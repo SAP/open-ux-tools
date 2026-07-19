@@ -26,7 +26,7 @@ import { getTemplatePath } from '../templates.js';
 import { type IdGeneratorFunction, createIdGenerator } from '../common/file.js';
 import { getErrorMessage } from '../common/validate.js';
 import { i18nNamespaces, translate } from '../i18n.js';
-import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { getDOMParserOptions, getOrAddNamespace, TEMPLATE_NAMESPACES } from './prompts/utils/xml.js';
 import { resolveAggregationPath } from './processor.js';
 
 /**
@@ -45,13 +45,9 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
         throw new Error(`Unable to read xml view file. Details: ${getErrorMessage(error)}`);
     }
 
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse xml view file. Details: [${level}] - ${message}`);
-    };
-
     let viewDocument: Document;
     try {
-        viewDocument = new DOMParser({ errorHandler }).parseFromString(viewContent, 'text/xml');
+        viewDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(viewContent, 'text/xml');
     } catch (error) {
         throw new Error(`Unable to parse xml view file. Details: ${getErrorMessage(error)}`);
     }
@@ -188,10 +184,11 @@ function buildPageAggregationFragment(
         .map((a) => `${a.name}="${a.value}"`)
         .join(' ');
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
-    };
-    return new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
+    return new DOMParser(
+        getDOMParserOptions(TEMPLATE_NAMESPACES, (level, message) => {
+            throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
+        })
+    ).parseFromString(wrapped, 'text/xml');
 }
 
 /**

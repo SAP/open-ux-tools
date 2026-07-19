@@ -1,7 +1,35 @@
-import { DOMParser } from '@xmldom/xmldom';
+import { DOMParser, type Options } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 import { MACROS_NAMESPACE_URI } from '../../types.js';
+
+/** Fallback namespace map for `@xmldom/xmldom`: maps unprefixed elements to XHTML and `macros:*` to `sap.fe.macros`. */
+export const TEMPLATE_NAMESPACES: Record<string, string> = {
+    '': 'http://www.w3.org/1999/xhtml',
+    'macros': 'sap.fe.macros'
+};
+
+/**
+ * Builds a `DOMParser` options object.
+ *
+ * @param xmlns - Fallback prefix→URI map (use `TEMPLATE_NAMESPACES` for templates and UI5 view/fragment files).
+ * @param errorHandler - Parse error handler. Defaults to throwing. Pass `() => {}` for a silent partial DOM.
+ */
+export function getDOMParserOptions(
+    xmlns?: Record<string, string | null | undefined>,
+    errorHandler?: (level: string, message: string) => void
+): Options & { xmlns?: Record<string, string | null | undefined> } {
+    return {
+        errorHandler:
+            errorHandler ??
+            ((level: string, message: string) => {
+                throw new Error(
+                    `Unable to parse template file with building block data. Details: [${level}] - ${message}`
+                );
+            }),
+        xmlns
+    };
+}
 
 /**
  * Converts the provided xpath string from `/mvc:View/Page/content` to
@@ -64,10 +92,10 @@ export function getXPathStringsForXmlFile(
     let pageMacroDefinition: string | undefined;
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const errorHandler = (level: string, message: string) => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+        const xmlDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            xmlContent,
+            'text/xml'
+        );
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
@@ -131,10 +159,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
     const ids: string[] = [];
     const buildingBlockSelector = 'macros:FilterBar';
     const xmlContent = fs.read(viewOrFragmentPath);
-    const errorHandler = (level: string, message: string): void => {
-        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-    };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+    const xmlDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xmlContent, 'text/xml');
     const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
     for (const element of elements) {
         const id = element.getAttributeNode('id')?.value;
@@ -162,10 +187,10 @@ export async function getExistingButtonGroups(
 
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const errorHandler = (level: string, message: string): void => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+        const xmlDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            xmlContent,
+            'text/xml'
+        );
 
         // Get namespace map and create xpath selector
         const nsMap = (xmlDocument.firstChild as any)?._nsMap || {};
