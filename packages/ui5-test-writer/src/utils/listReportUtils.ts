@@ -28,6 +28,7 @@ import {
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type { Manifest } from '@sap-ux/project-access';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
+import { t } from '../i18n.js';
 
 export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
 export { safeCheckButtonVisibility };
@@ -165,11 +166,8 @@ export function getListReportFeatures(
         }
     }
 
-    // Resolve unresolved i18n placeholders on custom filter field labels using the
-    // property's OData `@Common.Label`. The spec model returns `filterFields[<p>].label`
-    // verbatim for custom filter fields (e.g. `{i18n>Foo}`), even when the same key
-    // resolves at runtime. `iCheckFilterField(<label>)` matches by the rendered label,
-    // so we need the resolved string. The OData label is the closest stable substitute.
+    // Custom filter fields are matched by rendered label, so resolve unresolved i18n
+    // placeholders via the property's OData `@Common.Label`.
     const filterBarItems: FilterBarItem[] = filterFieldEntries.map((entry) => {
         const custom = customFilterFieldProperties.has(entry.property);
         let description = entry.description;
@@ -193,11 +191,7 @@ export function getListReportFeatures(
         semanticKeyProperties?.length && filterBarProperties.length
             ? semanticKeyProperties
                   .filter((key) => !filterBarProperties.includes(key))
-                  // Exclude properties annotated with `@UI.HiddenFilter` — these are hidden
-                  // from the user's filter adaptation dialog, so trying to add them at runtime
-                  // via `iAddAdaptationFilterField({ property })` produces a "field not found"
-                  // failure. When metadata is unavailable the check is skipped (graceful
-                  // degradation — the property is kept rather than dropped).
+                  // `@UI.HiddenFilter` properties cannot be added via the adaptation dialog; skip the check when metadata is missing.
                   .filter(
                       (key) => !convertedMetadata || !isHiddenFilter(convertedMetadata, listReportPage.entitySet, key)
                   )
@@ -253,9 +247,7 @@ export function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[
     }
 
     if (!filterBarItems?.length) {
-        log?.warn(
-            'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
-        );
+        log?.warn(t('warn.noFilterFieldTests'));
     }
 
     return filterBarItems;
@@ -264,9 +256,8 @@ export function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[
 /**
  * Retrieves filter field property names paired with their translated labels from the page model.
  *
- * Used by the List Report path where custom filter fields must be identified by label because
- * `iCheckFilterField({ property })` cannot match their control ids (rendered as
- * `…::CustomFilterField::<property>` rather than the standard `…::FilterField::<property>`).
+ * Used by the List Report path where custom filter fields must be matched by label rather
+ * than by property, because their control ids do not follow the standard filter-field pattern.
  *
  * @param pageModel - the tree model containing filter bar definitions
  * @param log - optional logger instance
@@ -283,9 +274,7 @@ export function getFilterFieldItems(pageModel: TreeModel, log?: Logger): { prope
     }
 
     if (!filterBarItems.length) {
-        log?.warn(
-            'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
-        );
+        log?.warn(t('warn.noFilterFieldTests'));
     }
 
     return filterBarItems;
@@ -294,11 +283,8 @@ export function getFilterFieldItems(pageModel: TreeModel, log?: Logger): { prope
 /**
  * Extracts the property names of custom filter fields declared in the manifest.
  *
- * A custom filter field is declared under
- * `sap.ui5.routing.targets[<targetKey>].options.settings.controlConfiguration["@com.sap.vocabularies.UI.v1.SelectionFields"].filterFields[<property>]`
- * with a `template` value pointing at an app-provided fragment. At runtime such fields
- * render with control id `…::CustomFilterField::<property>` and cannot be matched by
- * `iCheckFilterField({ property })` (which builds a regex against `::FilterField::<property>$`).
+ * Custom filter fields render with a non-standard control id and so cannot be matched by
+ * `iCheckFilterField({ property })`; callers fall back to matching them by label instead.
  *
  * @param manifest - the application manifest (may be undefined)
  * @param targetKey - routing target key of the List Report page
@@ -321,11 +307,11 @@ export function getCustomFilterFieldProperties(
               };
           }
         | undefined;
-    const cc = target?.options?.settings?.controlConfiguration;
-    if (!cc || typeof cc !== 'object') {
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
         return custom;
     }
-    const selectionFieldsConfig = cc['@com.sap.vocabularies.UI.v1.SelectionFields'] as
+    const selectionFieldsConfig = controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'] as
         | { filterFields?: Record<string, { template?: string }> }
         | undefined;
     const filterFields = selectionFieldsConfig?.filterFields;
@@ -341,18 +327,12 @@ export function getCustomFilterFieldProperties(
 }
 
 /**
- * Determines the non-custom tab keys for a List Report page.
+ * Determines the non-custom tab keys for a multi-tab List Report, used to target a specific
+ * table via `onTable("<key>")`. Custom tabs (backed by an app fragment) are skipped as they
+ * typically host no queryable table.
  *
- * A multi-tab List Report declares its tabs under
- * `sap.ui5.routing.targets[<targetKey>].options.settings.views.paths[]`. Each entry has
- * a `key` used by the runtime as the tab id. `onTable("<key>")` targets the table on a
- * specific tab; `onTable()` cannot resolve a table when there is more than one.
- *
- * Custom tabs (with a `template` property pointing at an app-provided fragment) are
- * skipped — they typically do not host a queryable table.
- *
- * Returns an empty array for single-table List Reports; callers should use `onTable()`
- * (JS) or `onTable("")` (TS) as before.
+ * Returns an empty array for single-table List Reports, where `onTable()` resolves the table
+ * without a tab id.
  *
  * @param manifest - the application manifest (may be undefined)
  * @param targetKey - routing target key of the List Report page
@@ -388,9 +368,7 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
             identifiers.push(path.key);
         }
     }
-    // A single non-custom tab behaves like a single-table List Report: `onTable()` resolves
-    // it without a tab id, so no tab-targeting or switching is needed. Return identifiers
-    // only when there are genuinely multiple tabs.
+    // A single non-custom tab needs no tab-targeting; treat it like a single-table List Report.
     if (identifiers.length <= 1) {
         return [];
     }
@@ -643,7 +621,7 @@ export function isSemanticKeyInFilterBar(
  *
  * @param convertedMetadata - The already-converted OData metadata
  * @param entitySetName - The name of the entity set to inspect
- * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Default false. Translatable labels should be avoided in stable test identifiers; prefer property names.
+ * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falling back to the property name); default false
  * @returns An array of PropertyPath string values (or their labels) from the SemanticKey annotation, or an empty array if not found
  * @throws {Error} If the entity set is not found
  */
@@ -683,7 +661,7 @@ export function getSemanticKeyPropertiesFromMetadata(
  *
  * @param metadataXml - The OData metadata XML content as a string
  * @param entitySetName - The name of the entity set to inspect
- * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Default false. Translatable labels should be avoided in stable test identifiers; prefer property names.
+ * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falling back to the property name); default false
  * @returns An array of PropertyPath string values (or their labels) from the SemanticKey annotation, or an empty array if not found
  * @throws {Error} If the metadata cannot be parsed or the entity set is not found
  */

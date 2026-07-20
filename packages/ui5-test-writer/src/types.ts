@@ -176,12 +176,8 @@ export type ObjectPageFeatures = {
 };
 
 /**
- * Filter bar item as consumed by the List Report journey template.
- * `property` is the OData property name (stable identifier).
- * `description` is the (translatable) label — used only for `iCheckFilterField(<label>)`
- * fallback on custom filter fields, where the object form does not work at runtime.
- * `custom` is true when the manifest declares a `template` for the field under
- * `controlConfiguration["@com.sap.vocabularies.UI.v1.SelectionFields"].filterFields`.
+ * Filter bar item consumed by the List Report journey template. Custom filter fields fall
+ * back to their (translatable) label, so `custom` selects the label vs. `{ property }` form.
  */
 export type FilterBarItem = {
     property: string;
@@ -206,19 +202,8 @@ export type ListReportFeatures = {
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
     /**
-     * Non-custom tab keys for multi-tab List Reports.
-     *
-     * Multi-tab LRs declare their tabs under
-     * `sap.ui5.routing.targets[<targetKey>].options.settings.views.paths[]`. Each entry
-     * has a `key` used by the runtime as the tab id. `onTable("<key>")` targets the table
-     * on a specific tab; `onTable()` cannot resolve a table when there is more than one.
-     *
-     * When populated, the first entry is used as the "primary" tab identifier for
-     * assertions that only make sense once (Create/Delete visibility, row navigation to
-     * the Object Page, action list). Row-existence assertions can be emitted per tab.
-     *
-     * Undefined for single-table List Reports (existing behavior — template emits
-     * `onTable()` in JS and `onTable("")` in TS).
+     * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
+     * single-table LRs. Used to target a specific tab via `onTable("<key>")`.
      */
     tableIdentifiers?: string[];
     semanticKey?: {

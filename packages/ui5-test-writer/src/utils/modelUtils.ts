@@ -229,11 +229,8 @@ export function getAggregations(node: TreeAggregation): TreeAggregations {
 }
 
 /**
- * Retrieves selection field property names from the given selection fields aggregation.
- *
- * Returns the OData property names (e.g. `"TravelID"`) read from `schema.keys[0].value`,
- * not the translatable display labels. Stable identifiers like these are needed by
- * `iCheckFilterField({ property })` so generated tests do not break under translation.
+ * Retrieves the stable OData property names of the selection fields, so generated
+ * filter-field checks do not break under translation.
  *
  * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
  * @returns An array of selection field property names.
@@ -254,11 +251,8 @@ export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): st
 }
 
 /**
- * Retrieves selection field property names and translated display labels from the given
- * selection fields aggregation.
- *
- * Used by the List Report path where custom filter fields cannot be identified by the
- * property regex `::FilterField::<property>$` and must fall back to matching by label.
+ * Retrieves both the property name and translated label of each selection field, for the
+ * List Report path where custom filter fields must fall back to matching by label.
  *
  * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
  * @returns Array of `{ property, description }` entries.
