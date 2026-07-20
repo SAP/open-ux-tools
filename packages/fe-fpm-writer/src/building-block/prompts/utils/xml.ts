@@ -9,27 +9,30 @@ export const TEMPLATE_NAMESPACES: Record<string, string> = {
     'macros': 'sap.fe.macros'
 };
 
-/** `Options` extended with `xmlns` namespace map for prefix resolution. */
-type DOMParserOptions = Options & { xmlns?: Record<string, string | null | undefined> };
+/** `Options` extended with `xmlns` and `onError` */
+type DOMParserOptions = Options & {
+    xmlns?: Record<string, string | null | undefined>;
+    onError?: (level: string, message: string) => void;
+};
 
 /**
  * Builds a `DOMParser` options object.
  *
  * @param xmlns - Fallback prefix→URI map (use `TEMPLATE_NAMESPACES` for templates and UI5 view/fragment files).
- * @param errorHandler - Parse error handler. Defaults to throwing. Pass `() => {}` for a silent partial DOM.
+ * @param onError - Parse error handler. Defaults to throwing. Pass `() => {}` for a silent partial DOM.
  */
 export function getDOMParserOptions(
     xmlns?: Record<string, string | null | undefined>,
-    errorHandler?: (level: string, message: string) => void
+    onError?: (level: string, message: string) => void
 ): DOMParserOptions {
+    const handler =
+        onError ??
+        ((level: string, message: string) => {
+            throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
+        });
     return {
-        errorHandler:
-            errorHandler ??
-            ((level: string, message: string) => {
-                throw new Error(
-                    `Unable to parse template file with building block data. Details: [${level}] - ${message}`
-                );
-            }),
+        onError: handler,
+        errorHandler: handler,
         xmlns
     };
 }
@@ -95,10 +98,7 @@ export function getXPathStringsForXmlFile(
     let pageMacroDefinition: string | undefined;
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const xmlDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
-            xmlContent,
-            'text/xml'
-        );
+        const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
@@ -162,7 +162,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
     const ids: string[] = [];
     const buildingBlockSelector = 'macros:FilterBar';
     const xmlContent = fs.read(viewOrFragmentPath);
-    const xmlDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xmlContent, 'text/xml');
+    const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
     const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
     for (const element of elements) {
         const id = element.getAttributeNode('id')?.value;
@@ -190,10 +190,7 @@ export async function getExistingButtonGroups(
 
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const xmlDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
-            xmlContent,
-            'text/xml'
-        );
+        const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
 
         // Get namespace map and create xpath selector
         const nsMap = (xmlDocument.firstChild as any)?._nsMap || {};

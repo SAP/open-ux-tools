@@ -271,7 +271,7 @@ describe('getDOMParserOptions', () => {
     test('returns errorHandler and xmlns in options object', () => {
         const handler = () => {};
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
-        expect(options.errorHandler).toBe(handler);
+        expect(options.onError).toBe(handler);
         expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
     });
 });

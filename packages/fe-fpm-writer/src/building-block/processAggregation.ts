@@ -47,7 +47,7 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
 
     let viewDocument: Document;
     try {
-        viewDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(viewContent, 'text/xml');
+        viewDocument = new DOMParser(getDOMParserOptions()).parseFromString(viewContent, 'text/xml');
     } catch (error) {
         throw new Error(`Unable to parse xml view file. Details: ${getErrorMessage(error)}`);
     }

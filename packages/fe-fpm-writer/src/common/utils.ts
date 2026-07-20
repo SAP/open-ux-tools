@@ -7,7 +7,7 @@ import { getTemplatePath } from '../templates.js';
 import type { FileContentPosition, Manifest, ManifestData } from './types.js';
 import { copyTpl } from './file.js';
 import { DOMParser } from '@xmldom/xmldom';
-import { getDOMParserOptions, TEMPLATE_NAMESPACES } from '../building-block/prompts/utils/xml.js';
+import { getDOMParserOptions } from '../building-block/prompts/utils/xml.js';
 
 /**
  * Method inserts passed text into content by char index position.
@@ -113,9 +113,6 @@ export async function getManifest(basePath: string, fs: Editor, validate = true)
  */
 export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string): boolean {
     const xmlContent = fs.read(viewOrFragmentPath).toString();
-    const xmlDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES, () => {})).parseFromString(
-        xmlContent,
-        'text/xml'
-    );
+    const xmlDocument = new DOMParser(getDOMParserOptions(undefined, () => {})).parseFromString(xmlContent, 'text/xml');
     return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
 }
