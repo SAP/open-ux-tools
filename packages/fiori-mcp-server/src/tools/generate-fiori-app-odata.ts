@@ -48,13 +48,15 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
         if (generatorConfig.service) {
             const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
             generatorConfig.service.edmx = metadata;
-            generatorConfig.service.externalServices = await getExternalServiceMetadata(
-                generatorConfig.service.servicePath,
-                generatorConfig.service.edmx,
-                generatorConfig.service.host,
-                generatorConfig.service.client,
-                generatorConfig.service.destination
-            );
+            if (generatorConfig.service.host || generatorConfig.service.destination) {
+                generatorConfig.service.externalServices = await getExternalServiceMetadata(
+                    generatorConfig.service.servicePath,
+                    generatorConfig.service.edmx,
+                    generatorConfig.service.host,
+                    generatorConfig.service.client,
+                    generatorConfig.service.destination
+                );
+            }
         }
 
         const content = JSON.stringify(generatorConfig, null, 4);

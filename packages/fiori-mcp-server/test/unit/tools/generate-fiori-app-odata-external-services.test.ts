@@ -160,6 +160,61 @@ describe('generateFioriAppOData - External Services', () => {
             const callArg = mockFindSystem.mock.calls[0][0];
             expect(callArg).toContain('sap-client=100');
         });
+
+        test('should use host directly without sap-client when client is not provided', async () => {
+            // Given: Args with host but no client
+            const argsWithoutClient = {
+                ...validArgs,
+                service: {
+                    host: 'https://example.com',
+                    servicePath: '/sap/opu/odata/sap/MY_SERVICE/'
+                }
+            };
+            mockParse.mockReturnValue(argsWithoutClient);
+
+            mockGetExternalServiceReferences.mockReturnValue([{ type: 'value-list' }]);
+
+            const mockSystem = { url: 'https://example.com' };
+            mockFindSystem.mockResolvedValue({ system: mockSystem });
+
+            const mockProvider = new MockAbapServiceProvider();
+            mockProvider.fetchExternalServices.mockResolvedValue([]);
+            mockCreateAbapServiceProvider.mockReturnValue(mockProvider);
+
+            // When: Generating the app
+            await generateFioriAppOData(argsWithoutClient);
+
+            // Then: findSystem should be called with the plain host, no sap-client param
+            const callArg = mockFindSystem.mock.calls[0][0];
+            expect(callArg).toBe('https://example.com');
+            expect(callArg).not.toContain('sap-client');
+        });
+    });
+
+    describe('External service fetching - guard conditions', () => {
+        test('should skip external service fetching when neither host nor destination is provided', async () => {
+            // Given: Service config with no host and no destination (e.g. local metadata only)
+            const argsWithoutSystem = {
+                ...validArgs,
+                service: {
+                    host: '',
+                    servicePath: '/sap/opu/odata/sap/MY_SERVICE/'
+                }
+            };
+            mockParse.mockReturnValue(argsWithoutSystem);
+
+            // Even if references would exist, the guard must short-circuit before fetching
+            mockGetExternalServiceReferences.mockReturnValue([{ type: 'value-list' }]);
+
+            // When: Generating the app
+            const result = await generateFioriAppOData(argsWithoutSystem);
+
+            // Then: External service fetching should not be attempted at all
+            expect(mockGetExternalServiceReferences).not.toHaveBeenCalled();
+            expect(mockFindSystem).not.toHaveBeenCalled();
+            expect(mockCreateForDestination).not.toHaveBeenCalled();
+            expect(result.status).toBe('Success');
+        });
     });
 
     describe('External service fetching - no references', () => {
