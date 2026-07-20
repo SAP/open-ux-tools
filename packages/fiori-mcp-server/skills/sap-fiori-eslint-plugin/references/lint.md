@@ -59,6 +59,8 @@ count than what the tooling shows.
 
 Always target the exact file set explicitly. Substitute real paths where shown.
 
+> **Windows**: these commands require **Git Bash** or **WSL** — they will not run in cmd.exe or PowerShell.
+
 **Standalone Fiori app:**
 ```bash
 # From the app root (where eslint.config.mjs and webapp/ are)
@@ -67,16 +69,15 @@ Always target the exact file set explicitly. Substitute real paths where shown.
 npx eslint webapp/manifest.json
 
 # 2. propertyChange files — OData V2 projects only (skip if V4)
-find webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx eslint --no-warn-ignored
+npx eslint $(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
 
 # 3. All local XML files declared in manifest dataSources via localUri
 #    (covers annotation files, metadata.xml, service.xml, etc.)
-LOCAL_URIS=$(node -e "
+npx eslint $(node -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
 ")
-npx eslint $LOCAL_URIS 2>/dev/null
 
 # Or combine all three in one pass:
 npx eslint webapp/manifest.json \
@@ -85,7 +86,7 @@ npx eslint webapp/manifest.json \
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
-") 2>/dev/null
+")
 ```
 
 **CAP project — specific app:**
@@ -97,7 +98,7 @@ APP=app/incidents   # replace with your app folder
 npx eslint $APP/webapp/manifest.json
 
 # 2. propertyChange files — OData V2 projects only (skip if V4)
-find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx eslint --no-warn-ignored
+npx eslint $(find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null)
 
 # 3. CDS files (app-level only)
 npx eslint "$APP/**/*.cds"
@@ -135,16 +136,7 @@ Application Issues (Application Information / Page Map scope):
 - Most common rules: [top 3]
 ```
 
-When presenting issues as a table, always include the source file as the first column and a separate Line column. Put the file path as a bare inline-code string in the form `` `file:///absolute/path:line` `` — VS Code terminal detects and makes bare `file://` URIs with `:line` clickable, but markdown link syntax `[label](url)` breaks this because the renderer interferes with the `:line` suffix before VS Code can parse it.
-
-```
-| File | Line | Rule | Issue |
-|---|---|---|---|
-| `file:///abs/path/webapp/localService/metadata.xml:3983` | 3983 | sap-description-column-label | AccountingDocumentCategory_Text has generic label |
-| `file:///abs/path/webapp/annotations/annotation.xml:4763` | 4763 | sap-text-arrangement-hidden  | CompanyCodeName is referenced via Common.Text … |
-```
-
-Always use the full absolute `file:///` URI with `:line` appended. Keep the bare `Line` column as well for scannability.
+When listing individual issues, use the table format described in Step 7.
 
 If the count still differs from what the user sees in Application Information or Page Map, check:
 1. **Missing annotation files** — the manifest may reference annotation URIs not covered by the glob above; extract them with the node snippet above
