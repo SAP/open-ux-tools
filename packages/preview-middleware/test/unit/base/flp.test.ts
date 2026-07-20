@@ -119,7 +119,6 @@ describe('FlpSandbox', () => {
                 getSourcePath: () => tmpdir()
             };
         }
-        // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     } as unknown as MiddlewareUtils;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
         warn: ReturnType<typeof jest.fn>;
@@ -1319,7 +1318,6 @@ describe('FlpSandbox', () => {
             getProject() {
                 return { getSourcePath: () => webappPath };
             }
-            // eslint-disable-next-line @typescript-eslint/consistent-type-imports
         } as unknown as MiddlewareUtils;
         const mockConfig = { editors: { cardGenerator: { path: '/test/flpCardGeneratorSandbox.html' } } };
 
