@@ -6,9 +6,10 @@ import { dirname, join } from 'node:path';
 import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
-import { AbapServiceProvider, createForDestination } from '@sap-ux/axios-extension';
-import type { ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
+import { createForDestination } from '@sap-ux/axios-extension';
+import type { ExternalService, ServiceProvider, AbapServiceProvider } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider, findSystem } from './services/sap-system.js';
+import { WebIDEUsage } from '@sap-ux/btp-utils';
 
 async function executeOData(validated: GeneratorConfigOData, appPath: string): Promise<GenerateAppOutput> {
     const generatorConfigValidated: GeneratorConfigOData = validateWithSchema(generatorConfigOData, validated);
@@ -177,16 +178,19 @@ async function getAbapServiceProvider(
 ): Promise<AbapServiceProvider | undefined> {
     let serviceProvider: ServiceProvider | undefined;
     if (destinationName) {
-        serviceProvider = await createForDestination({}, { Name: destinationName });
+        // To avoid an additional call to listDestinations, we create a destination provider directly with the given name.
+        const destination = { Name: destinationName, WebIDEUsage: WebIDEUsage.ODATA_ABAP };
+        serviceProvider = await createForDestination({}, destination);
     } else {
-        // Create full URL with client for findSystem to work correctly
-        const url = new URL(host);
+        let findSystemQuery = host;
         if (client) {
+            // Create full URL with client for findSystem to work correctly
+            const url = new URL(host);
             url.searchParams.set('sap-client', client);
+            findSystemQuery = url.toString();
         }
-        const fullUrl = url.toString();
 
-        const { system } = await findSystem(fullUrl);
+        const { system } = await findSystem(findSystemQuery);
         if (system) {
             serviceProvider = createAbapServiceProvider(system);
         } else {
@@ -196,10 +200,10 @@ async function getAbapServiceProvider(
         }
     }
 
-    if (!(serviceProvider instanceof AbapServiceProvider)) {
+    /* if (!(serviceProvider instanceof AbapServiceProvider)) {
         logger.error('Value Help and Code List metadata is only available from ABAP backends');
         return undefined;
-    }
+    } */
 
-    return serviceProvider;
+    return serviceProvider as AbapServiceProvider;
 }

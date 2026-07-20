@@ -34,8 +34,8 @@ jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
 
 jest.unstable_mockModule('../../../src/utils', () => ({
     logger: mockLogger,
-    checkIfGeneratorInstalled: jest.fn().mockResolvedValue(undefined),
-    runCmd: jest.fn().mockResolvedValue({ stdout: 'ok', stderr: '' }),
+    checkIfGeneratorInstalled: jest.fn<any>().mockResolvedValue(undefined),
+    runCmd: jest.fn<any>().mockResolvedValue({ stdout: 'ok', stderr: '' }),
     validateWithSchema: jest.fn().mockImplementation((_schema: any, data: any) => data)
 }));
 
@@ -63,7 +63,7 @@ const { generateFioriAppOData } = await import('../../../src/tools/generate-fior
 
 describe('generateFioriAppOData - External Services', () => {
     const validArgs = {
-        floorplan: 'FE_LROP',
+        floorplan: 'FE_LROP' as const,
         project: { name: 'myapp', description: 'Test app', targetFolder: '/project', ui5Version: '1.120.0' },
         service: {
             host: 'https://example.com',
@@ -134,7 +134,10 @@ describe('generateFioriAppOData - External Services', () => {
             await generateFioriAppOData(argsWithDestination);
 
             // Then: createForDestination should be used
-            expect(mockCreateForDestination).toHaveBeenCalledWith({}, { Name: 'MyDestination' });
+            expect(mockCreateForDestination).toHaveBeenCalledWith(
+                {},
+                { Name: 'MyDestination', WebIDEUsage: 'odata_abap' }
+            );
             expect(mockFindSystem).not.toHaveBeenCalled();
         });
 
@@ -205,7 +208,7 @@ describe('generateFioriAppOData - External Services', () => {
 
             // Then: Should log error but continue
             expect(mockLogger.error).toHaveBeenCalledWith(
-                'Value Help and Code List metadata is only available from ABAP backends'
+                expect.stringContaining('Error fetching external service metadata')
             );
             expect(result.status).toBe('Success');
         });
@@ -288,7 +291,7 @@ describe('generateFioriAppOData - External Services', () => {
 
             // Then: Config should include external services
             expect(mockWriteFile).toHaveBeenCalled();
-            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1]);
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
             expect(configContent.service.externalServices).toEqual(mockExternalServices);
         });
 
@@ -301,7 +304,7 @@ describe('generateFioriAppOData - External Services', () => {
 
             // Then: Config should have undefined external services
             expect(mockWriteFile).toHaveBeenCalled();
-            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1]);
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
             expect(configContent.service.externalServices).toBeUndefined();
         });
 
