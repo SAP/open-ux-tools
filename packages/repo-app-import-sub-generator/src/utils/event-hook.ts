@@ -16,6 +16,8 @@ export interface RepoAppGenContext {
     vscodeInstance?: VSCodeInstance;
     // Optional deploy config to pass to the post-generation command
     deployConfig?: AbapDeployConfig;
+    // Optional telemetry event name for migration
+    migrationTelemetryEvent?: string;
 }
 
 /**
@@ -37,7 +39,8 @@ export async function runPostAppGenHook(context: RepoAppGenContext): Promise<voi
         // Execute the post-generation command
         await context.vscodeInstance?.commands?.executeCommand?.(context.postGenCommand, {
             fsPath: context.path,
-            deployConfig: context.deployConfig
+            deployConfig: context.deployConfig,
+            ...(context.migrationTelemetryEvent && { migrationTelemetryEvent: context.migrationTelemetryEvent })
         });
     } catch (e) {
         RepoAppDownloadLogger.logger?.error(
