@@ -207,7 +207,7 @@ function collectValueListReferences(
                     type: 'value-list',
                     serviceRootPath,
                     target,
-                    value: stringValue.String.replaceAll(/\n/g, '').trim() // Ensure that formatted XML does not break the value list reference string
+                    value: stringValue.String.replaceAll('\n', '').trim() // Ensure that formatted XML does not break the value list reference string
                 });
             }
         }
