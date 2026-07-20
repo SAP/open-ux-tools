@@ -64,7 +64,7 @@ function buildPackageMap() {
         const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
         for (const [key, value] of Object.entries(allDeps)) {
             if (typeof value !== 'string') continue;
-            const match = value.match(/^workspace:(@[^@]+\/[^@]+|[^@]+)@/);
+            const match = value.match(/^workspace:(@[^@]+\/[^@]+|[^@/][^@]*)@/);
             if (!match) continue;
             const realName = match[1];
             if (realName !== key && map.has(realName)) {
@@ -117,7 +117,6 @@ function buildBundledDepReverseMap(pkgMap, aliasMap) {
     for (const bundler of ESBUILD_BUNDLING_PACKAGES) {
         if (!pkgMap.has(bundler)) continue;
         const allDeps = transitiveWorkspaceDeps(bundler, pkgMap, aliasMap);
-        allDeps.delete(bundler); // exclude self
         for (const dep of allDeps) {
             if (!reverse.has(dep)) reverse.set(dep, new Set());
             reverse.get(dep).add(bundler);
