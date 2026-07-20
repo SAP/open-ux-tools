@@ -7,7 +7,7 @@ import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/ind
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import { createForDestination } from '@sap-ux/axios-extension';
-import type { ExternalService, ServiceProvider, AbapServiceProvider } from '@sap-ux/axios-extension';
+import { ExternalService, ServiceProvider, AbapServiceProvider } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider, findSystem } from './services/sap-system.js';
 import { WebIDEUsage } from '@sap-ux/btp-utils';
 
@@ -202,10 +202,10 @@ async function getAbapServiceProvider(
         }
     }
 
-    /* if (!(serviceProvider instanceof AbapServiceProvider)) {
+    if (!(serviceProvider instanceof AbapServiceProvider)) {
         logger.error('Value Help and Code List metadata is only available from ABAP backends');
         return undefined;
-    } */
+    }
 
     return serviceProvider as AbapServiceProvider;
 }
