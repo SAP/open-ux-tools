@@ -32,8 +32,8 @@ async function getProjectDistTag(root: string, options?: { logger?: Logger; memF
         const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest), memFs);
         const minUI5Version = getMinimumUI5Version(manifest);
         if (minUI5Version && valid(minUI5Version)) {
-            const [mayor, minor] = minUI5Version.split('.');
-            distTag = `UI5-${mayor}.${minor}`;
+            const [major, minor] = minUI5Version.split('.');
+            distTag = `UI5-${major}.${minor}`;
         }
     } catch (error) {
         options?.logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
