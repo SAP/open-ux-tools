@@ -1,5 +1,17 @@
 # @sap-ux/app-config-writer
 
+## 1.1.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- do not allow adding card generator for CAP node projects w/o cds-plugin-ui5 [[8cda5dd](https://github.com/SAP/open-ux-tools/commit/8cda5ddc2ecf1f9554a9ae43715671a643f8cdad)]
+
 ## 1.1.8
 
 ### Patch Changes
