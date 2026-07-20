@@ -165,20 +165,15 @@ async function getSpecificationByVersion<T>(version: string, options?: { logger?
  * @param distTag - dist-tag of the specification, like 'latest' or 'UI5-1.71'
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
- * @param [options.memFs] - optional mem-fs editor instance
  * @returns - version for given dist-tag
  */
-async function convertDistTagToVersion(
-    distTag: string,
-    options?: { logger?: Logger; memFs?: Editor }
-): Promise<string> {
+async function convertDistTagToVersion(distTag: string, options?: { logger?: Logger }): Promise<string> {
     const logger = options?.logger;
-    const memFs = options?.memFs;
     if (!existsSync(specificationDistTagPath)) {
         logger?.debug(`Specification dist-tags not found at '${specificationDistTagPath}'. Trying to refresh.`);
         await refreshSpecificationDistTags({ logger });
     }
-    let specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath, memFs);
+    let specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
     // Validate the current dist-tags file
     if (
         'error' in specificationDistTags &&
@@ -188,7 +183,7 @@ async function convertDistTagToVersion(
         // Refresh if dist-tags are invalid
         logger?.debug(`Specification dist-tags file has error at '${specificationDistTagPath}'. Trying to refresh.`);
         await refreshSpecificationDistTags({ logger });
-        specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath, memFs);
+        specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
     }
     const version = specificationDistTags[distTag] ?? specificationDistTags.latest;
     return version;
@@ -206,7 +201,7 @@ async function convertDistTagToVersion(
 async function getSpecificationVersion(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<string> {
     const { logger, memFs } = options ?? {};
     const distTag = await getProjectDistTag(root, { logger, memFs });
-    return await convertDistTagToVersion(distTag, { logger, memFs });
+    return await convertDistTagToVersion(distTag, { logger });
 }
 
 /**

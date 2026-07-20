@@ -207,9 +207,7 @@ describe('Test getSpecification', () => {
             const root = join(__dirname, '../test-data/specification/app');
             const memFs = createMemFsEditor(createStorage());
             const manifestPath = join(root, 'webapp', FileName.Manifest);
-            memFs.writeJSON(manifestPath, { 'sap.ui5': { dependencies: { minUI5Version: '1.3.3' } } });
-            const distTagsPath = join(__dirname, '../test-data/specification/specification-dist-tags.json');
-            memFs.writeJSON(distTagsPath, { 'UI5-1.2': '0.2.3', 'UI5-1.3': '0.1.2', 'UI5-1.4': '0.3.3' });
+            memFs.writeJSON(manifestPath, { 'sap.ui5': { dependencies: { minUI5Version: '1.2.3' } } });
             const specification = await getSpecification<Specification>(root, { logger, memFs });
             expect(specification.exec()).toBe('specification-mock');
             expect(logger.debug).toHaveBeenCalledWith("Specification loaded from cache using version '0.1.2'");
