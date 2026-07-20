@@ -9,7 +9,7 @@ import { GET_MERGED_MANIFEST } from '../constant.js';
 // from the user's project) because we want to exercise the exact version they
 // installed — see further below in this file.
 import { graphFromPackageDependencies } from '@ui5/project/graph';
-import { readUi5Config } from '@sap-ux/adp-tooling/src/base/helper.js';
+import { readUi5Config } from '@sap-ux/adp-tooling';
 
 interface PreflightOk {
     ok: true;
@@ -23,6 +23,44 @@ export type systemPath = {
     url: string;
     client: string;
 };
+
+// Minimal shape of a `@ui5/project` Project used here — the package ships no .d.ts.
+// The workspace is opaque; it is passed through unchanged to `previewManifest`.
+type Ui5Workspace = object;
+
+interface Ui5CustomTask {
+    name: string;
+    configuration?: Record<string, unknown>;
+}
+
+interface Ui5Project {
+    /** @returns The build workspace (opaque; passed through to task-adaptation). */
+    getWorkspace(): Ui5Workspace;
+    /** @returns Project namespace (dot-separated app id). */
+    getNamespace(): string;
+    /** @returns Custom tasks configured for this project, or undefined when none. */
+    getCustomTasks(): Ui5CustomTask[] | undefined;
+}
+
+interface PreviewManifestOptions {
+    workspace: Ui5Workspace;
+    options: { configuration: Record<string, unknown>; projectNamespace: string };
+    taskUtil: {
+        getTag: () => undefined;
+        setTag: () => void;
+        clearTag: () => void;
+        STANDARD_TAGS: { OmitFromBuildResult: string };
+    };
+}
+
+type PreviewManifestFn = (opts: PreviewManifestOptions) => Promise<object>;
+
+// Minimal shape of the dynamically-imported `@ui5/task-adaptation` module.
+// `default` is the full-build task; either the module or its default may expose `previewManifest`.
+interface TaskAdaptationModule {
+    previewManifest?: PreviewManifestFn;
+    default?: PreviewManifestFn & { previewManifest?: PreviewManifestFn };
+}
 
 /**
  * Checks whether a filesystem path exists and is aaccessible.
@@ -101,7 +139,9 @@ function envelope(
 }
 
 // eslint-disable-next-line no-new-func
-const dynamicImport = new Function('specifier', 'return import(specifier)') as (specifier: string) => Promise<any>;
+const dynamicImport = new Function('specifier', 'return import(specifier)') as (
+    specifier: string
+) => Promise<TaskAdaptationModule>;
 
 /**
  * Validates the descriptor changes of an SAP UI5 Adaptation Project by calling
@@ -118,7 +158,7 @@ const dynamicImport = new Function('specifier', 'return import(specifier)') as (
  * @param params Tool input.
  * @returns Standard tool execution envelope.
  */
-export async function getMergedManifest(params: GetMergedManifestInput): Promise<ExecuteFunctionalityOutput> {
+export async function getMergedManifest(params: GetMergedManifestInput): Promise<object> {
     const { appPath } = params;
     if (!appPath) {
         return envelope('Error', 'Missing required parameter: appPath.', params);
@@ -129,24 +169,27 @@ export async function getMergedManifest(params: GetMergedManifestInput): Promise
         return envelope('Error', preflightStatus.message, params);
     }
 
+    // @ui5/project ships no .d.ts, so graphFromPackageDependencies has no type info;
+    // we narrow the root via `as Ui5Project` immediately below.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const graph = await graphFromPackageDependencies({
         cwd: params.appPath,
         resolveFrameworkDependencies: false
     });
 
-    const project = graph.getRoot() as any;
+    const project = graph.getRoot() as Ui5Project;
 
     const workspace = project.getWorkspace();
     const projectNamespace = project.getNamespace();
-    let configuration =
-        (project.getCustomTasks() ?? []).find((t: any) => t.name === 'app-variant-bundler-build')?.configuration ?? {};
+    let configuration: Record<string, unknown> =
+        (project.getCustomTasks() ?? []).find((t: Ui5CustomTask) => t.name === 'app-variant-bundler-build')
+            ?.configuration ?? {};
 
     if (Object.keys(configuration).length === 0) {
         const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
-        configuration = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<systemPath> } }>(
-            'fiori-tools-preview'
-        )?.configuration?.adp;
-        configuration.type = 'abap';
+        const adp = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<systemPath> } }>('fiori-tools-preview')
+            ?.configuration?.adp;
+        configuration = { ...(adp ?? {}), type: 'abap' };
     }
     //console.info?.(`task-adaptation configuration: ${JSON.stringify(configuration)}`);
 
@@ -168,6 +211,11 @@ export async function getMergedManifest(params: GetMergedManifestInput): Promise
         }
     }).catch(async (error: Error) => {
         if (error.message.includes('Run a full build first')) {
+            if (typeof mod.default !== 'function') {
+                throw new Error(
+                    `@ui5/task-adaptation does not export a default full-build task (keys: ${Object.keys(mod).join(', ')})`
+                );
+            }
             await mod.default({
                 workspace,
                 options: { configuration, projectNamespace },

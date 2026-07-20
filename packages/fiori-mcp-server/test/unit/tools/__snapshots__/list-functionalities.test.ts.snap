@@ -15,6 +15,10 @@ Array [
     "functionalityId": "create-controller-extension",
   },
   Object {
+    "description": "Queries the SAP system configured in the adaptation project (via ui5.yaml) and returns both the UI5 libraries that ship with an app descriptor and the OData services (V2 and V4) exposed by the system catalog. **Only supported for Cloud Foundry (S/4HANA Cloud) ADP projects** — other project types are rejected. Use this when adding an OData service to the manifest and you need to discover what is available on the target system. The result is a JSON object \`{ libraries, odataServices }\` returned in the response \`message\` field. Pass \`saveLocal: true\` to also persist the two lists as \`webapp/.context/libraries.json\` and \`webapp/.context/odata-services.json\` for agent consumption.",
+    "functionalityId": "list-system-resources",
+  },
+  Object {
     "description": "Represents a prefix that is prepended in front of the viewName",
     "functionalityId": Array [
       "settings",

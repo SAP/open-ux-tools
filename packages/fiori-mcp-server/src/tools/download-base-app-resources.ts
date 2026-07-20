@@ -8,7 +8,7 @@ import type { DownloadBaseAppResourcesInput } from '../types/index.js';
 // from the user's project) because we want to exercise the exact version they
 // installed — see further below in this file.
 import { graphFromPackageDependencies } from '@ui5/project/graph';
-import { readUi5Config } from '@sap-ux/adp-tooling/src/base/helper.js';
+import { readUi5Config } from '@sap-ux/adp-tooling';
 import type { systemPath } from './get-merged-manifest.js';
 
 // eslint-disable-next-line no-new-func

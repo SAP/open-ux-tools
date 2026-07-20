@@ -9,10 +9,7 @@ import {
     CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
     createControllerExtensionHandlers
 } from './controller-extension/index.js';
-import {
-    LIST_SYSTEM_RESOURCES_FUNCTIONALITY,
-    listSystemResourcesHandlers
-} from './manifest-context/list-system-resources';
+import { LIST_SYSTEM_RESOURCES_FUNCTIONALITY, listSystemResourcesHandlers } from './manifest-context/index.js';
 import {
     ADD_PAGE,
     CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,

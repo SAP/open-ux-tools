@@ -70,6 +70,10 @@ type ToolArgs =
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
 
+/**
+ *
+ * @param requested
+ */
 function negotiateProtocolVersion(requested: string): string {
     if (SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {
         return requested;
@@ -247,9 +251,6 @@ export class FioriFunctionalityServer {
                         break;
                     case 'read_odata_metadata_adp':
                         result = await readODataMetadataAdp(args as AdpMetadataInput);
-                        break;
-                    case 'run_rta_workflow_step':
-                        result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
                         break;
                     case 'run_rta_workflow_step':
                         result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);

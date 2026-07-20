@@ -221,7 +221,7 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode'],
+    external: ['vscode', '@ui5/project'],
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin]
 });
 

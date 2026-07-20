@@ -19,7 +19,7 @@ export { openAdaptationEditor } from './open-adaptation-editor.js';
 export { getMergedManifest as validateManifestChanges } from './get-merged-manifest.js';
 export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
-export { readODataMetadataAdp } from './get-adp-odata-metada';
+export { readODataMetadataAdp } from './get-adp-odata-metadata.js';
 
 export const tools = [
     {

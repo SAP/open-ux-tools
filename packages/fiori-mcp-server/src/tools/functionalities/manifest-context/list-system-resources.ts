@@ -4,17 +4,24 @@ import type {
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
-} from '../../../types';
-import { AdpMetadataInputSchema } from '../../../types/input';
-import { convertToSchema } from '../../../utils';
-import { LIST_SYSTEM_RESOURCES_FUNCTIONALITY_ID } from '../../../constant';
-import { getAvailableLibraryFromSystem, getAvailableODataServices, writeContextFile } from './manifestContext';
+} from '../../../types/index.js';
+import { AdpMetadataInputSchema } from '../../../types/input.js';
+import { convertToSchema } from '../../../utils/index.js';
+import { LIST_SYSTEM_RESOURCES_FUNCTIONALITY_ID } from '../../../constant.js';
+import {
+    contextFileLabel,
+    getAvailableLibraryFromSystem,
+    getAvailableODataServices,
+    LIBRARIES_FILE,
+    ODATA_SERVICES_FILE,
+    writeContextFile
+} from './system-resources.js';
 
 export const LIST_SYSTEM_RESOURCES_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: LIST_SYSTEM_RESOURCES_FUNCTIONALITY_ID,
     name: 'List UI5 libraries and OData services available in the connected SAP system',
     description:
-        'Queries the SAP system configured in the adaptation project (via ui5.yaml) and returns both the UI5 libraries that ship with an app descriptor and the OData services (V2 and V4) exposed by the system catalog. Use this when adding an OData service to the manifest and you need to discover what is available on the target system. The result is a JSON object `{ libraries, odataServices }` returned in the response `message` field. Pass `saveLocal: true` to also persist the two lists as `webapp/.context/libraries.json` and `webapp/.context/odata-services.json` for agent consumption.',
+        'Queries the SAP system configured in the adaptation project (via ui5.yaml) and returns both the UI5 libraries that ship with an app descriptor and the OData services (V2 and V4) exposed by the system catalog. **Only supported for Cloud Foundry (S/4HANA Cloud) ADP projects** — other project types are rejected. Use this when adding an OData service to the manifest and you need to discover what is available on the target system. The result is a JSON object `{ libraries, odataServices }` returned in the response `message` field. Pass `saveLocal: true` to also persist the two lists as `webapp/.context/libraries.json` and `webapp/.context/odata-services.json` for agent consumption.',
     parameters: convertToSchema(AdpMetadataInputSchema)
 };
 
@@ -49,10 +56,10 @@ async function executeFunctionality(input: ExecuteFunctionalityInput): Promise<E
     const changes: string[] = [];
     if (parameters?.saveLocal === true) {
         await Promise.all([
-            writeContextFile(appPath, 'libraries.json', JSON.stringify(libraries, null, 4)),
-            writeContextFile(appPath, 'odata-services.json', JSON.stringify(odataServices, null, 4))
+            writeContextFile(appPath, LIBRARIES_FILE, JSON.stringify(libraries, null, 4)),
+            writeContextFile(appPath, ODATA_SERVICES_FILE, JSON.stringify(odataServices, null, 4))
         ]);
-        changes.push('Wrote webapp/.context/libraries.json', 'Wrote webapp/.context/odata-services.json');
+        changes.push(`Wrote ${contextFileLabel(LIBRARIES_FILE)}`, `Wrote ${contextFileLabel(ODATA_SERVICES_FILE)}`);
     }
 
     return {
