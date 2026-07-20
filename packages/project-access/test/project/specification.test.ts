@@ -213,7 +213,7 @@ describe('Test getSpecification', () => {
             expect(logger.debug).toHaveBeenCalledWith("Specification loaded from cache using version '0.1.2'");
         });
 
-        test('minUI5Version resolved from memFs - unsuccessfull load', async () => {
+        test('minUI5Version resolved from memFs - unsuccessful load', async () => {
             const logger = getMockLogger();
             const root = join(__dirname, '../test-data/specification/app');
             const memFs = createMemFsEditor(createStorage());
