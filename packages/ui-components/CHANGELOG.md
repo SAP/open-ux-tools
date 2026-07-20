@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Override Fluent UI TextField validation message styles - remove border-radius and animation, add negative margin-top and dynamic border-top color per message type (error/warning/info) [[c8741b3](https://github.com/SAP/open-ux-tools/commit/c8741b3f8a925ad3a8be8a701920af9e0c8b6bbf)]
+
 ## 3.0.6
 
 ### Patch Changes
