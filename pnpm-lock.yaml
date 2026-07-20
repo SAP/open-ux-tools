@@ -1491,8 +1491,8 @@ importers:
         specifier: 0.2.2
         version: 0.2.2(esbuild@0.27.4)
       '@fluentui/react':
-        specifier: 8.125.7
-        version: 8.125.7(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 8.125.6
+        version: 8.125.6(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       '@fluentui/react-hooks':
         specifier: 8.10.2
         version: 8.10.2(@types/react@16.14.69)(react@16.14.0)
@@ -4428,8 +4428,8 @@ importers:
   packages/ui-components:
     dependencies:
       '@fluentui/react':
-        specifier: 8.125.7
-        version: 8.125.7(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 8.125.6
+        version: 8.125.6(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       react-movable:
         specifier: 2.5.4
         version: 2.5.4(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -7169,8 +7169,8 @@ packages:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
 
-  '@fluentui/react@8.125.7':
-    resolution: {integrity: sha512-MsputVjgAZEcSzfr6nXBghfZnqu+GKT4NCBwLeSL8yyQEugUxyZJNp4TVZblGdMognyRDbobNn+/zIhEK4sxNQ==}
+  '@fluentui/react@8.125.6':
+    resolution: {integrity: sha512-uvq0PdAL+Tznikek54zbS31JefTqcPaCkwjHjJz0t8NAC2ZFHozKnkApaQo2+sf0390K3k1ErGWr/+3Tvc6+JQ==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       '@types/react-dom': '>=16.8.0 <20.0.0'
@@ -22575,7 +22575,7 @@ snapshots:
       react: 16.14.0
       tslib: 2.8.1
 
-  '@fluentui/react@8.125.7(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)':
+  '@fluentui/react@8.125.6(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)':
     dependencies:
       '@fluentui/date-time-utilities': 8.6.11
       '@fluentui/font-icons-mdl2': 8.5.74(@types/react@16.14.69)(react@16.14.0)
