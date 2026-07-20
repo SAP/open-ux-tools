@@ -36,7 +36,7 @@ function makePage(targetKey: string, template: 'ListReport' | 'ObjectPage' = 'Li
 }
 
 /**
- * Realistic post-rework OpaJourneyTypes.d.ts content with one ListReport page (`TravelList`)
+ * Realistic post-rework OpaJourneyTypes.gen.d.ts content with one ListReport page (`TravelList`)
  * already wired in. Used as the splice target across the tests.
  */
 const BASE_FILE = `import type Opa5 from "sap/ui/test/Opa5";
@@ -129,7 +129,7 @@ describe('spliceJourneysIntoOpaJourneyTypes()', () => {
 
 describe('addJourneysToOpaJourneyTypes()', () => {
     const testOutDirPath = join('/', 'project', 'webapp', 'test');
-    const expectedFilePath = join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts');
+    const expectedFilePath = join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.gen.d.ts');
 
     function makeFsMock(content: string): Pick<Editor, 'read' | 'write'> {
         return {
@@ -138,7 +138,7 @@ describe('addJourneysToOpaJourneyTypes()', () => {
         };
     }
 
-    test('reads OpaJourneyTypes.d.ts from the testOutDirPath and writes spliced content', () => {
+    test('reads OpaJourneyTypes.gen.d.ts from the testOutDirPath and writes spliced content', () => {
         const fs = makeFsMock(BASE_FILE) as unknown as Editor;
         addJourneysToOpaJourneyTypes([makePage('TravelObjectPage', 'ObjectPage')], testOutDirPath, fs);
 
@@ -181,7 +181,7 @@ describe('addJourneysToOpaJourneyTypes()', () => {
 
         addJourneysToOpaJourneyTypes([makePage('TravelObjectPage', 'ObjectPage')], testOutDirPath, fs, log);
 
-        expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('OpaJourneyTypes.d.ts'));
+        expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('OpaJourneyTypes.gen.d.ts'));
     });
 
     test('warns and returns false when the file exceeds MAX_FILE_CONTENT_LENGTH', () => {
@@ -198,6 +198,6 @@ describe('addJourneysToOpaJourneyTypes()', () => {
 
         expect(written).toBe(false);
         expect(fs.write).not.toHaveBeenCalled();
-        expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('OpaJourneyTypes.d.ts'));
+        expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('OpaJourneyTypes.gen.d.ts'));
     });
 });

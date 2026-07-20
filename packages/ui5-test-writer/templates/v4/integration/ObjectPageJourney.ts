@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 import opaTest from "sap/ui/test/opaQunit";
-import type { Given, When, Then } from "./types/OpaJourneyTypes";
+import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 <%_
 const usesFieldIdentifier = (headerSections || []).some(function(section) {
     return section.form && section.fields && section.fields.length > 0;

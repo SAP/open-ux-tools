@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 import opaTest from "sap/ui/test/opaQunit";
-import type { Given, When, Then } from "./types/OpaJourneyTypes";
+import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 <%_
 const usesFilterFieldIdentifier =
     (!hideFilterBar && filterBarItems && filterBarItems.length > 0) ||

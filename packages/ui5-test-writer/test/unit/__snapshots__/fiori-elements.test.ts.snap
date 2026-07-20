@@ -11994,7 +11994,7 @@ Object {
   },
   "webapp/test/integration/myOPATest.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes.gen\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
@@ -12196,7 +12196,7 @@ export default runner;
 ",
     "state": "modified",
   },
-  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+  "webapp/test/integration/types/OpaJourneyTypes.gen.d.ts": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -12445,7 +12445,7 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes.gen\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
@@ -12647,7 +12647,7 @@ export default runner;
 ",
     "state": "modified",
   },
-  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+  "webapp/test/integration/types/OpaJourneyTypes.gen.d.ts": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -12896,7 +12896,7 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes.gen\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
@@ -13098,7 +13098,7 @@ export default runner;
 ",
     "state": "modified",
   },
-  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+  "webapp/test/integration/types/OpaJourneyTypes.gen.d.ts": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -13324,7 +13324,7 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes.gen\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
@@ -13473,7 +13473,7 @@ export default runner;
 ",
     "state": "modified",
   },
-  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+  "webapp/test/integration/types/OpaJourneyTypes.gen.d.ts": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -13761,7 +13761,7 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes.gen\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
@@ -14061,7 +14061,7 @@ export default class ObjectPage {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+  "webapp/test/integration/types/OpaJourneyTypes.gen.d.ts": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *

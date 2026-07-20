@@ -10,10 +10,10 @@
     "warn": {
         "cannotUpdateJourneyRunner": "Could not update `JourneyRunner.js`. The existing file may be missing or unreadable. New pages were not registered.",
         "cannotUpdateOpaTestsQunit": "Could not update `opaTests.qunit.js`. The existing file may be missing or unreadable. New journey paths were not registered.",
-        "cannotUpdateOpaJourneyTypes": "Could not update `OpaJourneyTypes.d.ts`. The existing file may be missing or unreadable. New journey type definitions were not registered."
+        "cannotUpdateOpaJourneyTypes": "Could not update `OpaJourneyTypes.gen.d.ts`. The existing file may be missing or unreadable. New journey type definitions were not registered."
     },
     "info": {
-        "opaJourneyTypesNotUpdated": "`OpaJourneyTypes.d.ts` was not updated due to an incompatible existing test setup.",
+        "opaJourneyTypesNotUpdated": "`OpaJourneyTypes.gen.d.ts` was not updated due to an incompatible existing test setup.",
         "incompatibleTestSetupSkipped": "`testsuite.qunit` and `opaTests.qunit` files were not updated due to an incompatible existing test setup.",
         "manualIntegrationRequired": "Please ensure the generated journeys and pages are integrated into your existing OPA5 test setup."
     }

@@ -593,7 +593,7 @@ function writeJourneyRunner(writeContext: WriteContext): void {
 }
 
 /**
- * Writes the OpaJourneyTypes.d.ts type definition file used by generated TypeScript OPA tests.
+ * Writes the OpaJourneyTypes.gen.d.ts type definition file used by generated TypeScript OPA tests.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  */
@@ -601,14 +601,14 @@ function writeOpaJourneyTypes(writeContext: WriteContext): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, modifiedFiles } = writeContext;
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
-        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
+        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.gen.d.ts'),
         config,
         undefined,
         {
             globOptions: { dot: true }
         }
     );
-    modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
+    modifiedFiles.push('integration/types/OpaJourneyTypes.gen.d.ts');
 }
 
 /**
@@ -710,7 +710,7 @@ function writeFallbackJourney(writeContext: WriteContext): void {
 }
 
 /**
- * Update the `OpaJourneyTypes.d.ts` type-definition file used by generated TypeScript OPA tests.
+ * Update the `OpaJourneyTypes.gen.d.ts` type-definition file used by generated TypeScript OPA tests.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param generatedPages - pages whose journeys should be reflected in the type definitions
@@ -728,7 +728,7 @@ function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: OpaPa
             writeContext.log
         );
         if (written) {
-            writeContext.modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
+            writeContext.modifiedFiles.push('integration/types/OpaJourneyTypes.gen.d.ts');
         }
     } else {
         writeOpaJourneyTypes(writeContext);
