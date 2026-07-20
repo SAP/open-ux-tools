@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Consolidate DOMParser instantiation behind getDOMParserOptions with correct errorHandler and xmlns support [[70ab106](https://github.com/SAP/open-ux-tools/commit/70ab106566883152b7483e96c297e5782a453e97)]
+
 ## 1.3.0
 
 ### Minor Changes
