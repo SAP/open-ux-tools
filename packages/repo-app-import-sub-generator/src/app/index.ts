@@ -37,7 +37,7 @@ import { getPrompts } from '../prompts/prompts.js';
 import { generate, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'node:path';
 import { platform } from 'node:os';
-import { runPostAppGenHook, type RepoAppGenContext } from '../utils/event-hook.js';
+import { runPostAppGenHook } from '../utils/event-hook.js';
 import { getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig, updateWorkspaceFoldersIfNeeded, handleWorkspaceConfig } from '@sap-ux/launch-config';
@@ -412,7 +412,7 @@ export default class extends Generator {
             await runPostAppGenHook({
                 path: this.projectPath,
                 vscodeInstance: this.vscode,
-                postGenCommand: this.options.data.postGenCommand,
+                postGenCommand: this.options.data?.postGenCommand ?? '',
                 deployConfig: this.deployConfig,
                 ...(this.downloadType === AppDownloadType.AbapRepository && {
                     migrationTelemetryEvent: EventName.ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED
