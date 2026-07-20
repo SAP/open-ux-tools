@@ -290,31 +290,35 @@ pnpm audit
 
 **When NOT to create a changeset:**
 - ❌ Changes only to tests (test files in `test/` directories)
-- ❌ Changes only to `devDependencies` (unless the package uses esbuild for bundling — see **Bundled devDependency cascades** below)
+- ❌ Changes only to `devDependencies` (unless the package physically embeds another workspace package's dist — see **Bundled devDependency cascades** below)
 - ❌ Configuration changes (eslint, prettier, jest configs) that don't touch `src/`
 - ❌ CI/CD pipeline updates (.github/workflows)
 
 **Bundled devDependency cascades:**
 
-Some packages use esbuild to inline their dependency graph into the dist bundle at build time. When any workspace package in that graph is released, the bundling consumer **must also have a changeset** — otherwise it will not be re-published and consumers will keep running the old bundled code.
+Some packages physically embed another workspace package's built dist output into their own dist at build time (via esbuild bundling, `copyfiles`, or similar mechanisms). When any workspace package in that graph is released, the embedding consumer **must also have a changeset** — otherwise it will not be re-published and consumers will keep running the old embedded code.
 
-The affected bundling packages are declared in [`scripts/validate-changesets.mjs`](scripts/validate-changesets.mjs) (`ESBUILD_BUNDLING_PACKAGES` array). The set of bundled deps is derived automatically by walking the dependency graph:
-- The bundler's own `devDependencies` are included (esbuild reads them directly)
-- For transitive deps, only their `dependencies` are followed — their `devDependencies` are not installed in the bundler's `node_modules` tree and are never bundled
+The affected embedding packages are declared in [`scripts/validate-changesets.mjs`](scripts/validate-changesets.mjs) (`ESBUILD_BUNDLING_PACKAGES` array). The set of embedded deps is derived automatically by walking the dependency graph:
+- The embedding package's own `devDependencies` are included (copied/bundled directly)
+- For transitive deps, only their `dependencies` are followed — their `devDependencies` are not installed in the embedding package's `node_modules` tree and are never included
 
 This is enforced automatically: `pnpm build` and `pnpm cset` both run `pnpm validate:changesets` and will error with an actionable message if a cascade changeset is missing.
 
-**If you release any workspace package** (direct devDep or transitive dep via `dependencies`), check whether it is in the bundle of any `ESBUILD_BUNDLING_PACKAGES` consumer — `pnpm validate:changesets` will tell you. Example cascade changeset:
+**If you release any workspace package** (direct devDep or transitive dep via `dependencies`), check whether it is embedded by any `ESBUILD_BUNDLING_PACKAGES` consumer — `pnpm validate:changesets` will tell you. Example cascade changeset:
 
 ```markdown
 ---
 "@sap-ux/fiori-mcp-server": patch
 ---
 
-BUMP: Rebuild bundle with updated @sap-ux/fiori-docs-embeddings
+BUMP: Republish to pick up updated @sap-ux/fiori-docs-embeddings
 ```
 
-**If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled dep set is derived automatically from the dependency graph.
+**Special case — `@sap-ux/preview-middleware` and `@sap-ux-private/preview-middleware-client`:**
+
+`preview-middleware` physically copies the client's built dist into its own `dist/client/` via `copyfiles` (not esbuild, but same embedding concept). The client is an implementation detail — it is never published independently. Always write the cascade changeset for `@sap-ux/preview-middleware` (the public package), **never** for `@sap-ux-private/preview-middleware-client` alone. The `fixed` group in `.changeset/config.json` will version-bump the client alongside the middleware automatically.
+
+**If you add a new dist-embedding package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its embedded dep set is derived automatically from the dependency graph.
 
 **Private packages and changesets:**
 
@@ -322,7 +326,7 @@ Packages with `"private": true` in their `package.json` are NOT published to npm
 
 ```markdown
 ---
-"@sap-ux-private/preview-middleware-client": patch
+"@sap-ux-private/control-property-editor-common": patch
 ---
 
 BUMP: Upgrade shared devDependencies (jest 30)
@@ -845,7 +849,7 @@ Before submitting changes, verify:
 - [ ] `pnpm test` passes with ≥80% coverage
 - [ ] `pnpm lint:dependency-versions` passes
 - [ ] Changeset created if source code or runtime dependencies changed
-- [ ] If releasing a bundled workspace devDep, cascade changeset added for each consumer in `scripts/validate-changesets.mjs`
+- [ ] If releasing an embedded workspace devDep, cascade changeset added for each consumer in `scripts/validate-changesets.mjs`
 - [ ] No pnpm audit vulnerabilities introduced
 - [ ] Code follows TypeScript and ESLint standards
 - [ ] Tests follow given/when/then pattern

@@ -10,22 +10,29 @@ const BLOCKED_MAJOR_PACKAGES = [
 ];
 
 /**
- * Packages that use esbuild to bundle their dependency graph into the dist output.
+ * Packages that physically embed another workspace package's built dist output
+ * into their own dist at build time (via esbuild bundling, copyfiles, or similar).
  *
- * When any of a bundler's transitive workspace deps is released, the bundler
- * must be re-published so consumers receive the updated bundle.
+ * When any of an embedding package's transitive workspace deps is released, the
+ * embedding package must be re-published so consumers receive the updated output.
  *
- * Walk rule: the bundler's own devDependencies are bundled directly; for
- * transitive deps only their `dependencies` are followed (their devDependencies
- * are not installed in the bundler's node_modules and are never bundled).
+ * Walk rule: the embedding package's own devDependencies are included directly;
+ * for transitive deps only their `dependencies` are followed (their devDependencies
+ * are not installed in the embedding package's node_modules and are never included).
  *
- * Add a package here when it gains an esbuild-based bundle step. Remove it if
- * the package stops bundling its dependencies.
+ * Add a package here when it embeds another workspace package's dist. Remove it
+ * if the package stops embedding its dependencies.
+ *
+ * Note: @sap-ux/preview-middleware uses tsc+copyfiles (not esbuild) but is listed
+ * here because it physically copies @sap-ux-private/preview-middleware-client dist
+ * into its own dist/client/ at build time. Always write the cascade changeset for
+ * @sap-ux/preview-middleware, never for @sap-ux-private/preview-middleware-client alone.
  */
 const ESBUILD_BUNDLING_PACKAGES = [
     '@sap-ux/fiori-mcp-server',
     'sap-ux-sap-systems-ext',
-    '@sap-ux/eslint-plugin-fiori-tools'
+    '@sap-ux/eslint-plugin-fiori-tools',
+    '@sap-ux/preview-middleware'
 ];
 
 const __dirname = import.meta.dirname;
@@ -34,7 +41,7 @@ const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP|INFRA):/i;
 const CHANGESET_DIR = path.join(ROOT, '.changeset');
 const PACKAGES_DIR = path.join(ROOT, 'packages');
 
-/** Build a name → packageJson map for all workspace packages. */
+/** Build a name → packageJson map for all workspace packages, plus an alias → real name map. */
 function buildPackageMap() {
     /** @type {Map<string, object>} */
     const map = new Map();
@@ -48,19 +55,39 @@ function buildPackageMap() {
             // ignore malformed package.json
         }
     }
-    return map;
+
+    // Build alias map: pnpm alias key -> real package name
+    // e.g. "@private/foo": "workspace:@scope/real-foo@*" -> aliasMap["@private/foo"] = "@scope/real-foo"
+    /** @type {Map<string, string>} */
+    const aliasMap = new Map();
+    for (const pkg of map.values()) {
+        const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+        for (const [key, value] of Object.entries(allDeps)) {
+            if (typeof value !== 'string') continue;
+            const match = value.match(/^workspace:(@[^@]+\/[^@]+|[^@]+)@/);
+            if (!match) continue;
+            const realName = match[1];
+            if (realName !== key && map.has(realName)) {
+                aliasMap.set(key, realName);
+            }
+        }
+    }
+    return { pkgMap: map, aliasMap };
 }
 
 /**
- * Collect all workspace packages that end up in a bundler's esbuild output.
+ * Collect all workspace packages that end up in an embedding package's output.
  *
- * esbuild resolves from node_modules, so the rule is:
- * - The bundler's own devDependencies ARE bundled (esbuild reads them directly)
+ * esbuild/copyfiles resolves from node_modules, so the rule is:
+ * - The embedding package's own devDependencies ARE included (read directly)
  * - For every transitive dep, only its `dependencies` are followed — its
  *   devDependencies are not part of its published artifact and are never
- *   installed as part of the bundler's node_modules tree
+ *   installed as part of the embedding package's node_modules tree
+ *
+ * aliasMap resolves pnpm alias keys (e.g. "@private/foo") to real package names
+ * (e.g. "@scope/real-foo") so aliased devDependencies are not missed by the walk.
  */
-function transitiveWorkspaceDeps(startName, pkgMap) {
+function transitiveWorkspaceDeps(startName, pkgMap, aliasMap) {
     const visited = new Set();
     function walk(name, isRoot) {
         if (visited.has(name)) return;
@@ -71,7 +98,8 @@ function transitiveWorkspaceDeps(startName, pkgMap) {
             ? { ...pkg.dependencies, ...pkg.devDependencies }
             : { ...pkg.dependencies };
         for (const dep of Object.keys(toFollow)) {
-            if (pkgMap.has(dep)) walk(dep, false);
+            const resolvedName = aliasMap.has(dep) ? aliasMap.get(dep) : dep;
+            if (pkgMap.has(resolvedName)) walk(resolvedName, false);
         }
     }
     walk(startName, true);
@@ -80,15 +108,15 @@ function transitiveWorkspaceDeps(startName, pkgMap) {
 }
 
 /**
- * Build reverse map: transitive workspace dep → set of bundling packages that
- * include it. Derived by walking the full dependency graph of each bundler.
+ * Build reverse map: transitive workspace dep → set of embedding packages that
+ * include it. Derived by walking the full dependency graph of each embedding package.
  */
-function buildBundledDepReverseMap(pkgMap) {
+function buildBundledDepReverseMap(pkgMap, aliasMap) {
     /** @type {Map<string, Set<string>>} */
     const reverse = new Map();
     for (const bundler of ESBUILD_BUNDLING_PACKAGES) {
         if (!pkgMap.has(bundler)) continue;
-        const allDeps = transitiveWorkspaceDeps(bundler, pkgMap);
+        const allDeps = transitiveWorkspaceDeps(bundler, pkgMap, aliasMap);
         allDeps.delete(bundler); // exclude self
         for (const dep of allDeps) {
             if (!reverse.has(dep)) reverse.set(dep, new Set());
@@ -153,11 +181,11 @@ function validateChangesets() {
         }
     }
 
-    // Check that bundling packages have a changeset whenever any transitive
-    // workspace dependency is being released. esbuild inlines the full module
-    // graph at build time, so even indirect deps end up in the bundle.
-    const pkgMap = buildPackageMap();
-    const reverseMap = buildBundledDepReverseMap(pkgMap);
+    // Check that embedding packages have a changeset whenever any transitive
+    // workspace dependency is being released. The embedded output is frozen at
+    // build time, so even indirect deps must trigger a re-publish.
+    const { pkgMap, aliasMap } = buildPackageMap();
+    const reverseMap = buildBundledDepReverseMap(pkgMap, aliasMap);
     for (const [dep, bundlers] of reverseMap.entries()) {
         if (!packagesWithChangesets.has(dep)) continue;
 
@@ -165,14 +193,14 @@ function validateChangesets() {
             if (!packagesWithChangesets.has(bundler)) {
                 errors.push(
                     `❌ Missing cascading changeset for "${bundler}"\n` +
-                        `   Reason: "${dep}" is being released and "${bundler}" bundles it via esbuild.\n` +
-                        `   The bundler must be re-published so consumers receive the updated bundle.\n` +
+                        `   Reason: "${dep}" is being released and "${bundler}" embeds it in its dist output.\n` +
+                        `   The embedding package must be re-published so consumers receive the updated output.\n` +
                         `   Fix: Add a changeset for "${bundler}" (patch bump, BUMP: prefix):\n\n` +
                         `     ---\n` +
                         `     "${bundler}": patch\n` +
                         `     ---\n\n` +
-                        `     BUMP: Rebuild bundle with updated ${dep}\n` +
-                        `   To add a new bundling package: scripts/validate-changesets.mjs → ESBUILD_BUNDLING_PACKAGES`
+                        `     BUMP: Republish to pick up updated ${dep}\n` +
+                        `   To add a new embedding package: scripts/validate-changesets.mjs → ESBUILD_BUNDLING_PACKAGES`
                 );
             }
         }
