@@ -32,7 +32,7 @@ import {
     type TemplateContext
 } from '../common/file.js';
 import { getManifest, getManifestPath } from '../common/utils.js';
-import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { getDOMParserOptions, getOrAddNamespace, TEMPLATE_NAMESPACES } from './prompts/utils/xml.js';
 import { i18nNamespaces, translate } from '../i18n.js';
 import { processBuildingBlock, resolveAggregationPath } from './processor.js';
 import {
@@ -338,14 +338,14 @@ function getTemplateDocument<T extends BuildingBlock>(
         undefined,
         templateConfig
     );
-    const errorHandler = (level: string, message: string) => {
-        throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
-    };
 
     // Parse the rendered template content
     let templateDocument: Document;
     try {
-        templateDocument = new DOMParser({ errorHandler }).parseFromString(templateContent, 'text/xml');
+        templateDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            templateContent,
+            'text/xml'
+        );
     } catch (error) {
         throw new Error(`Unable to parse template file with building block data. Details: ${getErrorMessage(error)}`);
     }
@@ -471,18 +471,16 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             );
         // Parse content directly so documentElement IS the <macros:Page> element,
         // matching what appendPageAggregations expects as templateDocument.documentElement.
-        const snippetErrorHandler = (level: string, message: string): never => {
-            throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
-        };
         const snippetMacrosNS = getOrAddNamespace(nsDoc, 'sap.fe.macros', 'macros') || 'macros';
         const snippetContent = `${content}`.replace(
             new RegExp(`^<(${snippetMacrosNS}:Page)`),
             `<$1 xmlns:${snippetMacrosNS}="sap.fe.macros"`
         );
-        const snippetDoc = new DOMParser({ errorHandler: snippetErrorHandler }).parseFromString(
-            snippetContent,
-            'text/xml'
-        );
+        const snippetDoc = new DOMParser(
+            getDOMParserOptions(TEMPLATE_NAMESPACES, (level, message) => {
+                throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
+            })
+        ).parseFromString(snippetContent, 'text/xml');
         appendPageAggregations(
             fs,
             nsDoc,
