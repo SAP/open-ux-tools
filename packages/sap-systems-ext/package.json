@@ -12,7 +12,7 @@
         "directory": "packages/sap-systems-ext"
     },
     "engines": {
-        "vscode": "^1.106.3",
+        "vscode": "^1.109.0",
         "node": ">=22.x"
     },
     "files": [
