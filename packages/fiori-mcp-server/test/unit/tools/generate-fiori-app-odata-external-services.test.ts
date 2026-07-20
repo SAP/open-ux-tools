@@ -263,7 +263,7 @@ describe('generateFioriAppOData - External Services', () => {
 
             // Then: Should log error but continue
             expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining('Error fetching external service metadata')
+                'Value Help and Code List metadata is only available from ABAP backends'
             );
             expect(result.status).toBe('Success');
         });
