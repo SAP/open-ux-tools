@@ -1,5 +1,13 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add backendSystemFilter option to system selection and filter full-service-URL systems in repo app import; move getFloorplanLabel and floorplan label/description translations to fiori-generator-shared and export tFioriGeneratorShared [[22c974b](https://github.com/SAP/open-ux-tools/commit/22c974bbd38773e62e87aa34b60481ee6a3da62f)]
+
 ## 1.1.0
 
 ### Minor Changes
