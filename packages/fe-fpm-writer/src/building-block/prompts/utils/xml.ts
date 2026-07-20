@@ -9,6 +9,9 @@ export const TEMPLATE_NAMESPACES: Record<string, string> = {
     'macros': 'sap.fe.macros'
 };
 
+/** `Options` extended with `xmlns` namespace map for prefix resolution. */
+type DOMParserOptions = Options & { xmlns?: Record<string, string | null | undefined> };
+
 /**
  * Builds a `DOMParser` options object.
  *
@@ -18,7 +21,7 @@ export const TEMPLATE_NAMESPACES: Record<string, string> = {
 export function getDOMParserOptions(
     xmlns?: Record<string, string | null | undefined>,
     errorHandler?: (level: string, message: string) => void
-): Options & { xmlns?: Record<string, string | null | undefined> } {
+): DOMParserOptions {
     return {
         errorHandler:
             errorHandler ??
