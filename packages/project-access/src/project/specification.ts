@@ -3,6 +3,7 @@ import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
+import type { Editor } from 'mem-fs-editor';
 import { deleteModule, getModule, loadModuleFromProject } from './module-loader.js';
 import { getWebappPath } from './ui5-config.js';
 import { getNodeModulesPath } from './dependencies.js';
@@ -20,13 +21,15 @@ const specificationDistTagPath = join(fioriToolsDirectory, FileName.Specificatio
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-async function getProjectDistTag(root: string, options?: { logger?: Logger }): Promise<string> {
+async function getProjectDistTag(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<string> {
     let distTag = 'latest';
     try {
-        const webappPath = await getWebappPath(root);
-        const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest));
+        const memFs = options?.memFs;
+        const webappPath = await getWebappPath(root, memFs);
+        const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest), memFs);
         const minUI5Version = getMinimumUI5Version(manifest);
         if (minUI5Version && valid(minUI5Version)) {
             const [mayor, minor] = minUI5Version.split('.');
@@ -55,12 +58,16 @@ async function hasSpecificationDevDependency(root: string): Promise<boolean> {
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-export async function getSpecificationModuleFromCache<T>(root: string, options?: { logger?: Logger }): Promise<T> {
-    const logger = options?.logger;
+export async function getSpecificationModuleFromCache<T>(
+    root: string,
+    options?: { logger?: Logger; memFs?: Editor }
+): Promise<T> {
+    const { logger, memFs } = options ?? {};
     let specification: T;
-    const version = await getSpecificationVersion(root, { logger });
+    const version = await getSpecificationVersion(root, { logger, memFs });
     try {
         specification = await getSpecificationByVersion<T>(version, { logger });
         logger?.debug(`Specification loaded from cache using version '${version}'`);
@@ -79,10 +86,11 @@ export async function getSpecificationModuleFromCache<T>(root: string, options?:
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-export async function getSpecification<T>(root: string, options?: { logger?: Logger }): Promise<T> {
-    const logger = options?.logger;
+export async function getSpecification<T>(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<T> {
+    const { logger, memFs } = options ?? {};
     try {
         if (await hasSpecificationDevDependency(root)) {
             logger?.debug(`Specification found in devDependencies of project '${root}', trying to load`);
@@ -92,7 +100,7 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
     } catch {
         logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
     }
-    return await getSpecificationModuleFromCache(root, { logger });
+    return await getSpecificationModuleFromCache(root, { logger, memFs });
 }
 
 /**
@@ -157,15 +165,20 @@ async function getSpecificationByVersion<T>(version: string, options?: { logger?
  * @param distTag - dist-tag of the specification, like 'latest' or 'UI5-1.71'
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - version for given dist-tag
  */
-async function convertDistTagToVersion(distTag: string, options?: { logger?: Logger }): Promise<string> {
+async function convertDistTagToVersion(
+    distTag: string,
+    options?: { logger?: Logger; memFs?: Editor }
+): Promise<string> {
     const logger = options?.logger;
+    const memFs = options?.memFs;
     if (!existsSync(specificationDistTagPath)) {
         logger?.debug(`Specification dist-tags not found at '${specificationDistTagPath}'. Trying to refresh.`);
         await refreshSpecificationDistTags({ logger });
     }
-    let specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+    let specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath, memFs);
     // Validate the current dist-tags file
     if (
         'error' in specificationDistTags &&
@@ -175,7 +188,7 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
         // Refresh if dist-tags are invalid
         logger?.debug(`Specification dist-tags file has error at '${specificationDistTagPath}'. Trying to refresh.`);
         await refreshSpecificationDistTags({ logger });
-        specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+        specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath, memFs);
     }
     const version = specificationDistTags[distTag] ?? specificationDistTags.latest;
     return version;
@@ -187,12 +200,13 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - version of specification
  */
-async function getSpecificationVersion(root: string, options?: { logger?: Logger }): Promise<string> {
-    const logger = options?.logger;
-    const distTag = await getProjectDistTag(root, { logger });
-    return await convertDistTagToVersion(distTag, { logger });
+async function getSpecificationVersion(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<string> {
+    const { logger, memFs } = options ?? {};
+    const distTag = await getProjectDistTag(root, { logger, memFs });
+    return await convertDistTagToVersion(distTag, { logger, memFs });
 }
 
 /**

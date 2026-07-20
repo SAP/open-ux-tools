@@ -6,6 +6,8 @@ import type * as fsPromisesType from 'node:fs/promises';
 import type { Logger } from '@sap-ux/logger';
 import type * as commandType from '../../src/command/index.js';
 import type * as moduleType from '../../src/project/module-loader.js';
+import { create as createStorage } from 'mem-fs';
+import { create as createMemFsEditor } from 'mem-fs-editor';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -197,6 +199,32 @@ describe('Test getSpecification', () => {
         expect(logger.debug).toHaveBeenCalledWith(
             `Specification not found in project '${root}', using path from cache with version '0.1.2'`
         );
+    });
+
+    describe('memFs support', () => {
+        test('minUI5Version resolved from memFs - success load', async () => {
+            const logger = getMockLogger();
+            const root = join(__dirname, '../test-data/specification/app');
+            const memFs = createMemFsEditor(createStorage());
+            const manifestPath = join(root, 'webapp', FileName.Manifest);
+            memFs.writeJSON(manifestPath, { 'sap.ui5': { dependencies: { minUI5Version: '1.3.3' } } });
+            const distTagsPath = join(__dirname, '../test-data/specification/specification-dist-tags.json');
+            memFs.writeJSON(distTagsPath, { 'UI5-1.2': '0.2.3', 'UI5-1.3': '0.1.2', 'UI5-1.4': '0.3.3' });
+            const specification = await getSpecification<Specification>(root, { logger, memFs });
+            expect(specification.exec()).toBe('specification-mock');
+            expect(logger.debug).toHaveBeenCalledWith("Specification loaded from cache using version '0.1.2'");
+        });
+
+        test('minUI5Version resolved from memFs - unsuccessfull load', async () => {
+            const logger = getMockLogger();
+            const root = join(__dirname, '../test-data/specification/app');
+            const memFs = createMemFsEditor(createStorage());
+            const manifestPath = join(root, 'webapp', FileName.Manifest);
+            memFs.writeJSON(manifestPath, { 'sap.ui5': { dependencies: { minUI5Version: '1.3.3' } } });
+            await expect(getSpecification<Specification>(root, { logger, memFs })).rejects.toThrow(
+                'Failed to load specification: TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined'
+            );
+        });
     });
 });
 
