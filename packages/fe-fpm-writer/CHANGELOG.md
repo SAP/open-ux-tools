@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Use onError instead of errorHandler in DOMParser options for xmldom 0.9.x compatibility [[7249031](https://github.com/SAP/open-ux-tools/commit/7249031c3c38bcc8c8afe1d448fd49268a3f4695)]
+
 ## 1.3.1
 
 ### Patch Changes
