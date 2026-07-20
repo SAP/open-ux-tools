@@ -213,12 +213,16 @@ async function getSpecificationVersion(root: string, options?: { logger?: Logger
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - path to specification
  */
-export async function getSpecificationPath(root: string, options?: { logger?: Logger }): Promise<string> {
-    const logger = options?.logger;
+export async function getSpecificationPath(
+    root: string,
+    options?: { logger?: Logger; memFs?: Editor }
+): Promise<string> {
+    const { logger, memFs } = options ?? {};
     const moduleName = '@sap/ux-specification';
-    if (await hasSpecificationDevDependency(root)) {
+    if (await hasSpecificationDevDependency(root, { memFs })) {
         const nodeModulesParent = getNodeModulesPath(root, moduleName);
         if (!nodeModulesParent) {
             throw new Error(`Module '${moduleName}' not found in node_modules for project '${root}'`);
@@ -226,8 +230,8 @@ export async function getSpecificationPath(root: string, options?: { logger?: Lo
         logger?.debug(`Specification root found in project '${root}'`);
         return join(nodeModulesParent, 'node_modules', moduleName);
     }
-    await getSpecificationModuleFromCache(root, { logger });
-    const version = await getSpecificationVersion(root, { logger });
+    await getSpecificationModuleFromCache(root, { logger, memFs });
+    const version = await getSpecificationVersion(root, { logger, memFs });
     logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);
     const nodeModulesParent = getNodeModulesPath(moduleRoot, moduleName);

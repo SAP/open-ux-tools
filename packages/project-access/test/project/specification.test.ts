@@ -236,6 +236,36 @@ describe('Test getSpecification', () => {
                 'Failed to load specification: TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined'
             );
         });
+
+        test('getSpecificationPath resolves from cache using manifest in memFs', async () => {
+            const logger = getMockLogger();
+            const root = join(__dirname, '../test-data/specification/app');
+            const memFs = createMemFsEditor(createStorage());
+            memFs.writeJSON(join(root, 'webapp', FileName.Manifest), {
+                'sap.ui5': { dependencies: { minUI5Version: '1.2.3' } }
+            });
+            const expectedPath = join(
+                __dirname,
+                '../test-data/module-loader/@sap/ux-specification/0.1.2/node_modules/@sap/ux-specification'
+            );
+            const path = await getSpecificationPath(root, { logger, memFs });
+            expect(path).toBe(expectedPath);
+            expect(logger.debug).toHaveBeenCalledWith(
+                `Specification not found in project '${root}', using path from cache with version '0.1.2'`
+            );
+        });
+
+        test('getSpecificationPath resolves from project using package.json in memFs', async () => {
+            const logger = getMockLogger();
+            const root = join(__dirname, '../test-data/specification/app');
+            const memFs = createMemFsEditor(createStorage());
+            memFs.writeJSON(join(root, FileName.Package), { devDependencies: { '@sap/ux-specification': '0.1.2' } });
+            const fakeNodeModulesRoot = join(__dirname, '../test-data/module-loader/@sap/ux-specification/0.1.2');
+            mockGetNodeModulesPath.mockReturnValueOnce(fakeNodeModulesRoot);
+            const path = await getSpecificationPath(root, { logger, memFs });
+            expect(path).toBe(join(fakeNodeModulesRoot, 'node_modules', '@sap/ux-specification'));
+            expect(logger.debug).toHaveBeenCalledWith(`Specification root found in project '${root}'`);
+        });
     });
 });
 
