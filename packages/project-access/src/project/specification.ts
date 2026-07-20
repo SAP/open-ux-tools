@@ -45,10 +45,12 @@ async function getProjectDistTag(root: string, options?: { logger?: Logger; memF
  * Checks if package.json contains dev dependency to specification.
  *
  * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns If dev dependency to specification is found in package.json
  */
-async function hasSpecificationDevDependency(root: string): Promise<boolean> {
-    const packageJson = await readJSON<Package>(join(root, FileName.Package));
+async function hasSpecificationDevDependency(root: string, options?: { memFs?: Editor }): Promise<boolean> {
+    const packageJson = await readJSON<Package>(join(root, FileName.Package), options?.memFs);
     return !!packageJson.devDependencies?.['@sap/ux-specification'];
 }
 
@@ -92,7 +94,7 @@ export async function getSpecificationModuleFromCache<T>(
 export async function getSpecification<T>(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<T> {
     const { logger, memFs } = options ?? {};
     try {
-        if (await hasSpecificationDevDependency(root)) {
+        if (await hasSpecificationDevDependency(root, { memFs })) {
             logger?.debug(`Specification found in devDependencies of project '${root}', trying to load`);
             // Early return with load module from project. If it throws an error it is not handled here.
             return loadModuleFromProject<T>(root, '@sap/ux-specification');

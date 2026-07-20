@@ -202,7 +202,7 @@ describe('Test getSpecification', () => {
     });
 
     describe('memFs support', () => {
-        test('minUI5Version resolved from memFs - success load', async () => {
+        test('minUI5Version resolved from memFs - successful load', async () => {
             const logger = getMockLogger();
             const root = join(__dirname, '../test-data/specification/app');
             const memFs = createMemFsEditor(createStorage());
@@ -211,6 +211,19 @@ describe('Test getSpecification', () => {
             const specification = await getSpecification<Specification>(root, { logger, memFs });
             expect(specification.exec()).toBe('specification-mock');
             expect(logger.debug).toHaveBeenCalledWith("Specification loaded from cache using version '0.1.2'");
+        });
+
+        test('package.json devDependency read from memFs - falls through to cache when module not installed', async () => {
+            const logger = getMockLogger();
+            const root = join(__dirname, '../test-data/specification/app');
+            const memFs = createMemFsEditor(createStorage());
+            memFs.writeJSON(join(root, FileName.Package), { devDependencies: { '@sap/ux-specification': '0.1.2' } });
+            memFs.writeJSON(join(root, 'webapp', FileName.Manifest), {
+                'sap.ui5': { dependencies: { minUI5Version: '1.2.3' } }
+            });
+            await expect(getSpecification<Specification>(root, { logger, memFs })).rejects.toThrow(
+                `Module '@sap/ux-specification' not installed in project '${root}'.\nError: Path to module not found.`
+            );
         });
 
         test('minUI5Version resolved from memFs - unsuccessful load', async () => {
