@@ -153,6 +153,8 @@ describe('getManifestContent', () => {
         );
 
         expect(i18nModelChanges).toHaveLength(1);
-        expect((i18nModelChanges[0].content as { createIfMissing?: boolean }).createIfMissing).toBe(true);
+        // The base app's own @i18n entry is left untouched — createIfMissing is only set on
+        // an entry we add ourselves, never grafted onto a pre-existing one.
+        expect((i18nModelChanges[0].content as { createIfMissing?: boolean }).createIfMissing).toBeUndefined();
     });
 });

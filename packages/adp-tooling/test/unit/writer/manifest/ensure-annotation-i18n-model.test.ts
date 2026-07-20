@@ -55,7 +55,7 @@ describe('ensureAnnotationI18nModelRegistered', () => {
         });
     });
 
-    it('should enhance an existing @i18n entry with createIfMissing instead of duplicating', async () => {
+    it('should leave an existing @i18n entry untouched instead of enhancing or duplicating', async () => {
         fs.writeJSON(descriptorPath, {
             content: [
                 {
@@ -68,13 +68,13 @@ describe('ensureAnnotationI18nModelRegistered', () => {
 
         const modified = await ensureAnnotationI18nModelRegistered(projectPath, fs);
 
-        expect(modified).toBe(true);
+        expect(modified).toBe(false);
         const changes = i18nModelChanges();
         expect(changes).toHaveLength(1);
-        expect(changes[0].content.createIfMissing).toBe(true);
+        expect(changes[0].content.createIfMissing).toBeUndefined();
     });
 
-    it('should be a no-op when @i18n already has createIfMissing', async () => {
+    it('should be a no-op when @i18n already exists with createIfMissing', async () => {
         fs.writeJSON(descriptorPath, {
             content: [
                 {
@@ -138,7 +138,7 @@ describe('ensureAnnotationI18nModelContent', () => {
         });
     });
 
-    it('should enhance an existing @i18n entry with createIfMissing instead of duplicating', () => {
+    it('should leave an existing @i18n entry untouched instead of enhancing or duplicating', () => {
         const content: DescriptorChange[] = [
             {
                 changeType: 'appdescr_ui5_addNewModelEnhanceWith',
@@ -149,12 +149,12 @@ describe('ensureAnnotationI18nModelContent', () => {
 
         const modified = ensureAnnotationI18nModelContent(content);
 
-        expect(modified).toBe(true);
+        expect(modified).toBe(false);
         expect(content).toHaveLength(1);
-        expect(content[0].content).toEqual({ modelId: '@i18n', createIfMissing: true });
+        expect(content[0].content).toEqual({ modelId: '@i18n' });
     });
 
-    it('should be a no-op when @i18n already has createIfMissing', () => {
+    it('should be a no-op when @i18n already exists with createIfMissing', () => {
         const content: DescriptorChange[] = [
             {
                 changeType: 'appdescr_ui5_addNewModelEnhanceWith',
