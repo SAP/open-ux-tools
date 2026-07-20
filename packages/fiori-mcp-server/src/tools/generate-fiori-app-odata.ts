@@ -6,8 +6,8 @@ import { dirname, join } from 'node:path';
 import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
-import { createForDestination } from '@sap-ux/axios-extension';
-import { ExternalService, ServiceProvider, AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
+import { createForDestination, AbapServiceProvider } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider, findSystem } from './services/sap-system.js';
 import { WebIDEUsage } from '@sap-ux/btp-utils';
 
