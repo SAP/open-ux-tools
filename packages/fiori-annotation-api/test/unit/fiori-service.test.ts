@@ -2669,7 +2669,6 @@ rating : Rating;
                 });
 
                 test('with qualifiers and embedded annotation', async () => {
-                    // deletion logic doesn't work correctly with ![]
                     const project = PROJECTS.V4_CDS_START;
                     const root = project.root;
                     const fsEditor = await createFsEditorForProject(root);
