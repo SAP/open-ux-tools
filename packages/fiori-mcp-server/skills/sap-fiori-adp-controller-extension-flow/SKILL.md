@@ -1,5 +1,7 @@
 ---
-name: adp-controller-extension-flow
+name: sap-fiori-adp-controller-extension-flow
+author: sap-fiori-tools
+version: 0.0.1
 description: Use when making RTA changes to a SAP Fiori adaptation project via the adaptation editor — adding/removing UI elements, changing properties, renaming labels, hiding controls, or extending controllers and fragments.
 ---
 
