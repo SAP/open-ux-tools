@@ -1,5 +1,7 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.43
+
 ## 1.0.42
 
 ## 1.0.41

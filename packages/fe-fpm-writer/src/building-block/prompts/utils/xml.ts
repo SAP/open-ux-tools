@@ -32,7 +32,6 @@ export function getDOMParserOptions(
         });
     return {
         onError: handler,
-        errorHandler: handler,
         xmlns
     };
 }
