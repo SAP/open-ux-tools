@@ -506,7 +506,7 @@ describe('Test getFilterFieldNames()', () => {
         const result = getFilterFieldNames(mockPageModel, mockLogger);
         expect(result).toEqual([]);
         expect(mockLogger.warn).toHaveBeenCalledWith(
-            'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+            'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
         );
     });
 

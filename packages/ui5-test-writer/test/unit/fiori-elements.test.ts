@@ -290,7 +290,7 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                    'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
                 )
             );
         });
@@ -1114,7 +1114,7 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                    'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
                 )
             );
         });
