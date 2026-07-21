@@ -35,6 +35,7 @@
         "@sapui5/types": "1.120.5",
         "ui5-tooling-modules": "3.35.0",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@ui5/cli": "4.0.50",
         "eslint-plugin-jsdoc": "62.8.1",

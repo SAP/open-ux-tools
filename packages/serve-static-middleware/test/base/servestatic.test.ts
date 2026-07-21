@@ -52,6 +52,18 @@ describe('serve-static-middleware', () => {
         expect(mockServeStatic.mock.calls).toMatchSnapshot();
     });
 
+    test('serveStaticMiddleware: call with custom library from /resources', () => {
+        const config: ServeStaticConfig = {
+            paths: [
+                { path: '/resources/my/custom/lib', src: '/path/to/my/custom/lib', maxAge: 123, fallthrough: false },
+                { path: '/test-resources', src: '/path/to/test-resources', maxAge: 456, fallthrough: true }
+            ]
+        };
+        serveStaticMiddleware('/root', config, logger);
+        expect(mockServeStatic).toHaveBeenCalledTimes(3);
+        expect(mockServeStatic.mock.calls).toMatchSnapshot();
+    });
+
     test('serveStaticMiddleware: call with src path resolution', () => {
         const config: ServeStaticConfig = {
             paths: [

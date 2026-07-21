@@ -80,6 +80,38 @@ import { getIntegrationCard } from './utils/cards.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
+type UI5VersionDetails = {
+    /**
+     * Contains either
+     * - the name of the distribution or
+     * - the id of the application in case the UI5 sources have beeng loaded from npmjs.
+     */
+    name: 'SAPUI5 Distribution' | Manifest['sap.app']['id'];
+    /**
+     * Contains either
+     * - the version of the UI5 framework or
+     * - the version of the application in case the UI5 sources have been loaded from npmjs.
+     */
+    version: string | Manifest['sap.app']['applicationVersion']['version'];
+    libraries: UI5LibraryVersionInfo[];
+};
+
+type UI5LibraryVersionInfo = {
+    name: string;
+    version: string;
+};
+
+export type Ui5VersionInfo = {
+    major: number;
+    minor: number;
+    patch: number;
+    label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn: boolean;
+};
+
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
@@ -101,17 +133,6 @@ type OnChangeRequestHandler = (
     logger: Logger,
     extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
-
-type Ui5Version = {
-    major: number;
-    minor: number;
-    patch: number;
-    label?: string;
-    /**
-     * Indicates if the UI5 version is served from CDN.
-     */
-    isCdn: boolean;
-};
 
 type RtaDeveloperModeTemplateConfig = {
     previewUrl: string;
@@ -191,7 +212,16 @@ export class FlpSandbox {
             (await findCapProjectRoot(process.cwd(), false)) ?? (await findProjectRoot(process.cwd(), false, true));
         this.projectType = await getProjectType(projectRoot);
         this.createFlexHandler();
-        this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
+        if (this.projectType === 'EDMXBackend') {
+            this.flpConfig.libs ??= true;
+        } else {
+            if (this.flpConfig.libs === true) {
+                this.logger.warn(
+                    `'flp.libs' disabled because the current project type is not EDMX. 'flp.libs' only works for EDMX backends.`
+                );
+            }
+            this.flpConfig.libs = false;
+        }
         const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, adp !== undefined);
         this.adp = adp;
@@ -607,7 +637,7 @@ export class FlpSandbox {
     private async getUi5VersionFromRequest(
         req: EnhancedRequest | connect.IncomingMessage,
         baseUrl: string = ''
-    ): Promise<Ui5Version> {
+    ): Promise<Ui5VersionInfo> {
         // use protocol from request header referer as fallback for connect API (karma test runner)
         const protocol =
             'protocol' in req
@@ -630,7 +660,7 @@ export class FlpSandbox {
         protocol: Request['protocol'],
         host: Request['headers']['host'],
         baseUrl: string = ''
-    ): Promise<Ui5Version> {
+    ): Promise<Ui5VersionInfo> {
         let version: string | undefined;
         let isCdn = false;
         if (!host) {
@@ -639,7 +669,7 @@ export class FlpSandbox {
             try {
                 const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
-                    | { name: string; libraries: { name: string; version: string }[] }
+                    | UI5VersionDetails
                     | undefined;
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
                 isCdn = responseJson?.name === 'SAPUI5 Distribution';
@@ -679,7 +709,7 @@ export class FlpSandbox {
      * @param ui5Version - the UI5 version
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate(ui5Version: Ui5Version): string {
+    private getSandboxTemplate(ui5Version: Ui5VersionInfo): string {
         this.logger.info(
             `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''
@@ -714,16 +744,6 @@ export class FlpSandbox {
                 delete manifest['sap.ui5'].flexExtensionPointEnabled;
             }
         }
-    }
-
-    /**
-     * Try finding a locate-reuse-libs script in the project.
-     *
-     * @returns the location of the locate-reuse-libs script or undefined.
-     */
-    private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
-        const files = await this.project.byGlob('**/locate-reuse-libs.js');
-        return files.length > 0;
     }
 
     /**
