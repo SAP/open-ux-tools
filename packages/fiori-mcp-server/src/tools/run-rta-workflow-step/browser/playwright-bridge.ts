@@ -45,6 +45,7 @@ interface WebclientBridgeWindow {
  * actions through `window.sapdas.webclientBridge.getFrontendActions()`.
  *
  * @param page The Playwright page to wrap.
+ * @param context
  * @returns An RPC handle for the page.
  */
 async function createPageRPC(page: Page, context: BrowserContext): Promise<PageRPC> {
