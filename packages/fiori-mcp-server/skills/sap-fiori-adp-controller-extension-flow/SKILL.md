@@ -21,6 +21,31 @@ Drive Runtime Authoring (RTA) in the SAP Fiori adaptation editor through the **`
   3. System Google Chrome (default channel)
   4. Playwright-managed Chromium (auto-fallback if 1–3 fail)
 
+### Installing fiori-mcp
+
+This skill requires the `@sap-ux/fiori-mcp-server` MCP server. It is part of the [SAP UX Tools](https://github.com/SAP/open-ux-tools) open-source project.
+
+**Install via npm:**
+
+```bash
+npm install -g @sap-ux/fiori-mcp-server
+```
+
+**Configure in your MCP client** (e.g. Claude Desktop `claude_desktop_config.json`, or VS Code `settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "command": "npx",
+      "args": ["-y", "@sap-ux/fiori-mcp-server"]
+    }
+  }
+}
+```
+
+After adding the server, restart your MCP client. The `run_rta_workflow_step` tool should appear in the available tools list.
+
 ### Chromium fallback (no system Chrome)
 
 If no system Chrome is found and no env override is set, the server falls back to Playwright's bundled Chromium. The bundle is **not** included with `playwright-core`, so it has to be installed once on the host machine:
