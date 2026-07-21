@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 import { MACROS_NAMESPACE_URI } from '../../types.js';
 
-/** Namespace map for `@xmldom/xmldom`:  namespace map for UI5 view and fragment files. */
+/** Namespace map for `@xmldom/xmldom`: maps namespace prefixes to their URIs for UI5 view and fragment files. */
 export const TEMPLATE_NAMESPACES: Record<string, string> = {
     '': 'http://www.w3.org/1999/xhtml',
     'mvc': 'sap.ui.core.mvc',
