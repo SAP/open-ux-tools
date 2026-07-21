@@ -1,4 +1,4 @@
-import { chromium, type Browser, type Frame, type Page } from 'playwright-core';
+import { chromium, type Browser, type BrowserContext, type Frame, type Page } from 'playwright-core';
 import { logger } from '../../../utils/logger.js';
 import type { FrontendActionResult, FrontendActionTransport } from './types.js';
 
@@ -47,7 +47,7 @@ interface WebclientBridgeWindow {
  * @param page The Playwright page to wrap.
  * @returns An RPC handle for the page.
  */
-async function createPageRPC(page: Page): Promise<PageRPC> {
+async function createPageRPC(page: Page, context: BrowserContext): Promise<PageRPC> {
     await page.waitForFunction(() => document.readyState === 'complete', undefined, { timeout: 30000 });
 
     const callFrontendAction: PageRPC['callFrontendAction'] = async <TReturn = unknown>(
@@ -96,6 +96,7 @@ async function createPageRPC(page: Page): Promise<PageRPC> {
 
     const close = async (): Promise<void> => {
         await page.close();
+        await context.close();
     };
 
     return { callFrontendAction, close };
@@ -228,7 +229,7 @@ export async function callFrontendAction<TReturn = unknown>(
 
         await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
 
-        rpc = await createPageRPC(page);
+        rpc = await createPageRPC(page, context);
         connectionRegistry.set(site, rpc);
     }
 

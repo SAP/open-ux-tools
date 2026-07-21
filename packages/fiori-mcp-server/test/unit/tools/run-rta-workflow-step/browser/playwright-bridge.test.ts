@@ -47,7 +47,7 @@ class FakeBrowser extends EventEmitter {
         this.emit('disconnected');
     });
     public readonly newPage = jest.fn();
-    public readonly newContext = jest.fn(async () => ({ newPage: this.newPage }));
+    public readonly newContext = jest.fn(async () => ({ newPage: this.newPage, close: jest.fn(async () => undefined) }));
     public connected = true;
     isConnected(): boolean {
         return this.connected;
