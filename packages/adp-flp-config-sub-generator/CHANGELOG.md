@@ -1,5 +1,178 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 1.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/adp-tooling 1.0.33 → 1.0.34
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/flp-config-inquirer 1.0.33 → 1.0.34
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/flp-config-inquirer 1.0.32 → 1.0.33
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+- @sap-ux/adp-tooling 1.0.32 → 1.0.33
+
+## 1.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/flp-config-inquirer 1.0.31 → 1.0.32
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+- @sap-ux/adp-tooling 1.0.31 → 1.0.32
+
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.30 → 1.0.31
+- @sap-ux/flp-config-inquirer 1.0.30 → 1.0.31
+
+## 1.0.30
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use legacy inbound change types for ABAP systems on UI5 1.142 or lower; CF projects always use the new 'appdescr_app_setInbounds' change type [[56fe433](https://github.com/SAP/open-ux-tools/commit/56fe433aebc72d91f2ad5f702ed0125c590f226c)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.29 → 1.0.30
+- @sap-ux/flp-config-inquirer 1.0.29 → 1.0.30
+
+## 1.0.29
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/feature-toggle 1.0.4 → 1.0.5
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/flp-config-inquirer 1.0.28 → 1.0.29
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/adp-tooling 1.0.28 → 1.0.29
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.6 → 1.0.7
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+- @sap-ux/flp-config-inquirer 1.0.27 → 1.0.28
+- @sap-ux/adp-tooling 1.0.27 → 1.0.28
+
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/adp-tooling 1.0.26 → 1.0.27
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/flp-config-inquirer 1.0.26 → 1.0.27
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/flp-config-inquirer 1.0.25 → 1.0.26
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/feature-toggle 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/adp-tooling 1.0.25 → 1.0.26
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+- @sap-ux/flp-config-inquirer 1.0.24 → 1.0.25
+- @sap-ux/adp-tooling 1.0.24 → 1.0.25
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+- @sap-ux/flp-config-inquirer 1.0.23 → 1.0.24
+- @sap-ux/adp-tooling 1.0.23 → 1.0.24
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/adp-tooling 1.0.22 → 1.0.23
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/flp-config-inquirer 1.0.22 → 1.0.23
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.4 → 1.0.4
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.21 → 1.0.22
+- @sap-ux/flp-config-inquirer 1.0.21 → 1.0.22
+
 ## 1.0.21
 
 ### Patch Changes

@@ -1,5 +1,36 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.6 → 3.0.7
+- @sap-ux/ui-prompting 1.0.7 → 1.0.8
+
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.5 → 3.0.6
+- @sap-ux/ui-prompting 1.0.6 → 1.0.7
+
+## 1.1.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.4 → 3.0.5
+- @sap-ux/ui-prompting 1.0.5 → 1.0.6
+
 ## 1.1.1
 
 ### Patch Changes

@@ -1,5 +1,154 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 2.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-17
+
+#### Bug Fixes
+
+- [BAS][Deploy] Password field in the deploy page disappears when the user edits the username. [[ff7fc25](https://github.com/SAP/open-ux-tools/commit/ff7fc25829f6b29a5083a56c8899e646d3c8569d)]
+
+## 2.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
+## 2.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+
+## 2.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/nodejs-utils 1.0.6 → 1.0.7
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 2.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 2.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/nodejs-utils 1.0.5 → 1.0.6
+
+## 2.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/nodejs-utils 1.0.4 → 1.0.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+
+## 2.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Bug Fixes
+
+- Register autocomplete plugin inside getPrompts so CLI renders package autocomplete correctly [[4c34a73](https://github.com/SAP/open-ux-tools/commit/4c34a73ad972fa63eb83cf7ee2f775725e7cca71)]
+
+## 2.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
+## 2.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+
+## 2.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.4 → 1.0.4
+
 ## 2.0.16
 
 ### Patch Changes

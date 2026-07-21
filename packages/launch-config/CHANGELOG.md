@@ -1,5 +1,55 @@
 # @sap-ux/launch-config
 
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.10
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+
+## 1.0.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+
 ## 1.0.8
 
 ### Patch Changes

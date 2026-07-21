@@ -1,5 +1,195 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/preview-middleware 1.0.42 → 1.0.43
+
+## 1.2.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/preview-middleware 1.0.41 → 1.0.42
+
+## 1.2.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-16
+
+#### Bug Fixes
+
+- Generate form field checks for Object Page standard form sections. The generator read the spec-model aggregation under the key `subSections`, but `@sap/ux-specification` emits it as `subsections`, so sections structured as CollectionFacet → ReferenceFacet (e.g. GeneralInformation) produced only a shallow `iCheckSection` with no `iCheckSubSection`/`iCheckField` checks. [[5b5c4c6](https://github.com/SAP/open-ux-tools/commit/5b5c4c6869234e4635ce1b0faf0730a024837122)]
+
+## 1.2.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/preview-middleware 1.0.40 → 1.0.41
+
+## 1.2.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.39 → 1.0.40
+
+## 1.2.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- Emit full ancestor cascade when navigating to deeply-nested Object Pages [[65b4b19](https://github.com/SAP/open-ux-tools/commit/65b4b1915767fafe5e8a9d197ac32be7dd9a0333)]
+
+## 1.2.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Handle `@UI.ConnectedFields` and `@UI.FieldGroup` wrappers in body sub-section form fields and emit one `iCheckField` per inner property with the `connectedFields` / `fieldGroup` qualifier on the `FieldIdentifier`. [[4fb839f](https://github.com/SAP/open-ux-tools/commit/4fb839f183299d93ca3ed2c601cff14ced8435d8)]
+
+## 1.2.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Incorrect types of arguments passed in TS test code [[8e1ad51](https://github.com/SAP/open-ux-tools/commit/8e1ad51c656e719607d801495d06f75130fe24d0)]
+
+## 1.2.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use const in JS templates instead of var [[824ed4d](https://github.com/SAP/open-ux-tools/commit/824ed4dbb03ac46752e5d2ba6dca5bfcb7675a09)]
+
+## 1.2.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.38 → 1.0.39
+
+## 1.2.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/preview-middleware 1.0.37 → 1.0.38
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+
+## 1.2.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.8 → 2.1.0
+
+## 1.2.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/preview-middleware 1.0.36 → 1.0.37
+
+## 1.2.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.7 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/preview-middleware 1.0.35 → 1.0.36
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.2.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/ui5-application-writer 2.0.6 → 2.0.7
+- @sap-ux/preview-middleware 1.0.34 → 1.0.35
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/logger 1.0.1 → 1.0.2
+
+## 1.2.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/preview-middleware 1.0.33 → 1.0.34
+
+## 1.2.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/preview-middleware 1.0.32 → 1.0.33
+
+## 1.2.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/preview-middleware 1.0.31 → 1.0.32
+- @sap-ux/ui5-application-writer 2.0.6 → 2.0.6
+
+## 1.2.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.30 → 1.0.31
+
 ## 1.2.6
 
 ### Patch Changes
