@@ -21,7 +21,6 @@ export async function initI18nProjectValidators(): Promise<void> {
     await i18n.init({
         lng: 'en',
         fallbackLng: 'en',
-        showSupportNotice: false
     });
     addi18nResourceBundle();
 }

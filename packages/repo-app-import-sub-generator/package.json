@@ -51,7 +51,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "adm-zip": "0.5.17",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "inquirer": "8.2.7",
         "yeoman-generator": "5.10.0"
     },

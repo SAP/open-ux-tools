@@ -42,7 +42,7 @@
         "eslint": "9.39.1",
         "eslint-plugin-react": "7.37.5",
         "http-proxy-middleware": "3.0.7",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "jest-scss-transform": "1.0.4",
         "npm-run-all2": "8.0.4",
         "react": "16.14.0",

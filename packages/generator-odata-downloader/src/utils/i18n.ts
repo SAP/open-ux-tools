@@ -20,7 +20,6 @@ export async function initI18nODataDownloadGenerator(): Promise<void> {
         defaultNS: odataDownloadGenerator,
         ns: [odataDownloadGenerator],
         missingInterpolationHandler: () => '', // Called when interpolation values are undefined, prevents outputting of `{{undefinedProperty}}`
-        showSupportNotice: false
     });
 }
 

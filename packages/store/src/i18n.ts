@@ -18,7 +18,6 @@ export async function initI18n(): Promise<void> {
         fallbackNS: 'default',
         ns: [NS],
         interpolation: { escapeValue: false },
-        showSupportNotice: false
     });
     await i18nInstance.init();
 }

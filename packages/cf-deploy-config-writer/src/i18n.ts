@@ -21,7 +21,6 @@ export async function initI18n(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: NS,
         ns: [NS],
-        showSupportNotice: false
     });
 }
 

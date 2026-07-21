@@ -21,7 +21,6 @@ export async function initI18n(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: adpI18nNamespace,
         ns: [adpI18nNamespace],
-        showSupportNotice: false
     });
 }
 

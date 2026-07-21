@@ -20,7 +20,6 @@ export async function initI18nNodejsUtils(): Promise<void> {
             }
         },
         interpolation: { escapeValue: false },
-        showSupportNotice: false
     });
 }
 

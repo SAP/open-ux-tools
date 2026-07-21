@@ -249,7 +249,6 @@ export async function initI18n(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: ns,
         ns: [ns],
-        showSupportNotice: false
     });
 }
 

@@ -11,7 +11,6 @@ export async function initI18n(): Promise<void> {
     await i18n.init({
         lng: 'en',
         fallbackLng: 'en',
-        showSupportNotice: false
     });
     i18n.addResourceBundle('en', ui5LibI18nNamespace, translations);
 }
