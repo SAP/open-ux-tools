@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.9.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
 ## 1.9.1
 
 ### Patch Changes
