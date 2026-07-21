@@ -1,5 +1,41 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.1 → 1.3.2
+- @sap-ux/fiori-elements-writer 3.1.1 → 3.1.2
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.0
+
+## 1.3.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.0 → 1.3.1
+- @sap-ux/fiori-elements-writer 3.1.0 → 3.1.1
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.0
+
+## 1.3.0
+
+### Minor Changes
+
+#### Features
+
+- Add option to create Page Building Block with full layout during app generation [[85b88aa](https://github.com/SAP/open-ux-tools/commit/85b88aa64241d65d7a0618222221281bae2e3e45)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.2.1 → 1.3.0
+- @sap-ux/odata-service-inquirer 3.1.0 → 3.2.0
+- @sap-ux/fiori-elements-writer 3.0.60 → 3.1.0
+
 ## 1.2.0
 
 ### Minor Changes

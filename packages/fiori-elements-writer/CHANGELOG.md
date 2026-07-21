@@ -1,5 +1,35 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.1 → 1.3.2
+
+## 3.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.0 → 1.3.1
+
+## 3.1.0
+
+### Minor Changes
+
+#### Features
+
+- Add option to create Page Building Block with full layout during app generation [[85b88aa](https://github.com/SAP/open-ux-tools/commit/85b88aa64241d65d7a0618222221281bae2e3e45)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.2.1 → 1.3.0
+
 ## 3.0.60
 
 ### Patch Changes

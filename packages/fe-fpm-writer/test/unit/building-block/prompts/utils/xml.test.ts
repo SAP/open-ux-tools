@@ -3,7 +3,12 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getOrAddNamespace, getXPathStringsForXmlFile } from '../../../../../src/building-block/prompts/utils/xml.js';
+import {
+    getOrAddNamespace,
+    getXPathStringsForXmlFile,
+    getDOMParserOptions,
+    TEMPLATE_NAMESPACES
+} from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
 import { isElementIdAvailable } from '../../../../../src/common/utils.js';
 
@@ -227,5 +232,46 @@ describe('getXPathStringsForXmlFile', () => {
         // macros:items is a real element in the DOM — it will appear as a real choice, not a duplicate
         const macrosItemsKeys = keys.filter((k) => k.endsWith('macros:Page/macros:items'));
         expect(macrosItemsKeys).toHaveLength(1);
+    });
+});
+
+describe('getDOMParserOptions', () => {
+    const validXml = '<root xmlns:macros="sap.fe.macros"><macros:Table id="T1"/></root>';
+    const invalidXml = '<a>aaa</b>';
+
+    test('default handler throws on parse error', () => {
+        const options = getDOMParserOptions();
+        expect(() => new DOMParser(options).parseFromString(invalidXml, 'text/xml')).toThrow(
+            /Unable to parse template file with building block data/
+        );
+    });
+
+    test('custom handler is called with level and message', () => {
+        const calls: [string, string][] = [];
+        const options = getDOMParserOptions(undefined, (level, message) => {
+            calls.push([level, message]);
+        });
+        new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        expect(calls.length).toBeGreaterThan(0);
+        expect(calls[0][0]).toBeDefined();
+    });
+
+    test('silent handler returns partial DOM without throwing', () => {
+        const options = getDOMParserOptions(undefined, () => {});
+        const doc = new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        expect(doc).toBeDefined();
+    });
+
+    test('xmlns option resolves macros prefix from TEMPLATE_NAMESPACES', () => {
+        const options = getDOMParserOptions(TEMPLATE_NAMESPACES);
+        const doc = new DOMParser(options).parseFromString(validXml, 'text/xml');
+        expect(doc.documentElement).toBeTruthy();
+    });
+
+    test('returns onError and xmlns in options object', () => {
+        const handler = () => {};
+        const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
+        expect(options.onError).toBe(handler);
+        expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
     });
 });
