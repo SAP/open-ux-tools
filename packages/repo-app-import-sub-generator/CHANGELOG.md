@@ -1,5 +1,35 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.1 → 3.1.2
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.0
+
+## 1.2.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Features
+
+- add telemetry event to track migration triggered via ABAP repository download [[cd55989](https://github.com/SAP/open-ux-tools/commit/cd559894de83a3b70b69147805861ed796cc2a62)]
+
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.0 → 3.1.1
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.0
+
 ## 1.2.1
 
 ### Patch Changes
