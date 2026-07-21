@@ -102,6 +102,12 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
 
 /** IDs needed per aggregation template, keyed by the variable name used in the EJS template. */
 /** Controls to generate IDs for per aggregation. `key` is the EJS template variable name, `base` is passed to generateId. */
+/**
+ * Page aggregations that can only appear once in the view.
+ * A second "Add" for these is a no-op; their creation form is disabled once present.
+ */
+export const SINGLE_INSTANCE_PAGE_AGGREGATIONS = new Set<PageAggregationName>(['breadcrumbs', 'footer']);
+
 export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; base: string }[]>> = {
     breadcrumbs: [
         { key: 'Breadcrumbs', base: 'breadcrumbs_breadcrumbs' },
@@ -466,12 +472,15 @@ export async function generateBuildingBlockAggregation(
             (node as Element).localName === aggName &&
             (node as Element).namespaceURI === (nsMap[fragMacrosNS] ?? 'sap.fe.macros')
     );
-    if (hasExistingAggregation) {
+    if (hasExistingAggregation && SINGLE_INSTANCE_PAGE_AGGREGATIONS.has(aggName)) {
+        // Single-instance aggregations (breadcrumbs, footer) — already present, nothing to add.
         sortPageAggregationChildren(pageElement);
         const existingXmlContent = new XMLSerializer().serializeToString(xmlDocument);
         fs.write(join(basePath, viewPath), format(existingXmlContent));
         return fs;
     }
+    // Multiple-instance aggregations (navigationActions, titleContent, actions, headerContent) fall through
+    // and append a new container element with unique IDs.
 
     const hasExistingElementChildren = childNodes.some((n) => n.nodeType === 1 /* Element */);
     const hasTemplateComment = childNodes.some(
