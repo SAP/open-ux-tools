@@ -25,22 +25,22 @@ export async function adpControllerExtension(params: AdpControllerExtensionInput
         );
     }
 
+    if (aiResponse?.trim()) {
+        logger.info(`Executing ADP controller extension functionality for: ${prompt}`);
+        return processAiResponse(appPath, aiResponse, params);
+    }
+
     const contextResult = await loadProjectContext(appPath);
     if ('error' in contextResult) {
         return contextResult.error;
     }
     const projectContext = contextResult.context;
 
-    if (!aiResponse?.trim()) {
-        const existingFiles = await scanExistingProjectFiles(appPath);
-        logger.debug(`Found ${existingFiles.length} existing project files`);
+    const existingFiles = await scanExistingProjectFiles(appPath);
+    logger.debug(`Found ${existingFiles.length} existing project files`);
 
-        const reason = prompt
-            ? `Prompt received: "${prompt}"\n\nNo aiResponse provided. Generate the code following the rules below, then call this tool again with the aiResponse parameter.`
-            : 'No prompt or aiResponse provided. Provide a prompt describing what to create, generate the code following the rules below, then call this tool again with the aiResponse parameter.';
-        return buildKnowledgeBaseResponse(appPath, reason, projectContext, existingFiles);
-    }
-
-    logger.info(`Executing ADP controller extension functionality for: ${prompt}`);
-    return processAiResponse(appPath, aiResponse, params);
+    const reason = prompt
+        ? `Prompt received: "${prompt}"\n\nNo aiResponse provided. Generate the code following the rules below, then call this tool again with the aiResponse parameter.`
+        : 'No prompt or aiResponse provided. Provide a prompt describing what to create, generate the code following the rules below, then call this tool again with the aiResponse parameter.';
+    return buildKnowledgeBaseResponse(appPath, reason, projectContext, existingFiles);
 }

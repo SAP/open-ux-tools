@@ -1,7 +1,9 @@
 import type { ExtractedFile } from '../types.js';
+import { logger } from '../../../utils/logger.js';
 
 const PATH_MARKER = /\*\*Path:\*\*\s*(.+)/;
 const FENCE_OPEN = /^```(\w+)?/;
+const FENCE_CLOSE = /^```\s*$/;
 
 /**
  * Parses an AI response containing markdown code blocks preceded by
@@ -20,31 +22,34 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
     let currentCode = '';
 
     for (const line of lines) {
-        const pathMatch = line.match(PATH_MARKER);
-        if (pathMatch) {
-            currentPath = pathMatch[1].trim();
-            continue;
-        }
-
-        if (FENCE_OPEN.test(line) && !inCodeBlock) {
-            inCodeBlock = true;
-            currentCode = '';
-            continue;
-        }
-
-        if (line.startsWith('```') && inCodeBlock) {
-            inCodeBlock = false;
-            if (currentPath && currentCode.trim()) {
-                codeBlocks.push({ path: currentPath, code: currentCode.trim() });
+        if (!inCodeBlock) {
+            const pathMatch = line.match(PATH_MARKER);
+            if (pathMatch) {
+                currentPath = pathMatch[1].trim();
+                continue;
             }
-            currentPath = '';
-            currentCode = '';
-            continue;
-        }
 
-        if (inCodeBlock) {
+            if (FENCE_OPEN.test(line)) {
+                inCodeBlock = true;
+                currentCode = '';
+                continue;
+            }
+        } else {
+            if (FENCE_CLOSE.test(line)) {
+                inCodeBlock = false;
+                if (currentPath && currentCode.trim()) {
+                    codeBlocks.push({ path: currentPath, code: currentCode.trim() });
+                }
+                currentPath = '';
+                currentCode = '';
+                continue;
+            }
             currentCode += line + '\n';
         }
+    }
+
+    if (inCodeBlock) {
+        logger.warn(`AI response ended with an unclosed code block — content discarded for path: "${currentPath || '(no path)'}"`);
     }
 
     return codeBlocks;
