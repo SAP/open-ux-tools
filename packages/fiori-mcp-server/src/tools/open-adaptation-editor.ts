@@ -111,6 +111,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         let editorPath: string | undefined;
         let serverUrl: string | undefined;
         let resolved = false;
+        let spawnError: Error | undefined;
 
         if (childProcess.stdout) {
             const rl = createInterface({
@@ -164,6 +165,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         childProcess.on('error', (error) => {
             logger.error(`Editor process error: ${error.message}`);
             if (!resolved) {
+                spawnError = error;
                 resolved = true;
             }
         });
@@ -184,6 +186,18 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
                 }
             }, 100);
         });
+
+        if (spawnError) {
+            return {
+                functionalityId: OPEN_ADAPTATION_EDITOR_ID,
+                status: 'Error',
+                message: `Failed to spawn editor process: ${spawnError.message}`,
+                parameters: params,
+                appPath,
+                changes: [],
+                timestamp: new Date().toISOString()
+            };
+        }
 
         if (!serverUrl) {
             if (childProcess.pid) {

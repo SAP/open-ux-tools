@@ -10,6 +10,11 @@ import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
  * @param params - Input parameters for the adaptation project generation.
  * @returns A promise resolving to the execution output.
  */
+function safeParams(params: GenerateAdaptationProjectInput): Omit<GenerateAdaptationProjectInput, 'password'> {
+    const { password: _password, ...rest } = params;
+    return rest;
+}
+
 export async function generateAdaptationProject(
     params: GenerateAdaptationProjectInput
 ): Promise<ExecuteFunctionalityOutput> {
@@ -31,7 +36,7 @@ export async function generateAdaptationProject(
             functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
             status: 'Error',
             message: 'Missing required parameters: system and application are required.',
-            parameters: params,
+            parameters: safeParams(params),
             appPath,
             changes: [],
             timestamp: new Date().toISOString()
@@ -84,7 +89,7 @@ export async function generateAdaptationProject(
             functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
             status: 'Success',
             message: `Adaptation project generated successfully at ${projectPath}.`,
-            parameters: params,
+            parameters: safeParams(params),
             appPath: projectPath,
             changes: [],
             timestamp: new Date().toISOString()
@@ -95,7 +100,7 @@ export async function generateAdaptationProject(
             functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
             status: 'Error',
             message: 'Error generating adaptation project: ' + (error instanceof Error ? error.message : String(error)),
-            parameters: params,
+            parameters: safeParams(params),
             appPath,
             changes: [],
             timestamp: new Date().toISOString()
@@ -105,7 +110,7 @@ export async function generateAdaptationProject(
 
 function getDefaultProjectName(basePath: string, dirName: string = 'app.variant'): string {
     let newDir = dirName;
-    let index = 1;
+    let index = 0;
 
     while (existsSync(join(basePath, newDir))) {
         index++;
