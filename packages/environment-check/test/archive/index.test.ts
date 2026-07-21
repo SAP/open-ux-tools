@@ -69,9 +69,9 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.dot).toBe(false);
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toEqual(['**/node_modules/**']);
-        expect(globOptions.ignore.ignores('**/.git')).toBe(true);
-        expect(globOptions.ignore.ignores('**/.env')).toBe(true);
-        expect(globOptions.ignore.ignores('**/node_modules')).toBe(true);
+        expect(globOptions.ignore.ignores('.git/config')).toBe(true);
+        expect(globOptions.ignore.ignores('.env')).toBe(true);
+        expect(globOptions.ignore.ignores('node_modules/pkg/index.js')).toBe(true);
         expect(globOptions.ignore.ignores('FILE_ONE')).toBe(false);
     });
 
@@ -119,7 +119,7 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.ignore.ignores('excludedir/file.txt')).toBe(true);
         expect(globOptions.ignore.ignores('excludefile')).toBe(true);
         expect(globOptions.ignore.ignores('some/nm/file')).toBe(true);
-        expect(globOptions.ignore.ignores('**/.git')).toBe(true);
+        expect(globOptions.ignore.ignores('.git/config')).toBe(true);
         expect(globOptions.ignore.ignores('FILE_ONE')).toBe(false);
     });
 
