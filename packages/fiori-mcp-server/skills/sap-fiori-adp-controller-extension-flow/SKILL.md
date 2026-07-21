@@ -14,7 +14,7 @@ Drive Runtime Authoring (RTA) in the SAP Fiori adaptation editor through the **`
 ## Prerequisites
 
 - `fiori-mcp` server running (provides `run_rta_workflow_step`)
-- Adaptation editor URL (from the `adp-project-setup` skill or user-provided)
+- Adaptation editor URL (from the `sap-fiori-adp-project-setup` skill or user-provided)
 - A Chromium-based browser the server can launch. Resolution order:
   1. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` env var (absolute path to a Chromium binary)
   2. `PLAYWRIGHT_BROWSER_CHANNEL` env var (`chrome`, `msedge`, `chrome-beta`, etc.)
