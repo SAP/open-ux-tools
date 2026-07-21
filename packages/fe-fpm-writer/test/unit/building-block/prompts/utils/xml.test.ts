@@ -268,6 +268,28 @@ describe('getDOMParserOptions', () => {
         expect(doc.documentElement).toBeTruthy();
     });
 
+    test.each([
+        [
+            'richtexteditor prefix',
+            `<core:FragmentDefinition xmlns:core="sap.ui.core"><richtexteditor:RichTextEditor id="R1"/></core:FragmentDefinition>`
+        ],
+        [
+            'macrosTable prefix',
+            `<core:FragmentDefinition xmlns:core="sap.ui.core"><macrosTable:Action key="a1"/></core:FragmentDefinition>`
+        ],
+        [
+            'core prefix',
+            `<core:FragmentDefinition xmlns:core="sap.ui.core"><core:Fragment fragmentName="test" type="XML"/></core:FragmentDefinition>`
+        ],
+        [
+            'macrosChart prefix',
+            `<core:FragmentDefinition xmlns:core="sap.ui.core"><macrosChart:Chart id="C1"/></core:FragmentDefinition>`
+        ]
+    ])('TEMPLATE_NAMESPACES resolves %s without NamespaceError', (_label, xml) => {
+        const options = getDOMParserOptions(TEMPLATE_NAMESPACES);
+        expect(() => new DOMParser(options).parseFromString(xml, 'text/xml')).not.toThrow();
+    });
+
     test('returns onError and xmlns in options object', () => {
         const handler = () => {};
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);

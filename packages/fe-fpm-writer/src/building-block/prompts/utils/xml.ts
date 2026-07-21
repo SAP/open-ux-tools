@@ -3,10 +3,15 @@ import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 import { MACROS_NAMESPACE_URI } from '../../types.js';
 
-/** Namespace map for `@xmldom/xmldom`: maps unprefixed elements to XHTML and `macros:*` to `sap.fe.macros`. */
+/** Namespace map for `@xmldom/xmldom`:  namespace map for UI5 view and fragment files. */
 export const TEMPLATE_NAMESPACES: Record<string, string> = {
     '': 'http://www.w3.org/1999/xhtml',
-    'macros': 'sap.fe.macros'
+    'mvc': 'sap.ui.core.mvc',
+    'core': 'sap.ui.core',
+    'macros': 'sap.fe.macros',
+    'macrosTable': 'sap.fe.macros.table',
+    'macrosChart': 'sap.fe.macros.chart',
+    'richtexteditor': 'sap.fe.macros.richtexteditor'
 };
 
 /** `Options` extended with `xmlns` and `onError` */
