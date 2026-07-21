@@ -18,7 +18,7 @@ export function initI18n(language = 'en'): void {
             fallbackLng: 'en',
             interpolation: {
                 escapeValue: false
-            },
+            }
         })
         .catch((error) => console.error(error));
 }

@@ -16,7 +16,7 @@ export async function initI18nCfDeployConfigInquirer(): Promise<void> {
             defaultVariables: {
                 defaultProjectNumber
             }
-        },
+        }
     });
 
     i18n.addResourceBundle('en', cfInquirerNamespace, translations);

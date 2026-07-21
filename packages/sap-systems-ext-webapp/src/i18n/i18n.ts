@@ -14,6 +14,6 @@ export function initI18n(): void {
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false
-        },
+        }
     });
 }
