@@ -60,7 +60,7 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
             // Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
-            // Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<service>", action: "<ActionName>", unbound: false }, { enabled: true });
+            // Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<Action Name>", { enabled: true });
         });
 <%_ } -%>
 
@@ -84,8 +84,8 @@ sap.ui.define([
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
-            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
             <%_ } _%>
             <%_ }); -%>
             <%_ } -%>

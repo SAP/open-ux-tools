@@ -43,10 +43,10 @@ sap.ui.define([
         opaTest("Check table columns and actions", function (Given, When, Then) {
             // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressDelete();
             Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
-            // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "c_salesordermanage_sd_aggregate/ReturnInProcess", unbound: true });
-            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "c_salesordermanage_sd_aggregate/ReturnInProcess", unbound: true }, { enabled: true });
-            // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "DummyBoundAction", unbound: false });
-            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "DummyBoundAction", unbound: false }, { enabled: false });
+            // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressAction("View Return Status");
+            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckAction("View Return Status", { enabled: true });
+            // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressAction("Dummy Bound Action");
+            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckAction("Dummy Bound Action", { enabled: false });
             Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {"10":{"header":"Bound Action"},"11":{"header":"IBN"},"SalesOrderItem":{"header":"Item"},"HigherLevelItem":{"header":"Higher-Level Item"},"Material":{"header":"Material"},"RequestedQuantity":{"header":"Requested Quantity"},"SalesOrderItemCategory":{"header":"Item Category"},"RequestedDeliveryDate":{"header":"Delivery Date"},"NetAmount":{"header":"Net Value"},"_Material/Material":{"header":"Material"},"isVerified":{"header":"Verified Material"},"_ReferencedSalesOrder/SalesOrder":{"header":"Referenced Sales Order"}});
         });
 
