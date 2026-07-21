@@ -1,5 +1,20 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/mockserver-config-writer 1.0.10 → 1.0.11
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.1
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.18 → 1.0.19
+
 ## 0.3.30
 
 ### Patch Changes
