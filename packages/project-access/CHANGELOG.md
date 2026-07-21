@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 2.1.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- `getSpecification` and `getSpecificationPath` methods did not consider `memFs` for reading `minUI5Version` from `manifest.json` and dev dependency from `package.json`. This caused these files to be read from the physical file system instead of the in-memory file system, leading to incorrect version detection and loading wrong specification version. [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
 ## 2.1.6
 
 ### Patch Changes
