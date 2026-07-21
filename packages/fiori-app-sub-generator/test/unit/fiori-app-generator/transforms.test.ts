@@ -206,7 +206,39 @@ describe('Test transform state', () => {
             entityConfig: {
                 mainEntityName: 'SEPMRA_C_PD_Product'
             },
+            pageBuildingBlockTemplateType: 'basic',
             pageBuildingBlockTitle: 'Product Details',
+            pageName: 'Main'
+        });
+    });
+
+    test('should correctly map page building block full layout for FPM floorplan', async () => {
+        const state: State = {
+            ...baseState,
+            service: { ...baseState.service, source: DatasourceType.none },
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'SEPMRA_C_PD_Product',
+                    entitySetType: 'SEPMRA_C_PD_ProductType'
+                },
+                addPageBuildingBlock: true,
+                pageBuildingBlockLayout: 'full',
+                pageBuildingBlockTitle: 'Product Details',
+                navigationEntity: {} as EntityRelatedAnswers['navigationEntity'],
+                presentationQualifier: '',
+                tableType: 'ResponsiveTable',
+                tableSelectionMode: 'None'
+            },
+            floorplan: FloorplanFE.FE_FPM
+        };
+
+        const feApp = await transformState<FioriElementsApp<unknown>>(state);
+        expect(feApp.template.settings).toEqual({
+            entityConfig: {
+                mainEntityName: 'SEPMRA_C_PD_Product'
+            },
+            pageBuildingBlockTitle: 'Product Details',
+            pageBuildingBlockTemplateType: 'full',
             pageName: 'Main'
         });
     });

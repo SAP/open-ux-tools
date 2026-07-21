@@ -1,5 +1,37 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 2.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-17
+
+#### Bug Fixes
+
+- [BAS][Deploy] Password field in the deploy page disappears when the user edits the username. [[ff7fc25](https://github.com/SAP/open-ux-tools/commit/ff7fc25829f6b29a5083a56c8899e646d3c8569d)]
+
+## 2.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
 ## 2.0.25
 
 ### Patch Changes

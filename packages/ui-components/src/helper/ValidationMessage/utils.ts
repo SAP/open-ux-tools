@@ -40,6 +40,7 @@ const getMessageColorStylings = (bgColor: string, borderColor: string): IRawStyl
         backgroundColor: bgColor,
         borderLeft: border,
         borderRight: border,
+        borderTop: border,
         borderBottom: border,
         borderColor: borderColor
     };
@@ -55,8 +56,9 @@ const messagesStyles: InputErrorMessageStyles = {
         paddingTop: 4,
         paddingBottom: 5,
         paddingLeft: 8,
-        margin: 0,
-        borderRadius: 'var(--vscode-cornerRadius-small)'
+        margin: '-1px 0 0',
+        borderRadius: 0,
+        animation: 'none'
     },
     warning: {},
     info: {}

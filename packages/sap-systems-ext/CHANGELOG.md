@@ -1,5 +1,25 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 1.0.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[c8741b3](https://github.com/SAP/open-ux-tools/commit/c8741b3f8a925ad3a8be8a701920af9e0c8b6bbf)]
+
 ## 1.0.9
 
 ### Patch Changes
