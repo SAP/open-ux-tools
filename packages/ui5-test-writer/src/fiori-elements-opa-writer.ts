@@ -892,10 +892,10 @@ function writePageObject(
 
 /**
  * Adds generated journey file names to `AllJourneys.gen.json` without overwriting existing entries.
- * The file contains an array of journey file name strings (e.g. `"ListReportJourney.gen.js"`).
+ * The file contains an array of journey file name strings (e.g. `"ListReportJourney.gen"`).
  * Duplicate entries are not added.
  *
- * @param generatedJourneys - feature names for which a `<name>Journey.gen.<ext>` file was written
+ * @param generatedJourneys - feature names for which a `<name>Journey.gen` file was written
  * @param writeContext - shared write context (config, paths, editor, dotFileExtension)
  */
 export function addJourneysToAllJourneysFile(generatedJourneys: string[], writeContext: WriteContext): void {
