@@ -49,7 +49,9 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
     }
 
     if (inCodeBlock) {
-        logger.warn(`AI response ended with an unclosed code block — content discarded for path: "${currentPath || '(no path)'}"`);
+        logger.warn(
+            `AI response ended with an unclosed code block — content discarded for path: "${currentPath || '(no path)'}"`
+        );
     }
 
     return codeBlocks;
