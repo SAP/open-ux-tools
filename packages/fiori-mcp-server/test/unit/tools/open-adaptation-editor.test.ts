@@ -25,13 +25,27 @@ function makeFakeRl(): FakeRl {
         lineCallbacks: [],
         closeCallbacks: [],
         on(event, cb) {
-            if (event === 'line') this.lineCallbacks.push(cb as LineCallback);
-            if (event === 'close') this.closeCallbacks.push(cb as () => void);
+            if (event === 'line') {
+                this.lineCallbacks.push(cb as LineCallback);
+            }
+            if (event === 'close') {
+                this.closeCallbacks.push(cb as () => void);
+            }
             return this;
         },
-        close() { this.emitClose(); },
-        emitLine(line) { for (const cb of this.lineCallbacks) cb(line); },
-        emitClose() { for (const cb of this.closeCallbacks) cb(); }
+        close() {
+            this.emitClose();
+        },
+        emitLine(line) {
+            for (const cb of this.lineCallbacks) {
+                cb(line);
+            }
+        },
+        emitClose() {
+            for (const cb of this.closeCallbacks) {
+                cb();
+            }
+        }
     };
 }
 
@@ -42,7 +56,9 @@ jest.unstable_mockModule('node:readline', () => ({
     createInterface: jest.fn((_opts: unknown) => {
         rlCallCount++;
         const rl = makeFakeRl();
-        if (rlCallCount % 2 === 1) currentStdoutRl = rl;
+        if (rlCallCount % 2 === 1) {
+            currentStdoutRl = rl;
+        }
         return rl;
     })
 }));
@@ -166,6 +182,6 @@ describe('openAdaptationEditor', () => {
         const result = await resultPromise;
         expect(result.status).toBe('Success');
         const params = result.parameters as Record<string, unknown>;
-        expect((params.editorUrl as string)).toContain('/test/adaptation-editor.html');
+        expect(params.editorUrl as string).toContain('/test/adaptation-editor.html');
     });
 });
