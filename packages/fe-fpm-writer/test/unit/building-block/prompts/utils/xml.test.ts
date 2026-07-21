@@ -269,21 +269,13 @@ describe('getDOMParserOptions', () => {
     });
 
     test.each([
+        ['mvc prefix', `<mvc:View xmlns="sap.m"><Page title="Main"/></mvc:View>`],
+        ['macros prefix', `<mvc:View xmlns="sap.m"><macros:Table id="T1"/></mvc:View>`],
+        ['macrosTable prefix', `<core:FragmentDefinition><macrosTable:Action key="a1"/></core:FragmentDefinition>`],
+        ['macrosChart prefix', `<core:FragmentDefinition><macrosChart:Chart id="C1"/></core:FragmentDefinition>`],
         [
             'richtexteditor prefix',
-            `<core:FragmentDefinition xmlns:core="sap.ui.core"><richtexteditor:RichTextEditor id="R1"/></core:FragmentDefinition>`
-        ],
-        [
-            'macrosTable prefix',
-            `<core:FragmentDefinition xmlns:core="sap.ui.core"><macrosTable:Action key="a1"/></core:FragmentDefinition>`
-        ],
-        [
-            'core prefix',
-            `<core:FragmentDefinition xmlns:core="sap.ui.core"><core:Fragment fragmentName="test" type="XML"/></core:FragmentDefinition>`
-        ],
-        [
-            'macrosChart prefix',
-            `<core:FragmentDefinition xmlns:core="sap.ui.core"><macrosChart:Chart id="C1"/></core:FragmentDefinition>`
+            `<core:FragmentDefinition><richtexteditor:RichTextEditor id="R1"/></core:FragmentDefinition>`
         ]
     ])('TEMPLATE_NAMESPACES resolves %s without NamespaceError', (_label, xml) => {
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES);
