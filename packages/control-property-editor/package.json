@@ -44,7 +44,7 @@
         "http-proxy-middleware": "3.0.7",
         "i18next": "25.10.10",
         "jest-scss-transform": "1.0.4",
-        "npm-run-all2": "8.0.4",
+        "npm-run-all2": "9.0.2",
         "react": "16.14.0",
         "react-dom": "16.14.0",
         "react-i18next": "15.7.4",
