@@ -5,6 +5,38 @@ const PATH_MARKER = /\*\*Path:\*\*\s*(.+)/;
 const FENCE_OPEN = /^```(\w+)?/;
 const FENCE_CLOSE = /^```\s*$/;
 
+function processOutsideBlock(
+    line: string,
+    state: { inCodeBlock: boolean; currentPath: string; currentCode: string }
+): void {
+    const pathMatch = PATH_MARKER.exec(line);
+    if (pathMatch) {
+        state.currentPath = pathMatch[1].trim();
+        return;
+    }
+    if (FENCE_OPEN.test(line)) {
+        state.inCodeBlock = true;
+        state.currentCode = '';
+    }
+}
+
+function processInsideBlock(
+    line: string,
+    state: { inCodeBlock: boolean; currentPath: string; currentCode: string },
+    codeBlocks: ExtractedFile[]
+): void {
+    if (FENCE_CLOSE.test(line)) {
+        state.inCodeBlock = false;
+        if (state.currentPath && state.currentCode.trim()) {
+            codeBlocks.push({ path: state.currentPath, code: state.currentCode.trim() });
+        }
+        state.currentPath = '';
+        state.currentCode = '';
+        return;
+    }
+    state.currentCode += line + '\n';
+}
+
 /**
  * Parses an AI response containing markdown code blocks preceded by
  * `**Path:** <fullFilePath>` markers and returns the extracted files. Lines
@@ -16,41 +48,19 @@ const FENCE_CLOSE = /^```\s*$/;
  */
 export function extractFilesFromResponse(content: string): ExtractedFile[] {
     const codeBlocks: ExtractedFile[] = [];
-    const lines = content.split('\n');
-    let currentPath = '';
-    let inCodeBlock = false;
-    let currentCode = '';
+    const state = { inCodeBlock: false, currentPath: '', currentCode: '' };
 
-    for (const line of lines) {
-        if (!inCodeBlock) {
-            const pathMatch = line.match(PATH_MARKER);
-            if (pathMatch) {
-                currentPath = pathMatch[1].trim();
-                continue;
-            }
-
-            if (FENCE_OPEN.test(line)) {
-                inCodeBlock = true;
-                currentCode = '';
-                continue;
-            }
+    for (const line of content.split('\n')) {
+        if (!state.inCodeBlock) {
+            processOutsideBlock(line, state);
         } else {
-            if (FENCE_CLOSE.test(line)) {
-                inCodeBlock = false;
-                if (currentPath && currentCode.trim()) {
-                    codeBlocks.push({ path: currentPath, code: currentCode.trim() });
-                }
-                currentPath = '';
-                currentCode = '';
-                continue;
-            }
-            currentCode += line + '\n';
+            processInsideBlock(line, state, codeBlocks);
         }
     }
 
-    if (inCodeBlock) {
+    if (state.inCodeBlock) {
         logger.warn(
-            `AI response ended with an unclosed code block — content discarded for path: "${currentPath || '(no path)'}"`
+            `AI response ended with an unclosed code block — content discarded for path: "${state.currentPath || '(no path)'}"`
         );
     }
 
