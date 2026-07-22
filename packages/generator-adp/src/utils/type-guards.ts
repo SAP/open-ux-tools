@@ -22,6 +22,7 @@ export function isJsonInput(value: unknown): value is JsonInput {
     }
 
     return (
+        isOptionalString(value.id) &&
         isString(value.system) &&
         isString(value.application) &&
         isOptionalString(value.applicationTitle) &&
