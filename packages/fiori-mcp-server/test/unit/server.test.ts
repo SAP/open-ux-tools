@@ -40,6 +40,10 @@ const mockListSapSystems = jest.fn<any>();
 const mockDownloadODataServiceMetadata = jest.fn<any>();
 const mockGenerateFioriAppOData = jest.fn<any>();
 const mockGenerateFioriAppCap = jest.fn<any>();
+const mockGenerateAdaptationProject = jest.fn<any>();
+const mockOpenAdaptationEditor = jest.fn<any>();
+const mockAdpControllerExtension = jest.fn<any>();
+const mockRunRtaWorkflowStep = jest.fn<any>();
 const actualTools = await import('../../src/tools/index.js');
 jest.unstable_mockModule('../../src/tools', () => ({
     ...actualTools,
@@ -51,7 +55,11 @@ jest.unstable_mockModule('../../src/tools', () => ({
     listSapSystems: mockListSapSystems,
     downloadODataServiceMetadata: mockDownloadODataServiceMetadata,
     generateFioriAppOData: mockGenerateFioriAppOData,
-    generateFioriAppCap: mockGenerateFioriAppCap
+    generateFioriAppCap: mockGenerateFioriAppCap,
+    generateAdaptationProject: mockGenerateAdaptationProject,
+    openAdaptationEditor: mockOpenAdaptationEditor,
+    adpControllerExtension: mockAdpControllerExtension,
+    runRtaWorkflowStep: mockRunRtaWorkflowStep
 }));
 
 // Dynamic imports after mocks
@@ -73,6 +81,10 @@ describe('FioriFunctionalityServer', () => {
         mockDownloadODataServiceMetadata.mockReset();
         mockGenerateFioriAppOData.mockReset();
         mockGenerateFioriAppCap.mockReset();
+        mockGenerateAdaptationProject.mockReset();
+        mockOpenAdaptationEditor.mockReset();
+        mockAdpControllerExtension.mockReset();
+        mockRunRtaWorkflowStep.mockReset();
     });
 
     // version cannot be hard coded as it will update on each new patch update
@@ -100,6 +112,10 @@ describe('FioriFunctionalityServer', () => {
             'download_odata_service_metadata',
             'generate_fiori_app_odata',
             'generate_fiori_app_cap',
+            'generate_adaptation_project',
+            'open_adaptation_editor',
+            'adp_controller_extension',
+            'run_rta_workflow_step',
             'list_functionality',
             'get_functionality_details',
             'execute_functionality'
@@ -349,6 +365,10 @@ describe('FioriFunctionalityServer', () => {
                 'download_odata_service_metadata',
                 'generate_fiori_app_odata',
                 'generate_fiori_app_cap',
+                'generate_adaptation_project',
+                'open_adaptation_editor',
+                'adp_controller_extension',
+                'run_rta_workflow_step',
                 'list_functionality',
                 'get_functionality_details',
                 'execute_functionality'
@@ -597,6 +617,100 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        test('generate_adaptation_project', async () => {
+            const mockResult = {
+                status: 'Success',
+                message: 'Adaptation project generated.',
+                parameters: {},
+                appPath: '/project/adapt',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockGenerateAdaptationProject.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'generate_adaptation_project',
+                    arguments: { appPath: '/project/adapt' }
+                }
+            });
+            expect(mockGenerateAdaptationProject).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'generate_adaptation_project',
+                {
+                    tool: 'generate_adaptation_project',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                '/project/adapt'
+            );
+        });
+
+        test('open_adaptation_editor', async () => {
+            const mockResult = {
+                status: 'Success',
+                message: 'Adaptation editor opened.',
+                parameters: {},
+                appPath: '/project/adapt',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockOpenAdaptationEditor.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'open_adaptation_editor',
+                    arguments: { appPath: '/project/adapt' }
+                }
+            });
+            expect(mockOpenAdaptationEditor).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'open_adaptation_editor',
+                {
+                    tool: 'open_adaptation_editor',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                '/project/adapt'
+            );
+        });
+
+        test('adp_controller_extension', async () => {
+            const mockResult = {
+                status: 'success',
+                message: 'Controller extension created.',
+                functionalityId: 'adp-controller-extension',
+                parameters: { appPath: '/project/adapt' },
+                appPath: '/project/adapt',
+                changes: ['Created webapp/changes/coding/MyExt.js'],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockAdpControllerExtension.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'adp_controller_extension',
+                    arguments: { appPath: '/project/adapt', prompt: 'add a button' }
+                }
+            });
+            expect(mockAdpControllerExtension).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'adp_controller_extension',
+                {
+                    tool: 'adp_controller_extension',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                '/project/adapt'
+            );
+        });
+
         test('list_functionality', async () => {
             mockListFunctionalities.mockResolvedValue({
                 applicationPath: 'app1',
@@ -755,6 +869,50 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        test('search_docs', async () => {
+            const mockResult = { results: [] };
+            mockDocSearch.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'search_docs',
+                    arguments: { query: 'table' }
+                }
+            });
+            expect(mockDocSearch).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+        });
+
+        test('run_rta_workflow_step', async () => {
+            const mockResult = { sessionId: 'abc', rtaStarted: true };
+            mockRunRtaWorkflowStep.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'run_rta_workflow_step',
+                    arguments: { step: 'start', payload: { site: 'http://localhost' } }
+                }
+            });
+            expect(mockRunRtaWorkflowStep).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+        });
+
+        test('string result returns plain text content without structuredContent', async () => {
+            mockDocSearch.mockResolvedValue('plain text result');
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'search_docs',
+                    arguments: { query: 'anything' }
+                }
+            });
+            expect(result.content[0].text).toBe('plain text result');
+            expect(result.structuredContent).toBeUndefined();
+        });
+
         test('Unknown tool', async () => {
             // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
@@ -770,7 +928,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -791,7 +949,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -813,7 +971,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);

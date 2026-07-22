@@ -22,8 +22,9 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
+        "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --external:playwright-core --main-fields=module,main src/index.ts",
         "build-bundle": "node scripts/bundle.mjs",
-        "build-dev": "NODE_ENV=development node scripts/bundle.mjs",
+        "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",
         "build-compile": "tsc --noEmit",
         "build": "npm-run-all build-compile build-bundle",
         "watch": "tsc --watch",
@@ -47,7 +48,8 @@
         "dist",
         "!dist/**/*.map",
         "assets/icon.svg",
-        "assets/icon.png"
+        "assets/icon.png",
+        "skills"
     ],
     "bin": {
         "fiori-mcp": "./dist/index.js"
@@ -82,6 +84,7 @@
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "@sap-ux/adp-tooling": "workspace:*",
         "cross-env": "10.1.0",
         "esbuild": "0.27.4",
         "i18next": "25.10.10",
@@ -89,6 +92,7 @@
         "mem-fs-editor": "9.4.0",
         "npm-run-all2": "8.0.4",
         "os-name": "4.0.1",
+        "playwright-core": "1.58.2",
         "promptfoo": "0.121.15",
         "xml-formatter": "3.7.0",
         "ts-node": "10.9.2",

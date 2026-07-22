@@ -14,6 +14,10 @@ export { listSapSystems } from './list-sap-systems.js';
 export { downloadODataServiceMetadata } from './download-odata-service-metadata.js';
 export { generateFioriAppOData } from './generate-fiori-app-odata.js';
 export { generateFioriAppCap } from './generate-fiori-app-cap.js';
+export { generateAdaptationProject } from './generate-adaptation-project.js';
+export { openAdaptationEditor } from './open-adaptation-editor.js';
+export { adpControllerExtension } from './adp-controller-extension/index.js';
+export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 
 export const tools = [
     {
@@ -63,7 +67,7 @@ export const tools = [
                     **ALWAYS** use the Service Center MCP tool 'list_systems' first if it is available. This tool is a fallback for environments where the Service Center MCP tool is not available.
                     Also use this tool when the user asks to 'list systems', 'list backends', or any equivalent phrasing.
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
-                    before calling 'download_odata_service_metadata' or generating a Fiori application.`,
+                    before calling 'download_odata_service_metadata', 'generate_adaptation_project', or generating a Fiori application.`,
         annotations: {
             title: 'List SAP Systems',
             readOnlyHint: true,
@@ -175,6 +179,94 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: generatorConfigCAPJson
+    },
+    {
+        name: 'generate_adaptation_project',
+        description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
+
+        This tool requires:
+        - system: The name of the SAP system (from list_sap_systems)
+        - application: The application ID to adapt
+
+        Optional parameters: targetFolder, projectName, namespace, applicationTitle, client, username, password.
+
+        Use 'list_sap_systems' first to discover available systems.
+        The generator will be executed with the provided JSON configuration.`,
+        annotations: {
+            title: 'Generate Adaptation Project',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema)
+    },
+    {
+        name: 'open_adaptation_editor',
+        description: `Starts the adaptation editor server by running 'npx fiori run /test/adaptation-editor.html' in the adaptation project directory.
+
+        This tool:
+        - Spawns the editor server process in the background
+        - Extracts the server URL and editor path from the command output
+        - Returns the full editor URL and process ID
+        - Provides instructions on how to stop the editor process
+
+        The editor server will run independently in the background. Use the returned process ID or port to stop it if needed.`,
+        annotations: {
+            title: 'Open Adaptation Editor',
+            readOnlyHint: false,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema)
+    },
+    {
+        name: 'adp_controller_extension',
+        description: `Processes AI-generated controller extensions and fragments for SAPUI5 Adaptation Projects.
+
+        This tool:
+        - Validates that the project is an adaptation project (has manifest.appdescr_variant)
+        - Reads manifest.appdescr_variant to determine layer and namespace requirements
+        - Extracts files from the AI response (markdown code blocks with **Path:** markers)
+        - Writes controller extension files, fragments, and other code files
+        - Does NOT write change files (.change) - these are handled separately
+
+        CRITICAL: The 'aiResponse' parameter must contain pre-generated code with markdown code blocks,
+        each preceded by "**Path:** fullFilePath" on its own line.
+        Call this tool first without 'aiResponse' to receive detailed generation rules and project context.`,
+        annotations: {
+            title: 'ADP Controller Extension',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema),
+        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+    },
+    {
+        name: 'run_rta_workflow_step',
+        description: `Internal step runner for the **sap-fiori-adp-controller-extension-flow** skill. **Do not call this tool standalone.**
+        The skill orchestrates a multi-step Runtime Authoring flow (start → get_overlays → AI selects target control → get_actions → AI selects action → get_context → AI prepares payload → call_action → save → stop) and decides what each call should pass. Calling out of sequence will fail with descriptive errors but bypasses the AI decision points the skill provides.
+
+        Always go through the **sap-fiori-adp-controller-extension-flow** skill in the SAP Fiori MCP server.
+
+        Steps:
+        - **start** — payload: \`{ site: string, frameId?: string }\`. Launches the editor URL, starts RTA, returns a fresh \`sessionId\` and \`{ rtaStarted: true }\`.
+        - **get_overlays** — sessionId only. Returns \`{ overlays: Overlay[] }\` for AI control selection.
+        - **get_actions** — sessionId, payload: \`{ controlId: string }\`. Returns \`{ actions: Action[] }\`.
+        - **get_context** — sessionId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
+        - **call_action** — sessionId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
+        - **save** — sessionId only. Returns \`{ saved: boolean }\`.
+        - **stop** — sessionId only. Closes the session; if no sessions remain, the browser shuts down. Returns \`{ stopped: true }\`.`,
+        annotations: {
+            title: 'Run RTA Workflow Step (skill-internal)',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
+        },
+        inputSchema: convertToSchema(Input.RunRtaWorkflowStepInputSchema)
     },
     {
         name: 'list_functionality',
