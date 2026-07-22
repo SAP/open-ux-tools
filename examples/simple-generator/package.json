@@ -30,7 +30,7 @@
         "@types/yeoman-generator": "5.2.14",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
-        "axios": "1.18.0"
+        "axios": "1.18.1"
     },
     "files": [
         "generators",

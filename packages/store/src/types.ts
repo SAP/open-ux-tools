@@ -31,10 +31,4 @@ export const ConnectionType = {
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType];
 
 export type BackendSerializableKeys =
-    | 'name'
-    | 'url'
-    | 'client'
-    | 'systemType'
-    | 'authenticationType'
-    | 'connectionType'
-    | 'systemInfo';
+    'name' | 'url' | 'client' | 'systemType' | 'authenticationType' | 'connectionType' | 'systemInfo';
