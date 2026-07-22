@@ -51,4 +51,24 @@ describe('Test utils related to the store', () => {
             expect.stringContaining('An error occurred when retrieving the backend systems from the store: Test error')
         );
     });
+
+    it('should call getAll with default backendSystemFilter when none provided', async () => {
+        mockGetAll.mockResolvedValueOnce([]);
+        await getAllBackendSystems();
+        expect(mockGetAll).toHaveBeenCalledWith(
+            expect.objectContaining({
+                backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+            })
+        );
+    });
+
+    it('should call getAll with provided backendSystemFilter', async () => {
+        mockGetAll.mockResolvedValueOnce([]);
+        await getAllBackendSystems(false, { connectionType: ['abap_catalog'] });
+        expect(mockGetAll).toHaveBeenCalledWith(
+            expect.objectContaining({
+                backendSystemFilter: { connectionType: ['abap_catalog'] }
+            })
+        );
+    });
 });

@@ -189,7 +189,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show password questions', () => {
-        PromptState.transportAnswers.transportConfigNeedsCreds = true;
+        PromptState.transportAnswers.areCredentialFieldsVisible = true;
         expect(showPasswordQuestion()).toBe(true);
     });
 

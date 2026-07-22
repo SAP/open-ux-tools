@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/launch-config",
-    "version": "1.0.12",
+    "version": "1.0.14",
     "description": "SAP Fiori tools launch config administration",
     "type": "module",
     "repository": {

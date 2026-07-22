@@ -293,6 +293,12 @@ export interface ExtensionProjectData {
  * generator configurations. The json is passed as an CLI argument.
  */
 export interface JsonInput {
+    /**
+     * Correlation key sent by the SAP Business Application Studio orchestrator. When present, the
+     * generation outcome (project path on success, `Failure: <message>` on error) is written back
+     * under this key so the orchestrator can poll the result of an async headless generation.
+     */
+    id?: string;
     system: string;
     client?: string;
     username?: string;

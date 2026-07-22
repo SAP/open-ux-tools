@@ -235,13 +235,11 @@ export const toAnnotationFile = (
             range: Range.create(0, 0, 0, 0),
             references: [
                 ...cdsAnnotationFile.references,
-                ...supportedVocabularies.map(
-                    (vocabulary): Reference => ({
-                        type: REFERENCE_TYPE,
-                        name: vocabulary.namespace,
-                        alias: vocabulary.defaultAlias
-                    })
-                )
+                ...supportedVocabularies.map((vocabulary): Reference => ({
+                    type: REFERENCE_TYPE,
+                    name: vocabulary.namespace,
+                    alias: vocabulary.defaultAlias
+                }))
             ]
         }
     };
