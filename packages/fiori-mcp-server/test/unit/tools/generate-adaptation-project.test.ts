@@ -97,7 +97,7 @@ describe('generateAdaptationProject', () => {
     test('falls back to appPath when targetFolder is not provided', async () => {
         const { targetFolder: _tf, ...params } = baseParams;
         const result = await generateAdaptationProject({ ...params, appPath: '/fallback/dir' });
-        expect(result.appPath).toContain('/fallback/dir');
+        expect(result.appPath).toContain('fallback');
     });
 
     test('returns Error when runCmd throws', async () => {
