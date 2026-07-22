@@ -33,12 +33,8 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/in
     }
 }));
 
-const { runRtaWorkflowStep } = await import(
-    '../../../../src/tools/run-rta-workflow-step/index.js'
-);
-const { FrontendActionError } = await import(
-    '../../../../src/tools/run-rta-workflow-step/rta/index.js'
-);
+const { runRtaWorkflowStep } = await import('../../../../src/tools/run-rta-workflow-step/index.js');
+const { FrontendActionError } = await import('../../../../src/tools/run-rta-workflow-step/rta/index.js');
 
 /**
  * Session IDs accumulated by tests that start a session but do not stop it.
@@ -93,9 +89,9 @@ describe('runRtaWorkflowStep', () => {
     describe('get_actions', () => {
         test('throws when controlId is missing', async () => {
             const sessionId = await startSession();
-            await expect(
-                runRtaWorkflowStep({ step: 'get_actions', sessionId, payload: {} })
-            ).rejects.toThrow('payload.controlId is required and must be a non-empty string');
+            await expect(runRtaWorkflowStep({ step: 'get_actions', sessionId, payload: {} })).rejects.toThrow(
+                'payload.controlId is required and must be a non-empty string'
+            );
         });
 
         test('returns actions on success', async () => {
@@ -189,7 +185,9 @@ describe('runRtaWorkflowStep', () => {
             const result = await runRtaWorkflowStep({ step: 'stop', sessionId });
             // Remove from open list since it was stopped here
             const idx = openSessionIds.indexOf(sessionId);
-            if (idx !== -1) openSessionIds.splice(idx, 1);
+            if (idx !== -1) {
+                openSessionIds.splice(idx, 1);
+            }
             expect(result).toEqual({ stopped: true });
         });
 
@@ -218,9 +216,7 @@ describe('runRtaWorkflowStep', () => {
 
     describe('unknown step', () => {
         test('throws with message containing Unknown step', async () => {
-            await expect(
-                runRtaWorkflowStep({ step: 'not_a_real_step' as any })
-            ).rejects.toThrow('Unknown step');
+            await expect(runRtaWorkflowStep({ step: 'not_a_real_step' as any })).rejects.toThrow('Unknown step');
         });
     });
 
@@ -229,9 +225,7 @@ describe('runRtaWorkflowStep', () => {
             const sessionId = await startSession();
             const frontendError = new (FrontendActionError as any)('someAction', 'ERR_CODE', 'something failed');
             mockGetOverlays.mockRejectedValue(frontendError);
-            await expect(
-                runRtaWorkflowStep({ step: 'get_overlays', sessionId })
-            ).rejects.toThrow('something failed');
+            await expect(runRtaWorkflowStep({ step: 'get_overlays', sessionId })).rejects.toThrow('something failed');
         });
     });
 });
