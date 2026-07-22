@@ -1,5 +1,36 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- Register generated journeys in `AllJourneys.gen.json` when adding OPA tests to existing projects [[e93607c](https://github.com/SAP/open-ux-tools/commit/e93607cfbf5736f120f58067293732d0897a28ad)]
+
+## 1.2.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.43 → 1.0.44
+
+## 1.2.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/preview-middleware 1.0.42 → 1.0.43
+
 ## 1.2.24
 
 ### Patch Changes
