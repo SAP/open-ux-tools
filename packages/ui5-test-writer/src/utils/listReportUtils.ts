@@ -312,8 +312,7 @@ export function getCustomFilterFieldProperties(
         return custom;
     }
     const selectionFieldsConfig = controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'] as
-        | { filterFields?: Record<string, { template?: string }> }
-        | undefined;
+        { filterFields?: Record<string, { template?: string }> } | undefined;
     const filterFields = selectionFieldsConfig?.filterFields;
     if (!filterFields || typeof filterFields !== 'object') {
         return custom;
