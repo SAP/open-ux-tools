@@ -154,6 +154,7 @@ does this for you internally.
 | `iShouldSeeTheButtonOnTheDialog(sButton)` | label string | Assert a specific button exists on an open dialog. |
 | `iShouldSeeTheButtonsOnTheDialog(aButton)` | array of label strings | Assert multiple buttons exist on an open dialog. |
 | `iShouldSeeThePopoverWithTitle(sTitle)` | title string | Assert a popover is open with the given title. |
+| `iShouldSeeTheMessageToastWithText(sExpectedText)` | text | Assert message toast is displayed with the given text. |
 
 ---
 
@@ -166,7 +167,7 @@ does this for you internally.
 | Method | Parameters | Description |
 |---|---|---|
 | `iClickTheEditButton()` | - | Click Edit to enter edit mode. |
-| `iSaveTheDraft()` | - | Click Save to persist the draft. |
+| `iSaveTheDraft(bNonDraft)` | `bNonDraft` (optional bool, default false) | Click Save. Pass `true` for non-draft apps (clicks `--save` button); omit or pass `false` for draft-enabled apps (clicks `--activate` button). |
 | `iCancelTheDraft()` | - | Click Cancel to discard the draft. |
 | `iSelectTheOptionFromDiscardDraftPopUp(sOption)` | option label string | Select a radio button option from the discard-draft confirmation popup. |
 

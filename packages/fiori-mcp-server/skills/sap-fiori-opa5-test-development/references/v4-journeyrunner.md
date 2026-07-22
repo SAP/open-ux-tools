@@ -81,7 +81,7 @@ sap.ui.define([
         QUnit.module("Feature Name Journey");
 
         opaTest("Start application", function (Given, When, Then) {
-            Given.iStartMyApp("<object>-<action>");
+            Given.iStartMyApp();
             Then.onTheEntityNameList.iSeeThisPage();
         });
 
@@ -97,7 +97,9 @@ sap.ui.define([
 });
 ```
 
-**`iStartMyApp("<object>-<action>")`** is the SAP Fiori elements equivalent of the base OPA5 `iStartMyAppInAFrame`. The argument is the FLP intent (`<object>-<action>`) - see "Finding the tile name" above for how to determine the correct value.
+**`iStartMyApp()`** launches the app using the intent already encoded in `launchUrl` in `JourneyRunner.js`. This is the standard form — use it when the runner is already configured with the correct hash.
+
+**`iStartMyApp("<object>-<action>")`** overrides the intent at call time. Use this when a journey needs to launch with a different intent than the one in `launchUrl`, or when you prefer to keep `launchUrl` intent-independent. The argument is the FLP intent (`<object>-<action>`) — see "Finding the tile name" above for how to determine the correct value.
 
 ---
 
@@ -121,7 +123,7 @@ sap.ui.require(
 );
 ```
 
-When the virtual endpoint is active (see SKILL.md "Generated Test Structure"), this file does not exist on disk - the middleware generates it automatically by scanning for journey files matching the configured pattern.
+When the virtual endpoint is active (see `v4-instructions.md` "Generated Test Structure"), this file does not exist on disk - the middleware generates it automatically by scanning for journey files matching the configured pattern.
 
 > If the entry point does not set `QUnit.config.autostart = false` before loading journey modules, tests may start before all modules are fully loaded, causing intermittent failures. If you encounter this, fix it by adding `window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } })` before the `sap.ui.require` call and ensuring `QUnit.start()` is called inside the require callback.
 

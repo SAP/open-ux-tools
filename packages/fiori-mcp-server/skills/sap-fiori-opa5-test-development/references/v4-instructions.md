@@ -36,6 +36,7 @@ SAP Fiori Elements apps use `sap.fe.test.JourneyRunner` instead of raw `Opa5.ext
 const runner = new JourneyRunner({
     launchUrl: ...,
     pages: { ... },
+    async: true,
     opaConfig: {
         autoWait: true,
         timeout: 60    // increase from default 15 for CI/CD environments
@@ -224,6 +225,7 @@ When.onTheListReport.onFilterBar().iChangeFilterField("CategoryId", "CAT001");
 When.onTheListReport.onFilterBar().iChangeFilterField("SalesDocument", "4026");
 
 // ✅ Fixed - target the inner input directly
+// Replace {appId}, {pageId}, {entitySet} with real values from manifest.json and the browser debugger
 iFillSalesDocument: function(sValue) {
     this.waitFor({
         id: "{appId}::{pageId}--fe::FilterBar::{entitySet}::FilterField::SalesDocument-inner",
@@ -268,7 +270,7 @@ Use `onTable({property: "items"})` where `"items"` is the OData navigation prope
 
 ```javascript
 // Navigate to the section first
-When.onTheObjectPage.iGoToSection("Items");
+When.onTheObjectPage.iGoToSection({ section: "Items" });
 
 // Create a new sub-entity
 When.onTheObjectPage.onTable({property: "items"}).iExecuteCreate();

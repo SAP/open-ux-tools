@@ -11,6 +11,7 @@ For full method signatures and parameter details, read `references/v4-sap-fe-tes
 
 ```javascript
 // Start app and verify page loaded
+// iStartMyApp() uses the intent encoded in launchUrl in JourneyRunner.js — see references/v4-journeyrunner.md
 Given.iStartMyApp();
 Then.onTheListReport.iSeeThisPage();
 
@@ -29,26 +30,33 @@ Given.iTearDownMyApp();
 ```javascript
 // Set a filter field and execute search
 When.onTheListReport.onFilterBar()
-    .iChangeFilterField("CategoryId", "CAT001")
+    .iChangeFilterField({ property: "CategoryId" }, "CAT001")
     .and.iExecuteSearch();
 
 // Assert a filter field has a specific value
 Then.onTheListReport.onFilterBar()
-    .iCheckFilterField("CategoryId", "CAT001");
+    .iCheckFilterField({ property: "CategoryId" }, "CAT001");
 
 // Set multiple filters
 When.onTheListReport.onFilterBar()
-    .iChangeFilterField("Status", "Active")
-    .and.iChangeFilterField("CategoryId", "Electronics")
+    .iChangeFilterField({ property: "Status" }, "Active")
+    .and.iChangeFilterField({ property: "CategoryId" }, "Electronics")
     .and.iExecuteSearch();
 
-// Clear a filter field - pass null or empty string as value, true as third argument
+// Set a filter field value, clearing any existing content first (bClearFirst: true)
+// Use when the field already has a value and you want to replace it, not append
 When.onTheListReport.onFilterBar()
-    .iChangeFilterField("Status", null, true)
+    .iChangeFilterField({ property: "Status" }, "Active", true)
     .and.iExecuteSearch();
-// empty string also works:
+
+// Set a filter field value without clearing first (appends to existing content)
 When.onTheListReport.onFilterBar()
-    .iChangeFilterField("Status", "", true)
+    .iChangeFilterField({ property: "Status" }, "Active")
+    .and.iExecuteSearch();
+
+// Clear a filter field completely
+When.onTheListReport.onFilterBar()
+    .iChangeFilterField({ property: "Status" }, "", true)
     .and.iExecuteSearch();
 
 // Filter adaptation panel
@@ -67,22 +75,20 @@ When.onTheListReport.onTable().iPressRow(0);                          // by inde
 When.onTheListReport.onTable().iPressRow({ProductID: "HT-1000"});     // by field value
 
 // Assert row count
-Then.onTheListReport.onTable().iCheckRows();                          // just checks table has rows (no count assertion)
+Then.onTheListReport.onTable().iCheckRows();                          // asserts the table has at least one row
+Then.onTheListReport.onTable().iCheckRows(0);                         // asserts the table is empty
 Then.onTheListReport.onTable().iCheckRows(5);                         // exact count
 Then.onTheListReport.onTable().iCheckRows({Status: "Active"}, 3);     // filtered count
-
-// Assert a specific cell value by row index and column name
-Then.onTheListReport.onTable().iCheckCellValue(0, "ProductName", "Laptop");
 
 // Row selection (for mass actions)
 When.onTheListReport.onTable().iSelectRows({ProductID: "HT-1000"});
 When.onTheListReport.onTable().iSelectAllRows();
-When.onTheListReport.onTable().iDeselectAllRows();
-Then.onTheListReport.onTable().iCheckSelectedRows(2);
 
-// Sort by column
-When.onTheListReport.onTable().iChangeSorting("ProductName");         // toggle
-When.onTheListReport.onTable().iChangeSorting("ProductName", true);   // ascending
+// Sort by column (second arg: "Ascending" | "Descending" | "None", defaults to "Ascending")
+When.onTheListReport.onTable().iChangeSortOrder("ProductName");                // ascending (default)
+When.onTheListReport.onTable().iChangeSortOrder("ProductName", "Ascending");   // ascending
+When.onTheListReport.onTable().iChangeSortOrder("ProductName", "Descending");  // descending
+When.onTheListReport.onTable().iChangeSortOrder("ProductName", "None");        // remove sorting
 
 // Create / delete via table toolbar
 When.onTheListReport.onTable().iExecuteCreate();
@@ -120,18 +126,21 @@ When.onTheObjectPage.onHeader().iPressNavigateUpButton();
 
 ## Form
 
+> **Scope: SAP Fiori Elements-generated forms only.** The `{ property: "..." }` and `{ section: "SectionId" }` identifiers work by matching auto-generated control IDs like `FormElement::DataField::PropertyName` and subsection IDs like `fe::FacetSubSection::SectionId`. These IDs do **not** exist in custom extension sections whose content is a hand-authored fragment (e.g. a `sap.ui.layout.form.Form` containing `macros:Field` building blocks). For those cases see `references/v4-custom-selectors.md`.
+
+The `section` value in `onForm({ section: "..." })` must be the **ID** from the `@UI.Facets` annotation, not the display label.
+
 ```javascript
-// Enter edit mode first
 When.onTheObjectPage.onHeader().iExecuteEdit();
 Then.onTheObjectPage.iSeeObjectPageInEditMode();
 
-// Change a field in a section (section must match @UI.Facets annotation label exactly)
+// Change a field in a section
 When.onTheObjectPage.onForm({section: "GeneralInfo"})
-    .iChangeField("ProductName", "Updated Name");
+    .iChangeField({ property: "ProductName" }, "Updated Name");
 
 // Assert a field value
 Then.onTheObjectPage.onForm({section: "GeneralInfo"})
-    .iCheckField("ProductName", "Updated Name");
+    .iCheckField({ property: "ProductName" }, "Updated Name");
 
 // Open value help from a form field
 When.onTheObjectPage.onForm({section: "GeneralInfo"})
@@ -165,9 +174,6 @@ Then.onTheObjectPage.iSeeObjectPageInDisplayMode();
 When.onTheObjectPage.onDialog().iConfirm();
 When.onTheObjectPage.onDialog().iCancel();
 
-// Assert dialog title
-Then.onTheObjectPage.onDialog().iCheckDialogTitle("Confirm Deletion");
-
 // Change a field inside a dialog
 When.onTheObjectPage.onDialog()
     .iChangeDialogField({property: "Reason"}, "Test reason");
@@ -182,45 +188,89 @@ When.onTheObjectPage.onDialog()
 
 ## Section Navigation
 
+Always pass the section **ID** (from `@UI.Facets` annotation or manifest key) as an object `{ section: "SectionId" }`, not a plain string label.
+
 ```javascript
-// Navigate to a section (title must match @UI.Facets annotation label exactly)
-When.onTheObjectPage.iGoToSection("Stock Status");
+// Navigate to a section — works for ALL sections including custom extension sections
+When.onTheObjectPage.iGoToSection({ section: "StockStatus" });
 
 // Assert a section is visible/active
-Then.onTheObjectPage.iCheckSection("Stock Status");
+Then.onTheObjectPage.iCheckSection({ section: "StockStatus" });
 
 // Expand / collapse sections
-When.onTheObjectPage.iExpandSection("Additional Info");
-When.onTheObjectPage.iCollapseSection("Additional Info");
+When.onTheObjectPage.iExpandSection({ section: "AdditionalInfo" });
+When.onTheObjectPage.iCollapseSection({ section: "AdditionalInfo" });
 ```
+
+> `iGoToSection` is the correct method for ALL section navigation — including custom extension sections. Do NOT use custom page object methods for this.
+> The section ID is the `ID` property value from `@UI.Facets` (e.g. `<PropertyValue Property="ID" String="GeneralInformation"/>`) or the key in `manifest.json` (e.g. `"ExtensionSection2"`). Never use the display label string.
 
 ---
 
 ## Value Help Dialog
 
+Open value help from a form field or filter bar field:
+
 ```javascript
-// Open value help from a form field
 When.onTheObjectPage.onForm({section: "GeneralInfo"})
     .iOpenValueHelp("Category");
 
-// Search within the value help dialog
+When.onTheListReport.onFilterBar()
+    .iOpenValueHelp({ property: "CustomerID" });
+```
+
+Search via the generic search field. The search field is only available when the value help entity set is annotated as searchable in `metadata.xml`. Depending on the backend:
+- **CAP**: `Search.SearchRestrictions` with `Searchable: true` (from `@Search.searchable: true` in CDS)
+- **RAP**: `SAP__capabilities.SearchRestrictions` with `Searchable: true`
+
+Generic search may return many results - prefer filtering by a specific field (see below) for a precise result set.
+
+```javascript
 When.onTheObjectPage.onValueHelpDialog()
     .iChangeSearchField("Elec")
     .and.iExecuteSearch();
-
-// Select a row by field value
-When.onTheObjectPage.onValueHelpDialog()
-    .iSelectRows({CategoryId: "CAT001"});
-
-// Confirm selection
-When.onTheObjectPage.onValueHelpDialog().iConfirm();
-
-// Assert the field was updated
-Then.onTheObjectPage.onForm({section: "GeneralInfo"})
-    .iCheckField("Category", "Electronics");
 ```
 
-> Ensure the value help entity has mock data - `iSelectRows` times out if the VH entity set has no records.
+Filter by a specific field. Two cases depending on the value help dialog layout:
+
+- **Case A: value help dialog has a search field** (filters are collapsed by default) - call `iExecuteShowHideFilters` first to expand the filter bar, then set the field:
+
+```javascript
+When.onTheObjectPage.onValueHelpDialog()
+    .iExecuteShowHideFilters();
+When.onTheObjectPage.onValueHelpDialog()
+    .iChangeFilterField({ property: "CustomerID" }, "6")
+    .and.iExecuteSearch();
+```
+
+- **Case B: value help dialog has no search field** (filter bar is always visible) - call `iChangeFilterField` directly:
+
+```javascript
+When.onTheObjectPage.onValueHelpDialog()
+    .iChangeFilterField({ property: "CustomerID" }, "6")
+    .and.iExecuteSearch();
+```
+
+Select a row by index (use when field-based selection is unreliable due to column naming) or by field value (only works if the column exists in the value help dialog result table):
+
+```javascript
+When.onTheObjectPage.onValueHelpDialog()
+    .iSelectRows(0);
+
+When.onTheObjectPage.onValueHelpDialog()
+    .iSelectRows({CategoryId: "CAT001"});
+```
+
+Confirm selection and assert the field was updated:
+
+```javascript
+When.onTheObjectPage.onValueHelpDialog().iConfirm();
+
+Then.onTheObjectPage.onForm({section: "GeneralInfo"})
+    .iCheckField({ property: "Category" }, "Electronics");
+```
+
+> Ensure the value help entity has mock data - `iSelectRows` times out if the value help entity set has no records.
 
 ---
 
@@ -228,7 +278,7 @@ Then.onTheObjectPage.onForm({section: "GeneralInfo"})
 
 ```javascript
 // Navigate to the section containing the sub-table
-When.onTheObjectPage.iGoToSection("Items");
+When.onTheObjectPage.iGoToSection({ section: "Items" });
 
 // Create a new sub-entity
 When.onTheObjectPage.onTable({property: "items"}).iExecuteCreate();
@@ -259,10 +309,16 @@ Then.onTheListReport.onChart().iCheckChartType("Bar");
 
 ## Shell and Base Assertions
 
+`onTheShell` is a framework built-in provided by `sap.fe.test` - it does not need to be registered in the `pages` map in `JourneyRunner.js`.
+
 ```javascript
 // Navigate back via FLP back button
-Then.onTheShell.iNavigateBack();
+When.onTheShell.iNavigateBack();
+```
 
-// Assert message toast (called directly on Then, no page qualifier)
+`iSeeMessageToast` is a base assertion called directly on `Then` with no page or area qualifier - it is not on `onTheShell`:
+
+```javascript
 Then.iSeeMessageToast("Object saved.");
+```
 ```

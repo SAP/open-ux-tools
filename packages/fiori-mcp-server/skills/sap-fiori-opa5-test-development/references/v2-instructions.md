@@ -41,16 +41,45 @@ Opa5.extendConfig({
 
 `appId` and `entitySet` drive all internal ID-prefix construction - getting these right is the single most important configuration step.
 
-Then load the page object modules:
+Then load the page object modules for your floorplan:
 
 ```javascript
+// List Report + Object Page (most common)
 sap.ui.define([
     "sap/suite/ui/generic/template/integration/testLibrary/ListReport/pages/ListReport",
     "sap/suite/ui/generic/template/integration/testLibrary/ObjectPage/pages/ObjectPage"
 ], function() { "use strict"; });
+
+// Analytical List Page
+sap.ui.define([
+    "sap/suite/ui/generic/template/integration/testLibrary/AnalyticalListPage/pages/AnalyticalListPage"
+], function() { "use strict"; });
+
+// Flexible Column Layout
+sap.ui.define([
+    "sap/suite/ui/generic/template/integration/testLibrary/FCL/pages/FCL"
+], function() { "use strict"; });
 ```
 
-Loading these modules registers `onTheGenericListReport` and `onTheGenericObjectPage` globally on the OPA5 runtime.
+Loading these modules registers the corresponding global page objects: `onTheGenericListReport`, `onTheGenericObjectPage`, `onTheGenericAnalyticalListPage`, `onTheGenericFCLApp`.
+
+---
+
+## App Startup
+
+Use `iStartMyAppInAFrame` to launch the app. The argument is the relative path to the app's entry point HTML file, typically `index.html`. Add `sap-ui-xx-viewCache=false` to avoid stale view caches between test runs:
+
+```javascript
+Given.iStartMyAppInAFrame("index.html?sap-ui-xx-viewCache=false");
+```
+
+The entry point is usually `webapp/index.html`. If the app uses a standalone test page, check `package.json` for the `int-test` script to find the correct path.
+
+Always tear down the app at the end of a journey using `Given.iTeardownMyApp()` (lowercase d - base `Opa5` method):
+
+```javascript
+Given.iTeardownMyApp();
+```
 
 ---
 
@@ -117,13 +146,7 @@ When.onTheGenericObjectPage.iClickTheEditButtonOnTheObjectPage();    // older ve
 
 **Never mix V4 and V2 APIs in the same test file.** `sap.fe.test` and `fioriElementsTestLibrary` are completely separate - using methods from both in one journey will produce silent failures or unexpected behaviour.
 
-**Flaky tests on CI** - the default OPA5 timeout (15s) is often too low for CI environments. Increase it in `Opa5.extendConfig`:
-
-```javascript
-Opa5.extendConfig({
-    timeout: 60  // increase from default 15 for CI/CD environments
-});
-```
+**Flaky tests on CI** - the default OPA5 timeout (15s) is often too low for CI environments. Increase `timeout` to 60 in your `Opa5.extendConfig` config.
 
 ---
 

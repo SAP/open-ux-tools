@@ -42,6 +42,7 @@ The `sap.fe.test.api` folder is where the actual functions live. It is split by 
 | `FooterActions` / `FooterAssertions` | `iExecuteSave`, `iCheckSave`, ... |
 | `DialogActions` / `DialogAssertions` | `iConfirm`, `iCancel`, ... |
 | `BaseAssertions` | `iSeeThisPage`, `iSeeMessageToast`, ... |
+| `ObjectPage` (top-level) | `iSeeObjectPageInEditMode`, `iSeeObjectPageInDisplayMode` — called directly on the page object, not via an area accessor |
 
 ---
 

@@ -1,6 +1,11 @@
 # V4 Custom Selectors
 
-Custom selectors are a last resort. Always try the standard `sap.fe.test` API first (`onFilterBar()`, `onTable()`, `onHeader()`, `onForm()`, `onFooter()`, `onDialog()`). Only write a custom selector when the standard API genuinely cannot cover the scenario.
+**Lookup order when writing any journey step:**
+1. Check `references/v4-standard-patterns.md` for a ready-made snippet.
+2. If not there, check `references/v4-sap-fe-test-api-guide.md` for a standard API method.
+3. Only if no standard API covers it, use a custom page object method.
+
+> Reading the page object to understand the app is fine. But if you find a custom method there, do NOT use it in preference to a standard API method that covers the same scenario — custom methods exist to fill gaps, not to replace standard ones.
 
 > **TypeScript note:** All examples below use `sap.ui.define` (JavaScript). The same patterns apply in TypeScript - replace `sap.ui.define([...], function(...) {})` with ES module imports, e.g. `import OpaBuilder from "sap/ui/test/OpaBuilder"` and `import Press from "sap/ui/test/actions/Press"`. The selector logic itself is identical.
 
@@ -139,7 +144,46 @@ this.waitFor({
 
 ---
 
-## `sap.m.ObjectIdentifier` Title Link
+## Custom Extension Sections
+
+When an Object Page extension section (defined via `manifest.json` `content.body.sections`) contains a hand-authored fragment (e.g. using `macros:Field` or `macros:FormElement` building blocks, or any other custom content), the standard `onForm({ section: "..." })` and `iCheckField({ property: "..." })` identifiers **do not work** because:
+
+1. `onForm({ section: "SectionId" })` resolves to `fe::FacetSubSection::SectionId` — but custom extension subsections use `fe::CustomSubSection::SectionId`. The anchor is never found.
+2. `iCheckField({ property: "PropertyName" })` looks for a `FormElement` with an auto-generated ID ending in `FormElement::DataField::PropertyName`. In a custom fragment the form elements have explicit hand-authored IDs — so the regex never matches.
+
+**Solution: use string labels for both identifiers.**
+
+Both `onForm(string)` and `iCheckField(string)` fall back to label-text matching in the `sap.fe.test` internals (`createFormElementMatcher` and `createFieldMatcher` in `BaseAPI.js`):
+- `onForm(string)` matches a `sap.uxap.ObjectPageSubSection` by its `title` property — this is the section's display title from the manifest.
+- `iCheckField(string)` matches a `sap.ui.layout.form.FormElement` by its label text — this is the field's `Common.Label` from the OData metadata (or i18n text).
+
+```javascript
+// ✅ Correct for custom extension sections
+Then.onTheObjectPage
+    .onForm("Breakout Section #2")          // section display title (manifest "title" value)
+    .iCheckField("Journal Entry");           // field label from Common.Label annotation
+
+Then.onTheObjectPage
+    .onForm("Breakout Section #2")
+    .iCheckField("Business Area");
+
+Then.onTheObjectPage
+    .onForm("Breakout Section #2")
+    .iCheckField("Amount in Transaction Currency");
+```
+
+```javascript
+// ❌ Fails for custom extension sections — IDs don't match
+Then.onTheObjectPage
+    .onForm({ section: "ExtensionSection2" })
+    .iCheckField({ property: "AccountingDocument" });
+```
+
+**How to find the correct label strings:**
+- Open `localService/mainService/metadata.xml` and search for `Annotations Target="...EntityType/PropertyName"` → read the `Common.Label` `String` value.
+- For fields without a `Common.Label`, the label is derived from the property name itself or from an i18n key — check the fragment and the i18n file.
+
+**Note on duplicate labels:** If two fields in the same section share the same label, `iCheckField("Label")` will match the first one found. This is usually sufficient to verify the field is present; distinguishing between the two requires a custom OpaBuilder selector (see OpaBuilder section above).
 
 To press an active title link (e.g. a material name that opens a quick view), use `idSuffix: "title"` on the `Press` action.
 

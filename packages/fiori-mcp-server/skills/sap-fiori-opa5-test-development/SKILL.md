@@ -248,6 +248,8 @@ When the test pauses, inspect the live app in the browser to see what the UI act
 
 For UI5 version 1.147 and above, the **TestRecorder** tool (`sap.ui.testrecorder` library) can be added to the app temporarily to inspect the live control tree and generate reliable OPA5 snippets for non-trivial selectors. Remove the library again once done.
 
+**Flaky tests on CI** - the default OPA5 timeout (15s) is often too low for CI environments. Increase it to 60 in your runner config (`opaConfig.timeout` for V4, `Opa5.extendConfig({ timeout: 60 })` for V2).
+
 ---
 
 ## Reference Files
@@ -255,9 +257,9 @@ For UI5 version 1.147 and above, the **TestRecorder** tool (`sap.ui.testrecorder
 | File | When to read |
 |---|---|
 | `references/v4-instructions.md` | V4 app: test structure, JourneyRunner, page objects, anti-patterns, debugging, patterns and fixes by UI area |
-| `references/v4-standard-patterns.md` | V4: quick-reference example catalogue by UI area (FilterBar, Table, Header, Form, Footer, Dialog, Section, Value Help, Chart) |
-| `references/v2-instructions.md` | V2 app: setup, page objects, V2 gotchas |
 | `references/v4-journeyrunner.md` | V4: full JourneyRunner config reference, tile name lookup, portable journey pattern |
 | `references/v4-sap-fe-test-api-guide.md` | V4: how to navigate the sap.fe.test API docs, naming conventions, identifier patterns |
+| `references/v4-standard-patterns.md` | V4: quick-reference example catalogue by UI area (App Startup, FilterBar, Table, Header, Form, Footer, Dialog, Section, Value Help, Chart, Shell) |
 | `references/v4-custom-selectors.md` | V4: custom selectors (last resort), OpaBuilder, CustomFilterField IDs, ComboBox, suffix pitfalls |
-| `references/fiori-elements-v2-test-library.md` | V2: full API reference, method signatures, common pitfalls, complete example |
+| `references/v2-instructions.md` | V2 app: setup, page objects, V2 gotchas |
+| `references/fiori-elements-v2-test-library.md` | V2: full API reference for List Report, Object Page, ALP, and FCL page objects — method signatures, common pitfalls, complete example |
