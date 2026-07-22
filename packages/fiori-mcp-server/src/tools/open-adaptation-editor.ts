@@ -10,6 +10,15 @@ const execAsync = promisify(exec);
 
 const TCP_LISTEN_WINDOWS = /TCP\s+[\d.]+:(\d+)\s+[\d.]+\s+LISTENING\s+\d+/;
 const TCP_LISTEN_UNIX = /TCP\s+(?:[\d.]+|\[?[\da-f:]+\]?|\*):(\d+)\s+\(LISTEN\)/;
+const EDITOR_PATH_RE = /fiori run --open\s+([^\s]+)/;
+const SERVER_URL_RE = /^URL:\s*(https?:\/\/[^\s]+)/;
+
+interface EditorState {
+    editorPath: string | undefined;
+    serverUrl: string | undefined;
+    resolved: boolean;
+    spawnError: Error | undefined;
+}
 
 async function getWindowsPorts(pid: number, preferredPort?: number): Promise<number[]> {
     const { stdout } = await execAsync(`netstat -ano | findstr ${pid}`);
@@ -80,16 +89,6 @@ async function getPortFromPid(pid: number, preferredPort?: number): Promise<numb
         logger.warn(`Failed to get port from PID ${pid}: ${error instanceof Error ? error.message : String(error)}`);
     }
     return undefined;
-}
-
-const EDITOR_PATH_RE = /fiori run --open\s+([^\s]+)/;
-const SERVER_URL_RE = /^URL:\s*(https?:\/\/[^\s]+)/;
-
-interface EditorState {
-    editorPath: string | undefined;
-    serverUrl: string | undefined;
-    resolved: boolean;
-    spawnError: Error | undefined;
 }
 
 function watchStdout(childProcess: ChildProcess, state: EditorState): void {
