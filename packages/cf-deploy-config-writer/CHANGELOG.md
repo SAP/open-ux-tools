@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+
 ## 1.0.17
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/launch-config
 
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+
 ## 1.0.13
 
 ### Patch Changes
