@@ -120,7 +120,8 @@ export async function getAppFeatures(
                 objectPages,
                 listReportPage?.name,
                 log,
-                projectMetadata
+                projectMetadata,
+                manifest
             );
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
@@ -228,18 +229,45 @@ export function getAggregations(node: TreeAggregation): TreeAggregations {
 }
 
 /**
- * Retrieves selection field items from the given selection fields aggregation.
+ * Retrieves the stable OData property names of the selection fields, so generated
+ * filter-field checks do not break under translation.
  *
  * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
- * @returns An array of selection field descriptions.
+ * @returns An array of selection field property names.
  */
 export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): string[] {
     if (selectionFieldsAgg && typeof selectionFieldsAgg === 'object') {
         const items: string[] = [];
         for (const itemKey in selectionFieldsAgg) {
-            items.push(
-                (selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem).description
-            );
+            const item = selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem;
+            const property = item.schema?.keys?.[0]?.value;
+            if (property) {
+                items.push(property);
+            }
+        }
+        return items;
+    }
+    return [];
+}
+
+/**
+ * Retrieves both the property name and translated label of each selection field, for the
+ * List Report path where custom filter fields must fall back to matching by label.
+ *
+ * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
+ * @returns Array of `{ property, description }` entries.
+ */
+export function getSelectionFieldItemsWithLabels(
+    selectionFieldsAgg: TreeAggregations
+): { property: string; description: string }[] {
+    if (selectionFieldsAgg && typeof selectionFieldsAgg === 'object') {
+        const items: { property: string; description: string }[] = [];
+        for (const itemKey in selectionFieldsAgg) {
+            const item = selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem;
+            const property = item.schema?.keys?.[0]?.value;
+            if (property) {
+                items.push({ property, description: item.description ?? property });
+            }
         }
         return items;
     }
