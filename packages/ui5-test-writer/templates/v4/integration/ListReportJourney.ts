@@ -19,7 +19,7 @@ import opaTest from "sap/ui/test/opaQunit";
 import type { Given, When, Then } from "./types/OpaJourneyTypes";
 <%_
 const usesFilterFieldIdentifier =
-    filterBarItems && filterBarItems.some(function(item) { return item.custom; });
+    !hideFilterBar && filterBarItems && filterBarItems.some(function(item) { return item.custom; });
 -%>
 <% if (usesFilterFieldIdentifier) { -%>
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
