@@ -1,5 +1,19 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/annotation-generator 1.0.16 → 1.0.17
+- @sap-ux/fe-fpm-writer 1.3.4 → 1.3.5
+
 ## 3.1.5
 
 ### Patch Changes
