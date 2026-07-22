@@ -11,7 +11,9 @@ import type {
     GenerateAdaptationProjectInputSchema,
     OpenAdaptationEditorInputSchema,
     AdpControllerExtensionInputSchema,
-    RunRtaWorkflowStepInputSchema
+    RunRtaWorkflowStepInputSchema,
+    AdpMetadataInputSchema,
+    ODataServiceInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -46,6 +48,8 @@ export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptation
 export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
 export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
+export type AdpMetadataInput = zod.infer<typeof AdpMetadataInputSchema>;
+export type ODataServiceInput = zod.infer<typeof ODataServiceInputSchema>;
 export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
 export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
 export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;

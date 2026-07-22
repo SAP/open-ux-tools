@@ -2726,6 +2726,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -2738,6 +2741,9 @@ importers:
       '@sap/ux-specification':
         specifier: 1.144.5
         version: 1.144.5(typescript@5.9.3)
+      '@types/adm-zip':
+        specifier: 0.5.8
+        version: 0.5.8
       '@types/json-schema':
         specifier: 7.0.15
         version: 7.0.15
@@ -2747,6 +2753,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      adm-zip:
+        specifier: 0.5.16
+        version: 0.5.16
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -2771,6 +2780,9 @@ importers:
       playwright-core:
         specifier: 1.58.2
         version: 1.58.2
+      prettify-xml:
+        specifier: 1.2.0
+        version: 1.2.0
       promptfoo:
         specifier: 0.121.15
         version: 0.121.15(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.49(@opentelemetry/api@1.9.0)(@opentelemetry/exporter-trace-otlp-proto@0.218.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.8.0(@opentelemetry/api@1.9.0))(openai@6.39.0(ws@8.21.0)(zod@4.3.6))(ws@8.21.0))(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.13.14)(@types/pg@8.15.6)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)

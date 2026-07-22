@@ -2,15 +2,16 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    getVariant: jest.fn()
+const mockGetVariant = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    getVariant: mockGetVariant
 }));
 
-import { getVariant } from '@sap-ux/adp-tooling';
-import { adpControllerExtension } from '../../../../src/tools/adp-controller-extension/tool.js';
-import { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../../src/constant.js';
+const { adpControllerExtension } = await import('../../../../src/tools/adp-controller-extension/tool.js');
+const { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } = await import('../../../../src/constant.js');
 
-const mockedGetVariant = getVariant as jest.MockedFunction<typeof getVariant>;
+const mockedGetVariant = mockGetVariant;
 
 function createAdpProject(layer: string = 'CUSTOMER_BASE'): string {
     const appPath = mkdtempSync(join(tmpdir(), 'adp-tool-'));

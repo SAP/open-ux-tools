@@ -104,6 +104,9 @@ describe('FioriFunctionalityServer', () => {
             'open_adaptation_editor',
             'adp_controller_extension',
             'run_rta_workflow_step',
+            'list_libraries_from_system',
+            'list_odata_services_from_system',
+            'read_odata_metadata_adp',
             'list_functionality',
             'get_functionality_details',
             'execute_functionality'
@@ -357,6 +360,9 @@ describe('FioriFunctionalityServer', () => {
                 'open_adaptation_editor',
                 'adp_controller_extension',
                 'run_rta_workflow_step',
+                'list_libraries_from_system',
+                'list_odata_services_from_system',
+                'read_odata_metadata_adp',
                 'list_functionality',
                 'get_functionality_details',
                 'execute_functionality'
