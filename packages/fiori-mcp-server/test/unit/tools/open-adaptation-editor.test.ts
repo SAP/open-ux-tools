@@ -64,7 +64,8 @@ jest.unstable_mockModule('node:readline', () => ({
 }));
 
 const mockSpawn = jest.fn<() => FakeProcess>();
-const mockExec = jest.fn<(cmd: string, cb: (err: Error | null, result?: { stdout: string; stderr: string }) => void) => void>();
+const mockExec =
+    jest.fn<(cmd: string, cb: (err: Error | null, result?: { stdout: string; stderr: string }) => void) => void>();
 
 jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn,
@@ -200,10 +201,7 @@ describe('port detection via execAsync', () => {
         jest.useRealTimers();
     });
 
-    async function runSuccessAndGetPort(
-        urlLine: string,
-        execStdout: string
-    ): Promise<Record<string, unknown>> {
+    async function runSuccessAndGetPort(urlLine: string, execStdout: string): Promise<Record<string, unknown>> {
         const fakeProc = makeFakeProcess(1234);
         mockSpawn.mockReturnValue(fakeProc);
         mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: execStdout, stderr: '' }));
@@ -380,7 +378,8 @@ describe('port detection via execAsync', () => {
     test('returns preferred port from netstat when it matches on Windows (early return)', async () => {
         const originalPlatform = process.platform;
         Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
-        const netstatOutput = 'TCP    0.0.0.0:3000    0.0.0.0    LISTENING    1234\nTCP    0.0.0.0:4000    0.0.0.0    LISTENING    1234';
+        const netstatOutput =
+            'TCP    0.0.0.0:3000    0.0.0.0    LISTENING    1234\nTCP    0.0.0.0:4000    0.0.0.0    LISTENING    1234';
         mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: netstatOutput, stderr: '' }));
 
         const fakeProc = makeFakeProcess(1234);
@@ -431,7 +430,9 @@ describe('port detection via execAsync', () => {
     });
 
     test('outer catch returns error envelope when spawn itself throws synchronously', async () => {
-        mockSpawn.mockImplementation(() => { throw new Error('spawn failed synchronously'); });
+        mockSpawn.mockImplementation(() => {
+            throw new Error('spawn failed synchronously');
+        });
 
         const result = await openAdaptationEditor({ appPath: '/app' });
         expect(result.status).toBe('Error');
