@@ -64,12 +64,11 @@ jest.unstable_mockModule('node:readline', () => ({
 }));
 
 const mockSpawn = jest.fn<() => FakeProcess>();
+const mockExec = jest.fn<(cmd: string, cb: (err: Error | null, result?: { stdout: string; stderr: string }) => void) => void>();
 
 jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn,
-    exec: jest.fn((_cmd: string, cb: (err: Error | null) => void) => {
-        cb(new Error('exec mocked'));
-    })
+    exec: mockExec
 }));
 
 const { openAdaptationEditor } = await import('../../../src/tools/open-adaptation-editor.js');
@@ -97,6 +96,8 @@ describe('openAdaptationEditor', () => {
     beforeEach(() => {
         (mockCreateInterface as ReturnType<typeof jest.fn>).mockClear();
         mockSpawn.mockReset();
+        mockExec.mockReset();
+        mockExec.mockImplementation((_cmd, cb) => cb(new Error('exec not configured')));
         currentStdoutRl = null;
         rlCallCount = 0;
         jest.useFakeTimers();
@@ -153,6 +154,7 @@ describe('openAdaptationEditor', () => {
     test('returns Success with editorUrl and processId when URL and path are emitted', async () => {
         const fakeProc = makeFakeProcess(9999);
         mockSpawn.mockReturnValue(fakeProc);
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: '', stderr: '' }));
 
         const resultPromise = openAdaptationEditor(appParams);
         currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
@@ -173,6 +175,7 @@ describe('openAdaptationEditor', () => {
     test('falls back to default editorPath when only URL line is emitted before timeout', async () => {
         const fakeProc = makeFakeProcess(5555);
         mockSpawn.mockReturnValue(fakeProc);
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: '', stderr: '' }));
 
         const resultPromise = openAdaptationEditor(appParams);
         currentStdoutRl!.emitLine('URL: http://localhost:3000');
@@ -183,5 +186,155 @@ describe('openAdaptationEditor', () => {
         expect(result.status).toBe('Success');
         const params = result.parameters as Record<string, unknown>;
         expect(params.editorUrl as string).toContain('/test/adaptation-editor.html');
+    });
+});
+
+describe('port detection via execAsync', () => {
+    beforeEach(() => {
+        mockExec.mockReset();
+        mockSpawn.mockReset();
+        jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    async function runSuccessAndGetPort(
+        urlLine: string,
+        execStdout: string
+    ): Promise<Record<string, unknown>> {
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: execStdout, stderr: '' }));
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine(urlLine);
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        return result.parameters as Record<string, unknown>;
+    }
+
+    test('detects port from lsof output on Unix', async () => {
+        const lsofOutput = 'node   1234  user  TCP *:8080 (LISTEN)';
+        const params = await runSuccessAndGetPort('URL: http://localhost:8080', lsofOutput);
+        expect(params.port).toBe(8080);
+    });
+
+    test('returns preferred port when lsof output is empty', async () => {
+        const params = await runSuccessAndGetPort('URL: http://localhost:4000', '');
+        expect(params.port).toBe(4000);
+    });
+
+    test('detects child pids via pgrep and scans them for ports', async () => {
+        let callCount = 0;
+        mockExec.mockImplementation((cmd, cb) => {
+            callCount++;
+            if ((cmd as string).includes('pgrep')) {
+                cb(null, { stdout: '5678\n', stderr: '' });
+            } else if ((cmd as string).includes('5678')) {
+                cb(null, { stdout: 'node   5678  user  TCP *:3000 (LISTEN)', stderr: '' });
+            } else {
+                cb(null, { stdout: '', stderr: '' });
+            }
+        });
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://localhost:3000');
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        const params = result.parameters as Record<string, unknown>;
+        expect(params.port).toBe(3000);
+    });
+
+    test('handles pgrep failure gracefully and scans only the parent pid', async () => {
+        mockExec.mockImplementation((cmd, cb) => {
+            if ((cmd as string).includes('pgrep')) {
+                cb(new Error('pgrep not found'));
+            } else {
+                cb(null, { stdout: 'node   1234  user  TCP *:9090 (LISTEN)', stderr: '' });
+            }
+        });
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://localhost:9090');
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        const params = result.parameters as Record<string, unknown>;
+        expect(params.port).toBe(9090);
+    });
+
+    test('skips COMMAND header line and non-matching lines in lsof output', async () => {
+        const lsofOutput = [
+            'COMMAND  PID USER   FD   TYPE',
+            'garbage line',
+            'node   1234  user  TCP *:7777 (LISTEN)'
+        ].join('\n');
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: lsofOutput, stderr: '' }));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://localhost:7777');
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        const params = result.parameters as Record<string, unknown>;
+        expect(params.port).toBe(7777);
+    });
+
+    test('detects port from netstat output on Windows', async () => {
+        const originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+        const netstatOutput = 'TCP    0.0.0.0:8080    0.0.0.0:0    LISTENING    1234';
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: netstatOutput, stderr: '' }));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://localhost:8080');
+        await tickMs(200);
+        await tickMs(1200);
+
+        Object.defineProperty(process, 'platform', { value: originalPlatform, configurable: true });
+        const result = await resultPromise;
+        const params = result.parameters as Record<string, unknown>;
+        expect(params.port).toBe(8080);
+    });
+
+    test('returns success without port when getPortFromPid throws', async () => {
+        mockExec.mockImplementation((_cmd, cb) => cb(new Error('lsof crashed')));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://localhost:8080');
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        expect(result.status).toBe('Success');
     });
 });
