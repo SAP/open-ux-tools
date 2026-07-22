@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- Add missing namespace prefixes to TEMPLATE_NAMESPACES for xmldom [[c143424](https://github.com/SAP/open-ux-tools/commit/c143424d9ed3332a3c4c8a61cbcda79e325c2b95)]
+
 ## 1.3.3
 
 ### Patch Changes
