@@ -1,5 +1,17 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Upgrade npm-run-all2 8.0.4 → 9.0.2 [[20a52ef](https://github.com/SAP/open-ux-tools/commit/20a52ef640141e4bcaa87482b44ce5049cbc2de1)]
+
 ## 1.0.14
 
 ### Patch Changes
