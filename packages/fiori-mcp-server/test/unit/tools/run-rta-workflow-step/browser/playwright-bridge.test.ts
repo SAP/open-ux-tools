@@ -394,4 +394,37 @@ describe('browser/playwright-bridge', () => {
 
         await fs.stopBrowser();
     });
+
+    test('throws non-missing-browser error from bundled Chromium fallback', async () => {
+        launchMock.mockRejectedValueOnce(new Error("Executable doesn't exist at /usr/bin/google-chrome"));
+        launchMock.mockRejectedValueOnce(new Error('GPU process crashed'));
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/GPU process crashed/);
+        expect(launchMock).toHaveBeenCalledTimes(2);
+    });
+
+    test('evaluate throws when bridge is unavailable on the page', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockRejectedValueOnce(
+            new Error('window.sapdas.webclientBridge.getFrontendActions is not available on the page')
+        );
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/getFrontendActions is not available/);
+
+        await fs.stopBrowser();
+    });
+
+    test('evaluate throws when frontend action is not registered', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockRejectedValueOnce(new Error('Frontend action "unknown.action" not registered'));
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'unknown.action')).rejects.toThrow(/not registered/);
+
+        await fs.stopBrowser();
+    });
 });

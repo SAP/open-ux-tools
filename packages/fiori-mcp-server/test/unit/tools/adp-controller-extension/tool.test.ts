@@ -63,6 +63,19 @@ describe('adpControllerExtension', () => {
         }
     });
 
+    test('handles variant with undefined layer and id gracefully', async () => {
+        const appPath = mkdtempSync(join(tmpdir(), 'adp-tool-null-'));
+        mockedGetVariant.mockResolvedValue({ layer: undefined, id: undefined, content: [] } as never);
+        try {
+            const result = await adpControllerExtension({ appPath, prompt: 'test' });
+            expect(result.status).toBe('info');
+            expect(result.message).toContain('Layer: ');
+            expect(result.message).toContain('Variant ID: ');
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
     test('writes extracted files when aiResponse is provided', async () => {
         const appPath = createAdpProject('VENDOR');
         const aiResponse = [

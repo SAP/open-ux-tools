@@ -89,9 +89,31 @@ describe('generateAdaptationProject', () => {
         expect(command).toContain('@sap-ux/adp');
     });
 
+    test('logs stderr when runCmd returns stderr output', async () => {
+        mockRunCmd.mockResolvedValue({ stdout: 'Done', stderr: 'some warning' });
+        const result = await generateAdaptationProject(baseParams);
+        expect(result.status).toBe('Success');
+    });
+
     test('uses explicitly supplied projectName', async () => {
         const result = await generateAdaptationProject({ ...baseParams, projectName: 'my.custom.variant' });
         expect(result.appPath).toContain('my.custom.variant');
+    });
+
+    test('includes optional fields namespace, applicationTitle, client, username in yo command input', async () => {
+        const params = {
+            ...baseParams,
+            namespace: 'customer.ns',
+            applicationTitle: 'My App',
+            client: '100',
+            username: 'admin'
+        };
+        await generateAdaptationProject(params);
+        const [command] = mockRunCmd.mock.calls[0] as [string, unknown];
+        expect(command).toContain('customer.ns');
+        expect(command).toContain('My App');
+        expect(command).toContain('"client":"100"');
+        expect(command).toContain('"username":"admin"');
     });
 
     test('falls back to appPath when targetFolder is not provided', async () => {
