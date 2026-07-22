@@ -40,6 +40,14 @@ describe('isJsonInput', () => {
         ).toBe(true);
     });
 
+    it('should return true when the optional id is a string', () => {
+        expect(isJsonInput({ id: 'correlation-id', system: 'system', application: 'application' })).toBe(true);
+    });
+
+    it('should return false when id is present but not a string', () => {
+        expect(isJsonInput({ id: 123, system: 'system', application: 'application' })).toBe(false);
+    });
+
     it('should return false if some of the required fields are missing', () => {
         expect(
             isJsonInput({

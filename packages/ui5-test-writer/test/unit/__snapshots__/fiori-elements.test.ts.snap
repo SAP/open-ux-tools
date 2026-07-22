@@ -15766,6 +15766,8 @@ sap.ui.define([
     function journey() {
         QUnit.module(\\"TravelListListReport journey\\");
 
+        const defaultTableId = \\"\\";
+
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -15773,45 +15775,39 @@ sap.ui.define([
         });
 
         opaTest(\\"Check filter bar\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"AgencyID\\");
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"Kunden ID\\");
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"AgencyID\\" });
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"CustomerID\\" });
         });
 
         opaTest(\\"Add semantic key properties to filter bar\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onFilterBar().iOpenFilterAdaptation();
-            When.onTheTravelListGenerated.onFilterBar().iAddAdaptationFilterField(\\"TravelID\\");
-            Then.onTheTravelListGenerated.onFilterBar().iConfirmFilterAdaptation();
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"TravelID\\");
-            // Then.onTheTravelListGenerated.onFilterBar().iChangeFilterField(\\"TravelID\\");
-            // Then.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-            // Then.onTheTravelListGenerated.onTable().iCheckRows();
-            // Then.onTheTravelListGenerated.onTable().iSelectRows(0);
-            // Then.onTheTravelListGenerated.onTable().iCheckAction(\\"<Action Name>\\", { enabled: true });
+            When.onTheTravelListGenerated.onFilterBar().iOpenFilterAdaptation();
+            When.onTheTravelListGenerated.onFilterBar().iAddAdaptationFilterField({ property: \\"TravelID\\" });
+            When.onTheTravelListGenerated.onFilterBar().iConfirmFilterAdaptation();
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"TravelID\\" });
+            // When.onTheTravelListGenerated.onFilterBar().iChangeFilterField({ property: \\"TravelID\\" }, \\"<value to filter>\\", false);
+            // When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
+            // Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iSelectRows(0);
+            // Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"<Action Name>\\", { enabled: true });
         });
 
         // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
+        //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
         // });
-
-
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelListGenerated.onTable().iCheckRows();
-
-            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheTravelListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -17645,6 +17641,8 @@ sap.ui.define([
     function journey() {
         QUnit.module(\\"TravelListListReport journey\\");
 
+        const defaultTableId = \\"\\";
+
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -17652,34 +17650,28 @@ sap.ui.define([
         });
 
         opaTest(\\"Check filter bar\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"TravelID\\");
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"AgencyID\\");
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"Kunden ID\\");
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"TravelID\\" });
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"AgencyID\\" });
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"CustomerID\\" });
         });
 
         // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
+        //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
         // });
-
-
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelListGenerated.onTable().iCheckRows();
-
-            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheTravelListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -19514,6 +19506,8 @@ sap.ui.define([
     function journey() {
         QUnit.module(\\"TravelListListReport journey\\");
 
+        const defaultTableId = \\"\\";
+
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -19525,23 +19519,18 @@ sap.ui.define([
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
+        //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
         // });
-
-
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
-            Then.onTheTravelListGenerated.onTable().iCheckRows();
-
-            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheTravelListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });

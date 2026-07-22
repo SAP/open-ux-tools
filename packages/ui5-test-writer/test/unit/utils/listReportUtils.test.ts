@@ -17,7 +17,12 @@ import {
     getSemanticKeyProperties,
     getSemanticKeyPropertiesFromMetadata,
     isSemanticKeyInFilterBar,
-    safeGetSemanticKeyProperties
+    safeGetSemanticKeyProperties,
+    getCustomFilterFieldProperties,
+    getTableIdentifiers,
+    getPropertyLabelFromMetadata,
+    isHiddenFilter,
+    getFilterFieldItems
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import { readFileSync } from 'node:fs';
@@ -467,8 +472,12 @@ describe('Test getFilterFieldNames()', () => {
                         aggregations: {
                             selectionFields: {
                                 aggregations: {
-                                    field1: { description: 'Field 1' } as unknown as TreeAggregation,
-                                    field2: { description: 'Field 2' } as unknown as TreeAggregation
+                                    field1: {
+                                        schema: { keys: [{ name: 'Value', value: 'Field1' }] }
+                                    } as unknown as TreeAggregation,
+                                    field2: {
+                                        schema: { keys: [{ name: 'Value', value: 'Field2' }] }
+                                    } as unknown as TreeAggregation
                                 }
                             } as unknown as TreeAggregation
                         }
@@ -480,8 +489,8 @@ describe('Test getFilterFieldNames()', () => {
         } as unknown as TreeModel;
 
         const result = getFilterFieldNames(mockPageModel, mockLogger);
-        expect(result).toContain('Field 1');
-        expect(result).toContain('Field 2');
+        expect(result).toContain('Field1');
+        expect(result).toContain('Field2');
         expect(result).toHaveLength(2);
     });
 
@@ -497,7 +506,7 @@ describe('Test getFilterFieldNames()', () => {
         const result = getFilterFieldNames(mockPageModel, mockLogger);
         expect(result).toEqual([]);
         expect(mockLogger.warn).toHaveBeenCalledWith(
-            'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+            'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
         );
     });
 
@@ -1255,7 +1264,10 @@ describe('Test getListReportFeatures()', () => {
                             aggregations: {
                                 selectionFields: {
                                     aggregations: {
-                                        field1: { description: 'Filter 1' } as unknown as TreeAggregation
+                                        field1: {
+                                            description: 'Filter 1',
+                                            schema: { keys: [{ name: 'Value', value: 'Field1' }] }
+                                        } as unknown as TreeAggregation
                                     }
                                 } as unknown as TreeAggregation
                             }
@@ -1295,7 +1307,7 @@ describe('Test getListReportFeatures()', () => {
         expect(result).toBeDefined();
         expect(result.createButton).toBeDefined();
         expect(result.deleteButton).toBeDefined();
-        expect(result.filterBarItems).toContain('Filter 1');
+        expect(result.filterBarItems).toContainEqual({ property: 'Field1', description: 'Filter 1', custom: false });
         expect(result.tableColumns).toBeDefined();
         expect(result.toolBarActions).toBeDefined();
     });
@@ -1309,7 +1321,10 @@ describe('Test getListReportFeatures()', () => {
                             aggregations: {
                                 selectionFields: {
                                     aggregations: {
-                                        field1: { description: 'Filter 1' } as unknown as TreeAggregation
+                                        field1: {
+                                            description: 'Filter 1',
+                                            schema: { keys: [{ name: 'Value', value: 'Field1' }] }
+                                        } as unknown as TreeAggregation
                                     }
                                 } as unknown as TreeAggregation
                             }
@@ -1348,7 +1363,7 @@ describe('Test getListReportFeatures()', () => {
             enabled: undefined,
             dynamicPath: undefined
         });
-        expect(result.filterBarItems).toContain('Filter 1');
+        expect(result.filterBarItems).toContainEqual({ property: 'Field1', description: 'Filter 1', custom: false });
         expect(result.toolBarActions).toEqual([]);
     });
 
@@ -1475,8 +1490,14 @@ describe('Test getListReportFeatures()', () => {
                             aggregations: {
                                 selectionFields: {
                                     aggregations: {
-                                        field1: { description: 'Product' } as unknown as TreeAggregation,
-                                        field2: { description: 'Category' } as unknown as TreeAggregation
+                                        field1: {
+                                            description: 'Product',
+                                            schema: { keys: [{ name: 'Value', value: 'Product' }] }
+                                        } as unknown as TreeAggregation,
+                                        field2: {
+                                            description: 'Category',
+                                            schema: { keys: [{ name: 'Value', value: 'Category' }] }
+                                        } as unknown as TreeAggregation
                                     }
                                 } as unknown as TreeAggregation
                             }
@@ -1522,8 +1543,8 @@ describe('Test getListReportFeatures()', () => {
 
         // Verify all components are integrated
         expect(result.filterBarItems).toHaveLength(2);
-        expect(result.filterBarItems).toContain('Product');
-        expect(result.filterBarItems).toContain('Category');
+        expect(result.filterBarItems).toContainEqual({ property: 'Product', description: 'Product', custom: false });
+        expect(result.filterBarItems).toContainEqual({ property: 'Category', description: 'Category', custom: false });
 
         expect(Object.keys(result.tableColumns || {})).toContain('IDColumn');
         expect(Object.keys(result.tableColumns || {})).toContain('NameColumn');
@@ -1880,7 +1901,7 @@ describe('Test isSemanticKeyInFilterBar()', () => {
     const makePageModel = (fields: string[]): TreeModel => {
         const aggregations: Record<string, TreeAggregation> = {};
         fields.forEach((f) => {
-            aggregations[f] = { description: f } as unknown as TreeAggregation;
+            aggregations[f] = { schema: { keys: [{ name: 'Value', value: f }] } } as unknown as TreeAggregation;
         });
         return {
             root: {
@@ -2079,5 +2100,337 @@ describe('Test safeGetSemanticKeyProperties()', () => {
         safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent', mockLogger);
         const [loggedMessage] = (mockLogger.debug as jest.Mock).mock.calls[0];
         expect(loggedMessage).toMatch(/Failed to get semantic key properties: .+/);
+    });
+});
+
+describe('Test getCustomFilterFieldProperties()', () => {
+    const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { controlConfiguration } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('returns empty set when manifest is undefined', () => {
+        expect(getCustomFilterFieldProperties(undefined, 'MyLR').size).toBe(0);
+    });
+
+    test('returns empty set when target key is undefined', () => {
+        expect(getCustomFilterFieldProperties(makeManifest({}), undefined).size).toBe(0);
+    });
+
+    test('returns empty set when controlConfiguration is missing', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(getCustomFilterFieldProperties(manifest, 'MyLR').size).toBe(0);
+    });
+
+    test('returns empty set when SelectionFields config has no filterFields', () => {
+        const manifest = makeManifest({ '@com.sap.vocabularies.UI.v1.SelectionFields': {} });
+        expect(getCustomFilterFieldProperties(manifest, 'MyLR').size).toBe(0);
+    });
+
+    test('includes only fields that declare a non-empty template', () => {
+        const manifest = makeManifest({
+            '@com.sap.vocabularies.UI.v1.SelectionFields': {
+                filterFields: {
+                    CustomField: { template: 'my.app.ext.CustomFilter' },
+                    StandardField: {},
+                    EmptyTemplate: { template: '' }
+                }
+            }
+        });
+        const result = getCustomFilterFieldProperties(manifest, 'MyLR');
+        expect(result.has('CustomField')).toBe(true);
+        expect(result.has('StandardField')).toBe(false);
+        expect(result.has('EmptyTemplate')).toBe(false);
+        expect(result.size).toBe(1);
+    });
+});
+
+describe('Test getTableIdentifiers()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { views: { paths } } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('returns empty array when manifest is undefined', () => {
+        expect(getTableIdentifiers(undefined, 'MyLR')).toEqual([]);
+    });
+
+    test('returns empty array when target key is undefined', () => {
+        expect(getTableIdentifiers(makeManifest([{ key: '1' }]), undefined)).toEqual([]);
+    });
+
+    test('returns empty array when views.paths is missing or not an array', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(getTableIdentifiers(manifest, 'MyLR')).toEqual([]);
+        expect(getTableIdentifiers(makeManifest('not-an-array'), 'MyLR')).toEqual([]);
+        expect(getTableIdentifiers(makeManifest([]), 'MyLR')).toEqual([]);
+    });
+
+    test('returns non-custom tab keys and skips custom (template) tabs and keyless entries', () => {
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '2' },
+            { key: '5', template: 'my.app.ext.CustomTab' },
+            { key: '' },
+            undefined,
+            { key: '6' }
+        ]);
+        expect(getTableIdentifiers(manifest, 'MyLR')).toEqual(['1', '2', '6']);
+    });
+
+    test('returns empty array for a single-path views.paths (treated as single-table LR)', () => {
+        expect(getTableIdentifiers(makeManifest([{ key: '1' }]), 'MyLR')).toEqual([]);
+    });
+
+    test('returns empty array when only one non-custom tab survives filtering', () => {
+        const manifest = makeManifest([{ key: '1' }, { key: '5', template: 'my.app.ext.CustomTab' }]);
+        expect(getTableIdentifiers(manifest, 'MyLR')).toEqual([]);
+    });
+
+    test('treats an empty-string template as a standard (non-custom) tab', () => {
+        const manifest = makeManifest([
+            { key: '1', template: '' },
+            { key: '2', template: '' }
+        ]);
+        expect(getTableIdentifiers(manifest, 'MyLR')).toEqual(['1', '2']);
+    });
+});
+
+describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="ItemType">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="Labelled" Type="Edm.String"/>
+                <Property Name="Plain" Type="Edm.String"/>
+                <Property Name="Secret" Type="Edm.String"/>
+                <Property Name="NotHidden" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Items" EntityType="TestService.ItemType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.ItemType/Labelled">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Item Type"/>
+            </Annotations>
+            <Annotations Target="TestService.ItemType/Secret">
+                <Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/>
+            </Annotations>
+            <Annotations Target="TestService.ItemType/NotHidden">
+                <Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="false"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+    const metadata = convert(parse(metadataXml));
+
+    test('getPropertyLabelFromMetadata returns the Common.Label value', () => {
+        expect(getPropertyLabelFromMetadata(metadata, 'Items', 'Labelled')).toBe('Item Type');
+    });
+
+    test('getPropertyLabelFromMetadata returns undefined when the property has no label', () => {
+        expect(getPropertyLabelFromMetadata(metadata, 'Items', 'Plain')).toBeUndefined();
+    });
+
+    test('getPropertyLabelFromMetadata returns undefined for an unknown entity set or property', () => {
+        expect(getPropertyLabelFromMetadata(metadata, 'Unknown', 'Labelled')).toBeUndefined();
+        expect(getPropertyLabelFromMetadata(metadata, 'Items', 'Unknown')).toBeUndefined();
+    });
+
+    test('isHiddenFilter returns true for a HiddenFilter-annotated property', () => {
+        expect(isHiddenFilter(metadata, 'Items', 'Secret')).toBe(true);
+    });
+
+    test('isHiddenFilter returns false for a non-hidden property', () => {
+        expect(isHiddenFilter(metadata, 'Items', 'Plain')).toBe(false);
+    });
+
+    test('isHiddenFilter returns false when HiddenFilter is explicitly false', () => {
+        expect(isHiddenFilter(metadata, 'Items', 'NotHidden')).toBe(false);
+    });
+
+    test('isHiddenFilter returns false when entity set name is undefined', () => {
+        expect(isHiddenFilter(metadata, undefined, 'Secret')).toBe(false);
+    });
+
+    test('isHiddenFilter returns false for an unknown entity set or property', () => {
+        expect(isHiddenFilter(metadata, 'Unknown', 'Secret')).toBe(false);
+        expect(isHiddenFilter(metadata, 'Items', 'Unknown')).toBe(false);
+    });
+});
+
+describe('Test getFilterFieldItems() error handling', () => {
+    test('returns empty array and logs debug when the page model cannot be traversed', () => {
+        const mockLogger = {
+            debug: jest.fn(),
+            warn: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+        // Accessing `.root` throws → getFilterFields throws → caught and logged
+        const brokenPageModel = {
+            get root(): never {
+                throw new Error('root access failed');
+            }
+        } as unknown as TreeModel;
+        const result = getFilterFieldItems(brokenPageModel, mockLogger);
+        expect(result).toEqual([]);
+        expect(mockLogger.debug).toHaveBeenCalled();
+    });
+});
+
+describe('Test getListReportFeatures() custom filter field i18n label resolution', () => {
+    const mockLogger = { debug: jest.fn(), warn: jest.fn(), info: jest.fn(), error: jest.fn() } as unknown as Logger;
+
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="ItemType">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="ItemCategory" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Items" EntityType="TestService.ItemType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.ItemType/ItemCategory">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Item Type"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const manifest = {
+        'sap.ui5': {
+            routing: {
+                targets: {
+                    MyLR: {
+                        options: {
+                            settings: {
+                                controlConfiguration: {
+                                    '@com.sap.vocabularies.UI.v1.SelectionFields': {
+                                        filterFields: {
+                                            ItemCategory: { template: 'my.app.ext.CustomFilter' }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } as unknown as Manifest;
+
+    test('resolves an unresolved i18n placeholder label via the OData Common.Label', () => {
+        const pageModel: PageWithModelV4 = {
+            name: 'MyLR',
+            entitySet: 'Items',
+            model: {
+                root: {
+                    aggregations: {
+                        filterBar: {
+                            aggregations: {
+                                selectionFields: {
+                                    aggregations: {
+                                        ItemCategory: {
+                                            description: '{i18n>customCategory}',
+                                            schema: { keys: [{ name: 'Value', value: 'ItemCategory' }] }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation
+            } as unknown as TreeModel
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(pageModel, mockLogger, metadataXml, manifest);
+        // The custom field's {i18n>...} placeholder is replaced by the metadata Common.Label
+        expect(result.filterBarItems).toContainEqual({
+            property: 'ItemCategory',
+            description: 'Item Type',
+            custom: true
+        });
+    });
+});
+
+describe('Test getListReportFeatures() semantic-key HiddenFilter exclusion', () => {
+    const mockLogger = { debug: jest.fn(), warn: jest.fn(), info: jest.fn(), error: jest.fn() } as unknown as Logger;
+
+    // Two semantic keys (TravelID, BookingID). BookingID is @UI.HiddenFilter, so it must be
+    // dropped from missingFromFilterBar. Neither key is present in the filter bar (which holds
+    // an unrelated field), so both would otherwise be "missing".
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="BookingID" Type="Edm.String"/>
+                <Property Name="AgencyID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>TravelID</PropertyPath>
+                        <PropertyPath>BookingID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="TestService.TravelType/BookingID">
+                <Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const pageModel: PageWithModelV4 = {
+        name: 'TravelLR',
+        entitySet: 'Travel',
+        model: {
+            root: {
+                aggregations: {
+                    filterBar: {
+                        aggregations: {
+                            selectionFields: {
+                                aggregations: {
+                                    AgencyID: {
+                                        description: 'Agency',
+                                        schema: { keys: [{ name: 'Value', value: 'AgencyID' }] }
+                                    } as unknown as TreeAggregation
+                                }
+                            } as unknown as TreeAggregation
+                        }
+                    } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation
+        } as unknown as TreeModel
+    } as unknown as PageWithModelV4;
+
+    test('drops a @UI.HiddenFilter semantic key from missingFromFilterBar', () => {
+        const result = getListReportFeatures(pageModel, mockLogger, metadataXml);
+        // TravelID is missing and not hidden → kept; BookingID is hidden → dropped
+        expect(result.semanticKey?.missingFromFilterBar).toEqual(['TravelID']);
     });
 });
