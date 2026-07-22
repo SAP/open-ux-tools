@@ -82,6 +82,68 @@ async function getPortFromPid(pid: number, preferredPort?: number): Promise<numb
     return undefined;
 }
 
+const EDITOR_PATH_RE = /fiori run --open\s+([^\s]+)/;
+const SERVER_URL_RE = /^URL:\s*(https?:\/\/[^\s]+)/;
+
+interface EditorState {
+    editorPath: string | undefined;
+    serverUrl: string | undefined;
+    resolved: boolean;
+    spawnError: Error | undefined;
+}
+
+function watchStdout(childProcess: ChildProcess, state: EditorState): void {
+    if (!childProcess.stdout) return;
+    const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
+    rl.on('line', (line: string) => {
+        logger.debug(`Editor output: ${line}`);
+        if (!state.editorPath) {
+            const m = EDITOR_PATH_RE.exec(line);
+            if (m?.[1]) {
+                state.editorPath = m[1];
+                logger.info(`Extracted editor path: ${state.editorPath}`);
+            }
+        }
+        if (!state.serverUrl) {
+            const m = SERVER_URL_RE.exec(line);
+            if (m?.[1]) {
+                state.serverUrl = m[1];
+                logger.info(`Extracted server URL: ${state.serverUrl}`);
+            }
+        }
+        if (state.serverUrl && state.editorPath && !state.resolved) {
+            state.resolved = true;
+            rl.close();
+        }
+    });
+    rl.on('close', () => {
+        if (!state.resolved && state.serverUrl && state.editorPath) {
+            state.resolved = true;
+        }
+    });
+}
+
+function buildKillCommands(isWindows: boolean, processId: number, port: number | undefined): string {
+    const byPid = isWindows
+        ? `Windows: taskkill /PID ${processId} /F`
+        : `Mac/Linux: kill ${processId} (or kill -9 ${processId} for force kill)`;
+    if (!port) return `To stop the editor:\n${byPid}`;
+    const byPort = isWindows
+        ? `Windows: for /f "tokens=5" %a in ('netstat -ano ^| findstr :${port}') do taskkill /PID %a /F`
+        : `Mac/Linux: kill -9 $(lsof -ti:${port})`;
+    return `To stop the editor (recommended - by port):\n${byPort}\n\nAlternative (by PID):\n${byPid}`;
+}
+
+function getPreferredPort(serverUrl: string): number | undefined {
+    try {
+        const urlObj = new URL(serverUrl);
+        if (urlObj.port) return Number.parseInt(urlObj.port, 10);
+        return urlObj.protocol === 'https:' ? 443 : 80;
+    } catch {
+        return undefined;
+    }
+}
+
 /**
  * Starts the adaptation editor server by spawning `npx fiori run /test/adaptation-editor.html`
  * in the adaptation project directory.
@@ -91,12 +153,11 @@ async function getPortFromPid(pid: number, preferredPort?: number): Promise<numb
  */
 export async function openAdaptationEditor(params: OpenAdaptationEditorInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath } = params;
+    const isWindows = process.platform === 'win32';
 
     try {
-        const isWindows = process.platform === 'win32';
         const command = isWindows ? 'npx.cmd' : 'npx';
         const args = ['fiori', 'run', '/test/adaptation-editor.html'];
-
         logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
 
         const childProcess: ChildProcess = spawn(command, args, {
@@ -105,78 +166,33 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             shell: false
         });
 
-        let editorPath: string | undefined;
-        let serverUrl: string | undefined;
-        let resolved = false;
-        let spawnError: Error | undefined;
+        const state: EditorState = { editorPath: undefined, serverUrl: undefined, resolved: false, spawnError: undefined };
 
-        if (childProcess.stdout) {
-            const rl = createInterface({
-                input: childProcess.stdout,
-                crlfDelay: Infinity
-            });
-
-            rl.on('line', (line: string) => {
-                logger.debug(`Editor output: ${line}`);
-
-                if (!editorPath) {
-                    const pathMatch = line.match(/fiori run --open\s+([^\s]+)/);
-                    if (pathMatch?.[1]) {
-                        editorPath = pathMatch[1];
-                        logger.info(`Extracted editor path: ${editorPath}`);
-                    }
-                }
-
-                if (!serverUrl) {
-                    const urlMatch = line.match(/^URL:\s*(https?:\/\/[^\s]+)/);
-                    if (urlMatch?.[1]) {
-                        serverUrl = urlMatch[1];
-                        logger.info(`Extracted server URL: ${serverUrl}`);
-                    }
-                }
-
-                if (serverUrl && editorPath && !resolved) {
-                    resolved = true;
-                    rl.close();
-                }
-            });
-
-            rl.on('close', () => {
-                if (!resolved && serverUrl && editorPath) {
-                    resolved = true;
-                }
-            });
-        }
+        watchStdout(childProcess, state);
 
         if (childProcess.stderr) {
-            const stderrRl = createInterface({
-                input: childProcess.stderr,
-                crlfDelay: Infinity
-            });
-
-            stderrRl.on('line', (line: string) => {
-                logger.debug(`Editor stderr: ${line}`);
-            });
+            const stderrRl = createInterface({ input: childProcess.stderr, crlfDelay: Infinity });
+            stderrRl.on('line', (line: string) => logger.debug(`Editor stderr: ${line}`));
         }
 
         childProcess.on('error', (error) => {
             logger.error(`Editor process error: ${error.message}`);
-            if (!resolved) {
-                spawnError = error;
-                resolved = true;
+            if (!state.resolved) {
+                state.spawnError = error;
+                state.resolved = true;
             }
         });
 
         const timeoutId = setTimeout(() => {
-            if (!resolved) {
-                resolved = true;
+            if (!state.resolved) {
+                state.resolved = true;
                 logger.warn('Timeout waiting for editor URL');
             }
         }, TIMEOUT_MS);
 
         await new Promise<void>((resolve) => {
             const checkInterval = setInterval(() => {
-                if (resolved) {
+                if (state.resolved) {
                     clearInterval(checkInterval);
                     clearTimeout(timeoutId);
                     resolve();
@@ -184,11 +200,11 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             }, 100);
         });
 
-        if (spawnError) {
+        if (state.spawnError) {
             return {
                 functionalityId: OPEN_ADAPTATION_EDITOR_ID,
                 status: 'Error',
-                message: `Failed to spawn editor process: ${spawnError.message}`,
+                message: `Failed to spawn editor process: ${state.spawnError.message}`,
                 parameters: params,
                 appPath,
                 changes: [],
@@ -196,15 +212,10 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             };
         }
 
-        if (!serverUrl) {
+        if (!state.serverUrl) {
             if (childProcess.pid) {
-                try {
-                    process.kill(childProcess.pid, 'SIGTERM');
-                } catch {
-                    // Process may have already exited
-                }
+                try { process.kill(childProcess.pid, 'SIGTERM'); } catch { /* already exited */ }
             }
-
             return {
                 functionalityId: OPEN_ADAPTATION_EDITOR_ID,
                 status: 'Error',
@@ -216,10 +227,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             };
         }
 
-        const finalEditorPath = editorPath || '/test/adaptation-editor.html';
-        const editorUrl = `${serverUrl}${finalEditorPath}`;
         const processId = childProcess.pid;
-
         if (!processId) {
             return {
                 functionalityId: OPEN_ADAPTATION_EDITOR_ID,
@@ -232,60 +240,20 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             };
         }
 
-        let preferredPort: number | undefined;
-        try {
-            const urlObj = new URL(serverUrl);
-            if (urlObj.port) {
-                preferredPort = Number.parseInt(urlObj.port, 10);
-            } else {
-                preferredPort = urlObj.protocol === 'https:' ? 443 : 80;
-            }
-        } catch {
-            // URL parse failure is non-critical
-        }
-
         childProcess.unref();
-
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        const detectedPort = await getPortFromPid(processId, preferredPort);
-        const port = detectedPort ?? preferredPort;
 
-        const killPort = port;
-        let killPortCommands = '';
-        let killProcessCommands = '';
-
-        if (killPort) {
-            killPortCommands = isWindows
-                ? `Windows: for /f "tokens=5" %a in ('netstat -ano ^| findstr :${killPort}') do taskkill /PID %a /F`
-                : `Mac/Linux: kill -9 $(lsof -ti:${killPort})`;
-        }
-
-        killProcessCommands = isWindows
-            ? `Windows: taskkill /PID ${processId} /F`
-            : `Mac/Linux: kill ${processId} (or kill -9 ${processId} for force kill)`;
-
-        const portLine = killPort ? `Actual listening port: ${killPort}` : '';
-        const killCommandsSection = killPortCommands
-            ? `To stop the editor (recommended - by port):\n${killPortCommands}\n\nAlternative (by PID):\n${killProcessCommands}`
-            : `To stop the editor:\n${killProcessCommands}`;
-
-        const message = `Adaptation editor started successfully.
-Editor URL: ${editorUrl}
-Process ID: ${processId}
-${portLine}
-
-${killCommandsSection}`;
+        const preferredPort = getPreferredPort(state.serverUrl);
+        const port = (await getPortFromPid(processId, preferredPort)) ?? preferredPort;
+        const editorUrl = `${state.serverUrl}${state.editorPath ?? '/test/adaptation-editor.html'}`;
+        const portLine = port ? `Actual listening port: ${port}` : '';
+        const message = `Adaptation editor started successfully.\nEditor URL: ${editorUrl}\nProcess ID: ${processId}\n${portLine}\n\n${buildKillCommands(isWindows, processId, port)}`;
 
         return {
             functionalityId: OPEN_ADAPTATION_EDITOR_ID,
             status: 'Success',
             message,
-            parameters: {
-                ...params,
-                editorUrl,
-                processId,
-                ...(killPort && { port: killPort })
-            },
+            parameters: { ...params, editorUrl, processId, ...(port && { port }) },
             appPath,
             changes: [],
             timestamp: new Date().toISOString()
