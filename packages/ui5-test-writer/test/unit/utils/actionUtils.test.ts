@@ -204,7 +204,7 @@ describe('buildActionButtonState()', () => {
 
         const result = buildActionButtonState(item, minimalMetadata);
         expect(result.label).toBe('Check Order');
-        expect(result.action).toBe('TestService.Check');
+        expect(result.action).toBe('Check');
         expect(result.visible).toBe(true);
         expect(result.enabled).toBe(true);
     });

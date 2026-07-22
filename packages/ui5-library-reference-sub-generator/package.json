@@ -48,7 +48,7 @@
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
         "@types/yeoman-test": "4.0.6",
-        "@types/vscode": "1.106.1",
+        "@types/vscode": "1.109.0",
         "@vscode-logging/logger": "2.0.9",
         "fs-extra": "11.3.6",
         "rimraf": "6.1.3",
