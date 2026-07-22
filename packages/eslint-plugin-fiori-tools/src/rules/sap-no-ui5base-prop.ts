@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, createPropertyChecker } from '../utils/helpers';
+import { type ASTNode, createPropertyChecker } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -14,7 +14,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {

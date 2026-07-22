@@ -3,13 +3,15 @@ import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';
-import { getWebappPath } from './ui5-config';
-import { getMinimumUI5Version } from './info';
-import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants';
-import { readJSON, writeFile } from '../file';
-import type { Manifest, Package } from '../types';
-import { execNpmCommand } from '../command';
+import type { Editor } from 'mem-fs-editor';
+import { deleteModule, getModule, loadModuleFromProject } from './module-loader.js';
+import { getWebappPath } from './ui5-config.js';
+import { getNodeModulesPath } from './dependencies.js';
+import { getMinimumUI5Version } from './info.js';
+import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants.js';
+import { readJSON, writeFile } from '../file/index.js';
+import type { Manifest, Package } from '../types/index.js';
+import { execNpmCommand } from '../command/index.js';
 
 const specificationDistTagPath = join(fioriToolsDirectory, FileName.SpecificationDistTags);
 
@@ -19,17 +21,19 @@ const specificationDistTagPath = join(fioriToolsDirectory, FileName.Specificatio
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-async function getProjectDistTag(root: string, options?: { logger?: Logger }): Promise<string> {
+async function getProjectDistTag(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<string> {
     let distTag = 'latest';
     try {
-        const webappPath = await getWebappPath(root);
-        const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest));
+        const memFs = options?.memFs;
+        const webappPath = await getWebappPath(root, memFs);
+        const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest), memFs);
         const minUI5Version = getMinimumUI5Version(manifest);
         if (minUI5Version && valid(minUI5Version)) {
-            const [mayor, minor] = minUI5Version.split('.');
-            distTag = `UI5-${mayor}.${minor}`;
+            const [major, minor] = minUI5Version.split('.');
+            distTag = `UI5-${major}.${minor}`;
         }
     } catch (error) {
         options?.logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
@@ -41,10 +45,12 @@ async function getProjectDistTag(root: string, options?: { logger?: Logger }): P
  * Checks if package.json contains dev dependency to specification.
  *
  * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns If dev dependency to specification is found in package.json
  */
-async function hasSpecificationDevDependency(root: string): Promise<boolean> {
-    const packageJson = await readJSON<Package>(join(root, FileName.Package));
+async function hasSpecificationDevDependency(root: string, options?: { memFs?: Editor }): Promise<boolean> {
+    const packageJson = await readJSON<Package>(join(root, FileName.Package), options?.memFs);
     return !!packageJson.devDependencies?.['@sap/ux-specification'];
 }
 
@@ -54,12 +60,16 @@ async function hasSpecificationDevDependency(root: string): Promise<boolean> {
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-export async function getSpecificationModuleFromCache<T>(root: string, options?: { logger?: Logger }): Promise<T> {
-    const logger = options?.logger;
+export async function getSpecificationModuleFromCache<T>(
+    root: string,
+    options?: { logger?: Logger; memFs?: Editor }
+): Promise<T> {
+    const { logger, memFs } = options ?? {};
     let specification: T;
-    const version = await getSpecificationVersion(root, { logger });
+    const version = await getSpecificationVersion(root, { logger, memFs });
     try {
         specification = await getSpecificationByVersion<T>(version, { logger });
         logger?.debug(`Specification loaded from cache using version '${version}'`);
@@ -78,12 +88,13 @@ export async function getSpecificationModuleFromCache<T>(root: string, options?:
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-export async function getSpecification<T>(root: string, options?: { logger?: Logger }): Promise<T> {
-    const logger = options?.logger;
+export async function getSpecification<T>(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<T> {
+    const { logger, memFs } = options ?? {};
     try {
-        if (await hasSpecificationDevDependency(root)) {
+        if (await hasSpecificationDevDependency(root, { memFs })) {
             logger?.debug(`Specification found in devDependencies of project '${root}', trying to load`);
             // Early return with load module from project. If it throws an error it is not handled here.
             return loadModuleFromProject<T>(root, '@sap/ux-specification');
@@ -91,7 +102,7 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
     } catch {
         logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
     }
-    return await getSpecificationModuleFromCache(root, { logger });
+    return await getSpecificationModuleFromCache(root, { logger, memFs });
 }
 
 /**
@@ -186,11 +197,12 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - version of specification
  */
-async function getSpecificationVersion(root: string, options?: { logger?: Logger }): Promise<string> {
-    const logger = options?.logger;
-    const distTag = await getProjectDistTag(root, { logger });
+async function getSpecificationVersion(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<string> {
+    const { logger, memFs } = options ?? {};
+    const distTag = await getProjectDistTag(root, { logger, memFs });
     return await convertDistTagToVersion(distTag, { logger });
 }
 
@@ -201,20 +213,30 @@ async function getSpecificationVersion(root: string, options?: { logger?: Logger
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
+ * @param [options.memFs] - optional mem-fs editor instance
  * @returns - path to specification
  */
-export async function getSpecificationPath(root: string, options?: { logger?: Logger }): Promise<string> {
-    const logger = options?.logger;
+export async function getSpecificationPath(
+    root: string,
+    options?: { logger?: Logger; memFs?: Editor }
+): Promise<string> {
+    const { logger, memFs } = options ?? {};
     const moduleName = '@sap/ux-specification';
-    if (await hasSpecificationDevDependency(root)) {
-        const modulePath = await getModulePath(root, moduleName);
+    if (await hasSpecificationDevDependency(root, { memFs })) {
+        const nodeModulesParent = getNodeModulesPath(root, moduleName);
+        if (!nodeModulesParent) {
+            throw new Error(`Module '${moduleName}' not found in node_modules for project '${root}'`);
+        }
         logger?.debug(`Specification root found in project '${root}'`);
-        return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
+        return join(nodeModulesParent, 'node_modules', moduleName);
     }
-    await getSpecificationModuleFromCache(root, { logger });
-    const version = await getSpecificationVersion(root, { logger });
+    await getSpecificationModuleFromCache(root, { logger, memFs });
+    const version = await getSpecificationVersion(root, { logger, memFs });
     logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);
-    const modulePath = await getModulePath(moduleRoot, moduleName);
-    return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
+    const nodeModulesParent = getNodeModulesPath(moduleRoot, moduleName);
+    if (!nodeModulesParent) {
+        throw new Error(`Module '${moduleName}' not found in cache at '${moduleRoot}'`);
+    }
+    return join(nodeModulesParent, 'node_modules', moduleName);
 }

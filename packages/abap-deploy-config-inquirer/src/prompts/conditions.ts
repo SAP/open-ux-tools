@@ -1,9 +1,9 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { PromptState } from './prompt-state';
-import { findBackendSystemByUrl, initTransportConfig } from '../utils';
-import { handleTransportConfigError } from '../error-handler';
-import { t } from '../i18n';
-import LoggerHelper from '../logger-helper';
+import { PromptState } from './prompt-state.js';
+import { findBackendSystemByUrl, initTransportConfig } from '../utils.js';
+import { handleTransportConfigError } from '../error-handler.js';
+import { t } from '../i18n.js';
+import LoggerHelper from '../logger-helper.js';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -15,7 +15,7 @@ import {
     type BackendTarget,
     type TransportListItem,
     type TransportInputChoicePromptOptions
-} from '../types';
+} from '../types.js';
 
 /**
  * Determines if URL question should be shown.
@@ -115,6 +115,11 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
     PromptState.transportAnswers.transportConfig = transportConfig;
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
 
+    // Track that credential fields should remain visible for the duration of the auth flow.
+    // This flag is NOT reset by validateCredentials, unlike transportConfigNeedsCreds which
+    // must become false after successful auth so downstream questions (package, transport) appear.
+    PromptState.transportAnswers.areCredentialFieldsVisible = transportConfigNeedsCreds ?? false;
+
     // Provide context to the CLI when username credentials are required
     if (transportConfigNeedsCreds) {
         LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
@@ -128,7 +133,7 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
  * @returns boolean
  */
 export function showPasswordQuestion(): boolean {
-    return Boolean(PromptState.transportAnswers.transportConfigNeedsCreds);
+    return !!PromptState.transportAnswers.areCredentialFieldsVisible;
 }
 
 /**

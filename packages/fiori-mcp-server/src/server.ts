@@ -6,27 +6,34 @@ import {
     CallToolRequestSchema,
     InitializeRequestSchema,
     ListToolsRequestSchema,
+    SUPPORTED_PROTOCOL_VERSIONS,
     type CallToolResult
 } from '@modelcontextprotocol/sdk/types.js';
-import packageJson from '../package.json';
+import { PACKAGE_VERSION } from './package-info.js';
 import {
     docSearch,
     listFioriApps,
     listFunctionalities,
     getFunctionalityDetails,
     executeFunctionality,
+    listSapSystems,
+    downloadODataServiceMetadata,
+    generateFioriAppOData,
+    generateFioriAppCap,
     tools
-} from './tools';
-import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
-import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant';
+} from './tools/index.js';
+import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
     ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
     DocSearchInput,
     ListFioriAppsInput,
-    ListFunctionalitiesInput
-} from './types';
-import { logger } from './utils/logger';
+    ListFunctionalitiesInput,
+    DownloadODataServiceMetadataInput
+} from './types/index.js';
+import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
+import { logger } from './utils/logger.js';
 
 type ToolArgs =
     | DocSearchInput
@@ -34,7 +41,24 @@ type ToolArgs =
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
     | ExecuteFunctionalityInput
+    | DownloadODataServiceMetadataInput
+    | GeneratorConfigOData
+    | GeneratorConfigCAP
     | Record<string, unknown>;
+
+const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
+
+function negotiateProtocolVersion(requested: string): string {
+    if (SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {
+        return requested;
+    }
+    if (SUPPORTED_PROTOCOL_VERSIONS.includes(FALLBACK_PROTOCOL_VERSION)) {
+        return FALLBACK_PROTOCOL_VERSION;
+    }
+    // if FALLBACK_PROTOCOL_VERSION was removed from the SDK; return the newest available version
+    // (last element, since the SDK lists versions oldest-first) for maximum forward-compatibility.
+    return SUPPORTED_PROTOCOL_VERSIONS[SUPPORTED_PROTOCOL_VERSIONS.length - 1];
+}
 
 /**
  * Sets up and manages an MCP (Model Context Protocol) server that provides Fiori-related tools.
@@ -52,7 +76,7 @@ export class FioriFunctionalityServer {
         this.server = new Server(
             {
                 name: 'fiori-mcp',
-                version: packageJson.version,
+                version: PACKAGE_VERSION,
                 icons: [
                     {
                         src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/assets/icon.svg',
@@ -112,14 +136,85 @@ export class FioriFunctionalityServer {
             await TelemetryHelper.sendTelemetry(TELEMETRY_MCP_SERVER_INITIALIZED, telemetryProperties);
 
             return {
-                protocolVersion: '2024-11-05', // MCP protocol version
+                // Echo back the client's requested version if supported; fall back to 2024-11-05
+                // (the first broadly-adopted version) as the safest baseline for unknown clients.
+                // If that version is ever removed from the SDK, we fall back to the oldest available.
+                protocolVersion: negotiateProtocolVersion(request.params.protocolVersion),
                 capabilities: {
                     tools: {}
                 },
                 serverInfo: {
                     name: 'fiori-mcp',
-                    version: packageJson.version
-                }
+                    version: PACKAGE_VERSION
+                },
+                instructions: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚨🚨🚨 STOP - READ THIS BEFORE CALLING ANY TOOLS 🚨🚨🚨
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOU ARE CONNECTED TO: SAP Fiori MCP Server
+
+MANDATORY PROTOCOL - NO EXCEPTIONS:
+1. Call tools/list FIRST in every session
+2. Read the inputSchema for EVERY tool before calling it
+3. Use ONLY the properties defined in inputSchema
+4. DO NOT add extra properties, notes, or wrapper objects
+
+IF YOU SKIP THESE STEPS:
+❌ Your tool call will FAIL
+❌ User's task will FAIL
+❌ You will waste tokens and time
+❌ You are violating the MCP protocol
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## CORRECT Tool Call Workflow
+
+✅ Step 1: Call tools/list
+✅ Step 2: Examine inputSchema of the tool you need
+✅ Step 3: Construct parameters using ONLY properties from inputSchema
+✅ Step 4: Call the tool
+
+## INCORRECT Workflow (DO NOT DO THIS)
+
+❌ Assume you know the schema from training data
+❌ Skip reading inputSchema
+❌ Add properties not in inputSchema
+❌ Wrap parameters in extra objects
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## Modifying an existing SAP Fiori application (3-step workflow)
+
+When the user wants to modify an existing Fiori app, you MUST follow these steps in order:
+
+1. **list_functionality** (Step 1) — Call with the absolute path to the Fiori app. Returns all supported modification operations and their functionalityIds.
+2. **get_functionality_details** (Step 2) — Call with a functionalityId from Step 1. Returns the exact parameters required for the modification.
+3. **execute_functionality** (Step 3) — Call with the parameters from Step 2 to apply the modification.
+
+Never skip steps or guess functionalityIds. Never use a functionalityId as a tool name.
+
+## Generating a new SAP Fiori application
+
+- For OData/non-CAP projects: use \`generate_fiori_app_odata\`
+  - BEFORE CALLING: Read its inputSchema from tools/list
+  - REQUIRED top-level properties: floorplan, project
+  - OPTIONAL top-level properties: service, entityConfig
+  - DO NOT add: config, metadata, NOTE, or any other properties
+
+- For CAP projects: use \`generate_fiori_app_cap\`
+  - BEFORE CALLING: Read its inputSchema from tools/list
+
+- If a SAP system or service URL is involved, call \`download_odata_service_metadata\` first and pass ALL fields it returns into the generator config.
+
+## Other available tools
+
+- \`list_sap_systems\` — list available SAP backends/destinations
+- \`list_fiori_apps\` — discover existing Fiori apps in a directory
+- \`search_docs\` — search Fiori Elements, SAPUI5, and annotation documentation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`
             };
         });
 
@@ -146,7 +241,7 @@ export class FioriFunctionalityServer {
                     mcpClientName: this.mcpClientName,
                     mcpClientVersion: this.mcpClientVersion
                 };
-                if ('functionalityId' in args) {
+                if (args && 'functionalityId' in args) {
                     const { functionalityId } = args;
                     const shouldPrefixWithPropertyChange =
                         Array.isArray(functionalityId) && functionalityId.length >= 1;
@@ -166,6 +261,18 @@ export class FioriFunctionalityServer {
                     case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         break;
+                    case 'list_sap_systems':
+                        result = await listSapSystems();
+                        break;
+                    case 'download_odata_service_metadata':
+                        result = await downloadODataServiceMetadata(args as DownloadODataServiceMetadataInput);
+                        break;
+                    case 'generate_fiori_app_odata':
+                        result = await generateFioriAppOData(args as GeneratorConfigOData);
+                        break;
+                    case 'generate_fiori_app_cap':
+                        result = await generateFioriAppCap(args as GeneratorConfigCAP);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
@@ -179,7 +286,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
@@ -244,11 +351,20 @@ export class FioriFunctionalityServer {
      * Connects the server to a StdioServerTransport and begins listening for requests.
      */
     async run(): Promise<void> {
-        await this.setupTelemetry();
+        // Generate the session ID synchronously before connecting so that it is available
+        // when the InitializeRequest handler fires and calls sendTelemetry for the first time.
+        TelemetryHelper.initSessionId();
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         logger.info(
-            `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${packageJson.version}) running on stdio`
+            `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${PACKAGE_VERSION}) running on stdio`
+        );
+        // The remaining (slow) telemetry init runs fire-and-forget after transport.connect() so it
+        // never blocks the MCP handshake. This is required for Claude Desktop's built-in Node runner,
+        // where a blocking await here causes the process to crash before the client receives the
+        // initialize response.
+        this.setupTelemetry().catch((error) =>
+            logger.error(`Telemetry init error: ${error instanceof Error ? error.message : String(error)}`)
         );
     }
 }

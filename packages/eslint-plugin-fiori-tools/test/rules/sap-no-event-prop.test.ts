@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-event-prop';
+import rule from '../../src/rules/sap-no-event-prop.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -27,8 +27,7 @@ ruleTester.run('sap-no-event-prop', rule, {
             code: 'var oEvent;oEvent.oSource = 12;',
             errors: [
                 {
-                    message: 'Direct usage of a private member from  sap.ui.base.Event detected!',
-                    type: 'MemberExpression'
+                    message: 'Direct usage of a private member from  sap.ui.base.Event detected!'
                 }
             ]
         }

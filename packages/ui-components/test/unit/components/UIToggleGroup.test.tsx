@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzym from 'enzyme';
+import Enzym from 'enzyme';
 
 import { UIToggleGroup } from '../../../src/components/UIToggleGroup/index';
 import type { UIToggleGroupProps } from '../../../src/components/UIToggleGroup/index';

@@ -1,10 +1,10 @@
 import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
-import type { FlexChange } from './common';
-import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
-import { getAdditionalChangeInfo } from '../utils/additional-change-info';
+import type { FlexChange } from './common.js';
+import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { getAdditionalChangeInfo } from '../utils/additional-change-info.js';
 
 const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
 const changesApiPath = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
@@ -67,14 +67,14 @@ const connector = merge({}, ObjectStorageConnector, {
         getItem: function (_key: string) {
             // not implemented
         },
-        getItems: async function () {
+        getItems: async function (): Promise<FlexChange[]> {
             const response = await fetch(changesApiPath, {
                 method: 'GET',
                 headers: {
                     'content-type': 'application/json'
                 }
             });
-            return (await response.json()) as unknown as FlexChange[];
+            return response.json();
         }
     } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {

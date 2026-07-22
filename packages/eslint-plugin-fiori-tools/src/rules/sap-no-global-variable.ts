@@ -3,7 +3,7 @@
  */
 
 import type { Rule, Scope } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
+import { type ASTNode } from '../utils/helpers.js';
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -29,7 +29,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'disallow global variable declarations',
-            category: 'Best Practices',
             recommended: true
         },
         fixable: undefined,
@@ -48,7 +47,7 @@ const rule: Rule.RuleModule = {
 
         return {
             VariableDeclaration(node: ASTNode) {
-                const sourceCode = context.sourceCode ?? context.getSourceCode();
+                const sourceCode = context.sourceCode;
                 const scope: Scope.Scope = sourceCode.getScope
                     ? sourceCode.getScope(node)
                     : (context as any).getScope();

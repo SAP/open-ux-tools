@@ -47,10 +47,9 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 ap
 
 exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 2`] = `
 "{
-  \\"xsappname\\": \\"cappapp\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 "
@@ -68,7 +67,7 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 ap
         \\"@cap-js/sqlite\\": \\"^1\\",
         \\"@sap/cds-dk\\": \\"^8\\",
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
+        \\"mbt\\": \\"^1.2.49\\"
     },
     \\"cds\\": {},
     \\"scripts\\": {
@@ -179,7 +178,7 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Generate CAP
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
@@ -269,6 +268,7 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Generate CAP
 "{
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 "

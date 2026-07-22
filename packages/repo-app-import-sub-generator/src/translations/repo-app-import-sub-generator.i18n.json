@@ -7,6 +7,7 @@
         "metadataFetchError": "An error occurred when fetching metadata: {{- error}}. For more information, view the logs.",
         "appConfigGenError": "An error occurred when generating the application configuration: {{- error}}. For more information, view the logs.",
         "endPhase": "An error occurred in the end phase: {{- error}}. For more information, view the logs.",
+        "writingPhase": "An error occurred in the writing phase: {{- error}}. For more information, view the logs.",
         "errorProcessingJsonFile": "An error occurred when processing the JSON file: {{- error}}. Check the file is valid.",
         "noAppsDeployed": "No applications deployed to this system can be downloaded.",
         "validationErrors": {
@@ -24,8 +25,11 @@
         "appDownloadErrors": {
             "downloadedFileNotBufferError": "Error: The downloaded file is not a buffer. Check the file.",
             "appDownloadFailure": "An error occurred when downloading the application: {{- error}}. For more information, view the logs.",
-            "zipExtractionError": "An error occurred when extracting the zip file: {{- error}}. For more information, view the logs."
+            "zipExtractionError": "An error occurred when extracting the zip file: {{- error}}. For more information, view the logs.",
+            "validationError": "An error occurred when validating the application selection: {{- error}}. For more information, view the logs."
         },
+        "dataSourcesNotFound": "No data sources found in the `manifest.json` file. Check the `manifest.json` file is valid.",
+        "qfaJsonValidationFailed": "The {{- jsonFileName}} file contains invalid or missing fields. For more information, view the logs.",
         "eventHookErrors": {
             "vscodeInstanceMissing": "Error: Missing VS Code instance in event hook.",
             "postGenCommandMissing": "Error: Missing `postGenCommand` in event hook.",
@@ -38,14 +42,15 @@
             "sourceTemplateNotSupported": "Error: Source template not supported. Use a supported template.",
             "invalidManifestStructureError": "Invalid `manifest.json file` structure: `sap.ui5` or `sap.app` are missing. Check they exist."
         },
-        "quickDeployedAppDownloadErrors": {
-            "noAppsFound": "No application with the ID {{ appId }} was found in the system. Please check if the application is deployed correctly or select another app.",
-            "transportCheckFailed": "Transport request resolution failed with error: {error}."
-        }
+        "adtQuickDeployErrors": {
+            "noAppsFound": "No application with the ID {{ appId }} was found in the system. Please check if the application is deployed correctly or select another app."
+        },
+        "transportCheckFailed": "Transport request resolution failed with error: {{- error}}."
     },
     "warn": {
         "extractedFileNotFound": "Extracted file not found: {{- extractedFilePath}}. For more information, view the logs.",
-        "requiredFieldsMissing": "Required fields are missing for the {{- appId }} application. Check if the application is deployed correctly."
+        "requiredFieldsMissing": "Required fields are missing for the {{- appId }} application. Check if the application is deployed correctly.",
+        "repoInfoFetchFailed": "Could not fetch repository info for '{{- repoName}}': {{- error}}. Deploy configuration may be incomplete."
     },
     "prompts": {
         "appSelection": {
@@ -59,10 +64,20 @@
         }
     },
     "readMe": {
-        "appDescription": "This application was converted from an SAP Fiori application that was deployed from ADT using the ADT Quick Fiori Application generator.",
+        "adtQuickDeploy": {
+            "appDescription": "This application was converted from an SAP Fiori application that was deployed from ADT using the ADT Quick Fiori Application generator."
+        },
+        "abapRepository": {
+            "appDescription": "This application was downloaded from an SAP ABAP repository."
+        },
         "launchText": "To launch the generated application, run the following command from the generated app root folder:\n\n```\n    npm start\n```"
     },
     "info": {
-        "repoAppDownloadCompleteMsg": "The selected application has been downloaded and updated to support SAP Fiori tools."
+        "adtQuickDeploy": {
+            "repoAppDownloadCompleteMsg": "The selected application has been downloaded and updated to support SAP Fiori tools."
+        },
+        "abapRepository": {
+            "repoAppDownloadCompleteMsg": "After the application is downloaded, the SAP Fiori migration tool launches so that the project can be migrated to support SAP Fiori tools."
+        }
     }
 }

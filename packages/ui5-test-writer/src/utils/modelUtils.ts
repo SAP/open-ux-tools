@@ -2,18 +2,19 @@ import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
+import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type {
     TreeAggregation,
     TreeAggregations,
     TreeModel,
     ApplicationModel
-} from '@sap/ux-specification/dist/types/src/parser';
-import type { AppFeatures, FPMFeatures } from '../types';
-import { getObjectPageFeatures, getObjectPages } from './objectPageUtils';
-import { getFilterFieldNames, getListReportFeatures } from './listReportUtils';
+} from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type { AppFeatures, FPMFeatures } from '../types.js';
+import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
+import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
+import { extractTableColumnsFromNode } from './tableUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -115,7 +116,12 @@ export async function getAppFeatures(
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
-            featureData.objectPages = await getObjectPageFeatures(objectPages, listReportPage?.name, log);
+            featureData.objectPages = await getObjectPageFeatures(
+                objectPages,
+                listReportPage?.name,
+                log,
+                projectMetadata
+            );
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {
@@ -126,44 +132,6 @@ export async function getAppFeatures(
     }
 
     return featureData;
-}
-
-/**
- * Gets identifier of a column for OPA5 tests.
- * If the column is custom, the identifier is taken from the 'Key' entry in the schema keys.
- * If the column is not custom, the identifier is taken from the 'Value' entry in the schema keys.
- * If no such entry is found, undefined is returned.
- *
- * @param column - column module from ux specification
- * @param column.custom boolean indicating whether the column is custom
- * @param column.schema schema of the column
- * @param column.schema.keys keys of the column; expected to have an entry with the name 'Key' or 'Value'
- * @returns identifier of the column for OPA5 tests; can be the name or index
- */
-function getColumnIdentifier(column: {
-    custom: boolean;
-    schema: { keys: { name: string; value: string }[] };
-}): string | undefined {
-    const key = column.custom ? 'Key' : 'Value';
-    const keyEntry = column.schema.keys.find((entry: { name: string; value: string }) => entry.name === key);
-    return keyEntry?.value;
-}
-
-/**
- * Transforms column aggregations from the ux specification model into a map of columns for OPA5 tests.
- *
- * @param columnAggregations column aggregations from the ux specification model
- * @returns a map of columns for OPA5 tests
- */
-function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
-    const columns: Record<string, any> = {};
-    Object.values(columnAggregations).forEach((columnAggregation, index) => {
-        columns[getColumnIdentifier(columnAggregation) ?? index] = {
-            header: columnAggregation.description
-            // TODO possibly more reliable properties could be used?
-        };
-    });
-    return columns;
 }
 
 /**
@@ -180,8 +148,7 @@ export function getTableColumnData(
     let tableColumns: Record<string, Record<string, string | number | boolean>> = {};
 
     try {
-        const columnAggregations = getTableColumns(pageModel);
-        tableColumns = transformTableColumns(columnAggregations);
+        tableColumns = extractTableColumnsFromNode(pageModel.root);
     } catch (error) {
         log?.debug(error);
     }
@@ -294,15 +261,25 @@ export function getFilterFields(pageModel: TreeModel): TreeAggregations {
 }
 
 /**
- * Retrieves the table columns aggregation from the given tree model.
+ * Parses a `DataFieldForAnnotation::<property>::<targetAnnotation>` style identifier.
  *
- * @param pageModel - The tree model containing table column definitions.
- * @returns The table columns aggregation object.
+ * @param name - aggregation key or `field.name` from the spec model
+ * @returns the parsed property and target annotation, or undefined for non-annotation entries
  */
-export function getTableColumns(pageModel: TreeModel): TreeAggregations {
-    const table = getAggregations(pageModel.root)['table'];
-    const tableAggregations = getAggregations(table);
-    const columns = tableAggregations['columns'];
-    const columnAggregations = getAggregations(columns);
-    return columnAggregations;
+export function parseDataFieldForAnnotationName(
+    name: string | undefined
+): { property: string; targetAnnotation: string } | undefined {
+    if (!name) {
+        return undefined;
+    }
+    const segments = name.split('::');
+    if (segments.length < 3 || segments[0] !== 'DataFieldForAnnotation') {
+        return undefined;
+    }
+    const property = segments[1];
+    const targetAnnotation = segments[2];
+    if (!property || !targetAnnotation) {
+        return undefined;
+    }
+    return { property, targetAnnotation };
 }

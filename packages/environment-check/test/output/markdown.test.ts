@@ -1,13 +1,16 @@
-import type { EnvironmentCheckResult } from '../../src';
-import { Check, convertResultsToMarkdown, Severity, UrlServiceType } from '../../src';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { t } from '../../src/i18n';
+import { jest } from '@jest/globals';
+import type { EnvironmentCheckResult } from '../../src/index.js';
+import { Check, Severity, UrlServiceType } from '../../src/types.js';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const { convertResultsToMarkdown } = await import('../../src/output/markdown.js');
+const { t } = await import('../../src/i18n.js');
 
 const requestedChecksSet = [Check.Environment, Check.Destinations, Check.EndpointResults];
 

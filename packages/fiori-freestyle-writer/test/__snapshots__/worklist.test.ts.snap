@@ -100,6 +100,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -149,6 +154,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -188,6 +198,11 @@ server:
           intent:
             object: wrk1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6872,6 +6887,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6924,6 +6944,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6966,6 +6991,11 @@ server:
           intent:
             object: wrk1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7640,7 +7670,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -9192,8 +9221,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                     <Record>
                         <PropertyValue Property=\\"TargetEntities\\">
                             <Collection>
-                                <NavigationPropertyPath>
-                                </NavigationPropertyPath>
+                                <NavigationPropertyPath></NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductText</NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductTextInOriginalLang</NavigationPropertyPath>
                             </Collection>
@@ -10248,6 +10276,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -10297,6 +10330,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -10336,6 +10374,11 @@ server:
           intent:
             object: wrk1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -13140,8 +13183,8 @@ export default [
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -13257,6 +13300,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -13325,6 +13372,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -13383,6 +13434,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -14015,7 +14070,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -15567,8 +15621,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                     <Record>
                         <PropertyValue Property=\\"TargetEntities\\">
                             <Collection>
-                                <NavigationPropertyPath>
-                                </NavigationPropertyPath>
+                                <NavigationPropertyPath></NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductText</NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductTextInOriginalLang</NavigationPropertyPath>
                             </Collection>
@@ -16545,8 +16598,8 @@ export default [
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -16658,6 +16711,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -16726,6 +16783,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -16784,6 +16845,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -17416,7 +17481,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -18968,8 +19032,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                     <Record>
                         <PropertyValue Property=\\"TargetEntities\\">
                             <Collection>
-                                <NavigationPropertyPath>
-                                </NavigationPropertyPath>
+                                <NavigationPropertyPath></NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductText</NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductTextInOriginalLang</NavigationPropertyPath>
                             </Collection>

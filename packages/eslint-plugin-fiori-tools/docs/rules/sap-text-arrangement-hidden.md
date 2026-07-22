@@ -39,7 +39,35 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 </Annotations>
 ```
 
-**An `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
+**Format 1: Record Syntax**
+
+```cds
+annotate service.MyEntity with {
+    property_code @Common: { Text: category.name, TextArrangement: #TextFirst }
+};
+
+annotate service.Category with {
+    name @UI.Hidden
+};
+```
+
+**Format 2: Inline Qualifier Syntax**
+
+```cds
+annotate service.MyEntity with {
+    property_code @(
+        Common.Text: category.name,
+        Common.Text.@UI.TextArrangement: #TextFirst,
+    )
+};
+
+annotate service.Category with {
+    name @UI.Hidden
+};
+```
+
+**An `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties:**
+
 
 ```xml
 <!-- TextArrangement applied at entity-type level — acts as fallback for all Common.Text properties -->
@@ -56,6 +84,18 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 <Annotations Target="MyService.Category/name">
     <Annotation Term="UI.Hidden"/>
 </Annotations>
+```
+
+```cds
+annotate service.MyEntity with @UI.TextArrangement: #TextFirst;
+
+annotate service.MyEntity with {
+    property_code @Common.Text: category.name
+};
+
+annotate service.Category with {
+    name @UI.Hidden
+};
 ```
 
 ### Correct Annotations
@@ -76,7 +116,27 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 </Annotations>
 ```
 
-**A `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
+**Format 1: Record Syntax**
+
+```cds
+annotate service.MyEntity with {
+    property_code @Common: { Text: category.name, TextArrangement: #TextFirst }
+};
+```
+
+**Format 2: Inline Qualifier Syntax:**
+
+```cds
+annotate service.MyEntity with {
+    property_code @(
+        Common.Text: category.name,
+        Common.Text.@UI.TextArrangement: #TextFirst,
+    )
+};
+```
+
+**A `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties:**
+
 
 ```xml
 <!-- TextArrangement applied at entity-type level -->
@@ -95,12 +155,26 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 </Annotations>
 ```
 
+```cds
+annotate service.MyEntity with @UI.TextArrangement: #TextFirst;
+
+annotate service.MyEntity with {
+    property_code @Common.Text: category.name
+};
+```
+
 If the property should not be hidden in this context, set `UI.Hidden` to `false`:
 
 ```xml
 <Annotations Target="MyService.Category/name">
     <Annotation Term="UI.Hidden" Bool="false"/>
 </Annotations>
+```
+
+```cds
+annotate service.Category with {
+    name @UI.Hidden: false
+};
 ```
 
 ## Bug Report

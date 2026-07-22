@@ -1,4 +1,4 @@
-import { join, normalize, posix } from 'node:path';
+import { dirname, join, normalize, posix } from 'node:path';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
@@ -30,10 +30,10 @@ import {
     MbtPackage,
     MTABuildScript,
     CDSDKPackage,
-    CDSPackage,
-    MAX_MTA_PREFIX_LENGTH
-} from './constants';
-import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types';
+    CDSPackage
+} from './constants.js';
+import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types/index.js';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Read manifest file for processing.
@@ -55,7 +55,7 @@ export function readManifest(manifestPath: string, fs: Editor): Manifest {
  * @returns The path of the template specified or templates root folder
  */
 export function getTemplatePath(relativeTemplatePath: string): string {
-    return join(__dirname, '../templates', relativeTemplatePath);
+    return join(dirname(fileURLToPath(import.meta.url)), '../templates', relativeTemplatePath);
 }
 
 /**
@@ -144,15 +144,10 @@ export function validateVersion(mtaVersion?: string): boolean {
  *
  * @param config MTA base configuration
  * @param config.mtaPath Path to the MTA project
- * @param config.mtaId MTA ID used for security configuration
  * @param fs Reference to a mem-fs editor
- * @param addTenant If true, append tenant configuration to the xs-security.json file (default: true)
  */
-export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor, addTenant: boolean = true): void {
-    fs.copyTpl(getTemplatePath(`common/${FileName.XSSecurityJson}`), join(mtaPath, FileName.XSSecurityJson), {
-        id: mtaId.slice(0, MAX_MTA_PREFIX_LENGTH),
-        addTenant
-    });
+export function addXSSecurityConfig({ mtaPath }: MTABaseConfig, fs: Editor): void {
+    fs.copyTpl(getTemplatePath(`common/${FileName.XSSecurityJson}`), join(mtaPath, FileName.XSSecurityJson), {});
 }
 
 /**
@@ -195,18 +190,13 @@ export async function addCommonPackageDependencies(targetPath: string, fs: Edito
  *
  * @param config Writer configuration
  * @param fs Reference to a mem-fs editor
- * @param addTenant If true, append tenant configuration to the xs-security.json file (default: true)
  */
-export async function generateSupportingConfig(
-    config: MTABaseConfig,
-    fs: Editor,
-    addTenant: boolean = true
-): Promise<void> {
+export async function generateSupportingConfig(config: MTABaseConfig, fs: Editor): Promise<void> {
     if (config.mtaId && !fs.exists(join(config.mtaPath, 'package.json'))) {
         addRootPackage(config, fs);
     }
     if (config.mtaId && !fs.exists(join(config.mtaPath, FileName.XSSecurityJson))) {
-        addXSSecurityConfig(config, fs, addTenant);
+        addXSSecurityConfig(config, fs);
     }
     // Be a good citizen and add a .gitignore if missing from the existing project root
     if (!fs.exists(join(config.mtaPath, '.gitignore'))) {

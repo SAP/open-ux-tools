@@ -15,15 +15,15 @@ import type {
     MergedAppDescriptor
 } from '@sap-ux/axios-extension';
 
-import RoutesHandler from './routes-handler';
-import OvpRoutesHandler from './ovp-routes-handler';
+import RoutesHandler from './routes-handler.js';
+import OvpRoutesHandler from './ovp-routes-handler.js';
 import type {
     AdpPreviewConfig,
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
     CommonAdditionalChangeInfoProperties
-} from '../types';
+} from '../types.js';
 import type { Editor } from 'mem-fs-editor';
 import {
     addAnnotationFile,
@@ -35,9 +35,9 @@ import {
     moduleNameContentMap,
     tryFixChange,
     isV4DescriptorChange
-} from './change-handler';
-import { addCustomFragment } from './descriptor-change-handler';
-import { getExistingAdpProjectType } from '../base/helper';
+} from './change-handler.js';
+import { addCustomFragment } from './descriptor-change-handler.js';
+import { getExistingAdpProjectType } from '../base/helper.js';
 import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -92,6 +92,15 @@ export class AdpPreview {
     }
 
     /**
+     * @returns `true` when the preview was initialized for a Cloud Foundry adaptation
+     * project that serves a pre-built bundle from `cfBuildPath`. CF mode skips the
+     * backend descriptor merge, so callers must avoid touching `descriptor`/`resources`.
+     */
+    get isCloudFoundry(): boolean {
+        return 'cfBuildPath' in this.config;
+    }
+
+    /**
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
     get resources(): {
@@ -118,10 +127,17 @@ export class AdpPreview {
     }
 
     /**
-     * @returns {AdaptationProjectType | undefined} The project type.
+     * @returns The project type.
      */
     get projectType(): AdaptationProjectType | undefined {
         return this.projectTypeValue;
+    }
+
+    /**
+     * @returns the ABAP service provider used to connect to the backend, or undefined if not initialized or in CF build mode.
+     */
+    get serviceProvider(): AbapServiceProvider | undefined {
+        return this.provider;
     }
 
     /**
@@ -221,6 +237,14 @@ export class AdpPreview {
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
+        } else if (req.path.startsWith('/i18n/') && req.path.endsWith('.properties')) {
+            // Without this branch, the generic file-exists check below would 302 to
+            // the ADP's local i18n.properties whenever one exists, shadowing the
+            // base app's complete bundle. Explicitly pass i18n .properties requests
+            // through so the base app's bundle is served instead. Covers the default
+            // bundle, locale variants, and per-page bundles
+            // (/i18n/ListReport/<entity>/i18n.properties). See changeset for details.
+            next();
         } else {
             // check if the requested file exists in the file system (replace .js with .* for typescript)
             const files = await this.project.byGlob(req.path.replace('.js', '.*'));

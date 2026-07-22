@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
-import type { FioriElementsApp, FPMSettings } from './types';
+import type { FioriElementsApp, FPMSettings } from './types.js';
 /**
  * Processes the template for the Flexible Programming Model (FPM).
  * Generates a custom page and updates the UI5 local yaml.
@@ -23,7 +23,8 @@ export async function generateFpmConfig<T extends {}>(
             name: config.pageName,
             minUI5Version: feApp.ui5?.minUI5Version,
             typescript: feApp.appOptions?.typescript,
-            pageBuildingBlockTitle: config.pageBuildingBlockTitle
+            pageBuildingBlockTitle: config.pageBuildingBlockTitle,
+            pageBuildingBlockTemplateType: config.pageBuildingBlockTemplateType
         },
         fs
     );

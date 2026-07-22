@@ -1,4 +1,9 @@
-import { getMinUI5VersionAsArray, getMinUI5VersionFromManifest, getMinimumUI5Version, type Manifest } from '../../src';
+import {
+    getMinUI5VersionAsArray,
+    getMinUI5VersionFromManifest,
+    getMinimumUI5Version,
+    type Manifest
+} from '../../src/index.js';
 
 describe('getters for minUI5Version', () => {
     interface TestCase {

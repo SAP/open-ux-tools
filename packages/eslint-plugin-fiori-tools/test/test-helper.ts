@@ -1,20 +1,24 @@
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
 
 import type { RuleTester } from 'eslint';
 
 import type { Manifest } from '@sap-ux/project-access';
 import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 
-import { ProjectContext } from '../src/project-context/project-context';
+import { ProjectContext } from '../src/project-context/project-context.js';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
+import type { FlexChange } from '../src/project-context/parser/types.js';
 
 export interface FileChange {
     filename: string;
     code: string;
 }
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ROOT = join(__dirname, '..');
 
@@ -39,7 +43,7 @@ export const V4_FACETS_ANNOTATIONS = `
                     <Collection>
                         <Record Type="UI.ReferenceFacet">
                             <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="Prducts"/>
+                            <PropertyValue Property="Label" String="Products"/>
                             <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
                         </Record>
                     </Collection>
@@ -60,6 +64,11 @@ export const V4_FACETS_ANNOTATIONS = `
                 </Annotation>
             </Annotations>
             `;
+export const V4_SECOND_TABLE_ANNOTATION = `<Annotations Target="IncidentService.Incidents">
+                            <Annotation Term="UI.LineItem" Qualifier="secondTable">
+                                <Collection/>
+                            </Annotation>
+                        </Annotations>`;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
 // CAP
@@ -94,6 +103,18 @@ annotate service.IncidentFlow with @(UI.LineItem #table_section: [
 ]);
 `;
 
+export const CAP_SECOND_TABLE_ANNOTATION = `annotate service.Incidents with @(UI.LineItem #secondTable   : [
+        {
+            $Type: 'UI.DataField',
+            Value: title,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: description,
+        },
+    ],
+);`;
+
 // XML V2
 export const V2_PROJECT_PATH = join(ROOT, 'test', 'data', 'v2-xml-start');
 export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
@@ -108,6 +129,21 @@ export const V2_ANNOTATIONS_PATH = join(
     'annotation.xml'
 );
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
+export const V2_METADATA_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'localService', 'metadata.xml');
+export const V2_METADATA = readFileSync(V2_METADATA_PATH, 'utf-8');
+export const V2_FLEX_CHANGE_DIR = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'changes');
+export const V2_FLEX_CHANGE_FILE_PATH = join(
+    ROOT,
+    'test',
+    'data',
+    'v2-xml-start',
+    'webapp',
+    'changes',
+    'id_1779179176282_0_propertyChange.change'
+);
+export const V2_FLEX_CHANGE_CONTENT = Object.freeze(
+    JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8'))
+) as FlexChange;
 
 const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');
@@ -168,14 +204,15 @@ export function setup(name: string, capAppPath?: string) {
 
     beforeEach(() => {
         const key = expect.getState().currentTestName;
-        if (!key) {
+        if (!key || !lookup[key]) {
             return;
         }
-        const { changes = [], filename } = lookup[key] ?? [];
+        const { changes = [], filename } = lookup[key];
         const projectCwdCap = capAppPath && CAP_PROJECT_PATH;
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;
         jest.spyOn(process, 'cwd').mockReturnValue(cwd);
+        ProjectContext.fileCache = new Map<string, string>(); // to force file reindex
         for (const change of changes) {
             const path = normalizePath(change.filename);
             const uri = pathToFileURL(path).toString();

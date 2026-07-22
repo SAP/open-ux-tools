@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-forbidden-window-property';
+import rule from '../../src/rules/sap-forbidden-window-property.js';
 import { RuleTester } from 'eslint';
 const MSG = 'Usage of a forbidden window property.' as const;
 
@@ -25,8 +25,7 @@ ruleTester.run('sap-forbidden-window-property', rule, {
             code: 'var top = window.top;',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
                 }
             ]
         },
@@ -34,8 +33,7 @@ ruleTester.run('sap-forbidden-window-property', rule, {
             code: "var fenster = window, tuer = window; var x = tuer['top'];",
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
                 }
             ]
         },
@@ -43,8 +41,7 @@ ruleTester.run('sap-forbidden-window-property', rule, {
             code: 'window.addEventListener();',
             errors: [
                 {
-                    message: MSG,
-                    type: 'MemberExpression'
+                    message: MSG
                 }
             ]
         }

@@ -1,4 +1,4 @@
-import type { ServeStaticConfig, PathConfig } from './types';
+import type { ServeStaticConfig, PathConfig } from './types.js';
 import type { ServeStaticOptions } from 'serve-static';
 import { relative, isAbsolute, join } from 'node:path';
 

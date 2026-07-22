@@ -3,8 +3,8 @@
  */
 
 import type { Rule } from 'eslint';
-import type { ASTNode } from '../utils/helpers';
-import { isIdentifier, isMember, isCall, isLiteral, contains, isForbiddenObviousApi } from '../utils/helpers';
+import type { ASTNode } from '../utils/helpers.js';
+import { isIdentifier, isMember, isCall, isLiteral, contains, isForbiddenObviousApi } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Helpers
@@ -57,7 +57,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {

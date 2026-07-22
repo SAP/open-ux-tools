@@ -1,7 +1,8 @@
 import { join, dirname } from 'node:path';
 import { platform } from 'node:os';
-import hasbin = require('hasbin');
+import * as hasbin from 'hasbin';
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import {
     sendTelemetry,
     TelemetryHelper,
@@ -31,19 +32,19 @@ import {
     generateDestinationName,
     getDestination
 } from '@sap-ux/deploy-config-generator-shared';
-import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils';
-import { loadManifest } from './utils';
+import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils/index.js';
+import { loadManifest } from './utils.js';
+import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import { getMtaPath, findCapProjectRoot, FileName, type Package } from '@sap-ux/project-access';
-import { EventName } from '../telemetryEvents';
-import { getCFQuestions, getCAPMTAQuestions } from './questions';
+import { EventName } from '../telemetryEvents/index.js';
+import { getCFQuestions, getCAPMTAQuestions } from './questions.js';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { CfDeployConfigOptions } from './types';
+import type { CfDeployConfigOptions } from './types.js';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
-    type CfDeployConfigPromptOptions,
-    CfDeployConfigAnswers,
+    type CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { Answers } from 'inquirer';
@@ -52,7 +53,7 @@ import type { Answers } from 'inquirer';
  * Cloud Foundry deployment configuration generator.
  */
 export default class extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
+    private readonly appWizard: AppWizardType;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;
     private readonly launchStandaloneFromYui?: boolean;
@@ -246,7 +247,8 @@ export default class extends DeploymentGenerator {
                 this.launchStandaloneFromYui,
                 this.options.overwrite
             ),
-            apiHubConfig: this.apiHubConfig
+            apiHubConfig: this.apiHubConfig,
+            promptModule: (this.env?.adapter as InquirerAdapter | undefined)?.promptModule
         });
     }
 
@@ -258,6 +260,9 @@ export default class extends DeploymentGenerator {
         const destination = await getDestination(destinationName);
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
+        if (isDestinationFullUrl) {
+            DeploymentGenerator.logger?.warn(t('cfGen.warn.fullUrlDestination'));
+        }
         const addManagedAppRouter =
             this.options.addManagedAppRouter ??
             (this.options.routerType === RouterModuleType.Managed ||
@@ -407,11 +412,11 @@ export default class extends DeploymentGenerator {
 
 export { getCFQuestions, loadManifest };
 export { API_BUSINESS_HUB_ENTERPRISE_PREFIX, DESTINATION_AUTHTYPE_NOTFOUND };
-export {
-    CfDeployConfigOptions,
+export type {
     CfDeployConfigAnswers,
     CfDeployConfigQuestions,
-    CfDeployConfigPromptOptions,
-    ApiHubConfig,
-    ApiHubType
-};
+    CfDeployConfigPromptOptions
+} from '@sap-ux/cf-deploy-config-inquirer';
+export type { CfDeployConfigOptions } from './types.js';
+export type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
+export { ApiHubType } from '@sap-ux/cf-deploy-config-writer';

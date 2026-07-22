@@ -1,5 +1,5 @@
 import type { Manifest } from '@sap-ux/project-access';
-import type { AnnotationReference } from '../project-context/parser';
+import type { AnnotationReference } from '../project-context/parser/index.js';
 import type { Element } from '@sap-ux/odata-annotation-core';
 import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
@@ -17,11 +17,15 @@ export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-b
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const NO_COMMAS_IN_SECTION_TITLES = 'sap-no-commas-in-section-titles';
+export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
+export const NO_LIVE_MODE = 'sap-no-live-mode';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest: Partial<ManifestPropertyDiagnosticData> &
+        Pick<ManifestPropertyDiagnosticData, 'uri' | 'object' | 'propertyPath'>;
     pageName: string;
+    pageSectionName?: string;
     annotation: {
         file: string;
         annotationPath: string;
@@ -37,7 +41,7 @@ export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
     propertyPath: string[];
-    loc?: SourceLocation;
+    loc: SourceLocation;
 }
 
 export interface FlexEnabled {
@@ -55,6 +59,7 @@ export type CreateModeMessageId =
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
     tableType: string;
@@ -65,19 +70,26 @@ export interface CreationModeForTable {
 export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface EnableExport {
     type: typeof ENABLE_EXPORT;
+    property: string;
     pageName: string;
-    manifest: ManifestPropertyDiagnosticData;
+    pageSectionName?: string;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
+    changeFileUri?: string;
 }
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
+    property: string;
     pageName: string;
-    manifest: ManifestPropertyDiagnosticData;
+    pageSectionName?: string;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
+    changeFileUri?: string;
 }
 
 export type StatePreservationModeMessageId =
@@ -108,6 +120,7 @@ export interface TablePersonalization {
     property?: PersonalizationProperty;
     undefinedProperties?: PersonalizationProperty[];
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -131,6 +144,7 @@ export interface NoDataFieldIntentBasedNavigation {
 export interface CondensedTableLayout {
     type: typeof CONDENSED_TABLE_LAYOUT;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -139,14 +153,21 @@ export interface StrictUomFiltering {
     manifest: ManifestPropertyDiagnosticData;
 }
 
-export interface NoCommasInSectionTitles {
-    type: typeof NO_COMMAS_IN_SECTION_TITLES;
+export type DescriptionColumnLabelMessageId =
+    | 'trivialLabel' // label is "Name" or "Description"
+    | 'duplicateLabel'; // label of text property matches label of ID property
+
+export interface DescriptionColumnLabel {
+    type: typeof DESCRIPTION_COLUMN_LABEL;
+    messageId: DescriptionColumnLabelMessageId;
     pageNames: string[];
     annotation: {
-        file: string;
-        annotationPath: string;
+        /** Reference to the Common.Label annotation of the text property (the reported node) */
         reference: AnnotationReference;
-        labelValue: string;
+        idPropertyTarget: string;
+        textPropertyTarget: string;
+        textPropertyLabel: string;
+        idPropertyLabel?: string;
     };
 }
 
@@ -160,12 +181,32 @@ export interface TextArrangementHidden {
     };
 }
 
+export interface NoLiveMode {
+    type: typeof NO_LIVE_MODE;
+    pageName: string;
+    property: string;
+    manifest?: ManifestPropertyDiagnosticData; // ODataV4 - manifest property
+    changeFileUri?: string; // ODataV2 - flex change property
+}
+
+export interface NoCommasInSectionTitles {
+    type: typeof NO_COMMAS_IN_SECTION_TITLES;
+    pageNames: string[];
+    annotation: {
+        file: string;
+        annotationPath: string;
+        reference: AnnotationReference;
+        labelValue: string;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
     | FlexEnabled
     | CopyToClipboard
     | CreationModeForTable
+    | DescriptionColumnLabel
     | EnableExport
     | EnablePaste
     | StatePreservationMode
@@ -175,4 +216,5 @@ export type Diagnostic =
     | TablePersonalization
     | TextArrangementHidden
     | StrictUomFiltering
-    | NoCommasInSectionTitles;
+    | NoCommasInSectionTitles
+    | NoLiveMode;

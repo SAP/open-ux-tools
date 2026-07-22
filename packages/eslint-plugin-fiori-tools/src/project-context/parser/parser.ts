@@ -1,16 +1,30 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse as parseJson } from '@humanwhocodes/momoa';
-
 import type { FoundFioriArtifacts, Manifest, ProjectType } from '@sap-ux/project-access';
-import { getMainService } from '@sap-ux/project-access';
-import { CdsAnnotationProvider, getXmlServiceArtifacts, type ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
-
-import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
-import type { Diagnostic } from '../../language/diagnostics';
-import { buildServiceIndex } from './service';
-import type { ParsedProject, ParsedApp, ParsedManifest, FoundODataService, CustomViews, MinUI5Version } from './types';
+import type { ODataVersionType } from '@sap-ux/odata-annotation-core';
+import { getMainService, normalizePath } from '@sap-ux/project-access';
+import {
+    CdsAnnotationProvider,
+    getXmlServiceArtifacts,
+    type ServiceArtifacts,
+    type V2Annotation
+} from '@sap-ux/fiori-annotation-api';
+import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types.js';
+import type { Diagnostic } from '../../language/diagnostics.js';
+import { buildServiceIndex } from './service.js';
+import type {
+    ParsedProject,
+    ParsedApp,
+    ParsedManifest,
+    FoundODataService,
+    CustomViews,
+    MinUI5Version,
+    FlexChange
+} from './types.js';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { collectFlexChanges, getAppForPath, isFlexChange } from '../utils.js';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -69,18 +83,29 @@ export class ApplicationParser {
                 const webappPath = dirname(app.manifestPath);
                 const [parsedManifest, services] = this.parseManifest(webappPath, manifestUri, manifest);
                 const appRootUri = pathToFileURL(app.appRoot).toString();
+                const changes: FlexChange[] = [];
+                const mainServiceName = getMainService(manifest) ?? '';
+                const mainService = services.find((service) => service.name === mainServiceName);
+                if (mainService?.version === '2.0' && existsSync(join(webappPath, 'changes'))) {
+                    const changeFiles = readdirSync(join(webappPath, 'changes'))
+                        .filter((file) => file.endsWith('propertyChange.change'))
+                        .map((file) => normalizePath(join(webappPath, 'changes', file)));
+                    changes.push(...collectFlexChanges(changeFiles));
+                }
                 const parsedApp: ParsedApp = {
                     manifest: parsedManifest,
                     manifestObject: manifest,
                     projectRootPath: app.projectRoot,
+                    changes,
                     services: {}
                 };
                 this.index.apps[appRootUri] = parsedApp;
 
                 for (const service of services) {
-                    const artifacts = this.parseService(app.projectRoot, service);
-                    if (artifacts) {
-                        const index = buildServiceIndex(artifacts, this.index.documents);
+                    const result = this.parseService(app.projectRoot, service);
+                    if (result) {
+                        const [artifacts, v2Annotations] = result;
+                        const index = buildServiceIndex(artifacts, this.index.documents, v2Annotations);
                         parsedApp.services[service.name] = { config: service, artifacts, index };
                     }
                 }
@@ -109,11 +134,11 @@ export class ApplicationParser {
         for (const app of Object.values(index.apps)) {
             for (const service of Object.values(app.services)) {
                 if (service.config.type === 'cap') {
-                    const artifacts = this.parseService(app.projectRootPath, service.config);
-                    if (artifacts) {
-                        const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                    const result = this.parseService(app.projectRootPath, service.config);
+                    if (result) {
+                        const [artifacts, v2Annotations] = result;
                         service.artifacts = artifacts;
-                        service.index = serviceIndex;
+                        service.index = buildServiceIndex(artifacts, index.documents, v2Annotations);
                     }
                 }
             }
@@ -144,12 +169,12 @@ export class ApplicationParser {
             const webappPath = dirname(fileURLToPath(uri));
             const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
             index.documents[uri] = manifestAst;
-
             const parsedApp: ParsedApp = {
                 manifest: parsedManifest,
                 manifestObject: manifest,
                 projectRootPath: previousApp.projectRootPath,
-                services: {}
+                services: {},
+                changes: previousApp.changes
             };
 
             const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
@@ -160,15 +185,69 @@ export class ApplicationParser {
                 // services have changed, reset existing services
                 parsedApp.services = {};
                 for (const service of services) {
-                    const artifacts = this.parseService(parsedApp.projectRootPath, service);
-                    if (artifacts) {
-                        const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                    const result = this.parseService(parsedApp.projectRootPath, service);
+                    if (result) {
+                        const [artifacts, v2Annotations] = result;
+                        const serviceIndex = buildServiceIndex(artifacts, index.documents, v2Annotations);
                         parsedApp.services[service.name] = { config: service, artifacts, index: serviceIndex };
                     }
                 }
             }
             index.apps[key] = parsedApp;
             break;
+        }
+    }
+
+    /**
+     * Reparses .change property change files and updates the associated app in the project index.
+     *
+     * @param uri - The URI of the property change file to reparse
+     * @param index - The current parsed project index
+     * @param fileCache - Map of file URIs to their contents
+     */
+    private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
+        const path = fileURLToPath(uri);
+        const app = getAppForPath(index.apps, path);
+        if (!app) {
+            return;
+        }
+        // Remove deleted files
+        app.changes = app.changes.filter((change) => existsSync(fileURLToPath(change.changeFileUri)));
+        const existingChangeIndex = app.changes.findIndex((change) => change.changeFileUri === uri);
+        try {
+            const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
+            // Create and save the ast tree
+            const ast = parseJson(content, {
+                mode: 'json',
+                ranges: true,
+                tokens: true,
+                allowTrailingCommas: false
+            });
+            index.documents[uri] = ast;
+            // Create new change object
+            const jsonContent = JSON.parse(content);
+            if (isFlexChange(jsonContent)) {
+                const newChange: FlexChange = {
+                    changeType: jsonContent.changeType,
+                    content: jsonContent.content,
+                    selector: jsonContent.selector,
+                    changeFileUri: uri
+                };
+                // Replace the existing entry for this URI, or append if new
+                if (existingChangeIndex >= 0) {
+                    app.changes[existingChangeIndex] = newChange;
+                } else {
+                    app.changes.push(newChange);
+                }
+            } else if (existingChangeIndex >= 0) {
+                // Remove existing change object for updated file
+                app.changes.splice(existingChangeIndex, 1);
+            }
+        } catch {
+            // Remove existing change object for unreadable or malformed change file
+            if (existingChangeIndex >= 0) {
+                app.changes.splice(existingChangeIndex, 1);
+            }
         }
     }
 
@@ -184,11 +263,11 @@ export class ApplicationParser {
                 if (service.config.type === 'local') {
                     const annotationFile = service.config.annotationFiles.find((file) => file.uri === uri);
                     if (annotationFile) {
-                        const artifacts = this.parseService(app.projectRootPath, service.config);
-                        if (artifacts) {
-                            const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                        const result = this.parseService(app.projectRootPath, service.config);
+                        if (result) {
+                            const [artifacts, v2Annotations] = result;
                             service.artifacts = artifacts;
-                            service.index = serviceIndex;
+                            service.index = buildServiceIndex(artifacts, index.documents, v2Annotations);
                         }
                         break;
                     }
@@ -212,6 +291,8 @@ export class ApplicationParser {
             this.reparseJSON(uri, index, fileCache);
         } else if (uri.endsWith('.xml')) {
             this.reparseXML(uri, index);
+        } else if (uri.endsWith('.change')) {
+            this.reparseChange(uri, index, fileCache);
         }
         return { index: index, diagnostics: [] };
     }
@@ -231,7 +312,7 @@ export class ApplicationParser {
         const customViews: CustomViews = {};
         const services: FoundODataService[] = [];
         const targets = manifest['sap.ui5']?.routing?.targets;
-        for (const [, target] of Object.entries(targets ?? {})) {
+        for (const [, target] of Object.entries((targets ?? {}) as Record<string, RoutingTarget>)) {
             const settings = target.options?.settings;
             if (settings?.entitySet || settings?.contextPath) {
                 if (settings.viewName) {
@@ -257,7 +338,7 @@ export class ApplicationParser {
                     type: 'cap',
                     name: dataSourceName,
                     path: uniformUrl(dataSource.uri),
-                    version: dataSource.settings?.odataVersion ?? '4.0'
+                    version: (dataSource.settings?.odataVersion ?? '4.0') as ODataVersionType
                 });
                 continue;
             }
@@ -269,7 +350,7 @@ export class ApplicationParser {
                 type: 'local',
                 name: dataSourceName,
                 path: uniformUrl(dataSource.uri),
-                version: dataSource.settings?.odataVersion ?? '2.0',
+                version: (dataSource.settings?.odataVersion ?? '2.0') as ODataVersionType,
                 metadata: {
                     type: 'remote',
                     cacheType: 'local-service',
@@ -301,9 +382,17 @@ export class ApplicationParser {
      * @param projectRootPath - The absolute path to the project root
      * @param service - The OData service configuration to parse
      */
-    private parseService(projectRootPath: string, service: FoundODataService): ServiceArtifacts | undefined {
+    private parseService(
+        projectRootPath: string,
+        service: FoundODataService
+    ): [ServiceArtifacts, V2Annotation[]] | undefined {
         if (service.type === 'cap') {
-            return CdsAnnotationProvider.getCdsServiceArtifacts(projectRootPath, service.path, this.context.fileCache);
+            const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
+                projectRootPath,
+                service.path,
+                this.context.fileCache
+            );
+            return artifacts ? [artifacts, []] : undefined;
         } else {
             return getXmlServiceArtifacts(
                 service.version,
@@ -323,8 +412,19 @@ export class ApplicationParser {
     }
 }
 
-type DataSources = Exclude<Manifest['sap.app']['dataSources'], undefined>;
+type SapApp = Exclude<Manifest['sap.app'], undefined>;
+type DataSources = Exclude<SapApp['dataSources'], undefined>;
 type DataSource = DataSources[keyof DataSources];
+
+interface RoutingTarget {
+    options?: {
+        settings?: {
+            entitySet?: string;
+            contextPath?: string;
+            viewName?: string;
+        };
+    };
+}
 
 /**
  * Retrieves the list of annotation files configured for an OData data source.
@@ -354,7 +454,7 @@ function getAnnotationFiles(
                 type: 'remote',
                 cacheType: 'local-service',
                 cachePath: filePath,
-                relativeBackendPath: uri,
+                relativeBackendPath: uri ?? '',
                 uri: annotationFileUri
             });
         } else {
@@ -396,7 +496,7 @@ function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
             patch: 0
         };
     }
-    const [major, minor, patch] = rawValue.split('.').map((part) => Number.parseInt(part, 10));
+    const [major, minor, patch] = rawValue.split('.').map((part: string) => Number.parseInt(part, 10));
     return {
         raw: rawValue,
         major: Number.isNaN(major) ? 0 : major,

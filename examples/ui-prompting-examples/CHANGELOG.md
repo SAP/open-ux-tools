@@ -1,5 +1,223 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.6 → 3.0.7
+- @sap-ux/ui-prompting 1.0.7 → 1.0.8
+
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.5 → 3.0.6
+- @sap-ux/ui-prompting 1.0.6 → 1.0.7
+
+## 1.1.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.4 → 3.0.5
+- @sap-ux/ui-prompting 1.0.5 → 1.0.6
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.3 → 3.0.4
+- @sap-ux/ui-prompting 1.0.4 → 1.0.5
+
+## 1.1.0
+
+### Minor Changes
+
+#### Features
+
+- Add full template support for the Page building block with all 7 aggregations and controller stub generation [[5a4f633](https://github.com/SAP/open-ux-tools/commit/5a4f633fdd1a1c7d5415221c0863089e7e540aca)]
+
+## 1.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Code preview in Storybook examples was hard to read due to background color [[e3b09f8](https://github.com/SAP/open-ux-tools/commit/e3b09f83d9ea244a4d3b107ed4e50615a1c45367)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-prompting 1.0.3 → 1.0.4
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [a1235d6]
+    - @sap-ux/ui-components@3.0.3
+    - @sap-ux/ui-prompting@1.0.3
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [21a3de7]
+    - @sap-ux/ui-components@3.0.2
+    - @sap-ux/ui-prompting@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [21cadc3]
+    - @sap-ux/ui-components@3.0.1
+    - @sap-ux/ui-prompting@1.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/ui-components@3.0.0
+    - @sap-ux/ui-prompting@1.0.0
+
+## 0.5.36
+
+### Patch Changes
+
+- Updated dependencies [b0a922a]
+    - @sap-ux/ui-components@2.2.5
+    - @sap-ux/ui-prompting@0.7.5
+
+## 0.5.35
+
+### Patch Changes
+
+- Updated dependencies [bc315f0]
+    - @sap-ux/ui-components@2.2.4
+    - @sap-ux/ui-prompting@0.7.4
+
+## 0.5.34
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade sanitize-html 2.17.3 → 2.17.4 (GHSA-rpr9-rxv7-x643), ws 8.20.0 → 8.21.0 (GHSA-58qx-3vcg-4xpx)
+- a97d926: fix(ui-prompting-examples): upgrade sanitize-html 2.17.3 → 2.17.4 to resolve critical XSS vulnerability (GHSA-mjxr-4v3x-q3m4)
+- Updated dependencies [01b70ca]
+- Updated dependencies [a97d926]
+    - @sap-ux/ui-components@2.2.3
+    - @sap-ux/ui-prompting@0.7.3
+
+## 0.5.33
+
+### Patch Changes
+
+- Updated dependencies [882d45b]
+    - @sap-ux/ui-components@2.2.2
+    - @sap-ux/ui-prompting@0.7.2
+
+## 0.5.32
+
+### Patch Changes
+
+- Updated dependencies [742d896]
+    - @sap-ux/ui-components@2.2.1
+    - @sap-ux/ui-prompting@0.7.1
+
+## 0.5.31
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/ui-components@2.2.0
+    - @sap-ux/ui-prompting@0.7.0
+
+## 0.5.30
+
+### Patch Changes
+
+- Updated dependencies [50a8ba5]
+    - @sap-ux/ui-components@2.1.16
+    - @sap-ux/ui-prompting@0.6.29
+
+## 0.5.29
+
+### Patch Changes
+
+- Updated dependencies [189ad98]
+    - @sap-ux/ui-components@2.1.15
+    - @sap-ux/ui-prompting@0.6.28
+
+## 0.5.28
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui-components@2.1.14
+    - @sap-ux/ui-prompting@0.6.27
+
+## 0.5.27
+
+### Patch Changes
+
+- Updated dependencies [7f8a712]
+    - @sap-ux/ui-components@2.1.13
+    - @sap-ux/ui-prompting@0.6.26
+
+## 0.5.26
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/ui-components@2.1.12
+    - @sap-ux/ui-prompting@0.6.25
+
 ## 0.5.25
 
 ### Patch Changes

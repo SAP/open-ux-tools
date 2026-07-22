@@ -120,16 +120,18 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
-|  new      | [sap-text-arrangement-hidden](docs/rules/sap-text-arrangement-hidden.md) | Ensures that the text property referenced by a `UI.TextArrangement` annotation using the `Common.Text` annotation is not hidden by the `UI.Hidden` annotation | | ✅ |
 |  new      | [sap-no-commas-in-section-titles](docs/rules/sap-no-commas-in-section-titles.md) | Section and subsection titles (`UI.Facets` / `UI.HeaderFacets` `Label`) must not contain commas, as commas are used as delimiters for backend message grouping. | | ✅ |
+|  10.7.6   | [sap-no-live-mode](docs/rules/sap-no-live-mode.md) | Ensures that live mode is not enabled. | | ✅ |
+|  9.13.0   | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description text property referenced using the `Common.Text` annotation has a meaningful `Common.Label` annotation. It must not be a generic value such as "Name" or "Description", and not the same label as the `ID` property. | | ✅ |
+|  9.12.0   | [sap-text-arrangement-hidden](docs/rules/sap-text-arrangement-hidden.md) | Ensures that the text property referenced by a `UI.TextArrangement` annotation using the `Common.Text` annotation is not hidden by the `UI.Hidden` annotation | | ✅ |
 |  9.11.0   | [sap-no-data-field-intent-based-navigation](docs/rules/sap-no-data-field-intent-based-navigation.md) | Ensures neither `DataFieldForIntentBasedNavigation` nor `DataFieldWithIntentBasedNavigation` are used in tables or form fields in SAP Fiori elements applications. | | ✅ |
 |  9.10.0   | [sap-condensed-table-layout](docs/rules/sap-condensed-table-layout.md) | Requires `condensedTableLayout` to be enabled when using a grid table, analytical table, or tree table. | | ✅ |
 |   9.9.0   | [sap-strict-uom-filtering](docs/rules/sap-strict-uom-filtering.md) | Ensures that `disableStrictUomFiltering` is not set to `true` in `sap.fe.app` manifest configuration | | ✅ |
 |   9.8.0   | [sap-table-personalization](docs/rules/sap-table-personalization.md) | Ensures that all table `personalization` options are enabled in the OData V4 applications. | | ✅ |
 |   9.7.0   | [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages). | | ✅ |
 |   9.5.0   | [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` Configuration for Responsive Type Tables in SAP Fiori Elements applications | | ✅ |
-|   9.4.0   | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in any OData V4 applications tables is available | | ✅ |
-|   9.4.0   | [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality in any OData V4 applications tables is available | | ✅ |
+|   9.4.0   | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality for tables in OData V4 and OData V2 applications is enabled | | ✅ |
+|   9.4.0   | [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality for tables in OData V4 and OData V2 applications is enabled | | ✅ |
 |   9.3.1   | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |
 |   9.1.0   | [sap-copy-to-clipboard](docs/rules/sap-copy-to-clipboard.md) | Ensures that the copy functionality in any table is enabled. "Copy" button is shown by default. | | ✅ |
 |   9.1.0   | [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |

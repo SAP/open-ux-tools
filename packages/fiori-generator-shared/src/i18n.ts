@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/fiori-generator-shared.i18n.json';
+import translations from './translations/fiori-generator-shared.i18n.json' with { type: 'json' };
 
 const NS = 'fiori-freestyle-writer';
 export const i18n: i18nNext = i18next.createInstance();
@@ -19,7 +19,16 @@ export async function initI18n(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: NS,
         ns: [NS],
-        showSupportNotice: false
+        showSupportNotice: false,
+        interpolation: {
+            format: function (value: string, format?: string) {
+                if (format === 'odataVersionFormatter') {
+                    return value ? ` V${value}` : '';
+                }
+                return value;
+            }
+        },
+        missingInterpolationHandler: () => ''
     });
 }
 

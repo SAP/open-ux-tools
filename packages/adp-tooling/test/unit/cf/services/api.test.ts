@@ -1,11 +1,62 @@
-import axios from 'axios';
-import { readFileSync } from 'node:fs';
-import { cfGetAvailableOrgs, Cli } from '@sap/cf-tools';
-
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import {
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockIsLoggedInCf = jest.fn() as jest.Mock;
+const mockGetServiceKeys = jest.fn() as jest.Mock;
+const mockCreateServiceKey = jest.fn() as jest.Mock;
+const mockRequestCfApi = jest.fn() as jest.Mock;
+const mockGetProjectNameForXsSecurity = jest.fn() as jest.Mock;
+const mockCfGetServiceKeys = jest.fn<typeof realCfTools.cfGetServiceKeys>();
+const mockCfCreateServiceKey = jest.fn<typeof realCfTools.cfCreateServiceKey>();
+const mockCfGetAvailableOrgs = jest.fn<typeof realCfTools.cfGetAvailableOrgs>();
+const mockCFToolsCliExecute = jest.fn<typeof realCfTools.execute>();
+
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    readFileSync: mockReadFileSync,
+    default: { ...realFs.default, readFileSync: mockReadFileSync }
+}));
+
+jest.unstable_mockModule('axios', () => ({
+    default: { get: mockAxiosGet, post: mockAxiosPost },
+    __esModule: true
+}));
+
+const realCfTools = await import('@sap/cf-tools');
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
+    cfGetServiceKeys: mockCfGetServiceKeys,
+    cfCreateServiceKey: mockCfCreateServiceKey,
+    cfGetAvailableOrgs: mockCfGetAvailableOrgs,
+    Cli: { execute: mockCFToolsCliExecute }
+}));
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+jest.unstable_mockModule('../../../../src/cf/core/auth', () => ({
+    isLoggedInCf: mockIsLoggedInCf
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/cli', () => ({
+    getServiceKeys: mockGetServiceKeys,
+    createServiceKey: mockCreateServiceKey,
+    requestCfApi: mockRequestCfApi
+}));
+
+jest.unstable_mockModule('../../../../src/cf/project', () => ({
+    getProjectNameForXsSecurity: mockGetProjectNameForXsSecurity
+}));
+
+const {
     getBusinessServiceInfo,
     getFDCApps,
     getCfUi5AppInfo,
@@ -14,55 +65,15 @@ import {
     createServiceInstance,
     getServiceNameByTags,
     createServices,
-    getOrCreateServiceInstanceKeys,
     getServiceTags,
-    getServiceKeyCredentialsWithTags
-} from '../../../../src/cf/services/api';
-import { initI18n, t } from '../../../../src/i18n';
-import { isLoggedInCf } from '../../../../src/cf/core/auth';
-import { getProjectNameForXsSecurity } from '../../../../src/cf/project';
-import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types';
-import { getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
+    getServiceKeyCredentialsWithTags,
+    getOrCreateServiceInstanceKeys
+} = await import('../../../../src/cf/services/api.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types.js';
 
-jest.mock('fs', () => ({
-    readFileSync: jest.fn()
-}));
-jest.mock('axios');
-jest.mock('@sap/cf-tools', () => ({
-    cfGetServiceKeys: jest.fn(),
-    cfCreateServiceKey: jest.fn(),
-    cfGetAvailableOrgs: jest.fn(),
-    Cli: {
-        execute: jest.fn()
-    }
-}));
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-jest.mock('../../../../src/cf/core/auth', () => ({
-    isLoggedInCf: jest.fn()
-}));
-jest.mock('../../../../src/cf/services/cli', () => ({
-    getServiceKeys: jest.fn(),
-    createServiceKey: jest.fn(),
-    requestCfApi: jest.fn()
-}));
-jest.mock('../../../../src/cf/project', () => ({
-    getProjectNameForXsSecurity: jest.fn()
-}));
-
-const mockAxios = axios as jest.Mocked<typeof axios>;
-const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
-const mockRequestCfApi = requestCfApi as jest.MockedFunction<typeof requestCfApi>;
-const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
-const mockIsLoggedInCf = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf>;
-const mockGetServiceKeys = getServiceKeys as jest.MockedFunction<typeof getServiceKeys>;
-const mockCreateServiceKey = createServiceKey as jest.MockedFunction<typeof createServiceKey>;
-const mockCFToolsCliExecute = Cli.execute as jest.MockedFunction<typeof Cli.execute>;
-const mockCfGetAvailableOrgs = cfGetAvailableOrgs as jest.MockedFunction<typeof cfGetAvailableOrgs>;
-const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
-    typeof getProjectNameForXsSecurity
->;
+// Alias mockAxiosGet as mockAxios for compatibility with existing tests
+const mockAxios = { get: mockAxiosGet, post: mockAxiosPost } as any;
 
 describe('CF Services API', () => {
     const mockLogger = {
@@ -261,9 +272,7 @@ describe('CF Services API', () => {
                     } as Record<string, string>)
                 } as Record<string, unknown>)
             );
-            expect(mockLogger.log).toHaveBeenCalledWith(
-                'Fetching ui5AppInfo.json from FDC: https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/ui5appinfo?appId=test-app-id&appHostId=host-1&appHostId=host-2'
-            );
+            expect(mockLogger.log).toHaveBeenCalledWith('Fetching ui5AppInfo.json');
             expect(mockLogger.log).toHaveBeenCalledWith('Successfully retrieved ui5AppInfo.json from FDC');
         });
 

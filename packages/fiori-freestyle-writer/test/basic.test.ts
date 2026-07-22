@@ -1,30 +1,36 @@
-import type { FreestyleApp } from '../src';
-import { generate, TemplateType } from '../src';
+import { jest } from '@jest/globals';
+import type { FreestyleApp } from '../src/index.js';
+import type { BasicAppSettings } from '../src/types.js';
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath, projectChecks } from './common';
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
-import type { BasicAppSettings } from '../src/types';
-import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
+jest.unstable_mockModule('read-pkg-up', () => ({
+    default: {
+        sync: jest.fn().mockReturnValue({
+            packageJson: {
+                name: 'mocked-package-name',
+                version: '9.9.9-mocked'
+            }
+        })
+    }
+}));
+
+const mockApplyCAPUpdates = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
+
+jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
+    applyCAPUpdates: mockApplyCAPUpdates
+}));
+
+const { generate, TemplateType } = await import('../src/index.js');
+const { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath, projectChecks } = await import('./common.js');
+
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(240000); // Needed when debug.enabled
-
-jest.mock('read-pkg-up', () => ({
-    sync: jest.fn().mockReturnValue({
-        packageJson: {
-            name: 'mocked-package-name',
-            version: '9.9.9-mocked'
-        }
-    })
-}));
-
-jest.mock('@sap-ux/cap-config-writer', () => ({
-    ...jest.requireActual('@sap-ux/cap-config-writer'),
-    applyCAPUpdates: jest.fn()
-}));
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -307,7 +313,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const Component = { js: join(testPath, 'webapp', 'Component.js') };
 
         expect(fs.exists(Component.js)).toBeTruthy();
-        expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
+        expect(fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
     });
 
     test('sapuxLayer is added to package json for edmx projects when provided', async () => {
@@ -419,9 +425,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             enableTypescript: false
         };
 
-        afterEach(() => {
-            jest.clearAllMocks();
-            jest.resetAllMocks();
+        beforeEach(() => {
+            mockApplyCAPUpdates.mockClear();
         });
 
         test('should perform CAP updates when CAP service is available', async () => {
@@ -433,8 +438,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 capService
             });
             await generate(curTestOutPath, freestyleApp, fs);
-            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
-            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capService, {
+            expect(mockApplyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(mockApplyCAPUpdates).toHaveBeenCalledWith(fs, capService, {
                 ...capProjectSettings,
                 sapux: false
             });
@@ -447,7 +452,79 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 typescript: false
             });
             await generate(curTestOutPath, freestyleApp, fs);
-            expect(applyCAPUpdates).toHaveBeenCalledTimes(0);
+            expect(mockApplyCAPUpdates).toHaveBeenCalledTimes(0);
+        });
+    });
+
+    describe('useVirtualPreviewEndpoints yaml updates', () => {
+        test('adds test entries to ui5-mock.yaml (javascript)', async () => {
+            const fs = create(createStorage());
+            const testPath = join(curTestOutPath, 'virtual_endpoints_yaml_js');
+            await generate(
+                testPath,
+                {
+                    ...commonConfig,
+                    appOptions: { loadReuseLibs: false, addTests: true, useVirtualPreviewEndpoints: true }
+                },
+                fs
+            );
+
+            const ui5Yaml = fs.read(join(testPath, 'ui5.yaml'));
+            const ui5LocalYaml = fs.read(join(testPath, 'ui5-local.yaml'));
+            const ui5MockYaml = fs.read(join(testPath, 'ui5-mock.yaml'));
+
+            expect(ui5Yaml).not.toContain('framework: OPA5');
+            expect(ui5LocalYaml).not.toContain('framework: OPA5');
+            expect(ui5MockYaml).toContain('framework: OPA5');
+            expect(ui5MockYaml).toContain('path: /test/integration/opaTests.qunit.html');
+            expect(ui5MockYaml).toContain('pattern: /test/**/AllJourneys.*');
+            expect(ui5MockYaml).toContain('framework: Testsuite');
+            expect(ui5MockYaml).toContain('framework: QUnit');
+            expect(ui5MockYaml).toContain('path: /test/unit/unitTests.qunit.html');
+            expect(ui5MockYaml).toContain('pattern: /test/unit/controller/*.{js,ts}');
+        });
+
+        test('adds test entries to ui5-mock.yaml (typescript)', async () => {
+            const fs = create(createStorage());
+            const testPath = join(curTestOutPath, 'virtual_endpoints_yaml_ts');
+            await generate(
+                testPath,
+                {
+                    ...commonConfig,
+                    appOptions: {
+                        loadReuseLibs: false,
+                        typescript: true,
+                        addTests: true,
+                        useVirtualPreviewEndpoints: true
+                    }
+                },
+                fs
+            );
+
+            const ui5MockYaml = fs.read(join(testPath, 'ui5-mock.yaml'));
+
+            expect(ui5MockYaml).toContain('framework: OPA5');
+            expect(ui5MockYaml).toContain('path: /test/integration/opaTests.qunit.html');
+            expect(ui5MockYaml).toContain('pattern: /test/**/*Journey.*');
+            expect(ui5MockYaml).toContain('framework: Testsuite');
+            expect(ui5MockYaml).toContain('framework: QUnit');
+            expect(ui5MockYaml).toContain('path: /test/unit/unitTests.qunit.html');
+            expect(ui5MockYaml).toContain('pattern: /test/unit/controller/*.{js,ts}');
+        });
+
+        test('does not add test entries when useVirtualPreviewEndpoints is false', async () => {
+            const fs = create(createStorage());
+            const testPath = join(curTestOutPath, 'no_virtual_endpoints_yaml');
+            await generate(
+                testPath,
+                {
+                    ...commonConfig,
+                    appOptions: { loadReuseLibs: false, addTests: true, useVirtualPreviewEndpoints: false }
+                },
+                fs
+            );
+
+            expect(fs.read(join(testPath, 'ui5-mock.yaml'))).not.toContain('framework: OPA5');
         });
     });
 });

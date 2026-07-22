@@ -1,4 +1,7 @@
 import Transport from 'winston-transport';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 /**
  * Interface for function arguments that get passed into the
@@ -44,6 +47,5 @@ export class VSCodeTransport extends Transport {
 }
 
 function getVSCodeInstance(): any {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require('vscode');
 }

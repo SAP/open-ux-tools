@@ -1,38 +1,66 @@
+import { jest } from '@jest/globals';
 import type { AxiosResponse } from 'axios';
+import { createRequire } from 'node:module';
 import * as memfs from 'memfs';
-import { processToolsSuiteTelemetry, getIdeType } from '../../src/tooling-telemetry';
-import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
 import fs from 'node:fs';
-import { join } from 'node:path';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
+import path, { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Union } from 'unionfs';
 
+const require = createRequire(import.meta.url);
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const unionFs = new Union().use(fs).use(memfs.vol as unknown as typeof fs);
+(unionFs as any).realpath = fs.realpath;
+(unionFs as any).realpathSync = fs.realpathSync;
+
+// Mock for CJS consumers (findit2 uses require('fs'))
 jest.mock('fs', () => {
-    const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line  @typescript-eslint/no-require-imports
+    const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line  @typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
-    const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
-    memfs.realpath = fs1.realpath;
-    memfs.realpathSync = fs1.realpathSync;
-    return memfs;
+    const _fs = new Union().use(fsLib);
+    const memfsUnion = _fs.use(vol as unknown as typeof fs);
+    memfsUnion.constants = fsLib.constants;
+    memfsUnion.realpath = fsLib.realpath;
+    memfsUnion.realpathSync = fsLib.realpathSync;
+    return memfsUnion;
 });
+
+// Mock for ESM consumers
+jest.unstable_mockModule('node:fs', () => ({
+    ...unionFs,
+    default: unionFs
+}));
+jest.unstable_mockModule('fs', () => ({
+    ...unionFs,
+    default: unionFs
+}));
+
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+const actualAxios = await import('axios');
 
 const isAppStudioMock = jest.fn();
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-        isAppStudio: (): boolean => isAppStudioMock()
-    };
-});
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: (): boolean => isAppStudioMock()
+}));
 
 const axiosGetMock = jest.fn();
-jest.mock('axios', () => {
-    return {
-        ...(jest.requireActual('axios') as {}),
+jest.unstable_mockModule('axios', () => ({
+    ...actualAxios,
+    default: {
+        ...actualAxios.default,
         get: (): AxiosResponse => axiosGetMock()
-    };
-});
+    }
+}));
+
+const { processToolsSuiteTelemetry, getIdeType } = await import('../../src/tooling-telemetry/index.js');
+const { ToolingTelemetrySettings } = await import('../../src/tooling-telemetry/config-state.js');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
 describe('Tools Suite Telemetry Tests', () => {
     jest.setTimeout(10000);
@@ -562,9 +590,9 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.internalFeatures': 'external',
             internalVsExternal: 'external',
             'cmn.nodeVersion': expect.any(String),
-            'cmn.templateId': '@sap/generator-adaptation-project',
-            'cmn.templateVersion': '1.1.57',
-            'cmn.toolsId': '421a7e6d-4507-4f66-9369-f80bdd3c6877',
+            'cmn.templateId': '@sap/generator-fiori',
+            'cmn.templateVersion': '1.27.0',
+            'cmn.toolsId': '45047b14-f55b-47df-9669-68d28bf0d51b',
             'cmn.appLanguage': '',
             'cmn.applicationType': 'Fiori Adaptation',
             'cmn.ideType': expect.any(String)

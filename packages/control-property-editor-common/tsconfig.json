@@ -8,7 +8,6 @@
         "rootDir": "src",
         "baseUrl": ".",
         "types": ["node", "jest"],
-        "moduleResolution": "node",
         "useUnknownInCatchVariables": false
     },
     "include": ["src/**/*.ts"],

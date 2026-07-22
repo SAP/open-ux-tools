@@ -1,9 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
 import { getService, BackendSystemKey, BackendSystem, type SystemType, type ConnectionType } from '@sap-ux/store';
-import type { UrlAbapTarget } from '../types';
+import type { UrlAbapTarget } from '../types.js';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import prompts from 'prompts';
-import { questions } from './prompts';
+import { questions } from './prompts.js';
 
 export type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name' | 'refreshToken'>>;

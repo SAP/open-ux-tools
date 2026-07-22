@@ -1,8 +1,8 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import type { GeneratorData, ChangeType } from '../types';
-import { WriterFactory } from './changes/writer-factory';
+import type { GeneratorData, ChangeType } from '../types.js';
+import { WriterFactory } from './changes/writer-factory.js';
 
 /**
  * Generates and applies changes to a project based on a specified generator type.

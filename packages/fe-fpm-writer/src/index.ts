@@ -1,31 +1,44 @@
-export { CustomPage, ObjectPage, ListReport } from './page/types';
-export { generateCustomPage, generateObjectPage, generateListReport } from './page';
+export type { CustomPage, ObjectPage, ListReport } from './page/types.js';
+export { generateCustomPage, generateObjectPage, generateListReport } from './page/index.js';
 
-export { CustomAction, TargetControl } from './action/types';
-export { generateCustomAction } from './action';
+export type { CustomAction } from './action/types.js';
+export { TargetControl } from './action/types.js';
+export { generateCustomAction } from './action/index.js';
 
-export { ActionMenu, TargetControl as ActionMenuTargetControl } from './action-menu/types';
-export { generateActionMenu } from './action-menu';
+export type { ActionMenu } from './action-menu/types.js';
+export { TargetControl as ActionMenuTargetControl } from './action-menu/types.js';
+export { generateActionMenu } from './action-menu/index.js';
 
-export { CustomTableColumn } from './column/types';
-export { generateCustomColumn } from './column';
+export type { CustomTableColumn } from './column/types.js';
+export { generateCustomColumn } from './column/index.js';
 
-export { CustomHeaderSection, CustomSection, CustomSubSection, RequestGroupId, DesignTime } from './section/types';
-export { generateCustomSection, generateCustomSubSection, generateCustomHeaderSection } from './section';
+export type { Fragment } from './fragment/types.js';
+export { generateFragment } from './fragment/index.js';
 
-export { CustomFilter } from './filter/types';
-export { generateCustomFilter } from './filter';
+export type { CustomHeaderSection, CustomSection, CustomSubSection } from './section/types.js';
+export { RequestGroupId, DesignTime } from './section/types.js';
+export { generateCustomSection, generateCustomSubSection, generateCustomHeaderSection } from './section/index.js';
 
-export { CustomView } from './view/types';
-export { generateCustomView } from './view';
+export type { CustomFilter } from './filter/types.js';
+export { generateCustomFilter } from './filter/index.js';
 
-export { enableFPM, FPMConfig } from './app';
+export type { CustomView } from './view/types.js';
+export { generateCustomView } from './view/index.js';
 
-export { validateBasePath, validateVersion } from './common/validate';
-export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file';
+export { enableFPM } from './app/index.js';
+export type { FPMConfig } from './app/index.js';
+
+export { validateBasePath, validateVersion } from './common/validate.js';
+export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
 
 export {
     BuildingBlockType,
+    PageTemplateType,
+    PAGE_AGGREGATIONS,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from './building-block/types.js';
+export type {
     FilterBar,
     Form,
     Chart,
@@ -40,9 +53,14 @@ export {
     RichTextEditor,
     ButtonGroupConfig,
     Action
-} from './building-block/types';
-export { generateBuildingBlock, getSerializedFileContent } from './building-block';
+} from './building-block/types.js';
+export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
 export {
+    generateBuildingBlock,
+    getSerializedFileContent,
+    generateBuildingBlockAggregation
+} from './building-block/index.js';
+export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
     FormPromptsAnswer,
@@ -51,23 +69,23 @@ export {
     RichTextEditorPromptsAnswer,
     RichTextEditorButtonGroupsPromptsAnswer,
     BuildingBlockTypePromptsAnswer
-} from './building-block/prompts/questions';
-export {
-    PromptsType,
+} from './building-block/prompts/questions/index.js';
+export { PromptsType, PromptsAPI } from './prompts/index.js';
+export type {
     SupportedGeneratorAnswers,
-    PromptsAPI,
     PromptsGroup,
     Prompts,
     ValidationResults,
     Answers,
     Subset,
     CodeSnippet
-} from './prompts';
+} from './prompts/index.js';
 
-export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';
-export { generateControllerExtension } from './controller-extension';
+export type { ControllerExtension } from './controller-extension/types.js';
+export { ControllerExtensionPageType } from './controller-extension/types.js';
+export { generateControllerExtension } from './controller-extension/index.js';
 
-export { CustomField } from './field/types';
-export { generateCustomField } from './field';
+export type { CustomField } from './field/types.js';
+export { generateCustomField } from './field/index.js';
 
-export { initI18n } from './i18n';
+export { initI18n } from './i18n.js';

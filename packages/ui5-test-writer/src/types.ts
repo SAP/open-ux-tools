@@ -1,4 +1,28 @@
 import type { Editor } from 'mem-fs-editor';
+import type { Logger } from '@sap-ux/logger';
+
+export const DotFileExtension = {
+    JS: '.js',
+    TS: '.ts'
+} as const;
+
+export type DotFileExtension = (typeof DotFileExtension)[keyof typeof DotFileExtension];
+
+/**
+ * Options accepted by the public OPA test generation entry point.
+ */
+export type OPAGenerationOptions = {
+    /** The name of the OPA journey file. If not specified, 'FirstJourney' will be used. */
+    scriptName?: string;
+    /** The appID. If not specified, will be read from the manifest in sap.app/id. */
+    appID?: string;
+    /** The name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used. */
+    htmlTarget?: string;
+    /** When true, OPA harness files are served virtually; skip writing them to disk. */
+    useVirtualPreviewEndpoints?: boolean;
+    /** If true, generate TypeScript files instead of JavaScript. */
+    enableTypeScript?: boolean;
+};
 
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
@@ -15,6 +39,8 @@ export type FEV4OPAPageConfig = {
     contextPath?: string;
     targetKey: string;
     isStartup: boolean;
+    fileName?: string;
+    fileExtension?: string;
 };
 
 export type FEV4OPAConfig = {
@@ -25,6 +51,7 @@ export type FEV4OPAConfig = {
     htmlTarget: string;
     hideFilterBar: boolean;
     filterBarItems?: string[];
+    useVirtualPreviewEndpoints: boolean;
 };
 
 export type JourneyParams = {
@@ -87,27 +114,53 @@ export interface FFOPAConfig {
     viewName?: string;
     ui5Version?: string;
     ui5Theme?: string;
+    useVirtualPreviewEndpoints?: boolean;
 }
+
+export type ObjectPageNavigationParent = {
+    name: string;
+    navigationProperty: string;
+};
 
 export type ObjectPageNavigationParents = {
     parentLRName?: string;
-    parentOPName?: string;
-    parentOPTableSection?: string;
+    parentOPs: ObjectPageNavigationParent[];
 };
+
+export type SectionFormField = {
+    property: string;
+    connectedFields?: string;
+    fieldGroup?: string;
+};
+
+export type TableColumn = {
+    header?: string;
+};
+
+export type TableColumnFeatureData = Record<string, TableColumn>;
 
 export type BodySubSectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
 };
 
 export type BodySectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
+    actions?: ActionButtonState[];
+    createButton?: ButtonState;
+    deleteButton?: ButtonState;
 };
 
 export type ObjectPageFeatures = {
@@ -117,6 +170,8 @@ export type ObjectPageFeatures = {
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
     bodySections?: BodySectionFeatureData[];
+    headerActions?: ActionButtonState[];
+    editButton?: ButtonState;
 };
 
 export type ListReportFeatures = {
@@ -128,17 +183,25 @@ export type ListReportFeatures = {
     };
     deleteButton?: {
         enabled?: boolean | string;
-        visible: boolean;
+        visible?: boolean;
         dynamicPath?: string;
     };
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
+    semanticKey?: {
+        semanticKeyProperties?: string[];
+        missingFromFilterBar?: string[];
+    };
 };
 
 export interface ActionButtonState {
     label: string;
+    /**
+     * For List Report actions: the full OData binding path (e.g. "namespace.ActionName(entityType=@odata.context)").
+     * For Object Page actions extracted from the spec model: the method name only (e.g. "Copy").
+     */
     action: string;
     visible: boolean;
     /**
@@ -157,6 +220,16 @@ export interface ActionButtonState {
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */
     invocationGrouping?: string;
+    /**
+     * OData schema namespace used as the `service` parameter in iCheckAction({ service, action, unbound }).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    service?: string;
+    /**
+     * Whether the action is unbound (not bound to a specific entity instance).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    unbound?: boolean;
 }
 
 export type FPMFeatures = {
@@ -173,10 +246,17 @@ export type AppFeatures = {
 
 export type WriteContext = {
     config: FEV4OPAConfig;
+    basePath: string;
+    rootCommonTemplateDirPath: string;
     rootV4TemplateDirPath: string;
     testOutDirPath: string;
     editor: Editor;
+    log?: Logger;
     journeyParams: JourneyParams;
+    hasPreexistingTests?: boolean;
+    incompatibleTestSetup?: boolean;
+    dotFileExtension: DotFileExtension;
+    modifiedFiles: string[];
 };
 
 export type FormField = {

@@ -1,11 +1,11 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, getElementAttributeValue, elements, ELEMENT_TYPE } from '@sap-ux/odata-annotation-core';
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import { NO_COMMAS_IN_SECTION_TITLES, type NoCommasInSectionTitles } from '../language/diagnostics';
-import type { IndexedAnnotation } from '../project-context/parser';
-import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4';
-import type { FeV2ObjectPage, FeV2ListReport } from '../project-context/linker/fe-v2';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import { NO_COMMAS_IN_SECTION_TITLES, type NoCommasInSectionTitles } from '../language/diagnostics.js';
+import type { IndexedAnnotation } from '../project-context/parser/index.js';
+import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
+import type { FeV2ObjectPage, FeV2ListReport } from '../project-context/linker/fe-v2.js';
 
 /**
  * Checks all facet records (CollectionFacet and ReferenceFacet) in a collection for comma-containing labels.

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
@@ -31,7 +31,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 4,
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -113,7 +113,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 4,
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -194,8 +194,8 @@ describe('<UIDefaultButton />', () => {
             `
             Object {
               "backgroundColor": "var(--vscode-button-secondaryBackground)",
-              "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 4,
+              "borderColor": "var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))",
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-button-secondaryForeground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -216,7 +216,7 @@ describe('<UIDefaultButton />', () => {
         expect(styles?.rootHovered).toMatchInlineSnapshot(`
             Object {
               "backgroundColor": "var(--vscode-button-secondaryHoverBackground)",
-              "borderColor": "var(--vscode-button-border, transparent)",
+              "borderColor": "var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))",
               "color": "var(--vscode-button-secondaryForeground)",
               "selectors": Object {
                 "svg > path, svg > rect": Object {
@@ -228,7 +228,7 @@ describe('<UIDefaultButton />', () => {
         expect(styles?.rootDisabled).toMatchInlineSnapshot(`
             Object {
               "backgroundColor": "var(--vscode-button-secondaryBackground)",
-              "borderColor": "var(--vscode-button-border, transparent)",
+              "borderColor": "var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))",
               "color": "var(--vscode-button-secondaryForeground)",
               "opacity": "0.5 !important",
             }
@@ -277,7 +277,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 4,
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -359,7 +359,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-errorForeground)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 4,
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -441,7 +441,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-errorForeground)",
               "borderColor": "var(--vscode-button-border, transparent)",
-              "borderRadius": 4,
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-button-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -521,7 +521,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "transparent",
               "borderColor": "transparent",
-              "borderRadius": 4,
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,
@@ -604,7 +604,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "transparent",
               "borderColor": "transparent",
-              "borderRadius": 4,
+              "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
               "color": "var(--vscode-foreground)",
               "fontSize": "13px",
               "fontWeight": 400,

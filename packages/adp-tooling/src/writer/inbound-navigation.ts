@@ -4,9 +4,12 @@ import { type Editor, create } from 'mem-fs-editor';
 
 import { type NewI18nEntry, SapShortTextType, removeAndCreateI18nEntries } from '@sap-ux/i18n';
 
-import { getVariant, updateVariant } from '../';
-import type { Content, InternalInboundNavigation, DescriptorVariantContent } from '../types';
-import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } from './options';
+import { getVariant, updateVariant } from '../index.js';
+import type { Content, InternalInboundNavigation, DescriptorVariantContent } from '../types.js';
+import {
+    enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig,
+    shouldUseLegacyInboundChangeTypes
+} from './options.js';
 
 /**
  * Generates and writes the inbound configuration to the manifest.appdescr_variant file.
@@ -14,12 +17,18 @@ import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } fro
  * @param basePath - The base path of the project.
  * @param configs - The inbound configuration properties.
  * @param fs - Optional mem-fs editor instance.
+ * @param systemUI5Version - Optional UI5 version string from the system (e.g. '1.142.0').
+ *   When the version is 1.142 or lower and the project is not a CF project, legacy change types are used.
+ * @param isCfProject - Whether this is a Cloud Foundry adaptation project. CF projects always use
+ *   the new 'appdescr_app_setInbounds' change type regardless of UI5 version.
  * @returns The mem-fs editor instance.
  */
 export async function generateInboundConfig(
     basePath: string,
     configs: InternalInboundNavigation[],
-    fs?: Editor
+    fs?: Editor,
+    systemUI5Version?: string,
+    isCfProject = false
 ): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
@@ -36,7 +45,8 @@ export async function generateInboundConfig(
         }
     }
 
-    enhanceInboundConfig(configs, variant.id, variant.content as Content[]);
+    const useLegacyChangeTypes = shouldUseLegacyInboundChangeTypes(systemUI5Version, isCfProject);
+    enhanceInboundConfig(configs, variant.id, variant.content as Content[], useLegacyChangeTypes);
 
     await updateVariant(basePath, variant, fs);
     await updateI18n(basePath, variant.id, configs, fs);
@@ -96,7 +106,10 @@ export async function updateI18n(
 }
 
 /**
- * Removes elements with changeType 'appdescr_app_addNewInbound', 'appdescr_app_removeAllInboundsExceptOne' and 'appdescr_app_changeInbound' from the given array.
+ * Removes elements with changeType 'appdescr_app_addNewInbound', 'appdescr_app_removeAllInboundsExceptOne',
+ * 'appdescr_app_changeInbound' and 'appdescr_app_setInbounds' from the given array.
+ * Note: 'appdescr_app_addNewInbound', 'appdescr_app_removeAllInboundsExceptOne' and 'appdescr_app_changeInbound' are kept for
+ * backwards compatibility to clean up variant files written by older versions of this tool.
  *
  * @param content The array of manifest change objects.
  * @returns A new array with the specified elements removed.
@@ -106,6 +119,7 @@ export function removeInboundChangeTypes(content: DescriptorVariantContent[]): D
         (item) =>
             item.changeType !== 'appdescr_app_addNewInbound' &&
             item.changeType !== 'appdescr_app_changeInbound' &&
-            item.changeType !== 'appdescr_app_removeAllInboundsExceptOne'
+            item.changeType !== 'appdescr_app_removeAllInboundsExceptOne' &&
+            item.changeType !== 'appdescr_app_setInbounds'
     );
 }

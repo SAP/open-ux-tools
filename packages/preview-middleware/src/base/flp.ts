@@ -9,7 +9,13 @@ import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
 import { dirname, join, posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
+
+import { createRequire } from 'node:module';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import {
@@ -17,6 +23,7 @@ import {
     getProjectType,
     type ProjectType,
     findProjectRoot,
+    findCapProjectRoot,
     type Manifest,
     FileName,
     type ManifestNamespace,
@@ -34,8 +41,15 @@ import {
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
-import { deleteChange, readChanges, writeChange } from './flex';
-import { generateImportList, mergeTestConfigDefaults } from './test';
+import {
+    deleteChange,
+    readChanges,
+    readLocalModulePaths,
+    stripLocalModulesFromLrepResponse,
+    writeChange,
+    type LocalModuleState
+} from './flex.js';
+import { generateImportList, mergeTestConfigDefaults } from './test.js';
 import type {
     RtaEditor,
     FlpConfig,
@@ -46,7 +60,7 @@ import type {
     CardGeneratorConfig,
     MultiCardsPayload,
     I18nEntry
-} from '../types';
+} from '../types/index.js';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -59,12 +73,12 @@ import {
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
     remapResourcesForPath
-} from './config';
-import { generateCdm } from './cdm';
+} from './config.js';
+import { generateCdm } from './cdm.js';
 import { readFileSync } from 'node:fs';
-import { getIntegrationCard } from './utils/cards';
+import { getIntegrationCard } from './utils/cards.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -173,12 +187,13 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        const projectRoot = await findProjectRoot(process.cwd(), false, true);
+        const projectRoot =
+            (await findCapProjectRoot(process.cwd(), false)) ?? (await findProjectRoot(process.cwd(), false, true));
         this.projectType = await getProjectType(projectRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, adp !== undefined);
         this.adp = adp;
         this.manifest = manifest;
 
@@ -355,7 +370,7 @@ export class FlpSandbox {
      * @returns Promise that resolves when the application dependencies are set
      */
     private async setApplicationDependencies(): Promise<void> {
-        if (this.adp) {
+        if (this.adp && !this.adp.isCloudFoundry) {
             await this.adp.sync();
             const appName = getAppName(this.manifest, this.flpConfig.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
@@ -501,7 +516,7 @@ export class FlpSandbox {
         await this.setApplicationDependencies();
         // get filepath from request. Use dummy url to extract it from originalUrl if needed
         const filePath = 'query' in req ? req.path : new URL('http://dummyHost' + req.originalUrl!).pathname; //NOSONAR
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const file = await this.project.byPath(filePath);
         if (file) {
             this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
@@ -509,14 +524,7 @@ export class FlpSandbox {
         } else {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
-            const ui5Version = await this.getUi5Version(
-                //use protocol from request header referer as fallback for connect API (karma test runner)
-                'protocol' in req
-                    ? req.protocol
-                    : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http'),
-                req.headers.host,
-                this.templateConfig.baseUrl
-            );
+            const ui5Version = await this.getUi5VersionFromRequest(req, this.templateConfig.baseUrl);
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
@@ -566,9 +574,46 @@ export class FlpSandbox {
                 next: NextFunction
             ) => {
                 this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
+                if (this.templateConfig.enableCardGenerator) {
+                    // check for min ui5 version of card generator feature
+                    const baseUrl = 'ui5-patched-router' in req ? (req['ui5-patched-router']?.baseUrl ?? '') : '';
+                    const ui5Version = await this.getUi5VersionFromRequest(req, baseUrl);
+                    const minMinor = this.projectType === 'CAPNodejs' || this.projectType === 'CAPJava' ? 149 : 121;
+                    if (
+                        (ui5Version.major === 1 && ui5Version.minor < minMinor) ||
+                        ui5Version.major >= 2 ||
+                        ui5Version.label?.includes('legacy-free')
+                    ) {
+                        this.templateConfig.enableCardGenerator = false;
+                        this.logger.warn(
+                            `Feature cardGenerator disabled: UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch} does not meet the minimum required version 1.${minMinor}.0 for project type '${this.projectType}'.`
+                        );
+                    }
+                }
                 await this.flpGetHandler(req, res, next);
             }
         );
+    }
+
+    /**
+     * Extracts protocol and baseUrl from a request and calls getUi5Version.
+     * Handles both express Request and connect IncomingMessage (karma test runner).
+     *
+     * @param req - the incoming request
+     * @param baseUrl - the base path to include when fetching the UI5 version
+     * @returns the parsed UI5 version
+     * @private
+     */
+    private async getUi5VersionFromRequest(
+        req: EnhancedRequest | connect.IncomingMessage,
+        baseUrl: string = ''
+    ): Promise<Ui5Version> {
+        // use protocol from request header referer as fallback for connect API (karma test runner)
+        const protocol =
+            'protocol' in req
+                ? req.protocol
+                : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http');
+        return this.getUi5Version(protocol, req.headers.host, baseUrl);
     }
 
     /**
@@ -610,6 +655,7 @@ export class FlpSandbox {
         const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
 
+        // check for min ui5 version of flp.enhancedHomePage feature
         if (
             this.flpConfig.enhancedHomePage &&
             ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free'))
@@ -950,7 +996,7 @@ export class FlpSandbox {
         id: string
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const file = await this.project.byPath(config.path);
         if (file) {
             this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
@@ -1225,7 +1271,7 @@ export class FlpSandbox {
         if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false, true);
-            await this.init(manifest, variant.reference);
+            await this.init(manifest, variant.reference, {}, adp);
             await this.setupAdpCommonHandlers(adp);
             return;
         }
@@ -1234,6 +1280,8 @@ export class FlpSandbox {
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
         await this.init(manifest, name, adp.resources, adp);
+        const localModuleState = await readLocalModulePaths(this.project, this.logger);
+        this.registerLrepFlexDataFilter(adp, localModuleState);
         this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
         await this.setupAdpCommonHandlers(adp);
     }
@@ -1249,6 +1297,79 @@ export class FlpSandbox {
         adp.addApis(this.router);
         // Register i18n store route for ADP projects (used by OVP bridge functions)
         await this.addStoreI18nKeysRoute();
+    }
+
+    /**
+     * Registers a middleware that intercepts LREP flex data responses to apply
+     * local workspace overrides: stripping inlined modules for active local files,
+     * removing the loadModules pre-fetch flag, injecting correct moduleNames, and
+     * suppressing deployed changes for orphaned local files (change record deleted).
+     *
+     * The local module state is captured once at server startup by `readLocalModulePaths`
+     * and is not refreshed during the preview session. If a developer adds, renames, or deletes
+     * a local fragment, controller, or change file while the preview is running, the filter will
+     * be stale until the server is restarted. This is an intentional trade-off — re-scanning the
+     * VFS on every flex-data request would add latency to every preview round-trip.
+     *
+     * @param adp AdpPreview instance with access to the ABAP service provider
+     * @param localModuleState pre-scanned local module state
+     */
+    private registerLrepFlexDataFilter(adp: AdpPreview, localModuleState: LocalModuleState): void {
+        const provider = adp.serviceProvider;
+        if (!provider) {
+            return;
+        }
+
+        if (localModuleState.active.size === 0 && localModuleState.orphaned.size === 0) {
+            this.logger.debug('No local module files found — LREP flex data filter not registered');
+            return;
+        }
+
+        const lrepFlexDataPath = '/sap/bc/lrep/flex/data/';
+        this.router.get(`${lrepFlexDataPath}*`, async (req: Request, res: Response, next: NextFunction) => {
+            await this.lrepFlexDataFilterHandler(req, res, next, provider, localModuleState);
+        });
+        this.logger.info(
+            `Registered LREP flex data filter for ${localModuleState.active.size} active and ${localModuleState.orphaned.size} orphaned local module(s)`
+        );
+    }
+
+    /**
+     * Handler for LREP flex data requests. Strips inlined modules that exist locally
+     * so that UI5 fetches them via HTTP from the local workspace instead.
+     *
+     * @param req the request
+     * @param res the response
+     * @param next the next middleware
+     * @param provider the ABAP service provider for backend calls
+     * @param localModuleState pre-scanned local module state
+     */
+    private async lrepFlexDataFilterHandler(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+        provider: AbapServiceProvider,
+        localModuleState: LocalModuleState
+    ): Promise<void> {
+        try {
+            const response = await provider.get(req.url);
+            const responseData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+
+            const filtered = stripLocalModulesFromLrepResponse(
+                responseData as Record<string, unknown>,
+                localModuleState,
+                this.logger
+            );
+
+            res.status(200).json(filtered);
+        } catch (error) {
+            this.logger.error(
+                `LREP flex data filter failed for '${req.url}' — falling back to unfiltered backend response. Local workspace files may not take effect. Error: ${error?.message ?? error}`
+            );
+            // Fall through to the next middleware (e.g. backend-proxy-middleware)
+            // so that preview remains functional even if filtering fails.
+            next();
+        }
     }
 
     /**

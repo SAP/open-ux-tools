@@ -1,46 +1,63 @@
-import { validateAndUpdateManifestUI5Version, replaceWebappFiles } from '../../src/utils/updates';
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
-import { t } from '../../src/utils/i18n';
-import { getUI5Versions } from '@sap-ux/ui5-info';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { Manifest } from '@sap-ux/project-access';
-import { readManifest } from '../../src/utils/file-helpers';
+import { t } from '../../src/utils/i18n.js';
 import { join } from 'node:path';
-import { FileName, DirName } from '@sap-ux/project-access';
-import RepoAppDownloadLogger from '../../src/utils/logger';
-import { fioriAppSourcetemplateId } from '../../src/utils/constants';
+import { fioriAppSourcetemplateId } from '../../src/utils/constants.js';
 
-jest.mock('@sap-ux/ui5-info', () => ({
-    ...jest.requireActual('@sap-ux/ui5-info'),
-    getUI5Versions: jest.fn()
+import type { Manifest } from '@sap-ux/project-access';
+
+// Inline project-access constants to avoid loading full dependency chain
+const FileName = { Manifest: 'manifest.json' } as const;
+const DirName = { Webapp: 'webapp' } as const;
+
+// Pre-import actual modules before mocking
+const actualUi5Info = await import('@sap-ux/ui5-info');
+const actualFeatureToggle = await import('@sap-ux/feature-toggle');
+const actualFileHelpers = await import('../../src/utils/file-helpers.js');
+
+const mockGetUI5Versions = jest.fn<typeof actualUi5Info.getUI5Versions>();
+const mockIsInternalFeaturesSettingEnabled = jest.fn<typeof actualFeatureToggle.isInternalFeaturesSettingEnabled>();
+const mockReadManifest = jest.fn<typeof actualFileHelpers.readManifest>();
+
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    ...actualUi5Info,
+    getUI5Versions: mockGetUI5Versions
 }));
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    ...jest.requireActual('@sap-ux/feature-toggle'),
-    isInternalFeaturesSettingEnabled: jest.fn()
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    ...actualFeatureToggle,
+    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
 }));
 
-jest.mock('../../src/utils/file-helpers', () => ({
-    ...jest.requireActual('../../src/utils/file-helpers'),
-    readManifest: jest.fn()
+jest.unstable_mockModule('../../src/utils/file-helpers', () => ({
+    ...actualFileHelpers,
+    readManifest: mockReadManifest
 }));
 
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        warn: jest.fn()
-    }
-}));
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = {
+        logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+const { validateAndUpdateManifestUI5Version, replaceWebappFiles } = await import('../../src/utils/updates.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
 describe('validateAndUpdateManifestUI5Version', () => {
-    let fs: jest.Mocked<Editor>;
+    let fs: {
+        writeJSON: ReturnType<typeof jest.fn>;
+        exists: ReturnType<typeof jest.fn>;
+        readJSON: ReturnType<typeof jest.fn>;
+    };
 
     beforeEach(() => {
         fs = {
             writeJSON: jest.fn(),
             exists: jest.fn(),
             readJSON: jest.fn()
-        } as unknown as jest.Mocked<Editor>;
+        };
     });
 
     afterEach(() => {
@@ -48,68 +65,44 @@ describe('validateAndUpdateManifestUI5Version', () => {
     });
 
     it('should throw an error if manifest structure is invalid', async () => {
-        (readManifest as jest.Mock).mockReturnValue({
+        mockReadManifest.mockReturnValue({
             'sap.ui5': {}
         } as unknown as Manifest);
-        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.90.0' }]);
+        mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
 
-        await expect(validateAndUpdateManifestUI5Version('path/to/manifest.json', fs)).rejects.toThrow(
-            t('error.readManifestErrors.invalidManifestStructureError')
-        );
+        await expect(
+            validateAndUpdateManifestUI5Version('path/to/manifest.json', fs as unknown as Editor)
+        ).rejects.toThrow(t('error.readManifestErrors.invalidManifestStructureError'));
     });
 
     it('should not modify the manifest if minUI5Version is valid', async () => {
         const manifest = {
-            'sap.ui5': {
-                dependencies: {
-                    minUI5Version: '1.90.0'
-                }
-            },
-            'sap.app': {
-                sourceTemplate: {
-                    id: fioriAppSourcetemplateId
-                }
-            }
+            'sap.ui5': { dependencies: { minUI5Version: '1.90.0' } },
+            'sap.app': { sourceTemplate: { id: 'old-template-id' } }
         };
-        (readManifest as jest.Mock).mockReturnValue(manifest);
-        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.90.0' }]);
+        mockReadManifest.mockReturnValue(manifest);
+        mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
 
-        await validateAndUpdateManifestUI5Version('path/to/manifest.json', fs);
+        await validateAndUpdateManifestUI5Version('path/to/manifest.json', fs as unknown as Editor);
         expect(fs.writeJSON).toHaveBeenCalledWith('path/to/manifest.json', manifest, undefined, 2);
     });
 
     it('should update minUI5Version to internal version if internal features are enabled', async () => {
         const manifest = {
-            'sap.ui5': {
-                dependencies: {
-                    minUI5Version: '1.80.0'
-                }
-            },
-            'sap.app': {
-                sourceTemplate: {
-                    id: fioriAppSourcetemplateId
-                }
-            }
+            'sap.ui5': { dependencies: { minUI5Version: '1.80.0' } },
+            'sap.app': { sourceTemplate: { id: 'old-template-id' } }
         };
-        (readManifest as jest.Mock).mockReturnValue(manifest);
-        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.90.0' }]);
-        (isInternalFeaturesSettingEnabled as jest.Mock).mockReturnValue(true);
+        mockReadManifest.mockReturnValue(manifest);
+        mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
 
-        await validateAndUpdateManifestUI5Version('path/to/manifest.json', fs);
+        await validateAndUpdateManifestUI5Version('path/to/manifest.json', fs as unknown as Editor);
 
         expect(fs.writeJSON).toHaveBeenCalledWith(
             'path/to/manifest.json',
             {
-                'sap.ui5': {
-                    dependencies: {
-                        minUI5Version: '${sap.ui5.dist.version}'
-                    }
-                },
-                'sap.app': {
-                    sourceTemplate: {
-                        id: fioriAppSourcetemplateId
-                    }
-                }
+                'sap.ui5': { dependencies: { minUI5Version: '${sap.ui5.dist.version}' } },
+                'sap.app': { sourceTemplate: { id: fioriAppSourcetemplateId } }
             },
             undefined,
             2
@@ -118,36 +111,20 @@ describe('validateAndUpdateManifestUI5Version', () => {
 
     it('should update minUI5Version to the closest available version if invalid', async () => {
         const manifest = {
-            'sap.ui5': {
-                dependencies: {
-                    minUI5Version: '1.70.0'
-                }
-            },
-            'sap.app': {
-                sourceTemplate: {
-                    id: fioriAppSourcetemplateId
-                }
-            }
+            'sap.ui5': { dependencies: { minUI5Version: '1.70.0' } },
+            'sap.app': { sourceTemplate: { id: 'old-template-id' } }
         };
-        (readManifest as jest.Mock).mockReturnValue(manifest);
-        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.90.0' }]);
-        (isInternalFeaturesSettingEnabled as jest.Mock).mockReturnValue(false);
+        mockReadManifest.mockReturnValue(manifest);
+        mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
 
-        await validateAndUpdateManifestUI5Version('path/to/manifest.json', fs);
+        await validateAndUpdateManifestUI5Version('path/to/manifest.json', fs as unknown as Editor);
 
         expect(fs.writeJSON).toHaveBeenCalledWith(
             'path/to/manifest.json',
             {
-                'sap.ui5': {
-                    dependencies: {
-                        minUI5Version: '1.90.0'
-                    }
-                },
-                'sap.app': {
-                    sourceTemplate: {
-                        id: fioriAppSourcetemplateId
-                    }
-                }
+                'sap.ui5': { dependencies: { minUI5Version: '1.90.0' } },
+                'sap.app': { sourceTemplate: { id: fioriAppSourcetemplateId } }
             },
             undefined,
             2
@@ -156,7 +133,12 @@ describe('validateAndUpdateManifestUI5Version', () => {
 });
 
 describe('replaceWebappFiles', () => {
-    let fs: jest.Mocked<Editor>;
+    let fs: {
+        exists: ReturnType<typeof jest.fn>;
+        copy: ReturnType<typeof jest.fn>;
+        readJSON: ReturnType<typeof jest.fn>;
+        writeJSON: ReturnType<typeof jest.fn>;
+    };
 
     beforeEach(() => {
         fs = {
@@ -164,7 +146,7 @@ describe('replaceWebappFiles', () => {
             copy: jest.fn(),
             readJSON: jest.fn(),
             writeJSON: jest.fn()
-        } as unknown as jest.Mocked<Editor>;
+        };
     });
 
     afterEach(() => {
@@ -178,7 +160,7 @@ describe('replaceWebappFiles', () => {
 
         // Mock fs.exists to return true for all files
         fs.exists.mockReturnValue(true);
-        await replaceWebappFiles(projectPath, extractedPath, fs);
+        await replaceWebappFiles(projectPath, extractedPath, fs as unknown as Editor);
 
         // Verify that fs.copy is called for each file
         expect(fs.writeJSON).toHaveBeenCalledWith(join(`${webappPath}/${FileName.Manifest}`), undefined, undefined, 2);
@@ -197,7 +179,7 @@ describe('replaceWebappFiles', () => {
 
         // Mock fs.exists to return false for one file
         fs.exists.mockImplementation((filePath) => filePath !== join(`${extractedPath}/${FileName.Manifest}`));
-        await replaceWebappFiles(projectPath, extractedPath, fs);
+        await replaceWebappFiles(projectPath, extractedPath, fs as unknown as Editor);
 
         // Verify that fs.copy is not called for the missing file
         expect(fs.copy).not.toHaveBeenCalledWith(
@@ -215,7 +197,7 @@ describe('replaceWebappFiles', () => {
         fs.exists.mockImplementation(() => {
             throw new Error('Test error');
         });
-        await replaceWebappFiles(projectPath, extractedPath, fs);
+        await replaceWebappFiles(projectPath, extractedPath, fs as unknown as Editor);
         expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(
             t('error.replaceWebappFilesError', { error: new Error('Test error') })
         );

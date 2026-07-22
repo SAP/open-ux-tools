@@ -2,7 +2,9 @@ import { join } from 'node:path';
 import { join as joinPosix } from 'node:path/posix';
 
 import type { Editor } from 'mem-fs-editor';
-import prettifyXml from 'prettify-xml';
+// xml-formatter types are not callable under NodeNext; cast to function type once so call sites are clean
+import _fmt from 'xml-formatter';
+const xmlFormatter = _fmt as unknown as (xml: string, options?: object) => string;
 
 import type {
     AnnotationList,
@@ -18,8 +20,8 @@ import { parse } from '@sap-ux/edmx-parser';
 import { DirName } from '@sap-ux/project-access';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 
-import type { ExternalServiceCollectionOptions } from '../types';
-import { DEFAULT_DATASOURCE_NAME } from './constants';
+import type { ExternalServiceCollectionOptions } from '../types.js';
+import { DEFAULT_DATASOURCE_NAME } from './constants.js';
 
 const INDENT_SIZE = 4;
 
@@ -64,7 +66,15 @@ export function writeExternalServiceMetadata(
         const path = join(...filePathSegments);
 
         if (reference.metadata) {
-            fs.write(path, prettifyXml(reference.metadata, { indent: INDENT_SIZE }));
+            fs.write(
+                path,
+                xmlFormatter(reference.metadata, {
+                    indentation: '    ',
+                    lineSeparator: '\n',
+                    collapseContent: true,
+                    throwOnFailure: false
+                })
+            );
         }
     }
 }

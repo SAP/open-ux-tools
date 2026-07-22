@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { UIIcon } from '../../UIIcon';
-import { getUIId } from '../../../utilities';
+import { UIIcon } from '../../UIIcon/index.js';
+import { getUIId } from '../../../utilities/index.js';
 
-import type { UIToggleGroupOptionProps } from './UIToggleGroupOption.types';
+import type { UIToggleGroupOptionProps } from './UIToggleGroupOption.types.js';
 
 import './UIToggleGroupOption.scss';
 
@@ -48,7 +48,6 @@ export class UIToggleGroupOption extends React.Component<UIToggleGroupOptionProp
 
         return (
             <button
-                role="button"
                 {...(this.props.title && { title: this.props.title })}
                 data-is-focusable="true"
                 className={[

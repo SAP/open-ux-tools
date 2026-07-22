@@ -1,8 +1,8 @@
 import { Range } from '@sap-ux/odata-annotation-core-types';
-import type { Comment } from '../../../src/cds/comments';
+import type { Comment } from '../../../src/cds/comments.js';
 
-import { PROJECTS } from '../projects';
-import { getCDSDocument } from './utils';
+import { PROJECTS } from '../projects.js';
+import { getCDSDocument } from './utils.js';
 
 async function getComments(text: string): Promise<Comment[]> {
     const [, document] = await getCDSDocument(PROJECTS.V4_CDS_START.root, text);

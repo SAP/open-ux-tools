@@ -1,6 +1,196 @@
 # @sap-ux/ui-components
 
+## 3.0.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Override Fluent UI TextField validation message styles - remove border-radius and animation, add negative margin-top and dynamic border-top color per message type (error/warning/info) [[c8741b3](https://github.com/SAP/open-ux-tools/commit/c8741b3f8a925ad3a8be8a701920af9e0c8b6bbf)]
+
+## 3.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-07
+
+#### Features
+
+- use new vscode variable '--vscode-button-secondaryBorder' for secondary buttons [[647b8d2](https://github.com/SAP/open-ux-tools/commit/647b8d2ad5560f78f85bb146b9cae7549536bb81)]
+
+## 3.0.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 3.0.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+## 3.0.3
+
+_Released: 2026-06-10T07:55:58Z_
+
+### Patch Changes
+
+- a1235d6: feat: add ValidationWarning icon to UiIcons
+
+## 3.0.2
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 3.0.1
+
+_Released: 2026-06-03T10:37:52Z_
+
+### Patch Changes
+
+- 21cadc3: fix: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values in buttons, callouts, dialogs and toggle
+
+## 3.0.0
+
+_Released: 2026-05-30T20:54:07Z_
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+## 2.2.5
+
+_Released: 2026-05-29T09:10:40Z_
+
+### Patch Changes
+
+- b0a922a: fix(UITranslationButton): use onCancel for callout onDismiss instead of onToggleCallout
+
+## 2.2.4
+
+_Released: 2026-05-27T08:56:54Z_
+
+### Patch Changes
+
+- bc315f0: chore: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values
+
+## 2.2.3
+
+_Released: 2026-05-26T16:40:21Z_
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade sanitize-html 2.17.3 → 2.17.4 (GHSA-rpr9-rxv7-x643)
+- a97d926: fix(ui-components): upgrade sanitize-html 2.17.3 → 2.17.4 to resolve critical XSS vulnerability (GHSA-mjxr-4v3x-q3m4)
+
+## 2.2.2
+
+_Released: 2026-05-22T06:20:19Z_
+
+### Patch Changes
+
+- 882d45b: Fixed UIDropdown background overflowing past rounded borders.
+
+## 2.2.1
+
+_Released: 2026-05-15T10:52:26Z_
+
+### Patch Changes
+
+- 742d896: Fixed missing local-variable box shadow for dropdown menus in UICombobox, UIDropdown.
+
+## 2.2.0
+
+_Released: 2026-05-15T08:12:20Z_
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 2.1.16
+
+_Released: 2026-05-14T11:45:51Z_
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 2.1.15
+
+_Released: 2026-05-11T17:25:40Z_
+
+### Patch Changes
+
+- 189ad98: UISections/UISplitter: Updated resize splitter UI and set `UISplitterLayoutType.Compact` as the default `splitterLayoutType`.
+
+## 2.1.14
+
+_Released: 2026-05-06T23:02:00Z_
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+
+## 2.1.13
+
+_Released: 2026-05-06T14:01:23Z_
+
+### Patch Changes
+
+- 7f8a712: Adjust toolbar border and separator color variables
+
+## 2.1.12
+
+_Released: 2026-04-30T14:23:24Z_
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
 ## 2.1.11
+
+_Released: 2026-04-22T14:26:13Z_
 
 ### Patch Changes
 
@@ -8,11 +198,15 @@
 
 ## 2.1.10
 
+_Released: 2026-04-14T21:37:37Z_
+
 ### Patch Changes
 
 - 4357b0b: generate opa5 tests from app info
 
 ## 2.1.9
+
+_Released: 2026-04-01T10:25:12Z_
 
 ### Patch Changes
 
@@ -20,11 +214,15 @@
 
 ## 2.1.8
 
+_Released: 2026-03-31T17:04:36Z_
+
 ### Patch Changes
 
 - 10f83b6: UIActionButton, UIDefaultButton - adjust `min height` after latest Fluent UI update
 
 ## 2.1.7
+
+_Released: 2026-03-31T10:49:34Z_
 
 ### Patch Changes
 
@@ -32,11 +230,15 @@
 
 ## 2.1.6
 
+_Released: 2026-03-31T08:19:05Z_
+
 ### Patch Changes
 
 - 6b622e0: error, warning, info boxes have rounded corners
 
 ## 2.1.5
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -44,11 +246,15 @@
 
 ## 2.1.4
 
+_Released: 2026-03-26T12:07:04Z_
+
 ### Patch Changes
 
 - a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
 
 ## 2.1.3
+
+_Released: 2026-03-24T09:40:46Z_
 
 ### Patch Changes
 
@@ -56,11 +262,15 @@
 
 ## 2.1.2
 
+_Released: 2026-03-16T13:36:45Z_
+
 ### Patch Changes
 
 - addfdee: Add `GoToData` icon to `UiIcons` enum and `initIcons()` function
 
 ## 2.1.1
+
+_Released: 2026-03-16T12:21:56Z_
 
 ### Patch Changes
 
@@ -68,11 +278,15 @@
 
 ## 2.1.0
 
+_Released: 2026-03-16T09:52:00Z_
+
 ### Minor Changes
 
 - 24bd091: feat(ui-component): add form, form field and mighty pen icons
 
 ## 2.0.3
+
+_Released: 2026-03-12T15:14:05Z_
 
 ### Patch Changes
 
@@ -80,11 +294,15 @@
 
 ## 2.0.2
 
+_Released: 2026-03-05T15:09:36Z_
+
 ### Patch Changes
 
 - 5d458c7: fix(deps): update dependency uuid to v13
 
 ## 2.0.1
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -92,11 +310,15 @@
 
 ## 2.0.0
 
+_Released: 2026-03-04T12:59:11Z_
+
 ### Major Changes
 
 - c4839f5: update border radius for UI components to improve consistency
 
 ## 1.27.10
+
+_Released: 2026-03-03T11:24:48Z_
 
 ### Patch Changes
 
@@ -104,11 +326,15 @@
 
 ## 1.27.9
 
+_Released: 2026-02-24T13:51:51Z_
+
 ### Patch Changes
 
 - 4e6c4d5: Update of Icons - `SidePanelRight`, `Edit`, `Trash`, `Add`, `Filter`
 
 ## 1.27.8
+
+_Released: 2026-02-23T23:44:05Z_
 
 ### Patch Changes
 
@@ -116,11 +342,15 @@
 
 ## 1.27.7
 
+_Released: 2026-02-23T19:07:48Z_
+
 ### Patch Changes
 
 - cc1c422: fix(deps): update dependency npm-run-all2 to v8
 
 ## 1.27.6
+
+_Released: 2026-02-20T16:17:11Z_
 
 ### Patch Changes
 
@@ -129,11 +359,15 @@
 
 ## 1.27.5
 
+_Released: 2026-02-16T16:08:11Z_
+
 ### Patch Changes
 
 - a22d236: fix(deps): update dependency sanitize-html to v2.17.0
 
 ## 1.27.4
+
+_Released: 2026-02-10T21:03:43Z_
 
 ### Patch Changes
 
@@ -141,11 +375,15 @@
 
 ## 1.27.3
 
+_Released: 2026-02-06T13:45:47Z_
+
 ### Patch Changes
 
 - b990534: UIFlexibleTable. Large cell content in flexible table items no longer shifts the other column to the right.
 
 ## 1.27.2
+
+_Released: 2026-01-16T11:48:02Z_
 
 ### Patch Changes
 
@@ -153,11 +391,15 @@
 
 ## 1.27.1
 
+_Released: 2026-01-09T11:35:48Z_
+
 ### Patch Changes
 
 - e111d0d: fix sonar issues
 
 ## 1.27.0
+
+_Released: 2025-12-30T13:15:47Z_
 
 ### Minor Changes
 
@@ -165,11 +407,15 @@
 
 ## 1.26.19
 
+_Released: 2025-12-19T12:55:00Z_
+
 ### Patch Changes
 
 - 87a6696: UIIconButton. Issue on MacOS(in VSCode) - tooltips does not appear on icon buttons
 
 ## 1.26.18
+
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -177,11 +423,15 @@
 
 ## 1.26.17
 
+_Released: 2025-12-15T10:50:50Z_
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
 
 ## 1.26.16
+
+_Released: 2025-12-08T17:56:48Z_
 
 ### Patch Changes
 
@@ -189,11 +439,15 @@
 
 ## 1.26.15
 
+_Released: 2025-11-11T14:10:21Z_
+
 ### Patch Changes
 
 - afb4be5: Update building block icon svg
 
 ## 1.26.14
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -201,11 +455,15 @@
 
 ## 1.26.13
 
+_Released: 2025-10-15T14:30:03Z_
+
 ### Patch Changes
 
 - 6debb89: style update for disabled combobox option
 
 ## 1.26.12
+
+_Released: 2025-10-10T08:12:15Z_
 
 ### Patch Changes
 
@@ -213,11 +471,15 @@
 
 ## 1.26.11
 
+_Released: 2025-10-01T14:21:20Z_
+
 ### Patch Changes
 
 - 7f652f3: Update Icons for Page and Building Block
 
 ## 1.26.10
+
+_Released: 2025-08-19T15:08:38Z_
 
 ### Patch Changes
 
@@ -225,11 +487,15 @@
 
 ## 1.26.9
 
+_Released: 2025-08-01T17:01:04Z_
+
 ### Patch Changes
 
 - e660064: add an alert red color uidefaultbutton
 
 ## 1.26.8
+
+_Released: 2025-06-23T14:13:34Z_
 
 ### Patch Changes
 
@@ -237,11 +503,15 @@
 
 ## 1.26.7
 
+_Released: 2025-06-20T07:40:14Z_
+
 ### Patch Changes
 
 - a4e81fc: UIDialog: Override FluentUI overlay background with VSCode theme variable
 
 ## 1.26.6
+
+_Released: 2025-06-13T11:42:58Z_
 
 ### Patch Changes
 
@@ -249,11 +519,15 @@
 
 ## 1.26.5
 
+_Released: 2025-05-30T12:59:04Z_
+
 ### Patch Changes
 
 - 5b4af69: UIComboBox: Add support for external (backend) search with example in Storybook
 
 ## 1.26.4
+
+_Released: 2025-05-19T15:23:07Z_
 
 ### Patch Changes
 
@@ -261,11 +535,15 @@
 
 ## 1.26.3
 
+_Released: 2025-04-28T05:54:02Z_
+
 ### Patch Changes
 
 - 46c775f: Icons update. Update icons "SwitchOff" and "SwitchOn"
 
 ## 1.26.2
+
+_Released: 2025-04-22T16:27:34Z_
 
 ### Patch Changes
 
@@ -273,11 +551,15 @@
 
 ## 1.26.1
 
+_Released: 2025-04-17T14:55:33Z_
+
 ### Patch Changes
 
 - 698b7e3: Fixes space between empty table and Add button.
 
 ## 1.26.0
+
+_Released: 2025-03-31T13:28:17Z_
 
 ### Minor Changes
 
@@ -285,11 +567,15 @@
 
 ## 1.25.0
 
+_Released: 2025-03-31T12:27:46Z_
+
 ### Minor Changes
 
 - 1c276ac: Remove font-family definitions from individual components and apply it globally.
 
 ## 1.24.12
+
+_Released: 2025-03-14T19:30:43Z_
 
 ### Patch Changes
 
@@ -297,11 +583,15 @@
 
 ## 1.24.11
 
+_Released: 2025-03-12T23:05:41Z_
+
 ### Patch Changes
 
 - 21292ad: Feat(UI components): issue #32314 - UITranslationInput inverted theme
 
 ## 1.24.10
+
+_Released: 2025-03-12T08:27:36Z_
 
 ### Patch Changes
 
@@ -309,11 +599,15 @@
 
 ## 1.24.9
 
+_Released: 2025-03-06T11:37:39Z_
+
 ### Patch Changes
 
 - 3190a55: UISections. Fixed incorrect position calculations when hiding sections with three or more sections present.
 
 ## 1.24.8
+
+_Released: 2025-03-05T14:45:32Z_
 
 ### Patch Changes
 
@@ -321,11 +615,15 @@
 
 ## 1.24.7
 
+_Released: 2025-03-04T09:51:37Z_
+
 ### Patch Changes
 
 - 8b27155: UIToggle: Avoid triggering change when click happens on whitespace between label and toggle switch button
 
 ## 1.24.6
+
+_Released: 2025-02-28T12:18:07Z_
 
 ### Patch Changes
 
@@ -333,17 +631,23 @@
 
 ## 1.24.5
 
+_Released: 2025-02-18T13:23:57Z_
+
 ### Patch Changes
 
 - b410041: fix(ui-components): UIButtonAction set margin left icon to zero
 
 ## 1.24.4
 
+_Released: 2025-02-18T11:24:40Z_
+
 ### Patch Changes
 
 - 1215e5b: fix(ui-components): UIButtonAction underline in normal mode
 
 ## 1.24.3
+
+_Released: 2025-02-11T13:17:16Z_
 
 ### Patch Changes
 
@@ -353,11 +657,15 @@
 
 ## 1.24.2
 
+_Released: 2025-01-27T11:41:12Z_
+
 ### Patch Changes
 
 - dd34d62: UI accessability improvements for disabled elements and in quick action list
 
 ## 1.24.1
+
+_Released: 2025-01-14T15:34:10Z_
 
 ### Patch Changes
 
@@ -365,11 +673,15 @@
 
 ## 1.24.0
 
+_Released: 2025-01-09T16:10:30Z_
+
 ### Minor Changes
 
 - f48bfa0: This update introduces hover styles for the UIToggle component's thumb when in a checked state. It improves the visual feedback for users interacting with the toggle.
 
 ## 1.23.0
+
+_Released: 2024-12-20T09:13:58Z_
 
 ### Minor Changes
 
@@ -377,11 +689,15 @@
 
 ## 1.22.3
 
+_Released: 2024-12-19T10:24:13Z_
+
 ### Patch Changes
 
 - 81a5351: Add export for `setIconOptions` method from `@fluentui/react`
 
 ## 1.22.2
+
+_Released: 2024-12-17T17:15:28Z_
 
 ### Patch Changes
 
@@ -394,11 +710,15 @@
 
 ## 1.22.1
 
+_Released: 2024-12-17T08:02:28Z_
+
 ### Patch Changes
 
 - 0fd924b: Adding a workaround for FluentUI not setting aria-invalid correctly for ComboBoxes
 
 ## 1.22.0
+
+_Released: 2024-12-16T14:46:46Z_
 
 ### Minor Changes
 
@@ -407,11 +727,15 @@
 
 ## 1.21.4
 
+_Released: 2024-12-10T13:07:23Z_
+
 ### Patch Changes
 
 - d167a73: Enhancements to UISections: Supports resizing with three or more sections.
 
 ## 1.21.3
+
+_Released: 2024-12-02T12:10:17Z_
 
 ### Patch Changes
 
@@ -419,11 +743,15 @@
 
 ## 1.21.2
 
+_Released: 2024-11-19T15:25:45Z_
+
 ### Patch Changes
 
 - 2a72ad2: chore - Fix audit issues
 
 ## 1.21.1
+
+_Released: 2024-11-15T09:46:36Z_
 
 ### Patch Changes
 
@@ -431,11 +759,15 @@
 
 ## 1.21.0
 
+_Released: 2024-11-11T09:33:19Z_
+
 ### Minor Changes
 
 - 25b90b5: UIComboBox: New property "customSearchFilter" allows passing a custom filter function to apply additional filtering logic on top of the default search.
 
 ## 1.20.4
+
+_Released: 2024-11-11T08:02:21Z_
 
 ### Patch Changes
 
@@ -445,17 +777,23 @@
 
 ## 1.20.3
 
+_Released: 2024-10-29T12:32:46Z_
+
 ### Patch Changes
 
 - e9e1e4d: Add aria-label for UIFlexibleTable Add Row Button
 
 ## 1.20.2
 
+_Released: 2024-10-28T20:28:02Z_
+
 ### Patch Changes
 
 - 9d06579: UITextInput, UIComboBox, UIDropdown, and UIChoiceGroup: Do not announce 'asterisk' on screen readers for required labels
 
 ## 1.20.1
+
+_Released: 2024-10-25T05:28:32Z_
 
 ### Patch Changes
 
@@ -467,11 +805,15 @@
 
 ## 1.20.0
 
+_Released: 2024-10-23T17:57:31Z_
+
 ### Minor Changes
 
 - ae2a993: UICombobox: Added new property 'searchByKeyEnabled' to allow searching by the option's "key" in addition to "text".
 
 ## 1.19.0
+
+_Released: 2024-10-18T13:47:38Z_
 
 ### Minor Changes
 
@@ -479,11 +821,15 @@
 
 ## 1.18.11
 
+_Released: 2024-10-15T21:45:56Z_
+
 ### Patch Changes
 
 - b403459: fix(ui-components): #2140 - fix dropdown vertical align input field
 
 ## 1.18.10
+
+_Released: 2024-10-15T16:25:45Z_
 
 ### Patch Changes
 
@@ -491,11 +837,15 @@
 
 ## 1.18.9
 
+_Released: 2024-10-11T10:01:35Z_
+
 ### Patch Changes
 
 - 4c6f92c: feat(ui-c): add UIsetIconOptions and UIunregisterIcons
 
 ## 1.18.8
+
+_Released: 2024-10-10T17:50:56Z_
 
 ### Patch Changes
 
@@ -503,11 +853,15 @@
 
 ## 1.18.7
 
+_Released: 2024-10-10T05:24:04Z_
+
 ### Patch Changes
 
 - e65bb7f: Update style for UICallout
 
 ## 1.18.6
+
+_Released: 2024-10-07T09:17:53Z_
 
 ### Patch Changes
 
@@ -515,11 +869,15 @@
 
 ## 1.18.5
 
+_Released: 2024-10-04T15:21:13Z_
+
 ### Patch Changes
 
 - 93f8a83: chore - upgrade typescript 5.6.2
 
 ## 1.18.4
+
+_Released: 2024-09-23T13:16:17Z_
 
 ### Patch Changes
 
@@ -527,11 +885,15 @@
 
 ## 1.18.3
 
+_Released: 2024-09-20T13:10:30Z_
+
 ### Patch Changes
 
 - 89ec1c3: Uitable a11y fix: The `:focus` style should have been added to the column header cells (not to the header row).
 
 ## 1.18.2
+
+_Released: 2024-09-20T07:56:40Z_
 
 ### Patch Changes
 
@@ -539,11 +901,15 @@
 
 ## 1.18.1
 
+_Released: 2024-09-19T18:22:44Z_
+
 ### Patch Changes
 
 - 15c57bc: fix(ui-c): accessibility updates for uitable
 
 ## 1.18.0
+
+_Released: 2024-09-11T11:29:10Z_
 
 ### Minor Changes
 
@@ -551,11 +917,15 @@
 
 ## 1.17.9
 
+_Released: 2024-08-30T10:03:37Z_
+
 ### Patch Changes
 
 - ea0674c: UIContextualMenu.getUIcontextualMenuCalloutStyles - change parameter from `props?: IContextualMenuProps` to `styles?: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles>` and make parameter as optional
 
 ## 1.17.8
+
+_Released: 2024-08-29T16:31:35Z_
 
 ### Patch Changes
 
@@ -563,11 +933,15 @@
 
 ## 1.17.7
 
+_Released: 2024-08-29T09:14:28Z_
+
 ### Patch Changes
 
 - 73f905f: Added optional `tabIndex` property for UISplitter component.
 
 ## 1.17.6
+
+_Released: 2024-08-23T17:49:39Z_
 
 ### Patch Changes
 
@@ -575,11 +949,15 @@
 
 ## 1.17.5
 
+_Released: 2024-08-20T14:24:47Z_
+
 ### Patch Changes
 
 - 128a3dc: UIDefaultButton. Regression after context menu enhancements - ArrowDown icon always rendered for button
 
 ## 1.17.4
+
+_Released: 2024-08-20T07:11:53Z_
 
 ### Patch Changes
 
@@ -587,11 +965,15 @@
 
 ## 1.17.3
 
+_Released: 2024-08-07T08:31:04Z_
+
 ### Patch Changes
 
 - 0084205: chore: update sanitize-html and transitive dependencies
 
 ## 1.17.2
+
+_Released: 2024-08-01T18:27:11Z_
 
 ### Patch Changes
 
@@ -599,17 +981,23 @@
 
 ## 1.17.1
 
+_Released: 2024-07-19T09:48:06Z_
+
 ### Patch Changes
 
 - 9b7f144: adjust storybook after stroybook update from "7.6.18" to "8.1.11"
 
 ## 1.17.0
 
+_Released: 2024-07-05T15:03:05Z_
+
 ### Minor Changes
 
 - c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
 
 ## 1.16.3
+
+_Released: 2024-06-19T15:00:35Z_
 
 ### Patch Changes
 
@@ -618,11 +1006,15 @@
 
 ## 1.16.2
 
+_Released: 2024-06-12T06:02:01Z_
+
 ### Patch Changes
 
 - 915e7d0c: UIContextualMenu. Wrong visualisation of menu item without text when menu contains at least one menu item with icon
 
 ## 1.16.1
+
+_Released: 2024-05-24T11:49:12Z_
 
 ### Patch Changes
 
@@ -630,11 +1022,15 @@
 
 ## 1.16.0
 
+_Released: 2024-05-24T11:31:34Z_
+
 ### Minor Changes
 
 - 43b0ebdd: Buttons. New property 'transparent' for UIDefaultButton and minor coloring styles correction
 
 ## 1.15.15
+
+_Released: 2024-05-23T08:33:43Z_
 
 ### Patch Changes
 
@@ -643,6 +1039,8 @@
 
 ## 1.15.14
 
+_Released: 2024-05-22T12:24:05Z_
+
 ### Patch Changes
 
 - 833718a0: Update Icons.tsx
@@ -650,11 +1048,15 @@
 
 ## 1.15.13
 
+_Released: 2024-04-18T08:13:44Z_
+
 ### Patch Changes
 
 - 494fd0f1: fix: UISections splitter resize issue after window resize
 
 ## 1.15.12
+
+_Released: 2024-04-10T10:44:28Z_
 
 ### Patch Changes
 
@@ -662,11 +1064,15 @@
 
 ## 1.15.11
 
+_Released: 2024-04-10T08:23:35Z_
+
 ### Patch Changes
 
 - f3acc1c6: Security upgrade fixes - `webpack-dev-middleware` from `6.1.1` to `6.1.3`
 
 ## 1.15.10
+
+_Released: 2024-03-21T16:21:01Z_
 
 ### Patch Changes
 
@@ -674,17 +1080,23 @@
 
 ## 1.15.9
 
+_Released: 2024-03-18T09:37:44Z_
+
 ### Patch Changes
 
 - d188f765: Upgrading version of `sanitize-html` due to medium priority security issue
 
 ## 1.15.8
 
+_Released: 2024-03-05T08:49:15Z_
+
 ### Patch Changes
 
 - 75653b31: UIIconButton. Some icons(which are not 16x16) are not centered within UIIconButton
 
 ## 1.15.7
+
+_Released: 2024-03-01T08:32:54Z_
 
 ### Patch Changes
 
@@ -704,11 +1116,15 @@
 
 ## 1.15.6
 
+_Released: 2024-02-29T16:43:58Z_
+
 ### Patch Changes
 
 - f6f7111c: UIIconButton. Apply vscode theme variables for UIIconButton when 'checked' property is set as 'true'
 
 ## 1.15.5
+
+_Released: 2024-02-22T09:27:36Z_
 
 ### Patch Changes
 
@@ -716,11 +1132,15 @@
 
 ## 1.15.4
 
+_Released: 2024-02-07T11:10:48Z_
+
 ### Patch Changes
 
 - eb0b7b37: Chore - TypeScript 5 upgrade
 
 ## 1.15.3
+
+_Released: 2024-02-02T15:43:24Z_
 
 ### Patch Changes
 
@@ -728,11 +1148,15 @@
 
 ## 1.15.2
 
+_Released: 2024-02-02T10:28:13Z_
+
 ### Patch Changes
 
 - ccf2767a: Update Icons - Expand/Collapse Groups & 3 Layout options (Layout Centre, Left. & Right)
 
 ## 1.15.1
+
+_Released: 2024-02-02T09:59:19Z_
 
 ### Patch Changes
 
@@ -740,11 +1164,15 @@
 
 ## 1.15.0
 
+_Released: 2024-02-02T09:07:20Z_
+
 ### Minor Changes
 
 - ea1ed433: feat: New component UIQuickNavigation to allow focus through groups using keyboard shortcuts
 
 ## 1.14.2
+
+_Released: 2024-01-17T14:59:46Z_
 
 ### Patch Changes
 
@@ -752,17 +1180,23 @@
 
 ## 1.14.1
 
+_Released: 2024-01-08T14:50:43Z_
+
 ### Patch Changes
 
 - 17cd1c21: fix: UIDefaultButton. Apply VSCode border color(`--vscode-button-border`) to UIDefaultButton
 
 ## 1.14.0
 
+_Released: 2023-12-20T08:23:38Z_
+
 ### Minor Changes
 
 - 3ec4de4b: Fix: UIComboBox. Prevent caret jump on input value change and on autocomplete value click
 
 ## 1.13.5
+
+_Released: 2023-12-05T11:08:26Z_
 
 ### Patch Changes
 
@@ -772,6 +1206,8 @@
 
 ## 1.13.4
 
+_Released: 2023-11-27T08:39:30Z_
+
 ### Patch Changes
 
 - e47492f0: Reusable css variables and classes for common box shadows.
@@ -780,11 +1216,15 @@
 
 ## 1.13.3
 
+_Released: 2023-11-23T10:14:35Z_
+
 ### Patch Changes
 
 - 3473d4b0: UIFlexibleTable. New property "isTouchDragDisabled" which allows to disable drag/reordering of table rows where drag is initalized by touch events
 
 ## 1.13.2
+
+_Released: 2023-11-23T08:28:39Z_
 
 ### Patch Changes
 
@@ -792,11 +1232,15 @@
 
 ## 1.13.1
 
+_Released: 2023-11-20T17:17:06Z_
+
 ### Patch Changes
 
 - cbae7aba: fix: UICallout. New property "focusTargetSiblingOnTabPress", which allows to focus next/previous element relative to target when Tab key is pressed using keyboard
 
 ## 1.13.0
+
+_Released: 2023-11-13T06:40:18Z_
 
 ### Minor Changes
 
@@ -804,11 +1248,15 @@
 
 ## 1.12.5
 
+_Released: 2023-11-10T12:55:49Z_
+
 ### Patch Changes
 
 - ade42a17: add `bookbookmark` icon
 
 ## 1.12.4
+
+_Released: 2023-11-10T12:35:38Z_
 
 ### Patch Changes
 
@@ -816,11 +1264,15 @@
 
 ## 1.12.3
 
+_Released: 2023-11-08T15:55:56Z_
+
 ### Patch Changes
 
 - c53c31e3: Update Icons.tsx
 
 ## 1.12.2
+
+_Released: 2023-11-08T11:34:34Z_
 
 ### Patch Changes
 
@@ -828,11 +1280,15 @@
 
 ## 1.12.1
 
+_Released: 2023-11-07T16:44:29Z_
+
 ### Patch Changes
 
 - 9896d6f4: add `footer` icon
 
 ## 1.12.0
+
+_Released: 2023-11-07T15:22:31Z_
 
 ### Minor Changes
 
@@ -840,11 +1296,15 @@
 
 ## 1.11.21
 
+_Released: 2023-11-01T17:43:17Z_
+
 ### Patch Changes
 
 - 95f951f9: styling changes for UIActionCallout
 
 ## 1.11.20
+
+_Released: 2023-11-01T09:50:49Z_
 
 ### Patch Changes
 
@@ -852,11 +1312,15 @@
 
 ## 1.11.19
 
+_Released: 2023-10-16T15:58:45Z_
+
 ### Patch Changes
 
 - a6de5157: Fixed SonarQube issue: "setState" should use a callback when referencing the previous state
 
 ## 1.11.18
+
+_Released: 2023-10-04T14:33:48Z_
 
 ### Patch Changes
 
@@ -864,11 +1328,15 @@
 
 ## 1.11.17
 
+_Released: 2023-10-04T07:26:58Z_
+
 ### Patch Changes
 
 - 38d70e31: UIList. Fix - ListProps interface is extended from fluent-ui IGroupedListProps
 
 ## 1.11.16
+
+_Released: 2023-10-03T14:55:12Z_
 
 ### Patch Changes
 
@@ -876,11 +1344,15 @@
 
 ## 1.11.15
 
+_Released: 2023-10-03T13:11:03Z_
+
 ### Patch Changes
 
 - a1c0d41f: UITextField. Fix - apply font family using vscode variable to UITextField input.
 
 ## 1.11.14
+
+_Released: 2023-09-21T11:59:35Z_
 
 ### Patch Changes
 
@@ -888,11 +1360,15 @@
 
 ## 1.11.13
 
+_Released: 2023-09-20T13:13:51Z_
+
 ### Patch Changes
 
 - 63c698a8: chore - fix publishing of modules missed in failed release build
 
 ## 1.11.12
+
+_Released: 2023-09-19T15:51:30Z_
 
 ### Patch Changes
 
@@ -900,11 +1376,15 @@
 
 ## 1.11.11
 
+_Released: 2023-09-19T15:06:34Z_
+
 ### Patch Changes
 
 - 0dbad1b8: chore(deps): update dependency typescript to v4.9.5
 
 ## 1.11.10
+
+_Released: 2023-09-19T13:39:12Z_
 
 ### Patch Changes
 
@@ -912,11 +1392,15 @@
 
 ## 1.11.9
 
+_Released: 2023-09-19T13:00:35Z_
+
 ### Patch Changes
 
 - de3bc3d5: chore(deps): update storybook monorepo to v7.4.2
 
 ## 1.11.8
+
+_Released: 2023-09-18T08:45:35Z_
 
 ### Patch Changes
 
@@ -924,11 +1408,15 @@
 
 ## 1.11.7
 
+_Released: 2023-09-13T14:04:14Z_
+
 ### Patch Changes
 
 - 93f711c7: 2px border radius is applied for input, dropdown, button components.
 
 ## 1.11.6
+
+_Released: 2023-09-12T17:23:46Z_
 
 ### Patch Changes
 
@@ -936,11 +1424,15 @@
 
 ## 1.11.5
 
+_Released: 2023-09-12T16:40:08Z_
+
 ### Patch Changes
 
 - 30fc4a11: feat(ui-components) add createref as props to UICreateSelect
 
 ## 1.11.4
+
+_Released: 2023-09-07T08:37:05Z_
 
 ### Patch Changes
 
@@ -948,11 +1440,15 @@
 
 ## 1.11.3
 
+_Released: 2023-09-06T13:33:28Z_
+
 ### Patch Changes
 
 - 540c38c2: feat(ui-components) add UICreateSelect component
 
 ## 1.11.2
+
+_Released: 2023-09-06T08:50:59Z_
 
 ### Patch Changes
 
@@ -960,11 +1456,15 @@
 
 ## 1.11.1
 
+_Released: 2023-08-31T05:42:02Z_
+
 ### Patch Changes
 
 - b9320dbf: update devDependencies
 
 ## 1.11.0
+
+_Released: 2023-08-24T08:34:02Z_
 
 ### Minor Changes
 
@@ -972,11 +1472,15 @@
 
 ## 1.10.0
 
+_Released: 2023-08-22T08:06:32Z_
+
 ### Minor Changes
 
 - c908acf2: feat(562): update star icon and add history icon
 
 ## 1.9.0
+
+_Released: 2023-08-15T06:52:37Z_
 
 ### Minor Changes
 
@@ -984,11 +1488,15 @@
 
 ## 1.8.5
 
+_Released: 2023-08-09T18:54:10Z_
+
 ### Patch Changes
 
 - d3e7d06b: Fixes for 'promises should not be misused' sonar bugs
 
 ## 1.8.4
+
+_Released: 2023-07-05T15:04:04Z_
 
 ### Patch Changes
 
@@ -996,11 +1504,15 @@
 
 ## 1.8.3
 
+_Released: 2023-06-27T14:58:54Z_
+
 ### Patch Changes
 
 - 4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
 
 ## 1.8.2
+
+_Released: 2023-06-12T06:59:29Z_
 
 ### Patch Changes
 
@@ -1008,11 +1520,15 @@
 
 ## 1.8.1
 
+_Released: 2023-06-07T14:08:50Z_
+
 ### Patch Changes
 
 - e315fd8a: fix: make icon positioning consistent in searchbox inputs
 
 ## 1.8.0
+
+_Released: 2023-05-25T08:10:21Z_
 
 ### Minor Changes
 
@@ -1020,11 +1536,15 @@
 
 ## 1.7.0
 
+_Released: 2023-05-24T06:58:50Z_
+
 ### Minor Changes
 
 - 8c3aecc6: update to ui action callout component
 
 ## 1.6.0
+
+_Released: 2023-05-22T09:19:23Z_
 
 ### Minor Changes
 
@@ -1032,11 +1552,15 @@
 
 ## 1.5.1
 
+_Released: 2023-05-16T13:02:55Z_
+
 ### Patch Changes
 
 - 6b26d421: UITranslationInput. Generic type for "entries" property("I18nBundle" type) - generic type is used as parameter when "onShowExistingEntry" is called.
 
 ## 1.5.0
+
+_Released: 2023-04-14T17:26:38Z_
 
 ### Minor Changes
 
@@ -1044,11 +1568,15 @@
 
 ## 1.4.0
 
+_Released: 2023-04-14T15:14:53Z_
+
 ### Minor Changes
 
 - 3771a579: feat(ui-components) icons - separator - small btn
 
 ## 1.3.9
+
+_Released: 2023-03-21T15:44:10Z_
 
 ### Patch Changes
 
@@ -1056,11 +1584,15 @@
 
 ## 1.3.8
 
+_Released: 2023-03-21T13:54:41Z_
+
 ### Patch Changes
 
 - 3a61b8d: Column ids added to the flexible table header row cells
 
 ## 1.3.7
+
+_Released: 2023-03-17T14:46:48Z_
 
 ### Patch Changes
 
@@ -1068,11 +1600,15 @@
 
 ## 1.3.6
 
+_Released: 2023-03-07T16:30:24Z_
+
 ### Patch Changes
 
 - 925a52c: UITranslationInput. Fix - allow to pass custom "title" when i18n entry resolved
 
 ## 1.3.5
+
+_Released: 2023-02-23T13:56:23Z_
 
 ### Patch Changes
 
@@ -1080,11 +1616,15 @@
 
 ## 1.3.4
 
+_Released: 2023-02-22T16:47:58Z_
+
 ### Patch Changes
 
 - f8c3fe5: Updated filter icon, as it was totally buggy
 
 ## 1.3.3
+
+_Released: 2023-02-10T14:09:06Z_
 
 ### Patch Changes
 
@@ -1092,11 +1632,15 @@
 
 ## 1.3.2
 
+_Released: 2023-02-10T10:54:52Z_
+
 ### Patch Changes
 
 - 59fc7a9: message sent icon added
 
 ## 1.3.1
+
+_Released: 2023-02-10T07:53:56Z_
 
 ### Patch Changes
 
@@ -1104,11 +1648,15 @@
 
 ## 1.3.0
 
+_Released: 2023-02-08T14:07:05Z_
+
 ### Minor Changes
 
 - e007958: feat(21552): add generic combobox column type to UITable (ColumnControlType.UICombobox)
 
 ## 1.2.0
+
+_Released: 2023-02-08T06:39:22Z_
 
 ### Minor Changes
 
@@ -1116,11 +1664,15 @@
 
 ## 1.1.10
 
+_Released: 2023-02-02T18:25:25Z_
+
 ### Patch Changes
 
 - 2bac3c4: New icon Id tag
 
 ## 1.1.9
+
+_Released: 2023-01-27T15:43:53Z_
 
 ### Patch Changes
 
@@ -1128,11 +1680,15 @@
 
 ## 1.1.8
 
+_Released: 2023-01-26T08:02:13Z_
+
 ### Patch Changes
 
 - b9b66e9: UIFlexibleTable. Fixed "undefined" error when "No data." row was clicked and dragged.
 
 ## 1.1.7
+
+_Released: 2023-01-20T09:34:34Z_
 
 ### Patch Changes
 
@@ -1140,11 +1696,15 @@
 
 ## 1.1.6
 
+_Released: 2023-01-19T14:57:57Z_
+
 ### Patch Changes
 
 - 2014255: Added warning icon with smiley style.
 
 ## 1.1.5
+
+_Released: 2023-01-19T14:18:54Z_
 
 ### Patch Changes
 
@@ -1152,11 +1712,15 @@
 
 ## 1.1.4
 
+_Released: 2023-01-17T12:19:27Z_
+
 ### Patch Changes
 
 - 2447b96: New icons added for knowledge centre, Icon16/ Mission, Graduate, ClockShort, ClockMedium, ClockLong
 
 ## 1.1.3
+
+_Released: 2023-01-13T15:07:08Z_
 
 ### Patch Changes
 
@@ -1164,11 +1728,15 @@
 
 ## 1.1.2
 
+_Released: 2023-01-10T10:52:46Z_
+
 ### Patch Changes
 
 - 1777aff: UIFlexibleTable. Added "grab" icon for cursor when table reordering is enabled. Cursor icon changes to "default" when reordering is disabled, "grabbing" icon is displayed if reordering is started.
 
 ## 1.1.1
+
+_Released: 2022-12-23T10:30:44Z_
 
 ### Patch Changes
 
@@ -1176,11 +1744,15 @@
 
 ## 1.1.0
 
+_Released: 2022-12-16T16:34:40Z_
+
 ### Minor Changes
 
 - 69260c3: Adds UIActionCallout
 
 ## 1.0.28
+
+_Released: 2022-12-15T14:55:07Z_
 
 ### Patch Changes
 
@@ -1188,11 +1760,15 @@
 
 ## 1.0.27
 
+_Released: 2022-12-07T19:19:11Z_
+
 ### Patch Changes
 
 - e7d10c9: Storybook update
 
 ## 1.0.26
+
+_Released: 2022-12-05T09:07:08Z_
 
 ### Patch Changes
 
@@ -1200,11 +1776,15 @@
 
 ## 1.0.25
 
+_Released: 2022-12-05T07:50:58Z_
+
 ### Patch Changes
 
 - 070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
 
 ## 1.0.24
+
+_Released: 2022-11-22T13:02:32Z_
 
 ### Patch Changes
 
@@ -1212,11 +1792,15 @@
 
 ## 1.0.23
 
+_Released: 2022-11-21T10:58:36Z_
+
 ### Patch Changes
 
 - d6cb122: Changes to current icons and 2 new icons added. Expand and Collapse icons changed and CopyToClipboard and Warningsmall added
 
 ## 1.0.22
+
+_Released: 2022-11-18T15:55:05Z_
 
 ### Patch Changes
 
@@ -1224,11 +1808,15 @@
 
 ## 1.0.21
 
+_Released: 2022-11-16T15:59:45Z_
+
 ### Patch Changes
 
 - a1ec78c: New icon for Foreign Key and 2 new icons added - Guided Answers and Chat Bubbles
 
 ## 1.0.20
+
+_Released: 2022-11-16T14:31:37Z_
 
 ### Patch Changes
 
@@ -1236,11 +1824,15 @@
 
 ## 1.0.19
 
+_Released: 2022-11-14T15:56:45Z_
+
 ### Patch Changes
 
 - 4ab13f2: UIFlexiblaTeble row reordering restricitions support, tooltips for cell and row headers and reordering actions
 
 ## 1.0.18
+
+_Released: 2022-11-11T08:57:32Z_
 
 ### Patch Changes
 
@@ -1248,11 +1840,15 @@
 
 ## 1.0.17
 
+_Released: 2022-11-08T18:08:21Z_
+
 ### Patch Changes
 
 - e4a9572: Update dependencies
 
 ## 1.0.16
+
+_Released: 2022-10-28T14:40:51Z_
 
 ### Patch Changes
 
@@ -1260,11 +1856,15 @@
 
 ## 1.0.15
 
+_Released: 2022-10-28T11:11:12Z_
+
 ### Patch Changes
 
 - 57ed473: Add UIPersona
 
 ## 1.0.14
+
+_Released: 2022-10-25T14:02:20Z_
 
 ### Patch Changes
 
@@ -1272,11 +1872,15 @@
 
 ## 1.0.13
 
+_Released: 2022-10-21T07:04:47Z_
+
 ### Patch Changes
 
 - f3cbe4d: Remove dependency to i18n libraries in Yaml module
 
 ## 1.0.12
+
+_Released: 2022-10-19T15:58:11Z_
 
 ### Patch Changes
 
@@ -1284,11 +1888,15 @@
 
 ## 1.0.11
 
+_Released: 2022-10-13T10:35:19Z_
+
 ### Patch Changes
 
 - 7c0ae60: Added CustomFPMPage icon
 
 ## 1.0.10
+
+_Released: 2022-10-13T09:24:39Z_
 
 ### Patch Changes
 
@@ -1296,11 +1904,15 @@
 
 ## 1.0.9
 
+_Released: 2022-10-12T18:03:48Z_
+
 ### Patch Changes
 
 - 41813bd: fix - Reversed logic for underline in plaintext links. It's now underlined by default, and on hover underline is removed.
 
 ## 1.0.8
+
+_Released: 2022-10-12T07:27:09Z_
 
 ### Patch Changes
 
@@ -1308,11 +1920,15 @@
 
 ## 1.0.7
 
+_Released: 2022-10-11T14:43:28Z_
+
 ### Patch Changes
 
 - 6f204c0: move devDependencies to dependencies
 
 ## 1.0.6
+
+_Released: 2022-10-11T14:06:32Z_
 
 ### Patch Changes
 
@@ -1320,11 +1936,15 @@
 
 ## 1.0.5
 
+_Released: 2022-10-05T18:37:36Z_
+
 ### Patch Changes
 
 - 0024d55: chore(ui-components) cherrypick UIDefaultButton fix tools-suite/pull/21665
 
 ## 1.0.4
+
+_Released: 2022-10-04T15:02:00Z_
 
 ### Patch Changes
 
@@ -1332,17 +1952,23 @@
 
 ## 1.0.3
 
+_Released: 2022-09-28T16:56:28Z_
+
 ### Patch Changes
 
 - 583a009: Fixing eslint issues
 
 ## 1.0.2
 
+_Released: 2022-09-28T12:37:23Z_
+
 ### Patch Changes
 
 - cf49b22: update package dependencies
 
 ## 1.0.1
+
+_Released: 2022-09-26T13:19:50Z_
 
 ### Patch Changes
 

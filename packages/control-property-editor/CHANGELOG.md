@@ -1,6 +1,137 @@
 # @sap-ux/control-property-editor
 
+## 1.0.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.0.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+## 1.0.5
+
+_Released: 2026-06-12T08:50:00Z_
+
+### Patch Changes
+
+- 0110219: fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
+
+## 1.0.4
+
+_Released: 2026-06-09T09:41:14Z_
+
+### Patch Changes
+
+- bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
+
+## 1.0.3
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 1.0.2
+
+_Released: 2026-06-02T21:37:28Z_
+
+### Patch Changes
+
+- 3506d2c: fix: i18n translations not loading after ESM migration
+
+## 1.0.1
+
+_Released: 2026-05-30T22:14:13Z_
+
+### Patch Changes
+
+- 509e833: fix: bump version to 1.0.1 to avoid npm publish conflict with previously unpublished 1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+## 0.8.1
+
+_Released: 2026-05-18T06:18:05Z_
+
+### Patch Changes
+
+- 676cbe6: Add margins to panel horizontal borders to distinguish them from splitter borders
+
+## 0.8.0
+
+_Released: 2026-05-15T08:12:20Z_
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.7.26
+
+_Released: 2026-05-14T11:45:51Z_
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.7.25
+
+_Released: 2026-05-06T23:02:00Z_
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+
+## 0.7.24
+
+_Released: 2026-04-30T14:23:24Z_
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
 ## 0.7.23
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -8,11 +139,15 @@
 
 ## 0.7.22
 
+_Released: 2026-03-17T01:04:22Z_
+
 ### Patch Changes
 
 - 55417bb: fix(deps): update dependency i18next to v25.8.18
 
 ## 0.7.21
+
+_Released: 2026-03-12T02:17:32Z_
 
 ### Patch Changes
 
@@ -20,11 +155,15 @@
 
 ## 0.7.20
 
+_Released: 2026-03-05T15:09:36Z_
+
 ### Patch Changes
 
 - 5d458c7: fix(deps): update dependency uuid to v13
 
 ## 0.7.19
+
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -32,11 +171,15 @@
 
 ## 0.7.18
 
+_Released: 2026-03-02T13:05:37Z_
+
 ### Patch Changes
 
 - 4f7b796: fix(deps): update dependency ts-jest to v29.4.6
 
 ## 0.7.17
+
+_Released: 2026-02-26T10:46:59Z_
 
 ### Patch Changes
 
@@ -44,11 +187,15 @@
 
 ## 0.7.16
 
+_Released: 2026-02-24T12:43:07Z_
+
 ### Patch Changes
 
 - e19516b: fix(deps): update dependency ts-import-plugin to v3
 
 ## 0.7.15
+
+_Released: 2026-02-23T23:44:05Z_
 
 ### Patch Changes
 
@@ -56,11 +203,15 @@
 
 ## 0.7.14
 
+_Released: 2026-02-23T19:07:48Z_
+
 ### Patch Changes
 
 - cc1c422: fix(deps): update dependency npm-run-all2 to v8
 
 ## 0.7.13
+
+_Released: 2026-02-20T20:20:17Z_
 
 ### Patch Changes
 
@@ -68,11 +219,15 @@
 
 ## 0.7.12
 
+_Released: 2026-02-20T16:17:11Z_
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
 
 ## 0.7.11
+
+_Released: 2026-02-10T21:03:43Z_
 
 ### Patch Changes
 
@@ -80,11 +235,15 @@
 
 ## 0.7.10
 
+_Released: 2026-02-04T22:31:27Z_
+
 ### Patch Changes
 
 - 9f11dd2: chore - address audit issues
 
 ## 0.7.9
+
+_Released: 2026-01-23T22:30:10Z_
 
 ### Patch Changes
 
@@ -92,11 +251,15 @@
 
 ## 0.7.8
 
+_Released: 2026-01-14T13:30:42Z_
+
 ### Patch Changes
 
 - ce4b29c: Upgrade qs/body-parser/express
 
 ## 0.7.7
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -104,11 +267,15 @@
 
 ## 0.7.6
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
 
 ## 0.7.5
+
+_Released: 2025-12-17T10:17:22Z_
 
 ### Patch Changes
 
@@ -116,11 +283,15 @@
 
 ## 0.7.4
 
+_Released: 2025-12-15T10:50:50Z_
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
 
 ## 0.7.3
+
+_Released: 2025-12-08T17:56:48Z_
 
 ### Patch Changes
 
@@ -128,11 +299,15 @@
 
 ## 0.7.2
 
+_Released: 2025-11-05T06:53:42Z_
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.7.1
+
+_Released: 2025-10-22T18:56:41Z_
 
 ### Patch Changes
 
@@ -140,11 +315,15 @@
 
 ## 0.7.0
 
+_Released: 2025-08-01T13:45:39Z_
+
 ### Minor Changes
 
 - b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
 
 ## 0.6.8
+
+_Released: 2025-07-21T10:03:36Z_
 
 ### Patch Changes
 
@@ -152,11 +331,15 @@
 
 ## 0.6.7
 
+_Released: 2025-07-04T15:18:17Z_
+
 ### Patch Changes
 
 - 69f62ec: i18next upgrade to 25.3.0
 
 ## 0.6.6
+
+_Released: 2025-05-27T14:27:55Z_
 
 ### Patch Changes
 
@@ -164,11 +347,15 @@
 
 ## 0.6.5
 
+_Released: 2025-05-14T08:48:37Z_
+
 ### Patch Changes
 
 - e856125: Fix: Generic handling for change type and new UI component for displaying
 
 ## 0.6.4
+
+_Released: 2025-04-17T14:55:33Z_
 
 ### Patch Changes
 
@@ -176,11 +363,15 @@
 
 ## 0.6.3
 
+_Released: 2025-04-15T15:11:22Z_
+
 ### Patch Changes
 
 - 838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
 
 ## 0.6.2
+
+_Released: 2025-03-31T14:04:07Z_
 
 ### Patch Changes
 
@@ -188,11 +379,15 @@
 
 ## 0.6.1
 
+_Released: 2025-03-06T11:37:39Z_
+
 ### Patch Changes
 
 - 3190a55: UISections. Fixed incorrect position calculations when hiding sections with three or more sections present.
 
 ## 0.6.0
+
+_Released: 2025-03-05T14:45:32Z_
 
 ### Minor Changes
 
@@ -200,11 +395,15 @@
 
 ## 0.5.37
 
+_Released: 2025-02-11T10:08:55Z_
+
 ### Patch Changes
 
 - 7c76e7c: fix: unify contextual menu for all nodes in outline panel.
 
 ## 0.5.36
+
+_Released: 2025-02-06T22:08:41Z_
 
 ### Patch Changes
 
@@ -212,11 +411,15 @@
 
 ## 0.5.35
 
+_Released: 2025-02-05T12:39:22Z_
+
 ### Patch Changes
 
 - 9ddf98f: Feature to add context menu on outline
 
 ## 0.5.34
+
+_Released: 2025-02-05T07:28:28Z_
 
 ### Patch Changes
 
@@ -224,11 +427,15 @@
 
 ## 0.5.33
 
+_Released: 2025-01-27T11:41:12Z_
+
 ### Patch Changes
 
 - dd34d62: UI accessability improvements for disabled elements and in quick action list
 
 ## 0.5.32
+
+_Released: 2025-01-13T18:05:42Z_
 
 ### Patch Changes
 
@@ -236,11 +443,15 @@
 
 ## 0.5.31
 
+_Released: 2025-01-08T17:16:17Z_
+
 ### Patch Changes
 
 - 19d51f3: feat: Quick Action For Add New Annotation File
 
 ## 0.5.30
+
+_Released: 2024-12-23T10:38:10Z_
 
 ### Patch Changes
 
@@ -248,11 +459,15 @@
 
 ## 0.5.29
 
+_Released: 2024-12-18T16:31:44Z_
+
 ### Patch Changes
 
 - 60d5f85: Added tooltip for funnel and copy icon
 
 ## 0.5.28
+
+_Released: 2024-11-29T13:58:32Z_
 
 ### Patch Changes
 
@@ -260,11 +475,15 @@
 
 ## 0.5.27
 
+_Released: 2024-11-21T13:02:44Z_
+
 ### Patch Changes
 
 - c39325c: Fix for Config Quick action state not reflecting properties in properties panel
 
 ## 0.5.26
+
+_Released: 2024-11-13T16:02:41Z_
 
 ### Patch Changes
 
@@ -272,11 +491,15 @@
 
 ## 0.5.25
 
+_Released: 2024-11-12T14:14:38Z_
+
 ### Patch Changes
 
 - 06e9468: Allow adaptations of manifest settings in FEv4 adaptation projects via Control Property Editor Property Panel
 
 ## 0.5.24
+
+_Released: 2024-10-30T09:11:46Z_
 
 ### Patch Changes
 
@@ -284,11 +507,15 @@
 
 ## 0.5.23
 
+_Released: 2024-10-29T15:38:23Z_
+
 ### Patch Changes
 
 - d4d1b3c: Add zero state for changes panel
 
 ## 0.5.22
+
+_Released: 2024-10-25T14:04:19Z_
 
 ### Patch Changes
 
@@ -296,11 +523,15 @@
 
 ## 0.5.21
 
+_Released: 2024-10-22T22:47:19Z_
+
 ### Patch Changes
 
 - bc75111: Upgrade http-proxy-middleware
 
 ## 0.5.20
+
+_Released: 2024-10-16T14:50:28Z_
 
 ### Patch Changes
 
@@ -308,11 +539,15 @@
 
 ## 0.5.19
 
+_Released: 2024-10-16T11:01:15Z_
+
 ### Patch Changes
 
 - 0135cea: Update filter bars.
 
 ## 0.5.18
+
+_Released: 2024-10-15T15:11:53Z_
 
 ### Patch Changes
 
@@ -320,11 +555,15 @@
 
 ## 1.0.0
 
+_Released: 2024-10-15T08:24:27Z_
+
 ### Major Changes
 
 - efea4c1: Added tooltip for value of control id and type and removed controlid popup
 
 ## 0.5.17
+
+_Released: 2024-10-10T05:24:04Z_
 
 ### Patch Changes
 
@@ -332,11 +571,15 @@
 
 ## 0.5.16
 
+_Released: 2024-10-08T08:19:13Z_
+
 ### Patch Changes
 
 - ed1c915: Clean up copied to clipboard pop up
 
 ## 0.5.15
+
+_Released: 2024-10-07T10:11:19Z_
 
 ### Patch Changes
 
@@ -344,11 +587,15 @@
 
 ## 0.5.14
 
+_Released: 2024-10-04T15:21:13Z_
+
 ### Patch Changes
 
 - 93f8a83: chore - upgrade typescript 5.6.2
 
 ## 0.5.13
+
+_Released: 2024-10-04T08:37:29Z_
 
 ### Patch Changes
 
@@ -356,11 +603,15 @@
 
 ## 0.5.12
 
+_Released: 2024-10-01T09:10:42Z_
+
 ### Patch Changes
 
 - 1da1e7a: Small CPE UI improvements
 
 ## 0.5.11
+
+_Released: 2024-09-26T15:06:27Z_
 
 ### Patch Changes
 
@@ -368,11 +619,15 @@
 
 ## 0.5.10
 
+_Released: 2024-09-25T08:23:49Z_
+
 ### Patch Changes
 
 - b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
 
 ## 0.5.9
+
+_Released: 2024-09-24T11:55:25Z_
 
 ### Patch Changes
 
@@ -380,11 +635,15 @@
 
 ## 0.5.8
 
+_Released: 2024-09-20T07:07:40Z_
+
 ### Patch Changes
 
 - e12dd50: Added hover over theme picker and border for Callout
 
 ## 0.5.7
+
+_Released: 2024-09-18T16:51:00Z_
 
 ### Patch Changes
 
@@ -392,11 +651,15 @@
 
 ## 0.5.6
 
+_Released: 2024-09-18T15:00:42Z_
+
 ### Patch Changes
 
 - 37851a2: Fixed wrong chevron color for high contrast theme
 
 ## 0.5.5
+
+_Released: 2024-09-17T14:18:44Z_
 
 ### Patch Changes
 
@@ -404,11 +667,15 @@
 
 ## 0.5.4
 
+_Released: 2024-09-17T13:11:54Z_
+
 ### Patch Changes
 
 - 9506a73: Uniform funnel checkboxes
 
 ## 0.5.3
+
+_Released: 2024-09-17T10:23:36Z_
 
 ### Patch Changes
 
@@ -416,11 +683,15 @@
 
 ## 0.5.2
 
+_Released: 2024-09-16T10:06:52Z_
+
 ### Patch Changes
 
 - cdabb95: updated color variables for themes
 
 ## 0.5.1
+
+_Released: 2024-09-04T13:28:04Z_
 
 ### Patch Changes
 
@@ -428,11 +699,15 @@
 
 ## 0.5.0
 
+_Released: 2024-09-04T11:08:59Z_
+
 ### Minor Changes
 
 - b1628da: Add quick actions to adaptation editor
 
 ## 0.4.30
+
+_Released: 2024-09-02T14:24:05Z_
 
 ### Patch Changes
 
@@ -440,11 +715,15 @@
 
 ## 0.4.29
 
+_Released: 2024-08-23T17:49:39Z_
+
 ### Patch Changes
 
 - 7710aa5: chore upgrade @fluentui/react@8.120.5
 
 ## 0.4.28
+
+_Released: 2024-08-21T10:47:59Z_
 
 ### Patch Changes
 
@@ -452,11 +731,15 @@
 
 ## 0.4.27
 
+_Released: 2024-08-01T11:28:02Z_
+
 ### Patch Changes
 
 - b5d9461: Add sticky search bar for outline and filter search
 
 ## 0.4.26
+
+_Released: 2024-07-25T07:23:04Z_
 
 ### Patch Changes
 
@@ -464,11 +747,15 @@
 
 ## 0.4.25
 
+_Released: 2024-07-10T14:03:43Z_
+
 ### Patch Changes
 
 - 671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
 
 ## 0.4.24
+
+_Released: 2024-07-10T13:25:26Z_
 
 ### Patch Changes
 
@@ -476,11 +763,15 @@
 
 ## 0.4.23
 
+_Released: 2024-05-28T14:57:10Z_
+
 ### Patch Changes
 
 - 78de7813: RTA standard toolbar replaced with custom CPE toolbar
 
 ## 0.4.22
+
+_Released: 2024-05-24T11:49:12Z_
 
 ### Patch Changes
 
@@ -488,11 +779,15 @@
 
 ## 0.4.21
 
+_Released: 2024-05-23T07:03:28Z_
+
 ### Patch Changes
 
 - 56d8b0b9: Add default content for extension points to the outline in CPE
 
 ## 0.4.20
+
+_Released: 2024-05-10T12:37:23Z_
 
 ### Patch Changes
 
@@ -500,11 +795,15 @@
 
 ## 0.4.19
 
+_Released: 2024-05-07T14:01:29Z_
+
 ### Patch Changes
 
 - 4e267684: chore - ejs upgrade
 
 ## 0.4.18
+
+_Released: 2024-05-06T12:14:11Z_
 
 ### Patch Changes
 
@@ -512,11 +811,15 @@
 
 ## 0.4.17
 
+_Released: 2024-04-03T11:49:21Z_
+
 ### Patch Changes
 
 - 31ae689d: websocket over https
 
 ## 0.4.16
+
+_Released: 2024-03-21T16:21:01Z_
 
 ### Patch Changes
 
@@ -524,11 +827,15 @@
 
 ## 0.4.15
 
+_Released: 2024-03-12T14:36:02Z_
+
 ### Patch Changes
 
 - fc76be56: do not trigger empty change on focus out
 
 ## 0.4.14
+
+_Released: 2024-03-11T09:44:19Z_
 
 ### Patch Changes
 
@@ -536,11 +843,15 @@
 
 ## 0.4.13
 
+_Released: 2024-02-07T11:10:48Z_
+
 ### Patch Changes
 
 - eb0b7b37: Chore - TypeScript 5 upgrade
 
 ## 0.4.12
+
+_Released: 2024-02-05T07:10:18Z_
 
 ### Patch Changes
 
@@ -548,11 +859,15 @@
 
 ## 0.4.11
 
+_Released: 2024-02-02T07:55:30Z_
+
 ### Patch Changes
 
 - f6bf758e: Mark for saved changes now changes on press of save button
 
 ## 0.4.10
+
+_Released: 2024-01-29T10:58:00Z_
 
 ### Patch Changes
 
@@ -560,11 +875,15 @@
 
 ## 0.4.9
 
+_Released: 2024-01-15T08:59:06Z_
+
 ### Patch Changes
 
 - 70296b55: Remove label and icon in control property editor
 
 ## 0.4.8
+
+_Released: 2023-12-19T15:32:14Z_
 
 ### Patch Changes
 
@@ -572,11 +891,15 @@
 
 ## 0.4.7
 
+_Released: 2023-12-19T15:05:28Z_
+
 ### Patch Changes
 
 - 83f25073: The extension points not shown as such in the Outline for ADP
 
 ## 0.4.6
+
+_Released: 2023-12-13T11:52:06Z_
 
 ### Patch Changes
 
@@ -584,11 +907,15 @@
 
 ## 0.4.5
 
+_Released: 2023-11-29T14:45:41Z_
+
 ### Patch Changes
 
 - b4081d0a: Show warning message for adaptation project if ui5 version is less than 1.71
 
 ## 0.4.4
+
+_Released: 2023-11-28T10:54:29Z_
 
 ### Patch Changes
 
@@ -596,11 +923,15 @@
 
 ## 0.4.3
 
+_Released: 2023-11-24T10:09:04Z_
+
 ### Patch Changes
 
 - b7b3a0c3: keyboard support for theme selector callout
 
 ## 0.4.2
+
+_Released: 2023-11-10T14:30:35Z_
 
 ### Patch Changes
 
@@ -608,11 +939,15 @@
 
 ## 0.4.1
 
+_Released: 2023-11-08T11:15:50Z_
+
 ### Patch Changes
 
 - e2b264c2: Make Control Property Editor aware which application (scenario) its running in the iframe
 
 ## 0.4.0
+
+_Released: 2023-11-06T16:53:10Z_
 
 ### Minor Changes
 
@@ -620,11 +955,15 @@
 
 ## 0.3.1
 
+_Released: 2023-11-06T06:59:20Z_
+
 ### Patch Changes
 
 - c800f248: chore(deps): update dependency postcss to v8.4.31 [security]
 
 ## 0.3.0
+
+_Released: 2023-11-03T13:38:39Z_
 
 ### Minor Changes
 
@@ -632,11 +971,15 @@
 
 ## 0.2.4
 
+_Released: 2023-10-18T13:59:49Z_
+
 ### Patch Changes
 
 - cbcad88d: fix(deps): update dependencies [i18next]
 
 ## 0.2.3
+
+_Released: 2023-10-05T14:55:15Z_
 
 ### Patch Changes
 
@@ -644,11 +987,15 @@
 
 ## 0.2.2
 
+_Released: 2023-09-25T15:52:06Z_
+
 ### Patch Changes
 
 - 4f2d9ed8: Bump packages to release the dep fix
 
 ## 0.2.1
+
+_Released: 2023-09-25T13:57:39Z_
 
 ### Patch Changes
 

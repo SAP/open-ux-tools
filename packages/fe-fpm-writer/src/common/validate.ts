@@ -2,8 +2,9 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
-import type { Manifest } from './types';
-import { getManifestPath } from './utils';
+import { isAbsolute } from 'node:path';
+import type { Manifest } from './types.js';
+import { getManifestPath } from './utils.js';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -83,4 +84,25 @@ export async function validateBasePath(
  */
 export function getErrorMessage(error: Error | unknown): string {
     return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Validates that a folder path is relative and does not contain path traversal sequences.
+ * This prevents security issues where malicious paths like '../../../etc' could write files outside the project.
+ *
+ * @param {string} folder - the folder path to validate
+ * @param {string} [paramName] - optional parameter name for error messages
+ * @throws {Error} if the path is absolute or contains '..'
+ */
+export function validateRelativePath(folder: string, paramName = 'Path'): void {
+    // Check for absolute paths
+    if (isAbsolute(folder)) {
+        throw new Error(`${paramName} must not be an absolute path, got: ${folder}`);
+    }
+
+    // Check for path traversal attempts by examining path segments
+    const segments = folder.split(/[/\\]/);
+    if (segments.includes('..')) {
+        throw new Error(`${paramName} must not contain '..' (path traversal), got: ${folder}`);
+    }
 }

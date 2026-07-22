@@ -18,6 +18,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
   },
   {
     "default": [Function],
+    "filter": [Function],
     "guiOptions": {
       "breadcrumb": "CAP Project",
       "mandatory": true,
@@ -39,6 +40,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
     },
     "message": "OData Service",
     "name": "capService",
+    "showOutputTabLink": "validationMessageOverflow",
     "type": "list",
     "validate": [Function],
     "when": [Function],

@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/ui5-config",
     "description": "Library to UI5 configuration artifacts",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -9,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-config"
     },
-    "version": "0.30.3",
+    "version": "1.0.5",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -19,8 +20,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -33,10 +34,10 @@
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
         "ajv": "8.18.0",
-        "js-yaml": "4.1.1",
+        "js-yaml": "4.2.0",
         "lodash": "4.18.1",
-        "semver": "7.7.4",
-        "axios": "1.15.0"
+        "semver": "7.8.4",
+        "axios": "1.18.1"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
@@ -45,6 +46,6 @@
         "@types/js-yaml": "4.0.9"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

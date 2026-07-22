@@ -1,7 +1,7 @@
-export { t, initI18n } from './i18n';
-export { showOverwriteQuestion } from './conditions';
-export { ErrorHandler, ERROR_TYPE, bail, handleErrorMessage } from './error-handler';
-export { getExtensionGenPromptOpts } from './extension-prompts';
-export * from './constants';
-export * from './destination';
-export * from './types';
+export { t, initI18n } from './i18n.js';
+export { showOverwriteQuestion } from './conditions.js';
+export { ErrorHandler, ERROR_TYPE, bail, handleErrorMessage } from './error-handler.js';
+export { getExtensionGenPromptOpts } from './extension-prompts.js';
+export * from './constants.js';
+export * from './destination.js';
+export * from './types.js';

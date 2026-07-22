@@ -1,5 +1,5 @@
-import { t } from '../utils/i18n';
-import type { FioriStep } from './yeomanUiStepConfig';
+import { t } from '../utils/i18n.js';
+import type { FioriStep } from './yeomanUiStepConfig.js';
 
 export const LEGACY_CAP_TYPE_NODE = 'capNode';
 export const LEGACY_CAP_TYPE_JAVA = 'capJava';
@@ -104,8 +104,6 @@ export const FPM_DEFAULT_PAGE_NAME = 'Main';
 // App gen specific (not writer specific) supported UI5 versions
 export const minSupportedUi5Version = '1.65.0';
 export const minSupportedUi5VersionV4 = '1.84.0';
-// The minimum UI5 version required for page building block feature
-export const minUi5VersionForPageBuildingBlock = '1.136.0';
 export const defaultNavActionTile = 'tile';
 export const defaultNavActionDisplay = 'display';
 
