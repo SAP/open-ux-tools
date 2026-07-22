@@ -1,5 +1,34 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/fiori-annotation-api 1.0.17 → 1.0.18
+
+## 1.3.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.16 → 1.0.17
+
+## 1.3.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- Add missing namespace prefixes to TEMPLATE_NAMESPACES for xmldom [[c143424](https://github.com/SAP/open-ux-tools/commit/c143424d9ed3332a3c4c8a61cbcda79e325c2b95)]
+
 ## 1.3.3
 
 ### Patch Changes
