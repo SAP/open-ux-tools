@@ -36,13 +36,13 @@
         "@npm/types": "2.1.0",
         "@sap-ux/create": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "@types/node": "22.13.14",
+        "@types/node": "22.20.1",
         "fast-xml-parser": "5.10.1",
         "gray-matter": "^4.0.3",
         "jsdoc-api": "9.3.6",
         "marked": "^12.0.0",
         "node-fetch": "^3.3.2",
-        "npm-run-all2": "8.0.4",
+        "npm-run-all2": "9.0.2",
         "tsx": "^4.7.0"
     },
     "keywords": [
