@@ -17,8 +17,8 @@ async function getWindowsPorts(pid: number, preferredPort?: number): Promise<num
     for (const line of stdout.split('\n')) {
         const match = TCP_LISTEN_WINDOWS.exec(line);
         if (!match?.[1]) continue;
-        const port = parseInt(match[1], 10);
-        if (isNaN(port)) continue;
+        const port = Number.parseInt(match[1], 10);
+        if (Number.isNaN(port)) continue;
         found.push(port);
         if (preferredPort && port === preferredPort) return found;
     }
@@ -28,7 +28,7 @@ async function getWindowsPorts(pid: number, preferredPort?: number): Promise<num
 async function getChildPids(pid: number): Promise<number[]> {
     try {
         const { stdout } = await execAsync(`pgrep -P ${pid}`);
-        return stdout.trim().split('\n').filter(Boolean).map(Number).filter((p) => !isNaN(p));
+        return stdout.trim().split('\n').filter(Boolean).map(Number).filter((p) => !Number.isNaN(p));
     } catch {
         return [];
     }
@@ -42,8 +42,8 @@ async function getUnixPortsForPid(checkPid: number, preferredPort?: number): Pro
             if (line.trim().startsWith('COMMAND')) continue;
             const match = TCP_LISTEN_UNIX.exec(line);
             if (!match?.[1]) continue;
-            const port = parseInt(match[1], 10);
-            if (isNaN(port)) continue;
+            const port = Number.parseInt(match[1], 10);
+            if (Number.isNaN(port)) continue;
             found.push(port);
             if (preferredPort && port === preferredPort) return found;
         }
@@ -236,7 +236,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         try {
             const urlObj = new URL(serverUrl);
             if (urlObj.port) {
-                preferredPort = parseInt(urlObj.port, 10);
+                preferredPort = Number.parseInt(urlObj.port, 10);
             } else {
                 preferredPort = urlObj.protocol === 'https:' ? 443 : 80;
             }
