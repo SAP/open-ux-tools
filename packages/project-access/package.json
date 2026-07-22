@@ -36,7 +36,7 @@
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@ui5/manifest": "1.88.0",
-        "fast-xml-parser": "5.8.0",
+        "fast-xml-parser": "5.10.1",
         "findit2": "2.2.3",
         "json-parse-even-better-errors": "5.0.0",
         "mem-fs": "2.1.0",
