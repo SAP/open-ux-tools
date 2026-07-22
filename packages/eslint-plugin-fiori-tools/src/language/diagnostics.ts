@@ -93,9 +93,7 @@ export interface EnablePaste {
 }
 
 export type StatePreservationModeMessageId =
-    | 'invalidMode'
-    | 'recommendPersistenceForFCL'
-    | 'recommendDiscoveryForNonFCL';
+    'invalidMode' | 'recommendPersistenceForFCL' | 'recommendDiscoveryForNonFCL';
 
 export interface StatePreservationMode {
     type: typeof STATE_PRESERVATION_MODE;

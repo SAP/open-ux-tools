@@ -116,10 +116,7 @@ function indentToStr(indent: number): string {
 
 function getLocationsText(
     annotationObject:
-        | AnnotationListWithOrigins
-        | AnnotationWithOrigin
-        | RecordWithOrigins
-        | CollectionExpressionWithOrigins,
+        AnnotationListWithOrigins | AnnotationWithOrigin | RecordWithOrigins | CollectionExpressionWithOrigins,
     index?: number
 ): string {
     const getRangeText = (range: Range | undefined) =>
@@ -144,10 +141,7 @@ function getLocationsText(
 
 function getOrigins(
     annotationObject:
-        | AnnotationListWithOrigins
-        | AnnotationWithOrigin
-        | RecordWithOrigins
-        | CollectionExpressionWithOrigins
+        AnnotationListWithOrigins | AnnotationWithOrigin | RecordWithOrigins | CollectionExpressionWithOrigins
 ): (Range | undefined)[] {
     if (isAnnotationList(annotationObject)) {
         return annotationObject.origins ?? [];
