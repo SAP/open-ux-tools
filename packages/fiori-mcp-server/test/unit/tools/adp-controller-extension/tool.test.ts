@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -148,6 +148,38 @@ describe('adpControllerExtension', () => {
             expect(result.parameters).toEqual({ appPath, prompt: 'p' });
             expect(JSON.stringify(result.parameters)).not.toContain('Path:');
         } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('includes existing files in knowledge base response when webapp/changes has content', async () => {
+        const appPath = createAdpProject('CUSTOMER_BASE');
+        const codingDir = join(appPath, 'webapp', 'changes', 'coding');
+        mkdirSync(codingDir, { recursive: true });
+        writeFileSync(join(codingDir, 'MyExt.js'), '// existing extension', 'utf-8');
+
+        try {
+            const result = await adpControllerExtension({ appPath, prompt: 'test' });
+            expect(result.status).toBe('info');
+            expect(result.message).toContain('EXISTING PROJECT FILES');
+            expect(result.message).toContain('MyExt.js');
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('returns error with Failed to write file when writeFile throws a generic error', async () => {
+        const appPath = createAdpProject();
+        const aiResponse = ['**Path:** webapp/changes/coding/MyExt.js', '```javascript', '// code', '```'].join('\n');
+        const fsMock = await import('node:fs');
+        const writeFileSpy = jest.spyOn(fsMock.promises, 'writeFile').mockRejectedValueOnce(new Error('disk full'));
+
+        try {
+            const result = await adpControllerExtension({ appPath, aiResponse });
+            expect(result.status).toBe('error');
+            expect(result.message).toContain('Failed to write file');
+        } finally {
+            writeFileSpy.mockRestore();
             rmSync(appPath, { recursive: true, force: true });
         }
     });

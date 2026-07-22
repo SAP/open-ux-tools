@@ -40,6 +40,9 @@ const mockListSapSystems = jest.fn<any>();
 const mockDownloadODataServiceMetadata = jest.fn<any>();
 const mockGenerateFioriAppOData = jest.fn<any>();
 const mockGenerateFioriAppCap = jest.fn<any>();
+const mockGenerateAdaptationProject = jest.fn<any>();
+const mockOpenAdaptationEditor = jest.fn<any>();
+const mockAdpControllerExtension = jest.fn<any>();
 const actualTools = await import('../../src/tools/index.js');
 jest.unstable_mockModule('../../src/tools', () => ({
     ...actualTools,
@@ -51,7 +54,10 @@ jest.unstable_mockModule('../../src/tools', () => ({
     listSapSystems: mockListSapSystems,
     downloadODataServiceMetadata: mockDownloadODataServiceMetadata,
     generateFioriAppOData: mockGenerateFioriAppOData,
-    generateFioriAppCap: mockGenerateFioriAppCap
+    generateFioriAppCap: mockGenerateFioriAppCap,
+    generateAdaptationProject: mockGenerateAdaptationProject,
+    openAdaptationEditor: mockOpenAdaptationEditor,
+    adpControllerExtension: mockAdpControllerExtension
 }));
 
 // Dynamic imports after mocks
@@ -73,6 +79,9 @@ describe('FioriFunctionalityServer', () => {
         mockDownloadODataServiceMetadata.mockReset();
         mockGenerateFioriAppOData.mockReset();
         mockGenerateFioriAppCap.mockReset();
+        mockGenerateAdaptationProject.mockReset();
+        mockOpenAdaptationEditor.mockReset();
+        mockAdpControllerExtension.mockReset();
     });
 
     // version cannot be hard coded as it will update on each new patch update
@@ -602,6 +611,100 @@ describe('FioriFunctionalityServer', () => {
                     mcpClientVersion: 'unknown-version'
                 },
                 undefined
+            );
+        });
+
+        test('generate_adaptation_project', async () => {
+            const mockResult = {
+                status: 'Success',
+                message: 'Adaptation project generated.',
+                parameters: {},
+                appPath: '/project/adapt',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockGenerateAdaptationProject.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'generate_adaptation_project',
+                    arguments: { appPath: '/project/adapt' }
+                }
+            });
+            expect(mockGenerateAdaptationProject).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'generate_adaptation_project',
+                {
+                    tool: 'generate_adaptation_project',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                '/project/adapt'
+            );
+        });
+
+        test('open_adaptation_editor', async () => {
+            const mockResult = {
+                status: 'Success',
+                message: 'Adaptation editor opened.',
+                parameters: {},
+                appPath: '/project/adapt',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockOpenAdaptationEditor.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'open_adaptation_editor',
+                    arguments: { appPath: '/project/adapt' }
+                }
+            });
+            expect(mockOpenAdaptationEditor).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'open_adaptation_editor',
+                {
+                    tool: 'open_adaptation_editor',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                '/project/adapt'
+            );
+        });
+
+        test('adp_controller_extension', async () => {
+            const mockResult = {
+                status: 'success',
+                message: 'Controller extension created.',
+                functionalityId: 'adp-controller-extension',
+                parameters: { appPath: '/project/adapt' },
+                appPath: '/project/adapt',
+                changes: ['Created webapp/changes/coding/MyExt.js'],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockAdpControllerExtension.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'adp_controller_extension',
+                    arguments: { appPath: '/project/adapt', prompt: 'add a button' }
+                }
+            });
+            expect(mockAdpControllerExtension).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'adp_controller_extension',
+                {
+                    tool: 'adp_controller_extension',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                '/project/adapt'
             );
         });
 
