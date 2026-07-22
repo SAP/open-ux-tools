@@ -31,7 +31,7 @@ export class PathTraversalError extends Error {
  * @throws {PathTraversalError} If the resolved path is outside `appPath`.
  */
 export function resolveWithinAppPath(appPath: string, requestedPath: string): string {
-    const normalizedInput = requestedPath.replace(/\\/g, '/');
+    const normalizedInput = requestedPath.replaceAll('\\', '/');
     const resolvedAppPath = resolve(appPath);
     const resolvedFilePath = isAbsolute(normalizedInput)
         ? resolve(normalizedInput)
