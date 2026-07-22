@@ -50,9 +50,7 @@ describe('extractFilesFromResponse', () => {
 
     test('handles fences without language hints', () => {
         const content = ['**Path:** webapp/changes/coding/X.js', '```', 'code();', '```'].join('\n');
-        expect(extractFilesFromResponse(content)).toEqual([
-            { path: 'webapp/changes/coding/X.js', code: 'code();' }
-        ]);
+        expect(extractFilesFromResponse(content)).toEqual([{ path: 'webapp/changes/coding/X.js', code: 'code();' }]);
     });
 
     test('returns an empty array for prose-only input', () => {
@@ -93,11 +91,7 @@ describe('extractFilesFromResponse', () => {
     });
 
     test('returns empty array and warns when code block is unclosed at EOF', () => {
-        const content = [
-            '**Path:** webapp/changes/coding/MyExt.js',
-            '```javascript',
-            'sap.ui.define(['
-        ].join('\n');
+        const content = ['**Path:** webapp/changes/coding/MyExt.js', '```javascript', 'sap.ui.define(['].join('\n');
 
         const result = extractFilesFromResponse(content);
         expect(result).toEqual([]);
