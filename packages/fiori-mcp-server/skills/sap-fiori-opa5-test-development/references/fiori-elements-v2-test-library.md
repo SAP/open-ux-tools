@@ -263,7 +263,6 @@ does this for you internally.
 | `iCheckObjectPageIconTabBarValue(bIconTabBar, sEntitySet)` | bool, optional entitySet | Assert `useIconTabBar` property of ObjectPageLayout. |
 | `iExpectFocusSetOnControlById(sId)` | short id | Assert DOM focus is on the given control. |
 | `iSeeShellHeaderWithTitle(sTitle)` | title string | Assert the Shell header app title. |
-| `iShouldSeeTheSections(aSections)` | array of section titles | Assert all listed sections exist. |
 
 ---
 

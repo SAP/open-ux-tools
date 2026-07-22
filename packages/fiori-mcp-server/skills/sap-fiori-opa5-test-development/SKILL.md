@@ -52,6 +52,8 @@ If `manifest.json` is inconclusive, check the `<edmx:Edmx>` root element in the 
 
 These attributes appear on line 1 or 2 of the file.
 
+If neither signal is present, ask the user to confirm the OData version before proceeding.
+
 ---
 
 ## Step 2: Follow the Matching Guide
