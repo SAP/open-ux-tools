@@ -54,31 +54,17 @@ describe('writeResult', () => {
         );
     });
 
-    it('should treat a malformed result file as empty', () => {
+    it.each([
+        ['malformed JSON', 'not-json'],
+        ['a non-object value', '42'],
+        ['an array', '[1,2]']
+    ])('should treat %s result file as empty', (_label, fileContent) => {
         mockExistsSync.mockReturnValue(true);
-        mockReadFileSync.mockReturnValue('not-json');
+        mockReadFileSync.mockReturnValue(fileContent);
 
         writeResult('id-3', '/path/new');
 
         expect(mockWriteFileSync).toHaveBeenCalledWith(RESULT_FILE_PATH, JSON.stringify({ 'id-3': '/path/new' }));
-    });
-
-    it('should treat a non-object result file as empty', () => {
-        mockExistsSync.mockReturnValue(true);
-        mockReadFileSync.mockReturnValue('42');
-
-        writeResult('id-4', '/path/new');
-
-        expect(mockWriteFileSync).toHaveBeenCalledWith(RESULT_FILE_PATH, JSON.stringify({ 'id-4': '/path/new' }));
-    });
-
-    it('should treat an array result file as empty', () => {
-        mockExistsSync.mockReturnValue(true);
-        mockReadFileSync.mockReturnValue('[1,2]');
-
-        writeResult('id-5', '/path/new');
-
-        expect(mockWriteFileSync).toHaveBeenCalledWith(RESULT_FILE_PATH, JSON.stringify({ 'id-5': '/path/new' }));
     });
 
     it('should swallow a write failure instead of throwing', () => {
