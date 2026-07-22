@@ -36,8 +36,8 @@
         "@jest/globals": "30.4.1",
         "axios": "1.18.1",
         "npm-run-all2": "9.0.2",
-        "prettier": "3.8.4",
-        "tsx": "^4.7.0"
+        "prettier": "3.9.5",
+        "tsx": "4.23.1"
     },
     "engines": {
         "node": ">=22.x"

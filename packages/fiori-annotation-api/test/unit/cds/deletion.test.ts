@@ -42,15 +42,14 @@ function getDeletedTextsForQualifierStartString(
     const targets = [...(context.ast.targetMap || [])].map(([, value]) => value);
     const matches = findNodesByQualifier(targets, qualifierStartString)!;
 
-    const ranges = matches.map(
-        ({ index, node, parent, greatGrandParent }) =>
-            getDeletionRangeForNode(
-                context.vocabularyService,
-                context.vocabularyAliases,
-                index,
-                context.tokens,
-                ...getAnnotationFromAssignment(context.facade, node, parent, greatGrandParent)
-            )!
+    const ranges = matches.map(({ index, node, parent, greatGrandParent }) =>
+        getDeletionRangeForNode(
+            context.vocabularyService,
+            context.vocabularyAliases,
+            index,
+            context.tokens,
+            ...getAnnotationFromAssignment(context.facade, node, parent, greatGrandParent)
+        )!
     );
 
     const textEdits = getTextEditsForDeletionRanges(
