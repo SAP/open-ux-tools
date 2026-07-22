@@ -4001,7 +4001,7 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect((output.match(/<macros:footer\b/g) ?? []).length).toBe(1);
+            expect(output.match(/<macros:footer\b/g)).toHaveLength(1);
             expect(output).not.toContain('id="footer1"');
         });
 
@@ -4028,7 +4028,7 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect((output.match(/<macros:breadcrumbs\b/g) ?? []).length).toBe(1);
+            expect(output.match(/<macros:breadcrumbs\b/g)).toHaveLength(1);
         });
 
         it('appends a new navigationActions container when one already exists', async () => {
@@ -4055,7 +4055,7 @@ describe('Building Blocks', () => {
 
             const output = result.read(join(basePath, xmlViewFilePath));
             // Two separate <macros:navigationActions> containers
-            expect((output.match(/<macros:navigationActions\b/g) ?? []).length).toBe(2);
+            expect(output.match(/<macros:navigationActions\b/g)).toHaveLength(2);
             // Second container has a unique ID (numeric suffix appended by createIdGenerator)
             expect(output).toContain('id="navigationActions_button1"');
         });
