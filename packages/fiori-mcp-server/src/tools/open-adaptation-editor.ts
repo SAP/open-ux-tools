@@ -25,11 +25,17 @@ async function getWindowsPorts(pid: number, preferredPort?: number): Promise<num
     const found: number[] = [];
     for (const line of stdout.split('\n')) {
         const match = TCP_LISTEN_WINDOWS.exec(line);
-        if (!match?.[1]) continue;
+        if (!match?.[1]) {
+            continue;
+        }
         const port = Number.parseInt(match[1], 10);
-        if (Number.isNaN(port)) continue;
+        if (Number.isNaN(port)) {
+            continue;
+        }
         found.push(port);
-        if (preferredPort && port === preferredPort) return found;
+        if (preferredPort && port === preferredPort) {
+            return found;
+        }
     }
     return found;
 }
@@ -37,7 +43,12 @@ async function getWindowsPorts(pid: number, preferredPort?: number): Promise<num
 async function getChildPids(pid: number): Promise<number[]> {
     try {
         const { stdout } = await execAsync(`pgrep -P ${pid}`);
-        return stdout.trim().split('\n').filter(Boolean).map(Number).filter((p) => !Number.isNaN(p));
+        return stdout
+            .trim()
+            .split('\n')
+            .filter(Boolean)
+            .map(Number)
+            .filter((p) => !Number.isNaN(p));
     } catch {
         return [];
     }
@@ -48,13 +59,21 @@ async function getUnixPortsForPid(checkPid: number, preferredPort?: number): Pro
     try {
         const { stdout } = await execAsync(`lsof -p ${checkPid} -iTCP -sTCP:LISTEN -n -P`);
         for (const line of stdout.split('\n')) {
-            if (line.trim().startsWith('COMMAND')) continue;
+            if (line.trim().startsWith('COMMAND')) {
+                continue;
+            }
             const match = TCP_LISTEN_UNIX.exec(line);
-            if (!match?.[1]) continue;
+            if (!match?.[1]) {
+                continue;
+            }
             const port = Number.parseInt(match[1], 10);
-            if (Number.isNaN(port)) continue;
+            if (Number.isNaN(port)) {
+                continue;
+            }
             found.push(port);
-            if (preferredPort && port === preferredPort) return found;
+            if (preferredPort && port === preferredPort) {
+                return found;
+            }
         }
     } catch {
         // lsof may fail for some PIDs
@@ -81,7 +100,9 @@ async function getPortFromPid(pid: number, preferredPort?: number): Promise<numb
             for (const checkPid of pidsToCheck) {
                 const ports = await getUnixPortsForPid(checkPid, preferredPort);
                 foundPorts.push(...ports);
-                if (preferredPort && foundPorts.includes(preferredPort)) break;
+                if (preferredPort && foundPorts.includes(preferredPort)) {
+                    break;
+                }
             }
         }
         return foundPorts[0];
@@ -92,7 +113,9 @@ async function getPortFromPid(pid: number, preferredPort?: number): Promise<numb
 }
 
 function watchStdout(childProcess: ChildProcess, state: EditorState): void {
-    if (!childProcess.stdout) return;
+    if (!childProcess.stdout) {
+        return;
+    }
     const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
     rl.on('line', (line: string) => {
         logger.debug(`Editor output: ${line}`);
@@ -126,7 +149,9 @@ function buildKillCommands(isWindows: boolean, processId: number, port: number |
     const byPid = isWindows
         ? `Windows: taskkill /PID ${processId} /F`
         : `Mac/Linux: kill ${processId} (or kill -9 ${processId} for force kill)`;
-    if (!port) return `To stop the editor:\n${byPid}`;
+    if (!port) {
+        return `To stop the editor:\n${byPid}`;
+    }
     const byPort = isWindows
         ? `Windows: for /f "tokens=5" %a in ('netstat -ano ^| findstr :${port}') do taskkill /PID %a /F`
         : `Mac/Linux: kill -9 $(lsof -ti:${port})`;
@@ -136,7 +161,9 @@ function buildKillCommands(isWindows: boolean, processId: number, port: number |
 function getPreferredPort(serverUrl: string): number | undefined {
     try {
         const urlObj = new URL(serverUrl);
-        if (urlObj.port) return Number.parseInt(urlObj.port, 10);
+        if (urlObj.port) {
+            return Number.parseInt(urlObj.port, 10);
+        }
         return urlObj.protocol === 'https:' ? 443 : 80;
     } catch {
         return undefined;
@@ -165,7 +192,12 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             shell: false
         });
 
-        const state: EditorState = { editorPath: undefined, serverUrl: undefined, resolved: false, spawnError: undefined };
+        const state: EditorState = {
+            editorPath: undefined,
+            serverUrl: undefined,
+            resolved: false,
+            spawnError: undefined
+        };
 
         watchStdout(childProcess, state);
 
@@ -213,7 +245,11 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
         if (!state.serverUrl) {
             if (childProcess.pid) {
-                try { process.kill(childProcess.pid, 'SIGTERM'); } catch { /* already exited */ }
+                try {
+                    process.kill(childProcess.pid, 'SIGTERM');
+                } catch {
+                    /* already exited */
+                }
             }
             return {
                 functionalityId: OPEN_ADAPTATION_EDITOR_ID,
