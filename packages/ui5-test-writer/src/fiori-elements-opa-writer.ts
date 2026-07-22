@@ -907,7 +907,9 @@ export function addJourneysToAllJourneysFile(generatedJourneys: string[], writeC
     if (!editor.exists(allJourneysPath)) {
         return;
     }
-    const existing: string[] = (editor.readJSON(allJourneysPath) as string[]) ?? [];
+    const content = editor.readJSON(allJourneysPath);
+    const existing: string[] =
+        Array.isArray(content) && content.every((entry) => typeof entry === 'string') ? content : [];
     const existingSet = new Set(existing);
     for (const journey of generatedJourneys) {
         const fileName = `${journey}Journey.gen`;

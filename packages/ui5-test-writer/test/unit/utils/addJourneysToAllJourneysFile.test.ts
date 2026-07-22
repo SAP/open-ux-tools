@@ -77,4 +77,20 @@ describe('addJourneysToAllJourneysFile()', () => {
 
         expect(editor.readJSON(ALL_JOURNEYS_PATH)).toEqual(['ListReportJourney.gen']);
     });
+
+    test('ignores an unexpected object shape and writes only the generated journeys', () => {
+        editor.writeJSON(ALL_JOURNEYS_PATH, { unexpected: 'content' });
+
+        addJourneysToAllJourneysFile(['ListReport'], makeContext(editor));
+
+        expect(editor.readJSON(ALL_JOURNEYS_PATH)).toEqual(['ListReportJourney.gen']);
+    });
+
+    test('ignores an array containing non-string entries and writes only the generated journeys', () => {
+        editor.writeJSON(ALL_JOURNEYS_PATH, ['ExistingJourney.gen', 42, { bad: true }]);
+
+        addJourneysToAllJourneysFile(['ListReport'], makeContext(editor));
+
+        expect(editor.readJSON(ALL_JOURNEYS_PATH)).toEqual(['ListReportJourney.gen']);
+    });
 });
