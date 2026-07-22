@@ -8,6 +8,51 @@ import { OPEN_ADAPTATION_EDITOR_ID } from '../constant.js';
 const TIMEOUT_MS = 30000;
 const execAsync = promisify(exec);
 
+const TCP_LISTEN_WINDOWS = /TCP\s+[\d.]+:(\d+)\s+[\d.]+\s+LISTENING\s+\d+/;
+const TCP_LISTEN_UNIX = /TCP\s+(?:[\d.]+|\[?[\da-f:]+\]?|\*):(\d+)\s+\(LISTEN\)/;
+
+async function getWindowsPorts(pid: number, preferredPort?: number): Promise<number[]> {
+    const { stdout } = await execAsync(`netstat -ano | findstr ${pid}`);
+    const found: number[] = [];
+    for (const line of stdout.split('\n')) {
+        const match = TCP_LISTEN_WINDOWS.exec(line);
+        if (!match?.[1]) continue;
+        const port = parseInt(match[1], 10);
+        if (isNaN(port)) continue;
+        found.push(port);
+        if (preferredPort && port === preferredPort) return found;
+    }
+    return found;
+}
+
+async function getChildPids(pid: number): Promise<number[]> {
+    try {
+        const { stdout } = await execAsync(`pgrep -P ${pid}`);
+        return stdout.trim().split('\n').filter(Boolean).map(Number).filter((p) => !isNaN(p));
+    } catch {
+        return [];
+    }
+}
+
+async function getUnixPortsForPid(checkPid: number, preferredPort?: number): Promise<number[]> {
+    const found: number[] = [];
+    try {
+        const { stdout } = await execAsync(`lsof -p ${checkPid} -iTCP -sTCP:LISTEN -n -P`);
+        for (const line of stdout.split('\n')) {
+            if (line.trim().startsWith('COMMAND')) continue;
+            const match = TCP_LISTEN_UNIX.exec(line);
+            if (!match?.[1]) continue;
+            const port = parseInt(match[1], 10);
+            if (isNaN(port)) continue;
+            found.push(port);
+            if (preferredPort && port === preferredPort) return found;
+        }
+    } catch {
+        // lsof may fail for some PIDs
+    }
+    return found;
+}
+
 /**
  * Gets the actual port number that a process is listening on.
  *
@@ -17,71 +62,23 @@ const execAsync = promisify(exec);
  */
 async function getPortFromPid(pid: number, preferredPort?: number): Promise<number | undefined> {
     const isWindows = process.platform === 'win32';
-    const foundPorts: number[] = [];
-
     try {
+        let foundPorts: number[];
         if (isWindows) {
-            const { stdout } = await execAsync(`netstat -ano | findstr ${pid}`);
-            const lines = stdout.split('\n');
-            for (const line of lines) {
-                const match = line.match(/TCP\s+[\d.]+:(\d+)\s+[\d.]+\s+LISTENING\s+\d+/);
-                if (match?.[1]) {
-                    const port = parseInt(match[1], 10);
-                    if (!isNaN(port)) {
-                        foundPorts.push(port);
-                        if (preferredPort && port === preferredPort) {
-                            return port;
-                        }
-                    }
-                }
-            }
+            foundPorts = await getWindowsPorts(pid, preferredPort);
         } else {
-            const pidsToCheck = [pid];
-            try {
-                const { stdout: childrenStdout } = await execAsync(`pgrep -P ${pid}`);
-                const childPids = childrenStdout
-                    .trim()
-                    .split('\n')
-                    .filter((line) => line.trim())
-                    .map((line) => parseInt(line.trim(), 10))
-                    .filter((p) => !isNaN(p));
-                pidsToCheck.push(...childPids);
-            } catch {
-                // pgrep may fail if no children exist
-            }
-
+            const pidsToCheck = [pid, ...(await getChildPids(pid))];
+            foundPorts = [];
             for (const checkPid of pidsToCheck) {
-                try {
-                    const { stdout } = await execAsync(`lsof -p ${checkPid} -iTCP -sTCP:LISTEN -n -P`);
-                    const lines = stdout.split('\n');
-                    for (const line of lines) {
-                        if (line.trim().startsWith('COMMAND')) {
-                            continue;
-                        }
-                        const match = line.match(/TCP\s+(?:[\d.]+|\[?[\da-f:]+\]?|\*):(\d+)\s+\(LISTEN\)/);
-                        if (match?.[1]) {
-                            const port = parseInt(match[1], 10);
-                            if (!isNaN(port)) {
-                                foundPorts.push(port);
-                                if (preferredPort && port === preferredPort) {
-                                    return port;
-                                }
-                            }
-                        }
-                    }
-                } catch {
-                    // lsof may fail for some PIDs
-                }
+                const ports = await getUnixPortsForPid(checkPid, preferredPort);
+                foundPorts.push(...ports);
+                if (preferredPort && foundPorts.includes(preferredPort)) break;
             }
         }
-
-        if (foundPorts.length > 0) {
-            return foundPorts[0];
-        }
+        return foundPorts[0];
     } catch (error) {
         logger.warn(`Failed to get port from PID ${pid}: ${error instanceof Error ? error.message : String(error)}`);
     }
-
     return undefined;
 }
 
