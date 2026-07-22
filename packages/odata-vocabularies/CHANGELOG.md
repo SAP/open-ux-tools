@@ -1,5 +1,17 @@
 # @sap-ux/odata-vocabularies
 
+## 1.0.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
 ## 1.0.4
 
 ### Patch Changes
