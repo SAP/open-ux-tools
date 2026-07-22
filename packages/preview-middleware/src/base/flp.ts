@@ -625,6 +625,7 @@ export class FlpSandbox {
             // so we cannot derive the path from the request inside the handler.
             for (const dir of sandboxDirs) {
                 const configJsonPath = `${dir}/fioriSandboxAppConfig.json`;
+                this.logger.debug(`Add route for ${configJsonPath}`);
                 this.router.get(
                     configJsonPath,
                     async (
