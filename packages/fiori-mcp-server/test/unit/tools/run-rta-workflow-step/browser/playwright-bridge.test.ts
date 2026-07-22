@@ -316,4 +316,82 @@ describe('browser/playwright-bridge', () => {
         await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/locked by another process/);
         expect(launchMock).toHaveBeenCalledTimes(1);
     });
+
+    test('isMissingBrowserError returns false for non-Error rejection so launch is not retried', async () => {
+        launchMock.mockRejectedValueOnce('not an Error object');
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toBe('not an Error object');
+        expect(launchMock).toHaveBeenCalledTimes(1);
+    });
+
+    test('concurrent callFrontendAction calls reuse the same browserStartPromise', async () => {
+        let resolveLaunch!: (b: FakeBrowser) => void;
+        const launchDeferred = new Promise<FakeBrowser>((resolve) => {
+            resolveLaunch = resolve;
+        });
+        launchMock.mockReturnValueOnce(launchDeferred);
+
+        const browser = new FakeBrowser();
+        const page1 = new FakePage();
+        const page2 = new FakePage();
+        let pageIdx = 0;
+        const pages = [page1, page2];
+        browser.newPage.mockImplementation(async () => pages[pageIdx++]);
+        page1.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
+        page2.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        const p1 = fs.callFrontendAction(SITE_A, 'action1');
+        const p2 = fs.callFrontendAction(SITE_B, 'action2');
+
+        resolveLaunch(browser);
+        const [r1, r2] = await Promise.all([p1, p2]);
+
+        // Both calls share the same browser launch — launchMock fires only once
+        expect(launchMock).toHaveBeenCalledTimes(1);
+        // Each site gets its own page
+        expect(browser.newPage).toHaveBeenCalledTimes(2);
+        expect(r1.payload).toBe('first');
+        expect(r2.payload).toBe('second');
+
+        await fs.stopBrowser();
+    });
+
+    test('pageerror event logs a warning with the site URL', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        await fs.callFrontendAction(SITE_A, 'a');
+
+        const loggerModule = await import('../../../../../src/utils/logger.js');
+        const warnSpy = jest.spyOn(loggerModule.logger, 'warn').mockImplementation(jest.fn());
+
+        page.emit('pageerror', new Error('script error'));
+
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(SITE_A));
+
+        warnSpy.mockRestore();
+        await fs.stopBrowser();
+    });
+
+    test('frameElement() returning null skips that frame and matches by id on next frame', async () => {
+        const nullFrame = new FakeFrame(null);
+        nullFrame.frameElement.mockResolvedValueOnce(null as any);
+        const targetFrame = new FakeFrame('target');
+        const page = new FakePage([nullFrame, targetFrame]);
+        setupBrowser([page]);
+        targetFrame.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'target-result', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction(SITE_A, 'a', {}, 'target');
+
+        expect(targetFrame.evaluate).toHaveBeenCalledTimes(1);
+        expect(nullFrame.evaluate).not.toHaveBeenCalled();
+        expect(result.payload).toBe('target-result');
+
+        await fs.stopBrowser();
+    });
 });

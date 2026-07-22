@@ -43,6 +43,7 @@ const mockGenerateFioriAppCap = jest.fn<any>();
 const mockGenerateAdaptationProject = jest.fn<any>();
 const mockOpenAdaptationEditor = jest.fn<any>();
 const mockAdpControllerExtension = jest.fn<any>();
+const mockRunRtaWorkflowStep = jest.fn<any>();
 const actualTools = await import('../../src/tools/index.js');
 jest.unstable_mockModule('../../src/tools', () => ({
     ...actualTools,
@@ -57,7 +58,8 @@ jest.unstable_mockModule('../../src/tools', () => ({
     generateFioriAppCap: mockGenerateFioriAppCap,
     generateAdaptationProject: mockGenerateAdaptationProject,
     openAdaptationEditor: mockOpenAdaptationEditor,
-    adpControllerExtension: mockAdpControllerExtension
+    adpControllerExtension: mockAdpControllerExtension,
+    runRtaWorkflowStep: mockRunRtaWorkflowStep
 }));
 
 // Dynamic imports after mocks
@@ -82,6 +84,7 @@ describe('FioriFunctionalityServer', () => {
         mockGenerateAdaptationProject.mockReset();
         mockOpenAdaptationEditor.mockReset();
         mockAdpControllerExtension.mockReset();
+        mockRunRtaWorkflowStep.mockReset();
     });
 
     // version cannot be hard coded as it will update on each new patch update
@@ -864,6 +867,50 @@ describe('FioriFunctionalityServer', () => {
                 },
                 'app1'
             );
+        });
+
+        test('search_docs', async () => {
+            const mockResult = { results: [] };
+            mockDocSearch.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'search_docs',
+                    arguments: { query: 'table' }
+                }
+            });
+            expect(mockDocSearch).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+        });
+
+        test('run_rta_workflow_step', async () => {
+            const mockResult = { sessionId: 'abc', rtaStarted: true };
+            mockRunRtaWorkflowStep.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'run_rta_workflow_step',
+                    arguments: { step: 'start', payload: { site: 'http://localhost' } }
+                }
+            });
+            expect(mockRunRtaWorkflowStep).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+        });
+
+        test('string result returns plain text content without structuredContent', async () => {
+            mockDocSearch.mockResolvedValue('plain text result');
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'search_docs',
+                    arguments: { query: 'anything' }
+                }
+            });
+            expect(result.content[0].text).toBe('plain text result');
+            expect(result.structuredContent).toBeUndefined();
         });
 
         test('Unknown tool', async () => {
