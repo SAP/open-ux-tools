@@ -4,7 +4,7 @@ description: Develop a new ESLint rule for @sap-ux/eslint-plugin-fiori-tools. Us
 compatibility: Requires the open-ux-tools monorepo at packages/eslint-plugin-fiori-tools. Assumes pnpm workspace with TypeScript 5+.
 metadata:
   author: sap-ux
-  version: "1.0"
+  version: "0.0.1"
 ---
 
 # Fiori ESLint Rule Developer
@@ -21,6 +21,7 @@ Before writing any code, determine which kind of rule you are implementing:
 | **Fiori language rule — JSON** | Validates `manifest.json` properties across the project | `src/language/rule-factory.ts` |
 | **Fiori language rule — XML** | Validates XML view or fragment files | `src/language/rule-factory.ts` |
 | **Fiori language rule — CDS** | Validates OData annotations in `.cds` files | `src/language/rule-factory.ts` |
+| **Fiori language rule — flex change file** | Validates `webapp/changes/*.change` (JSON) flex change files; used when a setting can be overridden by a flex change in V2 projects | `src/language/change/source-code.ts`, `src/language/rule-factory.ts` |
 
 Read the rule request carefully and pick the correct type. Most new rules since 2024 are Fiori language rules operating on `manifest.json`.
 
@@ -43,6 +44,10 @@ ls packages/eslint-plugin-fiori-tools/src/rules/sap-*.ts
 # For Fiori language rules on manifest.json — good reference rules:
 cat packages/eslint-plugin-fiori-tools/src/rules/sap-flex-enabled.ts
 cat packages/eslint-plugin-fiori-tools/src/rules/sap-table-column-vertical-alignment.ts
+
+# For flex change file rules — good reference rules (use when rule covers V2 .change files):
+cat packages/eslint-plugin-fiori-tools/src/rules/sap-enable-export.ts
+cat packages/eslint-plugin-fiori-tools/src/rules/sap-enable-paste.ts
 
 # For JavaScript rules — good reference rules:
 cat packages/eslint-plugin-fiori-tools/src/rules/sap-no-br-on-return.ts
@@ -191,6 +196,65 @@ const rule: Rule.RuleModule = {
 export default rule;
 ```
 
+### For a flex change file rule (V2 `.change` files):
+
+Rules that cover both `manifest.json` (V4) and flex `*.change` files (V2) must:
+
+1. Accept both `FioriJSONSourceCode` and `FioriChangeSourceCode` in `check()`.
+2. Use `createChangeVisitorHandler` (alongside `createJsonVisitorHandler`) in `createFioriRule`.
+3. Use `FLEX_CHANGE_NEW_VALUE_PATH_RESULT` from `src/utils/helpers.ts` as the `deepestPathResult` for the fixer — change files use `operation: 'update'` (not `'delete'`) to set `content.newValue` to the correct value.
+4. Set `changeFileUri` on the diagnostic object (populated by the linker from `ConfigurationProperty`).
+
+```typescript
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import { FioriChangeSourceCode } from '../language/change/source-code.js';
+import { FLEX_CHANGE_NEW_VALUE_PATH_RESULT } from '../utils/helpers.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
+
+const rule: FioriRuleDefinition = createFioriRule({
+    ruleId: MY_RULE,
+    meta: { /* ... */ },
+
+    check(context) {
+        if (
+            !(context.sourceCode instanceof FioriJSONSourceCode) &&
+            !(context.sourceCode instanceof FioriChangeSourceCode)
+        ) {
+            return [];
+        }
+        // ... collect diagnostics including changeFileUri from linker ...
+        return problems;
+    },
+
+    createJsonVisitorHandler: (context, diagnostic, deepestPathResult) =>
+        function report(node: MemberNode): void {
+            context.report({
+                node,
+                messageId: MY_RULE,
+                fix: createJsonFixer({ context, deepestPathResult, node, operation: 'delete' })
+            });
+        },
+
+    createChangeVisitorHandler(context, diagnostic) {
+        return function report(node: MemberNode): void {
+            context.report({
+                node,
+                messageId: MY_RULE,
+                fix: createJsonFixer({
+                    context,
+                    deepestPathResult: FLEX_CHANGE_NEW_VALUE_PATH_RESULT,
+                    node,
+                    operation: 'update',
+                    value: true   // or whatever the correct value is
+                })
+            });
+        };
+    }
+});
+```
+
+Key reference for the linker side: `src/project-context/linker/fe-v2.ts` `getTablePropertyChangeConfig` — this is how `changeFileUri` and `selector` are populated on a `ConfigurationProperty` from parsed flex change files.
+
 ## Step 6 — Register the rule
 
 Add the rule to `packages/eslint-plugin-fiori-tools/src/rules/index.ts`:
@@ -224,6 +288,10 @@ Then add it to the appropriate config in `packages/eslint-plugin-fiori-tools/src
 cat packages/eslint-plugin-fiori-tools/test/rules/sap-creation-mode-for-table-v4.test.ts
 # Check existing test files - v2
 cat packages/eslint-plugin-fiori-tools/test/rules/sap-creation-mode-for-table-v2.test.ts
+# Check existing test with CAP/CDS support
+cat packages/eslint-plugin-fiori-tools/test/rules/sap-width-including-column-header.test.ts
+# Check existing test with flex change file support
+cat packages/eslint-plugin-fiori-tools/test/rules/sap-enable-export.test.ts
 ```
 
 Create `packages/eslint-plugin-fiori-tools/test/rules/sap-[rule-name].test.ts`.
@@ -287,6 +355,128 @@ ruleTester.run('sap-my-new-rule', myNewRule, {
                 errors: [{ messageId: 'sap-my-new-rule' }],
                 // If fixable, include the expected output after fix:
                 // output: getManifestAsCode(V4_MANIFEST, []) // property removed
+            }
+        )
+    ]
+});
+```
+
+### For CAP/CDS rules:
+
+CAP rules run against a CAP project where annotations live in `.cds` files rather than `manifest.json`. Use `setup(name, CAP_APP_PATH)` to point the project context at the CAP test project — this also triggers an `npm install` of the CDS module if needed.
+
+```typescript
+import {
+    getManifestAsCode,
+    setup,
+    CAP_APP_PATH,
+    CAP_MANIFEST,
+    CAP_MANIFEST_PATH,
+    CAP_ANNOTATIONS_PATH,
+} from '../test-helper';
+
+// Regular (non-CAP) tester
+const { createValidTest, createInvalidTest } = setup('sap-my-new-rule');
+
+// CAP tester — second argument activates CAP project context
+const { createValidTest: createValidTestCAP, createInvalidTest: createInvalidTestCAP } = setup(
+    'sap-my-new-rule - CAP',
+    CAP_APP_PATH
+);
+
+// Run a separate ruleTester.run() block for CAP cases:
+ruleTester.run('sap-my-new-rule - CAP', myNewRule, {
+    valid: [
+        createValidTestCAP(
+            {
+                name: 'non manifest file - cds',
+                filename: 'some-other-file.cds',
+                code: ''
+            },
+            []
+        ),
+        createValidTestCAP(
+            {
+                name: 'property correct in CAP manifest',
+                filename: CAP_MANIFEST_PATH,
+                code: JSON.stringify(CAP_MANIFEST)
+            },
+            []
+        )
+    ],
+    invalid: [
+        createInvalidTestCAP(
+            {
+                name: 'property wrong in CAP manifest',
+                filename: CAP_MANIFEST_PATH,
+                code: getManifestAsCode(CAP_MANIFEST, [
+                    { path: ['sap.app', 'myProperty'], value: 'wrongValue' }
+                ])
+            },
+            {
+                errors: [{ messageId: 'sap-my-new-rule' }]
+            }
+        )
+    ]
+});
+```
+
+**Note:** `CAP_ANNOTATIONS_PATH` (`annotations.cds`) is available when the rule operates on CDS annotation files directly. Pass it as `filename` in test cases that lint CDS content.
+
+### For flex change file rules (V2 `.change` files):
+
+```typescript
+import {
+    getManifestAsCode,
+    setup,
+    V2_MANIFEST,
+    V2_MANIFEST_PATH,
+    V2_FLEX_CHANGE_CONTENT,
+    V2_FLEX_CHANGE_FILE_PATH,
+} from '../test-helper';
+
+const { createValidTest, createInvalidTest } = setup('sap-my-new-rule');
+
+ruleTester.run('sap-my-new-rule', myNewRule, {
+    valid: [
+        // Change file present but property not set — no violation
+        createValidTest(
+            {
+                name: 'V2 - change file without relevant property',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(V2_FLEX_CHANGE_CONTENT, undefined, 2)
+            },
+            []
+        ),
+        // Change file sets the property to the correct value
+        createValidTest(
+            {
+                name: 'V2 - change file property set correctly',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(
+                    { ...V2_FLEX_CHANGE_CONTENT, content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'myProperty', newValue: true } },
+                    undefined, 2
+                )
+            },
+            []
+        )
+    ],
+    invalid: [
+        // Change file sets the property to the wrong value
+        createInvalidTest(
+            {
+                name: 'V2 - change file property set to wrong value',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(
+                    { ...V2_FLEX_CHANGE_CONTENT, content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'myProperty', newValue: false } },
+                    undefined, 2
+                )
+            },
+            [],
+            {
+                errors: [{ messageId: 'sap-my-new-rule' }],
+                // Fix should update content.newValue to true:
+                // output: JSON.stringify({ ...V2_FLEX_CHANGE_CONTENT, content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'myProperty', newValue: true } }, undefined, 2)
             }
         )
     ]
@@ -431,7 +621,7 @@ pnpm cset
 Select `@sap-ux/eslint-plugin-fiori-tools`, choose `minor` for new rules (or `patch` for fixes), and write a message following the convention:
 
 ```
-feat(eslint-plugin-fiori-tools): add sap-my-new-rule rule for [short description]
+FEAT: add sap-my-new-rule rule for [short description]
 ```
 
 ---
@@ -449,9 +639,12 @@ feat(eslint-plugin-fiori-tools): add sap-my-new-rule rule for [short description
 | V4 linker | `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v4.ts` |
 | Rule factory | `packages/eslint-plugin-fiori-tools/src/language/rule-factory.ts` |
 | Rule fixer | `packages/eslint-plugin-fiori-tools/src/language/rule-fixer.ts` |
+| Flex change source code | `packages/eslint-plugin-fiori-tools/src/language/change/source-code.ts` |
+| Parser types (FlexChange) | `packages/eslint-plugin-fiori-tools/src/project-context/parser/types.ts` |
 | Test helper | `packages/eslint-plugin-fiori-tools/test/test-helper.ts` |
 | Test data (V4) | `packages/eslint-plugin-fiori-tools/test/data/v4-xml-start/` |
 | Test data (V2) | `packages/eslint-plugin-fiori-tools/test/data/v2-xml-start/` |
+| Test data (V2 flex changes) | `packages/eslint-plugin-fiori-tools/test/data/v2-xml-start/webapp/changes/` |
 | Test data (CAP) | `packages/eslint-plugin-fiori-tools/test/data/cap-start/` |
 | Rule docs | `packages/eslint-plugin-fiori-tools/docs/rules/sap-[name].md` |
 | Docs template | `packages/eslint-plugin-fiori-tools/docs/rules/TEMPLATE.md` |
