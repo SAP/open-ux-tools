@@ -207,5 +207,5 @@ async function getAbapServiceProvider(
         return undefined;
     }
 
-    return serviceProvider as AbapServiceProvider;
+    return serviceProvider;
 }
