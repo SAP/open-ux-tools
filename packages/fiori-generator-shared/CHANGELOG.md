@@ -1,5 +1,35 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/telemetry 1.0.18 → 1.0.19
+
+## 1.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add backendSystemFilter option to system selection and filter full-service-URL systems in repo app import; move getFloorplanLabel and floorplan label/description translations to fiori-generator-shared and export tFioriGeneratorShared [[22c974b](https://github.com/SAP/open-ux-tools/commit/22c974bbd38773e62e87aa34b60481ee6a3da62f)]
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-14
+
+#### Features
+
+- Move getFloorplanLabel and floorplans translations from fiori-app-sub-generator to fiori-generator-shared. Add flow-specific telemetry events for ABAP repository download and ADT quick deploy flows. [[f14486c](https://github.com/SAP/open-ux-tools/commit/f14486c70e455b042c6bb4c009a717b615cbf06f)]
+
 ## 1.0.20
 
 ### Patch Changes

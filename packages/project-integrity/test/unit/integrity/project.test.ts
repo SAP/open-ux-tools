@@ -98,10 +98,10 @@ describe('Test checkProjectIntegrity()', () => {
     });
 
     test('Disabled project', async () => {
+        expect.assertions(1);
         const integrityFilePath = join(__testdir, '../../test-input/disabled-project/integrity.json');
         try {
             await checkProjectIntegrity(integrityFilePath);
-            expect(false).toBe('checkProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toBe(
                 `Integrity is disabled for the project with integrity data ${integrityFilePath}`
@@ -135,10 +135,10 @@ describe('Test updateProjectIntegrity()', () => {
     });
 
     test('Update with non existing additional string content', async () => {
+        expect.assertions(1);
         const integrityFilePath = join(__testdir, '../../test-input/valid-project/.integrity.json');
         try {
             await updateProjectIntegrity(integrityFilePath, { 'key1': 'value1', 'wrong': 'wrong content' });
-            expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toBe(
                 'There is a mismatch of additional content keys.\nStored content keys: key1, key2\nNew content keys: key1, wrong'
@@ -147,19 +147,19 @@ describe('Test updateProjectIntegrity()', () => {
     });
 
     test('Update with non existing integrity file', async () => {
+        expect.assertions(1);
         try {
             await updateProjectIntegrity('non-existing');
-            expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }
     });
 
     test('Update disabled project', async () => {
+        expect.assertions(1);
         const integrityFilePath = join(__testdir, '../../test-input/disabled-project/integrity.json');
         try {
             await updateProjectIntegrity(integrityFilePath);
-            expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toBe(
                 `Integrity is disabled for the project with integrity data ${integrityFilePath}`
@@ -186,9 +186,9 @@ describe('Test isProjectIntegrityEnabled()', () => {
     });
 
     test('Check non existing project', async () => {
+        expect.assertions(1);
         try {
             await isProjectIntegrityEnabled('non-existing');
-            expect(false).toBe('isProjectIntegrityEnabled() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }
@@ -220,9 +220,9 @@ describe('Test enableProjectIntegrity()', () => {
     });
 
     test('Enable integrity for non existing project', async () => {
+        expect.assertions(1);
         try {
             await enableProjectIntegrity('non-existing');
-            expect(false).toBe('enableProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }
@@ -254,9 +254,9 @@ describe('Test disableProjectIntegrity()', () => {
     });
 
     test('Disable integrity for non existing project', async () => {
+        expect.assertions(1);
         try {
             await disableProjectIntegrity('non-existing');
-            expect(false).toBe('disableProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toBe('Integrity data not found at non-existing');
         }

@@ -1,5 +1,21 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.9.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
+## 1.9.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
 ## 1.9.1
 
 ### Patch Changes

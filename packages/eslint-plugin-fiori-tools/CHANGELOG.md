@@ -1,5 +1,37 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.11
+
+### Patch Changes
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
+## 10.7.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 10.7.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- Validate required fields are defined in the .change file when creating a FlexChange object. [[81e386d](https://github.com/SAP/open-ux-tools/commit/81e386dec63839016e43cd3b48889134ccac48f9)]
+
 ## 10.7.8
 
 ### Patch Changes
