@@ -366,6 +366,8 @@ describe('Test findRootsForPath() with cache', () => {
 
     test('Test caching', async () => {
         const capProjectType = new Map<string, CapProjectType | undefined>([
+            // findCapProjectRoot now starts at appRoot itself (fiori_elements), so that entry must be pre-seeded
+            // or the spy would observe a set() call for it
             [join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix/app/fiori_elements'), undefined],
             [join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix/app'), undefined],
             [join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix'), 'CAPNodejs']
@@ -399,5 +401,9 @@ describe('Test findCapProjectRoot()', () => {
 
     test('Return CAP root when called with the CAP root itself', async () => {
         expect(await findCapProjectRoot(projectRoot, false)).toBe(projectRoot);
+    });
+
+    test('Return CAP root when called with the CAP root itself and checkForAppRouter=true', async () => {
+        expect(await findCapProjectRoot(projectRoot)).toBe(projectRoot);
     });
 });

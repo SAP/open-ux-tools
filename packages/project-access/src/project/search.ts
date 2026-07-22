@@ -242,7 +242,7 @@ export async function findRootsForPath(
         const projectRoot = await findCapProjectRoot(appRoot, undefined, { memFs, cache });
         if (projectRoot) {
             if (projectRoot === appRoot) {
-                // appRoot is the CAP root itself - e.g. app has no own package.json inside the CAP project, not supported
+                // appRoot is the CAP root itself, meaning there is no enclosing CAP project - not a supported app layout
                 return null;
             }
             // App included in CAP
