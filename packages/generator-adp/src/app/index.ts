@@ -169,6 +169,10 @@ export default class extends Generator {
      */
     private isCfEnv = false;
     /**
+     * Tracks whether the writing phase failed, to prevent end() from overwriting a failure result.
+     */
+    private writingFailed = false;
+    /**
      * Indicates if the user is logged in to CF.
      */
     private isCfLoggedIn = false;
@@ -432,6 +436,7 @@ export default class extends Generator {
         } catch (e) {
             const message = e instanceof Error ? e.message : String(e);
             this.logger.error(`Writing phase failed: ${message}`);
+            this.writingFailed = true;
             if (this.jsonInput?.id) {
                 writeResult(this.jsonInput.id, `Failure: ${message}`);
             }
@@ -457,7 +462,7 @@ export default class extends Generator {
         const projectPath = this._getProjectPath();
 
         // Report the generated project path back to the BAS orchestrator once files are written to disk.
-        if (this.jsonInput?.id) {
+        if (this.jsonInput?.id && !this.writingFailed) {
             writeResult(this.jsonInput.id, projectPath);
         }
 
