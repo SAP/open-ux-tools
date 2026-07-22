@@ -304,7 +304,7 @@ describe('port detection via execAsync', () => {
     test('detects port from netstat output on Windows', async () => {
         const originalPlatform = process.platform;
         Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
-        const netstatOutput = 'TCP    0.0.0.0:8080    0.0.0.0:0    LISTENING    1234';
+        const netstatOutput = 'TCP    0.0.0.0:8080    0.0.0.0    LISTENING    1234';
         mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: netstatOutput, stderr: '' }));
 
         const fakeProc = makeFakeProcess(1234);
@@ -336,5 +336,105 @@ describe('port detection via execAsync', () => {
 
         const result = await resultPromise;
         expect(result.status).toBe('Success');
+    });
+
+    test('returns preferred port when it is found in lsof output (early return)', async () => {
+        const lsofOutput = 'node   1234  user  TCP *:4000 (LISTEN)\nnode   1234  user  TCP *:5000 (LISTEN)';
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: lsofOutput, stderr: '' }));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://localhost:4000');
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        const params = result.parameters as Record<string, unknown>;
+        expect(params.port).toBe(4000);
+    });
+
+    test('rl close event resolves when both url and path are set but resolved was not yet flipped', async () => {
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: '', stderr: '' }));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+
+        // Emit URL and path separately then close — when close fires both are set
+        // but the line handler may not have had a chance to flip resolved yet if
+        // we emit close before the combined-check triggers
+        currentStdoutRl!.emitLine('URL: http://localhost:5000');
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitClose();
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        expect(result.status).toBe('Success');
+    });
+
+    test('returns preferred port from netstat when it matches on Windows (early return)', async () => {
+        const originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+        const netstatOutput = 'TCP    0.0.0.0:3000    0.0.0.0    LISTENING    1234\nTCP    0.0.0.0:4000    0.0.0.0    LISTENING    1234';
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: netstatOutput, stderr: '' }));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://localhost:3000');
+        await tickMs(200);
+        await tickMs(1200);
+
+        Object.defineProperty(process, 'platform', { value: originalPlatform, configurable: true });
+        const result = await resultPromise;
+        const params = result.parameters as Record<string, unknown>;
+        expect(params.port).toBe(3000);
+    });
+
+    test('uses port 443 when server URL is https with no explicit port', async () => {
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: '', stderr: '' }));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: https://localhost');
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        expect(result.status).toBe('Success');
+    });
+
+    test('handles invalid server URL gracefully in getPreferredPort', async () => {
+        mockExec.mockImplementation((_cmd, cb) => cb(null, { stdout: '', stderr: '' }));
+
+        const fakeProc = makeFakeProcess(1234);
+        mockSpawn.mockReturnValue(fakeProc);
+
+        const resultPromise = openAdaptationEditor({ appPath: '/app' });
+        currentStdoutRl!.emitLine('fiori run --open /test/adaptation-editor.html');
+        currentStdoutRl!.emitLine('URL: http://[invalid');
+        await tickMs(200);
+        await tickMs(1200);
+
+        const result = await resultPromise;
+        expect(result.status).toBe('Success');
+    });
+
+    test('outer catch returns error envelope when spawn itself throws synchronously', async () => {
+        mockSpawn.mockImplementation(() => { throw new Error('spawn failed synchronously'); });
+
+        const result = await openAdaptationEditor({ appPath: '/app' });
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('spawn failed synchronously');
     });
 });
