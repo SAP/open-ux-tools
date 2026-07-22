@@ -1,5 +1,13 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
 ## 1.0.11
 
 ### Patch Changes
