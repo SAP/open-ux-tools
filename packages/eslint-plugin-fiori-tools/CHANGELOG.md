@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
 ## 10.7.11
 
 ### Patch Changes
