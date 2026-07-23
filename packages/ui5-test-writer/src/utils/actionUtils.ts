@@ -155,7 +155,9 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
 
     return {
         label: (item.Label as string) || '',
-        action: actionString,
+        action: actionMethod,
+        service: metadata.namespace ?? '',
+        unbound: !isEntityBound,
         visible: true,
         enabled,
         dynamicPath,

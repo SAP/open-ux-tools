@@ -1,5 +1,41 @@
 # @sap-ux/preview-middleware
 
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.35 → 1.0.36
+
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/adp-tooling 1.0.34 → 1.0.35
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.0.44
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Show the original browser error text in the InfoCenter when an orphaned change file can't be loaded, instead of a fixed localized message. [[ee2db1b](https://github.com/SAP/open-ux-tools/commit/ee2db1b968ae892b12954f10219b89195b09be49)]
+
+## 1.0.43
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/adp-tooling 1.0.33 → 1.0.34
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
 ## 1.0.42
 
 ### Patch Changes
