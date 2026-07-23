@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.46
+
+## 1.0.45
+
+## 1.0.44
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- Show the original browser error text in the InfoCenter when an orphaned change file can't be loaded, instead of a fixed localized message. [[ee2db1b](https://github.com/SAP/open-ux-tools/commit/ee2db1b968ae892b12954f10219b89195b09be49)]
+
+## 1.0.43
+
 ## 1.0.42
 
 ## 1.0.41

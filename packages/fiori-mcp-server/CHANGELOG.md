@@ -1,5 +1,53 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- adjust opa5 test development skill initial workflow [[eb0d618](https://github.com/SAP/open-ux-tools/commit/eb0d618bf0cc168efec98465964d6e01fc74f512)]
+
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- add support for odata v2 to opa test development skill [[b45d339](https://github.com/SAP/open-ux-tools/commit/b45d339815670265f2c6013d98f636924514a24a)]
+
+## 1.9.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
+## 1.9.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
+## 1.9.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
 ## 1.9.1
 
 ### Patch Changes

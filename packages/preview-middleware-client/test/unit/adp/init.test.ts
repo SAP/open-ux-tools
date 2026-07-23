@@ -35,7 +35,7 @@ jest.unstable_mockModule('open/ux/preview/client/adp/extend-controller', () => (
 }));
 
 jest.unstable_mockModule('open/ux/preview/client/adp/change-file-validator', () => ({
-    initOrphanedChangeDetection: jest.fn().mockResolvedValue(undefined)
+    initOrphanedChangeDetection: jest.fn().mockReturnValue(() => undefined)
 }));
 
 const common = await import('@sap-ux-private/control-property-editor-common');
