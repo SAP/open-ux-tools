@@ -69,27 +69,27 @@ Always target the exact file set explicitly. Substitute real paths where shown.
 npx eslint webapp/manifest.json
 
 # 2. propertyChange files — OData V2 projects only (skip if V4)
-# Guard: only run if the find returns at least one file
-CHANGE_FILES=$(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
-[ -n "$CHANGE_FILES" ] && npx eslint $CHANGE_FILES
+# Array assignment splits find output into separate elements (works in bash and zsh)
+CHANGE_FILES=($(find webapp/changes -name "*propertyChange.change" 2>/dev/null))
+[ ${#CHANGE_FILES[@]} -gt 0 ] && npx eslint "${CHANGE_FILES[@]}"
 
 # 3. All local XML files declared in manifest dataSources via localUri
 #    (covers annotation files, metadata.xml, service.xml, etc.)
-XML_FILES=$(node --input-type=commonjs -e "
+XML_FILES=($(node --input-type=commonjs -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
-")
-[ -n "$XML_FILES" ] && npx eslint $XML_FILES
+"))
+[ ${#XML_FILES[@]} -gt 0 ] && npx eslint "${XML_FILES[@]}"
 
-# Or combine all three in one pass (skips change/XML args when there are no matching files):
-CHANGE_FILES=$(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
-XML_FILES=$(node --input-type=commonjs -e "
+# Or combine all three in one pass:
+CHANGE_FILES=($(find webapp/changes -name "*propertyChange.change" 2>/dev/null))
+XML_FILES=($(node --input-type=commonjs -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
-")
-npx eslint webapp/manifest.json ${CHANGE_FILES:+$CHANGE_FILES} ${XML_FILES:+$XML_FILES}
+"))
+npx eslint webapp/manifest.json "${CHANGE_FILES[@]}" "${XML_FILES[@]}"
 ```
 
 **CAP project — specific app:**
@@ -101,9 +101,8 @@ APP=app/incidents   # replace with your app folder
 npx eslint $APP/webapp/manifest.json
 
 # 2. propertyChange files — OData V2 projects only (skip if V4)
-# Guard: only run if the find returns at least one file
-CHANGE_FILES=$(find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null)
-[ -n "$CHANGE_FILES" ] && npx eslint $CHANGE_FILES
+CHANGE_FILES=($(find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null))
+[ ${#CHANGE_FILES[@]} -gt 0 ] && npx eslint "${CHANGE_FILES[@]}"
 
 # 3. CDS files (app-level only)
 # The glob is intentionally quoted — ESLint resolves it internally, not the shell.
