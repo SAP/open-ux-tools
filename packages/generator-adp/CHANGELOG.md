@@ -1,5 +1,25 @@
 # @sap-ux/generator-adp
 
+## 1.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.35 → 1.0.36
+
+## 1.0.38
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- Write headless generation result for BAS orchestrator when JSON input provides a correlation id [[0123b0f](https://github.com/SAP/open-ux-tools/commit/0123b0fb9c86dc19d615f89902a8518773dcde80)]
+
 ## 1.0.37
 
 ### Patch Changes

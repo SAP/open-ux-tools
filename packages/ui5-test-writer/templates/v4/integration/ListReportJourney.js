@@ -24,6 +24,8 @@ sap.ui.define([
     function journey() {
         QUnit.module("<%- name%>ListReport journey");
 
+        const defaultTableId = <%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '""' %>;
+
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
@@ -34,27 +36,31 @@ sap.ui.define([
         <%_ if (!hideFilterBar && filterBarItems && filterBarItems.length > 0) { -%>
         opaTest("Check filter bar", function (Given, When, Then) {
             <%_ filterBarItems.forEach(function(item) { _%>
-            Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- item %>");
+            <%_ if (item.custom) { _%>
+            Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- item.description %>");
+            <%_ } else { _%>
+            Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- item.property %>" });
+            <%_ } _%>
             <%_ }); -%>
         });
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
         opaTest("Add semantic key properties to filter bar", function (Given, When, Then) {
-            Then.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation();
+            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iAddAdaptationFilterField("<%- property %>");
+            When.onThe<%- startLR%>Generated.onFilterBar().iAddAdaptationFilterField({ property: "<%- property %>" });
             <%_ }); -%>
-            Then.onThe<%- startLR%>Generated.onFilterBar().iConfirmFilterAdaptation();
+            When.onThe<%- startLR%>Generated.onFilterBar().iConfirmFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-            Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- property %>");
+            Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- property %>" });
             <%_ }); -%>
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-            // Then.onThe<%- startLR%>Generated.onFilterBar().iChangeFilterField("<%- property %>");
+            // When.onThe<%- startLR%>Generated.onFilterBar().iChangeFilterField({ property: "<%- property %>" }, "<value to filter>", false);
             <%_ }); -%>
-            // Then.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
-            // Then.onThe<%- startLR%>Generated.onTable().iCheckRows();
-            // Then.onThe<%- startLR%>Generated.onTable().iSelectRows(0);
-            // Then.onThe<%- startLR%>Generated.onTable().iCheckAction("<Action Name>", { enabled: true });
+            // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            // Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            // Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<Action Name>", { enabled: true });
         });
 <%_ } -%>
 
@@ -62,47 +68,58 @@ sap.ui.define([
         // opaTest("Perform a global search and check the result", function (Given, When, Then) {
         //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
         //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
-        //     Then.onThe<%- startLR%>Generated.onTable().iCheckRows();
+        //     Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
         // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
             <%_ if (createButton.visible && !isALP) { _%>
-            Then.onThe<%- startLR%>Generated.onTable().iCheckCreate({ visible: true });
-            // Then.onThe<%- startLR%>Generated.onTable().iPressCreate();
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
             <%_ } _%>
             <%_ if (deleteButton.visible) { _%>
-            // Then.onThe<%- startLR%>Generated.onTable().iPressDelete();
-            Then.onThe<%- startLR%>Generated.onTable().iCheckDelete({ visible: true });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
-            // Then.onThe<%- startLR%>Generated.onTable().iPressAction("<%- item.label %>");
-            Then.onThe<%- startLR%>Generated.onTable().iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
             <%_ } _%>
             <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-            Then.onThe<%- startLR %>Generated.onTable().iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-            <%_ } %>
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+            <%_ } -%>
         });
-<%_ } %>
+<%_ } -%>
 
-<% if (startLR) { %>
+<%_ if (startLR) { -%>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            <% if (!hideFilterBar) { %>
+            <%_ if (!hideFilterBar) { -%>
             When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
-            <%} %>
-            Then.onThe<%- startLR%>Generated.onTable().iCheckRows();
-<% if (navigatedOP) { %>
-            When.onThe<%- startLR%>Generated.onTable().iPressRow(0);
+            <%_ } -%>
+            <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { -%>
+            <%_ tableIdentifiers.forEach(function(tabId) { _%>
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tabId %>" });
+            Then.onThe<%- startLR%>Generated.onTable("<%- tabId %>").iCheckRows();
+            <%_ }); -%>
+            <%_ } else { -%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+            <%_ } -%>
+            <%_ if (navigatedOP) { -%>
+            <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { _%>
+            When.onThe<%- startLR%>Generated.iGoToView({ key: defaultTableId });
+            <%_ } _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressRow(0);
             Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
-<%} %>
+            <%_ } -%>
         });
-<%} %>
-        opaTest("Teardown", function (Given, When, Then) { 
+<%_ } -%>
+
+        opaTest("Teardown", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });

@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- add support for odata v2 to opa test development skill [[b45d339](https://github.com/SAP/open-ux-tools/commit/b45d339815670265f2c6013d98f636924514a24a)]
+
 ## 1.9.4
 
 ### Patch Changes
