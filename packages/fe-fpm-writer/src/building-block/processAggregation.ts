@@ -12,9 +12,9 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
-    PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
     PAGE_TEMPLATE_COMMENT,
-    PAGE_TEMPLATE_TYPE_FULL,
+    PageTemplateType,
     type BuildingBlock,
     type PageAggregationName,
     type Page,
@@ -26,7 +26,7 @@ import { getTemplatePath } from '../templates.js';
 import { type IdGeneratorFunction, createIdGenerator } from '../common/file.js';
 import { getErrorMessage } from '../common/validate.js';
 import { i18nNamespaces, translate } from '../i18n.js';
-import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { getDOMParserOptions, getOrAddNamespace, TEMPLATE_NAMESPACES } from './prompts/utils/xml.js';
 import { resolveAggregationPath } from './processor.js';
 
 /**
@@ -45,13 +45,9 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
         throw new Error(`Unable to read xml view file. Details: ${getErrorMessage(error)}`);
     }
 
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse xml view file. Details: [${level}] - ${message}`);
-    };
-
     let viewDocument: Document;
     try {
-        viewDocument = new DOMParser({ errorHandler }).parseFromString(viewContent, 'text/xml');
+        viewDocument = new DOMParser(getDOMParserOptions()).parseFromString(viewContent, 'text/xml');
     } catch (error) {
         throw new Error(`Unable to parse xml view file. Details: ${getErrorMessage(error)}`);
     }
@@ -70,7 +66,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
     if (data.buildingBlockType !== BuildingBlockType.Page) {
         return undefined;
     }
-    return (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_AGGREGATIONS : undefined;
+    return (data as Page).templateType === PageTemplateType.Full ? PAGE_AGGREGATIONS : undefined;
 }
 
 /**
@@ -81,7 +77,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
  */
 export function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
     const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
-    if (minUI5Version && lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
+    if (minUI5Version && lt(minUI5Version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT)) {
         const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
         throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version.version })}`);
     }
@@ -188,10 +184,11 @@ function buildPageAggregationFragment(
         .map((a) => `${a.name}="${a.value}"`)
         .join(' ');
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
-    };
-    return new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
+    return new DOMParser(
+        getDOMParserOptions(TEMPLATE_NAMESPACES, (level, message) => {
+            throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
+        })
+    ).parseFromString(wrapped, 'text/xml');
 }
 
 /**

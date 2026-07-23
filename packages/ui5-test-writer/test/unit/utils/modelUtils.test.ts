@@ -8,6 +8,7 @@ import {
     getListReportPage,
     getAggregations,
     getSelectionFieldItems,
+    getSelectionFieldItemsWithLabels,
     getFilterFields,
     getAppFeatures,
     parseDataFieldForAnnotationName
@@ -125,44 +126,87 @@ describe('Test getSelectionFieldItems()', () => {
         expect(result).toEqual([]);
     });
 
-    test('should return array of description strings from aggregation items', () => {
+    test('should return array of property names from aggregation items', () => {
         const selectionFieldsAgg: TreeAggregations = {
-            field1: { description: 'First Field' } as unknown as TreeAggregation,
-            field2: { description: 'Second Field' } as unknown as TreeAggregation,
-            field3: { description: 'Third Field' } as unknown as TreeAggregation
+            field1: { schema: { keys: [{ name: 'Value', value: 'FirstField' }] } } as unknown as TreeAggregation,
+            field2: { schema: { keys: [{ name: 'Value', value: 'SecondField' }] } } as unknown as TreeAggregation,
+            field3: { schema: { keys: [{ name: 'Value', value: 'ThirdField' }] } } as unknown as TreeAggregation
         };
         const result = getSelectionFieldItems(selectionFieldsAgg);
         expect(result).toHaveLength(3);
-        expect(result).toContain('First Field');
-        expect(result).toContain('Second Field');
-        expect(result).toContain('Third Field');
+        expect(result).toContain('FirstField');
+        expect(result).toContain('SecondField');
+        expect(result).toContain('ThirdField');
     });
 
-    test('should handle items with undefined description', () => {
+    test('should skip items without a property key', () => {
         const selectionFieldsAgg: TreeAggregations = {
-            field1: { description: 'First Field' } as unknown as TreeAggregation,
+            field1: { schema: { keys: [{ name: 'Value', value: 'FirstField' }] } } as unknown as TreeAggregation,
             field2: {} as unknown as TreeAggregation
         };
         const result = getSelectionFieldItems(selectionFieldsAgg);
-        expect(result).toHaveLength(2);
-        expect(result[0]).toBe('First Field');
-        expect(result[1]).toBeUndefined();
+        expect(result).toHaveLength(1);
+        expect(result[0]).toBe('FirstField');
     });
 
     test('should preserve order of items', () => {
-        const field1Desc = 'Field One';
-        const field2Desc = 'Field Two';
-        const field3Desc = 'Field Three';
         const selectionFieldsAgg: TreeAggregations = {
-            field3: { description: field3Desc } as unknown as TreeAggregation,
-            field1: { description: field1Desc } as unknown as TreeAggregation,
-            field2: { description: field2Desc } as unknown as TreeAggregation
+            field3: { schema: { keys: [{ name: 'Value', value: 'FieldThree' }] } } as unknown as TreeAggregation,
+            field1: { schema: { keys: [{ name: 'Value', value: 'FieldOne' }] } } as unknown as TreeAggregation,
+            field2: { schema: { keys: [{ name: 'Value', value: 'FieldTwo' }] } } as unknown as TreeAggregation
         };
         const result = getSelectionFieldItems(selectionFieldsAgg);
         expect(result).toHaveLength(3);
-        expect(result[0]).toEqual(field3Desc);
-        expect(result[1]).toEqual(field1Desc);
-        expect(result[2]).toEqual(field2Desc);
+        expect(result[0]).toEqual('FieldThree');
+        expect(result[1]).toEqual('FieldOne');
+        expect(result[2]).toEqual('FieldTwo');
+    });
+});
+
+describe('Test getSelectionFieldItemsWithLabels()', () => {
+    test('should return empty array when selectionFieldsAgg is not an object', () => {
+        expect(getSelectionFieldItemsWithLabels('string' as unknown as TreeAggregations)).toEqual([]);
+        expect(getSelectionFieldItemsWithLabels(undefined as unknown as TreeAggregations)).toEqual([]);
+        expect(getSelectionFieldItemsWithLabels(null as unknown as TreeAggregations)).toEqual([]);
+    });
+
+    test('should return property and description entries from aggregation items', () => {
+        const selectionFieldsAgg: TreeAggregations = {
+            field1: {
+                description: 'Company Code',
+                schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] }
+            } as unknown as TreeAggregation,
+            field2: {
+                description: 'Customer',
+                schema: { keys: [{ name: 'Value', value: 'Customer' }] }
+            } as unknown as TreeAggregation
+        };
+        expect(getSelectionFieldItemsWithLabels(selectionFieldsAgg)).toEqual([
+            { property: 'CompanyCode', description: 'Company Code' },
+            { property: 'Customer', description: 'Customer' }
+        ]);
+    });
+
+    test('should fall back to the property name when description is missing', () => {
+        const selectionFieldsAgg: TreeAggregations = {
+            field1: { schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] } } as unknown as TreeAggregation
+        };
+        expect(getSelectionFieldItemsWithLabels(selectionFieldsAgg)).toEqual([
+            { property: 'CompanyCode', description: 'CompanyCode' }
+        ]);
+    });
+
+    test('should skip items without a property key', () => {
+        const selectionFieldsAgg: TreeAggregations = {
+            field1: {
+                description: 'Company Code',
+                schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] }
+            } as unknown as TreeAggregation,
+            field2: { description: 'No Key' } as unknown as TreeAggregation
+        };
+        expect(getSelectionFieldItemsWithLabels(selectionFieldsAgg)).toEqual([
+            { property: 'CompanyCode', description: 'Company Code' }
+        ]);
     });
 });
 
@@ -320,15 +364,13 @@ describe('Test edge cases for better branch coverage', () => {
         expect(result).toEqual([]);
     });
 
-    test('getSelectionFieldItems should handle items without description property', () => {
+    test('getSelectionFieldItems should skip items without a property key', () => {
         const selectionFieldsAgg: TreeAggregations = {
             field1: { name: 'field1' } as unknown as TreeAggregation,
             field2: { name: 'field2' } as unknown as TreeAggregation
         };
         const result = getSelectionFieldItems(selectionFieldsAgg);
-        expect(result).toHaveLength(2);
-        expect(result[0]).toBeUndefined();
-        expect(result[1]).toBeUndefined();
+        expect(result).toHaveLength(0);
     });
 
     test('getFilterFields should handle missing filterBar aggregations', () => {
@@ -386,16 +428,16 @@ describe('Test edge cases for better branch coverage', () => {
 
     test('getSelectionFieldItems should preserve insertion order', () => {
         const selectionFieldsAgg: TreeAggregations = {
-            zField: { description: 'Z Field' } as unknown as TreeAggregation,
-            aField: { description: 'A Field' } as unknown as TreeAggregation,
-            mField: { description: 'M Field' } as unknown as TreeAggregation
+            zField: { schema: { keys: [{ name: 'Value', value: 'ZField' }] } } as unknown as TreeAggregation,
+            aField: { schema: { keys: [{ name: 'Value', value: 'AField' }] } } as unknown as TreeAggregation,
+            mField: { schema: { keys: [{ name: 'Value', value: 'MField' }] } } as unknown as TreeAggregation
         };
         const result = getSelectionFieldItems(selectionFieldsAgg);
         expect(result).toHaveLength(3);
         // Order should match the object key insertion order
-        expect(result[0]).toBe('Z Field');
-        expect(result[1]).toBe('A Field');
-        expect(result[2]).toBe('M Field');
+        expect(result[0]).toBe('ZField');
+        expect(result[1]).toBe('AField');
+        expect(result[2]).toBe('MField');
     });
 
     test('getListReportPage should return null for empty pages object', () => {

@@ -1,5 +1,29 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
 ## 1.0.25
 
 ### Patch Changes
