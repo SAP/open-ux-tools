@@ -76,6 +76,14 @@ export async function generateOPAFiles(
     // journeys. All other project types (ObjectPage-only, Analytical List Page, unrecognized) fall back
     // to the generic FirstJourney starter.
     const generateUxSpecJourneys = !!LROP.pageLR || !!appFeatures.fpm;
+    // The `AnalyticalListPage` marker exists only to exclude ALP pages from LROP detection above. An ALP
+    // is a ListReport component under the hood with no dedicated page-object template or framework class,
+    // so once detection is done, normalize the marker back to `ListReport` for all downstream rendering.
+    for (const page of config.pages) {
+        if (page.template === 'AnalyticalListPage') {
+            page.template = 'ListReport';
+        }
+    }
     const journeyParams: JourneyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
@@ -877,12 +885,8 @@ function writePageObject(
 ): OpaPageWriteInfo {
     // FPM has no .ts template; force .js regardless of the configured extension
     const ext = pageConfig.template === 'FPM' ? DotFileExtension.JS : dotFileExtension;
-    // An Analytical List Page is a ListReport component under the hood and has no dedicated page-object
-    // template, so its page object renders from the ListReport template. The `AnalyticalListPage` marker
-    // is retained on the config only to exclude it from LROP journey detection.
-    const templateName = pageConfig.template === 'AnalyticalListPage' ? 'ListReport' : pageConfig.template;
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration', 'pages', `${templateName}${ext}`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${ext}`),
         join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen${ext}`),
         pageConfig,
         undefined,
