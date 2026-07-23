@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 1.0.36
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
 ## 1.0.35
 
 ### Patch Changes

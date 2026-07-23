@@ -1,5 +1,23 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+#### Release Date
+
+2026-07-22
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.9 → 3.1.10
+- @sap-ux/fiori-freestyle-writer 3.0.58 → 3.0.59
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.2
+
 ## 1.2.11
 
 ### Patch Changes
