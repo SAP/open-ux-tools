@@ -85,7 +85,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "cross-env": "10.1.0",
         "esbuild": "0.28.1",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "npm-run-all2": "9.0.2",

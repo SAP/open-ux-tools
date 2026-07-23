@@ -49,7 +49,7 @@
         "axios-logger": "2.8.1",
         "circular-reference-remover": "2.1.0",
         "fast-xml-parser": "5.8.0",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "inquirer-autocomplete-prompt": "2.0.1",
         "os-name": "4.0.1",
         "@sap-devx/yeoman-ui-types": "1.25.0"

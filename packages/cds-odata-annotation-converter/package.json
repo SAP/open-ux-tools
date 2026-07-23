@@ -35,7 +35,7 @@
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap/ux-cds-compiler-facade": "1.23.0",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
