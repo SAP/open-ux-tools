@@ -2,6 +2,7 @@
 "@sap-ux/create": minor
 "@sap-ux/odata-service-inquirer": patch
 "@sap-ux/store": patch
+"sap-ux-sap-systems-ext": patch
 ---
 
 FEAT: Add interactive prompting and connection checking for system management commands
@@ -11,3 +12,5 @@ FEAT: Add interactive prompting and connection checking for system management co
 - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
 - All commands now support both flag-based and fully interactive modes
 - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+
+BUMP: Rebuild bundle with updated @sap-ux/store
