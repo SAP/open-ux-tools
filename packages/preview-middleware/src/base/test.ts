@@ -1,8 +1,12 @@
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
 import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types/index.js';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
+import { posix } from 'node:path';
+import { getTestResourcesPathPrefix, adjustPathForSandbox } from './utils/project.js';
 
-const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
+const DEFAULTS: Record<string, Readonly<Required<TestConfig>>> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
         init: '/test/unitTests.qunit.js',
@@ -21,39 +25,65 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
         pattern: '',
         framework: 'Testsuite'
     }
-} satisfies TestConfigDefaults;
+} as const satisfies TestConfigDefaults;
 
 /**
  * Merge the given test configuration with the default values.
  *
  * @param config test configuration
+ * @param utils middleware utils
  * @returns merged test configuration
  */
-export function mergeTestConfigDefaults(config: TestConfig): CompleteTestConfig {
-    const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
-    const merged: CompleteTestConfig = { ...defaults, ...config };
-    if (!merged.path.startsWith('/')) {
-        merged.path = `/${merged.path}`;
+export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUtils): CompleteTestConfig {
+    const isCustomInit = config.init !== undefined;
+    const testPathPrefix = getTestResourcesPathPrefix(utils);
+    const defaults: Required<TestConfig> = structuredClone(DEFAULTS[config.framework.toLowerCase()] ?? {});
+
+    if (testPathPrefix) {
+        // remove leading /test from defaults if sandboxPathPrefix is set
+        defaults.pattern = adjustPathForSandbox(defaults.pattern, testPathPrefix);
+        for (const prop of ['path', 'init'] as const) {
+            defaults[prop] = adjustPathForSandbox(defaults[prop], testPathPrefix);
+        }
     }
-    if (!merged.init.startsWith('/')) {
-        merged.init = `/${config.init}`;
+
+    const merged: CompleteTestConfig = { ...defaults, ...config, isCustomInit };
+
+    if (testPathPrefix) {
+        // Prepend testPathPrefix
+        for (const prop of ['path', 'init', 'pattern'] as const) {
+            merged[prop] = posix.join(testPathPrefix, merged[prop]);
+        }
     }
+
+    // Ensure path and init start with leading slash when no prefix exists
+    for (const prop of ['path', 'init'] as const) {
+        merged[prop] = posix.join('/', merged[prop]);
+    }
+
     return merged;
 }
 
 /**
  * Generate a list of imports from a list of resources.
  *
- * @param ns namespace of the test files
+ * @param namespace application namespace
  * @param resourceList list of resources representing test files
+ * @param utils middleware utils
  * @returns array of strings representing the tests
  */
-export function generateImportList(ns: string, resourceList: Resource[]): string[] {
+export function generateImportList(namespace: string, resourceList: Resource[], utils?: MiddlewareUtils): string[] {
+    const testPathPrefix = getTestResourcesPathPrefix(utils);
     return resourceList
         ? resourceList.map((file) => {
-              const path = file.getPath().split('.');
-              path.pop();
-              return `${ns}${path.join('.')}`;
+              const filePath = file.getPath();
+              if (testPathPrefix) {
+                  // For component type: strip /test-resources/<namespace>/ prefix, then prepend namespace
+                  const strippedPath = filePath.replace(`${testPathPrefix}/`, '');
+                  const strippedPathNoExt = strippedPath.substring(0, strippedPath.lastIndexOf('.'));
+                  return `${namespace}/test/${strippedPathNoExt}`;
+              }
+              return `${namespace}${filePath.substring(0, filePath.lastIndexOf('.'))}`;
           })
         : [];
 }

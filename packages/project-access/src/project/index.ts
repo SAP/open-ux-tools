@@ -45,6 +45,7 @@ export {
 } from './search.js';
 export {
     getWebappPath,
+    getWebappTestPath,
     readUi5Yaml,
     getAllUi5YamlFileNames,
     getMockServerConfig,

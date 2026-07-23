@@ -5299,6 +5299,12 @@ importers:
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
+      is-glob:
+        specifier: 4.0.3
+        version: 4.0.3
+      micromatch:
+        specifier: 4.0.8
+        version: 4.0.8
       proxy-from-env:
         specifier: 1.1.0
         version: 1.1.0
@@ -5312,6 +5318,12 @@ importers:
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
+      '@types/is-glob':
+        specifier: 4.0.4
+        version: 4.0.4
+      '@types/micromatch':
+        specifier: 4.0.10
+        version: 4.0.10
       '@types/proxy-from-env':
         specifier: 1.0.4
         version: 1.0.4
@@ -10143,6 +10155,9 @@ packages:
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
+  '@types/braces@3.0.5':
+    resolution: {integrity: sha512-SQFof9H+LXeWNz8wDe7oN5zu7ket0qwMu5vZubW4GCJ8Kkeh6nBWUz87+KTz/G3Kqsrp0j/W253XJb3KMEeg3w==}
+
   '@types/bunyan@1.8.11':
     resolution: {integrity: sha512-758fRH7umIMk5qt5ELmRMff4mLDlN+xyYzC+dkPTdKwbSkJFvz6xwyScrytPU0QIBbRRwbiE8/BIg8bpajerNQ==}
 
@@ -10252,6 +10267,9 @@ packages:
   '@types/inquirer@8.2.6':
     resolution: {integrity: sha512-3uT88kxg8lNzY8ay2ZjP44DKcRaTGztqeIvN2zHvhzIBH/uAPaL75aBtdNRKbA7xXoMbBt5kX0M00VKAnfOYlA==}
 
+  '@types/is-glob@4.0.4':
+    resolution: {integrity: sha512-3mFBtIPQ0TQetKRDe94g8YrxJZxdMillMGegyv6zRBXvq4peRRhf2wLZ/Dl53emtTsC29dQQBwYvovS20yXpiQ==}
+
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
 
@@ -10314,6 +10332,9 @@ packages:
 
   '@types/methods@1.1.4':
     resolution: {integrity: sha512-ymXWVrDiCxTBE3+RIrrP533E70eA+9qu7zdWoHuOmGujkYtzf4HQF96b8nwHLqhuf4ykX61IGRIB38CC6/sImQ==}
+
+  '@types/micromatch@4.0.10':
+    resolution: {integrity: sha512-5jOhFDElqr4DKTrTEbnW8DZ4Hz5LRUEmyrGpCMrD/NphYv3nUnaF08xmSLx1rGGnyEs/kFnhiw6dCgcDqMr5PQ==}
 
   '@types/mime-types@2.1.4':
     resolution: {integrity: sha512-lfU4b34HOri+kAY5UheuFMWPDOI+OPceBSHZKp69gEyTL/mmJ4cnU6Y/rlme3UL3GyOn6Y42hyIEw0/q8sWx5w==}
@@ -26178,6 +26199,8 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/node': 22.13.14
 
+  '@types/braces@3.0.5': {}
+
   '@types/bunyan@1.8.11':
     dependencies:
       '@types/node': 22.13.14
@@ -26306,6 +26329,8 @@ snapshots:
       '@types/through': 0.0.33
       rxjs: 7.8.2
 
+  '@types/is-glob@4.0.4': {}
+
   '@types/istanbul-lib-coverage@2.0.6': {}
 
   '@types/istanbul-lib-report@3.0.3':
@@ -26383,6 +26408,10 @@ snapshots:
       '@types/vinyl': 2.0.12
 
   '@types/methods@1.1.4': {}
+
+  '@types/micromatch@4.0.10':
+    dependencies:
+      '@types/braces': 3.0.5
 
   '@types/mime-types@2.1.4': {}
 
@@ -35041,7 +35070,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.16.1):
     dependencies:
-      axios: 1.16.1(debug@4.3.4)
+      axios: 1.16.1
     optional: true
 
   retry@0.12.0: {}

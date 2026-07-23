@@ -14,6 +14,9 @@ import type { MiddlewareConfig } from '../../../src/index.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
+import { tmpdir } from 'node:os';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -23,9 +26,17 @@ describe('config', () => {
             id: 'my.app'
         }
     } as Manifest;
+    const mockUtils = {
+        getProject() {
+            return {
+                getSourcePath: () => tmpdir(),
+                getType: () => 'application'
+            };
+        }
+    } as unknown as MiddlewareUtils;
     describe('getFlpConfigWithDefaults', () => {
         test('minimum settings', () => {
-            const flpConfig = getFlpConfigWithDefaults({});
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
             expect(flpConfig).toMatchObject({
                 path: DEFAULT_PATH,
                 intent: DEFAULT_INTENT
@@ -34,20 +45,20 @@ describe('config', () => {
         test('user configured path', () => {
             const path = '/test/flpSandbox.html';
             const intent = { object: 'myapp', action: 'myaction' };
-            const flpConfig = getFlpConfigWithDefaults({ path, intent });
+            const flpConfig = getFlpConfigWithDefaults({ path, intent }, mockUtils);
             expect(flpConfig).toMatchObject({ path, intent });
         });
     });
 
     describe('createFlpTemplateConfig', () => {
         test('minimum settings', () => {
-            const flpConfig = getFlpConfigWithDefaults({});
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
             expect(templateConfig).toMatchSnapshot();
         });
 
         test('minimum settings with one reuse lib', () => {
-            const flpConfig = getFlpConfigWithDefaults({});
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
             const resources = { 'my.reuse.lib': '/custom/path/my.reuse.lib' };
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest, resources);
             expect(templateConfig).toMatchSnapshot();
@@ -70,17 +81,70 @@ describe('config', () => {
                 .map((c) => c.connector);
             expect(connectorNames).toContain('LocalStorageConnector');
         });
+
+        test('init is converted to UI5 module ID for application type', () => {
+            const flpConfig = getFlpConfigWithDefaults({ init: 'custom-init' }, mockUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            expect(templateConfig.init).toBe('my/app/custom-init');
+        });
+
+        test('init with leading slash is converted to UI5 module ID for application type', () => {
+            const flpConfig = getFlpConfigWithDefaults({ init: '/custom-init' }, mockUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            expect(templateConfig.init).toBe('my/app/custom-init');
+        });
+
+        test('init is converted to UI5 module ID for component type', () => {
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const flpConfig = getFlpConfigWithDefaults({ init: 'custom-init' }, mockComponentUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, false, mockComponentUtils);
+            expect(templateConfig.init).toBe('my/app/custom-init');
+        });
+
+        test('init is undefined when not configured', () => {
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            expect(templateConfig.init).toBeUndefined();
+        });
     });
 
     describe('createTestTemplateConfig', () => {
         test('minimum settings', () => {
-            const config = mergeTestConfigDefaults({ framework: 'OPA5' });
+            const config = mergeTestConfigDefaults({ framework: 'OPA5' }, mockUtils);
             const templateConfig = createTestTemplateConfig(config, manifest['sap.app'].id, 'sap_horizon');
             expect(templateConfig).toMatchObject({
-                basePath: '..',
+                appBasePath: '..',
+                rootBasePath: '..',
                 framework: 'OPA5',
                 id: manifest['sap.app'].id,
                 initPath: 'opaTests.qunit.js',
+                theme: 'sap_horizon'
+            });
+        });
+
+        test('component type uses absolute appBasePath for resourceroots', () => {
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/fe/v2/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const config = mergeTestConfigDefaults({ framework: 'QUnit' }, mockComponentUtils);
+            const templateConfig = createTestTemplateConfig(config, 'my.fe.v2.app', 'sap_horizon', mockComponentUtils);
+            expect(templateConfig).toMatchObject({
+                appBasePath: '/resources/my/fe/v2/app',
+                rootBasePath: '../../../../..',
+                framework: 'QUnit',
+                id: 'my.fe.v2.app',
                 theme: 'sap_horizon'
             });
         });
@@ -88,7 +152,7 @@ describe('config', () => {
 
     describe('getPreviewPaths', () => {
         test('minimum settings', async () => {
-            const paths = getPreviewPaths({});
+            const paths = getPreviewPaths({}, undefined, mockUtils);
             expect(paths).toHaveLength(1);
             expect(paths[0]).toMatchObject({
                 path: `${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`,
@@ -118,7 +182,7 @@ describe('config', () => {
                 },
                 test: [{ framework: 'OPA5' }]
             } as MiddlewareConfig;
-            const previews = getPreviewPaths(config);
+            const previews = getPreviewPaths(config, undefined, mockUtils);
             expect(previews).toHaveLength(5);
             expect(
                 previews.find(
@@ -155,7 +219,7 @@ describe('config', () => {
                 },
                 test: [{ framework: 'OPA5', path: 'test/opaTests.qunit.html' }]
             } as MiddlewareConfig;
-            const previews = getPreviewPaths(config);
+            const previews = getPreviewPaths(config, undefined, mockUtils);
             // FLP path is normalized by getFlpConfigWithDefaults
             expect(previews.find(({ path }) => path === '/test/flpSandbox.html#myapp-myaction')).toBeDefined();
             // editor endpoint path gets a leading slash added
@@ -168,6 +232,32 @@ describe('config', () => {
             previews.forEach(({ path }) => {
                 expect(path.startsWith('/')).toBe(true);
             });
+        });
+
+        test('editor and card generator paths are prefixed for component project type', async () => {
+            const componentUtils = {
+                getProject() {
+                    return {
+                        getSourcePath: () => tmpdir(),
+                        getType: () => 'component',
+                        getNamespace: () => 'my/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const config = {
+                editors: {
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        endpoints: [{ path: '/editor.html', developerMode: false }]
+                    },
+                    cardGenerator: {
+                        path: '/cardGenerator.html'
+                    }
+                }
+            } as MiddlewareConfig;
+            const previews = getPreviewPaths(config, undefined, componentUtils);
+            expect(previews.find(({ path }) => path === '/test-resources/my/app/editor.html')).toBeDefined();
+            expect(previews.find(({ path }) => path === '/test-resources/my/app/cardGenerator.html')).toBeDefined();
         });
     });
 
@@ -184,7 +274,7 @@ describe('config', () => {
                     }
                 }
             } as unknown as MiddlewareConfig;
-            getPreviewPaths(config);
+            getPreviewPaths(config, undefined, mockUtils);
             expect(consoleSpyError).not.toHaveBeenCalled();
             expect(consoleSpyWarning).not.toHaveBeenCalledWith('developerMode for /editor.html disabled');
             expect(config.editors!.rta!.endpoints[0].developerMode).toBe(true);
@@ -204,7 +294,7 @@ describe('config', () => {
                     }
                 }
             } as unknown as MiddlewareConfig;
-            getPreviewPaths(config);
+            getPreviewPaths(config, undefined, mockUtils);
             expect(consoleSpyError).not.toHaveBeenCalled();
             expect(consoleSpyWarning).not.toHaveBeenCalledWith(
                 'developerMode for /test/adaptation-editor.html disabled'
@@ -225,7 +315,7 @@ describe('config', () => {
                     }
                 }
             } as unknown as MiddlewareConfig;
-            getPreviewPaths(config);
+            getPreviewPaths(config, undefined, mockUtils);
             expect(consoleSpyError).toHaveBeenCalledWith(
                 'developerMode is ONLY supported for SAP UI5 adaptation projects.'
             );
@@ -284,6 +374,27 @@ describe('config', () => {
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
         });
+
+        test('test runners with custom test paths', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+            const config = {
+                test: [
+                    { framework: 'QUnit', path: '/test/unit/unitTests.html' },
+                    { framework: 'OPA5', path: '/test/integration/opaTests.html' }
+                ]
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
+
+        test('test runners with paths not starting with /test/', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+            const config = {
+                test: [{ framework: 'QUnit', path: '/custom/path/unitTests.html' }]
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
     });
 
     describe('remapResourcesForPath', () => {
@@ -303,11 +414,11 @@ describe('config', () => {
             // Editor at editor.html → newBasePath should be "."
             const config = buildConfig('/test/flp.html');
             // Simulate addApp: primary app resource root is set to basePath ".."
-            config.ui5.resources[appId] = config.basePath;
+            config.ui5.resources[appId] = config.appBasePath;
 
             remapResourcesForPath(config, '/editor.html', appId);
 
-            expect(config.basePath).toBe('.');
+            expect(config.appBasePath).toBe('.');
             expect(config.ui5.resources[appId]).toBe('.');
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
@@ -317,11 +428,11 @@ describe('config', () => {
             // FLP at test/flp.html    → basePath ".."
             // Editor at test/editor.html → newBasePath should still be ".."
             const config = buildConfig('/test/flp.html');
-            config.ui5.resources[appId] = config.basePath;
+            config.ui5.resources[appId] = config.appBasePath;
 
             remapResourcesForPath(config, '/test/editor.html', appId);
 
-            expect(config.basePath).toBe('..');
+            expect(config.appBasePath).toBe('..');
             expect(config.ui5.resources[appId]).toBe('..');
             expect(config.ui5.resources['open.ux.preview.client']).toBe('../preview/client');
         });
@@ -330,11 +441,11 @@ describe('config', () => {
             // FLP at test/flp.html  → basePath ".."
             // Editor at a/b/editor.html → newBasePath should be "../.."
             const config = buildConfig('/test/flp.html');
-            config.ui5.resources[appId] = config.basePath;
+            config.ui5.resources[appId] = config.appBasePath;
 
             remapResourcesForPath(config, '/a/b/editor.html', appId);
 
-            expect(config.basePath).toBe('../..');
+            expect(config.appBasePath).toBe('../..');
             expect(config.ui5.resources[appId]).toBe('../..');
             expect(config.ui5.resources['open.ux.preview.client']).toBe('../../preview/client');
         });
@@ -343,11 +454,11 @@ describe('config', () => {
             // FLP at a/b/flp.html   → basePath "../.."
             // Editor at editor.html → newBasePath should be "."
             const config = buildConfig('/a/b/flp.html');
-            config.ui5.resources[appId] = config.basePath;
+            config.ui5.resources[appId] = config.appBasePath;
 
             remapResourcesForPath(config, '/editor.html', appId);
 
-            expect(config.basePath).toBe('.');
+            expect(config.appBasePath).toBe('.');
             expect(config.ui5.resources[appId]).toBe('.');
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
@@ -356,7 +467,7 @@ describe('config', () => {
         test('additional app targets with absolute paths are not affected', () => {
             // Additional apps always have absolute target values and must not be remapped
             const config = buildConfig('/test/flp.html');
-            config.ui5.resources[appId] = config.basePath;
+            config.ui5.resources[appId] = config.appBasePath;
             const absoluteTarget = '/apps/my-other-app';
             config.ui5.resources['other.app'] = absoluteTarget;
 
@@ -368,16 +479,116 @@ describe('config', () => {
 
         test('unknown appId does not throw and leaves other resources intact', () => {
             const config = buildConfig('/test/flp.html');
-            config.ui5.resources[appId] = config.basePath;
+            config.ui5.resources[appId] = config.appBasePath;
 
             // Use an appId that is not in resources
             expect(() => remapResourcesForPath(config, '/editor.html', 'unknown.app')).not.toThrow();
             // The known appId entry is untouched because it was not matched
             expect(config.ui5.resources[appId]).toBe('..');
             // basePath and client ns are still updated
-            expect(config.basePath).toBe('.');
+            expect(config.appBasePath).toBe('.');
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
+        });
+
+        test('component type: editor in test-resources uses relative paths to /resources/<ns>', () => {
+            const componentAppId = 'my.fe.v2.app';
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/fe/v2/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+
+            // Build config for component project - appBasePath will be /resources/my/fe/v2/app
+            const flpConfig = getFlpConfigWithDefaults(
+                { path: '/test-resources/my/fe/v2/app/flp.html' },
+                mockComponentUtils
+            );
+            const config = createFlpTemplateConfig(
+                flpConfig,
+                { 'sap.app': { id: componentAppId } } as Manifest,
+                {},
+                mockComponentUtils
+            );
+            config.ui5.resources[componentAppId] = config.appBasePath;
+
+            // Remap for editor at /test-resources/my/fe/v2/app/editor.html
+            remapResourcesForPath(
+                config,
+                '/test-resources/my/fe/v2/app/editor.html',
+                componentAppId,
+                mockComponentUtils
+            );
+
+            // appBasePath should be relative from editor to /resources/my/fe/v2/app
+            // /test-resources/my/fe/v2/app/ is 5 levels deep, so need 5 '../' to root
+            expect(config.appBasePath).toBe('../../../../../resources/my/fe/v2/app');
+            expect(config.ui5.resources[componentAppId]).toBe('../../../../../resources/my/fe/v2/app');
+            // Preview client should be relative to /resources/my/fe/v2/app/preview/client
+            expect(config.ui5.resources['open.ux.preview.client']).toBe(
+                '../../../../../resources/my/fe/v2/app/preview/client'
+            );
+        });
+
+        test('component type: editor at root uses relative paths to /resources/<ns>', () => {
+            const componentAppId = 'my.app';
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+
+            const flpConfig = getFlpConfigWithDefaults({ path: '/test-resources/my/app/flp.html' }, mockComponentUtils);
+            const config = createFlpTemplateConfig(
+                flpConfig,
+                { 'sap.app': { id: componentAppId } } as Manifest,
+                {},
+                mockComponentUtils
+            );
+            config.ui5.resources[componentAppId] = config.appBasePath;
+
+            // Remap for editor at root level
+            remapResourcesForPath(config, '/editor.html', componentAppId, mockComponentUtils);
+
+            // From root, relative path to /resources/my/app is just the path itself
+            expect(config.appBasePath).toBe('resources/my/app');
+            expect(config.ui5.resources[componentAppId]).toBe('resources/my/app');
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('resources/my/app/preview/client');
+        });
+
+        test('component type: non-absolute newPagePath is normalized before relative calculation', () => {
+            const componentAppId = 'my.ns';
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/ns'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+
+            const flpConfig = getFlpConfigWithDefaults({ path: '/test-resources/my/ns/flp.html' }, mockComponentUtils);
+            const config = createFlpTemplateConfig(
+                flpConfig,
+                { 'sap.app': { id: componentAppId } } as Manifest,
+                {},
+                mockComponentUtils
+            );
+            config.ui5.resources[componentAppId] = config.appBasePath;
+
+            // Pass non-absolute path (without leading slash) - should be normalized
+            remapResourcesForPath(config, 'test/editor.html', componentAppId, mockComponentUtils);
+
+            // Should still compute correct relative path (treated as /test/editor.html)
+            expect(config.appBasePath).toBe('../resources/my/ns');
+            expect(config.ui5.resources[componentAppId]).toBe('../resources/my/ns');
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('../resources/my/ns/preview/client');
         });
     });
 });

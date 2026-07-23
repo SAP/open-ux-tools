@@ -92,7 +92,10 @@ export interface TestConfig {
 /**
  * Test configuration that has been enriched with the defaults in case of missing values.
  */
-export type CompleteTestConfig = Required<TestConfig>;
+export type CompleteTestConfig = Required<TestConfig> & {
+    /** True when the user explicitly provided an init path in the yaml config; false when the default was applied. */
+    isCustomInit: boolean;
+};
 
 /**
  * Test configuration defaults.

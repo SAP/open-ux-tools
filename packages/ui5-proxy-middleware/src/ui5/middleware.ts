@@ -61,7 +61,11 @@ async function loadManifest(rootProject: ReaderCollection): Promise<Manifest | u
     }
 }
 
-export default async ({ resources, options }: MiddlewareParameters<UI5ProxyConfig>): Promise<RequestHandler> => {
+const ui5ProxyMiddleware = async ({
+    resources,
+    options,
+    middlewareUtil
+}: MiddlewareParameters<UI5ProxyConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         logLevel: options.configuration?.debug ? LogLevel.Debug : LogLevel.Info,
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
@@ -112,7 +116,10 @@ export default async ({ resources, options }: MiddlewareParameters<UI5ProxyConfi
                 proxy: config.proxy
             };
 
-            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions, undefined, logger) });
+            routes.push({
+                route: ui5Config.path,
+                handler: ui5Proxy(ui5Config, proxyOptions, undefined, logger, middlewareUtil)
+            });
             ui5Configs.push(ui5Config);
         }
     }
@@ -123,3 +130,5 @@ export default async ({ resources, options }: MiddlewareParameters<UI5ProxyConfi
 
     return createRequestHandler(routes);
 };
+
+export default ui5ProxyMiddleware;
