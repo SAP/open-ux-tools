@@ -1,5 +1,21 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Release Date
+
+2026-07-23
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.18 → 1.0.19
+
 ## 1.3.6
 
 ### Patch Changes

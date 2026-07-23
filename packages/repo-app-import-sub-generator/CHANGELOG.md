@@ -1,5 +1,26 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.13
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.10 → 3.1.11
+- @sap-ux/fiori-freestyle-writer 3.0.59 → 3.0.60
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/launch-config 1.0.14 → 1.0.15
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.3
+- @sap-ux/project-input-validator 1.0.12 → 1.0.13
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/abap-deploy-config-writer 1.0.16 → 1.0.17
+
 ## 1.2.12
 
 ### Patch Changes
