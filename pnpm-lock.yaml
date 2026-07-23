@@ -2717,6 +2717,9 @@ importers:
       '@sap-ux/odata-entity-model':
         specifier: workspace:*
         version: link:../odata-entity-model
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
