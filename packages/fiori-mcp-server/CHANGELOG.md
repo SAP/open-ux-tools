@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- adjust opa5 test development skill initial workflow [[eb0d618](https://github.com/SAP/open-ux-tools/commit/eb0d618bf0cc168efec98465964d6e01fc74f512)]
+
 ## 1.10.0
 
 ### Minor Changes
