@@ -123,6 +123,8 @@ async function generate<T extends {}>(
 
     setAppDefaults(feApp);
 
+    // test
+
     fs = await generateUi5Project(basePath, feApp, fs);
 
     feApp.template.settings = setDefaultTemplateSettings(feApp.template, feApp.service.version);
