@@ -30,7 +30,16 @@ The `/test` folder must be present (e.g. at `webapp/test`). If it is missing, as
 
 ---
 
-## Step 1: Detect OData Version
+## Step 1: Locate the Project Root
+
+When the user provides a project name or ID (e.g. `fin.test.rap.lr3`) instead of a file path:
+1. Search for `manifest.json` files under common project roots (e.g. `webapp/manifest.json`).
+2. Match the `"id"` field in `sap.app` to the given name, or look for a folder whose name contains the given ID.
+3. Once found, treat the folder containing `webapp/manifest.json` as the project root for all subsequent steps.
+
+---
+
+## Step 2: Detect OData Version
 
 Before writing any test code, determine whether the app is OData V4 or V2. The two test libraries are completely different and must never be mixed.
 
@@ -56,14 +65,28 @@ If neither signal is present, ask the user to confirm the OData version before p
 
 ---
 
-## Step 2: Follow the Matching Guide
+## Step 3: Follow the Matching Guide
 
 Once the version is confirmed:
 
-1. Read the shared sections below ("Test Endpoint and Running Tests", "Mock Server") - they apply to both V4 and V2.
+1. Read the shared sections further below ("Test Endpoint and Running Tests", "Mock Server") - they apply to both V4 and V2.
 2. Then read the version-specific guide for all test library decisions:
    - **OData V4** - read `references/v4-instructions.md`
    - **OData V2** - read `references/v2-instructions.md`
+
+---
+
+## Adding a New Journey
+
+When the user asks to add an additional journey (not just a new `opaTest` inside an existing journey):
+
+1. **Find the test root** - search for files matching `*Journey.js`, `*Journey.ts`, `*Journey.gen.js`, or `*Journey.gen.ts` in the project. The folder containing those files is the integration test root. These files typically live in a folder named `integration` within the test directory, e.g. `webapp/test/integration`.
+2. **Understand the wiring** - read the existing journey files and any entry point files to understand how journeys are registered. Three setups are possible:
+   - **Virtual endpoint** (V4) - no registration needed; the middleware picks up any file matching the configured pattern (default: ends in `Journey.js` or `Journey.ts`)
+   - **Physical entry point** (V4) - add the new journey's module path to the `sap.ui.require` array in `OpaTests.qunit.js`
+   - **Custom wiring** (e.g. S/4 apps with `AllJourneys.js` or `AllJourneys.json`) - follow the existing pattern
+3. **Create the journey file** following the same naming pattern as existing journeys.
+4. **Confirm** to the user which file was created and how it is registered (or that registration is automatic).
 
 ---
 
