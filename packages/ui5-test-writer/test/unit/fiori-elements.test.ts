@@ -290,7 +290,7 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                    'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
                 )
             );
         });
@@ -754,7 +754,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
-            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
             expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
@@ -763,12 +765,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain(
-                '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
+                '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
             );
             expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
             );
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
@@ -779,6 +781,55 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
+        });
+
+        it('generates navigation cascade for v4 application with deeply-nested sub object page', async () => {
+            // Extend V4_WITH_SUB_OBJECT_PAGE by hanging a third-level OP off BookingObjectPage.
+            const deepAppModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            deepAppModel.applicationModel.pages.BookingObjectPage.navigation = {
+                _BookSupplement: { route: 'BookingSupplementObjectPage' }
+            };
+            deepAppModel.applicationModel.pages.BookingSupplementObjectPage = {
+                pageType: 'ObjectPage',
+                entitySet: 'BookingSupplement',
+                contextPath: '/BookingSupplement',
+                template: 'sap.fe.templates.ObjectPage',
+                model: { root: { aggregations: {} } }
+            };
+            readAppMock.mockResolvedValueOnce(deepAppModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
+
+            const deepJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingSupplementObjectPageJourney.gen.js']
+                    .contents;
+            // Cascade must include both intermediate hops (Travel and Booking) in order
+            const travelSee = deepJourneyContent.indexOf('Then.onTheTravelObjectPageGenerated.iSeeThisPage();');
+            const travelCheckBooking = deepJourneyContent.indexOf(
+                'onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckRows()'
+            );
+            const travelPressBooking = deepJourneyContent.indexOf(
+                'onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iPressRow(0)'
+            );
+            const bookingSee = deepJourneyContent.indexOf('Then.onTheBookingObjectPageGenerated.iSeeThisPage();');
+            const bookingCheckSupplement = deepJourneyContent.indexOf(
+                'onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckRows()'
+            );
+            const bookingPressSupplement = deepJourneyContent.indexOf(
+                'onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iPressRow(0)'
+            );
+            const targetSee = deepJourneyContent.indexOf(
+                'Then.onTheBookingSupplementObjectPageGenerated.iSeeThisPage();'
+            );
+            expect(travelSee).toBeGreaterThan(-1);
+            expect(travelCheckBooking).toBeGreaterThan(travelSee);
+            expect(travelPressBooking).toBeGreaterThan(travelCheckBooking);
+            expect(bookingSee).toBeGreaterThan(travelPressBooking);
+            expect(bookingCheckSupplement).toBeGreaterThan(bookingSee);
+            expect(bookingPressSupplement).toBeGreaterThan(bookingCheckSupplement);
+            expect(targetSee).toBeGreaterThan(bookingPressSupplement);
         });
     });
 
@@ -981,14 +1032,14 @@ export type Then = Opa5 & BaseArrangements & {
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
 
-            // TS-shape filter assertions: plain string identifier (matches JS template) cast to
-            // FilterFieldIdentifier to satisfy `@sapui5/types` which mistypes the parameter.
-            expect(lrContent).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
-            expect(lrContent).toContain('iCheckFilterField("AgencyID" as unknown as FilterFieldIdentifier)');
-            expect(lrContent).toContain('iCheckFilterField("Kunden ID" as unknown as FilterFieldIdentifier)');
+            // Standard filter fields use the stable property object form (no cast needed).
+            expect(lrContent).toContain('iCheckFilterField({ property: "TravelID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "AgencyID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "CustomerID" })');
 
-            // TS adaptation: onTable("") instead of onTable()
-            expect(lrContent).toContain('onTable("")');
+            // TS adaptation: single default-table id via the defaultTableId const, no bare onTable()
+            expect(lrContent).toContain('const defaultTableId = "";');
+            expect(lrContent).toContain('onTable(defaultTableId)');
             expect(lrContent).not.toContain('onTable()');
 
             // The TS journey is typed, no AMD wrapper. Start application uses Given + Then (When prefixed with _ as unused).
@@ -1010,12 +1061,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(lrJourneyPath).toBeDefined();
             const content = dumped[lrJourneyPath!].contents as string;
 
-            // The semantic-key adaptation block is emitted with TS-shape calls
+            // The semantic-key adaptation block is emitted with the stable property object form
             expect(content).toContain('Add semantic key properties to filter bar');
             expect(content).toContain('iOpenFilterAdaptation()');
-            expect(content).toContain('iAddAdaptationFilterField("TravelID")');
+            expect(content).toContain('iAddAdaptationFilterField({ property: "TravelID" })');
             expect(content).toContain('iConfirmFilterAdaptation()');
-            expect(content).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
+            expect(content).toContain('iCheckFilterField({ property: "TravelID" })');
             // Commented-out global search example uses the typed function signature
             expect(content).toContain('function (Given: Given, When: When, Then: Then)');
         });
@@ -1031,8 +1082,8 @@ export type Then = Opa5 & BaseArrangements & {
             const content = dumped[lrJourneyPath!].contents as string;
 
             expect(content).toContain('iCheckColumns');
-            // TS adaptation: onTable("") on the column-check call
-            expect(content).toMatch(/onTable\(""\)\.iCheckColumns/);
+            // TS adaptation: default-table column-check call uses the defaultTableId const
+            expect(content).toMatch(/onTable\(defaultTableId\)\.iCheckColumns/);
         });
 
         it('generates TypeScript tests for LROPv4 app that has no filters in filter bar', async () => {
@@ -1059,7 +1110,7 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                    'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
                 )
             );
         });
@@ -1128,23 +1179,27 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
 
             // ─── Header actions (from PR #4632) ───
-            expect(content).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
+            expect(content).toContain(
+                'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
+            );
 
             // ─── Section navigation ───
             expect(content).toContain('iCheckNumberOfSections(3)');
             expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
-            expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
-            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
+            expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
+            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
             expect(content).toContain('iGoToSection({ section: "FlightData" })');
             expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
             expect(content).toContain('iGoToSection({ section: "PriceData" })');
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
 
             // ─── Section actions (table action with dynamic enabled) ───
-            expect(content).toContain('.iCheckAction("Deduct Discount" /* , { enabled: true } */)');
             expect(content).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+                '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
+            );
+            expect(content).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
             );
 
             // ─── onForm with FormIdentifier cast (TS adaptation) ───

@@ -1,4 +1,8 @@
 <<%- macrosPrefix %>breadcrumbs>
     <!-- Breadcrumbs aggregation -->
-    <%- mContent %>
+    <Breadcrumbs id="<%- ids.Breadcrumbs %>">
+        <Link id="<%- ids.Link %>" text="Home" press=".onBreadcrumbsPressHome" />
+        <Link id="<%- ids.Link1 %>" text="Page 1" press=".onBreadcrumbsPressPage1" />
+        <Link id="<%- ids.Link2 %>" text="Page 2" press=".onBreadcrumbsPressPage2" />
+    </Breadcrumbs>
 </<%- macrosPrefix %>breadcrumbs>

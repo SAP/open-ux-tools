@@ -30,14 +30,14 @@ sap.ui.define([
 <% if (!hideFilterBar) { -%>
             When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
 <% } -%>
-            Then.onThe<%- navigationParents.parentLRName%>Generated.onTable().iCheckRows();
-            When.onThe<%- navigationParents.parentLRName%>Generated.onTable().iPressRow(0);
+            Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '' %>).iCheckRows();
+            When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '' %>).iPressRow(0);
 <% } -%>
-<% if(navigationParents.parentOPName) { %>
-            Then.onThe<%- navigationParents.parentOPName%>Generated.iSeeThisPage();
-            Then.onThe<%- navigationParents.parentOPName%>Generated.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iCheckRows();
-            When.onThe<%- navigationParents.parentOPName%>Generated.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iPressRow(0);
-<% } %>
+<% navigationParents.parentOPs.forEach(function(parent) { %>
+            Then.onThe<%- parent.name %>Generated.iSeeThisPage();
+            Then.onThe<%- parent.name %>Generated.onTable({ property: "<%- parent.navigationProperty %>" }).iCheckRows();
+            When.onThe<%- parent.name %>Generated.onTable({ property: "<%- parent.navigationProperty %>" }).iPressRow(0);
+<% }); %>
             Then.onThe<%- name%>Generated.iSeeThisPage();
         });
 
@@ -51,11 +51,11 @@ sap.ui.define([
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
 <%         if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>Generated.onHeader().iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%         } else { -%>
-            Then.onThe<%- name%>Generated.onHeader().iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%         } -%>
-            // When.onThe<%- name%>Generated.onHeader().iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%     } -%>
 <%     }); -%>
         });
@@ -95,18 +95,18 @@ sap.ui.define([
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
 <%              if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%              } else { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
-            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%          } else { -%>
 <%              if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%              } else { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
-            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%          } -%>
 <%      } -%>
 <%      }); -%>
@@ -127,7 +127,7 @@ sap.ui.define([
             Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
@@ -137,7 +137,7 @@ sap.ui.define([
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
 <% section.fields.forEach(function(field) { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>

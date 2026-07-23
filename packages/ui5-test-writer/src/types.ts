@@ -117,14 +117,21 @@ export interface FFOPAConfig {
     useVirtualPreviewEndpoints?: boolean;
 }
 
+export type ObjectPageNavigationParent = {
+    name: string;
+    navigationProperty: string;
+};
+
 export type ObjectPageNavigationParents = {
     parentLRName?: string;
-    parentOPName?: string;
-    parentOPTableSection?: string;
+    parentLRTableIdentifier?: string;
+    parentOPs: ObjectPageNavigationParent[];
 };
 
 export type SectionFormField = {
     property: string;
+    connectedFields?: string;
+    fieldGroup?: string;
 };
 
 export type TableColumn = {
@@ -168,6 +175,16 @@ export type ObjectPageFeatures = {
     editButton?: ButtonState;
 };
 
+/**
+ * Filter bar item consumed by the List Report journey template. Custom filter fields fall
+ * back to their (translatable) label, so `custom` selects the label vs. `{ property }` form.
+ */
+export type FilterBarItem = {
+    property: string;
+    description: string;
+    custom: boolean;
+};
+
 export type ListReportFeatures = {
     name?: string;
     createButton?: {
@@ -180,10 +197,15 @@ export type ListReportFeatures = {
         visible?: boolean;
         dynamicPath?: string;
     };
-    filterBarItems?: string[];
+    filterBarItems?: FilterBarItem[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
+    /**
+     * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
+     * single-table LRs. Used to target a specific tab via `onTable("<key>")`.
+     */
+    tableIdentifiers?: string[];
     semanticKey?: {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
@@ -193,8 +215,8 @@ export type ListReportFeatures = {
 export interface ActionButtonState {
     label: string;
     /**
-     * For List Report actions: the full OData binding path (e.g. "namespace.ActionName(entityType=@odata.context)").
-     * For Object Page actions extracted from the spec model: the method name only (e.g. "Copy").
+     * Action method name only (e.g. `"SetToBooked"`). Used as the `action` field of
+     * `ActionIdentifier` in `iCheckAction({ service, action, unbound })`.
      */
     action: string;
     visible: boolean;
@@ -216,12 +238,12 @@ export interface ActionButtonState {
     invocationGrouping?: string;
     /**
      * OData schema namespace used as the `service` parameter in iCheckAction({ service, action, unbound }).
-     * Populated for Object Page actions extracted via the spec model + metadata.
+     * Populated for both List Report and Object Page actions extracted via metadata.
      */
     service?: string;
     /**
      * Whether the action is unbound (not bound to a specific entity instance).
-     * Populated for Object Page actions extracted via the spec model + metadata.
+     * Populated for both List Report and Object Page actions extracted via metadata.
      */
     unbound?: boolean;
 }

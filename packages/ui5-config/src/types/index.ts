@@ -28,8 +28,7 @@ export interface DestinationAbapTarget {
 }
 
 export type AbapTarget =
-    | (UrlAbapTarget & Partial<DestinationAbapTarget>)
-    | (DestinationAbapTarget & Partial<UrlAbapTarget>);
+    (UrlAbapTarget & Partial<DestinationAbapTarget>) | (DestinationAbapTarget & Partial<UrlAbapTarget>);
 
 export interface AbapDeployConfig {
     target: AbapTarget;

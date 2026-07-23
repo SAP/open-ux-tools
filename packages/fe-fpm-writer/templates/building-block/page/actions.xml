@@ -1,4 +1,5 @@
 <<%- macrosPrefix %>actions>
     <!-- Actions aggregation -->
-    <%- mContent %>
+    <Button id="<%- ids.Button %>" text="Action 1" press=".onActionsClickAction1" type="Ghost" />
+    <Button id="<%- ids.Button1 %>" text="Action 2" press=".onActionsClickAction2" type="Ghost" />
 </<%- macrosPrefix %>actions>

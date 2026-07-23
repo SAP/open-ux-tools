@@ -37,8 +37,8 @@ sap.ui.define([
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheSalesOrderItemObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
             // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iExecuteEdit();
-            Then.onTheSalesOrderItemObjectPageGenerated.onHeader().iCheckAction("Identification Form Action" /* , { enabled: true } */);
-            // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iPressAction("Identification Form Action");
+            Then.onTheSalesOrderItemObjectPageGenerated.onHeader().iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "IdentificationFormAction", unbound: false } /* , { enabled: true } */);
+            // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "IdentificationFormAction", unbound: false });
         });
 
 
@@ -54,8 +54,8 @@ sap.ui.define([
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrderItem/SalesOrderItem" });
             When.onTheSalesOrderItemObjectPageGenerated.iGoToSection({ section: "MaterialDetailsFacet" });
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
-            Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckAction("Material Details Bound Action", { enabled: true });
-            // When.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iPressAction("Material Details Bound Action");
+            Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialDetailsBoundAction", unbound: true }, { enabled: true });
+            // When.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialDetailsBoundAction", unbound: true });
             Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckColumns(undefined, {"ModelYear":{"header":"Model Year"},"WarrantyYear":{"header":"Warranty Expiration"},"BrandCategory":{"header":"Material Category"},"FabricationCountry":{"header":"Fabrication Country"}});
        });
 

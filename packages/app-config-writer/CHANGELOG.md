@@ -1,5 +1,37 @@
 # @sap-ux/app-config-writer
 
+## 1.1.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+
+## 1.1.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+
+## 1.1.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- do not allow adding card generator for CAP node projects w/o cds-plugin-ui5 [[8cda5dd](https://github.com/SAP/open-ux-tools/commit/8cda5ddc2ecf1f9554a9ae43715671a643f8cdad)]
+
 ## 1.1.8
 
 ### Patch Changes
