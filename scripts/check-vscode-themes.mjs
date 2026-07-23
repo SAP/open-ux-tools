@@ -58,25 +58,28 @@ function hexToFigmaRgba(hex) {
     return { r, g, b, a };
 }
 
-/** Convert Figma RGBA floats back to a hex string for display. */
+/** Convert Figma RGBA floats back to a normalized lowercase hex string. */
 function figmaRgbaToHex({ r, g, b, a }) {
     const toHex = (v) => Math.round(v * 255).toString(16).padStart(2, '0');
     const base = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-    return a < 1 ? `${base}${toHex(a)}` : base;
+    const hex = a < 1 ? `${base}${toHex(a)}` : base;
+    return hex.toLowerCase();
 }
 
-/** Round to 10 decimal places to avoid float noise */
-function round(n) {
-    return Math.round(n * 1e10) / 1e10;
+/** Compare colors via their hex representations to avoid float precision noise.
+ *  Normalizes both to lowercase only.
+ */
+function colorsEqual(figmaRgba, newHex) {
+    return figmaRgbaToHex(figmaRgba) === newHex.toLowerCase();
 }
 
-function colorsEqual(a, b) {
-    return (
-        round(a.r) === round(b.r) &&
-        round(a.g) === round(b.g) &&
-        round(a.b) === round(b.b) &&
-        round(a.a) === round(b.a)
-    );
+/** Extract the component prefix from a VSCode token key for grouping.
+ *  e.g. 'editor.selectionBackground' → 'editor'
+ *       'foreground' → 'general'
+ */
+function tokenGroup(key) {
+    const dot = key.indexOf('.');
+    return dot === -1 ? 'general' : key.slice(0, dot);
 }
 
 // ─── main ────────────────────────────────────────────────────────────────────
@@ -119,7 +122,7 @@ async function main() {
 
             const newRgba = hexToFigmaRgba(newHex);
 
-            if (!colorsEqual(currentRgba, newRgba)) {
+            if (!colorsEqual(currentRgba, newHex)) {
                 const oldHex = figmaRgbaToHex(currentRgba);
                 changed.push({ key: vscodeKey, oldHex, newHex });
 
@@ -145,28 +148,46 @@ async function main() {
     // Write updated tokens file (preserve formatting)
     writeFileSync(TOKENS_PATH, JSON.stringify(tokens, null, 2) + '\n', 'utf8');
 
-    // Build Markdown report
-    const lines = ['## VSCode Theme Changes Detected', ''];
-    lines.push(`**Source:** [microsoft/vscode theme-defaults](https://github.com/microsoft/vscode/tree/main/extensions/theme-defaults/themes)`, '');
-
-    for (const { label, changed } of Object.values(changesByTheme)) {
-        lines.push(`### ${label}`);
-        if (changed.length) {
-            lines.push('');
-            lines.push('| Token | Before | After |');
-            lines.push('|-------|--------|-------|');
-            for (const { key, oldHex, newHex } of changed) {
-                lines.push(`| \`${key}\` | \`${oldHex}\` | \`${newHex}\` |`);
-            }
-        }
-        lines.push('');
-    }
-
-    // Summary line for issue title
+    // Summary line for issue title / header
     const summary = Object.values(changesByTheme)
         .map(({ label, changed }) => `${label}: ${changed.length} changed`)
         .join(' | ');
 
+    const timestamp = new Date().toISOString().slice(0, 10);
+
+    // Build Markdown report
+    const lines = [
+        `## 🎨 PaletteBot — ${timestamp}`,
+        '',
+        `**${summary}**`,
+        '',
+        `> Source: [microsoft/vscode theme-defaults](https://github.com/microsoft/vscode/tree/main/extensions/theme-defaults/themes)`,
+        '',
+    ];
+
+    for (const { label, changed } of Object.values(changesByTheme)) {
+        lines.push(`### ${label} (${changed.length} changes)`);
+        lines.push('');
+
+        // Group by component prefix
+        const groups = new Map();
+        for (const entry of changed) {
+            const group = tokenGroup(entry.key);
+            if (!groups.has(group)) groups.set(group, []);
+            groups.get(group).push(entry);
+        }
+
+        for (const [group, entries] of [...groups.entries()].sort()) {
+            lines.push(`**${group}**`);
+            lines.push('');
+            lines.push('| Token | Before | After |');
+            lines.push('|-------|--------|-------|');
+            for (const { key, oldHex, newHex } of entries) {
+                lines.push(`| \`${key}\` | \`${oldHex}\` | \`${newHex.toLowerCase()}\` |`);
+            }
+            lines.push('');
+        }
+    }
     const report = { title: `VSCode theme update — ${summary}`, body: lines.join('\n') };
 
     const outputPath = process.env.DIFF_OUTPUT;
