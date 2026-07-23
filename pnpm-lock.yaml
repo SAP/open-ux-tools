@@ -2013,8 +2013,8 @@ importers:
         specifier: 0.5.3
         version: 0.5.3
       '@eslint/core':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.2.1
+        version: 1.2.1
       '@eslint/js':
         specifier: 10.0.1
         version: 10.0.1(eslint@9.39.1)
