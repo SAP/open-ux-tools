@@ -431,20 +431,18 @@ function createCommunicationContact(uri: string, targetName: string, phones: str
                             name: 'tel',
                             value: {
                                 type: 'Collection',
-                                Collection: phones.map(
-                                    (phone): AnnotationRecord => ({
-                                        type: PHONE_NUMBER_TYPE,
-                                        propertyValues: [
-                                            {
-                                                name: 'type',
-                                                value: {
-                                                    type: 'EnumMember',
-                                                    EnumMember: phone
-                                                }
+                                Collection: phones.map((phone): AnnotationRecord => ({
+                                    type: PHONE_NUMBER_TYPE,
+                                    propertyValues: [
+                                        {
+                                            name: 'type',
+                                            value: {
+                                                type: 'EnumMember',
+                                                EnumMember: phone
                                             }
-                                        ]
-                                    })
-                                )
+                                        }
+                                    ]
+                                }))
                             }
                         }
                     ]
@@ -3067,18 +3065,15 @@ rating : Rating;
                     }
                 ],
                 getChanges: (files) =>
-                    Array.from(
-                        { length: collection.length },
-                        (_, i): DeleteChange => ({
-                            kind: ChangeType.Delete,
-                            pointer: `collection/${i}`,
-                            reference: {
-                                target: targetName,
-                                term: LINE_ITEM
-                            },
-                            uri: files.annotations
-                        })
-                    )
+                    Array.from({ length: collection.length }, (_, i): DeleteChange => ({
+                        kind: ChangeType.Delete,
+                        pointer: `collection/${i}`,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations
+                    }))
             });
         });
     });
