@@ -11,8 +11,7 @@ export const i18n: i18nNext = i18next.createInstance();
 export async function initI18n(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en',
-        showSupportNotice: false
+        fallbackLng: 'en'
     });
     i18n.addResourceBundle('en', ui5LibI18nNamespace, translations);
 }

@@ -33,7 +33,7 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@vscode-logging/logger": "2.0.9",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {

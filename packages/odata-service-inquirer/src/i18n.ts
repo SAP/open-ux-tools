@@ -15,22 +15,10 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         missingInterpolationHandler: () => '',
-        interpolation: {
-            format: function (value, format?: string) {
-                // OData version formatter
-                if (format === 'odataVersionFormatter') {
-                    return value ? ` V${value}` : '';
-                }
-
-                // If we have a value add a colon before outputting
-                if (format === 'addMsgWithColonFormatter') {
-                    return value ? `: ${value}` : '';
-                }
-                return value;
-            }
-        },
-        showSupportNotice: false
+        interpolation: { escapeValue: false }
     });
+    i18n.services.formatter?.add('odataVersionFormatter', (value: string) => (value ? ` V${value}` : ''));
+    i18n.services.formatter?.add('addMsgWithColonFormatter', (value: string) => (value ? `: ${value}` : ''));
     i18n.addResourceBundle('en', odataServiceInquirerNamespace, translations);
     // add other bundles that are used in consumed modules
     addInquirerCommonTexts();
