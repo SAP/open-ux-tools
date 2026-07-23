@@ -1,18 +1,7 @@
 import { t } from '../../../i18n.js';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'node:fs';
-import { getAllBackendSystems } from '../../../utils/store.js';
-
-/**
- * Check if the system name is already in use.
- *
- * @param systemName a system name to check
- * @returns true if the system name is already in use, otherwise false
- */
-async function isSystemNameInUse(systemName: string): Promise<boolean> {
-    const backendSystems = await getAllBackendSystems(false);
-    return !!backendSystems.find((system) => system.name === systemName);
-}
+import { isSystemNameInUse } from '@sap-ux/store';
 
 /**
  * Validates that the system name does not exist yet.
