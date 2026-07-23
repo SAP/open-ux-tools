@@ -38,7 +38,7 @@ The OData version is declared explicitly in `manifest.json` under `sap.app.dataS
 
 ```bash
 # Returns "v4" if any dataSource declares odataVersion 4.x, otherwise "v2"
-node -e "
+node --input-type=commonjs -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 const isV4 = ds.some(d => (d.settings?.odataVersion ?? '').startsWith('4'));
@@ -75,7 +75,7 @@ CHANGE_FILES=$(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
 
 # 3. All local XML files declared in manifest dataSources via localUri
 #    (covers annotation files, metadata.xml, service.xml, etc.)
-XML_FILES=$(node -e "
+XML_FILES=$(node --input-type=commonjs -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
@@ -84,7 +84,7 @@ ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.sett
 
 # Or combine all three in one pass (skips change/XML args when there are no matching files):
 CHANGE_FILES=$(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
-XML_FILES=$(node -e "
+XML_FILES=$(node --input-type=commonjs -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
@@ -117,7 +117,7 @@ npx eslint "$APP/**/*.cds"
 find app -maxdepth 2 -type d -name "webapp" -not -path "*/node_modules/*"
 
 # Extract all local XML file paths from manifest (any dataSource with a localUri)
-node -e "
+node --input-type=commonjs -e "
 const m = require('./webapp/manifest.json');
 const ds = m['sap.app']?.dataSources ?? {};
 Object.values(ds).filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
