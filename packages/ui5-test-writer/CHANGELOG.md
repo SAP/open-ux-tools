@@ -1,5 +1,54 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.45 → 1.0.46
+
+## 1.2.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- correct List Report and Object Page OPA test generation for multi-tab, custom filter fields, and semantic-key adaptation
+
+    - Use stable OData property names (`iCheckFilterField({ property })`) for standard filter fields instead of translatable labels; custom filter fields fall back to their resolved label
+    - Exclude `@UI.HiddenFilter` and already-present properties from the semantic-key "add to filter bar" test, and add a value placeholder to `iChangeFilterField`
+    - Correct Given/When/Then subjects in the semantic-key adaptation block
+    - Target the correct table on multi-tab List Reports via `onTable("<key>")` and switch tabs with `iGoToView({ key })` before checking each tab's rows
+    - Object Page navigation from a multi-tab parent List Report now targets the parent's default tab [[32a32a5](https://github.com/SAP/open-ux-tools/commit/32a32a5b938b448fc31d43c974e0363c71a8ec39)]
+
+## 1.2.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/preview-middleware 1.0.44 → 1.0.45
+
+## 1.2.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- Register generated journeys in `AllJourneys.gen.json` when adding OPA tests to existing projects [[e93607c](https://github.com/SAP/open-ux-tools/commit/e93607cfbf5736f120f58067293732d0897a28ad)]
+
 ## 1.2.26
 
 ### Patch Changes

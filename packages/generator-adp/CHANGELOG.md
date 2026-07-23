@@ -1,5 +1,41 @@
 # @sap-ux/generator-adp
 
+## 1.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.35 → 1.0.36
+
+## 1.0.38
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- Write headless generation result for BAS orchestrator when JSON input provides a correlation id [[0123b0f](https://github.com/SAP/open-ux-tools/commit/0123b0fb9c86dc19d615f89902a8518773dcde80)]
+
+## 1.0.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/adp-tooling 1.0.34 → 1.0.35
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+- @sap-ux/odata-service-writer 1.0.13 → 1.0.14
+- @sap-ux/project-input-validator 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.7 → 1.0.7
+- @sap-ux/telemetry 1.0.19 → 1.0.20
+
 ## 1.0.36
 
 ### Patch Changes

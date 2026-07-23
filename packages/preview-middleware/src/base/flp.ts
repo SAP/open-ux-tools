@@ -639,8 +639,7 @@ export class FlpSandbox {
             try {
                 const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
-                    | { name: string; libraries: { name: string; version: string }[] }
-                    | undefined;
+                    { name: string; libraries: { name: string; version: string }[] } | undefined;
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
                 isCdn = responseJson?.name === 'SAPUI5 Distribution';
             } catch (error) {
