@@ -9,7 +9,7 @@ description: Use this skill when writing, fixing, extending, or reviewing OPA5 i
   as the project context is SAP Fiori Elements. Not applicable to freestyle UI5 apps.
 metadata:
    author: sap-fiori-tools
-   version: "1.0.0"
+   version: "1.0.1"
 ---
 
 # SAP Fiori OPA5 Development Skill
