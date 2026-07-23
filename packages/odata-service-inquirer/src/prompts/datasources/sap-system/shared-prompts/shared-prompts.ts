@@ -177,8 +177,7 @@ export function getUserSystemNameQuestion(
             const shouldStoreCreds =
                 !!previousAnswers?.[
                     `${promptNamespacePart}${BasicCredentialsPromptNames.storeSystemCredentials}` as keyof (
-                        | AbapOnPremAnswers
-                        | SystemSelectionAnswers
+                        AbapOnPremAnswers | SystemSelectionAnswers
                     )
                 ];
             if (isValid === true) {

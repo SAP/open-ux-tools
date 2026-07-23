@@ -115,6 +115,7 @@ async function generateOPAFilesForExistingApp(writeContext: WriteContext, appFea
 
     const generatedPages = writePageFiles(standaloneWriteContext);
     const generatedJourneys = writeJourneyFiles(appFeatures, standaloneWriteContext);
+    addJourneysToAllJourneysFile(generatedJourneys, standaloneWriteContext);
     handleJourneyRunner(standaloneWriteContext, generatedPages);
     if (virtualOPA5Configured) {
         await addVirtualOpa5Config(standaloneWriteContext);
@@ -893,4 +894,34 @@ function writePageObject(
         entitySet: pageConfig.entitySet,
         contextPath: pageConfig.contextPath
     };
+}
+
+/**
+ * Adds generated journey file names to `AllJourneys.gen.json` without overwriting existing entries.
+ * The file contains an array of journey file name strings (e.g. `"ListReportJourney.gen"`).
+ * Duplicate entries are not added.
+ *
+ * @param generatedJourneys - feature names for which a `<name>Journey.gen` file was written
+ * @param writeContext - shared write context (config, paths, editor, dotFileExtension)
+ */
+export function addJourneysToAllJourneysFile(generatedJourneys: string[], writeContext: WriteContext): void {
+    if (generatedJourneys.length === 0) {
+        return;
+    }
+    const { testOutDirPath, editor } = writeContext;
+    const allJourneysPath = join(testOutDirPath, 'integration', 'AllJourneys.gen.json');
+    if (!editor.exists(allJourneysPath)) {
+        return;
+    }
+    const content = editor.readJSON(allJourneysPath);
+    const existing: string[] =
+        Array.isArray(content) && content.every((entry) => typeof entry === 'string') ? content : [];
+    const existingSet = new Set(existing);
+    for (const journey of generatedJourneys) {
+        const fileName = `${journey}Journey.gen`;
+        if (!existingSet.has(fileName)) {
+            existing.push(fileName);
+        }
+    }
+    editor.writeJSON(allJourneysPath, existing);
 }

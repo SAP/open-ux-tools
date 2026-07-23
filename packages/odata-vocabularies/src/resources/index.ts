@@ -30,8 +30,7 @@ import ObjectModel from './com.sap.cds.vocabularies.ObjectModel.js';
 import AnalyticsDetails from './com.sap.cds.vocabularies.AnalyticsDetails.js';
 
 export type CdsVocabularyNamespace =
-    | 'com.sap.cds.vocabularies.ObjectModel'
-    | 'com.sap.cds.vocabularies.AnalyticsDetails';
+    'com.sap.cds.vocabularies.ObjectModel' | 'com.sap.cds.vocabularies.AnalyticsDetails';
 
 export type SapVocabularyNamespace =
     | 'com.sap.vocabularies.Analytics.v1'

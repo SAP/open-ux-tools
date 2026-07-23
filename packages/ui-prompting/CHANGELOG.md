@@ -1,5 +1,25 @@
 # @sap-ux/ui-prompting
 
+## 1.0.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Reformat source files after prettier 3.8.4 → 3.9.5 upgrade [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.7 → 3.0.8
+
+## 1.0.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.6 → 3.0.7
+
 ## 1.0.7
 
 ### Patch Changes

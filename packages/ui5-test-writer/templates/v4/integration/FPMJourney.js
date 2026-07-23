@@ -30,7 +30,7 @@ sap.ui.define([
             Then.onThe<%- pageName %>Generated.iSeeThisPage();
             <%_ if (filterBarItems && filterBarItems.length > 0) { -%>
                 <%_ filterBarItems.forEach(function(item) { _%>
-            Then.onThe<%- pageName%>Generated.onFilterBar().iCheckFilterField("<%- item %>");
+            Then.onThe<%- pageName%>Generated.onFilterBar().iCheckFilterField({ property: "<%- item %>" });
                 <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { _%>
