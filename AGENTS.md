@@ -326,7 +326,9 @@ BUMP: Republish to pick up updated @sap-ux/fiori-docs-embeddings
 
 `preview-middleware` physically copies the client's built dist into its own `dist/client/` via `copyfiles` (not esbuild, but same embedding concept). The client is an implementation detail — it is never published independently. Always write the cascade changeset for `@sap-ux/preview-middleware` (the public package), **never** for `@sap-ux-private/preview-middleware-client` alone. The `fixed` group in `.changeset/config.json` will version-bump the client alongside the middleware automatically.
 
-**If you add a new dist-embedding package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its embedded dep set is derived automatically from the dependency graph.
+**If you add a new dist-embedding package**, choose the right mechanism in `scripts/validate-changesets.mjs`:
+- **`ESBUILD_BUNDLING_PACKAGES`** - for packages that inline their full dep graph via esbuild. The embedded set is derived automatically by walking transitive dependencies.
+- **`PINNED_EMBED_DEPS`** - for packages that copy only a fixed set of workspace packages (e.g. via `copyfiles`). Declare the exact list of embedded packages explicitly; no graph walk is performed.
 
 **Private packages and changesets:**
 
