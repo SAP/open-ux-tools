@@ -9,9 +9,8 @@ import {
     listDestinations
 } from '@sap-ux/btp-utils';
 import { ToolsLogger, UI5ToolingTransport, type Logger } from '@sap-ux/logger';
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
-import type { ServerOptions } from 'http-proxy';
-import type { Options, RequestHandler } from 'http-proxy-middleware';
+import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { Options, RequestHandler, OnProxyEvent } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import i18n from 'i18next';
@@ -32,7 +31,7 @@ export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'original
 /**
  * Collection of custom event handler for the proxy.
  */
-export const ProxyEventHandlers = {
+export const ProxyEventHandlers: OnProxyEvent = {
     /**
      * Modifies the request to the proxy server if the `FioriLaunchpad.html` is requested to add a required header.
      *
@@ -41,7 +40,7 @@ export const ProxyEventHandlers = {
      * @param _res (not used)
      * @param _options (not used)
      */
-    proxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
+    proxyReq(proxyReq, _req, _res, _options) {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
         }
@@ -54,7 +53,7 @@ export const ProxyEventHandlers = {
      * @param _req (not used) original request
      * @param _res (not used)
      */
-    proxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse): void {
+    proxyRes(proxyRes, _req, _res) {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {

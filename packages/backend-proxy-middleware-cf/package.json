@@ -37,7 +37,7 @@
         "@sap-ux/logger": "workspace:*",
         "content-type": "^1.0.5",
         "dotenv": "17.4.2",
-        "http-proxy-middleware": "3.0.7",
+        "http-proxy-middleware": "4.2.0",
         "mime-types": "^2.1.35",
         "portfinder": "1.0.38"
     },
@@ -45,7 +45,6 @@
         "@jest/globals": "30.4.1",
         "@types/content-type": "^1.0.0",
         "@types/express": "4.17.21",
-        "@types/http-proxy": "^1.17.5",
         "@types/mime-types": "^2.1.4"
     },
     "engines": {
