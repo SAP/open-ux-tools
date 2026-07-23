@@ -45,6 +45,9 @@
       "path": "../odata-entity-model"
     },
     {
+      "path": "../odata-service-writer"
+    },
+    {
       "path": "../project-access"
     },
     {
