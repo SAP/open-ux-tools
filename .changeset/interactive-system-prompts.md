@@ -3,6 +3,7 @@
 "@sap-ux/odata-service-inquirer": patch
 "@sap-ux/store": patch
 "sap-ux-sap-systems-ext": patch
+"@sap-ux/fiori-mcp-server": patch
 ---
 
 FEAT: Add interactive prompting and connection checking for system management commands
