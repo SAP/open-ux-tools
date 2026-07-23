@@ -72,6 +72,10 @@ export async function generateOPAFiles(
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
+    // Only projects with a startup ListReport page (LROP) or an FPM page get ux-specification-derived
+    // journeys. All other project types (ObjectPage-only, Analytical List Page, unrecognized) fall back
+    // to the generic FirstJourney starter.
+    const generateUxSpecJourneys = !!LROP.pageLR || !!appFeatures.fpm;
     const journeyParams: JourneyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
@@ -89,15 +93,14 @@ export async function generateOPAFiles(
         log,
         journeyParams,
         dotFileExtension,
+        generateUxSpecJourneys,
         modifiedFiles: []
     };
 
-    if (LROP || appFeatures.fpm) {
-        if (standalone) {
-            await generateOPAFilesForExistingApp(writeContext, appFeatures);
-        } else {
-            await generateOPAFilesForNewApp(writeContext, appFeatures);
-        }
+    if (standalone) {
+        await generateOPAFilesForExistingApp(writeContext, appFeatures);
+    } else {
+        await generateOPAFilesForNewApp(writeContext, appFeatures);
     }
 
     return editor;
@@ -629,7 +632,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
     const generatedJourneys: string[] = [];
 
-    if (appFeatures.listReport?.name) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.listReport?.name) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', `ListReportJourney${dotFileExtension}`),
             join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey.gen${dotFileExtension}`),
@@ -646,7 +649,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         generatedJourneys.push(appFeatures.listReport.name);
     }
 
-    if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.objectPages && appFeatures.objectPages.length > 0) {
         appFeatures.objectPages.forEach((objectPage) => {
             if (objectPage.name) {
                 editor.copyTpl(
@@ -667,7 +670,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         });
     }
 
-    if (appFeatures.fpm?.name) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.fpm?.name) {
         // FPM TypeScript support is out of scope for the initial TS OPA5 work
         // (LROP only). The FPM journey path below is hardcoded `.js` and there is
         // no `FPM.ts` template, so we force `DotFileExtension.JS` for the FPM
@@ -874,8 +877,12 @@ function writePageObject(
 ): OpaPageWriteInfo {
     // FPM has no .ts template; force .js regardless of the configured extension
     const ext = pageConfig.template === 'FPM' ? DotFileExtension.JS : dotFileExtension;
+    // An Analytical List Page is a ListReport component under the hood and has no dedicated page-object
+    // template, so its page object renders from the ListReport template. The `AnalyticalListPage` marker
+    // is retained on the config only to exclude it from LROP journey detection.
+    const templateName = pageConfig.template === 'AnalyticalListPage' ? 'ListReport' : pageConfig.template;
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${ext}`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${templateName}${ext}`),
         join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen${ext}`),
         pageConfig,
         undefined,
