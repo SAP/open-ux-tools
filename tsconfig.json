@@ -129,6 +129,9 @@
       "path": "packages/fiori-mcp-server"
     },
     {
+      "path": "packages/fiori-skills"
+    },
+    {
       "path": "packages/fiori-tools-settings"
     },
     {
