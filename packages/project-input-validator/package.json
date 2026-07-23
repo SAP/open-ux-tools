@@ -27,7 +27,7 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "validate-npm-package-name": "7.0.2",
         "@sap-ux/project-access": "workspace:*"
     },
