@@ -2,19 +2,13 @@
 name: sap-fiori-eslint-plugin
 description: >
   Configure, migrate, or run ESLint with @sap-ux/eslint-plugin-fiori-tools in SAP Fiori projects
-  (standalone or CAP). Use when a project is missing ESLint entirely, when an existing .eslintrc
-  or eslint@8 config needs upgrading to ESLint 9 flat config, or when the user wants to run linting,
-  fix lint errors, or troubleshoot ESLint problems, or when the user wants to see only application
-  issues consistent with what is shown in the SAP Fiori tools Application Information panel
-  or Page Map.
-  Trigger phrases include: "set up ESLint", "add ESLint", "configure linting",
-  "add code quality checks", "I have lint errors", "lint is failing",
-  "ESLint errors in my code", "fix lint issues", "my linting is broken",
-  "ESLint isn't working", "ESLint not working", "my .eslintrc is outdated", "migrate ESLint",
-  "upgrade ESLint", "update my ESLint config", "convert .eslintrc to flat config",
-  "show all application issues", "show all UX consistency issues", "show issues for my app",
-  "application issues only", "issues for app", "consistent with Page Map",
-  "same issues as Application Information", "UX issues for my app".
+  (standalone or CAP). Use when ESLint is missing and the user wants to add it or add code quality
+  checks; when an existing .eslintrc or eslint@8 config needs upgrading to ESLint 9 flat config;
+  when the user wants to run linting, fix lint errors, or ESLint is broken or not working; or when
+  the user wants to see the application issues or UX consistency issues for a specific app — e.g.
+  "show application issue(s) for my project <project_name>", "show application issues for app X",
+  "UX consistency issues", "issues consistent with Page Map",
+  "same issues as Application Information".
 compatibility: Requires Node.js with npm, pnpm, or yarn. Designed for SAP Fiori freestyle and Fiori elements projects (standalone or inside a CAP project).
 metadata:
   author: sap-fiori-tools

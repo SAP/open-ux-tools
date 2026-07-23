@@ -1,6 +1,6 @@
-# Run and Fix ESLint on a Fiori Project
+# Run, Fix, and Scope ESLint on a Fiori Project
 
-Run ESLint on a SAP Fiori project to check code quality and optionally auto-fix issues.
+Run ESLint on a SAP Fiori project to check code quality and optionally auto-fix issues. Includes an **app-scope mode** that reproduces the exact file set checked by the Application Information panel and Page Map.
 
 ## App-scope mode — show only application issues (consistent with Application Information / Page Map)
 
@@ -59,7 +59,7 @@ count than what the tooling shows.
 
 Always target the exact file set explicitly. Substitute real paths where shown.
 
-> **Windows**: these commands require **Git Bash** or **WSL** — they will not run in cmd.exe or PowerShell.
+> **Windows (all commands in this section)**: Both the standalone and CAP commands use `find` and `$()` subshell expansion. They require **Git Bash** or **WSL** — they will not run in cmd.exe or PowerShell.
 
 **Standalone Fiori app:**
 ```bash
@@ -69,24 +69,27 @@ Always target the exact file set explicitly. Substitute real paths where shown.
 npx eslint webapp/manifest.json
 
 # 2. propertyChange files — OData V2 projects only (skip if V4)
-npx eslint $(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
+# Guard: only run if the find returns at least one file
+CHANGE_FILES=$(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
+[ -n "$CHANGE_FILES" ] && npx eslint $CHANGE_FILES
 
 # 3. All local XML files declared in manifest dataSources via localUri
 #    (covers annotation files, metadata.xml, service.xml, etc.)
-npx eslint $(node -e "
+XML_FILES=$(node -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
 ")
+[ -n "$XML_FILES" ] && npx eslint $XML_FILES
 
-# Or combine all three in one pass:
-npx eslint webapp/manifest.json \
-  $(find webapp/changes -name "*propertyChange.change" 2>/dev/null) \
-  $(node -e "
+# Or combine all three in one pass (skips change/XML args when there are no matching files):
+CHANGE_FILES=$(find webapp/changes -name "*propertyChange.change" 2>/dev/null)
+XML_FILES=$(node -e "
 const m = require('./webapp/manifest.json');
 const ds = Object.values(m['sap.app']?.dataSources ?? {});
 ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
 ")
+npx eslint webapp/manifest.json ${CHANGE_FILES:+$CHANGE_FILES} ${XML_FILES:+$XML_FILES}
 ```
 
 **CAP project — specific app:**
@@ -98,9 +101,12 @@ APP=app/incidents   # replace with your app folder
 npx eslint $APP/webapp/manifest.json
 
 # 2. propertyChange files — OData V2 projects only (skip if V4)
-npx eslint $(find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null)
+# Guard: only run if the find returns at least one file
+CHANGE_FILES=$(find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null)
+[ -n "$CHANGE_FILES" ] && npx eslint $CHANGE_FILES
 
 # 3. CDS files (app-level only)
+# The glob is intentionally quoted — ESLint resolves it internally, not the shell.
 npx eslint "$APP/**/*.cds"
 ```
 
