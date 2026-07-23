@@ -1,5 +1,24 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.33
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/mockserver-config-writer 1.0.12 → 1.0.13
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.3
+- @sap-ux/odata-service-writer 1.0.14 → 1.0.15
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/telemetry 1.0.20 → 1.0.21
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
 ## 0.3.32
 
 ### Patch Changes
