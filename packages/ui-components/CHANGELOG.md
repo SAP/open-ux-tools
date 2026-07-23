@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Reformat source files after prettier 3.8.4 → 3.9.5 upgrade [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
 ## 3.0.7
 
 ### Patch Changes
