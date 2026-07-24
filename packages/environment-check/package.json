@@ -38,7 +38,7 @@
         "axios": "1.18.1",
         "glob-gitignore": "1.0.15",
         "i18next": "26.3.6",
-        "ignore": "5.2.4",
+        "ignore": "7.0.6",
         "minimist": "1.2.8",
         "prompts": "2.4.2",
         "yamljs": "0.3.0"
