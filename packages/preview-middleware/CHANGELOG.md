@@ -192,6 +192,14 @@
 
 ### Patch Changes
 
+#### Release Date
+
+2026-06-24
+
+#### Dependency Updates
+
+- BUMP: Republish to pick up updated @ui5/manifest to v1.86.0 in client [[666a17e](https://github.com/SAP/open-ux-tools/commit/666a17eb6f8cb5f4b414e64b1d66b234ca3a1a57)]
+
 #### Workspace Updates
 
 - @sap-ux/project-access 2.1.2 → 2.1.3
@@ -208,6 +216,16 @@
 
 ## 1.0.26
 
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- FIX: Republish to pick up client fix: remove static import to avoid eager sap.ui.dt load [[78d79c8](https://github.com/SAP/open-ux-tools/commit/78d79c8836a2a7768b8634ab226f1674b4bd0e78)]
+
 ## 1.0.25
 
 ### Patch Changes
@@ -219,6 +237,14 @@
 ## 1.0.24
 
 ### Patch Changes
+
+#### Release Date
+
+2026-06-17
+
+#### Bug Fixes
+
+- FIX: Republish to pick up client fix: remove static import and use type-only imports to avoid eager sap.ui.rta load [[dec7cc5](https://github.com/SAP/open-ux-tools/commit/dec7cc5d001a561be36b59e3dfa6835b9e8e49e9)]
 
 #### Workspace Updates
 

@@ -28,6 +28,20 @@ const ESBUILD_BUNDLING_PACKAGES = [
     '@sap-ux/eslint-plugin-fiori-tools'
 ];
 
+/**
+ * Packages that physically copy a fixed set of workspace packages into their dist
+ * (e.g. via copyfiles) but do NOT inline the full dep graph via esbuild.
+ * Only the explicitly listed deps trigger a cascade — runtime dependencies of those
+ * deps are NOT followed.
+ *
+ * @sap-ux/preview-middleware copies @sap-ux-private/preview-middleware-client dist
+ * into its own dist/client/ at build time. Always write the cascade changeset for
+ * @sap-ux/preview-middleware, never for @sap-ux-private/preview-middleware-client alone.
+ */
+const PINNED_EMBED_DEPS = {
+    '@sap-ux/preview-middleware': ['@sap-ux-private/preview-middleware-client']
+};
+
 const __dirname = import.meta.dirname;
 const ROOT = path.join(__dirname, '..');
 const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP|INFRA):/i;
@@ -91,6 +105,12 @@ function buildBundledDepReverseMap(pkgMap) {
         const allDeps = transitiveWorkspaceDeps(bundler, pkgMap);
         allDeps.delete(bundler); // exclude self
         for (const dep of allDeps) {
+            if (!reverse.has(dep)) reverse.set(dep, new Set());
+            reverse.get(dep).add(bundler);
+        }
+    }
+    for (const [bundler, deps] of Object.entries(PINNED_EMBED_DEPS)) {
+        for (const dep of deps) {
             if (!reverse.has(dep)) reverse.set(dep, new Set());
             reverse.get(dep).add(bundler);
         }
