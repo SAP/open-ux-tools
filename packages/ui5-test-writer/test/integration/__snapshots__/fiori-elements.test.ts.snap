@@ -598,7 +598,7 @@ export default class ObjectPage {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+  "webapp/test/integration/types/OpaJourneyTypes.gen.d.ts": Object {
     "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from \\"sap/fe/test/ListReport\\";
 import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from \\"sap/fe/test/ObjectPage\\";
