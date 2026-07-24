@@ -1,5 +1,30 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.41
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.29 → 2.0.30
+- @sap-ux/adp-tooling 1.0.36 → 1.0.37
+- @sap-ux/deploy-config-generator-shared 1.0.24 → 1.0.25
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+- @sap-ux/abap-deploy-config-writer 1.0.16 → 1.0.17
+
+## 1.0.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.35 → 1.0.36
+
 ## 1.0.39
 
 ### Patch Changes

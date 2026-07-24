@@ -1,5 +1,35 @@
 # @sap-ux/adp-tooling
 
+## 1.0.37
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/nodejs-utils 1.0.7 → 1.0.8
+- @sap-ux/odata-service-writer 1.0.14 → 1.0.15
+- @sap-ux/project-input-validator 1.0.12 → 1.0.13
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.36
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
 ## 1.0.35
 
 ### Patch Changes

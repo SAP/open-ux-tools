@@ -1,5 +1,18 @@
 # @sap-ux/ui5-library-inquirer
 
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/project-input-validator 1.0.12 → 1.0.13
+
 ## 1.0.25
 
 ### Patch Changes
