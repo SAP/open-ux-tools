@@ -5,8 +5,10 @@ import {
     createFlpTemplateConfig,
     createTestTemplateConfig,
     generatePreviewFiles,
+    generateSandboxAppConfig,
     getFlpConfigWithDefaults,
     getPreviewPaths,
+    qualifiesForNewSandbox,
     remapResourcesForPath
 } from '../../../src/base/config.js';
 import { mergeTestConfigDefaults } from '../../../src/base/test.js';
@@ -36,6 +38,15 @@ describe('config', () => {
             const intent = { object: 'myapp', action: 'myaction' };
             const flpConfig = getFlpConfigWithDefaults({ path, intent });
             expect(flpConfig).toMatchObject({ path, intent });
+        });
+        test('useNewSandbox defaults to false when not set', () => {
+            expect(getFlpConfigWithDefaults({}).useNewSandbox).toBe(false);
+        });
+        test('useNewSandbox:false is preserved', () => {
+            expect(getFlpConfigWithDefaults({ useNewSandbox: false }).useNewSandbox).toBe(false);
+        });
+        test('useNewSandbox:true is preserved', () => {
+            expect(getFlpConfigWithDefaults({ useNewSandbox: true }).useNewSandbox).toBe(true);
         });
     });
 
@@ -284,6 +295,106 @@ describe('config', () => {
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
         });
+
+        describe('sandbox 2 selection', () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+
+            function manifestWithVersion(minUI5Version: string): string {
+                return JSON.stringify({
+                    'sap.app': { id: 'test.app' },
+                    'sap.ui5': { dependencies: { minUI5Version } }
+                });
+            }
+
+            test('minUI5Version 1.150.0 generates sandbox2 HTML and fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.150.0'));
+                const result = await generatePreviewFiles(basePath, { flp: { useNewSandbox: true } }, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith(DEFAULT_PATH))).toBe(true);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(true);
+                expect(files[paths.find((p) => p.endsWith(DEFAULT_PATH))!].contents).toMatchSnapshot();
+                expect(files[paths.find((p) => p.endsWith('fioriSandboxAppConfig.json'))!].contents).toMatchSnapshot();
+            });
+
+            test('minUI5Version 2.0.0 generates sandbox2 HTML and fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('2.0.0'));
+                const result = await generatePreviewFiles(basePath, { flp: { useNewSandbox: true } }, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(true);
+                const htmlPath = paths.find((p) => p.endsWith(DEFAULT_PATH))!;
+                expect(files[htmlPath].contents).toMatchSnapshot();
+            });
+
+            test('minUI5Version 1.149.0 generates sandbox1 HTML, no fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.149.0'));
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+                expect(paths.some((p) => p.endsWith(DEFAULT_PATH))).toBe(true);
+            });
+
+            test('no minUI5Version in manifest generates sandbox1 HTML, no fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(
+                    join(basePath, 'webapp/manifest.json'),
+                    JSON.stringify({ 'sap.app': { id: 'test.app' }, 'sap.ui5': { dependencies: {} } })
+                );
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+            });
+
+            test('useNewSandbox:false with minUI5Version 1.150.0 generates sandbox1 HTML, no fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.150.0'));
+                const result = await generatePreviewFiles(basePath, { flp: { useNewSandbox: false } }, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+            });
+
+            test('legacy fioriSandboxConfig.json present with minUI5Version 1.150.0 generates sandbox1 HTML', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.150.0'));
+                fs.write(join(basePath, 'appconfig/fioriSandboxConfig.json'), '{}');
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+            });
+        });
+    });
+
+    describe('qualifiesForNewSandbox', () => {
+        test.each([
+            { major: 1, minor: 150, patch: 0, isCdn: false, expected: true },
+            { major: 1, minor: 151, patch: 0, isCdn: false, expected: true },
+            { major: 2, minor: 0, patch: 0, isCdn: false, expected: true },
+            { major: 1, minor: 149, patch: 0, isCdn: false, expected: false },
+            { major: 1, minor: 115, patch: 0, isCdn: false, expected: false },
+            { major: 1, minor: 149, patch: 0, label: 'legacy-free', isCdn: true, expected: true }
+        ])('major=$major minor=$minor label=$label => $expected', ({ expected, ...version }) => {
+            expect(qualifiesForNewSandbox(version)).toBe(expected);
+        });
     });
 
     describe('remapResourcesForPath', () => {
@@ -378,6 +489,135 @@ describe('config', () => {
             expect(config.basePath).toBe('.');
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
+        });
+    });
+
+    describe('generateSandboxAppConfig', () => {
+        const workspaceConnector = 'open/ux/preview/client/flp/WorkspaceConnector';
+
+        test('generates config with single app', () => {
+            const flpConfig = getFlpConfigWithDefaults({ intent: { object: 'app', action: 'preview' } });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            templateConfig.apps['app-preview'] = {
+                title: 'My App',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my.app',
+                applicationType: 'URL',
+                url: '..'
+            };
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
+            expect(result.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
+            expect(result.restricted.flexibilityServices).toHaveLength(3);
+            expect(result.restricted.flexibilityServices[0]).toEqual({
+                connector: 'LrepConnector',
+                layers: [],
+                url: '/sap/bc/lrep'
+            });
+            expect(result.restricted.flexibilityServices[1]).toEqual({
+                applyConnector: workspaceConnector,
+                writeConnector: workspaceConnector,
+                custom: true
+            });
+            expect(result.tiles).toHaveLength(1);
+            expect(result.tiles[0].rootPath).toBe('../');
+        });
+
+        test('generates config with multiple apps', () => {
+            const flpConfig = getFlpConfigWithDefaults({
+                intent: { object: 'myApp', action: 'start' },
+                apps: [
+                    { target: '/app2', intent: { object: 'otherApp', action: 'display' } },
+                    { target: '/app3' }, // no intent — derived from sap.app.id 'myotherapp' → 'myotherapp-preview'
+                    { target: '/app4' } // no intent — sap.app.id with dash 'my-app' → 'my-app-preview', lastIndexOf safe
+                ]
+            });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            templateConfig.apps['myApp-start'] = {
+                title: 'App One',
+                description: '',
+                additionalInformation: '',
+                applicationType: 'URL',
+                url: '/app1'
+            };
+            templateConfig.apps['otherApp-display'] = {
+                title: 'App Two',
+                description: '',
+                additionalInformation: '',
+                applicationType: 'URL',
+                url: '/app2'
+            };
+            templateConfig.apps['myotherapp-preview'] = {
+                title: 'App Three',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my.other.app',
+                applicationType: 'URL',
+                url: '/app3'
+            };
+            // key derived from sap.app.id 'my-app' (dashed, no dots) → 'my-app-preview'
+            // lastIndexOf('-') must split as semanticObject='my-app', action='preview'
+            templateConfig.apps['my-app-preview'] = {
+                title: 'App Four',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my-app',
+                applicationType: 'URL',
+                url: '/app4'
+            };
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.tiles).toHaveLength(4);
+            expect(result.tiles.find((t) => t.semanticObject === 'myApp')).toEqual({
+                semanticObject: 'myApp',
+                action: 'start',
+                rootPath: '/app1/'
+            });
+            expect(result.tiles.find((t) => t.semanticObject === 'otherApp')).toEqual({
+                semanticObject: 'otherApp',
+                action: 'display',
+                rootPath: '/app2/'
+            });
+            expect(result.tiles.find((t) => t.semanticObject === 'myotherapp')).toEqual({
+                semanticObject: 'myotherapp',
+                action: 'preview',
+                rootPath: '/app3/'
+            });
+            expect(result.tiles.find((t) => t.semanticObject === 'my-app')).toEqual({
+                semanticObject: 'my-app',
+                action: 'preview',
+                rootPath: '/app4/'
+            });
+        });
+
+        test('matches snapshot', () => {
+            const flpConfig = getFlpConfigWithDefaults({ intent: { object: 'app', action: 'preview' } });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            templateConfig.apps['app-preview'] = {
+                title: 'My App',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my.app',
+                applicationType: 'URL',
+                url: '..'
+            };
+            expect(generateSandboxAppConfig(templateConfig, flpConfig)).toMatchSnapshot();
+        });
+
+        test('navigateToApp: false does not set rootIntent', () => {
+            const flpConfig = getFlpConfigWithDefaults({
+                intent: { object: 'app', action: 'preview' },
+                navigateToApp: false
+            });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.rootIntent).toBeUndefined();
+        });
+
+        test('navigateToApp: true sets rootIntent from intent config', () => {
+            const flpConfig = getFlpConfigWithDefaults({
+                intent: { object: 'SalesOrder', action: 'manage' },
+                navigateToApp: true
+            });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.rootIntent).toBe('SalesOrder-manage');
         });
     });
 });

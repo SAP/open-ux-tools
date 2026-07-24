@@ -66,6 +66,17 @@ export interface FlpConfig {
      * Optional: if set to true then the new FLP homepage will be enabled
      */
     enhancedHomePage?: boolean;
+    /**
+     * Optional: if set to true, opts in to the new FLP Sandbox when the UI5 version qualifies (>= 1.150).
+     * Defaults to false.
+     */
+    useNewSandbox?: boolean;
+    /**
+     * Optional: if set to true, the new FLP Sandbox will navigate directly to the app on startup
+     * instead of showing the FLP home screen first. Only applies when the new Sandbox is active.
+     * Defaults to false.
+     */
+    navigateToApp?: boolean;
 }
 
 /**
@@ -256,6 +267,17 @@ export const FLPHomePageDefaults = {
     pageName: 'SAP_BASIS_PG_UI_MYHOME',
     catalogId: 'homeCatalog',
     sectionId: 'homeAppsSection'
+};
+
+export type Ui5Version = {
+    major: number;
+    minor: number;
+    patch: number;
+    label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn: boolean;
 };
 
 export interface MultiCardsPayload {

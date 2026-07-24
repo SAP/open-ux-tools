@@ -6,8 +6,10 @@ import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version.js';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info.js';
 
-const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
-const changesApiPath = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
+const getChangesApiPath = (): string => {
+    const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
+    return `${baseUrl}${CHANGES_API_PATH_STATIC}`;
+};
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
@@ -36,7 +38,7 @@ const connector = merge({}, ObjectStorageConnector, {
                 additionalChangeInfo
             };
 
-            return fetch(changesApiPath, {
+            return fetch(getChangesApiPath(), {
                 method: 'POST',
                 body: JSON.stringify(body, null, 2),
                 headers: {
@@ -53,7 +55,7 @@ const connector = merge({}, ObjectStorageConnector, {
                 }
             }
 
-            return fetch(changesApiPath, {
+            return fetch(getChangesApiPath(), {
                 method: 'DELETE',
                 body: JSON.stringify({ fileName: key }),
                 headers: {
@@ -68,7 +70,7 @@ const connector = merge({}, ObjectStorageConnector, {
             // not implemented
         },
         getItems: async function (): Promise<FlexChange[]> {
-            const response = await fetch(changesApiPath, {
+            const response = await fetch(getChangesApiPath(), {
                 method: 'GET',
                 headers: {
                     'content-type': 'application/json'

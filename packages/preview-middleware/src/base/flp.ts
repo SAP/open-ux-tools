@@ -59,7 +59,8 @@ import type {
     TestConfig,
     CardGeneratorConfig,
     MultiCardsPayload,
-    I18nEntry
+    I18nEntry,
+    Ui5Version
 } from '../types/index.js';
 import {
     getFlpConfigWithDefaults,
@@ -72,7 +73,9 @@ import {
     getAppName,
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
-    remapResourcesForPath
+    remapResourcesForPath,
+    generateSandboxAppConfig,
+    qualifiesForNewSandbox
 } from './config.js';
 import { generateCdm } from './cdm.js';
 import { readFileSync } from 'node:fs';
@@ -101,17 +104,6 @@ type OnChangeRequestHandler = (
     logger: Logger,
     extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
-
-type Ui5Version = {
-    major: number;
-    minor: number;
-    patch: number;
-    label?: string;
-    /**
-     * Indicates if the UI5 version is served from CDN.
-     */
-    isCdn: boolean;
-};
 
 type RtaDeveloperModeTemplateConfig = {
     previewUrl: string;
@@ -280,16 +272,20 @@ export class FlpSandbox {
      * Also deletes the ABAP connector in case of a CAP project.
      * Deletes all connectors if UI5 version is < 1.84 and served from npmjs.
      *
+     * @param config - the template config to mutate (must be a per-request clone, not the shared this.templateConfig)
      * @param ui5VersionMajor - the major version of UI5
      * @param ui5VersionMinor - the minor version of UI5
      * @param isCDN - whether the UI5 sources are served from CDN
      * @private
      */
-    private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number, isCDN: boolean): void {
+    private checkDeleteConnectors(
+        config: TemplateConfig,
+        ui5VersionMajor: number,
+        ui5VersionMinor: number,
+        isCDN: boolean
+    ): void {
         if (ui5VersionMajor === 1 && ui5VersionMinor < 84) {
-            this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter((connector) =>
-                isFlexConnector(connector)
-            );
+            config.ui5.flex = config.ui5?.flex?.filter((connector) => isFlexConnector(connector));
             this.logger.debug(
                 `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it.${
                     isCDN ? 'The Fiori Tools fake connector (FakeLrepConnector) will be used instead.' : ''
@@ -304,7 +300,7 @@ export class FlpSandbox {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
         }
         if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
-            this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter(
+            config.ui5.flex = config.ui5?.flex?.filter(
                 (connector) =>
                     !isFlexConnector(connector) ||
                     (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
@@ -333,7 +329,6 @@ export class FlpSandbox {
         await this.setApplicationDependencies();
         this.templateConfig.baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, this.templateConfig.baseUrl);
-        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
@@ -342,6 +337,8 @@ export class FlpSandbox {
         }
 
         const config = structuredClone(this.templateConfig);
+        config.ui5.versionMajor = ui5Version.major;
+        this.checkDeleteConnectors(config, ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (!config.ui5.libs.includes('sap.ui.rta')) {
             // sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects
             config.ui5.libs += ',sap.ui.rta';
@@ -360,7 +357,7 @@ export class FlpSandbox {
         const appId = this.manifest['sap.app']?.id ?? '';
         remapResourcesForPath(config, editor.path, appId);
 
-        return render(this.getSandboxTemplate(ui5Version), config);
+        return render(await this.getSandboxTemplate(ui5Version), config);
     }
 
     /**
@@ -525,14 +522,65 @@ export class FlpSandbox {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const ui5Version = await this.getUi5VersionFromRequest(req, this.templateConfig.baseUrl);
-            this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+            this.templateConfig.ui5.versionMajor = ui5Version.major;
+            this.checkDeleteConnectors(this.templateConfig, ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
             }
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
-            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
+            const html = render(await this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
+    }
+
+    /**
+     * Handler for GET requests to fioriSandboxAppConfig.json (Sandbox 2.0).
+     * Serves a virtual config, optionally merged with a user-provided file.
+     * If a real HTML file exists at the FLP path, no virtual config is served.
+     *
+     * @param req incoming request
+     * @param res server response
+     * @param next next middleware function
+     * @param configJsonPath project-relative path to fioriSandboxAppConfig.json
+     */
+    private async sandboxAppConfigGetHandler(
+        req: EnhancedRequest | connect.IncomingMessage,
+        res: Response | http.ServerResponse,
+        next: NextFunction,
+        configJsonPath: string
+    ): Promise<void> {
+        const baseUrl = (this.templateConfig.baseUrl =
+            ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
+
+        const file = await this.project.byPath(`${baseUrl}${this.flpConfig.path}`);
+        if (file) {
+            this.logger.info(
+                `HTML file returned at '${this.flpConfig.path}'. No virtual 'fioriSandboxAppConfig.json' will be served.`
+            );
+            next();
+            return;
+        }
+        // If the legacy fioriSandboxConfig.json exists, sandbox 2 is disabled — no config to serve.
+        const legacyFile = await this.project.byPath(`${baseUrl}/appconfig/fioriSandboxConfig.json`);
+        if (legacyFile) {
+            next();
+            return;
+        }
+        // check for user-provided fioriSandboxAppConfig.json and merge if present
+        const isCap = this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs';
+        const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
+        let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig, this.adp !== undefined, isCap);
+        if (userConfigFile) {
+            const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
+            config = {
+                ...config,
+                ...userConfig,
+                // beforeFlpStart and afterFlpStart must always point to our hooks
+                beforeFlpStart: config.beforeFlpStart,
+                afterFlpStart: config.afterFlpStart
+            };
+        }
+        this.sendResponse(res, 'application/json', 200, JSON.stringify(config));
     }
 
     /**
@@ -553,6 +601,43 @@ export class FlpSandbox {
                 await this.flpGetHandler(req, res, next);
             }
         );
+
+        // add routes for fioriSandboxAppConfig.json (Sandbox 2.0) — only when sandbox 2 is not explicitly disabled.
+        // The config must be served at the directory of every sandbox HTML endpoint,
+        // since each endpoint fetches fioriSandboxAppConfig.json relative to its own location.
+        if (this.flpConfig.useNewSandbox === true) {
+            const sandboxDirs = new Set<string>();
+            sandboxDirs.add(dirname(this.flpConfig.path));
+            if (this.cardGenerator?.path) {
+                const cardGeneratorPath = this.cardGenerator.path.startsWith('/')
+                    ? this.cardGenerator.path
+                    : `/${this.cardGenerator.path}`;
+                sandboxDirs.add(dirname(cardGeneratorPath));
+            }
+            if (this.rta) {
+                for (const editor of this.rta.endpoints) {
+                    sandboxDirs.add(dirname(editor.path));
+                }
+            }
+            // Register one route per directory rather than passing an array to router.get()
+            // sandboxAppConfigGetHandler needs the concrete configJsonPath to look up the user-provided
+            // file via project.byPath(), and connect.IncomingMessage does not expose req.path,
+            // so we cannot derive the path from the request inside the handler.
+            for (const dir of sandboxDirs) {
+                const configJsonPath = `${dir}/fioriSandboxAppConfig.json`;
+                this.logger.debug(`Add route for ${configJsonPath}`);
+                this.router.get(
+                    configJsonPath,
+                    async (
+                        req: EnhancedRequest | connect.IncomingMessage,
+                        res: Response | http.ServerResponse,
+                        next: NextFunction
+                    ) => {
+                        await this.sandboxAppConfigGetHandler(req, res, next, configJsonPath);
+                    }
+                );
+            }
+        }
     }
 
     /**
@@ -663,6 +748,12 @@ export class FlpSandbox {
             this.logger.warn(`Feature enhancedHomePage disabled: UI5 version: ${version} not supported.`);
         }
 
+        // enhancedHomePage (CDM) is not supported with Sandbox 2 — fall back to sandbox 1
+        if (this.flpConfig.enhancedHomePage && qualifiesForNewSandbox({ major, minor, patch, label, isCdn })) {
+            this.flpConfig.useNewSandbox = false;
+            this.logger.warn(`New FLP Sandbox disabled: enhancedHomePage is not supported with Sandbox 2.`);
+        }
+
         return {
             major,
             minor,
@@ -674,17 +765,26 @@ export class FlpSandbox {
 
     /**
      * Read the sandbox template file based on the given UI5 version.
+     * Also checks for a legacy 'appconfig/fioriSandboxConfig.json' and falls back to Sandbox 1 if found.
      *
      * @param ui5Version - the UI5 version
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate(ui5Version: Ui5Version): string {
+    private async getSandboxTemplate(ui5Version: Ui5Version): Promise<string> {
         this.logger.info(
             `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
-        const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
+        const qualifies = qualifiesForNewSandbox(ui5Version);
+        const legacyConfigPresent = qualifies
+            ? await this.hasLegacySandboxConfig(ui5Version, this.templateConfig.baseUrl)
+            : false;
+        const useNewSandbox = qualifies && this.flpConfig.useNewSandbox === true && !legacyConfigPresent;
+        if (qualifies && !useNewSandbox && !this.flpConfig.enhancedHomePage) {
+            this.logger.info('New FLP Sandbox disabled in configuration.');
+        }
+        const filePrefix = useNewSandbox ? '2' : '';
         const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
         return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.ejs`), 'utf-8');
     }
@@ -700,6 +800,29 @@ export class FlpSandbox {
                 appDependencies.asyncHints.requests = [];
             }
         }
+    }
+
+    /**
+     * Checks if a legacy 'appconfig/fioriSandboxConfig.json' file is present when using the new FLP Sandbox.
+     * If found, warns the user to migrate and returns true so the caller can fall back to the classic Sandbox
+     * for this request.
+     *
+     * @param ui5Version - the resolved UI5 version
+     * @param baseUrl - the base URL of the current request
+     * @returns true if the legacy file is present and sandbox 2 should be suppressed
+     * @private
+     */
+    private async hasLegacySandboxConfig(ui5Version: Ui5Version, baseUrl: string): Promise<boolean> {
+        if (qualifiesForNewSandbox(ui5Version) && this.flpConfig.useNewSandbox === true) {
+            const legacyFile = await this.project.byPath(`${baseUrl}/appconfig/fioriSandboxConfig.json`);
+            if (legacyFile) {
+                this.logger.warn(
+                    `Found legacy file at 'appconfig/fioriSandboxConfig.json'. Falling back to the classic Sandbox. Please migrate your application configuration first.`
+                );
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
