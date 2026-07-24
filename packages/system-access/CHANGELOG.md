@@ -1,5 +1,13 @@
 # @sap-ux/system-access
 
+## 1.0.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.4 → 2.0.5
+
 ## 1.0.7
 
 ### Patch Changes
