@@ -4031,7 +4031,7 @@ describe('Building Blocks', () => {
             expect(output.match(/<macros:breadcrumbs\b/g)).toHaveLength(1);
         });
 
-        it('appends a new navigationActions container when one already exists', async () => {
+        it('appends children inside existing navigationActions container on second add', async () => {
             const basePath = join(testAppPath, 'page-bb-agg-multi-nav');
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
             const viewWithNav = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
@@ -4054,10 +4054,95 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            // Two separate <macros:navigationActions> containers
-            expect(output.match(/<macros:navigationActions\b/g)).toHaveLength(2);
-            // Second container has a unique ID (numeric suffix appended by createIdGenerator)
+            // ONE container only — children are appended inside
+            expect(output.match(/<macros:navigationActions\b/g)).toHaveLength(1);
+            // Both the original and the new child are inside it
+            expect(output).toContain('id="navigationActions_button"');
             expect(output).toContain('id="navigationActions_button1"');
+        });
+
+        it('appends children inside existing titleContent container on second add', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-multi-title');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithTitle = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:titleContent><GenericTag id="titleContent_genericTag" text="Status" /></macros:titleContent>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithTitle);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'titleContent'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output.match(/<macros:titleContent\b/g)).toHaveLength(1);
+            expect(output).toContain('id="titleContent_genericTag"');
+            expect(output).toContain('id="titleContent_genericTag1"');
+        });
+
+        it('appends children inside existing actions container on second add', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-multi-actions');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithActions = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:actions><Button id="actions_button" text="Action 1" /></macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithActions);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'actions'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output.match(/<macros:actions\b/g)).toHaveLength(1);
+            expect(output).toContain('id="actions_button"');
+            expect(output).toContain('id="actions_button1"');
+        });
+
+        it('appends children inside existing headerContent container on second add', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-multi-header');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithHeader = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:headerContent><VBox id="headerContent_vbox"><Title id="headerContent_title" text="Page Title" /></VBox></macros:headerContent>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithHeader);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'headerContent'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output.match(/<macros:headerContent\b/g)).toHaveLength(1);
+            expect(output).toContain('id="headerContent_vbox"');
+            expect(output).toContain('id="headerContent_vbox1"');
         });
 
         it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {

@@ -479,8 +479,34 @@ export async function generateBuildingBlockAggregation(
         fs.write(join(basePath, viewPath), format(existingXmlContent));
         return fs;
     }
-    // Multiple-instance aggregations (navigationActions, titleContent, actions, headerContent) fall through
-    // and append a new container element with unique IDs.
+    if (hasExistingAggregation) {
+        // Append-children aggregations (navigationActions, titleContent, actions, headerContent):
+        // find the existing container and append new children from the rendered template inside it.
+        const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
+        const existingContainer = childNodes.find(
+            (n) =>
+                n.nodeType === 1 /* Element */ &&
+                (n as Element).localName === aggName &&
+                (n as Element).namespaceURI === macrosNsUri
+        ) as Element | undefined;
+        if (existingContainer) {
+            // aggDoc.documentElement is <root xmlns:macros=...>; its first Element child is <macros:xxx>
+            const renderedWrapper = Array.from(aggDoc.documentElement.childNodes).find(
+                (n) => n.nodeType === 1 /* Element */
+            ) as Element | undefined;
+            if (renderedWrapper) {
+                for (const child of Array.from(renderedWrapper.childNodes)) {
+                    if (child.nodeType === 1 /* Element */) {
+                        existingContainer.appendChild(xmlDocument.importNode(child, true));
+                    }
+                }
+            }
+        }
+        sortPageAggregationChildren(pageElement);
+        const existingXmlContent = new XMLSerializer().serializeToString(xmlDocument);
+        fs.write(join(basePath, viewPath), format(existingXmlContent));
+        return fs;
+    }
 
     const hasExistingElementChildren = childNodes.some((n) => n.nodeType === 1 /* Element */);
     const hasTemplateComment = childNodes.some(
