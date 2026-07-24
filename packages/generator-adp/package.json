@@ -38,7 +38,7 @@
         "yeoman-generator"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-devx/feature-toggle-node": "2.1.0",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
@@ -69,7 +69,7 @@
         "@types/yeoman-test": "4.0.6",
         "@types/uuid": "11.0.0",
         "@vscode-logging/logger": "2.0.9",
-        "fs-extra": "11.3.5",
+        "fs-extra": "11.3.6",
         "rimraf": "6.1.3",
         "yeoman-test": "6.3.0"
     },

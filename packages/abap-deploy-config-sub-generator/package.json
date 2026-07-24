@@ -44,7 +44,7 @@
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "i18next": "26.3.6",
-        "@sap-devx/yeoman-ui-types": "1.25.0"
+        "@sap-devx/yeoman-ui-types": "1.25.1"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
