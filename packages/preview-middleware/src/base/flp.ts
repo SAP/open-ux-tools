@@ -37,7 +37,8 @@ import {
     type OperationType,
     type CommonAdditionalChangeInfoProperties,
     loadAppVariant,
-    readManifestFromBuildPath
+    readManifestFromBuildPath,
+    ensureAnnotationI18nModelRegistered
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
@@ -1263,6 +1264,22 @@ export class FlpSandbox {
      */
     async initAdp(config: AdpPreviewConfig): Promise<void> {
         const variant = await loadAppVariant(this.project);
+
+        // Ensure old projects register the @i18n model so annotation-change bindings resolve.
+        // Must land on disk before adp.init() -> sync() zips the project via the UI5 reader.
+        // Best-effort: a failure to upgrade the descriptor must not break editor startup.
+        if (!('cfBuildPath' in config)) {
+            try {
+                const projectRoot = dirname(this.utils.getProject().getSourcePath());
+                const modified = await ensureAnnotationI18nModelRegistered(projectRoot, this.fs);
+                if (modified) {
+                    await new Promise<void>((resolve) => this.fs.commit(resolve));
+                }
+            } catch (error) {
+                this.logger.warn(`Could not ensure the @i18n model in the descriptor: ${error.message}`);
+            }
+        }
+
         const adp = new AdpPreview(config, this.project, this.utils, this.logger as ToolsLogger);
         const layer = await adp.init(variant);
 
