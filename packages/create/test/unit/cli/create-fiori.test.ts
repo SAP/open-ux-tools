@@ -88,7 +88,9 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     setupCfPreview: jest.fn()
 }));
 
+const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
     FileName: {
         Ui5Yaml: 'ui5.yaml',
         Ui5LocalYaml: 'ui5-local.yaml',
