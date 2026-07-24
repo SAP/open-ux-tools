@@ -40,7 +40,7 @@ sap.ui.define([
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheMaterialDetailsObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iPressEdit();
+            // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iExecuteEdit();
             Then.onTheMaterialDetailsObjectPageGenerated.onHeader().iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialCategoryFormAction", unbound: true }, { enabled: true });
             // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialCategoryFormAction", unbound: true });
         });
@@ -48,13 +48,13 @@ sap.ui.define([
 
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
+            When.onTheMaterialDetailsObjectPageGenerated.iGoToSection({ section: "MaterialDetailsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "ModelYear" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "WarrantyYear" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "BrandCategory" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "FabricationCountry" });
-            When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialRatingsFacet");
+            When.onTheMaterialDetailsObjectPageGenerated.iGoToSection({ section: "MaterialRatingsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialRatingsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true }, { enabled: true });
             // When.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true });

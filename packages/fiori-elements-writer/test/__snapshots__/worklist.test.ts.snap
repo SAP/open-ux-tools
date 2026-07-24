@@ -14212,7 +14212,7 @@ sap.ui.define([
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
             Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingDate\\" });
@@ -14222,7 +14222,7 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: \\"BookingSupplement\\" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
             Then.onTheBookingObjectPageGenerated.onTable({ property: \\"_BookSupplement\\" }).iCheckColumns(undefined, {\\"BookingSupplementID\\":{\\"header\\":\\"Book. Supp. Number\\"},\\"SupplementID\\":{\\"header\\":\\"Product ID\\"},\\"Price\\":{\\"header\\":\\"Product Price\\"}});
        });
@@ -14357,7 +14357,7 @@ sap.ui.define([
         opaTest(\\"Check header actions of the Object Page\\", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteEdit();
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false } /* , { enabled: true } */);
             // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false });
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToBooked\\", unbound: false } /* , { enabled: true } */);
@@ -14373,7 +14373,7 @@ sap.ui.define([
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Travel\\");
+            When.onTheTravelObjectPageGenerated.iGoToSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"AgencyID\\" });
@@ -14385,7 +14385,7 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
-            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
+            When.onTheTravelObjectPageGenerated.iGoToSection({ section: \\"Booking\\" });
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckColumns(undefined, {\\"BookingID\\":{\\"header\\":\\"Booking Number\\"},\\"BookingDate\\":{\\"header\\":\\"Booking Date\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"AirlineID\\":{\\"header\\":\\"Airline ID\\"},\\"ConnectionID\\":{\\"header\\":\\"Flight Number\\"},\\"FlightDate\\":{\\"header\\":\\"Flight Date\\"},\\"FlightPrice\\":{\\"header\\":\\"Flight Price\\"},\\"DestinationRisk\\":{\\"header\\":\\"Destination Risk\\"}});
        });
@@ -14484,18 +14484,11 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     const CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -14590,18 +14583,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     const CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
