@@ -1,4 +1,4 @@
-export { toAnnotationFile, toTargetMap, adjustCdsTermNames, toAbsoluteUriString } from './transforms/index.js';
+export { toAnnotationFile, toTargetMap, toAbsoluteUriString } from './transforms/index.js';
 export type { CdsAnnotationFile } from './transforms/index.js';
 export {
     print,

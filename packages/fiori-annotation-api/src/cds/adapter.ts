@@ -30,6 +30,7 @@ import type {
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { Project } from '@sap-ux/project-access';
+import type { Annotation } from '@sap-ux/cds-annotation-parser';
 import type { Record as RecordNode } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
@@ -1161,7 +1162,7 @@ function deleteChildFlattenedStructures(
             } else if (assignment.type === ANNOTATION_GROUP_TYPE) {
                 for (let groupItemIndex = 0; groupItemIndex < assignment.items.items.length; groupItemIndex++) {
                     const item = assignment.items.items[groupItemIndex];
-                    const combinedTerm = `${assignment.name.value}.${item.term.value}`;
+                    const combinedTerm = `${assignment.name.value}.${(item as Annotation).term.value}`;
 
                     if (isMatchingAnnotation(item, term, combinedTerm, qualifier)) {
                         writer.addChange(

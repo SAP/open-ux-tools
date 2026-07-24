@@ -115,7 +115,7 @@ class Visitor {
             const annotationIndex = findNodeIndexByRange(astNode.items.items, node.range);
             const annotation = astNode.items.items[annotationIndex];
             this.inVocabularyGroup = true;
-            const result = this.annotation(annotation, node, pointer);
+            const result = this.annotation(annotation as Annotation, node, pointer);
             if (result) {
                 result.pointer = ['items', 'items', annotationIndex.toString(), ...result.pointer];
 
@@ -235,7 +235,7 @@ class Visitor {
                         const annotationIndex = findNodeIndexByRange(astNode.annotations, nextGenericNode.range);
                         const annotation = astNode.annotations?.[annotationIndex];
                         if (annotation) {
-                            const result = this.annotation(annotation, nextGenericNode, segments, true);
+                            const result = this.annotation(annotation as Annotation, nextGenericNode, segments, true);
                             if (result) {
                                 result.pointer = ['annotations', annotationIndex.toString(), ...result.pointer];
                                 return result;
@@ -269,7 +269,7 @@ class Visitor {
                         const annotationIndex = findNodeIndexByRange(astNode.annotations, node.range);
                         const annotation = astNode.annotations?.[annotationIndex];
                         if (annotation) {
-                            const result = this.annotation(annotation, node, pointer, true);
+                            const result = this.annotation(annotation as Annotation, node, pointer, true);
                             if (result) {
                                 result.pointer = ['annotations', annotationIndex.toString(), ...result.pointer];
                                 return result;

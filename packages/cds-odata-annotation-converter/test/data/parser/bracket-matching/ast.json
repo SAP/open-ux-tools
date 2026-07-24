@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(1,23)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,19)..(1,20)]"
+                    "range": "[(1,19)..(1,20)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "collection",
@@ -85,8 +85,8 @@
                 "range": "[(3,4)..(3,23)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(3,18)..(3,19)]"
+                    "range": "[(3,18)..(3,19)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "collection",

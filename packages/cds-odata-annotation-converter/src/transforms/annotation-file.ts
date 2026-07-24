@@ -1,8 +1,8 @@
 import { Position, Range } from '@sap-ux/text-document-utils';
-import { copyRange, copyPosition, ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE, parse } from '@sap-ux/cds-annotation-parser';
+import { copyRange, copyPosition, ANNOTATION_GROUP_TYPE, parse } from '@sap-ux/cds-annotation-parser';
 import { convertAnnotation } from './annotation/index.js';
-import type { Annotation, AnnotationGroup, Assignment, Identifier } from '@sap-ux/cds-annotation-parser';
-import type { CdsVocabulary, VocabularyService } from '@sap-ux/odata-vocabularies';
+import type { Assignment } from '@sap-ux/cds-annotation-parser';
+import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import type {
     AnnotationAssignmentToken,
@@ -35,94 +35,6 @@ export { TARGET_TYPE } from '@sap-ux/odata-annotation-core-types';
 
 const SERVICE_NAME_PLACEHOLDER = '<ServiceName>';
 
-/**
- * Adapts the segments of an array of Identifiers based on a new name.
- *
- * @param segments - The array of Identifier segments to adapt.
- * @param newName - The new name to use for adaptation.
- * If undefined, the segments will be cleared.
- */
-function adaptSegments(segments: Identifier[], newName: string | undefined): void {
-    const newSegments = newName ? newName.split('.') : [];
-    newSegments.forEach((internalSegment, index) => {
-        if (segments[index]) {
-            segments[index].value = internalSegment;
-        }
-    });
-    // TODO adapt ranges ?
-    if (newSegments.length > segments.length) {
-        newSegments.slice(segments.length).forEach((newSegment) => {
-            segments.push({ type: 'identifier', value: newSegment });
-        });
-    } else if (newSegments.length < segments.length) {
-        segments.splice(newSegments.length, segments.length - newSegments.length);
-    }
-}
-export const adjustCdsTermNames = (assignment: Assignment, cdsVocabulary: CdsVocabulary): Assignment => {
-    if (assignment?.type === ANNOTATION_TYPE) {
-        if (cdsVocabulary.nameMap.has(assignment.term.value)) {
-            const internalTermName = cdsVocabulary.nameMap.get(assignment.term.value);
-            assignment.term.value = internalTermName ?? '';
-            adaptSegments(assignment.term.segments, internalTermName);
-        } else if (
-            assignment.term.segments.length > 2 &&
-            cdsVocabulary.groupNames.has(assignment.term.segments[0].value)
-        ) {
-            // value help e.g. for @cds.persistence.ex| - avoid flattening logic later on by replacing this with truncated CDS term
-            // (use name convention for building internal cds term names i.e. cds.persistence.exists => CDS.CdsPersistenceExists)
-            const adaptedSegments = assignment.term.segments.map(
-                (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
-            );
-            const internalTermName = cdsVocabulary.alias + '.' + adaptedSegments.join('');
-            assignment.term.value = internalTermName;
-            adaptSegments(assignment.term.segments, internalTermName);
-        }
-    } else if (assignment?.type === ANNOTATION_GROUP_TYPE && cdsVocabulary.groupNames.has(assignment.name.value)) {
-        // only CDS annotations ? set group name to CDS vocabulary alias and goup item name to internal term name
-        const nonCdsItems = (assignment?.items?.items || []).filter(
-            (groupItem) => !cdsVocabulary.nameMap.has(assignment.name.value + '.' + groupItem.term.value)
-        );
-        if (nonCdsItems.length === 0 && cdsVocabulary.nameMap) {
-            (assignment?.items?.items || []).forEach((groupItem) => {
-                const internalTermName = getInternalTermName(cdsVocabulary, groupItem, assignment);
-                groupItem.term.value = internalTermName ?? '';
-                adaptSegments(groupItem.term.segments, internalTermName);
-            });
-            assignment.name.value = cdsVocabulary.alias;
-        }
-    }
-    return assignment;
-};
-
-/**
- * Get the internal term name from the CDS vocabulary and group item.
- *
- * @param cdsVocabulary - The CDS vocabulary containing nameMap and alias.
- * @param groupItem - The group item annotation.
- * @param assignment - assignment name value
- * @returns The internal term name, or undefined if not found.
- */
-function getInternalTermName(
-    cdsVocabulary: CdsVocabulary,
-    groupItem: Annotation | undefined,
-    assignment: AnnotationGroup
-) {
-    if (cdsVocabulary?.nameMap && groupItem) {
-        const assignmentName = assignment.name.value;
-        const termValue = groupItem.term.value;
-
-        const fullName = assignmentName + '.' + termValue;
-
-        const fullNameFromMap = cdsVocabulary.nameMap.get(fullName);
-
-        if (fullNameFromMap) {
-            return fullNameFromMap.slice(cdsVocabulary.alias.length + 1);
-        }
-    }
-
-    return undefined;
-}
-
 export const toAssignment = (
     annotation: AnnotationAssignmentToken,
     vocabularyService: VocabularyService
@@ -141,7 +53,6 @@ export const toAssignment = (
     }
     // end of work around solution
     const assignment = parse(text, Position.create(annotation.line, annotation.character));
-    adjustCdsTermNames(assignment as Assignment, vocabularyService.cdsVocabulary);
     return assignment as Assignment;
 };
 

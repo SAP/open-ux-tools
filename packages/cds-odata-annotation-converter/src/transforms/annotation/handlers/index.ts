@@ -1,5 +1,6 @@
 import type { AnnotationNode } from '@sap-ux/cds-annotation-parser';
 
+import { flattenedExpressionHandler } from './flattenedExpression.js';
 import type { NodeHandler } from '../handler.js';
 import { annotationHandler } from './annotation.js';
 import { collectionHandler } from './collection.js';
@@ -24,6 +25,7 @@ export type NodeHandlerConfig = {
 
 export const nodeHandlerConfig: NodeHandlerConfig = {
     [annotationHandler.type]: annotationHandler,
+    [flattenedExpressionHandler.type]: flattenedExpressionHandler,
     [recordHandler.type]: recordHandler,
     [recordPropertyHandler.type]: recordPropertyHandler,
     [collectionHandler.type]: collectionHandler,

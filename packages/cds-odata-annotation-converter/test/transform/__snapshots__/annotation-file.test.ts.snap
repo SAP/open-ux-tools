@@ -6,8 +6,8 @@ Object {
   "file": Object {
     "contentRange": Object {
       "end": Object {
-        "character": 49,
-        "line": 61,
+        "character": 3,
+        "line": 67,
       },
       "start": Object {
         "character": 0,
@@ -20,8 +20,8 @@ Object {
     },
     "range": Object {
       "end": Object {
-        "character": 49,
-        "line": 61,
+        "character": 3,
+        "line": 67,
       },
       "start": Object {
         "character": 0,
@@ -1165,6 +1165,74 @@ Object {
           "start": Object {
             "character": 17,
             "line": 61,
+          },
+        },
+        "type": "target",
+      },
+      Object {
+        "name": "sap.capire.bookshop.Orders",
+        "nameRange": Object {
+          "end": Object {
+            "character": 15,
+            "line": 64,
+          },
+          "start": Object {
+            "character": 9,
+            "line": 64,
+          },
+        },
+        "range": Object {
+          "end": Object {
+            "character": 3,
+            "line": 67,
+          },
+          "start": Object {
+            "character": 2,
+            "line": 65,
+          },
+        },
+        "terms": Array [
+          Object {
+            "attributes": Object {
+              "Term": Object {
+                "name": "Term",
+                "type": "attribute",
+                "value": "CDS.OdataDraftEnabled",
+                "valueRange": Object {
+                  "end": Object {
+                    "character": 17,
+                    "line": 66,
+                  },
+                  "start": Object {
+                    "character": 4,
+                    "line": 66,
+                  },
+                },
+              },
+            },
+            "content": Array [],
+            "name": "Annotation",
+            "range": Object {
+              "end": Object {
+                "character": 17,
+                "line": 66,
+              },
+              "start": Object {
+                "character": 4,
+                "line": 66,
+              },
+            },
+            "type": "element",
+          },
+        ],
+        "termsRange": Object {
+          "end": Object {
+            "character": 3,
+            "line": 67,
+          },
+          "start": Object {
+            "character": 2,
+            "line": 65,
           },
         },
         "type": "target",

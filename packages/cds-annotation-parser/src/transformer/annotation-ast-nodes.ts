@@ -146,7 +146,8 @@ export const RECORD_TYPE = 'record';
 export interface Record extends Node {
     type: typeof RECORD_TYPE;
     properties: RecordProperty[];
-    annotations?: Annotation[];
+    annotations?: Assignment[];
+    flattenedExpressions?: FlattenedExpression[];
     openToken?: Token;
     closeToken?: Token;
     commas: Token[];
@@ -197,9 +198,48 @@ export const ANNOTATION_TYPE = 'annotation';
 export interface Annotation extends Node {
     type: typeof ANNOTATION_TYPE;
     term: Path;
+    /**
+     * CDS original term name (as it is in the file)
+     */
+    originalTerm?: Path;
     qualifier?: Qualifier;
     value?: AnnotationValue;
     colon?: Token;
+}
+export const FLATTENED_EXPRESSION_TYPE = 'flattened-expression';
+export interface FlattenedExpression extends Node {
+    type: typeof FLATTENED_EXPRESSION_TYPE;
+    path: FlattenedPath;
+    value?: AnnotationValue;
+    colon?: Token;
+}
+
+export const FLATTENED_PATH_TYPE = 'flattened-path';
+export interface FlattenedPath extends Node {
+    type: typeof FLATTENED_PATH_TYPE;
+    value: string;
+    segments: FlattenedPathSegment[];
+    separators: Separator[];
+}
+
+export type FlattenedPathSegment = FlattenedPropertySegment | FlattenedAnnotationSegment;
+
+export const FLATTENED_ANNOTATION_SEGMENT_TYPE = 'flattened-annotation-segment';
+export interface FlattenedAnnotationSegment extends Node {
+    type: typeof FLATTENED_ANNOTATION_SEGMENT_TYPE;
+    /**
+     * Indicates if the segment is prefixed with `@`.
+     */
+    prefix: boolean;
+    vocabulary?: Identifier;
+    term: Identifier;
+    qualifier?: Qualifier;
+}
+
+export const FLATTENED_PROPERTY_SEGMENT_TYPE = 'flattened-property-segment';
+export interface FlattenedPropertySegment extends Node {
+    type: typeof FLATTENED_PROPERTY_SEGMENT_TYPE;
+    name: Identifier;
 }
 
 export const ANNOTATION_GROUP_TYPE = 'annotation-group';
@@ -210,12 +250,12 @@ export interface AnnotationGroup extends Node {
     colon?: Token;
 }
 
-export type AstResult = Annotation | AnnotationGroup | undefined;
+export type AstResult = Assignment | undefined;
 
 export const ANNOTATION_GROUP_ITEMS_TYPE = 'annotation-group-items';
 export interface AnnotationGroupItems extends Node {
     type: typeof ANNOTATION_GROUP_ITEMS_TYPE;
-    items: Annotation[];
+    items: (Annotation | FlattenedExpression)[];
     openToken?: Token;
     closeToken?: Token;
     commas: Token[];
@@ -226,7 +266,7 @@ const CONTAINER_TYPES = new Set([ANNOTATION_GROUP_ITEMS_TYPE, RECORD_TYPE, COLLE
 export const isContainer = (node: AnnotationNode): node is AnnotationGroupItems | Record | Collection =>
     CONTAINER_TYPES.has(node.type);
 
-export type Assignment = Annotation | AnnotationGroup;
+export type Assignment = Annotation | AnnotationGroup | FlattenedExpression;
 
 export type Expression = CorrectExpression | IncorrectExpression | UnsupportedOperatorExpression;
 export type AnnotationNode =
@@ -240,6 +280,10 @@ export type AnnotationNode =
     | Separator
     | Token
     | EmptyValue
+    | FlattenedExpression
+    | FlattenedPath
+    | FlattenedAnnotationSegment
+    | FlattenedPropertySegment
     | Expression;
 
 export type NarrowAnnotationNode<T, N = AnnotationNode> = N extends { type: T } ? N : never;
@@ -251,6 +295,7 @@ export type AnnotationNodeType =
     | typeof QUALIFIER_TYPE
     | typeof IDENTIFIER_TYPE
     | typeof TOKEN_TYPE
+    | typeof FLATTENED_EXPRESSION_TYPE
     | AnnotationValueType;
 
 export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Range | undefined => {

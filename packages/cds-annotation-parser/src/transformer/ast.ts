@@ -22,7 +22,8 @@ import type {
     Expression,
     Operator,
     UnsupportedOperatorExpression,
-    IncorrectExpression
+    IncorrectExpression,
+    FlattenedExpression
 } from './annotation-ast-nodes.js';
 import {
     ANNOTATION_TYPE,
@@ -46,7 +47,8 @@ import {
     OPERATOR_TYPE,
     Delimiter,
     UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
-    INCORRECT_EXPRESSION_TYPE
+    INCORRECT_EXPRESSION_TYPE,
+    FLATTENED_EXPRESSION_TYPE
 } from './annotation-ast-nodes.js';
 import { Visitor } from '../parser/factory.js';
 import { buildExpression, operatorImageMap, operatorMap, rebuildNumberSigns } from './expressions.js';
@@ -66,7 +68,9 @@ import type {
     MultiLineStringStripIndentChildren,
     ExpressionChildren
 } from '../parser/parser.js';
+import type { CdsVocabulary } from '@sap-ux/odata-vocabularies';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
+import { FlattenedPathConverter } from './flattened-path-converter.js';
 import { tokenMap } from '../parser/tokens.js';
 import { copyPosition, copyRange } from './range.js';
 import { hasItems, isDefined, hasNaNOrUndefined } from '../utils/index.js';
@@ -126,11 +130,33 @@ const vocabularyAliases = [...vocabularyService.getVocabularies().values()].map(
     (vocabulary) => vocabulary.defaultAlias
 );
 const supportedVocabularyAliases = new Set([...vocabularyAliases, ...vocabularyService.cdsVocabulary.groupNames]);
+const flattenedPathConverter = new FlattenedPathConverter(supportedVocabularyAliases);
 
 const findNextToken = (tokens: IToken[], previousTokenEndOffset?: number): IToken | undefined => {
     const prevTokenIdx = tokens.findIndex((token) => token.endOffset === previousTokenEndOffset);
     return tokens[prevTokenIdx + 1];
 };
+
+interface BaseParams {
+    location: CstNodeLocation;
+}
+
+interface GroupParams extends BaseParams {
+    groupName: string;
+    groupAssignmentPath: Path;
+}
+
+/**
+ * Checks if the given object is a GroupParams object.
+ *
+ * @param params Object to check
+ * @returns True if the object is a GroupParams object, false otherwise.
+ */
+function isGroupParams(params: CstNodeLocation | GroupParams): params is GroupParams {
+    return (params as GroupParams).groupName !== undefined;
+}
+
+type VisitorParams = GroupParams;
 
 /**
  *
@@ -143,10 +169,11 @@ class CstToAstVisitor extends Visitor {
      * Main visitor entry.
      *
      * @param cstNode CST node
+     * @param params Visitor parameters
      * @returns Result of the visitor call for the given cstNode
      */
-    visit(cstNode: CstNode): AnnotationNode {
-        return super.visit(cstNode, cstNode.location);
+    visit(cstNode: CstNode, params?: VisitorParams): AnnotationNode {
+        return super.visit(cstNode, params ? { ...params, location: cstNode.location } : cstNode.location);
     }
 
     /**
@@ -290,7 +317,11 @@ class CstToAstVisitor extends Visitor {
     ): AnnotationGroup {
         const items = (assignment.children.value?.[0].children.struct?.[0].children.assignment ?? []).map(
             (childAssignment, index, childAssignments) => {
-                const annotation = this.visit(childAssignment) as Annotation;
+                const annotation = this.visit(childAssignment, {
+                    groupName: path.value,
+                    location,
+                    groupAssignmentPath: path
+                }) as Annotation;
                 // check for specific situation where current child has no value and separating comma to next child is missing
                 // then: current child value is represented by a path and next child path is empty
                 const nextChildAssignment = index < childAssignments.length - 1 ? childAssignments[index + 1] : null;
@@ -313,9 +344,14 @@ class CstToAstVisitor extends Visitor {
             }
         );
         const commas: Token[] = this.getCommaToken(assignment.children.value?.[0].children?.struct?.[0].children.Comma);
+
+        const name = path.segments[0];
+        if (vocabularyService.cdsVocabulary.groupNames.has(name.value)) {
+            name.value = vocabularyService.cdsVocabulary.alias;
+        }
         const ast: AnnotationGroup = {
             type: ANNOTATION_GROUP_TYPE,
-            name: path.segments[0],
+            name,
             items: {
                 type: ANNOTATION_GROUP_ITEMS_TYPE,
                 items,
@@ -340,21 +376,22 @@ class CstToAstVisitor extends Visitor {
                 ast.items.closeToken = this.createToken(struct.children.RCurly[0]);
             }
         }
+
         return ast;
     }
 
     /**
      * Creates colon token from the given assignment.
      *
-     * @param assignment Assignment CST node
+     * @param children AssignmentChildren CST node
      * @returns Colon ast token or undefined if not found
      */
-    private getColon(assignment: AssignmentCstNode): Token | undefined {
-        if (assignment.children.Colon?.length) {
+    private getColon(children: AssignmentChildren): Token | undefined {
+        if (children.Colon?.length) {
             return {
                 type: TOKEN_TYPE,
-                range: this.tokenToRange(assignment.children.Colon[0]),
-                value: assignment.children.Colon[0].image
+                range: this.tokenToRange(children.Colon[0]),
+                value: children.Colon[0].image
             };
         }
         return undefined;
@@ -369,36 +406,139 @@ class CstToAstVisitor extends Visitor {
      */
     private toTopLevelAnnotationPath(assignment: AssignmentCstNode, location: CstNodeLocation): AstResult {
         const path = this.visit(assignment.children.path[0]) as Path;
-        if (path.segments.length !== 1 || (path.segments.length === 1 && !supportedVocabularyAliases.has(path.value))) {
+        const pathIsVocabularyGroup = supportedVocabularyAliases.has(path.value);
+        console.log(JSON.stringify(path, undefined, 2));
+        if (path.segments.length !== 1 || (path.segments.length === 1 && !pathIsVocabularyGroup)) {
+            const firstSegmentIsVocabulary = supportedVocabularyAliases.has(path.segments[0].value);
+            const minFlattenedSegmentCount = firstSegmentIsVocabulary ? 3 : 2;
+            const flattenedExpression = this.flattenedExpression(
+                assignment.children,
+                location,
+                path,
+                minFlattenedSegmentCount,
+                vocabularyService
+            );
+            const value = hasItems(assignment.children.value)
+                ? (this.visit(assignment.children.value[0]) as AnnotationValue)
+                : undefined;
+
+            if (flattenedExpression) {
+                flattenedExpression.value = value;
+                return flattenedExpression;
+            }
+
             const ast: Annotation = {
                 type: ANNOTATION_TYPE,
                 term: path,
                 range: this.locationToRange(location)
             };
-            ast.colon = this.getColon(assignment);
+            ast.colon = this.getColon(assignment.children);
             const qualifier = this.getQualifier(assignment.children);
             if (qualifier) {
                 ast.qualifier = qualifier;
             }
-
-            // Flattened qualifier syntax handling
-            const qSegment = Math.min(
-                supportedVocabularyAliases.has(path.segments[0].value) ? ast.term.segments.length - 1 : 0,
-                1
-            );
-            if (!ast.qualifier && qSegment >= 0 && ast.term.segments[qSegment].value.includes('#')) {
-                ast.qualifier = createQualifier(ast.term);
+            if (value) {
+                ast.value = value;
             }
-
-            if (hasItems(assignment.children.value)) {
-                ast.value = this.visit(assignment.children.value[0]) as AnnotationValue;
-            }
+            adjustCdsTermNames(ast, vocabularyService.cdsVocabulary);
             return ast;
-        } else if (path.segments.length === 1 && supportedVocabularyAliases.has(path.value)) {
+        } else if (path.segments.length === 1 && pathIsVocabularyGroup) {
             return this.toTopLevelAnnotationPathGroup(path, assignment, location);
         }
 
         return undefined;
+    }
+
+    /**
+     * Converts Path node to FlattenedExpression node.
+     *
+     * @param assignmentChildren AssignmentChildren CST node
+     * @param location  CstNodeLocation
+     * @param path Path node to convert
+     * @param minFlattenedSegmentCount Minimum number of segments for the path to be considered flattened
+     * @param vocabularyService Vocabulary service instance
+     * @param groupName Name of an annotation group
+     * @returns FlattenedExpression node or undefined if the path does not meet the criteria
+     */
+    private flattenedExpression(
+        assignmentChildren: AssignmentChildren,
+        location: CstNodeLocation,
+        path: Path,
+        minFlattenedSegmentCount: number,
+        vocabularyService: VocabularyService,
+        groupName?: string
+    ): Annotation | FlattenedExpression | undefined {
+        if (path.segments.length < minFlattenedSegmentCount) {
+            return undefined;
+        }
+        const lastSegmentQualifier = this.getQualifier(assignmentChildren);
+        const vocabularyName = groupName ?? path.segments[0].value;
+        if (vocabularyService.cdsVocabulary.nameMap && vocabularyService.cdsVocabulary.groupNames.has(vocabularyName)) {
+            const cdsTerm = path.segments.map((segment) => segment.value).join('.');
+            const fullName = (groupName ? groupName + '.' : '') + cdsTerm;
+            const ast: Annotation = {
+                type: ANNOTATION_TYPE,
+                qualifier: lastSegmentQualifier,
+                term: {
+                    segments: path.segments,
+                    separators: path.separators,
+                    type: PATH_TYPE,
+                    value: fullName,
+                    range: path.range
+                },
+                originalTerm: {
+                    segments: path.segments,
+                    separators: path.separators,
+                    type: PATH_TYPE,
+                    value: cdsTerm,
+                    range: path.range
+                },
+                range: this.locationToRange(location)
+            };
+            let fullNameConverted = vocabularyService.cdsVocabulary.nameMap.get(fullName);
+            if (!fullNameConverted) {
+                // some terms may not exist in the map (like cds.odata.bindingparameter.name)
+                const adaptedSegments = path.segments.map(
+                    (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
+                );
+                fullNameConverted = vocabularyService.cdsVocabulary.alias + '.' + adaptedSegments.join('');
+            }
+            if (groupName) {
+                fullNameConverted = fullNameConverted.slice(vocabularyService.cdsVocabulary.alias.length + 1);
+            }
+            const segmentValues = fullNameConverted.split('.');
+            const segments: Identifier[] = segmentValues.map((value) => ({ type: IDENTIFIER_TYPE, value }));
+            const separators: Separator[] = [];
+            for (let index = 0; index < segments.length - 1; index++) {
+                separators.push({ type: SEPARATOR_TYPE, escaped: false, value: '.' });
+            }
+            ast.term = {
+                segments,
+                separators,
+                type: PATH_TYPE,
+                value: fullNameConverted,
+                range: path.range
+            };
+            if (hasItems(assignmentChildren.value)) {
+                ast.value = this.visit(assignmentChildren.value[0]) as AnnotationValue;
+            }
+            ast.colon = this.getColon(assignmentChildren);
+            return ast;
+        }
+
+        const flattenedPath = flattenedPathConverter.convert(true, path, lastSegmentQualifier);
+        const ast: FlattenedExpression = {
+            type: FLATTENED_EXPRESSION_TYPE,
+            path: flattenedPath,
+            range: this.locationToRange(location)
+        };
+        ast.colon = this.getColon(assignmentChildren);
+
+        if (hasItems(assignmentChildren.value)) {
+            ast.value = this.visit(assignmentChildren.value[0]) as AnnotationValue;
+        }
+
+        return ast;
     }
 
     /**
@@ -417,6 +557,7 @@ class CstToAstVisitor extends Visitor {
             return undefined;
         }
         if (assignment.children.path) {
+            console.log('aaa');
             return this.toTopLevelAnnotationPath(assignment, location);
         }
         if (assignment.children.value && assignment.children.Colon && !assignment.children.path) {
@@ -1185,15 +1326,12 @@ class CstToAstVisitor extends Visitor {
      * @param assignment Record assignment
      * @returns Property data
      */
-    private getRecordProperty(assignment: AssignmentCstNode): {
-        property: RecordProperty | Annotation;
-        kind: 'annotation' | 'property';
-    } {
+    private getRecordProperty(assignment: AssignmentCstNode): RecordProperty | Annotation | FlattenedExpression {
         const assignmentRange = this.locationToRange(assignment.location);
         const name = this.getAssignmentKey(assignment.children, assignmentRange);
-        let property: RecordProperty | Annotation;
-        if (name.value.startsWith('@')) {
-            property = {
+
+        if (name.value.startsWith('@') && name.segments.length === 2) {
+            const property: Annotation = {
                 type: ANNOTATION_TYPE,
                 term: name,
                 value: hasItems(assignment.children.value)
@@ -1208,10 +1346,25 @@ class CstToAstVisitor extends Visitor {
                 property.qualifier = this.getQualifier(assignment.children);
             }
 
-            return { property, kind: 'annotation' };
+            return property;
         }
 
-        property = {
+        if (name.segments.length > 1) {
+            const flattenedPath = flattenedPathConverter.convert(false, name);
+            const ast: FlattenedExpression = {
+                type: FLATTENED_EXPRESSION_TYPE,
+                path: flattenedPath,
+                range: assignmentRange
+            };
+            ast.colon = this.getColon(assignment.children);
+
+            if (hasItems(assignment.children.value)) {
+                ast.value = this.visit(assignment.children.value[0]) as AnnotationValue;
+            }
+            return ast;
+        }
+
+        return {
             type: RECORD_PROPERTY_TYPE,
             name,
             value: hasItems(assignment.children.value)
@@ -1219,7 +1372,6 @@ class CstToAstVisitor extends Visitor {
                 : undefined,
             range: assignmentRange
         };
-        return { property, kind: 'property' };
     }
 
     /**
@@ -1231,22 +1383,40 @@ class CstToAstVisitor extends Visitor {
      */
     struct(context: StructChildren, location: CstNodeLocation): Record {
         const range = this.locationToRange(location);
-        const { properties: allProperties, annotations: allAnnotations } = (context.assignment ?? [])
+        const {
+            properties: allProperties,
+            annotations: allAnnotations,
+            flattenedExpressions: allFlattenedExpressions
+        } = (context.assignment ?? [])
             .filter((assignment) => {
                 return hasItems(assignment.children.path) || hasItems(assignment.children.value);
             })
             .reduce(
                 (
-                    { annotations, properties }: { properties: RecordProperty[]; annotations: Annotation[] },
+                    {
+                        annotations,
+                        properties,
+                        flattenedExpressions
+                    }: {
+                        properties: RecordProperty[];
+                        annotations: Assignment[];
+                        flattenedExpressions: FlattenedExpression[];
+                    },
                     assignment,
                     assignmentIndex,
                     assignments
-                ): { properties: RecordProperty[]; annotations: Annotation[] } => {
-                    const { property, kind } = this.getRecordProperty(assignment);
-                    if (kind === 'annotation') {
-                        annotations.push(property as Annotation);
-                    } else {
-                        properties.push(property as RecordProperty);
+                ): {
+                    properties: RecordProperty[];
+                    annotations: Assignment[];
+                    flattenedExpressions: FlattenedExpression[];
+                } => {
+                    const property = this.getRecordProperty(assignment);
+                    if (property.type === ANNOTATION_TYPE) {
+                        annotations.push(property);
+                    } else if (property.type === RECORD_PROPERTY_TYPE) {
+                        properties.push(property);
+                    } else if (property.type === FLATTENED_EXPRESSION_TYPE) {
+                        flattenedExpressions.push(property);
                     }
                     if (
                         hasItems(assignment.children.Colon) &&
@@ -1268,10 +1438,10 @@ class CstToAstVisitor extends Visitor {
                             range: Range.create(start, end ?? start)
                         };
                     }
-                    property.colon = this.getColon(assignment);
-                    return { properties, annotations };
+                    property.colon = this.getColon(assignment.children);
+                    return { properties, annotations, flattenedExpressions };
                 },
-                { annotations: [], properties: [] }
+                { annotations: [], properties: [], flattenedExpressions: [] }
             );
         const commas: Token[] = this.getCommaToken(context?.Comma);
         const ast: Record = {
@@ -1283,6 +1453,9 @@ class CstToAstVisitor extends Visitor {
 
         if (allAnnotations.length) {
             ast.annotations = allAnnotations;
+        }
+        if (allFlattenedExpressions.length) {
+            ast.flattenedExpressions = allFlattenedExpressions;
         }
         if (existsAndNotRecovered(context.LCurly)) {
             ast.openToken = this.createToken(context.LCurly[0]);
@@ -1297,31 +1470,42 @@ class CstToAstVisitor extends Visitor {
      * Converts annotation assignment children to annotation ast node.
      *
      * @param context CST annotation assignment children
-     * @param location CST location
+     * @param params Parameters
      * @returns Annotation AST node
      */
-    assignment(context: AssignmentChildren, location: CstNodeLocation): Annotation {
+    assignment(context: AssignmentChildren, params: CstNodeLocation | GroupParams): Annotation | FlattenedExpression {
+        const location = isGroupParams(params) ? params.location : params;
+        const groupName = isGroupParams(params) ? params.groupName : undefined;
+        const minFlattenedSegmentCount = groupName ? 2 : 3;
         const range = this.locationToRange(location);
+        const path = this.getAssignmentKey(context, range);
+
+        const flattenedExpression = this.flattenedExpression(
+            context,
+            location,
+            path,
+            minFlattenedSegmentCount,
+            vocabularyService,
+            groupName
+        );
+        if (flattenedExpression) {
+            if (hasItems(context.value) && !hasNaNOrUndefined(context.value[0]?.location?.startOffset)) {
+                flattenedExpression.value = this.visit(context.value[0]) as AnnotationValue;
+            } else if (hasItems(context.Colon)) {
+                this.recoverFromMissingValue(context.Colon[0], flattenedExpression);
+            }
+            return flattenedExpression;
+        }
+
         const ast: Annotation = {
             type: ANNOTATION_TYPE,
-            term: this.getAssignmentKey(context, range),
+            term: this.getAssignmentKey(context, range), //path,
             range
         };
 
-        if (context.Colon?.length) {
-            ast.colon = {
-                type: TOKEN_TYPE,
-                value: context.Colon[0].image,
-                range: this.tokenToRange(context.Colon[0])
-            };
-        }
+        ast.colon = this.getColon(context);
         if (hasItems(context.NumberSign)) {
             ast.qualifier = this.getQualifier(context);
-        }
-
-        // Flattened qualifier syntax handling
-        if (!ast.qualifier && ast.term.segments.length && ast.term.segments[0].value.includes('#')) {
-            ast.qualifier = createQualifier(ast.term);
         }
 
         if (hasItems(context.value) && !hasNaNOrUndefined(context.value[0]?.location?.startOffset)) {
@@ -1329,6 +1513,7 @@ class CstToAstVisitor extends Visitor {
         } else if (hasItems(context.Colon)) {
             this.recoverFromMissingValue(context.Colon[0], ast);
         }
+        adjustCdsTermNames(ast, vocabularyService.cdsVocabulary, groupName);
         return ast;
     }
 
@@ -1357,12 +1542,12 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
-     * Recovers annotation or record property node when value is missng - sets up an empty value.
+     * Recovers annotation or record property node when value is missing - sets up an empty value.
      *
      * @param colonToken Colon cst token
      * @param ast Annotation or property ast node
      */
-    private recoverFromMissingValue(colonToken: IToken, ast: Annotation | RecordProperty): void {
+    private recoverFromMissingValue(colonToken: IToken, ast: Annotation | RecordProperty | FlattenedExpression): void {
         // adjust range
         const nextToken = findNextToken(this.tokenVector, colonToken.endOffset);
         if ((nextToken?.image === ',' || nextToken?.image === '}') && nextToken?.startColumn) {
@@ -1388,9 +1573,69 @@ export const buildAst = (cst: CstNode, tokenVector: IToken[], startPosition?: Po
     AstBuilder.startPosition = startPosition;
     const root = AstBuilder.visit(cst);
 
-    if (root && (root.type === ANNOTATION_TYPE || root.type === ANNOTATION_GROUP_TYPE)) {
+    if (
+        root &&
+        (root.type === ANNOTATION_TYPE ||
+            root.type === ANNOTATION_GROUP_TYPE ||
+            root.type === FLATTENED_EXPRESSION_TYPE)
+    ) {
         return root;
     }
 
     return undefined;
 };
+
+/**
+ * Adapts the segments of an array of Identifiers based on a new name.
+ *
+ * @param segments - The array of Identifier segments to adapt.
+ * @param newName - The new name to use for adaptation.
+ * If undefined, the segments will be cleared.
+ */
+function adaptSegments(segments: Identifier[], newName: string | undefined): void {
+    const newSegments = newName ? newName.split('.') : [];
+    newSegments.forEach((internalSegment, index) => {
+        if (segments[index]) {
+            segments[index].value = internalSegment;
+        }
+    });
+    // TODO adapt ranges ?
+    if (newSegments.length > segments.length) {
+        newSegments.slice(segments.length).forEach((newSegment) => {
+            segments.push({ type: 'identifier', value: newSegment });
+        });
+    } else if (newSegments.length < segments.length) {
+        segments.splice(newSegments.length, segments.length - newSegments.length);
+    }
+}
+
+/**
+ * Converts cds specific term names into internal representation suitable for generic file format.
+ *
+ * @param assignment - annotation assignment
+ * @param cdsVocabulary - cds vocabulary instance
+ * @param groupName - annotation group name
+ */
+function adjustCdsTermNames(assignment: Annotation, cdsVocabulary: CdsVocabulary, groupName?: string): void {
+    if (cdsVocabulary.nameMap.has(assignment.term.value)) {
+        const internalTermName = cdsVocabulary.nameMap.get(assignment.term.value);
+        assignment.term.value = internalTermName ?? '';
+        adaptSegments(assignment.term.segments, internalTermName);
+    } else if (
+        (assignment.term.segments.length > 2 && cdsVocabulary.groupNames.has(assignment.term.segments[0].value)) ||
+        cdsVocabulary.groupNames.has(groupName ?? '')
+    ) {
+        // value help e.g. for @cds.persistence.ex| - avoid flattening logic later on by replacing this with truncated CDS term
+        // (use name convention for building internal cds term names i.e. cds.persistence.exists => CDS.CdsPersistenceExists)
+        const allSegments = [...assignment.term.segments];
+        if (groupName) {
+            allSegments.unshift({ type: IDENTIFIER_TYPE, value: groupName });
+        }
+        const adaptedSegments = allSegments.map(
+            (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
+        );
+        const internalTermName = (groupName ? '' : cdsVocabulary.alias + '.') + adaptedSegments.join('');
+        assignment.term.value = internalTermName;
+        adaptSegments(assignment.term.segments, internalTermName);
+    }
+}
