@@ -76,6 +76,10 @@ sap.ui.define([
                 targetAnnotation: "<%- field.targetAnnotation %>"
             });
 <% }) -%>
+<% section.contactCardFields.forEach(function(field) { -%>
+            When.onThe<%- name%>Generated.onHeader().iClickLink({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% } -%>
 <% } -%>
 <% }) -%>
@@ -122,6 +126,10 @@ sap.ui.define([
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckDelete({ visible: true });
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressDelete();
 <% } -%>
+<% section.contactCardColumns.forEach(function(column) { -%>
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iClickLink(0, "<%- column.property %>");
+            Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
@@ -132,8 +140,18 @@ sap.ui.define([
             Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
+<% subSection.contactCardFields.forEach(function(field) { -%>
+            When.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iClickLink({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(subSection.tableColumns) %>);
+<% } -%>
+<% if (subSection.navigationProperty) { -%>
+<% subSection.contactCardColumns.forEach(function(column) { -%>
+            When.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iClickLink(0, "<%- column.property %>");
+            Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% } -%>
 <% }) -%>
 <% } else { -%>
@@ -142,6 +160,10 @@ sap.ui.define([
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
+<% section.contactCardFields.forEach(function(field) { -%>
+            When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iClickLink({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(section.tableColumns) %>);
 <% } -%>

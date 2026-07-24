@@ -58,7 +58,7 @@ sap.ui.define([
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialRatingsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true }, { enabled: true });
             // When.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true });
-            Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckColumns(undefined, {"0":{"header":"Rating"},"Title":{"header":"Title"}});
+            Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckColumns(undefined, {"DataFieldForAnnotation::DataPoint::Rating":{"header":"Rating"},"Title":{"header":"Title"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 

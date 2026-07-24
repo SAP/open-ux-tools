@@ -3,6 +3,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
+    ContactCardField,
     FormField,
     SectionFormField,
     BodySectionFeatureData,
@@ -22,7 +23,7 @@ import {
     getAggregations,
     parseDataFieldForAnnotationName
 } from './modelUtils.js';
-import { extractTableColumnsFromNode } from './tableUtils.js';
+import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -183,10 +184,12 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
                 microChart: isSectionMicroChart(section),
                 form: isFormSection(section),
                 // collection: false // TODO: find out how to identify collection facets
-                title: section.title
+                title: section.title,
+                contactCardFields: []
             };
             if (sectionData.form) {
                 sectionData.fields = getHeaderSectionFormFields(section);
+                sectionData.contactCardFields = pickContactCardFieldsFromHeader(sectionData.fields);
             }
             headerSections.push(sectionData);
         });
@@ -220,17 +223,20 @@ function extractObjectPageBodySectionsData(
             const subSections = extractBodySubSectionsData(section, sectionId, convertedMetadata, objectPage.entitySet);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
             const isTable = isTableSection(section);
+            const fields =
+                section.custom || isTable ? [] : extractFormFields(section, convertedMetadata, objectPage.entitySet);
+            const tableColumns = section.custom || !isTable ? {} : extractTableColumnsFromNode(section);
+            const contactCardColumns = section.custom || !isTable ? [] : extractContactCardColumnsFromNode(section);
             const sectionData: BodySectionFeatureData = {
                 id: sectionId,
                 navigationProperty,
                 isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields:
-                    section.custom || isTable
-                        ? []
-                        : extractFormFields(section, convertedMetadata, objectPage.entitySet),
-                tableColumns: section.custom || !isTable ? {} : extractTableColumnsFromNode(section),
+                fields,
+                tableColumns,
+                contactCardFields: pickContactCardFields(fields),
+                contactCardColumns,
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
@@ -335,22 +341,58 @@ function extractBodySubSectionsData(
     entitySetName?: string
 ): BodySubSectionFeatureData[] {
     const subSections: BodySubSectionFeatureData[] = [];
-    const subSectionsAggregation = getAggregations(section)['subsections'];
+    const sectionAggregations = getAggregations(section);
+    const subSectionsAggregation = sectionAggregations['subSections'] ?? sectionAggregations['subsections'];
     const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
     Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
         const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
         const isTable = isTableSection(subSection);
+        const fields =
+            subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName);
+        const tableColumns = subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection);
+        const contactCardColumns = subSection.custom || !isTable ? [] : extractContactCardColumnsFromNode(subSection);
         subSections.push({
             id: subSectionId,
             navigationProperty: getNavigationPropertyFromKey(subSectionKey),
             isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
-            tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
+            // Contact-card fields are kept in `fields` too so the test also asserts `iCheckField` alongside `iClickLink` / `iCheckContactDialog` (dual diagnostic).
+            contactCardFields: pickContactCardFields(fields),
+            contactCardColumns,
+            fields,
+            tableColumns
         });
     });
     return subSections;
+}
+
+/**
+ * Filters form fields down to those rendered as Contact-card links (`@Communication.Contact`).
+ *
+ * @param fields - all form fields of a (sub-)section
+ * @returns Contact-card fields, addressed via the qualified `<property>/<targetAnnotation>` form
+ */
+function pickContactCardFields(fields: SectionFormField[]): ContactCardField[] {
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact')
+        .map((field) => ({ property: field.property }));
+}
+
+/**
+ * Filters header field-group fields down to Contact-card entries and projects them to
+ * the `<property>/Contact` form expected by `onHeader().iClickLink({ property })`.
+ *
+ * @param fields - header field-group fields with optional `field` and `targetAnnotation`
+ * @returns Contact-card descriptors usable as `iClickLink` / `iCheckLink` arguments
+ */
+function pickContactCardFieldsFromHeader(fields: FormField[] | undefined): ContactCardField[] {
+    if (!fields) {
+        return [];
+    }
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact' && field.field)
+        .map((field) => ({ property: `${field.field}/${field.targetAnnotation}` }));
 }
 
 /**
@@ -385,7 +427,12 @@ function extractFormFields(
 
         if (annotationParts) {
             const qualifier = annotationParts.targetAnnotation;
-            if (annotationParts.property === 'ConnectedFields' && entityType) {
+            if (qualifier === 'Contact') {
+                fields.push({
+                    property: `${baseProperty}/${qualifier}`,
+                    targetAnnotation: qualifier
+                });
+            } else if (annotationParts.property === 'ConnectedFields' && entityType) {
                 resolveConnectedFieldsInnerProperties(entityType, qualifier).forEach((property) => {
                     fields.push({ property, connectedFields: qualifier });
                 });

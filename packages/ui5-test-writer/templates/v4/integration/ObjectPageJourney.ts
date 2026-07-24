@@ -81,7 +81,7 @@ function journey() {
 <% } -%>
 
 <% if (headerSections?.length > 0) { -%>
-    opaTest("Check header facets of the Object Page", function (_Given: Given, _When: When, Then: Then) {
+    opaTest("Check header facets of the Object Page", function (_Given: Given, When: When, Then: Then) {
 <% headerSections.forEach(function(section) { -%>
 <% if (section.microChart) { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckMicroChart("<%- section.title %>", "");
@@ -94,6 +94,10 @@ function journey() {
             field: "<%- field.field %>",
             targetAnnotation: "<%- field.targetAnnotation %>"
         } as unknown as FieldIdentifier);
+<% }) -%>
+<% section.contactCardFields.forEach(function(field) { -%>
+        When.onThe<%- name%>Generated.onHeader().iClickLink({ property: "<%- field.property %>" } as unknown as FieldIdentifier);
+        Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
 <% }) -%>
 <% } -%>
 <% } -%>
@@ -141,6 +145,10 @@ function journey() {
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckDelete({ visible: true });
         // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressDelete();
 <% } -%>
+<% section.contactCardColumns.forEach(function(column) { -%>
+        When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iClickLink(0, "<%- column.property %>");
+        Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
@@ -151,8 +159,18 @@ function journey() {
         Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
+<% subSection.contactCardFields.forEach(function(field) { -%>
+        When.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iClickLink({ property: "<%- field.property %>" });
+        Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(subSection.tableColumns) %>);
+<% } -%>
+<% if (subSection.navigationProperty) { -%>
+<% subSection.contactCardColumns.forEach(function(column) { -%>
+        When.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iClickLink(0, "<%- column.property %>");
+        Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% } -%>
 <% }) -%>
 <% } else { -%>
@@ -161,6 +179,10 @@ function journey() {
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
+<% section.contactCardFields.forEach(function(field) { -%>
+        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iClickLink({ property: "<%- field.property %>" });
+        Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+<% }) -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(section.tableColumns) %>);
 <% } -%>
