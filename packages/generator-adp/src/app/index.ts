@@ -60,6 +60,7 @@ import {
 } from '../utils/steps.js';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers.js';
 import { getTemplatesOverwritePath } from '../utils/templates.js';
+import { writeResult } from '../utils/write-result.js';
 import { existsInWorkspace, handleWorkspaceFolderChoice, showWorkspaceFolderWarning } from '../utils/workspace.js';
 import { getFlexLayer } from './layer.js';
 import { getPrompts } from './questions/attributes.js';
@@ -167,6 +168,10 @@ export default class extends Generator {
      * Indicates if the current environment is a CF environment.
      */
     private isCfEnv = false;
+    /**
+     * Tracks whether the writing phase failed, to prevent end() from overwriting a failure result.
+     */
+    private writingFailed = false;
     /**
      * Indicates if the user is logged in to CF.
      */
@@ -429,7 +434,12 @@ export default class extends Generator {
 
             await generate(this._getProjectPath(), config, this.fs);
         } catch (e) {
-            this.logger.error(`Writing phase failed: ${e}`);
+            const message = e instanceof Error ? e.message : String(e);
+            this.logger.error(`Writing phase failed: ${message}`);
+            this.writingFailed = true;
+            if (this.jsonInput?.id) {
+                writeResult(this.jsonInput.id, `Failure: ${message}`);
+            }
             throw new Error(t('error.updatingApp'));
         } finally {
             cacheClear(this.appWizard, this.logger);
@@ -450,6 +460,12 @@ export default class extends Generator {
 
     async end(): Promise<void> {
         const projectPath = this._getProjectPath();
+
+        // Report the generated project path back to the BAS orchestrator once files are written to disk.
+        if (this.jsonInput?.id && !this.writingFailed) {
+            writeResult(this.jsonInput.id, projectPath);
+        }
+
         const data = TelemetryHelper.createTelemetryData({
             appType: 'generator-adp',
             ...this.options.telemetryData,

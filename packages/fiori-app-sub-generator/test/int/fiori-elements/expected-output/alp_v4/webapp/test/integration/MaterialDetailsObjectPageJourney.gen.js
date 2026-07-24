@@ -41,8 +41,8 @@ sap.ui.define([
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheMaterialDetailsObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
             // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iPressEdit();
-            Then.onTheMaterialDetailsObjectPageGenerated.onHeader().iCheckAction("Change Material Category", { enabled: true });
-            // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iPressAction("Change Material Category");
+            Then.onTheMaterialDetailsObjectPageGenerated.onHeader().iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialCategoryFormAction", unbound: true }, { enabled: true });
+            // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialCategoryFormAction", unbound: true });
         });
 
 
@@ -56,8 +56,8 @@ sap.ui.define([
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "FabricationCountry" });
             When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialRatingsFacet");
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialRatingsFacet" });
-            Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckAction("Material Ratings Bound Action", { enabled: true });
-            // When.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iPressAction("Material Ratings Bound Action");
+            Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true }, { enabled: true });
+            // When.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true });
             Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckColumns(undefined, {"0":{"header":"Rating"},"Title":{"header":"Title"}});
        });
 

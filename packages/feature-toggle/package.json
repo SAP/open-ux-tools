@@ -38,7 +38,7 @@
         "@jest/globals": "30.4.1",
         "jest-when": "4.0.3",
         "rimraf": "6.1.3",
-        "@types/vscode": "1.106.1"
+        "@types/vscode": "1.109.0"
     },
     "engines": {
         "node": ">=22.x"

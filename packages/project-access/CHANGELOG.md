@@ -1,5 +1,29 @@
 # @sap-ux/project-access
 
+## 2.1.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+
+## 2.1.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- findCapProjectRoot now correctly starts search at the given path instead of its parent, so passing a CAP root directly returns it as expected [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
 ## 2.1.7
 
 ### Patch Changes

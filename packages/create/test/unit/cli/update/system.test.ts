@@ -10,8 +10,23 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 }));
 
 const isAppStudioMock = jest.fn().mockReturnValue(false);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
     isAppStudio: isAppStudioMock
+}));
+
+// Mock prompts - return empty object (no interactive prompting)
+const mockPrompts = jest.fn().mockResolvedValue({});
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPrompts
+}));
+
+// Mock connection check to always succeed and not prompt
+const mockCheckConnectionOrPrompt = jest.fn().mockResolvedValue(true);
+jest.unstable_mockModule('../../../../src/cli/utils/system-connection', () => ({
+    checkConnectionOrPrompt: mockCheckConnectionOrPrompt,
+    checkSystemConnection: jest.fn().mockResolvedValue({ success: true })
 }));
 
 const mockedService = {
@@ -48,6 +63,8 @@ describe('system/update (update command group)', () => {
         mockedService.partialUpdate.mockResolvedValue(undefined);
         // Default: system exists
         mockedService.read.mockResolvedValue({ name: 'My System' });
+        mockCheckConnectionOrPrompt.mockResolvedValue(true);
+        mockPrompts.mockResolvedValue({});
     });
 
     test('should update system name', async () => {
@@ -115,21 +132,22 @@ describe('system/update (update command group)', () => {
             unknown,
             { username?: string; password?: string }
         ];
-        expect(patch.username).toBeUndefined();
-        expect(patch.password).toBeUndefined();
+        expect(patch.username).toBe('');
+        expect(patch.password).toBe('');
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated'));
     });
 
     test('should log error when no fields to update', async () => {
         // Given
+        mockPrompts.mockResolvedValueOnce({ fields: [] }); // User selects nothing in multi-select
         const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com']));
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--client', '']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No fields to update'));
+        expect(loggerMock.error).toHaveBeenCalledWith('At least one field must be selected');
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 

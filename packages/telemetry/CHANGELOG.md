@@ -1,5 +1,46 @@
 # @sap-ux/telemetry
 
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Upgrade applicationinsights 3.15.0 → 3.15.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Release Date
+
+2026-07-24
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/nodejs-utils 1.0.8 → 1.0.9
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.7 → 1.0.8
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+
 ## 1.0.19
 
 ### Patch Changes
