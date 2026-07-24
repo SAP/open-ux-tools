@@ -83,6 +83,16 @@ import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-e
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
+ * Convert an application id to its namespace by replacing dots with slashes.
+ *
+ * @param id application id from manifest (e.g. 'test.fe.v2.app')
+ * @returns namespace string (e.g. 'test/fe/v2/app')
+ */
+function toNamespace(id: string): string {
+    return id.replaceAll('.', '/');
+}
+
+/**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
  */
 export type EnhancedRouter = Router & {
@@ -231,7 +241,7 @@ export class FlpSandbox {
                 this.test.filter((config) => config.framework !== 'Testsuite'),
                 id
             );
-            this.createTestSuite(this.test);
+            await this.createTestSuite(this.test, id);
         }
 
         if (this.flpConfig.enhancedHomePage) {
@@ -881,6 +891,8 @@ export class FlpSandbox {
      * @param config the test configuration
      * @param initTemplate the test runner template
      * @param testPaths the paths to the test files
+     * @param opa5Path optional relative path from testsuite to OPA5 HTML page
+     * @param journeyNamesForIsolation optional list of journey module paths for isolated runs
      * @private
      */
     private async testSuiteJsGetHandler(
@@ -888,7 +900,9 @@ export class FlpSandbox {
         next: NextFunction,
         config: CompleteTestConfig,
         initTemplate: string,
-        testPaths: string[]
+        testPaths: string[],
+        opa5Path?: string,
+        journeyNamesForIsolation?: string[]
     ): Promise<void> {
         const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
         if (files?.length > 0) {
@@ -896,9 +910,10 @@ export class FlpSandbox {
             next();
         } else {
             this.logger.debug(`Serving test route: ${config.init}`);
-            const templateConfig = {
-                testPaths: testPaths
-            };
+            const templateConfig: Record<string, unknown> =
+                opa5Path && journeyNamesForIsolation
+                    ? { testPaths, opa5Path, journeyNames: journeyNamesForIsolation }
+                    : { testPaths };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
         }
@@ -908,9 +923,10 @@ export class FlpSandbox {
      * If it is part of TestConfig, create a test suite for the test configurations.
      *
      * @param configs test configurations
+     * @param id application id from manifest
      * @private
      */
-    private createTestSuite(configs: TestConfig[]): void {
+    private async createTestSuite(configs: TestConfig[], id: string): Promise<void> {
         const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
         if (!testsuiteConfig) {
             //silent skip: create a testsuite only if it is explicitly part of the test configuration
@@ -937,16 +953,29 @@ export class FlpSandbox {
             return;
         }
 
+        const ns = toNamespace(id);
+        const qunitConfig = configs.find((c) => c.framework === 'QUnit');
+        const opa5Config = configs.find((c) => c.framework === 'OPA5');
+        const mergedOpa5Config = opa5Config ? mergeTestConfigDefaults(opa5Config) : undefined;
+
         const testPaths: string[] = [];
-        for (const testConfig of configs) {
-            if (testConfig.framework === 'Testsuite') {
-                continue;
+        let opa5Path: string | undefined;
+        let journeyNamesForIsolation: string[] | undefined;
+
+        if (qunitConfig) {
+            testPaths.push(posix.relative(posix.dirname(config.path), mergeTestConfigDefaults(qunitConfig).path));
+        }
+        if (mergedOpa5Config) {
+            if (mergedOpa5Config.isolateJourneys) {
+                const journeyFiles = await this.project.byGlob(mergedOpa5Config.pattern);
+                opa5Path = posix.relative(posix.dirname(config.path), mergedOpa5Config.path);
+                journeyNamesForIsolation = generateImportList(ns, journeyFiles);
+            } else {
+                testPaths.push(posix.relative(posix.dirname(config.path), mergedOpa5Config.path));
             }
-            const mergedConfig = mergeTestConfigDefaults(testConfig);
-            testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
         }
 
-        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit-init.ejs'), 'utf-8');
         this.logger.debug(`Add route for ${config.init}`);
         this.router.get(
             config.init,
@@ -955,7 +984,15 @@ export class FlpSandbox {
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                await this.testSuiteJsGetHandler(res, next, config, initTemplate, testPaths);
+                await this.testSuiteJsGetHandler(
+                    res,
+                    next,
+                    config,
+                    initTemplate,
+                    testPaths,
+                    opa5Path,
+                    journeyNamesForIsolation
+                );
             }
         );
     }
@@ -1032,7 +1069,10 @@ export class FlpSandbox {
             next();
         } else {
             const testFiles = await this.project.byGlob(config.pattern);
-            const templateConfig = { tests: generateImportList(ns, testFiles) };
+            const templateConfig = {
+                tests: generateImportList(ns, testFiles),
+                isolateJourneys: config.isolateJourneys === true
+            };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
         }
@@ -1045,7 +1085,7 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: TestConfig[], id: string): void {
-        const ns = id.replace(/\./g, '/');
+        const ns = toNamespace(id);
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const testConfig of configs) {
             const config = mergeTestConfigDefaults(testConfig);
@@ -1066,7 +1106,7 @@ export class FlpSandbox {
                 continue;
             }
             // add route for the init file
-            const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
+            const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit-init.ejs'), 'utf-8');
             this.logger.debug(`Add route for ${config.init}`);
             this.router.get(
                 config.init,

@@ -1808,6 +1808,77 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
     });
+
+    describe('router with isolateJourneys OPA5', () => {
+        let server!: supertest.Agent;
+
+        const mockProjectWithJourneys = {
+            byPath: jest.fn().mockResolvedValue(undefined),
+            byGlob: jest.fn().mockImplementation((glob: string) => {
+                if (glob.includes('changes')) {
+                    return Promise.resolve([
+                        {
+                            getPath: () => 'test/changes/myid.change',
+                            getName: () => 'myid.change',
+                            getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
+                        }
+                    ]);
+                }
+                if (glob.includes('Journey')) {
+                    return Promise.resolve([
+                        { getPath: () => '/test/integration/NavigationJourney.js' },
+                        { getPath: () => '/test/integration/SortingJourney.js' }
+                    ]);
+                }
+                return Promise.resolve([]);
+            })
+        } as unknown as typeof mockProject;
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                {
+                    test: [
+                        { framework: 'QUnit' },
+                        { framework: 'OPA5', isolateJourneys: true },
+                        { framework: 'Testsuite' }
+                    ]
+                },
+                mockProjectWithJourneys,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+            const app = express();
+            app.use(flp.router);
+            server = supertest(app);
+        });
+
+        test('OPA5 HTML page is served', async () => {
+            const response = await server.get('/test/opaTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('OPA5 init JS contains URL param filtering and inlined journey list', async () => {
+            const response = await server.get('/test/opaTests.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+            expect(response.text).toContain('journeyParam');
+            expect(response.text).toContain('modulesToRequire');
+        });
+
+        test('testsuite JS renders one addTestPage per journey with ?journey= param', async () => {
+            const response = await server.get('/test/testsuite.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+            expect(response.text).toContain('?journey=');
+            expect(response.text).toContain('opaTests.qunit.html');
+        });
+
+        test('QUnit init is not affected by isolateJourneys', async () => {
+            const response = await server.get('/test/unitTests.qunit.js').expect(200);
+            expect(response.text).not.toContain('journeyParam');
+            expect(response.text).not.toContain('NavigationJourney');
+        });
+    });
 });
 
 describe('initAdp', () => {

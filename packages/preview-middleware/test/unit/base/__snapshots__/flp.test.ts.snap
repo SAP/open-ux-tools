@@ -774,16 +774,20 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
+
+const modulesToRequire = [];
+
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\"
 ], function (QUnit) {
     'use strict';
-    sap.ui.require([], function() {
+    sap.ui.require(modulesToRequire, function() {
         QUnit.start();
     });
-});"
+});
+"
 `;
 
 exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 4`] = `
@@ -999,16 +1003,20 @@ exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
+
+const modulesToRequire = [];
+
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\"
 ], function (QUnit) {
     'use strict';
-    sap.ui.require([], function() {
+    sap.ui.require(modulesToRequire, function() {
         QUnit.start();
     });
-});"
+});
+"
 `;
 
 exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
@@ -2798,6 +2806,91 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
 </html>"
 `;
 
+exports[`FlpSandbox router with isolateJourneys OPA5 OPA5 HTML page is served 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+	<title>OPA5 tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_horizon_dark'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\">
+	</script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>"
+`;
+
+exports[`FlpSandbox router with isolateJourneys OPA5 OPA5 init JS contains URL param filtering and inlined journey list 1`] = `
+"sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+
+const journeyParam = new URLSearchParams(window.location.search).get(\\"journey\\");
+const modulesToRequire = journeyParam ? [journeyParam] : [\\"test/fe/v2/app/test/integration/NavigationJourney\\",\\"test/fe/v2/app/test/integration/SortingJourney\\"];
+
+sap.ui.require([
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\"
+], function (QUnit) {
+    'use strict';
+    sap.ui.require(modulesToRequire, function() {
+        QUnit.start();
+    });
+});
+"
+`;
+
+exports[`FlpSandbox router with isolateJourneys OPA5 testsuite JS renders one addTestPage per journey with ?journey= param 1`] = `
+"window.suite = function () {
+    const oSuite = new parent.jsUnitTestSuite();
+    var sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
+
+    oSuite.addTestPage(sContextPath + \\"unitTests.qunit.html\\");
+
+
+
+    oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html?journey=test/fe/v2/app/test/integration/NavigationJourney\\");
+
+    oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html?journey=test/fe/v2/app/test/integration/SortingJourney\\");
+
+
+    return oSuite;
+}
+"
+`;
+
 exports[`FlpSandbox router with test suite default with testsuite 1`] = `
 "<!DOCTYPE html>
 <html lang=\\"en\\">
@@ -2820,8 +2913,10 @@ exports[`FlpSandbox router with test suite default with testsuite and init tests
 
     oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html\\");
 
+
     return oSuite;
-}"
+}
+"
 `;
 
 exports[`FlpSandbox rta with new config rta 1`] = `"Found. Redirecting to /my/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true"`;

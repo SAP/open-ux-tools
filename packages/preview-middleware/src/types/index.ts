@@ -87,6 +87,12 @@ export interface TestConfig {
      * Pattern to match the test files
      */
     pattern?: string;
+
+    /**
+     * Optional: when true, each OPA5 journey runs in its own isolated test page.
+     * Only meaningful when framework is 'OPA5'.
+     */
+    isolateJourneys?: boolean;
 }
 
 /**
@@ -103,18 +109,21 @@ export type TestConfigDefaults = {
         init: '/test/unitTests.qunit.js';
         pattern: '/test/**/*Test.{js,ts}';
         framework: 'QUnit';
+        isolateJourneys: false;
     };
     opa5: {
         path: '/test/opaTests.qunit.html';
         init: '/test/opaTests.qunit.js';
         pattern: '/test/**/*Journey{,.gen}.{js,ts}';
         framework: 'OPA5';
+        isolateJourneys: false;
     };
     testsuite: {
         path: '/test/testsuite.qunit.html';
         init: '/test/testsuite.qunit.js';
         pattern: '';
         framework: 'Testsuite';
+        isolateJourneys: false;
     };
 };
 
