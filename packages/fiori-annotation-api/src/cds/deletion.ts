@@ -163,6 +163,13 @@ export function getDeletionRangeForNode(
     return undefined;
 }
 
+function getEscapedTerm(text: string): string {
+    if (text.startsWith('![') && text.includes('.')) {
+        return text.split('.')[0].substring(2);
+    }
+    return '';
+}
+
 function findTermKind(
     vocabularyAliases: Set<string>,
     tokens: CompilerToken[],
@@ -174,6 +181,8 @@ function findTermKind(
         if (nativeCdsTermName && tokens[i].text === nativeCdsTermName) {
             deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME; // e.g. @title
         } else if (vocabularyAliases.has(tokens[i].text) && tokens[i + 1].text === '.') {
+            deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME;
+        } else if (vocabularyAliases.has(getEscapedTerm(tokens[i].text))) {
             deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME;
         } else if (/^\w+$/.test(tokens[i].text)) {
             // TODO use better regular expression for OData simple identifier
