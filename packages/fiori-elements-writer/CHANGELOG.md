@@ -1,5 +1,24 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/cap-config-writer 1.0.25 → 1.0.26
+- @sap-ux/fe-fpm-writer 1.3.7 → 1.3.8
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/odata-service-writer 1.0.15 → 1.0.16
+- @sap-ux/ui5-application-writer 2.1.1 → 2.1.2
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/ui5-test-writer 1.2.31 → 1.2.32
+- @sap-ux/annotation-generator 1.0.19 → 1.0.20
+
 ## 3.1.11
 
 ### Patch Changes

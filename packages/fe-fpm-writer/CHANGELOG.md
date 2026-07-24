@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/fiori-annotation-api 1.0.19 → 1.0.20
+
 ## 1.3.7
 
 ### Patch Changes

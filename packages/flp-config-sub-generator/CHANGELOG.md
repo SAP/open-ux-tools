@@ -1,5 +1,22 @@
 # @sap-ux/flp-config-sub-generator
 
+## 1.0.44
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap-devx/yeoman-ui-types 1.25.0 → 1.25.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/app-config-writer 1.1.12 → 1.1.13
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/deploy-config-generator-shared 1.0.25 → 1.0.26
+- @sap-ux/flp-config-inquirer 1.0.37 → 1.0.38
+
 ## 1.0.43
 
 ### Patch Changes
