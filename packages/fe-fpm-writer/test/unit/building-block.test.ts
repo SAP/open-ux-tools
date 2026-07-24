@@ -4001,7 +4001,7 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect(output.match(/<macros:footer\b/g)).toHaveLength(1);
+            expect(output).toMatchSnapshot();
             expect(output).not.toContain('id="footer1"');
         });
 
@@ -4028,7 +4028,7 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect(output.match(/<macros:breadcrumbs\b/g)).toHaveLength(1);
+            expect(output).toMatchSnapshot();
         });
 
         it('appends children inside existing navigationActions container on second add', async () => {
@@ -4055,10 +4055,7 @@ describe('Building Blocks', () => {
 
             const output = result.read(join(basePath, xmlViewFilePath));
             // ONE container only — children are appended inside
-            expect(output.match(/<macros:navigationActions\b/g)).toHaveLength(1);
-            // Both the original and the new child are inside it
-            expect(output).toContain('id="navigationActions_button"');
-            expect(output).toContain('id="navigationActions_button1"');
+            expect(output).toMatchSnapshot();
         });
 
         it('appends children inside existing titleContent container on second add', async () => {
@@ -4084,9 +4081,7 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect(output.match(/<macros:titleContent\b/g)).toHaveLength(1);
-            expect(output).toContain('id="titleContent_genericTag"');
-            expect(output).toContain('id="titleContent_genericTag1"');
+            expect(output).toMatchSnapshot();
         });
 
         it('appends children inside existing actions container on second add', async () => {
@@ -4112,9 +4107,7 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect(output.match(/<macros:actions\b/g)).toHaveLength(1);
-            expect(output).toContain('id="actions_button"');
-            expect(output).toContain('id="actions_button1"');
+            expect(output).toMatchSnapshot();
         });
 
         it('appends children inside existing headerContent container on second add', async () => {
@@ -4140,9 +4133,7 @@ describe('Building Blocks', () => {
             );
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect(output.match(/<macros:headerContent\b/g)).toHaveLength(1);
-            expect(output).toContain('id="headerContent_vbox"');
-            expect(output).toContain('id="headerContent_vbox1"');
+            expect(output).toMatchSnapshot();
         });
 
         it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {
