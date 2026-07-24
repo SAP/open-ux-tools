@@ -48,11 +48,11 @@
         "axios": "1.18.1",
         "axios-logger": "2.8.1",
         "circular-reference-remover": "2.1.0",
-        "fast-xml-parser": "5.8.0",
+        "fast-xml-parser": "5.10.1",
         "i18next": "26.3.6",
         "inquirer-autocomplete-prompt": "2.0.1",
         "os-name": "4.0.1",
-        "@sap-devx/yeoman-ui-types": "1.25.0"
+        "@sap-devx/yeoman-ui-types": "1.25.1"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",

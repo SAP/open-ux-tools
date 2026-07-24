@@ -43,7 +43,7 @@
         "supertest": "7.2.2",
         "@types/express": "4.17.21",
         "@types/serve-static": "1.15.5",
-        "@types/supertest": "7.2.0"
+        "@types/supertest": "7.2.1"
     },
     "peerDependencies": {
         "express": "4"
