@@ -1,5 +1,88 @@
 # @sap-ux/ui-service-inquirer
 
+## 1.0.34
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.29 → 2.0.30
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.3
+- @sap-ux/telemetry 1.0.20 → 1.0.21
+
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+- @sap-ux/odata-service-inquirer 3.2.1 → 3.2.2
+- @sap-ux/telemetry 1.0.19 → 1.0.20
+- @sap-ux/abap-deploy-config-inquirer 2.0.28 → 2.0.29
+
+## 1.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.1
+- @sap-ux/telemetry 1.0.18 → 1.0.19
+- @sap-ux/abap-deploy-config-inquirer 2.0.27 → 2.0.28
+
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.26 → 2.0.27
+
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.1.0 → 3.2.0
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.25 → 3.1.0
+- @sap-ux/abap-deploy-config-inquirer 2.0.25 → 2.0.26
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.24 → 3.0.25
+
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.24 → 2.0.25
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+- @sap-ux/odata-service-inquirer 3.0.23 → 3.0.24
+
 ## 1.0.26
 
 ### Patch Changes

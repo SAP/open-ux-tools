@@ -1,5 +1,73 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+## 10.7.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
+## 10.7.11
+
+### Patch Changes
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
+## 10.7.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 10.7.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- Validate required fields are defined in the .change file when creating a FlexChange object. [[81e386d](https://github.com/SAP/open-ux-tools/commit/81e386dec63839016e43cd3b48889134ccac48f9)]
+
+## 10.7.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-13
+
+#### Features
+
+- Enable linting applications with multiple views. [[c325423](https://github.com/SAP/open-ux-tools/commit/c32542308410ce93ea7e6eea8186b82963f8144c)]
+
 ## 10.7.7
 
 ### Patch Changes

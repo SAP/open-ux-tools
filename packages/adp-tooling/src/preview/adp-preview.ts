@@ -237,6 +237,14 @@ export class AdpPreview {
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
+        } else if (req.path.startsWith('/i18n/') && req.path.endsWith('.properties')) {
+            // Without this branch, the generic file-exists check below would 302 to
+            // the ADP's local i18n.properties whenever one exists, shadowing the
+            // base app's complete bundle. Explicitly pass i18n .properties requests
+            // through so the base app's bundle is served instead. Covers the default
+            // bundle, locale variants, and per-page bundles
+            // (/i18n/ListReport/<entity>/i18n.properties). See changeset for details.
+            next();
         } else {
             // check if the requested file exists in the file system (replace .js with .* for typescript)
             const files = await this.project.byGlob(req.path.replace('.js', '.*'));

@@ -11,6 +11,7 @@ config.moduleNameMapper = {
     // issue with jest.spyOn (findFilesByExtension)
     '^@sap-ux/project-access/dist/file(/index(\\.js)?)?$': '<rootDir>/test/__mocks__/project-access-file.mjs'
 };
+config.setupFilesAfterEnv = ['<rootDir>/test/jest.setup.mjs'];
 config.transformIgnorePatterns = [
     'node_modules/(?!(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|@vscode-logging)/)'
 ];

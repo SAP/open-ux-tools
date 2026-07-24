@@ -4,7 +4,6 @@ import type { AxiosRequestConfig, ODataService } from '@sap-ux/axios-extension';
 import { AbapServiceProvider, TlsPatch } from '@sap-ux/axios-extension';
 import { getService, getSapToolsDirectory } from '@sap-ux/store';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
-import format from 'xml-formatter';
 import { logger } from '../../utils/index.js';
 import {
     Authentication,
@@ -13,6 +12,10 @@ import {
     isAppStudio,
     listDestinations
 } from '@sap-ux/btp-utils';
+// xml-formatter types are not callable under NodeNext; cast to function type once so call sites are clean
+// TODO: Remove this workaround when xml-formatter publishes proper ESM types for NodeNext resolution
+import _fmt from 'xml-formatter';
+const xmlFormatter = _fmt as unknown as (xml: string, options?: object) => string;
 
 // Capture the real SAP tools directory at module load time. In test environments the
 // HOME env var may be overridden after process start; SAP_TOOLS_DIR can be set by the
@@ -166,7 +169,7 @@ function findSapSystem(
  * @param backendSystem - The backend system to connect to.
  * @returns A configured AbapServiceProvider instance.
  */
-function createAbapServiceProvider(backendSystem: BackendSystem): AbapServiceProvider {
+export function createAbapServiceProvider(backendSystem: BackendSystem): AbapServiceProvider {
     const providerConfig: AxiosRequestConfig = {
         baseURL: backendSystem.url,
         params: { 'sap-client': backendSystem.client }
@@ -230,7 +233,12 @@ export async function getServiceMetadata(system: BackendSystem, servicePath: str
     const metadata = await service.metadata();
     checkMetadata(metadata);
     try {
-        return format(metadata, { indentation: '    ', lineSeparator: '\n' });
+        return xmlFormatter(metadata, {
+            indentation: '    ',
+            lineSeparator: '\n',
+            collapseContent: true,
+            throwOnFailure: false
+        });
     } catch {
         return metadata;
     }

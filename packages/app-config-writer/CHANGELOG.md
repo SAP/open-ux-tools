@@ -1,5 +1,39 @@
 # @sap-ux/app-config-writer
 
+## 1.1.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.1
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.1.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+
+## 1.1.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+
 ## 1.1.9
 
 ### Patch Changes

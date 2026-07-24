@@ -1,6 +1,45 @@
-import { DOMParser } from '@xmldom/xmldom';
+import { DOMParser, type Options } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
+import { MACROS_NAMESPACE_URI } from '../../types.js';
+
+/** Namespace map for `@xmldom/xmldom`: maps namespace prefixes to their URIs for UI5 view and fragment files. */
+export const TEMPLATE_NAMESPACES: Record<string, string> = {
+    '': 'http://www.w3.org/1999/xhtml',
+    'mvc': 'sap.ui.core.mvc',
+    'core': 'sap.ui.core',
+    'macros': 'sap.fe.macros',
+    'macrosTable': 'sap.fe.macros.table',
+    'macrosChart': 'sap.fe.macros.chart',
+    'richtexteditor': 'sap.fe.macros.richtexteditor'
+};
+
+/** `Options` extended with `xmlns` and `onError` */
+type DOMParserOptions = Options & {
+    xmlns?: Record<string, string | null | undefined>;
+    onError?: (level: string, message: string) => void;
+};
+
+/**
+ * Builds a `DOMParser` options object.
+ *
+ * @param xmlns - Fallback prefix→URI map (use `TEMPLATE_NAMESPACES` for templates and UI5 view/fragment files).
+ * @param onError - Parse error handler. Defaults to throwing. Pass `() => {}` for a silent partial DOM.
+ */
+export function getDOMParserOptions(
+    xmlns?: Record<string, string | null | undefined>,
+    onError?: (level: string, message: string) => void
+): DOMParserOptions {
+    const handler =
+        onError ??
+        ((level: string, message: string) => {
+            throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
+        });
+    return {
+        onError: handler,
+        xmlns
+    };
+}
 
 /**
  * Converts the provided xpath string from `/mvc:View/Page/content` to
@@ -18,6 +57,37 @@ export const augmentXpathWithLocalNames = (path: string): string => {
 };
 
 /**
+ * If the given node is a macros:Page element that has no macros:items child, adds a synthesized
+ * macros:items path to the result map so callers can target it as an aggregation path.
+ * ensureMissingAggregation in generateBuildingBlock will create the DOM element when needed.
+ *
+ * @param node - the current DOM node being visited
+ * @param parentNode - accumulated XPath prefix up to (but not including) this node
+ * @param macrosNamespace - the resolved macros namespace prefix (e.g. 'macros')
+ * @param result - mutable map of XPath choices to augment
+ */
+function addMacrosItemsPathIfMissing(
+    node: Node,
+    parentNode: string,
+    macrosNamespace: string,
+    result: Record<string, string>
+): void {
+    if ((node as Element).localName !== 'Page' || (node as Element).namespaceURI !== MACROS_NAMESPACE_URI) {
+        return;
+    }
+    const resolvedPrefix = macrosNamespace || 'macros';
+    const macrosItemsName = `${resolvedPrefix}:items`;
+    const hasItemsChild = Array.from(node.childNodes).some(
+        (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).localName === 'items'
+    );
+    if (!hasItemsChild) {
+        const pageStep = (node as Element).prefix ? node.nodeName : `${resolvedPrefix}:Page`;
+        const itemsPath = `${parentNode}/${pageStep}/${macrosItemsName}`;
+        result[itemsPath] = augmentXpathWithLocalNames(itemsPath);
+    }
+}
+
+/**
  * Returns a list of xpath strings for each element of the xml file provided.
  *
  * @param xmlFilePath - the xml file path
@@ -32,10 +102,7 @@ export function getXPathStringsForXmlFile(
     let pageMacroDefinition: string | undefined;
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const errorHandler = (level: string, message: string) => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+        const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
@@ -54,11 +121,13 @@ export function getXPathStringsForXmlFile(
                 (child) =>
                     child.nodeType === child.ELEMENT_NODE &&
                     (child as Element).localName === 'Page' &&
-                    child.nodeName === pageMacroDefinition
+                    (child as Element).namespaceURI === MACROS_NAMESPACE_URI
             );
             if (!hasPageMacroChild) {
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             }
+
+            addMacrosItemsPathIfMissing(node, parentNode, macrosNamespace || 'macros', result);
 
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {
@@ -97,10 +166,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
     const ids: string[] = [];
     const buildingBlockSelector = 'macros:FilterBar';
     const xmlContent = fs.read(viewOrFragmentPath);
-    const errorHandler = (level: string, message: string): void => {
-        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-    };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+    const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
     const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
     for (const element of elements) {
         const id = element.getAttributeNode('id')?.value;
@@ -128,10 +194,7 @@ export async function getExistingButtonGroups(
 
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const errorHandler = (level: string, message: string): void => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+        const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
 
         // Get namespace map and create xpath selector
         const nsMap = (xmlDocument.firstChild as any)?._nsMap || {};

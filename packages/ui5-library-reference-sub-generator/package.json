@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-reference-sub-generator",
     "description": "Generator for adding reference libraries to a project",
-    "version": "1.0.22",
+    "version": "1.0.27",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -38,7 +38,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-library-reference-inquirer": "workspace:*",
         "@sap-ux/ui5-library-reference-writer": "workspace:*",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
@@ -48,7 +48,7 @@
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
         "@types/yeoman-test": "4.0.6",
-        "@types/vscode": "1.106.1",
+        "@types/vscode": "1.109.0",
         "@vscode-logging/logger": "2.0.9",
         "fs-extra": "11.3.5",
         "rimraf": "6.1.3",
