@@ -46,20 +46,27 @@ sap.ui.define([
         });
 
 
-        opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+        opaTest("Check the number of sections of the Object Page", function (Given, When, Then) {
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest("Check the MaterialDetailsFacet section of the Object Page", function (Given, When, Then) {
             When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "ModelYear" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "WarrantyYear" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "BrandCategory" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "FabricationCountry" });
+        });
+
+        opaTest("Check the MaterialRatingsFacet section of the Object Page", function (Given, When, Then) {
             When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialRatingsFacet");
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialRatingsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true }, { enabled: true });
             // When.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialRatingsBoundAction", unbound: true });
             Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckColumns(undefined, {"0":{"header":"Rating"},"Title":{"header":"Title"}});
-       });
+        });
+
 
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup

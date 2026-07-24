@@ -42,8 +42,11 @@ sap.ui.define([
         });
 
 
-        opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+        opaTest("Check the number of sections of the Object Page", function (Given, When, Then) {
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest("Check the Identification section of the Object Page", function (Given, When, Then) {
             When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("Identification");
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "Identification" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrder/SalesOrder" });
@@ -52,12 +55,16 @@ sap.ui.define([
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "RequestedQuantity" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "NetAmount" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrderItem/SalesOrderItem" });
+        });
+
+        opaTest("Check the MaterialDetailsFacet section of the Object Page", function (Given, When, Then) {
             When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
             Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialDetailsBoundAction", unbound: true }, { enabled: true });
             // When.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "MaterialDetailsBoundAction", unbound: true });
             Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckColumns(undefined, {"ModelYear":{"header":"Model Year"},"WarrantyYear":{"header":"Warranty Expiration"},"BrandCategory":{"header":"Material Category"},"FabricationCountry":{"header":"Fabrication Country"}});
-       });
+        });
+
 
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
