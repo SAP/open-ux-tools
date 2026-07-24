@@ -160,6 +160,27 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
 }
 
 /**
+ * Reads builder.resources.excludes from the deploy config file and converts glob patterns to prefix patterns.
+ * Returns an empty array if the section is absent or the file cannot be read.
+ *
+ * @param deployConfigPath - path to the ui5-deploy.yaml file
+ * @returns normalised prefix patterns e.g. ['/test/', '/localService/']
+ */
+async function readBuilderExcludes(deployConfigPath: string): Promise<string[]> {
+    try {
+        const content = readFileSync(deployConfigPath, 'utf-8');
+        const ui5Config = await UI5Config.newInstance(content);
+        return ui5Config.getBuilderResourceExcludes().map((p) => {
+            const prefix = p.replace(/\/\*+$/, '/');
+            const withSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
+            return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
+        });
+    } catch {
+        return [];
+    }
+}
+
+/**
  * Merge the configuration from the ui5*.yaml with CLI options.
  *
  * @param taskConfig - base configuration from the file
@@ -183,6 +204,9 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
     config.lrep = options.lrep;
+    const builderExcludes = options.config ? await readBuilderExcludes(options.config) : [];
+    const merged = [...new Set([...(options.exclude ?? []), ...(taskConfig.exclude ?? []), ...builderExcludes])];
+    config.exclude = merged.length ? merged : undefined;
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';

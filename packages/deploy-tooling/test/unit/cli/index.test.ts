@@ -167,9 +167,29 @@ describe('cli', () => {
                     expect(mockWriteFileSync.mock.calls[0][0]).toBe('archive.zip');
                 }
                 expect(mockGetArchive).toHaveBeenCalled();
-                expect(mockGetArchive).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
+                expect(mockGetArchive).toHaveBeenCalledWith(
+                    expect.any(ToolsLogger),
+                    expect.objectContaining(object),
+                    expect.any(Array)
+                );
             }
         );
+
+        test('passes exclude from config file to getArchive', async () => {
+            process.argv = minimumConfigCmd;
+            await runDeploy();
+            expect(mockGetArchive).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.anything(), ['/test/']);
+        });
+
+        test('passes --exclude CLI patterns to getArchive', async () => {
+            process.argv = [...cliCmd, '--exclude', '/test/', '/localService/', '/MyFolder/'];
+            await runDeploy();
+            expect(mockGetArchive).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.anything(), [
+                '/test/',
+                '/localService/',
+                '/MyFolder/'
+            ]);
+        });
     });
 
     describe('runUndeploy', () => {

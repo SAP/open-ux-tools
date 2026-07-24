@@ -158,4 +158,53 @@ describe('cli/config', () => {
             expect(merged.app.package).toBe('$tmp');
         });
     });
+
+    describe('mergeConfig exclude patterns', () => {
+        const fixture = join(__testdirname, '../../fixtures/simple-app');
+        const baseConfig: AbapDeployConfig = {
+            app: { name: 'ZAPP', description: '', package: '', transport: '' },
+            target: { url: 'http://target.example' }
+        };
+
+        test('configuration.exclude present: merged with CLI options.exclude', async () => {
+            const merged = await mergeConfig({ ...baseConfig, exclude: ['/test/'] }, {
+                exclude: ['/localService/']
+            } as CliOptions);
+            expect(merged.exclude).toEqual(['/localService/', '/test/']);
+        });
+
+        test('configuration.exclude present: CLI options.exclude deduplicates', async () => {
+            const merged = await mergeConfig({ ...baseConfig, exclude: ['/test/'] }, {
+                exclude: ['/test/']
+            } as CliOptions);
+            expect(merged.exclude).toEqual(['/test/']);
+        });
+
+        test('configuration.exclude absent: derives from builder.resources.excludes in ui5.yaml', async () => {
+            const merged = await mergeConfig(baseConfig, {
+                config: join(fixture, 'ui5-deploy-no-exclude.yaml')
+            } as CliOptions);
+            expect(merged.exclude).toEqual(['/test/', '/localService/']);
+        });
+
+        test('configuration.exclude present: also merged with builder.resources.excludes from ui5.yaml', async () => {
+            const merged = await mergeConfig({ ...baseConfig, exclude: ['/extra/'] }, {
+                config: join(fixture, 'ui5-deploy-no-exclude.yaml')
+            } as CliOptions);
+            expect(merged.exclude).toEqual(['/extra/', '/test/', '/localService/']);
+        });
+
+        test('configuration.exclude absent: CLI options.exclude merged with derived excludes', async () => {
+            const merged = await mergeConfig(baseConfig, {
+                config: join(fixture, 'ui5-deploy-no-exclude.yaml'),
+                exclude: ['/extra/']
+            } as CliOptions);
+            expect(merged.exclude).toEqual(['/extra/', '/test/', '/localService/']);
+        });
+
+        test('configuration.exclude absent, no config path: exclude is undefined', async () => {
+            const merged = await mergeConfig(baseConfig, {});
+            expect(merged.exclude).toBeUndefined();
+        });
+    });
 });

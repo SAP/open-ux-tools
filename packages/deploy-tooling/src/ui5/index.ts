@@ -55,7 +55,7 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
         logger,
         workspace,
         options.projectNamespace ?? options.projectName,
-        config.exclude
+        config.exclude ?? []
     );
     await deploy(archive, config, logger);
 }
