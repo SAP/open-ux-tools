@@ -73,8 +73,8 @@ describe('<UITooltip />', () => {
                 </UITooltip>
             );
             const button = container.querySelector(`button#${buttonId}`) as HTMLElement;
+            fireEvent.focus(button);
             await act(async () => {
-                fireEvent.focus(button);
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             });
             expect(onLayerMount).toHaveBeenCalledTimes(1);
@@ -94,8 +94,8 @@ describe('<UITooltip />', () => {
                 </UITooltip>
             );
             const button = container.querySelector(`button#${buttonId}`) as HTMLElement;
+            fireEvent.focus(button);
             await act(async () => {
-                fireEvent.focus(button);
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             });
             expect(onLayerMount).toHaveBeenCalledTimes(0);

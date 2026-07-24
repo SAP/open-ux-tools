@@ -37,7 +37,7 @@ describe('<UISplitButton />', () => {
         const { container } = render(<UISplitButton {...splitButtonProps} />);
 
         const buttons = container.querySelectorAll('button');
-        expect(buttons.length).toEqual(2);
+        expect(buttons).toHaveLength(2);
 
         fireEvent.click(buttons[0]);
         expect(splitButtonProps.callback).toHaveBeenCalledWith('option1');
@@ -48,7 +48,7 @@ describe('<UISplitButton />', () => {
         const { container } = render(<UISplitButton {...splitButtonProps} ref={ref} />);
 
         const buttons = container.querySelectorAll('button');
-        expect(buttons.length).toEqual(2);
+        expect(buttons).toHaveLength(2);
 
         // Open the dropdown so the menu state is active
         fireEvent.click(buttons[1]);

@@ -280,7 +280,7 @@ describe('<Splitter />', () => {
                 );
                 expect(container.querySelectorAll('.splitter__grip')).toHaveLength(1);
                 const icons = container.querySelectorAll(`i[data-icon-name]`);
-                expect(icons.length).toEqual(testCase.expect.icon ? 1 : 0);
+                expect(icons).toHaveLength(testCase.expect.icon ? 1 : 0);
                 if (testCase.expect.icon) {
                     expect(icons[0].getAttribute('data-icon-name')).toEqual(testCase.expect.icon);
                 }

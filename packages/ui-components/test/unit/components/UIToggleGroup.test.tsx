@@ -58,7 +58,7 @@ describe('<UIToggleGroup />', () => {
         const { container } = render(<UIToggleGroup {...testProps} />);
 
         const buttons = container.querySelectorAll('button');
-        expect(buttons.length).toEqual(3);
+        expect(buttons).toHaveLength(3);
 
         fireEvent.click(buttons[0]);
         expect(onChange).toHaveBeenCalledWith('high', true);
