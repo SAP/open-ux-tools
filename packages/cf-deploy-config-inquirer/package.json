@@ -39,7 +39,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/project-input-validator": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",

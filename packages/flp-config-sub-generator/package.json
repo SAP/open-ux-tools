@@ -31,7 +31,7 @@
         "!generators/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/deploy-config-generator-shared": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",

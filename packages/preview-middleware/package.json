@@ -53,7 +53,7 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "qrcode": "1.5.4",
-        "@sap/bas-sdk": "3.13.9"
+        "@sap/bas-sdk": "3.13.10"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
@@ -69,12 +69,12 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.9",
-        "@types/supertest": "7.2.0",
+        "@types/supertest": "7.2.1",
         "connect": "^3.7.0",
         "copyfiles": "2.4.1",
         "dotenv": "17.4.2",
         "express": "4.22.1",
-        "nock": "14.0.15",
+        "nock": "14.0.16",
         "npm-run-all2": "9.0.2",
         "supertest": "7.2.2"
     },
