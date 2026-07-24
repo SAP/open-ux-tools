@@ -16,6 +16,7 @@ export const TEXT_ARRANGEMENT_HIDDEN = 'sap-text-arrangement-hidden';
 export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
+export const NO_COMMAS_IN_SECTION_TITLES = 'sap-no-commas-in-section-titles';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 
@@ -186,6 +187,17 @@ export interface NoLiveMode {
     changeFileUri?: string; // ODataV2 - flex change property
 }
 
+export interface NoCommasInSectionTitles {
+    type: typeof NO_COMMAS_IN_SECTION_TITLES;
+    pageNames: string[];
+    annotation: {
+        file: string;
+        annotationPath: string;
+        reference: AnnotationReference;
+        labelValue: string;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -202,4 +214,5 @@ export type Diagnostic =
     | TablePersonalization
     | TextArrangementHidden
     | StrictUomFiltering
+    | NoCommasInSectionTitles
     | NoLiveMode;
