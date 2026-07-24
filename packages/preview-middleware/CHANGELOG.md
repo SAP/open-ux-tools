@@ -1,5 +1,20 @@
 # @sap-ux/preview-middleware
 
+## 1.0.48
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap/bas-sdk 3.13.9 → 3.13.10 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/adp-tooling 1.0.37 → 1.0.38
+- @sap-ux/system-access 1.0.8 → 1.0.9
+
 ## 1.0.47
 
 ### Patch Changes
