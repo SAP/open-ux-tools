@@ -59,7 +59,7 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
  * Returns the aggregation names to append for a Page building block, or undefined if not a Page.
  * Full template appends all PAGE_AGGREGATIONS; basic template appends nothing.
  *
- * @param data - the building block data
+ * @param {BuildingBlock} data - the building block data
  * @returns aggregation names array, or undefined if not a Page building block
  */
 export function getPageAggregationNames(data: BuildingBlock): readonly PageAggregationName[] | undefined {
@@ -73,7 +73,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
  * Throws if the manifest's minUI5Version is set and does not meet the 1.145.0 requirement for the full Page template.
  * If minUI5Version is not set, it is treated as latest and passes the check.
  *
- * @param manifest - the manifest content, or undefined if not available
+ * @param {Manifest | undefined} manifest - the manifest content, or undefined if not available
  */
 export function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
     const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
@@ -88,8 +88,8 @@ export function validateFullPageTemplateVersion(manifest: Manifest | undefined):
  * If sap.fe.macros is the default namespace (no prefix), declares xmlns:macros on the document element
  * so that generated prefixed elements like <macros:items> remain valid.
  *
- * @param xmlDocument - the view XML document
- * @returns the resolved namespace prefix string (e.g. 'macros')
+ * @param {Document} xmlDocument - the view XML document
+ * @returns {string} the resolved namespace prefix string (e.g. 'macros')
  */
 function resolveMacrosPrefix(xmlDocument: Document): string {
     const prefix = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
@@ -100,14 +100,13 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
     return prefix;
 }
 
-/** IDs needed per aggregation template, keyed by the variable name used in the EJS template. */
-/** Controls to generate IDs for per aggregation. `key` is the EJS template variable name, `base` is passed to generateId. */
 /**
  * Page aggregations that can only appear once in the view.
  * A second "Add" for these is a no-op; their creation form is disabled once present.
  */
 export const SINGLE_INSTANCE_PAGE_AGGREGATIONS = new Set<PageAggregationName>(['breadcrumbs', 'footer']);
 
+/** Controls to generate IDs for per aggregation. `key` is the EJS template variable name, `base` is passed to generateId. */
 export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; base: string }[]>> = {
     breadcrumbs: [
         { key: 'Breadcrumbs', base: 'breadcrumbs_breadcrumbs' },
@@ -137,9 +136,9 @@ export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: str
  * Generates a map of unique IDs for all controls in a given Page aggregation template.
  * Keys match the `ids.*` variable names referenced in the EJS templates.
  *
- * @param aggName - the aggregation name
- * @param generateId - the project-aware ID generator
- * @returns an object mapping each template variable name to a unique ID string
+ * @param {PageAggregationName} aggName - the aggregation name
+ * @param {IdGeneratorFunction} generateId - the project-aware ID generator
+ * @returns {Record<string, string>} an object mapping each template variable name to a unique ID string
  */
 export function buildAggregationIds(
     aggName: PageAggregationName,
@@ -160,15 +159,15 @@ export function buildAggregationIds(
  * Renders a Page aggregation EJS template and parses it as an XML fragment document.
  * Inherits all xmlns:* declarations from the view root so inner content can use any view-declared prefix.
  *
- * @param fs - the memfs editor instance
- * @param aggName - the aggregation name (e.g. 'footer', 'items')
- * @param aggContext - the EJS template context
- * @param aggContext.macrosPrefix - the namespace prefix string (e.g. 'macros:')
- * @param aggContext.aggId - the generated unique ID for the aggregation element
- * @param aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
- * @param aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
- * @param fragMacrosNS - the namespace prefix resolved for sap.fe.macros
- * @param xmlDocument - the view XML document (used to inherit namespace declarations)
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} aggName - the aggregation name (e.g. 'footer', 'items')
+ * @param {object} aggContext - the EJS template context
+ * @param {string} aggContext.macrosPrefix - the namespace prefix string (e.g. 'macros:')
+ * @param {string} aggContext.aggId - the generated unique ID for the aggregation element
+ * @param {boolean} aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
+ * @param {Record<string, string>} aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
+ * @param {string} fragMacrosNS - the namespace prefix resolved for sap.fe.macros
+ * @param {Document} xmlDocument - the view XML document (used to inherit namespace declarations)
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
  */
 function buildPageAggregationFragment(
@@ -204,7 +203,7 @@ function buildPageAggregationFragment(
  * @param {Document} templateDocument - the template document whose root element receives the children
  * @param {IdGeneratorFunction} generateId - function to generate unique IDs
  * @param {readonly PageAggregationName[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
- * @param useDefaults - when true, the items aggregation renders its default IconTabBar content
+ * @param {boolean} useDefaults - when true, the items aggregation renders its default IconTabBar content
  */
 export function appendPageAggregations(
     fs: Editor,
@@ -236,7 +235,7 @@ export function appendPageAggregations(
  * Returns the local name of an Element if it belongs to the sap.fe.macros namespace, otherwise an empty string.
  * This ensures only Page aggregation elements are sorted by position; non-macros elements fall back to the items slot.
  *
- * @param el - the DOM Element
+ * @param {Element} el - the DOM Element
  * @returns the local name string, or '' if not a sap.fe.macros element
  */
 function getElementLocalName(el: Element): string {
@@ -250,7 +249,7 @@ function getElementLocalName(el: Element): string {
  * Builds a comparator for sorting XmlAggregationGroups by their position in aggNames.
  * Unknown elements fall back to the position of 'items'. Ties are broken by original index.
  *
- * @param aggNames - ordered list of aggregation names
+ * @param {readonly string[]} aggNames - ordered list of aggregation names
  * @returns comparator function for Array.prototype.sort
  */
 function buildAggregationComparator(
@@ -272,7 +271,7 @@ function buildAggregationComparator(
  * Preserves relative order of siblings with the same local name. Pure whitespace text nodes are dropped
  * because the xml-formatter call that follows will regenerate proper indentation.
  *
- * @param pageElement - the macros:Page DOM node whose children should be sorted
+ * @param {Node} pageElement - the macros:Page DOM node whose children should be sorted
  */
 export function sortPageAggregationChildren(pageElement: Node): void {
     const allChildren = Array.from(pageElement.childNodes);
@@ -384,10 +383,10 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
  * (i.e. loose building blocks like macros:Form, macros:Table) inside a <macros:items> element.
  * Called before inserting a new named aggregation so the DOM stays well-formed.
  *
- * @param pageElement - the macros:Page DOM element
- * @param xmlDocument - the owner document
- * @param macrosNS - the sap.fe.macros namespace URI
- * @param macrosPrefix - the resolved prefix string (e.g. 'macros')
+ * @param {Element} pageElement - the macros:Page DOM element
+ * @param {Document} xmlDocument - the owner document
+ * @param {string} macrosNS - the sap.fe.macros namespace URI
+ * @param {string} macrosPrefix - the resolved prefix string (e.g. 'macros')
  */
 function wrapLooseBuildingBlocksInItems(
     pageElement: Element,
@@ -419,6 +418,40 @@ function wrapLooseBuildingBlocksInItems(
 
     for (const child of looseChildren) {
         itemsEl.appendChild(child);
+    }
+}
+
+/**
+ * Serializes and writes the XML document to the view file on disk.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} basePath - the base path of the application
+ * @param {string} viewPath - the path of the xml view relative to the base path
+ * @param {Document} xmlDocument - the XML document to serialize and write
+ */
+function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDocument: Document): void {
+    fs.write(join(basePath, viewPath), format(new XMLSerializer().serializeToString(xmlDocument)));
+}
+
+/**
+ * Appends child elements from the rendered aggregation template into an existing container element.
+ * aggDoc.documentElement is `<root xmlns:macros=...>`; its first Element child is `<macros:aggName>`.
+ *
+ * @param {Element} existingContainer - the existing aggregation container element in the view
+ * @param {Document} aggDoc - the rendered template document whose first Element child holds the new children
+ * @param {Document} xmlDocument - the owner document (used to import nodes)
+ */
+function appendChildrenIntoContainer(existingContainer: Element, aggDoc: Document, xmlDocument: Document): void {
+    const renderedWrapper = Array.from(aggDoc.documentElement.childNodes).find(
+        (n) => n.nodeType === 1 /* Element */
+    ) as Element | undefined;
+    if (!renderedWrapper) {
+        return;
+    }
+    for (const child of Array.from(renderedWrapper.childNodes)) {
+        if (child.nodeType === 1 /* Element */) {
+            existingContainer.appendChild(xmlDocument.importNode(child, true));
+        }
     }
 }
 
@@ -475,8 +508,7 @@ export async function generateBuildingBlockAggregation(
     if (hasExistingAggregation && SINGLE_INSTANCE_PAGE_AGGREGATIONS.has(aggName)) {
         // Single-instance aggregations (breadcrumbs, footer) — already present, nothing to add.
         sortPageAggregationChildren(pageElement);
-        const existingXmlContent = new XMLSerializer().serializeToString(xmlDocument);
-        fs.write(join(basePath, viewPath), format(existingXmlContent));
+        writeXmlDocument(fs, basePath, viewPath, xmlDocument);
         return fs;
     }
     if (hasExistingAggregation) {
@@ -490,21 +522,10 @@ export async function generateBuildingBlockAggregation(
                 (n as Element).namespaceURI === macrosNsUri
         ) as Element | undefined;
         if (existingContainer) {
-            // aggDoc.documentElement is <root xmlns:macros=...>; its first Element child is <macros:xxx>
-            const renderedWrapper = Array.from(aggDoc.documentElement.childNodes).find(
-                (n) => n.nodeType === 1 /* Element */
-            ) as Element | undefined;
-            if (renderedWrapper) {
-                for (const child of Array.from(renderedWrapper.childNodes)) {
-                    if (child.nodeType === 1 /* Element */) {
-                        existingContainer.appendChild(xmlDocument.importNode(child, true));
-                    }
-                }
-            }
+            appendChildrenIntoContainer(existingContainer, aggDoc, xmlDocument);
         }
         sortPageAggregationChildren(pageElement);
-        const existingXmlContent = new XMLSerializer().serializeToString(xmlDocument);
-        fs.write(join(basePath, viewPath), format(existingXmlContent));
+        writeXmlDocument(fs, basePath, viewPath, xmlDocument);
         return fs;
     }
 
@@ -526,9 +547,6 @@ export async function generateBuildingBlockAggregation(
         }
     }
     sortPageAggregationChildren(pageElement);
-
-    const newXmlContent = new XMLSerializer().serializeToString(xmlDocument);
-    fs.write(join(basePath, viewPath), format(newXmlContent));
-
+    writeXmlDocument(fs, basePath, viewPath, xmlDocument);
     return fs;
 }
