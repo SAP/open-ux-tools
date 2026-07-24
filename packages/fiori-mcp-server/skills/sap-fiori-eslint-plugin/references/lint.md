@@ -98,10 +98,10 @@ npx eslint webapp/manifest.json "${CHANGE_FILES[@]}" "${XML_FILES[@]}"
 APP=app/incidents   # replace with your app folder
 
 # 1. manifest.json
-npx eslint $APP/webapp/manifest.json
+npx eslint "$APP/webapp/manifest.json"
 
 # 2. propertyChange files — OData V2 projects only (skip if V4)
-CHANGE_FILES=($(find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null))
+CHANGE_FILES=($(find "$APP/webapp/changes" -name "*propertyChange.change" 2>/dev/null))
 [ ${#CHANGE_FILES[@]} -gt 0 ] && npx eslint "${CHANGE_FILES[@]}"
 
 # 3. CDS files (app-level only)
