@@ -1,0 +1,120 @@
+name: PaletteBot
+
+on:
+    schedule:
+        # Runs on the 1st of every month at 08:00 UTC
+        - cron: '0 8 1 * *'
+    workflow_dispatch:
+
+jobs:
+    check-themes:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        permissions:
+            contents: write
+            issues: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+              with:
+                  node-version: 22.x
+
+            - name: Check for VSCode theme changes
+              id: check
+              run: |
+                  DIFF_OUTPUT="${RUNNER_TEMP}/theme-diff.json" node scripts/check-vscode-themes.mjs
+                  echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+                  if [ -f "${RUNNER_TEMP}/theme-diff.json" ]; then
+                    echo "diff_file=${RUNNER_TEMP}/theme-diff.json" >> "$GITHUB_OUTPUT"
+                    echo "has_changes=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "has_changes=false" >> "$GITHUB_OUTPUT"
+                  fi
+              env:
+                  DIFF_OUTPUT: ${{ runner.temp }}/theme-diff.json
+              # exit code 1 means changes found (not a failure)
+              continue-on-error: true
+
+            - name: Commit updated vscode_themes.json
+              if: steps.check.outputs.has_changes == 'true'
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add design-tokens/vscode_themes.json
+                  git commit -m "chore: PaletteBot — update vscode_themes.json with upstream theme changes"
+                  git push
+
+            - name: Post comment on tracking issue
+              if: steps.check.outputs.has_changes == 'true'
+              uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  script: |
+                      const fs = require('fs');
+                      const diffPath = process.env.DIFF_FILE;
+                      const report = JSON.parse(fs.readFileSync(diffPath, 'utf8'));
+
+                      // Find or create the tracking issue
+                      const TRACKING_LABEL = 'palettebot';
+                      const TRACKING_TITLE = 'PaletteBot — VSCode Theme Changes';
+
+                      const { data: issues } = await github.rest.issues.listForRepo({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        labels: TRACKING_LABEL,
+                        state: 'open',
+                        per_page: 1,
+                      });
+
+                      let issueNumber;
+
+                      if (issues.length > 0) {
+                        issueNumber = issues[0].number;
+                      } else {
+                        // Create the label if it doesn't exist
+                        try {
+                          await github.rest.issues.createLabel({
+                            owner: context.repo.owner,
+                            repo: context.repo.repo,
+                            name: TRACKING_LABEL,
+                            color: '0075ca',
+                            description: 'PaletteBot — tracks upstream VSCode theme color changes',
+                          });
+                        } catch (e) {
+                          // label already exists, ignore
+                        }
+
+                        const { data: newIssue } = await github.rest.issues.create({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          title: TRACKING_TITLE,
+                          labels: [TRACKING_LABEL],
+                          body: [
+                            '## 🎨 PaletteBot',
+                            '',
+                            'This issue tracks upstream color changes from the',
+                            '[microsoft/vscode](https://github.com/microsoft/vscode/tree/main/extensions/theme-defaults/themes)',
+                            'theme files (2026 Light, 2026 Dark, HC Black).',
+                            '',
+                            'Each comment below is an automated update from PaletteBot. The file',
+                            '`design-tokens/vscode_themes.json` in this repo is',
+                            'updated automatically when changes are detected.',
+                          ].join('\n'),
+                        });
+                        issueNumber = newIssue.number;
+                      }
+
+                      await github.rest.issues.createComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: issueNumber,
+                        body: report.body,
+                      });
+
+                      core.notice(`Posted theme diff to issue #${issueNumber}`);
+              env:
+                  DIFF_FILE: ${{ steps.check.outputs.diff_file }}
