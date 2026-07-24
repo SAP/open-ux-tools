@@ -82,12 +82,15 @@ sap.ui.define([
         });
 <% } -%>
 
-<% if (bodySections?.length > 0) { -%>
-        opaTest("Check body sections of the Object Page", function (Given, When, Then) {
 <% if (bodySections?.length > 1) { -%>
+        opaTest("Check the number of sections of the Object Page", function (Given, When, Then) {
             Then.onThe<%- name%>Generated.iCheckNumberOfSections(<%- bodySections.length %>);
+        });
+
 <% } -%>
+<% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
+        opaTest("Check the <%- section.id %> section of the Object Page", function (Given, When, Then) {
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
@@ -146,8 +149,9 @@ sap.ui.define([
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(section.tableColumns) %>);
 <% } -%>
 <% } -%>
+        });
+
 <% }) -%>
-       });
 <% } -%>
 
         opaTest("Teardown", function (Given, When, Then) { 
