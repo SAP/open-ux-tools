@@ -1,5 +1,19 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.31
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.1
+- @sap-ux/preview-middleware 1.0.46 → 1.0.47
+
 ## 1.2.30
 
 ### Patch Changes
