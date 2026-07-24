@@ -1,38 +1,56 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, fireEvent, act } from '@testing-library/react';
 import type { IStyleFunction, IToggleStyles, IRawStyle } from '@fluentui/react';
-import { Toggle } from '@fluentui/react';
 import type { UIToggleProps } from '../../../src/components/UIToggle/UIToggle';
 import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggle';
 
+/**
+ * Extract the `styles` function that UIToggle passes to the inner <Toggle>.
+ *
+ * UIToggle is a class component whose `render()` either returns the Toggle
+ * element directly or wraps it in a MessageWrapper.  In both cases the
+ * Toggle element (and therefore its `styles` prop) is reachable without
+ * mounting the component.
+ *
+ * @param props - Props to pass to the UIToggle instance.
+ * @param styleProps - Style-state props forwarded to the styles function (e.g. `{checked: true}`).
+ */
+function getStyles(props: Partial<UIToggleProps>, styleProps: object = {}): IToggleStyles {
+    const instance = new UIToggle(props as UIToggleProps);
+    const rendered = instance.render();
+    // When a validation message is present, render() returns
+    // <MessageWrapper><Toggle .../></MessageWrapper>
+    const toggleElement = rendered?.props?.message !== undefined ? rendered.props.children : rendered;
+    const stylesFn = toggleElement?.props?.styles as IStyleFunction<object, IToggleStyles>;
+    return stylesFn(styleProps) as IToggleStyles;
+}
+
 describe('<UIToggle />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIToggleProps>;
     const handleChangeMock = jest.fn();
 
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UIToggle onChange={handleChangeMock} checked={false} />);
-    });
-
     afterEach(() => {
-        wrapper.unmount();
+        handleChangeMock.mockClear();
     });
 
     it('Should render a UIToggle component', () => {
-        expect(wrapper.find('.ms-Toggle').length).toEqual(1);
+        const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
+        expect(container.querySelectorAll('.ms-Toggle')).toHaveLength(1);
     });
 
     it('Should toggle the checked state correctly', () => {
-        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(0);
+        const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
+        expect(container.querySelectorAll('.ms-Toggle.is-checked')).toHaveLength(0);
 
-        // Simulate toggle behavior
-        wrapper.find('button').simulate('click');
-        // Assert that handleChange was called once
+        const button = container.querySelector('button') as HTMLButtonElement;
+        fireEvent.click(button);
         expect(handleChangeMock).toHaveBeenCalledTimes(1);
-        wrapper.setProps({ checked: true }); // Simulating controlled prop change
-        wrapper.update();
 
-        // New state: checked
-        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(1);
+        // Simulate controlled prop change (checked=true) via rerender
+        act(() => {
+            rerender(<UIToggle onChange={handleChangeMock} checked={true} />);
+        });
+
+        expect(container.querySelectorAll('.ms-Toggle.is-checked')).toHaveLength(1);
     });
 
     describe('Styles', () => {
@@ -83,12 +101,10 @@ describe('<UIToggle />', () => {
                 }
             }
         ];
+
         for (const testCase of testCases) {
             it(`Property "size" - value ${testCase.name}`, () => {
-                wrapper.setProps({
-                    size: testCase.size
-                });
-                const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
+                const styles = getStyles({ checked: false, size: testCase.size });
                 const rootStyles = styles.root as IRawStyle;
                 const labelStyles = styles.label as IRawStyle;
                 const pillStyles = styles.pill as IRawStyle;
@@ -107,7 +123,7 @@ describe('<UIToggle />', () => {
         }
 
         it('Default', () => {
-            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
+            const styles = getStyles({ checked: false });
             expect(styles.pill).toMatchInlineSnapshot(`
                 Object {
                   ":disabled": Object {
@@ -162,8 +178,7 @@ describe('<UIToggle />', () => {
         });
 
         it('Checked', () => {
-            const styleProps = { checked: true };
-            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)(styleProps) as IToggleStyles;
+            const styles = getStyles({ checked: false }, { checked: true });
             expect(styles.pill).toMatchInlineSnapshot(`
                 Object {
                   ":disabled": Object {
@@ -220,39 +235,47 @@ describe('<UIToggle />', () => {
 
     describe('Validation message', () => {
         it('Error - standard', () => {
-            wrapper.setProps({
-                errorMessage: 'dummy',
-                inlineLabel: false
+            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
+            act(() => {
+                rerender(
+                    <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={false} />
+                );
             });
-            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
+
+            const styles = getStyles({ checked: false, errorMessage: 'dummy', inlineLabel: false });
             const rootStyles = styles.root as IRawStyle;
             expect(rootStyles.marginBottom).toEqual(4);
-            expect(wrapper.find('.ts-message-wrapper--error').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--error')).toHaveLength(1);
         });
 
         it('Error - inline', () => {
-            wrapper.setProps({
-                errorMessage: 'dummy',
-                inlineLabel: true
+            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
+            act(() => {
+                rerender(
+                    <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={true} />
+                );
             });
-            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
+
+            const styles = getStyles({ checked: false, errorMessage: 'dummy', inlineLabel: true });
             const rootStyles = styles.root as IRawStyle;
             expect(rootStyles.marginBottom).toEqual(0);
-            expect(wrapper.find('.ts-message-wrapper--error').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--error')).toHaveLength(1);
         });
 
         it('Warning', () => {
-            wrapper.setProps({
-                warningMessage: 'dummy'
+            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
+            act(() => {
+                rerender(<UIToggle onChange={handleChangeMock} checked={false} warningMessage="dummy" />);
             });
-            expect(wrapper.find('.ts-message-wrapper--warning').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--warning')).toHaveLength(1);
         });
 
         it('Info', () => {
-            wrapper.setProps({
-                infoMessage: 'dummy'
+            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
+            act(() => {
+                rerender(<UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />);
             });
-            expect(wrapper.find('.ts-message-wrapper--info').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--info')).toHaveLength(1);
         });
     });
 });

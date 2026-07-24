@@ -1,30 +1,30 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import { DefaultButton } from '@fluentui/react';
+import { render } from '@testing-library/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
+import type { IButtonStyles } from '@fluentui/react';
 import { UiIcons } from '../../../src/components/Icons';
+import { initIcons } from '../../../src/components';
 
 describe('<UIDefaultButton />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIDefaultButtonProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UIDefaultButton>Dummy</UIDefaultButton>);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
+    /**
+     * Computes the IButtonStyles that UIDefaultButton would pass to DefaultButton
+     * by calling the protected `setStyle` method directly on a throw-away instance.
+     */
+    function getStyles(props: UIDefaultButtonProps): IButtonStyles {
+        const instance = new UIDefaultButton(props) as unknown as {
+            setStyle(p: UIDefaultButtonProps): IButtonStyles;
+        };
+        return instance.setStyle(props);
+    }
 
     it('Should render a UIDefaultButton component', () => {
-        expect(wrapper.find('.ms-Button').length).toEqual(1);
+        const { container } = render(<UIDefaultButton>Dummy</UIDefaultButton>);
+        expect(container.querySelectorAll('.ms-Button')).toHaveLength(1);
     });
 
     it('Styles - primary', () => {
-        wrapper.setProps({
-            primary: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ primary: true });
         expect(styles?.root).toMatchInlineSnapshot(
             {},
             `
@@ -104,11 +104,7 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - primary and checked', () => {
-        wrapper.setProps({
-            primary: true,
-            checked: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ primary: true, checked: true });
         expect(styles?.root).toMatchInlineSnapshot(`
             Object {
               "backgroundColor": "var(--vscode-button-background)",
@@ -185,10 +181,7 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - secondary', () => {
-        wrapper.setProps({
-            primary: false
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ primary: false });
         expect(styles?.root).toMatchInlineSnapshot(
             {},
             `
@@ -268,11 +261,7 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - secondary and checked', () => {
-        wrapper.setProps({
-            primary: true,
-            checked: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ primary: true, checked: true });
         expect(styles?.root).toMatchInlineSnapshot(`
             Object {
               "backgroundColor": "var(--vscode-button-background)",
@@ -349,10 +338,7 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - alert', () => {
-        wrapper.setProps({
-            alert: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ alert: true });
         expect(styles?.root).toMatchInlineSnapshot(
             {},
             `
@@ -432,11 +418,7 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - alert and checked', () => {
-        wrapper.setProps({
-            alert: true,
-            checked: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ alert: true, checked: true });
         expect(styles?.root).toMatchInlineSnapshot(`
             Object {
               "backgroundColor": "var(--vscode-errorForeground)",
@@ -513,10 +495,7 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - transparent', () => {
-        wrapper.setProps({
-            transparent: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ transparent: true });
         expect(styles?.root).toMatchInlineSnapshot(`
             Object {
               "backgroundColor": "transparent",
@@ -595,11 +574,7 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - transparent and checked', () => {
-        wrapper.setProps({
-            transparent: true,
-            checked: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        const styles = getStyles({ transparent: true, checked: true });
         expect(styles?.root).toMatchInlineSnapshot(`
             Object {
               "backgroundColor": "transparent",
@@ -678,34 +653,31 @@ describe('<UIDefaultButton />', () => {
     });
 
     describe('Menu', () => {
+        beforeAll(() => {
+            initIcons();
+        });
+
         it('Default render without icon', () => {
-            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+            const { container } = render(<UIDefaultButton>Dummy</UIDefaultButton>);
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(0);
         });
 
         it('Render without icon', () => {
-            wrapper.setProps({
-                menuProps: undefined
-            });
-            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+            const { container } = render(<UIDefaultButton menuProps={undefined}>Dummy</UIDefaultButton>);
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(0);
         });
 
         it('Render with default icon', () => {
-            wrapper.setProps({
-                menuProps: {
-                    items: []
-                }
-            });
-            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(1);
+            const { container } = render(<UIDefaultButton menuProps={{ items: [] }}>Dummy</UIDefaultButton>);
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(1);
         });
 
         it('Render with custom icon', () => {
-            wrapper.setProps({
-                menuIconProps: {
-                    iconName: UiIcons.ArrowUp
-                }
-            });
-            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
-            expect(wrapper.find('[data-icon-name="ArrowUp"]').length).toEqual(1);
+            const { container } = render(
+                <UIDefaultButton menuIconProps={{ iconName: UiIcons.ArrowUp }}>Dummy</UIDefaultButton>
+            );
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(0);
+            expect(container.querySelectorAll('[data-icon-name="ArrowUp"]')).toHaveLength(1);
         });
     });
 });

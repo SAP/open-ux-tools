@@ -1,91 +1,123 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { UISectionProps } from '../../../src/components/UISection/UISection';
+import { render, fireEvent } from '@testing-library/react';
 import { UISection, UISectionLayout } from '../../../src/components/UISection/UISection';
 
 describe('<Section />', () => {
-    let wrapper: Enzyme.ReactWrapper<UISectionProps>;
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
-    beforeEach(() => {
-        wrapper = Enzyme.mount(
+    it('Should render a Shell component', () => {
+        const { container } = render(
             <UISection>
                 <div>Dummy Content</div>
             </UISection>
         );
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-        wrapper.unmount();
-    });
-
-    it('Should render a Shell component', () => {
-        expect(wrapper.exists()).toEqual(true);
-        expect(wrapper.find('.section').length).toEqual(1);
+        expect(container.querySelector('.section')).not.toBeNull();
+        expect(container.querySelectorAll('.section')).toHaveLength(1);
     });
 
     it('Test "height" property', () => {
         const height = '500px';
-        wrapper.setProps({
-            height
-        });
-        const dom: HTMLElement = wrapper.getDOMNode();
-        expect(dom.style.height).toEqual(height);
+        const { container, rerender } = render(
+            <UISection>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        rerender(
+            <UISection height={height}>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        const section = container.querySelector('.section') as HTMLElement;
+        expect(section.style.height).toEqual(height);
     });
 
     it('Test "className" property', () => {
         const className = 'dummyClass';
-        wrapper.setProps({
-            className
-        });
-        expect(wrapper.find('.' + className).length).toBeGreaterThan(0);
+        const { container, rerender } = render(
+            <UISection>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        rerender(
+            <UISection className={className}>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        expect(container.querySelectorAll('.' + className).length).toBeGreaterThan(0);
     });
 
     it('Test "title" property', () => {
         const title = 'dummy title';
-        wrapper.setProps({
-            title
-        });
-        expect(wrapper.find('.section__header__title').text()).toEqual(title);
+        const { container, rerender } = render(
+            <UISection>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        rerender(
+            <UISection title={title}>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        expect(container.querySelector('.section__header__title')?.textContent).toEqual(title);
     });
 
     it('Test "collapsible" property', () => {
-        wrapper.setProps({
-            layout: UISectionLayout.Extended
-        });
-        expect(wrapper.find('.section--extended').length).toEqual(1);
+        const { container, rerender } = render(
+            <UISection>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        rerender(
+            <UISection layout={UISectionLayout.Extended}>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        expect(container.querySelectorAll('.section--extended')).toHaveLength(1);
     });
 
     it('Test "onScroll" event', () => {
         const onScroll = jest.fn();
-        wrapper.setProps({
-            onScroll,
-            className: 'aaaa',
-            collapsible: true
-        });
-        expect(wrapper.find('.section__body').length).toEqual(1);
-        wrapper.find('.section__body').simulate('scroll', {});
-        // Check result
+        const { container, rerender } = render(
+            <UISection>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        rerender(
+            <UISection onScroll={onScroll} className="aaaa" collapsible={true}>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        const body = container.querySelector('.section__body') as HTMLElement;
+        expect(body).not.toBeNull();
+        fireEvent.scroll(body);
         expect(onScroll).toHaveBeenCalledTimes(1);
     });
 
     it('Test "hidden" property', () => {
-        expect(wrapper.find('.section--hidden').length).toEqual(0);
-        wrapper.setProps({
-            hidden: true
-        });
-        expect(wrapper.find('.section--hidden').length).toEqual(1);
+        const { container, rerender } = render(
+            <UISection>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        expect(container.querySelectorAll('.section--hidden')).toHaveLength(0);
+        rerender(
+            <UISection hidden={true}>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        expect(container.querySelectorAll('.section--hidden')).toHaveLength(1);
     });
 
     it('Test data property', () => {
         const testValue = 'test value';
-        wrapper = Enzyme.mount(
+        const { container } = render(
             <UISection data-test={testValue}>
                 <div>Dummy Content</div>
             </UISection>
         );
-        expect(wrapper.find('.section[data-test="test value"]').getDOMNode().getAttribute('data-test')).toEqual(
-            testValue
-        );
+        const section = container.querySelector(`.section[data-test="${testValue}"]`) as HTMLElement;
+        expect(section.getAttribute('data-test')).toEqual(testValue);
     });
 });

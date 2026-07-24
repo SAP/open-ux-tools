@@ -3,7 +3,7 @@ const config = { ...baseConfig };
 config.testEnvironment = 'jsdom';
 config.extensionsToTreatAsEsm = ['.ts', '.tsx'];
 config.collectCoverageFrom = ['src/**/*.{ts,tsx}'];
-config.setupFilesAfterEnv = ['<rootDir>/test/test-setup.cjs', '<rootDir>/test/test-shim.cjs'];
+config.setupFilesAfterEnv = ['<rootDir>/test/test-setup.mjs', '<rootDir>/test/test-shim.cjs'];
 config.snapshotResolver = '<rootDir>/test/utils/snapshotResolver.cjs';
 config.transform = {
     '^.+\\.tsx?$': [

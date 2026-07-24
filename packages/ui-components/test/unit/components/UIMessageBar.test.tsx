@@ -1,75 +1,67 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render } from '@testing-library/react';
 import type { IMessageBarProps, IMessageBarStyles } from '@fluentui/react';
-import { MessageBar, MessageBarType } from '@fluentui/react';
-import { UIMessageBar } from '../../../src/components/UIMessageBar';
+import { MessageBarType } from '@fluentui/react';
 import { UiIcons } from '../../../src/components/Icons';
 
+// Capture props that UIMessageBar passes down to MessageBar
+let capturedProps: IMessageBarProps | undefined;
+
+const actual = await import('@fluentui/react');
+const OriginalMessageBar = actual.MessageBar;
+const mocked = {
+    ...actual,
+    MessageBar: (props: IMessageBarProps) => {
+        capturedProps = props;
+        return React.createElement(OriginalMessageBar as React.ComponentType<IMessageBarProps>, props);
+    }
+};
+jest.unstable_mockModule('@fluentui/react', () => mocked);
+
+const { UIMessageBar } = await import('../../../src/components/UIMessageBar');
+
 describe('<UIMessageBar />', () => {
-    let wrapper: Enzyme.ReactWrapper<IMessageBarProps>;
-
-    const getStyles = (): IMessageBarStyles => {
-        return wrapper.find(MessageBar).props().styles as IMessageBarStyles;
-    };
-
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UIMessageBar />);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
+        capturedProps = undefined;
     });
 
     it('Should render a UIMessageBar component - default state', () => {
-        expect(wrapper.find('.ms-MessageBar').length).toEqual(1);
-        const messageBar = wrapper.find(MessageBar);
-        expect(messageBar.prop('messageBarIconProps')?.iconName).toEqual(UiIcons.Success);
-        // Check styles
-        const styles = getStyles();
-        expect(styles.root?.['backgroundColor']).toEqual(undefined);
+        const { container } = render(<UIMessageBar />);
+        expect(container.querySelectorAll('.ms-MessageBar')).toHaveLength(1);
+        expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Success);
+        const styles = capturedProps?.styles as IMessageBarStyles;
+        expect(styles?.root?.['backgroundColor']).toBeUndefined();
     });
 
     it('Test property "messageBarType" - error', () => {
-        wrapper.setProps({
-            messageBarType: MessageBarType.error
-        });
-        const messageBar = wrapper.find(MessageBar);
-        expect(messageBar.prop('messageBarIconProps')?.iconName).toEqual(UiIcons.Error);
-        // Check styles
-        const styles = getStyles();
-        expect(styles.root?.['backgroundColor']).toEqual('transparent');
+        const { rerender } = render(<UIMessageBar />);
+        rerender(<UIMessageBar messageBarType={MessageBarType.error} />);
+        expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Error);
+        const styles = capturedProps?.styles as IMessageBarStyles;
+        expect(styles?.root?.['backgroundColor']).toEqual('transparent');
     });
 
     it('Test property "messageBarType" - success', () => {
-        wrapper.setProps({
-            messageBarType: MessageBarType.success
-        });
-        const messageBar = wrapper.find(MessageBar);
-        expect(messageBar.prop('messageBarIconProps')?.iconName).toEqual(UiIcons.Success);
-        // Check styles
-        const styles = getStyles();
-        expect(styles.root?.['backgroundColor']).toEqual('transparent');
+        const { rerender } = render(<UIMessageBar />);
+        rerender(<UIMessageBar messageBarType={MessageBarType.success} />);
+        expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Success);
+        const styles = capturedProps?.styles as IMessageBarStyles;
+        expect(styles?.root?.['backgroundColor']).toEqual('transparent');
     });
 
     it('Test property "messageBarType" - info', () => {
-        wrapper.setProps({
-            messageBarType: MessageBarType.info
-        });
-        const messageBar = wrapper.find(MessageBar);
-        expect(messageBar.prop('messageBarIconProps')?.iconName).toEqual(UiIcons.Info);
-        // Check styles
-        const styles = getStyles();
-        expect(styles.root?.['backgroundColor']).toEqual('transparent');
+        const { rerender } = render(<UIMessageBar />);
+        rerender(<UIMessageBar messageBarType={MessageBarType.info} />);
+        expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Info);
+        const styles = capturedProps?.styles as IMessageBarStyles;
+        expect(styles?.root?.['backgroundColor']).toEqual('transparent');
     });
 
     it('Test property "messageBarType" - warning', () => {
-        wrapper.setProps({
-            messageBarType: MessageBarType.warning
-        });
-        const messageBar = wrapper.find(MessageBar);
-        expect(messageBar.prop('messageBarIconProps')?.iconName).toEqual(UiIcons.Warning);
-        // Check styles
-        const styles = getStyles();
-        expect(styles.root?.['backgroundColor']).toEqual('transparent');
+        const { rerender } = render(<UIMessageBar />);
+        rerender(<UIMessageBar messageBarType={MessageBarType.warning} />);
+        expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Warning);
+        const styles = capturedProps?.styles as IMessageBarStyles;
+        expect(styles?.root?.['backgroundColor']).toEqual('transparent');
     });
 });

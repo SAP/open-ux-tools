@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, fireEvent, act } from '@testing-library/react';
 
 import type {
     UIFlexibleTableProps,
@@ -77,102 +77,102 @@ describe('<UIFlexibleTable />', () => {
     const tableId = 'dummy-table-id';
 
     describe('InlineFlex layout', () => {
-        let wrapper: Enzyme.ReactWrapper<UIFlexibleTableProps<number>>;
+        let props: UIFlexibleTableProps<number>;
+        let container: HTMLElement;
+        let rerender: (ui: React.ReactElement) => void;
 
         beforeEach(() => {
-            wrapper = Enzyme.mount(
-                <UIFlexibleTable
-                    layout={UIFlexibleTableLayout.InlineFlex}
-                    id={tableId}
-                    columns={columns}
-                    rows={rows}
-                    onRenderCell={onRenderCell}
-                    onTableReorder={() => {
-                        return;
-                    }}
-                    onRenderReorderActions={() => {
-                        return {};
-                    }}
-                />
-            );
+            props = {
+                layout: UIFlexibleTableLayout.InlineFlex,
+                id: tableId,
+                columns,
+                rows,
+                onRenderCell,
+                onTableReorder: () => {
+                    return;
+                },
+                onRenderReorderActions: () => {
+                    return {};
+                }
+            };
+            ({ container, rerender } = render(<UIFlexibleTable {...props} />));
         });
 
         afterEach(() => {
             jest.clearAllMocks();
-            wrapper.unmount();
         });
 
+        const setProps = (newProps: Partial<UIFlexibleTableProps<number>>) => {
+            props = { ...props, ...newProps };
+            rerender(<UIFlexibleTable {...props} />);
+        };
+
         it('Render default', () => {
-            expect(wrapper.exists()).toEqual(true);
-            expect(wrapper.find(selectors.content).length).toEqual(1);
-            expect(wrapper.find(selectors.addButton).length).toEqual(0);
-            const rowObjects = wrapper.find(selectors.row);
+            expect(container.querySelector(selectors.tableRoot)).toBeTruthy();
+            expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.addButton)).toHaveLength(0);
+            const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(3);
-            expect(wrapper.find(selectors.titleRow).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
             rowObjects.forEach((row, rowIndex) => {
                 columns.forEach((col) => {
                     const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
-                    const dataCellsFound = row.find(selector);
+                    const dataCellsFound = row.querySelectorAll(selector);
 
                     expect(dataCellsFound.length).toBe(col.hidden ? 0 : 1);
                     if (!col.hidden) {
-                        const cell = dataCellsFound.get(0);
-                        expect(cell.props.children).toBe(rows[rowIndex].cells[col.key]);
+                        expect(dataCellsFound[0].textContent).toBe(String(rows[rowIndex].cells[col.key]));
                     }
                 });
             });
-            expect(wrapper.find(selectors.reverseBackground).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.reverseBackground)).toHaveLength(0);
         });
 
         it('Render table (no rows)', () => {
-            wrapper.setProps({
-                noDataText: 'No data.',
-                rows: []
-            });
-            expect(wrapper.exists()).toEqual(true);
-            expect(wrapper.find(selectors.content).length).toEqual(1);
-            expect(wrapper.find(selectors.row).length).toEqual(0);
-            const noData = wrapper.find(selectors.noData);
-            expect(noData.exists()).toEqual(true);
-            expect(noData.props().style?.cursor).toBe('default');
+            setProps({ noDataText: 'No data.', rows: [] });
+            expect(container.querySelector(selectors.tableRoot)).toBeTruthy();
+            expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.row)).toHaveLength(0);
+            const noData = container.querySelector(selectors.noData);
+            expect(noData).toBeTruthy();
+            expect((noData as HTMLElement).style.cursor).toBe('default');
         });
 
         it('Render index column', () => {
-            wrapper.setProps({ showIndexColumn: true });
-            const indexCells = wrapper.find(selectors.indexColumn);
+            setProps({ showIndexColumn: true });
+            const indexCells = container.querySelectorAll(selectors.indexColumn);
             expect(indexCells.length).toEqual(3);
             indexCells.forEach((cell, idx) => {
-                const value = cell.find(selectors.indexColumnValue);
-                expect(value.get(0).props.children).toBe(rows[idx].key);
+                const value = cell.querySelector(selectors.indexColumnValue);
+                expect(value?.textContent).toBe(rows[idx].key);
             });
         });
 
         it('Render column default titles', () => {
-            wrapper.setProps({ showIndexColumn: true, showColumnTitles: true });
-            const headersFound = wrapper.find(selectors.titleRow);
+            setProps({ showIndexColumn: true, showColumnTitles: true });
+            const headersFound = container.querySelectorAll(selectors.titleRow);
             expect(headersFound.length).toEqual(1);
 
-            const indexTitleFound = wrapper.find(selectors.indexColumnTitle);
+            const indexTitleFound = container.querySelectorAll(selectors.indexColumnTitle);
             expect(indexTitleFound.length).toBe(1);
-            expect(indexTitleFound.get(0).props.children).toBe('#');
+            expect(indexTitleFound[0].textContent).toBe('#');
 
-            const titleCells = wrapper.find(selectors.titleRowValue);
+            const titleCells = container.querySelectorAll(selectors.titleRowValue);
             expect(titleCells.length).toBe(2);
 
             const filteredColumns = columns.filter((col) => !col.hidden);
             const expectedIds = filteredColumns.map((c) => `${tableId}-header-column-${c.key}`);
 
             filteredColumns.forEach((col, idx) => {
-                expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
-                expect(titleCells.get(idx).props.children).toBe(col.title);
-                expect(titleCells.get(idx).props['id']).toBe(expectedIds[idx]);
+                expect(titleCells[idx].getAttribute('id')).toBe(expectedIds[idx]);
+                expect(titleCells[idx].textContent).toBe(col.title);
             });
         });
 
         it('Render column default titles (with spanned cells)', () => {
-            wrapper.setProps({
+            setProps({
                 showIndexColumn: true,
                 showColumnTitles: true,
                 onRenderTitleColumnCell: (params) => ({
@@ -180,38 +180,38 @@ describe('<UIFlexibleTable />', () => {
                     isSpan: params.colIndex === 0
                 })
             });
-            const headersFound = wrapper.find(selectors.titleRow);
+            const headersFound = container.querySelectorAll(selectors.titleRow);
             expect(headersFound.length).toEqual(1);
 
-            const titleCells = wrapper.find(selectors.titleRowValue);
+            const titleCells = container.querySelectorAll(selectors.titleRowValue);
             expect(titleCells.length).toBe(1);
 
             const col = columns[0];
             const expectedId = `${tableId}-header-column-${col.key}`;
-            expect(titleCells.get(0).key).toBe(`title-cell-unknown`);
-            expect(titleCells.get(0).props.children).toBe(col.title);
-            expect(titleCells.get(0).props['id']).toBe(expectedId);
+            // isSpan=true renders key="title-cell-unknown"
+            expect(titleCells[0].getAttribute('id')).toBe(expectedId);
+            expect(titleCells[0].textContent).toBe(col.title);
         });
 
         it('Render column titles in cells', () => {
-            wrapper.setProps({ showIndexColumn: true, showColumnTitles: true, showColumnTitlesInCells: true });
-            const headersFound = wrapper.find(selectors.titleRow);
+            setProps({ showIndexColumn: true, showColumnTitles: true, showColumnTitlesInCells: true });
+            const headersFound = container.querySelectorAll(selectors.titleRow);
             expect(headersFound.length).toEqual(0);
 
-            const titleCells = wrapper.find(selectors.cellTitle);
+            const titleCells = container.querySelectorAll(selectors.cellTitle);
             expect(titleCells.length).toBe(6);
 
             rows.forEach((row, rIdx) => {
                 columns
                     .filter((col) => !col.hidden)
                     .forEach((col, idx) => {
-                        expect(titleCells.get(rIdx * 2 + idx).props.children).toBe(col.title);
+                        expect(titleCells[rIdx * 2 + idx].textContent).toBe(col.title);
                     });
             });
         });
 
         it('Render column custom titles', () => {
-            wrapper.setProps({
+            setProps({
                 showIndexColumn: true,
                 showColumnTitles: true,
                 onRenderTitleColumnCell: (params: TitleCellRendererParams) => {
@@ -227,68 +227,60 @@ describe('<UIFlexibleTable />', () => {
                     }
                 }
             });
-            const headersFound = wrapper.find(selectors.titleRow);
+            const headersFound = container.querySelectorAll(selectors.titleRow);
             expect(headersFound.length).toEqual(1);
 
-            const indexTitleFound = wrapper.find(selectors.indexColumnTitleCustom);
+            const indexTitleFound = container.querySelectorAll(selectors.indexColumnTitleCustom);
             expect(indexTitleFound.length).toBe(1);
-            expect(indexTitleFound.get(0).props.children).toBe('id');
-            expect(indexTitleFound.get(0).props.className).toBe(
-                'flexible-table-content-table-title-row-item-index custom-id'
-            );
+            expect(indexTitleFound[0].textContent).toBe('id');
+            expect(indexTitleFound[0].className).toBe('flexible-table-content-table-title-row-item-index custom-id');
 
-            const actionsTitleFound = wrapper.find(selectors.titleRowActions);
+            const actionsTitleFound = container.querySelectorAll(selectors.titleRowActions);
             expect(actionsTitleFound.length).toBe(1);
-            expect(actionsTitleFound.get(0).props.children).toBe('Actions');
-            expect(actionsTitleFound.get(0).props.className).toBe(
+            expect(actionsTitleFound[0].textContent).toBe('Actions');
+            expect(actionsTitleFound[0].className).toBe(
                 'flexible-table-content-table-title-row-item-actions custom-actions'
             );
 
-            const titleCells = wrapper.find(selectors.titleRowValue);
+            const titleCells = container.querySelectorAll(selectors.titleRowValue);
             expect(titleCells.length).toBe(2);
 
             columns
                 .filter((col) => !col.hidden)
                 .forEach((col, idx) => {
-                    expect(titleCells.get(idx).props.children).toBe(col.title + ' title');
+                    expect(titleCells[idx].textContent).toBe(col.title + ' title');
                 });
         });
 
         it('Render custom row content', () => {
-            wrapper.setProps({
+            setProps({
                 onRenderRowDataContent: (params) => {
                     return params.rowIndex === 1 ? <div id="custom-row">This is too complex row</div> : undefined;
                 }
             });
 
-            const rowDataObjects = wrapper.find(selectors.rowDataCells);
+            const rowDataObjects = container.querySelectorAll(selectors.rowDataCells);
             expect(rowDataObjects.length).toEqual(3);
 
-            const rowObjects = wrapper.find(selectors.row);
+            const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(3);
-            expect(wrapper.find(selectors.titleRow).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
             rowObjects.forEach((row, rowIndex) => {
                 if (rowIndex === 1) {
-                    const selector = selectors.rowDataCells;
-                    const content = row.find(`${selector} #custom-row`);
-                    expect(content.length).toBe(1);
-                    expect(content.getElement().props).toMatchInlineSnapshot(`
-                        Object {
-                          "children": "This is too complex row",
-                          "id": "custom-row",
-                        }
-                    `);
+                    const content = row.querySelector(`${selectors.rowDataCells} #custom-row`);
+                    expect(content).toBeTruthy();
+                    expect(content?.textContent).toBe('This is too complex row');
+                    expect(content?.getAttribute('id')).toBe('custom-row');
                 } else {
                     columns.forEach((col) => {
                         const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
-                        const dataCellsFound = row.find(selector);
+                        const dataCellsFound = row.querySelectorAll(selector);
 
                         expect(dataCellsFound.length).toBe(col.hidden ? 0 : 1);
                         if (!col.hidden) {
-                            const cell = dataCellsFound.get(0);
-                            expect(cell.props.children).toBe(rows[rowIndex].cells[col.key]);
+                            expect(dataCellsFound[0].textContent).toBe(String(rows[rowIndex].cells[col.key]));
                         }
                     });
                 }
@@ -296,59 +288,40 @@ describe('<UIFlexibleTable />', () => {
         });
 
         it('Render with limited width', () => {
-            wrapper.setProps({
-                maxWidth: 1000
-            });
-            const root = wrapper.find(selectors.tableRoot);
-            expect(root.length).toEqual(1);
-            expect(root.getElement().props.style).toMatchInlineSnapshot(`
-                Object {
-                  "maxWidth": "1000px",
-                }
-            `);
+            setProps({ maxWidth: 1000 });
+            const root = container.querySelector(selectors.tableRoot) as HTMLElement;
+            expect(root).toBeTruthy();
+            expect(root.style.maxWidth).toBe('1000px');
 
-            wrapper.setProps({
-                maxWidth: undefined
-            });
-            wrapper.update();
-            const root2 = wrapper.find(selectors.tableRoot);
-            expect(root2.getElement().props.style).toMatchInlineSnapshot(`
-                Object {
-                  "maxWidth": "100%",
-                }
-            `);
+            setProps({ maxWidth: undefined });
+            const root2 = container.querySelector(selectors.tableRoot) as HTMLElement;
+            expect(root2.style.maxWidth).toBe('100%');
         });
 
         it('onRenderRowContainer ', () => {
-            wrapper.setProps({
+            setProps({
                 onRenderRowContainer: (params) => {
                     return params.rowIndex === 2 ? { isDropWarning: true } : { isDropWarning: false };
                 }
             });
 
-            const rowDataObjects = wrapper.find(selectors.rowDataCells);
+            const rowDataObjects = container.querySelectorAll(selectors.rowDataCells);
             expect(rowDataObjects.length).toEqual(3);
 
-            const rowObjects = wrapper.find(selectors.row);
+            const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(3);
 
             // check warning class added
             rowObjects.forEach((row, rowIndex) => {
-                expect(
-                    row.getElement().props.className.includes('highlight-drop-warning') === (rowIndex === 2)
-                ).toBeTruthy();
+                expect(row.className.includes('highlight-drop-warning') === (rowIndex === 2)).toBeTruthy();
             });
         });
 
         it('Property "reverseBackground"', () => {
-            wrapper.setProps({
-                reverseBackground: true
-            });
-            expect(wrapper.find(selectors.reverseBackground).length).toEqual(3);
-            wrapper.setProps({
-                reverseBackground: false
-            });
-            expect(wrapper.find(selectors.reverseBackground).length).toEqual(0);
+            setProps({ reverseBackground: true });
+            expect(container.querySelectorAll(selectors.reverseBackground)).toHaveLength(3);
+            setProps({ reverseBackground: false });
+            expect(container.querySelectorAll(selectors.reverseBackground)).toHaveLength(0);
         });
 
         describe('Add button', () => {
@@ -356,44 +329,40 @@ describe('<UIFlexibleTable />', () => {
             it('enabled', () => {
                 Element.prototype.scrollIntoView = jest.fn();
                 const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView');
-                wrapper.setProps({
-                    addRowButton: { label: 'Add New Item', onClick: onAddClick }
-                });
-                expect(wrapper.find(selectors.addButton).length).toEqual(1);
-                expect(wrapper.find(selectors.addButton).prop('aria-label')).toBe('Add New Item');
-                wrapper.find(selectors.addButton).first().simulate('click');
+                setProps({ addRowButton: { label: 'Add New Item', onClick: onAddClick } });
+                expect(container.querySelectorAll(selectors.addButton)).toHaveLength(1);
+                expect(container.querySelector(selectors.addButton)?.getAttribute('aria-label')).toBe('Add New Item');
+                fireEvent.click(container.querySelector(selectors.addButton)!);
                 expect(onAddClick.mock.calls.length).toEqual(1);
-                wrapper.setProps({ isContentLoading: true });
-                wrapper.setProps({ isContentLoading: false });
+                setProps({ isContentLoading: true });
+                setProps({ isContentLoading: false });
                 expect(scrollSpy).toHaveBeenCalled();
                 expect((scrollSpy.mock.instances[0] as any).parentElement.attributes.getNamedItem('id').value).toBe(
                     'row-1'
                 );
             });
             it('readonly - off', () => {
-                wrapper.setProps({
+                setProps({
                     addRowButton: { label: 'Add New Item', title: 'Read only reason', onClick: onAddClick },
                     readonly: true
                 });
-                const foundButtons = wrapper.find(selectors.addButton);
+                const foundButtons = container.querySelectorAll(selectors.addButton);
                 expect(foundButtons.length).toEqual(1);
-                expect(foundButtons.get(0).props.disabled).toBeTruthy();
-                expect(foundButtons.get(0).props.title).toBe('Read only reason');
+                expect((foundButtons[0] as HTMLButtonElement).disabled).toBeTruthy();
+                expect(foundButtons[0].getAttribute('title')).toBe('Read only reason');
             });
             it('disabled', () => {
-                wrapper.setProps({
+                setProps({
                     addRowButton: { label: 'Add New Item', onClick: onAddClick },
                     isAddItemDisabled: true
                 });
-                const foundButtons = wrapper.find(selectors.addButton);
+                const foundButtons = container.querySelectorAll(selectors.addButton);
                 expect(foundButtons.length).toEqual(1);
-                expect(foundButtons.get(0).props.disabled).toBeTruthy();
+                expect((foundButtons[0] as HTMLButtonElement).disabled).toBeTruthy();
             });
             it('omitted', () => {
-                wrapper.setProps({
-                    addRowButton: undefined
-                });
-                const foundButtons = wrapper.find(selectors.addButton);
+                setProps({ addRowButton: undefined });
+                const foundButtons = container.querySelectorAll(selectors.addButton);
                 expect(foundButtons.length).toEqual(0);
             });
         });
@@ -410,73 +379,27 @@ describe('<UIFlexibleTable />', () => {
             beforeEach(() => renderSpy.mockClear());
 
             it('primary actions', () => {
-                wrapper.setProps({
-                    onRenderPrimaryTableActions: renderSpy
-                });
-                wrapper.update();
-                const actions = wrapper.find(selectors.tableHeaderPrimaryAction);
+                setProps({ onRenderPrimaryTableActions: renderSpy });
+                const actions = container.querySelectorAll(selectors.tableHeaderPrimaryAction);
                 expect(actions.length).toBe(2);
-                expect(actions.map((item) => item.getElement().props.children)).toMatchInlineSnapshot(`
-                    Array [
-                      <div
-                        id="action1"
-                      >
-                        write1
-                      </div>,
-                      <div
-                        id="action2"
-                      >
-                        write2
-                      </div>,
-                    ]
-                `);
+                expect(actions[0].querySelector('#action1')?.textContent).toBe('write1');
+                expect(actions[1].querySelector('#action2')?.textContent).toBe('write2');
             });
 
             it('secondary actions', () => {
-                wrapper.setProps({
-                    onRenderSecondaryTableActions: renderSpy
-                });
-                wrapper.update();
-                const actions = wrapper.find(selectors.tableHeaderSecondaryAction);
+                setProps({ onRenderSecondaryTableActions: renderSpy });
+                const actions = container.querySelectorAll(selectors.tableHeaderSecondaryAction);
                 expect(actions.length).toBe(2);
-                expect(actions.map((item) => item.getElement().props.children)).toMatchInlineSnapshot(`
-                    Array [
-                      <div
-                        id="action1"
-                      >
-                        write1
-                      </div>,
-                      <div
-                        id="action2"
-                      >
-                        write2
-                      </div>,
-                    ]
-                `);
+                expect(actions[0].querySelector('#action1')?.textContent).toBe('write1');
+                expect(actions[1].querySelector('#action2')?.textContent).toBe('write2');
             });
 
             it('readonly actions', () => {
-                wrapper.setProps({
-                    onRenderPrimaryTableActions: renderSpy,
-                    readonly: true
-                });
-                wrapper.update();
-                const actions = wrapper.find(selectors.tableHeaderPrimaryAction);
+                setProps({ onRenderPrimaryTableActions: renderSpy, readonly: true });
+                const actions = container.querySelectorAll(selectors.tableHeaderPrimaryAction);
                 expect(actions.length).toBe(2);
-                expect(actions.map((item) => item.getElement().props.children)).toMatchInlineSnapshot(`
-                    Array [
-                      <div
-                        id="action1"
-                      >
-                        read1
-                      </div>,
-                      <div
-                        id="action2"
-                      >
-                        read2
-                      </div>,
-                    ]
-                `);
+                expect(actions[0].querySelector('#action1')?.textContent).toBe('read1');
+                expect(actions[1].querySelector('#action2')?.textContent).toBe('read2');
             });
         });
 
@@ -484,17 +407,18 @@ describe('<UIFlexibleTable />', () => {
             const onAddClick = jest.fn();
             const onDeleteClick = jest.fn();
             it('enabled', () => {
-                wrapper.setProps({
+                setProps({
                     addRowButton: { label: 'Add New Item', onClick: onAddClick },
                     onDeleteRow: onDeleteClick
                 });
-                expect(wrapper.find(selectors.deleteButton).length).toEqual(3);
-                wrapper.find(selectors.deleteButton).last().simulate('click');
+                expect(container.querySelectorAll(selectors.deleteButton)).toHaveLength(3);
+                const deleteButtons = container.querySelectorAll(selectors.deleteButton);
+                fireEvent.click(deleteButtons[deleteButtons.length - 1]);
                 expect(onDeleteClick.mock.calls.length).toEqual(1);
                 expect(onDeleteClick.mock.calls[0][0].rowIndex).toEqual(2);
             });
             it('tooltip', () => {
-                wrapper.setProps({
+                setProps({
                     addRowButton: { label: 'Add New Item', onClick: onAddClick },
                     onDeleteRow: onDeleteClick,
                     onRenderDeleteAction: ({ rowIndex }) => {
@@ -504,24 +428,22 @@ describe('<UIFlexibleTable />', () => {
                         };
                     }
                 });
-                const foundButtons = wrapper.find(selectors.deleteButton);
+                const foundButtons = container.querySelectorAll(selectors.deleteButton);
                 expect(foundButtons.length).toEqual(3);
                 foundButtons.forEach((button, idx) => {
-                    expect(button.getElement().props.title).toBe(
-                        idx > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled'
-                    );
+                    expect(button.getAttribute('title')).toBe(idx > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled');
                 });
             });
             it('readonly - off', () => {
-                wrapper.setProps({
+                setProps({
                     addRowButton: { label: 'Add', onClick: onAddClick },
                     onDeleteRow: onDeleteClick,
                     readonly: true
                 });
-                expect(wrapper.find(selectors.deleteButton).length).toEqual(0);
+                expect(container.querySelectorAll(selectors.deleteButton)).toHaveLength(0);
             });
             it('disabled', () => {
-                wrapper.setProps({
+                setProps({
                     addRowButton: { label: 'Add', onClick: onAddClick },
                     onDeleteRow: onDeleteClick,
                     onRenderDeleteAction: ({ rowIndex }) => {
@@ -530,46 +452,44 @@ describe('<UIFlexibleTable />', () => {
                         };
                     }
                 });
-                const foundButtons = wrapper.find(selectors.deleteButton);
+                const foundButtons = container.querySelectorAll(selectors.deleteButton);
                 expect(foundButtons.length).toEqual(3);
                 foundButtons.forEach((button, idx) => {
-                    expect(button.getElement().props.disabled).toBe(idx > 0 ? true : undefined);
+                    expect((button as HTMLButtonElement).disabled).toBe(idx > 0 ? true : false);
                 });
             });
         });
 
         describe('reorder buttons', () => {
             it('render', () => {
-                wrapper.setProps({
+                setProps({
                     onTableReorder: () => {
                         return;
                     }
                 });
-                const upButtonsFound = wrapper.find(selectors.upArrow);
-                const downButtonsFound = wrapper.find(selectors.downArrow);
+                const upButtonsFound = container.querySelectorAll(selectors.upArrow);
+                const downButtonsFound = container.querySelectorAll(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(3);
                 expect(downButtonsFound.length).toBe(3);
                 upButtonsFound.forEach((button, idx) => {
-                    expect(button.getElement().props.className.includes('is-disabled') === (idx === 0)).toBeTruthy();
+                    expect(button.className.includes('is-disabled') === (idx === 0)).toBeTruthy();
                 });
                 downButtonsFound.forEach((button, idx) => {
-                    expect(button.getElement().props.className.includes('is-disabled') === (idx === 2)).toBeTruthy();
+                    expect(button.className.includes('is-disabled') === (idx === 2)).toBeTruthy();
                 });
-                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('grab');
+                expect((container.querySelector(selectors.content) as HTMLElement).style.cursor).toBe('grab');
             });
             it('move up/down not rendered', () => {
-                wrapper.setProps({
-                    onTableReorder: undefined
-                });
-                const upButtonsFound = wrapper.find(selectors.upArrow);
-                const downButtonsFound = wrapper.find(selectors.downArrow);
+                setProps({ onTableReorder: undefined });
+                const upButtonsFound = container.querySelectorAll(selectors.upArrow);
+                const downButtonsFound = container.querySelectorAll(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(0);
                 expect(downButtonsFound.length).toBe(0);
-                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('default');
+                expect((container.querySelector(selectors.content) as HTMLElement).style.cursor).toBe('default');
             });
 
             it('move up/down disabled for new line item index 1(2nd row) with tooltip', () => {
-                wrapper.setProps({
+                setProps({
                     onTableReorder: () => {
                         return;
                     },
@@ -587,54 +507,46 @@ describe('<UIFlexibleTable />', () => {
                         };
                     }
                 });
-                const upButtonsFound = wrapper.find(selectors.upArrow);
-                const downButtonsFound = wrapper.find(selectors.downArrow);
+                const upButtonsFound = container.querySelectorAll(selectors.upArrow);
+                const downButtonsFound = container.querySelectorAll(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(3);
                 expect(downButtonsFound.length).toBe(3);
                 upButtonsFound.forEach((button, idx) => {
-                    expect(
-                        button.getElement().props.className.includes('is-disabled') === [0, 1].includes(idx)
-                    ).toBeTruthy();
-                    expect(button.getElement().props.title).toBe(idx === 1 ? 'Testing move up disabled' : '');
+                    expect(button.className.includes('is-disabled') === [0, 1].includes(idx)).toBeTruthy();
+                    expect(button.getAttribute('title')).toBe(idx === 1 ? 'Testing move up disabled' : '');
                 });
                 downButtonsFound.forEach((button, idx) => {
-                    expect(
-                        button.getElement().props.className.includes('is-disabled') === [1, 2].includes(idx)
-                    ).toBeTruthy();
-                    expect(button.getElement().props.title).toBe(idx === 1 ? 'Testing move down disabled' : '');
+                    expect(button.className.includes('is-disabled') === [1, 2].includes(idx)).toBeTruthy();
+                    expect(button.getAttribute('title')).toBe(idx === 1 ? 'Testing move down disabled' : '');
                 });
             });
             it('readonly - off', () => {
-                wrapper.setProps({
+                setProps({
                     onTableReorder: () => {
                         return;
                     },
                     readonly: true
                 });
-                const upButtonsFound = wrapper.find(selectors.upArrow);
-                const downButtonsFound = wrapper.find(selectors.downArrow);
+                const upButtonsFound = container.querySelectorAll(selectors.upArrow);
+                const downButtonsFound = container.querySelectorAll(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(0);
                 expect(downButtonsFound.length).toBe(0);
             });
             it('no handler - off', () => {
-                wrapper.setProps({
-                    onTableReorder: undefined
-                });
-                const upButtonsFound = wrapper.find(selectors.upArrow);
-                const downButtonsFound = wrapper.find(selectors.downArrow);
+                setProps({ onTableReorder: undefined });
+                const upButtonsFound = container.querySelectorAll(selectors.upArrow);
+                const downButtonsFound = container.querySelectorAll(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(0);
                 expect(downButtonsFound.length).toBe(0);
             });
 
             it('click down button', async () => {
                 const onReorder = jest.fn();
-                wrapper.setProps({
-                    onTableReorder: onReorder
-                });
+                setProps({ onTableReorder: onReorder });
 
-                const downButtonsFound = wrapper.find(selectors.downArrow);
-                const button = downButtonsFound.first();
-                button.simulate('focus');
+                const downButtonsFound = container.querySelectorAll(selectors.downArrow);
+                const button = downButtonsFound[0] as HTMLButtonElement;
+                fireEvent.focus(button);
 
                 const dummyButton = document.createElement('button');
                 const focusSpy = jest.spyOn(dummyButton, 'focus');
@@ -647,10 +559,12 @@ describe('<UIFlexibleTable />', () => {
                     return null;
                 });
 
-                button.simulate('click');
-                wrapper.setProps({ isContentLoading: true });
-                await delay(200);
-                wrapper.setProps({ isContentLoading: false });
+                fireEvent.click(button);
+                setProps({ isContentLoading: true });
+                await act(async () => {
+                    await delay(200);
+                });
+                setProps({ isContentLoading: false });
                 getByIdSpy.mockRestore();
 
                 expect(onReorder.mock.calls.length).toBe(1);
@@ -659,23 +573,23 @@ describe('<UIFlexibleTable />', () => {
                 expect(idMismatches).toBe(0);
                 // Focus should not be reseted anymore
                 focusSpy.mockReset();
-                const root = wrapper.find(selectors.tableRoot);
-                root.simulate('blur');
-                wrapper.setProps({ isContentLoading: true });
-                await delay(200);
-                wrapper.setProps({ isContentLoading: false });
+                const root = container.querySelector(selectors.tableRoot) as HTMLElement;
+                fireEvent.blur(root);
+                setProps({ isContentLoading: true });
+                await act(async () => {
+                    await delay(200);
+                });
+                setProps({ isContentLoading: false });
                 expect(focusSpy).toHaveBeenCalledTimes(0);
             });
 
             it('click last available down button', async () => {
                 const onReorder = jest.fn();
-                wrapper.setProps({
-                    onTableReorder: onReorder
-                });
+                setProps({ onTableReorder: onReorder });
 
-                const downButtonsFound = wrapper.find(selectors.downArrow);
-                const button = downButtonsFound.first();
-                button.simulate('focus');
+                const downButtonsFound = container.querySelectorAll(selectors.downArrow);
+                const button = downButtonsFound[0] as HTMLButtonElement;
+                fireEvent.focus(button);
 
                 const dummyButton = document.createElement('button');
                 const focusSpy = jest.spyOn(dummyButton, 'focus');
@@ -697,10 +611,12 @@ describe('<UIFlexibleTable />', () => {
                     return null;
                 });
 
-                button.simulate('click');
-                wrapper.setProps({ isContentLoading: true });
-                await delay(200);
-                wrapper.setProps({ isContentLoading: false });
+                fireEvent.click(button);
+                setProps({ isContentLoading: true });
+                await act(async () => {
+                    await delay(200);
+                });
+                setProps({ isContentLoading: false });
                 expect(getByIdSpy).toHaveBeenCalledTimes(4);
                 getByIdSpy.mockRestore();
 
@@ -714,13 +630,11 @@ describe('<UIFlexibleTable />', () => {
 
             it('click up button', async () => {
                 const onReorder = jest.fn();
-                wrapper.setProps({
-                    onTableReorder: onReorder
-                });
+                setProps({ onTableReorder: onReorder });
 
-                const upButtonsFound = wrapper.find(selectors.upArrow);
-                const button = upButtonsFound.last();
-                button.simulate('focus');
+                const upButtonsFound = container.querySelectorAll(selectors.upArrow);
+                const button = upButtonsFound[upButtonsFound.length - 1] as HTMLButtonElement;
+                fireEvent.focus(button);
 
                 const dummyButton = document.createElement('button');
                 const focusSpy = jest.spyOn(dummyButton, 'focus');
@@ -733,10 +647,12 @@ describe('<UIFlexibleTable />', () => {
                     return null;
                 });
 
-                button.simulate('click');
-                wrapper.setProps({ isContentLoading: true });
-                await delay(200);
-                wrapper.setProps({ isContentLoading: false });
+                fireEvent.click(button);
+                setProps({ isContentLoading: true });
+                await act(async () => {
+                    await delay(200);
+                });
+                setProps({ isContentLoading: false });
                 getByIdSpy.mockRestore();
 
                 expect(onReorder.mock.calls.length).toBe(1);
@@ -747,13 +663,11 @@ describe('<UIFlexibleTable />', () => {
 
             it('click last available up button', async () => {
                 const onReorder = jest.fn();
-                wrapper.setProps({
-                    onTableReorder: onReorder
-                });
+                setProps({ onTableReorder: onReorder });
 
-                const upButtonsFound = wrapper.find(selectors.upArrow);
-                const button = upButtonsFound.last();
-                button.simulate('focus');
+                const upButtonsFound = container.querySelectorAll(selectors.upArrow);
+                const button = upButtonsFound[upButtonsFound.length - 1] as HTMLButtonElement;
+                fireEvent.focus(button);
 
                 const dummyButton = document.createElement('button');
                 const focusSpy = jest.spyOn(dummyButton, 'focus');
@@ -775,10 +689,12 @@ describe('<UIFlexibleTable />', () => {
                     return null;
                 });
 
-                button.simulate('click');
-                wrapper.setProps({ isContentLoading: true });
-                await delay(200);
-                wrapper.setProps({ isContentLoading: false });
+                fireEvent.click(button);
+                setProps({ isContentLoading: true });
+                await act(async () => {
+                    await delay(200);
+                });
+                setProps({ isContentLoading: false });
                 expect(getByIdSpy).toHaveBeenCalledTimes(4);
                 getByIdSpy.mockRestore();
 
@@ -793,100 +709,102 @@ describe('<UIFlexibleTable />', () => {
     });
 
     describe('Wrapping layout', () => {
-        let wrapper: Enzyme.ReactWrapper<UIFlexibleTableProps<number>>;
+        let props: UIFlexibleTableProps<number>;
+        let container: HTMLElement;
+        let rerender: (ui: React.ReactElement) => void;
 
         beforeEach(() => {
-            wrapper = Enzyme.mount(
-                <UIFlexibleTable
-                    layout={UIFlexibleTableLayout.Wrapping}
-                    id={tableId}
-                    columns={columns}
-                    rows={rows}
-                    onRenderCell={onRenderCell}
-                    onTableReorder={() => {
-                        return;
-                    }}
-                    showColumnTitles={true}
-                />
-            );
+            props = {
+                layout: UIFlexibleTableLayout.Wrapping,
+                id: tableId,
+                columns,
+                rows,
+                onRenderCell,
+                onTableReorder: () => {
+                    return;
+                },
+                showColumnTitles: true
+            };
+            ({ container, rerender } = render(<UIFlexibleTable {...props} />));
         });
 
         afterEach(() => {
             jest.clearAllMocks();
-            wrapper.unmount();
         });
 
+        const setProps = (newProps: Partial<UIFlexibleTableProps<number>>) => {
+            props = { ...props, ...newProps };
+            rerender(<UIFlexibleTable {...props} />);
+        };
+
         it('Render default', () => {
-            expect(wrapper.exists()).toEqual(true);
-            expect(wrapper.find(selectors.tableWrappingLayout).length).toEqual(1);
-            expect(wrapper.find(selectors.content).length).toEqual(1);
-            expect(wrapper.find(selectors.addButton).length).toEqual(0);
-            const rowObjects = wrapper.find(selectors.row);
+            expect(container.querySelector(selectors.tableRoot)).toBeTruthy();
+            expect(container.querySelectorAll(selectors.tableWrappingLayout)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.addButton)).toHaveLength(0);
+            const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(3);
-            const rowHeaderObjects = wrapper.find(selectors.rowHeader);
+            const rowHeaderObjects = container.querySelectorAll(selectors.rowHeader);
             expect(rowHeaderObjects.length).toEqual(3);
-            expect(wrapper.find(selectors.titleRow).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
             rowObjects.forEach((row, rowIndex) => {
                 columns.forEach((col) => {
                     // check row title
-                    const rowTitle = row.find(selectors.rowTitleContainer);
-                    expect(rowTitle.get(0).props.children).toBe(rows[rowIndex].title);
+                    const rowTitle = row.querySelector(selectors.rowTitleContainer);
+                    expect(rowTitle?.textContent).toBe(rows[rowIndex].title);
 
                     // check row default actions
-                    const rowActions = row.find(selectors.rowHeaderActionsContainer);
-                    expect(rowActions.length).toBe(1);
-                    const actions = rowActions
-                        .first()
-                        .find('UIFlexibleTableRowActionButton')
-                        .getElements()
-                        .map((i) => i.props.actionName);
-                    expect(actions).toEqual(['up', 'down']);
+                    const rowActions = row.querySelector(selectors.rowHeaderActionsContainer);
+                    expect(rowActions).toBeTruthy();
+                    // up and down action buttons should be present
+                    const upBtn = rowActions?.querySelector(selectors.upArrow);
+                    const downBtn = rowActions?.querySelector(selectors.downArrow);
+                    expect(upBtn).toBeTruthy();
+                    expect(downBtn).toBeTruthy();
 
                     // check data cells
                     const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
-                    const dataCellsFound = row.find(selector);
+                    const dataCellsFound = row.querySelectorAll(selector);
                     expect(dataCellsFound.length).toBe(col.hidden ? 0 : 1);
                     if (!col.hidden) {
-                        const cell = dataCellsFound.get(0);
-                        expect(cell.props.children).toBe(rows[rowIndex].cells[col.key]);
+                        expect(dataCellsFound[0].textContent).toBe(String(rows[rowIndex].cells[col.key]));
                     }
                 });
             });
         });
 
         it('Render delete actions on header', () => {
-            wrapper.setProps({
+            setProps({
                 onDeleteRow: () => null,
                 onRenderDeleteAction: (params) => ({ isDeleteDisabled: params.rowIndex === 1 })
             });
-            const rowObjects = wrapper.find(selectors.row);
+            const rowObjects = container.querySelectorAll(selectors.row);
             rowObjects.forEach((row, rowIndex) => {
-                const action = row.find(
+                const action = row.querySelector(
                     `${selectors.rowHeaderActionsContainer} ${selectors.rowActionWrapper} ${selectors.deleteButton}`
-                );
-                expect(action.length).toBe(1);
-                const disabled = action.getElement().props.disabled;
-                expect(!!disabled).toEqual(rowIndex === 1);
+                ) as HTMLButtonElement | null;
+                expect(action).toBeTruthy();
+                expect(!!action?.disabled).toEqual(rowIndex === 1);
             });
         });
 
         it('Render custom row actions on header', () => {
-            wrapper.setProps({
+            setProps({
                 onRenderActions: (params) => [
                     <div key="action" className="testAction">
                         {params.rowKey}
                     </div>
                 ]
             });
-            const rowObjects = wrapper.find(selectors.row);
+            const rowObjects = container.querySelectorAll(selectors.row);
             rowObjects.forEach((row, rowIndex) => {
-                const action = row.find(
+                const action = row.querySelector(
                     `${selectors.rowHeaderActionsContainer} ${selectors.rowActionWrapper} .testAction`
                 );
-                expect(action.length).toBe(1);
-                expect(action.get(0).props.children).toBe((rowIndex + 1).toString());
+                expect(action).toBeTruthy();
+                expect(action?.textContent).toBe((rowIndex + 1).toString());
             });
         });
 
@@ -894,13 +812,13 @@ describe('<UIFlexibleTable />', () => {
             const onAddClick = jest.fn().mockImplementation(() => ({ scrollToRow: 1 }));
             Element.prototype.scrollIntoView = jest.fn();
             const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView');
-            wrapper.setProps({ addRowButton: { label: 'Add', onClick: onAddClick, ariaLabel: 'Add Button' } });
-            expect(wrapper.find(selectors.addButton).length).toEqual(1);
-            expect(wrapper.find(selectors.addButton).prop('aria-label')).toBe('Add Button');
-            wrapper.find(selectors.addButton).first().simulate('click');
+            setProps({ addRowButton: { label: 'Add', onClick: onAddClick, ariaLabel: 'Add Button' } });
+            expect(container.querySelectorAll(selectors.addButton)).toHaveLength(1);
+            expect(container.querySelector(selectors.addButton)?.getAttribute('aria-label')).toBe('Add Button');
+            fireEvent.click(container.querySelector(selectors.addButton)!);
             expect(onAddClick.mock.calls.length).toEqual(1);
-            wrapper.setProps({ isContentLoading: true });
-            wrapper.setProps({ isContentLoading: false });
+            setProps({ isContentLoading: true });
+            setProps({ isContentLoading: false });
             expect(scrollSpy).toHaveBeenCalled();
             expect((scrollSpy.mock.instances[0] as any).parentElement.attributes.getNamedItem('id').value).toBe(
                 'row-1'
@@ -910,39 +828,25 @@ describe('<UIFlexibleTable />', () => {
         it('Disabled reorder row', () => {
             const enabledRowIndex = 0;
             const disablerRowIndex = 1;
-            wrapper.setProps({
+            setProps({
                 rows: rows.map((row, index) => ({ ...row, disabled: index === disablerRowIndex }))
             });
             // Check enabled row
-            const enabledRow = wrapper.find('li').at(enabledRowIndex);
-            expect(enabledRow.prop('style')).toEqual(
-                expect.objectContaining({
-                    cursor: 'inherit',
-                    touchAction: 'none',
-                    userSelect: 'none',
-                    pointerEvents: 'all'
-                })
-            );
+            const liElements = container.querySelectorAll('li');
+            const enabledRow = liElements[enabledRowIndex] as HTMLElement;
+            expect(enabledRow.style.cursor).toBe('inherit');
+            expect(enabledRow.style.touchAction).toBe('none');
+            expect(enabledRow.style.userSelect).toBe('none');
+            expect(enabledRow.style.pointerEvents).toBe('all');
             // Check disabled row
-            const disabledRow = wrapper.find('li').at(disablerRowIndex);
-            expect(disabledRow.prop('style')).toEqual(
-                expect.objectContaining({
-                    cursor: 'default',
-                    touchAction: 'auto',
-                    userSelect: 'none',
-                    pointerEvents: 'all'
-                })
-            );
+            const disabledRow = liElements[disablerRowIndex] as HTMLElement;
+            expect(disabledRow.style.cursor).toBe('default');
+            expect(disabledRow.style.touchAction).toBe('auto');
+            expect(disabledRow.style.userSelect).toBe('none');
+            expect(disabledRow.style.pointerEvents).toBe('all');
         });
 
         describe('Test property "isTouchDragDisabled"', () => {
-            const getNativeEventMock = () => {
-                return {
-                    nativeEvent: {
-                        stopImmediatePropagation: jest.fn()
-                    }
-                };
-            };
             const testCases = [
                 {
                     isTouchDragDisabled: true,
@@ -962,86 +866,96 @@ describe('<UIFlexibleTable />', () => {
                 const { isTouchDragDisabled, stopImmediatePropagation, dragDisabled } = testCase;
                 it(`isTouchDragDisabled=${isTouchDragDisabled}; dragDisabled=${dragDisabled}`, () => {
                     const rowIndex = 0;
-                    wrapper.setProps({
+                    setProps({
                         isTouchDragDisabled,
                         rows: rows.map((row, index) => ({ ...row, disabled: !!dragDisabled && index === 0 }))
                     });
                     // Check styles
-                    const row = wrapper.find('li').at(rowIndex);
-                    expect(row.prop('style')).toEqual(
-                        expect.objectContaining({
-                            touchAction: isTouchDragDisabled ? 'auto' : 'none',
-                            pointerEvents: 'all'
-                        })
-                    );
+                    const liElements = container.querySelectorAll('li');
+                    const row = liElements[rowIndex] as HTMLElement;
+                    expect(row.style.touchAction).toBe(isTouchDragDisabled ? 'auto' : 'none');
+                    expect(row.style.pointerEvents).toBe('all');
+
                     // Check touch event handling
-                    const touchStartEvent = getNativeEventMock();
-                    row.simulate('touchStart', touchStartEvent);
-                    expect(touchStartEvent.nativeEvent.stopImmediatePropagation).toHaveBeenCalledTimes(
-                        stopImmediatePropagation ? 1 : 0
-                    );
-                    const touchEndEvent = getNativeEventMock();
-                    row.simulate('touchEnd', touchEndEvent);
-                    expect(touchEndEvent.nativeEvent.stopImmediatePropagation).toHaveBeenCalledTimes(
-                        stopImmediatePropagation ? 1 : 0
-                    );
+                    const stopImmediatePropagationMockStart = jest.fn();
+                    const stopImmediatePropagationMockEnd = jest.fn();
+                    fireEvent.touchStart(row, {
+                        nativeEvent: { stopImmediatePropagation: stopImmediatePropagationMockStart }
+                    });
+                    fireEvent.touchEnd(row, {
+                        nativeEvent: { stopImmediatePropagationMockEnd }
+                    });
+                    // The actual handler calls event.nativeEvent.stopImmediatePropagation
+                    // fireEvent does not replicate nativeEvent, so we verify via the DOM handler registration
+                    // by checking the number of calls on the real nativeEvent mock via low-level dispatch
+                    const touchStartStopSpy = jest.fn();
+                    const touchEndStopSpy = jest.fn();
+                    const touchStartEvent = new TouchEvent('touchstart', { bubbles: true, cancelable: true });
+                    Object.defineProperty(touchStartEvent, 'stopImmediatePropagation', {
+                        value: touchStartStopSpy
+                    });
+                    row.dispatchEvent(touchStartEvent);
+                    expect(touchStartStopSpy).toHaveBeenCalledTimes(stopImmediatePropagation ? 1 : 0);
+
+                    const touchEndEvent = new TouchEvent('touchend', { bubbles: true, cancelable: true });
+                    Object.defineProperty(touchEndEvent, 'stopImmediatePropagation', {
+                        value: touchEndStopSpy
+                    });
+                    row.dispatchEvent(touchEndEvent);
+                    expect(touchEndStopSpy).toHaveBeenCalledTimes(stopImmediatePropagation ? 1 : 0);
                 });
             }
         });
     });
 
     describe('InlineFlex layout', () => {
-        let wrapper: Enzyme.ReactWrapper<UIFlexibleTableProps<number>>;
+        let props: UIFlexibleTableProps<number>;
+        let container: HTMLElement;
+        let rerender: (ui: React.ReactElement) => void;
 
         beforeEach(() => {
-            wrapper = Enzyme.mount(
-                <UIFlexibleTable
-                    layout={UIFlexibleTableLayout.InlineFlex}
-                    id={tableId}
-                    columns={columns}
-                    rows={[]}
-                    onRenderCell={onRenderCell}
-                    onTableReorder={() => {
-                        return;
-                    }}
-                />
-            );
+            props = {
+                layout: UIFlexibleTableLayout.InlineFlex,
+                id: tableId,
+                columns,
+                rows: [],
+                onRenderCell,
+                onTableReorder: () => {
+                    return;
+                }
+            };
+            ({ container, rerender } = render(<UIFlexibleTable {...props} />));
         });
+
+        const setProps = (newProps: Partial<UIFlexibleTableProps<number>>) => {
+            props = { ...props, ...newProps };
+            rerender(<UIFlexibleTable {...props} />);
+        };
 
         it('"noDataText" as string', () => {
             const noDataText = 'dummy no data';
-            wrapper.setProps({
-                noDataText
-            });
-            const noData = wrapper.find(selectors.noData);
-            expect(noData.length).toEqual(1);
-            expect(noData.text()).toEqual(noDataText);
+            setProps({ noDataText });
+            const noData = container.querySelector(selectors.noData);
+            expect(container.querySelectorAll(selectors.noData)).toHaveLength(1);
+            expect(noData?.textContent).toEqual(noDataText);
         });
 
         it('"noDataText" as element', () => {
-            wrapper.setProps({
-                noDataText: <div className="customNoData"></div>
-            });
-            const noData = wrapper.find('.customNoData');
-            expect(noData.length).toEqual(1);
+            setProps({ noDataText: <div className="customNoData"></div> });
+            const noData = container.querySelector('.customNoData');
+            expect(noData).toBeTruthy();
         });
 
         it('"noRowBackground"', () => {
             const noDataText = 'dummy no data';
-            wrapper.setProps({
-                noRowBackground: true,
-                noDataText
-            });
-            expect(wrapper.find(`${selectors.noData}.no-background`).length).toEqual(1);
+            setProps({ noRowBackground: true, noDataText });
+            expect(container.querySelectorAll(`${selectors.noData}.no-background`)).toHaveLength(1);
         });
 
         it('"reverseBackground" ', () => {
             const noDataText = 'dummy no data';
-            wrapper.setProps({
-                reverseBackground: true,
-                noDataText
-            });
-            expect(wrapper.find(`${selectors.noData}.reverse-background`).length).toEqual(1);
+            setProps({ reverseBackground: true, noDataText });
+            expect(container.querySelectorAll(`${selectors.noData}.reverse-background`)).toHaveLength(1);
         });
     });
 });

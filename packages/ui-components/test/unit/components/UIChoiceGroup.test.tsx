@@ -1,29 +1,17 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { IStyleFunction, IChoiceGroupStyleProps, IChoiceGroupStyles } from '@fluentui/react';
-import { ChoiceGroup } from '@fluentui/react';
-import type { ChoiceGroupProps } from '../../../src/components/UIChoiceGroup/UIChoiceGroup';
+import { render } from '@testing-library/react';
+import type { IChoiceGroupStyleProps, IChoiceGroupStyles } from '@fluentui/react';
 import { UIChoiceGroup } from '../../../src/components/UIChoiceGroup/UIChoiceGroup';
 
 describe('<UIToggle />', () => {
-    let wrapper: Enzyme.ReactWrapper<ChoiceGroupProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UIChoiceGroup />);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Should render a UIChoiceGroup component', () => {
-        expect(wrapper.find('.ms-ChoiceFieldGroup').length).toEqual(1);
+        const { container } = render(<UIChoiceGroup />);
+        expect(container.querySelectorAll('.ms-ChoiceFieldGroup')).toHaveLength(1);
     });
 
     it('Styles - default', () => {
-        const styles = (wrapper.find(ChoiceGroup).props().styles as IStyleFunction<{}, {}>)(
-            {}
-        ) as IChoiceGroupStyleProps;
+        const instance = new UIChoiceGroup({});
+        const styles = instance.setStyles() as IChoiceGroupStyleProps;
         expect(styles).toMatchInlineSnapshot(`
             Object {
               "label": Object {
@@ -115,12 +103,8 @@ describe('<UIToggle />', () => {
     });
 
     it('Styles - disabled', () => {
-        wrapper.setProps({
-            disabled: true
-        });
-        const styles = (wrapper.find(ChoiceGroup).props().styles as IStyleFunction<{}, {}>)(
-            {}
-        ) as IChoiceGroupStyleProps;
+        const instance = new UIChoiceGroup({ disabled: true });
+        const styles = instance.setStyles() as IChoiceGroupStyleProps;
         expect(styles).toMatchInlineSnapshot(`
             Object {
               "label": Object {
@@ -213,12 +197,8 @@ describe('<UIToggle />', () => {
     });
 
     it('Styles - required', () => {
-        wrapper.setProps({
-            required: true
-        });
-        const styles = (wrapper.find(ChoiceGroup).props().styles as IStyleFunction<{}, {}>)(
-            {}
-        ) as IChoiceGroupStyleProps;
+        const instance = new UIChoiceGroup({ required: true });
+        const styles = instance.setStyles() as IChoiceGroupStyleProps;
         expect(styles).toMatchInlineSnapshot(`
             Object {
               "label": Object {
@@ -317,10 +297,8 @@ describe('<UIToggle />', () => {
     });
 
     it('Styles - inline', () => {
-        wrapper.setProps({
-            inline: true
-        });
-        const styles = (wrapper.find(ChoiceGroup).props().styles as IStyleFunction<{}, {}>)({}) as IChoiceGroupStyles;
+        const instance = new UIChoiceGroup({ inline: true });
+        const styles = instance.setStyles() as IChoiceGroupStyles;
         expect(styles.flexContainer).toMatchInlineSnapshot(
             {},
             `

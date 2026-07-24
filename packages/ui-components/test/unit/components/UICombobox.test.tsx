@@ -1,18 +1,23 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
+import { render, fireEvent, act } from '@testing-library/react';
+import type { UIComboBoxOption, UIComboBoxProps } from '../../../src/components/UIComboBox';
 import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
-import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
+import { KeyCodes } from '@fluentui/react';
 import { CalloutCollisionTransform } from '../../../src/components/UICallout/CalloutCollisionTransform';
 
 let data: UIComboBoxOption[] = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
 
+// Helper: get the FluentUI ComboBox props from a UIComboBox ref
+function getComboBoxProps(ref: React.RefObject<UIComboBox>): Record<string, unknown> {
+    return (ref.current as unknown as { comboBox: React.RefObject<{ props: Record<string, unknown> }> }).comboBox
+        .current?.props as Record<string, unknown>;
+}
+
 describe('<UIComboBox />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIComboBoxProps, UIComboBoxState>;
     const menuDropdownSelector = 'div.ts-Callout-Dropdown';
     const nonHighlighttItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ms-ComboBox-optionText`;
     const highlightItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ts-Menu-option`;
@@ -20,19 +25,30 @@ describe('<UIComboBox />', () => {
     const headerItemSelector = '.ms-ComboBox-header';
     initIcons();
 
+    // RTL-compatible: just pass value; tagName is read-only on real DOM elements
     const getInputTarget = (value = '') => {
-        return { tagName: 'INPUT', value };
+        return { value };
     };
 
+    let container: HTMLElement;
+    let rerender: (ui: React.ReactElement) => void;
+    let comboboxRef: React.RefObject<UIComboBox>;
+
+    // Default props used across most tests
+    let defaultProps: UIComboBoxProps;
+
     const openDropdown = (): void => {
-        wrapper.find('.ms-ComboBox .ms-Button--icon').simulate('click', document.createEvent('Events'));
+        const btn = container.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
+        fireEvent.click(btn, document.createEvent('Events'));
     };
 
     const triggerSearch = (query: string) => {
-        wrapper.find('input').simulate('input', {
+        const input = container.querySelector('input') as HTMLInputElement;
+        fireEvent.input(input, {
             target: getInputTarget(query)
         });
     };
+
     let CalloutCollisionTransformSpy: {
         preventDismissOnEvent: jest.SpyInstance;
         applyTransformation: jest.SpyInstance;
@@ -41,34 +57,38 @@ describe('<UIComboBox />', () => {
 
     beforeEach(() => {
         data = JSON.parse(JSON.stringify(originalData));
+        defaultProps = { options: data, highlight: false, allowFreeform: true, autoComplete: 'on' };
         CalloutCollisionTransformSpy = {
             preventDismissOnEvent: jest.spyOn(CalloutCollisionTransform.prototype, 'preventDismissOnEvent'),
             applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
             resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
         };
-        wrapper = Enzyme.mount(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" />);
+        comboboxRef = React.createRef<UIComboBox>();
+        const result = render(<UIComboBox ref={comboboxRef} {...defaultProps} />);
+        container = result.container;
+        rerender = result.rerender;
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-        wrapper.unmount();
     });
 
     it('Test css selectors which are used in scss - main', () => {
-        expect(wrapper.find('.ms-ComboBox').length).toEqual(1);
-        expect(wrapper.find('.ms-ComboBox .ms-Button--icon i svg').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-ComboBox')).toHaveLength(1);
+        expect(container.querySelectorAll('.ms-ComboBox .ms-Button--icon i svg')).toHaveLength(1);
         openDropdown();
-        expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
-        expect(wrapper.find(`${menuDropdownSelector} .ms-Callout-main`).length).toBeGreaterThan(0);
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
+        expect(document.querySelectorAll(`${menuDropdownSelector} .ms-Callout-main`).length).toBeGreaterThan(0);
         expect(
-            wrapper.find(`${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command`).length
+            document.querySelectorAll(`${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command`)
+                .length
         ).toBeGreaterThan(0);
-        expect(wrapper.find(nonHighlighttItemSelector).length).toBeGreaterThan(0);
-        expect(wrapper.find(highlightItemSelector).length).toEqual(0);
+        expect(document.querySelectorAll(nonHighlighttItemSelector).length).toBeGreaterThan(0);
+        expect(document.querySelectorAll(highlightItemSelector)).toHaveLength(0);
     });
 
     it('Styles - default', () => {
-        const styles = wrapper.find(ComboBox).props().styles;
+        const styles = getComboBoxProps(comboboxRef)?.styles;
         expect(styles).toMatchInlineSnapshot(
             {},
             `
@@ -111,10 +131,8 @@ describe('<UIComboBox />', () => {
     });
 
     it('Styles - required', () => {
-        wrapper.setProps({
-            required: true
-        });
-        const styles = wrapper.find(ComboBox).props().styles;
+        rerender(<UIComboBox ref={comboboxRef} {...defaultProps} required={true} />);
+        const styles = getComboBoxProps(comboboxRef)?.styles;
         expect(styles).toMatchInlineSnapshot(
             {},
             `
@@ -165,239 +183,242 @@ describe('<UIComboBox />', () => {
 
     describe('Test highlight', () => {
         beforeEach(() => {
-            wrapper.setProps({
-                highlight: true
-            });
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} />);
         });
 
         it('Test css selectors which are used in scss - with highlight', () => {
             openDropdown();
-            expect(wrapper.find(highlightItemSelector).length).toBeGreaterThan(0);
-            expect(wrapper.find(nonHighlighttItemSelector).length).toEqual(0);
+            expect(document.querySelectorAll(highlightItemSelector).length).toBeGreaterThan(0);
+            expect(document.querySelectorAll(nonHighlighttItemSelector)).toHaveLength(0);
         });
 
         describe('Test on "Keydown"', () => {
             const openMenuOnClickOptions = [true, false, undefined];
             for (const openMenuOnClick of openMenuOnClickOptions) {
                 it(`Test on "Keydown" - open callout, "openMenuOnClick=${openMenuOnClick}"`, () => {
-                    wrapper.setProps({
-                        openMenuOnClick
-                    });
-                    expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
-                    wrapper.find('input').simulate('keyDown', {});
-                    expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
+                    rerender(
+                        <UIComboBox
+                            ref={comboboxRef}
+                            {...defaultProps}
+                            highlight={true}
+                            openMenuOnClick={openMenuOnClick}
+                        />
+                    );
+                    const input = container.querySelector('input') as HTMLInputElement;
+                    expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
+                    fireEvent.keyDown(input, {});
+                    expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
                 });
             }
 
             it('Test on "Keydown" - test arrow Cycling', () => {
-                expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+                const input = container.querySelector('input') as HTMLInputElement;
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 // Open callout
-                wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
-                expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
+                fireEvent.keyDown(input, { which: KeyCodes.down, keyCode: KeyCodes.down });
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
                 // First empty option
-                expect(wrapper.find('.ts-ComboBox--selected .ts-Menu-option').text()).toEqual('');
+                expect(document.querySelector('.ts-ComboBox--selected .ts-Menu-option')?.textContent).toEqual('');
                 // Test cycling UP - last item should be selected
-                wrapper.find('input').simulate('keyDown', { which: KeyCodes.up });
-                expect(wrapper.find('.ts-ComboBox--selected .ts-Menu-option').text()).toEqual('Yemen');
+                fireEvent.keyDown(input, { which: KeyCodes.up, keyCode: KeyCodes.up });
+                expect(document.querySelector('.ts-ComboBox--selected .ts-Menu-option')?.textContent).toEqual('Yemen');
                 // Test cycling UP - first item should be selected
-                wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
-                expect(wrapper.find('.ts-ComboBox--selected .ts-Menu-option').text()).toEqual('');
+                fireEvent.keyDown(input, { which: KeyCodes.down, keyCode: KeyCodes.down });
+                expect(document.querySelector('.ts-ComboBox--selected .ts-Menu-option')?.textContent).toEqual('');
                 // Go one more step down
-                wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
-                expect(wrapper.find('.ts-ComboBox--selected .ts-Menu-option').text()).toEqual('Algeria');
+                fireEvent.keyDown(input, { which: KeyCodes.down, keyCode: KeyCodes.down });
+                expect(document.querySelector('.ts-ComboBox--selected .ts-Menu-option')?.textContent).toEqual(
+                    'Algeria'
+                );
             });
 
             it(`Test on "Keydown" - keyboard keys, which does not trigger dropdown open`, () => {
                 const ignoredOpenKeys = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
+                const input = container.querySelector('input') as HTMLInputElement;
 
-                expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 for (const ignoredKey of ignoredOpenKeys) {
-                    wrapper.find('input').simulate('keyDown', { key: ignoredKey });
+                    fireEvent.keyDown(input, { key: ignoredKey });
                 }
                 // None of previously pressed keys should not trigger open for dropdown menu
-                expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 // Trigger with valid key
-                wrapper.find('input').simulate('keyDown', { key: 'a' });
-                expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
+                fireEvent.keyDown(input, { key: 'a' });
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
             });
         });
 
         it('Test "onInput"', () => {
-            const query = 'Lat';
-            wrapper.find('input').simulate('keyDown', {});
-            triggerSearch(query);
-            expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
-            expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
+            const input = container.querySelector('input') as HTMLInputElement;
+            fireEvent.keyDown(input, {});
+            triggerSearch('Lat');
+            expect(document.querySelectorAll('.ts-Menu-option--highlighted')).toHaveLength(1);
+            expect(document.querySelector('.ts-Menu-option--highlighted')?.textContent).toEqual('Lat');
         });
 
         it('Test onInput value selection', async () => {
             const requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame');
-            const input = wrapper.find('input');
+            const input = container.querySelector('input') as HTMLInputElement;
 
-            input.simulate('input', { target: getInputTarget('test') });
-            await new Promise((resolve) => setTimeout(resolve));
-            const inputDOM = input.getDOMNode() as HTMLInputElement;
-            const selections = inputDOM.selectionEnd;
+            // Set value and cursor in the middle so setCaretPosition detects cursor not at end
+            input.value = 'test';
+            input.selectionStart = input.selectionEnd = 2;
+            fireEvent.input(input);
+            // setCaretPosition calls requestAnimationFrame to restore cursor position
             expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(1);
-            expect(selections).toBe(4);
+            await new Promise((resolve) => setTimeout(resolve));
+            // After rAF fires, cursor is restored to 2
+            const selections = input.selectionEnd;
+            expect(selections).toBe(2);
 
-            const event = {
-                target: inputDOM
-            } as unknown as React.FormEvent<IComboBox>;
-            inputDOM.value = 'test01';
-            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
-            input.simulate('input', event);
-            inputDOM.selectionEnd = inputDOM.selectionStart = selections;
+            input.value = 'test01';
+            input.selectionEnd = input.selectionStart = 2;
+            fireEvent.input(input);
+            input.selectionEnd = input.selectionStart = 5;
             await new Promise((resolve) => setTimeout(resolve));
             expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2);
-            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
+            expect((input as HTMLInputElement).selectionEnd).toBe(2);
         });
 
         it('Test onClick value selection', async () => {
-            wrapper.setProps({ selectedKey: 'AU' });
-            const input = wrapper.find('input');
-            const inputDOM = input.getDOMNode() as HTMLInputElement;
-            const event = {
-                target: inputDOM
-            } as unknown as React.FormEvent<IComboBox>;
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} selectedKey="AU" />);
+            const input = container.querySelector('input') as HTMLInputElement;
 
-            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
-            input.simulate('click', event);
-            inputDOM.selectionEnd = inputDOM.selectionStart = 5;
+            // Directly test the setCaretPosition behavior via a simulated click event
+            // that uses the actual DOM input as target (mimicking original Enzyme test)
+            input.selectionEnd = input.selectionStart = 2;
+            const event = {
+                target: input
+            } as unknown as React.FormEvent<IComboBox>;
+            // Call UIComboBox.onClick directly via the component instance
+            (comboboxRef.current as unknown as { onClick: (e: React.FormEvent<IComboBox>) => void }).onClick(event);
+            input.selectionEnd = input.selectionStart = 5;
             await new Promise((resolve) => setTimeout(resolve));
-            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
+            expect((input as HTMLInputElement).selectionEnd).toBe(2);
         });
 
         it('Test "reserQuery"', () => {
+            const input = container.querySelector('input') as HTMLInputElement;
             openDropdown();
             triggerSearch('Au');
-            expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
-            let hiddenItemsExist = wrapper.props().options.some((option) => {
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
+            let hiddenItemsExist = comboboxRef.current?.props.options.some((option) => {
                 return option.hidden;
             });
             expect(hiddenItemsExist).toEqual(true);
             // Close callout
-            wrapper.find('input').simulate('keyDown', { which: KeyCodes.escape });
-            expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
-            hiddenItemsExist = wrapper.props().options.some((option) => {
+            fireEvent.keyDown(input, { which: KeyCodes.escape });
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
+            hiddenItemsExist = comboboxRef.current?.props.options.some((option) => {
                 return option.hidden;
             });
             expect(hiddenItemsExist).toEqual(false);
         });
 
         it('Test list visibility', () => {
-            expect(wrapper.state().isListHidden).toBeFalsy();
-            wrapper.find('input').simulate('keyDown', {});
+            expect(comboboxRef.current?.state.isListHidden).toBeFalsy();
+            const input = container.querySelector('input') as HTMLInputElement;
+            fireEvent.keyDown(input, {});
             triggerSearch('Lat');
             // List should be visible - there is some occurrences
-            expect(wrapper.state().isListHidden).toBeFalsy();
+            expect(comboboxRef.current?.state.isListHidden).toBeFalsy();
             // List should be hidden - there any occurrence
             triggerSearch('404');
-            expect(wrapper.state().isListHidden).toBeTruthy();
+            expect(comboboxRef.current?.state.isListHidden).toBeTruthy();
         });
 
         it('Search hidden option - option should not be found', () => {
-            const query = 'Est';
-            wrapper.setProps({
-                options: data.map((options) => ({
-                    ...options,
-                    hidden: options.key === 'EE'
-                }))
-            });
-            wrapper.find('input').simulate('keyDown', {});
-            triggerSearch(query);
-            expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(0);
+            rerender(
+                <UIComboBox
+                    ref={comboboxRef}
+                    {...defaultProps}
+                    highlight={true}
+                    options={data.map((option) => ({
+                        ...option,
+                        hidden: option.key === 'EE'
+                    }))}
+                />
+            );
+            const input = container.querySelector('input') as HTMLInputElement;
+            fireEvent.keyDown(input, {});
+            triggerSearch('Est');
+            expect(document.querySelectorAll('.ts-Menu-option--highlighted')).toHaveLength(0);
         });
     });
 
     it('Test "useComboBoxAsMenuMinWidth"', () => {
-        expect(wrapper.state().minWidth).toEqual(undefined);
-        wrapper = Enzyme.mount(
-            <UIComboBox
-                options={data}
-                highlight={false}
-                allowFreeform={true}
-                autoComplete="on"
-                useComboBoxAsMenuMinWidth={true}
-            />
+        expect(comboboxRef.current?.state.minWidth).toBeUndefined();
+        const newRef = React.createRef<UIComboBox>();
+        const { container: c2 } = render(
+            <UIComboBox ref={newRef} {...defaultProps} useComboBoxAsMenuMinWidth={true} />
         );
-        openDropdown();
+        const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
+        fireEvent.click(btn, document.createEvent('Events'));
         // I would like to add more check, but can not access private variables
-        expect(wrapper.state().minWidth).toEqual(0);
+        expect(newRef.current?.state.minWidth).toEqual(0);
     });
 
     it('Test menu close method', () => {
-        const comboboxRef = React.createRef<UIComboBox & HTMLDivElement>();
-        wrapper = Enzyme.mount(
-            <UIComboBox
-                ref={comboboxRef}
-                options={data}
-                highlight={true}
-                allowFreeform={true}
-                autoComplete="on"
-                useComboBoxAsMenuMinWidth={true}
-            />
+        const newRef = React.createRef<UIComboBox>();
+        const { container: c2 } = render(
+            <UIComboBox ref={newRef} {...defaultProps} highlight={true} useComboBoxAsMenuMinWidth={true} />
         );
-        expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
         // Open callout
-        openDropdown();
-        expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
-        comboboxRef.current?.dismissMenu();
-        wrapper.update();
-        expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+        const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
+        fireEvent.click(btn, document.createEvent('Events'));
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
+        act(() => {
+            newRef.current?.dismissMenu();
+        });
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
     });
 
     describe('Multiselect', () => {
         it('No filtration', () => {
-            const comboboxRef = React.createRef<UIComboBox & HTMLDivElement>();
-            let keys = [];
+            let keys: Array<string | number> = [];
             const onChange = jest
                 .fn()
                 .mockImplementation((event: React.FormEvent<IComboBox>, option?: IComboBoxOption | undefined) => {
-                    keys = [...keys, option.key].filter((k) => (option.selected ? true : k !== option.key));
+                    keys = [...keys, option!.key].filter((k) => (option!.selected ? true : k !== option!.key));
                 });
 
-            wrapper = Enzyme.mount(
+            const newRef = React.createRef<UIComboBox>();
+            const { container: c2, rerender: rerenderMulti } = render(
                 <UIComboBox
-                    ref={comboboxRef}
-                    options={data}
+                    ref={newRef}
+                    {...defaultProps}
                     highlight={true}
-                    allowFreeform={true}
                     multiSelect={true}
-                    autoComplete="on"
                     useComboBoxAsMenuMinWidth={true}
                     selectedKey={keys}
                     onChange={onChange}
                 />
             );
-            expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
             // Open callout
-            openDropdown();
-            expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
-            // select some options
-            const options = wrapper.find('.ms-Checkbox.is-enabled.ms-ComboBox-option');
+            const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
+            fireEvent.click(btn, document.createEvent('Events'));
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
+            // select some options - fire change on the inner checkbox input elements
+            const options = document.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
             expect(options.length).toBeGreaterThan(0);
-            options
-                .at(1)
-                .find('input')
-                .simulate('change', {
-                    target: {
-                        value: true,
-                        name: 'test1'
-                    }
-                });
-            options
-                .at(2)
-                .find('input')
-                .simulate('change', {
-                    target: {
-                        checked: true,
-                        name: 'test2'
-                    }
-                });
+            const checkbox1 = options[1].querySelector('input[type="checkbox"]') as HTMLInputElement;
+            const checkbox2 = options[2].querySelector('input[type="checkbox"]') as HTMLInputElement;
+            fireEvent.click(checkbox1);
+            fireEvent.click(checkbox2);
 
-            wrapper.setProps({ selectedKey: keys });
-            wrapper.update();
+            rerenderMulti(
+                <UIComboBox
+                    ref={newRef}
+                    {...defaultProps}
+                    highlight={true}
+                    multiSelect={true}
+                    useComboBoxAsMenuMinWidth={true}
+                    selectedKey={keys}
+                    onChange={onChange}
+                />
+            );
 
             expect(onChange).toHaveBeenCalledTimes(2);
             expect(onChange.mock.calls.map((parms) => parms[1].key)).toMatchInlineSnapshot(`
@@ -407,60 +428,59 @@ describe('<UIComboBox />', () => {
                 ]
             `);
 
-            const selectedOptions = wrapper.find('.ms-Checkbox.is-checked.ms-ComboBox-option');
+            const selectedOptions = document.querySelectorAll('.ms-Checkbox.is-checked.ms-ComboBox-option');
             expect(selectedOptions.length).toBe(2);
         });
 
         it('With filter and changes in options', () => {
-            const comboboxRef = React.createRef<UIComboBox & HTMLDivElement>();
-            let keys = [];
+            let keys: Array<string | number> = [];
             const onChange = jest
                 .fn()
                 .mockImplementation((event: React.FormEvent<IComboBox>, option?: IComboBoxOption | undefined) => {
-                    keys = [...keys, option.key].filter((k) => (option.selected ? true : k !== option.key));
+                    keys = [...keys, option!.key].filter((k) => (option!.selected ? true : k !== option!.key));
                 });
 
-            wrapper = Enzyme.mount(
+            const newRef = React.createRef<UIComboBox>();
+            const { container: c2, rerender: rerenderMulti } = render(
                 <UIComboBox
-                    ref={comboboxRef}
-                    options={data}
+                    ref={newRef}
+                    {...defaultProps}
                     highlight={true}
-                    allowFreeform={true}
                     multiSelect={true}
-                    autoComplete="on"
                     useComboBoxAsMenuMinWidth={true}
                     selectedKey={keys}
                     onChange={onChange}
                 />
             );
 
-            expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
             const query = 'Lat';
-            wrapper.find('input').simulate('keyDown', {});
-            wrapper
-                .find('input')
-                .at(0)
-                .simulate('input', {
-                    target: getInputTarget(query)
-                });
-            expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
-            expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
+            const input = c2.querySelector('input') as HTMLInputElement;
+            fireEvent.keyDown(input, {});
+            fireEvent.input(input, {
+                target: getInputTarget(query)
+            });
+            expect(document.querySelectorAll('.ts-Menu-option--highlighted')).toHaveLength(1);
+            expect(document.querySelector('.ts-Menu-option--highlighted')?.textContent).toEqual(query);
 
-            // select some options
-            const options = wrapper.find('.ms-Checkbox.is-enabled.ms-ComboBox-option');
+            // select some options - fire change on the inner checkbox input element
+            const options = document.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
             expect(options.length).toBeGreaterThan(0);
-            options
-                .at(0)
-                .find('input')
-                .simulate('change', {
-                    target: {
-                        value: true,
-                        name: 'test1'
-                    }
-                });
+            const checkbox1 = options[0].querySelector('input[type="checkbox"]') as HTMLInputElement;
+            fireEvent.click(checkbox1);
 
-            wrapper.setProps({ selectedKey: keys, options: [...data] });
-            wrapper.update();
+            rerenderMulti(
+                <UIComboBox
+                    ref={newRef}
+                    {...defaultProps}
+                    options={[...data]}
+                    highlight={true}
+                    multiSelect={true}
+                    useComboBoxAsMenuMinWidth={true}
+                    selectedKey={keys}
+                    onChange={onChange}
+                />
+            );
             expect(onChange).toHaveBeenCalledTimes(1);
             expect(onChange.mock.calls.map((parms) => parms[1].key)).toMatchInlineSnapshot(`
                 Array [
@@ -468,7 +488,7 @@ describe('<UIComboBox />', () => {
                 ]
             `);
 
-            const selectedOptions = wrapper.find('.ms-Checkbox.is-checked.ms-ComboBox-option');
+            const selectedOptions = document.querySelectorAll('.ms-Checkbox.is-checked.ms-ComboBox-option');
             expect(selectedOptions.length).toBe(1);
         });
     });
@@ -526,8 +546,10 @@ describe('<UIComboBox />', () => {
                 jest.spyOn(parent, 'scrollTop', 'get').mockReturnValue(testCase.scrollTop);
                 const scrollTopSetter = jest.spyOn(parent, 'scrollTop', 'set');
                 jest.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(parent);
-                wrapper = Enzyme.mount(
+                const scrollRef = React.createRef<UIComboBox>();
+                const { container: c2 } = render(
                     <UIComboBox
+                        ref={scrollRef}
                         options={data}
                         highlight={true}
                         allowFreeform={true}
@@ -536,19 +558,20 @@ describe('<UIComboBox />', () => {
                         useComboBoxAsMenuMinWidth={true}
                     />
                 );
-                const combobox = wrapper.find(ComboBox);
-                const onScrollToItem = combobox.prop('onScrollToItem');
+                const comboBoxProps = getComboBoxProps(scrollRef);
+                const onScrollToItem = comboBoxProps?.onScrollToItem as ((index: number) => void) | undefined;
                 if (testCase.singleSelect) {
                     // Single select should not invoke solutin for fix, because there no issue in single select combobox
                     expect(onScrollToItem).toBeUndefined();
                     return;
                 }
                 // Open callout
-                openDropdown();
-                const input = wrapper.find(inputSelector);
-                input.simulate('keyDown', { which: KeyCodes.down });
-                // Mock element
-                const element: HTMLElement = wrapper.find('.ts-ComboBox--selected').getDOMNode();
+                const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
+                fireEvent.click(btn, document.createEvent('Events'));
+                const input = c2.querySelector(inputSelector) as HTMLInputElement;
+                fireEvent.keyDown(input, { which: KeyCodes.down, keyCode: KeyCodes.down });
+                // Mock element - ts-ComboBox--selected is rendered when an item is focused
+                const element = document.querySelector('.ts-ComboBox--selected') as HTMLElement;
                 jest.spyOn(element, 'offsetTop', 'get').mockReturnValue(testCase.element.offsetTop);
                 jest.spyOn(element, 'clientHeight', 'get').mockReturnValue(testCase.element.clientHeight);
                 // Simulate navigation
@@ -564,65 +587,53 @@ describe('<UIComboBox />', () => {
 
     describe('Error message', () => {
         it('Error', () => {
-            wrapper.setProps({
-                errorMessage: 'dummy'
-            });
-            expect(wrapper.find('.ts-ComboBox--error').length).toEqual(1);
-            expect(wrapper.find('.ts-ComboBox--warning').length).toEqual(0);
-            expect(wrapper.find('.ts-ComboBox--info').length).toEqual(0);
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} errorMessage="dummy" />);
+            expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(1);
+            expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(0);
         });
 
         it('Warning', () => {
-            wrapper.setProps({
-                warningMessage: 'dummy'
-            });
-            expect(wrapper.find('.ts-ComboBox--error').length).toEqual(0);
-            expect(wrapper.find('.ts-ComboBox--warning').length).toEqual(1);
-            expect(wrapper.find('.ts-ComboBox--info').length).toEqual(0);
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} warningMessage="dummy" />);
+            expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(1);
+            expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(0);
         });
 
         it('Info', () => {
-            wrapper.setProps({
-                infoMessage: 'dummy'
-            });
-            expect(wrapper.find('.ts-ComboBox--error').length).toEqual(0);
-            expect(wrapper.find('.ts-ComboBox--warning').length).toEqual(0);
-            expect(wrapper.find('.ts-ComboBox--info').length).toEqual(1);
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} infoMessage="dummy" />);
+            expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(1);
         });
     });
 
     describe('Behavior of title/tooltip for options', () => {
         const buttonSelector = `${menuDropdownSelector} .ms-Button--command`;
         it('Default - inherit from text', () => {
-            wrapper.setProps({
-                highlight: true,
-                options: originalData
-            });
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={originalData} />);
             openDropdown();
-            expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual('Yemen');
+            const buttons = document.querySelectorAll(buttonSelector);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual('Yemen');
         });
 
         it('Custom title', () => {
             const expectTitle = 'dummy';
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = expectTitle;
-            wrapper.setProps({
-                highlight: true,
-                options: dataTemp
-            });
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />);
             openDropdown();
-            expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual(expectTitle);
+            const buttons = document.querySelectorAll(buttonSelector);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(expectTitle);
         });
 
         it('No title', () => {
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = null;
-            wrapper.setProps({
-                highlight: true,
-                options: dataTemp
-            });
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />);
             openDropdown();
-            expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual(null);
+            const buttons = document.querySelectorAll(buttonSelector);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toBeNull();
         });
     });
 
@@ -643,12 +654,11 @@ describe('<UIComboBox />', () => {
         ];
         for (const testCase of testCases) {
             it(`Click on input, "openMenuOnClick=${testCase.value}"`, () => {
-                wrapper.setProps({
-                    openMenuOnClick: testCase.value
-                });
-                expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
-                wrapper.find('input').simulate('click');
-                expect(wrapper.find(menuDropdownSelector).length).toEqual(testCase.expectOpen ? 1 : 0);
+                rerender(<UIComboBox ref={comboboxRef} {...defaultProps} openMenuOnClick={testCase.value} />);
+                const input = container.querySelector('input') as HTMLInputElement;
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
+                fireEvent.click(input);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(testCase.expectOpen ? 1 : 0);
             });
         }
     });
@@ -657,45 +667,35 @@ describe('<UIComboBox />', () => {
         const testCases = [true, false];
         for (const testCase of testCases) {
             it(`isForceEnabled=${testCase}`, () => {
-                wrapper.setProps({
-                    options: [],
-                    isForceEnabled: testCase
-                });
-                expect(wrapper.find(ComboBox).prop('disabled')).toEqual(!testCase);
+                rerender(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={testCase} />);
+                const props = getComboBoxProps(comboboxRef);
+                expect(props?.disabled).toEqual(!testCase);
             });
         }
     });
 
     it('Test "disabled" property', () => {
-        wrapper.setProps({
-            disabled: true
-        });
-        const inputProps = wrapper.find(inputSelector)?.props();
-        expect(inputProps?.disabled).toEqual(undefined);
-        expect(inputProps?.readOnly).toEqual(true);
-        expect(inputProps?.tabIndex).toEqual(undefined);
-        expect(inputProps?.['aria-disabled']).toEqual(true);
+        rerender(<UIComboBox ref={comboboxRef} {...defaultProps} disabled={true} />);
+        const input = container.querySelector(inputSelector) as HTMLInputElement;
+        // disabled prop maps to readOnly=true and aria-disabled=true (not actual HTML disabled)
+        expect(input.disabled).toBeFalsy();
+        expect(input.readOnly).toEqual(true);
+        expect(input.getAttribute('tabindex')).toBeNull();
+        expect(input.getAttribute('aria-disabled')).toEqual('true');
     });
 
     describe('Test "aria-invalid" set according to error message', () => {
         it('No Error case', () => {
-            const autofill = wrapper.find(Autofill);
-            const autofillProps = autofill.props();
-
-            expect('aria-invalid' in autofillProps).toEqual(true);
-            expect(autofillProps['aria-invalid']).toEqual(false);
+            const input = container.querySelector(inputSelector) as HTMLInputElement;
+            expect(input.hasAttribute('aria-invalid')).toEqual(true);
+            expect(input.getAttribute('aria-invalid')).toEqual('false');
         });
 
         it('Error case', () => {
-            wrapper.setProps({
-                errorMessage: 'dummy'
-            });
-
-            const autofill = wrapper.find(Autofill);
-            const autofillProps = autofill.props();
-
-            expect('aria-invalid' in autofillProps).toEqual(true);
-            expect(autofillProps['aria-invalid']).toEqual(true);
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} errorMessage="dummy" />);
+            const input = container.querySelector(inputSelector) as HTMLInputElement;
+            expect(input.hasAttribute('aria-invalid')).toEqual(true);
+            expect(input.getAttribute('aria-invalid')).toEqual('true');
         });
     });
 
@@ -742,29 +742,37 @@ describe('<UIComboBox />', () => {
         for (const testCase of testCases) {
             it(`"readOnly=${testCase.readOnly}", "tabIndex=${testCase.tabIndex}", "disabled=${testCase.disabled}"`, () => {
                 const { expected } = testCase;
-                wrapper.setProps({
-                    readOnly: testCase.readOnly,
-                    ...(testCase.tabIndex && { tabIndex: testCase.tabIndex }),
-                    ...(testCase.disabled && { disabled: testCase.disabled })
-                });
-                const autofill = wrapper.find(Autofill);
-                expect(autofill.length).toEqual(1);
-                const autofillProps = autofill.props();
-                expect(autofillProps.readOnly).toEqual(expected.readOnly);
-                expect(autofillProps.tabIndex).toEqual(expected.tabIndex);
-                const className = wrapper.find('.ts-ComboBox').prop('className');
-                expect(className?.includes('ts-ComboBox--readonly')).toEqual(
+                rerender(
+                    <UIComboBox
+                        ref={comboboxRef}
+                        {...defaultProps}
+                        readOnly={testCase.readOnly}
+                        {...(testCase.tabIndex !== undefined && { tabIndex: testCase.tabIndex })}
+                        {...(testCase.disabled !== undefined && { disabled: testCase.disabled })}
+                    />
+                );
+                const input = container.querySelector(inputSelector) as HTMLInputElement;
+                expect(input).not.toBeNull();
+                expect(input.readOnly).toEqual(expected.readOnly);
+                // tabIndex: RTL exposes tabindex attribute as string or missing
+                const tabIndexAttr = input.getAttribute('tabindex');
+                const tabIndexValue = tabIndexAttr !== null ? Number(tabIndexAttr) : undefined;
+                expect(tabIndexValue).toEqual(expected.tabIndex);
+
+                const className = container.querySelector('.ts-ComboBox')?.getAttribute('class') ?? '';
+                expect(className.includes('ts-ComboBox--readonly')).toEqual(
                     !testCase.disabled ? !!expected.readOnly : false
                 );
-                expect(className?.includes('ts-ComboBox--disabled')).toEqual(!!testCase.disabled);
+                expect(className.includes('ts-ComboBox--disabled')).toEqual(!!testCase.disabled);
                 // Additional properties
                 if (!testCase.disabled && expected.readOnly) {
-                    expect(autofillProps['aria-readonly']).toEqual(true);
-                    expect('aria-disabled' in autofillProps).toEqual(true);
-                    expect(autofillProps['aria-disabled']).toEqual(undefined);
+                    // When readOnly is set: aria-readonly=true, aria-disabled is explicitly undefined (not rendered)
+                    expect(input.getAttribute('aria-readonly')).toEqual('true');
+                    // aria-disabled is set to undefined in props - React does not render it as a DOM attribute
+                    expect(input.getAttribute('aria-disabled')).toBeNull();
                 } else {
-                    expect('aria-readonly' in autofillProps).toEqual(false);
-                    expect(autofillProps['aria-disabled']).toEqual(!!testCase.disabled);
+                    expect(input.hasAttribute('aria-readonly')).toEqual(false);
+                    expect(input.getAttribute('aria-disabled')).toEqual(testCase.disabled ? 'true' : 'false');
                 }
             });
         }
@@ -802,66 +810,72 @@ describe('<UIComboBox />', () => {
             it(`"text=${testCase.text}", "selectedKey=${
                 Array.isArray(testCase.selectedKey) ? JSON.stringify(testCase.selectedKey) : testCase.selectedKey
             }"`, () => {
-                wrapper.setProps({
-                    text: testCase.text,
-                    selectedKey: testCase.selectedKey
-                });
-                expect(wrapper.find('div.ts-ComboBox--empty').length).toEqual(testCase.expected ? 1 : 0);
+                rerender(
+                    <UIComboBox
+                        ref={comboboxRef}
+                        {...defaultProps}
+                        text={testCase.text}
+                        selectedKey={testCase.selectedKey as UIComboBoxProps['selectedKey']}
+                    />
+                );
+                expect(container.querySelectorAll('div.ts-ComboBox--empty')).toHaveLength(testCase.expected ? 1 : 0);
             });
         }
     });
 
     describe('Combobox items with group headers', () => {
         beforeEach(() => {
-            wrapper.setProps({
-                highlight: true,
-                options: groupsData
-            });
-            wrapper.update();
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={groupsData} />);
         });
 
         it('Test css selectors which are used in scss - with highlight', () => {
             openDropdown();
-            expect(wrapper.find(headerItemSelector).length).toEqual(7);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(7);
             // Search items and hide group header if no matching children
-            wrapper.find('input').simulate('keyDown', {});
+            const input = container.querySelector('input') as HTMLInputElement;
+            fireEvent.keyDown(input, {});
             triggerSearch('Est');
-            expect(wrapper.find(headerItemSelector).length).toEqual(1);
-            expect(wrapper.find(headerItemSelector).text()).toEqual('Europe');
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(1);
+            expect(document.querySelector(headerItemSelector)?.textContent).toEqual('Europe');
             // Search and match first group
             triggerSearch('gypt');
-            expect(wrapper.find(headerItemSelector).length).toEqual(1);
-            expect(wrapper.find(headerItemSelector).text()).toEqual('Africa');
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(1);
+            expect(document.querySelector(headerItemSelector)?.textContent).toEqual('Africa');
             // Search and match last group
             triggerSearch('dumy');
-            expect(wrapper.find(headerItemSelector).length).toEqual(1);
-            expect(wrapper.find(headerItemSelector).text()).toEqual('Unknown');
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(1);
+            expect(document.querySelector(headerItemSelector)?.textContent).toEqual('Unknown');
             // Search and match multiple groups
             triggerSearch('la');
-            expect(wrapper.find(headerItemSelector).length).toEqual(3);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(3);
             // Search without matching
             triggerSearch('404');
-            expect(wrapper.find(headerItemSelector).length).toEqual(0);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(0);
             // Reset search
             triggerSearch('');
-            expect(wrapper.find(headerItemSelector).length).toEqual(7);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(7);
         });
     });
 
     it('Handle "onPendingValueChanged"', () => {
         const onPendingValueChanged = jest.fn();
-        wrapper.setProps({
-            highlight: true,
-            options: data.map((options) => ({
-                ...options,
-                hidden: options.key !== 'LV'
-            })),
-            onPendingValueChanged
-        });
-        expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+        rerender(
+            <UIComboBox
+                ref={comboboxRef}
+                {...defaultProps}
+                highlight={true}
+                options={data.map((option) => ({
+                    ...option,
+                    hidden: option.key !== 'LV'
+                }))}
+                onPendingValueChanged={onPendingValueChanged}
+            />
+        );
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
         // Open callout
         expect(onPendingValueChanged).not.toHaveBeenCalled();
-        wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
+        const input = container.querySelector('input') as HTMLInputElement;
+        fireEvent.keyDown(input, { which: KeyCodes.down, keyCode: KeyCodes.down });
         expect(onPendingValueChanged).toHaveBeenCalled();
         const callArgs = onPendingValueChanged.mock.calls[0];
         expect(callArgs[0].key).toEqual('LV');
@@ -889,28 +903,42 @@ describe('<UIComboBox />', () => {
         for (const testCase of testCases) {
             const { multiSelect, enabled, expected } = testCase;
             it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
-                wrapper.setProps({
-                    multiSelect: testCase.multiSelect,
-                    calloutCollisionTransformation: testCase.enabled
-                });
-                const dropdown = wrapper.find(ComboBox);
-                expect(dropdown.length).toEqual(1);
-                const calloutProps = dropdown.prop('calloutProps');
+                rerender(
+                    <UIComboBox
+                        ref={comboboxRef}
+                        {...defaultProps}
+                        multiSelect={testCase.multiSelect}
+                        calloutCollisionTransformation={testCase.enabled}
+                    />
+                );
+                const props = getComboBoxProps(comboboxRef);
+                expect(props).toBeTruthy();
+                const calloutProps = props?.calloutProps as Record<string, unknown> | undefined;
                 if (expected) {
                     expect(calloutProps?.preventDismissOnEvent).toBeDefined();
-                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
-                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+                    expect(
+                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerDidMount
+                    ).toBeDefined();
+                    expect(
+                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerWillUnmount
+                    ).toBeDefined();
 
-                    calloutProps?.preventDismissOnEvent?.({} as Event);
-                    calloutProps?.layerProps?.onLayerDidMount?.();
-                    calloutProps?.layerProps?.onLayerWillUnmount?.();
+                    (calloutProps?.preventDismissOnEvent as (e: Event) => void)?.({} as Event);
+                    (calloutProps?.layerProps as { onLayerDidMount?: () => void } | undefined)?.onLayerDidMount?.();
+                    (
+                        calloutProps?.layerProps as { onLayerWillUnmount?: () => void } | undefined
+                    )?.onLayerWillUnmount?.();
                     expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(expected ? 1 : 0);
                     expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(expected ? 1 : 0);
                     expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(expected ? 1 : 0);
                 } else {
                     expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
-                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
-                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeUndefined();
+                    expect(
+                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerDidMount
+                    ).toBeUndefined();
+                    expect(
+                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerWillUnmount
+                    ).toBeUndefined();
                 }
             });
         }
@@ -925,18 +953,21 @@ describe('<UIComboBox />', () => {
                     }
                 }
             };
-            wrapper.setProps({
-                multiSelect: true,
-                calloutCollisionTransformation: true,
-                ...externalListeners
-            });
-            const dropdown = wrapper.find(ComboBox);
-            expect(dropdown.length).toEqual(1);
-            const calloutProps = dropdown.prop('calloutProps');
+            rerender(
+                <UIComboBox
+                    ref={comboboxRef}
+                    {...defaultProps}
+                    multiSelect={true}
+                    calloutCollisionTransformation={true}
+                    {...externalListeners}
+                />
+            );
+            const props = getComboBoxProps(comboboxRef);
+            const calloutProps = props?.calloutProps as Record<string, unknown> | undefined;
 
-            calloutProps?.preventDismissOnEvent?.({} as Event);
-            calloutProps?.layerProps?.onLayerDidMount?.();
-            calloutProps?.layerProps?.onLayerWillUnmount?.();
+            (calloutProps?.preventDismissOnEvent as (e: Event) => void)?.({} as Event);
+            (calloutProps?.layerProps as { onLayerDidMount?: () => void } | undefined)?.onLayerDidMount?.();
+            (calloutProps?.layerProps as { onLayerWillUnmount?: () => void } | undefined)?.onLayerWillUnmount?.();
             expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(1);
             expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(1);
             expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(1);
@@ -975,55 +1006,73 @@ describe('<UIComboBox />', () => {
             }
         ];
         test.each(testCases)('isLoading = $isLoading', ({ isLoading, expectLoaderInInput, expectLoaderInMenu }) => {
-            wrapper.setProps({
-                isLoading
-            });
+            rerender(
+                <UIComboBox ref={comboboxRef} {...defaultProps} isLoading={isLoading as UIComboBoxProps['isLoading']} />
+            );
             openDropdown();
-            expect(wrapper.find('.ms-Callout UILoader').length).toEqual(expectLoaderInMenu ? 1 : 0);
-            expect(wrapper.find('.ms-ComboBox UILoader').length).toEqual(expectLoaderInInput ? 1 : 0);
+            // Check loader in menu (Callout)
+            const callout = document.querySelector('.ms-Callout');
+            const loaderInMenu = callout ? callout.querySelectorAll('.ms-Spinner').length : 0;
+            expect(loaderInMenu).toEqual(expectLoaderInMenu ? 1 : 0);
+            // Check loader in input (ComboBox wrapper)
+            const comboBoxWrapper = container.querySelector('.ms-ComboBox');
+            const loaderInInput = comboBoxWrapper ? comboBoxWrapper.querySelectorAll('.ms-Spinner').length : 0;
+            expect(loaderInInput).toEqual(expectLoaderInInput ? 1 : 0);
         });
     });
 
     it('Custom renderers for "onRenderOption"', () => {
-        wrapper.setProps({
-            highlight: true,
-            onRenderOption: (
-                props?: UIComboBoxOption,
-                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
-            ) => {
-                return <div className="custom-render-option">{defaultRender?.(props)}</div>;
-            }
-        });
+        rerender(
+            <UIComboBox
+                ref={comboboxRef}
+                {...defaultProps}
+                highlight={true}
+                onRenderOption={(
+                    props?: UIComboBoxOption,
+                    defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+                }}
+            />
+        );
         openDropdown();
-        expect(wrapper.find('.custom-render-option').length).toBeGreaterThan(0);
-        expect(wrapper.find(highlightItemSelector).length).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.custom-render-option').length).toBeGreaterThan(0);
+        expect(document.querySelectorAll(highlightItemSelector).length).toBeGreaterThan(0);
     });
 
     it('Custom renderers for "onRenderItem"', () => {
-        wrapper.setProps({
-            options: JSON.parse(JSON.stringify(originalData)),
-            highlight: true,
-            selectedKey: 'AR',
-            onRenderItem: (
-                props?: UIComboBoxOption,
-                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
-            ) => {
-                return <div className="custom-render-item">{defaultRender?.(props)}</div>;
-            }
-        });
+        rerender(
+            <UIComboBox
+                ref={comboboxRef}
+                {...defaultProps}
+                options={JSON.parse(JSON.stringify(originalData))}
+                highlight={true}
+                selectedKey="AR"
+                onRenderItem={(
+                    props?: UIComboBoxOption,
+                    defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-item">{defaultRender?.(props)}</div>;
+                }}
+            />
+        );
         openDropdown();
-        expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ts-ComboBox--selected').length).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.custom-render-item').length).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.ts-ComboBox--selected').length).toBeGreaterThan(0);
     });
 
     it('Test "calloutProps"', () => {
-        wrapper.setProps({
-            calloutProps: {
-                className: 'dummy'
-            }
-        });
+        rerender(
+            <UIComboBox
+                ref={comboboxRef}
+                {...defaultProps}
+                calloutProps={{
+                    className: 'dummy'
+                }}
+            />
+        );
         openDropdown();
-        expect(wrapper.find('div.dummy').length).toEqual(1);
+        expect(document.querySelectorAll('div.dummy')).toHaveLength(1);
     });
 
     describe('Test "searchByKeyEnabled" property', () => {
@@ -1075,15 +1124,20 @@ describe('<UIComboBox />', () => {
             const { name, searchByKeyEnabled, expectedCount } = testCase;
             it(name, () => {
                 const query = 'bookings';
-                wrapper.setProps({
-                    highlight: true,
-                    options: searchKeysData,
-                    searchByKeyEnabled
-                });
+                rerender(
+                    <UIComboBox
+                        ref={comboboxRef}
+                        {...defaultProps}
+                        highlight={true}
+                        options={searchKeysData}
+                        searchByKeyEnabled={searchByKeyEnabled}
+                    />
+                );
                 openDropdown();
-                wrapper.find('input').simulate('keyDown', {});
+                const input = container.querySelector('input') as HTMLInputElement;
+                fireEvent.keyDown(input, {});
                 triggerSearch(query);
-                expect(wrapper.find('.ms-Button').length).toEqual(expectedCount);
+                expect(document.querySelectorAll('.ms-Button')).toHaveLength(expectedCount);
             });
         }
     });
@@ -1129,31 +1183,38 @@ describe('<UIComboBox />', () => {
             const { name, query, expectedCountBefore, expectedCountAfter, options } = testCase;
             it(name, () => {
                 // Default state before custom filter
-                wrapper.setProps({
-                    highlight: true,
-                    options: options
-                });
+                rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={options} />);
                 openDropdown();
-                wrapper.find('input').simulate('keyDown', {});
+                const input = container.querySelector('input') as HTMLInputElement;
+                fireEvent.keyDown(input, {});
                 triggerSearch(query);
-                expect(wrapper.find('.ms-Button--action').length).toEqual(expectedCountBefore);
+                expect(document.querySelectorAll('.ms-Button--action')).toHaveLength(expectedCountBefore);
                 // Apply custom filter and check result for same query
-                wrapper.setProps({
-                    customSearchFilter: (searchTerm: string, option: UIComboBoxOption) => {
-                        if ('customMark' in option && option.customMark) {
-                            return true;
-                        }
-                        if (option.key === 'BC') {
-                            // Hide 'Lorem ipsum dolor sit amet' when searching
-                            return false;
-                        }
-                        return undefined;
-                    }
-                });
+                rerender(
+                    <UIComboBox
+                        ref={comboboxRef}
+                        {...defaultProps}
+                        highlight={true}
+                        options={options}
+                        customSearchFilter={(searchTerm: string, option: UIComboBoxOption) => {
+                            if (
+                                'customMark' in option &&
+                                (option as UIComboBoxOption & { customMark?: boolean }).customMark
+                            ) {
+                                return true;
+                            }
+                            if (option.key === 'BC') {
+                                // Hide 'Lorem ipsum dolor sit amet' when searching
+                                return false;
+                            }
+                            return undefined;
+                        }}
+                    />
+                );
                 openDropdown();
-                wrapper.find('input').simulate('keyDown', {});
+                fireEvent.keyDown(input, {});
                 triggerSearch(query);
-                expect(wrapper.find('.ms-Button--action').length).toEqual(expectedCountAfter);
+                expect(document.querySelectorAll('.ms-Button--action')).toHaveLength(expectedCountAfter);
             });
         }
     });
@@ -1163,30 +1224,33 @@ describe('<UIComboBox />', () => {
             noDataText: '.option-no-data'
         };
         beforeEach(() => {
-            wrapper.setProps({
-                options: [],
-                isForceEnabled: true
-            });
+            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={true} />);
         });
 
         it('Check "noDataLabel"', () => {
             const noDataLabel = 'Dummy text';
-            wrapper.setProps({
-                externalSearchProps: {
-                    noDataLabel,
-                    onExternalSearch: jest.fn()
-                }
-            });
+            rerender(
+                <UIComboBox
+                    ref={comboboxRef}
+                    {...defaultProps}
+                    options={[]}
+                    isForceEnabled={true}
+                    externalSearchProps={{
+                        noDataLabel,
+                        onExternalSearch: jest.fn()
+                    }}
+                />
+            );
             openDropdown();
-            expect(wrapper.find(selectors.noDataText).length).toEqual(1);
-            expect(wrapper.find(selectors.noDataText).getDOMNode().textContent).toEqual(noDataLabel);
+            expect(document.querySelectorAll(selectors.noDataText)).toHaveLength(1);
+            expect(document.querySelector(selectors.noDataText)?.textContent).toEqual(noDataLabel);
         });
 
         it('Handle "onInputChange" and "onExternalSearch"', async () => {
             const noDataLabel = 'Dummy text';
             const onInputChange = jest.fn();
             const onExternalSearch = jest.fn();
-            wrapper = Enzyme.mount(
+            const { container: c2 } = render(
                 <UIComboBox
                     options={[]}
                     highlight={true}
@@ -1201,9 +1265,10 @@ describe('<UIComboBox />', () => {
                     }}
                 />
             );
-            wrapper.find('input').simulate('input', { target: { value: 'My' } });
-            wrapper.find('input').simulate('input', { target: { value: 'My dummy' } });
-            wrapper.find('input').simulate('input', { target: { value: 'My dummy value' } });
+            const input = c2.querySelector('input') as HTMLInputElement;
+            fireEvent.input(input, { target: { value: 'My' } });
+            fireEvent.input(input, { target: { value: 'My dummy' } });
+            fireEvent.input(input, { target: { value: 'My dummy value' } });
             await new Promise((resolve) => setTimeout(resolve, 20));
             expect(onInputChange).toHaveBeenCalledTimes(3);
             expect(onExternalSearch).toHaveBeenCalledTimes(1);
