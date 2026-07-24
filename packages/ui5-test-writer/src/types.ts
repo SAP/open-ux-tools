@@ -272,6 +272,12 @@ export type WriteContext = {
     hasPreexistingTests?: boolean;
     incompatibleTestSetup?: boolean;
     dotFileExtension: DotFileExtension;
+    /**
+     * When true, ux-specification-derived journeys (ListReport, ObjectPage, FPM) are generated.
+     * When false (e.g. ObjectPage-only or Analytical List Page projects), only the generic
+     * fallback `FirstJourney` is written.
+     */
+    generateUxSpecJourneys: boolean;
     modifiedFiles: string[];
 };
 

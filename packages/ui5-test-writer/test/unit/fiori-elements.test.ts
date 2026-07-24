@@ -1055,6 +1055,55 @@ export type Then = Opa5 & BaseArrangements & {
             expect(firstJourneyPath).toBeUndefined();
         });
 
+        describe('ux-specification journey gating (LROP / FPM only)', () => {
+            it('writes only the fallback FirstJourney for an ObjectPage-only app (no startup ListReport)', async () => {
+                // Model contains OP pages, but the FullScreenOPNoStart manifest has no startup ListReport,
+                // so the app is non-qualifying: no ux-spec journeys, fallback FirstJourney instead.
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+                const projectDir = prepareTestFiles('FullScreenOPNoStart');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const paths = Object.keys(fs.dump(projectDir));
+                // Fallback journey is written
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(true);
+                // No ux-spec-derived journeys
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(false);
+                // Full harness is still generated
+                expect(paths.some((p) => p.includes('integration/pages/JourneyRunner.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('integration/opaTests.qunit.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('integration/opaTests.qunit.html'))).toBe(true);
+                expect(paths.some((p) => p.includes('testsuite.qunit.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('testsuite.qunit.html'))).toBe(true);
+            });
+
+            it('writes only the fallback FirstJourney for an Analytical List Page app', async () => {
+                // The ALP ListReport target carries `views`, so it is not treated as an LROP startup page.
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('FullScreenALP');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const dumped = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                // Fallback journey is written, no ux-spec journeys
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(false);
+                // The ALP page object is still rendered from the ListReport page-object template
+                const alpPagePath = paths.find((p) => p.includes('integration/pages/EmployeesList.gen.js'));
+                expect(alpPagePath).toBeDefined();
+                expect(dumped[alpPagePath!].contents as string).toContain('sap/fe/test/ListReport');
+            });
+
+            it('generates ux-spec journeys and no fallback for an LROP app', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const paths = Object.keys(fs.dump(projectDir));
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(true);
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(false);
+            });
+        });
+
         it('generates TypeScript filter tests for LROPv4 app (missing semantic filter)', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL_FILTER_BAR_NO_TRAVEL_ID));
             const projectDir = prepareTestFiles('LROPv4');
