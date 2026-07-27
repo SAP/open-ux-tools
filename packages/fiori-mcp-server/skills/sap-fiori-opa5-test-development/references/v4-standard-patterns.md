@@ -143,21 +143,26 @@ The `section` value in `onForm({ section: "..." })` must be the **ID** from the 
 
 **Anti-pattern — `iCheckField` with only `{ value }` on a text-annotated field always times out:**
 
-Any field annotated with a text association in the metadata is rendered as a combined display string (e.g. `"John Doe (99)"`). Passing only `{ value: "99" }` will always time out — no control matches the partial object. You **must** pass `{ value, description }`.
+Any field annotated with a text association in the metadata is rendered as a combined display string. Passing only `{ value: "99" }` will always time out — no control matches the partial object.
 
 ```javascript
 // ❌ Wrong — times out for any field with a text annotation
 Then.onTheObjectPage.onForm({section: "GeneralInfo"})
     .iCheckField({ property: "CustomerID" }, { value: "99" });
+```
 
-// ✅ Fixed — always pass { value, description } for text-annotated fields
-// value = the key (ID), description = the associated text
-// For TextFirst (default in RAP): display is "Description (ID)"
-// For TextLast: display is "ID (Description)"
-// TextOnly (common in CAP): only the description text is shown — pass { value: "", description: "John Doe" }
-// Find the description by grepping the value help mock data file for the known ID
+Pass an object matching the `TextArrangement` of the field. Find the description by grepping the value help mock data file for the known ID.
+
+**TextFirst / TextLast** (RAP default is TextFirst) — renders "Description (ID)" or "ID (Description)":
+```javascript
 Then.onTheObjectPage.onForm({section: "GeneralInfo"})
     .iCheckField({ property: "CustomerID" }, { value: "99", description: "John Doe" });
+```
+
+**TextOnly** (CAP default) — renders description only:
+```javascript
+Then.onTheObjectPage.onForm({section: "GeneralInfo"})
+    .iCheckField({ property: "CustomerID" }, { description: "John Doe" });
 ```
 
 To detect whether a field needs `{ value, description }`: grep `metadata.xml` for `Target="...<EntityType>/<PropertyName>"` and check for a text annotation on that target.
