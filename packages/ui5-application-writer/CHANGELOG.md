@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 2.1.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+
 ## 2.1.1
 
 ### Patch Changes
