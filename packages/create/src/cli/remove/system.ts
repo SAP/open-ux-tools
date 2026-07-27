@@ -3,6 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
+import { promptForSystemIdentifier, promptForRemoveConfirmation } from '../utils/system-prompts.js';
 
 /**
  * Add the "remove system" subcommand to a passed command.
@@ -16,12 +17,14 @@ export function addSystemRemoveCommand(cmd: Command): void {
             `Remove a saved back-end system from the saved system store (\`~/.fioritools\`). Also deletes any stored credentials in the OS keychain.\n
 Example:
     \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com\`
-    \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100\``
+    \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100\`
+    \`npx --yes @sap-ux/create@latest remove system\` (interactive mode)`
         )
-        .requiredOption('--url <string>', 'URL of the backend system to remove')
+        .option('--url <string>', 'URL of the backend system to remove')
         .option('--client <string>', 'SAP client number (optional)')
+        .option('--force', 'Skip confirmation prompt')
         .action(async (options) => {
-            await removeSystem(options.url, options.client);
+            await removeSystem(options.url, options.client, !!options.force);
         });
 }
 
@@ -30,8 +33,9 @@ Example:
  *
  * @param url - URL of the system to remove
  * @param client - optional SAP client
+ * @param force - skip confirmation prompt
  */
-async function removeSystem(url: string, client: string | undefined): Promise<void> {
+async function removeSystem(url: string | undefined, client: string | undefined, force: boolean): Promise<void> {
     const logger = getLogger();
     try {
         if (isAppStudio()) {
@@ -41,13 +45,25 @@ async function removeSystem(url: string, client: string | undefined): Promise<vo
             return;
         }
 
+        // Prompt for system identifier if not provided
+        const identifier = await promptForSystemIdentifier({ url, client });
+
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const key = new BackendSystemKey({ url, client });
+        const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
         const system = await service.read(key);
 
         if (!system) {
             logger.error(`System not found: ${key.getId()}`);
             return;
+        }
+
+        // Prompt for confirmation unless --force
+        if (!force) {
+            const confirmed = await promptForRemoveConfirmation(system.name);
+            if (!confirmed) {
+                logger.info('Remove cancelled.');
+                return;
+            }
         }
 
         const deleted = await service.delete(system);
