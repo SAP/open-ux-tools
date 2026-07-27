@@ -5,8 +5,8 @@ import { t } from '../i18n.js';
 import type { OpaPageWriteInfo } from './journeyRunnerUtils.js';
 import { MAX_FILE_CONTENT_LENGTH, escapeRegex, findBracedBlock, insertAfterLastImport } from './fileWritingUtils.js';
 
-/** Relative path from the test output directory to OpaJourneyTypes.d.ts */
-const OPA_JOURNEY_TYPES_FILE = join('integration', 'types', 'OpaJourneyTypes.d.ts');
+/** Relative path from the test output directory to OpaJourneyTypes.gen.d.ts */
+const OPA_JOURNEY_TYPES_FILE = join('integration', 'types', 'OpaJourneyTypes.gen.d.ts');
 
 /** Frameworks the splicer knows how to render entries for. */
 const SUPPORTED_FRAMEWORKS = new Set(['ListReport', 'ObjectPage']);

@@ -1,5 +1,16 @@
 # @sap-ux/adp-tooling
 
+## 1.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
 ## 1.0.38
 
 ### Patch Changes
