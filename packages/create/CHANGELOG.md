@@ -1,5 +1,40 @@
 # @sap-ux/create
 
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-27
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/abap-deploy-config-inquirer 2.0.31 → 2.0.32
+- @sap-ux/adp-tooling 1.0.38 → 1.0.39
+- @sap-ux/app-config-writer 1.1.13 → 1.1.14
+- @sap-ux/preview-middleware 1.0.48 → 1.0.49
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/flp-config-inquirer 1.0.38 → 1.0.39
+- @sap-ux/abap-deploy-config-writer 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+- @sap-ux/cap-config-writer 1.0.26 → 1.0.27
+
 ## 1.0.62
 
 ### Patch Changes

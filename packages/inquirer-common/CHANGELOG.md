@@ -1,5 +1,14 @@
 # @sap-ux/inquirer-common
 
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/telemetry 1.0.22 → 1.0.23
+
 ## 1.0.27
 
 ### Patch Changes
