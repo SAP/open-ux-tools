@@ -426,6 +426,38 @@ function wrapLooseBuildingBlocksInItems(
 }
 
 /**
+ * Collects all `id` attribute values from direct Element children of the given container.
+ * Used to seed the ID generator so new IDs don't collide with existing ones.
+ *
+ * @param {Element | undefined} container - the aggregation container element, or undefined if not present
+ * @returns {string[]} array of existing child element IDs
+ */
+function getExistingContainerIds(container: Element | undefined): string[] {
+    if (!container) {
+        return [];
+    }
+    return Array.from(container.childNodes)
+        .filter((n) => n.nodeType === 1 /* Element */)
+        .map((n) => (n as Element).getAttribute('id'))
+        .filter((id): id is string => !!id);
+}
+
+/**
+ * Derives the 1-based sequential index for a new aggregation add from the first generated ID.
+ * Maps ID suffix to start number: no suffix → 1, suffix '2' → 3, suffix '4' → 5, etc.
+ *
+ * @param {Record<string, string>} ids - generated IDs map from buildAggregationIds
+ * @param {PageAggregationName} aggName - the aggregation name
+ * @returns {number} 1-based start index for text/press handler numbering
+ */
+function deriveAggregationIndex(ids: Record<string, string>, aggName: PageAggregationName): number {
+    const firstId = Object.values(ids)[0] ?? '';
+    const firstIdBase = AGGREGATION_ID_KEYS[aggName]?.[0]?.base ?? aggName;
+    const suffix = firstId.slice(firstIdBase.length);
+    return suffix === '' ? 1 : Number.parseInt(suffix, 10) + 1;
+}
+
+/**
  * Serializes and writes the XML document to the view file on disk.
  *
  * @param {Editor} fs - the memfs editor instance
@@ -519,20 +551,9 @@ export async function generateBuildingBlockAggregation(
           ) as Element | undefined)
         : undefined;
 
-    const existingContainerIds = existingContainer
-        ? Array.from(existingContainer.childNodes)
-              .filter((n) => n.nodeType === 1 /* Element */)
-              .map((n) => (n as Element).getAttribute('id'))
-              .filter((id): id is string => !!id)
-        : [];
-
+    const existingContainerIds = getExistingContainerIds(existingContainer);
     const ids = buildAggregationIds(aggName, generateId, existingContainerIds);
-    // Derive the start button number from the first generated ID suffix.
-    // 'actions_button' (no suffix) → start=1, 'actions_button2' → start=3, 'actions_button4' → start=5.
-    const firstId = Object.values(ids)[0] ?? '';
-    const firstIdBase = AGGREGATION_ID_KEYS[aggName]?.[0]?.base ?? aggName;
-    const suffix = firstId.slice(firstIdBase.length);
-    const aggIndex = suffix === '' ? 1 : parseInt(suffix, 10) + 1;
+    const aggIndex = deriveAggregationIndex(ids, aggName);
     const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids, aggIndex };
     const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
 
