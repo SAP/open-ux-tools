@@ -3,6 +3,7 @@ import type { PREDEFINED_GENERATOR_VALUES } from './appgen-config-schema-props.j
 import { z } from 'zod';
 import { convertToSchema } from '../../utils/index.js';
 import { entityConfig, floorplan, project, serviceOdata as service } from './appgen-config-schema-props.js';
+import type { ExternalService } from '@sap-ux/axios-extension';
 
 export const generatorConfigOData = z.object({
     entityConfig: entityConfig.optional(),
@@ -29,7 +30,9 @@ For all other floorplans, service and entityConfig are required.`);
 // Input type for functionality parameters
 export type GeneratorConfigOData = z.infer<typeof generatorConfigOData>;
 export type GeneratorConfigODataWithAPI = GeneratorConfigOData &
-    typeof PREDEFINED_GENERATOR_VALUES & { service?: { edmx?: string } };
+    typeof PREDEFINED_GENERATOR_VALUES & {
+        service?: { edmx?: string; externalServices?: (ExternalService & { metadata: string })[] };
+    };
 
 // JSON schema for functionality description
 export const generatorConfigODataJson = convertToSchema(generatorConfigOData);

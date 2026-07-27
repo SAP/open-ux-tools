@@ -1,6 +1,155 @@
-# Run and Fix ESLint on a Fiori Project
+# Run, Fix, and Scope ESLint on a Fiori Project
 
-Run ESLint on a SAP Fiori project to check code quality and optionally auto-fix issues.
+Run ESLint on a SAP Fiori project to check code quality and optionally auto-fix issues. Includes an **app-scope mode** that reproduces the exact file set checked by the Application Information panel and Page Map.
+
+## App-scope mode — show only application issues (consistent with Application Information / Page Map)
+
+Use this mode when the user says things like:
+- "show all application issues for my app"
+- "show UX consistency issues"
+- "issues for app xyz"
+- "same issues as Application Information" / "same issues as Page Map"
+
+### Exact file scope used by Application Information / Page Map
+
+The Application Information panel and Page Map do **not** lint all files in `webapp/`. They lint a precise, curated
+set of files — nothing more. Running `npx eslint .` or `npx eslint webapp/` will produce a higher,
+inconsistent count because it picks up JavaScript/TypeScript source files, test files, and other
+files that the tooling never checks.
+
+**Files linted by Application Information / Page Map (derived from the IDE extension source):**
+
+| File | Standalone | CAP |
+|---|:---:|:---:|
+| `webapp/manifest.json` | ✅ | ✅ |
+| `webapp/changes/**/*propertyChange.change` (OData V2 only) | ✅ | ✅ |
+| All local XML files listed in the manifest via `localUri` (`ODataAnnotation`, `OData`, etc.) | ✅ | ❌ |
+| `<app-folder>/<app-name>/**/*.cds` (app-level only) | ❌ | ✅ |
+
+Key rules:
+- Only `*propertyChange.change` files are included from the `changes/` folder — not all `.change` files; these only exist in OData V2 projects
+- For CAP projects, only `.cds` files within the specific app directory are linted — not the project root, `db/`, `srv/`, or sibling apps
+- For CAP projects, XML annotation files are **not** linted — the annotations live in `.cds` files instead
+- For standalone projects, `.cds` files are **not** linted — only the manifest, all localUri XML files from manifest dataSources, and change files
+
+### Detecting OData version
+
+The OData version is declared explicitly in `manifest.json` under `sap.app.dataSources[*].settings.odataVersion`. A V4 project will have `"odataVersion": "4.0"` on its main data source; V2 projects either have `"2.0"` or omit the field entirely.
+
+```bash
+# Returns "v4" if any dataSource declares odataVersion 4.x, otherwise "v2"
+node --input-type=commonjs -e "
+const m = require('./webapp/manifest.json');
+const ds = Object.values(m['sap.app']?.dataSources ?? {});
+const isV4 = ds.some(d => (d.settings?.odataVersion ?? '').startsWith('4'));
+console.log(isV4 ? 'v4' : 'v2');
+"
+```
+
+- Result `v4` → **OData V4** — skip `.change` files
+- Result `v2` → **OData V2** — include `*propertyChange.change` files
+
+### Why counts differ without this scoping
+
+Running `npx eslint .` or `npx eslint webapp/` picks up `.js`, `.ts`, controller files, test files,
+and more — none of which Application Information or Page Map ever checks. This produces more issues and a higher
+count than what the tooling shows.
+
+### App-scope lint commands
+
+Always target the exact file set explicitly. Substitute real paths where shown.
+
+> **Windows (all commands in this section)**: Both the standalone and CAP commands use `find` and `$()` subshell expansion. They require **Git Bash** or **WSL** — they will not run in cmd.exe or PowerShell.
+
+**Standalone Fiori app:**
+```bash
+# From the app root (where eslint.config.mjs and webapp/ are)
+
+# 1. manifest.json
+npx eslint webapp/manifest.json
+
+# 2. propertyChange files — OData V2 projects only (skip if V4)
+# Array assignment splits find output into separate elements (works in bash and zsh)
+CHANGE_FILES=($(find webapp/changes -name "*propertyChange.change" 2>/dev/null))
+[ ${#CHANGE_FILES[@]} -gt 0 ] && npx eslint "${CHANGE_FILES[@]}"
+
+# 3. All local XML files declared in manifest dataSources via localUri
+#    (covers annotation files, metadata.xml, service.xml, etc.)
+XML_FILES=($(node --input-type=commonjs -e "
+const m = require('./webapp/manifest.json');
+const ds = Object.values(m['sap.app']?.dataSources ?? {});
+ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
+"))
+[ ${#XML_FILES[@]} -gt 0 ] && npx eslint "${XML_FILES[@]}"
+
+# Or combine all three in one pass:
+CHANGE_FILES=($(find webapp/changes -name "*propertyChange.change" 2>/dev/null))
+XML_FILES=($(node --input-type=commonjs -e "
+const m = require('./webapp/manifest.json');
+const ds = Object.values(m['sap.app']?.dataSources ?? {});
+ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
+"))
+npx eslint webapp/manifest.json "${CHANGE_FILES[@]}" "${XML_FILES[@]}"
+```
+
+**CAP project — specific app:**
+```bash
+# From the CAP project root
+APP=app/incidents   # replace with your app folder
+
+# 1. manifest.json
+npx eslint "$APP/webapp/manifest.json"
+
+# 2. propertyChange files — OData V2 projects only (skip if V4)
+CHANGE_FILES=($(find "$APP/webapp/changes" -name "*propertyChange.change" 2>/dev/null))
+[ ${#CHANGE_FILES[@]} -gt 0 ] && npx eslint "${CHANGE_FILES[@]}"
+
+# 3. CDS files (app-level only)
+# The glob is intentionally quoted — ESLint resolves it internally, not the shell.
+npx eslint "$APP/**/*.cds"
+```
+
+### Identifying the app name and local XML files
+
+```bash
+# Find webapp/ locations (CAP)
+find app -maxdepth 2 -type d -name "webapp" -not -path "*/node_modules/*"
+
+# Extract all local XML file paths from manifest (any dataSource with a localUri)
+node --input-type=commonjs -e "
+const m = require('./webapp/manifest.json');
+const ds = m['sap.app']?.dataSources ?? {};
+Object.values(ds).filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
+"
+```
+
+If the user names a specific app, match by the parent folder of `webapp/`. If ambiguous, list found
+apps and ask the user to confirm.
+
+### Reporting app-scope results
+
+Present results with a clear scope label so the user knows the count matches the tooling:
+
+```
+Application Issues (Application Information / Page Map scope):
+  Standalone: manifest.json + all localUri XML files from manifest dataSources + *propertyChange.change files (V2 only)
+  CAP:        manifest.json + <app>/**/*.cds + *propertyChange.change files (V2 only)
+
+- X errors
+- Y warnings
+- Files affected: [list]
+- Most common rules: [top 3]
+```
+
+When listing individual issues, use the table format described in Step 7.
+
+If the count still differs from what the user sees in Application Information or Page Map, check:
+1. **Missing annotation files** — the manifest may reference annotation URIs not covered by the glob above; extract them with the node snippet above
+2. **ESLint config `files` glob** — the config may restrict which file types are checked (e.g. only `*.xml` but not `*.json`)
+3. **Rule set variant** — confirm the config uses `recommended-for-s4hana` vs `recommended` to match what the tooling expects
+4. **Plugin version** — Application Information and Page Map each load the plugin from the project's own `node_modules`; make sure `@sap-ux/eslint-plugin-fiori-tools` is installed there
+
+
 
 ## Step 1 — Verify ESLint is configured
 
@@ -190,6 +339,14 @@ ESLint Results:
 - Y warnings found (P auto-fixed, Q require manual fix)
 - Files with issues: [list key files]
 - Most common violations: [top 3 rules]
+```
+
+When listing individual issues in a table, always include the source file as the first column and a separate Line column. Put the path as bare inline code `` `file:///absolute/path:line` `` — markdown link syntax breaks the `:line` suffix before VS Code's terminal link detector can parse it:
+
+```
+| File | Line | Rule | Issue |
+|---|---|---|---|
+| `file:///abs/path/webapp/localService/metadata.xml:123` | 123 | sap-description-column-label | MyField has generic label … |
 ```
 
 If everything is clean:

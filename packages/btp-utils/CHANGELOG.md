@@ -1,5 +1,13 @@
 # @sap-ux/btp-utils
 
+## 2.0.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap/bas-sdk 3.13.9 → 3.13.10 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
 ## 2.0.5
 
 ### Patch Changes

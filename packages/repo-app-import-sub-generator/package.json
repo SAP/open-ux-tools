@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/repo-app-import-sub-generator",
     "description": "Generator to download LROP Fiori applications deployed from an ABAP repository.",
-    "version": "1.2.12",
+    "version": "1.2.14",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -31,7 +31,7 @@
         "!generators/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
@@ -51,7 +51,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "adm-zip": "0.6.0",
-        "i18next": "25.10.10",
+        "i18next": "26.3.6",
         "inquirer": "8.2.7",
         "yeoman-generator": "5.10.0"
     },
@@ -68,7 +68,7 @@
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@types/fs-extra": "11.0.4",
-        "fs-extra": "11.3.5",
+        "fs-extra": "11.3.6",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@vscode-logging/logger": "2.0.9",
