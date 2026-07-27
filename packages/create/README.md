@@ -410,7 +410,7 @@ Command group for updating saved resources. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest update [subcommand] [options]`
 
-The available subcommands are: `system`
+The available subcommands are: `system` and `metadata`
 
 
 --------------------------------
@@ -433,6 +433,24 @@ Options:
 - `--username <string>` - New username
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
+
+--------------------------------
+
+## [`update metadata`](#update-metadata)
+
+Refresh the local OData service metadata.xml from the live backend for a Fiori application.
+Also fetches value-help (external) service metadata when available.
+
+Example:
+
+`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app`
+
+`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate`
+
+Options:
+- `--no-fetch-external-service-metadata` - Skip fetching value-help (external) service metadata
+- `-s, --simulate` - Simulate only. Do not write. Also sets `--verbose`.
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
