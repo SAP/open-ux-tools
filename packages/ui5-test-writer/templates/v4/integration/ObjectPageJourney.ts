@@ -172,7 +172,6 @@ function journey() {
 
 <% }) -%>
 <% } -%>
-
     opaTest("Teardown", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();

@@ -153,7 +153,6 @@ sap.ui.define([
 
 <% }) -%>
 <% } -%>
-
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
