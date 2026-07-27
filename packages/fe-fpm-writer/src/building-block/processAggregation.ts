@@ -111,14 +111,14 @@ export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: str
     breadcrumbs: [
         { key: 'Breadcrumbs', base: 'breadcrumbs_breadcrumbs' },
         { key: 'Link', base: 'breadcrumbs_link' },
-        { key: 'Link1', base: 'breadcrumbs_link_1' },
-        { key: 'Link2', base: 'breadcrumbs_link_2' }
+        { key: 'Link1', base: 'breadcrumbs_link' },
+        { key: 'Link2', base: 'breadcrumbs_link' }
     ],
     navigationActions: [{ key: 'Button', base: 'navigationActions_button' }],
     titleContent: [{ key: 'GenericTag', base: 'titleContent_genericTag' }],
     actions: [
         { key: 'Button', base: 'actions_button' },
-        { key: 'Button1', base: 'actions_button_1' }
+        { key: 'Button1', base: 'actions_button' }
     ],
     headerContent: [
         { key: 'VBox', base: 'headerContent_vbox' },
@@ -128,7 +128,7 @@ export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: str
         { key: 'OverflowToolbar', base: 'footer_overflowToolbar' },
         { key: 'ToolbarSpacer', base: 'footer_toolbarSpacer' },
         { key: 'Button', base: 'footer_button' },
-        { key: 'Button1', base: 'footer_button_1' }
+        { key: 'Button1', base: 'footer_button' }
     ]
 };
 
@@ -138,14 +138,16 @@ export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: str
  *
  * @param {PageAggregationName} aggName - the aggregation name
  * @param {IdGeneratorFunction} generateId - the project-aware ID generator
+ * @param {string[]} existingIds - IDs already present in the container (prevents collision on subsequent adds)
  * @returns {Record<string, string>} an object mapping each template variable name to a unique ID string
  */
 export function buildAggregationIds(
     aggName: PageAggregationName,
-    generateId: IdGeneratorFunction
+    generateId: IdGeneratorFunction,
+    existingIds: string[] = []
 ): Record<string, string> {
     const entries = AGGREGATION_ID_KEYS[aggName] ?? [];
-    const validatedIds: string[] = [];
+    const validatedIds: string[] = [...existingIds];
     const ids: Record<string, string> = {};
     for (const { key, base } of entries) {
         const id = generateId(base, validatedIds);
@@ -166,6 +168,7 @@ export function buildAggregationIds(
  * @param {string} aggContext.aggId - the generated unique ID for the aggregation element
  * @param {boolean} aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
  * @param {Record<string, string>} aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
+ * @param {number} aggContext.aggIndex - 1-based counter for this aggregation add (used to number text/press handler names)
  * @param {string} fragMacrosNS - the namespace prefix resolved for sap.fe.macros
  * @param {Document} xmlDocument - the view XML document (used to inherit namespace declarations)
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
@@ -178,6 +181,7 @@ function buildPageAggregationFragment(
         aggId: string;
         showDefaultContent: boolean;
         ids: Record<string, string>;
+        aggIndex: number;
     },
     fragMacrosNS: string,
     xmlDocument: Document
@@ -221,7 +225,7 @@ export function appendPageAggregations(
         const aggId = generateId(aggName);
         const showDefaultContent = aggName === 'items' && useDefaults;
         const ids = buildAggregationIds(aggName, generateId);
-        const aggContext = { macrosPrefix, aggId, showDefaultContent, ids };
+        const aggContext = { macrosPrefix, aggId, showDefaultContent, ids, aggIndex: 1 };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
@@ -482,9 +486,6 @@ export async function generateBuildingBlockAggregation(
 
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
-    const ids = buildAggregationIds(aggName, generateId);
-    const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids };
-    const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
 
     const nsMap = (xmlDocument.documentElement as any)?._nsMap ?? {};
     // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
@@ -499,12 +500,42 @@ export async function generateBuildingBlockAggregation(
         (pageElement as Element).setAttribute('showFooter', 'true');
     }
     const childNodes = Array.from(pageElement.childNodes);
+    const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
     const hasExistingAggregation = childNodes.some(
         (node) =>
             node.nodeType === 1 /* Element */ &&
             (node as Element).localName === aggName &&
-            (node as Element).namespaceURI === (nsMap[fragMacrosNS] ?? 'sap.fe.macros')
+            (node as Element).namespaceURI === macrosNsUri
     );
+
+    // Find existing container early so its child IDs can seed the ID generator,
+    // preventing collisions when appending to an already-populated aggregation.
+    const existingContainer = hasExistingAggregation
+        ? (childNodes.find(
+              (n) =>
+                  n.nodeType === 1 /* Element */ &&
+                  (n as Element).localName === aggName &&
+                  (n as Element).namespaceURI === macrosNsUri
+          ) as Element | undefined)
+        : undefined;
+
+    const existingContainerIds = existingContainer
+        ? Array.from(existingContainer.childNodes)
+              .filter((n) => n.nodeType === 1 /* Element */)
+              .map((n) => (n as Element).getAttribute('id'))
+              .filter((id): id is string => !!id)
+        : [];
+
+    const ids = buildAggregationIds(aggName, generateId, existingContainerIds);
+    // Derive the start button number from the first generated ID suffix.
+    // 'actions_button' (no suffix) → start=1, 'actions_button2' → start=3, 'actions_button4' → start=5.
+    const firstId = Object.values(ids)[0] ?? '';
+    const firstIdBase = AGGREGATION_ID_KEYS[aggName]?.[0]?.base ?? aggName;
+    const suffix = firstId.slice(firstIdBase.length);
+    const aggIndex = suffix === '' ? 1 : parseInt(suffix, 10) + 1;
+    const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids, aggIndex };
+    const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
+
     if (hasExistingAggregation && SINGLE_INSTANCE_PAGE_AGGREGATIONS.has(aggName)) {
         // Single-instance aggregations (breadcrumbs, footer) — already present, nothing to add.
         sortPageAggregationChildren(pageElement);
@@ -513,14 +544,7 @@ export async function generateBuildingBlockAggregation(
     }
     if (hasExistingAggregation) {
         // Append-children aggregations (navigationActions, titleContent, actions, headerContent):
-        // find the existing container and append new children from the rendered template inside it.
-        const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
-        const existingContainer = childNodes.find(
-            (n) =>
-                n.nodeType === 1 /* Element */ &&
-                (n as Element).localName === aggName &&
-                (n as Element).namespaceURI === macrosNsUri
-        ) as Element | undefined;
+        // append new children from the rendered template into the existing container.
         if (existingContainer) {
             appendChildrenIntoContainer(existingContainer, aggDoc, xmlDocument);
         }
@@ -536,7 +560,6 @@ export async function generateBuildingBlockAggregation(
 
     // Move any loose macros building blocks (e.g. macros:Form, macros:Table) into macros:items
     // before inserting the new named aggregation so the Page DOM stays well-formed.
-    const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
     wrapLooseBuildingBlocksInItems(pageElement as Element, xmlDocument, macrosNsUri, fragMacrosNS);
     if (!hasExistingElementChildren && !hasTemplateComment) {
         pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));

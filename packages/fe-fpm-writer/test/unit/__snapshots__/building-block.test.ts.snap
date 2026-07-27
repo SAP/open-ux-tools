@@ -1886,27 +1886,27 @@ exports[`Building Blocks generate Page building block with full template inserts
             <!-- Breadcrumbs aggregation -->
             <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
                 <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+                <Link id=\\"breadcrumbs_link1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:navigationActions>
             <!-- Navigation actions aggregation -->
-            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen1\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
         <macros:titleContent>
             <!-- Title content aggregation (content next to title) -->
-            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status 1\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
         <macros:actions>
             <!-- Actions aggregation -->
             <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
-            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
         </macros:actions>
         <macros:headerContent>
             <!-- Header content aggregation (content after avatar) -->
             <VBox id=\\"headerContent_vbox\\">
-                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+                <Title id=\\"headerContent_title\\" text=\\"Page Title 1\\"/>
             </VBox>
         </macros:headerContent>
         <macros:items>
@@ -1923,7 +1923,7 @@ exports[`Building Blocks generate Page building block with full template inserts
             <OverflowToolbar id=\\"footer_overflowToolbar\\">
                 <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
                 <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+                <Button id=\\"footer_button1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
             </OverflowToolbar>
         </macros:footer>
     </macros:Page>
@@ -1938,27 +1938,27 @@ exports[`Building Blocks generate Page building block with full template uses de
             <!-- Breadcrumbs aggregation -->
             <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
                 <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+                <Link id=\\"breadcrumbs_link1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:navigationActions>
             <!-- Navigation actions aggregation -->
-            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen1\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
         <macros:titleContent>
             <!-- Title content aggregation (content next to title) -->
-            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status 1\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
         <macros:actions>
             <!-- Actions aggregation -->
             <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
-            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
         </macros:actions>
         <macros:headerContent>
             <!-- Header content aggregation (content after avatar) -->
             <VBox id=\\"headerContent_vbox\\">
-                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+                <Title id=\\"headerContent_title\\" text=\\"Page Title 1\\"/>
             </VBox>
         </macros:headerContent>
         <macros:items>
@@ -1975,7 +1975,7 @@ exports[`Building Blocks generate Page building block with full template uses de
             <OverflowToolbar id=\\"footer_overflowToolbar\\">
                 <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
                 <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+                <Button id=\\"footer_button1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
             </OverflowToolbar>
         </macros:footer>
     </macros:Page>
@@ -2079,9 +2079,10 @@ exports[`Building Blocks generateBuildingBlockAggregation appends children insid
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" controllerName=\\"com.test.myApp.ext.main.Main\\">
     <macros:Page id=\\"Page\\" title=\\"pageTitle\\">
         <macros:actions>
-            <Button id=\\"actions_button\\" text=\\"Action 1\\"/>
-            <Button id=\\"actions_button1\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
-            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button2\\" text=\\"Action 3\\" press=\\".onActionsClickAction3\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button3\\" text=\\"Action 4\\" press=\\".onActionsClickAction4\\" type=\\"Ghost\\"/>
         </macros:actions>
     </macros:Page>
 </mvc:View>"
@@ -2095,7 +2096,7 @@ exports[`Building Blocks generateBuildingBlockAggregation appends children insid
                 <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
             </VBox>
             <VBox id=\\"headerContent_vbox1\\">
-                <Title id=\\"headerContent_title1\\" text=\\"Page Title\\"/>
+                <Title id=\\"headerContent_title1\\" text=\\"Page Title 2\\"/>
             </VBox>
         </macros:headerContent>
     </macros:Page>
@@ -2107,7 +2108,7 @@ exports[`Building Blocks generateBuildingBlockAggregation appends children insid
     <macros:Page id=\\"Page\\" title=\\"pageTitle\\">
         <macros:navigationActions>
             <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" type=\\"Transparent\\"/>
-            <Button id=\\"navigationActions_button1\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+            <Button id=\\"navigationActions_button1\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen2\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
     </macros:Page>
 </mvc:View>"
@@ -2118,7 +2119,7 @@ exports[`Building Blocks generateBuildingBlockAggregation appends children insid
     <macros:Page id=\\"Page\\" title=\\"pageTitle\\">
         <macros:titleContent>
             <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\"/>
-            <GenericTag id=\\"titleContent_genericTag1\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"titleContent_genericTag1\\" text=\\"Status 2\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
     </macros:Page>
 </mvc:View>"
@@ -2151,8 +2152,8 @@ exports[`Building Blocks generateBuildingBlockAggregation wraps loose building b
             <!-- Breadcrumbs aggregation -->
             <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
                 <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+                <Link id=\\"breadcrumbs_link1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:items>

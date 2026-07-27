@@ -4090,7 +4090,10 @@ describe('Building Blocks', () => {
             const viewWithActions = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
     <macros:Page id="Page" title="pageTitle">
-        <macros:actions><Button id="actions_button" text="Action 1" /></macros:actions>
+        <macros:actions>
+            <Button id="actions_button" text="Action 1" press=".onActionsClickAction1" type="Ghost"/>
+            <Button id="actions_button1" text="Action 2" press=".onActionsClickAction2" type="Ghost"/>
+        </macros:actions>
     </macros:Page>
 </mvc:View>`;
             fs.write(join(basePath, xmlViewFilePath), viewWithActions);
