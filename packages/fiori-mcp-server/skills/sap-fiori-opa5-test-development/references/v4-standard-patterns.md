@@ -184,7 +184,7 @@ Then.onTheObjectPage.onForm({section: "GeneralInfo"})
 
 // Assert a text-annotated field (Common.Text / SAP__common.Text annotation present)
 Then.onTheObjectPage.onForm({section: "GeneralInfo"})
-    .iCheckField({ property: "CustomerID" }, { value: "99", description: "Christine Detemple" });
+    .iCheckField({ property: "CustomerID" }, { value: "99", description: "John Doe" });
 
 // Open value help from a form field
 When.onTheObjectPage.onForm({section: "GeneralInfo"})
@@ -273,7 +273,7 @@ When.onTheListReport.onFilterBar()
 ```
 
 Search via the generic search field. The search field is only available when the value help entity set is annotated as searchable in `metadata.xml`. Depending on the backend:
-- **CAP**: `Search.SearchRestrictions` with `Searchable: true` (from `@Search.searchable: true` in CDS)
+- **CAP**: `Capabilities.SearchRestrictions` with `Searchable: true` (opt-in via `@cds.search` on the entity in CDS)
 - **RAP**: `SAP__capabilities.SearchRestrictions` with `Searchable: true`
 
 Generic search may return many results - prefer filtering by a specific field (see below) for a precise result set.
