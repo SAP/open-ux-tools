@@ -1,5 +1,65 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.4 → 3.2.5
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/telemetry 1.0.22 → 1.0.23
+- @sap-ux/cap-config-writer 1.0.26 → 1.0.27
+- @sap-ux/fiori-elements-writer 3.1.12 → 3.1.13
+- @sap-ux/fiori-freestyle-writer 3.0.61 → 3.0.62
+- @sap-ux/ui5-application-inquirer 1.0.27 → 1.0.28
+
+## 1.3.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.21 → 1.0.22
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/cap-config-writer 1.0.25 → 1.0.26
+- @sap-ux/fe-fpm-writer 1.3.7 → 1.3.8
+- @sap-ux/fiori-elements-writer 3.1.11 → 3.1.12
+- @sap-ux/fiori-freestyle-writer 3.0.60 → 3.0.61
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/odata-service-writer 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-application-inquirer 1.0.26 → 1.0.27
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+- @sap-ux/odata-service-inquirer 3.2.3 → 3.2.4
+- @sap-ux/annotation-generator 1.0.19 → 1.0.20
+- @sap-ux/launch-config 1.0.15 → 1.0.16
+
+## 1.3.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/cap-config-writer 1.0.24 → 1.0.25
+- @sap-ux/fe-fpm-writer 1.3.6 → 1.3.7
+- @sap-ux/fiori-elements-writer 3.1.10 → 3.1.11
+- @sap-ux/fiori-freestyle-writer 3.0.59 → 3.0.60
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/launch-config 1.0.14 → 1.0.15
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.3
+- @sap-ux/odata-service-writer 1.0.14 → 1.0.15
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/ui5-application-inquirer 1.0.25 → 1.0.26
+- @sap-ux/telemetry 1.0.20 → 1.0.21
+- @sap-ux/annotation-generator 1.0.18 → 1.0.19
+
 ## 1.3.10
 
 ### Patch Changes

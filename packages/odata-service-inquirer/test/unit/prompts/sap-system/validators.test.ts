@@ -3,11 +3,16 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 
 const actualStore = await import('@sap-ux/store');
+const mockSystems = [{ name: 'new system' } as BackendSystem];
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue([{ name: 'new system' } as BackendSystem])
-    }))
+        getAll: jest.fn().mockResolvedValue(mockSystems)
+    })),
+    isSystemNameInUse: jest.fn().mockImplementation(async (name: string) => {
+        const trimmedName = name.trim().toLowerCase();
+        return mockSystems.some((system: BackendSystem) => system.name.toLowerCase() === trimmedName);
+    })
 }));
 
 const serviceInfoMock: Partial<ServiceInfo> = {

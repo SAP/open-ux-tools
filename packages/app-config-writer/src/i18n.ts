@@ -21,8 +21,7 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: SMART_LINKS_NS, // Default since first to add translations
-        ns: [SMART_LINKS_NS, NAV_CONFIG_NS],
-        showSupportNotice: false
+        ns: [SMART_LINKS_NS, NAV_CONFIG_NS]
     });
 }
 
