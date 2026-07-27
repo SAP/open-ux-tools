@@ -235,13 +235,13 @@ describe('update metadata command', () => {
         expect(mockSetLogLevelVerbose).toHaveBeenCalledTimes(1);
     });
 
-    test('--no-fetch-external-service-metadata: skips external service fetch', async () => {
+    test('--no-value-help: skips external service fetch', async () => {
         // Given
         const command = new Command('update');
         addMetadataUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path', '--no-fetch-external-service-metadata']));
+        await command.parseAsync(getArgv(['metadata', '/app/path', '--no-value-help']));
 
         // Then
         expect(mockFetchExternalServices).not.toHaveBeenCalled();

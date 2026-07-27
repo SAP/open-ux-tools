@@ -4,7 +4,7 @@ description: Run, invoke, and test the @sap-ux/create CLI — generate, add, con
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
-  version: "1.0.61"
+  version: "1.0.62"
 ---
 
 
@@ -442,6 +442,8 @@ Options:
 
 ## [`update metadata`](#update-metadata)
 
+> For the full workflow guide including prerequisites and manual steps, read `references/update-metadata.md`.
+
 Refresh the local OData service metadata.xml from the live backend for a Fiori application.
 Also fetches value-help (external) service metadata when available.
 
@@ -452,7 +454,7 @@ Example:
 `npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate`
 
 Options:
-- `--no-fetch-external-service-metadata` - Skip fetching value-help (external) service metadata
+- `--no-value-help` - Skip fetching value-help (external) service metadata
 - `-s, --simulate` - Simulate only. Do not write. Also sets `--verbose`.
 - `-v, --verbose` - Show verbose information.
 

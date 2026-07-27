@@ -31,14 +31,14 @@ Example:
     \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app\`
     \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate\``
         )
-        .option('--no-fetch-external-service-metadata', 'Skip fetching value-help (external) service metadata')
+        .option('--no-value-help', 'Skip fetching value-help (external) service metadata')
         .option('-s, --simulate', 'Simulate only. Do not write. Also sets `--verbose`.')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (appPath: string, options) => {
             if (options.verbose || options.simulate) {
                 setLogLevelVerbose();
             }
-            await updateMetadata(resolve(appPath), options.fetchExternalServiceMetadata !== false, !!options.simulate);
+            await updateMetadata(resolve(appPath), options.valueHelp !== false, !!options.simulate);
         });
 }
 

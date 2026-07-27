@@ -457,7 +457,7 @@ Example:
 `npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate`
 
 Options:
-- `--no-fetch-external-service-metadata` - Skip fetching value-help (external) service metadata
+- `--no-value-help` - Skip fetching value-help (external) service metadata
 - `-s, --simulate` - Simulate only. Do not write. Also sets `--verbose`.
 - `-v, --verbose` - Show verbose information.
 
