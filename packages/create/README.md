@@ -457,6 +457,7 @@ Example:
 `npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate`
 
 Options:
+- `--service <name>` - Name of the data source in manifest.json (defaults to mainService or first service)
 - `--no-value-help` - Skip fetching value-help (external) service metadata
 - `-s, --simulate` - Simulate only. Do not write. Also sets `--verbose`.
 - `-v, --verbose` - Show verbose information.

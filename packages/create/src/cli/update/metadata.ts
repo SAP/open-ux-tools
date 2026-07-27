@@ -31,6 +31,7 @@ Example:
     \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app\`
     \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate\``
         )
+        .option('--service <name>', 'Name of the data source in manifest.json (defaults to mainService or first service)')
         .option('--no-value-help', 'Skip fetching value-help (external) service metadata')
         .option('-s, --simulate', 'Simulate only. Do not write. Also sets `--verbose`.')
         .option('-v, --verbose', 'Show verbose information.')
@@ -38,7 +39,7 @@ Example:
             if (options.verbose || options.simulate) {
                 setLogLevelVerbose();
             }
-            await updateMetadata(resolve(appPath), options.valueHelp !== false, !!options.simulate);
+            await updateMetadata(resolve(appPath), options.valueHelp !== false, !!options.simulate, options.service);
         });
 }
 
@@ -49,7 +50,7 @@ Example:
  * @param fetchExternalServiceMetadata - whether to also fetch value-help service metadata
  * @param simulate - dry run; trace changes but do not write to disk
  */
-async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boolean, simulate: boolean): Promise<void> {
+async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boolean, simulate: boolean, serviceNameOpt?: string): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called update metadata for path '${appPath}'`);
@@ -57,9 +58,13 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
 
         // Read manifest to get service name, path and OData version
         const appAccess = await createApplicationAccess(appPath);
-        const serviceName = appAccess.app.mainService ?? Object.keys(appAccess.app.services)[0];
+        const serviceName = serviceNameOpt ?? appAccess.app.mainService ?? Object.keys(appAccess.app.services)[0];
         if (!serviceName) {
             logger.error(`No OData service found in manifest for app at '${appPath}'`);
+            return;
+        }
+        if (serviceNameOpt && !appAccess.app.services[serviceNameOpt]) {
+            logger.error(`Service '${serviceNameOpt}' not found in manifest. Available: ${Object.keys(appAccess.app.services).join(', ')}`);
             return;
         }
         const servicePath = appAccess.app.services[serviceName]?.uri;
@@ -73,7 +78,7 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
             | { dataSources?: Record<string, { settings?: { odataVersion?: string } }> }
             | undefined;
         const odataVersionRaw = sappManifest?.dataSources?.[serviceName]?.settings?.odataVersion;
-        const odataVersion = odataVersionRaw === '4.0' ? OdataVersion.v4 : OdataVersion.v2;
+        const odataVersion = odataVersionRaw?.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
 
         logger.debug(`Service '${serviceName}' at path '${servicePath}' (OData ${odataVersion})`);
 
@@ -90,7 +95,7 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
         let provider: AbapServiceProvider;
         if (isAppStudio()) {
             if (!backendConfig.destination) {
-                logger.error(`No destination configured in '${FileName.Ui5Yaml}'. Cannot connect to backend in SAP Business Application Studio.`);
+                logger.error(`No destination found in '${FileName.Ui5Yaml}'. Add a 'destination' entry to the backend configuration to connect in SAP Business Application Studio.`);
                 return;
             }
             // WebIDEUsage.ODATA_ABAP is required so createForDestination returns an AbapServiceProvider.
@@ -102,6 +107,12 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
                 ? new URL(backendConfig.connectPath, backendConfig.url).href
                 : backendConfig.url;
             const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+            if (!systemService) {
+                logger.error(
+                    `A stored connection configuration for backend system '${backendUrl}'${backendConfig.client ? ` (client ${backendConfig.client})` : ''} cannot be found. Use 'npx @sap-ux/create@latest add system' to create a matching entry.`
+                );
+                return;
+            }
             const system = await systemService.read(new BackendSystemKey({ url: backendUrl, client: backendConfig.client }));
             if (!system) {
                 logger.error(`No stored system found for URL '${backendUrl}'${backendConfig.client ? ` (client ${backendConfig.client})` : ''}. Run 'sap-ux add system' first.`);
@@ -120,7 +131,15 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
 
         // Fetch main service metadata
         logger.info(`Fetching metadata for service '${serviceName}'...`);
-        const metadataXml = await provider.service(servicePath).metadata();
+        let metadataXml: string;
+        try {
+            metadataXml = await provider.service(servicePath).metadata();
+        } catch (error) {
+            if (isAppStudio() && backendConfig.destination) {
+                throw new Error(`The service metadata is returning an error. Please check that the destination '${backendConfig.destination}' exists and the service is accessible.`);
+            }
+            throw error;
+        }
         logger.debug(`Received metadata for service '${serviceName}'`);
 
         // Fetch external (value-help) service metadata when requested

@@ -255,6 +255,26 @@ describe('update metadata command', () => {
         expect(mockFsCommit).toHaveBeenCalledTimes(1);
     });
 
+    test('OData version 4.01 is treated as v4', async () => {
+        // Given
+        mockReadManifest.mockResolvedValueOnce({
+            'sap.app': { dataSources: { mainService: { settings: { odataVersion: '4.01' } } } }
+        });
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path']));
+
+        // Then
+        expect(mockUpdate).toHaveBeenCalledWith(
+            '/app/path',
+            expect.objectContaining({ version: '4.0' }),
+            mockFsInstance,
+            true
+        );
+    });
+
     test('no external service references: skips external fetch and uses updateMiddlewares=false', async () => {
         // Given
         mockGetExternalServiceReferences.mockReturnValue([]);
@@ -345,6 +365,21 @@ describe('update metadata command', () => {
         expect(mockUpdate).not.toHaveBeenCalled();
     });
 
+    test('VSCode: systemService not available: logs specific error and exits without writing', async () => {
+        // Given
+        mockGetService.mockResolvedValueOnce(undefined);
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('A stored connection configuration for backend system'));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('add system'));
+        expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
     test('VSCode: system not found in store: logs error and exits without writing', async () => {
         // Given
         mockSystemRead.mockResolvedValue(undefined);
@@ -359,7 +394,7 @@ describe('update metadata command', () => {
         expect(mockUpdate).not.toHaveBeenCalled();
     });
 
-    test('BAS: missing destination in ui5.yaml: logs error and exits without writing', async () => {
+    test('BAS: missing destination in ui5.yaml: logs specific error and exits without writing', async () => {
         // Given
         mockIsAppStudio.mockReturnValue(true);
         mockGetBackendConfigs.mockReturnValue([{ url: 'https://test.example.com', path: '/sap/opu/' }]);
@@ -370,7 +405,27 @@ describe('update metadata command', () => {
         await command.parseAsync(getArgv(['metadata', '/app/path']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No destination configured'));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No destination found'));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("'destination' entry"));
+        expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
+    test('BAS: metadata fetch fails: logs destination-specific error', async () => {
+        // Given
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetBackendConfigs.mockReturnValue([
+            { url: 'https://test.example.com', path: '/sap/opu/', destination: 'MY_DEST' }
+        ]);
+        mockMetadata.mockRejectedValueOnce(new Error('404 Not Found'));
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("destination 'MY_DEST'"));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('service is accessible'));
         expect(mockUpdate).not.toHaveBeenCalled();
     });
 
@@ -385,6 +440,55 @@ describe('update metadata command', () => {
         // Then — validateBasePath receives the resolved absolute path, not the raw relative one
         const { resolve } = await import('node:path');
         expect(mockValidateBasePath).toHaveBeenCalledWith(resolve('relative/path'));
+    });
+
+    test('--service: uses specified service name instead of mainService', async () => {
+        // Given
+        mockCreateApplicationAccess.mockResolvedValue({
+            app: {
+                mainService: 'mainService',
+                services: {
+                    mainService: { uri: '/sap/opu/odata/sap/ZTEST_SRV/' },
+                    otherService: { uri: '/sap/opu/odata/sap/ZOTHER_SRV/' }
+                }
+            },
+            readManifest: mockReadManifest
+        });
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path', '--service', 'otherService']));
+
+        // Then
+        expect(mockUpdate).toHaveBeenCalledWith(
+            '/app/path',
+            expect.objectContaining({ name: 'otherService', path: '/sap/opu/odata/sap/ZOTHER_SRV/' }),
+            mockFsInstance,
+            expect.any(Boolean)
+        );
+        expect(loggerMock.error).not.toHaveBeenCalled();
+    });
+
+    test('--service with unknown name: logs error listing available services', async () => {
+        // Given
+        mockCreateApplicationAccess.mockResolvedValue({
+            app: {
+                mainService: 'mainService',
+                services: { mainService: { uri: '/sap/opu/odata/sap/ZTEST_SRV/' } }
+            },
+            readManifest: mockReadManifest
+        });
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path', '--service', 'unknownService']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('unknownService'));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('mainService'));
+        expect(mockUpdate).not.toHaveBeenCalled();
     });
 
     test('metadata() throws: logs error message', async () => {
