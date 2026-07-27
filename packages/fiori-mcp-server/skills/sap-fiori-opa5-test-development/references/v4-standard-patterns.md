@@ -165,15 +165,22 @@ Then.onTheObjectPage.onForm({section: "GeneralInfo"})
     .iCheckField({ property: "CustomerID" }, { description: "John Doe" });
 ```
 
-To detect whether a field needs `{ value, description }`: grep `metadata.xml` for `Target="...<EntityType>/<PropertyName>"` and check for a text annotation on that target.
-Both backends use the same OData vocabulary terms — only the namespace alias differs:
+To detect whether a field needs `{ value, description }`: check `metadata.xml` for a text annotation on the property target. Both backends use the same OData vocabulary terms — only the namespace alias differs:
 
 | Backend | Annotation alias in metadata.xml | Fully qualified term |
 |---|---|---|
 | RAP | `SAP__common.Text` / `SAP__UI.TextArrangement` | `com.sap.vocabularies.Common.v1.Text` / `com.sap.vocabularies.UI.v1.TextArrangement` |
 | CAP | `Common.Text` / `UI.TextArrangement` | same |
 
-Grep for either alias form — or search for the fully qualified term `com.sap.vocabularies.Common.v1.Text` to catch both.
+Grep for either alias form — or use the fully qualified term to catch both:
+
+```bash
+grep -A5 'Target=".*<PropertyName>"' metadata.xml
+```
+
+Replace `<PropertyName>` with the actual OData property name (e.g. `CustomerID`). This prints the `Annotations` element targeting that property plus the 5 lines after it, where the `Common.Text` or `TextArrangement` annotation will appear if present.
+
+**Standard form edit/check workflow:**
 
 ```javascript
 When.onTheObjectPage.onHeader().iExecuteEdit();
