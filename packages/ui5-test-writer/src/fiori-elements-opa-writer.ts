@@ -701,7 +701,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         generatedJourneys.push(appFeatures.fpm.name);
     }
 
-    if (generatedJourneys.length === 0 && !writeContext.hasPreexistingTests) {
+    if (generatedJourneys.length === 0 && !writeContext.incompatibleTestSetup) {
         writeFallbackJourney(writeContext);
     }
 
@@ -716,9 +716,14 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
  */
 function writeFallbackJourney(writeContext: WriteContext): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
+    const fallbackPath = join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`);
+    // Do not clobber an existing fallback file (e.g. a user-edited FirstJourney in a preexisting test setup).
+    if (editor.exists(fallbackPath)) {
+        return;
+    }
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', `FirstJourney${dotFileExtension}`),
-        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`),
+        fallbackPath,
         journeyParams,
         undefined,
         {
@@ -856,14 +861,13 @@ function writeOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys
  * @returns true if the file was written, false otherwise
  */
 function updateReferencesInOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys: string[] = []): boolean {
-    return addPathsToQUnitJs(
-        generatedJourneys.map((page) => {
-            return `${writeContext.config.appPath}/test/integration/${page}Journey.gen`;
-        }),
-        writeContext.testOutDirPath,
-        writeContext.editor,
-        writeContext.log
-    );
+    // With no ux-spec journeys, wire the fallback journey (plain `opaJourneyFileName`, no `Journey.gen`
+    // suffix) into the existing qunit harness so the test setup remains runnable.
+    const journeyPaths =
+        generatedJourneys.length > 0
+            ? generatedJourneys.map((page) => `${writeContext.config.appPath}/test/integration/${page}Journey.gen`)
+            : [`${writeContext.config.appPath}/test/integration/${writeContext.config.opaJourneyFileName}`];
+    return addPathsToQUnitJs(journeyPaths, writeContext.testOutDirPath, writeContext.editor, writeContext.log);
 }
 
 /**

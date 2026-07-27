@@ -486,6 +486,42 @@ describe('ui5-test-writer', () => {
                     expect(firstJourneyCalls).toHaveLength(0);
                     copyTplSpy.mockRestore();
                 });
+
+                it('writes the fallback journey and splices it into qunit when none exists and no journeys are produced', async () => {
+                    const projectDir = prepareTestFiles('LropVirtualTests');
+                    // Remove the fixture's FirstJourney.js so the fallback is not already present
+                    fs!.delete(join(projectDir, 'webapp', 'test', 'integration', 'FirstJourney.js'));
+                    // Empty model → no LR/OP/FPM journeys
+                    readAppMock.mockResolvedValueOnce({});
+                    mockProjectExistsSync({
+                        hasIntegration: true,
+                        hasJourneyRunner: true
+                    });
+                    addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                    const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                    fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                    // Fallback FirstJourney template is rendered because no fallback file exists
+                    const firstJourneyCalls = copyTplSpy.mock.calls.filter(
+                        (call) => typeof call[0] === 'string' && call[0].endsWith('FirstJourney.js')
+                    );
+                    expect(firstJourneyCalls).toHaveLength(1);
+                    // The fallback module path (no .gen suffix) is spliced into the existing opaTests.qunit.js
+                    expect(addPathsToQUnitJsMock).toHaveBeenCalledWith(
+                        expect.arrayContaining([expect.stringContaining('/test/integration/FirstJourney')]),
+                        expect.any(String),
+                        expect.anything(),
+                        undefined
+                    );
+                    expect(addPathsToQUnitJsMock).not.toHaveBeenCalledWith(
+                        expect.arrayContaining([expect.stringContaining('Journey.gen')]),
+                        expect.any(String),
+                        expect.anything(),
+                        undefined
+                    );
+                    copyTplSpy.mockRestore();
+                });
             });
 
             describe('existing app with incompatible test setup (no own JourneyRunner.js)', () => {
@@ -524,6 +560,31 @@ describe('ui5-test-writer', () => {
                     // Informational log is emitted
                     expect(log.info).toHaveBeenCalledWith(incompatibleMessage);
 
+                    copyTplSpy.mockRestore();
+                });
+
+                it('does not write the fallback journey when no journeys are produced', async () => {
+                    const projectDir = prepareTestFiles('LropVirtualTests');
+                    // Remove the fixture's FirstJourney.js so the guard cannot be satisfied by an existing file
+                    fs!.delete(join(projectDir, 'webapp', 'test', 'integration', 'FirstJourney.js'));
+                    // Empty model → no LR/OP/FPM journeys
+                    readAppMock.mockResolvedValueOnce({});
+                    mockProjectExistsSync({
+                        hasIntegration: true,
+                        hasJourneyRunner: false
+                    });
+                    addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                    const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                    fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                    // Fallback must not be written into an incompatible setup (the harness is left untouched)
+                    const firstJourneyCalls = copyTplSpy.mock.calls.filter(
+                        (call) => typeof call[0] === 'string' && call[0].endsWith('FirstJourney.js')
+                    );
+                    expect(firstJourneyCalls).toHaveLength(0);
+                    // Splice helper is not invoked
+                    expect(addPathsToQUnitJsMock).not.toHaveBeenCalled();
                     copyTplSpy.mockRestore();
                 });
             });
