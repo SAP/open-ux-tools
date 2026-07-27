@@ -65,7 +65,6 @@ sap.ui.define([
             Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckColumns(undefined, {"ModelYear":{"header":"Model Year"},"WarrantyYear":{"header":"Warranty Expiration"},"BrandCategory":{"header":"Material Category"},"FabricationCountry":{"header":"Fabrication Country"}});
         });
 
-
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();

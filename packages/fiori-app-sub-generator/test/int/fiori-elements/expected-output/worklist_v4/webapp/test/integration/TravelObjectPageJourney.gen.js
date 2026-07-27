@@ -74,7 +74,6 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns(undefined, {"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
         });
 
-
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();

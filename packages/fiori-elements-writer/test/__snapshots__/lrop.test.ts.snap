@@ -18753,7 +18753,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -18861,7 +18860,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 
@@ -26243,7 +26241,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -26351,7 +26348,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 

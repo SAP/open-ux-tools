@@ -61,7 +61,6 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckColumns(undefined, {"BookingSupplementID":{"header":"Book. Supp. Number"},"SupplementID":{"header":"Product ID"},"Price":{"header":"Product Price"}});
         });
 
-
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();

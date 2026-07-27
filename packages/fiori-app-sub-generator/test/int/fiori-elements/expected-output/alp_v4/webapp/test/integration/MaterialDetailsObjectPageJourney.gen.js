@@ -67,7 +67,6 @@ sap.ui.define([
             Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckColumns(undefined, {"0":{"header":"Rating"},"Title":{"header":"Title"}});
         });
 
-
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
