@@ -85,14 +85,25 @@ When.onTheListReport.onTable().iSelectRows({ProductID: "HT-1000"});
 When.onTheListReport.onTable().iSelectAllRows();
 
 // Sort by column (second arg: "Ascending" | "Descending" | "None", defaults to "Ascending")
-When.onTheListReport.onTable().iChangeSortOrder("ProductName");                // ascending (default)
-When.onTheListReport.onTable().iChangeSortOrder("ProductName", "Ascending");   // ascending
-When.onTheListReport.onTable().iChangeSortOrder("ProductName", "Descending");  // descending
-When.onTheListReport.onTable().iChangeSortOrder("ProductName", "None");        // remove sorting
+// IMPORTANT: The first argument is the visible column header label (as shown in the UI),
+// NOT the OData property name. Check the column header text from iCheckColumns or the annotation.
+// Object form uses { name: "<key>" } where key is the selectedKey of the sort dialog ComboBox item.
+When.onTheListReport.onTable().iChangeSortOrder("Product Name");                // ascending (default)
+When.onTheListReport.onTable().iChangeSortOrder("Product Name", "Ascending");   // ascending
+When.onTheListReport.onTable().iChangeSortOrder("Product Name", "Descending");  // descending
+When.onTheListReport.onTable().iChangeSortOrder("Product Name", "None");        // remove sorting
+
+// Group by column — first arg is the visible column header label (same rule as iChangeSortOrder)
+When.onTheListReport.onTable().iGroupByColumn("Product Name");
+// Assert grouping is active for a column
+Then.onTheListReport.onTable().iCheckGroupByColumn("Product Name");
 
 // Create / delete via table toolbar
 When.onTheListReport.onTable().iExecuteCreate();
 When.onTheListReport.onTable().iExecuteDelete();
+
+// Execute a custom action from the table toolbar (use iExecuteAction, NOT iPressAction)
+When.onTheListReport.onTable().iExecuteAction("Deduct Discount");
 ```
 
 ---
@@ -130,6 +141,35 @@ When.onTheObjectPage.onHeader().iPressNavigateUpButton();
 
 The `section` value in `onForm({ section: "..." })` must be the **ID** from the `@UI.Facets` annotation, not the display label.
 
+**Anti-pattern — `iCheckField` with only `{ value }` on a text-annotated field always times out:**
+
+Any field annotated with a text association in the metadata is rendered as a combined display string (e.g. `"John Doe (99)"`). Passing only `{ value: "99" }` will always time out — no control matches the partial object. You **must** pass `{ value, description }`.
+
+```javascript
+// ❌ Wrong — times out for any field with a text annotation
+Then.onTheObjectPage.onForm({section: "GeneralInfo"})
+    .iCheckField({ property: "CustomerID" }, { value: "99" });
+
+// ✅ Fixed — always pass { value, description } for text-annotated fields
+// value = the key (ID), description = the associated text
+// For TextFirst (default in RAP): display is "Description (ID)"
+// For TextLast: display is "ID (Description)"
+// TextOnly (common in CAP): only the description text is shown — pass { value: "", description: "John Doe" }
+// Find the description by grepping the value help mock data file for the known ID
+Then.onTheObjectPage.onForm({section: "GeneralInfo"})
+    .iCheckField({ property: "CustomerID" }, { value: "99", description: "John Doe" });
+```
+
+To detect whether a field needs `{ value, description }`: grep `metadata.xml` for `Target="...<EntityType>/<PropertyName>"` and check for a text annotation on that target.
+Both backends use the same OData vocabulary terms — only the namespace alias differs:
+
+| Backend | Annotation alias in metadata.xml | Fully qualified term |
+|---|---|---|
+| RAP | `SAP__common.Text` / `SAP__UI.TextArrangement` | `com.sap.vocabularies.Common.v1.Text` / `com.sap.vocabularies.UI.v1.TextArrangement` |
+| CAP | `Common.Text` / `UI.TextArrangement` | same |
+
+Grep for either alias form — or search for the fully qualified term `com.sap.vocabularies.Common.v1.Text` to catch both.
+
 ```javascript
 When.onTheObjectPage.onHeader().iExecuteEdit();
 Then.onTheObjectPage.iSeeObjectPageInEditMode();
@@ -138,9 +178,13 @@ Then.onTheObjectPage.iSeeObjectPageInEditMode();
 When.onTheObjectPage.onForm({section: "GeneralInfo"})
     .iChangeField({ property: "ProductName" }, "Updated Name");
 
-// Assert a field value
+// Assert a plain field value (no Common.Text / SAP__common.Text annotation)
 Then.onTheObjectPage.onForm({section: "GeneralInfo"})
     .iCheckField({ property: "ProductName" }, "Updated Name");
+
+// Assert a text-annotated field (Common.Text / SAP__common.Text annotation present)
+Then.onTheObjectPage.onForm({section: "GeneralInfo"})
+    .iCheckField({ property: "CustomerID" }, { value: "99", description: "Christine Detemple" });
 
 // Open value help from a form field
 When.onTheObjectPage.onForm({section: "GeneralInfo"})
@@ -209,12 +253,21 @@ When.onTheObjectPage.iCollapseSection({ section: "AdditionalInfo" });
 
 ## Value Help Dialog
 
-Open value help from a form field or filter bar field:
+Open value help from a form field or filter bar field.
+
+**Form field**: pass the label as it appears on the form field in the UI.
+This comes from the `Label` value in the `@UI.FieldGroup` / `@UI.Identification` annotation for that field, NOT from the `Common.Label` annotation on the OData property - those two often differ.
+For example, `CustomerID` may have `Common.Label "Customer ID"` but the form field is labelled `"Customer"` - use `"Customer"`, not `"Customer ID"` and not `"CustomerID"`.
+When in doubt, check the `@UI.FieldGroup` or `@UI.Identification` annotation, or inspect the rendered form.
 
 ```javascript
 When.onTheObjectPage.onForm({section: "GeneralInfo"})
     .iOpenValueHelp("Category");
+```
 
+**Filter bar field**: pass `{ property: "<ODataPropertyName>" }`.
+
+```javascript
 When.onTheListReport.onFilterBar()
     .iOpenValueHelp({ property: "CustomerID" });
 ```
@@ -231,7 +284,12 @@ When.onTheObjectPage.onValueHelpDialog()
     .and.iExecuteSearch();
 ```
 
-Filter by a specific field. Two cases depending on the value help dialog layout:
+Filter by a specific field. Two cases depending on the value help dialog layout. **Determine the case before writing the test** by grepping `metadata.xml` for `SearchRestrictions` on the value help target entity (found via the `NavigationProperty` path, e.g. `_Customer` → `Passenger` entity set):
+
+- `Searchable: true` present → **Case A**
+- Absent or `Searchable: false` → **Case B**
+
+> Backend defaults: **RAP** — Case A is the default, standard VH entities expose `SAP__capabilities.SearchRestrictions` with `Searchable: true`. **CAP** — search is opt-in via `@cds.search` on the entity; without it, CAP emits `Capabilities.SearchRestrictions` with `Searchable: false`, making Case B the default. When in doubt, always check the metadata rather than assuming.
 
 - **Case A: value help dialog has a search field** (filters are collapsed by default) - call `iExecuteShowHideFilters` first to expand the filter bar, then set the field:
 
@@ -251,19 +309,38 @@ When.onTheObjectPage.onValueHelpDialog()
     .and.iExecuteSearch();
 ```
 
-Select a row by index (use when field-based selection is unreliable due to column naming) or by field value (only works if the column exists in the value help dialog result table):
+Select a row by index or by field value.
+
+**Prefer index-based selection** (`iSelectRows(0)`) — it is always reliable regardless of result table columns. Use field-based selection only when the test must select a specific record and cannot rely on position (e.g. unsorted results with multiple pages).
+
+Field-based selection only works if the column exists in the value help dialog result table AND the column name key matches exactly (case-sensitive OData property name):
 
 ```javascript
+// Preferred: select by index — works regardless of column layout
 When.onTheObjectPage.onValueHelpDialog()
     .iSelectRows(0);
 
+// Alternative: select by field value — only when a specific record must be targeted
 When.onTheObjectPage.onValueHelpDialog()
     .iSelectRows({CategoryId: "CAT001"});
 ```
 
-Confirm selection and assert the field was updated:
+Confirm selection and assert the field was updated.
+
+**Single-select value help dialog** (most form fields): selecting a row closes the dialog immediately — do NOT call `iConfirm()` afterwards, it will time out because the dialog is already gone:
 
 ```javascript
+When.onTheObjectPage.onValueHelpDialog().iSelectRows(0);
+// dialog closes automatically — no iConfirm() needed
+
+Then.onTheObjectPage.onForm({section: "GeneralInfo"})
+    .iCheckField({ property: "Category" }, "Electronics");
+```
+
+**Multi-select value help dialog** (e.g. filter bar fields): selecting rows does not close the dialog — call `iConfirm()` explicitly:
+
+```javascript
+When.onTheObjectPage.onValueHelpDialog().iSelectRows(0);
 When.onTheObjectPage.onValueHelpDialog().iConfirm();
 
 Then.onTheObjectPage.onForm({section: "GeneralInfo"})
