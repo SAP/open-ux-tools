@@ -51,9 +51,9 @@ jest.unstable_mockModule('@sap-ux/project-access', () =>
 );
 
 // ── UI5Config ────────────────────────────────────────────────────────────────
-const mockGetBackendConfigs = jest.fn().mockReturnValue([
-    { url: 'https://test.example.com', path: '/sap/opu/odata/sap/', client: '100' }
-]);
+const mockGetBackendConfigs = jest
+    .fn()
+    .mockReturnValue([{ url: 'https://test.example.com', path: '/sap/opu/odata/sap/', client: '100' }]);
 const mockUi5ConfigInstance = { getBackendConfigsFromFioriToolsProxyMiddleware: mockGetBackendConfigs };
 const mockUi5ConfigNewInstance = jest.fn<any>().mockResolvedValue(mockUi5ConfigInstance);
 
@@ -150,7 +150,12 @@ describe('update metadata command', () => {
             { url: 'https://test.example.com', path: '/sap/opu/odata/sap/', client: '100' }
         ]);
         mockUi5ConfigNewInstance.mockResolvedValue(mockUi5ConfigInstance);
-        mockSystemRead.mockResolvedValue({ name: 'TestSystem', url: 'https://test.example.com', username: 'user', password: 'pass' });
+        mockSystemRead.mockResolvedValue({
+            name: 'TestSystem',
+            url: 'https://test.example.com',
+            username: 'user',
+            password: 'pass'
+        });
         mockMetadata.mockResolvedValue('<edmx:Edmx/>');
         mockGetExternalServiceReferences.mockReturnValue([{ name: 'ValHelpRef' }]);
         mockFetchExternalServices.mockResolvedValue([{ name: 'ValHelp' }]);
@@ -199,10 +204,7 @@ describe('update metadata command', () => {
         await command.parseAsync(getArgv(['metadata', '/app/path']));
 
         // Then
-        expect(mockCreateForDestination).toHaveBeenCalledWith(
-            {},
-            { Name: 'MY_DEST', WebIDEUsage: 'odata_abap' }
-        );
+        expect(mockCreateForDestination).toHaveBeenCalledWith({}, { Name: 'MY_DEST', WebIDEUsage: 'odata_abap' });
         expect(mockMetadata).toHaveBeenCalledTimes(1);
         expect(mockFetchExternalServices).toHaveBeenCalledTimes(1);
         expect(mockFsCommit).toHaveBeenCalledTimes(1);
@@ -327,7 +329,7 @@ describe('update metadata command', () => {
         await command.parseAsync(getArgv(['metadata', '/app/path']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("has no URI"));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('has no URI'));
         expect(mockUpdate).not.toHaveBeenCalled();
     });
 
@@ -403,12 +405,14 @@ describe('update metadata command', () => {
 
     test('uses connectPath to look up stored system when present', async () => {
         // Given
-        mockGetBackendConfigs.mockReturnValue([{
-            url: 'https://test.example.com',
-            path: '/sap/opu/',
-            client: '200',
-            connectPath: '/sap'
-        }]);
+        mockGetBackendConfigs.mockReturnValue([
+            {
+                url: 'https://test.example.com',
+                path: '/sap/opu/',
+                client: '200',
+                connectPath: '/sap'
+            }
+        ]);
         const command = new Command('update');
         addMetadataUpdateCommand(command);
 
@@ -417,6 +421,8 @@ describe('update metadata command', () => {
 
         // Then — BackendSystemKey is constructed with the resolved connectPath URL
         const { BackendSystemKey: ActualKey } = actualStore;
-        expect(mockSystemRead).toHaveBeenCalledWith(new ActualKey({ url: 'https://test.example.com/sap', client: '200' }));
+        expect(mockSystemRead).toHaveBeenCalledWith(
+            new ActualKey({ url: 'https://test.example.com/sap', client: '200' })
+        );
     });
 });
