@@ -90,7 +90,7 @@ sap.ui.define([
 <% } -%>
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
-        opaTest("Check the <%- section.id %> section of the Object Page", function (Given, When, Then) {
+        opaTest("Check the <%- section.id %> section of the Object Page", function (Given, <% if (bodySections.length > 1) { %>When<% } else { %>_When<% } %>, Then) {
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
