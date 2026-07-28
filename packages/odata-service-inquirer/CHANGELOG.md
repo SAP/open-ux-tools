@@ -1,5 +1,27 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.2.5
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/telemetry 1.0.22 → 1.0.23
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
 ## 3.2.4
 
 ### Patch Changes

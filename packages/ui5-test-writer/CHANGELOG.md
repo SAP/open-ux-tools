@@ -1,5 +1,26 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-28
+
+#### Bug Fixes
+
+- Rename the generated OPA journey type-definition file to `OpaJourneyTypes.gen.d.ts` and update the generated journey imports to match [[6fdd7f9](https://github.com/SAP/open-ux-tools/commit/6fdd7f9a7d6f082135f25eff5a77252694648cfa)]
+
+## 1.2.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/preview-middleware 1.0.48 → 1.0.49
+
 ## 1.2.32
 
 ### Patch Changes
