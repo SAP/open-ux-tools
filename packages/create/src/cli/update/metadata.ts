@@ -20,6 +20,88 @@ import { create as createStore } from 'mem-fs';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
 import { validateBasePath } from '../../validation/index.js';
 
+type BackendConfig = ReturnType<InstanceType<typeof UI5Config>['getBackendConfigsFromFioriToolsProxyMiddleware']>[number];
+type Logger = ReturnType<typeof getLogger>;
+
+/**
+ * Creates an AbapServiceProvider for the given backend config.
+ * Returns null and logs an error if the required config is missing.
+ */
+async function buildProvider(backendConfig: BackendConfig, logger: Logger): Promise<AbapServiceProvider | null> {
+    if (isAppStudio()) {
+        if (!backendConfig.destination) {
+            logger.error(
+                `No destination found in '${FileName.Ui5Yaml}'. Add a 'destination' entry to the backend configuration to connect in SAP Business Application Studio.`
+            );
+            return null;
+        }
+        const destination = { Name: backendConfig.destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP };
+        return createForDestination({}, destination) as AbapServiceProvider;
+    }
+
+    const backendUrl = backendConfig.connectPath
+        ? new URL(backendConfig.connectPath, backendConfig.url).href
+        : backendConfig.url;
+    const clientSuffix = backendConfig.client ? ` (client ${backendConfig.client})` : '';
+
+    const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+    if (!systemService) {
+        logger.error(
+            `A stored connection configuration for backend system '${backendUrl}'${clientSuffix} cannot be found. Use 'npx @sap-ux/create@latest add system' to create a matching entry.`
+        );
+        return null;
+    }
+    const system = await systemService.read(new BackendSystemKey({ url: backendUrl, client: backendConfig.client }));
+    if (!system) {
+        logger.error(
+            `No stored system found for URL '${backendUrl}'${clientSuffix}. Run 'sap-ux add system' first.`
+        );
+        return null;
+    }
+    const providerConfig: AxiosRequestConfig = {
+        baseURL: backendConfig.url,
+        params: { 'sap-client': backendConfig.client },
+        ...(system.username ? { auth: { username: system.username, password: system.password ?? '' } } : {})
+    };
+    if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
+        TlsPatch.apply();
+    }
+    return new AbapServiceProvider(providerConfig);
+}
+
+/**
+ * Fetches external (value-help) services when requested.
+ * Returns undefined if not requested, none found, or the fetch fails.
+ */
+async function fetchExternalServicesIfRequested(
+    provider: AbapServiceProvider,
+    servicePath: string,
+    metadataXml: string,
+    fetchExternal: boolean,
+    logger: Logger
+): Promise<Awaited<ReturnType<AbapServiceProvider['fetchExternalServices']>> | undefined> {
+    if (!fetchExternal) {
+        return undefined;
+    }
+    const references = getExternalServiceReferences(servicePath, metadataXml);
+    if (references.length === 0) {
+        logger.debug('No external service references found in metadata');
+        return undefined;
+    }
+    logger.info(`Fetching ${references.length} external service(s)...`);
+    try {
+        const externalServices = await provider.fetchExternalServices(references);
+        logger.debug(`Fetched ${externalServices.length} external service(s)`);
+        return externalServices;
+    } catch (error) {
+        logger.warn(
+            `Could not fetch external service metadata: ${(error as Error).message}. Continuing without external services.`
+        );
+        logger.debug(error);
+        return undefined;
+    }
+}
+
 /**
  * Add the "update metadata" subcommand to a passed command.
  * Refreshes the local OData service metadata and value-help service metadata from the live backend.
@@ -57,7 +139,7 @@ Example:
  * @param appPath - absolute path to the Fiori application root
  * @param fetchExternalServiceMetadata - whether to also fetch value-help service metadata
  * @param simulate - dry run; trace changes but do not write to disk
- * @param serviceNameOpt
+ * @param serviceNameOpt - name of the data source in manifest (defaults to mainService or first service)
  */
 async function updateMetadata(
     appPath: string,
@@ -70,7 +152,6 @@ async function updateMetadata(
         logger.debug(`Called update metadata for path '${appPath}'`);
         await validateBasePath(appPath);
 
-        // Read manifest to get service name, path and OData version
         const appAccess = await createApplicationAccess(appPath);
         const serviceName = serviceNameOpt ?? appAccess.app.mainService ?? Object.keys(appAccess.app.services)[0];
         if (!serviceName) {
@@ -92,10 +173,8 @@ async function updateMetadata(
         const manifest = await appAccess.readManifest();
         const odataVersionRaw = manifest['sap.app']?.dataSources?.[serviceName]?.settings?.odataVersion;
         const odataVersion = odataVersionRaw?.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
-
         logger.debug(`Service '${serviceName}' at path '${servicePath}' (OData ${odataVersion})`);
 
-        // Read ui5.yaml to get backend connection config
         const ui5YamlContent = await readFile(join(appPath, FileName.Ui5Yaml), 'utf-8');
         const ui5Config = await UI5Config.newInstance(ui5YamlContent);
         const backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
@@ -104,51 +183,11 @@ async function updateMetadata(
             return;
         }
 
-        // Connect to backend
-        let provider: AbapServiceProvider;
-        if (isAppStudio()) {
-            if (!backendConfig.destination) {
-                logger.error(
-                    `No destination found in '${FileName.Ui5Yaml}'. Add a 'destination' entry to the backend configuration to connect in SAP Business Application Studio.`
-                );
-                return;
-            }
-            // WebIDEUsage.ODATA_ABAP is required so createForDestination returns an AbapServiceProvider.
-            // Without it isAbapSystem() returns false and we get a base ServiceProvider which lacks fetchExternalServices.
-            const destination = { Name: backendConfig.destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP };
-            provider = createForDestination({}, destination) as AbapServiceProvider;
-        } else {
-            const backendUrl = backendConfig.connectPath
-                ? new URL(backendConfig.connectPath, backendConfig.url).href
-                : backendConfig.url;
-            const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-            if (!systemService) {
-                logger.error(
-                    `A stored connection configuration for backend system '${backendUrl}'${backendConfig.client ? ` (client ${backendConfig.client})` : ''} cannot be found. Use 'npx @sap-ux/create@latest add system' to create a matching entry.`
-                );
-                return;
-            }
-            const system = await systemService.read(
-                new BackendSystemKey({ url: backendUrl, client: backendConfig.client })
-            );
-            if (!system) {
-                logger.error(
-                    `No stored system found for URL '${backendUrl}'${backendConfig.client ? ` (client ${backendConfig.client})` : ''}. Run 'sap-ux add system' first.`
-                );
-                return;
-            }
-            const providerConfig: AxiosRequestConfig = {
-                baseURL: backendConfig.url,
-                params: { 'sap-client': backendConfig.client },
-                ...(system.username ? { auth: { username: system.username, password: system.password ?? '' } } : {})
-            };
-            if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
-                TlsPatch.apply();
-            }
-            provider = new AbapServiceProvider(providerConfig);
+        const provider = await buildProvider(backendConfig, logger);
+        if (!provider) {
+            return;
         }
 
-        // Fetch main service metadata
         logger.info(`Fetching metadata for service '${serviceName}'...`);
         let metadataXml: string;
         try {
@@ -163,29 +202,14 @@ async function updateMetadata(
         }
         logger.debug(`Received metadata for service '${serviceName}'`);
 
-        // Fetch external (value-help) service metadata when requested
-        let externalServices: Awaited<ReturnType<AbapServiceProvider['fetchExternalServices']>> | undefined;
-        if (fetchExternalServiceMetadata) {
-            const references = getExternalServiceReferences(servicePath, metadataXml);
-            if (references.length > 0) {
-                logger.info(`Fetching ${references.length} external service(s)...`);
-                try {
-                    externalServices = await provider.fetchExternalServices(references);
-                    logger.debug(`Fetched ${externalServices.length} external service(s)`);
-                } catch (error) {
-                    // The destination was assumed to be ABAP but may not be, or the backend
-                    // does not support external service references. Log and continue with main metadata only.
-                    logger.warn(
-                        `Could not fetch external service metadata: ${(error as Error).message}. Continuing without external services.`
-                    );
-                    logger.debug(error);
-                }
-            } else {
-                logger.debug('No external service references found in metadata');
-            }
-        }
+        const externalServices = await fetchExternalServicesIfRequested(
+            provider,
+            servicePath,
+            metadataXml,
+            fetchExternalServiceMetadata,
+            logger
+        );
 
-        // Write files via odata-service-writer
         const serviceData: OdataService = {
             name: serviceName,
             path: servicePath,
@@ -193,8 +217,6 @@ async function updateMetadata(
             type: ServiceType.EDMX,
             metadata: metadataXml,
             externalServices,
-            // Populate previewSettings from the existing backend config so the
-            // proxy middleware update (when updateMiddlewares=true) is idempotent.
             previewSettings: {
                 path: backendConfig.path,
                 url: backendConfig.url,
@@ -206,10 +228,7 @@ async function updateMetadata(
 
         const memStore = createStore();
         const fs = createEditor(memStore);
-        // Only regenerate mockserver yaml (resolveExternalServiceReferences) when external
-        // services were actually fetched; otherwise leave yaml unchanged.
-        const updateMiddlewares = !!externalServices?.length;
-        await updateService(appPath, serviceData, fs, updateMiddlewares);
+        await updateService(appPath, serviceData, fs, !!externalServices?.length);
 
         await traceChanges(fs);
         if (!simulate) {
