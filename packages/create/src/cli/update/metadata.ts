@@ -7,12 +7,7 @@ import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName, createApplicationAccess } from '@sap-ux/project-access';
-import {
-    update as updateService,
-    getExternalServiceReferences,
-    OdataVersion,
-    ServiceType
-} from '@sap-ux/odata-service-writer';
+import { update as updateService, getExternalServiceReferences, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { create as createEditor } from 'mem-fs-editor';
@@ -36,7 +31,10 @@ Example:
     \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app\`
     \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate\``
         )
-        .option('--service <name>', 'Name of the data source in manifest.json (defaults to mainService or first service)')
+        .option(
+            '--service <name>',
+            'Name of the data source in manifest.json (defaults to mainService or first service)'
+        )
         .option('--no-value-help', 'Skip fetching value-help (external) service metadata')
         .option('-s, --simulate', 'Simulate only. Do not write. Also sets `--verbose`.')
         .option('-v, --verbose', 'Show verbose information.')
@@ -58,7 +56,8 @@ Example:
 async function updateMetadata(
     appPath: string,
     fetchExternalServiceMetadata: boolean,
-    simulate: boolean
+    simulate: boolean,
+    serviceNameOpt?: string
 ): Promise<void> {
     const logger = getLogger();
     try {
@@ -73,7 +72,9 @@ async function updateMetadata(
             return;
         }
         if (serviceNameOpt && !appAccess.app.services[serviceNameOpt]) {
-            logger.error(`Service '${serviceNameOpt}' not found in manifest. Available: ${Object.keys(appAccess.app.services).join(', ')}`);
+            logger.error(
+                `Service '${serviceNameOpt}' not found in manifest. Available: ${Object.keys(appAccess.app.services).join(', ')}`
+            );
             return;
         }
         const servicePath = appAccess.app.services[serviceName]?.uri;
@@ -83,7 +84,8 @@ async function updateMetadata(
         }
 
         const manifest = await appAccess.readManifest();
-        const odataVersion = (manifest['sap.app']?.dataSources?.[serviceName]?.settings?.odataVersion ?? '2.0') as OdataVersion;
+        const odataVersionRaw = manifest['sap.app']?.dataSources?.[serviceName]?.settings?.odataVersion;
+        const odataVersion = odataVersionRaw?.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
 
         logger.debug(`Service '${serviceName}' at path '${servicePath}' (OData ${odataVersion})`);
 
@@ -100,7 +102,9 @@ async function updateMetadata(
         let provider: AbapServiceProvider;
         if (isAppStudio()) {
             if (!backendConfig.destination) {
-                logger.error(`No destination found in '${FileName.Ui5Yaml}'. Add a 'destination' entry to the backend configuration to connect in SAP Business Application Studio.`);
+                logger.error(
+                    `No destination found in '${FileName.Ui5Yaml}'. Add a 'destination' entry to the backend configuration to connect in SAP Business Application Studio.`
+                );
                 return;
             }
             // WebIDEUsage.ODATA_ABAP is required so createForDestination returns an AbapServiceProvider.
@@ -145,7 +149,9 @@ async function updateMetadata(
             metadataXml = await provider.service(servicePath).metadata();
         } catch (error) {
             if (isAppStudio() && backendConfig.destination) {
-                throw new Error(`The service metadata is returning an error. Please check that the destination '${backendConfig.destination}' exists and the service is accessible.`);
+                throw new Error(
+                    `The service metadata is returning an error. Please check that the destination '${backendConfig.destination}' exists and the service is accessible.`
+                );
             }
             throw error;
         }

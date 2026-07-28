@@ -377,7 +377,9 @@ describe('update metadata command', () => {
         await command.parseAsync(getArgv(['metadata', '/app/path']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('A stored connection configuration for backend system'));
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            expect.stringContaining('A stored connection configuration for backend system')
+        );
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('add system'));
         expect(mockUpdate).not.toHaveBeenCalled();
     });
