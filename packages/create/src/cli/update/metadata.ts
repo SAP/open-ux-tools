@@ -74,11 +74,7 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
         }
 
         const manifest = await appAccess.readManifest();
-        const sappManifest = manifest['sap.app'] as unknown as
-            | { dataSources?: Record<string, { settings?: { odataVersion?: string } }> }
-            | undefined;
-        const odataVersionRaw = sappManifest?.dataSources?.[serviceName]?.settings?.odataVersion;
-        const odataVersion = odataVersionRaw?.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
+        const odataVersion = (manifest['sap.app']?.dataSources?.[serviceName]?.settings?.odataVersion ?? '2.0') as OdataVersion;
 
         logger.debug(`Service '${serviceName}' at path '${servicePath}' (OData ${odataVersion})`);
 
@@ -190,7 +186,7 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
 
         await traceChanges(fs);
         if (!simulate) {
-            await new Promise<void>((resolve) => fs.commit(resolve));
+            await new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
             logger.info('Metadata updated.');
         }
     } catch (error) {
