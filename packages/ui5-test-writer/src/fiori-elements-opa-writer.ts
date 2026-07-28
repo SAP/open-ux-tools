@@ -76,9 +76,10 @@ export async function generateOPAFiles(
     // journeys. All other project types (ObjectPage-only, Analytical List Page, unrecognized) fall back
     // to the generic FirstJourney starter.
     const generateUxSpecJourneys = !!LROP.pageLR || !!appFeatures.fpm;
-    // The `AnalyticalListPage` marker exists only to exclude ALP pages from LROP detection above. An ALP
-    // is a ListReport component under the hood with no dedicated page-object template or framework class,
-    // so once detection is done, normalize the marker back to `ListReport` for all downstream rendering.
+    // ALP pages are tagged with the `AnalyticalListPage` template in `createPageConfig`, which already
+    // excludes them from `findLROP` above (it matches only `template === 'ListReport'`). An ALP is a
+    // ListReport component under the hood with no dedicated page-object template or framework class, so
+    // now that detection is done, normalize the marker back to `ListReport` for all downstream rendering.
     for (const page of config.pages) {
         if (page.template === 'AnalyticalListPage') {
             page.template = 'ListReport';
