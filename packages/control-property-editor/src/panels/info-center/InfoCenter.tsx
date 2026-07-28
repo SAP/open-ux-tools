@@ -64,7 +64,7 @@ export function InfoCenter(): ReactElement {
                     />
                 </Stack.Item>
             </div>
-            <div className="info-center-items auto-element-scroller">
+            <div className="info-center-items auto-element-scroller" data-testid="info-center">
                 {messages.map((messageItem) => {
                     return <InfoMessageItem key={messageItem.id} {...messageItem} />;
                 })}
