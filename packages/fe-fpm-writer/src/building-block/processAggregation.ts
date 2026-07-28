@@ -443,18 +443,21 @@ function getExistingContainerIds(container: Element | undefined): string[] {
 }
 
 /**
- * Derives the 1-based sequential index for a new aggregation add from the first generated ID.
- * Maps ID suffix to start number: no suffix → 1, suffix '2' → 3, suffix '4' → 5, etc.
+ * Derives the 1-based sequential index for a new aggregation add from the existing container.
+ * The index equals the number of existing child elements + 1, ensuring text/press handler
+ * names continue sequentially (e.g. "Action 3" after two buttons already exist).
  *
- * @param {Record<string, string>} ids - generated IDs map from buildAggregationIds
- * @param {PageAggregationName} aggName - the aggregation name
+ * @param {Element | undefined} existingContainer - the existing aggregation container, or undefined on first add
  * @returns {number} 1-based start index for text/press handler numbering
  */
-function deriveAggregationIndex(ids: Record<string, string>, aggName: PageAggregationName): number {
-    const firstId = Object.values(ids)[0] ?? '';
-    const firstIdBase = AGGREGATION_ID_KEYS[aggName]?.[0]?.base ?? aggName;
-    const suffix = firstId.slice(firstIdBase.length);
-    return suffix === '' ? 1 : Number.parseInt(suffix, 10) + 1;
+function deriveAggregationIndex(existingContainer: Element | undefined): number {
+    if (!existingContainer) {
+        return 1;
+    }
+    const existingChildCount = Array.from(existingContainer.childNodes).filter(
+        (n) => n.nodeType === 1 /* Element */
+    ).length;
+    return existingChildCount + 1;
 }
 
 /**
@@ -553,7 +556,7 @@ export async function generateBuildingBlockAggregation(
 
     const existingContainerIds = getExistingContainerIds(existingContainer);
     const ids = buildAggregationIds(aggName, generateId, existingContainerIds);
-    const aggIndex = deriveAggregationIndex(ids, aggName);
+    const aggIndex = deriveAggregationIndex(existingContainer);
     const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids, aggIndex };
     const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
 
