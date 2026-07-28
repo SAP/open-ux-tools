@@ -7,7 +7,12 @@ import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName, createApplicationAccess } from '@sap-ux/project-access';
-import { update as updateService, getExternalServiceReferences, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
+import {
+    update as updateService,
+    getExternalServiceReferences,
+    OdataVersion,
+    ServiceType
+} from '@sap-ux/odata-service-writer';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { create as createEditor } from 'mem-fs-editor';
@@ -52,6 +57,7 @@ Example:
  * @param appPath - absolute path to the Fiori application root
  * @param fetchExternalServiceMetadata - whether to also fetch value-help service metadata
  * @param simulate - dry run; trace changes but do not write to disk
+ * @param serviceNameOpt
  */
 async function updateMetadata(
     appPath: string,
