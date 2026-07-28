@@ -1,5 +1,5 @@
 <<%- macrosPrefix %>actions>
     <!-- Actions aggregation -->
-    <Button id="<%- ids.Button %>" text="Action <%- aggIndex %>" press=".onActionsClickAction<%- aggIndex %>" type="Ghost" />
-    <Button id="<%- ids.Button1 %>" text="Action <%- aggIndex + 1 %>" press=".onActionsClickAction<%- aggIndex + 1 %>" type="Ghost" />
+    <Button id="<%- ids.Button %>" text="Action <%- aggIndex %>" press=".onActionsClickAction<%- aggIndex %>" type="Ghost" /><% if (aggIndex === 1) { %>
+    <Button id="<%- ids.Button1 %>" text="Action <%- aggIndex + 1 %>" press=".onActionsClickAction<%- aggIndex + 1 %>" type="Ghost" /><% } %>
 </<%- macrosPrefix %>actions>
