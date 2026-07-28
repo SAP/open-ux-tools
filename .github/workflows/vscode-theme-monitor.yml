@@ -26,27 +26,22 @@ jobs:
             - name: Check for VSCode theme changes
               id: check
               run: |
-                  DIFF_OUTPUT="${RUNNER_TEMP}/theme-diff.json" node scripts/check-vscode-themes.mjs
-                  echo "exit_code=$?" >> "$GITHUB_OUTPUT"
-                  if [ -f "${RUNNER_TEMP}/theme-diff.json" ]; then
-                    echo "diff_file=${RUNNER_TEMP}/theme-diff.json" >> "$GITHUB_OUTPUT"
+                  set +e
+                  DIFF_OUTPUT="${{ runner.temp }}/theme-diff.json" node scripts/check-vscode-themes.mjs
+                  EXIT_CODE=$?
+                  set -e
+                  if [ $EXIT_CODE -ne 0 ] && [ $EXIT_CODE -ne 1 ]; then
+                    echo "PaletteBot encountered an error (exit code $EXIT_CODE) — check the logs above" >&2
+                    exit 1
+                  fi
+                  if [ -f "${{ runner.temp }}/theme-diff.json" ]; then
+                    echo "diff_file=${{ runner.temp }}/theme-diff.json" >> "$GITHUB_OUTPUT"
                     echo "has_changes=true" >> "$GITHUB_OUTPUT"
                   else
                     echo "has_changes=false" >> "$GITHUB_OUTPUT"
                   fi
               env:
                   DIFF_OUTPUT: ${{ runner.temp }}/theme-diff.json
-              # exit code 1 means changes found (not a failure)
-              continue-on-error: true
-
-            - name: Commit updated vscode_themes.json
-              if: steps.check.outputs.has_changes == 'true'
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add design-tokens/vscode_themes.json
-                  git commit -m "chore: PaletteBot — update vscode_themes.json with upstream theme changes"
-                  git push
 
             - name: Post comment on tracking issue
               if: steps.check.outputs.has_changes == 'true'
@@ -75,7 +70,7 @@ jobs:
                       if (issues.length > 0) {
                         issueNumber = issues[0].number;
                       } else {
-                        // Create the label if it doesn't exist
+                        // Create the label if it doesn't exist — only swallow 422 (already exists)
                         try {
                           await github.rest.issues.createLabel({
                             owner: context.repo.owner,
@@ -85,7 +80,7 @@ jobs:
                             description: 'PaletteBot — tracks upstream VSCode theme color changes',
                           });
                         } catch (e) {
-                          // label already exists, ignore
+                          if (e.status !== 422) throw e;
                         }
 
                         const { data: newIssue } = await github.rest.issues.create({
@@ -98,7 +93,7 @@ jobs:
                             '',
                             'This issue tracks upstream color changes from the',
                             '[microsoft/vscode](https://github.com/microsoft/vscode/tree/main/extensions/theme-defaults/themes)',
-                            'theme files (2026 Light, 2026 Dark, HC Black).',
+                            'theme files (2026 Light, 2026 Dark, Monokai, HC Black).',
                             '',
                             'Each comment below is an automated update from PaletteBot. The file',
                             '`design-tokens/vscode_themes.json` in this repo is',
@@ -118,3 +113,12 @@ jobs:
                       core.notice(`Posted theme diff to issue #${issueNumber}`);
               env:
                   DIFF_FILE: ${{ steps.check.outputs.diff_file }}
+
+            - name: Commit updated vscode_themes.json
+              if: steps.check.outputs.has_changes == 'true'
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add design-tokens/vscode_themes.json
+                  git commit -m "chore: PaletteBot — update vscode_themes.json with upstream theme changes"
+                  git push origin HEAD:main
