@@ -2,6 +2,8 @@
 
 # Open UX Tools
 
+[![MCP Toplist](https://mcptoplist.com/badge/io.github.SAP%2Ffiori-mcp-server.svg)](https://mcptoplist.com/server/io.github.SAP%2Ffiori-mcp-server)
+
 [![Build status](https://github.com/SAP/open-ux-tools/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/SAP/open-ux-tools/actions/workflows/pipeline.yml?query=branch%3Amain)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=SAP_open-ux-tools&metric=bugs)](https://sonarcloud.io/summary/new_code?id=SAP_open-ux-tools)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=SAP_open-ux-tools&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=SAP_open-ux-tools)
