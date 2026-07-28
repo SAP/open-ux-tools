@@ -556,7 +556,7 @@ export default runner;
 `;
 
                 /**
-                 * Realistic post-rework OpaJourneyTypes.d.ts with one ListReport page wired in.
+                 * Realistic post-rework OpaJourneyTypes.gen.d.ts with one ListReport page wired in.
                  */
                 const EXISTING_OPA_JOURNEY_TYPES = `import type Opa5 from "sap/ui/test/Opa5";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from "sap/fe/test/ListReport";
@@ -601,7 +601,7 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(paths.some((p) => p.endsWith('TravelListJourney.gen.ts'))).toBe(true);
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('TravelList.gen.ts'))).toBe(true);
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('JourneyRunner.ts'))).toBe(true);
-                    expect(paths.some((p) => p.endsWith('OpaJourneyTypes.d.ts'))).toBe(true);
+                    expect(paths.some((p) => p.endsWith('OpaJourneyTypes.gen.d.ts'))).toBe(true);
                     // No .js Journey/Page/runner files are produced on the TS path
                     expect(paths.every((p) => !p.endsWith('TravelListJourney.gen.js'))).toBe(true);
                     expect(paths.every((p) => !(p.includes('pages') && p.endsWith('TravelList.gen.js')))).toBe(true);
@@ -621,7 +621,7 @@ export type Then = Opa5 & BaseArrangements & {
                     const paths = Object.keys(fs.dump(projectDir));
                     expect(paths.some((p) => p.endsWith('TravelListJourney.gen.js'))).toBe(true);
                     expect(paths.every((p) => !p.endsWith('TravelListJourney.gen.ts'))).toBe(true);
-                    expect(paths.every((p) => !p.endsWith('OpaJourneyTypes.d.ts'))).toBe(true);
+                    expect(paths.every((p) => !p.endsWith('OpaJourneyTypes.gen.d.ts'))).toBe(true);
                 });
 
                 it('splices new .gen.ts page entries into the existing JourneyRunner.ts', async () => {
@@ -641,7 +641,7 @@ export type Then = Opa5 & BaseArrangements & {
                         'test',
                         'integration',
                         'types',
-                        'OpaJourneyTypes.d.ts'
+                        'OpaJourneyTypes.gen.d.ts'
                     );
                     fs!.write(typesPath, EXISTING_OPA_JOURNEY_TYPES);
 
@@ -659,7 +659,7 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(updatedRunner).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
                 });
 
-                it('splices new journey type entries into the existing OpaJourneyTypes.d.ts', async () => {
+                it('splices new journey type entries into the existing OpaJourneyTypes.gen.d.ts', async () => {
                     const projectDir = prepareTestFiles('LropVirtualTests');
                     readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                     mockProjectExistsSync({
@@ -676,7 +676,7 @@ export type Then = Opa5 & BaseArrangements & {
                         'test',
                         'integration',
                         'types',
-                        'OpaJourneyTypes.d.ts'
+                        'OpaJourneyTypes.gen.d.ts'
                     );
                     fs!.write(typesPath, EXISTING_OPA_JOURNEY_TYPES);
 
@@ -893,12 +893,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(paths.some((p) => p.endsWith('.js') && p.includes('integration/pages/'))).toBe(false);
         });
 
-        it('generates OpaJourneyTypes.d.ts with correct page entries', async () => {
+        it('generates OpaJourneyTypes.gen.d.ts with correct page entries', async () => {
             const projectDir = prepareTestFiles('FullScreenLROP');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const typesPath = Object.keys(dumped).find((p) => p.includes('OpaJourneyTypes.d.ts'));
+            const typesPath = Object.keys(dumped).find((p) => p.includes('OpaJourneyTypes.gen.d.ts'));
             expect(typesPath).toBeDefined();
 
             const typesContent = dumped[typesPath!].contents as string;
@@ -1251,7 +1251,7 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(file).toMatch(/\.js$/);
             }
             expect(paths.some((p) => p.endsWith('.ts') && p.includes('integration/'))).toBe(false);
-            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(false);
         });
 
         it('generates .js files when app has an FPM page and tsconfig.json exists in standalone mode', async () => {
@@ -1284,7 +1284,7 @@ export type Then = Opa5 & BaseArrangements & {
             for (const file of integrationFiles) {
                 expect(file).toMatch(/\.js$/);
             }
-            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(false);
 
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);

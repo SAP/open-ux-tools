@@ -7,7 +7,12 @@ import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName, createApplicationAccess } from '@sap-ux/project-access';
-import { update as updateService, getExternalServiceReferences, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
+import {
+    update as updateService,
+    getExternalServiceReferences,
+    OdataVersion,
+    ServiceType
+} from '@sap-ux/odata-service-writer';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { create as createEditor } from 'mem-fs-editor';
@@ -50,7 +55,11 @@ Example:
  * @param fetchExternalServiceMetadata - whether to also fetch value-help service metadata
  * @param simulate - dry run; trace changes but do not write to disk
  */
-async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boolean, simulate: boolean, serviceNameOpt?: string): Promise<void> {
+async function updateMetadata(
+    appPath: string,
+    fetchExternalServiceMetadata: boolean,
+    simulate: boolean
+): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called update metadata for path '${appPath}'`);
@@ -109,9 +118,13 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
                 );
                 return;
             }
-            const system = await systemService.read(new BackendSystemKey({ url: backendUrl, client: backendConfig.client }));
+            const system = await systemService.read(
+                new BackendSystemKey({ url: backendUrl, client: backendConfig.client })
+            );
             if (!system) {
-                logger.error(`No stored system found for URL '${backendUrl}'${backendConfig.client ? ` (client ${backendConfig.client})` : ''}. Run 'sap-ux add system' first.`);
+                logger.error(
+                    `No stored system found for URL '${backendUrl}'${backendConfig.client ? ` (client ${backendConfig.client})` : ''}. Run 'sap-ux add system' first.`
+                );
                 return;
             }
             const providerConfig: AxiosRequestConfig = {
@@ -150,7 +163,9 @@ async function updateMetadata(appPath: string, fetchExternalServiceMetadata: boo
                 } catch (error) {
                     // The destination was assumed to be ABAP but may not be, or the backend
                     // does not support external service references. Log and continue with main metadata only.
-                    logger.warn(`Could not fetch external service metadata: ${(error as Error).message}. Continuing without external services.`);
+                    logger.warn(
+                        `Could not fetch external service metadata: ${(error as Error).message}. Continuing without external services.`
+                    );
                     logger.debug(error);
                 }
             } else {
