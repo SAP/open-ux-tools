@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { Command } from 'commander';
+import { resolve } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 // ── Tracing / validation mocks ───────────────────────────────────────────────
@@ -177,7 +178,7 @@ describe('update metadata command', () => {
         expect(mockMetadata).toHaveBeenCalledTimes(1);
         expect(mockFetchExternalServices).toHaveBeenCalledTimes(1);
         expect(mockUpdate).toHaveBeenCalledWith(
-            '/app/path',
+            resolve('/app/path'),
             expect.objectContaining({
                 name: 'mainService',
                 path: '/sap/opu/odata/sap/ZTEST_SRV/',
@@ -249,7 +250,7 @@ describe('update metadata command', () => {
         expect(mockFetchExternalServices).not.toHaveBeenCalled();
         expect(mockGetExternalServiceReferences).not.toHaveBeenCalled();
         expect(mockUpdate).toHaveBeenCalledWith(
-            '/app/path',
+            resolve('/app/path'),
             expect.objectContaining({ externalServices: undefined }),
             mockFsInstance,
             false // updateMiddlewares=false because no external services
@@ -270,7 +271,7 @@ describe('update metadata command', () => {
 
         // Then
         expect(mockUpdate).toHaveBeenCalledWith(
-            '/app/path',
+            resolve('/app/path'),
             expect.objectContaining({ version: '4.0' }),
             mockFsInstance,
             true
@@ -289,7 +290,7 @@ describe('update metadata command', () => {
         // Then
         expect(mockFetchExternalServices).not.toHaveBeenCalled();
         expect(mockUpdate).toHaveBeenCalledWith(
-            '/app/path',
+            resolve('/app/path'),
             expect.objectContaining({ externalServices: undefined }),
             mockFsInstance,
             false
@@ -309,7 +310,7 @@ describe('update metadata command', () => {
         // Then
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('Not an ABAP system'));
         expect(mockUpdate).toHaveBeenCalledWith(
-            '/app/path',
+            resolve('/app/path'),
             expect.objectContaining({ externalServices: undefined }),
             mockFsInstance,
             false
@@ -466,7 +467,7 @@ describe('update metadata command', () => {
 
         // Then
         expect(mockUpdate).toHaveBeenCalledWith(
-            '/app/path',
+            resolve('/app/path'),
             expect.objectContaining({ name: 'otherService', path: '/sap/opu/odata/sap/ZOTHER_SRV/' }),
             mockFsInstance,
             expect.any(Boolean)
