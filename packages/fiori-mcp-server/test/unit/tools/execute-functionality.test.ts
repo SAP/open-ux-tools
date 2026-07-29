@@ -284,14 +284,26 @@ describe('executeFunctionality', () => {
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
     });
 
-    test('Without appPath', async () => {
-        await expect(
-            executeFunctionality({
-                appPath: '',
-                functionalityId: 'add-page',
-                parameters: {}
-            })
-        ).rejects.toThrow('appPath parameter is required');
+    describe('appPath validation', () => {
+        test('throws when appPath is empty string', async () => {
+            await expect(
+                executeFunctionality({
+                    appPath: '',
+                    functionalityId: 'add-page',
+                    parameters: {}
+                })
+            ).rejects.toThrow('appPath parameter is required');
+        });
+
+        test('throws when appPath is whitespace only', async () => {
+            await expect(
+                executeFunctionality({
+                    appPath: '   ',
+                    functionalityId: 'add-page',
+                    parameters: {}
+                })
+            ).rejects.toThrow('appPath parameter is required');
+        });
     });
 
     test('Without functionalityId', async () => {
