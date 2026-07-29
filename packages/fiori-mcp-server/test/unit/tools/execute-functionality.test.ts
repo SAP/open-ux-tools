@@ -304,6 +304,16 @@ describe('executeFunctionality', () => {
         ).rejects.toThrow('functionalityId parameter is required');
     });
 
+    test('Without parameters', async () => {
+        await expect(
+            executeFunctionality({
+                appPath,
+                functionalityId: 'add-page',
+                parameters: undefined as unknown as Record<string, unknown>
+            })
+        ).rejects.toThrow('parameters is required');
+    });
+
     test('Change page property - flex change', async () => {
         const flexChangeFileName = 'id_1761320220775_2_propertyChange.change';
         const commitSpy = jest.spyOn(fsEditor, 'commit');
