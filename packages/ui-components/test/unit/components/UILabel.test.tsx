@@ -9,6 +9,8 @@ describe('<UILabel />', () => {
         expect(container.querySelectorAll('.ms-Label')).toHaveLength(1);
     });
 
+    // TODO: this test duplicates the component's internal style logic instead of testing the rendered output.
+    // Replace with a test that renders <UILabel disabled> and asserts the actual DOM styles.
     it('Styles', () => {
         const labelStyles = (props: ILabelStyleProps): Partial<ILabelStyles> => ({
             root: [
