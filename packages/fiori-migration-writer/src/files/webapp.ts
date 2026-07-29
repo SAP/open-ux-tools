@@ -2,7 +2,7 @@
  * Helper functions for creating and managing webapp folder structure
  */
 
-import { join, resolve } from 'node:path';
+import { join, resolve, relative } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import { fileExists, updateJSON } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
@@ -12,18 +12,22 @@ import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 
 /**
- * Validates a path argument before passing it to git command
- * Rejects paths with control characters that could enable shell injection
+ * Validates the root directory path before using as working directory
+ * Rejects paths with control characters that could enable command injection
  *
- * @param path - Path to validate
+ * @param path - Root directory path to validate
  * @returns Validated absolute path
- * @throws Error if path contains unsafe characters
+ * @throws Error if path contains unsafe characters or is not a directory
  */
-function validateGitPathArg(path: string): string {
+function validateRootDirectory(path: string): string {
     const resolved = resolve(path);
     // Reject control characters and shell metacharacters
     if (/[\0\r\n`$|&;<>]/.test(resolved)) {
         throw new Error('Path contains unsafe characters');
+    }
+    // Ensure it's an existing directory
+    if (!existsSync(resolved)) {
+        throw new Error('Root directory does not exist');
     }
     return resolved;
 }
@@ -129,17 +133,19 @@ export async function createWebappFolderAndMigrateFiles(
 
         const runner = new CommandRunner();
 
+        // Validate root directory once
+        const safeRootPath = validateRootDirectory(rootPath);
+
         // Move files to webapp folder
         for (const path of dirContent) {
             if (direntToFilter.indexOf(path.name) === -1) {
                 try {
-                    // Validate paths before passing to git command
-                    const safeRootPath = validateGitPathArg(rootPath);
-                    const safeSourcePath = validateGitPathArg(join(rootPath, path.name));
-                    const safeDestPath = validateGitPathArg(join(rootPath, DirName.Webapp, path.name));
+                    // Use relative paths - path.name is from fs.readdirSync, not user input
+                    const relSource = path.name;
+                    const relDest = join(DirName.Webapp, path.name);
 
-                    // use git to move files if available (-- separates options from paths)
-                    await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeSourcePath, safeDestPath]);
+                    // use git to move files if available (relative paths prevent injection)
+                    await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
                 } catch {
                     // Expected: git command may fail if git is not installed or repo is not initialized.
                     // Fallback to file system move (handled below) is intentional.

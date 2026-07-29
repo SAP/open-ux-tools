@@ -1,5 +1,5 @@
 // CLASSIFICATION: [OPEN]
-import { join, resolve } from 'node:path';
+import { join, resolve, relative } from 'node:path';
 import { existsSync } from 'node:fs';
 import fsextra from 'fs-extra';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
@@ -7,18 +7,22 @@ import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 
 /**
- * Validates a path argument before passing it to git command
- * Rejects paths with control characters that could enable shell injection
+ * Validates the root directory path before using as working directory
+ * Rejects paths with control characters that could enable command injection
  *
- * @param path - Path to validate
+ * @param path - Root directory path to validate
  * @returns Validated absolute path
- * @throws Error if path contains unsafe characters
+ * @throws Error if path contains unsafe characters or is not a directory
  */
-function validateGitPathArg(path: string): string {
+function validateRootDirectory(path: string): string {
     const resolved = resolve(path);
     // Reject control characters and shell metacharacters
     if (/[\0\r\n`$|&;<>]/.test(resolved)) {
         throw new Error('Path contains unsafe characters');
+    }
+    // Ensure it's an existing directory
+    if (!existsSync(resolved)) {
+        throw new Error('Root directory does not exist');
     }
     return resolved;
 }
@@ -53,6 +57,7 @@ export function buildLegacyPaths(rootPath: string, legacyPath: string): LegacyPa
 
 /**
  * Try to move folders using git to preserve history
+ * Uses relative paths from validated root directory to prevent command injection
  *
  * @param rootPath - Project root path
  * @param paths - Legacy paths object
@@ -61,25 +66,27 @@ export async function tryGitMove(rootPath: string, paths: LegacyPaths): Promise<
     const runner = new CommandRunner();
 
     try {
-        // Validate all paths before passing to git commands
-        const safeRootPath = validateGitPathArg(rootPath);
-        const safeLegacyWebappPath = validateGitPathArg(paths.ffLegacyWebappPath);
-        const safeNewWebappPath = validateGitPathArg(join(rootPath, DirName.Webapp));
-        const safeLegacyTestQunitPath = validateGitPathArg(paths.ffLegacyTestQunitPath);
-        const safeLegacyTestuiveri5Path = validateGitPathArg(paths.ffLegacyTestuiveri5Path);
-        const safeNewTestPath = validateGitPathArg(paths.ffNewTestPath);
+        // Validate root directory - this is the only absolute path passed to git (-C option)
+        const safeRootPath = validateRootDirectory(rootPath);
 
-        // Move main webapp folder (-- separates options from paths)
-        await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeLegacyWebappPath, safeNewWebappPath]);
+        // Calculate relative paths from root - these never contain untrusted input
+        const relLegacyWebapp = relative(safeRootPath, paths.ffLegacyWebappPath);
+        const relNewWebapp = DirName.Webapp;
+        const relLegacyTestQunit = relative(safeRootPath, paths.ffLegacyTestQunitPath);
+        const relLegacyTestuiveri5 = relative(safeRootPath, paths.ffLegacyTestuiveri5Path);
+        const relNewTest = relative(safeRootPath, paths.ffNewTestPath);
+
+        // Move main webapp folder (using relative paths prevents command injection)
+        await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyWebapp, relNewWebapp]);
 
         // Move qunit folder if exists
         if (existsSync(paths.ffLegacyTestQunitPath)) {
-            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeLegacyTestQunitPath, safeNewTestPath]);
+            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyTestQunit, relNewTest]);
         }
 
         // Move uiveri5 folder if exists
         if (existsSync(paths.ffLegacyTestuiveri5Path)) {
-            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeLegacyTestuiveri5Path, safeNewTestPath]);
+            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyTestuiveri5, relNewTest]);
         }
     } catch {
         // git might not be available or move failed - fallback will handle it
