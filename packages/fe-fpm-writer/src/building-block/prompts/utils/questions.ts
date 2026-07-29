@@ -272,18 +272,57 @@ export async function getCAPServiceChoices(project: Project, appId: string): Pro
 }
 
 /**
+ * Resolves the default (pre-selected) aggregation-path choice key.
+ *
+ * By default the pre-selected choice is the page macro node itself (`macros:Page`), matching the historic
+ * behavior. When `defaultTarget` is `'items'`, the default is the `macros:items` slot under the page macro,
+ * or the first tab's content (`IconTabFilter`) directly inside that slot when one exists.
+ *
+ * The lookup is anchored to the `macros:items` slot under the page macro, so this only applies to a Custom Page
+ * building block layout. For views without a `macros:Page` (e.g. object-page sections or plain FPM views) no key
+ * matches, so it falls through to the historic fallback and the default is unchanged.
+ *
+ * @param inputChoices - map of available aggregation XPath choices
+ * @param pageMacroDefinition - the page macro node name (e.g. `macros:Page`)
+ * @param defaultTarget - preferred default target: `'page'` (default) or `'items'`
+ * @returns the choice key to mark as checked, or undefined when none applies
+ */
+function resolveDefaultKey(
+    inputChoices: Record<string, string>,
+    pageMacroDefinition: string | undefined,
+    defaultTarget: 'page' | 'items'
+): string | undefined {
+    const keys = Object.keys(inputChoices);
+    if (defaultTarget === 'items' && pageMacroDefinition) {
+        const macrosPrefix = pageMacroDefinition.split(':')[0];
+        const itemsKey = keys.find((k) => k.endsWith(`/${pageMacroDefinition}/${macrosPrefix}:items`));
+        if (itemsKey) {
+            // Prefer the first tab's content (IconTabFilter) directly under the items slot.
+            const tabKey = keys.find((k) => k.startsWith(`${itemsKey}/`) && k.endsWith('/IconTabFilter'));
+            return tabKey ?? itemsKey;
+        }
+    }
+    // Default / fallback: the page macro node itself (undefined when no page macro node exists).
+    return keys.find((k) => k.endsWith(`/${pageMacroDefinition}`));
+}
+
+/**
  * Return a Prompt for choosing the aggregation path.
  *
  * @param context - prompt context including data about project
  * @param properties - object with additional properties of question
+ * @param options - additional options
+ * @param options.defaultTarget - preferred aggregation to pre-select by default: `'page'` (default) or `'items'`
  * @returns prompt for choosing aggregation path of selected xml file.
  */
 export function getAggregationPathPrompt(
     context: PromptContext,
-    properties: Partial<ListPromptQuestion> = {}
+    properties: Partial<ListPromptQuestion> = {},
+    options: { defaultTarget?: 'page' | 'items' } = {}
 ): ListPromptQuestion {
     const { fs, project, appPath } = context;
     const { guiOptions } = properties;
+    const { defaultTarget = 'page' } = options;
 
     return {
         ...properties,
@@ -297,7 +336,7 @@ export function getAggregationPathPrompt(
                           join(appPath, viewOrFragmentPath),
                           fs
                       );
-                      const key = Object.keys(inputChoices).find((k) => k.endsWith(`/${pageMacroDefinition}`));
+                      const key = resolveDefaultKey(inputChoices, pageMacroDefinition, defaultTarget);
                       const choices = transformChoices(inputChoices, false, key);
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');

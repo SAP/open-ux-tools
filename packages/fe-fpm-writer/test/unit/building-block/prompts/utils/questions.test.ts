@@ -378,6 +378,57 @@ describe('utils - questions', () => {
         });
     });
 
+    describe('getAggregationPathPrompt with defaultTarget: "items"', () => {
+        // Use an isolated in-memory app path so these fixtures don't affect the shared sample folder
+        // (e.g. the getViewOrFragmentPathPrompt view-count assertion).
+        const itemsAppPath = join(__dirname, '../../../sample/building-block/items-default-virtual');
+        const viewPath = 'webapp/ext/view/Page.view.xml';
+        const pageOpen =
+            '<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:macros="sap.fe.macros">';
+        const writeView = (inner: string) => {
+            fs.write(join(itemsAppPath, viewPath), `${pageOpen}\n${inner}\n</mvc:View>`);
+        };
+        const getChoices = async () => {
+            const prompt = getAggregationPathPrompt(
+                { ...context, appPath: itemsAppPath },
+                { message: 'AggregationPathMessage' },
+                { defaultTarget: 'items' }
+            );
+            return (await (prompt.choices as Choices)({
+                viewOrFragmentPath: join(viewPath)
+            })) as { name: string; value: string; checked?: boolean }[];
+        };
+        const getChecked = (choices: { name: string; checked?: boolean }[]) => choices.find((c) => c.checked)?.name;
+
+        test('defaults to the first tab (IconTabFilter) when an IconTabBar is present', async () => {
+            writeView(
+                '<macros:Page id="Page"><macros:items><IconTabBar id="itb"><items>' +
+                    '<IconTabFilter id="itf" text="Tab 1"/></items></IconTabBar></macros:items></macros:Page>'
+            );
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items/IconTabBar/items/IconTabFilter');
+        });
+
+        test('defaults to macros:items when items exists without an IconTabBar', async () => {
+            writeView('<macros:Page id="Page"><macros:items><Text text="content"/></macros:items></macros:Page>');
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items');
+        });
+
+        test('defaults to synthesized macros:items when the page has no items child', async () => {
+            writeView('<macros:Page id="Page"><macros:Table id="Table"/></macros:Page>');
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items');
+        });
+
+        test('leaves the default unchanged (no items/tab preselection) when the view has no macros:Page', async () => {
+            writeView('<Page title="Main"><content/></Page>');
+            const choices = await getChoices();
+            // No page macro => no key contains the page segment => falls through to historic behavior.
+            expect(getChecked(choices)).toBeUndefined();
+        });
+    });
+
     test('getViewOrFragmentPathPrompt', async () => {
         let viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(context, 'validationError', {
             message: 'testMessage',
