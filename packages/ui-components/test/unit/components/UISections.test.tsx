@@ -10,7 +10,7 @@ import { initIcons } from '../../../src/components/Icons';
 initIcons();
 mockResizeObserver();
 
-describe('<Sections />', () => {
+describe('<UISections />', () => {
     let container: HTMLElement;
     let unmount: () => void;
     let rerender: (ui: React.ReactElement) => void;

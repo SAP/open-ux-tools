@@ -20,7 +20,7 @@ function getStyles(
     return stylesFn({ ...props, ...additionalStyleProps } as ITextFieldStyleProps) as ITextFieldStyles;
 }
 
-describe('<UIToggle />', () => {
+describe('<UITextInput />', () => {
     it('Should render a UITextInput component', () => {
         const { container } = render(<UITextInput />);
         expect(container.querySelectorAll('.ms-TextField')).toHaveLength(1);

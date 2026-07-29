@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import type { IChoiceGroupStyleProps, IChoiceGroupStyles } from '@fluentui/react';
 import { UIChoiceGroup } from '../../../src/components/UIChoiceGroup/UIChoiceGroup';
 
-describe('<UIToggle />', () => {
+describe('<UIChoiceGroup />', () => {
     it('Should render a UIChoiceGroup component', () => {
         const { container } = render(<UIChoiceGroup />);
         expect(container.querySelectorAll('.ms-ChoiceFieldGroup')).toHaveLength(1);

@@ -6,7 +6,7 @@ import { initIcons, UiIcons } from '../../../src/components/Icons';
 
 initIcons();
 
-describe('<Splitter />', () => {
+describe('<UISplitter />', () => {
     const onResize = jest.fn();
 
     beforeEach(() => {

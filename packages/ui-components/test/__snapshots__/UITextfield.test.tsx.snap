@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`<UIToggle /> Focus styles, "errorMessage=[object Object]" 1`] = `
+exports[`<UITextInput /> Focus styles, "errorMessage=[object Object]" 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -105,7 +105,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Focus styles, "errorMessage=[object Object]" 2`] = `
+exports[`<UITextInput /> Focus styles, "errorMessage=[object Object]" 2`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -210,7 +210,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Readonly input field with value 1`] = `
+exports[`<UITextInput /> Readonly input field with value 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -315,7 +315,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - default 1`] = `
+exports[`<UITextInput /> Styles - default 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -413,7 +413,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - error message Error 1`] = `
+exports[`<UITextInput /> Styles - error message Error 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -511,7 +511,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - error message Info 1`] = `
+exports[`<UITextInput /> Styles - error message Info 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -609,7 +609,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - error message Warning 1`] = `
+exports[`<UITextInput /> Styles - error message Warning 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -707,7 +707,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=false, disabled=true, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=false, disabled=true, readOnly=undefined 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -807,7 +807,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=false, disabled=undefined, readOnly=true 1`] = `
+exports[`<UITextInput /> Styles - multiline=false, disabled=undefined, readOnly=true 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -916,7 +916,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=false, disabled=undefined, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=false, disabled=undefined, readOnly=undefined 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -1014,7 +1014,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=true, disabled=true, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=true, disabled=true, readOnly=undefined 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -1112,7 +1112,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=true, disabled=undefined, readOnly=true 1`] = `
+exports[`<UITextInput /> Styles - multiline=true, disabled=undefined, readOnly=true 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -1219,7 +1219,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=true, disabled=undefined, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=true, disabled=undefined, readOnly=undefined 1`] = `
 Object {
   "errorMessage": Array [
     Object {
@@ -1315,7 +1315,7 @@ Object {
 }
 `;
 
-exports[`<UIToggle /> Styles - required 1`] = `
+exports[`<UITextInput /> Styles - required 1`] = `
 Object {
   "errorMessage": Array [
     Object {

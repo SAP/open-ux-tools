@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { UISection, UISectionLayout } from '../../../src/components/UISection/UISection';
 
-describe('<Section />', () => {
+describe('<UISection />', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });

@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import type { ICheckboxStyles, IRawStyle } from '@fluentui/react';
 import { UICheckbox } from '../../../src/components/UICheckbox';
 
-describe('<UIToggle />', () => {
+describe('<UICheckbox />', () => {
     const globalClassNames = {
         root: 'ms-Checkbox',
         checkmark: 'ms-Checkbox-checkmark',
@@ -12,7 +12,7 @@ describe('<UIToggle />', () => {
         error: 'ts-message-wrapper--error'
     };
 
-    it('Should render a UIToggle component', () => {
+    it('Should render a UICheckbox component', () => {
         const { container } = render(<UICheckbox />);
         expect(container.querySelectorAll(`.${globalClassNames.root}`)).toHaveLength(1);
     });
