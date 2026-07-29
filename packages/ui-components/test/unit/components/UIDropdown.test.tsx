@@ -28,10 +28,8 @@ describe('<UIDropdown />', () => {
     let renderResult: ReturnType<typeof render>;
 
     const openDropdown = (container: HTMLElement): void => {
-        const trigger = container.querySelector('.ms-Dropdown .ms-Dropdown-caretDownWrapper');
-        if (trigger) {
-            fireEvent.click(trigger, document.createEvent('Events'));
-        }
+        const trigger = container.querySelector('.ms-Dropdown .ms-Dropdown-caretDownWrapper') as HTMLElement;
+        fireEvent.click(trigger, document.createEvent('Events'));
     };
 
     let CalloutCollisionTransformSpy: {
@@ -51,7 +49,6 @@ describe('<UIDropdown />', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-        renderResult.unmount();
     });
 
     it('Test responsive mode - default value', () => {
@@ -296,7 +293,8 @@ describe('<UIDropdown />', () => {
                 }
             },
             {
-                readOnly: true,
+                readOnly: false,
+                disabled: true,
                 expected: {
                     readOnly: true
                 }
