@@ -5,6 +5,10 @@ import type { InputRenderProps, UITextInputProps } from '../../../src/components
 import { UITextInput } from '../../../src/components/UIInput';
 
 /**
+ * TODO: this helper instantiates UITextInput directly and accesses the private getStyles arrow function.
+ * This tests implementation details rather than rendered output and will break if refactored to a function component.
+ * Replace style tests with render(<UITextInput .../>) and assert DOM/CSS via compareStylesBySelector.
+ *
  * Instantiate UITextInput with the given props and invoke the private
  * `getStyles` arrow function that the component passes to <TextField>.
  *

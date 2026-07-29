@@ -5,6 +5,10 @@ import type { UIToggleProps } from '../../../src/components/UIToggle/UIToggle';
 import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggle';
 
 /**
+ * TODO: this helper tests internal implementation details (the `styles` prop passed to FluentUI's Toggle)
+ * rather than the rendered output. It will break if UIToggle is refactored to a function component.
+ * Replace style tests with render(<UIToggle .../>) and assert the actual DOM/CSS via compareStylesBySelector.
+ *
  * Extract the `styles` function that UIToggle passes to the inner <Toggle>.
  *
  * UIToggle is a class component whose `render()` either returns the Toggle

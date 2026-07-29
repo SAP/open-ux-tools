@@ -7,6 +7,9 @@ import { UiIcons } from '../../../src/components/Icons';
 import { initIcons } from '../../../src/components';
 
 describe('<UIDefaultButton />', () => {
+    // TODO: getStyles() instantiates UIDefaultButton and calls the protected setStyle() method directly.
+    // This tests implementation details rather than rendered output and will break if refactored to a function component.
+    // Replace style tests with render(<UIDefaultButton .../>) and assert DOM/CSS via compareStylesBySelector.
     /**
      * Computes the IButtonStyles that UIDefaultButton would pass to DefaultButton
      * by calling the protected `setStyle` method directly on a throw-away instance.

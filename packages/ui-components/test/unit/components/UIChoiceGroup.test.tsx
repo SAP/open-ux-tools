@@ -3,6 +3,9 @@ import { render } from '@testing-library/react';
 import type { IChoiceGroupStyleProps, IChoiceGroupStyles } from '@fluentui/react';
 import { UIChoiceGroup } from '../../../src/components/UIChoiceGroup/UIChoiceGroup';
 
+// TODO: the Styles tests below instantiate UIChoiceGroup directly and call the internal
+// setStyles() method. This tests implementation details rather than rendered output.
+// Replace with render(<UIChoiceGroup .../>) and assert DOM/CSS via compareStylesBySelector.
 describe('<UIChoiceGroup />', () => {
     it('Should render a UIChoiceGroup component', () => {
         const { container } = render(<UIChoiceGroup />);
