@@ -138,8 +138,8 @@ export async function createWebappFolderAndMigrateFiles(
                     const safeSourcePath = validateGitPathArg(join(rootPath, path.name));
                     const safeDestPath = validateGitPathArg(join(rootPath, DirName.Webapp, path.name));
 
-                    // use git to move files if available
-                    await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeSourcePath, safeDestPath]);
+                    // use git to move files if available (-- separates options from paths)
+                    await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeSourcePath, safeDestPath]);
                 } catch {
                     // Expected: git command may fail if git is not installed or repo is not initialized.
                     // Fallback to file system move (handled below) is intentional.

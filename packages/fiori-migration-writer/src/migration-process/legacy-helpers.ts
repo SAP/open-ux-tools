@@ -69,17 +69,17 @@ export async function tryGitMove(rootPath: string, paths: LegacyPaths): Promise<
         const safeLegacyTestuiveri5Path = validateGitPathArg(paths.ffLegacyTestuiveri5Path);
         const safeNewTestPath = validateGitPathArg(paths.ffNewTestPath);
 
-        // Move main webapp folder
-        await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeLegacyWebappPath, safeNewWebappPath]);
+        // Move main webapp folder (-- separates options from paths)
+        await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeLegacyWebappPath, safeNewWebappPath]);
 
         // Move qunit folder if exists
         if (existsSync(paths.ffLegacyTestQunitPath)) {
-            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeLegacyTestQunitPath, safeNewTestPath]);
+            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeLegacyTestQunitPath, safeNewTestPath]);
         }
 
         // Move uiveri5 folder if exists
         if (existsSync(paths.ffLegacyTestuiveri5Path)) {
-            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeLegacyTestuiveri5Path, safeNewTestPath]);
+            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', safeLegacyTestuiveri5Path, safeNewTestPath]);
         }
     } catch {
         // git might not be available or move failed - fallback will handle it
