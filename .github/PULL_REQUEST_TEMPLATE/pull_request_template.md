@@ -17,3 +17,4 @@ Make it easier for reviewer by describing the tests you have done to verify your
 - [ ] The code is easy to read and maintainable by others
 - [ ] Corresponding changes to the documentation has been done
 - [ ] Already existing and new unit tests pass locally
+- [ ] I have reviewed and addressed all Hyperspace bot findings (or explicitly explained dismissals)
