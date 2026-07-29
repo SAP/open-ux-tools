@@ -56,7 +56,7 @@ After completing, create a changeset with `pnpm cset`.
 
 To test local changes to this package inside the XML annotation language server of `tools-suite`, use [yalc](https://github.com/wclr/yalc). `pnpm link` does not work there because the language server is an esbuild bundle and dependencies are resolved at build time.
 
-See [cross-repo-dev.md](https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/docs/dev-guide/cross-repo-dev.md) in tools-suite for the full setup and iteration workflow.
+See [cross-repo-dev.md](https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/docs/dev-guide/cross-repo-dev.md) *(SAP-internal)* in tools-suite for the full setup and iteration workflow.
 
 **Quick reference — after every change:**
 ```bash
