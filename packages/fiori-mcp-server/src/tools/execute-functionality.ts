@@ -26,6 +26,9 @@ export async function executeFunctionality(params: ExecuteFunctionalityInput): P
     if (!appPath) {
         throw new Error('appPath parameter is required');
     }
+    if (!parameters) {
+        throw new Error('parameters is required');
+    }
     // Custom/external functionalities
     const externalFunctionality =
         typeof functionalityId === 'string' ? FUNCTIONALITIES_HANDLERS.get(functionalityId) : undefined;
