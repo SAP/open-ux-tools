@@ -2125,21 +2125,19 @@ exports[`Building Blocks generateBuildingBlockAggregation appends children insid
 `;
 
 exports[`Building Blocks generateBuildingBlockAggregation does not append duplicate aggregation when it already exists in view 1`] = `
-"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" controllerName=\\"com.test.myApp.ext.main.Main\\">
-    <macros:Page id=\\"Page\\" title=\\"pageTitle\\" showFooter=\\"true\\">
-        <macros:footer id=\\"footer\\">
-            <OverflowToolbar/>
-        </macros:footer>
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    xmlns:macros=\\"sap.fe.macros\\" controllerName=\\"com.test.myApp.ext.main.Main\\">
+    <macros:Page id=\\"Page\\" title=\\"pageTitle\\">
+        <macros:footer id=\\"footer\\"><OverflowToolbar /></macros:footer>
     </macros:Page>
 </mvc:View>"
 `;
 
 exports[`Building Blocks generateBuildingBlockAggregation does not append duplicate breadcrumbs aggregation when it already exists in view 1`] = `
-"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" controllerName=\\"com.test.myApp.ext.main.Main\\">
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    xmlns:macros=\\"sap.fe.macros\\" controllerName=\\"com.test.myApp.ext.main.Main\\">
     <macros:Page id=\\"Page\\" title=\\"pageTitle\\">
-        <macros:breadcrumbs>
-            <Breadcrumbs/>
-        </macros:breadcrumbs>
+        <macros:breadcrumbs><Breadcrumbs /></macros:breadcrumbs>
     </macros:Page>
 </mvc:View>"
 `;

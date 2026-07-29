@@ -32,9 +32,9 @@ import { resolveAggregationPath } from './processor.js';
 /**
  * Returns the UI5 xml file document (view/fragment).
  *
- * @param {string} basePath - the base path
- * @param {string} viewPath - the path of the xml view relative to the base path
- * @param {Editor} fs - the memfs editor instance
+ * @param basePath - the base path
+ * @param viewPath - the path of the xml view relative to the base path
+ * @param fs - the memfs editor instance
  * @returns {Document} the view xml file document
  */
 export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Document {
@@ -59,7 +59,7 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
  * Returns the aggregation names to append for a Page building block, or undefined if not a Page.
  * Full template appends all PAGE_AGGREGATIONS; basic template appends nothing.
  *
- * @param {BuildingBlock} data - the building block data
+ * @param data - the building block data
  * @returns aggregation names array, or undefined if not a Page building block
  */
 export function getPageAggregationNames(data: BuildingBlock): readonly PageAggregationName[] | undefined {
@@ -73,7 +73,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
  * Throws if the manifest's minUI5Version is set and does not meet the 1.145.0 requirement for the full Page template.
  * If minUI5Version is not set, it is treated as latest and passes the check.
  *
- * @param {Manifest | undefined} manifest - the manifest content, or undefined if not available
+ * @param manifest - the manifest content, or undefined if not available
  */
 export function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
     const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
@@ -88,7 +88,7 @@ export function validateFullPageTemplateVersion(manifest: Manifest | undefined):
  * If sap.fe.macros is the default namespace (no prefix), declares xmlns:macros on the document element
  * so that generated prefixed elements like <macros:items> remain valid.
  *
- * @param {Document} xmlDocument - the view XML document
+ * @param xmlDocument - the view XML document
  * @returns {string} the resolved namespace prefix string (e.g. 'macros')
  */
 function resolveMacrosPrefix(xmlDocument: Document): string {
@@ -104,7 +104,7 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
  * Page aggregations that can only appear once in the view.
  * A second "Add" for these is a no-op; their creation form is disabled once present.
  */
-export const SINGLE_INSTANCE_PAGE_AGGREGATIONS = new Set<PageAggregationName>(['breadcrumbs', 'footer']);
+const SINGLE_INSTANCE_PAGE_AGGREGATIONS = new Set<PageAggregationName>(['breadcrumbs', 'footer']);
 
 /** Controls to generate IDs for per aggregation. `key` is the EJS template variable name, `base` is passed to generateId. */
 export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; base: string }[]>> = {
@@ -136,9 +136,9 @@ export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: str
  * Generates a map of unique IDs for all controls in a given Page aggregation template.
  * Keys match the `ids.*` variable names referenced in the EJS templates.
  *
- * @param {PageAggregationName} aggName - the aggregation name
- * @param {IdGeneratorFunction} generateId - the project-aware ID generator
- * @param {string[]} existingIds - IDs already present in the container (prevents collision on subsequent adds)
+ * @param aggName - the aggregation name
+ * @param generateId - the project-aware ID generator
+ * @param existingIds - IDs already present in the container (prevents collision on subsequent adds)
  * @returns {Record<string, string>} an object mapping each template variable name to a unique ID string
  */
 export function buildAggregationIds(
@@ -161,16 +161,16 @@ export function buildAggregationIds(
  * Renders a Page aggregation EJS template and parses it as an XML fragment document.
  * Inherits all xmlns:* declarations from the view root so inner content can use any view-declared prefix.
  *
- * @param {Editor} fs - the memfs editor instance
- * @param {string} aggName - the aggregation name (e.g. 'footer', 'items')
- * @param {object} aggContext - the EJS template context
- * @param {string} aggContext.macrosPrefix - the namespace prefix string (e.g. 'macros:')
- * @param {string} aggContext.aggId - the generated unique ID for the aggregation element
- * @param {boolean} aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
- * @param {Record<string, string>} aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
- * @param {number} aggContext.aggIndex - 1-based counter for this aggregation add (used to number text/press handler names)
- * @param {string} fragMacrosNS - the namespace prefix resolved for sap.fe.macros
- * @param {Document} xmlDocument - the view XML document (used to inherit namespace declarations)
+ * @param fs - the memfs editor instance
+ * @param aggName - the aggregation name (e.g. 'footer', 'items')
+ * @param aggContext - the EJS template context
+ * @param aggContext.macrosPrefix - the namespace prefix string (e.g. 'macros:')
+ * @param aggContext.aggId - the generated unique ID for the aggregation element
+ * @param aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
+ * @param aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
+ * @param aggContext.aggIndex - 1-based counter for this aggregation add (used to number text/press handler names)
+ * @param fragMacrosNS - the namespace prefix resolved for sap.fe.macros
+ * @param xmlDocument - the view XML document (used to inherit namespace declarations)
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
  */
 function buildPageAggregationFragment(
@@ -202,12 +202,12 @@ function buildPageAggregationFragment(
 
 /**
  *
- * @param {Editor} fs - the memfs editor instance
- * @param {Document} xmlDocument - the view XML document (used to resolve namespace prefixes)
- * @param {Document} templateDocument - the template document whose root element receives the children
- * @param {IdGeneratorFunction} generateId - function to generate unique IDs
- * @param {readonly PageAggregationName[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
- * @param {boolean} useDefaults - when true, the items aggregation renders its default IconTabBar content
+ * @param fs - the memfs editor instance
+ * @param xmlDocument - the view XML document (used to resolve namespace prefixes)
+ * @param templateDocument - the template document whose root element receives the children
+ * @param generateId - function to generate unique IDs
+ * @param [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
+ * @param useDefaults - when true, the items aggregation renders its default IconTabBar content
  */
 export function appendPageAggregations(
     fs: Editor,
@@ -239,7 +239,7 @@ export function appendPageAggregations(
  * Returns the local name of an Element if it belongs to the sap.fe.macros namespace, otherwise an empty string.
  * This ensures only Page aggregation elements are sorted by position; non-macros elements fall back to the items slot.
  *
- * @param {Element} el - the DOM Element
+ * @param el - the DOM Element
  * @returns the local name string, or '' if not a sap.fe.macros element
  */
 function getElementLocalName(el: Element): string {
@@ -253,7 +253,7 @@ function getElementLocalName(el: Element): string {
  * Builds a comparator for sorting XmlAggregationGroups by their position in aggNames.
  * Unknown elements fall back to the position of 'items'. Ties are broken by original index.
  *
- * @param {readonly string[]} aggNames - ordered list of aggregation names
+ * @param aggNames - ordered list of aggregation names
  * @returns comparator function for Array.prototype.sort
  */
 function buildAggregationComparator(
@@ -275,7 +275,7 @@ function buildAggregationComparator(
  * Preserves relative order of siblings with the same local name. Pure whitespace text nodes are dropped
  * because the xml-formatter call that follows will regenerate proper indentation.
  *
- * @param {Node} pageElement - the macros:Page DOM node whose children should be sorted
+ * @param pageElement - the macros:Page DOM node whose children should be sorted
  */
 export function sortPageAggregationChildren(pageElement: Node): void {
     const allChildren = Array.from(pageElement.childNodes);
@@ -333,8 +333,8 @@ export function sortPageAggregationChildren(pageElement: Node): void {
  * via the path prefix and the element is inserted in place. This allows generateBuildingBlock to
  * handle missing aggregation containers in a single write pass, avoiding a separate commit.
  *
- * @param {Document} xmlDocument - The XML document to mutate
- * @param {string} aggregationPath - Full XPath to the target aggregation (e.g. '/mvc:View/macros:Page/macros:items')
+ * @param xmlDocument - The XML document to mutate
+ * @param aggregationPath - Full XPath to the target aggregation (e.g. '/mvc:View/macros:Page/macros:items')
  */
 export function ensureMissingAggregation(xmlDocument: Document, aggregationPath: string): void {
     const nsMap: Record<string, string> = (xmlDocument.documentElement as any)?._nsMap ?? {};
@@ -387,10 +387,10 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
  * (i.e. loose building blocks like macros:Form, macros:Table) inside a <macros:items> element.
  * Called before inserting a new named aggregation so the DOM stays well-formed.
  *
- * @param {Element} pageElement - the macros:Page DOM element
- * @param {Document} xmlDocument - the owner document
- * @param {string} macrosNS - the sap.fe.macros namespace URI
- * @param {string} macrosPrefix - the resolved prefix string (e.g. 'macros')
+ * @param pageElement - the macros:Page DOM element
+ * @param xmlDocument - the owner document
+ * @param macrosNS - the sap.fe.macros namespace URI
+ * @param macrosPrefix - the resolved prefix string (e.g. 'macros')
  */
 function wrapLooseBuildingBlocksInItems(
     pageElement: Element,
@@ -429,7 +429,7 @@ function wrapLooseBuildingBlocksInItems(
  * Collects all `id` attribute values from direct Element children of the given container.
  * Used to seed the ID generator so new IDs don't collide with existing ones.
  *
- * @param {Element | undefined} container - the aggregation container element, or undefined if not present
+ * @param container - the aggregation container element, or undefined if not present
  * @returns {string[]} array of existing child element IDs
  */
 function getExistingContainerIds(container: Element | undefined): string[] {
@@ -447,7 +447,7 @@ function getExistingContainerIds(container: Element | undefined): string[] {
  * The index equals the number of existing child elements + 1, ensuring text/press handler
  * names continue sequentially (e.g. "Action 3" after two buttons already exist).
  *
- * @param {Element | undefined} existingContainer - the existing aggregation container, or undefined on first add
+ * @param existingContainer - the existing aggregation container, or undefined on first add
  * @returns {number} 1-based start index for text/press handler numbering
  */
 function deriveAggregationIndex(existingContainer: Element | undefined): number {
@@ -463,10 +463,10 @@ function deriveAggregationIndex(existingContainer: Element | undefined): number 
 /**
  * Serializes and writes the XML document to the view file on disk.
  *
- * @param {Editor} fs - the memfs editor instance
- * @param {string} basePath - the base path of the application
- * @param {string} viewPath - the path of the xml view relative to the base path
- * @param {Document} xmlDocument - the XML document to serialize and write
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path of the application
+ * @param viewPath - the path of the xml view relative to the base path
+ * @param xmlDocument - the XML document to serialize and write
  */
 function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDocument: Document): void {
     fs.write(join(basePath, viewPath), format(new XMLSerializer().serializeToString(xmlDocument)));
@@ -476,9 +476,9 @@ function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDoc
  * Appends child elements from the rendered aggregation template into an existing container element.
  * aggDoc.documentElement is `<root xmlns:macros=...>`; its first Element child is `<macros:aggName>`.
  *
- * @param {Element} existingContainer - the existing aggregation container element in the view
- * @param {Document} aggDoc - the rendered template document whose first Element child holds the new children
- * @param {Document} xmlDocument - the owner document (used to import nodes)
+ * @param existingContainer - the existing aggregation container element in the view
+ * @param aggDoc - the rendered template document whose first Element child holds the new children
+ * @param xmlDocument - the owner document (used to import nodes)
  */
 function appendChildrenIntoContainer(existingContainer: Element, aggDoc: Document, xmlDocument: Document): void {
     const renderedWrapper = Array.from(aggDoc.documentElement.childNodes).find(
@@ -497,9 +497,9 @@ function appendChildrenIntoContainer(existingContainer: Element, aggDoc: Documen
 /**
  * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
  *
- * @param {string} basePath - the base path of the application
- * @param {GenerateBuildingBlockAggregationConfig} config - the aggregation configuration containing aggregationName
- * @param {Editor} [fs] - the memfs editor instance
+ * @param basePath - the base path of the application
+ * @param config - the aggregation configuration containing aggregationName
+ * @param [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
 export async function generateBuildingBlockAggregation(
@@ -554,18 +554,15 @@ export async function generateBuildingBlockAggregation(
           ) as Element | undefined)
         : undefined;
 
+    if (hasExistingAggregation && SINGLE_INSTANCE_PAGE_AGGREGATIONS.has(aggName)) {
+        return fs;
+    }
+
     const existingContainerIds = getExistingContainerIds(existingContainer);
     const ids = buildAggregationIds(aggName, generateId, existingContainerIds);
     const aggIndex = deriveAggregationIndex(existingContainer);
     const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids, aggIndex };
     const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
-
-    if (hasExistingAggregation && SINGLE_INSTANCE_PAGE_AGGREGATIONS.has(aggName)) {
-        // Single-instance aggregations (breadcrumbs, footer) — already present, nothing to add.
-        sortPageAggregationChildren(pageElement);
-        writeXmlDocument(fs, basePath, viewPath, xmlDocument);
-        return fs;
-    }
     if (hasExistingAggregation) {
         // Append-children aggregations (navigationActions, titleContent, actions, headerContent):
         // append new children from the rendered template into the existing container.
