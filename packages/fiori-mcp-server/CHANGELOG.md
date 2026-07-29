@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- add input validation and consistent error throwing to list_functionality and execute_functionality tools [[76e8011](https://github.com/SAP/open-ux-tools/commit/76e80113baa6ada117cf6efdc0698c82d559128c)]
+
 ## 1.11.2
 
 ### Patch Changes
