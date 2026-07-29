@@ -151,7 +151,6 @@ describe('<UITreeDropdown />', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-        renderResult.unmount();
     });
 
     it('Open', () => {
@@ -571,7 +570,6 @@ describe('<UITreeDropdown />', () => {
             };
 
             beforeEach(() => {
-                renderResult.unmount();
                 windowEventMock = mockDomEventListener(window);
                 renderResult = render(<UITreeDropdown {...multipleItemsProps} />);
                 focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
@@ -705,9 +703,6 @@ describe('<UITreeDropdown />', () => {
 
         afterEach(() => {
             focusSpy.mockClear();
-            if (localRenderResult) {
-                localRenderResult.unmount();
-            }
         });
 
         it('No value set', async () => {
