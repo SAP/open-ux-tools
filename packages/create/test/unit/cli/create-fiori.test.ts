@@ -175,8 +175,10 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AdaptationProjectType: { ON_PREMISE: 'ON_PREMISE', CLOUD: 'CLOUD' },
+    AbapCloudEnvironment: { Standalone: 'Standalone', EmbeddedSteampunk: 'EmbeddedSteampunk' },
     AbapServiceProvider: class {},
     TlsPatch: { isPatchRequired: jest.fn().mockReturnValue(false), apply: jest.fn() },
+    createForAbapOnCloud: jest.fn(),
     createForDestination: jest.fn()
 }));
 
