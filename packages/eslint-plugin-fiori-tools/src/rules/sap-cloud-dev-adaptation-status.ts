@@ -25,9 +25,6 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         const problems: CloudDevAdaptationStatus[] = [];
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
-            if (app.type !== 'fe-v4' && app.type !== 'fe-v2') {
-                continue;
-            }
             if (app.configuration.cloudDevAdaptationStatus.valueInFile !== undefined) {
                 continue;
             }
