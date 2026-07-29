@@ -15,4 +15,5 @@ This package provides migration capabilities for Fiori projects, extracted from 
 Security improvements:
 - Fix incomplete string escaping in escapeSingleQuotes and escapeDoubleQuotes
 - Fix incomplete pattern replacement in resolveAppIdFromPom
+- Add path validation for git command arguments to prevent shell injection
 - Proper error type handling with instanceof checks

@@ -1,10 +1,27 @@
 // CLASSIFICATION: [OPEN]
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import fsextra from 'fs-extra';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
+
+/**
+ * Validates a path argument before passing it to git command
+ * Rejects paths with control characters that could enable shell injection
+ *
+ * @param path - Path to validate
+ * @returns Validated absolute path
+ * @throws Error if path contains unsafe characters
+ */
+function validateGitPathArg(path: string): string {
+    const resolved = resolve(path);
+    // Reject control characters and shell metacharacters
+    if (/[\0\r\n`$|&;<>]/.test(resolved)) {
+        throw new Error('Path contains unsafe characters');
+    }
+    return resolved;
+}
 
 /**
  * Build legacy folder paths for migration
@@ -44,17 +61,25 @@ export async function tryGitMove(rootPath: string, paths: LegacyPaths): Promise<
     const runner = new CommandRunner();
 
     try {
+        // Validate all paths before passing to git commands
+        const safeRootPath = validateGitPathArg(rootPath);
+        const safeLegacyWebappPath = validateGitPathArg(paths.ffLegacyWebappPath);
+        const safeNewWebappPath = validateGitPathArg(join(rootPath, DirName.Webapp));
+        const safeLegacyTestQunitPath = validateGitPathArg(paths.ffLegacyTestQunitPath);
+        const safeLegacyTestuiveri5Path = validateGitPathArg(paths.ffLegacyTestuiveri5Path);
+        const safeNewTestPath = validateGitPathArg(paths.ffNewTestPath);
+
         // Move main webapp folder
-        await runner.run('git', ['-C', rootPath, 'mv', '-k', paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp)]);
+        await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeLegacyWebappPath, safeNewWebappPath]);
 
         // Move qunit folder if exists
         if (existsSync(paths.ffLegacyTestQunitPath)) {
-            await runner.run('git', ['-C', rootPath, 'mv', '-k', paths.ffLegacyTestQunitPath, paths.ffNewTestPath]);
+            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeLegacyTestQunitPath, safeNewTestPath]);
         }
 
         // Move uiveri5 folder if exists
         if (existsSync(paths.ffLegacyTestuiveri5Path)) {
-            await runner.run('git', ['-C', rootPath, 'mv', '-k', paths.ffLegacyTestuiveri5Path, paths.ffNewTestPath]);
+            await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeLegacyTestuiveri5Path, safeNewTestPath]);
         }
     } catch {
         // git might not be available or move failed - fallback will handle it

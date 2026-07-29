@@ -1,4 +1,4 @@
-import baseConfig from '../../../jest-esm-preset.js';
+import baseConfig from '../../jest.base.mjs';
 
 export default {
     ...baseConfig,

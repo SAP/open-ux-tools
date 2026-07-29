@@ -2,7 +2,7 @@
  * Helper functions for creating and managing webapp folder structure
  */
 
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import { fileExists, updateJSON } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
@@ -10,6 +10,23 @@ import { CommandRunner } from '@sap-ux/nodejs-utils';
 import fsextra from 'fs-extra';
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
+
+/**
+ * Validates a path argument before passing it to git command
+ * Rejects paths with control characters that could enable shell injection
+ *
+ * @param path - Path to validate
+ * @returns Validated absolute path
+ * @throws Error if path contains unsafe characters
+ */
+function validateGitPathArg(path: string): string {
+    const resolved = resolve(path);
+    // Reject control characters and shell metacharacters
+    if (/[\0\r\n`$|&;<>]/.test(resolved)) {
+        throw new Error('Path contains unsafe characters');
+    }
+    return resolved;
+}
 
 /**
  * Create basic extension project manifest.json
@@ -116,15 +133,13 @@ export async function createWebappFolderAndMigrateFiles(
         for (const path of dirContent) {
             if (direntToFilter.indexOf(path.name) === -1) {
                 try {
+                    // Validate paths before passing to git command
+                    const safeRootPath = validateGitPathArg(rootPath);
+                    const safeSourcePath = validateGitPathArg(join(rootPath, path.name));
+                    const safeDestPath = validateGitPathArg(join(rootPath, DirName.Webapp, path.name));
+
                     // use git to move files if available
-                    await runner.run('git', [
-                        '-C',
-                        `${rootPath}`,
-                        'mv',
-                        '-k',
-                        `${join(rootPath, path.name)}`,
-                        `${join(rootPath, DirName.Webapp, path.name)}`
-                    ]);
+                    await runner.run('git', ['-C', safeRootPath, 'mv', '-k', safeSourcePath, safeDestPath]);
                 } catch {
                     // Expected: git command may fail if git is not installed or repo is not initialized.
                     // Fallback to file system move (handled below) is intentional.
