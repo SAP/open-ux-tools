@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Only generate ux-specification-derived OPA journeys for List Report / Object Page (LROP) and Flexible Programming Model (FPM) apps. Object Page-only and Analytical List Page projects now receive the generic fallback FirstJourney instead. The fallback is also written (and wired into the existing `opaTests.qunit.js`) when regenerating an existing app whose test setup is compatible but produces no ux-spec journeys, without overwriting a user's existing fallback journey. [[dbde04c](https://github.com/SAP/open-ux-tools/commit/dbde04ce67b917a1fea61511fb045d15708778ca)]
+
 ## 1.2.34
 
 ### Patch Changes
