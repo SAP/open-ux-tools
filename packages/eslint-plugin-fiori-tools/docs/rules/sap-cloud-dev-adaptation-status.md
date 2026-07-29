@@ -23,7 +23,7 @@ The following configuration will trigger a warning because `cloudDevAdaptationSt
 }
 ```
 
-**Warning message:** `"cloudDevAdaptationStatus" must be defined in the "sap.fiori" section of the manifest.json.`
+**Warning message:** `The application hasn't set a release status for the developer adaptation in the cloud.`
 
 ## Correct Pattern
 
