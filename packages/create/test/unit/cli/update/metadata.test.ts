@@ -73,12 +73,16 @@ class MockAbapServiceProvider {
 }
 
 const mockCreateForDestination = jest.fn().mockImplementation(() => new MockAbapServiceProvider());
+const mockCreateForAbapOnCloud = jest.fn().mockImplementation(() => new MockAbapServiceProvider());
 const mockTlsPatch = { isPatchRequired: jest.fn().mockReturnValue(false), apply: jest.fn() };
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: MockAbapServiceProvider,
+    AbapCloudEnvironment: { EmbeddedSteampunk: 'EmbeddedSteampunk' },
     TlsPatch: mockTlsPatch,
-    createForDestination: mockCreateForDestination
+    createForDestination: mockCreateForDestination,
+    createForAbapOnCloud: mockCreateForAbapOnCloud,
+    createForAbap: jest.fn()
 }));
 
 // ── Store ────────────────────────────────────────────────────────────────────
@@ -162,6 +166,7 @@ describe('update metadata command', () => {
         mockFetchExternalServices.mockResolvedValue([{ name: 'ValHelp' }]);
         mockUpdate.mockResolvedValue(undefined);
         mockCreateForDestination.mockImplementation(() => new MockAbapServiceProvider());
+        mockCreateForAbapOnCloud.mockImplementation(() => new MockAbapServiceProvider());
         mockTlsPatch.isPatchRequired.mockReturnValue(false);
         mockFsCommit.mockImplementation((cb: () => void) => cb());
     });
@@ -531,5 +536,49 @@ describe('update metadata command', () => {
         expect(mockSystemRead).toHaveBeenCalledWith(
             new ActualKey({ url: 'https://test.example.com/sap', client: '200' })
         );
+    });
+
+    test('reentranceTicket system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        // Given
+        mockSystemRead.mockResolvedValue({
+            name: 'CloudSystem',
+            url: 'https://test.example.com',
+            authenticationType: 'reentranceTicket'
+        });
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path']));
+
+        // Then
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: 'https://test.example.com'
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
+        expect(loggerMock.error).not.toHaveBeenCalled();
+    });
+
+    test('serviceKeys system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        // Given
+        mockSystemRead.mockResolvedValue({
+            name: 'CloudSystem',
+            url: 'https://test.example.com',
+            serviceKeys: { uaa: { clientid: 'client', clientsecret: 'secret', url: 'https://auth.example.com' } }
+        });
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path']));
+
+        // Then
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: 'https://test.example.com'
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 });

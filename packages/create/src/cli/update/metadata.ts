@@ -1,31 +1,42 @@
-import type { Command } from 'commander';
 import type { AxiosRequestConfig } from '@sap-ux/axios-extension';
-import type { BackendSystem } from '@sap-ux/store';
-import type { OdataService } from '@sap-ux/odata-service-writer';
-import { AbapServiceProvider, TlsPatch, createForDestination } from '@sap-ux/axios-extension';
-import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
-import { getService, BackendSystemKey } from '@sap-ux/store';
-import { UI5Config } from '@sap-ux/ui5-config';
-import { FileName, createApplicationAccess } from '@sap-ux/project-access';
 import {
-    update as updateService,
+    AbapCloudEnvironment,
+    AbapServiceProvider,
+    createForAbapOnCloud,
+    createForDestination,
+    TlsPatch
+} from '@sap-ux/axios-extension';
+import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import {
     getExternalServiceReferences,
     OdataVersion,
-    ServiceType
+    ServiceType,
+    update as updateService
 } from '@sap-ux/odata-service-writer';
+import { createApplicationAccess, FileName } from '@sap-ux/project-access';
+import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, getService } from '@sap-ux/store';
+import { UI5Config } from '@sap-ux/ui5-config';
+import type { Command } from 'commander';
+import { create as createStore } from 'mem-fs';
+import { create as createEditor } from 'mem-fs-editor';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { create as createEditor } from 'mem-fs-editor';
-import { create as createStore } from 'mem-fs';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
 import { validateBasePath } from '../../validation/index.js';
 
-type BackendConfig = ReturnType<InstanceType<typeof UI5Config>['getBackendConfigsFromFioriToolsProxyMiddleware']>[number];
+type BackendConfig = ReturnType<
+    InstanceType<typeof UI5Config>['getBackendConfigsFromFioriToolsProxyMiddleware']
+>[number];
 type Logger = ReturnType<typeof getLogger>;
 
 /**
  * Creates an AbapServiceProvider for the given backend config.
  * Returns null and logs an error if the required config is missing.
+ *
+ * @param backendConfig
+ * @param logger
  */
 async function buildProvider(backendConfig: BackendConfig, logger: Logger): Promise<AbapServiceProvider | null> {
     if (isAppStudio()) {
@@ -53,9 +64,7 @@ async function buildProvider(backendConfig: BackendConfig, logger: Logger): Prom
     }
     const system = await systemService.read(new BackendSystemKey({ url: backendUrl, client: backendConfig.client }));
     if (!system) {
-        logger.error(
-            `No stored system found for URL '${backendUrl}'${clientSuffix}. Run 'sap-ux add system' first.`
-        );
+        logger.error(`No stored system found for URL '${backendUrl}'${clientSuffix}. Run 'sap-ux add system' first.`);
         return null;
     }
     const providerConfig: AxiosRequestConfig = {
@@ -66,12 +75,25 @@ async function buildProvider(backendConfig: BackendConfig, logger: Logger): Prom
     if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
         TlsPatch.apply();
     }
+
+    if (system.authenticationType === 'reentranceTicket' || system.serviceKeys) {
+        return createForAbapOnCloud({
+            environment: AbapCloudEnvironment.EmbeddedSteampunk,
+            url: backendConfig.url
+        });
+    }
     return new AbapServiceProvider(providerConfig);
 }
 
 /**
  * Fetches external (value-help) services when requested.
  * Returns undefined if not requested, none found, or the fetch fails.
+ *
+ * @param provider
+ * @param servicePath
+ * @param metadataXml
+ * @param fetchExternal
+ * @param logger
  */
 async function fetchExternalServicesIfRequested(
     provider: AbapServiceProvider,
