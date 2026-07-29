@@ -2,7 +2,7 @@
 "@sap-ux/fiori-migration-writer": minor
 ---
 
-Introduce new @sap-ux/fiori-migration-writer package
+FEAT: Introduce new @sap-ux/fiori-migration-writer package
 
 This package provides migration capabilities for Fiori projects, extracted from SAP-internal tools to enable open-source collaboration. Key features:
 
