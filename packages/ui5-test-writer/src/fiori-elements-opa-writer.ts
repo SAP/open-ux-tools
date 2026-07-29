@@ -113,6 +113,7 @@ async function generateOPAFilesForExistingApp(writeContext: WriteContext, appFea
 
     const generatedPages = writePageFiles(standaloneWriteContext);
     const generatedJourneys = writeJourneyFiles(appFeatures, standaloneWriteContext);
+    addJourneysToAllJourneysFile(generatedJourneys, standaloneWriteContext);
     handleJourneyRunner(standaloneWriteContext, generatedPages);
     if (virtualOPA5Configured) {
         await addVirtualOpa5Config(standaloneWriteContext);
@@ -593,7 +594,7 @@ function writeJourneyRunner(writeContext: WriteContext): void {
 }
 
 /**
- * Writes the OpaJourneyTypes.d.ts type definition file used by generated TypeScript OPA tests.
+ * Writes the OpaJourneyTypes.gen.d.ts type definition file used by generated TypeScript OPA tests.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  */
@@ -601,14 +602,14 @@ function writeOpaJourneyTypes(writeContext: WriteContext): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, modifiedFiles } = writeContext;
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
-        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
+        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.gen.d.ts'),
         config,
         undefined,
         {
             globOptions: { dot: true }
         }
     );
-    modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
+    modifiedFiles.push('integration/types/OpaJourneyTypes.gen.d.ts');
 }
 
 /**
@@ -710,7 +711,7 @@ function writeFallbackJourney(writeContext: WriteContext): void {
 }
 
 /**
- * Update the `OpaJourneyTypes.d.ts` type-definition file used by generated TypeScript OPA tests.
+ * Update the `OpaJourneyTypes.gen.d.ts` type-definition file used by generated TypeScript OPA tests.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param generatedPages - pages whose journeys should be reflected in the type definitions
@@ -728,7 +729,7 @@ function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: OpaPa
             writeContext.log
         );
         if (written) {
-            writeContext.modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
+            writeContext.modifiedFiles.push('integration/types/OpaJourneyTypes.gen.d.ts');
         }
     } else {
         writeOpaJourneyTypes(writeContext);
@@ -887,4 +888,34 @@ function writePageObject(
         entitySet: pageConfig.entitySet,
         contextPath: pageConfig.contextPath
     };
+}
+
+/**
+ * Adds generated journey file names to `AllJourneys.gen.json` without overwriting existing entries.
+ * The file contains an array of journey file name strings (e.g. `"ListReportJourney.gen"`).
+ * Duplicate entries are not added.
+ *
+ * @param generatedJourneys - feature names for which a `<name>Journey.gen` file was written
+ * @param writeContext - shared write context (config, paths, editor, dotFileExtension)
+ */
+export function addJourneysToAllJourneysFile(generatedJourneys: string[], writeContext: WriteContext): void {
+    if (generatedJourneys.length === 0) {
+        return;
+    }
+    const { testOutDirPath, editor } = writeContext;
+    const allJourneysPath = join(testOutDirPath, 'integration', 'AllJourneys.gen.json');
+    if (!editor.exists(allJourneysPath)) {
+        return;
+    }
+    const content = editor.readJSON(allJourneysPath);
+    const existing: string[] =
+        Array.isArray(content) && content.every((entry) => typeof entry === 'string') ? content : [];
+    const existingSet = new Set(existing);
+    for (const journey of generatedJourneys) {
+        const fileName = `${journey}Journey.gen`;
+        if (!existingSet.has(fileName)) {
+            existing.push(fileName);
+        }
+    }
+    editor.writeJSON(allJourneysPath, existing);
 }

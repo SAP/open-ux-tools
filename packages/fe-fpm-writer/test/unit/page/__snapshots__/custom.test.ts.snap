@@ -1093,8 +1093,170 @@ Object {
 }
 `;
 
+exports[`CustomPage generateCustomPage: only page, no others should generate a custom page with full layout page building block 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\" showFooter=\\"true\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:breadcrumbs>
+            <!-- Breadcrumbs aggregation -->
+            <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
+                <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
+                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+            </Breadcrumbs>
+        </macros:breadcrumbs>
+        <macros:navigationActions>
+            <!-- Navigation actions aggregation -->
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+        </macros:navigationActions>
+        <macros:titleContent>
+            <!-- Title content aggregation (content next to title) -->
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+        </macros:titleContent>
+        <macros:actions>
+            <!-- Actions aggregation -->
+            <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+        </macros:actions>
+        <macros:headerContent>
+            <!-- Header content aggregation (content after avatar) -->
+            <VBox id=\\"headerContent_vbox\\">
+                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+            </VBox>
+        </macros:headerContent>
+        <macros:items>
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+        <macros:footer>
+            <!-- Footer aggregation -->
+            <OverflowToolbar id=\\"footer_overflowToolbar\\">
+                <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
+                <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            </OverflowToolbar>
+        </macros:footer>
+    </macros:Page>
+</mvc:View>"
+`;
+
 exports[`CustomPage generateCustomPage: only page, no others should generate a custom page with pageBuildingBlockTitle enabled 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
     <macros:Page id=\\"Page\\" title=\\"Test Page Title\\"/>
+</mvc:View>"
+`;
+
+exports[`CustomPage generateCustomPage: only page, no others should log a warning when min ui5 version is not met for full layout page building block 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\"/>
+</mvc:View>"
+`;
+
+exports[`CustomPage generateCustomPage: only page, no others should use full layout when latest ui5 version is specified with full layout page building block 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\" showFooter=\\"true\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:breadcrumbs>
+            <!-- Breadcrumbs aggregation -->
+            <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
+                <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
+                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+            </Breadcrumbs>
+        </macros:breadcrumbs>
+        <macros:navigationActions>
+            <!-- Navigation actions aggregation -->
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+        </macros:navigationActions>
+        <macros:titleContent>
+            <!-- Title content aggregation (content next to title) -->
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+        </macros:titleContent>
+        <macros:actions>
+            <!-- Actions aggregation -->
+            <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+        </macros:actions>
+        <macros:headerContent>
+            <!-- Header content aggregation (content after avatar) -->
+            <VBox id=\\"headerContent_vbox\\">
+                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+            </VBox>
+        </macros:headerContent>
+        <macros:items>
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+        <macros:footer>
+            <!-- Footer aggregation -->
+            <OverflowToolbar id=\\"footer_overflowToolbar\\">
+                <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
+                <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            </OverflowToolbar>
+        </macros:footer>
+    </macros:Page>
+</mvc:View>"
+`;
+
+exports[`CustomPage generateCustomPage: only page, no others should use full layout when no ui5 version is specified with full layout page building block 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\" showFooter=\\"true\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:breadcrumbs>
+            <!-- Breadcrumbs aggregation -->
+            <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
+                <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
+                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+            </Breadcrumbs>
+        </macros:breadcrumbs>
+        <macros:navigationActions>
+            <!-- Navigation actions aggregation -->
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+        </macros:navigationActions>
+        <macros:titleContent>
+            <!-- Title content aggregation (content next to title) -->
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+        </macros:titleContent>
+        <macros:actions>
+            <!-- Actions aggregation -->
+            <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+        </macros:actions>
+        <macros:headerContent>
+            <!-- Header content aggregation (content after avatar) -->
+            <VBox id=\\"headerContent_vbox\\">
+                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+            </VBox>
+        </macros:headerContent>
+        <macros:items>
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+        <macros:footer>
+            <!-- Footer aggregation -->
+            <OverflowToolbar id=\\"footer_overflowToolbar\\">
+                <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
+                <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            </OverflowToolbar>
+        </macros:footer>
+    </macros:Page>
 </mvc:View>"
 `;

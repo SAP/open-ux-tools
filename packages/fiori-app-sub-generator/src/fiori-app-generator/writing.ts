@@ -1,10 +1,10 @@
 import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
-import { generateAppGenInfo, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { generateAppGenInfo, getHostEnvironment, getFloorplanLabel } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ApiHubConfig, State } from '../types/index.js';
 import { DEFAULT_CAP_HOST } from '../types/index.js';
-import { getLaunchText, getReadMeDataSourceLabel, isAbapCloud, t, getFloorplanLabel } from '../utils/index.js';
+import { getLaunchText, getReadMeDataSourceLabel, isAbapCloud, t } from '../utils/index.js';
 
 /**
  * Writes app related information files - README.md & .appGenInfo.json.

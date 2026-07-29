@@ -19,7 +19,6 @@ Library that contains the most recent copies of the OData vocabularies authored 
 [SAP Vocabularies](https://sap.github.io/odata-vocabularies) 
 * Analytics
 * Auditing
-* CDS
 * CodeList
 * Common
 * Communication

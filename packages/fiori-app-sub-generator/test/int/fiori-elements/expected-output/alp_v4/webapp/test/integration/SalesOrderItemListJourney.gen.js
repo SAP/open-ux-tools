@@ -24,6 +24,8 @@ sap.ui.define([
     function journey() {
         QUnit.module("SalesOrderItemListListReport journey");
 
+        const defaultTableId = "";
+
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -35,35 +37,28 @@ sap.ui.define([
         // opaTest("Perform a global search and check the result", function (Given, When, Then) {
         //     When.onTheSalesOrderItemListGenerated.onFilterBar().iChangeSearchField("Search Term");
         //     When.onTheSalesOrderItemListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheSalesOrderItemListGenerated.onTable().iCheckRows();
+        //     Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckRows();
         // });
 
         opaTest("Check table columns and actions", function (Given, When, Then) {
-            // Then.onTheSalesOrderItemListGenerated.onTable().iPressDelete();
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckDelete({ visible: true });
-            // Then.onTheSalesOrderItemListGenerated.onTable().iPressAction("View Return Status");
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction("View Return Status", { enabled: true });
-            // Then.onTheSalesOrderItemListGenerated.onTable().iPressAction("Dummy Bound Action");
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction("Dummy Bound Action", { enabled: false });
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckColumns(undefined, {"10":{"header":"Bound Action"},"11":{"header":"IBN"},"SalesOrderItem":{"header":"Item"},"HigherLevelItem":{"header":"Higher-Level Item"},"Material":{"header":"Material"},"RequestedQuantity":{"header":"Requested Quantity"},"SalesOrderItemCategory":{"header":"Item Category"},"RequestedDeliveryDate":{"header":"Delivery Date"},"NetAmount":{"header":"Net Value"},"_Material/Material":{"header":"Material"},"isVerified":{"header":"Verified Material"},"_ReferencedSalesOrder/SalesOrder":{"header":"Referenced Sales Order"}});
-
+            // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressDelete();
+            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
+            // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressAction("View Return Status");
+            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckAction("View Return Status", { enabled: true });
+            // When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressAction("Dummy Bound Action");
+            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckAction("Dummy Bound Action", { enabled: false });
+            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {"10":{"header":"Bound Action"},"11":{"header":"IBN"},"SalesOrderItem":{"header":"Item"},"HigherLevelItem":{"header":"Higher-Level Item"},"Material":{"header":"Material"},"RequestedQuantity":{"header":"Requested Quantity"},"SalesOrderItemCategory":{"header":"Item Category"},"RequestedDeliveryDate":{"header":"Delivery Date"},"NetAmount":{"header":"Net Value"},"_Material/Material":{"header":"Material"},"isVerified":{"header":"Verified Material"},"_ReferencedSalesOrder/SalesOrder":{"header":"Referenced Sales Order"}});
         });
-
-
 
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
             When.onTheSalesOrderItemListGenerated.onFilterBar().iExecuteSearch();
-            
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckRows();
-
-            When.onTheSalesOrderItemListGenerated.onTable().iPressRow(0);
+            Then.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheSalesOrderItemListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheSalesOrderItemObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest("Teardown", function (Given, When, Then) { 
+        opaTest("Teardown", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });

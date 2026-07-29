@@ -108,6 +108,6 @@ describe('rta-service', () => {
         expect(rtaMock.attachStart).toHaveBeenCalledTimes(1);
 
         rtaMock.attachStart.mock.calls[0][0]();
-        expect(promise).resolves.toBe(undefined);
+        await expect(promise).resolves.toBe(undefined);
     });
 });

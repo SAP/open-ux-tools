@@ -21,7 +21,9 @@ import {
     CAP_APP_PATH,
     CAP_FACETS_ANNOTATIONS,
     CAP_PROJECT_PATH,
-    npmInstall
+    CAP_SECOND_TABLE_ANNOTATION,
+    npmInstall,
+    V4_SECOND_TABLE_ANNOTATION
 } from '../../test-helper.js';
 import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations.js';
 import { getParsedServiceByName } from '../../../src/project-context/utils.js';
@@ -78,6 +80,7 @@ describe('FE V4 Linker - XML', () => {
                     </Collection>
                 </Annotation>
             </Annotations>`;
+
     beforeAll(async () => {
         artifacts = await findFioriArtifacts({
             wsFolders: [root],
@@ -162,6 +165,51 @@ describe('FE V4 Linker - XML', () => {
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
                 expect(page.lookup['table']?.[0].configuration.creationMode).toMatchSnapshot();
+            });
+
+            test('multiple views - gets both tables configuration', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'enableExport'
+                            ],
+                            value: false
+                        },
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                                'tableSettings',
+                                'personalization'
+                            ],
+                            value: { group: false }
+                        }
+                    ],
+                    annotationsChange: V4_SECOND_TABLE_ANNOTATION
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                expect(page.lookup['table']).toHaveLength(2);
+                expect(page.lookup['table']?.[0].configuration.enableExport.valueInFile).toBe(false);
+                expect(page.lookup['table']?.[1].configuration.personalization.valueInFile).toMatchObject({
+                    group: false
+                });
             });
         });
 
@@ -293,7 +341,7 @@ describe('FE V4 Linker - XML', () => {
                 expect(orphanSections![0].configuration).toMatchSnapshot();
             });
 
-            test('orphan-table', async () => {
+            test('orphan-table - has manifest config, no annotation', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
@@ -306,13 +354,15 @@ describe('FE V4 Linker - XML', () => {
                                 'settings',
                                 'controlConfiguration'
                             ],
-                            value: '{}'
+                            value: {
+                                '@com.sap.vocabularies.UI.v1.LineItem#orphanTable': {}
+                            }
                         }
                     ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
-                const table = page.lookup['table'];
+                const table = page.lookup['orphan-table'];
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration).toMatchSnapshot();
             });
@@ -630,7 +680,8 @@ describe('FE V4 Linker - CAP', () => {
             const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
             let content = await readFile(absolutePath, 'utf-8');
             if (file.endsWith('annotations.cds')) {
-                content += CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION;
+                content +=
+                    CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION + CAP_SECOND_TABLE_ANNOTATION;
             }
             const uri = pathToFileURL(absolutePath).toString();
             fileCache.set(uri, content);
@@ -706,6 +757,72 @@ describe('FE V4 Linker - CAP', () => {
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
                 expect(page.lookup['table']?.[0].configuration.creationMode).toMatchSnapshot();
+            });
+
+            test('empty configuration - but 2 tables are collected from annotations', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration'
+                            ],
+                            value: undefined
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                expect(page.lookup['table']?.length).toBe(2);
+                expect(page.lookup['table']?.[0].annotation?.annotation.qualifier).toBeUndefined();
+                expect(page.lookup['table']?.[1].annotation?.annotation.qualifier).toBe('secondTable');
+            });
+
+            test('multiple views - gets both tables configuration', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'enableExport'
+                            ],
+                            value: false
+                        },
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '/Incidents/@com.sap.vocabularies.UI.v1.LineItem#secondTable', // config key differs from the table annotation path
+                                'tableSettings',
+                                'disableCopyToClipboard'
+                            ],
+                            value: true
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                expect(page.lookup['table']).toHaveLength(2);
+                expect(page.lookup['table']?.[0].configuration.enableExport.valueInFile).toBe(false);
+                expect(page.lookup['table']?.[1].configuration.disableCopyToClipboard.valueInFile).toBe(true);
             });
         });
 
@@ -842,7 +959,7 @@ describe('FE V4 Linker - CAP', () => {
                 expect(orphanSections![0].configuration).toMatchSnapshot();
             });
 
-            test('orphan-table', async () => {
+            test('orphan-table - has manifest config, no annotation', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
@@ -853,15 +970,16 @@ describe('FE V4 Linker - CAP', () => {
                                 'IncidentsList',
                                 'options',
                                 'settings',
-                                'controlConfiguration'
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#orphanTable'
                             ],
-                            value: '{}'
+                            value: {}
                         }
                     ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
-                const table = page.lookup['table'];
+                const table = page.lookup['orphan-table'];
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration).toMatchSnapshot();
             });

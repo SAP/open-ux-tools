@@ -1137,7 +1137,7 @@ describe('Test getObjectPageFeatures()', () => {
                                         keys: [{ name: 'ID', value: 'GeneralInformation' }]
                                     },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {}
                                         } as unknown as TreeAggregation
                                     }
@@ -1181,7 +1181,7 @@ describe('Test getObjectPageFeatures()', () => {
                                         keys: [{ name: 'Key', value: 'SalesOrder' }]
                                     },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {}
                                         } as unknown as TreeAggregation
                                     }
@@ -1222,7 +1222,7 @@ describe('Test getObjectPageFeatures()', () => {
                                         keys: [{ name: 'ID', value: 'GeneralInformation' }]
                                     },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: false,
@@ -1274,7 +1274,7 @@ describe('Test getObjectPageFeatures()', () => {
                                         keys: [{ name: 'ID', value: 'GeneralInformation' }]
                                     },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: false,
@@ -1319,7 +1319,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: false,
@@ -1399,7 +1399,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: false,
@@ -1445,7 +1445,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: false,
@@ -1557,7 +1557,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     custom: false,
                                     schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: false,
@@ -1639,7 +1639,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'Items' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: true,
@@ -1713,7 +1713,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'Items' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: true,
@@ -1782,7 +1782,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: true,
@@ -1827,7 +1827,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
                                     aggregations: {
-                                        subSections: {
+                                        subsections: {
                                             aggregations: {
                                                 subSection1: {
                                                     isTable: false,
@@ -1895,7 +1895,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
                                         form: {
                                             schema: { keys: [] },
                                             aggregations: {
@@ -1951,7 +1951,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'Key', value: '_Items' }] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
                                         table: {
                                             schema: { keys: [] },
                                             aggregations: {
@@ -2010,7 +2010,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
                                         table: {
                                             schema: { keys: [] },
                                             aggregations: {
@@ -2063,7 +2063,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'CustomSection' }] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
                                         form: {
                                             schema: { keys: [] },
                                             aggregations: {
@@ -2113,7 +2113,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'Booking' }] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation
                                     }
                                 } as unknown as TreeAggregation
                             }
@@ -2149,7 +2149,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'Travel' }] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation
                                     }
                                 } as unknown as TreeAggregation
                             }
@@ -2250,7 +2250,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'Items' }] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
                                         table: {
                                             aggregations: {
                                                 columns: { aggregations: {} } as unknown as TreeAggregation,
@@ -2319,7 +2319,7 @@ describe('Test getObjectPageFeatures()', () => {
                                     order: 1,
                                     schema: { keys: [{ name: 'ID', value: 'General' }] },
                                     aggregations: {
-                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
                                         form: {
                                             aggregations: {
                                                 fields: { aggregations: {} } as unknown as TreeAggregation,

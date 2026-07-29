@@ -150,6 +150,14 @@ Dependencies should **not be older than 6 months** to ensure security, bug fixes
 - Test thoroughly after version bumps
 - Use `pnpm overrides` (in root package.json) for security patches when necessary
 
+**VSCode backward compatibility (`@types/vscode`):**
+
+Do **not** upgrade `@types/vscode` to the absolute latest release. Instead, target a version that is approximately **6 months old** to maintain backward compatibility for users on older VS Code builds.
+
+- Check the [VS Code release history](https://code.visualstudio.com/updates) to find the version released ~6 months ago
+- Example: if today's latest is `1.125.0` but the 6-month-old release is `1.109.0`, use `"@types/vscode": "1.109.0"`
+- This applies to both `devDependencies` and the `engines.vscode` field in extension `package.json` files
+
 **Check dependency ages:**
 ```bash
 # Check outdated dependencies
