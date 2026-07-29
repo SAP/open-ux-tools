@@ -2,7 +2,7 @@
  * Helper functions for creating and managing webapp folder structure
  */
 
-import { join, resolve, relative } from 'node:path';
+import { join, resolve } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import { fileExists, updateJSON } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
