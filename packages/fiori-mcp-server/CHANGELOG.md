@@ -1,5 +1,82 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.2
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+#### Release Date
+
+2026-07-27
+
+#### Bug Fixes
+
+- substantiate opa5 dev skill patterns [[de08dd1](https://github.com/SAP/open-ux-tools/commit/de08dd1ce292f7560a3d2693fe85f296d5d74b83)]
+
+## 1.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/nodejs-utils, @sap-ux/project-access, @sap-ux/telemetry, @sap-ux/ui5-config [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- Add external service metadata fetching (value help and code lists) to OData app generation [[d1f129b](https://github.com/SAP/open-ux-tools/commit/d1f129b98564bef9f42c51e0bad04381c025631b)]
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+## 1.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- adjust opa5 test development skill initial workflow [[eb0d618](https://github.com/SAP/open-ux-tools/commit/eb0d618bf0cc168efec98465964d6e01fc74f512)]
+
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- add support for odata v2 to opa test development skill [[b45d339](https://github.com/SAP/open-ux-tools/commit/b45d339815670265f2c6013d98f636924514a24a)]
+
 ## 1.9.4
 
 ### Patch Changes
