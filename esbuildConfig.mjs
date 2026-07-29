@@ -1,3 +1,15 @@
+/**
+ * esbuild build configuration for `open-ux-tools`.
+ *
+ * Exports:
+ *   - `esbuildOptionsBrowser`: browser-targeted build options
+ *   - `build(options, args)`: CLI-friendly build runner
+ *
+ * The configuration includes support for Sass, CSS modules, autoprefixing,
+ * metadata output, source maps, and optional CLI flags for minify/watch.
+ *
+ * @typedef {import('esbuild').BuildOptions} BuildOptions
+ */
 import { sassPlugin, postcssModules } from 'esbuild-sass-plugin';
 import autoprefixer from 'autoprefixer';
 import postcss from 'postcss';
@@ -6,7 +18,13 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 
-// from https://github.com/bvaughn/react-virtualized/issues/1212#issuecomment-847759202 workaround for https://github.com/bvaughn/react-virtualized/issues/1632 until it is released.
+/**
+ * esbuild plugin that resolves `react-virtualized` to its UMD bundle.
+ *
+ * This workaround is required for React Virtualized versions affected by
+ * issue #1212 / #1632 until a fixed release is available.
+ * @type {import('esbuild').Plugin}
+ */
 const resolveFixup = {
     name: 'resolve-fixup',
     setup(build) {
@@ -18,6 +36,7 @@ const resolveFixup = {
     }
 };
 
+/** Shared base esbuild options used by all targets. */
 const commonConfig = {
     write: true,
     bundle: true,
@@ -37,7 +56,12 @@ const commonConfig = {
     external: [],
     plugins: []
 };
+/**
+ * CSS Modules transform instance used by the Sass plugin for `.module.scss` files.
+ * @type {import('esbuild-sass-plugin').PostcssModulesResult}
+ */
 const transformModule = postcssModules({});
+/** Browser-targeted esbuild options for the webview and browser bundle. */
 const browserConfig = {
     entryPoints: {
         index: 'src/index.ts',
@@ -61,6 +85,19 @@ const browserConfig = {
         })
     ]
 };
+/**
+ * Apply CLI overrides to a base esbuild options object.
+ *
+ * Supported CLI flags:
+ *   --minify
+ *   --watch
+ *   --metafile
+ *   --sourcemap
+ *
+ * @param {BuildOptions} options - base esbuild build options
+ * @param {string[]} [args=[]] - raw CLI arguments
+ * @returns {BuildOptions}
+ */
 const handleCliParams = (options, args = []) => {
     const outOptions = { ...options };
     const yargs = yargsParser(args);
@@ -78,6 +115,16 @@ const handleCliParams = (options, args = []) => {
 
     return outOptions;
 };
+/**
+ * Build the project with esbuild and optional CLI-driven mode overrides.
+ *
+ * If `watch` is enabled, this starts a long-running watch context. Otherwise,
+ * it executes a single build and optionally writes `esbuild-stats.json` when
+ * `metafile` is enabled.
+ *
+ * @param {BuildOptions} options - base esbuild build options
+ * @param {string[]} args - raw CLI arguments
+ */
 const build = async (options, args) => {
     const finalConfig = handleCliParams(options, args);
     const isWatch = finalConfig.watch;
