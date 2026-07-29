@@ -65,8 +65,8 @@ sap.ui.define([
         opaTest("Check header title of the Object Page", function (Given, When, Then) {
             Then.onThe<%- name%>Generated.onHeader().iCheckTitlePath("<%- headerTitle %>");
         });
-<% } -%>
 
+<% } -%>
 <% if (headerSections?.length > 0) { -%>
         opaTest("Check header facets of the Object Page", function (Given, When, Then) {
 <% headerSections.forEach(function(section) { -%>
