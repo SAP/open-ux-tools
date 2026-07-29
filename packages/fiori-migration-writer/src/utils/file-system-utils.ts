@@ -13,14 +13,14 @@ export const stripSpaces = (val: string): string => val.replace(/\s/g, '');
  *
  * @param s
  */
-export const escapeSingleQuotes = (s: string): string => s.replace(/(')/g, '\\$&');
+export const escapeSingleQuotes = (s: string): string => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
 /**
  * escapeDoubleQuotes
  *
  * @param s
  */
-export const escapeDoubleQuotes = (s: string): string => s.replace(/(")/g, '\\$&');
+export const escapeDoubleQuotes = (s: string): string => s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
 /**
  * Check if directory exists

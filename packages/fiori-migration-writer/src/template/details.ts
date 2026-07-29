@@ -121,7 +121,7 @@ async function extractPomDetails(
  * @param pomJSON
  */
 function resolveAppIdFromPom(manifestAppId: string, pomJSON: any): string {
-    const sapAppIdKey = manifestAppId.replace('${', '').replace('}', '').trim();
+    const sapAppIdKey = manifestAppId.replace(/\$\{|\}/g, '').trim();
 
     try {
         // Use safe property access instead of eval
