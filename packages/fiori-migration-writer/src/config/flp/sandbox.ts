@@ -36,7 +36,6 @@ export async function processFlpSandboxFiles(
 ): Promise<FlpSandboxProcessingResult> {
     let flpSandboxLibs = '';
     let flpSandboxFlpIntent = existingFlpIntent;
-    let flpSandboxMockFlpIntent: string | undefined;
     const hasRootIntent = { flpSandboxRootIntent: false, flpSandboxMockRootIntent: false };
     let targetMockHtmlFile: string | undefined;
 
@@ -70,7 +69,7 @@ export async function processFlpSandboxFiles(
     // Process flpSandboxMockServer.html
     const flpSandboxMockPath = join(projectRoot, webappPath, 'test', 'flpSandboxMockServer.html');
 
-    flpSandboxMockFlpIntent = await getFlpIntentFromHtml(flpSandboxMockPath);
+    const flpSandboxMockFlpIntent = await getFlpIntentFromHtml(flpSandboxMockPath);
     if (await fileExists(flpSandboxMockPath)) {
         targetMockHtmlFile = 'test/flpSandboxMockServer.html';
         const flpSandboxMockContent: string = await readFile(flpSandboxMockPath);

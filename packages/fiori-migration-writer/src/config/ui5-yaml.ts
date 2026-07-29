@@ -202,7 +202,7 @@ export async function generateAndWriteUI5MockYaml(config: UI5MockYamlGenerationC
     );
 
     const ui5MockYamlJson = parse(ui5MockYamlContents);
-    ui5MockYamlJson.server.customMiddleware.forEach((middleware: MiddlewareProxy, index: number) => {
+    ui5MockYamlJson.server.customMiddleware.forEach((middleware: MiddlewareProxy) => {
         if (setUI5version && middleware?.name === FIORI_TOOLS_PROXY) {
             setProxyUI5Version(ui5MockYamlJson, templateData.ui5Yaml?.ui5Version);
         }

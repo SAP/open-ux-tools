@@ -84,14 +84,28 @@ export {
 
 // Additional exports from adapters for test compatibility
 export { buildMainBackend, buildProxyConfig, buildPreviewMiddleware } from './adapters/ui5-config-helpers.js';
-export { generateUI5YamlContent, generateUI5LocalYamlContent, generateUI5MockYamlContent } from './adapters/ui5-config-adapter.js';
+export {
+    generateUI5YamlContent,
+    generateUI5LocalYamlContent,
+    generateUI5MockYamlContent
+} from './adapters/ui5-config-adapter.js';
 
 // Additional exports from utils for test compatibility
 export { readManifest, getUI5Version } from './utils/manifest-and-version-utils.js';
-export { doesPropertyExist, stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, doesDirectoryExists } from './utils/file-system-utils.js';
+export {
+    doesPropertyExist,
+    stripSpaces,
+    escapeSingleQuotes,
+    escapeDoubleQuotes,
+    doesDirectoryExists
+} from './utils/file-system-utils.js';
 export { generateSapLibsStr, getSourceTemplate } from './utils/migration-utils.js';
 export { getWebIDEProjectPathsAsLabels } from './utils/project-discovery.js';
-export { handleGitIgnoreFile, handlePackageJsonFile, handleLocateReuseLibsFile } from './utils/template-generators/index.js';
+export {
+    handleGitIgnoreFile,
+    handlePackageJsonFile,
+    handleLocateReuseLibsFile
+} from './utils/template-generators/index.js';
 export { validateMetadata } from './utils/service.js';
 export { checkIfReuseLib, getReuseLibModuleName } from './utils/project-readers/reuse-lib-utils.js';
 export { findAllProjectRoots, getReuseLibs, findAll, ReuseLibType } from './utils/file-discovery.js';

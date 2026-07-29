@@ -87,21 +87,19 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
     const neoAppData = await getDestinationFromNeoApp(projectRoot, projectInfo.destination);
     let destination: string | undefined;
     let hostname = '';
-    let scp: boolean | undefined;
     let sapClient = '';
     const ui5Backend = await getFirstBackend(projectRoot);
     destination = ui5Backend?.destination ?? destination;
-    scp = ui5Backend?.scp ?? scp;
+    const scp = ui5Backend?.scp;
     sapClient = ui5Backend?.sapClient ?? sapClient;
     hostname = ui5Backend?.url ?? hostname;
 
-    let firstNeoAppDestination: string | undefined;
     let neoAppUI5Version: string | undefined = '';
     let neoappDestinations: NeoappDestination[] = [];
     if (neoAppData?.destination) {
         destination = neoAppData.destination;
     }
-    firstNeoAppDestination = destination;
+    const firstNeoAppDestination = destination;
     neoAppUI5Version = neoAppData?.neoAppUI5Version;
     const ui5Version = neoAppData?.neoAppUI5Version;
     sapClient = getClientFromDestinationName(destination as string) ?? sapClient;

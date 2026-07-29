@@ -19,10 +19,10 @@ const missingUtilsExports = new Set();
 
 /**
  * Add .js extension to relative imports
- * @param content
- * @param filePath
+ * @param {string} content - File content
+ * @returns {string} Fixed content
  */
-function fixJsExtensions(content, filePath) {
+function fixJsExtensions(content) {
     let fixed = content;
 
     // Pattern: from './something' or from '../something' (but not already .js)
@@ -42,7 +42,8 @@ function fixJsExtensions(content, filePath) {
 
 /**
  * Extract missing exports from utils/index imports
- * @param content
+ * @param {string} content - File content
+ * @returns {void}
  */
 function trackUtilsExports(content) {
     // Pattern: import { something } from '../utils/index.js' or './utils/index.js'
@@ -64,8 +65,9 @@ function trackUtilsExports(content) {
 
 /**
  * Fix i18n JSON import
- * @param content
- * @param filePath
+ * @param {string} content - File content
+ * @param {string} filePath - File path
+ * @returns {string} Fixed content
  */
 function fixI18nImport(content, filePath) {
     if (!filePath.endsWith('i18n.ts')) {
@@ -83,7 +85,8 @@ function fixI18nImport(content, filePath) {
 
 /**
  * Process a single TypeScript file
- * @param filePath
+ * @param {string} filePath - File path
+ * @returns {void}
  */
 function processFile(filePath) {
     const content = readFileSync(filePath, 'utf-8');

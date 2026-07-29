@@ -45,14 +45,9 @@ export async function findAllManifest(roots: string[]): Promise<string[]> {
  *
  * @param projectPath - Path to project root
  * @param dependencyName - Dependency name to check
- * @param checkDevDeps - Whether to check devDependencies
  * @returns true if project has the dependency
  */
-export async function isFioriToolsProject(
-    projectPath: string,
-    dependencyName: string,
-    checkDevDeps: boolean = true
-): Promise<boolean> {
+export async function isFioriToolsProject(projectPath: string, dependencyName: string): Promise<boolean> {
     try {
         const packageJsonPath = join(projectPath, 'package.json');
         const packageJson = await readJSON(packageJsonPath);

@@ -52,7 +52,6 @@ export async function processNeoAppAndODataVersion(
 ): Promise<NeoAppAndODataResult> {
     let destination = existingDestination;
     let firstNeoAppDestination: string | undefined;
-    let neoAppUI5Version: string | undefined;
     let neoappDestinations: NeoappDestination[] = [];
     let sapClient = existingSapClient;
 
@@ -63,7 +62,7 @@ export async function processNeoAppAndODataVersion(
         firstNeoAppDestination = destination;
     }
 
-    neoAppUI5Version = neoAppData?.neoAppUI5Version;
+    const neoAppUI5Version = neoAppData?.neoAppUI5Version;
     if (neoAppData?.neoappDestinations) {
         neoappDestinations = neoAppData.neoappDestinations;
     }

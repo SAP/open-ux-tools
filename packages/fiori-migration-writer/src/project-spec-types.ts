@@ -30,11 +30,8 @@ export const enum FileName {
     Manifest = 'manifest.json',
     Package = 'package.json',
     UI5Yaml = 'ui5.yaml',
-    Ui5Yaml = 'ui5.yaml', // Alias for compatibility
     UI5LocalYaml = 'ui5-local.yaml',
-    Ui5LocalYaml = 'ui5-local.yaml', // Alias for compatibility
     UI5MockYaml = 'ui5-mock.yaml',
-    Ui5MockYaml = 'ui5-mock.yaml', // Alias for compatibility
     NeoApp = 'neo-app.json',
     XsApp = 'xs-app.json',
     ExtConfigJson = 'ext-config.json',
