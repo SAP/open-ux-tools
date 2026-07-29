@@ -4,6 +4,10 @@ import type { IMessageBarProps, IMessageBarStyles } from '@fluentui/react';
 import { MessageBarType } from '@fluentui/react';
 import { UiIcons } from '../../../src/components/Icons';
 
+// TODO: the mock below intercepts props passed to FluentUI's MessageBar to test internal
+// prop forwarding rather than rendered output. Replace with render(<UIMessageBar .../>) and
+// assert observable DOM behaviour, which would also remove jest.unstable_mockModule.
+
 // Capture props that UIMessageBar passes down to MessageBar
 let capturedProps: IMessageBarProps | undefined;
 

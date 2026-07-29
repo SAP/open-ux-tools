@@ -2,6 +2,10 @@ import * as React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import type { IStyleFunction, ICalloutContentStyles, ITooltipHostProps } from '@fluentui/react';
 
+// TODO: the mock below intercepts props passed to FluentUI's TooltipHost to test internal
+// style/prop details rather than rendered output. Replace with render(<UITooltip .../>) and
+// assert observable DOM behaviour via compareStylesBySelector, removing jest.unstable_mockModule.
+
 // Capture props that UITooltip passes down to TooltipHost
 let capturedProps: ITooltipHostProps | undefined;
 

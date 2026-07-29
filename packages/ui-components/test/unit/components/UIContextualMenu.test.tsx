@@ -1,5 +1,10 @@
 import * as React from 'react';
 
+// TODO: the mock below intercepts calloutProps passed to FluentUI's ContextualMenu to test
+// internal implementation details rather than rendered output. Replace style/prop assertions
+// with render(<UIContextualMenu .../>) and assert DOM/CSS via compareStylesBySelector,
+// which would also remove the need for jest.unstable_mockModule and the dynamic import.
+
 // Module-level variable for capturing calloutProps in the Styles test.
 // The mock below always delegates to the real ContextualMenu, but also
 // stores calloutProps here so the Styles test can inspect it.
@@ -22,7 +27,7 @@ const { getUIcontextualMenuCalloutStyles, getUIContextualMenuItemStyles, UIConte
     await import('../../../src/components/UIContextualMenu');
 const { UiIcons, initIcons } = await import('../../../src/components/Icons');
 
-describe('<UIDropdown />', () => {
+describe('<UIContextualMenu />', () => {
     initIcons();
 
     const defaultItems = [

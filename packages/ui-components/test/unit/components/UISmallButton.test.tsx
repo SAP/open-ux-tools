@@ -2,6 +2,10 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import type { IButtonProps, IButtonStyles } from '@fluentui/react';
 
+// TODO: the mock below intercepts props passed to FluentUI's DefaultButton to test internal
+// style details rather than rendered output. Replace with render(<UISmallButton .../>) and
+// assert observable DOM/CSS behaviour via compareStylesBySelector, removing jest.unstable_mockModule.
+
 // Capture props that UISmallButton passes down to DefaultButton
 let capturedProps: IButtonProps | undefined;
 

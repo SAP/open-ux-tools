@@ -4,6 +4,11 @@ import type { ILinkStyles } from '@fluentui/react';
 
 let capturedStyles: (() => Partial<ILinkStyles>) | undefined;
 
+// TODO: the Styles tests below mock @fluentui/react to intercept the internal `styles` prop
+// that UILink passes to FluentUI's Link. This tests implementation details rather than rendered output.
+// Replace with render(<UILink .../>) and assert DOM/CSS via compareStylesBySelector, which
+// would also remove the need for jest.unstable_mockModule and the dynamic import.
+
 // In ESM mode (--experimental-vm-modules + ts-jest useESM), jest.mock() is NOT
 // hoisted. Use jest.unstable_mockModule so the mock is registered before the
 // module under test is dynamically imported below.

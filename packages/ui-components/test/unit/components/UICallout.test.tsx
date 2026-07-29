@@ -2,6 +2,10 @@ import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import type { ICalloutContentStyles } from '@fluentui/react';
 
+// TODO: the mock below intercepts getNextElement/getPreviousElement from @fluentui/react to spy
+// on focus navigation internals. Consider replacing with RTL userEvent interactions that
+// assert observable focus behaviour in the DOM instead.
+
 const { getNextElement: mockGetNextElement, getPreviousElement: mockGetPreviousElement } = await (async () => {
     const actual = await import('@fluentui/react');
     const mocked = {
