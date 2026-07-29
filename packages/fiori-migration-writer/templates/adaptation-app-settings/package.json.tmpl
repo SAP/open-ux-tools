@@ -1,0 +1,17 @@
+{
+	"name": "<%= name %>",
+	"version": "0.0.1",
+	"devDependencies": {
+		"@openui5/ts-types": "1.60.x",
+		"@sap/approuter": "^8.5.1",
+		"@sap/ui5-builder-webide-extension": "1.0.x"
+	},
+	"scripts": {
+		"build": "ui5 build --include-task=generateCachebusterInfo"
+	},
+	"ui5": {
+		"dependencies": [
+			"@sap/ui5-builder-webide-extension"
+		]
+	}
+}
