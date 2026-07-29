@@ -92,7 +92,7 @@ function processFile(filePath) {
     const content = readFileSync(filePath, 'utf-8');
 
     let fixed = content;
-    fixed = fixJsExtensions(fixed, filePath);
+    fixed = fixJsExtensions(fixed);
     fixed = fixI18nImport(fixed, filePath);
 
     // Track utils exports

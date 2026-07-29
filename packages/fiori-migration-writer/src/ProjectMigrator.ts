@@ -107,9 +107,10 @@ export class ProjectMigrator {
                 messages.push({ type: 'ERROR', description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO') });
             }
         } catch (e) {
+            const error = e instanceof Error ? e : new Error(String(e));
             messages.push({
                 type: 'ERROR',
-                description: `Error during migration: ${determineMessage(e, undefined, e.useMessage)}`
+                description: `Error during migration: ${determineMessage(error, undefined, (e as any)?.useMessage)}`
             });
         }
         return { result, messages };
@@ -308,7 +309,7 @@ export class ProjectMigrator {
             });
             return messages;
         }
-        for (const yamlName of [FileName.Ui5LocalYaml, FileName.Ui5MockYaml]) {
+        for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
             if (existsSync(yamlPath)) {
                 const yamlConfig = await UI5Config.newInstance(await readFile(yamlPath));

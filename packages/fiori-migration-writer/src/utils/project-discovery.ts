@@ -53,7 +53,7 @@ async function findWebIDEProject(wsRoot: string, projects: string[]): Promise<vo
         let fioriToolsProject = false;
         const file = join(wsRoot, entries[entry]);
         // check for neo-app.json or pom.xml file present
-        fioriToolsProject = await isFioriToolsProject(dirname(file), '@sap/ux-ui5-tooling', true);
+        fioriToolsProject = await isFioriToolsProject(dirname(file), '@sap/ux-ui5-tooling');
         if (!projects.includes(dirname(file)) && !fioriToolsProject) {
             projects.push(dirname(file));
         }

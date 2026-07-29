@@ -78,7 +78,7 @@ export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string
         if (await fileExists(htmlFilePath)) {
             const flpSandboxContent: any = await readFile(htmlFilePath);
             const key = 'window["sap-ushell-config"] = {';
-            if (flpSandboxContent?.indexOf(key)) {
+            if (flpSandboxContent?.indexOf(key) !== -1) {
                 const posOfkey = flpSandboxContent.indexOf(key);
                 const lenOfKey = key.length;
                 const posStartOfValue = posOfkey + lenOfKey;
@@ -166,7 +166,7 @@ export function getFloorPlan(manifest: Manifest, feVersion: FioriElementsVersion
         // Don't throw message here it will be handled later in migration : 'Migration of OData V4 Projects is not currently supported';
         return FLOOR_PLAN.ListReportObjectPageV4;
     } else {
-        throw i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION');
+        throw new Error(i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION'));
     }
 }
 
