@@ -82,7 +82,7 @@ function journey() {
 
 <% if (headerTitle) { -%>
     opaTest("Check header title of the Object Page", function (_Given: Given, _When: When, Then: Then) {
-        Then.onThe<%- name%>Generated.onHeader().iCheckTitlePath("<%- headerTitle %>");
+        Then.onThe<%- name%>Generated.onHeader().iCheckTitlePath(<%- JSON.stringify(headerTitle) %>);
     });
 
 <% } -%>
