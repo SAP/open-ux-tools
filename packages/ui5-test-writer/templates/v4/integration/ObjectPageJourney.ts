@@ -81,7 +81,7 @@ function journey() {
 <% } -%>
 
 <% if (headerSections?.length > 0) { -%>
-    opaTest("Check header facets of the Object Page", function (_Given: Given, When: When, Then: Then) {
+    opaTest("Check header facets of the Object Page", function (_Given: Given, <% if (headerSections.some(function(section) { return section.contactCardFields?.length > 0; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% headerSections.forEach(function(section) { -%>
 <% if (section.microChart) { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckMicroChart("<%- section.title %>", "");

@@ -1277,6 +1277,54 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).not.toContain("'use strict'");
         });
 
+        it('marks When as unused (_When) in the header-facets test when no header field is a Contact card', async () => {
+            // OP with a header facet (microchart) but no @Communication.Contact header field: When would be unused.
+            const appModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            appModel.applicationModel.pages.BookingObjectPage.navigation = {
+                _BookSupplement: { route: 'BookingSupplementObjectPage' }
+            };
+            appModel.applicationModel.pages.BookingSupplementObjectPage = {
+                pageType: 'ObjectPage',
+                entitySet: 'BookingSupplement',
+                contextPath: '/BookingSupplement',
+                template: 'sap.fe.templates.ObjectPage',
+                model: {
+                    root: {
+                        aggregations: {
+                            header: {
+                                aggregations: {
+                                    sections: {
+                                        aggregations: {
+                                            priceChart: {
+                                                title: 'Supplement Price',
+                                                schema: { dataType: 'ChartDefinition' }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, subOPMetadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const journeyPath = Object.keys(dumped).find((p) =>
+                p.includes('BookingSupplementObjectPageJourney.gen.ts')
+            );
+            expect(journeyPath).toBeDefined();
+            const content = dumped[journeyPath!].contents as string;
+            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+            expect(content).toContain(
+                'opaTest("Check header facets of the Object Page", function (_Given: Given, _When: When, Then: Then)'
+            );
+        });
+
         it('does not modify tsconfig.json', async () => {
             const projectDir = prepareTestFiles('FullScreenLROP');
             const tsconfigPath = join(projectDir, 'tsconfig.json');
