@@ -65,7 +65,7 @@ Search for the method name directly in the installed `sap.fe` package under `nod
 ```bash
 grep -r "iChangeFilterField" node_modules/@sap/ux-ui5-tooling/node_modules --include="*.js" -l
 # or search the project's own node_modules for the sap.fe runtime
-grep -r "methodName" node_modules --include="TableActions*" -l
+grep -r "iChangeFilterField" node_modules --include="TableActions*" -l
 ```
 
 Once you find the file, read the JSDoc block above the method definition for the parameter list. The source files are minified in some distributions — in that case, look for a `.d.ts` type definition file alongside the `.js`, which is always readable.
