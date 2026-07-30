@@ -4,10 +4,11 @@ import {
     AbapServiceProvider,
     createForAbapOnCloud,
     createForDestination,
+    ODataVersion as CatalogODataVersion,
     TlsPatch
 } from '@sap-ux/axios-extension';
 import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
-import type { OdataService } from '@sap-ux/odata-service-writer';
+import type { EdmxAnnotationsInfo, OdataService } from '@sap-ux/odata-service-writer';
 import {
     getExternalServiceReferences,
     OdataVersion,
@@ -125,6 +126,46 @@ async function fetchExternalServicesIfRequested(
 }
 
 /**
+ * Fetches the service's remote annotations from the backend catalog.
+ * Returns undefined when none are available or the fetch fails, so that a metadata refresh
+ * never deletes the existing local annotation files (see odata-service-writer guard).
+ *
+ * @param provider
+ * @param servicePath
+ * @param odataVersion
+ * @param logger
+ */
+async function fetchAnnotations(
+    provider: AbapServiceProvider,
+    servicePath: string,
+    odataVersion: OdataVersion,
+    logger: Logger
+): Promise<EdmxAnnotationsInfo[] | undefined> {
+    // OData V4 embeds annotations in the metadata; the catalog returns none.
+    if (odataVersion === OdataVersion.v4) {
+        return undefined;
+    }
+    try {
+        const annotations = await provider.catalog(CatalogODataVersion.v2).getAnnotations({ path: servicePath });
+        if (annotations.length === 0) {
+            logger.debug('No remote annotations found for service');
+            return undefined;
+        }
+        logger.debug(`Fetched ${annotations.length} annotation source(s)`);
+        return annotations.map((annotation) => ({
+            technicalName: annotation.TechnicalName,
+            xml: annotation.Definitions
+        }));
+    } catch (error) {
+        logger.warn(
+            `Could not fetch annotations: ${(error as Error).message}. Existing local annotation files will be left untouched.`
+        );
+        logger.debug(error);
+        return undefined;
+    }
+}
+
+/**
  * Add the "update metadata" subcommand to a passed command.
  * Refreshes the local OData service metadata and value-help service metadata from the live backend.
  *
@@ -232,12 +273,15 @@ async function updateMetadata(
             logger
         );
 
+        const annotations = await fetchAnnotations(provider, servicePath, odataVersion, logger);
+
         const serviceData: OdataService = {
             name: serviceName,
             path: servicePath,
             version: odataVersion,
             type: ServiceType.EDMX,
             metadata: metadataXml,
+            annotations,
             externalServices,
             previewSettings: {
                 path: backendConfig.path,
@@ -250,7 +294,9 @@ async function updateMetadata(
 
         const memStore = createStore();
         const fs = createEditor(memStore);
-        await updateService(appPath, serviceData, fs, !!externalServices?.length);
+        // updateMiddlewares = false: refresh metadata.xml, annotation files and manifest dataSources only.
+        // The ui5*.yaml middlewares are intentionally left untouched by a metadata re-sync.
+        await updateService(appPath, serviceData, fs, false);
 
         await traceChanges(fs);
         if (!simulate) {

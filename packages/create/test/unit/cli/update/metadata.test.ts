@@ -66,10 +66,15 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
 const mockMetadata = jest.fn<any>().mockResolvedValue('<edmx:Edmx/>');
 const mockFetchExternalServices = jest.fn<any>().mockResolvedValue([{ name: 'ValHelp' }]);
 const mockServiceFn = jest.fn().mockReturnValue({ metadata: mockMetadata });
+const mockGetAnnotations = jest
+    .fn<any>()
+    .mockResolvedValue([{ TechnicalName: 'ZTEST_SRV_ANNO', Version: '0001', Definitions: '<Annotations/>' }]);
+const mockCatalog = jest.fn().mockReturnValue({ getAnnotations: mockGetAnnotations });
 
 class MockAbapServiceProvider {
     service = mockServiceFn;
     fetchExternalServices = mockFetchExternalServices;
+    catalog = mockCatalog;
 }
 
 const mockCreateForDestination = jest.fn().mockImplementation(() => new MockAbapServiceProvider());
@@ -79,6 +84,7 @@ const mockTlsPatch = { isPatchRequired: jest.fn().mockReturnValue(false), apply:
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: MockAbapServiceProvider,
     AbapCloudEnvironment: { EmbeddedSteampunk: 'EmbeddedSteampunk' },
+    ODataVersion: { v2: '2', v4: '4' },
     TlsPatch: mockTlsPatch,
     createForDestination: mockCreateForDestination,
     createForAbapOnCloud: mockCreateForAbapOnCloud,
@@ -164,6 +170,10 @@ describe('update metadata command', () => {
         mockMetadata.mockResolvedValue('<edmx:Edmx/>');
         mockGetExternalServiceReferences.mockReturnValue([{ name: 'ValHelpRef' }]);
         mockFetchExternalServices.mockResolvedValue([{ name: 'ValHelp' }]);
+        mockGetAnnotations.mockResolvedValue([
+            { TechnicalName: 'ZTEST_SRV_ANNO', Version: '0001', Definitions: '<Annotations/>' }
+        ]);
+        mockCatalog.mockReturnValue({ getAnnotations: mockGetAnnotations });
         mockUpdate.mockResolvedValue(undefined);
         mockCreateForDestination.mockImplementation(() => new MockAbapServiceProvider());
         mockCreateForAbapOnCloud.mockImplementation(() => new MockAbapServiceProvider());
@@ -182,16 +192,18 @@ describe('update metadata command', () => {
         // Then
         expect(mockMetadata).toHaveBeenCalledTimes(1);
         expect(mockFetchExternalServices).toHaveBeenCalledTimes(1);
+        expect(mockGetAnnotations).toHaveBeenCalledTimes(1);
         expect(mockUpdate).toHaveBeenCalledWith(
             resolve('/app/path'),
             expect.objectContaining({
                 name: 'mainService',
                 path: '/sap/opu/odata/sap/ZTEST_SRV/',
                 metadata: '<edmx:Edmx/>',
+                annotations: [{ technicalName: 'ZTEST_SRV_ANNO', xml: '<Annotations/>' }],
                 externalServices: [{ name: 'ValHelp' }]
             }),
             mockFsInstance,
-            true // updateMiddlewares=true because externalServices.length > 0
+            false // updateMiddlewares is always false: a metadata re-sync must not rewrite the yaml middlewares
         );
         expect(mockFsCommit).toHaveBeenCalledTimes(1);
         expect(loggerMock.error).not.toHaveBeenCalled();
@@ -275,12 +287,53 @@ describe('update metadata command', () => {
         await command.parseAsync(getArgv(['metadata', '/app/path']));
 
         // Then
+        expect(mockGetAnnotations).not.toHaveBeenCalled(); // V4 embeds annotations in metadata
         expect(mockUpdate).toHaveBeenCalledWith(
             resolve('/app/path'),
-            expect.objectContaining({ version: '4.0' }),
+            expect.objectContaining({ version: '4.0', annotations: undefined }),
             mockFsInstance,
-            true
+            false
         );
+    });
+
+    test('no remote annotations found: passes annotations undefined (never deletes local files)', async () => {
+        // Given
+        mockGetAnnotations.mockResolvedValue([]);
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path']));
+
+        // Then
+        expect(mockUpdate).toHaveBeenCalledWith(
+            resolve('/app/path'),
+            expect.objectContaining({ annotations: undefined }),
+            mockFsInstance,
+            false
+        );
+        expect(loggerMock.error).not.toHaveBeenCalled();
+    });
+
+    test('annotation fetch throws: logs warning and passes annotations undefined', async () => {
+        // Given
+        mockGetAnnotations.mockRejectedValueOnce(new Error('Catalog unavailable'));
+        const command = new Command('update');
+        addMetadataUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['metadata', '/app/path']));
+
+        // Then
+        expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('Catalog unavailable'));
+        expect(mockUpdate).toHaveBeenCalledWith(
+            resolve('/app/path'),
+            expect.objectContaining({ annotations: undefined }),
+            mockFsInstance,
+            false
+        );
+        expect(mockFsCommit).toHaveBeenCalledTimes(1);
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
     test('no external service references: skips external fetch and uses updateMiddlewares=false', async () => {
