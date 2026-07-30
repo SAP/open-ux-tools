@@ -419,6 +419,31 @@ Then.onTheObjectPage.onTable({property: "items"}).iCheckRows(3);
 
 ---
 
+## Sub-Object Page (two-level navigation)
+
+When an app has a sub-object page, a separate page object is needed for each level. The setup is the same as for a top-level Object Page (see `references/v4-instructions.md` and `references/v4-journeyrunner.md`) with one difference: the `contextPath` or `entitySet` in the page object constructor comes from the sub-object page's manifest target — always read it from `manifest.json`, never guess.
+
+- `contextPath`: `/<ParentEntitySet>/<NavigationProperty>` — used when the manifest target has `contextPath` in its settings
+- `entitySet`: `<SubEntitySet>` (no leading slash) — used when the manifest target has `entitySet` instead
+
+**Journey** - navigate through all levels explicitly, asserting each page is reached:
+
+```javascript
+Given.iStartMyApp();
+Then.onThe<Entity>List.iSeeThisPage();
+
+When.onThe<Entity>List.onTable().iPressRow(0);
+Then.onThe<Entity>ObjectPage.iSeeThisPage();
+
+// <SectionId>   = section ID from @UI.Facets annotation
+// <NavProperty> = OData navigation property name from metadata.xml
+When.onThe<Entity>ObjectPage.iGoToSection({ section: "<SectionId>" });
+When.onThe<Entity>ObjectPage.onTable({ property: "<NavProperty>" }).iPressRow(0);
+Then.onThe<SubEntity>ObjectPage.iSeeThisPage();
+```
+
+---
+
 ## Chart / Analytical List Page (ALP)
 
 ```javascript
