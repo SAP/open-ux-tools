@@ -93,6 +93,18 @@ When.onTheListReport.onTable().iChangeSortOrder("Product Name", "Ascending");   
 When.onTheListReport.onTable().iChangeSortOrder("Product Name", "Descending");  // descending
 When.onTheListReport.onTable().iChangeSortOrder("Product Name", "None");        // remove sorting
 
+// Add / remove a column via the table settings (Columns tab of the p13n dialog)
+// First arg is the visible column header label, or { name: "<ODataPropertyName>" } for stability.
+// The dialog is opened and confirmed automatically — no separate open/confirm call needed.
+When.onTheListReport.onTable().iAddAdaptationColumn("Booking Confirmed");
+When.onTheListReport.onTable().iRemoveAdaptationColumn("Booking Confirmed");
+
+// Filter via the table settings (Filter tab of the p13n dialog)
+// First arg is { name: "<ODataPropertyName>" } — use the exact OData property name from metadata.xml.
+// The dialog is opened and confirmed automatically — no separate open/confirm call needed.
+When.onTheListReport.onTable().iChangeFilterField({ name: "AgencyID" }, "70004");
+When.onTheListReport.onTable().iChangeFilterField({ name: "AgencyID" }, "70004", true);  // bClearFirst: true
+
 // Group by column — first arg is the visible column header label (same rule as iChangeSortOrder)
 When.onTheListReport.onTable().iGroupByColumn("Product Name");
 // Assert grouping is active for a column
@@ -231,6 +243,7 @@ When.onTheObjectPage.onDialog().iConfirm();
 When.onTheObjectPage.onDialog().iCancel();
 
 // Change a field inside a dialog
+// ONLY works when the dialog uses sap.fe.Field building blocks (e.g. action parameter dialogs)
 When.onTheObjectPage.onDialog()
     .iChangeDialogField({property: "Reason"}, "Test reason");
 
@@ -238,6 +251,29 @@ When.onTheObjectPage.onDialog()
 When.onTheObjectPage.onDialog()
     .iChangeDialogField({property: "RejectionReason"}, "Not applicable")
     .and.iConfirm();
+```
+
+> **`iChangeDialogField` cannot be used for the mass Edit action dialog.** It only works for dialogs that use `sap.fe.Field` building blocks (e.g. standard action parameter dialogs). The mass Edit dialog is NOT such a dialog.
+
+### Mass Edit dialog
+
+Use `onMassEditDialog()` instead of `onDialog()`, and `iChangeField` instead of `iChangeDialogField`.
+
+To set a new value for a field, two steps are required:
+1. Select `< Enter New Value >` from the dropdown for that field.
+2. Set the actual value (as `rawText` for a plain input, or open value help for a VH-backed field).
+
+```javascript
+// Step 1: select "Enter New Value" from the field's dropdown
+When.onTheTravelObjectPage.onMassEditDialog()
+    .iChangeField({ property: "CustomerID" }, { dropDownText: "< Enter New Value >" });
+
+// Step 2: type the value directly (for plain input fields)
+When.onTheTravelObjectPage.onMassEditDialog()
+    .iChangeField({ property: "CustomerID" }, { rawText: "45" });
+
+// Confirm the mass edit dialog
+When.onTheTravelObjectPage.onMassEditDialog().iConfirm();
 ```
 
 ---
