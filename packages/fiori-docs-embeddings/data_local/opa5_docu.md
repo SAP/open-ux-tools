@@ -91,7 +91,7 @@ Remove it once all journeys pass.
 - Do NOT write custom `waitFor` selectors when standard `sap.fe.test` API covers the scenario
 - Do NOT mix V4 (`sap.fe.test`) and V2 (`sap.suite.ui.generic.template`) API in the same test
 - Do NOT use hardcoded generated IDs like `'__xmlview0--list--0'` — they are unstable
-- Do NOT skip `iTeardownMyApp()` at the end of a journey
+- Do NOT skip `iTeardownMyApp()` at the end of a journey (V4: `Given.iTeardownMyApp()`, V2: `Given.iTeardownMyApp()`)
 - Do NOT chain teardown on a page object — always call it on `Given`
 
 ### Assertion Omission
