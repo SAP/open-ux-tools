@@ -130,6 +130,8 @@ async function generate<T extends {}>(
     // This is done after `generateUi5Project` since defaults are set if values are not provided
     validateApp(feApp);
 
+    // test
+
     await addOdataService(basePath, feApp.service, fs);
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
