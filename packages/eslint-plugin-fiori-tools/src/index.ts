@@ -477,16 +477,6 @@ const typescriptConfig: Linter.Config[] = [
     }
 ];
 
-const commonManifestConfig: Linter.Config[] = [
-    {
-        files: ['**/manifest.json'],
-        language: '@sap-ux/fiori-tools/fiori',
-        rules: {
-            '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn'
-        }
-    }
-];
-
 // Fiori language rules (for manifest.json, XML views, CDS, .change files)
 const fioriLanguageConfig: Linter.Config[] = [
     {
@@ -523,15 +513,13 @@ export const configs: Record<string, Linter.Config[]> = {
             plugins: {
                 '@sap-ux/fiori-tools': {
                     meta,
-                    languages,
                     rules: fioriRules
                 }
             }
         },
         ...prodConfig,
         ...testConfig,
-        ...typescriptConfig,
-        ...commonManifestConfig
+        ...typescriptConfig
     ],
     'recommended-for-s4hana': [
         {
