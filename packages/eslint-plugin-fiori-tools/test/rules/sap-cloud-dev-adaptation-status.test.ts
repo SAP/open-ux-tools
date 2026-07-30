@@ -131,6 +131,22 @@ ruleTester.run(`${TEST_NAME} - CAP`, cloudDevAdaptationStatusRule, {
                 ]
             },
             []
+        ),
+        createInvalidTestCAP(
+            {
+                name: 'CAP - cloudDevAdaptationStatus has invalid value - should warn',
+                filename: CAP_MANIFEST_PATH,
+                code: getManifestAsCode(CAP_MANIFEST, [
+                    { path: ['sap.fiori', 'cloudDevAdaptationStatus'], value: 'unknown-value' }
+                ]),
+                errors: [
+                    {
+                        message:
+                            "The application hasn't set a release status for the developer adaptation in the cloud."
+                    }
+                ]
+            },
+            []
         )
     ]
 });
