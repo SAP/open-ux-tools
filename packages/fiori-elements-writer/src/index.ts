@@ -279,7 +279,7 @@ async function generate<T extends {}>(
         );
         await generateOPAFiles(
             basePath,
-            { ...opaConfig, enableTypeScript: feApp.appOptions?.typescript },
+            { ...opaConfig, enableTypeScript: feApp.appOptions?.typescript, ui5Version: feApp.ui5?.version },
             data.service.metadata,
             fs,
             log
