@@ -269,6 +269,8 @@ async function generate<T extends {}>(
         await writeAnnotations(basePath, feApp, fs, log);
     }
 
+    //test
+
     // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
     if (addTest) {
         const opaConfig = getOpaConfig(
@@ -277,7 +279,7 @@ async function generate<T extends {}>(
         );
         await generateOPAFiles(
             basePath,
-            { ...opaConfig, enableTypeScript: feApp.appOptions?.typescript, ui5Version: feApp.ui5?.version },
+            { ...opaConfig, enableTypeScript: feApp.appOptions?.typescript },
             data.service.metadata,
             fs,
             log
