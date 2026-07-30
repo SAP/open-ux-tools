@@ -1425,7 +1425,7 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
 
                 const templatePaths = copyTplSpy.mock.calls.map((call) => String(call[0]));
-                expect(templatePaths.some((p) => p.includes(`/v4/${expectedBucket}/`))).toBe(true);
+                expect(templatePaths.some((p) => p.includes(join('v4', expectedBucket)))).toBe(true);
                 copyTplSpy.mockRestore();
             });
         });
