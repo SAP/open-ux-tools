@@ -276,6 +276,12 @@ export type WriteContext = {
     dotFileExtension: DotFileExtension;
     /** Resolved template bucket folder name: '1.84' or '1.150'. */
     templateUi5Version: string;
+    /**
+     * When true, ux-specification-derived journeys (ListReport, ObjectPage, FPM) are generated.
+     * When false (e.g. ObjectPage-only or Analytical List Page projects), only the generic
+     * fallback `FirstJourney` is written.
+     */
+    generateUxSpecJourneys: boolean;
     modifiedFiles: string[];
 };
 

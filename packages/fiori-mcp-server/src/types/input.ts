@@ -20,6 +20,7 @@ export const ListFunctionalitiesInputSchema = zod.object({
     /** Path to the Fiori application */
     appPath: zod
         .string()
+        .min(1)
         .describe(
             'Path to the root folder of the Fiori application (where package.json and ui5.yaml reside) if one exists or to the current directory. Path should be an absolute path.'
         )
