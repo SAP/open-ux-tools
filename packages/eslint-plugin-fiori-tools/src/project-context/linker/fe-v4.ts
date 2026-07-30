@@ -693,8 +693,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
     const disableStrictUomFiltering = config.app?.disableStrictUomFiltering;
-    const fioriConfig = context.app.manifestObject['sap.fiori'] as { cloudDevAdaptationStatus?: string } | undefined;
-    const cloudDevAdaptationStatus = fioriConfig?.cloudDevAdaptationStatus;
+    const cloudDevAdaptationStatus = context.app.manifestObject['sap.fiori']?.cloudDevAdaptationStatus;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],

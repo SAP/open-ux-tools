@@ -743,8 +743,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
     const twoColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
     const threeColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
     const tableColumnVerticalAlignmentValue = config.settings?.tableColumnVerticalAlignment;
-    const fioriConfig = context.app.manifestObject['sap.fiori'] as { cloudDevAdaptationStatus?: string } | undefined;
-    const cloudDevAdaptationStatus = fioriConfig?.cloudDevAdaptationStatus;
+    const cloudDevAdaptationStatus = context.app.manifestObject['sap.fiori']?.cloudDevAdaptationStatus;
     const linkedApp: LinkedFeV2App = {
         type: 'fe-v2',
         pages: [],
