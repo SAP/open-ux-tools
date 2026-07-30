@@ -1,3 +1,8 @@
 #!/usr/bin/env node
 
-import('../dist/cli/index.js').then((m) => m.runUndeploy());
+import('../dist/cli/index.js')
+    .then((m) => m.runUndeploy())
+    .catch((err) => {
+        process.stderr.write((err?.message ?? String(err)) + '\n');
+        process.exit(1);
+    });
