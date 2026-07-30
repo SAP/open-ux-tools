@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Upgrade sanitize-html 2.17.5 → 2.17.6 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
 ## 3.0.8
 
 ### Patch Changes

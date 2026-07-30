@@ -1,5 +1,30 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/ui5-library-inquirer 1.0.27 → 1.0.28
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap-devx/yeoman-ui-types 1.25.0 → 1.25.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/nodejs-utils 1.0.8 → 1.0.9
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+- @sap-ux/ui5-library-writer 1.0.14 → 1.0.15
+- @sap-ux/ui5-library-inquirer 1.0.26 → 1.0.27
+
 ## 1.0.26
 
 ### Patch Changes
