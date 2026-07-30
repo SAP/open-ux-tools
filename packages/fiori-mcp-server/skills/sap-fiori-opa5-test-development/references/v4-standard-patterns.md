@@ -471,4 +471,3 @@ When.onTheShell.iNavigateBack();
 ```javascript
 Then.iSeeMessageToast("Object saved.");
 ```
-```
