@@ -45,6 +45,7 @@
 /packages/playwright/               @SAP/ux-tools-foundations @SAP/ux-tools-architects
 
 # A2 — App Generators and Deploy
+# (A3 is intentionally skipped — the original proposal numbering has no A3)
 /packages/fiori-elements-writer/               @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/fiori-freestyle-writer/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/fiori-app-sub-generator/             @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
@@ -133,6 +134,6 @@
 # Localisation texts — must remain last; globs overlay package-level rules
 **/i18n.json                                                     @SAP/ux-tools-text-reviewers
 **/*.i18n.json                                                   @SAP/ux-tools-text-reviewers
-packages/preview-middleware-client/src/messagebundle.properties  @SAP/ux-tools-text-reviewers
+/packages/preview-middleware-client/src/messagebundle.properties  @SAP/ux-tools-text-reviewers
 **/translations/i18n.ts                                          @SAP/ux-tools-text-reviewers
 /packages/eslint-plugin-fiori-tools/docs/rules/                  @SAP/ux-tools-text-reviewers
