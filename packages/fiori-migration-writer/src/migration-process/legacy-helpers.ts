@@ -14,7 +14,7 @@ import { TemplateFileName } from '../index.js';
  * @returns Validated absolute path
  * @throws Error if path contains unsafe characters or is not a directory
  */
-function validateRootDirectory(path: string): string {
+export function validateRootDirectory(path: string): string {
     const resolved = resolve(path);
     // Reject control characters and shell metacharacters
     if (/[\0\r\n`$|&;<>]/.test(resolved)) {
