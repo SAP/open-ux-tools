@@ -81,7 +81,7 @@ describe('generate — ui5Version forwarding to generateOPAFiles', () => {
 
         await generate('/test/opaVersionTest_noui5', config);
 
-        // setAppDefaults coerces undefined version to '' — empty string routes to the 1.150 bucket
+        // generateUi5Project (mergeUi5) coerces undefined version to '' — empty string routes to the 1.150 bucket
         expect(mockGenerateOPAFiles).toHaveBeenCalledWith(
             '/test/opaVersionTest_noui5',
             expect.objectContaining({ ui5Version: '' }),
