@@ -32,7 +32,7 @@ APIJSON="${TEMP:-/tmp}/sap.fe.test.api.json"
 
 # Look up a specific method
 node -e "
-const data = JSON.parse(require('fs').readFileSync(process.env.TEMP || '/tmp' + '/sap.fe.test.api.json'));
+const data = JSON.parse(require('fs').readFileSync((process.env.TEMP || '/tmp') + '/sap.fe.test.api.json'));
 const cls = data.symbols.find(s => s.name === 'sap.fe.test.api.TableActions');
 const method = cls.methods.find(m => m.name === 'iChangeFilterField');
 console.log(JSON.stringify(method, null, 2));
@@ -40,7 +40,7 @@ console.log(JSON.stringify(method, null, 2));
 
 # List all methods of a class to discover what's available
 node -e "
-const data = JSON.parse(require('fs').readFileSync(process.env.TEMP || '/tmp' + '/sap.fe.test.api.json'));
+const data = JSON.parse(require('fs').readFileSync((process.env.TEMP || '/tmp') + '/sap.fe.test.api.json'));
 const cls = data.symbols.find(s => s.name === 'sap.fe.test.api.TableActions');
 console.log(cls.methods.map(m => m.name).join('\n'));
 "
