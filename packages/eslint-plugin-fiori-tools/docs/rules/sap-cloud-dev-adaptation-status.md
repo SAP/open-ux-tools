@@ -4,11 +4,11 @@
 
 This rule ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of `manifest.json`.
 
-The `cloudDevAdaptationStatus` property indicates whether the application supports cloud-based UI adaptation (key user adaptation). Without this property, the adaptation status is undefined, which can prevent key users from adapting the app.
+The `cloudDevAdaptationStatus` property represents the release status for the developer adaptation in the cloud. The supported types are `released` - app is fully open for cloud adaptation projects and variant generation, `deprecated` - marks older extension pathways that are phased out or no longer recommended, `obsolete` - the app is locked and not enabled for cloud-ready adaptation.
 
 ## Why Was This Introduced?
 
-S/4HANA applications are required to declare their cloud dev adaptation status explicitly in the manifest so that the platform can determine whether UI adaptation is supported or not.
+S/4HANA applications are required to declare their cloud dev adaptation status.
 
 ## Warning Examples
 
@@ -23,7 +23,7 @@ The following configuration will trigger a warning because `cloudDevAdaptationSt
 }
 ```
 
-**Warning message:** `The application hasn't set a release status for the developer adaptation in the cloud.`
+**Warning message:** "The application hasn't set a release status for the developer adaptation in the cloud."
 
 ## Correct Pattern
 
@@ -39,9 +39,12 @@ The following configuration will trigger a warning because `cloudDevAdaptationSt
 
 ## How to Fix
 
-Add a `cloudDevAdaptationStatus` entry inside the `sap.fiori` section of your `manifest.json` with an appropriate value (`"deprecated"`, `"obsolete"` or `"released"`).
+Add a `cloudDevAdaptationStatus` entry inside the `sap.fiori` section of your `manifest.json` with a selected value.
 
 ## Bug Report
 
 Report issues at: https://github.com/SAP/open-ux-tools/issues
 
+## Further Reading
+
+- [Releasing an SAP Fiori Application to Be Extensible in Adaptation Projects](https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/104620657c3b4723ad142e0d1f94d8e1.html)
