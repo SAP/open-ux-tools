@@ -45,7 +45,6 @@
 /packages/playwright/               @SAP/ux-tools-foundations @SAP/ux-tools-architects
 
 # A2 — App Generators and Deploy
-# (A3 is intentionally skipped — the original proposal numbering has no A3)
 /packages/fiori-elements-writer/               @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/fiori-freestyle-writer/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/fiori-app-sub-generator/             @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
@@ -87,7 +86,7 @@
 /packages/sap-systems-ext-types/               @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/sap-systems-ext-webapp/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 
-# A4 — Middlewares
+# A3 — Middlewares
 /packages/backend-proxy-middleware/    @SAP/ux-tools-middlewares @SAP/ux-tools-architects
 /packages/backend-proxy-middleware-cf/ @SAP/ux-tools-middlewares @SAP/ux-tools-architects
 /packages/ui5-proxy-middleware/        @SAP/ux-tools-middlewares @SAP/ux-tools-architects
@@ -98,7 +97,7 @@
 /packages/cards-editor-middleware/     @SAP/ux-tools-middlewares @SAP/ux-tools-architects
 /packages/cards-editor-config-writer/  @SAP/ux-tools-middlewares @SAP/ux-tools-architects
 
-# A5 — Annotations and OData
+# A4 — Annotations and OData
 /packages/cds-annotation-parser/          @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
 /packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
 /packages/xml-odata-annotation-converter/ @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
@@ -110,7 +109,7 @@
 /packages/annotation-generator/           @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
 /packages/text-document-utils/            @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
 
-# A6 — ADP and Editors
+# A5 — ADP and Editors
 /packages/adp-tooling/                    @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
 /packages/generator-adp/                  @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
 /packages/adp-flp-config-sub-generator/   @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
@@ -120,12 +119,12 @@
 # Integration tests
 /tests/integration/adaptation-editor/     @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
 
-# A7 — FPM and UI
+# A6 — FPM and UI
 /packages/fe-fpm-writer/  @SAP/ux-tools-fpm-and-ui @SAP/ux-tools-architects
 /packages/ui-components/  @SAP/ux-tools-fpm-and-ui @SAP/ux-tools-architects
 /packages/ui-prompting/   @SAP/ux-tools-fpm-and-ui @SAP/ux-tools-architects
 
-# A8 — MCP and Tooling
+# A7 — MCP and Tooling
 /packages/fiori-mcp-server/          @SAP/ux-tools-mcp-and-tooling @SAP/ux-tools-architects
 /packages/fiori-docs-embeddings/     @SAP/ux-tools-mcp-and-tooling @SAP/ux-tools-architects
 /packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-mcp-and-tooling @SAP/ux-tools-architects
