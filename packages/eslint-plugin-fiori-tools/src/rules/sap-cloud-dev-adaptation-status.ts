@@ -25,12 +25,13 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         const problems: CloudDevAdaptationStatus[] = [];
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
-            if (app.configuration.cloudDevAdaptationStatus.valueInFile !== undefined) {
+            const statusValue = app.configuration.cloudDevAdaptationStatus.valueInFile;
+            if (statusValue && ['deprecated', 'obsolete', 'released'].includes(statusValue)) {
                 continue;
             }
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
             const configPath = app.configuration.cloudDevAdaptationStatus.configurationPath;
-            const node = context.sourceCode.getNode(context.sourceCode.ast.body, ['sap.fiori']);
+            const node = context.sourceCode.getNode(context.sourceCode.ast.body, configPath);
             problems.push({
                 type: CLOUD_DEV_ADAPTATION_STATUS,
                 manifest: {
