@@ -33,6 +33,30 @@ function validateRootDirectory(path: string): string {
 }
 
 /**
+ * Validates a relative path to ensure it's safe for git commands
+ * Rejects paths that escape the root or contain unsafe characters
+ *
+ * @param relPath - Relative path to validate
+ * @returns The same path if safe
+ * @throws Error if path is unsafe
+ */
+function validateGitRelativePath(relPath: string): string {
+    // Reject empty or root-level paths
+    if (!relPath || relPath === '.') {
+        throw new Error('Git path cannot be empty or root');
+    }
+    // Reject paths that escape the root
+    if (relPath.startsWith('..') || relPath.includes('/..') || relPath.includes('\\..')) {
+        throw new Error('Git path escapes root directory');
+    }
+    // Reject control characters
+    if (/[\0\r\n]/.test(relPath)) {
+        throw new Error('Git path contains control characters');
+    }
+    return relPath;
+}
+
+/**
  * Create basic extension project manifest.json
  * Creates a minimal manifest needed for extension project preview
  *
@@ -140,11 +164,11 @@ export async function createWebappFolderAndMigrateFiles(
         for (const path of dirContent) {
             if (direntToFilter.indexOf(path.name) === -1) {
                 try {
-                    // Use relative paths - path.name is from fs.readdirSync, not user input
-                    const relSource = path.name;
-                    const relDest = join(DirName.Webapp, path.name);
+                    // Validate paths before passing to git - path.name is from fs.readdirSync
+                    const relSource = validateGitRelativePath(path.name);
+                    const relDest = validateGitRelativePath(join(DirName.Webapp, path.name));
 
-                    // use git to move files if available (relative paths prevent injection)
+                    // use git to move files if available (validated relative paths prevent injection)
                     await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
                 } catch {
                     // Expected: git command may fail if git is not installed or repo is not initialized.

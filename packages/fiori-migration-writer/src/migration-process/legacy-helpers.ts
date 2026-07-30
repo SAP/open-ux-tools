@@ -28,6 +28,30 @@ export function validateRootDirectory(path: string): string {
 }
 
 /**
+ * Validates a relative path to ensure it's safe for git commands
+ * Rejects paths that escape the root or contain unsafe characters
+ *
+ * @param relPath - Relative path from relative()
+ * @returns The same path if safe
+ * @throws Error if path is unsafe
+ */
+function validateGitRelativePath(relPath: string): string {
+    // Reject empty or root-level paths
+    if (!relPath || relPath === '.') {
+        throw new Error('Git path cannot be empty or root');
+    }
+    // Reject paths that escape the root
+    if (relPath.startsWith('..') || relPath.includes('/..') || relPath.includes('\\..')) {
+        throw new Error('Git path escapes root directory');
+    }
+    // Reject control characters
+    if (/[\0\r\n]/.test(relPath)) {
+        throw new Error('Git path contains control characters');
+    }
+    return relPath;
+}
+
+/**
  * Build legacy folder paths for migration
  */
 export interface LegacyPaths {
@@ -69,14 +93,14 @@ export async function tryGitMove(rootPath: string, paths: LegacyPaths): Promise<
         // Validate root directory - this is the only absolute path passed to git (-C option)
         const safeRootPath = validateRootDirectory(rootPath);
 
-        // Calculate relative paths from root - these never contain untrusted input
-        const relLegacyWebapp = relative(safeRootPath, paths.ffLegacyWebappPath);
-        const relNewWebapp = DirName.Webapp;
-        const relLegacyTestQunit = relative(safeRootPath, paths.ffLegacyTestQunitPath);
-        const relLegacyTestuiveri5 = relative(safeRootPath, paths.ffLegacyTestuiveri5Path);
-        const relNewTest = relative(safeRootPath, paths.ffNewTestPath);
+        // Calculate and validate relative paths from root
+        const relLegacyWebapp = validateGitRelativePath(relative(safeRootPath, paths.ffLegacyWebappPath));
+        const relNewWebapp = validateGitRelativePath(DirName.Webapp);
+        const relLegacyTestQunit = validateGitRelativePath(relative(safeRootPath, paths.ffLegacyTestQunitPath));
+        const relLegacyTestuiveri5 = validateGitRelativePath(relative(safeRootPath, paths.ffLegacyTestuiveri5Path));
+        const relNewTest = validateGitRelativePath(relative(safeRootPath, paths.ffNewTestPath));
 
-        // Move main webapp folder (using relative paths prevents command injection)
+        // Move main webapp folder (using validated relative paths prevents command injection)
         await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyWebapp, relNewWebapp]);
 
         // Move qunit folder if exists
