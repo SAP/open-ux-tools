@@ -286,28 +286,22 @@ describe('<UITable />', () => {
         expect(dropdowns[0].textContent).toContain('Ireland');
 
         const firstSpan = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
-        if (firstSpan) {
-            fireEvent.click(firstSpan);
-        }
+        fireEvent.click(firstSpan);
         const firstInput = container.querySelector('input') as HTMLElement;
-        if (firstInput) {
-            fireEvent.keyDown(firstInput, { key: 'Tab' });
-            jest.runOnlyPendingTimers();
-            const inputAfterTab = container.querySelector('input') as HTMLElement;
-            fireEvent.keyDown(inputAfterTab, { key: 'Enter' });
-            jest.runOnlyPendingTimers();
-            const inputAfterEnter = container.querySelector('input') as HTMLElement;
-            fireEvent.keyDown(inputAfterEnter, { key: 'Tab', shiftKey: true });
-            jest.runOnlyPendingTimers();
-            const inputAfterShiftTab = container.querySelector('input') as HTMLElement;
-            fireEvent.keyDown(inputAfterShiftTab, { key: 'Enter', shiftKey: true });
-            jest.runOnlyPendingTimers();
-        }
+        fireEvent.keyDown(firstInput, { key: 'Tab' });
+        jest.runOnlyPendingTimers();
+        const inputAfterTab = container.querySelector('input') as HTMLElement;
+        fireEvent.keyDown(inputAfterTab, { key: 'Enter' });
+        jest.runOnlyPendingTimers();
+        const inputAfterEnter = container.querySelector('input') as HTMLElement;
+        fireEvent.keyDown(inputAfterEnter, { key: 'Tab', shiftKey: true });
+        jest.runOnlyPendingTimers();
+        const inputAfterShiftTab = container.querySelector('input') as HTMLElement;
+        fireEvent.keyDown(inputAfterShiftTab, { key: 'Enter', shiftKey: true });
+        jest.runOnlyPendingTimers();
 
         const dropdown = container.querySelector('.ms-Dropdown') as HTMLElement;
-        if (dropdown) {
-            fireEvent.click(dropdown);
-        }
+        fireEvent.click(dropdown);
     });
 
     it('Validate and focus', () => {

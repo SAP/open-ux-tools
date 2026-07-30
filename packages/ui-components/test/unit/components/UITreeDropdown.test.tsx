@@ -329,10 +329,8 @@ describe('<UITreeDropdown />', () => {
             await triggerWindowKeydownWithFocus(container, 'Title.SAP__Messages', 'ArrowRight');
             const inputEl = container.querySelector('input') as HTMLInputElement;
             expect(inputEl.value).toEqual('Title.SAP__Messages');
-            const menuList = queryMenuList();
-            if (menuList) {
-                fireEvent.keyDown(menuList, { key: 'Enter' });
-            }
+            const menuList = queryMenuList() as HTMLElement;
+            fireEvent.keyDown(menuList, { key: 'Enter' });
             expect(inputEl.value).toEqual('Title.SAP__Messages');
         });
 
@@ -364,10 +362,8 @@ describe('<UITreeDropdown />', () => {
             const { container } = renderResult;
             await triggerWindowKeydownWithFocus(container, 'Title');
             await new Promise((resolve) => setTimeout(resolve, 100));
-            const splitMenuButton = querySplitMenuButton();
-            if (splitMenuButton) {
-                fireEvent.click(splitMenuButton, document.createEvent('Events'));
-            }
+            const splitMenuButton = querySplitMenuButton() as HTMLElement;
+            fireEvent.click(splitMenuButton, document.createEvent('Events'));
             expect(document.querySelectorAll(`div.ui-treeDropDown-context-menu`)).toHaveLength(2);
             const inputEl = container.querySelector('input') as HTMLInputElement;
             expect(inputEl.value).toEqual('Title');
@@ -465,10 +461,8 @@ describe('<UITreeDropdown />', () => {
                 expect(document.querySelectorAll('.ms-ContextualMenu-container')).toHaveLength(1);
                 expect(queryCallouts()).toHaveLength(1);
                 // Trigger submenu expand
-                const splitMenuButton = querySplitMenuButton();
-                if (splitMenuButton) {
-                    fireEvent.click(splitMenuButton, document.createEvent('Events'));
-                }
+                const splitMenuButton = querySplitMenuButton() as HTMLElement;
+                fireEvent.click(splitMenuButton, document.createEvent('Events'));
                 // Check submenu offset - two callouts rendered
                 expect(queryCallouts()).toHaveLength(2);
             });
