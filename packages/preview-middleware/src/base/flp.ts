@@ -912,7 +912,7 @@ export class FlpSandbox {
         } else {
             this.logger.debug(`Serving test route: ${config.init}`);
             const templateConfig: Record<string, unknown> =
-                opa5Path && journeyNamesForIsolation
+                opa5Path && journeyNamesForIsolation?.length
                     ? { testPaths, opa5Path, journeyNames: journeyNamesForIsolation }
                     : { testPaths };
             const js = render(initTemplate, templateConfig);
@@ -968,9 +968,16 @@ export class FlpSandbox {
         }
         if (mergedOpa5Config) {
             if (mergedOpa5Config.isolateJourneys) {
-                const journeyFiles = await this.project.byGlob(mergedOpa5Config.pattern);
-                opa5Path = posix.relative(posix.dirname(config.path), mergedOpa5Config.path);
-                journeyNamesForIsolation = generateImportList(ns, journeyFiles);
+                try {
+                    const journeyFiles = await this.project.byGlob(mergedOpa5Config.pattern);
+                    journeyNamesForIsolation = generateImportList(ns, journeyFiles);
+                    opa5Path = posix.relative(posix.dirname(config.path), mergedOpa5Config.path);
+                } catch (e) {
+                    this.logger.error(
+                        `Failed to discover journey files: ${(e as Error).message}. OPA5 page will be added to testsuite without isolated journeys.`
+                    );
+                    testPaths.push(posix.relative(posix.dirname(config.path), mergedOpa5Config.path));
+                }
             } else {
                 testPaths.push(posix.relative(posix.dirname(config.path), mergedOpa5Config.path));
             }
@@ -1070,6 +1077,9 @@ export class FlpSandbox {
             next();
         } else {
             const testFiles = await this.project.byGlob(config.pattern);
+            if (testFiles.length === 0) {
+                this.logger.warn(`No test files found for pattern '${config.pattern}'.`);
+            }
             const templateConfig = {
                 tests: generateImportList(ns, testFiles),
                 isolateJourneys: config.isolateJourneys === true

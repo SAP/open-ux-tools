@@ -1,13 +1,13 @@
 window.suite = function () {
     const oSuite = new parent.jsUnitTestSuite();
     var sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1);
-<% for (const path of locals.testPaths) { %>
+<% for (const path of locals.testPaths) { -%>
     oSuite.addTestPage(sContextPath + "<%- path %>");
-<% } %>
-<% if (locals.opa5Path && locals.journeyNames && locals.journeyNames.length > 0) { %>
-<% for (const name of locals.journeyNames) { %>
+<% } -%>
+<% if (locals.opa5Path && locals.journeyNames && locals.journeyNames.length > 0) { -%>
+<% for (const name of locals.journeyNames) { -%>
     oSuite.addTestPage(sContextPath + "<%- locals.opa5Path %>?journey=<%- name %>");
-<% } %>
-<% } %>
+<% } -%>
+<% } -%>
     return oSuite;
 }

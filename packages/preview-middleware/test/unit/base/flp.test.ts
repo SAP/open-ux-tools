@@ -1879,6 +1879,60 @@ describe('FlpSandbox', () => {
             expect(response.text).not.toContain('NavigationJourney');
         });
     });
+
+    describe('router with isolateJourneys OPA5 and no journey files found', () => {
+        let server!: supertest.Agent;
+
+        const mockProjectNoJourneys = {
+            byPath: jest.fn().mockResolvedValue(undefined),
+            byGlob: jest.fn().mockImplementation((glob: string) => {
+                if (glob.includes('changes')) {
+                    return Promise.resolve([
+                        {
+                            getPath: () => 'test/changes/myid.change',
+                            getName: () => 'myid.change',
+                            getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
+                        }
+                    ]);
+                }
+                return Promise.resolve([]);
+            })
+        } as unknown as typeof mockProject;
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                {
+                    test: [
+                        { framework: 'OPA5', isolateJourneys: true },
+                        { framework: 'Testsuite' }
+                    ]
+                },
+                mockProjectNoJourneys,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+            const app = express();
+            app.use(flp.router);
+            server = supertest(app);
+        });
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('testsuite renders without OPA5 page when no journeys found', async () => {
+            const response = await server.get('/test/testsuite.qunit.js').expect(200);
+            expect(response.text).not.toContain('opaTests.qunit.html');
+            expect(response.text).not.toContain('?journey=');
+        });
+
+        test('warns when no test files found for OPA5 init', async () => {
+            await server.get('/test/opaTests.qunit.js').expect(200);
+            expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('No test files found for pattern'));
+        });
+    });
 });
 
 describe('initAdp', () => {

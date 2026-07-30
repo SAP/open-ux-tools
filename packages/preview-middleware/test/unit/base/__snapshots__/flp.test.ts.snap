@@ -774,9 +774,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
-
 const modulesToRequire = [];
-
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
@@ -1003,9 +1001,7 @@ exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
-
 const modulesToRequire = [];
-
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
@@ -2855,10 +2851,9 @@ exports[`FlpSandbox router with isolateJourneys OPA5 OPA5 init JS contains URL p
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
-
+const knownJourneys = [\\"test/fe/v2/app/test/integration/NavigationJourney\\",\\"test/fe/v2/app/test/integration/SortingJourney\\"];
 const journeyParam = new URLSearchParams(window.location.search).get(\\"journey\\");
-const modulesToRequire = journeyParam ? [journeyParam] : [\\"test/fe/v2/app/test/integration/NavigationJourney\\",\\"test/fe/v2/app/test/integration/SortingJourney\\"];
-
+const modulesToRequire = (journeyParam && knownJourneys.includes(journeyParam)) ? [journeyParam] : knownJourneys;
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
@@ -2876,16 +2871,9 @@ exports[`FlpSandbox router with isolateJourneys OPA5 testsuite JS renders one ad
 "window.suite = function () {
     const oSuite = new parent.jsUnitTestSuite();
     var sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
-
     oSuite.addTestPage(sContextPath + \\"unitTests.qunit.html\\");
-
-
-
     oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html?journey=test/fe/v2/app/test/integration/NavigationJourney\\");
-
     oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html?journey=test/fe/v2/app/test/integration/SortingJourney\\");
-
-
     return oSuite;
 }
 "
@@ -2908,12 +2896,8 @@ exports[`FlpSandbox router with test suite default with testsuite and init tests
 "window.suite = function () {
     const oSuite = new parent.jsUnitTestSuite();
     var sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
-
     oSuite.addTestPage(sContextPath + \\"unitTests.qunit.html\\");
-
     oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html\\");
-
-
     return oSuite;
 }
 "
