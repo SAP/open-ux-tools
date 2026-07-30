@@ -1902,10 +1902,7 @@ describe('FlpSandbox', () => {
         beforeAll(async () => {
             const flp = new FlpSandbox(
                 {
-                    test: [
-                        { framework: 'OPA5', isolateJourneys: true },
-                        { framework: 'Testsuite' }
-                    ]
+                    test: [{ framework: 'OPA5', isolateJourneys: true }, { framework: 'Testsuite' }]
                 },
                 mockProjectNoJourneys,
                 mockUtils,
