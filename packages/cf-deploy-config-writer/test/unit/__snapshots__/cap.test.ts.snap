@@ -331,7 +331,7 @@ modules:
         properties:
           srv-url: \${default-url}
     requires:
-      - name: cappapp-uaa
+      - name: cappapp-auth
   - name: cappapp-db-deployer
     type: hdb
     path: gen/db
@@ -349,10 +349,10 @@ modules:
         parameters:
           service-key:
             name: cappapp-repo-host-key
-      - name: cappapp-uaa
+      - name: cappapp-auth
         parameters:
           service-key:
-            name: cappapp-uaa-key
+            name: cappapp-auth-key
     parameters:
       content:
         instance:
@@ -364,7 +364,7 @@ modules:
             - Authentication: OAuth2UserTokenExchange
               Name: cappapp_uaa
               ServiceInstanceName: cappapp-xsuaa-service
-              ServiceKeyName: cappapp-uaa-key
+              ServiceKeyName: cappapp-auth-key
               sap.cloud.service: cappapp
           existing_destinations_policy: update
     build-parameters:
@@ -428,16 +428,20 @@ resources:
                 HTML5.ForwardAuthToken: true
     requires:
       - name: srv-api
-  - name: cappapp-uaa
+  - name: cappapp-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: cappapp-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: cappapp-xsuaa-service
       config:
         xsappname: cappapp-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:

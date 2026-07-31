@@ -63,23 +63,27 @@ modules:
       - name: appfrontend-app-front
         parameters:
           content-target: true
-      - name: appfrontend-uaa
+      - name: appfrontend-auth
     parameters:
       config:
         destinations:
           - name: ui5
             url: https://ui5.sap.com
 resources:
-  - name: appfrontend-uaa
+  - name: appfrontend-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: appfrontend-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: appfrontend-xsuaa-service
       config:
         xsappname: appfrontend-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: appfrontend-app-front
     type: org.cloudfoundry.managed-service
     parameters:
@@ -155,10 +159,10 @@ modules:
         parameters:
           service-key:
             name: managed-repo-host-key
-      - name: managed-uaa
+      - name: managed-auth
         parameters:
           service-key:
-            name: managed-uaa-key
+            name: managed-auth-key
     parameters:
       content:
         instance:
@@ -170,7 +174,7 @@ modules:
             - Authentication: OAuth2UserTokenExchange
               Name: managed_uaa
               ServiceInstanceName: managed-xsuaa-service
-              ServiceKeyName: managed-uaa-key
+              ServiceKeyName: managed-auth-key
               sap.cloud.service: managed
           existing_destinations_policy: update
     build-parameters:
@@ -194,16 +198,20 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-  - name: managed-uaa
+  - name: managed-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: managed-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: managed-xsuaa-service
       config:
         xsappname: managed-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: managed-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -319,7 +327,7 @@ modules:
       memory: 256M
     requires:
       - name: standalonewithabapserviceprovider-html5-repo-runtime
-      - name: standalonewithabapserviceprovider-uaa
+      - name: standalonewithabapserviceprovider-auth
       - name: standalonewithabapserviceprovider-destination-service
         group: destinations
         properties:
@@ -328,7 +336,7 @@ modules:
           forwardAuthToken: false
       - name: standalonewithabapservic-abap-Y11_00.0035
 resources:
-  - name: standalonewithabapserviceprovider-uaa
+  - name: standalonewithabapserviceprovider-auth
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
@@ -338,6 +346,10 @@ resources:
       config:
         xsappname: standalonewithabapserviceprovider-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: standalonewithabapserviceprovider-html5-repo-runtime
     type: org.cloudfoundry.managed-service
     parameters:
@@ -470,7 +482,7 @@ modules:
       memory: 256M
     requires:
       - name: standalone-with-connectivity-service-html5-repo-runtime
-      - name: standalone-with-connectivity-service-uaa
+      - name: standalone-with-connectivity-service-auth
       - name: standalone-with-connectivity-service-destination-service
         group: destinations
         properties:
@@ -479,7 +491,7 @@ modules:
           forwardAuthToken: false
       - name: standalone-with-connectivity-service-connectivity
 resources:
-  - name: standalone-with-connectivity-service-uaa
+  - name: standalone-with-connectivity-service-auth
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
@@ -489,6 +501,10 @@ resources:
       config:
         xsappname: standalone-with-connectivity-service-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: standalone-with-connectivity-service-html5-repo-runtime
     type: org.cloudfoundry.managed-service
     parameters:
