@@ -8,7 +8,7 @@ If the command fails with any of the following errors, stop and explain what the
 
 - **"No backend configuration found in ui5.yaml"** — the app's `ui5.yaml` has no `fiori-tools-proxy` middleware with a backend entry. The user must add a backend configuration pointing to their ABAP system.
 - **"No stored system found"** (VSCode only) — the backend URL is not stored in the secure store. Run `npx @sap-ux/create@latest add system` first.
-- **"No destination configured"** (SAP Business Application Studio only) — `ui5.yaml` has no `destination` under the backend config. The user must add a BTP destination name.
+- **"No destination found in 'ui5.yaml'"** (SAP Business Application Studio only) — `ui5.yaml` has no `destination` under the backend config. The user must add a BTP destination name.
 - **"No OData service found in manifest"** — the app's `manifest.json` has no `sap.app.dataSources` entries. The app may not be a standard Fiori elements app.
 - **"Service '...' has no URI defined in manifest"** — the data source entry exists but is missing its URI. The manifest is malformed.
 
@@ -60,7 +60,7 @@ After a real (non-simulate) run, give a clear summary:
 | Error message | Cause | Fix |
 |---|---|---|
 | `No stored system found for URL '...'` | System not in secure store | Run `npx @sap-ux/create@latest add system` |
-| `No destination configured in ui5.yaml` | BAS deployment without destination | Add `destination: MY_DEST` to backend config in `ui5.yaml` |
+| `No destination found in 'ui5.yaml'` | BAS deployment without destination | Add `destination: MY_DEST` to backend config in `ui5.yaml` |
 | `No backend configuration found in ui5.yaml` | Missing fiori-tools-proxy backend | Add backend entry to `ui5.yaml` |
 | `Network error` / `ECONNREFUSED` | Backend unreachable | Check VPN, system URL, and credentials |
 | `401 Unauthorized` | Wrong or expired credentials | Re-run `add system` to update stored credentials |
