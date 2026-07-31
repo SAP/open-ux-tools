@@ -55,7 +55,10 @@ describe('<UISplitButton />', () => {
 
         // Access the menu's onItemClick handler and the items directly from component state
         const instance = ref.current!;
-        const { items, onItemClick } = instance.state.menu as { items: any[]; onItemClick: (ev?: React.MouseEvent<HTMLElement>, item?: any) => void };
+        const { items, onItemClick } = instance.state.menu as {
+            items: any[];
+            onItemClick: (ev?: React.MouseEvent<HTMLElement>, item?: any) => void;
+        };
         onItemClick(undefined, items[0]);
 
         expect(splitButtonProps.callback).toHaveBeenCalledWith('option2');
