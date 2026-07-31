@@ -308,9 +308,7 @@ describe('executeFunctionality', () => {
         test('throws when resolveApplication times out', async () => {
             jest.useFakeTimers();
             try {
-                mockCreateApplicationAccess.mockImplementation(
-                    () => new Promise<never>(() => undefined)
-                );
+                mockCreateApplicationAccess.mockImplementation(() => new Promise<never>(() => undefined));
                 const promise = executeFunctionality({
                     appPath: '/some/path',
                     functionalityId: 'add-page',
