@@ -16,7 +16,7 @@ const RESOLVE_APPLICATION_TIMEOUT_MS = 7000;
  */
 export async function resolveApplication(path: string): Promise<Appdetails | undefined> {
     let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
-    const timeout = new Promise<never>((_, reject) => {
+    const timeout = new Promise<never>((_resolve, reject) => {
         timeoutHandle = setTimeout(
             () => reject(new Error(`resolveApplication timed out after ${RESOLVE_APPLICATION_TIMEOUT_MS}ms`)),
             RESOLVE_APPLICATION_TIMEOUT_MS
