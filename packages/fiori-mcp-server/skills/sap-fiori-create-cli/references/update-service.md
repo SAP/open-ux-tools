@@ -1,6 +1,6 @@
-# update metadata — Full Workflow
+# update service — Full Workflow
 
-Runs `update metadata` (see CLI reference in SKILL.md) to refresh the local `metadata.xml` and value-help service metadata from the live backend for a SAP Fiori application.
+Runs `update service` (see CLI reference in SKILL.md) to refresh the local `metadata.xml` and value-help service metadata from the live backend for a SAP Fiori application.
 
 ## Prerequisites (hard errors - must be resolved before running)
 

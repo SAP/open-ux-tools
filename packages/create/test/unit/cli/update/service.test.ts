@@ -132,11 +132,11 @@ jest.unstable_mockModule('mem-fs-editor', () => ({ create: mockCreateEditor }));
 jest.unstable_mockModule('mem-fs', () => ({ create: mockCreateMemStore }));
 
 // ── Dynamic import after all mocks ───────────────────────────────────────────
-const { addMetadataUpdateCommand } = await import('../../../../src/cli/update/metadata.js');
+const { addServiceUpdateCommand } = await import('../../../../src/cli/update/service.js');
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-describe('update metadata command', () => {
+describe('update service command', () => {
     let loggerMock: ToolsLogger;
     const getArgv = (args: string[]) => ['', '', ...args];
 
@@ -184,10 +184,10 @@ describe('update metadata command', () => {
     test('VSCode: fetches metadata and external services, writes files and commits', async () => {
         // Given
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(mockMetadata).toHaveBeenCalledTimes(1);
@@ -216,10 +216,10 @@ describe('update metadata command', () => {
             { url: 'https://test.example.com', path: '/sap/opu/', destination: 'MY_DEST' }
         ]);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(mockCreateForDestination).toHaveBeenCalledWith({}, { Name: 'MY_DEST', WebIDEUsage: 'odata_abap' });
@@ -232,10 +232,10 @@ describe('update metadata command', () => {
     test('--simulate: traces changes but does not commit', async () => {
         // Given
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path', '--simulate']));
+        await command.parseAsync(getArgv(['service', '/app/path', '--simulate']));
 
         // Then
         expect(mockTraceChanges).toHaveBeenCalledTimes(1);
@@ -246,10 +246,10 @@ describe('update metadata command', () => {
     test('--verbose: sets log level verbose', async () => {
         // Given
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path', '--verbose']));
+        await command.parseAsync(getArgv(['service', '/app/path', '--verbose']));
 
         // Then
         expect(mockSetLogLevelVerbose).toHaveBeenCalledTimes(1);
@@ -258,10 +258,10 @@ describe('update metadata command', () => {
     test('--no-value-help: skips external service fetch', async () => {
         // Given
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path', '--no-value-help']));
+        await command.parseAsync(getArgv(['service', '/app/path', '--no-value-help']));
 
         // Then
         expect(mockFetchExternalServices).not.toHaveBeenCalled();
@@ -281,10 +281,10 @@ describe('update metadata command', () => {
             'sap.app': { dataSources: { mainService: { settings: { odataVersion: '4.01' } } } }
         });
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(mockGetAnnotations).not.toHaveBeenCalled(); // V4 embeds annotations in metadata
@@ -300,10 +300,10 @@ describe('update metadata command', () => {
         // Given
         mockGetAnnotations.mockResolvedValue([]);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(mockUpdate).toHaveBeenCalledWith(
@@ -319,10 +319,10 @@ describe('update metadata command', () => {
         // Given
         mockGetAnnotations.mockRejectedValueOnce(new Error('Catalog unavailable'));
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('Catalog unavailable'));
@@ -340,10 +340,10 @@ describe('update metadata command', () => {
         // Given
         mockGetExternalServiceReferences.mockReturnValue([]);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(mockFetchExternalServices).not.toHaveBeenCalled();
@@ -360,10 +360,10 @@ describe('update metadata command', () => {
         // Given
         mockFetchExternalServices.mockRejectedValueOnce(new Error('Not an ABAP system'));
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('Not an ABAP system'));
@@ -384,10 +384,10 @@ describe('update metadata command', () => {
             readManifest: mockReadManifest
         });
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No OData service found'));
@@ -402,10 +402,10 @@ describe('update metadata command', () => {
             readManifest: mockReadManifest
         });
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('has no URI'));
@@ -416,10 +416,10 @@ describe('update metadata command', () => {
         // Given
         mockGetBackendConfigs.mockReturnValue([]);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No backend configuration found'));
@@ -430,10 +430,10 @@ describe('update metadata command', () => {
         // Given
         mockGetService.mockResolvedValueOnce(undefined);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(
@@ -447,10 +447,10 @@ describe('update metadata command', () => {
         // Given
         mockSystemRead.mockResolvedValue(undefined);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No stored system found'));
@@ -462,10 +462,10 @@ describe('update metadata command', () => {
         mockIsAppStudio.mockReturnValue(true);
         mockGetBackendConfigs.mockReturnValue([{ url: 'https://test.example.com', path: '/sap/opu/' }]);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No destination found'));
@@ -481,10 +481,10 @@ describe('update metadata command', () => {
         ]);
         mockMetadata.mockRejectedValueOnce(new Error('404 Not Found'));
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("destination 'MY_DEST'"));
@@ -495,10 +495,10 @@ describe('update metadata command', () => {
     test('relative appPath is resolved to absolute before use', async () => {
         // Given
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', 'relative/path']));
+        await command.parseAsync(getArgv(['service', 'relative/path']));
 
         // Then — validateBasePath receives the resolved absolute path, not the raw relative one
         const { resolve } = await import('node:path');
@@ -518,10 +518,10 @@ describe('update metadata command', () => {
             readManifest: mockReadManifest
         });
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path', '--service', 'otherService']));
+        await command.parseAsync(getArgv(['service', '/app/path', '--service', 'otherService']));
 
         // Then
         expect(mockUpdate).toHaveBeenCalledWith(
@@ -543,10 +543,10 @@ describe('update metadata command', () => {
             readManifest: mockReadManifest
         });
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path', '--service', 'unknownService']));
+        await command.parseAsync(getArgv(['service', '/app/path', '--service', 'unknownService']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('unknownService'));
@@ -558,10 +558,10 @@ describe('update metadata command', () => {
         // Given
         mockMetadata.mockRejectedValueOnce(new Error('Network error'));
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('Network error');
@@ -579,10 +579,10 @@ describe('update metadata command', () => {
             }
         ]);
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then — BackendSystemKey is constructed with the resolved connectPath URL
         const { BackendSystemKey: ActualKey } = actualStore;
@@ -599,10 +599,10 @@ describe('update metadata command', () => {
             authenticationType: 'reentranceTicket'
         });
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
@@ -621,10 +621,10 @@ describe('update metadata command', () => {
             serviceKeys: { uaa: { clientid: 'client', clientsecret: 'secret', url: 'https://auth.example.com' } }
         });
         const command = new Command('update');
-        addMetadataUpdateCommand(command);
+        addServiceUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['metadata', '/app/path']));
+        await command.parseAsync(getArgv(['service', '/app/path']));
 
         // Then
         expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({

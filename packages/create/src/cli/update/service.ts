@@ -13,7 +13,7 @@ import {
     getExternalServiceReferences,
     OdataVersion,
     ServiceType,
-    update as updateService
+    update as updateOdataService
 } from '@sap-ux/odata-service-writer';
 import { createApplicationAccess, FileName } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
@@ -166,20 +166,20 @@ async function fetchAnnotations(
 }
 
 /**
- * Add the "update metadata" subcommand to a passed command.
+ * Add the "update service" subcommand to a passed command.
  * Refreshes the local OData service metadata and value-help service metadata from the live backend.
  *
- * @param cmd - commander command to attach the metadata subcommand to
+ * @param cmd - commander command to attach the service subcommand to
  */
-export function addMetadataUpdateCommand(cmd: Command): void {
-    cmd.command('metadata <appPath>')
+export function addServiceUpdateCommand(cmd: Command): void {
+    cmd.command('service <appPath>')
         .description(
             `Refresh the local OData service metadata.xml from the live backend for a Fiori application.
 Also fetches value-help (external) service metadata when available.
 
 Example:
-    \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app\`
-    \`npx --yes @sap-ux/create@latest update metadata /path/to/my-fiori-app --simulate\``
+    \`npx --yes @sap-ux/create@latest update service /path/to/my-fiori-app\`
+    \`npx --yes @sap-ux/create@latest update service /path/to/my-fiori-app --simulate\``
         )
         .option(
             '--service <name>',
@@ -192,7 +192,7 @@ Example:
             if (options.verbose || options.simulate) {
                 setLogLevelVerbose();
             }
-            await updateMetadata(resolve(appPath), options.valueHelp !== false, !!options.simulate, options.service);
+            await updateService(resolve(appPath), options.valueHelp !== false, !!options.simulate, options.service);
         });
 }
 
@@ -204,7 +204,7 @@ Example:
  * @param simulate - dry run; trace changes but do not write to disk
  * @param serviceNameOpt - name of the data source in manifest (defaults to mainService or first service)
  */
-async function updateMetadata(
+async function updateService(
     appPath: string,
     fetchExternalServiceMetadata: boolean,
     simulate: boolean,
@@ -212,7 +212,7 @@ async function updateMetadata(
 ): Promise<void> {
     const logger = getLogger();
     try {
-        logger.debug(`Called update metadata for path '${appPath}'`);
+        logger.debug(`Called update service for path '${appPath}'`);
         await validateBasePath(appPath);
 
         const appAccess = await createApplicationAccess(appPath);
@@ -296,7 +296,7 @@ async function updateMetadata(
         const fs = createEditor(memStore);
         // updateMiddlewares = false: refresh metadata.xml, annotation files and manifest dataSources only.
         // The ui5*.yaml middlewares are intentionally left untouched by a metadata re-sync.
-        await updateService(appPath, serviceData, fs, false);
+        await updateOdataService(appPath, serviceData, fs, false);
 
         await traceChanges(fs);
         if (!simulate) {

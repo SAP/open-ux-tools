@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { addSystemUpdateCommand } from './system.js';
-import { addMetadataUpdateCommand } from './metadata.js';
+import { addServiceUpdateCommand } from './service.js';
 
 /**
  * Return 'create-fiori update *' commands. Commands include also the handler action.
@@ -10,6 +10,6 @@ import { addMetadataUpdateCommand } from './metadata.js';
 export function getUpdateCommands(): Command {
     const updateCommands = new Command('update');
     addSystemUpdateCommand(updateCommands);
-    addMetadataUpdateCommand(updateCommands);
+    addServiceUpdateCommand(updateCommands);
     return updateCommands;
 }
