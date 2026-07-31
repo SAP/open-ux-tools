@@ -1139,7 +1139,7 @@ export class MtaConfig {
                                     },
                                     {
                                         Authentication: 'OAuth2UserTokenExchange',
-                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_uaa`,
+                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_auth`,
                                         ServiceInstanceName: managedXSUAAServiceName,
                                         ServiceKeyName: `${managedXSUAAName}-key`,
                                         'sap.cloud.service': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}`

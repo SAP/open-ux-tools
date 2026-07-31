@@ -273,7 +273,7 @@ modules:
               ServiceKeyName: basicapp-repo-host-key
               sap.cloud.service: basicapp
             - Authentication: OAuth2UserTokenExchange
-              Name: basicapp_uaa
+              Name: basicapp_auth
               ServiceInstanceName: basicapp-xsuaa-service
               ServiceKeyName: basicapp-auth-key
               sap.cloud.service: basicapp
@@ -668,7 +668,7 @@ modules:
               ServiceKeyName: multiproject-repo-host-key
               sap.cloud.service: multiproject
             - Authentication: OAuth2UserTokenExchange
-              Name: multiproject_uaa
+              Name: multiproject_auth
               ServiceInstanceName: multiproject-xsuaa-service
               ServiceKeyName: multiproject-auth-key
               sap.cloud.service: multiproject
@@ -1069,7 +1069,7 @@ modules:
               ServiceKeyName: comfioritoolslrop-repo-host-key
               sap.cloud.service: comfioritoolslrop
             - Authentication: OAuth2UserTokenExchange
-              Name: comfioritoolslrop_uaa
+              Name: comfioritoolslrop_auth
               ServiceInstanceName: comfioritoolslrop-xsuaa-service
               ServiceKeyName: comfioritoolslrop-auth-key
               sap.cloud.service: comfioritoolslrop

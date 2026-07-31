@@ -172,7 +172,7 @@ modules:
               ServiceKeyName: managed-repo-host-key
               sap.cloud.service: managed
             - Authentication: OAuth2UserTokenExchange
-              Name: managed_uaa
+              Name: managed_auth
               ServiceInstanceName: managed-xsuaa-service
               ServiceKeyName: managed-auth-key
               sap.cloud.service: managed

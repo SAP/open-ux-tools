@@ -31,7 +31,7 @@ modules:
               ServiceKeyName: basicApp-repo-host-key
               sap.cloud.service: basicApp
             - Authentication: OAuth2UserTokenExchange
-              Name: basicApp_uaa
+              Name: basicApp_auth
               ServiceInstanceName: basicApp-xsuaa-service
               ServiceKeyName: basicApp-auth-key
               sap.cloud.service: basicApp
@@ -170,7 +170,7 @@ modules:
               ServiceKeyName: managedAppCAPProject-repo-host-key
               sap.cloud.service: managedAppCAPProject
             - Authentication: OAuth2UserTokenExchange
-              Name: managedAppCAPProject_uaa
+              Name: managedAppCAPProject_auth
               ServiceInstanceName: managedAppCAPProject-xsuaa-service
               ServiceKeyName: managedAppCAPProject-auth-key
               sap.cloud.service: managedAppCAPProject

@@ -86,7 +86,7 @@ modules:
               ServiceKeyName: captestproject-html5-repo-host-key
               sap.cloud.service: captestproject
             - Authentication: OAuth2UserTokenExchange
-              Name: captestproject_uaa
+              Name: captestproject_auth
               ServiceInstanceName: captestproject-xsuaa-service
               ServiceKeyName: captestproject-auth-key
               sap.cloud.service: captestproject
