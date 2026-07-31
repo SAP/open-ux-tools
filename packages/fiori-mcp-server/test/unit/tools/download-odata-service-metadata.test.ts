@@ -11,21 +11,26 @@ jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
 }));
 
 const mockWriteFileSync = jest.fn<any>();
+const mockExistsSync = jest.fn<any>();
 const actualFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
+        existsSync: mockExistsSync,
         writeFileSync: mockWriteFileSync
     },
+    existsSync: mockExistsSync,
     writeFileSync: mockWriteFileSync
 }));
 jest.unstable_mockModule('fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
+        existsSync: mockExistsSync,
         writeFileSync: mockWriteFileSync
     },
+    existsSync: mockExistsSync,
     writeFileSync: mockWriteFileSync
 }));
 
@@ -55,6 +60,7 @@ describe('downloadODataServiceMetadata', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
+        mockExistsSync.mockReturnValue(true);
         mockWriteFileSync.mockImplementation(() => {});
     });
 
@@ -177,6 +183,26 @@ describe('downloadODataServiceMetadata', () => {
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
         expect(result.message).toBe('Missing required parameter: servicePath must be provided');
+    });
+
+    test('should fail fast with an actionable error when appPath does not exist', async () => {
+        mockExistsSync.mockReturnValue(false);
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe(
+            `appPath does not exist: ${mockAppPath}. Create the directory before calling this tool. ` +
+                'This tool does not create directories.'
+        );
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
     test('should return error response from findSystem failure', async () => {
