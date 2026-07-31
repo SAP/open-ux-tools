@@ -154,5 +154,28 @@ describe('listFunctionalities', () => {
         test('throws when appPath is whitespace only', async () => {
             await expect(listFunctionalities({ appPath: '   ' })).rejects.toThrow('appPath parameter is required');
         });
+
+        test('returns static functionalities for non-existent path', async () => {
+            mockCreateApplicationAccess.mockRejectedValue(new Error('Path does not exist'));
+            mockFindProjectRoot.mockRejectedValue(new Error('Path does not exist'));
+            const result = await listFunctionalities({ appPath: '/non/existent/path' });
+            expect(result.applicationPath).toEqual('/non/existent/path');
+            expect(result.functionalities.map((f) => f.functionalityId)).toEqual([
+                'add-page',
+                'delete-page',
+                'create-controller-extension'
+            ]);
+        });
+
+        test('throws when resolveApplication times out', async () => {
+            jest.useFakeTimers();
+            mockCreateApplicationAccess.mockImplementation(
+                () => new Promise<never>(() => undefined)
+            );
+            const promise = listFunctionalities({ appPath: '/some/path' });
+            jest.advanceTimersByTime(8000);
+            await expect(promise).rejects.toThrow('resolveApplication timed out');
+            jest.useRealTimers();
+        });
     });
 });

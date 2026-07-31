@@ -304,6 +304,21 @@ describe('executeFunctionality', () => {
                 })
             ).rejects.toThrow('appPath parameter is required');
         });
+
+        test('throws when resolveApplication times out', async () => {
+            jest.useFakeTimers();
+            mockCreateApplicationAccess.mockImplementation(
+                () => new Promise<never>(() => undefined)
+            );
+            const promise = executeFunctionality({
+                appPath: '/some/path',
+                functionalityId: 'add-page',
+                parameters: {}
+            });
+            jest.advanceTimersByTime(8000);
+            await expect(promise).rejects.toThrow('resolveApplication timed out');
+            jest.useRealTimers();
+        });
     });
 
     test('Without functionalityId', async () => {
