@@ -6,14 +6,14 @@ import { join } from 'node:path';
 import * as zod from 'zod';
 import { logger } from './logger.js';
 
+const RESOLVE_APPLICATION_TIMEOUT_MS = 7000;
+
 /**
  * Resolves the application details from a given path.
  *
  * @param path - The file system path to resolve the application from.
  * @returns A promise that resolves to an Appdetails object if the application is found, or undefined otherwise.
  */
-const RESOLVE_APPLICATION_TIMEOUT_MS = 7000;
-
 export async function resolveApplication(path: string): Promise<Appdetails | undefined> {
     let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
     const timeout = new Promise<never>((_, reject) => {

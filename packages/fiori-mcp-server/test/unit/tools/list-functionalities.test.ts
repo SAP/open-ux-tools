@@ -169,13 +169,16 @@ describe('listFunctionalities', () => {
 
         test('throws when resolveApplication times out', async () => {
             jest.useFakeTimers();
-            mockCreateApplicationAccess.mockImplementation(
-                () => new Promise<never>(() => undefined)
-            );
-            const promise = listFunctionalities({ appPath: '/some/path' });
-            jest.advanceTimersByTime(8000);
-            await expect(promise).rejects.toThrow('resolveApplication timed out');
-            jest.useRealTimers();
+            try {
+                mockCreateApplicationAccess.mockImplementation(
+                    () => new Promise<never>(() => undefined)
+                );
+                const promise = listFunctionalities({ appPath: '/some/path' });
+                jest.advanceTimersByTime(8000);
+                await expect(promise).rejects.toThrow('resolveApplication timed out');
+            } finally {
+                jest.useRealTimers();
+            }
         });
     });
 });
