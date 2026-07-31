@@ -132,11 +132,20 @@ async function determinePatch(
     }
 
     const fieldsToUpdate = await promptForUpdateFields(existing);
-    const updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
+    let updateValues: Record<string, unknown>;
+    try {
+        updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
+    } catch (err) {
+        // User cancelled (e.g. declined clear-credentials confirmation)
+        if ((err as Error).message === 'Clear credentials cancelled') {
+            logger.info('Operation cancelled.');
+            return null;
+        }
+        throw err;
+    }
 
     // Check if clearCredentials was selected in interactive mode
     if (updateValues.clearCredentials) {
-        params.clearCredentials = true;
         updateValues.username = '';
         updateValues.password = '';
         delete updateValues.clearCredentials;
@@ -161,8 +170,9 @@ async function verifyCredentialsUpdate(
     params: { clearCredentials: boolean; skipCheck?: boolean }
 ): Promise<boolean> {
     const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
+    const clearingCredentials = patch.username === '' && patch.password === '';
 
-    if (!updatingCredentials || params.clearCredentials) {
+    if (!updatingCredentials || params.clearCredentials || clearingCredentials) {
         return true;
     }
 

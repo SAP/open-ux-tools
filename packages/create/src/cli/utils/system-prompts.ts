@@ -225,6 +225,8 @@ export async function promptForSystemConfig(partial: {
     const authType = partial.authenticationType || answers.authenticationType;
     const needsCredentials = authType === AuthenticationType.Basic;
 
+    let credentialAnswers: any = {};
+
     if (needsCredentials) {
         const credentialQuestions: prompts.PromptObject[] = [];
 
@@ -245,13 +247,12 @@ export async function promptForSystemConfig(partial: {
         }
 
         if (credentialQuestions.length > 0) {
-            const credentialAnswers = await prompts(credentialQuestions as any);
-            Object.assign(answers, credentialAnswers);
+            credentialAnswers = (await prompts(credentialQuestions as any)) || {};
         }
     } else if (authType === AuthenticationType.ReentranceTicket) {
         // Inform user about re-entrance ticket authentication
-        console.log(
-            '\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n'
+        process.stdout.write(
+            '\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n\n'
         );
     }
 
@@ -262,8 +263,8 @@ export async function promptForSystemConfig(partial: {
         systemType: partial.systemType || answers.systemType,
         authenticationType: partial.authenticationType || answers.authenticationType,
         connectionType: partial.connectionType || answers.connectionType,
-        username: partial.username ?? (answers.username || undefined),
-        password: partial.password ?? (answers.password || undefined)
+        username: partial.username ?? (credentialAnswers.username || answers.username || undefined),
+        password: partial.password ?? (credentialAnswers.password || answers.password || undefined)
     };
 }
 

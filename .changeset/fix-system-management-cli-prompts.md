@@ -2,7 +2,7 @@
 '@sap-ux/create': minor
 ---
 
-fix(create): improve system management CLI auth prompts and add clear credentials option
+FIX: improve system management CLI auth prompts and add clear credentials option
 
 - Make username/password prompts conditional on authenticationType - only prompt when auth type is 'basic'
 - Add informational message for reentranceTicket authentication about browser tab
