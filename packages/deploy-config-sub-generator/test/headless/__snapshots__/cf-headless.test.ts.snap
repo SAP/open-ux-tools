@@ -64,7 +64,7 @@ modules:
               ServiceKeyName: managedAppCAPProjectJava-repo-host-key
               sap.cloud.service: managedAppCAPProjectJava
             - Authentication: OAuth2UserTokenExchange
-              Name: managedAppCAPProjectJava_uaa
+              Name: managedAppCAPProjectJava_auth
               ServiceInstanceName: managedAppCAPProjectJava-xsuaa-service
               ServiceKeyName: managedAppCAPProjectJava-auth-key
               sap.cloud.service: managedAppCAPProjectJava
@@ -333,7 +333,7 @@ modules:
               ServiceKeyName: cappapp-repo-host-key
               sap.cloud.service: cappapp
             - Authentication: OAuth2UserTokenExchange
-              Name: cappapp_uaa
+              Name: cappapp_auth
               ServiceInstanceName: cappapp-xsuaa-service
               ServiceKeyName: cappapp-auth-key
               sap.cloud.service: cappapp
@@ -610,7 +610,7 @@ modules:
               ServiceKeyName: existing-id-deploy-repo-host-key
               sap.cloud.service: existing-id-deploy
             - Authentication: OAuth2UserTokenExchange
-              Name: existing-id-deploy_uaa
+              Name: existing-id-deploy_auth
               ServiceInstanceName: existing-id-deploy-xsuaa-service
               ServiceKeyName: existing-id-deploy-auth-key
               sap.cloud.service: existing-id-deploy
@@ -846,7 +846,7 @@ modules:
               ServiceKeyName: cappapp-repo-host-key
               sap.cloud.service: cappapp
             - Authentication: OAuth2UserTokenExchange
-              Name: cappapp_uaa
+              Name: cappapp_auth
               ServiceInstanceName: cappapp-xsuaa-service
               ServiceKeyName: cappapp-auth-key
               sap.cloud.service: cappapp
@@ -1148,7 +1148,7 @@ modules:
               ServiceKeyName: existing-id-deploy-repo-host-key
               sap.cloud.service: existing-id-deploy
             - Authentication: OAuth2UserTokenExchange
-              Name: existing-id-deploy_uaa
+              Name: existing-id-deploy_auth
               ServiceInstanceName: existing-id-deploy-xsuaa-service
               ServiceKeyName: existing-id-deploy-auth-key
               sap.cloud.service: existing-id-deploy

@@ -29,7 +29,7 @@ modules:
                         ServiceKeyName: sap-ux-test-repo-host-key
                         sap.cloud.service: sap-ux-test
                       - Authentication: OAuth2UserTokenExchange
-                        Name: sap-ux-test_uaa
+                        Name: sap-ux-test_auth
                         ServiceInstanceName: sap-ux-test-xsuaa-service
                         ServiceKeyName: sap-ux-test-auth-key
                         sap.cloud.service: sap-ux-test
