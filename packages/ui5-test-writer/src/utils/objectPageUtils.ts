@@ -171,6 +171,9 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
         const sectionsAggregation = getAggregations(headerAggregation)['sections'];
         const sections = getAggregations(sectionsAggregation) as Record<string, HeaderSectionItem>;
         Object.values(sections).forEach((section) => {
+            if (isSectionHidden(section)) {
+                return;
+            }
             const facetId = getSectionIdentifier(section);
             if (!facetId) {
                 // if no identifier can be found for the section, it is not possible to reliably identify it in tests, so skip it
@@ -216,6 +219,9 @@ function extractObjectPageBodySectionsData(
         const sectionsAggregation = getAggregations(objectPage.model.root)['sections'];
         const sections = getAggregations(sectionsAggregation) as Record<string, BodySectionItem>;
         Object.entries(sections).forEach(([sectionKey, section]) => {
+            if (isSectionHidden(section)) {
+                return;
+            }
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
             const subSections = extractBodySubSectionsData(section, sectionId, convertedMetadata, objectPage.entitySet);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
@@ -338,6 +344,9 @@ function extractBodySubSectionsData(
     const subSectionsAggregation = getAggregations(section)['subsections'];
     const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
     Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
+        if (isSectionHidden(subSection)) {
+            return;
+        }
         const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
         const isTable = isTableSection(subSection);
         subSections.push({
@@ -610,6 +619,17 @@ function isSectionMicroChart(section: SectionItem): boolean {
  */
 function isTableSection(section: BodySectionItem): boolean {
     return !!section.isTable || !!getAggregations(section).table;
+}
+
+/**
+ * Checks whether a section is hidden by a UI.Hidden annotation and should be skipped.
+ *
+ * @param section - section entry from ux specification
+ * @returns true if the section is marked hidden
+ */
+function isSectionHidden(section: SectionItem): boolean {
+    // hideByProperty holds a dynamic hide expression; treat any value as hidden.
+    return section.properties?.hidden?.value === true || !!section.properties?.hideByProperty?.value;
 }
 
 /**
