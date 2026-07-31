@@ -226,6 +226,7 @@ async function updateSystem(params: {
         const patchRecord = await determinePatch(params, existing, logger);
 
         if (!patchRecord) {
+            logger.info('System was not updated.');
             return;
         }
 
@@ -235,6 +236,7 @@ async function updateSystem(params: {
             logger.error(
                 'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
             );
+            logger.info('System was not updated.');
             return;
         }
 
