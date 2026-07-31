@@ -218,23 +218,40 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
-    if (partial.username === undefined) {
-        questions.push({
-            type: 'text',
-            name: 'username',
-            message: 'Username (optional, press Enter to skip):'
-        });
-    }
-
-    if (partial.password === undefined) {
-        questions.push({
-            type: 'password',
-            name: 'password',
-            message: 'Password (optional, press Enter to skip):'
-        });
-    }
-
+    // Get answers for the questions so far (including auth type if it was prompted)
     const answers = questions.length > 0 ? await prompts(questions as any) : {};
+
+    // Now conditionally prompt for credentials based on the determined authentication type
+    const authType = partial.authenticationType || answers.authenticationType;
+    const needsCredentials = authType === AuthenticationType.Basic;
+
+    if (needsCredentials) {
+        const credentialQuestions: prompts.PromptObject[] = [];
+
+        if (partial.username === undefined) {
+            credentialQuestions.push({
+                type: 'text',
+                name: 'username',
+                message: 'Username (optional, press Enter to skip):'
+            });
+        }
+
+        if (partial.password === undefined) {
+            credentialQuestions.push({
+                type: 'password',
+                name: 'password',
+                message: 'Password (optional, press Enter to skip):'
+            });
+        }
+
+        if (credentialQuestions.length > 0) {
+            const credentialAnswers = await prompts(credentialQuestions as any);
+            Object.assign(answers, credentialAnswers);
+        }
+    } else if (authType === AuthenticationType.ReentranceTicket) {
+        // Inform user about re-entrance ticket authentication
+        console.log('\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n');
+    }
 
     return {
         name: partial.name || answers.name,
@@ -302,7 +319,8 @@ export async function promptForUpdateFields(existing: BackendSystem): Promise<st
         choices: [
             { title: `Name (current: ${existing.name})`, value: 'name' },
             { title: `Username (current: ${existing.username || '(none)'})`, value: 'username' },
-            { title: 'Password', value: 'password' }
+            { title: 'Password', value: 'password' },
+            { title: 'Clear Credentials', value: 'clearCredentials' }
         ],
         min: 1
     });
@@ -325,6 +343,29 @@ export async function promptForFieldUpdates(
     fields: string[],
     existing: BackendSystem
 ): Promise<Record<string, unknown>> {
+    // Track if clearCredentials was requested
+    const clearCredentialsRequested = fields.includes('clearCredentials');
+
+    // Handle clearCredentials separately - it doesn't need a prompt
+    if (clearCredentialsRequested) {
+        const answer = await prompts({
+            type: 'confirm',
+            name: 'confirmClear',
+            message: 'Are you sure you want to clear all stored credentials?',
+            initial: false
+        });
+
+        if (!answer.confirmClear) {
+            throw new Error('Clear credentials cancelled');
+        }
+
+        // Remove clearCredentials from fields to process
+        fields = fields.filter((f) => f !== 'clearCredentials');
+        if (fields.length === 0) {
+            return { clearCredentials: true };
+        }
+    }
+
     const questions = fields
         .map((field) => {
             switch (field) {
@@ -357,7 +398,14 @@ export async function promptForFieldUpdates(
         })
         .filter((q) => q !== null);
 
-    return await prompts(questions as any);
+    const result = await prompts(questions as any);
+
+    // Add clearCredentials flag if it was originally selected
+    if (clearCredentialsRequested) {
+        result.clearCredentials = true;
+    }
+
+    return result;
 }
 
 /**

@@ -132,7 +132,17 @@ async function determinePatch(
     }
 
     const fieldsToUpdate = await promptForUpdateFields(existing);
-    return await promptForFieldUpdates(fieldsToUpdate, existing);
+    const updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
+
+    // Check if clearCredentials was selected in interactive mode
+    if (updateValues.clearCredentials) {
+        params.clearCredentials = true;
+        updateValues.username = '';
+        updateValues.password = '';
+        delete updateValues.clearCredentials;
+    }
+
+    return updateValues;
 }
 
 /**

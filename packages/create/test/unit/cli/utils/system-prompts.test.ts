@@ -873,7 +873,8 @@ describe('system-prompts', () => {
                 choices: [
                     { title: 'Name (current: ExistingSystem)', value: 'name' },
                     { title: 'Username (current: existing-user)', value: 'username' },
-                    { title: 'Password', value: 'password' }
+                    { title: 'Password', value: 'password' },
+                    { title: 'Clear Credentials', value: 'clearCredentials' }
                 ],
                 min: 1
             });
@@ -1016,6 +1017,41 @@ describe('system-prompts', () => {
             const result = await promptForFieldUpdates(['unknown' as any], mockSystem);
 
             expect(result).toEqual({});
+        });
+
+        test('should handle clearCredentials selection with confirmation', async () => {
+            mockPrompts
+                .mockResolvedValueOnce({ confirmClear: true }) // Confirmation prompt
+                .mockResolvedValueOnce({ name: 'UpdatedName' }); // Name update prompt
+
+            const result = await promptForFieldUpdates(['clearCredentials', 'name'], mockSystem);
+
+            expect(result).toEqual({
+                clearCredentials: true,
+                name: 'UpdatedName'
+            });
+            expect(mockPrompts).toHaveBeenCalledWith({
+                type: 'confirm',
+                name: 'confirmClear',
+                message: 'Are you sure you want to clear all stored credentials?',
+                initial: false
+            });
+        });
+
+        test('should throw error if clearCredentials confirmation is declined', async () => {
+            mockPrompts.mockResolvedValueOnce({ confirmClear: false });
+
+            await expect(promptForFieldUpdates(['clearCredentials'], mockSystem)).rejects.toThrow(
+                'Clear credentials cancelled'
+            );
+        });
+
+        test('should return clearCredentials flag when only clearCredentials selected', async () => {
+            mockPrompts.mockResolvedValueOnce({ confirmClear: true });
+
+            const result = await promptForFieldUpdates(['clearCredentials'], mockSystem);
+
+            expect(result).toEqual({ clearCredentials: true });
         });
     });
 
