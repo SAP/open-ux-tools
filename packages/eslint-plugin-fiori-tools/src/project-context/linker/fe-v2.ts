@@ -776,7 +776,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
                 valueInFile: tableColumnVerticalAlignmentValue
             },
             cloudDevAdaptationStatus: {
-                values: [],
+                values: ['released', 'deprecated', 'obsolete'],
                 configurationPath: ['sap.fiori', 'cloudDevAdaptationStatus'],
                 valueInFile: cloudDevAdaptationStatus
             }

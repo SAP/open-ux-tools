@@ -26,7 +26,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         const problems: CloudDevAdaptationStatus[] = [];
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             const statusValue = app.configuration.cloudDevAdaptationStatus.valueInFile;
-            if (statusValue && ['deprecated', 'obsolete', 'released'].includes(statusValue)) {
+            if (statusValue && app.configuration.cloudDevAdaptationStatus.values.includes(statusValue)) {
                 continue;
             }
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];

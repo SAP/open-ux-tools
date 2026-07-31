@@ -709,7 +709,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
                 valueInFile: disableStrictUomFiltering
             },
             cloudDevAdaptationStatus: {
-                values: [],
+                values: ['released', 'deprecated', 'obsolete'],
                 configurationPath: ['sap.fiori', 'cloudDevAdaptationStatus'],
                 valueInFile: cloudDevAdaptationStatus
             }
