@@ -250,7 +250,9 @@ export async function promptForSystemConfig(partial: {
         }
     } else if (authType === AuthenticationType.ReentranceTicket) {
         // Inform user about re-entrance ticket authentication
-        console.log('\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n');
+        console.log(
+            '\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n'
+        );
     }
 
     return {
