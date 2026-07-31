@@ -236,16 +236,7 @@ export async function updateServicesData(
         }
     }
     // For update, updatable files should already exist
-    const webappPath = await updateMetadata(
-        basePath,
-        paths,
-        service,
-        ui5Config,
-        ui5LocalConfig,
-        fs,
-        updateMiddlewares,
-        updateMockserver
-    );
+    const webappPath = await updateMetadata(basePath, paths, service, ui5Config, ui5LocalConfig, fs, updateMiddlewares);
 
     if (paths.ui5LocalYaml && ui5LocalConfig) {
         // write ui5 local yaml if service type is not CDS
@@ -268,7 +259,6 @@ export async function updateServicesData(
  * @param {UI5Config | undefined} ui5LocalConfig - ui5-local.yaml configuration
  * @param {Editor} fs - the memfs editor instance
  * @param {boolean} updateMiddlewares - whether the backend proxy (fiori-tools-proxy) middleware should be updated
- * @param {boolean} updateMockserver - whether the mockserver (sap-fe-mockserver) middleware should be regenerated from the manifest
  * @returns {Promise<string | undefined>} webapp path if metadata was written, undefined otherwise
  */
 async function updateMetadata(
@@ -278,13 +268,16 @@ async function updateMetadata(
     ui5Config: UI5Config | undefined,
     ui5LocalConfig: UI5Config | undefined,
     fs: Editor,
-    updateMiddlewares: boolean,
-    updateMockserver: boolean
+    updateMiddlewares: boolean
 ): Promise<string | undefined> {
     if (!service.metadata) {
         return undefined;
     }
     const webappPath = await getWebappPath(basePath, fs);
+    // The mockserver middleware is derived from the manifest and must stay consistent with the external
+    // (value-help) metadata files we write. Regenerate it whenever external services are present, even
+    // when the backend proxy middlewares are being preserved (updateMiddlewares === false).
+    const updateMockserver = updateMiddlewares || !!service.externalServices?.length;
     // Generate mockserver only when ui5-mock.yaml already exists
     if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMockserver) {
         const config: MockserverConfig = {
