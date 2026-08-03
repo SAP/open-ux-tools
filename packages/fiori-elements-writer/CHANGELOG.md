@@ -1,5 +1,25 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-31
+
+#### Bug Fixes
+
+- Pass ui5Version to generateOPAFiles so OPA test template bucket matches the app's target UI5 version [[8f7862f](https://github.com/SAP/open-ux-tools/commit/8f7862f37a8685a9cd9ece5910bd4c5dd94c1194)]
+
+#### Release Date
+
+2026-07-31
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.35 → 1.3.0
+
 ## 3.1.16
 
 ### Patch Changes
