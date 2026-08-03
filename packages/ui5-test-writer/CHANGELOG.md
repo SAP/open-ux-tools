@@ -1,5 +1,25 @@
 # @sap-ux/ui5-test-writer
 
+## 1.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support 2-bucket UI5 version template selection (1.84 / 1.150) for Fiori Elements OPA5 test generation [[8f7862f](https://github.com/SAP/open-ux-tools/commit/8f7862f37a8685a9cd9ece5910bd4c5dd94c1194)]
+
+## 1.2.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Only generate ux-specification-derived OPA journeys for List Report / Object Page (LROP) and Flexible Programming Model (FPM) apps. Object Page-only and Analytical List Page projects now receive the generic fallback FirstJourney instead. The fallback is also written (and wired into the existing `opaTests.qunit.js`) when regenerating an existing app whose test setup is compatible but produces no ux-spec journeys, without overwriting a user's existing fallback journey. [[dbde04c](https://github.com/SAP/open-ux-tools/commit/dbde04ce67b917a1fea61511fb045d15708778ca)]
+
 ## 1.2.34
 
 ### Patch Changes

@@ -22,6 +22,8 @@ export type OPAGenerationOptions = {
     useVirtualPreviewEndpoints?: boolean;
     /** If true, generate TypeScript files instead of JavaScript. */
     enableTypeScript?: boolean;
+    /** Minimum UI5 version of the target app — selects template bucket ('1.84' / '1.150'). */
+    ui5Version?: string;
 };
 
 export const SupportedPageTypes: { [id: string]: string } = {
@@ -272,6 +274,14 @@ export type WriteContext = {
     hasPreexistingTests?: boolean;
     incompatibleTestSetup?: boolean;
     dotFileExtension: DotFileExtension;
+    /** Resolved template bucket folder name: '1.84' or '1.150'. */
+    templateUi5Version: string;
+    /**
+     * When true, ux-specification-derived journeys (ListReport, ObjectPage, FPM) are generated.
+     * When false (e.g. ObjectPage-only or Analytical List Page projects), only the generic
+     * fallback `FirstJourney` is written.
+     */
+    generateUxSpecJourneys: boolean;
     modifiedFiles: string[];
 };
 
