@@ -695,8 +695,20 @@ Report issues at: https://github.com/SAP/open-ux-tools/issues
 
 ## Further Reading
 
-- [Link to relevant UI5 documentation]
-- [Link to Fiori Design Guidelines if applicable]
+Only include this section if you have a **real, verifiable URL** to documentation that directly explains the setting this rule validates. Do **not** invent or guess URLs — omit the section entirely if no known link exists.
+
+If a link is appropriate, use one of these known-good bases:
+- UI5 API docs: `https://ui5.sap.com/#/api/...`
+- Fiori Design Guidelines: `https://experience.sap.com/fiori-design-web/...`
+- SAP Help Portal: `https://help.sap.com/docs/...`
+
+```markdown
+## Further Reading
+
+- [UI5 API: sap.m.Table](https://ui5.sap.com/#/api/sap.m.Table)
+```
+
+If no verified link is available, **delete this section entirely** rather than leaving a placeholder.
 ```
 
 ## Step 9 — Update the README
