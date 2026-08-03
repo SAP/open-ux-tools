@@ -3,11 +3,7 @@ import type { PromptsType } from '../../utils/index.js';
 import type { PromptQuestion } from '@sap-ux/ui-prompting';
 
 export type ProjectActions =
-    | GetProjectPath
-    | SetProjectPath
-    | UpdateProjectPath
-    | UpdateProjectPathResult
-    | ValidateAnswers;
+    GetProjectPath | SetProjectPath | UpdateProjectPath | UpdateProjectPathResult | ValidateAnswers;
 
 export const GET_PROJECT_PATH = 'GET_PROJECT_PATH';
 export const UPDATE_PROJECT_PATH = 'UPDATE_PROJECT_PATH';

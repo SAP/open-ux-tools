@@ -73,24 +73,6 @@ export function findBackendSystemByUrl(backendUrl: string): BackendSystem | unde
 }
 
 /**
- * Check if the current system is the same as the one in the answers.
- *
- * @param abapSystem - system configuration
- * @param url - url
- * @param client - client
- * @param destination - destination
- * @returns true if the system is the same
- */
-export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: string, destination?: string): boolean {
-    return Boolean(
-        (abapSystem?.url &&
-            abapSystem.url.trim()?.replace(/\/$/, '') === url?.trim()?.replace(/\/$/, '') &&
-            abapSystem.client === client) ||
-        (!!abapSystem?.destination && destination === abapSystem?.destination)
-    );
-}
-
-/**
  * Get transport configuration from the backend.
  *
  * @param transportConfigParams - transport configuration parameters

@@ -17,6 +17,7 @@ import {
     getDefaultTargetFolder,
     generateAppGenInfo,
     type AppGenInfo,
+    type Floorplan,
     sendTelemetry,
     TelemetryHelper,
     isCli,
@@ -298,7 +299,9 @@ export default class extends Generator {
             generatorName: generatorName,
             generatorVersion: this.rootGeneratorVersion(),
             ui5Version: config.ui5?.version ?? '',
-            template: getFloorplanLabel(config.template.type, config.service.version),
+            template: config.template.type
+                ? getFloorplanLabel(config.template.type as Floorplan, config.service.version)
+                : 'unknown',
             serviceUrl: config.service.url,
             launchText: t('readMe.launchText')
         };
@@ -409,8 +412,11 @@ export default class extends Generator {
             await runPostAppGenHook({
                 path: this.projectPath,
                 vscodeInstance: this.vscode,
-                postGenCommand: this.options.data?.postGenCommand,
-                deployConfig: this.deployConfig
+                postGenCommand: this.options.data?.postGenCommand ?? '',
+                deployConfig: this.deployConfig,
+                ...(this.downloadType === AppDownloadType.AbapRepository && {
+                    migrationTelemetryEvent: EventName.ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED
+                })
             });
         }
     }

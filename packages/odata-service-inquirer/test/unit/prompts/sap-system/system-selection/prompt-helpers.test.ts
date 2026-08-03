@@ -125,6 +125,19 @@ describe('Test system selection prompt helpers', () => {
             ]);
         });
 
+        test('Should call getAll with backendSystemFilter', async () => {
+            const mockGetAll = jest.fn().mockResolvedValue(backendSystems);
+            mockGetService.mockImplementationOnce(() => ({ getAll: mockGetAll }));
+
+            await createSystemChoices(undefined, false, true, { connectionType: ['abap_catalog'] });
+
+            expect(mockGetAll).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    backendSystemFilter: { connectionType: ['abap_catalog'] }
+                })
+            );
+        });
+
         test('Should return index of default', async () => {
             const nonBasChoices = await createSystemChoices();
             expect(findDefaultSystemSelectionIndex(nonBasChoices, 'no such system')).toEqual(-1);

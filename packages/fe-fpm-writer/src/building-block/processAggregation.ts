@@ -12,9 +12,9 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
-    PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
     PAGE_TEMPLATE_COMMENT,
-    PAGE_TEMPLATE_TYPE_FULL,
+    PageTemplateType,
     type BuildingBlock,
     type PageAggregationName,
     type Page,
@@ -26,15 +26,15 @@ import { getTemplatePath } from '../templates.js';
 import { type IdGeneratorFunction, createIdGenerator } from '../common/file.js';
 import { getErrorMessage } from '../common/validate.js';
 import { i18nNamespaces, translate } from '../i18n.js';
-import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { getDOMParserOptions, getOrAddNamespace, TEMPLATE_NAMESPACES } from './prompts/utils/xml.js';
 import { resolveAggregationPath } from './processor.js';
 
 /**
  * Returns the UI5 xml file document (view/fragment).
  *
- * @param {string} basePath - the base path
- * @param {string} viewPath - the path of the xml view relative to the base path
- * @param {Editor} fs - the memfs editor instance
+ * @param basePath - the base path
+ * @param viewPath - the path of the xml view relative to the base path
+ * @param fs - the memfs editor instance
  * @returns {Document} the view xml file document
  */
 export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Document {
@@ -45,13 +45,9 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
         throw new Error(`Unable to read xml view file. Details: ${getErrorMessage(error)}`);
     }
 
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse xml view file. Details: [${level}] - ${message}`);
-    };
-
     let viewDocument: Document;
     try {
-        viewDocument = new DOMParser({ errorHandler }).parseFromString(viewContent, 'text/xml');
+        viewDocument = new DOMParser(getDOMParserOptions()).parseFromString(viewContent, 'text/xml');
     } catch (error) {
         throw new Error(`Unable to parse xml view file. Details: ${getErrorMessage(error)}`);
     }
@@ -70,7 +66,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
     if (data.buildingBlockType !== BuildingBlockType.Page) {
         return undefined;
     }
-    return (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_AGGREGATIONS : undefined;
+    return (data as Page).templateType === PageTemplateType.Full ? PAGE_AGGREGATIONS : undefined;
 }
 
 /**
@@ -81,7 +77,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
  */
 export function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
     const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
-    if (minUI5Version && lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
+    if (minUI5Version && lt(minUI5Version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT)) {
         const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
         throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version.version })}`);
     }
@@ -93,7 +89,7 @@ export function validateFullPageTemplateVersion(manifest: Manifest | undefined):
  * so that generated prefixed elements like <macros:items> remain valid.
  *
  * @param xmlDocument - the view XML document
- * @returns the resolved namespace prefix string (e.g. 'macros')
+ * @returns {string} the resolved namespace prefix string (e.g. 'macros')
  */
 function resolveMacrosPrefix(xmlDocument: Document): string {
     const prefix = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
@@ -104,20 +100,25 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
     return prefix;
 }
 
-/** IDs needed per aggregation template, keyed by the variable name used in the EJS template. */
+/**
+ * Page aggregations that can only appear once in the view.
+ * A second "Add" for these is a no-op; their creation form is disabled once present.
+ */
+const SINGLE_INSTANCE_PAGE_AGGREGATIONS = new Set<PageAggregationName>(['breadcrumbs', 'footer']);
+
 /** Controls to generate IDs for per aggregation. `key` is the EJS template variable name, `base` is passed to generateId. */
 export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; base: string }[]>> = {
     breadcrumbs: [
         { key: 'Breadcrumbs', base: 'breadcrumbs_breadcrumbs' },
         { key: 'Link', base: 'breadcrumbs_link' },
-        { key: 'Link1', base: 'breadcrumbs_link_1' },
-        { key: 'Link2', base: 'breadcrumbs_link_2' }
+        { key: 'Link1', base: 'breadcrumbs_link' },
+        { key: 'Link2', base: 'breadcrumbs_link' }
     ],
     navigationActions: [{ key: 'Button', base: 'navigationActions_button' }],
     titleContent: [{ key: 'GenericTag', base: 'titleContent_genericTag' }],
     actions: [
         { key: 'Button', base: 'actions_button' },
-        { key: 'Button1', base: 'actions_button_1' }
+        { key: 'Button1', base: 'actions_button' }
     ],
     headerContent: [
         { key: 'VBox', base: 'headerContent_vbox' },
@@ -127,7 +128,7 @@ export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: str
         { key: 'OverflowToolbar', base: 'footer_overflowToolbar' },
         { key: 'ToolbarSpacer', base: 'footer_toolbarSpacer' },
         { key: 'Button', base: 'footer_button' },
-        { key: 'Button1', base: 'footer_button_1' }
+        { key: 'Button1', base: 'footer_button' }
     ]
 };
 
@@ -137,14 +138,16 @@ export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: str
  *
  * @param aggName - the aggregation name
  * @param generateId - the project-aware ID generator
- * @returns an object mapping each template variable name to a unique ID string
+ * @param existingIds - IDs already present in the container (prevents collision on subsequent adds)
+ * @returns {Record<string, string>} an object mapping each template variable name to a unique ID string
  */
 export function buildAggregationIds(
     aggName: PageAggregationName,
-    generateId: IdGeneratorFunction
+    generateId: IdGeneratorFunction,
+    existingIds: string[] = []
 ): Record<string, string> {
     const entries = AGGREGATION_ID_KEYS[aggName] ?? [];
-    const validatedIds: string[] = [];
+    const validatedIds: string[] = [...existingIds];
     const ids: Record<string, string> = {};
     for (const { key, base } of entries) {
         const id = generateId(base, validatedIds);
@@ -165,6 +168,7 @@ export function buildAggregationIds(
  * @param aggContext.aggId - the generated unique ID for the aggregation element
  * @param aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
  * @param aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
+ * @param aggContext.aggIndex - 1-based counter for this aggregation add (used to number text/press handler names)
  * @param fragMacrosNS - the namespace prefix resolved for sap.fe.macros
  * @param xmlDocument - the view XML document (used to inherit namespace declarations)
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
@@ -177,6 +181,7 @@ function buildPageAggregationFragment(
         aggId: string;
         showDefaultContent: boolean;
         ids: Record<string, string>;
+        aggIndex: number;
     },
     fragMacrosNS: string,
     xmlDocument: Document
@@ -188,19 +193,20 @@ function buildPageAggregationFragment(
         .map((a) => `${a.name}="${a.value}"`)
         .join(' ');
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
-    };
-    return new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
+    return new DOMParser(
+        getDOMParserOptions(TEMPLATE_NAMESPACES, (level, message) => {
+            throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
+        })
+    ).parseFromString(wrapped, 'text/xml');
 }
 
 /**
  *
- * @param {Editor} fs - the memfs editor instance
- * @param {Document} xmlDocument - the view XML document (used to resolve namespace prefixes)
- * @param {Document} templateDocument - the template document whose root element receives the children
- * @param {IdGeneratorFunction} generateId - function to generate unique IDs
- * @param {readonly PageAggregationName[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
+ * @param fs - the memfs editor instance
+ * @param xmlDocument - the view XML document (used to resolve namespace prefixes)
+ * @param templateDocument - the template document whose root element receives the children
+ * @param generateId - function to generate unique IDs
+ * @param [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
  * @param useDefaults - when true, the items aggregation renders its default IconTabBar content
  */
 export function appendPageAggregations(
@@ -219,7 +225,7 @@ export function appendPageAggregations(
         const aggId = generateId(aggName);
         const showDefaultContent = aggName === 'items' && useDefaults;
         const ids = buildAggregationIds(aggName, generateId);
-        const aggContext = { macrosPrefix, aggId, showDefaultContent, ids };
+        const aggContext = { macrosPrefix, aggId, showDefaultContent, ids, aggIndex: 1 };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
@@ -327,8 +333,8 @@ export function sortPageAggregationChildren(pageElement: Node): void {
  * via the path prefix and the element is inserted in place. This allows generateBuildingBlock to
  * handle missing aggregation containers in a single write pass, avoiding a separate commit.
  *
- * @param {Document} xmlDocument - The XML document to mutate
- * @param {string} aggregationPath - Full XPath to the target aggregation (e.g. '/mvc:View/macros:Page/macros:items')
+ * @param xmlDocument - The XML document to mutate
+ * @param aggregationPath - Full XPath to the target aggregation (e.g. '/mvc:View/macros:Page/macros:items')
  */
 export function ensureMissingAggregation(xmlDocument: Document, aggregationPath: string): void {
     const nsMap: Record<string, string> = (xmlDocument.documentElement as any)?._nsMap ?? {};
@@ -420,11 +426,80 @@ function wrapLooseBuildingBlocksInItems(
 }
 
 /**
+ * Collects all `id` attribute values from direct Element children of the given container.
+ * Used to seed the ID generator so new IDs don't collide with existing ones.
+ *
+ * @param container - the aggregation container element, or undefined if not present
+ * @returns {string[]} array of existing child element IDs
+ */
+function getExistingContainerIds(container: Element | undefined): string[] {
+    if (!container) {
+        return [];
+    }
+    return Array.from(container.childNodes)
+        .filter((n) => n.nodeType === 1 /* Element */)
+        .map((n) => (n as Element).getAttribute('id'))
+        .filter((id): id is string => !!id);
+}
+
+/**
+ * Derives the 1-based sequential index for a new aggregation add from the existing container.
+ * The index equals the number of existing child elements + 1, ensuring text/press handler
+ * names continue sequentially (e.g. "Action 3" after two buttons already exist).
+ *
+ * @param existingContainer - the existing aggregation container, or undefined on first add
+ * @returns {number} 1-based start index for text/press handler numbering
+ */
+function deriveAggregationIndex(existingContainer: Element | undefined): number {
+    if (!existingContainer) {
+        return 1;
+    }
+    const existingChildCount = Array.from(existingContainer.childNodes).filter(
+        (n) => n.nodeType === 1 /* Element */
+    ).length;
+    return existingChildCount + 1;
+}
+
+/**
+ * Serializes and writes the XML document to the view file on disk.
+ *
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path of the application
+ * @param viewPath - the path of the xml view relative to the base path
+ * @param xmlDocument - the XML document to serialize and write
+ */
+function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDocument: Document): void {
+    fs.write(join(basePath, viewPath), format(new XMLSerializer().serializeToString(xmlDocument)));
+}
+
+/**
+ * Appends child elements from the rendered aggregation template into an existing container element.
+ * aggDoc.documentElement is `<root xmlns:macros=...>`; its first Element child is `<macros:aggName>`.
+ *
+ * @param existingContainer - the existing aggregation container element in the view
+ * @param aggDoc - the rendered template document whose first Element child holds the new children
+ * @param xmlDocument - the owner document (used to import nodes)
+ */
+function appendChildrenIntoContainer(existingContainer: Element, aggDoc: Document, xmlDocument: Document): void {
+    const renderedWrapper = Array.from(aggDoc.documentElement.childNodes).find(
+        (n) => n.nodeType === 1 /* Element */
+    ) as Element | undefined;
+    if (!renderedWrapper) {
+        return;
+    }
+    for (const child of Array.from(renderedWrapper.childNodes)) {
+        if (child.nodeType === 1 /* Element */) {
+            existingContainer.appendChild(xmlDocument.importNode(child, true));
+        }
+    }
+}
+
+/**
  * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
  *
- * @param {string} basePath - the base path of the application
- * @param {GenerateBuildingBlockAggregationConfig} config - the aggregation configuration containing aggregationName
- * @param {Editor} [fs] - the memfs editor instance
+ * @param basePath - the base path of the application
+ * @param config - the aggregation configuration containing aggregationName
+ * @param [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
 export async function generateBuildingBlockAggregation(
@@ -446,9 +521,6 @@ export async function generateBuildingBlockAggregation(
 
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
-    const ids = buildAggregationIds(aggName, generateId);
-    const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids };
-    const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
 
     const nsMap = (xmlDocument.documentElement as any)?._nsMap ?? {};
     // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
@@ -463,16 +535,42 @@ export async function generateBuildingBlockAggregation(
         (pageElement as Element).setAttribute('showFooter', 'true');
     }
     const childNodes = Array.from(pageElement.childNodes);
+    const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
     const hasExistingAggregation = childNodes.some(
         (node) =>
             node.nodeType === 1 /* Element */ &&
             (node as Element).localName === aggName &&
-            (node as Element).namespaceURI === (nsMap[fragMacrosNS] ?? 'sap.fe.macros')
+            (node as Element).namespaceURI === macrosNsUri
     );
+
+    // Find existing container early so its child IDs can seed the ID generator,
+    // preventing collisions when appending to an already-populated aggregation.
+    const existingContainer = hasExistingAggregation
+        ? (childNodes.find(
+              (n) =>
+                  n.nodeType === 1 /* Element */ &&
+                  (n as Element).localName === aggName &&
+                  (n as Element).namespaceURI === macrosNsUri
+          ) as Element | undefined)
+        : undefined;
+
+    if (hasExistingAggregation && SINGLE_INSTANCE_PAGE_AGGREGATIONS.has(aggName)) {
+        return fs;
+    }
+
+    const existingContainerIds = getExistingContainerIds(existingContainer);
+    const ids = buildAggregationIds(aggName, generateId, existingContainerIds);
+    const aggIndex = deriveAggregationIndex(existingContainer);
+    const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids, aggIndex };
+    const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
     if (hasExistingAggregation) {
+        // Append-children aggregations (navigationActions, titleContent, actions, headerContent):
+        // append new children from the rendered template into the existing container.
+        if (existingContainer) {
+            appendChildrenIntoContainer(existingContainer, aggDoc, xmlDocument);
+        }
         sortPageAggregationChildren(pageElement);
-        const existingXmlContent = new XMLSerializer().serializeToString(xmlDocument);
-        fs.write(join(basePath, viewPath), format(existingXmlContent));
+        writeXmlDocument(fs, basePath, viewPath, xmlDocument);
         return fs;
     }
 
@@ -483,7 +581,6 @@ export async function generateBuildingBlockAggregation(
 
     // Move any loose macros building blocks (e.g. macros:Form, macros:Table) into macros:items
     // before inserting the new named aggregation so the Page DOM stays well-formed.
-    const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
     wrapLooseBuildingBlocksInItems(pageElement as Element, xmlDocument, macrosNsUri, fragMacrosNS);
     if (!hasExistingElementChildren && !hasTemplateComment) {
         pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));
@@ -494,9 +591,6 @@ export async function generateBuildingBlockAggregation(
         }
     }
     sortPageAggregationChildren(pageElement);
-
-    const newXmlContent = new XMLSerializer().serializeToString(xmlDocument);
-    fs.write(join(basePath, viewPath), format(newXmlContent));
-
+    writeXmlDocument(fs, basePath, viewPath, xmlDocument);
     return fs;
 }
