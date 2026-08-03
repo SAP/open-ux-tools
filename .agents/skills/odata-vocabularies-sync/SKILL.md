@@ -3,7 +3,7 @@ name: odata-vocabularies-sync
 description: Sync odata-vocabularies package — update all vocabulary resource files to their latest published versions, and optionally add a new vocabulary given its JSON URL. Use when asked to update vocabularies, refresh vocabulary resources, or add a new vocabulary to @sap-ux/odata-vocabularies.
 argument-hint: (optional) URL of the new vocabulary in JSON format (ending in .json), e.g. https://sap.github.io/odata-vocabularies/vocabularies/SomeNew.json — XML URLs are not supported
 metadata:
-  author: sap-ux
+  author: sap-fiori-tools
   version: "1.0.0"
 ---
 
@@ -46,13 +46,13 @@ Add an entry to `SUPPORTED_VOCABULARIES` in alphabetical order within the existi
 
 ### 1c. Edit `src/resources/index.ts`
 
-Make all six additions. Insert each in alphabetical order within entries of the same vocabulary family. All six are mandatory — missing any one will cause a runtime error.
+Make all six additions. All six are mandatory — missing any one will cause a runtime error.
 
-1. **Import** (grouped with same-family imports):
+1. **Import** — insert alphabetically by alias in the single import block (OASIS and SAP imports are interleaved by alias, not grouped by family):
    ```typescript
    import <Alias> from './<namespace>.js';
    ```
-   Note: the import identifier must be a valid JS identifier. Use the `$Alias` value from the JSON verbatim — check existing OASIS aliases for precedent (e.g. `Auth` for Authorization, `ODataJSON` for JSON).
+   Use the `$Alias` value from the JSON as the import identifier. **Exception:** if the alias is a reserved JS keyword or built-in (e.g. `JSON`, `Map`, `Error`), prefix it to form a valid identifier (e.g. `JSON` → `ODataJSON`). Check existing imports for precedent.
 
 2. **Namespace union type** — add to the matching family type:
    - OASIS → `OasisVocabularyNamespace`
@@ -123,7 +123,7 @@ If the tool fails, stop and report the full error output before proceeding.
 pnpm --filter @sap-ux/odata-vocabularies test -- -u
 ```
 
-Report any test failures that are not snapshot-related. Snapshot updates are expected and normal after vocabulary content changes.
+Report any test failures that are not snapshot-related. Snapshot updates are expected only when vocabulary content has actually changed (either upstream drift detected by the update tool, or a newly added vocabulary). If snapshots change beyond what was updated, inspect the diff before accepting — it may indicate a regression.
 
 ---
 

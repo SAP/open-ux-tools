@@ -37,11 +37,13 @@ Library that contains the most recent copies of the OData vocabularies authored 
 
 ## Maintaining Vocabularies
 
-Both operations are handled by the `odata-vocabularies-sync` skill (`.claude/skills/odata-vocabularies-sync/SKILL.md`).
+Both operations are handled by the `odata-vocabularies-sync` skill
+(`.agents/skills/odata-vocabularies-sync/SKILL.md`).
+Ask an AI agent to run it — optionally pass the URL of a new vocabulary
+JSON file (URL must end in `.json`, XML is not supported).
 
-Use the slash command in Claude Code (CLI or VSCode extension):
-- `/odata-vocabularies-sync` — update all vocabularies
-- `/odata-vocabularies-sync https://...` — add a new vocabulary (URL must end in `.json`, XML is not supported)
+- No argument — update all vocabularies
+- With a URL — add a new vocabulary
 
 The skill will:
 1. *(When adding)* Register the vocabulary in `tools/update.ts`, `src/resources/index.ts`, `src/loader.ts`, and `README.md`
@@ -50,13 +52,9 @@ The skill will:
 
 After completing, create a changeset with `pnpm cset`.
 
-> **Note:** `com.sap.cds.vocabularies.*` files (ObjectModel, AnalyticsDetails) are hand-crafted and cannot be added this way.
-
 ## Local testing in tools-suite
 
 To test local changes to this package inside the XML annotation language server of `tools-suite`, use [yalc](https://github.com/wclr/yalc). `pnpm link` does not work there because the language server is an esbuild bundle and dependencies are resolved at build time.
-
-See [cross-repo-dev.md](https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/docs/dev-guide/cross-repo-dev.md) *(SAP-internal)* in tools-suite for the full setup and iteration workflow.
 
 **Quick reference — after every change:**
 ```bash
