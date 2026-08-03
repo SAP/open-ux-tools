@@ -52,6 +52,15 @@ const reportControllerExtensionErrorToInfoCenter: (event: GlobalErrorEvent) => v
     });
 };
 
+/**
+ * Registers global event listeners for uncaught errors and unhandled promise rejections
+ * to detect and report controller extension errors to the Info Center.
+ */
+export function registerForControllerExtensionErrors(): void {
+    globalThis.addEventListener('error', reportControllerExtensionErrorToInfoCenter);
+    globalThis.addEventListener('unhandledrejection', reportControllerExtensionErrorToInfoCenter);
+}
+
 export interface FlexChange {
     [key: string]: string | object | undefined;
     changeType: string;
