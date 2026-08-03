@@ -143,9 +143,16 @@ describe('listFunctionalities', () => {
         readAppMock.mockImplementation(() => {
             throw new Error('Dummy');
         });
-        const result = (await listFunctionalities({
-            appPath
-        })) as ListFunctionalitiesOutput;
-        expect(result).toEqual('Error while trying to list functionalities: Dummy');
+        await expect(listFunctionalities({ appPath })).rejects.toThrow('Dummy');
+    });
+
+    describe('input validation', () => {
+        test('throws when appPath is empty string', async () => {
+            await expect(listFunctionalities({ appPath: '' })).rejects.toThrow('appPath parameter is required');
+        });
+
+        test('throws when appPath is whitespace only', async () => {
+            await expect(listFunctionalities({ appPath: '   ' })).rejects.toThrow('appPath parameter is required');
+        });
     });
 });

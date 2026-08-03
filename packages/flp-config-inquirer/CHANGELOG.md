@@ -1,5 +1,29 @@
 # @sap-ux/flp-config-inquirer
 
+## 1.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.38 → 1.0.39
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
+## 1.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/adp-tooling 1.0.37 → 1.0.38
+- @sap-ux/project-input-validator 1.0.13 → 1.0.14
+
 ## 1.0.37
 
 ### Patch Changes

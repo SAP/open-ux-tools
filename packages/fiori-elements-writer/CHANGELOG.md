@@ -1,5 +1,93 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-03
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.2 → 2.1.2
+- @sap-ux/annotation-generator 1.0.20 → 1.0.21
+- @sap-ux/fe-fpm-writer 1.3.9 → 1.3.10
+
+## 3.1.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-31
+
+#### Bug Fixes
+
+- Pass ui5Version to generateOPAFiles so OPA test template bucket matches the app's target UI5 version [[8f7862f](https://github.com/SAP/open-ux-tools/commit/8f7862f37a8685a9cd9ece5910bd4c5dd94c1194)]
+
+#### Release Date
+
+2026-07-31
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.35 → 1.3.0
+
+## 3.1.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.34 → 1.2.35
+
+## 3.1.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.8 → 1.3.9
+
+## 3.1.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.33 → 1.2.34
+
+## 3.1.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/ui5-test-writer 1.2.32 → 1.2.33
+- @sap-ux/cap-config-writer 1.0.26 → 1.0.27
+
+## 3.1.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/cap-config-writer 1.0.25 → 1.0.26
+- @sap-ux/fe-fpm-writer 1.3.7 → 1.3.8
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/odata-service-writer 1.0.15 → 1.0.16
+- @sap-ux/ui5-application-writer 2.1.1 → 2.1.2
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/ui5-test-writer 1.2.31 → 1.2.32
+- @sap-ux/annotation-generator 1.0.19 → 1.0.20
+
 ## 3.1.11
 
 ### Patch Changes

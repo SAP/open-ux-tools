@@ -1,5 +1,33 @@
 # @sap-ux/ui-service-inquirer
 
+## 1.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.4 → 3.2.5
+- @sap-ux/abap-deploy-config-inquirer 2.0.31 → 2.0.32
+- @sap-ux/telemetry 1.0.22 → 1.0.23
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
+## 1.0.35
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap-devx/yeoman-ui-types 1.25.0 → 1.25.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.21 → 1.0.22
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/abap-deploy-config-inquirer 2.0.30 → 2.0.31
+- @sap-ux/odata-service-inquirer 3.2.3 → 3.2.4
+
 ## 1.0.34
 
 ### Patch Changes
