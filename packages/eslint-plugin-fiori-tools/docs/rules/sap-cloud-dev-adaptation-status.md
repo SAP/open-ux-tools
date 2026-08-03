@@ -6,7 +6,7 @@ This rule ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` 
 
 The `cloudDevAdaptationStatus` property represents the release status for the developer adaptation in the cloud.
 The following types are supported: 
-- `released`: The app is fully open for cloud adaptation projects and variant generation,.
+- `released`: The app is fully open for cloud adaptation projects and variant generation.
 - `deprecated`: Marks older extension pathways that are phased out or no longer recommended.
 - `obsolete`: The app is locked and not enabled for cloud-ready adaptation.
 
