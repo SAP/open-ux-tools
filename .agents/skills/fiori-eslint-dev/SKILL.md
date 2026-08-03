@@ -198,16 +198,27 @@ export default rule;
 
 ### For a flex change file rule (V2 `.change` files):
 
-Rules that cover both `manifest.json` and flex `*.change` files (V2) must:
+Rules that validate a setting via flex `.change` files (V2) or `manifest.json` (V4) must:
 
-1. Accept both `FioriJSONSourceCode` and `FioriChangeSourceCode` in `check()`.
-2. Use `createChangeVisitorHandler` (alongside `createJsonVisitorHandler`) in `createFioriRule`.
-3. Use `FLEX_CHANGE_NEW_VALUE_PATH_RESULT` from `src/utils/helpers.ts` as the `deepestPathResult` for the fixer — change files use `operation: 'update'` (not `'delete'`) to set `content.newValue` to the correct value.
-4. Set `changeFileUri` on the diagnostic object (populated by the linker from `ConfigurationProperty`).
+1. Guard `check()` on the source code type(s) you actually handle:
+   - V2-only (`.change` files only): guard on `FioriChangeSourceCode` alone — do **not** add `FioriJSONSourceCode`; the manifest is not checked.
+   - V2 + V4 (both `.change` and `manifest.json`): guard on both `FioriChangeSourceCode` and `FioriJSONSourceCode`.
+2. Set **`property`** on every diagnostic object — this is the property name as it appears in the change file (e.g. `'liveMode'`, `'enableExport'`). Without it, the Page Editor cannot navigate to the correct change file entry.
+3. Set **`changeFileUri`** on diagnostics for `.change` files (populated by the linker from `ConfigurationProperty`). Without it, navigation from Page Editor to the change file does not work.
+4. Use `createChangeVisitorHandler` in `createFioriRule` for change file reporting.
+5. Use `FLEX_CHANGE_NEW_VALUE_PATH_RESULT` from `src/utils/helpers.ts` as the `deepestPathResult` for the fixer — change files use `operation: 'update'` to set `content.newValue` to the correct value.
+
+**Required diagnostic fields by rule type:**
+
+| Rule type | Required diagnostic fields |
+|---|---|
+| Flex change (V2 `.change`) | `property`, `changeFileUri`, `pageName` |
+| Manifest JSON | `manifest` (uri, object, propertyPath, loc) |
+| XML annotation | `pageNames` (array of page target names) |
 
 ```typescript
-import { FioriJSONSourceCode } from '../language/json/source-code.js';
 import { FioriChangeSourceCode } from '../language/change/source-code.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js'; // only if also handling V4 manifest
 import { FLEX_CHANGE_NEW_VALUE_PATH_RESULT } from '../utils/helpers.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 
@@ -216,24 +227,32 @@ const rule: FioriRuleDefinition = createFioriRule({
     meta: { /* ... */ },
 
     check(context) {
-        if (
-            !(context.sourceCode instanceof FioriJSONSourceCode) &&
-            !(context.sourceCode instanceof FioriChangeSourceCode)
-        ) {
+        // V2-only: guard on FioriChangeSourceCode only
+        if (!(context.sourceCode instanceof FioriChangeSourceCode)) {
             return [];
         }
-        // ... collect diagnostics including changeFileUri from linker ...
+        // V2 + V4: guard on both
+        // if (
+        //     !(context.sourceCode instanceof FioriJSONSourceCode) &&
+        //     !(context.sourceCode instanceof FioriChangeSourceCode)
+        // ) { return []; }
+
+        const problems = [];
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            for (const page of app.pages) {
+                const config = page.someTable?.configuration.myProperty;
+                if (config?.valueInFile === false) {
+                    problems.push({
+                        type: MY_RULE,
+                        property: 'myPropertyName',    // required: name as it appears in the change file
+                        pageName: page.targetName,
+                        changeFileUri: config.changeFileUri  // required: enables Page Editor navigation
+                    });
+                }
+            }
+        }
         return problems;
     },
-
-    createJsonVisitorHandler: (context, diagnostic, deepestPathResult) =>
-        function report(node: MemberNode): void {
-            context.report({
-                node,
-                messageId: MY_RULE,
-                fix: createJsonFixer({ context, deepestPathResult, node, operation: 'delete' })
-            });
-        },
 
     createChangeVisitorHandler(context, diagnostic) {
         return function report(node: MemberNode): void {
