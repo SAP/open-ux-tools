@@ -18,8 +18,7 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: NS,
-        ns: [NS],
-        showSupportNotice: false
+        ns: [NS]
     });
     await i18nInstance.init();
 }

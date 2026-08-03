@@ -1,5 +1,54 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.20 → 1.0.21
+
+## 1.3.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Allow multiple aggregations to page BB except breadcrumbs and footer. [[4615b91](https://github.com/SAP/open-ux-tools/commit/4615b91b5351cc764a3af49ba3bb69383795715c)]
+
+## 1.3.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/fiori-annotation-api 1.0.19 → 1.0.20
+
+## 1.3.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Release Date
+
+2026-07-23
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.18 → 1.0.19
+
 ## 1.3.6
 
 ### Patch Changes

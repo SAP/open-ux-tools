@@ -1,5 +1,27 @@
 # @sap-ux/launch-config
 
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+
+## 1.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
 ## 1.0.14
 
 ### Patch Changes

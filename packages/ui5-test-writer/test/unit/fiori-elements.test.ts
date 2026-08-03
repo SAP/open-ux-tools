@@ -486,6 +486,42 @@ describe('ui5-test-writer', () => {
                     expect(firstJourneyCalls).toHaveLength(0);
                     copyTplSpy.mockRestore();
                 });
+
+                it('writes the fallback journey and splices it into qunit when none exists and no journeys are produced', async () => {
+                    const projectDir = prepareTestFiles('LropVirtualTests');
+                    // Remove the fixture's FirstJourney.js so the fallback is not already present
+                    fs!.delete(join(projectDir, 'webapp', 'test', 'integration', 'FirstJourney.js'));
+                    // Empty model → no LR/OP/FPM journeys
+                    readAppMock.mockResolvedValueOnce({});
+                    mockProjectExistsSync({
+                        hasIntegration: true,
+                        hasJourneyRunner: true
+                    });
+                    addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                    const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                    fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                    // Fallback FirstJourney template is rendered because no fallback file exists
+                    const firstJourneyCalls = copyTplSpy.mock.calls.filter(
+                        (call) => typeof call[0] === 'string' && call[0].endsWith('FirstJourney.js')
+                    );
+                    expect(firstJourneyCalls).toHaveLength(1);
+                    // The fallback module path (no .gen suffix) is spliced into the existing opaTests.qunit.js
+                    expect(addPathsToQUnitJsMock).toHaveBeenCalledWith(
+                        expect.arrayContaining([expect.stringContaining('/test/integration/FirstJourney')]),
+                        expect.any(String),
+                        expect.anything(),
+                        undefined
+                    );
+                    expect(addPathsToQUnitJsMock).not.toHaveBeenCalledWith(
+                        expect.arrayContaining([expect.stringContaining('Journey.gen')]),
+                        expect.any(String),
+                        expect.anything(),
+                        undefined
+                    );
+                    copyTplSpy.mockRestore();
+                });
             });
 
             describe('existing app with incompatible test setup (no own JourneyRunner.js)', () => {
@@ -526,6 +562,31 @@ describe('ui5-test-writer', () => {
 
                     copyTplSpy.mockRestore();
                 });
+
+                it('does not write the fallback journey when no journeys are produced', async () => {
+                    const projectDir = prepareTestFiles('LropVirtualTests');
+                    // Remove the fixture's FirstJourney.js so the guard cannot be satisfied by an existing file
+                    fs!.delete(join(projectDir, 'webapp', 'test', 'integration', 'FirstJourney.js'));
+                    // Empty model → no LR/OP/FPM journeys
+                    readAppMock.mockResolvedValueOnce({});
+                    mockProjectExistsSync({
+                        hasIntegration: true,
+                        hasJourneyRunner: false
+                    });
+                    addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                    const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                    fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                    // Fallback must not be written into an incompatible setup (the harness is left untouched)
+                    const firstJourneyCalls = copyTplSpy.mock.calls.filter(
+                        (call) => typeof call[0] === 'string' && call[0].endsWith('FirstJourney.js')
+                    );
+                    expect(firstJourneyCalls).toHaveLength(0);
+                    // Splice helper is not invoked
+                    expect(addPathsToQUnitJsMock).not.toHaveBeenCalled();
+                    copyTplSpy.mockRestore();
+                });
             });
 
             describe('existing TypeScript app', () => {
@@ -556,7 +617,7 @@ export default runner;
 `;
 
                 /**
-                 * Realistic post-rework OpaJourneyTypes.d.ts with one ListReport page wired in.
+                 * Realistic post-rework OpaJourneyTypes.gen.d.ts with one ListReport page wired in.
                  */
                 const EXISTING_OPA_JOURNEY_TYPES = `import type Opa5 from "sap/ui/test/Opa5";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from "sap/fe/test/ListReport";
@@ -601,7 +662,7 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(paths.some((p) => p.endsWith('TravelListJourney.gen.ts'))).toBe(true);
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('TravelList.gen.ts'))).toBe(true);
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('JourneyRunner.ts'))).toBe(true);
-                    expect(paths.some((p) => p.endsWith('OpaJourneyTypes.d.ts'))).toBe(true);
+                    expect(paths.some((p) => p.endsWith('OpaJourneyTypes.gen.d.ts'))).toBe(true);
                     // No .js Journey/Page/runner files are produced on the TS path
                     expect(paths.every((p) => !p.endsWith('TravelListJourney.gen.js'))).toBe(true);
                     expect(paths.every((p) => !(p.includes('pages') && p.endsWith('TravelList.gen.js')))).toBe(true);
@@ -621,7 +682,7 @@ export type Then = Opa5 & BaseArrangements & {
                     const paths = Object.keys(fs.dump(projectDir));
                     expect(paths.some((p) => p.endsWith('TravelListJourney.gen.js'))).toBe(true);
                     expect(paths.every((p) => !p.endsWith('TravelListJourney.gen.ts'))).toBe(true);
-                    expect(paths.every((p) => !p.endsWith('OpaJourneyTypes.d.ts'))).toBe(true);
+                    expect(paths.every((p) => !p.endsWith('OpaJourneyTypes.gen.d.ts'))).toBe(true);
                 });
 
                 it('splices new .gen.ts page entries into the existing JourneyRunner.ts', async () => {
@@ -641,7 +702,7 @@ export type Then = Opa5 & BaseArrangements & {
                         'test',
                         'integration',
                         'types',
-                        'OpaJourneyTypes.d.ts'
+                        'OpaJourneyTypes.gen.d.ts'
                     );
                     fs!.write(typesPath, EXISTING_OPA_JOURNEY_TYPES);
 
@@ -659,7 +720,7 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(updatedRunner).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
                 });
 
-                it('splices new journey type entries into the existing OpaJourneyTypes.d.ts', async () => {
+                it('splices new journey type entries into the existing OpaJourneyTypes.gen.d.ts', async () => {
                     const projectDir = prepareTestFiles('LropVirtualTests');
                     readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                     mockProjectExistsSync({
@@ -676,7 +737,7 @@ export type Then = Opa5 & BaseArrangements & {
                         'test',
                         'integration',
                         'types',
-                        'OpaJourneyTypes.d.ts'
+                        'OpaJourneyTypes.gen.d.ts'
                     );
                     fs!.write(typesPath, EXISTING_OPA_JOURNEY_TYPES);
 
@@ -893,12 +954,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(paths.some((p) => p.endsWith('.js') && p.includes('integration/pages/'))).toBe(false);
         });
 
-        it('generates OpaJourneyTypes.d.ts with correct page entries', async () => {
+        it('generates OpaJourneyTypes.gen.d.ts with correct page entries', async () => {
             const projectDir = prepareTestFiles('FullScreenLROP');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const typesPath = Object.keys(dumped).find((p) => p.includes('OpaJourneyTypes.d.ts'));
+            const typesPath = Object.keys(dumped).find((p) => p.includes('OpaJourneyTypes.gen.d.ts'));
             expect(typesPath).toBeDefined();
 
             const typesContent = dumped[typesPath!].contents as string;
@@ -1049,6 +1110,55 @@ export type Then = Opa5 & BaseArrangements & {
             // Sanity: FirstJourney is the rework's fallback and must NOT be emitted when LR/OP/FPM journeys are produced.
             const firstJourneyPath = Object.keys(dumped).find((p) => p.includes('FirstJourney.ts'));
             expect(firstJourneyPath).toBeUndefined();
+        });
+
+        describe('ux-specification journey gating (LROP / FPM only)', () => {
+            it('writes only the fallback FirstJourney for an ObjectPage-only app (no startup ListReport)', async () => {
+                // Model contains OP pages, but the FullScreenOPNoStart manifest has no startup ListReport,
+                // so the app is non-qualifying: no ux-spec journeys, fallback FirstJourney instead.
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+                const projectDir = prepareTestFiles('FullScreenOPNoStart');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const paths = Object.keys(fs.dump(projectDir));
+                // Fallback journey is written
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(true);
+                // No ux-spec-derived journeys
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(false);
+                // Full harness is still generated
+                expect(paths.some((p) => p.includes('integration/pages/JourneyRunner.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('integration/opaTests.qunit.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('integration/opaTests.qunit.html'))).toBe(true);
+                expect(paths.some((p) => p.includes('testsuite.qunit.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('testsuite.qunit.html'))).toBe(true);
+            });
+
+            it('writes only the fallback FirstJourney for an Analytical List Page app', async () => {
+                // The ALP ListReport target carries `views`, so it is not treated as an LROP startup page.
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('FullScreenALP');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const dumped = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                // Fallback journey is written, no ux-spec journeys
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(false);
+                // The ALP page object is still rendered from the ListReport page-object template
+                const alpPagePath = paths.find((p) => p.includes('integration/pages/EmployeesList.gen.js'));
+                expect(alpPagePath).toBeDefined();
+                expect(dumped[alpPagePath!].contents as string).toContain('sap/fe/test/ListReport');
+            });
+
+            it('generates ux-spec journeys and no fallback for an LROP app', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const paths = Object.keys(fs.dump(projectDir));
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(true);
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(false);
+            });
         });
 
         it('generates TypeScript filter tests for LROPv4 app (missing semantic filter)', async () => {
@@ -1247,7 +1357,7 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(file).toMatch(/\.js$/);
             }
             expect(paths.some((p) => p.endsWith('.ts') && p.includes('integration/'))).toBe(false);
-            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(false);
         });
 
         it('generates .js files when app has an FPM page and tsconfig.json exists in standalone mode', async () => {
@@ -1280,7 +1390,7 @@ export type Then = Opa5 & BaseArrangements & {
             for (const file of integrationFiles) {
                 expect(file).toMatch(/\.js$/);
             }
-            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(false);
 
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);
@@ -1289,6 +1399,69 @@ export type Then = Opa5 & BaseArrangements & {
         afterEach(() => {
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);
+        });
+    });
+
+    describe('generateOPAFiles UI5 version buckets', () => {
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+
+        describe('version selector', () => {
+            it.each([
+                { ui5Version: undefined, expectedBucket: '1.150' },
+                { ui5Version: '', expectedBucket: '1.150' },
+                { ui5Version: '1.100.0', expectedBucket: '1.84' },
+                { ui5Version: '1.120.0', expectedBucket: '1.84' },
+                { ui5Version: '1.149.9', expectedBucket: '1.84' },
+                { ui5Version: '1.150.0', expectedBucket: '1.150' },
+                { ui5Version: '1.160.0', expectedBucket: '1.150' }
+            ])('ui5Version $ui5Version → bucket $expectedBucket', async ({ ui5Version, expectedBucket }) => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
+
+                const templatePaths = copyTplSpy.mock.calls.map((call) => String(call[0]));
+                expect(templatePaths.some((p) => p.includes(join('v4', expectedBucket)))).toBe(true);
+                copyTplSpy.mockRestore();
+            });
+        });
+
+        describe('snapshot per bucket — JS', () => {
+            it('bucket 1.84 generates correct output (JS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.120.0' }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket 1.150 generates correct output (JS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.150.0' }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('snapshot per bucket — TS', () => {
+            it('bucket 1.84 generates correct output (TS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.120.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket 1.150 generates correct output (TS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.150.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
         });
     });
 });

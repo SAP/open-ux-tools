@@ -1,5 +1,45 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-03
+
+#### Bug Fixes
+
+- The bump to 8.0.1 in #4956 caused the esbuild step to fail silently — @babel/core@8.0.1 pulls in @babel/parser@8.0.4 (via its ^8.0.0 peer range) which broke the patchBabelEslintParser plugin, so the published 10.7.14 lib/index.js is raw tsc output rather than a bundle. Consumers hit ERR_MODULE_NOT_FOUND for @babel/eslint-parser at runtime. [[3afeb75](https://github.com/SAP/open-ux-tools/commit/3afeb75992181d3050f08905f6bb6b04247dac64)]
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
+## 10.7.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access and @sap-ux/ui5-config [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+## 10.7.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
 ## 10.7.12
 
 ### Patch Changes
