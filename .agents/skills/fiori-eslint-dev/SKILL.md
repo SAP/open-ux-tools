@@ -481,7 +481,7 @@ ruleTester.run(`${TEST_NAME} (V2)`, myNewRule, {
 
 #### CDS (CAP projects):
 
-CAP rules run against a CAP project where annotations live in `.cds` files rather than `manifest.json`. Use `setup(name, CAP_APP_PATH)` to point the project context at the CAP test project — this also triggers an `npm install` of the CDS module if needed.
+CAP rules run against a CAP project where annotations live in `.cds` files rather than `.xml` files. Use `setup(name, CAP_APP_PATH)` to point the project context at the CAP test project — this also triggers an `npm install` of the CDS module if needed.
 
 ```typescript
 import {
