@@ -19,8 +19,7 @@ export async function initI18nNodejsUtils(): Promise<void> {
                 [nodejsUtilsNamespace]: translations
             }
         },
-        interpolation: { escapeValue: false },
-        showSupportNotice: false
+        interpolation: { escapeValue: false }
     });
 }
 

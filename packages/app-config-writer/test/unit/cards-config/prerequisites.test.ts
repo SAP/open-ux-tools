@@ -5,18 +5,20 @@ const mockGetMinimumUI5Version = jest.fn();
 const mockGetProjectType = jest.fn();
 const mockFindProjectRoot = jest.fn();
 const mockReadManifest = jest.fn();
+const mockCheckCdsUi5PluginEnabled = jest.fn();
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getMinimumUI5Version: mockGetMinimumUI5Version,
     getProjectType: mockGetProjectType,
-    findProjectRoot: mockFindProjectRoot
+    findProjectRoot: mockFindProjectRoot,
+    checkCdsUi5PluginEnabled: mockCheckCdsUi5PluginEnabled
 }));
 
 jest.unstable_mockModule('../../../src/common/utils.js', () => ({
     readManifest: mockReadManifest
 }));
 
-const { ensureMinUI5Version } = await import('../../../src/cards-config/prerequisites.js');
+const { ensureMinUI5Version, ensureCdsPluginUi5 } = await import('../../../src/cards-config/prerequisites.js');
 
 describe('cards-config/prerequisites', () => {
     let mockFs: Editor;
@@ -96,5 +98,36 @@ describe('cards-config/prerequisites', () => {
         mockGetMinimumUI5Version.mockReturnValue(undefined);
 
         await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
+    });
+});
+
+describe('ensureCdsPluginUi5', () => {
+    let mockFs: Editor;
+
+    beforeEach(() => {
+        jest.resetAllMocks();
+        mockFs = {} as Editor;
+    });
+
+    test('should not throw when cds-plugin-ui5 is enabled', async () => {
+        mockCheckCdsUi5PluginEnabled.mockResolvedValue(true);
+
+        await expect(ensureCdsPluginUi5('/cap/root', mockFs)).resolves.toBeUndefined();
+    });
+
+    test('should throw when cds-plugin-ui5 is not enabled', async () => {
+        mockCheckCdsUi5PluginEnabled.mockResolvedValue(false);
+
+        await expect(ensureCdsPluginUi5('/cap/root', mockFs)).rejects.toThrow(
+            "The cards-editor command requires 'cds-plugin-ui5' to be installed and enabled in the CAP root package.json."
+        );
+    });
+
+    test('should pass capRoot and fs to checkCdsUi5PluginEnabled', async () => {
+        mockCheckCdsUi5PluginEnabled.mockResolvedValue(true);
+
+        await ensureCdsPluginUi5('/cap/root', mockFs);
+
+        expect(mockCheckCdsUi5PluginEnabled).toHaveBeenCalledWith('/cap/root', mockFs);
     });
 });

@@ -150,6 +150,14 @@ Dependencies should **not be older than 6 months** to ensure security, bug fixes
 - Test thoroughly after version bumps
 - Use `pnpm overrides` (in root package.json) for security patches when necessary
 
+**VSCode backward compatibility (`@types/vscode`):**
+
+Do **not** upgrade `@types/vscode` to the absolute latest release. Instead, target a version that is approximately **6 months old** to maintain backward compatibility for users on older VS Code builds.
+
+- Check the [VS Code release history](https://code.visualstudio.com/updates) to find the version released ~6 months ago
+- Example: if today's latest is `1.125.0` but the 6-month-old release is `1.109.0`, use `"@types/vscode": "1.109.0"`
+- This applies to both `devDependencies` and the `engines.vscode` field in extension `package.json` files
+
 **Check dependency ages:**
 ```bash
 # Check outdated dependencies
@@ -315,6 +323,21 @@ BUMP: Rebuild bundle with updated @sap-ux/fiori-docs-embeddings
 ```
 
 **If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled dep set is derived automatically from the dependency graph.
+
+**pnpm workspace alias cascades:**
+
+Some packages declare workspace dependencies using pnpm aliases, where the key in `package.json` differs from the real package name:
+
+```json
+"@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
+"@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*"
+```
+
+The changesets `updateInternalDependencies` cascade only matches by key — it never sees the real package name behind the alias and silently skips the cascade. When the aliased package is published to npm the `workspace:` protocol is replaced with a pinned version, so consumers of the alias are permanently tied to whatever version was current at publish time.
+
+This is enforced automatically: `pnpm validate:changesets` scans all workspace `package.json` files to detect alias dependencies and will error if a consumer package is missing a changeset when the aliased real package is being released. No manual list to maintain — any new alias is picked up automatically.
+
+**If you add a new pnpm workspace alias dependency**, no extra configuration is needed — `validate-changesets.mjs` will detect it automatically and enforce the cascade.
 
 **Private packages and changesets:**
 
@@ -846,6 +869,7 @@ Before submitting changes, verify:
 - [ ] `pnpm lint:dependency-versions` passes
 - [ ] Changeset created if source code or runtime dependencies changed
 - [ ] If releasing a bundled workspace devDep, cascade changeset added for each consumer in `scripts/validate-changesets.mjs`
+- [ ] If releasing a package consumed via a pnpm workspace alias, cascade changeset added for the alias consumer (`pnpm validate:changesets` will catch this automatically)
 - [ ] No pnpm audit vulnerabilities introduced
 - [ ] Code follows TypeScript and ESLint standards
 - [ ] Tests follow given/when/then pattern

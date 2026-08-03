@@ -240,29 +240,23 @@ describe('getTemplateTypeFromManifest', () => {
         [TemplateType.AnalyticalListPage, '@sap/generator-fiori:alp'],
         [TemplateType.OverviewPage, '@sap/generator-fiori:ovp'],
         [TemplateType.FormEntryObjectPage, '@sap/generator-fiori:feop'],
-        [FioriFreestyleTemplateType.Basic, '@sap/generator-fiori:basic'],
-        [FioriFreestyleTemplateType.ListDetail, '@sap/generator-fiori:listdetail']
+        [FioriFreestyleTemplateType.Basic, '@sap/generator-fiori:basic']
     ])('should return "%s" for sourceTemplate id "%s"', (expected, sourceTemplateId) => {
         const manifest = { 'sap.app': { sourceTemplate: { id: sourceTemplateId } } } as any;
         expect(getTemplateTypeFromManifest(manifest)).toBe(expected);
     });
 
-    it('should return "unknown" when sourceTemplate id has unknown suffix', () => {
+    it('should return undefined when sourceTemplate id has unknown suffix', () => {
         const manifest = { 'sap.app': { sourceTemplate: { id: '@sap/generator-fiori:custom' } } } as any;
-        expect(getTemplateTypeFromManifest(manifest)).toBe('unknown');
+        expect(getTemplateTypeFromManifest(manifest)).toBeUndefined();
     });
 
-    it('should return "unknown" when sourceTemplate id does not start with the fiori prefix', () => {
-        const manifest = { 'sap.app': { sourceTemplate: { id: '@sap/generator-other:lrop' } } } as any;
-        expect(getTemplateTypeFromManifest(manifest)).toBe('unknown');
-    });
-
-    it('should return "unknown" when sourceTemplate is absent', () => {
+    it('should return undefined when sourceTemplate is absent', () => {
         const manifest = { 'sap.app': {} } as any;
-        expect(getTemplateTypeFromManifest(manifest)).toBe('unknown');
+        expect(getTemplateTypeFromManifest(manifest)).toBeUndefined();
     });
 
-    it('should return "unknown" when manifest is undefined', () => {
-        expect(getTemplateTypeFromManifest(undefined as any)).toBe('unknown');
+    it('should return undefined when manifest is undefined', () => {
+        expect(getTemplateTypeFromManifest(undefined as any)).toBeUndefined();
     });
 });

@@ -81,20 +81,20 @@ describe('Test for initFioriProject()', () => {
     });
 
     test('Init invalid Fiori project, no db/schema.cds', async () => {
+        expect.assertions(1);
         const projectRoot = join(__testdir, '../../test-input/invalid-fiori-project-no-schema-cds');
         try {
             await initFioriProject(projectRoot);
-            expect(false).toBe('initFioriProject() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toContain('schema.cds');
         }
     });
 
     test('Init valid Fiori project no srv/service.cds', async () => {
+        expect.assertions(1);
         const projectRoot = join(__testdir, '../../test-input/invalid-fiori-project-no-service-cds');
         try {
             await initFioriProject(projectRoot);
-            expect(false).toBe('initFioriProject() should have thrown error but did not');
         } catch (error) {
             expect((error as Error).message).toContain('service.cds');
         }

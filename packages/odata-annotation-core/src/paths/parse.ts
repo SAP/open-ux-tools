@@ -28,10 +28,7 @@ export interface NavigationPropertyAnnotationSegment {
 }
 
 export type ParsedPathSegment =
-    | ParsedIdentifier
-    | TermCastSegment
-    | NavigationPropertyAnnotationSegment
-    | ParsedActionFunctionSignature;
+    ParsedIdentifier | TermCastSegment | NavigationPropertyAnnotationSegment | ParsedActionFunctionSignature;
 
 export const PATH_SEPARATOR = '/';
 
