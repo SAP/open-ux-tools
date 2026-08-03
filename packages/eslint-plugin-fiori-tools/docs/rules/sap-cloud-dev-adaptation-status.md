@@ -2,17 +2,21 @@
 
 ## Rule Details
 
-This rule ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of `manifest.json`.
+This rule ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file.
 
-The `cloudDevAdaptationStatus` property represents the release status for the developer adaptation in the cloud. The supported types are `released` - app is fully open for cloud adaptation projects and variant generation, `deprecated` - marks older extension pathways that are phased out or no longer recommended, `obsolete` - the app is locked and not enabled for cloud-ready adaptation.
+The `cloudDevAdaptationStatus` property represents the release status for the developer adaptation in the cloud.
+The following types are supported: 
+- `released`: The app is fully open for cloud adaptation projects and variant generation,.
+- `deprecated`: Marks older extension pathways that are phased out or no longer recommended.
+- `obsolete`: The app is locked and not enabled for cloud-ready adaptation.
 
 ## Why Was This Introduced?
 
-S/4HANA applications are required to declare their cloud dev adaptation status.
+SAP S/4HANA applications are required to declare their cloud dev adaptation status.
 
 ## Warning Examples
 
-The following configuration will trigger a warning because `cloudDevAdaptationStatus` is absent:
+The following configurations trigger a warning because `cloudDevAdaptationStatus` is absent:
 
 ```json
 {
@@ -39,7 +43,7 @@ The following configuration will trigger a warning because `cloudDevAdaptationSt
 
 ## How to Fix
 
-Add a `cloudDevAdaptationStatus` entry inside the `sap.fiori` section of your `manifest.json` with a selected value.
+Add a `cloudDevAdaptationStatus` entry inside the `sap.fiori` section of your `manifest.json` file with a selected value.
 
 ## Bug Report
 
