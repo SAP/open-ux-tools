@@ -36,20 +36,10 @@ Library that contains the most recent copies of the OData vocabularies authored 
 
 ## Maintaining Vocabularies
 
-Both operations are handled by the `odata-vocabularies-sync` skill
-(`.agents/skills/odata-vocabularies-sync/SKILL.md`).
-Ask an AI agent to run it — optionally pass the URL of a new vocabulary
-JSON file (URL must end in `.json`, XML is not supported).
+Use the `odata-vocabularies-sync` skill (`.agents/skills/odata-vocabularies-sync/SKILL.md`) via an AI agent:
 
-- No argument — update all vocabularies
-- With a URL — add a new vocabulary
-
-The skill will:
-1. *(When adding)* Register the vocabulary in `tools/update.ts`, `src/resources/index.ts`, `src/loader.ts`, and `README.md`
-2. Download and regenerate all vocabulary resource files
-3. Run tests and update snapshots
-
-After completing, create a changeset with `pnpm cset`.
+- No argument — update all existing vocabularies to their latest published versions
+- With a JSON URL (must end in `.json`, XML is not supported) — register a new vocabulary, then update all
 
 ## Local testing in tools-suite
 
