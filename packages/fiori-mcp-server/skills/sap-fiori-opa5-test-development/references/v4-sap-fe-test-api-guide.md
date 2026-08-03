@@ -11,6 +11,67 @@ Check the UI5 version your app uses in `ui5.yaml` under `framework.version`, or 
 
 ---
 
+## Accessing the API Docs — Tool-Specific Notes
+
+The `SAPUI5 SDK - Demo Kit` (`ui5.sap.com`) uses client-side rendering (JavaScript SPA), so the hash-based URL (`#/api/...`) content is not available to a static fetcher.
+
+Use the first available option below:
+
+**Option 1 — Direct WebFetch or built-in URL access:**
+
+Agents with a browser-capable fetch (e.g. GitHub Copilot) can access `ui5.sap.com` directly — no workaround needed.
+
+**Option 2 — Download the API JSON (preferred fallback):**
+
+SAP publishes the full `sap.fe.test` API as a structured JSON file. Download it once per session (262 KB), then query only the symbol or method you need — never load the whole file into context.
+
+```bash
+# Download (check first to avoid re-downloading within the same session)
+APIJSON="${TEMP:-/tmp}/sap.fe.test.api.json"
+[ -f "$APIJSON" ] || curl -s "https://ui5.sap.com/test-resources/sap/fe/test/designtime/apiref/api.json" -o "$APIJSON"
+
+# Look up a specific method
+node -e "
+const data = JSON.parse(require('fs').readFileSync((process.env.TEMP || '/tmp') + '/sap.fe.test.api.json'));
+const cls = data.symbols.find(s => s.name === 'sap.fe.test.api.TableActions');
+const method = cls.methods.find(m => m.name === 'iChangeFilterField');
+console.log(JSON.stringify(method, null, 2));
+"
+
+# List all methods of a class to discover what's available
+node -e "
+const data = JSON.parse(require('fs').readFileSync((process.env.TEMP || '/tmp') + '/sap.fe.test.api.json'));
+const cls = data.symbols.find(s => s.name === 'sap.fe.test.api.TableActions');
+console.log(cls.methods.map(m => m.name).join('\n'));
+"
+```
+
+The top-level structure is `{ symbols: [ { name, methods, ... } ] }` — search `symbols` by `name` to find a class, then `methods` by `name` to find a method. On Windows use `process.env.TEMP`; on Linux/Mac use `/tmp`.
+
+**Option 3 — Chrome DevTools MCP (when available):**
+
+1. Navigate to the class page, e.g.:
+   `https://ui5.sap.com/#/api/sap.fe.test.api.TableActions`
+2. Then navigate to the specific method anchor to trigger lazy rendering of that section:
+   `https://ui5.sap.com/#/api/sap.fe.test.api.TableActions%23methods/iChangeFilterField`
+3. Use `wait_for` + `take_snapshot` to read the rendered parameter table.
+
+The `%23` is a URL-encoded `#` — required because the fragment already uses `#` for the SPA route.
+
+**Option 4 — `node_modules` source (last resort):**
+
+Search for the method name directly in the installed `sap.fe` package under `node_modules`. This is version-exact and always available offline:
+
+```bash
+grep -r "iChangeFilterField" node_modules/@sap/ux-ui5-tooling/node_modules --include="*.js" -l
+# or search the project's own node_modules for the sap.fe runtime
+grep -r "iChangeFilterField" node_modules --include="TableActions*" -l
+```
+
+Once you find the file, read the JSDoc block above the method definition for the parameter list. The source files are minified in some distributions — in that case, look for a `.d.ts` type definition file alongside the `.js`, which is always readable.
+
+---
+
 ## Navigating the API Docs
 
 The namespace is organized into folders. Understanding the structure lets you find any function quickly:

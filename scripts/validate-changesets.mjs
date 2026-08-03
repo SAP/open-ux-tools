@@ -80,6 +80,33 @@ function transitiveWorkspaceDeps(startName, pkgMap) {
 }
 
 /**
+ * Build a reverse map of real package name → set of consumer packages that
+ * declare it via a pnpm workspace alias (where the dependency key differs from
+ * the real package name). Derived automatically by scanning all workspace
+ * package.json files — no manual list to maintain.
+ *
+ * The changesets `updateInternalDependencies` cascade only matches by key, so
+ * it never sees the real package name behind an alias and misses these cascades.
+ */
+function buildAliasDependencyReverseMap(pkgMap) {
+    /** @type {Map<string, Set<string>>} */
+    const reverse = new Map();
+    for (const [consumerName, pkg] of pkgMap.entries()) {
+        const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+        for (const [depKey, depValue] of Object.entries(allDeps)) {
+            if (pkgMap.has(depKey)) continue; // not an alias — key matches a real package name
+            const aliasMatch = typeof depValue === 'string' && depValue.match(/^workspace:(@[^@]+)@/);
+            if (aliasMatch && pkgMap.has(aliasMatch[1])) {
+                const realName = aliasMatch[1];
+                if (!reverse.has(realName)) reverse.set(realName, new Set());
+                reverse.get(realName).add(consumerName);
+            }
+        }
+    }
+    return reverse;
+}
+
+/**
  * Build reverse map: transitive workspace dep → set of bundling packages that
  * include it. Derived by walking the full dependency graph of each bundler.
  */
@@ -173,6 +200,27 @@ function validateChangesets() {
                         `     ---\n\n` +
                         `     BUMP: Rebuild bundle with updated ${dep}\n` +
                         `   To add a new bundling package: scripts/validate-changesets.mjs → ESBUILD_BUNDLING_PACKAGES`
+                );
+            }
+        }
+    }
+
+    // Check that packages with aliased workspace deps have a changeset whenever
+    // any of those aliased deps is being released. Derived automatically.
+    const aliasReverseMap = buildAliasDependencyReverseMap(pkgMap);
+    for (const [dep, consumers] of aliasReverseMap.entries()) {
+        if (!packagesWithChangesets.has(dep)) continue;
+        for (const consumer of consumers) {
+            if (!packagesWithChangesets.has(consumer)) {
+                errors.push(
+                    `❌ Missing cascading changeset for "${consumer}"\n` +
+                        `   Reason: "${dep}" is being released and "${consumer}" declares it as a pnpm workspace alias dependency.\n` +
+                        `   The consumer must be re-published so its pinned version is updated.\n` +
+                        `   Fix: Add a changeset for "${consumer}" (patch bump, BUMP: prefix):\n\n` +
+                        `     ---\n` +
+                        `     "${consumer}": patch\n` +
+                        `     ---\n\n` +
+                        `     BUMP: Update pinned version of ${dep}`
                 );
             }
         }

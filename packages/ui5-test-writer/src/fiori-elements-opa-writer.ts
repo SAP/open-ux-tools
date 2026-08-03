@@ -25,8 +25,20 @@ import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const UI5_VERSION_1_150 = '1.150.0';
+const V4_TEMPLATE_1_84 = '1.84';
+const V4_TEMPLATE_1_150 = '1.150';
+
+function getTemplateUi5Version(ui5Version?: string): string {
+    if (!ui5Version || compareUI5VersionGte(ui5Version, UI5_VERSION_1_150)) {
+        return V4_TEMPLATE_1_150;
+    }
+    return V4_TEMPLATE_1_84;
+}
 
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
@@ -64,7 +76,8 @@ export async function generateOPAFiles(
         !hasFPMPage && (options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig))));
     const dotFileExtension: DotFileExtension = enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
-    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
+    const templateUi5Version = getTemplateUi5Version(options.ui5Version);
+    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`, templateUi5Version);
     const testOutDirPath = join(await getWebappPath(basePath), 'test');
 
     // Access ux-specification to get feature data for OPA test generation
@@ -72,6 +85,19 @@ export async function generateOPAFiles(
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
+    // Only projects with a startup ListReport page (LROP) or an FPM page get ux-specification-derived
+    // journeys. All other project types (ObjectPage-only, Analytical List Page, unrecognized) fall back
+    // to the generic FirstJourney starter.
+    const generateUxSpecJourneys = !!LROP.pageLR || !!appFeatures.fpm;
+    // ALP pages are tagged with the `AnalyticalListPage` template in `createPageConfig`, which already
+    // excludes them from `findLROP` above (it matches only `template === 'ListReport'`). An ALP is a
+    // ListReport component under the hood with no dedicated page-object template or framework class, so
+    // now that detection is done, normalize the marker back to `ListReport` for all downstream rendering.
+    for (const page of config.pages) {
+        if (page.template === 'AnalyticalListPage') {
+            page.template = 'ListReport';
+        }
+    }
     const journeyParams: JourneyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
@@ -89,6 +115,8 @@ export async function generateOPAFiles(
         log,
         journeyParams,
         dotFileExtension,
+        templateUi5Version,
+        generateUxSpecJourneys,
         modifiedFiles: []
     };
 
@@ -420,6 +448,10 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
             fileName: targetKey + '.gen'
         };
 
+        if (target.options?.settings?.views) {
+            pageConfig.template = 'AnalyticalListPage';
+        }
+
         if (target.options.settings.contextPath) {
             pageConfig.contextPath = target.options.settings.contextPath;
         } else if (target.options.settings.entitySet) {
@@ -594,7 +626,7 @@ function writeJourneyRunner(writeContext: WriteContext): void {
 }
 
 /**
- * Writes the OpaJourneyTypes.d.ts type definition file used by generated TypeScript OPA tests.
+ * Writes the OpaJourneyTypes.gen.d.ts type definition file used by generated TypeScript OPA tests.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  */
@@ -602,14 +634,14 @@ function writeOpaJourneyTypes(writeContext: WriteContext): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, modifiedFiles } = writeContext;
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
-        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
+        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.gen.d.ts'),
         config,
         undefined,
         {
             globOptions: { dot: true }
         }
     );
-    modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
+    modifiedFiles.push('integration/types/OpaJourneyTypes.gen.d.ts');
 }
 
 /**
@@ -623,7 +655,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
     const generatedJourneys: string[] = [];
 
-    if (appFeatures.listReport?.name) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.listReport?.name) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', `ListReportJourney${dotFileExtension}`),
             join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey.gen${dotFileExtension}`),
@@ -640,7 +672,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         generatedJourneys.push(appFeatures.listReport.name);
     }
 
-    if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.objectPages && appFeatures.objectPages.length > 0) {
         appFeatures.objectPages.forEach((objectPage) => {
             if (objectPage.name) {
                 editor.copyTpl(
@@ -661,7 +693,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         });
     }
 
-    if (appFeatures.fpm?.name) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.fpm?.name) {
         // FPM TypeScript support is out of scope for the initial TS OPA5 work
         // (LROP only). The FPM journey path below is hardcoded `.js` and there is
         // no `FPM.ts` template, so we force `DotFileExtension.JS` for the FPM
@@ -684,7 +716,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         generatedJourneys.push(appFeatures.fpm.name);
     }
 
-    if (generatedJourneys.length === 0 && !writeContext.hasPreexistingTests) {
+    if (generatedJourneys.length === 0 && !writeContext.incompatibleTestSetup) {
         writeFallbackJourney(writeContext);
     }
 
@@ -699,9 +731,14 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
  */
 function writeFallbackJourney(writeContext: WriteContext): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
+    const fallbackPath = join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`);
+    // Do not clobber an existing fallback file (e.g. a user-edited FirstJourney in a preexisting test setup).
+    if (editor.exists(fallbackPath)) {
+        return;
+    }
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', `FirstJourney${dotFileExtension}`),
-        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`),
+        fallbackPath,
         journeyParams,
         undefined,
         {
@@ -711,7 +748,7 @@ function writeFallbackJourney(writeContext: WriteContext): void {
 }
 
 /**
- * Update the `OpaJourneyTypes.d.ts` type-definition file used by generated TypeScript OPA tests.
+ * Update the `OpaJourneyTypes.gen.d.ts` type-definition file used by generated TypeScript OPA tests.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param generatedPages - pages whose journeys should be reflected in the type definitions
@@ -729,7 +766,7 @@ function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: OpaPa
             writeContext.log
         );
         if (written) {
-            writeContext.modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
+            writeContext.modifiedFiles.push('integration/types/OpaJourneyTypes.gen.d.ts');
         }
     } else {
         writeOpaJourneyTypes(writeContext);
@@ -839,14 +876,13 @@ function writeOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys
  * @returns true if the file was written, false otherwise
  */
 function updateReferencesInOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys: string[] = []): boolean {
-    return addPathsToQUnitJs(
-        generatedJourneys.map((page) => {
-            return `${writeContext.config.appPath}/test/integration/${page}Journey.gen`;
-        }),
-        writeContext.testOutDirPath,
-        writeContext.editor,
-        writeContext.log
-    );
+    // With no ux-spec journeys, wire the fallback journey (plain `opaJourneyFileName`, no `Journey.gen`
+    // suffix) into the existing qunit harness so the test setup remains runnable.
+    const journeyPaths =
+        generatedJourneys.length > 0
+            ? generatedJourneys.map((page) => `${writeContext.config.appPath}/test/integration/${page}Journey.gen`)
+            : [`${writeContext.config.appPath}/test/integration/${writeContext.config.opaJourneyFileName}`];
+    return addPathsToQUnitJs(journeyPaths, writeContext.testOutDirPath, writeContext.editor, writeContext.log);
 }
 
 /**
