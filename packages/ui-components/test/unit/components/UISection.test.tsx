@@ -19,12 +19,7 @@ describe('<UISection />', () => {
 
     it('Test "height" property', () => {
         const height = '500px';
-        const { container, rerender } = render(
-            <UISection>
-                <div>Dummy Content</div>
-            </UISection>
-        );
-        rerender(
+        const { container } = render(
             <UISection height={height}>
                 <div>Dummy Content</div>
             </UISection>
@@ -35,12 +30,7 @@ describe('<UISection />', () => {
 
     it('Test "className" property', () => {
         const className = 'dummyClass';
-        const { container, rerender } = render(
-            <UISection>
-                <div>Dummy Content</div>
-            </UISection>
-        );
-        rerender(
+        const { container } = render(
             <UISection className={className}>
                 <div>Dummy Content</div>
             </UISection>
@@ -50,12 +40,7 @@ describe('<UISection />', () => {
 
     it('Test "title" property', () => {
         const title = 'dummy title';
-        const { container, rerender } = render(
-            <UISection>
-                <div>Dummy Content</div>
-            </UISection>
-        );
-        rerender(
+        const { container } = render(
             <UISection title={title}>
                 <div>Dummy Content</div>
             </UISection>
@@ -64,12 +49,7 @@ describe('<UISection />', () => {
     });
 
     it('Test "collapsible" property', () => {
-        const { container, rerender } = render(
-            <UISection>
-                <div>Dummy Content</div>
-            </UISection>
-        );
-        rerender(
+        const { container } = render(
             <UISection layout={UISectionLayout.Extended}>
                 <div>Dummy Content</div>
             </UISection>
@@ -79,12 +59,7 @@ describe('<UISection />', () => {
 
     it('Test "onScroll" event', () => {
         const onScroll = jest.fn();
-        const { container, rerender } = render(
-            <UISection>
-                <div>Dummy Content</div>
-            </UISection>
-        );
-        rerender(
+        const { container } = render(
             <UISection onScroll={onScroll} className="aaaa" collapsible={true}>
                 <div>Dummy Content</div>
             </UISection>

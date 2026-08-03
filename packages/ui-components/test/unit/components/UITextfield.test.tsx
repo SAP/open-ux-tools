@@ -126,8 +126,7 @@ describe('<UITextInput />', () => {
         });
 
         it('Error - custom component', async () => {
-            const { container, rerender } = render(<UITextInput />);
-            rerender(<UITextInput errorMessage={<div className="dummyError">TEST</div>} />);
+            const { container } = render(<UITextInput errorMessage={<div className="dummyError">TEST</div>} />);
             await new Promise((resolve) => setTimeout(resolve, 100));
             expect(container.querySelectorAll('.dummyError')).toHaveLength(1);
         });

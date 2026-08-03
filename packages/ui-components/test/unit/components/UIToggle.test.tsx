@@ -239,12 +239,9 @@ describe('<UIToggle />', () => {
 
     describe('Validation message', () => {
         it('Error - standard', () => {
-            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-            act(() => {
-                rerender(
-                    <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={false} />
-                );
-            });
+            const { container } = render(
+                <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={false} />
+            );
 
             const styles = getStyles({ checked: false, errorMessage: 'dummy', inlineLabel: false });
             const rootStyles = styles.root as IRawStyle;
@@ -253,12 +250,9 @@ describe('<UIToggle />', () => {
         });
 
         it('Error - inline', () => {
-            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-            act(() => {
-                rerender(
-                    <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={true} />
-                );
-            });
+            const { container } = render(
+                <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={true} />
+            );
 
             const styles = getStyles({ checked: false, errorMessage: 'dummy', inlineLabel: true });
             const rootStyles = styles.root as IRawStyle;
@@ -267,18 +261,16 @@ describe('<UIToggle />', () => {
         });
 
         it('Warning', () => {
-            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-            act(() => {
-                rerender(<UIToggle onChange={handleChangeMock} checked={false} warningMessage="dummy" />);
-            });
+            const { container } = render(
+                <UIToggle onChange={handleChangeMock} checked={false} warningMessage="dummy" />
+            );
             expect(container.querySelectorAll('.ts-message-wrapper--warning')).toHaveLength(1);
         });
 
         it('Info', () => {
-            const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-            act(() => {
-                rerender(<UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />);
-            });
+            const { container } = render(
+                <UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />
+            );
             expect(container.querySelectorAll('.ts-message-wrapper--info')).toHaveLength(1);
         });
     });

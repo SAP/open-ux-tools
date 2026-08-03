@@ -124,7 +124,7 @@ describe('<UISections />', () => {
     });
 
     it('Test "vertical" property', () => {
-        rerender(
+        const { container: c } = render(
             <UISections ref={sectionsRef} vertical={true}>
                 <UISections.Section
                     layout={UISectionLayout.Standard}
@@ -142,12 +142,12 @@ describe('<UISections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        expect(container.querySelectorAll('.sections--vertical')).toHaveLength(1);
-        expect(container.querySelectorAll('.sections--horizontal')).toHaveLength(0);
+        expect(c.querySelectorAll('.sections--vertical')).toHaveLength(1);
+        expect(c.querySelectorAll('.sections--horizontal')).toHaveLength(0);
     });
 
     it('Test "animation" property', () => {
-        rerender(
+        const { container: c } = render(
             <UISections ref={sectionsRef} vertical={false} animation={true}>
                 <UISections.Section
                     layout={UISectionLayout.Standard}
@@ -165,12 +165,12 @@ describe('<UISections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        expect(container.querySelectorAll('.sections--animated')).toHaveLength(1);
+        expect(c.querySelectorAll('.sections--animated')).toHaveLength(1);
     });
 
     it('Test "height" property', () => {
         const height = '500px';
-        rerender(
+        const { container: c } = render(
             <UISections ref={sectionsRef} vertical={false} height={height}>
                 <UISections.Section
                     layout={UISectionLayout.Standard}
@@ -188,7 +188,7 @@ describe('<UISections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        const dom = container.querySelector('.sections') as HTMLElement;
+        const dom = c.querySelector('.sections') as HTMLElement;
         expect(dom.style.height).toEqual(height);
     });
 
@@ -211,7 +211,7 @@ describe('<UISections />', () => {
             }
         ];
         test.each(testCases)('$name', ({ splitterLayoutType, isCompact }) => {
-            rerender(
+            const { container: c } = render(
                 <UISections ref={sectionsRef} vertical={false} splitter={true} splitterLayoutType={splitterLayoutType}>
                     <UISections.Section
                         layout={UISectionLayout.Standard}
@@ -229,8 +229,8 @@ describe('<UISections />', () => {
                     </UISections.Section>
                 </UISections>
             );
-            expect(container.querySelectorAll('.splitter--compact')).toHaveLength(isCompact ? 1 : 0);
-            expect(container.querySelectorAll('.splitter--standard')).toHaveLength(isCompact ? 0 : 1);
+            expect(c.querySelectorAll('.splitter--compact')).toHaveLength(isCompact ? 1 : 0);
+            expect(c.querySelectorAll('.splitter--standard')).toHaveLength(isCompact ? 0 : 1);
         });
     });
 
@@ -253,7 +253,8 @@ describe('<UISections />', () => {
     // There would need additional tests, but it would take some time to mock DOM values for multiple cases
     describe('Test splitter', () => {
         beforeEach(() => {
-            rerender(
+            unmount();
+            const result = render(
                 <UISections ref={sectionsRef} vertical={false} splitter={true}>
                     <UISections.Section
                         layout={UISectionLayout.Standard}
@@ -271,6 +272,9 @@ describe('<UISections />', () => {
                     </UISections.Section>
                 </UISections>
             );
+            container = result.container;
+            unmount = result.unmount;
+            rerender = result.rerender;
             const rect = {
                 top: 0,
                 height: 1000,

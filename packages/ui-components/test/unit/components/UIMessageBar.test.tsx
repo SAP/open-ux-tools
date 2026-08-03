@@ -38,32 +38,28 @@ describe('<UIMessageBar />', () => {
     });
 
     it('Test property "messageBarType" - error', () => {
-        const { rerender } = render(<UIMessageBar />);
-        rerender(<UIMessageBar messageBarType={MessageBarType.error} />);
+        render(<UIMessageBar messageBarType={MessageBarType.error} />);
         expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Error);
         const styles = capturedProps?.styles as IMessageBarStyles;
         expect(styles?.root?.['backgroundColor']).toEqual('transparent');
     });
 
     it('Test property "messageBarType" - success', () => {
-        const { rerender } = render(<UIMessageBar />);
-        rerender(<UIMessageBar messageBarType={MessageBarType.success} />);
+        render(<UIMessageBar messageBarType={MessageBarType.success} />);
         expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Success);
         const styles = capturedProps?.styles as IMessageBarStyles;
         expect(styles?.root?.['backgroundColor']).toEqual('transparent');
     });
 
     it('Test property "messageBarType" - info', () => {
-        const { rerender } = render(<UIMessageBar />);
-        rerender(<UIMessageBar messageBarType={MessageBarType.info} />);
+        render(<UIMessageBar messageBarType={MessageBarType.info} />);
         expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Info);
         const styles = capturedProps?.styles as IMessageBarStyles;
         expect(styles?.root?.['backgroundColor']).toEqual('transparent');
     });
 
     it('Test property "messageBarType" - warning', () => {
-        const { rerender } = render(<UIMessageBar />);
-        rerender(<UIMessageBar messageBarType={MessageBarType.warning} />);
+        render(<UIMessageBar messageBarType={MessageBarType.warning} />);
         expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Warning);
         const styles = capturedProps?.styles as IMessageBarStyles;
         expect(styles?.root?.['backgroundColor']).toEqual('transparent');

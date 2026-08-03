@@ -69,8 +69,7 @@ describe('<UILink />', () => {
     });
 
     it('Styles - secondary', () => {
-        const { rerender } = render(<UILink>Dummy</UILink>);
-        rerender(<UILink secondary={true}>Dummy</UILink>);
+        render(<UILink secondary={true}>Dummy</UILink>);
         const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
@@ -98,8 +97,7 @@ describe('<UILink />', () => {
     });
 
     it('Styles - primary with no underline', () => {
-        const { rerender } = render(<UILink>Dummy</UILink>);
-        rerender(<UILink underline={false}>Dummy</UILink>);
+        render(<UILink underline={false}>Dummy</UILink>);
         const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
@@ -127,8 +125,7 @@ describe('<UILink />', () => {
     });
 
     it('Styles - disabled', () => {
-        const { rerender } = render(<UILink>Dummy</UILink>);
-        rerender(<UILink disabled={true}>Dummy</UILink>);
+        render(<UILink disabled={true}>Dummy</UILink>);
         const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {

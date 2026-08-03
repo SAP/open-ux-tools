@@ -31,7 +31,7 @@ describe('<UIComboBox />', () => {
     };
 
     let container: HTMLElement;
-    let rerender: (ui: React.ReactElement) => void;
+    let rerenderBase: (ui: React.ReactElement) => void;
     let comboboxRef: React.RefObject<UIComboBox>;
 
     // Default props used across most tests
@@ -66,7 +66,7 @@ describe('<UIComboBox />', () => {
         comboboxRef = React.createRef<UIComboBox>();
         const result = render(<UIComboBox ref={comboboxRef} {...defaultProps} />);
         container = result.container;
-        rerender = result.rerender;
+        rerenderBase = result.rerender;
     });
 
     afterEach(() => {
@@ -131,7 +131,7 @@ describe('<UIComboBox />', () => {
     });
 
     it('Styles - required', () => {
-        rerender(<UIComboBox ref={comboboxRef} {...defaultProps} required={true} />);
+        render(<UIComboBox ref={comboboxRef} {...defaultProps} required={true} />);
         const styles = getComboBoxProps(comboboxRef)?.styles;
         expect(styles).toMatchInlineSnapshot(
             {},
@@ -183,7 +183,7 @@ describe('<UIComboBox />', () => {
 
     describe('Test highlight', () => {
         beforeEach(() => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} />));
         });
 
         it('Test css selectors which are used in scss - with highlight', () => {
@@ -196,14 +196,14 @@ describe('<UIComboBox />', () => {
             const openMenuOnClickOptions = [true, false, undefined];
             for (const openMenuOnClick of openMenuOnClickOptions) {
                 it(`Test on "Keydown" - open callout, "openMenuOnClick=${openMenuOnClick}"`, () => {
-                    rerender(
+                    ({ container } = render(
                         <UIComboBox
                             ref={comboboxRef}
                             {...defaultProps}
                             highlight={true}
                             openMenuOnClick={openMenuOnClick}
                         />
-                    );
+                    ));
                     const input = container.querySelector('input') as HTMLInputElement;
                     expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                     fireEvent.keyDown(input, {});
@@ -281,7 +281,7 @@ describe('<UIComboBox />', () => {
         });
 
         it('Test onClick value selection', async () => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} selectedKey="AU" />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} selectedKey="AU" />));
             const input = container.querySelector('input') as HTMLInputElement;
 
             // Directly test the setCaretPosition behavior via a simulated click event
@@ -328,7 +328,7 @@ describe('<UIComboBox />', () => {
         });
 
         it('Search hidden option - option should not be found', () => {
-            rerender(
+            ({ container } = render(
                 <UIComboBox
                     ref={comboboxRef}
                     {...defaultProps}
@@ -338,7 +338,7 @@ describe('<UIComboBox />', () => {
                         hidden: option.key === 'EE'
                     }))}
                 />
-            );
+            ));
             const input = container.querySelector('input') as HTMLInputElement;
             fireEvent.keyDown(input, {});
             triggerSearch('Est');
@@ -587,21 +587,21 @@ describe('<UIComboBox />', () => {
 
     describe('Error message', () => {
         it('Error', () => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} errorMessage="dummy" />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} errorMessage="dummy" />));
             expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(1);
             expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(0);
             expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(0);
         });
 
         it('Warning', () => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} warningMessage="dummy" />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} warningMessage="dummy" />));
             expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(0);
             expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(1);
             expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(0);
         });
 
         it('Info', () => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} infoMessage="dummy" />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} infoMessage="dummy" />));
             expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(0);
             expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(0);
             expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(1);
@@ -611,7 +611,7 @@ describe('<UIComboBox />', () => {
     describe('Behavior of title/tooltip for options', () => {
         const buttonSelector = `${menuDropdownSelector} .ms-Button--command`;
         it('Default - inherit from text', () => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={originalData} />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={originalData} />));
             openDropdown();
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toEqual('Yemen');
@@ -621,7 +621,7 @@ describe('<UIComboBox />', () => {
             const expectTitle = 'dummy';
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = expectTitle;
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />));
             openDropdown();
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(expectTitle);
@@ -630,7 +630,7 @@ describe('<UIComboBox />', () => {
         it('No title', () => {
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = null;
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />));
             openDropdown();
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toBeNull();
@@ -654,7 +654,7 @@ describe('<UIComboBox />', () => {
         ];
         for (const testCase of testCases) {
             it(`Click on input, "openMenuOnClick=${testCase.value}"`, () => {
-                rerender(<UIComboBox ref={comboboxRef} {...defaultProps} openMenuOnClick={testCase.value} />);
+                ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} openMenuOnClick={testCase.value} />));
                 const input = container.querySelector('input') as HTMLInputElement;
                 expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 fireEvent.click(input);
@@ -667,7 +667,7 @@ describe('<UIComboBox />', () => {
         const testCases = [true, false];
         for (const testCase of testCases) {
             it(`isForceEnabled=${testCase}`, () => {
-                rerender(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={testCase} />);
+                ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={testCase} />));
                 const props = getComboBoxProps(comboboxRef);
                 expect(props?.disabled).toEqual(!testCase);
             });
@@ -675,7 +675,7 @@ describe('<UIComboBox />', () => {
     });
 
     it('Test "disabled" property', () => {
-        rerender(<UIComboBox ref={comboboxRef} {...defaultProps} disabled={true} />);
+        ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} disabled={true} />));
         const input = container.querySelector(inputSelector) as HTMLInputElement;
         // disabled prop maps to readOnly=true and aria-disabled=true (not actual HTML disabled)
         expect(input.disabled).toBeFalsy();
@@ -692,7 +692,7 @@ describe('<UIComboBox />', () => {
         });
 
         it('Error case', () => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} errorMessage="dummy" />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} errorMessage="dummy" />));
             const input = container.querySelector(inputSelector) as HTMLInputElement;
             expect(input.hasAttribute('aria-invalid')).toEqual(true);
             expect(input.getAttribute('aria-invalid')).toEqual('true');
@@ -742,7 +742,7 @@ describe('<UIComboBox />', () => {
         for (const testCase of testCases) {
             it(`"readOnly=${testCase.readOnly}", "tabIndex=${testCase.tabIndex}", "disabled=${testCase.disabled}"`, () => {
                 const { expected } = testCase;
-                rerender(
+                ({ container } = render(
                     <UIComboBox
                         ref={comboboxRef}
                         {...defaultProps}
@@ -750,7 +750,7 @@ describe('<UIComboBox />', () => {
                         {...(testCase.tabIndex !== undefined && { tabIndex: testCase.tabIndex })}
                         {...(testCase.disabled !== undefined && { disabled: testCase.disabled })}
                     />
-                );
+                ));
                 const input = container.querySelector(inputSelector) as HTMLInputElement;
                 expect(input).not.toBeNull();
                 expect(input.readOnly).toEqual(expected.readOnly);
@@ -810,14 +810,14 @@ describe('<UIComboBox />', () => {
             it(`"text=${testCase.text}", "selectedKey=${
                 Array.isArray(testCase.selectedKey) ? JSON.stringify(testCase.selectedKey) : testCase.selectedKey
             }"`, () => {
-                rerender(
+                ({ container } = render(
                     <UIComboBox
                         ref={comboboxRef}
                         {...defaultProps}
                         text={testCase.text}
                         selectedKey={testCase.selectedKey as UIComboBoxProps['selectedKey']}
                     />
-                );
+                ));
                 expect(container.querySelectorAll('div.ts-ComboBox--empty')).toHaveLength(testCase.expected ? 1 : 0);
             });
         }
@@ -825,7 +825,7 @@ describe('<UIComboBox />', () => {
 
     describe('Combobox items with group headers', () => {
         beforeEach(() => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={groupsData} />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={groupsData} />));
         });
 
         it('Test css selectors which are used in scss - with highlight', () => {
@@ -859,7 +859,7 @@ describe('<UIComboBox />', () => {
 
     it('Handle "onPendingValueChanged"', () => {
         const onPendingValueChanged = jest.fn();
-        rerender(
+        ({ container } = render(
             <UIComboBox
                 ref={comboboxRef}
                 {...defaultProps}
@@ -870,7 +870,7 @@ describe('<UIComboBox />', () => {
                 }))}
                 onPendingValueChanged={onPendingValueChanged}
             />
-        );
+        ));
         expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
         // Open callout
         expect(onPendingValueChanged).not.toHaveBeenCalled();
@@ -903,14 +903,14 @@ describe('<UIComboBox />', () => {
         for (const testCase of testCases) {
             const { multiSelect, enabled, expected } = testCase;
             it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
-                rerender(
+                ({ container } = render(
                     <UIComboBox
                         ref={comboboxRef}
                         {...defaultProps}
                         multiSelect={testCase.multiSelect}
                         calloutCollisionTransformation={testCase.enabled}
                     />
-                );
+                ));
                 const props = getComboBoxProps(comboboxRef);
                 expect(props).toBeTruthy();
                 const calloutProps = props?.calloutProps as Record<string, unknown> | undefined;
@@ -953,7 +953,7 @@ describe('<UIComboBox />', () => {
                     }
                 }
             };
-            rerender(
+            render(
                 <UIComboBox
                     ref={comboboxRef}
                     {...defaultProps}
@@ -1006,9 +1006,9 @@ describe('<UIComboBox />', () => {
             }
         ];
         test.each(testCases)('isLoading = $isLoading', ({ isLoading, expectLoaderInInput, expectLoaderInMenu }) => {
-            rerender(
+            ({ container } = render(
                 <UIComboBox ref={comboboxRef} {...defaultProps} isLoading={isLoading as UIComboBoxProps['isLoading']} />
-            );
+            ));
             openDropdown();
             // Check loader in menu (Callout)
             const callout = document.querySelector('.ms-Callout');
@@ -1022,7 +1022,7 @@ describe('<UIComboBox />', () => {
     });
 
     it('Custom renderers for "onRenderOption"', () => {
-        rerender(
+        ({ container } = render(
             <UIComboBox
                 ref={comboboxRef}
                 {...defaultProps}
@@ -1034,14 +1034,14 @@ describe('<UIComboBox />', () => {
                     return <div className="custom-render-option">{defaultRender?.(props)}</div>;
                 }}
             />
-        );
+        ));
         openDropdown();
         expect(document.querySelectorAll('.custom-render-option').length).toBeGreaterThan(0);
         expect(document.querySelectorAll(highlightItemSelector).length).toBeGreaterThan(0);
     });
 
     it('Custom renderers for "onRenderItem"', () => {
-        rerender(
+        ({ container } = render(
             <UIComboBox
                 ref={comboboxRef}
                 {...defaultProps}
@@ -1055,14 +1055,14 @@ describe('<UIComboBox />', () => {
                     return <div className="custom-render-item">{defaultRender?.(props)}</div>;
                 }}
             />
-        );
+        ));
         openDropdown();
         expect(document.querySelectorAll('.custom-render-item').length).toBeGreaterThan(0);
         expect(document.querySelectorAll('.ts-ComboBox--selected').length).toBeGreaterThan(0);
     });
 
     it('Test "calloutProps"', () => {
-        rerender(
+        ({ container } = render(
             <UIComboBox
                 ref={comboboxRef}
                 {...defaultProps}
@@ -1070,7 +1070,7 @@ describe('<UIComboBox />', () => {
                     className: 'dummy'
                 }}
             />
-        );
+        ));
         openDropdown();
         expect(document.querySelectorAll('div.dummy')).toHaveLength(1);
     });
@@ -1124,7 +1124,7 @@ describe('<UIComboBox />', () => {
             const { name, searchByKeyEnabled, expectedCount } = testCase;
             it(name, () => {
                 const query = 'bookings';
-                rerender(
+                rerenderBase(
                     <UIComboBox
                         ref={comboboxRef}
                         {...defaultProps}
@@ -1183,14 +1183,15 @@ describe('<UIComboBox />', () => {
             const { name, query, expectedCountBefore, expectedCountAfter, options } = testCase;
             it(name, () => {
                 // Default state before custom filter
-                rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={options} />);
+                let localRerender: (ui: React.ReactElement) => void;
+                ({ container, rerender: localRerender } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={options} />));
                 openDropdown();
                 const input = container.querySelector('input') as HTMLInputElement;
                 fireEvent.keyDown(input, {});
                 triggerSearch(query);
                 expect(document.querySelectorAll('.ms-Button--action')).toHaveLength(expectedCountBefore);
                 // Apply custom filter and check result for same query
-                rerender(
+                localRerender(
                     <UIComboBox
                         ref={comboboxRef}
                         {...defaultProps}
@@ -1224,12 +1225,12 @@ describe('<UIComboBox />', () => {
             noDataText: '.option-no-data'
         };
         beforeEach(() => {
-            rerender(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={true} />);
+            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={true} />));
         });
 
         it('Check "noDataLabel"', () => {
             const noDataLabel = 'Dummy text';
-            rerender(
+            ({ container } = render(
                 <UIComboBox
                     ref={comboboxRef}
                     {...defaultProps}
@@ -1240,7 +1241,7 @@ describe('<UIComboBox />', () => {
                         onExternalSearch: jest.fn()
                     }}
                 />
-            );
+            ));
             openDropdown();
             expect(document.querySelectorAll(selectors.noDataText)).toHaveLength(1);
             expect(document.querySelector(selectors.noDataText)?.textContent).toEqual(noDataLabel);

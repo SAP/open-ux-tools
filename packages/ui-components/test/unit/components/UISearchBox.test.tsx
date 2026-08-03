@@ -13,9 +13,7 @@ describe('<UISearchBox />', () => {
         const onChange = jest.fn();
         const onClear = jest.fn();
 
-        const { container, rerender } = render(<UISearchBox />);
-
-        rerender(<UISearchBox onChange={onChange} onClear={onClear} />);
+        const { container } = render(<UISearchBox onChange={onChange} onClear={onClear} />);
 
         const input = container.querySelector('input') as HTMLInputElement;
         fireEvent.change(input, { target: { value: expectQuery } });

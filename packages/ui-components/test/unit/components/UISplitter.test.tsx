@@ -34,8 +34,7 @@ describe('<UISplitter />', () => {
     });
 
     it('Should render as vertical splitter', () => {
-        const { container, rerender } = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
-        rerender(<UISplitter type={UISplitterType.Resize} onResize={onResize} vertical={true} />);
+        const { container } = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} vertical={true} />);
         expect(container.querySelectorAll('.splitter--horizontal')).toHaveLength(0);
         expect(container.querySelectorAll('.splitter--vertical')).toHaveLength(1);
     });

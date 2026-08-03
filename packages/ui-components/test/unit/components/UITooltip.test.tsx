@@ -49,8 +49,7 @@ describe('<UITooltip />', () => {
 
     it('Property "maxWidth" - custom', () => {
         const maxWidth = 'auto';
-        const { rerender } = render(<UITooltip />);
-        rerender(<UITooltip maxWidth={maxWidth} />);
+        render(<UITooltip maxWidth={maxWidth} />);
         const styles = getTooltipStyles();
         expect(styles.calloutMain['maxWidth']).toEqual(maxWidth);
     });

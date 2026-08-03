@@ -30,8 +30,7 @@ describe('<UICheckbox />', () => {
 
         it('Error', () => {
             const ref = React.createRef<UICheckbox>();
-            const { container, rerender } = render(<UICheckbox ref={ref} />);
-            rerender(<UICheckbox ref={ref} errorMessage="dummy" />);
+            const { container } = render(<UICheckbox ref={ref} errorMessage="dummy" />);
             const instance = ref.current as any;
             const styles = instance.setStyle({ message: 'dummy' }, {}) as ICheckboxStyles;
             const rootStyles = styles.root as IRawStyle;

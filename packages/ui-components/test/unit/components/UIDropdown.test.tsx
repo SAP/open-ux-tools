@@ -25,7 +25,7 @@ const getInnerDropdownProps = (props: UIDropdownProps): IDropdownProps => {
 describe('<UIDropdown />', () => {
     initIcons();
 
-    let renderResult: ReturnType<typeof render>;
+    let container: HTMLElement;
 
     const openDropdown = (container: HTMLElement): void => {
         const trigger = container.querySelector('.ms-Dropdown .ms-Dropdown-caretDownWrapper') as HTMLElement;
@@ -44,7 +44,7 @@ describe('<UIDropdown />', () => {
             applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
             resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
         };
-        renderResult = render(<UIDropdown options={data} selectedKey="EE" />);
+        ({ container } = render(<UIDropdown options={data} selectedKey="EE" />));
     });
 
     afterEach(() => {
@@ -54,7 +54,7 @@ describe('<UIDropdown />', () => {
     it('Test responsive mode - default value', () => {
         const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE' });
         expect(dropdownProps.responsiveMode).toEqual(ResponsiveMode.xxxLarge);
-        expect(renderResult.container.querySelector('div.ts-SelectBox')?.className).toEqual(
+        expect(container.querySelector('div.ts-SelectBox')?.className).toEqual(
             'ms-Dropdown-container ts-SelectBox'
         );
     });
@@ -149,7 +149,6 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test css selectors which are used in scss - main', () => {
-        const { container } = renderResult;
         expect(container.querySelectorAll('div.ts-SelectBox')).toHaveLength(1);
         expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-title')).toHaveLength(1);
         expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg')).toHaveLength(1);
@@ -163,8 +162,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test "disabled" property', () => {
-        const { container } = renderResult;
-        renderResult.rerender(<UIDropdown options={data} selectedKey="EE" disabled={true} />);
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" disabled={true} />);
         expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown.is-disabled')).toHaveLength(1);
         const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE', disabled: true });
         expect(dropdownProps.disabled).toEqual(true);
@@ -173,8 +171,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test className property', () => {
-        const { container } = renderResult;
-        renderResult.rerender(<UIDropdown options={data} selectedKey="EE" className="dummy" />);
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" className="dummy" />);
         expect(container.querySelector('div.ts-SelectBox')?.className).toEqual(
             'ms-Dropdown-container ts-SelectBox dummy'
         );
@@ -182,24 +179,21 @@ describe('<UIDropdown />', () => {
 
     describe('Error message', () => {
         it('Error', () => {
-            const { container } = renderResult;
-            renderResult.rerender(<UIDropdown options={data} selectedKey="EE" errorMessage="dummy" />);
+            const { container } = render(<UIDropdown options={data} selectedKey="EE" errorMessage="dummy" />);
             expect(container.querySelectorAll('div.ts-SelectBox--error')).toHaveLength(1);
             expect(container.querySelectorAll('div.ts-SelectBox--warning')).toHaveLength(0);
             expect(container.querySelectorAll('div.ts-SelectBox--info')).toHaveLength(0);
         });
 
         it('Warning', () => {
-            const { container } = renderResult;
-            renderResult.rerender(<UIDropdown options={data} selectedKey="EE" warningMessage="dummy" />);
+            const { container } = render(<UIDropdown options={data} selectedKey="EE" warningMessage="dummy" />);
             expect(container.querySelectorAll('div.ts-SelectBox--error')).toHaveLength(0);
             expect(container.querySelectorAll('div.ts-SelectBox--warning')).toHaveLength(1);
             expect(container.querySelectorAll('div.ts-SelectBox--info')).toHaveLength(0);
         });
 
         it('Info', () => {
-            const { container } = renderResult;
-            renderResult.rerender(<UIDropdown options={data} selectedKey="EE" infoMessage="dummy" />);
+            const { container } = render(<UIDropdown options={data} selectedKey="EE" infoMessage="dummy" />);
             expect(container.querySelectorAll('div.ts-SelectBox--error')).toHaveLength(0);
             expect(container.querySelectorAll('div.ts-SelectBox--warning')).toHaveLength(0);
             expect(container.querySelectorAll('div.ts-SelectBox--info')).toHaveLength(1);
@@ -255,29 +249,26 @@ describe('<UIDropdown />', () => {
     describe('Behavior of title/tooltip for options', () => {
         const buttonSelector = '.ts-Callout-Dropdown .ms-Button--command';
         it('Default - inherit from text', () => {
-            const { container } = renderResult;
-            renderResult.rerender(<UIDropdown options={originalData} selectedKey="EE" />);
+            const { container } = render(<UIDropdown options={originalData} selectedKey="EE" />);
             openDropdown(container);
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toEqual('Yemen');
         });
 
         it('Custom title', () => {
-            const { container } = renderResult;
             const expectTitle = 'dummy';
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = expectTitle;
-            renderResult.rerender(<UIDropdown options={dataTemp} selectedKey="EE" />);
+            const { container } = render(<UIDropdown options={dataTemp} selectedKey="EE" />);
             openDropdown(container);
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(expectTitle);
         });
 
         it('No title', () => {
-            const { container } = renderResult;
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = null;
-            renderResult.rerender(<UIDropdown options={dataTemp} selectedKey="EE" />);
+            const { container } = render(<UIDropdown options={dataTemp} selectedKey="EE" />);
             openDropdown(container);
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toBeNull();
@@ -386,8 +377,7 @@ describe('<UIDropdown />', () => {
         ];
         for (const testCase of testCases) {
             it(`"selectedKey=${testCase.selectedKey}","selectedKeys=${JSON.stringify(testCase.selectedKeys)}"`, () => {
-                const { container } = renderResult;
-                renderResult.rerender(
+                const { container } = render(
                     <UIDropdown
                         options={data}
                         selectedKey={testCase.selectedKey as UIDropdownProps['selectedKey']}
@@ -400,8 +390,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Dropdown items with group headers', () => {
-        const { container } = renderResult;
-        renderResult.rerender(<UIDropdown options={groupsData} selectedKey="EE" />);
+        const { container } = render(<UIDropdown options={groupsData} selectedKey="EE" />);
         openDropdown(container);
         expect(document.querySelectorAll('.ms-Dropdown-header')).toHaveLength(7);
         expect(document.querySelectorAll('.ms-Dropdown-header .ts-dropdown-item-blocker')).toHaveLength(0);
@@ -490,8 +479,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Custom renderers for "onRenderOption"', () => {
-        const { container } = renderResult;
-        renderResult.rerender(
+        const { container } = render(
             <UIDropdown
                 options={data}
                 selectedKey="EE"
@@ -509,8 +497,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Custom renderers for "onRenderItem"', () => {
-        const { container } = renderResult;
-        renderResult.rerender(
+        const { container } = render(
             <UIDropdown
                 options={data}
                 selectedKey="EE"
@@ -527,8 +514,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test "calloutProps"', () => {
-        const { container } = renderResult;
-        renderResult.rerender(
+        const { container } = render(
             <UIDropdown
                 options={data}
                 selectedKey="EE"

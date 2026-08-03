@@ -14,8 +14,7 @@ describe('<UIIcon />', () => {
     });
 
     it('Property "classname"', () => {
-        const { rerender, container } = render(<UIIcon />);
-        rerender(<UIIcon className="dummy" />);
+        const { container } = render(<UIIcon className="dummy" />);
         const iconEl = container.querySelector('i');
         expect(iconEl?.className).toContain(globalClassNames.root);
         expect(iconEl?.className).toContain('dummy');
