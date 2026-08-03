@@ -1,6 +1,6 @@
 ---
 name: fiori-eslint-dev
-description: Develop a new ESLint rule for @sap-ux/eslint-plugin-fiori-tools. Use when adding a new rule to the plugin, implementing manifest.json/XML/CDS validation, writing rule tests with project context, or creating rule documentation. Guides through the complete workflow: diagnostics constant, rule implementation, unit tests, docs, and registration.
+description: "Develop a new ESLint rule for @sap-ux/eslint-plugin-fiori-tools. Use when adding a new rule to the plugin, implementing manifest.json/XML/CDS validation, writing rule tests with project context, or creating rule documentation. Guides through the complete workflow: diagnostics constant, rule implementation, unit tests, docs, and registration."
 compatibility: Requires the open-ux-tools monorepo at packages/eslint-plugin-fiori-tools. Assumes pnpm workspace with TypeScript 5+.
 metadata:
   author: sap-ux
@@ -198,7 +198,7 @@ export default rule;
 
 ### For a flex change file rule (V2 `.change` files):
 
-Rules that cover both `manifest.json` (V4) and flex `*.change` files (V2) must:
+Rules that cover both `manifest.json` and flex `*.change` files (V2) must:
 
 1. Accept both `FioriJSONSourceCode` and `FioriChangeSourceCode` in `check()`.
 2. Use `createChangeVisitorHandler` (alongside `createJsonVisitorHandler`) in `createFioriRule`.
@@ -276,7 +276,7 @@ Then add it to the appropriate config in `packages/eslint-plugin-fiori-tools/src
 ```typescript
 // Inside configs['recommended-for-s4hana'].rules (for Fiori language rules)
 // or inside configs.recommended.rules (for JS/TS rules)
-'@sap-ux/fiori-tools/sap-my-new-rule': 'error', // or 'warn'
+'@sap-ux/fiori-tools/sap-my-new-rule': 'warn', // or 'error'
 ```
 
 ## Step 7 — Write unit tests
@@ -297,6 +297,8 @@ cat packages/eslint-plugin-fiori-tools/test/rules/sap-enable-export.test.ts
 Create `packages/eslint-plugin-fiori-tools/test/rules/sap-[rule-name].test.ts`.
 
 ### For Fiori language rules:
+
+#### JSON (manifest.json):
 
 ```typescript
 import { RuleTester } from 'eslint';
@@ -361,17 +363,112 @@ ruleTester.run('sap-my-new-rule', myNewRule, {
 });
 ```
 
-### For CAP/CDS rules:
+#### XML (annotations.xml / metadata.xml):
+
+XML rules lint annotation XML files (`annotations.xml` for V4, `metadata.xml` for V2 where `sap:text`/`sap:label` attributes are injected). Use `getAnnotationsAsXmlCode` to inject annotation snippets into the base fixture.
+
+```typescript
+import { RuleTester } from 'eslint';
+import myNewRule from '../../src/rules/sap-my-new-rule';
+import { meta, languages } from '../../src/index';
+import {
+    getAnnotationsAsXmlCode,
+    setup,
+    V4_ANNOTATIONS,
+    V4_ANNOTATIONS_PATH,
+    V2_ANNOTATIONS,
+    V2_ANNOTATIONS_PATH,
+    V2_METADATA,
+    V2_METADATA_PATH,
+} from '../test-helper';
+
+const ruleTester = new RuleTester({
+    plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
+    language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
+});
+
+const TEST_NAME = 'sap-my-new-rule';
+const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+const { createValidTest: createValidTestV2, createInvalidTest: createInvalidTestV2 } = setup(`${TEST_NAME} (V2)`);
+
+// Annotation XML snippets — define as constants for readability
+const VALID_ANNOTATION = `
+    <Annotations Target="MyService.MyEntity/myProperty">
+        <Annotation Term="Common.Label" String="Valid Label"/>
+    </Annotations>`;
+
+const INVALID_ANNOTATION = `
+    <Annotations Target="MyService.MyEntity/myProperty">
+        <Annotation Term="Common.Label" String="Name"/>
+    </Annotations>`;
+
+ruleTester.run(TEST_NAME, myNewRule, {
+    valid: [
+        createValidTest(
+            {
+                name: 'no relevant annotation',
+                filename: V4_ANNOTATIONS_PATH,
+                code: V4_ANNOTATIONS
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'annotation set to valid value',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, VALID_ANNOTATION)
+            },
+            []
+        )
+    ],
+    invalid: [
+        createInvalidTest(
+            {
+                name: 'annotation set to invalid value',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, INVALID_ANNOTATION),
+                errors: [{ messageId: 'sap-my-new-rule' }]
+            },
+            []
+        )
+    ]
+});
+
+// V2: sap:text/sap:label attributes are injected into the metadata.xml AST
+ruleTester.run(`${TEST_NAME} (V2)`, myNewRule, {
+    valid: [
+        createValidTestV2(
+            {
+                name: 'V2 annotations.xml — no errors (synthetic sap: elements live in metadata.xml AST)',
+                filename: V2_ANNOTATIONS_PATH,
+                code: V2_ANNOTATIONS
+            },
+            []
+        )
+    ],
+    invalid: [
+        createInvalidTestV2(
+            {
+                name: 'V2 metadata.xml — violation flagged',
+                filename: V2_METADATA_PATH,
+                code: V2_METADATA,
+                errors: [{ messageId: 'sap-my-new-rule' }]
+            },
+            []
+        )
+    ]
+});
+```
+
+#### CDS (CAP projects):
 
 CAP rules run against a CAP project where annotations live in `.cds` files rather than `manifest.json`. Use `setup(name, CAP_APP_PATH)` to point the project context at the CAP test project — this also triggers an `npm install` of the CDS module if needed.
 
 ```typescript
 import {
-    getManifestAsCode,
     setup,
     CAP_APP_PATH,
-    CAP_MANIFEST,
-    CAP_MANIFEST_PATH,
+    CAP_ANNOTATIONS,
     CAP_ANNOTATIONS_PATH,
 } from '../test-helper';
 
@@ -384,22 +481,33 @@ const { createValidTest: createValidTestCAP, createInvalidTest: createInvalidTes
     CAP_APP_PATH
 );
 
+// CDS annotation snippets — append to CAP_ANNOTATIONS base fixture
+const VALID_CDS = `
+annotate MyService.MyEntity with @(
+    UI.LineItem: [{ Value: myProperty }]
+);`;
+
+const INVALID_CDS = `
+annotate MyService.MyEntity with @(
+    UI.LineItem: [{ Value: myProperty, Label: 'Name' }]
+);`;
+
 // Run a separate ruleTester.run() block for CAP cases:
 ruleTester.run('sap-my-new-rule - CAP', myNewRule, {
     valid: [
         createValidTestCAP(
             {
-                name: 'non manifest file - cds',
-                filename: 'some-other-file.cds',
-                code: ''
+                name: 'CAP annotations.cds - no relevant annotation',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS
             },
             []
         ),
         createValidTestCAP(
             {
-                name: 'property correct in CAP manifest',
-                filename: CAP_MANIFEST_PATH,
-                code: JSON.stringify(CAP_MANIFEST)
+                name: 'CAP annotations.cds - annotation set to valid value',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + VALID_CDS
             },
             []
         )
@@ -407,23 +515,18 @@ ruleTester.run('sap-my-new-rule - CAP', myNewRule, {
     invalid: [
         createInvalidTestCAP(
             {
-                name: 'property wrong in CAP manifest',
-                filename: CAP_MANIFEST_PATH,
-                code: getManifestAsCode(CAP_MANIFEST, [
-                    { path: ['sap.app', 'myProperty'], value: 'wrongValue' }
-                ])
-            },
-            {
+                name: 'CAP annotations.cds - annotation set to invalid value',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + INVALID_CDS,
                 errors: [{ messageId: 'sap-my-new-rule' }]
-            }
+            },
+            []
         )
     ]
 });
 ```
 
-**Note:** `CAP_ANNOTATIONS_PATH` (`annotations.cds`) is available when the rule operates on CDS annotation files directly. Pass it as `filename` in test cases that lint CDS content.
-
-### For flex change file rules (V2 `.change` files):
+#### Flex change files (V2 `.change` files):
 
 ```typescript
 import {
@@ -586,7 +689,7 @@ Add the new rule to the rule table in `packages/eslint-plugin-fiori-tools/README
 grep -n "sap-" packages/eslint-plugin-fiori-tools/README.md | head -20
 ```
 
-Add a row in the correct alphabetical position:
+Add a row at the **top** of the table (most recently added rules go first):
 ```markdown
 | [`sap-my-new-rule`](docs/rules/sap-my-new-rule.md) | Short description | ✅ | 🔧 |
 ```
