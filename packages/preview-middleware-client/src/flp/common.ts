@@ -6,7 +6,6 @@ import type AppState from 'sap/ushell/services/AppState';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
-import IconPool from 'sap/ui/core/IconPool';
 import { getError } from '../utils/error.js';
 import { isLowerThanMinimalUi5Version, type Ui5VersionInfo } from '../utils/version.js';
 import { sendInfoCenterMessage } from '../utils/info-center-message.js';
@@ -52,30 +51,6 @@ const reportControllerExtensionErrorToInfoCenter: (event: GlobalErrorEvent) => v
         details: stackTrace
     });
 };
-
-/**
- * Registers global event listeners for uncaught errors and unhandled promise rejections
- * to detect and report controller extension errors to the Info Center.
- */
-/**
- * Register SAP fonts that are also registered in a productive Fiori launchpad.
- * Required for RTA Outline icons (e.g. extension point icons) to render correctly.
- */
-export function registerSAPFonts(): void {
-    IconPool.registerFont({
-        fontFamily: 'SAP-icons-TNT',
-        fontURI: sap.ui.require.toUrl('sap/tnt/themes/base/fonts/')
-    });
-    IconPool.registerFont({
-        fontFamily: 'BusinessSuiteInAppSymbols',
-        fontURI: sap.ui.require.toUrl('sap/ushell/themes/base/fonts/')
-    });
-}
-
-export function registerForControllerExtensionErrors(): void {
-    globalThis.addEventListener('error', reportControllerExtensionErrorToInfoCenter);
-    globalThis.addEventListener('unhandledrejection', reportControllerExtensionErrorToInfoCenter);
-}
 
 export interface FlexChange {
     [key: string]: string | object | undefined;
