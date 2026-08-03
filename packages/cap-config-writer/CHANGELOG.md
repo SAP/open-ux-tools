@@ -1,5 +1,26 @@
 # @sap-ux/cap-config-writer
 
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/project-access 2.1.8 → 2.1.9
+
 ## 1.0.25
 
 ### Patch Changes
