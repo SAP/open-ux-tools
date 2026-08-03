@@ -1,5 +1,17 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-03
+
+#### Bug Fixes
+
+- Fixed a bug in the Fiori Annotations API where removing flattened annotation structures would cause files to update incorrectly. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
 ## 1.0.20
 
 ### Patch Changes
