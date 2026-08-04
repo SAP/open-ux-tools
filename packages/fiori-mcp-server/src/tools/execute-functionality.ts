@@ -23,8 +23,11 @@ export async function executeFunctionality(params: ExecuteFunctionalityInput): P
     if (!functionalityId) {
         throw new Error('functionalityId parameter is required');
     }
-    if (!appPath) {
+    if (!appPath?.trim()) {
         throw new Error('appPath parameter is required');
+    }
+    if (!parameters) {
+        throw new Error('parameters is required');
     }
     // Custom/external functionalities
     const externalFunctionality =

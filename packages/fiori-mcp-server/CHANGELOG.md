@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
+## 1.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-31
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill with V4 pattern additions and API access guide [[246b33d](https://github.com/SAP/open-ux-tools/commit/246b33d5682dbe590e9a0c53914137aee14ed691)]
+
+## 1.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- add input validation and consistent error throwing to list_functionality and execute_functionality tools [[76e8011](https://github.com/SAP/open-ux-tools/commit/76e80113baa6ada117cf6efdc0698c82d559128c)]
+
 ## 1.11.2
 
 ### Patch Changes

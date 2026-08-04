@@ -1,5 +1,25 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.20 → 1.0.21
+
+## 1.3.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Allow multiple aggregations to page BB except breadcrumbs and footer. [[4615b91](https://github.com/SAP/open-ux-tools/commit/4615b91b5351cc764a3af49ba3bb69383795715c)]
+
 ## 1.3.8
 
 ### Patch Changes
