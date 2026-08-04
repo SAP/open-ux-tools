@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
 ## 1.11.4
 
 ### Patch Changes
