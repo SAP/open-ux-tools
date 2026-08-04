@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-browser-api-error';
+import rule from '../../src/rules/sap-browser-api-error.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

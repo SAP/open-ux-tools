@@ -1,4 +1,4 @@
-import { MetadataService } from '../src';
+import { MetadataService } from '../src/index.js';
 import type { MetadataElement, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
 
 function createTestService() {

@@ -1,16 +1,16 @@
 import {
     TranslationTextPattern,
     TranslationKeyGenerator
-} from '../../../../src/components/UITranslationInput/UITranslationButton.types';
-import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types';
+} from '../../../../src/components/UITranslationInput/UITranslationButton.types.js';
+import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types.js';
 import {
     extractI18nKey,
     generateI18nKey,
     applyI18nPattern,
     getTranslationByKey,
     getTranslationByText
-} from '../../../../src/components/UITranslationInput/UITranslationUtils';
-import { getBundle } from './utils';
+} from '../../../../src/components/UITranslationInput/UITranslationUtils.js';
+import { getBundle } from './utils.js';
 
 describe('UITranslationUtils', () => {
     const bundle: I18nBundle = getBundle();

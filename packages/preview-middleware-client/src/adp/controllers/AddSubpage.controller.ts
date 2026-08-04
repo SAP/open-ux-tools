@@ -18,18 +18,18 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 /** sap.suite.ui.generic */
 import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
-import { getResourceModel } from '../../i18n';
+import { getResourceModel } from '../../i18n.js';
 
-import CommandExecutor from '../command-executor';
+import CommandExecutor from '../command-executor.js';
 
-import BaseDialog from './BaseDialog.controller';
+import BaseDialog from './BaseDialog.controller.js';
 
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { CommunicationService } from '../../cpe/communication-service';
+import { CommunicationService } from '../../cpe/communication-service.js';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
-import { generateRoutePattern } from '../quick-actions/fe-v4/utils';
-import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { PageDescriptorV4 } from './types';
+import { generateRoutePattern } from '../quick-actions/fe-v4/utils.js';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition.js';
+import { PageDescriptorV4 } from './types.js';
 
 type SubpageType = 'ObjectPage' | 'CustomPage';
 

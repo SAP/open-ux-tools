@@ -4,5 +4,5 @@ export {
     convertMetadataDocumentV2,
     transformRange,
     type V2Annotation
-} from './parser';
-export * from './printer';
+} from './parser/index.js';
+export * from './printer/index.js';

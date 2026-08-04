@@ -1,4 +1,4 @@
-import { ReuseLibConfig } from '../../src/types';
+import { ReuseLibConfig } from '../../src/types.js';
 
 export const reuseLibs: ReuseLibConfig[] = [
     {

@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-override-rendering';
+import rule from '../../src/rules/sap-no-override-rendering.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

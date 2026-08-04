@@ -2,11 +2,11 @@ import { type CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import isNil from 'lodash/isNil';
-import { getQuestions } from './prompts';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from './types';
-import { promptNames } from './types';
-import { initI18nUi5AppInquirer } from './i18n';
+import isNil from 'lodash/isNil.js';
+import { getQuestions } from './prompts/index.js';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from './types.js';
+import { promptNames } from './types.js';
+import { initI18nUi5AppInquirer } from './i18n.js';
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *
@@ -140,5 +140,5 @@ export {
     type UI5ApplicationAnswers,
     type UI5ApplicationPromptOptions
 };
-export type { UI5ApplicationCommonPromptOptions } from './types';
-export { defaultAppName } from './prompts/prompt-helpers';
+export type { UI5ApplicationCommonPromptOptions } from './types.js';
+export { defaultAppName } from './prompts/prompt-helpers.js';

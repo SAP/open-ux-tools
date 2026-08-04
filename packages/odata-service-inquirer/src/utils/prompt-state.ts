@@ -1,5 +1,5 @@
 import type { BackendSystem } from '@sap-ux/store';
-import type { OdataServiceAnswers } from '../types';
+import type { OdataServiceAnswers } from '../types.js';
 
 /**
  * Much of the values returned by the service inquirer prompting are derived from prompt answers and are not direct answer values.

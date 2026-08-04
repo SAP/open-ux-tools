@@ -19,8 +19,7 @@ export async function initI18nODataDownloadGenerator(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: odataDownloadGenerator,
         ns: [odataDownloadGenerator],
-        missingInterpolationHandler: () => '', // Called when interpolation values are undefined, prevents outputting of `{{undefinedProperty}}`
-        showSupportNotice: false
+        missingInterpolationHandler: () => '' // Called when interpolation values are undefined, prevents outputting of `{{undefinedProperty}}`
     });
 }
 
@@ -38,6 +37,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18nODataDownloadGenerator().catch(() => {
-    // Needed for lint
-});
+void initI18nODataDownloadGenerator().catch((error) => console.error('Failed to initialize i18n:', error));

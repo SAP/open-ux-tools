@@ -1,6 +1,6 @@
 import { Range, positionAt, getLineOffsets } from '@sap-ux/text-document-utils';
-import { type CsvDocument, type Token, type CsvField, type CsvRow, type CsvParseResult, TokenType } from '../types';
-import { tokenize } from '../lexer';
+import { type CsvDocument, type Token, type CsvField, type CsvRow, type CsvParseResult, TokenType } from '../types.js';
+import { tokenize } from '../lexer/index.js';
 
 /**
  * Parse CSV

@@ -2,8 +2,8 @@ import type { Editor } from 'mem-fs-editor';
 
 import { addPackageDevDependency, updatePackageScript } from '@sap-ux/project-access';
 
-import type { DeployConfigOptions } from './types';
-import { BUILD_SCRIPT, DEPLOY_SCRIPT, RIMRAF, RIMRAF_VERSION, UNDEPLOY_SCRIPT } from './constants';
+import type { DeployConfigOptions } from './types.js';
+import { BUILD_SCRIPT, DEPLOY_SCRIPT, RIMRAF, RIMRAF_VERSION, UNDEPLOY_SCRIPT } from './constants.js';
 
 /**
  * Updates the scripts in the package.json file with the provided scripts object.

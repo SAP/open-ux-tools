@@ -11,8 +11,8 @@ import {
     propertyChangeFailed,
     propertyChanged,
     selectControl
-} from '../../src/api';
-import type { Control, ChangeStackModified, PropertyChange, OutlineNode } from '../../src/api';
+} from '../../src/api.js';
+import type { Control, ChangeStackModified, PropertyChange, OutlineNode } from '../../src/api.js';
 
 describe('createExternalAction', () => {
     test('iconsLoaded', () => {

@@ -1,29 +1,42 @@
 import React from 'react';
-import '../../src/store';
-import { actions } from '../../src/state';
-import ReactDOM from 'react-dom';
+import { jest } from '@jest/globals';
 
-jest.mock('../../src/state', () => ({
-    actions: { webViewReady: jest.fn() },
-    store: { getState: jest.fn(), dispatch: jest.fn(), subscribe: jest.fn() }
+const mockWebViewReady = jest.fn();
+const mockRender = jest.fn();
+const mockDispatch = jest.fn();
+const mockGetState = jest.fn();
+const mockSubscribe = jest.fn();
+
+jest.unstable_mockModule('../../src/state', () => ({
+    actions: { webViewReady: mockWebViewReady },
+    store: { getState: mockGetState, dispatch: mockDispatch, subscribe: mockSubscribe }
 }));
 
-jest.mock('react-dom', () => ({
-    render: jest.fn()
+jest.unstable_mockModule('react-dom', () => ({
+    default: { render: mockRender },
+    render: mockRender
 }));
 
-jest.mock('../../src/components/App', () => () => <div>App</div>);
-jest.mock('@sap-ux/ui-components', () => ({
+jest.unstable_mockModule('../../src/components/App', () => ({
+    default: () => <div>App</div>
+}));
+
+jest.unstable_mockModule('@sap-ux/ui-components', () => ({
     initIcons: jest.fn(),
     initTheme: jest.fn()
 }));
-jest.mock('../../src/i18n', () => ({ initI18n: jest.fn() }));
+
+jest.unstable_mockModule('../../src/i18n', () => ({
+    initI18n: jest.fn()
+}));
 
 describe('entry point', () => {
-    it('runs startApp without crashing', () => {
+    it('runs startApp without crashing', async () => {
         document.body.innerHTML = '<div id="root"></div>';
 
-        expect(ReactDOM.render).toHaveBeenCalled();
-        expect(actions.webViewReady).toHaveBeenCalled();
+        await import('../../src/store');
+
+        expect(mockRender).toHaveBeenCalled();
+        expect(mockWebViewReady).toHaveBeenCalled();
     });
 });

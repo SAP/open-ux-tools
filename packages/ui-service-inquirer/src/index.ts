@@ -1,2 +1,2 @@
-export * from './types';
-export { getSystemSelectionPrompts, getConfigPrompts } from './prompts';
+export * from './types.js';
+export { getSystemSelectionPrompts, getConfigPrompts } from './prompts/index.js';

@@ -1,5 +1,5 @@
-import { AdtService } from './adt-service';
-import type { AdtCategory, BusinessObject } from '../../types';
+import { AdtService } from './adt-service.js';
+import type { AdtCategory, BusinessObject } from '../../types/index.js';
 
 /**
  * BusinessObjectsService implements ADT requests to obtain the list of business objects.

@@ -1,7 +1,7 @@
 import { expect } from '@sap-ux-private/playwright';
-import { test } from '../../fixture';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
-import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
+import { test } from '../../fixture.js';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils.js';
+import { ADP_FIORI_ELEMENTS_V2 } from '../../project/index.js';
 import { lt, satisfies } from 'semver';
 
 test.use({

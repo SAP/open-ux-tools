@@ -6,8 +6,7 @@ import {
     isOnPremiseDestination,
     type Destination
 } from '@sap-ux/btp-utils';
-import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
+import { getHostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,
@@ -17,9 +16,9 @@ import {
 } from '@sap-ux/guided-answers-helper';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import type { AxiosError } from 'axios';
-import { t } from '../i18n';
-import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../telemetry/telemetry';
-import { ValidationLink } from '../types';
+import { t } from '../i18n.js';
+import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../telemetry/telemetry.js';
+import { ValidationLink } from '../types.js';
 
 // Telemetry event names specific to odata service error handling
 const telemEventGALinkCreated = 'GA_LINK_CREATED';

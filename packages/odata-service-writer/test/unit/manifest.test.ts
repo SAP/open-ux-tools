@@ -1,20 +1,20 @@
-import { deleteServiceData } from '../../src/delete';
+import { deleteServiceData } from '../../src/delete.js';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { OdataService } from '../../src';
-import { OdataVersion, ServiceType } from '../../src';
+import type { OdataService } from '../../src/index.js';
+import { OdataVersion, ServiceType } from '../../src/index.js';
 import type { Manifest } from '@sap-ux/project-access';
-import { updateManifest } from '../../src/data/manifest';
-import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
-import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
-import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services';
-import { expectedEdmxManifestOlderServices } from '../test-data/manifest-json/edmx-manifest-older-services';
-import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
-import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation'; // single local annotation
-import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations'; // multiple local annotations
-import { expectedEdmxManifestMissingAnnotations } from '../test-data/manifest-json/edmx-manifest-missing-annotation-datasources'; // missing annotation definitions
-import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations'; // no any annotations
+import { updateManifest } from '../../src/data/manifest.js';
+import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest.js';
+import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations.js';
+import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services.js';
+import { expectedEdmxManifestOlderServices } from '../test-data/manifest-json/edmx-manifest-older-services.js';
+import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest.js';
+import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation.js'; // single local annotation
+import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations.js'; // multiple local annotations
+import { expectedEdmxManifestMissingAnnotations } from '../test-data/manifest-json/edmx-manifest-missing-annotation-datasources.js'; // missing annotation definitions
+import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations.js'; // no any annotations
 
 describe('manifest', () => {
     let fs: Editor;

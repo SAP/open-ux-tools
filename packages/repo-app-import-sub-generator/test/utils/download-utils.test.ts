@@ -1,20 +1,32 @@
-import { downloadApp, extractZip, hasQfaJson } from '../../src/utils/download-utils';
-import AdmZip from 'adm-zip';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import RepoAppDownloadLogger from '../../src/utils/logger';
-import { PromptState } from '../../src/prompts/prompt-state';
-import { qfaJsonFileName } from '../../src/utils/constants';
+import { qfaJsonFileName } from '../../src/utils/constants.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-jest.mock('adm-zip');
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        debug: jest.fn()
+jest.unstable_mockModule('adm-zip', () => {
+    class MockAdmZip {
+        buffer: Buffer;
+        constructor(buf: Buffer) {
+            this.buffer = buf;
+        }
     }
-}));
+    return { default: MockAdmZip, __esModule: true };
+});
+
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = {
+        logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+const { downloadApp, extractZip, hasQfaJson, fetchServiceMetadata } = await import('../../src/utils/download-utils.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
+const AdmZipModule = await import('adm-zip');
+const AdmZip = AdmZipModule.default;
+const { t } = await import('../../src/utils/i18n.js');
 
 describe('App Download Utils', () => {
     beforeEach(() => {
@@ -85,7 +97,7 @@ describe('App Download Utils', () => {
             await extractZip('/tmp/project', mockFs as any);
 
             expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
-                expect.stringContaining('zipExtractionError')
+                t('error.appDownloadErrors.zipExtractionError', { error: 'zip failed' })
             );
         });
     });
@@ -111,6 +123,38 @@ describe('App Download Utils', () => {
 
             expect(mockDownload).toHaveBeenCalledWith('Z_TEST_REPO');
             expect(PromptState.admZip).toBeInstanceOf(AdmZip);
+        });
+    });
+
+    describe('fetchServiceMetadata', () => {
+        it('should return metadata string when service call succeeds', async () => {
+            const mockMetadata = '<edmx:Edmx Version="4.0"/>';
+            const mockProvider = {
+                service: jest.fn().mockReturnValue({
+                    metadata: jest.fn().mockResolvedValue(mockMetadata)
+                })
+            } as unknown as AbapServiceProvider;
+
+            const result = await fetchServiceMetadata(mockProvider, '/sap/opu/odata4/srvd/test/0001');
+
+            expect(mockProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/srvd/test/0001');
+            expect(result).toBe(mockMetadata);
+        });
+
+        it('should return undefined and log error when service call fails', async () => {
+            const fetchError = new Error('Network timeout');
+            const mockProvider = {
+                service: jest.fn().mockReturnValue({
+                    metadata: jest.fn().mockRejectedValue(fetchError)
+                })
+            } as unknown as AbapServiceProvider;
+
+            const result = await fetchServiceMetadata(mockProvider, '/sap/opu/odata4/srvd/test/0001');
+
+            expect(result).toBeUndefined();
+            expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+                t('error.metadataFetchError', { error: fetchError.message })
+            );
         });
     });
 });

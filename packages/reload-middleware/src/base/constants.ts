@@ -1,4 +1,4 @@
-import type { LiveReloadOptions, ConnectLivereloadOptions } from './types';
+import type { LiveReloadOptions, ConnectLivereloadOptions } from './types.js';
 
 export const defaultLiveReloadOpts: LiveReloadOptions = {
     exts: [

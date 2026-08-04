@@ -1,2 +1,2 @@
-export { getSmartLinksTargetFromPrompt, promptUserPass } from './smartlinks-config';
-export * from './preview-config';
+export { getSmartLinksTargetFromPrompt, promptUserPass } from './smartlinks-config.js';
+export * from './preview-config.js';

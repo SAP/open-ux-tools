@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-absolute-component-path';
+import rule from '../../src/rules/sap-no-absolute-component-path.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -1,2 +1,2 @@
-export * from './UITranslationInput';
-export * from './UITranslationButton.types';
+export * from './UITranslationInput.js';
+export * from './UITranslationButton.types.js';

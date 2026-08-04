@@ -22,12 +22,12 @@ import type {
 import { prompt as promptUI5App, promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
 import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
 import type { Question } from 'inquirer';
-import merge from 'lodash/merge';
+import merge from 'lodash/merge.js';
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
-import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
-import { Features, defaultPromptValues } from '../types';
-import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
+import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types/index.js';
+import { Features, defaultPromptValues } from '../types/index.js';
+import { getMinSupportedUI5Version, t, validateNextStep } from '../utils/index.js';
 
 /**
  * Validates the view name.

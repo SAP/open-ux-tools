@@ -9,6 +9,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "noErrorTruncation": true,
+    "isolatedModules": false,
     "lib": [
       "ES2023"
     ]

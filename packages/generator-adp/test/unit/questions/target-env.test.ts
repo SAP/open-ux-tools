@@ -1,36 +1,36 @@
+import { jest } from '@jest/globals';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig } from '@sap-ux/adp-tooling';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 
-import { initI18n, t } from '../../../src/utils/i18n';
-import { TargetEnv, type TargetEnvAnswers } from '../../../src/app/types';
-import { getTargetEnvAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
-import { validateEnvironment, validateProjectPath } from '../../../src/app/questions/helper/validators';
-import { getTargetEnvPrompt, getEnvironments, getProjectPathPrompt } from '../../../src/app/questions/target-env';
+const mockGetDefaultTargetFolder = jest.fn<typeof realFioriGenShared.getDefaultTargetFolder>();
+const mockGetTargetEnvAdditionalMessages = jest.fn() as jest.Mock;
+const mockValidateEnvironment = jest.fn() as jest.Mock;
+const mockValidateProjectPath = jest.fn() as jest.Mock;
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    getDefaultTargetFolder: jest.fn()
+const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGenShared,
+    getDefaultTargetFolder: mockGetDefaultTargetFolder
 }));
 
-jest.mock('../../../src/app/questions/helper/additional-messages', () => ({
-    getTargetEnvAdditionalMessages: jest.fn()
+jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages', () => ({
+    getTargetEnvAdditionalMessages: mockGetTargetEnvAdditionalMessages
 }));
 
-jest.mock('../../../src/app/questions/helper/validators', () => ({
-    validateEnvironment: jest.fn(),
-    validateProjectPath: jest.fn()
+jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => ({
+    validateEnvironment: mockValidateEnvironment,
+    validateProjectPath: mockValidateProjectPath
 }));
 
-const mockValidateEnvironment = validateEnvironment as jest.MockedFunction<typeof validateEnvironment>;
-const mockValidateProjectPath = validateProjectPath as jest.MockedFunction<typeof validateProjectPath>;
-const mockGetDefaultTargetFolder = getDefaultTargetFolder as jest.MockedFunction<typeof getDefaultTargetFolder>;
-const mockGetTargetEnvAdditionalMessages = getTargetEnvAdditionalMessages as jest.MockedFunction<
-    typeof getTargetEnvAdditionalMessages
->;
+const { initI18n, t } = await import('../../../src/utils/i18n.js');
+const { TargetEnv } = await import('../../../src/app/types.js');
+import type { TargetEnvAnswers } from '../../../src/app/types.js';
+const { getTargetEnvPrompt, getEnvironments, getProjectPathPrompt } =
+    await import('../../../src/app/questions/target-env.js');
 
 describe('Target Environment', () => {
     const mockAppWizard: AppWizard = {

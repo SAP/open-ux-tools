@@ -1,5 +1,5 @@
 import semver from 'semver';
-import type { MinUI5Version } from '../project-context/parser/types';
+import type { MinUI5Version } from '../project-context/parser/types.js';
 
 /**
  * Checks if the provided UI5 version is lower than the minimal required UI5 version.

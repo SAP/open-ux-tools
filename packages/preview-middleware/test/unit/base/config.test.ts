@@ -8,11 +8,14 @@ import {
     getFlpConfigWithDefaults,
     getPreviewPaths,
     remapResourcesForPath
-} from '../../../src/base/config';
-import { mergeTestConfigDefaults } from '../../../src/base/test';
-import type { MiddlewareConfig } from '../../../src';
-import { join } from 'node:path';
+} from '../../../src/base/config.js';
+import { mergeTestConfigDefaults } from '../../../src/base/test.js';
+import type { MiddlewareConfig } from '../../../src/index.js';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('config', () => {
     const manifest = {
@@ -48,6 +51,24 @@ describe('config', () => {
             const resources = { 'my.reuse.lib': '/custom/path/my.reuse.lib' };
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest, resources);
             expect(templateConfig).toMatchSnapshot();
+        });
+
+        test('ADP project does not include LocalStorageConnector', () => {
+            const flpConfig = getFlpConfigWithDefaults({});
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, true);
+            const connectorNames = templateConfig.ui5.flex
+                .filter((c): c is { connector: string; layers: string[] } => 'connector' in c)
+                .map((c) => c.connector);
+            expect(connectorNames).not.toContain('LocalStorageConnector');
+        });
+
+        test('non-ADP project includes LocalStorageConnector', () => {
+            const flpConfig = getFlpConfigWithDefaults({});
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {});
+            const connectorNames = templateConfig.ui5.flex
+                .filter((c): c is { connector: string; layers: string[] } => 'connector' in c)
+                .map((c) => c.connector);
+            expect(connectorNames).toContain('LocalStorageConnector');
         });
     });
 

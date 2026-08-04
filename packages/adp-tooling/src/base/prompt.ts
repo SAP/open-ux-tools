@@ -7,8 +7,8 @@ import type { AppIndex } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
 
-import { getPackageJSONInfo } from '../writer/project-utils';
-import { type CustomConfig, type AdpWriterConfig, FlexLayer } from '../types';
+import { getPackageJSONInfo } from '../writer/project-utils.js';
+import { type CustomConfig, type AdpWriterConfig, FlexLayer } from '../types.js';
 
 export type PromptDefaults = {
     id?: string;

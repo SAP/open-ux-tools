@@ -13,7 +13,7 @@ import {
     createIsHistory,
     createIsHistoryObject,
     createRememberHistory
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Helper Functions

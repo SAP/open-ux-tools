@@ -1,6 +1,469 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
+## 2.0.31
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Upgrade @sap-devx/yeoman-ui-types 1.25.0 → 1.25.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/nodejs-utils 1.0.8 → 1.0.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/system-access 1.0.8 → 1.0.9
+
+## 2.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/nodejs-utils 1.0.7 → 1.0.8
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 2.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 2.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 2.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-17
+
+#### Bug Fixes
+
+- [BAS][Deploy] Password field in the deploy page disappears when the user edits the username. [[ff7fc25](https://github.com/SAP/open-ux-tools/commit/ff7fc25829f6b29a5083a56c8899e646d3c8569d)]
+
+## 2.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
+## 2.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+
+## 2.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/nodejs-utils 1.0.6 → 1.0.7
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 2.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 2.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/nodejs-utils 1.0.5 → 1.0.6
+
+## 2.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/nodejs-utils 1.0.4 → 1.0.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+
+## 2.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Bug Fixes
+
+- Register autocomplete plugin inside getPrompts so CLI renders package autocomplete correctly [[4c34a73](https://github.com/SAP/open-ux-tools/commit/4c34a73ad972fa63eb83cf7ee2f775725e7cca71)]
+
+## 2.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
+## 2.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+
+## 2.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.4 → 1.0.4
+
+## 2.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 2.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/system-access 1.0.3 → 1.0.3
+
+## 2.0.14
+
+### Patch Changes
+
+#### Features
+
+- show warning when a full URL destination is selected [[d905991](https://github.com/SAP/open-ux-tools/commit/d905991ddc0ac82d5cde833cf4489d8a72bd7ad5)]
+
+## 2.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.11 → 1.0.12
+
+## 2.0.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-16
+
+#### Bug Fixes
+
+- ADP gen crashes on Deployment Configuration step - empty destination field [[eebdc83](https://github.com/SAP/open-ux-tools/commit/eebdc834747fb88f1e2a4862deb5fd73da3263b0)]
+
+## 2.0.11
+
+_Released: 2026-06-12T06:53:23Z_
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.3
+- @sap-ux/inquirer-common@1.0.11
+- @sap-ux/fiori-generator-shared@1.0.11
+- @sap-ux/system-access@1.0.3
+
+## 2.0.10
+
+_Released: 2026-06-11T10:54:17Z_
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.10
+- @sap-ux/inquirer-common@1.0.10
+
+## 2.0.9
+
+_Released: 2026-06-10T09:57:42Z_
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.9
+    - @sap-ux/system-access@1.0.2
+
+## 2.0.8
+
+_Released: 2026-06-09T14:35:01Z_
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/nodejs-utils@1.0.3
+    - @sap-ux/system-access@1.0.2
+
+## 2.0.7
+
+_Released: 2026-06-09T13:18:16Z_
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/inquirer-common@1.0.7
+
+## 2.0.6
+
+_Released: 2026-06-04T13:54:21Z_
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.1
+- @sap-ux/fiori-generator-shared@1.0.6
+- @sap-ux/inquirer-common@1.0.6
+- @sap-ux/system-access@1.0.1
+
+## 2.0.5
+
+_Released: 2026-06-04T10:19:37Z_
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.1
+- @sap-ux/fiori-generator-shared@1.0.5
+- @sap-ux/inquirer-common@1.0.5
+- @sap-ux/system-access@1.0.1
+
+## 2.0.4
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/guided-answers-helper@1.0.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/nodejs-utils@1.0.2
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+
+## 2.0.3
+
+_Released: 2026-06-03T13:52:44Z_
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/inquirer-common@1.0.3
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/fiori-generator-shared@1.0.3
+    - @sap-ux/system-access@1.0.0
+
+## 2.0.2
+
+_Released: 2026-06-02T11:35:17Z_
+
+### Patch Changes
+
+- Updated dependencies [41f327a]
+    - @sap-ux/nodejs-utils@1.0.1
+    - @sap-ux/fiori-generator-shared@1.0.2
+    - @sap-ux/inquirer-common@1.0.2
+
+## 2.0.1
+
+_Released: 2026-06-01T15:15:26Z_
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.0
+- @sap-ux/fiori-generator-shared@1.0.1
+- @sap-ux/inquirer-common@1.0.1
+- @sap-ux/system-access@1.0.0
+
+## 2.0.0
+
+_Released: 2026-05-30T20:54:07Z_
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/guided-answers-helper@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/nodejs-utils@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 1.9.7
+
+_Released: 2026-05-29T12:50:34Z_
+
+### Patch Changes
+
+- Updated dependencies [a1c9cd7]
+    - @sap-ux/guided-answers-helper@0.5.1
+    - @sap-ux/inquirer-common@0.13.6
+
 ## 1.9.6
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -10,6 +473,8 @@
     - @sap-ux/inquirer-common@0.13.5
 
 ## 1.9.5
+
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -21,6 +486,8 @@
     - @sap-ux/inquirer-common@0.13.4
 
 ## 1.9.4
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -35,6 +502,8 @@
 
 ## 1.9.3
 
+_Released: 2026-05-21T16:21:11Z_
+
 ### Patch Changes
 
 - Updated dependencies [9752c40]
@@ -46,6 +515,8 @@
 
 ## 1.9.2
 
+_Released: 2026-05-19T15:16:46Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.26.0
@@ -54,6 +525,8 @@
 - @sap-ux/system-access@0.8.0
 
 ## 1.9.1
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -64,6 +537,8 @@
     - @sap-ux/inquirer-common@0.13.0
 
 ## 1.9.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -85,11 +560,15 @@
 
 ## 1.8.23
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
 
 ## 1.8.22
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -108,6 +587,8 @@
 
 ## 1.8.21
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -118,6 +599,8 @@
 
 ## 1.8.20
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -125,6 +608,8 @@
     - @sap-ux/inquirer-common@0.11.45
 
 ## 1.8.19
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -140,6 +625,8 @@
 
 ## 1.8.18
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -149,6 +636,8 @@
     - @sap-ux/inquirer-common@0.11.43
 
 ## 1.8.17
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -161,6 +650,8 @@
 
 ## 1.8.16
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.32
@@ -170,6 +661,8 @@
 
 ## 1.8.15
 
+_Released: 2026-04-23T12:54:21Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.32
@@ -178,6 +671,8 @@
 - @sap-ux/system-access@0.7.8
 
 ## 1.8.14
+
+_Released: 2026-04-23T06:48:55Z_
 
 ### Patch Changes
 
@@ -189,11 +684,15 @@
 
 ## 1.8.13
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.38
 
 ## 1.8.12
+
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -201,6 +700,8 @@
 - @sap-ux/inquirer-common@0.11.37
 
 ## 1.8.11
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -214,6 +715,8 @@
 
 ## 1.8.10
 
+_Released: 2026-04-14T12:35:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [cc4450c]
@@ -226,6 +729,8 @@
     - @sap-ux/nodejs-utils@0.2.20
 
 ## 1.8.9
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -243,6 +748,8 @@
 
 ## 1.8.8
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.28
@@ -251,6 +758,8 @@
 - @sap-ux/system-access@0.7.4
 
 ## 1.8.7
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -272,12 +781,16 @@
 
 ## 1.8.6
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.93
 - @sap-ux/inquirer-common@0.11.31
 
 ## 1.8.5
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -291,6 +804,8 @@
 
 ## 1.8.4
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.26
@@ -299,6 +814,8 @@
 - @sap-ux/system-access@0.7.2
 
 ## 1.8.3
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -323,6 +840,8 @@
 
 ## 1.8.2
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.25
@@ -332,6 +851,8 @@
 
 ## 1.8.1
 
+_Released: 2026-03-23T18:25:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [c0e05ab]
@@ -340,6 +861,8 @@
     - @sap-ux/system-access@0.7.1
 
 ## 1.8.0
+
+_Released: 2026-03-20T16:07:49Z_
 
 ### Minor Changes
 
@@ -356,6 +879,8 @@
 
 ## 1.7.23
 
+_Released: 2026-03-18T16:51:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [ae6758f]
@@ -363,6 +888,8 @@
     - @sap-ux/inquirer-common@0.11.25
 
 ## 1.7.22
+
+_Released: 2026-03-17T07:55:04Z_
 
 ### Patch Changes
 
@@ -372,6 +899,8 @@
     - @sap-ux/system-access@0.6.66
 
 ## 1.7.21
+
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -389,11 +918,15 @@
 
 ## 1.7.20
 
+_Released: 2026-03-06T13:19:33Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.23
 
 ## 1.7.19
+
+_Released: 2026-03-05T23:21:37Z_
 
 ### Patch Changes
 
@@ -404,6 +937,8 @@
 
 ## 1.7.18
 
+_Released: 2026-03-05T16:08:22Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.21
@@ -412,6 +947,8 @@
 - @sap-ux/system-access@0.6.63
 
 ## 1.7.17
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -424,11 +961,15 @@
 
 ## 1.7.16
 
+_Released: 2026-03-05T10:41:09Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.20
 
 ## 1.7.15
+
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -447,6 +988,8 @@
 
 ## 1.7.14
 
+_Released: 2026-03-04T15:52:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [2302698]
@@ -457,6 +1000,8 @@
     - @sap-ux/system-access@0.6.61
 
 ## 1.7.13
+
+_Released: 2026-03-04T14:39:10Z_
 
 ### Patch Changes
 
@@ -470,6 +1015,8 @@
 
 ## 1.7.12
 
+_Released: 2026-03-03T08:27:12Z_
+
 ### Patch Changes
 
 - 4af92b5: add node: proto prefix to imports
@@ -479,6 +1026,8 @@
     - @sap-ux/system-access@0.6.60
 
 ## 1.7.11
+
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -490,11 +1039,15 @@
 
 ## 1.7.10
 
+_Released: 2026-02-27T14:38:29Z_
+
 ### Patch Changes
 
 - 0e2d686: Improve package validation message for $TMP with lowercase warning
 
 ## 1.7.9
+
+_Released: 2026-02-26T10:46:59Z_
 
 ### Patch Changes
 
@@ -508,6 +1061,8 @@
 
 ## 1.7.8
 
+_Released: 2026-02-23T22:35:31Z_
+
 ### Patch Changes
 
 - Updated dependencies [c043712]
@@ -518,6 +1073,8 @@
 
 ## 1.7.7
 
+_Released: 2026-02-23T19:07:48Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.15
@@ -526,6 +1083,8 @@
 - @sap-ux/system-access@0.6.56
 
 ## 1.7.6
+
+_Released: 2026-02-20T21:31:31Z_
 
 ### Patch Changes
 
@@ -538,6 +1097,8 @@
 
 ## 1.7.5
 
+_Released: 2026-02-20T20:20:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [ff634b0]
@@ -548,6 +1109,8 @@
     - @sap-ux/fiori-generator-shared@0.13.76
 
 ## 1.7.4
+
+_Released: 2026-02-20T16:17:11Z_
 
 ### Patch Changes
 
@@ -560,6 +1123,8 @@
     - @sap-ux/ui5-config@0.29.18
 
 ## 1.7.3
+
+_Released: 2026-02-20T13:46:55Z_
 
 ### Patch Changes
 
@@ -574,6 +1139,8 @@
 
 ## 1.7.2
 
+_Released: 2026-02-18T21:45:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
@@ -583,6 +1150,8 @@
     - @sap-ux/system-access@0.6.54
 
 ## 1.7.1
+
+_Released: 2026-02-16T18:48:13Z_
 
 ### Patch Changes
 
@@ -595,6 +1164,8 @@
     - @sap-ux/system-access@0.6.53
 
 ## 1.7.0
+
+_Released: 2026-02-16T16:08:11Z_
 
 ### Minor Changes
 
@@ -612,6 +1183,8 @@
 
 ## 1.6.99
 
+_Released: 2026-02-13T16:18:58Z_
+
 ### Patch Changes
 
 - Updated dependencies [9f94937]
@@ -623,6 +1196,8 @@
 
 ## 1.6.98
 
+_Released: 2026-02-13T09:54:38Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.11
@@ -632,6 +1207,8 @@
 
 ## 1.6.97
 
+_Released: 2026-02-12T10:29:41Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.11
@@ -640,6 +1217,8 @@
 - @sap-ux/system-access@0.6.50
 
 ## 1.6.96
+
+_Released: 2026-02-10T23:50:15Z_
 
 ### Patch Changes
 
@@ -655,11 +1234,15 @@
 
 ## 1.6.95
 
+_Released: 2026-02-10T08:40:44Z_
+
 ### Patch Changes
 
 - ede6ae8: extend validation pre check to transport choice prompt
 
 ## 1.6.94
+
+_Released: 2026-02-09T15:13:41Z_
 
 ### Patch Changes
 
@@ -667,6 +1250,8 @@
     - @sap-ux/inquirer-common@0.11.1
 
 ## 1.6.93
+
+_Released: 2026-02-09T11:21:43Z_
 
 ### Patch Changes
 
@@ -678,6 +1263,8 @@
 
 ## 1.6.92
 
+_Released: 2026-02-05T20:09:45Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.10
@@ -686,6 +1273,8 @@
 - @sap-ux/inquirer-common@0.10.26
 
 ## 1.6.91
+
+_Released: 2026-02-05T13:53:56Z_
 
 ### Patch Changes
 
@@ -698,6 +1287,8 @@
 
 ## 1.6.90
 
+_Released: 2026-02-05T11:39:04Z_
+
 ### Patch Changes
 
 - Updated dependencies [83e3b70]
@@ -708,6 +1299,8 @@
     - @sap-ux/inquirer-common@0.10.24
 
 ## 1.6.89
+
+_Released: 2026-02-05T08:38:39Z_
 
 ### Patch Changes
 
@@ -721,6 +1314,8 @@
 
 ## 1.6.88
 
+_Released: 2026-02-04T22:31:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [9f11dd2]
@@ -733,6 +1328,8 @@
 
 ## 1.6.87
 
+_Released: 2026-02-03T15:42:23Z_
+
 ### Patch Changes
 
 - Updated dependencies [89175fe]
@@ -742,6 +1339,8 @@
     - @sap-ux/inquirer-common@0.10.21
 
 ## 1.6.86
+
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -758,6 +1357,8 @@
 
 ## 1.6.85
 
+_Released: 2026-01-29T14:02:02Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.19
@@ -766,6 +1367,8 @@
 - @sap-ux/system-access@0.6.44
 
 ## 1.6.84
+
+_Released: 2026-01-28T00:19:05Z_
 
 ### Patch Changes
 
@@ -778,6 +1381,8 @@
 
 ## 1.6.83
 
+_Released: 2026-01-26T09:14:13Z_
+
 ### Patch Changes
 
 - Updated dependencies [0492325]
@@ -787,12 +1392,16 @@
 
 ## 1.6.82
 
+_Released: 2026-01-23T23:57:30Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.57
 - @sap-ux/inquirer-common@0.10.17
 
 ## 1.6.81
+
+_Released: 2026-01-23T22:30:10Z_
 
 ### Patch Changes
 
@@ -802,6 +1411,8 @@
     - @sap-ux/inquirer-common@0.10.16
 
 ## 1.6.80
+
+_Released: 2026-01-23T12:49:27Z_
 
 ### Patch Changes
 
@@ -814,11 +1425,15 @@
 
 ## 1.6.79
 
+_Released: 2026-01-19T12:47:48Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.14
 
 ## 1.6.78
+
+_Released: 2026-01-16T13:57:39Z_
 
 ### Patch Changes
 
@@ -831,6 +1446,8 @@
 
 ## 1.6.77
 
+_Released: 2026-01-16T12:32:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [c9fd939]
@@ -842,6 +1459,8 @@
 
 ## 1.6.76
 
+_Released: 2026-01-15T14:14:39Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.6
@@ -850,6 +1469,8 @@
 - @sap-ux/inquirer-common@0.10.11
 
 ## 1.6.75
+
+_Released: 2026-01-14T17:56:49Z_
 
 ### Patch Changes
 
@@ -860,6 +1481,8 @@
 
 ## 1.6.74
 
+_Released: 2026-01-12T12:01:34Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.6
@@ -869,11 +1492,15 @@
 
 ## 1.6.73
 
+_Released: 2026-01-12T09:10:27Z_
+
 ### Patch Changes
 
 - 234dc8b: add precheck for package validation based on answers
 
 ## 1.6.72
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -885,6 +1512,8 @@
 
 ## 1.6.71
 
+_Released: 2026-01-08T17:12:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [2204ad3]
@@ -895,6 +1524,8 @@
 
 ## 1.6.70
 
+_Released: 2026-01-07T16:03:58Z_
+
 ### Patch Changes
 
 - Updated dependencies [4e0f204]
@@ -904,12 +1535,16 @@
 
 ## 1.6.69
 
+_Released: 2026-01-07T10:20:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [6382440]
     - @sap-ux/inquirer-common@0.10.6
 
 ## 1.6.68
+
+_Released: 2026-01-06T14:37:31Z_
 
 ### Patch Changes
 
@@ -919,6 +1554,8 @@
 
 ## 1.6.67
 
+_Released: 2026-01-05T14:16:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [62bb798]
@@ -926,6 +1563,8 @@
     - @sap-ux/inquirer-common@0.10.4
 
 ## 1.6.66
+
+_Released: 2025-12-22T17:36:43Z_
 
 ### Patch Changes
 
@@ -935,6 +1574,8 @@
     - @sap-ux/system-access@0.6.37
 
 ## 1.6.65
+
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -950,6 +1591,8 @@
     - @sap-ux/ui5-config@0.29.12
 
 ## 1.6.64
+
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -967,11 +1610,15 @@
 
 ## 1.6.63
 
+_Released: 2025-12-18T13:13:52Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.1
 
 ## 1.6.62
+
+_Released: 2025-12-18T08:56:52Z_
 
 ### Patch Changes
 
@@ -983,6 +1630,8 @@
 
 ## 1.6.61
 
+_Released: 2025-12-16T11:43:52Z_
+
 ### Patch Changes
 
 - Updated dependencies [ba58398]
@@ -993,6 +1642,8 @@
     - @sap-ux/inquirer-common@0.9.17
 
 ## 1.6.60
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -1011,6 +1662,8 @@
 
 ## 1.6.59
 
+_Released: 2025-12-12T12:38:21Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.24.5
@@ -1020,11 +1673,15 @@
 
 ## 1.6.58
 
+_Released: 2025-12-12T09:02:37Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.14
 
 ## 1.6.57
+
+_Released: 2025-12-10T20:04:51Z_
 
 ### Patch Changes
 
@@ -1035,6 +1692,8 @@
 
 ## 1.6.56
 
+_Released: 2025-12-10T09:08:56Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.24.5
@@ -1043,6 +1702,8 @@
 - @sap-ux/inquirer-common@0.9.12
 
 ## 1.6.55
+
+_Released: 2025-12-08T17:56:48Z_
 
 ### Patch Changes
 
@@ -1058,6 +1719,8 @@
 
 ## 1.6.54
 
+_Released: 2025-12-08T11:51:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [f71a139]
@@ -1067,6 +1730,8 @@
 
 ## 1.6.53
 
+_Released: 2025-12-05T12:18:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [d202c17]
@@ -1074,6 +1739,8 @@
     - @sap-ux/inquirer-common@0.9.10
 
 ## 1.6.52
+
+_Released: 2025-12-04T10:42:12Z_
 
 ### Patch Changes
 
@@ -1084,6 +1751,8 @@
 
 ## 1.6.51
 
+_Released: 2025-11-27T14:58:09Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.24.3
@@ -1092,6 +1761,8 @@
 - @sap-ux/inquirer-common@0.9.8
 
 ## 1.6.50
+
+_Released: 2025-11-26T14:39:37Z_
 
 ### Patch Changes
 
@@ -1104,11 +1775,15 @@
 
 ## 1.6.49
 
+_Released: 2025-11-26T12:17:21Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.6
 
 ## 1.6.48
+
+_Released: 2025-11-26T00:12:42Z_
 
 ### Patch Changes
 
@@ -1116,6 +1791,8 @@
     - @sap-ux/inquirer-common@0.9.5
 
 ## 1.6.47
+
+_Released: 2025-11-24T12:45:14Z_
 
 ### Patch Changes
 
@@ -1126,11 +1803,15 @@
 
 ## 1.6.46
 
+_Released: 2025-11-07T13:23:57Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.3
 
 ## 1.6.45
+
+_Released: 2025-11-06T15:12:51Z_
 
 ### Patch Changes
 
@@ -1138,6 +1819,8 @@
 - @sap-ux/inquirer-common@0.9.2
 
 ## 1.6.44
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -1156,12 +1839,16 @@
 
 ## 1.6.43
 
+_Released: 2025-11-03T10:50:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [4ddcff3]
     - @sap-ux/inquirer-common@0.9.0
 
 ## 1.6.42
+
+_Released: 2025-10-31T13:35:34Z_
 
 ### Patch Changes
 
@@ -1174,6 +1861,8 @@
 
 ## 1.6.41
 
+_Released: 2025-10-30T10:09:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [3253294]
@@ -1182,6 +1871,8 @@
     - @sap-ux/system-access@0.6.26
 
 ## 1.6.40
+
+_Released: 2025-10-29T17:02:38Z_
 
 ### Patch Changes
 
@@ -1194,6 +1885,8 @@
 
 ## 1.6.39
 
+_Released: 2025-10-29T11:04:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [36b0f19]
@@ -1205,6 +1898,8 @@
 
 ## 1.6.38
 
+_Released: 2025-10-28T13:36:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [cdeb18b]
@@ -1213,6 +1908,8 @@
     - @sap-ux/system-access@0.6.23
 
 ## 1.6.37
+
+_Released: 2025-10-27T13:41:31Z_
 
 ### Patch Changes
 
@@ -1223,6 +1920,8 @@
 
 ## 1.6.36
 
+_Released: 2025-10-22T18:56:41Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.23.1
@@ -1231,6 +1930,8 @@
 - @sap-ux/system-access@0.6.22
 
 ## 1.6.35
+
+_Released: 2025-10-22T09:32:12Z_
 
 ### Patch Changes
 
@@ -1241,12 +1942,16 @@
 
 ## 1.6.34
 
+_Released: 2025-10-21T09:37:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [06bc541]
     - @sap-ux/inquirer-common@0.8.4
 
 ## 1.6.33
+
+_Released: 2025-10-21T07:47:50Z_
 
 ### Patch Changes
 
@@ -1256,6 +1961,8 @@
 - @sap-ux/inquirer-common@0.8.3
 
 ## 1.6.32
+
+_Released: 2025-10-17T11:37:38Z_
 
 ### Patch Changes
 
@@ -1268,6 +1975,8 @@
 
 ## 1.6.31
 
+_Released: 2025-10-17T09:45:11Z_
+
 ### Patch Changes
 
 - Updated dependencies [d4dabbd]
@@ -1276,12 +1985,16 @@
 
 ## 1.6.30
 
+_Released: 2025-10-15T16:45:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [4053369]
     - @sap-ux/inquirer-common@0.8.0
 
 ## 1.6.29
+
+_Released: 2025-10-14T13:22:30Z_
 
 ### Patch Changes
 
@@ -1296,11 +2009,15 @@
 
 ## 1.6.28
 
+_Released: 2025-10-10T13:53:56Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.50
 
 ## 1.6.27
+
+_Released: 2025-10-10T12:22:06Z_
 
 ### Patch Changes
 
@@ -1313,6 +2030,8 @@
 
 ## 1.6.26
 
+_Released: 2025-10-07T13:15:25Z_
+
 ### Patch Changes
 
 - Updated dependencies [b268021]
@@ -1321,6 +2040,8 @@
     - @sap-ux/inquirer-common@0.7.48
 
 ## 1.6.25
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -1336,6 +2057,8 @@
 
 ## 1.6.24
 
+_Released: 2025-10-06T10:53:53Z_
+
 ### Patch Changes
 
 - Updated dependencies [d866995]
@@ -1347,11 +2070,15 @@
 
 ## 1.6.23
 
+_Released: 2025-09-26T12:52:39Z_
+
 ### Patch Changes
 
 - fe5fd09: Show asterisk for the Transport Request textbox.
 
 ## 1.6.22
+
+_Released: 2025-09-23T20:14:56Z_
 
 ### Patch Changes
 
@@ -1365,11 +2092,15 @@
 
 ## 1.6.21
 
+_Released: 2025-09-23T12:40:54Z_
+
 ### Patch Changes
 
 - bfdbaca: fix: Deploy Config generator should not validate the package for OnPremise systems for ADP
 
 ## 1.6.20
+
+_Released: 2025-09-19T16:36:41Z_
 
 ### Patch Changes
 
@@ -1385,6 +2116,8 @@
 
 ## 1.6.19
 
+_Released: 2025-09-19T00:44:48Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.22.7
@@ -1394,6 +2127,8 @@
 
 ## 1.6.18
 
+_Released: 2025-09-18T07:30:28Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.22.7
@@ -1402,6 +2137,8 @@
 - @sap-ux/inquirer-common@0.7.42
 
 ## 1.6.17
+
+_Released: 2025-09-16T06:28:11Z_
 
 ### Patch Changes
 
@@ -1414,6 +2151,8 @@
 
 ## 1.6.16
 
+_Released: 2025-09-11T11:04:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [3c094af]
@@ -1422,17 +2161,23 @@
 
 ## 1.6.15
 
+_Released: 2025-09-03T14:26:25Z_
+
 ### Patch Changes
 
 - f46dd02: fix: Deploy Config generator does not allow package with CloudReady and OnPremise project types
 
 ## 1.6.14
 
+_Released: 2025-09-03T13:57:15Z_
+
 ### Patch Changes
 
 - 2aecea7: Adjust the deployment host info message.
 
 ## 1.6.13
+
+_Released: 2025-09-02T13:22:05Z_
 
 ### Patch Changes
 
@@ -1442,6 +2187,8 @@
 - @sap-ux/system-access@0.6.16
 
 ## 1.6.12
+
+_Released: 2025-09-01T12:06:20Z_
 
 ### Patch Changes
 
@@ -1453,6 +2200,8 @@
     - @sap-ux/inquirer-common@0.7.38
 
 ## 1.6.11
+
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 
@@ -1468,11 +2217,15 @@
 
 ## 1.6.10
 
+_Released: 2025-08-25T12:19:51Z_
+
 ### Patch Changes
 
 - 384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
 
 ## 1.6.9
+
+_Released: 2025-08-21T14:27:46Z_
 
 ### Patch Changes
 
@@ -1484,6 +2237,8 @@
     - @sap-ux/inquirer-common@0.7.36
 
 ## 1.6.8
+
+_Released: 2025-08-14T14:36:13Z_
 
 ### Patch Changes
 
@@ -1497,6 +2252,8 @@
 
 ## 1.6.7
 
+_Released: 2025-08-13T10:00:10Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.22.5
@@ -1506,6 +2263,8 @@
 
 ## 1.6.6
 
+_Released: 2025-08-12T14:05:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [b6ce4a2]
@@ -1514,12 +2273,16 @@
 
 ## 1.6.5
 
+_Released: 2025-08-07T06:27:29Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.7
 - @sap-ux/inquirer-common@0.7.32
 
 ## 1.6.4
+
+_Released: 2025-08-01T13:45:39Z_
 
 ### Patch Changes
 
@@ -1529,6 +2292,8 @@
     - @sap-ux/system-access@0.6.12
 
 ## 1.6.3
+
+_Released: 2025-08-01T09:39:39Z_
 
 ### Patch Changes
 
@@ -1541,12 +2306,16 @@
 
 ## 1.6.2
 
+_Released: 2025-07-31T11:23:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [9fa7f0b]
     - @sap-ux/inquirer-common@0.7.30
 
 ## 1.6.1
+
+_Released: 2025-07-30T19:33:46Z_
 
 ### Patch Changes
 
@@ -1557,11 +2326,15 @@
 
 ## 1.6.0
 
+_Released: 2025-07-30T11:42:24Z_
+
 ### Minor Changes
 
 - 6e2c5aa: fix overwrite prompt conflict
 
 ## 1.5.2
+
+_Released: 2025-07-28T22:57:52Z_
 
 ### Patch Changes
 
@@ -1572,6 +2345,8 @@
 
 ## 1.5.1
 
+_Released: 2025-07-28T08:36:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [ffac61c]
@@ -1581,11 +2356,15 @@
 
 ## 1.5.0
 
+_Released: 2025-07-24T09:25:40Z_
+
 ### Minor Changes
 
 - 089b56f: updates extension types and extends prompt options in sub gens
 
 ## 1.4.38
+
+_Released: 2025-07-22T13:05:35Z_
 
 ### Patch Changes
 
@@ -1595,11 +2374,15 @@
 
 ## 1.4.37
 
+_Released: 2025-07-21T13:01:41Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.26
 
 ## 1.4.36
+
+_Released: 2025-07-17T13:47:26Z_
 
 ### Patch Changes
 
@@ -1607,6 +2390,8 @@
     - @sap-ux/nodejs-utils@0.2.2
 
 ## 1.4.35
+
+_Released: 2025-07-16T12:23:18Z_
 
 ### Patch Changes
 
@@ -1616,6 +2401,8 @@
 
 ## 1.4.34
 
+_Released: 2025-07-10T11:49:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [d75db00]
@@ -1623,6 +2410,8 @@
     - @sap-ux/inquirer-common@0.7.24
 
 ## 1.4.33
+
+_Released: 2025-07-08T12:06:04Z_
 
 ### Patch Changes
 
@@ -1633,6 +2422,8 @@
 
 ## 1.4.32
 
+_Released: 2025-07-07T08:44:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [58abe82]
@@ -1640,6 +2431,8 @@
     - @sap-ux/inquirer-common@0.7.22
 
 ## 1.4.31
+
+_Released: 2025-07-04T15:18:17Z_
 
 ### Patch Changes
 
@@ -1653,6 +2446,8 @@
 
 ## 1.4.30
 
+_Released: 2025-07-04T09:34:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [c0fa1d1]
@@ -1664,6 +2459,8 @@
 
 ## 1.4.29
 
+_Released: 2025-07-03T12:14:55Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.22.3
@@ -1673,6 +2470,8 @@
 
 ## 1.4.28
 
+_Released: 2025-06-30T08:46:50Z_
+
 ### Patch Changes
 
 - b9675bb: Improve Fiori Tools UI Texts
@@ -1681,6 +2480,8 @@
     - @sap-ux/inquirer-common@0.7.18
 
 ## 1.4.27
+
+_Released: 2025-06-27T16:39:38Z_
 
 ### Patch Changes
 
@@ -1693,6 +2494,8 @@
 
 ## 1.4.26
 
+_Released: 2025-06-27T07:08:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [77b3b22]
@@ -1704,6 +2507,8 @@
 
 ## 1.4.25
 
+_Released: 2025-06-24T14:02:12Z_
+
 ### Patch Changes
 
 - Updated dependencies [4fef16a]
@@ -1711,6 +2516,8 @@
     - @sap-ux/inquirer-common@0.7.15
 
 ## 1.4.24
+
+_Released: 2025-06-24T07:18:46Z_
 
 ### Patch Changes
 
@@ -1722,6 +2529,8 @@
 
 ## 1.4.23
 
+_Released: 2025-06-23T22:19:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [14214a3]
@@ -1730,11 +2539,15 @@
 
 ## 1.4.22
 
+_Released: 2025-06-20T08:26:14Z_
+
 ### Patch Changes
 
 - 5a88606: Remove warning messages, no longer applicable and GA link is too complex to follow
 
 ## 1.4.21
+
+_Released: 2025-06-19T10:31:56Z_
 
 ### Patch Changes
 
@@ -1744,6 +2557,8 @@
 
 ## 1.4.20
 
+_Released: 2025-06-19T04:44:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [aaf0c14]
@@ -1751,6 +2566,8 @@
     - @sap-ux/system-access@0.6.5
 
 ## 1.4.19
+
+_Released: 2025-06-17T07:58:40Z_
 
 ### Patch Changes
 
@@ -1760,6 +2577,8 @@
 
 ## 1.4.18
 
+_Released: 2025-06-16T09:52:52Z_
+
 ### Patch Changes
 
 - Updated dependencies [20cc54f]
@@ -1767,11 +2586,15 @@
 
 ## 1.4.17
 
+_Released: 2025-06-13T14:12:57Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.11
 
 ## 1.4.16
+
+_Released: 2025-06-13T10:58:52Z_
 
 ### Patch Changes
 
@@ -1781,6 +2604,8 @@
 
 ## 1.4.15
 
+_Released: 2025-06-11T12:23:45Z_
+
 ### Patch Changes
 
 - Updated dependencies [b45093b]
@@ -1788,6 +2613,8 @@
     - @sap-ux/system-access@0.6.4
 
 ## 1.4.14
+
+_Released: 2025-06-10T17:08:16Z_
 
 ### Patch Changes
 
@@ -1797,6 +2624,8 @@
 
 ## 1.4.13
 
+_Released: 2025-06-10T07:40:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [4e6c22e]
@@ -1804,6 +2633,8 @@
     - @sap-ux/inquirer-common@0.7.9
 
 ## 1.4.12
+
+_Released: 2025-06-09T09:48:34Z_
 
 ### Patch Changes
 
@@ -1814,11 +2645,15 @@
 
 ## 1.4.11
 
+_Released: 2025-06-05T16:14:06Z_
+
 ### Patch Changes
 
 - 18c7e5d: Adds support for cert bypassing and cert error GA link generation
 
 ## 1.4.10
+
+_Released: 2025-06-05T12:32:35Z_
 
 ### Patch Changes
 
@@ -1827,6 +2662,8 @@
     - @sap-ux/inquirer-common@0.7.7
 
 ## 1.4.9
+
+_Released: 2025-06-05T07:23:07Z_
 
 ### Patch Changes
 
@@ -1837,6 +2674,8 @@
 
 ## 1.4.8
 
+_Released: 2025-06-04T10:59:54Z_
+
 ### Patch Changes
 
 - Updated dependencies [61d4060]
@@ -1845,6 +2684,8 @@
 
 ## 1.4.7
 
+_Released: 2025-05-30T09:02:15Z_
+
 ### Patch Changes
 
 - Updated dependencies [91726b0]
@@ -1852,6 +2693,8 @@
     - @sap-ux/inquirer-common@0.7.5
 
 ## 1.4.6
+
+_Released: 2025-05-30T07:18:36Z_
 
 ### Patch Changes
 
@@ -1864,11 +2707,15 @@
 
 ## 1.4.5
 
+_Released: 2025-05-28T07:35:56Z_
+
 ### Patch Changes
 
 - 4c6b7a1: add package default to fiori gen settings
 
 ## 1.4.4
+
+_Released: 2025-05-27T17:59:17Z_
 
 ### Patch Changes
 
@@ -1878,12 +2725,16 @@
 
 ## 1.4.3
 
+_Released: 2025-05-27T15:05:11Z_
+
 ### Patch Changes
 
 - Updated dependencies [b3fe5b8]
     - @sap-ux/inquirer-common@0.7.2
 
 ## 1.4.2
+
+_Released: 2025-05-23T13:35:39Z_
 
 ### Patch Changes
 
@@ -1892,6 +2743,8 @@
     - @sap-ux/system-access@0.6.1
 
 ## 1.4.1
+
+_Released: 2025-05-15T13:36:04Z_
 
 ### Patch Changes
 
@@ -1904,6 +2757,8 @@
     - @sap-ux/system-access@0.6.0
 
 ## 1.4.0
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -1924,6 +2779,8 @@
 
 ## 1.3.2
 
+_Released: 2025-05-13T10:46:10Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.20.3
@@ -1931,6 +2788,8 @@
 - @sap-ux/system-access@0.5.39
 
 ## 1.3.1
+
+_Released: 2025-05-05T13:48:20Z_
 
 ### Patch Changes
 
@@ -1941,11 +2800,15 @@
 
 ## 1.3.0
 
+_Released: 2025-05-02T16:07:01Z_
+
 ### Minor Changes
 
 - cb8ff79: Adds new option to provide custom descriptions for new transport requests
 
 ## 1.2.51
+
+_Released: 2025-05-02T10:00:21Z_
 
 ### Patch Changes
 
@@ -1955,17 +2818,23 @@
 
 ## 1.2.50
 
+_Released: 2025-05-01T13:52:16Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.41
 
 ## 1.2.49
 
+_Released: 2025-04-30T09:58:47Z_
+
 ### Patch Changes
 
 - 39cf280: apply validation for package format and starting prefix with flag
 
 ## 1.2.48
+
+_Released: 2025-04-30T08:50:36Z_
 
 ### Patch Changes
 
@@ -1975,17 +2844,23 @@
 
 ## 1.2.47
 
+_Released: 2025-04-28T14:29:23Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.40
 
 ## 1.2.46
 
+_Released: 2025-04-28T08:38:04Z_
+
 ### Patch Changes
 
 - 55e7ebd: Fixes re-authentication should not be required
 
 ## 1.2.45
+
+_Released: 2025-04-24T15:01:01Z_
 
 ### Patch Changes
 
@@ -1998,6 +2873,8 @@
 
 ## 1.2.44
 
+_Released: 2025-04-23T15:22:38Z_
+
 ### Patch Changes
 
 - Updated dependencies [294bbe3]
@@ -2008,6 +2885,8 @@
     - @sap-ux/inquirer-common@0.6.38
 
 ## 1.2.43
+
+_Released: 2025-04-23T13:59:14Z_
 
 ### Patch Changes
 
@@ -2020,6 +2899,8 @@
 
 ## 1.2.42
 
+_Released: 2025-04-17T12:52:13Z_
+
 ### Patch Changes
 
 - Updated dependencies [e5f4915]
@@ -2027,6 +2908,8 @@
     - @sap-ux/inquirer-common@0.6.36
 
 ## 1.2.41
+
+_Released: 2025-04-15T14:18:17Z_
 
 ### Patch Changes
 
@@ -2036,12 +2919,16 @@
 
 ## 1.2.40
 
+_Released: 2025-04-15T10:10:52Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.10.2
 - @sap-ux/inquirer-common@0.6.35
 
 ## 1.2.39
+
+_Released: 2025-04-14T22:24:07Z_
 
 ### Patch Changes
 
@@ -2054,6 +2941,8 @@
 
 ## 1.2.38
 
+_Released: 2025-04-10T13:52:38Z_
+
 ### Patch Changes
 
 - Updated dependencies [23e055a]
@@ -2062,17 +2951,23 @@
 
 ## 1.2.37
 
+_Released: 2025-04-04T14:37:20Z_
+
 ### Patch Changes
 
 - 36518cc: check cloud systems are connected before making backend call
 
 ## 1.2.36
 
+_Released: 2025-04-01T14:03:23Z_
+
 ### Patch Changes
 
 - 5629071: make backend call for scp systems when initialising transport config
 
 ## 1.2.35
+
+_Released: 2025-03-26T12:15:41Z_
 
 ### Patch Changes
 
@@ -2083,11 +2978,15 @@
 
 ## 1.2.34
 
+_Released: 2025-03-20T14:57:37Z_
+
 ### Patch Changes
 
 - 1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
 
 ## 1.2.33
+
+_Released: 2025-03-19T08:54:25Z_
 
 ### Patch Changes
 
@@ -2097,6 +2996,8 @@
 - @sap-ux/inquirer-common@0.6.31
 
 ## 1.2.32
+
+_Released: 2025-03-18T09:41:03Z_
 
 ### Patch Changes
 
@@ -2108,6 +3009,8 @@
     - @sap-ux/inquirer-common@0.6.30
 
 ## 1.2.31
+
+_Released: 2025-03-10T20:40:35Z_
 
 ### Patch Changes
 
@@ -2121,6 +3024,8 @@
 
 ## 1.2.30
 
+_Released: 2025-03-06T16:16:20Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.19.0
@@ -2130,11 +3035,15 @@
 
 ## 1.2.29
 
+_Released: 2025-03-06T10:25:49Z_
+
 ### Patch Changes
 
 - 19a19dd: add new main deploy gen module
 
 ## 1.2.28
+
+_Released: 2025-03-05T11:16:53Z_
 
 ### Patch Changes
 
@@ -2144,6 +3053,8 @@
 - @sap-ux/inquirer-common@0.6.27
 
 ## 1.2.27
+
+_Released: 2025-03-05T09:14:02Z_
 
 ### Patch Changes
 
@@ -2156,11 +3067,15 @@
 
 ## 1.2.26
 
+_Released: 2025-03-04T14:54:47Z_
+
 ### Patch Changes
 
 - 2202356: cleanup package answer utility method
 
 ## 1.2.25
+
+_Released: 2025-03-04T08:55:15Z_
 
 ### Patch Changes
 
@@ -2171,6 +3086,8 @@
 
 ## 1.2.24
 
+_Released: 2025-03-03T11:06:12Z_
+
 ### Patch Changes
 
 - Updated dependencies [d47a1b1]
@@ -2179,6 +3096,8 @@
 
 ## 1.2.23
 
+_Released: 2025-03-03T08:50:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [aaa432a]
@@ -2186,6 +3105,8 @@
     - @sap-ux/system-access@0.5.32
 
 ## 1.2.22
+
+_Released: 2025-02-28T15:10:48Z_
 
 ### Patch Changes
 
@@ -2196,11 +3117,15 @@
 
 ## 1.2.21
 
+_Released: 2025-02-27T19:24:50Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.22
 
 ## 1.2.20
+
+_Released: 2025-02-27T14:15:03Z_
 
 ### Patch Changes
 
@@ -2211,6 +3136,8 @@
 
 ## 1.2.19
 
+_Released: 2025-02-27T08:22:17Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.18.6
@@ -2220,6 +3147,8 @@
 
 ## 1.2.18
 
+_Released: 2025-02-24T09:17:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [fffc3a7]
@@ -2227,6 +3156,8 @@
     - @sap-ux/inquirer-common@0.6.19
 
 ## 1.2.17
+
+_Released: 2025-02-17T13:42:22Z_
 
 ### Patch Changes
 
@@ -2237,6 +3168,8 @@
 
 ## 1.2.16
 
+_Released: 2025-02-17T11:44:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [4fd3029]
@@ -2244,6 +3177,8 @@
     - @sap-ux/system-access@0.5.31
 
 ## 1.2.15
+
+_Released: 2025-02-13T17:39:11Z_
 
 ### Patch Changes
 
@@ -2253,6 +3188,8 @@
 
 ## 1.2.14
 
+_Released: 2025-02-13T10:58:34Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.18.5
@@ -2261,6 +3198,8 @@
 - @sap-ux/inquirer-common@0.6.16
 
 ## 1.2.13
+
+_Released: 2025-02-07T19:58:32Z_
 
 ### Patch Changes
 
@@ -2273,11 +3212,15 @@
 
 ## 1.2.12
 
+_Released: 2025-02-05T20:45:59Z_
+
 ### Patch Changes
 
 - c08e1e3: Add option to hide createDuringDeploy list item in getTransportChoices
 
 ## 1.2.11
+
+_Released: 2025-02-05T17:08:20Z_
 
 ### Patch Changes
 
@@ -2287,6 +3230,8 @@
 - @sap-ux/inquirer-common@0.6.14
 
 ## 1.2.10
+
+_Released: 2025-02-05T14:44:29Z_
 
 ### Patch Changes
 
@@ -2299,6 +3244,8 @@
 
 ## 1.2.9
 
+_Released: 2025-02-04T15:39:07Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.18.4
@@ -2307,6 +3254,8 @@
 - @sap-ux/inquirer-common@0.6.12
 
 ## 1.2.8
+
+_Released: 2025-02-04T14:25:43Z_
 
 ### Patch Changes
 
@@ -2319,6 +3268,8 @@
 
 ## 1.2.7
 
+_Released: 2025-01-30T10:04:50Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.18.3
@@ -2328,12 +3279,16 @@
 
 ## 1.2.6
 
+_Released: 2025-01-29T17:41:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [5e3a5f8]
     - @sap-ux/inquirer-common@0.6.9
 
 ## 1.2.5
+
+_Released: 2025-01-29T13:31:31Z_
 
 ### Patch Changes
 
@@ -2346,6 +3301,8 @@
 
 ## 1.2.4
 
+_Released: 2025-01-28T10:44:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [e516306]
@@ -2353,6 +3310,8 @@
     - @sap-ux/system-access@0.5.27
 
 ## 1.2.3
+
+_Released: 2025-01-28T09:20:06Z_
 
 ### Patch Changes
 
@@ -2362,6 +3321,8 @@
 - @sap-ux/inquirer-common@0.6.7
 
 ## 1.2.2
+
+_Released: 2025-01-27T18:57:16Z_
 
 ### Patch Changes
 
@@ -2374,6 +3335,8 @@
 
 ## 1.2.1
 
+_Released: 2025-01-22T17:11:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [080bda2]
@@ -2382,11 +3345,15 @@
 
 ## 1.2.0
 
+_Released: 2025-01-17T14:33:24Z_
+
 ### Minor Changes
 
 - fc5916a: exposes getpackageprompts and gettransportrequest prompts
 
 ## 1.1.21
+
+_Released: 2025-01-16T02:22:29Z_
 
 ### Patch Changes
 
@@ -2397,6 +3364,8 @@
 
 ## 1.1.20
 
+_Released: 2025-01-14T16:54:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [1559aee]
@@ -2405,12 +3374,16 @@
 
 ## 1.1.19
 
+_Released: 2025-01-08T15:30:03Z_
+
 ### Patch Changes
 
 - Updated dependencies [40ba546]
     - @sap-ux/inquirer-common@0.6.3
 
 ## 1.1.18
+
+_Released: 2025-01-08T11:51:44Z_
 
 ### Patch Changes
 
@@ -2420,6 +3393,8 @@
 
 ## 1.1.17
 
+_Released: 2025-01-08T10:44:36Z_
+
 ### Patch Changes
 
 - Updated dependencies [2e3c15e]
@@ -2427,6 +3402,8 @@
     - @sap-ux/system-access@0.5.25
 
 ## 1.1.16
+
+_Released: 2024-12-20T15:43:15Z_
 
 ### Patch Changes
 
@@ -2436,6 +3413,8 @@
 
 ## 1.1.15
 
+_Released: 2024-12-19T17:24:19Z_
+
 ### Patch Changes
 
 - Updated dependencies [112d29a]
@@ -2443,12 +3422,16 @@
 
 ## 1.1.14
 
+_Released: 2024-12-18T10:32:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f8dda3b]
     - @sap-ux/inquirer-common@0.5.15
 
 ## 1.1.13
+
+_Released: 2024-12-17T15:31:53Z_
 
 ### Patch Changes
 
@@ -2458,6 +3441,8 @@
 - @sap-ux/inquirer-common@0.5.14
 
 ## 1.1.12
+
+_Released: 2024-12-17T13:32:02Z_
 
 ### Patch Changes
 
@@ -2470,6 +3455,8 @@
 
 ## 1.1.11
 
+_Released: 2024-12-10T16:04:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [3ebd767]
@@ -2481,12 +3468,16 @@
 
 ## 1.1.10
 
+_Released: 2024-12-10T14:32:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [0c64478]
     - @sap-ux/inquirer-common@0.5.11
 
 ## 1.1.9
+
+_Released: 2024-12-10T11:51:29Z_
 
 ### Patch Changes
 
@@ -2497,6 +3488,8 @@
 
 ## 1.1.8
 
+_Released: 2024-12-10T10:48:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [727fd86]
@@ -2504,6 +3497,8 @@
     - @sap-ux/system-access@0.5.22
 
 ## 1.1.7
+
+_Released: 2024-12-06T21:07:01Z_
 
 ### Patch Changes
 
@@ -2514,6 +3509,8 @@
 
 ## 1.1.6
 
+_Released: 2024-12-04T15:30:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [307706e]
@@ -2521,6 +3518,8 @@
     - @sap-ux/inquirer-common@0.5.8
 
 ## 1.1.5
+
+_Released: 2024-12-04T12:27:41Z_
 
 ### Patch Changes
 
@@ -2533,6 +3532,8 @@
 
 ## 1.1.4
 
+_Released: 2024-12-04T11:05:53Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.17.5
@@ -2540,6 +3541,8 @@
 - @sap-ux/system-access@0.5.20
 
 ## 1.1.3
+
+_Released: 2024-12-02T16:28:38Z_
 
 ### Patch Changes
 
@@ -2552,11 +3555,15 @@
 
 ## 1.1.2
 
+_Released: 2024-12-02T14:31:24Z_
+
 ### Patch Changes
 
 - 72114a8: fix package autocomplete input type
 
 ## 1.1.1
+
+_Released: 2024-11-29T13:58:32Z_
 
 ### Patch Changes
 
@@ -2564,17 +3571,23 @@
 
 ## 1.1.0
 
+_Released: 2024-11-26T15:01:44Z_
+
 ### Minor Changes
 
 - 849ef1e: updates options and conditions for prompts
 
 ## 1.0.26
 
+_Released: 2024-11-21T17:43:11Z_
+
 ### Patch Changes
 
 - aa0731f: ensure scp prompt is maintained
 
 ## 1.0.25
+
+_Released: 2024-11-21T11:48:14Z_
 
 ### Patch Changes
 
@@ -2583,6 +3596,8 @@
 
 ## 1.0.24
 
+_Released: 2024-11-19T13:21:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [575ff89]
@@ -2590,6 +3605,8 @@
     - @sap-ux/inquirer-common@0.5.3
 
 ## 1.0.23
+
+_Released: 2024-11-18T22:28:16Z_
 
 ### Patch Changes
 
@@ -2603,6 +3620,8 @@
 
 ## 1.0.22
 
+_Released: 2024-11-18T20:38:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [1beac7e]
@@ -2614,6 +3633,8 @@
 
 ## 1.0.21
 
+_Released: 2024-11-17T22:14:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [8237f83]
@@ -2622,6 +3643,8 @@
 
 ## 1.0.20
 
+_Released: 2024-11-14T17:04:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [2886db3]
@@ -2629,6 +3652,8 @@
     - @sap-ux/fiori-generator-shared@0.7.7
 
 ## 1.0.19
+
+_Released: 2024-11-11T17:55:13Z_
 
 ### Patch Changes
 
@@ -2641,6 +3666,8 @@
 
 ## 1.0.18
 
+_Released: 2024-11-08T15:21:08Z_
+
 ### Patch Changes
 
 - 7551316: Small text cleanups
@@ -2650,6 +3677,8 @@
 
 ## 1.0.17
 
+_Released: 2024-11-08T08:58:34Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.17.0
@@ -2658,6 +3687,8 @@
 
 ## 1.0.16
 
+_Released: 2024-11-07T09:36:42Z_
+
 ### Patch Changes
 
 - Updated dependencies [0120dda]
@@ -2665,6 +3696,8 @@
     - @sap-ux/system-access@0.5.15
 
 ## 1.0.15
+
+_Released: 2024-11-05T21:46:19Z_
 
 ### Patch Changes
 
@@ -2676,6 +3709,8 @@
 
 ## 1.0.14
 
+_Released: 2024-11-05T13:50:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [5a68903]
@@ -2684,6 +3719,8 @@
     - @sap-ux/system-access@0.5.14
 
 ## 1.0.13
+
+_Released: 2024-11-01T22:26:57Z_
 
 ### Patch Changes
 
@@ -2695,17 +3732,23 @@
 
 ## 1.0.12
 
+_Released: 2024-11-01T07:47:25Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.4.10
 
 ## 1.0.11
 
+_Released: 2024-10-31T15:12:23Z_
+
 ### Patch Changes
 
 - d69070a: Handle validator method not being invoked for confirm field
 
 ## 1.0.10
+
+_Released: 2024-10-31T07:40:48Z_
 
 ### Patch Changes
 
@@ -2715,11 +3758,15 @@
 
 ## 1.0.9
 
+_Released: 2024-10-30T13:01:12Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.4.9
 
 ## 1.0.8
+
+_Released: 2024-10-25T17:49:03Z_
 
 ### Patch Changes
 
@@ -2728,6 +3775,8 @@
 
 ## 1.0.7
 
+_Released: 2024-10-24T14:04:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [02e4f29]
@@ -2735,12 +3784,16 @@
 
 ## 1.0.6
 
+_Released: 2024-10-23T12:50:19Z_
+
 ### Patch Changes
 
 - Updated dependencies [d29b1a3]
     - @sap-ux/inquirer-common@0.4.7
 
 ## 1.0.5
+
+_Released: 2024-10-22T09:03:13Z_
 
 ### Patch Changes
 
@@ -2750,6 +3803,8 @@
 
 ## 1.0.4
 
+_Released: 2024-10-16T08:21:13Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.16.6
@@ -2757,6 +3812,8 @@
 - @sap-ux/system-access@0.5.12
 
 ## 1.0.3
+
+_Released: 2024-10-14T21:48:37Z_
 
 ### Patch Changes
 
@@ -2766,6 +3823,8 @@
 
 ## 1.0.2
 
+_Released: 2024-10-14T16:41:16Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.16.6
@@ -2774,17 +3833,23 @@
 
 ## 1.0.1
 
+_Released: 2024-10-14T13:46:17Z_
+
 ### Patch Changes
 
 - 43988ca: bug fix
 
 ## 1.0.0
 
+_Released: 2024-10-14T10:09:12Z_
+
 ### Major Changes
 
 - b3b1082: update prompt options for abap deploy config inquirer
 
 ## 0.0.25
+
+_Released: 2024-10-08T10:16:01Z_
 
 ### Patch Changes
 
@@ -2794,12 +3859,16 @@
 
 ## 0.0.24
 
+_Released: 2024-10-04T19:18:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [d40af34]
     - @sap-ux/fiori-generator-shared@0.6.0
 
 ## 0.0.23
+
+_Released: 2024-10-04T15:21:13Z_
 
 ### Patch Changes
 
@@ -2810,6 +3879,8 @@
 
 ## 0.0.22
 
+_Released: 2024-10-02T14:28:15Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.16.6
@@ -2818,12 +3889,16 @@
 
 ## 0.0.21
 
+_Released: 2024-09-25T15:31:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [04988f1]
     - @sap-ux/fiori-generator-shared@0.5.0
 
 ## 0.0.20
+
+_Released: 2024-09-23T10:02:33Z_
 
 ### Patch Changes
 
@@ -2835,11 +3910,15 @@
 
 ## 0.0.19
 
+_Released: 2024-09-18T18:06:57Z_
+
 ### Patch Changes
 
 - 7b60a4c: update destination validator
 
 ## 0.0.18
+
+_Released: 2024-09-18T14:01:49Z_
 
 ### Patch Changes
 
@@ -2849,11 +3928,15 @@
 
 ## 0.0.17
 
+_Released: 2024-09-12T10:12:56Z_
+
 ### Patch Changes
 
 - c538657: handle missing www-auth header
 
 ## 0.0.16
+
+_Released: 2024-09-12T09:42:45Z_
 
 ### Patch Changes
 
@@ -2863,6 +3946,8 @@
 
 ## 0.0.15
 
+_Released: 2024-09-11T10:59:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [aa72f3c]
@@ -2871,11 +3956,15 @@
 
 ## 0.0.14
 
+_Released: 2024-09-11T08:45:49Z_
+
 ### Patch Changes
 
 - 515900b: cleanup prompts and translation text
 
 ## 0.0.13
+
+_Released: 2024-09-06T10:50:34Z_
 
 ### Patch Changes
 
@@ -2883,11 +3972,15 @@
 
 ## 0.0.12
 
+_Released: 2024-09-04T10:06:31Z_
+
 ### Patch Changes
 
 - 40ce4ca: remove inquirer package
 
 ## 0.0.11
+
+_Released: 2024-09-03T19:06:21Z_
 
 ### Patch Changes
 
@@ -2897,17 +3990,23 @@
 
 ## 0.0.10
 
+_Released: 2024-09-03T14:50:43Z_
+
 ### Patch Changes
 
 - 7926d8c: Add missing dependencies
 
 ## 0.0.9
 
+_Released: 2024-09-02T09:05:39Z_
+
 ### Patch Changes
 
 - 99d7394: adds create command add deploy-config
 
 ## 0.0.8
+
+_Released: 2024-08-30T06:05:30Z_
 
 ### Patch Changes
 
@@ -2917,12 +4016,16 @@
 
 ## 0.0.7
 
+_Released: 2024-08-28T13:09:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [342e4be]
     - @sap-ux/guided-answers-helper@0.0.2
 
 ## 0.0.6
+
+_Released: 2024-08-28T11:16:50Z_
 
 ### Patch Changes
 
@@ -2934,11 +4037,15 @@
 
 ## 0.0.5
 
+_Released: 2024-08-27T16:26:50Z_
+
 ### Patch Changes
 
 - fc58821: fix for local package verification
 
 ## 0.0.4
+
+_Released: 2024-08-23T10:57:41Z_
 
 ### Patch Changes
 
@@ -2950,11 +4057,15 @@
 
 ## 0.0.3
 
+_Released: 2024-08-23T09:47:44Z_
+
 ### Patch Changes
 
 - b158244: remove feature toggle usage
 
 ## 0.0.2
+
+_Released: 2024-08-22T19:38:11Z_
 
 ### Patch Changes
 
@@ -2964,6 +4075,8 @@
     - @sap-ux/guided-answers-helper@0.0.1
 
 ## 0.0.1
+
+_Released: 2024-09-03T14:50:43Z_
 
 ### Patch Changes
 

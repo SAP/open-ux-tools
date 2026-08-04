@@ -1,15 +1,41 @@
-import { getService, SystemType } from '@sap-ux/store';
-import { storeCredentials } from '../../../src';
-import type { SystemLookup } from '../../../src';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { SystemLookup } from '../../../src/source/systems.js';
 
-jest.mock('@sap-ux/store');
+// MOCKS - use jest.unstable_mockModule for ESM compatibility
+const mockGetService = jest.fn<typeof realStore.getService>();
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService,
+    BackendSystem: class BackendSystem {
+        constructor(public data: any) {
+            Object.assign(this, data);
+        }
+    },
+    BackendSystemKey: class BackendSystemKey {
+        constructor(public data: any) {
+            Object.assign(this, data);
+        }
+    },
+    SystemType: { AbapOnPrem: 'AbapOnPrem', AbapOnBtp: 'AbapOnBtp' },
+    AuthenticationType: {},
+    ConnectionType: {},
+    Entity: class {},
+    getFilesystemWatcherFor: jest.fn(),
+    getBackendSystemType: jest.fn(),
+    getFioriToolsDirectory: jest.fn(),
+    getSapToolsDirectory: jest.fn(),
+    FioriToolsSettings: {},
+    SapTools: {}
+}));
+
+const { storeCredentials } = await import('../../../src/base/credentials.js');
 
 describe('Credential Storage Logic', () => {
     let mockSystemService: any;
     let mockLogger: ToolsLogger;
     let mockSystemLookup: SystemLookup;
-    const getServiceMock = getService as jest.Mock;
 
     beforeEach(() => {
         mockSystemService = {
@@ -28,7 +54,7 @@ describe('Credential Storage Logic', () => {
             getSystemByName: jest.fn()
         } as any;
 
-        getServiceMock.mockResolvedValue(mockSystemService);
+        mockGetService.mockResolvedValue(mockSystemService);
     });
 
     afterEach(() => {
@@ -44,7 +70,7 @@ describe('Credential Storage Logic', () => {
                 application: {} as any
             };
 
-            (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
+            (mockSystemLookup.getSystemByName as ReturnType<typeof jest.fn>).mockResolvedValue({
                 Name: 'SystemA',
                 Client: '010',
                 Url: 'https://example.com',
@@ -55,7 +81,7 @@ describe('Credential Storage Logic', () => {
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
-            expect(getServiceMock).toHaveBeenCalledWith({ entityName: 'system' });
+            expect(mockGetService).toHaveBeenCalledWith({ entityName: 'system' });
             expect(mockSystemService.read).toHaveBeenCalled();
             expect(mockSystemService.write).toHaveBeenCalledWith(expect.any(Object), { force: false });
             expect(mockLogger.info).toHaveBeenCalledWith('System credentials have been stored securely.');
@@ -69,7 +95,7 @@ describe('Credential Storage Logic', () => {
                 application: {} as any
             };
 
-            (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
+            (mockSystemLookup.getSystemByName as ReturnType<typeof jest.fn>).mockResolvedValue({
                 Name: 'SystemA',
                 Client: '010',
                 Url: 'https://example.com',
@@ -94,7 +120,7 @@ describe('Credential Storage Logic', () => {
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
-            expect(getServiceMock).not.toHaveBeenCalled();
+            expect(mockGetService).not.toHaveBeenCalled();
             expect(mockSystemService.write).not.toHaveBeenCalled();
         });
 
@@ -106,7 +132,7 @@ describe('Credential Storage Logic', () => {
                 application: {} as any
             };
 
-            (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue(undefined);
+            (mockSystemLookup.getSystemByName as ReturnType<typeof jest.fn>).mockResolvedValue(undefined);
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
@@ -122,7 +148,7 @@ describe('Credential Storage Logic', () => {
                 application: {} as any
             };
 
-            (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
+            (mockSystemLookup.getSystemByName as ReturnType<typeof jest.fn>).mockResolvedValue({
                 Name: 'SystemA',
                 Client: '010',
                 Url: 'https://example.com',

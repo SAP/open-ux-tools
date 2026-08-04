@@ -3,8 +3,8 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { BackendMiddlewareConfig } from './base/types';
-import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
+import type { BackendMiddlewareConfig } from './base/types.js';
+import { generateProxyMiddlewareOptions, initI18n } from './base/proxy.js';
 import type { MiddlewareParameters } from '@ui5/server'; // eslint-disable-line sonarjs/no-implicit-dependencies
 
 /**
@@ -33,7 +33,7 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
  * @param params.options configuration options
  * @returns {*}  {(Promise<RequestHandler>)}
  */
-module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
+export default async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
     const backend = options.configuration?.backend;
     if (!backend) {
         throw new Error('no backend configuration found.');

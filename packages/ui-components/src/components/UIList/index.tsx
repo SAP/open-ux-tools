@@ -1,1 +1,1 @@
-export * from './UIList';
+export * from './UIList.js';

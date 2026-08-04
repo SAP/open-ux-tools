@@ -12,8 +12,8 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { ServiceArtifacts, V2Annotation } from '@sap-ux/fiori-annotation-api';
 
-import type { DocumentType } from '../types';
-import { COMMON_LABEL, COMMON_TEXT } from '../../constants';
+import type { DocumentType } from '../types.js';
+import { COMMON_LABEL, COMMON_TEXT } from '../../constants.js';
 
 export interface ServiceIndex {
     entityContainer?: MetadataElement;

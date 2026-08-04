@@ -1,7 +1,7 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import smartLinksRes from './translations/smartlinks-config.json';
-import navConfigRes from './translations/navigation-config.json';
+import smartLinksRes from './translations/smartlinks-config.json' with { type: 'json' };
+import navConfigRes from './translations/navigation-config.json' with { type: 'json' };
 
 export const SMART_LINKS_NS = 'app-config-writer:smartLinksConfig';
 export const NAV_CONFIG_NS = 'app-config-writer:navConfig';
@@ -21,8 +21,7 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: SMART_LINKS_NS, // Default since first to add translations
-        ns: [SMART_LINKS_NS, NAV_CONFIG_NS],
-        showSupportNotice: false
+        ns: [SMART_LINKS_NS, NAV_CONFIG_NS]
     });
 }
 
@@ -37,6 +36,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Ignore any errors since the write will still work
-});
+void initI18n().catch(() => undefined);

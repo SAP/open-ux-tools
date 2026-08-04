@@ -1,6 +1,6 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
 
-import { convertPointerInAnnotationToInternal } from '../../../src/avt/pointer';
+import { convertPointerInAnnotationToInternal } from '../../../src/avt/pointer.js';
 
 // real world example: parsed value of this annotation (omitting position information)
 /*

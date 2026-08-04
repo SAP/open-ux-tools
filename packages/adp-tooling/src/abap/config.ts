@@ -4,7 +4,7 @@ import type { AbapTarget } from '@sap-ux/ui5-config';
 import type { AuthenticationType } from '@sap-ux/store';
 import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 
-import { SystemLookup } from '../source';
+import { SystemLookup } from '../source/index.js';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
 

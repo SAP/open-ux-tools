@@ -1,6 +1,6 @@
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
-import { mergeTestConfigDefaults, generateImportList } from '../../../src/base/test';
+import { mergeTestConfigDefaults, generateImportList } from '../../../src/base/test.js';
 
 describe('test', () => {
     describe('merge test configs', () => {
@@ -20,7 +20,7 @@ describe('test', () => {
                 framework: 'OPA5',
                 path: '/test/opaTests.qunit.html',
                 init: '/test/opaTests.qunit.js',
-                pattern: '/test/**/*Journey.{js,ts}'
+                pattern: '/test/**/*Journey{,.gen}.{js,ts}'
             });
         });
 

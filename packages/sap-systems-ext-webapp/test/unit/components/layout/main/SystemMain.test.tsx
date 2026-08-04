@@ -1,14 +1,18 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import { fireEvent, screen } from '@testing-library/dom';
+import { jest } from '@jest/globals';
 import { LoadingState } from '../../../../../src/types';
 import { actions } from '../../../../../src/state';
-import { SystemMain } from '../../../../../src/components/layout/main/SystemMain';
-import { useSystemMain } from '../../../../../src/hooks/useSystemMain';
 
-jest.mock('../../../../../src/hooks/useSystemMain');
+const mockUseSystemMain = jest.fn<any>();
 
-const mockUseSystemMain = useSystemMain as jest.MockedFunction<typeof useSystemMain>;
+jest.unstable_mockModule('../../../../../src/hooks/useSystemMain', () => ({
+    useSystemMain: mockUseSystemMain
+}));
+
+const { SystemMain } = await import('../../../../../src/components/layout/main/SystemMain');
+const { useSystemMain } = await import('../../../../../src/hooks/useSystemMain');
 
 describe('<SystemMain />', () => {
     const connectionStatus = {

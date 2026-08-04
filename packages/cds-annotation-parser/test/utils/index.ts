@@ -6,4 +6,4 @@ export {
     getBase,
     transformCstForAssertion,
     doesExits
-} from './setup';
+} from './setup.js';

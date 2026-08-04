@@ -1,5 +1,5 @@
-import { AdtService } from './adt-service';
-import type { AdtCategory, ODataServiceTechnicalDetails } from '../../types';
+import { AdtService } from './adt-service.js';
+import type { AdtCategory, ODataServiceTechnicalDetails } from '../../types/index.js';
 
 /**
  *

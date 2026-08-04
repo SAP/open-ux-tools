@@ -8,5 +8,5 @@ export {
     updatePackageJSON,
     updateManifestJSON,
     writeFile
-} from './file-access';
-export { findBy, findFiles, findFilesByExtension, findFileUp, getFilePaths } from './file-search';
+} from './file-access.js';
+export { findBy, findFiles, findFilesByExtension, findFileUp, getFilePaths } from './file-search.js';

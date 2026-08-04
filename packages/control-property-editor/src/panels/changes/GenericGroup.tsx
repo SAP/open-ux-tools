@@ -10,7 +10,7 @@ import type {
 import { SAVED_CHANGE_TYPE, selectControl } from '@sap-ux-private/control-property-editor-common';
 
 import styles from './GenericGroup.module.scss';
-import { GenericChange } from './GenericChange';
+import { GenericChange } from './GenericChange.js';
 import { useDispatch } from 'react-redux';
 
 export interface GenericGroupProps {

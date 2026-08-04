@@ -4,7 +4,7 @@ import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import type { FlexUICapability, SourceApplication } from '@sap-ux/adp-tooling';
 
-import { t } from '../../../utils/i18n';
+import { t } from '../../../utils/i18n.js';
 
 interface SupportFlags {
     hasSyncViews: boolean;

@@ -1,4 +1,4 @@
-import { parseCommonTextAnnotationKey } from '../../../src/rules/utils/common-text-helpers';
+import { parseCommonTextAnnotationKey } from '../../../src/rules/utils/common-text-helpers.js';
 
 describe('parseCommonTextAnnotationKey', () => {
     const relevantEntityTypes = new Map<string, string[]>([

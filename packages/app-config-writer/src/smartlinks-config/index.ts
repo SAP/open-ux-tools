@@ -1,2 +1,2 @@
-export * from './generateSmartLinks';
-export { getTargetDefinition, getLocalStoredCredentials } from './utils';
+export * from './generateSmartLinks.js';
+export { getTargetDefinition, getLocalStoredCredentials } from './utils.js';

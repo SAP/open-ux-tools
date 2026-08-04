@@ -22,7 +22,7 @@ sap.ui.require(
     "sap/ui/thirdparty/qunit-2",
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
-    "testNameSpace/fpmv4/test/integration/FirstJourney",
+    "testNameSpace/fpmv4/test/integration/TravelMainJourney.gen",
 ], function (QUnit) {
     "use strict";
     QUnit.start();

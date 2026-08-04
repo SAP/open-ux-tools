@@ -1,11 +1,11 @@
 import { join } from 'node:path';
-import { defaultNavActionDisplay } from '../types';
+import { defaultNavActionDisplay } from '../types/index.js';
 import { getSemanticObject } from '@sap-ux/fiori-generator-shared';
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { FlpConfigOptions, FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
-import type { Service } from '../types';
+import type { Service } from '../types/index.js';
 import type { DeployConfigSubGenPromptOptions } from '@sap-ux/deploy-config-sub-generator';
 
 /**

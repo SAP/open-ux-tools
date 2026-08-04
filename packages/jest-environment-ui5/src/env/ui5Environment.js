@@ -21,6 +21,7 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
         fetchStart: Date.now(),
         navigationStart: Date.now()
     };
+    globalWindow.performance.now = () => Date.now();
     globalWindow.requestAnimationFrame = (callback) => {
         callback(performance.now());
     };

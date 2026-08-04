@@ -12,7 +12,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SupportedProject } from './source';
+import type { SupportedProject } from './source/index.js';
 
 export type DataSources = Record<string, ManifestNamespace.DataSource>;
 
@@ -888,10 +888,18 @@ export interface XsApp {
 export interface Uaa {
     clientid: string;
     clientsecret: string;
+    /** Auth server URL (used to request OAuth tokens). */
     url: string;
+    /** Present on destination-service uaa bindings. */
+    uri?: string;
 }
 
-export type CfDestinationServiceCredentials = { uri: string; uaa: Uaa } | ({ uri: string } & Uaa);
+/**
+ * CF destination-service service-key credentials.
+ * - nested: `{ uaa: { clientid, clientsecret, url, uri, ... } }`
+ * - flat:   `{ clientid, clientsecret, url, uri, ... }`
+ */
+export type CfDestinationServiceCredentials = { uaa: Uaa & { uri: string } } | (Uaa & { uri: string });
 
 export interface CfAppParams {
     appName: string;

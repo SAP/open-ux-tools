@@ -2,10 +2,10 @@ import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { getService } from '@sap-ux/store';
-import { CREATE_TR_DURING_DEPLOY } from './constants';
-import { t } from './i18n';
-import LoggerHelper from './logger-helper';
-import { getTransportConfigInstance } from './service-provider-utils';
+import { CREATE_TR_DURING_DEPLOY } from './constants.js';
+import { t } from './i18n.js';
+import LoggerHelper from './logger-helper.js';
+import { getTransportConfigInstance } from './service-provider-utils/index.js';
 import type {
     AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
@@ -13,9 +13,9 @@ import type {
     Credentials,
     InitTransportConfigResult,
     SystemConfig
-} from './types';
-import { PackageInputChoices, TargetSystemType, TransportChoices } from './types';
-import { listPackages } from './validator-utils';
+} from './types.js';
+import { PackageInputChoices, TargetSystemType, TransportChoices } from './types.js';
+import { listPackages } from './validator-utils.js';
 
 let cachedDestinations: Destinations = {};
 let cachedBackendSystems: BackendSystem[] = [];
@@ -70,24 +70,6 @@ export function findDestination(destination: string): Destination | undefined {
  */
 export function findBackendSystemByUrl(backendUrl: string): BackendSystem | undefined {
     return cachedBackendSystems?.find((backend: BackendSystem) => backend.url === backendUrl);
-}
-
-/**
- * Check if the current system is the same as the one in the answers.
- *
- * @param abapSystem - system configuration
- * @param url - url
- * @param client - client
- * @param destination - destination
- * @returns true if the system is the same
- */
-export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: string, destination?: string): boolean {
-    return Boolean(
-        (abapSystem?.url &&
-            abapSystem.url.trim()?.replace(/\/$/, '') === url?.trim()?.replace(/\/$/, '') &&
-            abapSystem.client === client) ||
-        (!!abapSystem?.destination && destination === abapSystem?.destination)
-    );
 }
 
 /**

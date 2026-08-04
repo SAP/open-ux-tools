@@ -1,6 +1,10 @@
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
+
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import type {
     ALPSettings,
     ALPSettingsV2,
@@ -10,17 +14,17 @@ import type {
     LROPSettings,
     Template,
     WorklistSettings
-} from '../types';
-import { TableSelectionMode, TableType, TemplateType } from '../types';
+} from '../types.js';
+import { TableSelectionMode, TableType, TemplateType } from '../types.js';
 import {
     getBaseComponent,
     getTemplateUi5Libs,
     TemplateTypeAttributes,
     changesPreviewToVersion,
     getTemplateManifestLibs
-} from './templateAttributes';
-import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
-import { type TemplateOptions } from './templateAttributes';
+} from './templateAttributes.js';
+import { getAnnotationV4Libs } from './annotationCustomUi5Libs.js';
+import { type TemplateOptions } from './templateAttributes.js';
 import semVer from 'semver';
 import { getFlpId } from '@sap-ux/fiori-generator-shared';
 
@@ -76,8 +80,7 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
         }
     } else if (template.type === TemplateType.ListReportObjectPage || template.type === TemplateType.Worklist) {
         const tableSettings: WorklistSettings | LROPSettings = template.settings as unknown as
-            | WorklistSettings
-            | LROPSettings;
+            WorklistSettings | LROPSettings;
         Object.assign(templateSettings, {
             tableType: tableSettings.tableType ?? TableType.RESPONSIVE // Overrides the UI5 default: ''
         });

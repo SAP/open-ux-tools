@@ -1,6 +1,6 @@
-import { generateNewFioriLaunchConfig, getFioriOptions } from '../../src';
-import type { LaunchConfig } from '../../src';
-import { TestPaths } from '../test-data/utils';
+import { generateNewFioriLaunchConfig, getFioriOptions } from '../../src/index.js';
+import type { LaunchConfig } from '../../src/index.js';
+import { TestPaths } from '../test-data/utils.js';
 
 describe('utils', () => {
     describe('generateNewFioriLaunchConfig', () => {

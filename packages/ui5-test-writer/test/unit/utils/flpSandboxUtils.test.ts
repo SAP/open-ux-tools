@@ -1,4 +1,4 @@
-import { readHashFromFlpSandbox } from '../../../src/utils/flpSandboxUtils';
+import { readHashFromFlpSandbox } from '../../../src/utils/flpSandboxUtils.js';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 

@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-global-event';
+import rule from '../../src/rules/sap-no-global-event.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

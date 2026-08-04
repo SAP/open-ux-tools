@@ -1,20 +1,20 @@
-import { PerformanceMeasurementAPI } from '@sap-ux/telemetry';
+import { jest } from '@jest/globals';
 
-import { TelemetryCollector } from '../../../src/telemetry/collector';
+const mockStartMark = jest.fn() as jest.Mock;
+const mockEndMark = jest.fn() as jest.Mock;
+const mockMeasure = jest.fn() as jest.Mock;
+const mockGetMeasurementDuration = jest.fn() as jest.Mock;
 
-jest.mock('@sap-ux/telemetry', () => ({
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     PerformanceMeasurementAPI: {
-        startMark: jest.fn(),
-        endMark: jest.fn(),
-        measure: jest.fn(),
-        getMeasurementDuration: jest.fn()
+        startMark: mockStartMark,
+        endMark: mockEndMark,
+        measure: mockMeasure,
+        getMeasurementDuration: mockGetMeasurementDuration
     }
 }));
 
-const mockEndMark = PerformanceMeasurementAPI.endMark as jest.Mock;
-const mockMeasure = PerformanceMeasurementAPI.measure as jest.Mock;
-const mockStartMark = PerformanceMeasurementAPI.startMark as jest.Mock;
-const mockGetMeasurementDuration = PerformanceMeasurementAPI.getMeasurementDuration as jest.Mock;
+const { TelemetryCollector } = await import('../../../src/telemetry/collector.js');
 
 describe('TelemetryCollector', () => {
     let collector: TelemetryCollector;

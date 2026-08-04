@@ -1,11 +1,11 @@
 import { extendWithOptions, withCondition } from '@sap-ux/inquirer-common';
 import { join } from 'node:path';
-import { t } from '../utils';
+import { t } from '../utils/index.js';
 import { DeploymentGenerator, showOverwriteQuestion, TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { getAbapQuestions, indexHtmlExists } from '@sap-ux/abap-deploy-config-sub-generator';
 import { getCFQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
 import { FileName } from '@sap-ux/project-access';
-import { getDeployTargetQuestion } from './deploy-target';
+import { getDeployTargetQuestion } from './deploy-target.js';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
@@ -20,7 +20,7 @@ import type {
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { Answers, Question } from 'inquirer';
-import type { DeployConfigOptions, DeployConfigSubGenPromptOptions, Target } from '../types';
+import type { DeployConfigOptions, DeployConfigSubGenPromptOptions, Target } from '../types/index.js';
 
 /**
  * Retrieves the combined sub generator prompts.

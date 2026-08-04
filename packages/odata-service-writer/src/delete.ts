@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
-import type { EdmxAnnotationsInfo, OdataService, ProjectPaths } from './types';
+import type { EdmxAnnotationsInfo, OdataService, ProjectPaths } from './types.js';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { deleteServiceFromManifest } from './data/manifest';
-import { removeRemoteServiceAnnotationXmlFiles } from './data/annotations';
+import { deleteServiceFromManifest } from './data/manifest.js';
+import { removeRemoteServiceAnnotationXmlFiles } from './data/annotations.js';
 
 /**
  * Returns all paths of the EDMX service annotations.

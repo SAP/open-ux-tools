@@ -1,9 +1,9 @@
-import { toWinstonLogLevel, toWinstonTransport } from '../../../src/winston-logger/adapter';
+import { toWinstonLogLevel, toWinstonTransport } from '../../../src/winston-logger/adapter.js';
 import winston from 'winston';
-import { LogLevel, Transport } from '../../../src/types';
-import { ConsoleTransport, FileTransport, NullTransport, VSCodeTransport } from '../../../src/transports';
-import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport';
-import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport';
+import { LogLevel, Transport } from '../../../src/types.js';
+import { ConsoleTransport, FileTransport, NullTransport, VSCodeTransport } from '../../../src/transports/index.js';
+import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport.js';
+import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport.js';
 
 jest.mock(
     'vscode',

@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-global-define';
+import rule from '../../src/rules/sap-no-global-define.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

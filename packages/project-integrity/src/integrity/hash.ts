@@ -1,6 +1,6 @@
 import { createReadStream, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import type { Content, ContentIntegrity, FileIntegrity } from '../types';
+import type { Content, ContentIntegrity, FileIntegrity } from '../types.js';
 
 /**
  * Create a md5 hash for a given file.

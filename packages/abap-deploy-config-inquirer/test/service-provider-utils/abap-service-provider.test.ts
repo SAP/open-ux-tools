@@ -1,24 +1,26 @@
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { PromptState } from '../../src/prompts/prompt-state';
+import { jest } from '@jest/globals';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
-import LoggerHelper from '../../src/logger-helper';
 import { AuthenticationType } from '@sap-ux/store';
-import { t } from '../../src/i18n';
-import exp from 'node:constants';
+import { t } from '../../src/i18n.js';
 
-jest.mock('@sap-ux/system-access', () => ({
-    ...jest.requireActual('@sap-ux/system-access'),
-    createAbapServiceProvider: jest.fn()
+const mockCreateAbapServiceProvider = jest.fn<typeof realSystemAccess.createAbapServiceProvider>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+
+const realSystemAccess = await import('@sap-ux/system-access');
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    ...realSystemAccess,
+    createAbapServiceProvider: mockCreateAbapServiceProvider
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-const mockCreateAbapServiceProvider = createAbapServiceProvider as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const LoggerHelper = (await import('../../src/logger-helper.js')).default;
 
 describe('getOrCreateServiceProvider', () => {
     beforeAll(() => {
@@ -30,6 +32,7 @@ describe('getOrCreateServiceProvider', () => {
 
     afterEach(() => {
         AbapServiceProviderManager.deleteExistingServiceProvider();
+        mockCreateAbapServiceProvider.mockReset();
     });
 
     beforeEach(() => {
@@ -68,8 +71,8 @@ describe('getOrCreateServiceProvider', () => {
             LoggerHelper.logger
         );
 
-        // use existing provider when called again
-        const serviceProvider2 = await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials);
+        // use existing provider when called again without credentials.
+        const serviceProvider2 = await AbapServiceProviderManager.getOrCreateServiceProvider(undefined);
         expect(serviceProvider2).toBe(serviceProvider);
     });
 
@@ -145,5 +148,49 @@ describe('getOrCreateServiceProvider', () => {
             true // ignoreCertErrors should be true
         );
         expect(buildRequestOptionsSpy).toHaveBeenCalledWith(undefined, true);
+    });
+
+    it('should create a new service provider when called again with different credentials on the same system', async () => {
+        const abapServiceProviderA = new AbapServiceProvider();
+        const abapServiceProviderB = new AbapServiceProvider();
+        mockIsAppStudio.mockReturnValue(false);
+        mockCreateAbapServiceProvider.mockResolvedValueOnce(abapServiceProviderA);
+        mockCreateAbapServiceProvider.mockResolvedValueOnce(abapServiceProviderB);
+
+        PromptState.abapDeployConfig = {
+            url: 'http://target.url',
+            client: '100',
+            scp: false
+        };
+
+        const credentials1 = { username: 'userA', password: 'passwordA' };
+        const credentials2 = { username: 'userB', password: 'passwordB' };
+
+        const serviceProvider1 = await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials1);
+        expect(serviceProvider1).toBe(abapServiceProviderA);
+
+        const serviceProvider2 = await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials2);
+        expect(serviceProvider2).toBe(abapServiceProviderB);
+        expect(serviceProvider2).not.toBe(serviceProvider1);
+        expect(mockCreateAbapServiceProvider).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return cached service provider when called without credentials after initial creation', async () => {
+        const abapServiceProvider = new AbapServiceProvider();
+        mockIsAppStudio.mockReturnValue(false);
+        mockCreateAbapServiceProvider.mockResolvedValueOnce(abapServiceProvider);
+
+        PromptState.abapDeployConfig = {
+            url: 'http://target.url',
+            client: '100',
+            scp: false
+        };
+
+        const serviceProviderA = await AbapServiceProviderManager.getOrCreateServiceProvider();
+        expect(serviceProviderA).toBe(abapServiceProvider);
+
+        const serviceProviderB = await AbapServiceProviderManager.getOrCreateServiceProvider();
+        expect(serviceProviderB).toBe(serviceProviderA);
+        expect(mockCreateAbapServiceProvider).toHaveBeenCalledTimes(1);
     });
 });

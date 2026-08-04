@@ -1,6 +1,6 @@
-import { initI18nProjectValidators, t } from '../src/i18n';
-import { validateText } from '../src/flp/validators';
-import type { AllowedCharacters } from '../src/general/validators';
+import { initI18nProjectValidators, t } from '../src/i18n.js';
+import { validateText } from '../src/flp/validators.js';
+import type { AllowedCharacters } from '../src/general/validators.js';
 
 const allowedCharacters: AllowedCharacters[] = ['_'];
 const inputName = 'Test Input';

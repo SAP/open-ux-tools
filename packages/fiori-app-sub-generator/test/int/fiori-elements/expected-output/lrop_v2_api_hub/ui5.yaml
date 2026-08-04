@@ -35,3 +35,8 @@ server:
           intent:
             object: testNameSpacelropv2apihub
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

@@ -4,8 +4,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent } from '@sap-ux/axios-extension';
 
-import { getWebappFiles } from '../helper';
-import type { DescriptorVariant, IManifestService, DataSources } from '../../types';
+import { getWebappFiles } from '../helper.js';
+import type { DescriptorVariant, IManifestService, DataSources } from '../../types.js';
 
 /**
  * Retrieves the inbound navigation configurations from the project's manifest.

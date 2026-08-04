@@ -1,4 +1,4 @@
-import type { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import type { PageTypeV4 } from '@sap/ux-specification';
 
 export interface NewBasePage {
     parent?: string;

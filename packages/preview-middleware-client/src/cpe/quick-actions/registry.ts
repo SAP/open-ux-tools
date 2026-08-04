@@ -6,11 +6,11 @@ import type XMLView from 'sap/ui/core/mvc/XMLView';
 import Log from 'sap/base/Log';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 
-import type { QuickActionActivationContext, QuickActionDefinitionGroup } from './quick-action-definition';
+import type { QuickActionActivationContext, QuickActionDefinitionGroup } from './quick-action-definition.js';
 
-import type { ControlTreeIndex } from '../types';
-import { getControlById } from '../../utils/core';
-import { getRootControlFromComponentContainer } from '../utils';
+import type { ControlTreeIndex } from '../types.js';
+import { getControlById } from '../../utils/core.js';
+import { getRootControlFromComponentContainer } from '../utils.js';
 
 const NAV_CONTAINER_CONTROL_TYPE = 'sap.m.NavContainer';
 const FLEXIBLE_COLUMN_LAYOUT_CONTROL_TYPE = 'sap.f.FlexibleColumnLayout';

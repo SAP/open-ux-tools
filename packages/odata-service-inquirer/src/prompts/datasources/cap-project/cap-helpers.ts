@@ -7,12 +7,12 @@ import {
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
 import { basename, dirname, isAbsolute, relative } from 'node:path';
-import { t } from '../../../i18n';
-import type { CapServiceChoice } from '../../../types';
+import { t } from '../../../i18n.js';
+import type { CapServiceChoice } from '../../../types.js';
 import type { CapService } from '@sap-ux/cap-config-writer';
-import LoggerHelper from '../../logger-helper';
-import { errorHandler } from '../../prompt-helpers';
-import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
+import LoggerHelper from '../../logger-helper.js';
+import { errorHandler } from '../../prompt-helpers.js';
+import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types.js';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { realpath } from 'node:fs/promises';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';

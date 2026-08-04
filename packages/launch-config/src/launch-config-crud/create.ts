@@ -2,16 +2,22 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join, basename } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
-import { LAUNCH_JSON_FILE } from '../types';
-import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, DebugOptions, LaunchConfig } from '../types';
+import { LAUNCH_JSON_FILE } from '../types/index.js';
+import type {
+    FioriOptions,
+    LaunchJSON,
+    UpdateWorkspaceFolderOptions,
+    DebugOptions,
+    LaunchConfig
+} from '../types/index.js';
 import type { Editor } from 'mem-fs-editor';
-import { generateNewFioriLaunchConfig } from './utils';
-import { updateLaunchJSON } from './writer';
+import { generateNewFioriLaunchConfig } from './utils.js';
+import { updateLaunchJSON } from './writer.js';
 import { parse } from 'jsonc-parser';
-import { handleWorkspaceConfig } from '../debug-config/workspaceManager';
-import { configureLaunchJsonFile } from '../debug-config/config';
+import { handleWorkspaceConfig } from '../debug-config/workspaceManager.js';
+import { configureLaunchJsonFile } from '../debug-config/config.js';
 import type { Logger } from '@sap-ux/logger';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 /**
  * Writes the `launch.json` file with the specified configurations. If the file already exists, it will be overwritten.

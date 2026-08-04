@@ -1,1 +1,1 @@
-export * from './UIPersona';
+export * from './UIPersona.js';

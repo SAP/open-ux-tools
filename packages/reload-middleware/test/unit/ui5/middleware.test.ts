@@ -1,5 +1,5 @@
-import * as reloadMiddleware from '../../../src/ui5/middleware';
-import type { ReloaderConfig } from '../../../src';
+import { jest } from '@jest/globals';
+import type { ReloaderConfig } from '../../../src/index.js';
 import express from 'express';
 import supertest from 'supertest';
 import axios from 'axios';
@@ -7,7 +7,8 @@ import axios from 'axios';
 describe('Reload Middleware', () => {
     // middleware function wrapper for testing to simplify tests
     async function getTestServer(configuration: ReloaderConfig): Promise<any> {
-        const router = await (reloadMiddleware as any).default({
+        const { default: reloadMiddleware } = await import('../../../src/ui5/middleware.js');
+        const router = await reloadMiddleware({
             options: { configuration },
             middlewareUtil: {
                 getProject: () => {
@@ -21,7 +22,7 @@ describe('Reload Middleware', () => {
                     };
                 }
             }
-        });
+        } as any);
         const app = express();
         app.use(router);
         return supertest(app);

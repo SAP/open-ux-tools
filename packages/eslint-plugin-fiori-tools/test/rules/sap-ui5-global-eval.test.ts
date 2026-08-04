@@ -2,7 +2,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-ui5-global-eval';
+import rule from '../../src/rules/sap-ui5-global-eval.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

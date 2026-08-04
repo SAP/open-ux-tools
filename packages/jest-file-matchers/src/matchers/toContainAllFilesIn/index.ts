@@ -2,7 +2,7 @@ import { compareSync } from 'dir-compare';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import chalk from 'chalk';
-import type { MatcherOptions } from '../types';
+import type { MatcherOptions } from '../types.js';
 
 /**
  * Returns the messages(s), if any, related to the missing files in the directory.

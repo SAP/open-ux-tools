@@ -1,9 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { getTemplatePath } from '../templates';
-import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types';
-import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/utils';
-import { copyTpl } from './file';
+import { getTemplatePath } from '../templates.js';
+import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types.js';
+import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/utils.js';
+import { copyTpl } from './file.js';
 
 /**
  * Interface to describe event handler configuration options used during creation.

@@ -1,7 +1,7 @@
 import { join, resolve } from 'node:path';
 import { unlinkSync } from 'node:fs';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
-import { t, generatorNamespace, abapChoice, cfChoice } from '../utils';
+import { t, generatorNamespace, abapChoice, cfChoice } from '../utils/index.js';
 import { DeployTarget } from '@sap-ux/fiori-generator-shared';
 import type { CfDeployConfigOptions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { AbapDeployConfigOptions } from '@sap-ux/abap-deploy-config-sub-generator';

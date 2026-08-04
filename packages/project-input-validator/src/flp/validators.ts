@@ -1,6 +1,6 @@
-import { t } from '../i18n';
-import type { AllowedCharacters } from '../general/validators';
-import { validateAllowedCharacters, validateMaxLength } from '../general/validators';
+import { t } from '../i18n.js';
+import type { AllowedCharacters } from '../general/validators.js';
+import { validateAllowedCharacters, validateMaxLength } from '../general/validators.js';
 
 /**
  * Validates that text input does not have zero length and optionally is less than the specified maximum length.

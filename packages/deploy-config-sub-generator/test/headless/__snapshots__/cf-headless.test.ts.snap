@@ -144,6 +144,9 @@ resources:
       service: xsuaa
       service-name: managedAppCAPProjectJava-xsuaa-service
       service-plan: application
+      config:
+        xsappname: managedAppCAPProjectJava-\${org}-\${space}
+        tenant-mode: dedicated
   - name: managedAppCAPProjectJava-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -155,10 +158,9 @@ resources:
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 2`] = `
 "{
-  "xsappname": "managedAppCAPProjectJava",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -400,6 +402,9 @@ resources:
       service: xsuaa
       service-name: cappapp-xsuaa-service
       service-plan: application
+      config:
+        xsappname: cappapp-\${org}-\${space}
+        tenant-mode: dedicated
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -411,10 +416,9 @@ resources:
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 2`] = `
 "{
-  "xsappname": "cappapp",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -655,6 +659,9 @@ resources:
       service: xsuaa
       service-name: existing-id-deploy-xsuaa-service
       service-plan: application
+      config:
+        xsappname: existing-id-deploy-\${org}-\${space}
+        tenant-mode: dedicated
   - name: existing-id-deploy-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -761,10 +768,9 @@ archive.zip
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  6`] = `
 "{
-  "xsappname": "existing-id-deploy",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -892,6 +898,9 @@ resources:
       service: xsuaa
       service-name: cappapp-xsuaa-service
       service-plan: application
+      config:
+        xsappname: cappapp-\${org}-\${space}
+        tenant-mode: dedicated
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -937,10 +946,9 @@ mta_archives/
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 3`] = `
 "{
-  "xsappname": "cappapp",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -1195,6 +1203,9 @@ resources:
       service: xsuaa
       service-name: existing-id-deploy-xsuaa-service
       service-plan: application
+      config:
+        xsappname: existing-id-deploy-\${org}-\${space}
+        tenant-mode: dedicated
   - name: existing-id-deploy-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1455,10 +1466,9 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
 
 exports[`Test headless generator Test: Headless deploy-config 1`] = `
 "{
-  "xsappname": "existing-id-deploy",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -1803,10 +1813,9 @@ exports[`Test headless generator Test: Headless deploy-config 7`] = `
 
 exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 1`] = `
 "{
-  "xsappname": "existing-id-deploy_ts",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "

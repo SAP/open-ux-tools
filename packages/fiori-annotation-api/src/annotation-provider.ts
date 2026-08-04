@@ -11,11 +11,11 @@ import {
 } from '@sap/ux-cds-compiler-facade';
 import { MetadataService } from '@sap-ux/odata-entity-model';
 
-import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml';
-import type { ServiceArtifacts, TextFile } from './types';
+import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml/index.js';
+import type { ServiceArtifacts, TextFile } from './types/index.js';
 import type { V2Annotation } from '@sap-ux/xml-odata-annotation-converter';
 import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
-import { addAllVocabulariesToAliasInformation } from './vocabularies';
+import { addAllVocabulariesToAliasInformation } from './vocabularies.js';
 import { pathToFileURL } from 'node:url';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 

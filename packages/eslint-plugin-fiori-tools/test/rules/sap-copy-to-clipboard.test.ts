@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import copyToClipboardRule from '../../src/rules/sap-copy-to-clipboard';
-import { meta, languages } from '../../src/index';
+import copyToClipboardRule from '../../src/rules/sap-copy-to-clipboard.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
@@ -12,7 +12,7 @@ import {
     V2_MANIFEST,
     V2_MANIFEST_PATH,
     V4_FACETS_ANNOTATIONS
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

@@ -1,6 +1,6 @@
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
-import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types';
+import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types/index.js';
 
 const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     qunit: {
@@ -12,7 +12,7 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     opa5: {
         path: '/test/opaTests.qunit.html',
         init: '/test/opaTests.qunit.js',
-        pattern: '/test/**/*Journey.{js,ts}',
+        pattern: '/test/**/*Journey{,.gen}.{js,ts}',
         framework: 'OPA5'
     },
     testsuite: {

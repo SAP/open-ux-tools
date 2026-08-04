@@ -1,4 +1,4 @@
-import { setGlobalRejectUnauthorized } from '../../src/httpsUtils';
+import { setGlobalRejectUnauthorized } from '../../src/httpsUtils.js';
 import https from 'node:https';
 
 describe('httpsUtils tests', () => {

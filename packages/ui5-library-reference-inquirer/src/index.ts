@@ -1,14 +1,14 @@
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer, { type Question } from 'inquirer';
-import { getQuestions } from './prompts';
-import type { UI5LibraryReferenceAnswers, UI5LibraryReferencePromptOptions } from './types';
+import { getQuestions } from './prompts/index.js';
+import type { UI5LibraryReferenceAnswers, UI5LibraryReferencePromptOptions } from './types.js';
 import {
     getReuseLibs,
     findFioriArtifacts,
     type FioriArtifactTypes,
     type WorkspaceFolder
 } from '@sap-ux/project-access';
-import { getProjectChoices, getLibraryChoices } from './choices';
+import { getProjectChoices, getLibraryChoices } from './choices.js';
 
 /**
  * Get the inquirer prompts for ui5 library inquirer.
@@ -47,7 +47,7 @@ async function prompt(
     adapter?: InquirerAdapter,
     promptOptions?: UI5LibraryReferencePromptOptions
 ): Promise<UI5LibraryReferenceAnswers> {
-    const ui5LibPrompts = await exports.getPrompts(wsFolders, promptOptions);
+    const ui5LibPrompts = await getPrompts(wsFolders ?? [], promptOptions);
 
     return adapter ? adapter.prompt(ui5LibPrompts) : inquirer.prompt(ui5LibPrompts);
 }

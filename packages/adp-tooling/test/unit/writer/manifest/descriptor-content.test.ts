@@ -6,7 +6,7 @@ import {
     createDescriptorChangeForResourceModel,
     fillDescriptorContent,
     getManifestContent
-} from '../../../../src';
+} from '../../../../src/index.js';
 
 describe('createDescriptorChangeForResourceModel', () => {
     it('should return model with fallbackLocale if type is FREE_STYLE and UI5 version supports it', () => {

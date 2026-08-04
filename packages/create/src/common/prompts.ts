@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import type { PromptType, PromptObject, InitialReturnValue } from 'prompts';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers } from 'inquirer';
-import { getLogger } from '../tracing';
+import { getLogger } from '../tracing/index.js';
 
 /**
  * Checks if a property is a function.

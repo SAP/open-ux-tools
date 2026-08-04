@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 import { generateVariantsConfig } from '@sap-ux/app-config-writer';
 import { isAbsolute, join } from 'node:path';
 import { FileName } from '@sap-ux/project-access';

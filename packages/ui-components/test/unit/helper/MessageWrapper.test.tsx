@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { MessageWrapperProps } from '../../../src/helper/ValidationMessage';
 import { MessageWrapper, getMessageInfo } from '../../../src/helper/ValidationMessage';
 

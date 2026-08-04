@@ -1,4 +1,4 @@
-import { Separator } from '../../../src/prompts/separator';
+import { Separator } from '../../../src/prompts/separator.js';
 
 describe('Separator test', () => {
     test('Separator', () => {

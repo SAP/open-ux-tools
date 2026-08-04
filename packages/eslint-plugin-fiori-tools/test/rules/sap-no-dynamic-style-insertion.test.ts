@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-dynamic-style-insertion';
+import rule from '../../src/rules/sap-no-dynamic-style-insertion.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

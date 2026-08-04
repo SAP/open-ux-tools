@@ -1,10 +1,23 @@
+import { jest } from '@jest/globals';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
 
-import * as utils from '../../../src/adp/utils';
-import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
-import ExtensionPointService, { type ExtensionPointInfo } from '../../../src/adp/extension-point';
+const createDeferredMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
+    createDeferred: createDeferredMock,
+    checkForExistingChange: jest.fn(),
+    getNestedProperty: jest.fn(),
+    matchesChangeProperty: jest.fn(),
+    getControllerInfoForControl: jest.fn(),
+    getControllerInfo: jest.fn(),
+    getReuseComponentChecker: jest.fn(),
+    resetReuseComponentChecker: jest.fn()
+}));
+
+import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller.js';
+const { default: ExtensionPointService } = await import('open/ux/preview/client/adp/extension-point');
+type ExtensionPointInfo = import('../../../src/adp/extension-point.js').ExtensionPointInfo;
 
 describe('ExtensionPointService', () => {
     describe('fragmentHandler', () => {
@@ -22,17 +35,15 @@ describe('ExtensionPointService', () => {
             const mockResolve = jest.fn();
             const mockReject = jest.fn();
 
-            const createDeferredMock = jest.fn().mockReturnValue({
+            createDeferredMock.mockReturnValue({
                 promise: new Promise((resolve) => {
                     resolve(true);
                 }),
                 resolve: mockResolve,
                 reject: mockReject
-            }) as jest.Mock;
+            });
 
             ExtensionPoint.prototype.setup = jest.fn();
-
-            jest.spyOn(utils, 'createDeferred').mockImplementation(createDeferredMock);
 
             const result = await service.fragmentHandler(
                 {} as UI5Element,

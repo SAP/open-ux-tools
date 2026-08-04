@@ -45,7 +45,7 @@ import {
     GENERIC_CHANGE_KIND,
     toggleAppPreviewVisibility
 } from '@sap-ux-private/control-property-editor-common';
-import { DeviceType } from './devices';
+import { DeviceType } from './devices.js';
 
 export interface SliceState {
     deviceType: DeviceType;

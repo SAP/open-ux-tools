@@ -3,9 +3,9 @@ import React from 'react';
 
 import { UIIcon } from '@sap-ux/ui-components';
 
-import { IconName } from '../../icons';
+import { IconName } from '../../icons.js';
 
-import { getValueIcon } from './utils';
+import { getValueIcon } from './utils.js';
 import styles from './DisplayAsIcon.module.scss';
 import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-editor-common';
 

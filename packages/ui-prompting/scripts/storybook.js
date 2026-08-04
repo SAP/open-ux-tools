@@ -1,5 +1,6 @@
-const fs = require('fs');
-const { join } = require('path');
+import fs from 'node:fs';
+import { join } from 'node:path';
+const __dirname = import.meta.dirname;
 
 const StorybookFiles = {
     StorybookFolder: '.storybook',
@@ -55,4 +56,4 @@ async function run(argv) {
     copyFiles([StorybookFiles.ManagerFile, StorybookFiles.PreviewFile], SourceDir, TargetDir, overwrite);
 }
 
-module.exports = run;
+export default run;

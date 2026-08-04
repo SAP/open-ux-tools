@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
 import { generateFlpEmbeddedConfig, DEFAULT_FLP_PATH } from '@sap-ux/app-config-writer';
 
 /**

@@ -1,1 +1,1 @@
-export { getCapI18nBundle } from './bundle';
+export { getCapI18nBundle } from './bundle.js';

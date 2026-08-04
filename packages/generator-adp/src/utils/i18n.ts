@@ -15,8 +15,7 @@ export const i18n: i18nNext = i18next.createInstance();
 export async function initI18n(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en',
-        showSupportNotice: false
+        fallbackLng: 'en'
     });
     i18n.addResourceBundle('en', adpGeneratorI18nNamespace, translations);
 
@@ -38,6 +37,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Needed for lint
-});
+void initI18n().catch(() => undefined);

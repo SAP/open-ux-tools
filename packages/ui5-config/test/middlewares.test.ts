@@ -1,4 +1,4 @@
-import { getPreviewMiddlewareConfig } from '../src/middlewares';
+import { getPreviewMiddlewareConfig } from '../src/middlewares.js';
 
 describe('getPreviewMiddlewareConfig', () => {
     it('should return a valid preview middleware config', () => {

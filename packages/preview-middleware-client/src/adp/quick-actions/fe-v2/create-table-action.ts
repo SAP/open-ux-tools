@@ -5,14 +5,14 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type UI5Element from 'sap/ui/core/Element';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getControlById, isA } from '../../../utils/core';
-import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getControlById, isA } from '../../../utils/core.js';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import type OverflowToolbar from 'sap/m/OverflowToolbar';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
-import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
+import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types.js';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 // maintain order if action id

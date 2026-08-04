@@ -3,8 +3,8 @@ import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { findChrome } from './locate-chrome';
-import { getAnyEdgeStable } from './locate-edge';
+import { findChrome } from './locate-chrome.js';
+import { getAnyEdgeStable } from './locate-edge.js';
 
 const globalAny: any = global;
 

@@ -1,14 +1,14 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import UI5Element from 'sap/ui/core/Element';
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getControlById, findNestedElements } from '../../../utils/core';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { MDC_ACTION_TOOLBAR_TYPE, MDC_TABLE_TYPE } from '../control-types';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getControlById, findNestedElements } from '../../../utils/core.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { MDC_ACTION_TOOLBAR_TYPE, MDC_TABLE_TYPE } from '../control-types.js';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils.js';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
-import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { preprocessActionExecution } from '../fe-v2/create-table-custom-column.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 
 export const CHANGE_TABLE_ACTIONS = 'change-table-actions';
 const ACTION_ID = 'CTX_SETTINGS';

@@ -4,7 +4,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, createPropertyChecker } from '../utils/helpers';
+import { type ASTNode, createPropertyChecker } from '../utils/helpers.js';
 
 // THIS RULE IS DEPRECATED --> sap-no-ui5base-prop
 // ------------------------------------------------------------------------------

@@ -7,8 +7,8 @@ import { Text, Stack } from '@fluentui/react';
 import { UIIcon, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
 import type { Control, SavedGenericChange, PendingGenericChange } from '@sap-ux-private/control-property-editor-common';
-import { Separator } from '../../components';
-import type { RootState } from '../../store';
+import { Separator } from '../../components/index.js';
+import type { RootState } from '../../store.js';
 
 import styles from './PropertyDocumentation.module.scss';
 

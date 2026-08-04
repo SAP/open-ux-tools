@@ -12,7 +12,7 @@ import {
     buildCalleePath,
     isForbiddenObviousApi,
     type ASTNode
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Helper Functions

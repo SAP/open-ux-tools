@@ -1,9 +1,9 @@
 import type { Command } from 'commander';
 import chalk from 'chalk';
-import { getLogger, traceChanges } from '../../tracing';
+import { getLogger, traceChanges } from '../../tracing/index.js';
 import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate, FlexLayer } from '@sap-ux/adp-tooling';
-import { runNpmInstallCommand } from '../../common';
+import { runNpmInstallCommand } from '../../common/index.js';
 import { join } from 'node:path';
 
 /**

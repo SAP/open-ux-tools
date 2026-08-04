@@ -7,11 +7,11 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import { addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
-import type { Deferred } from './utils';
-import { createDeferred } from './utils';
-import { DialogFactory, DialogNames } from './dialog-factory';
+import type { Deferred } from './utils.js';
+import { createDeferred } from './utils.js';
+import { DialogFactory, DialogNames } from './dialog-factory.js';
 
-import { CommunicationService } from '../cpe/communication-service';
+import { CommunicationService } from '../cpe/communication-service.js';
 
 type ActionService = {
     execute: (controlId: string, actionId: string) => void;

@@ -5,10 +5,10 @@ import { TextField, Label, Stack } from '@fluentui/react';
 import { UIIconButton, UiIcons, UITooltip, UITooltipUtils, UIDirectionalHint } from '@sap-ux/ui-components';
 
 import './Properties.scss';
-import { defaultFontSize, sectionHeaderFontSize } from './constants';
-import { PropertyDocumentation } from './PropertyDocumentation';
+import { defaultFontSize, sectionHeaderFontSize } from './constants.js';
+import { PropertyDocumentation } from './PropertyDocumentation.js';
 import type { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
-import { Clipboard } from './Clipboard';
+import { Clipboard } from './Clipboard.js';
 import { useTranslation } from 'react-i18next';
 
 export interface HeaderFieldProps {

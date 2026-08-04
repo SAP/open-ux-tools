@@ -1,4 +1,4 @@
-import { pick } from '../../../src/utils';
+import { pick } from '../../../src/utils/index.js';
 
 describe('pick', () => {
     it('returns undefined when called on undefined target', () => {

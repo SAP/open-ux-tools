@@ -1,7 +1,7 @@
 import type { Filter, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
-import type { ProxyConfig } from './types';
+import type { ProxyConfig } from './types.js';
 import {
     proxyRequestHandler,
     proxyResponseHandler,
@@ -9,7 +9,7 @@ import {
     proxyErrorHandler,
     updateProxyEnv,
     getPathRewrite
-} from './utils';
+} from './utils.js';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { Url } from 'node:url';
 import { getProxyForUrl } from 'proxy-from-env';

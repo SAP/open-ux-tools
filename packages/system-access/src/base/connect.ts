@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '../types';
+import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '../types.js';
 import type {
     AbapCloudStandaloneOptions,
     AbapServiceProvider,
@@ -20,9 +20,9 @@ import {
     getCredentialsWithPrompts,
     isBasicAuth,
     isServiceAuth
-} from './credentials';
+} from './credentials.js';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import { questions } from './prompts';
+import { questions } from './prompts.js';
 import prompts from 'prompts';
 import { readFileSync } from 'node:fs';
 import { AuthenticationType } from '@sap-ux/store';

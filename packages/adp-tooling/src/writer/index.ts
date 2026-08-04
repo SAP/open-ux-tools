@@ -2,14 +2,13 @@ import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import { getManifestContent } from './manifest';
-import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
-import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
-import { getApplicationType } from '../source';
-import { writeKeyUserChanges } from '../base/change-utils';
-
-const baseTmplPath = join(__dirname, '../../templates');
+import { getManifestContent } from './manifest/index.js';
+import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils.js';
+import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types.js';
+import { getApplicationType } from '../source/index.js';
+import { writeKeyUserChanges } from '../base/change-utils.js';
+import { getTemplatePath } from '../templates.js';
 
 /**
  * Set default values for optional properties.
@@ -63,7 +62,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     }
 
     const fullConfig = setDefaults(config);
-    const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
+    const templatePath = config.options?.templatePathOverwrite ?? getTemplatePath();
 
     writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
     writeTemplateToFolder(templatePath, join(basePath), fullConfig, fs);
@@ -89,7 +88,7 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
 
     const fullConfig = setDefaults(config);
 
-    const tmplPath = join(baseTmplPath, 'project');
+    const tmplPath = join(getTemplatePath(), 'project');
 
     // Copy the specified files to target project
     fs.copyTpl(join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, undefined, {

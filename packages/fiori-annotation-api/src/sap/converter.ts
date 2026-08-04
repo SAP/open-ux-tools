@@ -7,16 +7,16 @@ import type {
     UIFieldGroupDefinition,
     UILineItemDefinition,
     ValueWithOrigin
-} from './types';
-import { UI_LINE_ITEM, UI_FACETS, UI_REFERENCE_FACET, UI_FIELD_GROUP } from './types';
-import { collectODataAnnotations } from './collector';
+} from './types.js';
+import { UI_LINE_ITEM, UI_FACETS, UI_REFERENCE_FACET, UI_FIELD_GROUP } from './types.js';
+import { collectODataAnnotations } from './collector.js';
 import {
     createComplexAnnotation,
     createPrimitiveAnnotation,
     createPrimitiveRecordProperty,
     createRecord
-} from './builders';
-import { logger } from '../logger';
+} from './builders.js';
+import { logger } from '../logger.js';
 
 type LabelDefinition = { source: ODataAnnotations['term']; value: ValueWithOrigin<string> };
 /**

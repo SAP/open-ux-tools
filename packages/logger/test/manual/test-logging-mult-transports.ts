@@ -1,5 +1,5 @@
-import { LogLevel, ToolsLogger } from '../../src';
-import { ConsoleTransport, FileTransport, NullTransport } from '../../src/transports';
+import { LogLevel, ToolsLogger } from '../../src/index.js';
+import { ConsoleTransport, FileTransport, NullTransport } from '../../src/transports/index.js';
 
 function main() {
     const logger = new ToolsLogger({

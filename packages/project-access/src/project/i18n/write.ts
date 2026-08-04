@@ -1,9 +1,9 @@
 import { createCapI18nEntries as createI18nEntriesBase, createPropertiesI18nEntries } from '@sap-ux/i18n';
 import type { NewI18nEntry } from '@sap-ux/i18n';
-import { getCapEnvironment } from '..';
-import type { I18nPropertiesPaths, Manifest } from '../../types';
+import { getCapEnvironment } from '../index.js';
+import type { I18nPropertiesPaths, Manifest } from '../../types/index.js';
 import { join, dirname } from 'node:path';
-import { readJSON, writeFile } from '../../file';
+import { readJSON, writeFile } from '../../file/index.js';
 import { mkdir } from 'node:fs/promises';
 import type { Editor } from 'mem-fs-editor';
 

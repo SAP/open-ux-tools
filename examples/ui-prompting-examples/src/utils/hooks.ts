@@ -5,9 +5,9 @@ import {
     getQuestions,
     subscribeOnChoicesUpdate,
     unsubscribeOnChoicesUpdate
-} from './communication';
+} from './communication.js';
 import type { DynamicChoices, PromptQuestion, TranslationProperties, PromptsGroup } from '@sap-ux/ui-prompting';
-import type { PromptsType } from './types';
+import type { PromptsType } from './types.js';
 import type { Answers } from 'inquirer';
 import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 

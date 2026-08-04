@@ -1,5 +1,5 @@
 import type { Layer } from 'sap/ui/fl';
-import { getError } from '../utils/error';
+import { getError } from '../utils/error.js';
 
 export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',

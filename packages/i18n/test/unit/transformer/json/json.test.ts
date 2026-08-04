@@ -1,4 +1,4 @@
-import { jsonToI18nBundle } from '../../../../src';
+import { jsonToI18nBundle } from '../../../../src/index.js';
 
 describe('json', () => {
     describe('jsonToI18nBundle', () => {

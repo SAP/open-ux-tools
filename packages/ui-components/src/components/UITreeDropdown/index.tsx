@@ -1,1 +1,1 @@
-export * from './UITreeDropdown';
+export * from './UITreeDropdown.js';

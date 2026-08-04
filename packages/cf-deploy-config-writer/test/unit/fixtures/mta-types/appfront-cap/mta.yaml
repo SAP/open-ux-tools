@@ -1,0 +1,70 @@
+_schema-version: 3.3.0
+ID: cap-fiori-frontend
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: cap-fiori-frontend-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: cap-fiori-frontend-auth
+
+  - name: cap-fiori-frontend-app-deployer
+    type: com.sap.application.content
+    path: gen
+    build-parameters:
+      build-result: app/
+      requires:
+    requires:
+      - name: cap-fiori-frontend-auth
+      - name: srv-api
+      - name: cap-fiori-frontend-app-front
+        parameters:
+          content-target: true
+      - name: cap-fiori-frontend-html5-repo-host
+        parameters:
+          content-target: true
+          config:
+            HTML5Runtime_enabled: true
+    parameters:
+      config:
+        destinations:
+          - name: srv-api
+            url: ~{srv-api/srv-url}
+            forwardAuthToken: true
+
+resources:
+  - name: cap-fiori-frontend-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+  - name: cap-fiori-frontend-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-plan: developer
+  - name: cap-fiori-frontend-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host

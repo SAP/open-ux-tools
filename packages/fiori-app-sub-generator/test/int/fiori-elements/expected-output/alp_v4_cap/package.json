@@ -15,7 +15,7 @@
     "app/*"
   ],
   "devDependencies": {
-    "cds-plugin-ui5": "^0.13.0"
+    "cds-plugin-ui5": "^0.17.0"
   },
   "scripts": {
     "watch-alp_v4_cap": "cds watch --open testNameSpace.alpv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"

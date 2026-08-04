@@ -7,7 +7,7 @@ import styles from './UnknownChange.module.scss';
 import { UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
 import type { PropertyChangeDeletionDetails } from '@sap-ux-private/control-property-editor-common';
 import { convertCamelCaseToPascalCase, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
-import { getFormattedDateAndTime } from './utils';
+import { getFormattedDateAndTime } from './utils.js';
 
 export interface UnknownChangeProps {
     fileName: string;

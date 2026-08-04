@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-br-on-return';
+import rule from '../../src/rules/sap-no-br-on-return.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

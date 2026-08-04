@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, createPropertyChecker } from '../utils/helpers';
+import { type ASTNode, createPropertyChecker } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

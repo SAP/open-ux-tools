@@ -1,26 +1,22 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import { getExistingController } from '../../api-handler';
-import { getControllerInfoForControl } from '../../utils';
-import { getV4AppComponent } from '../../../utils/fe-v4';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { MDC_TABLE_TYPE } from '../control-types';
-import { isA } from '../../../utils/core';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
+import { getExistingController } from '../../api-handler.js';
+import { getControllerInfoForControl } from '../../utils.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { MDC_TABLE_TYPE } from '../control-types.js';
+import { isA } from '../../../utils/core.js';
 import Table from 'sap/ui/mdc/Table';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
-import { getPropertyPath } from './utils';
+import { getPropertyPath, getAppDescriptorBase } from './utils.js';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 
-interface ViewDataType {
-    stableId: string;
-}
 const regexForAnnotationPath =
     /controlConfiguration\/(?:[^@]+\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//;
 
@@ -28,7 +24,7 @@ const regexForAnnotationPath =
  * Quick Action for adding a custom page action.
  */
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
-    protected pageId: string | undefined;
+    protected appDescriptor: ReturnType<typeof getAppDescriptorBase>;
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_ACTION, [MDC_TABLE_TYPE], 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, undefined, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -36,7 +32,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     }
 
     async initialize(): Promise<void> {
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
+        this.appDescriptor = getAppDescriptorBase(this.context);
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;
@@ -45,6 +41,9 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
+        if (!this.appDescriptor) {
+            return [];
+        }
         const { table } = this.tableMap[path];
         const propertyPath = `${getPropertyPath(table)}`;
         if (!table || !propertyPath) {
@@ -67,9 +66,8 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     actionType: 'tableAction',
                     appDescriptor: {
-                        appComponent: getV4AppComponent(this.context.view)!,
+                        ...this.appDescriptor,
                         appType: 'fe-v4',
-                        pageId: this.pageId!,
                         projectId: this.context.flexSettings.projectId
                     },
                     validateActionId: (actionId) => {

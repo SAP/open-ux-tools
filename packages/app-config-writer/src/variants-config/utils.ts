@@ -1,11 +1,15 @@
-import { MiddlewareConfigs } from '../types';
+import { MiddlewareConfigs } from '../types/index.js';
 import { stringify } from 'node:querystring';
 import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import type { PreviewConfigOptions } from '../types';
+import type { PreviewConfigOptions } from '../types/index.js';
 import type { Editor } from 'mem-fs-editor';
 import { satisfies } from 'semver';
-import { getPreviewMiddleware, getIntentFromPreviewConfig, isFioriToolsDeprecatedPreviewConfig } from '../common/utils';
+import {
+    getPreviewMiddleware,
+    getIntentFromPreviewConfig,
+    isFioriToolsDeprecatedPreviewConfig
+} from '../common/utils.js';
 
 /**
  * Get the url parameters needed for the UI5 run time adaptation.

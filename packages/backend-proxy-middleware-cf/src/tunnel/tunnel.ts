@@ -5,8 +5,8 @@ import type { ChildProcess } from 'node:child_process';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { ensureTunnelAppExists, enableSshAndRestart, DEFAULT_TUNNEL_APP_NAME } from '@sap-ux/adp-tooling';
 
-import { hasOnPremiseDestination } from './destination-check';
-import type { ConnectivityProxyInfo, SshTunnelOptions, EffectiveOptions } from '../types';
+import { hasOnPremiseDestination } from './destination-check.js';
+import type { ConnectivityProxyInfo, SshTunnelOptions, EffectiveOptions } from '../types.js';
 
 /**
  * Check if a port is already in use.

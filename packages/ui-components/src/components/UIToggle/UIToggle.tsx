@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import type { IToggleProps, IToggleStyleProps, IToggleStyles } from '@fluentui/react';
 import { Toggle } from '@fluentui/react';
 
-import type { UIComponentMessagesProps } from '../../helper/ValidationMessage';
-import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
-import { UIIcon } from '../UIIcon';
-import { UiIcons } from '../Icons';
+import type { UIComponentMessagesProps } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage/index.js';
+import { UIIcon } from '../UIIcon/index.js';
+import { UiIcons } from '../Icons.js';
 
 export interface UIToggleProps extends IToggleProps, UIComponentMessagesProps {
     inlineLabelLeft?: boolean;
@@ -80,9 +80,9 @@ const COLORS = {
     thumb: {
         unchecked: {
             background: 'var(--vscode-button-secondaryBackground)',
-            borderColor: 'var(--vscode-button-border, transparent)',
+            borderColor: 'var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))',
             hover: {
-                borderColor: 'var(--vscode-button-border, transparent)',
+                borderColor: 'var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))',
                 background: 'var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))'
             }
         },
@@ -223,6 +223,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     height: sizeInfo?.height,
                     width: sizeInfo?.width,
                     padding: sizeInfo?.padding,
+                    borderRadius: 'var(--vscode-cornerRadius-circle, 9999px)',
                     background: COLORS.pill.checked.background,
                     borderColor: COLORS.pill.checked.borderColor,
                     borderStyle: 'solid',

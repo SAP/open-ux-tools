@@ -1,16 +1,16 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Question } from 'inquirer';
-import LoggerHelper from '../logger-helper';
+import LoggerHelper from '../logger-helper.js';
 import type {
     ServiceConfig,
     ServiceConfigOptions,
     ServiceConfigQuestion,
     SystemSelectionAnswers,
     UiServiceAnswers
-} from '../types';
-import { getConfigQuestions } from './configuration/questions';
-import { PromptState } from './prompt-state';
-import { getSystemQuestions } from './system-selection/questions';
+} from '../types.js';
+import { getConfigQuestions } from './configuration/questions.js';
+import { PromptState } from './prompt-state.js';
+import { getSystemQuestions } from './system-selection/questions.js';
 
 /**
  * Get the system selection prompts.

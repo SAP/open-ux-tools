@@ -2,8 +2,8 @@ import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { LAUNCH_JSON_FILE, deleteLaunchConfig } from '../../src';
-import { TestPaths } from '../test-data/utils';
+import { LAUNCH_JSON_FILE, deleteLaunchConfig } from '../../src/index.js';
+import { TestPaths } from '../test-data/utils.js';
 import { parse } from 'jsonc-parser';
 
 const feLaunchJsonCopy = join(TestPaths.tmpDir, DirName.VSCode, LAUNCH_JSON_FILE);

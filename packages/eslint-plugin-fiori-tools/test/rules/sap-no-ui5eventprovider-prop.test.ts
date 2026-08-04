@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-ui5eventprovider-prop';
+import rule from '../../src/rules/sap-no-ui5eventprovider-prop.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 import Generator from 'yeoman-generator';
-import ReferenceLibGenLogger from '../utils/logger';
-import { generatorTitle, prompts } from '../utils/constants';
+import ReferenceLibGenLogger from '../utils/logger.js';
+import { generatorTitle, prompts } from '../utils/constants.js';
 import { workspace } from 'vscode';
 import { Prompts, AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import { generate } from '@sap-ux/ui5-library-reference-writer';
@@ -14,9 +14,9 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { prompt } from '@sap-ux/ui5-library-reference-inquirer';
-import { t } from '../utils/i18n';
-import { EventName } from '../telemetryEvents';
-import type { UI5ReferenceLibGenerator } from './types';
+import { t } from '../utils/i18n.js';
+import { EventName } from '../telemetryEvents/index.js';
+import type { UI5ReferenceLibGenerator } from './types.js';
 import type { ReuseLibConfig } from '@sap-ux/ui5-library-reference-writer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InquirerAdapter, UI5LibraryReferenceAnswers } from '@sap-ux/ui5-library-reference-inquirer';

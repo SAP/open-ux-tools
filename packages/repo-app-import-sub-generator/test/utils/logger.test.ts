@@ -1,4 +1,4 @@
-import RepoAppDownloadLogger from '../../src/utils/logger';
+import RepoAppDownloadLogger from '../../src/utils/logger.js';
 import { DefaultLogger, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from 'yeoman-environment';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';

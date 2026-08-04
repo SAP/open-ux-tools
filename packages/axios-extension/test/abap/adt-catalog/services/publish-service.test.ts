@@ -1,5 +1,5 @@
-import { PublishService } from '../../../../src';
-import type { ODataServiceTechnicalDetails } from '../../../../src/abap/types';
+import { PublishService } from '../../../../src/index.js';
+import type { ODataServiceTechnicalDetails } from '../../../../src/abap/types/index.js';
 
 describe('PublishService', () => {
     let service: PublishService;

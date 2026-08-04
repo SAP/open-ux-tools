@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-exec-command';
+import rule from '../../src/rules/sap-no-exec-command.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

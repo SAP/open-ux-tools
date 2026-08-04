@@ -1,7 +1,7 @@
-import { t } from '../../i18n';
-import { showPasswordQuestion, showUsernameQuestion } from '../conditions';
-import { validateCredentials } from '../validators';
-import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../types';
+import { t } from '../../i18n.js';
+import { showPasswordQuestion, showUsernameQuestion } from '../conditions.js';
+import { validateCredentials } from '../validators.js';
+import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../types.js';
 import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 

@@ -4,7 +4,7 @@ import {
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
     HELP_NODES
-} from '../../src/index';
+} from '../../src/index.js';
 
 // write your tests here
 describe('Guided Answers Helper', () => {
@@ -44,7 +44,8 @@ describe('Guided Answers Helper', () => {
             NO_V4_SERVICES: 57573,
             UI_SERVICE_GENERATOR: 63068,
             DESTINATION_GATEWAY_TIMEOUT: 57914,
-            ADT_APP_NOT_FOUND_ERROR: 63911
+            ADT_APP_NOT_FOUND_ERROR: 63911,
+            DESTINATION_FULL_URL: 68172
         });
     });
 });

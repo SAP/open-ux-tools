@@ -36,7 +36,10 @@ permissions:
     contents: read
 
 jobs:
-    publish-mcp-registry:
+    validate:
+        # Dry-run validation: PR edits to this workflow, or callers/dispatch with dry_run=true.
+        # No environment gate so it works on any branch / PR ref.
+        if: ${{ github.event_name == 'pull_request' || inputs.dry_run == true }}
         runs-on: ubuntu-24.04
         steps:
             - name: Checkout
@@ -49,7 +52,23 @@ jobs:
                   curl -L "${MCP_PUBLISHER_DOWNLOAD_URL}" | tar xz mcp-publisher
             - name: Login to MCP Registry
               run: ./mcp-publisher login github-oidc
+
+    publish-mcp-registry:
+        # Real publish: only on workflow_call with dry_run=false, or workflow_dispatch with dry_run=false.
+        if: ${{ github.event_name != 'pull_request' && inputs.dry_run != true }}
+        runs-on: ubuntu-24.04
+        environment: mcp-registry
+        steps:
+            - name: Checkout
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+            - name: Install MCP Publisher
+              run: |
+                  MCP_PUBLISHER_VERSION="${{ inputs.mcp_publisher_version || env.DEFAULT_MCP_PUBLISHER_VERSION }}"
+                  MCP_PUBLISHER_OS_ARCH="$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')"
+                  MCP_PUBLISHER_DOWNLOAD_URL="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_${MCP_PUBLISHER_OS_ARCH}.tar.gz"
+                  curl -L "${MCP_PUBLISHER_DOWNLOAD_URL}" | tar xz mcp-publisher
+            - name: Login to MCP Registry
+              run: ./mcp-publisher login github-oidc
             - name: Publish to MCP Registry
-              if: ${{ inputs.dry_run != true && github.event_name != 'pull_request' }}
               working-directory: packages/fiori-mcp-server
               run: ../../mcp-publisher publish

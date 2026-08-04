@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-jquery-device-api';
+import rule from '../../src/rules/sap-no-jquery-device-api.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

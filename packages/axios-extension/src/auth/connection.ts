@@ -1,6 +1,6 @@
 import { AxiosHeaders } from 'axios';
 import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
-import type { ServiceProvider } from '../base/service-provider';
+import type { ServiceProvider } from '../base/service-provider.js';
 import detectContentType from 'detect-content-type';
 
 export enum CSRF {

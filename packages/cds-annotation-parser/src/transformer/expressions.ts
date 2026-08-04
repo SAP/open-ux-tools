@@ -8,14 +8,14 @@ import type {
     NumberLiteral,
     Operator,
     CorrectExpression
-} from './annotation-ast-nodes';
+} from './annotation-ast-nodes.js';
 import {
     NUMBER_LITERAL_TYPE,
     OPERATOR_TYPE,
     CORRECT_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE,
     EXPRESSION_TYPES
-} from './annotation-ast-nodes';
+} from './annotation-ast-nodes.js';
 
 export const OPERATOR_NAME_NOT_EQUAL = 'not-equal'; // '!=' or '<>'
 export const OPERATOR_NAME_EQUAL = 'equal'; // '=';

@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-bookmark-performance';
+import rule from '../../src/rules/sap-bookmark-performance.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

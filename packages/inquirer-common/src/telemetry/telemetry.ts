@@ -7,7 +7,7 @@ import {
 import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
 import osName from 'os-name';
-import type { TelemPropertyDestinationType } from '../types';
+import type { TelemPropertyDestinationType } from '../types.js';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 let telemetryClient: ToolsSuiteTelemetryClient | undefined;

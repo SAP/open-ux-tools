@@ -1,5 +1,6 @@
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
-import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';
+import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
+const { createMetadataCollector } = cdsCompilerFacade;
 
 import type { Range } from '@sap-ux/odata-annotation-core-types';
 import { GHOST_FILENAME_PREFIX } from '@sap-ux/odata-annotation-core-types';
@@ -9,9 +10,9 @@ import { ANNOTATION_TYPE, ANNOTATION_GROUP_ITEMS_TYPE } from '@sap-ux/cds-annota
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import { TARGET_TYPE } from '@sap-ux/cds-odata-annotation-converter';
 
-import { ApiError, ApiErrorCode } from '../error';
-import type { AstNode } from './document';
-import { matchTokenByStart, tokenColumn, tokenLine, type CompilerToken } from './cds-compiler-tokens';
+import { ApiError, ApiErrorCode } from '../error.js';
+import type { AstNode } from './document.js';
+import { matchTokenByStart, tokenColumn, tokenLine, type CompilerToken } from './cds-compiler-tokens.js';
 
 /**
  *  Normalizes URI.

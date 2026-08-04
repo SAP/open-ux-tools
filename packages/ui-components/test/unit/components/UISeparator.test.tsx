@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 
 import type { UISeparatorProps } from '../../../src/components/UISeparator';
 import { UISeparator } from '../../../src/components/UISeparator';

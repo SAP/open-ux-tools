@@ -2,11 +2,11 @@ import * as path from 'node:path';
 
 import type { Destinations } from '@sap-ux/btp-utils';
 
-import { getOrCreateServiceInstanceKeys } from './api';
-import { listBtpDestinations } from '../../btp/api';
-import { getYamlContent } from '../project/yaml-loader';
-import { t } from '../../i18n';
-import type { CfDestinationServiceCredentials, MtaYaml } from '../../types';
+import { getOrCreateServiceInstanceKeys } from './api.js';
+import { listBtpDestinations } from '../../btp/api.js';
+import { getYamlContent } from '../project/yaml-loader.js';
+import { t } from '../../i18n.js';
+import type { CfDestinationServiceCredentials, MtaYaml } from '../../types.js';
 
 /**
  * Finds the name of the destination service instance declared in the MTA project's mta.yaml.

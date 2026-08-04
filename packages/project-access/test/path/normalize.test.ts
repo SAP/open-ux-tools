@@ -1,4 +1,4 @@
-import { normalizePath } from '../../src/path/normalize';
+import { normalizePath } from '../../src/path/normalize.js';
 import * as fs from 'node:fs';
 
 describe('normalizePath', () => {

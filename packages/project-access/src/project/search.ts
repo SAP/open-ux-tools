@@ -12,12 +12,12 @@ import type {
     Manifest,
     Package,
     WorkspaceFolder
-} from '../types';
-import { FileName } from '../constants';
-import { fileExists, findBy, findFileUp, readJSON } from '../file';
-import { hasDependency } from './dependencies';
-import { getCapProjectType } from './cap';
-import { getWebappPath } from './ui5-config';
+} from '../types/index.js';
+import { FileName } from '../constants.js';
+import { fileExists, findBy, findFileUp, readJSON } from '../file/index.js';
+import { hasDependency } from './dependencies.js';
+import { getCapProjectType } from './cap.js';
+import { getWebappPath } from './ui5-config.js';
 
 /**
  * Map artifact to file that is specific to the artifact type. Some artifacts can
@@ -241,6 +241,10 @@ export async function findRootsForPath(
         // Check if app is included in CAP project
         const projectRoot = await findCapProjectRoot(appRoot, undefined, { memFs, cache });
         if (projectRoot) {
+            if (projectRoot === appRoot) {
+                // appRoot is the CAP root itself, meaning there is no enclosing CAP project - not a supported app layout
+                return null;
+            }
             // App included in CAP
             return {
                 appRoot,
@@ -281,7 +285,7 @@ export async function findCapProjectRoot(
         }
         const { memFs, cache } = getFindOptions(options);
         const { root } = parse(path);
-        let projectRoot = dirname(path);
+        let projectRoot = path;
         while (projectRoot !== root) {
             if (!cache.capProjectType.has(projectRoot)) {
                 cache.capProjectType.set(projectRoot, await getCapProjectType(projectRoot, memFs));

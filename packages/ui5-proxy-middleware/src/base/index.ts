@@ -1,4 +1,4 @@
-export { ui5Proxy } from './proxy';
-export * from './constants';
-export * from './types';
-export * from './utils';
+export { ui5Proxy } from './proxy.js';
+export * from './constants.js';
+export * from './types.js';
+export * from './utils.js';

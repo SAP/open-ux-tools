@@ -1,2 +1,2 @@
-export * from './prompts';
-export * from './app-router-prompts';
+export * from './prompts.js';
+export * from './app-router-prompts.js';

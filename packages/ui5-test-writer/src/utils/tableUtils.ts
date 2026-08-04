@@ -1,6 +1,6 @@
-import type { TreeAggregation, TreeAggregations } from '@sap/ux-specification/dist/types/src/parser';
-import { getAggregations } from './modelUtils';
-import type { TableColumn, TableColumnFeatureData } from '../types';
+import type { TreeAggregation, TreeAggregations } from '@sap/ux-specification/dist/types/src/parser/index.js';
+import { getAggregations } from './modelUtils.js';
+import type { TableColumn, TableColumnFeatureData } from '../types.js';
 
 type ColumnModelItem = {
     custom?: boolean;

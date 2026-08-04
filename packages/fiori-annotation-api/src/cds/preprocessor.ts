@@ -12,7 +12,7 @@ import {
     RECORD_TYPE
 } from '@sap-ux/cds-annotation-parser';
 
-import type { JsonPointer } from '../types';
+import type { JsonPointer } from '../types/index.js';
 import {
     DELETE_TARGET_CHANGE_TYPE,
     DELETE_ANNOTATION_CHANGE_TYPE,
@@ -39,7 +39,7 @@ import {
     DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
     DELETE_RECORD_CHANGE_TYPE
-} from './change';
+} from './change.js';
 import type {
     Deletes,
     CDSDocumentChange,
@@ -48,11 +48,11 @@ import type {
     InsertAnnotation,
     MoveCollectionValue,
     DeleteRecord
-} from './change';
-import { getChildCount, type AstNode, type CDSDocument } from './document';
-import { getAstNodesFromPointer } from './pointer';
-import type { CompilerToken } from './cds-compiler-tokens';
-import { findLastTokenBeforePosition } from './cds-compiler-tokens';
+} from './change.js';
+import { getChildCount, type AstNode, type CDSDocument } from './document.js';
+import { getAstNodesFromPointer } from './pointer.js';
+import type { CompilerToken } from './cds-compiler-tokens.js';
+import { findLastTokenBeforePosition } from './cds-compiler-tokens.js';
 import { getElementAttribute } from '@sap-ux/odata-annotation-core';
 
 /**

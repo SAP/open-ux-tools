@@ -1,9 +1,9 @@
 import http from 'node:http';
-import type { SetupRedirectOptions } from '../../../src/auth/reentrance-ticket/redirect';
-import { setupRedirectHandling } from '../../../src/auth/reentrance-ticket/redirect';
-import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/abap-virtual-host-provider';
+import type { SetupRedirectOptions } from '../../../src/auth/reentrance-ticket/redirect.js';
+import { setupRedirectHandling } from '../../../src/auth/reentrance-ticket/redirect.js';
+import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/abap-virtual-host-provider.js';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { ConnectionError, TimeoutError } from '../../../src/auth';
+import { ConnectionError, TimeoutError } from '../../../src/auth/index.js';
 import request from 'supertest';
 import nock = require('nock');
 

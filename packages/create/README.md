@@ -288,15 +288,18 @@ Example:
 
 `npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser`
 
+`npx --yes @sap-ux/create@latest add system` (interactive mode)
+
 Options:
-- `--name <string>` _(required)_ - Display name for the system
-- `--url <string>` _(required)_ - URL of the backend system
+- `--name <string>` - Display name for the system
+- `--url <string>` - URL of the backend system
 - `--client <string>` - SAP client number (optional)
 - `--type <string>` - System type (AbapCloud | OnPrem | Generic) _(default: `OnPrem`)_
 - `--auth <string>` - Authentication type (basic | reentranceTicket | oauth2 | oauth2ClientCredential) _(default: `basic`)_
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
+- `--skip-check` - Skip connection verification before saving
 
 --------------------------------
 
@@ -398,9 +401,47 @@ Example:
 
 `npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100`
 
+`npx --yes @sap-ux/create@latest remove system` (interactive mode)
+
 Options:
-- `--url <string>` _(required)_ - URL of the backend system to remove
+- `--url <string>` - URL of the backend system to remove
 - `--client <string>` - SAP client number (optional)
+- `--force` - Skip confirmation prompt
+
+--------------------------------
+
+## [`update`](#update)
+
+Command group for updating saved resources. A subcommand is required.
+
+Usage: `npx --yes @sap-ux/create@latest update [subcommand] [options]`
+
+The available subcommands are: `system`
+
+
+--------------------------------
+
+## [`update system`](#update-system)
+
+Update an existing backend system in the saved systems store (`~/.fioritools`). The system is identified by its URL and optional SAP client.
+
+
+Example:
+
+`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --name "New Name"`
+
+`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser`
+
+`npx --yes @sap-ux/create@latest update system` (interactive mode)
+
+Options:
+- `--url <string>` - URL of the backend system to update
+- `--client <string>` - SAP client number to identify the system (optional)
+- `--name <string>` - New display name for the system
+- `--username <string>` - New username
+- `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
+- `--clear-credentials` - Remove stored credentials from the system
+- `--skip-check` - Skip connection verification before saving
 
 --------------------------------
 
@@ -410,7 +451,7 @@ Command group for changing existing SAP Fiori applications. A subcommand is requ
 
 Usage: `npx --yes @sap-ux/create@latest change [subcommand] [options]`
 
-The available subcommands are: `data-source`, `inbound` and `system`
+The available subcommands are: `data-source` and `inbound`
 
 --------------------------------
 
@@ -444,27 +485,6 @@ Example:
 
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
-
---------------------------------
-
-## [`change system`](#change-system)
-
-Update an existing backend system in the saved systems store (`~/.fioritools`). The system is identified by its URL and optional SAP client.
-
-
-Example:
-
-`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"`
-
-`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser`
-
-Options:
-- `--url <string>` _(required)_ - URL of the backend system to update
-- `--client <string>` - SAP client number to identify the system (optional)
-- `--name <string>` - New display name for the system
-- `--username <string>` - New username
-- `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
-- `--clear-credentials` - Remove stored credentials from the system
 
 --------------------------------
 

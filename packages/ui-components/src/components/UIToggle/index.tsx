@@ -1,1 +1,1 @@
-export * from './UIToggle';
+export * from './UIToggle.js';

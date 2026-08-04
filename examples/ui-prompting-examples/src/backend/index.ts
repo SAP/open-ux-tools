@@ -1,2 +1,2 @@
-export * from './connection';
-export * from './api';
+export * from './connection.js';
+export * from './api.js';

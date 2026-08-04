@@ -6,8 +6,14 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "generators"
+    "outDir": "generators",
+    "module": "commonjs",
+    "moduleResolution": "node"
   },
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
   "references": [
     {
       "path": "../axios-extension"

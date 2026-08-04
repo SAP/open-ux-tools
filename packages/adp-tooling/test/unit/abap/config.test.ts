@@ -1,12 +1,17 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { SystemLookup, getProviderConfig, type RequestOptions } from '../../../src';
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
+// MOCKS - use jest.unstable_mockModule for ESM compatibility
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
+
+const { SystemLookup } = await import('../../../src/source/systems.js');
+const { getProviderConfig } = await import('../../../src/abap/config.js');
+import type { RequestOptions } from '../../../src/abap/config.js';
 
 const logger = {
     error: jest.fn(),
@@ -26,10 +31,8 @@ const dummyDetails = {
 const system = dummyDetails.Name;
 const client = dummyDetails.Client;
 
-const mockIsAppStudio = isAppStudio as jest.Mock;
-
 describe('getProviderConfig', () => {
-    let getSystemByNameSpy: jest.SpyInstance;
+    let getSystemByNameSpy: ReturnType<typeof jest.spyOn>;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -38,7 +41,7 @@ describe('getProviderConfig', () => {
 
     it('should return a destination config when in AppStudio', async () => {
         mockIsAppStudio.mockReturnValue(true);
-        getSystemByNameSpy.mockResolvedValue(dummyDetails);
+        getSystemByNameSpy.mockResolvedValue(dummyDetails as any);
 
         const target = await getProviderConfig(system, logger);
 
@@ -47,7 +50,7 @@ describe('getProviderConfig', () => {
 
     it('should return an config with auth when not in BAS', async () => {
         mockIsAppStudio.mockReturnValue(false);
-        getSystemByNameSpy.mockResolvedValue(dummyDetails);
+        getSystemByNameSpy.mockResolvedValue(dummyDetails as any);
         const requestOptions: RequestOptions = {};
 
         const target = await getProviderConfig(system, logger, requestOptions, client);

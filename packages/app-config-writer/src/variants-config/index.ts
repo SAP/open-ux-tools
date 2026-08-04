@@ -1,1 +1,1 @@
-export * from './generateVariantsConfig';
+export * from './generateVariantsConfig.js';

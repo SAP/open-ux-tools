@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IStyleFunction, ICalloutContentStyles } from '@fluentui/react';
 import { TooltipHost } from '@fluentui/react';
 import type { UITooltipProps } from '../../../src/components/UITooltip/UITooltip';

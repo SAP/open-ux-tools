@@ -45,7 +45,7 @@ export class UISmallButton extends React.Component<IButtonProps, {}> {
                 height: 16,
                 fontSize: '11px',
                 fontWeight: 400,
-                borderRadius: 20,
+                borderRadius: 'var(--vscode-cornerRadius-circle, 9999px)',
                 paddingLeft: 13,
                 paddingRight: 13,
                 backgroundColor: 'var(--vscode-button-secondaryBackground, #5f6a79)',

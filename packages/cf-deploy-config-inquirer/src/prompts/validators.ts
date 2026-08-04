@@ -1,5 +1,5 @@
-import { t } from '../i18n';
-import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types';
+import { t } from '../i18n.js';
+import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types.js';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ErrorHandler } from '@sap-ux/inquirer-common';

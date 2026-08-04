@@ -1,6 +1,6 @@
 import React from 'react';
-import { UIFlexibleTableNoDataAlignment } from './types';
-import { composeClassNames } from './utils';
+import { UIFlexibleTableNoDataAlignment } from './types.js';
+import { composeClassNames } from './utils.js';
 
 export interface UIFlexibleTableRowNoDataProps {
     children?: string | React.ReactElement;

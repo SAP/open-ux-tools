@@ -1,5 +1,200 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+
+## 1.0.16
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+## 1.0.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Upgrade npm-run-all2 8.0.4 → 9.0.2 [[20a52ef](https://github.com/SAP/open-ux-tools/commit/20a52ef640141e4bcaa87482b44ce5049cbc2de1)]
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.4 → 1.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+
+## 1.0.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.10
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux-private/playwright 1.0.3 → 1.0.4
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/yaml 1.0.1 → 1.0.2
+
+## 1.0.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+
+## 1.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.2 → 1.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+
+## 1.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/project-access@2.1.2
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [d2b8d7b]
+- Updated dependencies [b326a9a]
+    - @sap-ux-private/playwright@1.0.2
+    - @sap-ux/project-access@2.1.0
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux-private/playwright@1.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/yaml@1.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux-private/playwright@1.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/yaml@1.0.0
+
 ## 0.0.87
 
 ### Patch Changes

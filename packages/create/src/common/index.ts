@@ -1,6 +1,6 @@
 import { execNpmCommand } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-export { promptYUIQuestions } from './prompts';
+export { promptYUIQuestions } from './prompts.js';
 
 /**
  * Run npm install command.

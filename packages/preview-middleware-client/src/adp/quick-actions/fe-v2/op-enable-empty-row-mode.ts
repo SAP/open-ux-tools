@@ -3,16 +3,16 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type {
     QuickActionContext,
     NestedQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { ANALYTICAL_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { ANALYTICAL_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types.js';
 
 import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
-import { areManifestChangesSupported, prepareManifestChange } from './utils';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { isA } from '../../../utils/core';
-import { getTooltipsForTableEmptyRowModeAction } from '../common/utils';
-import { preprocessActionExecution } from './create-table-custom-column';
+import { areManifestChangesSupported, prepareManifestChange } from './utils.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
+import { isA } from '../../../utils/core.js';
+import { getTooltipsForTableEmptyRowModeAction } from '../common/utils.js';
+import { preprocessActionExecution } from './create-table-custom-column.js';
 
 export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 

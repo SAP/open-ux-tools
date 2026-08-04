@@ -1,39 +1,83 @@
-import { TelemetrySettings } from '../../src/base/config-state';
-import type { ProjectInfo } from '../../src/base/types';
-import { initTelemetrySettings } from '../../src/tooling-telemetry';
-import * as storeMock from '@sap-ux/store';
+import { jest } from '@jest/globals';
+import type { ProjectInfo } from '../../src/base/types/index.js';
 
-const isAppStudioMock = jest.fn();
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-        isAppStudio: (): boolean => isAppStudioMock()
-    };
+jest.unstable_mockModule('applicationinsights', () => {
+    class TelemetryClient {
+        public config: any;
+        public setUseDiskRetryCaching: any;
+        public addTelemetryProcessor: any;
+        public trackEvent: any;
+        constructor() {
+            this.config = { samplingPercentage: 0 };
+            this.setUseDiskRetryCaching = jest.fn();
+            this.addTelemetryProcessor = jest.fn();
+            this.trackEvent = jest.fn();
+        }
+    }
+    return { TelemetryClient };
 });
 
+// @ts-expect-error jest mocking
+const isAppStudioMock: jest.Mock<boolean, [void]> = jest.fn();
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: (): boolean => isAppStudioMock()
+}));
+
+const actualFs = await import('node:fs');
+
 const readFileMock = jest.fn();
-jest.mock('fs', () => ({
-    ...(jest.requireActual('fs') as object),
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    default: {
+        ...actualFs.default,
+        promises: {
+            ...actualFs.default.promises,
+            readFile: (...args: any[]) => readFileMock(...args)
+        }
+    },
     promises: {
-        readFile: (...args: []) => readFileMock(...args)
+        ...actualFs.promises,
+        readFile: (...args: any[]) => readFileMock(...args)
     }
 }));
 
-jest.mock('../../src/base/utils/reporting', () => {
-    return {
-        reportRuntimeError: (error: Error) => {
-            throw error;
-        },
-        reportEnableTelemetryOnOff: jest.fn()
-    };
+const mockReportRuntimeError = jest.fn().mockImplementation((error) => {
+    throw error;
 });
+const mockReportEnableTelemetryOnOff = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../src/base/utils/reporting', () => ({
+    reportRuntimeError: mockReportRuntimeError,
+    reportEnableTelemetryOnOff: mockReportEnableTelemetryOnOff
+}));
+
+const mockGetService = jest.fn<typeof realStore.getService>();
+const mockGetFilesystemWatcherFor = jest.fn<typeof realStore.getFilesystemWatcherFor>();
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService,
+    getFilesystemWatcherFor: mockGetFilesystemWatcherFor,
+    Entity: { TelemetrySetting: 'telemetrySetting' },
+    TelemetrySetting: class {
+        enableTelemetry: boolean;
+        constructor(opts: any) {
+            this.enableTelemetry = opts?.enableTelemetry;
+        }
+    },
+    TelemetrySettingKey: class {}
+}));
+
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
+const { initTelemetrySettings } = await import('../../src/tooling-telemetry/index.js');
 
 const packageJson = {
     name: 'testProject',
     version: '0.0.1'
 } as ProjectInfo;
 
-const mockSettingFileContent = {
+const mockSettingFileContent: Record<string, boolean> = {
     'sap.ux.annotation.lsp.enableTelemetry': true,
     'sap.ux.applicationModeler.enableTelemetry': true,
     'sap.ux.help.enableTelemetry': true,
@@ -55,12 +99,9 @@ describe('toolsSuiteTelemetrySettings', () => {
      * Has existing central telemetry setting
      */
     it('Telemetry setting exists in store, enabled: true', async () => {
-        const getFilesystemWatcherForSpy = jest.spyOn(storeMock, 'getFilesystemWatcherFor');
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve({ enableTelemetry: true })
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: true })
+        });
 
         await initTelemetrySettings({
             resourceId: '',
@@ -70,18 +111,16 @@ describe('toolsSuiteTelemetrySettings', () => {
         });
 
         expect(readFileMock).toHaveBeenCalledTimes(0);
-        expect(getFilesystemWatcherForSpy).toHaveBeenCalledTimes(1);
+        expect(mockGetFilesystemWatcherFor).toHaveBeenCalledTimes(1);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
     });
 
     it('Telemetry setting exists in store, enabled: false', async () => {
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve({ enableTelemetry: false })
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: false })
+        });
 
         await initTelemetrySettings({
             resourceId: undefined,
@@ -102,14 +141,11 @@ describe('toolsSuiteTelemetrySettings', () => {
      * Set enableTelemetry to fase if any of the vscode extension setting is false.
      */
     it('Telemetry setting does not exist in store, at least one of legacy telemetry setting is disabled', async () => {
-        const getFilesystemWatcherForSpy = jest.spyOn(storeMock, 'getFilesystemWatcherFor');
         mockSettingFileContent['sap.ux.help.enableTelemetry'] = false;
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve(undefined),
-                write: () => jest.fn()
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve(undefined),
+            write: () => jest.fn()
+        });
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
@@ -121,7 +157,7 @@ describe('toolsSuiteTelemetrySettings', () => {
 
         expect(readFileMock).toHaveBeenCalledTimes(1);
         expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('settings.json'), 'utf-8');
-        expect(getFilesystemWatcherForSpy).toHaveBeenCalledTimes(0);
+        expect(mockGetFilesystemWatcherFor).toHaveBeenCalledTimes(0);
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
@@ -133,12 +169,10 @@ describe('toolsSuiteTelemetrySettings', () => {
      * Set enableTelemetry to true if all of the vscode extension setting are true.
      */
     it('Telemetry setting does not exist in store, all legacy telemetry settings are enabled', async () => {
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve(undefined),
-                write: () => jest.fn()
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve(undefined),
+            write: () => jest.fn()
+        });
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
@@ -159,12 +193,10 @@ describe('toolsSuiteTelemetrySettings', () => {
      * No central telemetry setting found. No deprecated vscode extension settings.
      */
     it('Telemetry setting does not exist in store, no legacy settings found', async () => {
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve(undefined),
-                write: () => jest.fn()
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve(undefined),
+            write: () => jest.fn()
+        });
         readFileMock.mockRejectedValueOnce(new Error('MockError: No file found'));
 
         await initTelemetrySettings({
@@ -185,12 +217,10 @@ describe('toolsSuiteTelemetrySettings', () => {
      */
     it('Telemetry setting does not exist in store for SBAS env, all legacy setting enabled', async () => {
         isAppStudioMock.mockReturnValue(true);
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve(undefined),
-                write: () => jest.fn()
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve(undefined),
+            write: () => jest.fn()
+        });
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
@@ -210,12 +240,10 @@ describe('toolsSuiteTelemetrySettings', () => {
     it('Telemetry setting does not exist in store for SBAS env, one legacy setting disabled', async () => {
         mockSettingFileContent['sap.ux.help.enableTelemetry'] = false;
         isAppStudioMock.mockReturnValue(true);
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve(undefined),
-                write: () => jest.fn()
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve(undefined),
+            write: () => jest.fn()
+        });
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
@@ -241,12 +269,10 @@ describe('toolsSuiteTelemetrySettings', () => {
             value: 'Unknown'
         });
 
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve(undefined),
-                write: () => jest.fn()
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve(undefined),
+            write: () => jest.fn()
+        });
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({

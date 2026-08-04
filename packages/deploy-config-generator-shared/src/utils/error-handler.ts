@@ -1,8 +1,9 @@
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { DeploymentGenerator } from '../base/generator';
-import { t } from './i18n';
-import { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg } from './constants';
-import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import { DeploymentGenerator } from '../base/generator.js';
+import { t } from './i18n.js';
+import { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg } from './constants.js';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 
 export enum ERROR_TYPE {
     ABORT_SIGNAL = 'ABORT_SIGNAL',

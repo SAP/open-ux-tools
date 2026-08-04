@@ -1,5 +1,5 @@
 import { Range, getLineOffsets, rangeAt } from '@sap-ux/text-document-utils';
-import type { CommentLine, KeyElementLine, PropertyList, TextNode, Token } from '../types';
+import type { CommentLine, KeyElementLine, PropertyList, TextNode, Token } from '../types.js';
 
 /**
  * Properties list class.

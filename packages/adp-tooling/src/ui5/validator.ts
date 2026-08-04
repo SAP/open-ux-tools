@@ -1,8 +1,8 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import axios from 'axios';
-import { t } from '../i18n';
-import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from './format';
-import { isOfflineError } from './network';
+import { t } from '../i18n.js';
+import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from './format.js';
+import { isOfflineError } from './network.js';
 
 /**
  * Validates a specified UI5 version by checking its availability on the SAP CDN.

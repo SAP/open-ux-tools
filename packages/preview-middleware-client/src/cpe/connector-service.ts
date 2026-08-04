@@ -1,8 +1,8 @@
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import { reloadApplication, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
-import type { ActionSenderFunction, SubscribeFunction } from './types';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
-import { AdditionalChangeInfo } from '../utils/additional-change-info';
+import type { ActionSenderFunction, SubscribeFunction } from './types.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { AdditionalChangeInfo } from '../utils/additional-change-info.js';
 /**
  * A Class of WorkspaceConnectorService
  */

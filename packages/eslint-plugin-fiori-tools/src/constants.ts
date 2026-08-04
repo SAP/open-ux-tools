@@ -1,5 +1,6 @@
 export const UI_LINE_ITEM = 'com.sap.vocabularies.UI.v1.LineItem';
 export const COMMON_TEXT = 'com.sap.vocabularies.Common.v1.Text';
+export const COMMON_TEXT_ARRANGEMENT = 'com.sap.vocabularies.Common.v1.TextArrangement';
 export const COMMON_LABEL = 'com.sap.vocabularies.Common.v1.Label';
 export const UI_HIDDEN = 'com.sap.vocabularies.UI.v1.Hidden';
 export const UI_TEXT_ARRANGEMENT = 'com.sap.vocabularies.UI.v1.TextArrangement';

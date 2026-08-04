@@ -1,5 +1,5 @@
 import { Position, Range } from '@sap-ux/text-document-utils';
-import { arePositionsEqual, areRangesEqual } from '../../src';
+import { arePositionsEqual, areRangesEqual } from '../../src/index.js';
 
 describe('Range utility functions', () => {
     test('arePositionsEqual', () => {

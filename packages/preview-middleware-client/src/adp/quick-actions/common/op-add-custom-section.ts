@@ -2,14 +2,14 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
-import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils.js';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 
 export const OP_ADD_CUSTOM_SECTION = 'op-add-custom-section';
 const CONTROL_TYPES = ['sap.uxap.ObjectPageLayout'];
