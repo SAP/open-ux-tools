@@ -4,7 +4,7 @@ import { ANNOTATION_TYPE, nodeRange, EMPTY_VALUE_TYPE, ReservedProperties } from
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
 
-import type { ConvertResult, NodeHandler, Subtree } from '../handler.js';
+import type { ConvertResult, NodeHandler } from '../handler.js';
 import { getTerm } from '../type-resolver.js';
 import type { VisitorState } from '../visitor-state.js';
 import { createQualifierAttribute, createTermAttribute } from '../creators.js';
@@ -36,7 +36,7 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
 
     const isEmbeddedAnnotation = state.elementStack.length > 0;
 
-    const parsedTermName = praseTermName(state.context.groupName, annotation, isEmbeddedAnnotation);
+    const parsedTermName = parseTermName(state.context.groupName, annotation, isEmbeddedAnnotation);
 
     element.attributes[Edm.Term] = createTermAttribute(
         parsedTermName.qualifiedName,
@@ -101,27 +101,32 @@ interface ParsedTermName {
     qualifierRange?: Range;
 }
 
-function praseTermName(
+/**
+ * Parses term name.
+ *
+ * @param groupName - annotation group name (vocabulary)
+ * @param annotation - annotation object
+ * @param isEmbeddedAnnotation - flag that is set to true for embedded annotations
+ * @returns parsed annotation term
+ */
+function parseTermName(
     groupName: string | undefined,
     annotation: Annotation,
     isEmbeddedAnnotation: boolean
 ): ParsedTermName {
     const termSegments = annotation.term.segments;
-    // const termSegments = getTermSegments(annotation, isEmbeddedAnnotation);
     if (groupName && !isEmbeddedAnnotation) {
-        return pp(groupName, termSegments[0]);
+        return parseTerm(groupName, termSegments[0]);
     } else {
         if (termSegments.length < 2) {
             // if term segments are less than 2, we can't parse it as a term
-            console.log(termSegments);
-
-            return pp('', termSegments[0]);
+            return parseTerm('', termSegments[0]);
         }
-        return pp(termSegments[0].value, termSegments[1], termSegments[0].range?.start);
+        return parseTerm(termSegments[0].value, termSegments[1], termSegments[0].range?.start);
     }
 }
 
-function pp(namespace: string | undefined, identifier: Identifier, namespaceStart?: Position): ParsedTermName {
+function parseTerm(namespace: string | undefined, identifier: Identifier, namespaceStart?: Position): ParsedTermName {
     const [term, qualifier] = identifier.value.split('#');
     const segmentRange = nodeRange(identifier, false);
     const termNameRange =
@@ -142,7 +147,6 @@ function pp(namespace: string | undefined, identifier: Identifier, namespaceStar
         qualifiedName,
         termNameRange
     };
-    // console.log(parsedTermName);
     if (qualifier) {
         parsedTermName.qualifier = qualifier;
         const qualifierRange = nodeRange(identifier, false);
@@ -153,19 +157,6 @@ function pp(namespace: string | undefined, identifier: Identifier, namespaceStar
     }
 
     return parsedTermName;
-}
-
-/**
- * Get the term segments from an annotation.
- *
- * @param annotation - The annotation object.
- * @param isEmbeddedAnnotation - A flag indicating whether the annotation is embedded.
- * @returns An array of string segments extracted from the annotation's term property.
- */
-function getTermSegments(annotation: Annotation, isEmbeddedAnnotation: boolean): string[] {
-    return annotation.term.segments.map((identifier, index) =>
-        index === 0 && isEmbeddedAnnotation ? identifier.value.slice(1) : identifier.value
-    );
 }
 
 /**
@@ -193,17 +184,4 @@ function getTermNameRange(
         return nodeRange(node.term, false);
     }
     return parsedTermName.termNameRange;
-}
-
-/**
- * Gets the flattened segments from the term of the given annotation, considering the context and nesting.
- *
- * @param state - The visitor state.
- * @param annotation - The annotation containing the term with segments.
- * @returns Returns the flattened segments of the term.
- */
-function getFlattenedSegments(state: VisitorState, annotation: Annotation): Identifier[] {
-    const isEmbeddedAnnotation = state.elementStack.length > 0;
-    const trailingTermSegmentStart = state.context.groupName && !isEmbeddedAnnotation ? 1 : 2;
-    return annotation.term.segments.slice(trailingTermSegmentStart);
 }

@@ -1,8 +1,10 @@
-const { stat, readdirSync, readFileSync, writeFileSync, statSync } = require('fs');
-const { join, dirname } = require('path');
-const { parse } = require('../dist/parser');
-const { buildAst } = require('../dist/transformer');
-const {
+import { stat, readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+import { parse } from '../dist/parser/index.js';
+import { buildAst } from '../dist/transformer/index.js';
+import {
     TOKEN_TYPE,
     EMPTY_VALUE_TYPE,
     NUMBER_LITERAL_TYPE,
@@ -29,7 +31,7 @@ const {
     FLATTENED_PATH_TYPE,
     FLATTENED_ANNOTATION_SEGMENT_TYPE,
     FLATTENED_PROPERTY_SEGMENT_TYPE
-} = require('../dist');
+} from '../dist/index.js';
 const compactPosition = (position) => `(${position.line},${position.character})`;
 const compactRange = (range) => `[${compactPosition(range.start)}..${compactPosition(range.end)}]`;
 const rangePropertyPattern = /[a-z]*ranges?/i;
@@ -56,7 +58,14 @@ const NODE_PROPERTIES = {
     [INCORRECT_EXPRESSION_TYPE]: [...nodeProperties, 'message', ...expressionProperties],
     [CORRECT_EXPRESSION_TYPE]: [...nodeProperties, 'operatorName', ...expressionProperties],
     [RECORD_PROPERTY_TYPE]: [...nodeProperties, 'colon', 'name', 'value'],
-    [RECORD_TYPE]: [...nodeProperties, 'properties', 'annotations', 'flattenedExpressions', 'commas', ...delimiterTokens],
+    [RECORD_TYPE]: [
+        ...nodeProperties,
+        'properties',
+        'annotations',
+        'flattenedExpressions',
+        'commas',
+        ...delimiterTokens
+    ],
     [COLLECTION_TYPE]: [...nodeProperties, 'items', 'commas', ...delimiterTokens],
     [QUALIFIER_TYPE]: [...valueNodeProperties],
     [ANNOTATION_TYPE]: [...nodeProperties, 'term', 'qualifier', 'colon', 'value'],
@@ -218,6 +227,7 @@ const getAllAssignments = (base, allAssignment = []) => {
 const update = async () => {
     const args = process.argv[2];
     const cstOrAst = process.argv[3];
+    const __dirname = dirname(fileURLToPath(import.meta.url));
     const BASE = join(__dirname, '..', 'test', 'data');
     const allAssignments = getAllAssignments(BASE);
     const tests = args ? [join(BASE, args, 'assignment.txt')] : allAssignments;

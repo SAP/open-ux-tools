@@ -54,10 +54,7 @@ export class FlattenedPathConverter {
         this.path = path;
         this.reset();
         while (this.peek()) {
-            const current = this.peek();
-            if (!current) {
-                break;
-            }
+            const current = this.peek() as InputToken;
             if (current.type === IDENTIFIER_TYPE) {
                 this.convertIdentifier(current);
             } else if (current.type === SEPARATOR_TYPE) {
@@ -118,7 +115,8 @@ export class FlattenedPathConverter {
      */
     private convertIdentifier(identifier: Identifier): void {
         const isFirstSegment = this.index === 0;
-        const isVocabulary = this.supportedVocabularyAliases.has(identifier.value.replace('@', '')) || identifier.value === '@';
+        const isVocabulary =
+            this.supportedVocabularyAliases.has(identifier.value.replace('@', '')) || identifier.value === '@';
 
         const range = structuredClone(identifier.range); // this needs to be called before `convertVocabulary`, because it may consume another token
         const [vocabulary, prefix, current] = isVocabulary

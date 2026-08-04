@@ -296,6 +296,9 @@ export type AnnotationNodeType =
     | typeof IDENTIFIER_TYPE
     | typeof TOKEN_TYPE
     | typeof FLATTENED_EXPRESSION_TYPE
+    | typeof FLATTENED_PATH_TYPE
+    | typeof FLATTENED_ANNOTATION_SEGMENT_TYPE
+    | typeof FLATTENED_PROPERTY_SEGMENT_TYPE
     | AnnotationValueType;
 
 export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Range | undefined => {

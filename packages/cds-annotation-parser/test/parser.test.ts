@@ -42,10 +42,10 @@ describe('cds annotation parser', () => {
     const skip: string[] = [];
     const todo: string[] = [];
     const only: string[] = [
-        // '/valid/qualifier/flat-syntax-3', 
+        // '/valid/qualifier/flat-syntax-3',
         // '/valid/qualifier/flat-syntax-with-spaces',
         // '/valid/qualifier/flat-syntax-in-group',
-        '/invalid/missing/value-with-flattened-syntax',
+        // '/invalid/missing/value-with-flattened-syntax',
         // '/valid/qualifier/flat-syntax-qualifier-in-last-segment',
         // '/valid/struct/flattened',
         // '/valid/term/boolean-value'

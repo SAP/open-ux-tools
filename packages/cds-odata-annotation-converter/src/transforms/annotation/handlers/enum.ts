@@ -21,7 +21,6 @@ export const enumHandler: NodeHandler<Enum> = {
     type: ENUM_TYPE,
     convert(state: VisitorState, node: Enum): Element | undefined {
         if (!state.context.valueType) {
-            console.log('rip')
             return;
         }
 

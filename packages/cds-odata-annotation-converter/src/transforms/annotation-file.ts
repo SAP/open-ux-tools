@@ -35,10 +35,7 @@ export { TARGET_TYPE } from '@sap-ux/odata-annotation-core-types';
 
 const SERVICE_NAME_PLACEHOLDER = '<ServiceName>';
 
-export const toAssignment = (
-    annotation: AnnotationAssignmentToken,
-    vocabularyService: VocabularyService
-): Assignment => {
+export const toAssignment = (annotation: AnnotationAssignmentToken): Assignment => {
     // Work around solution: CDS returns annotation text along with entity type property
     let text = annotation.text;
     if (
@@ -466,7 +463,7 @@ function prepareTargetMap(
 ): Map<string, Target> {
     const targetMap = new Map<string, Target>();
     for (const annotation of fileIndex.annotationAssignments) {
-        const assignment = toAssignment(annotation, vocabularyService);
+        const assignment = toAssignment(annotation);
         updateTargetMap(annotation, compilerFacade, assignment, targetMap);
     }
     return targetMap;

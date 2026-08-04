@@ -3,8 +3,8 @@
   "range": "[(0,0)..(0,67)]",
   "path": {
     "type": "flattened-path",
-    "range": "[(0,0)..(0,55)]",
-    "value": "UI.HeaderInfo#abc  .  Description.@Core.Description",
+    "range": "[(0,0)..(0,62)]",
+    "value": "UI.HeaderInfo#abc  .  Description.@Core.Description#third",
     "segments": [
       {
         "type": "flattened-annotation-segment",

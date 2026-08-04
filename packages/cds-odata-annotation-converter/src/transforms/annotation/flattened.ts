@@ -1,11 +1,9 @@
 import type {
     AnnotationValue,
     StringLiteral,
-    Annotation,
     FlattenedPathSegment,
     FlattenedPropertySegment,
     FlattenedExpression,
-    AnnotationNode,
     FlattenedAnnotationSegment
 } from '@sap-ux/cds-annotation-parser';
 import {
@@ -222,19 +220,12 @@ function convertToExpandedStructure(
             // handle embedded annotation syntax (supported starting with cds-compiler v3)
             // e.g. @Common.Text.@UI.TextArrangement : #TextFirst
             const vocabulary = segment.vocabulary?.value ?? state.context.groupName;
-            // if (!vocabulary) {
-            //     console.warn(`No vocabulary found for segment: ${segment.term.value}. This should not happen.`);
-            //     i++;
-            //     continue;
-            // }
             if (i === 0 && segment.vocabulary?.value && state.context.groupName) {
                 // first segment specifies a vocabulary while inside an annotation group — warn once (embedded annotations at i > 0 are exempt)
                 addDiagnosticForGroupNameAndTermVocabulary(state, segment);
             }
             const termName = vocabulary ? `${vocabulary}.${segment.term.value}` : segment.term.value;
             const termValueRange = createRange(segment.range?.start, segment.term.range?.end);
-            console.log(vocabulary, termName);
-
             const embeddedAnnotation = createElementNode({
                 name: Edm.Annotation,
                 range: propertyRange,

@@ -407,7 +407,6 @@ class CstToAstVisitor extends Visitor {
     private toTopLevelAnnotationPath(assignment: AssignmentCstNode, location: CstNodeLocation): AstResult {
         const path = this.visit(assignment.children.path[0]) as Path;
         const pathIsVocabularyGroup = supportedVocabularyAliases.has(path.value);
-        console.log(JSON.stringify(path, undefined, 2));
         if (path.segments.length !== 1 || (path.segments.length === 1 && !pathIsVocabularyGroup)) {
             const firstSegmentIsVocabulary = supportedVocabularyAliases.has(path.segments[0].value);
             const minFlattenedSegmentCount = firstSegmentIsVocabulary ? 3 : 2;
@@ -557,7 +556,6 @@ class CstToAstVisitor extends Visitor {
             return undefined;
         }
         if (assignment.children.path) {
-            console.log('aaa');
             return this.toTopLevelAnnotationPath(assignment, location);
         }
         if (assignment.children.value && assignment.children.Colon && !assignment.children.path) {
