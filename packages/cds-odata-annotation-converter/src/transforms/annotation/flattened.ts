@@ -61,24 +61,10 @@ export function convertFlattenedPath(
     //             Property    Property      Enum Member
     let root: Element | undefined;
     let parent: Element | undefined;
-    // console.log(segments);
     const expandedStructures = convertToExpandedStructure(state, expression, value);
-    console.log(
-        expandedStructures.length,
-        expression.path.segments.map((x) => (x.type === 'flattened-annotation-segment' ? x.term : x.name))
-    );
-    // console.log(expandedStructures);
     if (!expandedStructures.length) {
         return;
     }
-    // const last = expandedStructures[expandedStructures.length - 1];
-    // if (last.kind === 'annotation' && annotation?.qualifier) {
-    //     // last qualifier is parsed in annotation AST node and we need to attach it to the last flattened annotation
-    //     last.element.attributes[Edm.Qualifier] = createQualifierAttribute(
-    //         annotation.qualifier.value,
-    //         nodeRange(annotation.qualifier, false)
-    //     );
-    // }
     for (const expandedStructure of expandedStructures) {
         if (parent) {
             if (expandedStructure.kind === 'record-type' || expandedStructure.kind === 'annotation') {
