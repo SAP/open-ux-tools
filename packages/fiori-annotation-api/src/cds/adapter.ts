@@ -30,8 +30,7 @@ import type {
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { Project } from '@sap-ux/project-access';
-import type { Annotation } from '@sap-ux/cds-annotation-parser';
-import type { Record as RecordNode } from '@sap-ux/cds-annotation-parser';
+import type { Annotation, Record as RecordNode } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
     ANNOTATION_GROUP_TYPE,
