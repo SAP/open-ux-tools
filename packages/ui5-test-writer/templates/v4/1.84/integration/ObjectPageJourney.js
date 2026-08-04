@@ -62,7 +62,7 @@ sap.ui.define([
 <% } -%>
 
 <% if (headerTitle) { -%>
-        opaTest("Check header title of the Object Page", function (Given, When, Then) {
+        opaTest("Check header title of the Object Page", function (_Given, _When, Then) {
             Then.onThe<%- name%>Generated.onHeader().iCheckTitlePath(<%- JSON.stringify(headerTitle) %>);
         });
 
