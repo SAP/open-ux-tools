@@ -165,6 +165,7 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
  * Returns an empty array if the section is absent or the file cannot be read.
  *
  * @param deployConfigPath - path to the ui5-deploy.yaml file
+ * @param logger - optional logger; if provided, a warning is emitted when the file cannot be read
  * @returns normalised prefix patterns e.g. ['/test/', '/localService/']
  */
 export async function readBuilderExcludes(deployConfigPath: string, logger?: Logger): Promise<string[]> {
@@ -177,7 +178,7 @@ export async function readBuilderExcludes(deployConfigPath: string, logger?: Log
             return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
         });
     } catch (e) {
-        logger?.warn(`Could not read builder excludes from ${deployConfigPath}: ${(e as Error)?.message ?? String(e)}`);
+        logger?.warn(`Could not read builder excludes from ${deployConfigPath}: ${e instanceof Error ? e.message : String(e)}`);
         return [];
     }
 }
