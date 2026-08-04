@@ -140,6 +140,10 @@ describe('Archive Generation', () => {
                 getBuffer: () => Promise.resolve(Buffer.from(''))
             },
             {
+                getPath: () => `/resources/${projectName}/testXdir/file.js`,
+                getBuffer: () => Promise.resolve(Buffer.from(''))
+            },
+            {
                 getPath: () => `/resources/${projectName}/keep/file.js`,
                 getBuffer: () => Promise.resolve(Buffer.from(''))
             }
@@ -148,7 +152,10 @@ describe('Archive Generation', () => {
         const buffer = await createUi5Archive(nullLogger, mockDotProject as any, projectName, ['/test.dir/']);
         const zip = new AdmZip(buffer);
         const entries = zip.getEntries().map((e) => e.entryName);
+        // Pattern /test.dir/ should exclude 'test.dir/file.js' (literal dot match)
         expect(entries).not.toContain('test.dir/file.js');
+        // 'testXdir/' must NOT be excluded — only old RegExp (dot = any char) would wrongly exclude it
+        expect(entries).toContain('testXdir/file.js');
         expect(entries).toContain('keep/file.js');
     });
 });
