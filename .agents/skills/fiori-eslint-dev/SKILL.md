@@ -26,7 +26,7 @@ Add a new ESLint rule to `@sap-ux/eslint-plugin-fiori-tools` following the estab
 
 | Type | Use when | Reference file |
 |---|---|---|
-| **XML annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files | `references/xml-annotation.md` |
+| **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files | `references/annotation.md` |
 | **Manifest JSON rule** | Validates `manifest.json` properties | `references/manifest-json.md` |
 | **Flex change file rule** | Validates `webapp/changes/*.change` (V2 flex settings) | `references/flex-change.md` |
 | **JavaScript rule** | Validates JS/TS source code | `references/js-rule.md` |
@@ -37,7 +37,7 @@ Infer from the request:
 - **Auto-fix** — yes/no
 - **Severity** — `error` or `warning`. Rules in `recommended-for-s4hana` MUST be `warn`.
 
-**Read the matching reference file immediately**, then read all the files it lists in a single parallel batch.
+**Read the matching reference file immediately**, then read all the files it lists in a single parallel batch. If the rule spans multiple types (e.g. annotations + manifest, or annotations + flex changes), read all matching reference files and combine their templates and access patterns.
 
 ---
 
@@ -143,7 +143,7 @@ FEAT: add sap-my-new-rule rule for [short description]
 
 | Rule type | Use in `check()` | Why |
 |---|---|---|
-| **XML annotation** | `context.sourceCode.projectContext.index.apps` | `linkedModel.apps` silently excludes apps with unresolvable annotation targets |
+| **Annotation** | `context.sourceCode.projectContext.index.apps` | `linkedModel.apps` silently excludes apps with unresolvable annotation targets |
 | **Manifest JSON** | `context.sourceCode.projectContext.linkedModel.apps` | Requires linked pages to find manifest config paths |
 | **Flex change** | `context.sourceCode.projectContext.linkedModel.apps` | Guard on `FioriChangeSourceCode` first; linked model provides change file config |
 | **JavaScript** | Standard ESLint `context` — no `projectContext` | JS rules don't use the Fiori project model |

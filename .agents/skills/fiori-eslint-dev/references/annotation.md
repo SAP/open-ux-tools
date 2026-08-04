@@ -1,4 +1,4 @@
-# XML Annotation Rule — Fast Path
+# Annotation Rule — Fast Path
 
 ## Read all of these in parallel (one turn):
 
