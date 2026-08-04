@@ -298,7 +298,13 @@ function resolveDefaultKey(
         const itemsKey = keys.find((k) => k.endsWith(`/${pageMacroDefinition}/${macrosPrefix}:items`));
         if (itemsKey) {
             // Prefer the first tab's content (IconTabFilter) directly under the items slot.
-            const tabKey = keys.find((k) => k.startsWith(`${itemsKey}/`) && k.endsWith('/IconTabFilter'));
+            // The expected suffix is exactly 3 segments: IconTabBar/items/IconTabFilter.
+            const tabKey = keys.find(
+                (k) =>
+                    k.startsWith(`${itemsKey}/`) &&
+                    k.endsWith('/IconTabFilter') &&
+                    k.slice(itemsKey.length + 1).split('/').length === 3
+            );
             return tabKey ?? itemsKey;
         }
     }

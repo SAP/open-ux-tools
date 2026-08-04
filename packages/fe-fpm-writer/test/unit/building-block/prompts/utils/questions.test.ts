@@ -421,6 +421,20 @@ describe('utils - questions', () => {
             expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items');
         });
 
+        test('ignores a deeply nested IconTabFilter and defaults to the first direct tab', async () => {
+            writeView(
+                '<macros:Page id="Page"><macros:items><IconTabBar id="itb"><items>' +
+                    '<IconTabFilter id="itf1" text="Tab 1">' +
+                    '<content><IconTabBar id="inner"><items>' +
+                    '<IconTabFilter id="itf2" text="Inner Tab"/>' +
+                    '</items></IconTabBar></content>' +
+                    '</IconTabFilter>' +
+                    '</items></IconTabBar></macros:items></macros:Page>'
+            );
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items/IconTabBar/items/IconTabFilter');
+        });
+
         test('leaves the default unchanged (no items/tab preselection) when the view has no macros:Page', async () => {
             writeView('<Page title="Main"><content/></Page>');
             const choices = await getChoices();
