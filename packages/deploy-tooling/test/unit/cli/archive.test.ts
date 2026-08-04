@@ -105,12 +105,12 @@ describe('Archive Generation', () => {
     const files: Partial<Resource>[] = [];
     // Should be included
     files.push({
-        getPath: () => `${projectName}/~path`,
+        getPath: () => `/resources/${projectName}/~path`,
         getBuffer: () => Promise.resolve(Buffer.from(''))
     });
     // Should be excluded
     files.push({
-        getPath: () => `${projectName}/test/change_loader.js`,
+        getPath: () => `/resources/${projectName}/test/change_loader.js`,
         getBuffer: () => Promise.resolve(Buffer.from(''))
     });
     const mockProject = {
@@ -131,5 +131,24 @@ describe('Archive Generation', () => {
         const buffer = await createUi5Archive(nullLogger, mockProject as any, projectName);
         const zip = new AdmZip(buffer);
         expect(zip.getEntryCount()).toBe(2);
+    });
+
+    test('Create archive excludes pattern with regex metacharacter (dot)', async () => {
+        const dotFiles: Partial<Resource>[] = [
+            {
+                getPath: () => `/resources/${projectName}/test.dir/file.js`,
+                getBuffer: () => Promise.resolve(Buffer.from(''))
+            },
+            {
+                getPath: () => `/resources/${projectName}/keep/file.js`,
+                getBuffer: () => Promise.resolve(Buffer.from(''))
+            }
+        ];
+        const mockDotProject = { byGlob: jest.fn().mockResolvedValue(dotFiles) };
+        const buffer = await createUi5Archive(nullLogger, mockDotProject as any, projectName, ['/test.dir/']);
+        const zip = new AdmZip(buffer);
+        const entries = zip.getEntries().map((e) => e.entryName);
+        expect(entries).not.toContain('test.dir/file.js');
+        expect(entries).toContain('keep/file.js');
     });
 });

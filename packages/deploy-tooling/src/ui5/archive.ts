@@ -23,12 +23,14 @@ export async function createUi5Archive(
     const zip = new ZipFile();
     const resources = await workspace.byGlob(`${prefix}**/*`);
     for (const resource of resources) {
-        if (!exclude.some((regex) => RegExp(regex, 'g').exec(resource.getPath()))) {
-            const path = resource.getPath().replace(prefix, '');
-            logger.debug(`Adding ${path}`);
-            const buffer = await resource.getBuffer();
-            zip.addFile(path, buffer);
+        const path = resource.getPath().replace(prefix, '');
+        if (exclude.some((pattern) => path.startsWith(pattern.startsWith('/') ? pattern.slice(1) : pattern))) {
+            logger.debug(`Excluding ${path}`);
+            continue;
         }
+        logger.debug(`Adding ${path}`);
+        const buffer = await resource.getBuffer();
+        zip.addFile(path, buffer);
     }
     logger.info('Archive created.');
     return zip.toBuffer();
