@@ -3,7 +3,6 @@ import type { DownloadODataServiceMetadataInput, DownloadODataServiceMetadataOut
 import path from 'node:path';
 import fs from 'node:fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getServiceMetadata, findSystem } from './services/sap-system.js';
 
@@ -22,13 +21,27 @@ const EMPTY_PARAMS: DownloadODataServiceMetadataOutput['parameters'] = {
 export async function downloadODataServiceMetadata(
     params: DownloadODataServiceMetadataInput
 ): Promise<DownloadODataServiceMetadataOutput> {
-    const sapSystemQuery = String(params.sapSystemQuery ?? '').trim(); // can be empty
+    const sapSystemQuery = String(params.sapSystemQuery ?? '').trim();
     const servicePath = String(params.servicePath ?? '').trim();
+
+    // Check if we're in AppStudio - if so, this tool should not be used
+    // Service Center MCP should be used instead for BAS/Destination scenarios
+    if (isAppStudio()) {
+        return {
+            status: 'Error',
+            message:
+                'This tool is not supported in SAP Business Application Studio. Please use the Service Center MCP server tool to retrieve service metadata when working with destinations.',
+            parameters: EMPTY_PARAMS,
+            appPath: params.appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
 
     if (!servicePath) {
         return {
             status: 'Error',
-            message: 'Missing required parameter: servicePath',
+            message: 'Missing required parameter: servicePath must be provided',
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
@@ -50,16 +63,14 @@ export async function downloadODataServiceMetadata(
         }
         const foundSystem = findResult.system;
 
-        const metadata = await getServiceMetadata(foundSystem, servicePath);
+        // At this point, foundSystem should be a BackendSystem (VSCode only)
+        const metadata = await getServiceMetadata(foundSystem as BackendSystem, servicePath);
         const metadataFilePath = path.join(params.appPath, 'metadata.xml');
         fs.writeFileSync(metadataFilePath, metadata, 'utf-8');
 
-        const isAS = isAppStudio();
-        const dest = foundSystem as Destination;
         const backend = foundSystem as BackendSystem;
-        const host = isAS ? dest.Host : backend.url;
-        const client = isAS ? dest['sap-client'] : backend.client;
-        const destination = isAS ? dest.Name : undefined;
+        const host = backend.url;
+        const client = backend.client;
 
         return {
             status: 'Success',
@@ -69,8 +80,7 @@ export async function downloadODataServiceMetadata(
                 host,
                 client,
                 servicePath,
-                metadataFilePath,
-                destination
+                metadataFilePath
             },
             appPath: params.appPath,
             timestamp: new Date().toISOString()

@@ -148,7 +148,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
         expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
@@ -163,7 +163,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
         expect(mockFindSystem).not.toHaveBeenCalled();
     });
 
@@ -176,7 +176,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
     });
 
     test('should return error response from findSystem failure', async () => {
@@ -293,7 +293,7 @@ describe('downloadODataServiceMetadata', () => {
             mockFindSystem.mockResolvedValue({ system: mockDestination });
         });
 
-        test('should return destination name when isAppStudio is true', async () => {
+        test('should return error when isAppStudio is true', async () => {
             const params: DownloadODataServiceMetadataInput = {
                 appPath: mockAppPath,
                 sapSystemQuery: 'MY_DESTINATION',
@@ -302,35 +302,23 @@ describe('downloadODataServiceMetadata', () => {
 
             const result = await downloadODataServiceMetadata(params);
 
-            expect(result.status).toBe('Success');
-            expect((result.parameters as any).destination).toBe('MY_DESTINATION');
+            expect(result.status).toBe('Error');
+            expect(result.message).toContain('Service Center MCP');
         });
 
-        test('should use destination Host as host when isAppStudio is true', async () => {
+        test('should not call getServiceMetadata when isAppStudio is true', async () => {
             const params: DownloadODataServiceMetadataInput = {
                 appPath: mockAppPath,
                 sapSystemQuery: 'MY_DESTINATION',
                 servicePath: mockServicePath
             };
 
-            const result = await downloadODataServiceMetadata(params);
+            await downloadODataServiceMetadata(params);
 
-            expect((result.parameters as any).host).toBe('https://bas-system.example.com');
+            expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         });
 
-        test('should use destination sap-client as client when isAppStudio is true', async () => {
-            const params: DownloadODataServiceMetadataInput = {
-                appPath: mockAppPath,
-                sapSystemQuery: 'MY_DESTINATION',
-                servicePath: mockServicePath
-            };
-
-            const result = await downloadODataServiceMetadata(params);
-
-            expect((result.parameters as any).client).toBe('200');
-        });
-
-        test('should not return destination when isAppStudio is false', async () => {
+        test('should work normally when isAppStudio is false', async () => {
             mockIsAppStudio.mockReturnValue(false);
             mockFindSystem.mockResolvedValue({ system: mockSapSystem });
 
@@ -342,8 +330,9 @@ describe('downloadODataServiceMetadata', () => {
 
             const result = await downloadODataServiceMetadata(params);
 
-            expect((result.parameters as any).destination).toBeUndefined();
+            expect(result.status).toBe('Success');
             expect((result.parameters as any).host).toBe('https://test.example.com');
+            expect((result.parameters as any).destination).toBeUndefined();
         });
     });
 });

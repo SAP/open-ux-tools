@@ -25,6 +25,9 @@
       "path": "../deploy-config-sub-generator"
     },
     {
+      "path": "../fe-fpm-writer"
+    },
+    {
       "path": "../feature-toggle"
     },
     {

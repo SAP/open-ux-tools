@@ -1,5 +1,57 @@
 # @sap-ux/ui5-application-writer
 
+## 2.1.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+
+## 2.1.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 2.1.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- Set up TypeScript development environment after downloading a TypeScript app from ABAP repository [[c32b85f](https://github.com/SAP/open-ux-tools/commit/c32b85f9522b87950397682e6adfc48ca3174ece)]
+
+## 2.0.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+
+## 2.0.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+
 ## 2.0.6
 
 ### Patch Changes

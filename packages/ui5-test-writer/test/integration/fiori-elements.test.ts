@@ -73,7 +73,7 @@ describe('ui5-test-writer - Integration tests', () => {
         expect(paths.some((p) => p.includes('JourneyRunner.ts'))).toBe(true);
         expect(paths.some((p) => p.includes('RestaurantList.ts') && p.includes('pages/'))).toBe(true);
         expect(paths.some((p) => p.includes('RestaurantObjectPage.ts') && p.includes('pages/'))).toBe(true);
-        expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(true);
+        expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(true);
 
         // No JS page/journey files generated (opaTests.qunit.js is allowed)
         const jsIntegrationFiles = paths.filter(

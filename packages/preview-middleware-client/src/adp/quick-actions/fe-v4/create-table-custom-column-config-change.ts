@@ -8,15 +8,12 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
 
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import Table from 'sap/ui/mdc/Table';
-import { getV4AppComponent, isMacroTable } from '../../../utils/fe-v4.js';
-import { getLineItemAnnotation, getPropertyPath } from './utils.js';
+import { isMacroTable } from '../../../utils/fe-v4.js';
+import { getLineItemAnnotation, getPropertyPath, getAppDescriptorBase } from './utils.js';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import { isA } from '../../../utils/core.js';
 import UI5Element from 'sap/ui/core/Element';
 
-interface ViewDataType {
-    stableId: string;
-}
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 const regexForAnnotationPath =
     /controlConfiguration\/(?:entity\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/columns\//;
@@ -27,7 +24,7 @@ export class AddTableCustomColumnQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
-    protected pageId: string | undefined;
+    protected appDescriptor: ReturnType<typeof getAppDescriptorBase>;
     constructor(context: QuickActionContext) {
         super(
             CREATE_TABLE_CUSTOM_COLUMN,
@@ -41,7 +38,7 @@ export class AddTableCustomColumnQuickAction
         );
     }
     async initialize(): Promise<void> {
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
+        this.appDescriptor = getAppDescriptorBase(this.context);
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;
@@ -50,6 +47,9 @@ export class AddTableCustomColumnQuickAction
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
+        if (!this.appDescriptor) {
+            return [];
+        }
         const { table } = this.tableMap[path];
         if (!table) {
             return [];
@@ -67,9 +67,8 @@ export class AddTableCustomColumnQuickAction
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN',
                     type: 'tableColumn',
                     appDescriptor: {
-                        appComponent: getV4AppComponent(this.context.view)!,
+                        ...this.appDescriptor,
                         appType: 'fe-v4',
-                        pageId: this.pageId!,
                         projectId: this.context.flexSettings.projectId,
                         anchor
                     },

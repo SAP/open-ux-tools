@@ -20,6 +20,7 @@ export const ListFunctionalitiesInputSchema = zod.object({
     /** Path to the Fiori application */
     appPath: zod
         .string()
+        .min(1)
         .describe(
             'Path to the root folder of the Fiori application (where package.json and ui5.yaml reside) if one exists or to the current directory. Path should be an absolute path.'
         )
@@ -67,7 +68,24 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
         .string()
         .optional()
         .describe('The name, host or a URL of the SAP system to fetch service metadata from.'),
-    servicePath: zod.string().describe('The path to the SAP service to fetch metadata for.'),
+    servicePath: zod
+        .string()
+        .optional()
+        .describe(
+            'The path to the SAP service to fetch metadata for. ' +
+                'ONLY use this if the user provides an EXACT path (e.g., "/sap/opu/odata/sap/ZUI_TRAVEL_O4/"). ' +
+                'DO NOT construct paths from service names. This parameter is required.'
+        ),
+    /* serviceName: zod
+        .string()
+        .optional()
+        .describe(
+            '✅ USE THIS for service names! ' +
+                'The technical name of the OData service.' +
+                'If the user provides just a service name (not a full path containing forward slashes), pass it here. ' +
+                'A catalog lookup will be performed to resolve the service path automatically. ' +
+                'DO NOT try to construct servicePath yourself - let the tool do the lookup.'
+        ), */
     appPath: zod
         .string()
         .describe('Absolute path to the folder where metadata.xml will be saved. Typically the project target folder.')

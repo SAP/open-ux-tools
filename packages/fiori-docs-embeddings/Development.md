@@ -16,6 +16,10 @@ This guide explains how to update and manage the local documentation files for t
     - [Command](#command-1)
     - [Environment Variables](#environment-variables-1)
     - [Output](#output-1)
+  - [Updating sap.fe.test OPA5 API Docs](#updating-sapfetest-opa5-api-docs)
+    - [Prerequisites](#prerequisites)
+    - [Command](#command-2)
+    - [Output](#output-2)
   - [Adding Custom Documentation](#adding-custom-documentation)
     - [Example](#example)
     - [File Structure](#file-structure)
@@ -111,6 +115,44 @@ data_local/fiori-tools-opa-guide.md
 data_local/sapui5.md
 data_local/tools-suite.md
 ```
+
+---
+
+## Updating sap.fe.test OPA5 API Docs
+
+This script parses the `sap.fe.test` OPA5 testing library's public JSDoc API from a locally cloned copy of the `sap.fe` repository and produces a markdown file in the standard chunk format.
+
+The output is picked up automatically by the embeddings build — no further registration is needed.
+
+> **Note:** This script runs as part of `pnpm build`. If the `sap.fe` repository has not been cloned, it exits silently with a warning and the output file is simply not updated.
+
+### Prerequisites
+
+Clone the `sap.fe` repository into the expected location relative to this package:
+
+```bash
+git clone <sap.fe-repo-url> packages/fiori-docs-embeddings/data/git_repos/sap.fe
+```
+
+The script looks for API source files at:
+
+```
+packages/fiori-docs-embeddings/data/git_repos/sap.fe/packages/sap.fe.test/src/sap/fe/test/api/
+```
+
+### Command
+
+```bash
+pnpm --filter @sap-ux/fiori-docs-embeddings run build-fe-test-api-docs
+```
+
+### Output
+
+```
+data_local/sap_fe_test_api.md
+```
+
+The file contains one chunk per public class (actions/assertions), plus a combined type definitions chunk and a combined enumerations chunk.
 
 ---
 

@@ -590,9 +590,9 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.internalFeatures': 'external',
             internalVsExternal: 'external',
             'cmn.nodeVersion': expect.any(String),
-            'cmn.templateId': '@sap/generator-adaptation-project',
-            'cmn.templateVersion': '1.1.57',
-            'cmn.toolsId': '421a7e6d-4507-4f66-9369-f80bdd3c6877',
+            'cmn.templateId': '@sap/generator-fiori',
+            'cmn.templateVersion': '1.27.0',
+            'cmn.toolsId': '45047b14-f55b-47df-9669-68d28bf0d51b',
             'cmn.appLanguage': '',
             'cmn.applicationType': 'Fiori Adaptation',
             'cmn.ideType': expect.any(String)

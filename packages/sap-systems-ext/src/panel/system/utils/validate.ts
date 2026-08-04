@@ -1,5 +1,6 @@
 import type { BackendSystem } from '@sap-ux/store';
-import { getBackendSystemService, t } from '../../../utils';
+import { isSystemNameInUse } from '@sap-ux/store';
+import { t } from '../../../utils';
 import { SystemPanelViewType } from '../../../utils/constants';
 
 /**
@@ -34,13 +35,7 @@ export async function validateSystemName(
     currentName?: string,
     panelViewType?: SystemPanelViewType
 ): Promise<true> {
-    const systemService = await getBackendSystemService();
-    const allSystems = await systemService.getAll({
-        includeSensitiveData: false,
-        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service', 'generic_host'] }
-    });
-    const newSystemName = newName.trim().toLowerCase();
-    const nameExists = allSystems.some((sys) => sys.name.toLowerCase() === newSystemName);
+    const nameExists = await isSystemNameInUse(newName);
 
     if (nameExists) {
         if (panelViewType === SystemPanelViewType.Create || panelViewType === SystemPanelViewType.Import) {
@@ -49,6 +44,7 @@ export async function validateSystemName(
         } else if (panelViewType === SystemPanelViewType.View) {
             // if editing an existing system, only a name that matches another system (not the current one) is a conflict
             const currentSystemName = currentName?.trim().toLowerCase();
+            const newSystemName = newName.trim().toLowerCase();
             if (currentSystemName !== newSystemName) {
                 throw t('validation.connectionNameExists');
             }

@@ -63,8 +63,7 @@ export enum SuggestValueType {
 }
 
 export type TranslationSuggestValue<T extends TranslationEntry> =
-    | TranslationSuggestValueNew
-    | TranslationSuggestValueExisting<T>;
+    TranslationSuggestValueNew | TranslationSuggestValueExisting<T>;
 
 interface TranslationSuggestValueBase {
     icon?: UiIcons;

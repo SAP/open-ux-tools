@@ -1,5 +1,95 @@
 # @sap-ux/annotation-generator
 
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.20 → 1.0.21
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/fiori-annotation-api 1.0.19 → 1.0.20
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.18 → 1.0.19
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/fiori-annotation-api 1.0.17 → 1.0.18
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.16 → 1.0.17
+
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/fiori-annotation-api 1.0.15 → 1.0.16
+
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.6 → 2.1.6
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.13 → 1.0.14
+
+## 1.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.12 → 1.0.13
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.4 → 2.1.5
+
 ## 1.0.11
 
 ### Patch Changes
