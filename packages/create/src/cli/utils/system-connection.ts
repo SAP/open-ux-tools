@@ -1,4 +1,5 @@
 import prompts from 'prompts';
+import { createForAbap } from '@sap-ux/axios-extension';
 import { getLogger } from '../../tracing/index.js';
 
 /**
@@ -28,10 +29,37 @@ export async function checkSystemConnection(config: {
         return { success: false, error: `Invalid URL: ${config.url}` };
     }
 
-    // For now, we just validate the URL format
-    // A real implementation would attempt to connect to the backend
-    // using the provided credentials and check if the system is reachable
+    // For basic auth with credentials, attempt actual connection
+    if (config.authenticationType === 'basic' && config.username && config.password) {
+        try {
+            const service = await createForAbap({
+                baseURL: config.url,
+                auth: {
+                    username: config.username,
+                    password: config.password
+                },
+                params: config.client ? { 'sap-client': config.client } : undefined
+            });
 
+            // Attempt lightweight request with 5-second timeout
+            await service.get('/sap/bc/ping', { timeout: 5000 });
+            return { success: true };
+        } catch (error: any) {
+            if (error.response?.status === 401) {
+                return { success: false, error: 'Authentication failed (HTTP 401 Unauthorized)' };
+            }
+            if (error.code === 'ECONNREFUSED') {
+                return { success: false, error: 'Connection refused - system may be unreachable' };
+            }
+            if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {
+                return { success: false, error: 'Connection timeout after 5000ms' };
+            }
+            return { success: false, error: error.message || 'Connection failed' };
+        }
+    }
+
+    // For other auth types or missing credentials, only validate URL format
+    // Re-entrance ticket and OAuth require browser flow, can't be tested here
     return { success: true };
 }
 
