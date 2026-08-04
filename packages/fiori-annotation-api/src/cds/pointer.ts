@@ -325,7 +325,7 @@ class Visitor {
             }
         } else if (segment === 'content') {
             const index = Number.parseInt(indexSegment, 10);
-            if (!Number.isNaN(index) && segment === 'content' && astNode.value) {
+            if (!Number.isNaN(index) && astNode.value) {
                 if (this.flattenedSegments.length > 1) {
                     const result = this.flattenedProperty(astNode, node.content[index], segments);
 
@@ -359,7 +359,7 @@ class Visitor {
 
         if (segment === 'content') {
             const index = Number.parseInt(indexSegment, 10);
-            if (!Number.isNaN(index) && segment === 'content' && astNode.value) {
+            if (!Number.isNaN(index) && astNode.value) {
                 this.flattenedSegments.shift();
                 this.currentFlattenedSegmentIndexInPath++;
                 const result =
@@ -391,13 +391,10 @@ class Visitor {
         const [segment, indexSegment, ...segments] = pointer;
         if (segment === 'content') {
             const index = Number.parseInt(indexSegment, 10);
-            if (!Number.isNaN(index) && segment === 'content') {
+            if (!Number.isNaN(index)) {
                 this.flattenedSegments.shift();
                 this.currentFlattenedSegmentIndexInPath++;
                 const propertyValue = node.content[index];
-                if (segment.length === 0) {
-                    return undefined;
-                }
                 if (node.name === Edm.Record) {
                     return this.flattenedAnnotationPropertyValue(astNode, propertyValue, segments);
                 } else if (node.name === Edm.Annotation) {
