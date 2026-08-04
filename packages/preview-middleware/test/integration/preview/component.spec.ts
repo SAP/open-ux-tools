@@ -97,25 +97,14 @@ const UI5Versions = allUI5Versions.filter(({ version }) =>
     [...COMPONENT_TEST_VERSIONS].some((v) => version.startsWith(v))
 );
 
-// @ui5/cli@5 (used for type:component) requires Node >=22
-const isNode22Plus = parseInt(process.versions.node.split('.')[0], 10) >= 22;
-
 for (const { version } of UI5Versions) {
     test.describe(`UI5 version: ${version}`, () => {
-        test.skip(!isNode22Plus, 'Requires Node >=22 for @ui5/cli@5');
-
         test.beforeAll(async () => {
-            if (!isNode22Plus) {
-                return;
-            }
             test.setTimeout(TIMEOUT);
             await prepare(version);
         });
 
         test.afterAll(async () => {
-            if (!isNode22Plus) {
-                return;
-            }
             await teardownServer();
         });
 
