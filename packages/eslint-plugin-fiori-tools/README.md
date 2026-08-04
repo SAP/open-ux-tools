@@ -120,6 +120,7 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
+|  new      | [sap-no-single-facet-in-collection](docs/rules/sap-no-single-facet-in-collection.md) | Ensures `UI.CollectionFacet` is not used when it contains only one `UI.ReferenceFacet`. | | ✅ |
 |  new      | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |
 |  10.7.6   | [sap-no-live-mode](docs/rules/sap-no-live-mode.md) | Ensures that live mode is not enabled. | | ✅ |
 |  10.2.0   | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description text property referenced using the `Common.Text` annotation has a meaningful `Common.Label` annotation. It must not be a generic value such as "Name" or "Description", and not the same label as the `ID` property. | | ✅ |
