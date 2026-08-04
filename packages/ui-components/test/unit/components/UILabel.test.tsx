@@ -1,7 +1,16 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
-import type { ILabelStyleProps, ILabelStyles } from '@fluentui/react';
 import { labelGlobalStyle, UILabel } from '../../../src/components/UILabel';
+import type { ILabelStyleProps, ILabelStyles } from '@fluentui/react';
+import { findStyleFromStyleSheets } from '../../utils/styles';
+
+// getStyles is only needed for the required ::after pseudo-element assertion,
+// which is not accessible via getComputedStyle or document.styleSheets in jsdom.
+function getStylesFn(): (props: ILabelStyleProps) => Partial<ILabelStyles> {
+    const instance = new UILabel({});
+    const jsx = instance.render() as React.ReactElement;
+    return jsx.props.styles;
+}
 
 describe('<UILabel />', () => {
     it('Should render a UILabel component', () => {
@@ -9,46 +18,25 @@ describe('<UILabel />', () => {
         expect(container.querySelectorAll('.ms-Label')).toHaveLength(1);
     });
 
-    // TODO: this test duplicates the component's internal style logic instead of testing the rendered output.
-    // Replace with a test that renders <UILabel disabled> and asserts the actual DOM styles.
-    it('Styles', () => {
-        const labelStyles = (props: ILabelStyleProps): Partial<ILabelStyles> => ({
-            root: [
-                {
-                    marginTop: 25,
-                    ...labelGlobalStyle
-                },
-                props.disabled && {
-                    opacity: '0.4'
-                },
-                props.required && {
-                    selectors: {
-                        '::after': {
-                            content: "' *' / ''",
-                            color: 'var(--vscode-inputValidation-errorBorder)',
-                            paddingRight: 12
-                        }
-                    }
-                }
-            ]
+    describe('Styles', () => {
+        it('default - label global styles applied', () => {
+            const styles = getStylesFn()({} as ILabelStyleProps) as ILabelStyles;
+            const root = styles.root as Array<unknown>;
+            expect(root[0]).toEqual({ marginTop: 25, ...labelGlobalStyle });
         });
 
-        const styles = labelStyles({} as ILabelStyleProps) as ILabelStyles;
-        expect(styles.root).toMatchInlineSnapshot(
-            {},
-            `
-            Array [
-              Object {
-                "color": "var(--vscode-input-foreground)",
-                "fontSize": "13px",
-                "fontWeight": "bold",
-                "marginTop": 25,
-                "padding": "4px 0",
-              },
-              undefined,
-              undefined,
-            ]
-        `
-        );
+        it('disabled - opacity 0.4 applied to rendered label', () => {
+            render(<UILabel disabled>Dummy</UILabel>);
+            const el = document.body.querySelector('label.ms-Label') as HTMLElement;
+            expect(window.getComputedStyle(el).opacity).toEqual('0.4');
+        });
+
+        it('required - ::after indicator (pseudo-element, via getStyles)', () => {
+            const styles = getStylesFn()({ required: true } as ILabelStyleProps) as ILabelStyles;
+            const root = styles.root as Array<unknown>;
+            expect((root[2] as Record<string, unknown>)?.selectors).toMatchObject({
+                '::after': { color: 'var(--vscode-inputValidation-errorBorder)' }
+            });
+        });
     });
 });

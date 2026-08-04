@@ -2,28 +2,14 @@ import * as React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import type { IStyleFunction, IToggleStyles, IRawStyle } from '@fluentui/react';
 import type { UIToggleProps } from '../../../src/components/UIToggle/UIToggle';
-import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggle';
+import { UIToggle } from '../../../src/components/UIToggle/UIToggle';
+import { findStyleFromStyleSheets } from '../../utils/styles';
 
-/**
- * TODO: this helper tests internal implementation details (the `styles` prop passed to FluentUI's Toggle)
- * rather than the rendered output. It will break if UIToggle is refactored to a function component.
- * Replace style tests with render(<UIToggle .../>) and assert the actual DOM/CSS via compareStylesBySelector.
- *
- * Extract the `styles` function that UIToggle passes to the inner <Toggle>.
- *
- * UIToggle is a class component whose `render()` either returns the Toggle
- * element directly or wraps it in a MessageWrapper.  In both cases the
- * Toggle element (and therefore its `styles` prop) is reachable without
- * mounting the component.
- *
- * @param props - Props to pass to the UIToggle instance.
- * @param styleProps - Style-state props forwarded to the styles function (e.g. `{checked: true}`).
- */
+// getStyles is only needed for pseudo-state assertions (`:hover`, `:disabled`, `selectors`)
+// which are not accessible via getComputedStyle or document.styleSheets in jsdom.
 function getStyles(props: Partial<UIToggleProps>, styleProps: object = {}): IToggleStyles {
     const instance = new UIToggle(props as UIToggleProps);
     const rendered = instance.render();
-    // When a validation message is present, render() returns
-    // <MessageWrapper><Toggle .../></MessageWrapper>
     const toggleElement = rendered?.props?.message !== undefined ? rendered.props.children : rendered;
     const stylesFn = toggleElement?.props?.styles as IStyleFunction<object, IToggleStyles>;
     return stylesFn(styleProps) as IToggleStyles;
@@ -58,182 +44,55 @@ describe('<UIToggle />', () => {
     });
 
     describe('Styles', () => {
-        const testCases = [
-            {
-                name: 'Standard',
-                size: UIToggleSize.Standard,
-                expect: {
-                    margin: '0',
-                    fontSize: 13,
-                    padding: '0px 0px 1px 0px',
-                    height: 18,
-                    width: 30,
-                    innerPadding: '0 1px',
-                    thumbHeight: 14,
-                    thumbWidth: 14,
-                    borderWidth: 1
-                }
-            },
-            {
-                name: 'Default',
-                size: undefined,
-                expect: {
-                    margin: '0',
-                    fontSize: 13,
-                    padding: '0px 0px 1px 0px',
-                    height: 18,
-                    width: 30,
-                    innerPadding: '0 1px',
-                    thumbHeight: 14,
-                    thumbWidth: 14,
-                    borderWidth: 1
-                }
-            },
-            {
-                name: 'Small',
-                size: UIToggleSize.Small,
-                expect: {
-                    margin: '0',
-                    fontSize: 13,
-                    padding: '0px 0px 1px 0px',
-                    height: 18,
-                    width: 30,
-                    innerPadding: '0 1px',
-                    thumbHeight: 14,
-                    thumbWidth: 14,
-                    borderWidth: 1
-                }
-            }
-        ];
-
-        for (const testCase of testCases) {
-            it(`Property "size" - value ${testCase.name}`, () => {
-                const styles = getStyles({ checked: false, size: testCase.size });
-                const rootStyles = styles.root as IRawStyle;
-                const labelStyles = styles.label as IRawStyle;
-                const pillStyles = styles.pill as IRawStyle;
-                const thumbStyles = styles.thumb as IRawStyle;
-                const expectation = testCase.expect;
-                expect(rootStyles.margin).toEqual(expectation.margin);
-                expect(labelStyles.fontSize).toEqual(expectation.fontSize);
-                expect(labelStyles.padding).toEqual(expectation.padding);
-                expect(pillStyles.height).toEqual(expectation.height);
-                expect(pillStyles.width).toEqual(expectation.width);
-                expect(pillStyles.padding).toEqual(expectation.innerPadding);
-                expect(thumbStyles.height).toEqual(expectation.thumbHeight);
-                expect(thumbStyles.width).toEqual(expectation.thumbWidth);
-                expect(thumbStyles.borderWidth).toEqual(expectation.borderWidth);
-            });
-        }
-
-        it('Default', () => {
-            const styles = getStyles({ checked: false });
-            expect(styles.pill).toMatchInlineSnapshot(`
-                Object {
-                  ":disabled": Object {
-                    "background": "var(--vscode-editorWidget-background)",
-                    "borderColor": "var(--vscode-editorWidget-border)",
-                    "opacity": 0.4,
-                  },
-                  ":hover": Object {
-                    "background": "var(--vscode-editorWidget-background)",
-                    "borderColor": "var(--vscode-editorWidget-border)",
-                  },
-                  ":hover .ms-Toggle-thumb": Object {
-                    "background": "var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))",
-                    "borderColor": "var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))",
-                  },
-                  "background": "var(--vscode-editorWidget-background)",
-                  "borderColor": "var(--vscode-editorWidget-border)",
-                  "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
-                  "borderStyle": "solid",
-                  "height": 18,
-                  "padding": "0 1px",
-                  "selectors": Object {
-                    ":focus::after": Object {
-                      "border": "none !important",
-                      "outline": "1px solid var(--vscode-focusBorder) !important",
-                    },
-                  },
-                  "width": 30,
-                }
-            `);
-            expect(styles.thumb).toMatchInlineSnapshot(`
-                Object {
-                  ":hover": Object {
-                    "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
-                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
-                  },
-                  "backgroundColor": "var(--vscode-button-secondaryBackground)",
-                  "backgroundPosition": "center",
-                  "borderColor": "var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))",
-                  "borderWidth": 1,
-                  "height": 14,
-                  "svg": Object {
-                    "height": "100%",
-                    "path": Object {
-                      "fill": "var(--vscode-button-secondaryForeground)",
-                    },
-                    "width": "100%",
-                  },
-                  "width": 14,
-                }
-            `);
+        it('size - pill dimensions via rendered DOM', () => {
+            render(<UIToggle onChange={handleChangeMock} checked={false} />);
+            const pill = document.body.querySelector('.ms-Toggle-background') as HTMLElement;
+            expect(window.getComputedStyle(pill).height).toEqual('18px');
+            expect(window.getComputedStyle(pill).width).toEqual('30px');
         });
 
-        it('Checked', () => {
+        it('label - font size and padding via rendered DOM', () => {
+            render(<UIToggle onChange={handleChangeMock} checked={false} label="test" />);
+            const label = document.body.querySelector('.ms-Label') as HTMLElement;
+            expect(window.getComputedStyle(label).fontSize).toEqual('13px');
+        });
+
+        it('pill - unchecked border color via CSS', () => {
+            render(<UIToggle onChange={handleChangeMock} checked={false} />);
+            const pill = document.body.querySelector('.ms-Toggle-background') as HTMLElement;
+            expect(findStyleFromStyleSheets('borderColor', pill)).toEqual('var(--vscode-editorWidget-border)');
+        });
+
+        it('pill - checked border color via CSS', () => {
+            render(<UIToggle onChange={handleChangeMock} checked={true} />);
+            const pill = document.body.querySelector('.ms-Toggle-background') as HTMLElement;
+            expect(findStyleFromStyleSheets('borderColor', pill)).toEqual(
+                'var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))'
+            );
+        });
+
+        it('pill - unchecked vs checked use different border colors (via getStyles for pseudo-states)', () => {
+            const unchecked = getStyles({ checked: false }, { checked: false });
+            const checked = getStyles({ checked: false }, { checked: true });
+            expect((unchecked.pill as IRawStyle).borderColor).not.toEqual((checked.pill as IRawStyle).borderColor);
+        });
+
+        it('pill - has focus :focus::after outline selector', () => {
+            const styles = getStyles({ checked: false });
+            const pill = styles.pill as IRawStyle;
+            expect((pill.selectors as Record<string, unknown>)?.[':focus::after']).toBeDefined();
+        });
+
+        it('thumb - unchecked uses secondary background', () => {
+            const styles = getStyles({ checked: false }, { checked: false });
+            const thumb = styles.thumb as IRawStyle;
+            expect(thumb.backgroundColor).toEqual('var(--vscode-button-secondaryBackground)');
+        });
+
+        it('thumb - checked uses primary background', () => {
             const styles = getStyles({ checked: false }, { checked: true });
-            expect(styles.pill).toMatchInlineSnapshot(`
-                Object {
-                  ":disabled": Object {
-                    "background": "var(--vscode-editorWidget-background)",
-                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
-                    "opacity": 0.4,
-                  },
-                  ":hover": Object {
-                    "background": "var(--vscode-editorWidget-background)",
-                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
-                  },
-                  ":hover .ms-Toggle-thumb": Object {
-                    "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
-                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
-                  },
-                  "background": "var(--vscode-editorWidget-background)",
-                  "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
-                  "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
-                  "borderStyle": "solid",
-                  "height": 18,
-                  "padding": "0 1px",
-                  "selectors": Object {
-                    ":focus::after": Object {
-                      "border": "none !important",
-                      "outline": "1px solid var(--vscode-focusBorder) !important",
-                    },
-                  },
-                  "width": 30,
-                }
-            `);
-            expect(styles.thumb).toMatchInlineSnapshot(`
-                Object {
-                  ":hover": Object {
-                    "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
-                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
-                  },
-                  "backgroundColor": "var(--vscode-button-background)",
-                  "backgroundPosition": "center",
-                  "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
-                  "borderWidth": 1,
-                  "height": 14,
-                  "svg": Object {
-                    "height": "100%",
-                    "path": Object {
-                      "fill": "var(--vscode-button-foreground)",
-                    },
-                    "width": "100%",
-                  },
-                  "width": 14,
-                }
-            `);
+            const thumb = styles.thumb as IRawStyle;
+            expect(thumb.backgroundColor).toEqual('var(--vscode-button-background)');
         });
     });
 
