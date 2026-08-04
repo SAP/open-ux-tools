@@ -1,5 +1,5 @@
 ---
-'@sap-ux/create': minor
+'@sap-ux/create': patch
 ---
 
 FIX: system management CLI improvements - smart URL lookup and credential display
