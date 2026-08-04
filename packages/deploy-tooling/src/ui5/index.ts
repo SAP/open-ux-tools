@@ -8,7 +8,7 @@ import { createUi5Archive } from './archive.js';
 import { config as loadEnvConfig } from 'dotenv';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { join } from 'node:path';
-import { readBuilderExcludes } from '../cli/config.js';
+import { readBuilderExcludes } from '../base/config.js';
 
 /**
  * Resolves a log level value from ui5.yaml configuration to a LogLevel enum value.
@@ -52,6 +52,8 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     const config = validateConfig(options.configuration, logger);
     replaceEnvVariables(config);
 
+    // Only the standard 'ui5-deploy.yaml' filename is supported here; non-standard deploy
+    // config filenames used via the CLI --config flag will not contribute excludes in this path.
     const deployConfigPath = join(process.cwd(), 'ui5-deploy.yaml');
     const builderExcludes = await readBuilderExcludes(deployConfigPath, logger);
     const exclude = [...new Set([...(config.exclude ?? []), ...builderExcludes])];

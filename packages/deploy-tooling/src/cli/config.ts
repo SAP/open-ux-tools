@@ -6,6 +6,8 @@ import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types/index.js';
 import { NAME } from '../types/index.js';
+import { readBuilderExcludes } from '../base/config.js';
+export { readBuilderExcludes } from '../base/config.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -161,36 +163,14 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
 }
 
 /**
- * Reads builder.resources.excludes from the deploy config file and converts glob patterns to prefix patterns.
- * Returns an empty array if the section is absent or the file cannot be read.
- *
- * @param deployConfigPath - path to the ui5-deploy.yaml file
- * @param logger - optional logger; if provided, a warning is emitted when the file cannot be read
- * @returns normalised prefix patterns e.g. ['/test/', '/localService/']
- */
-export async function readBuilderExcludes(deployConfigPath: string, logger?: Logger): Promise<string[]> {
-    try {
-        const content = readFileSync(deployConfigPath, 'utf-8');
-        const ui5Config = await UI5Config.newInstance(content);
-        return ui5Config.getBuilderResourceExcludes().map((p) => {
-            const prefix = p.replace(/\/\*+$/, '/');
-            const withSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
-            return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
-        });
-    } catch (e) {
-        logger?.warn(`Could not read builder excludes from ${deployConfigPath}: ${e instanceof Error ? e.message : String(e)}`);
-        return [];
-    }
-}
-
-/**
  * Merge the configuration from the ui5*.yaml with CLI options.
  *
  * @param taskConfig - base configuration from the file
  * @param options - CLI options
+ * @param logger - optional logger; passed to readBuilderExcludes for warning on read failure
  * @returns the merged config
  */
-export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions): Promise<AbapDeployConfig> {
+export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions, logger?: Logger): Promise<AbapDeployConfig> {
     const app: Partial<BspConfig> = {
         name: options.name ?? taskConfig.app?.name,
         description: options.description ?? taskConfig.app?.description,
@@ -207,7 +187,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
     config.lrep = options.lrep;
-    const builderExcludes = options.config ? await readBuilderExcludes(options.config) : [];
+    const builderExcludes = options.config ? await readBuilderExcludes(options.config, logger) : [];
     const merged = [...new Set([...(options.exclude ?? []), ...(taskConfig.exclude ?? []), ...builderExcludes])];
     config.exclude = merged.length ? merged : undefined;
 

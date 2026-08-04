@@ -24,9 +24,9 @@ jest.unstable_mockModule('../../../src/ui5/archive.js', () => ({
     createUi5Archive: mockCreateUi5Archive
 }));
 
-const realCliConfig = await import('../../../src/cli/config.js');
+const realCliConfig = await import('../../../src/base/config.js');
 const mockReadBuilderExcludes = jest.fn<() => Promise<string[]>>().mockResolvedValue([]);
-jest.unstable_mockModule('../../../src/cli/config.js', () => ({
+jest.unstable_mockModule('../../../src/base/config.js', () => ({
     ...realCliConfig,
     readBuilderExcludes: mockReadBuilderExcludes
 }));

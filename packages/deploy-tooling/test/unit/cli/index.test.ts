@@ -175,7 +175,7 @@ describe('cli', () => {
             }
         );
 
-        test('passes exclude from config file to getArchive', async () => {
+        test('passes configuration.exclude from task config to getArchive', async () => {
             process.argv = minimumConfigCmd;
             await runDeploy();
             expect(mockGetArchive).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.anything(), ['/test/']);

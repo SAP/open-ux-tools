@@ -1,5 +1,6 @@
 import type { AbapDeployConfig, CliOptions } from '../../../src/types/index.js';
 import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config.js';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
@@ -208,10 +209,13 @@ describe('cli/config', () => {
         });
 
         test('bad config path yields undefined exclude (no crash)', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
             const merged = await mergeConfig(baseConfig, {
                 config: join(fixture, 'does-not-exist.yaml')
-            } as CliOptions);
+            } as CliOptions, logger);
             expect(merged.exclude).toBeUndefined();
+            expect(warnSpy).toHaveBeenCalledTimes(1);
         });
     });
 });
