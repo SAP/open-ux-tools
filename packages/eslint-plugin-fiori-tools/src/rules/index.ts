@@ -16,6 +16,7 @@ import {
     TABLE_PERSONALIZATION,
     TEXT_ARRANGEMENT_HIDDEN,
     STRICT_UOM_FILTERING,
+    NO_COMMAS_IN_SECTION_TITLES,
     NO_LIVE_MODE
 } from '../language/diagnostics.js';
 
@@ -84,6 +85,7 @@ import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-n
 import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
+import noCommasInSectionTitles from './sap-no-commas-in-section-titles.js';
 
 import type { Rule } from 'eslint';
 
@@ -151,5 +153,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
     [TABLE_PERSONALIZATION]: tablePersonalization,
     [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden,
+    [NO_COMMAS_IN_SECTION_TITLES]: noCommasInSectionTitles,
     [NO_LIVE_MODE]: noLiveMode
 };
