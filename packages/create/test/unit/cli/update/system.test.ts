@@ -229,7 +229,9 @@ describe('system/update (update command group)', () => {
         addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--username', 'newuser', '--password', 'newpass']));
+        await command.parseAsync(
+            getArgv(['system', '--url', 'https://example.com', '--username', 'newuser', '--password', 'newpass'])
+        );
 
         // Then
         expect(loggerMock.info).toHaveBeenCalledWith('System was not updated.');
@@ -262,7 +264,9 @@ describe('system/update (update command group)', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', 'Existing System']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith("A system with the name 'Existing System' already exists. Please choose a different name.");
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            "A system with the name 'Existing System' already exists. Please choose a different name."
+        );
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 
