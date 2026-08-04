@@ -52,7 +52,7 @@ async function removeSystem(url: string | undefined, client: string | undefined,
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
         // Use smart lookup to handle client mismatch scenarios
-        const system = await findSystemByUrl(identifier.url, identifier.client, service, BackendSystemKey);
+        const system = await findSystemByUrl(identifier.url, identifier.client, service);
 
         if (!system) {
             const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });

@@ -208,7 +208,7 @@ async function updateSystem(params: {
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
         // Use smart lookup to handle client mismatch scenarios
-        const existing = await findSystemByUrl(identifier.url, identifier.client, service, BackendSystemKey);
+        const existing = await findSystemByUrl(identifier.url, identifier.client, service);
 
         if (!existing) {
             const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });

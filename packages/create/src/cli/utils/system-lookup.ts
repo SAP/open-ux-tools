@@ -1,5 +1,6 @@
 import prompts from 'prompts';
 import type { BackendSystem, BackendSystemKey, Service } from '@sap-ux/store';
+import { BackendSystemKey as BackendSystemKeyClass } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 
 /**
@@ -7,7 +8,7 @@ import { getLogger } from '../../tracing/index.js';
  *
  * Logic:
  * 1. Try exact match (URL + client)
- * 2. If no match, find all systems with the same URL
+ * 2. If no match, find all systems with the same URL (across all connection types)
  * 3. If exactly one system found, use it automatically
  * 4. If multiple systems found, prompt user to select
  * 5. If none found, return undefined
@@ -15,14 +16,12 @@ import { getLogger } from '../../tracing/index.js';
  * @param url - URL of the backend system
  * @param client - optional SAP client
  * @param service - backend system service
- * @param keyConstructor
  * @returns the matched system, or undefined if not found or user cancelled
  */
 export async function findSystemByUrl(
     url: string,
     client: string | undefined,
-    service: Service<BackendSystem, BackendSystemKey>,
-    keyConstructor: new (params: { url: string; client?: string }) => BackendSystemKey
+    service: Service<BackendSystem, BackendSystemKey>
 ): Promise<BackendSystem | undefined> {
     const logger = getLogger();
 
@@ -30,7 +29,7 @@ export async function findSystemByUrl(
     const normalizedUrl = url.trim().replace(/\/$/, '');
 
     // Try exact match first
-    const exactKey = new keyConstructor({ url: normalizedUrl, client });
+    const exactKey = new BackendSystemKeyClass({ url: normalizedUrl, client });
     const exactMatch = await service.read(exactKey);
     if (exactMatch) {
         logger.debug(`Found exact match for ${exactKey.getId()}`);
@@ -38,8 +37,9 @@ export async function findSystemByUrl(
     }
 
     // No exact match - search all systems with this URL (across all connection types)
+    // Pass backendSystemFilter with connectionType undefined to bypass the default 'abap_catalog' filter
     logger.debug(`No exact match for ${exactKey.getId()}, searching by URL only`);
-    const allSystems = await service.getAll({});
+    const allSystems = await service.getAll({ backendSystemFilter: { connectionType: undefined as any } });
     const matches = allSystems.filter((s) => {
         const systemUrl = s.url.trim().replace(/\/$/, '');
         return systemUrl === normalizedUrl;
