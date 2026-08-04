@@ -211,9 +211,13 @@ describe('cli/config', () => {
         test('bad config path yields undefined exclude (no crash)', async () => {
             const logger = new ToolsLogger({ transports: [new NullTransport()] });
             const warnSpy = jest.spyOn(logger, 'warn');
-            const merged = await mergeConfig(baseConfig, {
-                config: join(fixture, 'does-not-exist.yaml')
-            } as CliOptions, logger);
+            const merged = await mergeConfig(
+                baseConfig,
+                {
+                    config: join(fixture, 'does-not-exist.yaml')
+                } as CliOptions,
+                logger
+            );
             expect(merged.exclude).toBeUndefined();
             expect(warnSpy).toHaveBeenCalledTimes(1);
         });

@@ -111,7 +111,9 @@ export async function readBuilderExcludes(deployConfigPath: string, logger?: Log
             return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
         });
     } catch (e) {
-        logger?.warn(`Could not read builder excludes from ${deployConfigPath}: ${e instanceof Error ? e.message : String(e)}`);
+        logger?.warn(
+            `Could not read builder excludes from ${deployConfigPath}: ${e instanceof Error ? e.message : String(e)}`
+        );
         return [];
     }
 }

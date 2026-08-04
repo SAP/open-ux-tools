@@ -169,7 +169,9 @@ describe('ui5', () => {
                 expect.anything()
             );
             expect(mockCreateUi5Archive).toHaveBeenCalledWith(
-                expect.anything(), expect.anything(), expect.anything(),
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
                 expect.arrayContaining(['/extra/', '/test/', '/localService/'])
             );
         });
@@ -186,7 +188,10 @@ describe('ui5', () => {
             mockReadBuilderExcludes.mockResolvedValue([]);
             await task({ workspace, options: { projectName, configuration } } as any);
             expect(mockCreateUi5Archive).toHaveBeenCalledWith(
-                expect.anything(), expect.anything(), expect.anything(), []
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+                []
             );
         });
     });

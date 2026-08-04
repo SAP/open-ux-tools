@@ -59,12 +59,7 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     const exclude = [...new Set([...(config.exclude ?? []), ...builderExcludes])];
 
     // The calling client can use either the projectNamespace or projectName when creating the workspace, needs to match when creating the archive.
-    const archive = await createUi5Archive(
-        logger,
-        workspace,
-        options.projectNamespace ?? options.projectName,
-        exclude
-    );
+    const archive = await createUi5Archive(logger, workspace, options.projectNamespace ?? options.projectName, exclude);
     await deploy(archive, config, logger);
 }
 

@@ -170,7 +170,11 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
  * @param logger - optional logger; passed to readBuilderExcludes for warning on read failure
  * @returns the merged config
  */
-export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions, logger?: Logger): Promise<AbapDeployConfig> {
+export async function mergeConfig(
+    taskConfig: AbapDeployConfig,
+    options: CliOptions,
+    logger?: Logger
+): Promise<AbapDeployConfig> {
     const app: Partial<BspConfig> = {
         name: options.name ?? taskConfig.app?.name,
         description: options.description ?? taskConfig.app?.description,
