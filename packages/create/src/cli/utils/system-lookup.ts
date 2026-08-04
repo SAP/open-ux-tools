@@ -1,6 +1,5 @@
 import prompts from 'prompts';
-import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
-import type { Service } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemKey, Service } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 
 /**
@@ -16,6 +15,7 @@ import { getLogger } from '../../tracing/index.js';
  * @param url - URL of the backend system
  * @param client - optional SAP client
  * @param service - backend system service
+ * @param keyConstructor
  * @returns the matched system, or undefined if not found or user cancelled
  */
 export async function findSystemByUrl(
