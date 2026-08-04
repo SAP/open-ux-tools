@@ -1,4 +1,4 @@
-import { input, select, password, checkbox } from '@inquirer/prompts';
+import { input, select, password, checkbox, confirm } from '@inquirer/prompts';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers } from 'inquirer';
 import { getLogger } from '../tracing/index.js';
@@ -12,8 +12,6 @@ import { getLogger } from '../tracing/index.js';
 function isFunction(property: unknown): property is Function {
     return typeof property === 'function';
 }
-
-type AutoCompleteCallbackFn = (answers: Answers, input: string) => Promise<Array<{ name: string; value: unknown }>>;
 
 /**
  * Map choices from inquirer format to @inquirer/prompts format.
@@ -148,20 +146,10 @@ async function promptSingleQuestion<T extends Answers>(
             }
 
             case 'confirm':
-                return await input({
-                    message: `${message} (y/n)`,
-                    default: defaultValue ? 'y' : 'n',
-                    validate: async (value: string) => {
-                        const normalized = value.toLowerCase().trim();
-                        if (normalized === 'y' || normalized === 'n' || normalized === 'yes' || normalized === 'no') {
-                            return true;
-                        }
-                        return 'Please enter y or n';
-                    }
-                }).then((value) => {
-                    const normalized = value.toLowerCase().trim();
-                    return (normalized === 'y' || normalized === 'yes') as T[keyof T];
-                });
+                return (await confirm({
+                    message,
+                    default: !!defaultValue
+                })) as T[keyof T];
 
             default:
                 getLogger().warn(`Unsupported question type: ${type}, falling back to input`);

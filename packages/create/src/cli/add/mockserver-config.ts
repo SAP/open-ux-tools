@@ -62,7 +62,11 @@ async function addMockserverConfig(
             const questions = getMockserverConfigQuestions({ webappPath, askForOverwrite: true });
             // getMockserverConfigQuestions returns prompts-format questions, convert them on the fly
             const answers: Record<string, any> = {};
-            const { input: inquirerInput, confirm: inquirerConfirm } = await import('@inquirer/prompts');
+            const {
+                input: inquirerInput,
+                confirm: inquirerConfirm,
+                select: inquirerSelect
+            } = await import('@inquirer/prompts');
             for (const q of questions) {
                 const message = typeof q.message === 'string' ? q.message : String(q.message);
                 const qType = typeof q.type === 'string' ? q.type : 'text';
@@ -70,6 +74,12 @@ async function addMockserverConfig(
                     answers[q.name as string] = await inquirerInput({ message });
                 } else if (qType === 'confirm') {
                     answers[q.name as string] = await inquirerConfirm({ message, default: false });
+                } else if (qType === 'select') {
+                    const rawChoices = (q.choices ?? []) as Array<{ title: string; value: unknown }>;
+                    answers[q.name as string] = await inquirerSelect({
+                        message,
+                        choices: rawChoices.map((c) => ({ name: c.title, value: c.value }))
+                    });
                 }
             }
             config.ui5MockYamlConfig = answers;
