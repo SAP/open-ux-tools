@@ -42,10 +42,12 @@ const mockedService = {
     getAll: jest.fn<any>().mockResolvedValue([]),
     partialUpdate: jest.fn<any>().mockResolvedValue(undefined)
 };
+const mockIsSystemNameInUse = jest.fn().mockResolvedValue(false);
 const actualStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...actualStore,
-    getService: jest.fn().mockResolvedValue(mockedService)
+    getService: jest.fn().mockResolvedValue(mockedService),
+    isSystemNameInUse: (...args: any[]) => mockIsSystemNameInUse(...args)
 }));
 
 const { addSystemUpdateCommand } = await import('../../../../src/cli/update/system.js');
@@ -67,6 +69,7 @@ describe('system/update (update command group)', () => {
         mockGetLogger.mockReturnValue(loggerMock);
         isAppStudioMock.mockReturnValue(false);
         mockedService.partialUpdate.mockResolvedValue(undefined);
+        mockIsSystemNameInUse.mockResolvedValue(false);
         // Default: system exists
         const mockSystem = {
             name: 'My System',
@@ -207,5 +210,81 @@ describe('system/update (update command group)', () => {
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should log error when system name is empty or whitespace-only', async () => {
+        // Given
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', '   ']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith('System name cannot be empty or whitespace-only.');
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should log error when new system name already exists', async () => {
+        // Given
+        mockIsSystemNameInUse.mockResolvedValueOnce(true);
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', 'Duplicate Name']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            expect.stringContaining("A system with the name 'Duplicate Name' already exists")
+        );
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should log info when connection verification fails', async () => {
+        // Given
+        mockCheckConnectionOrPrompt.mockResolvedValueOnce(false);
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When
+        await command.parseAsync(
+            getArgv(['system', '--url', 'https://example.com', '--username', 'newuser', '--password', 'newpass'])
+        );
+
+        // Then
+        expect(mockCheckConnectionOrPrompt).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalledWith('System was not updated.');
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should skip connection check when --skip-check flag is provided', async () => {
+        // Given
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When
+        await command.parseAsync(
+            getArgv([
+                'system',
+                '--url',
+                'https://example.com',
+                '--username',
+                'newuser',
+                '--password',
+                'newpass',
+                '--skip-check'
+            ])
+        );
+
+        // Then
+        expect(mockCheckConnectionOrPrompt).toHaveBeenCalledWith(
+            expect.objectContaining({
+                username: 'newuser',
+                password: 'newpass'
+            }),
+            true
+        );
+        expect(mockedService.partialUpdate).toHaveBeenCalled();
     });
 });
