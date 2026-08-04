@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import prompts from 'prompts';
+import { confirm } from '@inquirer/prompts';
 import { removeMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
 import { hasFileDeletes, validateBasePath } from '../../validation/index.js';
@@ -42,15 +42,10 @@ async function removeMockserverConfiguration(basePath: string, force: boolean): 
         const hasDeletions = hasFileDeletes(fs);
         let doCommit = true;
         if (hasDeletions && !force) {
-            doCommit = (
-                await prompts([
-                    {
-                        type: 'confirm',
-                        name: 'doCommit',
-                        message: `Do you want to apply the changes?`
-                    }
-                ])
-            ).doCommit;
+            doCommit = await confirm({
+                message: `Do you want to apply the changes?`,
+                default: true
+            });
         }
         if (doCommit) {
             fs.commit(() => {
