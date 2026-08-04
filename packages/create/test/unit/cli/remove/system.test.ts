@@ -36,6 +36,12 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: jest.fn().mockResolvedValue(mockedService)
 }));
 
+// Mock findSystemByUrl
+const mockFindSystemByUrl = jest.fn();
+jest.unstable_mockModule('../../../../src/cli/utils/system-lookup', () => ({
+    findSystemByUrl: mockFindSystemByUrl
+}));
+
 const { addSystemRemoveCommand } = await import('../../../../src/cli/remove/system.js');
 
 const mockSystem = new BackendSystem({
@@ -63,6 +69,7 @@ describe('system/remove', () => {
         mockGetLogger.mockReturnValue(loggerMock);
         isAppStudioMock.mockReturnValue(false);
         mockedService.read.mockResolvedValue(mockSystem);
+        mockFindSystemByUrl.mockResolvedValue(mockSystem);
         mockedService.delete.mockResolvedValue(true);
         mockPrompts.mockResolvedValue({ confirm: true });
     });
@@ -76,7 +83,7 @@ describe('system/remove', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com', '--client', '', '--force']));
 
         // Then
-        expect(mockedService.read).toHaveBeenCalledTimes(1);
+        expect(mockFindSystemByUrl).toHaveBeenCalledTimes(1);
         expect(mockedService.delete).toHaveBeenCalledWith(mockSystem);
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('removed'));
         expect(loggerMock.error).not.toHaveBeenCalled();
@@ -118,7 +125,7 @@ describe('system/remove', () => {
 
     test('should log error when system not found', async () => {
         // Given
-        mockedService.read.mockResolvedValue(undefined);
+        mockFindSystemByUrl.mockResolvedValue(undefined);
         const command = new Command('remove');
         addSystemRemoveCommand(command);
 

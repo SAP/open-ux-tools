@@ -29,6 +29,12 @@ jest.unstable_mockModule('../../../../src/cli/utils/system-connection', () => ({
     checkSystemConnection: jest.fn().mockResolvedValue({ success: true })
 }));
 
+// Mock findSystemByUrl to return the mocked system
+const mockFindSystemByUrl = jest.fn();
+jest.unstable_mockModule('../../../../src/cli/utils/system-lookup', () => ({
+    findSystemByUrl: mockFindSystemByUrl
+}));
+
 const mockedService = {
     read: jest.fn<any>().mockResolvedValue(undefined),
     write: jest.fn<any>().mockResolvedValue(undefined),
@@ -62,7 +68,16 @@ describe('system/update (update command group)', () => {
         isAppStudioMock.mockReturnValue(false);
         mockedService.partialUpdate.mockResolvedValue(undefined);
         // Default: system exists
-        mockedService.read.mockResolvedValue({ name: 'My System' });
+        const mockSystem = {
+            name: 'My System',
+            url: 'https://my-sap.example.com',
+            client: '100',
+            systemType: 'AbapOnPrem',
+            authenticationType: 'basic',
+            connectionType: 'abap_catalog'
+        };
+        mockedService.read.mockResolvedValue(mockSystem);
+        mockFindSystemByUrl.mockResolvedValue(mockSystem);
         mockCheckConnectionOrPrompt.mockResolvedValue(true);
         mockPrompts.mockResolvedValue({});
     });
@@ -167,7 +182,8 @@ describe('system/update (update command group)', () => {
 
     test('should log error when partialUpdate throws', async () => {
         // Given
-        mockedService.read.mockResolvedValueOnce({ name: 'existing' });
+        const mockSystem = { name: 'existing', url: 'https://example.com' };
+        mockFindSystemByUrl.mockResolvedValueOnce(mockSystem);
         mockedService.partialUpdate.mockRejectedValueOnce(new Error('Store error'));
         const command = new Command('update');
         addSystemUpdateCommand(command);
@@ -181,7 +197,7 @@ describe('system/update (update command group)', () => {
 
     test('should log error when system does not exist', async () => {
         // Given
-        mockedService.read.mockResolvedValueOnce(undefined);
+        mockFindSystemByUrl.mockResolvedValueOnce(undefined);
         const command = new Command('update');
         addSystemUpdateCommand(command);
 

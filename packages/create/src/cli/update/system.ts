@@ -7,6 +7,7 @@ import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
+import { findSystemByUrl } from '../utils/system-lookup.js';
 
 /**
  * Add the "update system" subcommand to a passed command.
@@ -205,10 +206,12 @@ async function updateSystem(params: {
         });
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
-        const existing = await service.read(key);
+
+        // Use smart lookup to handle client mismatch scenarios
+        const existing = await findSystemByUrl(identifier.url, identifier.client, service, BackendSystemKey);
 
         if (!existing) {
+            const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
             logger.error(`System not found: ${key.getId()}`);
             return;
         }
@@ -235,8 +238,9 @@ async function updateSystem(params: {
             return;
         }
 
+        const key = BackendSystemKey.from(existing);
         await service.partialUpdate(key, patch);
-        logger.info(`System '${key.getId()}' updated.`);
+        logger.info(`System '${existing.name}' updated.`);
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);
