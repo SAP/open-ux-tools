@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-04
+
+#### Features
+
+- add sap-cloud-dev-adaptation-status rule to warn when cloudDevAdaptationStatus is missing in sap.fiori manifest section. [[cca82b6](https://github.com/SAP/open-ux-tools/commit/cca82b6eb0687aa8afda56e8dc02ed40f4d3851b)]
+
 ## 10.7.15
 
 ### Patch Changes
