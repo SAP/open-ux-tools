@@ -169,7 +169,8 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
 }));
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
-    AdaptationProjectType: { ON_PREMISE: 'ON_PREMISE', CLOUD: 'CLOUD' }
+    AdaptationProjectType: { ON_PREMISE: 'ON_PREMISE', CLOUD: 'CLOUD' },
+    createForAbap: jest.fn()
 }));
 
 jest.unstable_mockModule('prompts', () => ({
