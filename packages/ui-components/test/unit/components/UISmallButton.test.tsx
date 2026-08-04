@@ -31,9 +31,7 @@ describe('<UISmallButton />', () => {
             expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(
                 'var(--vscode-button-secondaryBackground, #5f6a79)'
             );
-            expect(findStyleFromStyleSheets('color', el)).toEqual(
-                'var(--vscode-button-secondaryForeground, #ffffff)'
-            );
+            expect(findStyleFromStyleSheets('color', el)).toEqual('var(--vscode-button-secondaryForeground, #ffffff)');
         });
 
         it('primary - background and color', () => {

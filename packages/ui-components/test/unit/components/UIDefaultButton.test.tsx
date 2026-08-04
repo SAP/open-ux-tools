@@ -26,33 +26,25 @@ describe('<UIDefaultButton />', () => {
         it('secondary (default)', () => {
             render(<UIDefaultButton>Dummy</UIDefaultButton>);
             const el = document.body.querySelector('.ms-Button') as HTMLElement;
-            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(
-                BASE_STYLES.secondary.backgroundColor
-            );
+            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(BASE_STYLES.secondary.backgroundColor);
         });
 
         it('primary', () => {
             render(<UIDefaultButton primary={true}>Dummy</UIDefaultButton>);
             const el = document.body.querySelector('.ms-Button') as HTMLElement;
-            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(
-                BASE_STYLES.primary.backgroundColor
-            );
+            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(BASE_STYLES.primary.backgroundColor);
         });
 
         it('alert', () => {
             render(<UIDefaultButton alert={true}>Dummy</UIDefaultButton>);
             const el = document.body.querySelector('.ms-Button') as HTMLElement;
-            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(
-                BASE_STYLES.alert.backgroundColor
-            );
+            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(BASE_STYLES.alert.backgroundColor);
         });
 
         it('transparent', () => {
             render(<UIDefaultButton transparent={true}>Dummy</UIDefaultButton>);
             const el = document.body.querySelector('.ms-Button') as HTMLElement;
-            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(
-                BASE_STYLES.transparent.backgroundColor
-            );
+            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(BASE_STYLES.transparent.backgroundColor);
         });
     });
 
@@ -78,14 +70,19 @@ describe('<UIDefaultButton />', () => {
 
             it('root has focus selector', () => {
                 const styles = getStyles(props);
-                const selectors = ((styles.root as Record<string, unknown>)?.selectors ?? {}) as Record<string, unknown>;
+                const selectors = ((styles.root as Record<string, unknown>)?.selectors ?? {}) as Record<
+                    string,
+                    unknown
+                >;
                 expect(selectors['.ms-Fabric--isFocusVisible &:focus:after']).toBeDefined();
             });
         });
 
         it('checked - rootChecked borderColor uses contrastActiveBorder', () => {
             const styles = getStyles({ primary: true, checked: true });
-            expect((styles.rootChecked as Record<string, unknown>)?.borderColor).toEqual(BASE_STYLES.checkedBorderColor);
+            expect((styles.rootChecked as Record<string, unknown>)?.borderColor).toEqual(
+                BASE_STYLES.checkedBorderColor
+            );
         });
 
         it('transparent checked - rootChecked uses primary background', () => {

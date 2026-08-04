@@ -54,9 +54,7 @@ describe('<UIDropdown />', () => {
     it('Test responsive mode - default value', () => {
         const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE' });
         expect(dropdownProps.responsiveMode).toEqual(ResponsiveMode.xxxLarge);
-        expect(container.querySelector('div.ts-SelectBox')?.className).toEqual(
-            'ms-Dropdown-container ts-SelectBox'
-        );
+        expect(container.querySelector('div.ts-SelectBox')?.className).toEqual('ms-Dropdown-container ts-SelectBox');
     });
 
     it('Styles - default', () => {

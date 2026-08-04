@@ -13,7 +13,6 @@ mockResizeObserver();
 describe('<UISections />', () => {
     let container: HTMLElement;
     let unmount: () => void;
-    let rerender: (ui: React.ReactElement) => void;
     let sectionsRef: React.RefObject<UISections>;
     let windowEventListenerMock = mockDomEventListener(window);
 
@@ -102,7 +101,6 @@ describe('<UISections />', () => {
         );
         container = result.container;
         unmount = result.unmount;
-        rerender = result.rerender;
 
         windowEventListenerMock.cleanDomEventListeners();
         windowEventListenerMock = mockDomEventListener(window);
@@ -274,7 +272,6 @@ describe('<UISections />', () => {
             );
             container = result.container;
             unmount = result.unmount;
-            rerender = result.rerender;
             const rect = {
                 top: 0,
                 height: 1000,

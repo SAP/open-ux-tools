@@ -54,17 +54,13 @@ describe('<UITextInput />', () => {
         it('error - error border color', () => {
             render(<UITextInput errorMessage="dummy" />);
             const el = document.body.querySelector('.ms-TextField-fieldGroup') as HTMLElement;
-            expect(findStyleFromStyleSheets('borderColor', el)).toEqual(
-                'var(--vscode-inputValidation-errorBorder)'
-            );
+            expect(findStyleFromStyleSheets('borderColor', el)).toEqual('var(--vscode-inputValidation-errorBorder)');
         });
 
         it('warning - warning border color', () => {
             render(<UITextInput warningMessage="dummy" />);
             const el = document.body.querySelector('.ms-TextField-fieldGroup') as HTMLElement;
-            expect(findStyleFromStyleSheets('borderColor', el)).toEqual(
-                'var(--vscode-inputValidation-warningBorder)'
-            );
+            expect(findStyleFromStyleSheets('borderColor', el)).toEqual('var(--vscode-inputValidation-warningBorder)');
         });
 
         it('focused - :after border (pseudo-element, via getStyles)', () => {

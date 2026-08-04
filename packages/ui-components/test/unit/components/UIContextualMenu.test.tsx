@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { render, cleanup } from '@testing-library/react';
-import { getUIcontextualMenuCalloutStyles, getUIContextualMenuItemStyles, UIContextualMenu } from '../../../src/components/UIContextualMenu';
+import {
+    getUIcontextualMenuCalloutStyles,
+    getUIContextualMenuItemStyles,
+    UIContextualMenu
+} from '../../../src/components/UIContextualMenu';
 import { UiIcons, initIcons } from '../../../src/components/Icons';
 
 describe('<UIContextualMenu />', () => {

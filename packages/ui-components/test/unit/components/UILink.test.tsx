@@ -64,7 +64,9 @@ describe('<UILink />', () => {
         it('secondary uses foreground color in hover selectors', () => {
             const styles = getStyles({ secondary: true });
             const root = styles.root as Record<string, unknown>;
-            const hover = (root.selectors as Record<string, unknown>)?.['&:hover, &:hover:focus, &:hover:active'] as Record<string, unknown>;
+            const hover = (root.selectors as Record<string, unknown>)?.[
+                '&:hover, &:hover:focus, &:hover:active'
+            ] as Record<string, unknown>;
             expect(hover?.color).toEqual('var(--vscode-foreground)');
         });
     });

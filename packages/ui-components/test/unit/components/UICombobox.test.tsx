@@ -281,7 +281,9 @@ describe('<UIComboBox />', () => {
         });
 
         it('Test onClick value selection', async () => {
-            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} selectedKey="AU" />));
+            ({ container } = render(
+                <UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} selectedKey="AU" />
+            ));
             const input = container.querySelector('input') as HTMLInputElement;
 
             // Directly test the setCaretPosition behavior via a simulated click event
@@ -494,52 +496,52 @@ describe('<UIComboBox />', () => {
     });
 
     describe('onScrollToItem - multi select combobox', () => {
-        const testCases = [
+        const scrollTestCases = [
             {
+                name: 'item out of view above - scrolls up',
                 scrollHeight: 2000,
                 clientHeight: 200,
                 scrollTop: 50,
-                element: {
-                    offsetTop: 500,
-                    clientHeight: 50
-                },
+                element: { offsetTop: 500, clientHeight: 50 },
                 expect: 350
             },
             {
+                name: 'item out of view below - scrolls down',
                 scrollHeight: 2000,
                 clientHeight: 200,
                 scrollTop: 1500,
-                element: {
-                    offsetTop: 500,
-                    clientHeight: 50
-                },
+                element: { offsetTop: 500, clientHeight: 50 },
                 expect: 500
             },
             {
+                name: 'item already visible - no scroll',
                 scrollHeight: 2000,
                 clientHeight: 200,
                 scrollTop: 0,
-                element: {
-                    offsetTop: 100,
-                    clientHeight: 50
-                },
-                expect: undefined
-            },
-            // Single select should not invoke solutin for fix, because there no issue in single select combobox
-            {
-                singleSelect: true,
-                scrollHeight: 2000,
-                clientHeight: 200,
-                scrollTop: 1500,
-                element: {
-                    offsetTop: 500,
-                    clientHeight: 50
-                },
+                element: { offsetTop: 100, clientHeight: 50 },
                 expect: undefined
             }
         ];
-        for (const testCase of testCases) {
-            it('Scroll to selection', async () => {
+
+        it('single select - onScrollToItem handler is not registered', () => {
+            const scrollRef = React.createRef<UIComboBox>();
+            render(
+                <UIComboBox
+                    ref={scrollRef}
+                    options={data}
+                    highlight={true}
+                    allowFreeform={true}
+                    multiSelect={false}
+                    autoComplete="on"
+                    useComboBoxAsMenuMinWidth={true}
+                />
+            );
+            const comboBoxProps = getComboBoxProps(scrollRef);
+            expect(comboBoxProps?.onScrollToItem).toBeUndefined();
+        });
+
+        for (const testCase of scrollTestCases) {
+            it(`Scroll to selection - ${testCase.name}`, async () => {
                 const parent = document.createElement('div');
                 jest.spyOn(parent, 'scrollHeight', 'get').mockReturnValue(testCase.scrollHeight);
                 jest.spyOn(parent, 'clientHeight', 'get').mockReturnValue(testCase.clientHeight);
@@ -553,18 +555,13 @@ describe('<UIComboBox />', () => {
                         options={data}
                         highlight={true}
                         allowFreeform={true}
-                        multiSelect={!testCase.singleSelect}
+                        multiSelect={true}
                         autoComplete="on"
                         useComboBoxAsMenuMinWidth={true}
                     />
                 );
                 const comboBoxProps = getComboBoxProps(scrollRef);
                 const onScrollToItem = comboBoxProps?.onScrollToItem as ((index: number) => void) | undefined;
-                if (testCase.singleSelect) {
-                    // Single select should not invoke solutin for fix, because there no issue in single select combobox
-                    expect(onScrollToItem).toBeUndefined();
-                    return;
-                }
                 // Open callout
                 const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
                 fireEvent.click(btn, document.createEvent('Events'));
@@ -574,12 +571,12 @@ describe('<UIComboBox />', () => {
                 const element = document.querySelector('.ts-ComboBox--selected') as HTMLElement;
                 jest.spyOn(element, 'offsetTop', 'get').mockReturnValue(testCase.element.offsetTop);
                 jest.spyOn(element, 'clientHeight', 'get').mockReturnValue(testCase.element.clientHeight);
-                // Simulate navigation
-                onScrollToItem(5);
-                // Check result
-                expect(scrollTopSetter).toHaveBeenCalledTimes(testCase.expect ? 1 : 0);
+                onScrollToItem?.(5);
                 if (testCase.expect !== undefined) {
+                    expect(scrollTopSetter).toHaveBeenCalledTimes(1);
                     expect(scrollTopSetter).toHaveBeenCalledWith(testCase.expect);
+                } else {
+                    expect(scrollTopSetter).not.toHaveBeenCalled();
                 }
             });
         }
@@ -611,7 +608,9 @@ describe('<UIComboBox />', () => {
     describe('Behavior of title/tooltip for options', () => {
         const buttonSelector = `${menuDropdownSelector} .ms-Button--command`;
         it('Default - inherit from text', () => {
-            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={originalData} />));
+            ({ container } = render(
+                <UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={originalData} />
+            ));
             openDropdown();
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toEqual('Yemen');
@@ -621,7 +620,9 @@ describe('<UIComboBox />', () => {
             const expectTitle = 'dummy';
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = expectTitle;
-            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />));
+            ({ container } = render(
+                <UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />
+            ));
             openDropdown();
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(expectTitle);
@@ -630,7 +631,9 @@ describe('<UIComboBox />', () => {
         it('No title', () => {
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = null;
-            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />));
+            ({ container } = render(
+                <UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />
+            ));
             openDropdown();
             const buttons = document.querySelectorAll(buttonSelector);
             expect(buttons[buttons.length - 1].getAttribute('title')).toBeNull();
@@ -654,7 +657,9 @@ describe('<UIComboBox />', () => {
         ];
         for (const testCase of testCases) {
             it(`Click on input, "openMenuOnClick=${testCase.value}"`, () => {
-                ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} openMenuOnClick={testCase.value} />));
+                ({ container } = render(
+                    <UIComboBox ref={comboboxRef} {...defaultProps} openMenuOnClick={testCase.value} />
+                ));
                 const input = container.querySelector('input') as HTMLInputElement;
                 expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 fireEvent.click(input);
@@ -667,7 +672,9 @@ describe('<UIComboBox />', () => {
         const testCases = [true, false];
         for (const testCase of testCases) {
             it(`isForceEnabled=${testCase}`, () => {
-                ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={testCase} />));
+                ({ container } = render(
+                    <UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={testCase} />
+                ));
                 const props = getComboBoxProps(comboboxRef);
                 expect(props?.disabled).toEqual(!testCase);
             });
@@ -764,14 +771,13 @@ describe('<UIComboBox />', () => {
                     !testCase.disabled ? !!expected.readOnly : false
                 );
                 expect(className.includes('ts-ComboBox--disabled')).toEqual(!!testCase.disabled);
-                // Additional properties
-                if (!testCase.disabled && expected.readOnly) {
-                    // When readOnly is set: aria-readonly=true, aria-disabled is explicitly undefined (not rendered)
+
+                const isReadOnlyActive = !testCase.disabled && expected.readOnly;
+                expect(input.hasAttribute('aria-readonly')).toEqual(isReadOnlyActive);
+                if (isReadOnlyActive) {
                     expect(input.getAttribute('aria-readonly')).toEqual('true');
-                    // aria-disabled is set to undefined in props - React does not render it as a DOM attribute
                     expect(input.getAttribute('aria-disabled')).toBeNull();
                 } else {
-                    expect(input.hasAttribute('aria-readonly')).toEqual(false);
                     expect(input.getAttribute('aria-disabled')).toEqual(testCase.disabled ? 'true' : 'false');
                 }
             });
@@ -825,7 +831,9 @@ describe('<UIComboBox />', () => {
 
     describe('Combobox items with group headers', () => {
         beforeEach(() => {
-            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={groupsData} />));
+            ({ container } = render(
+                <UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={groupsData} />
+            ));
         });
 
         it('Test css selectors which are used in scss - with highlight', () => {
@@ -883,65 +891,47 @@ describe('<UIComboBox />', () => {
     }, 99999);
 
     describe('Test "calloutCollisionTransformation" property', () => {
-        const testCases = [
-            {
-                multiSelect: true,
-                enabled: true,
-                expected: true
-            },
-            {
-                multiSelect: false,
-                enabled: true,
-                expected: false
-            },
-            {
-                multiSelect: true,
-                enabled: false,
-                expected: false
-            }
-        ];
-        for (const testCase of testCases) {
-            const { multiSelect, enabled, expected } = testCase;
-            it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
-                ({ container } = render(
-                    <UIComboBox
-                        ref={comboboxRef}
-                        {...defaultProps}
-                        multiSelect={testCase.multiSelect}
-                        calloutCollisionTransformation={testCase.enabled}
-                    />
-                ));
-                const props = getComboBoxProps(comboboxRef);
-                expect(props).toBeTruthy();
-                const calloutProps = props?.calloutProps as Record<string, unknown> | undefined;
-                if (expected) {
-                    expect(calloutProps?.preventDismissOnEvent).toBeDefined();
-                    expect(
-                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerDidMount
-                    ).toBeDefined();
-                    expect(
-                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerWillUnmount
-                    ).toBeDefined();
+        const renderComboBox = (multiSelect: boolean, enabled: boolean) => {
+            ({ container } = render(
+                <UIComboBox
+                    ref={comboboxRef}
+                    {...defaultProps}
+                    multiSelect={multiSelect}
+                    calloutCollisionTransformation={enabled}
+                />
+            ));
+            const props = getComboBoxProps(comboboxRef);
+            expect(props).toBeTruthy();
+            return props?.calloutProps as Record<string, unknown> | undefined;
+        };
 
-                    (calloutProps?.preventDismissOnEvent as (e: Event) => void)?.({} as Event);
-                    (calloutProps?.layerProps as { onLayerDidMount?: () => void } | undefined)?.onLayerDidMount?.();
-                    (
-                        calloutProps?.layerProps as { onLayerWillUnmount?: () => void } | undefined
-                    )?.onLayerWillUnmount?.();
-                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(expected ? 1 : 0);
-                    expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(expected ? 1 : 0);
-                    expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(expected ? 1 : 0);
-                } else {
-                    expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
-                    expect(
-                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerDidMount
-                    ).toBeUndefined();
-                    expect(
-                        (calloutProps?.layerProps as Record<string, unknown> | undefined)?.onLayerWillUnmount
-                    ).toBeUndefined();
-                }
-            });
-        }
+        it('transformation active - multiSelect=true, enabled=true: handlers are wired and called', () => {
+            const calloutProps = renderComboBox(true, true);
+            expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+            expect((calloutProps?.layerProps as Record<string, unknown>)?.onLayerDidMount).toBeDefined();
+            expect((calloutProps?.layerProps as Record<string, unknown>)?.onLayerWillUnmount).toBeDefined();
+
+            (calloutProps?.preventDismissOnEvent as (e: Event) => void)?.({} as Event);
+            (calloutProps?.layerProps as { onLayerDidMount?: () => void })?.onLayerDidMount?.();
+            (calloutProps?.layerProps as { onLayerWillUnmount?: () => void })?.onLayerWillUnmount?.();
+            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(1);
+        });
+
+        it('transformation inactive - multiSelect=false, enabled=true: no handlers attached', () => {
+            const calloutProps = renderComboBox(false, true);
+            expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+            expect((calloutProps?.layerProps as Record<string, unknown>)?.onLayerDidMount).toBeUndefined();
+            expect((calloutProps?.layerProps as Record<string, unknown>)?.onLayerWillUnmount).toBeUndefined();
+        });
+
+        it('transformation inactive - multiSelect=true, enabled=false: no handlers attached', () => {
+            const calloutProps = renderComboBox(true, false);
+            expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+            expect((calloutProps?.layerProps as Record<string, unknown>)?.onLayerDidMount).toBeUndefined();
+            expect((calloutProps?.layerProps as Record<string, unknown>)?.onLayerWillUnmount).toBeUndefined();
+        });
 
         it(`Pass external listeners`, () => {
             const externalListeners = {
@@ -1184,7 +1174,9 @@ describe('<UIComboBox />', () => {
             it(name, () => {
                 // Default state before custom filter
                 let localRerender: (ui: React.ReactElement) => void;
-                ({ container, rerender: localRerender } = render(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={options} />));
+                ({ container, rerender: localRerender } = render(
+                    <UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={options} />
+                ));
                 openDropdown();
                 const input = container.querySelector('input') as HTMLInputElement;
                 fireEvent.keyDown(input, {});
@@ -1225,7 +1217,9 @@ describe('<UIComboBox />', () => {
             noDataText: '.option-no-data'
         };
         beforeEach(() => {
-            ({ container } = render(<UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={true} />));
+            ({ container } = render(
+                <UIComboBox ref={comboboxRef} {...defaultProps} options={[]} isForceEnabled={true} />
+            ));
         });
 
         it('Check "noDataLabel"', () => {

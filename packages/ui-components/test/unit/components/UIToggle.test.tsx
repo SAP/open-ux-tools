@@ -127,9 +127,7 @@ describe('<UIToggle />', () => {
         });
 
         it('Info', () => {
-            const { container } = render(
-                <UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />
-            );
+            const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />);
             expect(container.querySelectorAll('.ts-message-wrapper--info')).toHaveLength(1);
         });
     });

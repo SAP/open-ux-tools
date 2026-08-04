@@ -2,7 +2,6 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import { labelGlobalStyle, UILabel } from '../../../src/components/UILabel';
 import type { ILabelStyleProps, ILabelStyles } from '@fluentui/react';
-import { findStyleFromStyleSheets } from '../../utils/styles';
 
 // getStyles is only needed for the required ::after pseudo-element assertion,
 // which is not accessible via getComputedStyle or document.styleSheets in jsdom.
