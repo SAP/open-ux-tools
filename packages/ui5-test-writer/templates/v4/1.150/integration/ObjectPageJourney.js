@@ -83,7 +83,8 @@ sap.ui.define([
 <% } -%>
 
 <% if (bodySections?.length > 0) { -%>
-        opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+<% const usesWhenInBody = bodySections.length > 1 || bodySections.some(function(section) { return section.subSections && section.subSections.length > 0; }); -%>
+        opaTest("Check body sections of the Object Page", function (_Given, <% if (usesWhenInBody) { %>When<% } else { %>_When<% } %>, Then) {
             Then.onThe<%- name%>Generated.iCheckNumberOfSections(<%- bodySections.length %>);
 <% bodySections.forEach(function(section) { -%>
 <% if (bodySections.length > 1) { -%>
