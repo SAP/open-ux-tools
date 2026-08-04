@@ -1,7 +1,7 @@
 ---
 name: sap-fiori-tree-table
 description: Configure hierarchical tree table to SAP Fiori elements application for displaying parent-child recursive hierarchies. Supports CAP and ABAP RAP (OData V4).
-argument-hint: Entity, parent field, hierarchy qualifier
+argument-hint: Entity name (and ABAP package for RAP projects)
 metadata:
   author: sap-fiori-tools
   version: "0.0.1"
@@ -34,6 +34,7 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 ### Prerequisites
 - ✅ Existing CAP project with CDS entity
 - ✅ SAP Fiori Elements List Report application
+- ✅ CAP service must be exposed as OData V4 (recursive hierarchy is V4-only)
 - ✅ Entity uses `cuid` or has UUID primary key
 - ✅ CDS-MCP server tools available
 
@@ -73,6 +74,8 @@ service <ServiceName> @(path: '/<path>') {
 ### 4. Configure TreeTable in Manifest
 Update List Report target in `app/<app>/webapp/manifest.json`:
 
+**Path:** `sap.ui5.routing.targets.<ListReportTargetName>.options.settings.controlConfiguration`
+
 ```json
 "controlConfiguration": {
   "@com.sap.vocabularies.UI.v1.LineItem": {
@@ -85,24 +88,24 @@ Update List Report target in `app/<app>/webapp/manifest.json`:
 ```
 
 ✅ **type: "TreeTable"** (not "ResponsiveTable")  
-✅ **hierarchyQualifier** with descriptive name
+✅ **hierarchyQualifier** matches the auto-registered qualifier from `@hierarchy` annotation (CAP auto-registers `<EntityName>Hierarchy` when `@hierarchy` is applied)
 
 ### 5. Create Sample Hierarchical Data
 Create CSV at `db/data/<namespace>-<EntityName>.csv`:
 
 ```csv
 ID;Name;Description;parent_ID
-uuid-1;Electronics;;
-uuid-2;Computers;;uuid-1
-uuid-3;Laptops;;uuid-2
-uuid-4;Desktops;;uuid-2
-uuid-5;Home & Garden;;
-uuid-6;Furniture;;uuid-5
+11111111-1111-1111-1111-111111111111;Electronics;;
+22222222-2222-2222-2222-222222222222;Computers;;11111111-1111-1111-1111-111111111111
+33333333-3333-3333-3333-333333333333;Laptops;;22222222-2222-2222-2222-222222222222
+44444444-4444-4444-4444-444444444444;Desktops;;22222222-2222-2222-2222-222222222222
+55555555-5555-5555-5555-555555555555;Home & Garden;;
+66666666-6666-6666-6666-666666666666;Furniture;;55555555-5555-5555-5555-555555555555
 ```
 
 ✅ **Use `parent_ID`** (with underscore!)  
 ✅ **Root items have empty parent_ID**  
-✅ **Valid UUID format**
+✅ **Valid UUID format** (use real UUIDs for production data)
 
 ### 6. Test
 ```bash
@@ -128,11 +131,9 @@ Examine `webapp/localService/mainService/metadata.xml` for:
 - Proceed to Step 2
 
 ### 2. Implement Backend Hierarchy
-**🚨 CRITICAL: ALWAYS FETCH SAP DOCUMENTATION FIRST 🚨**
+**� Best Practice: Fetch SAP Documentation First**
 
-**MANDATORY STEP - DO NOT SKIP:**
-1. **BEFORE any ABAP implementation, you MUST call `fetch_webpage` tool** to retrieve the latest official SAP documentation
-2. **Use ALL of these SAP Help Portal URLs** (fetch all pages):
+**If `fetch_webpage` (or an equivalent web fetch tool) is available, retrieve the following SAP Help Portal pages for the latest patterns:**
 
    - **[Developing Apps with Hierarchical Data Structures](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-hierarchical-view)** - Overview
    - **[Treeviews with Read-Only Capabilities](https://help.sap.com/docs/abap-cloud/abap-rap/treeview-with-read-only-capability)** - Architecture
@@ -142,9 +143,6 @@ Examine `webapp/localService/mainService/metadata.xml` for:
    - **[Creating the Projection View](https://help.sap.com/docs/abap-cloud/abap-rap/creating-consumption-view)** - Projection with redirected association
    - **[Displaying Treeview on SAP Fiori UI](https://help.sap.com/docs/abap-cloud/abap-rap/hierarchical-treeview-on-ui)** - UI configuration
 
-3. **Extract implementation patterns** from fetched documentation
-4. **Apply patterns** to the specific entity and package
-
 **Example fetch_webpage usage:**
 ```
 fetch_webpage(
@@ -153,28 +151,23 @@ fetch_webpage(
 )
 ```
 
-**WHY THIS IS CRITICAL:**
-- ❌ **DO NOT implement from memory or skill examples alone**
-- ❌ **DO NOT assume syntax hasn't changed**
-- ✅ **ALWAYS use current SAP documentation** - APIs and patterns evolve
-- ✅ **Official docs show exact syntax** including annotations like `@OData.hierarchy.recursiveHierarchy`
-- ✅ **Prevents outdated or incorrect implementations**
+**If `fetch_webpage` is not available,** apply the canonical patterns documented below (which match the official SAP documentation as of this skill's creation).
 
-**After fetching documentation, implement:**
+**Implementation patterns (authoritative fallback):**
 
-**CRITICAL Requirements (from fetched SAP documentation):**
+**CRITICAL Requirements (from SAP documentation):**
 - ✅ Database table with parent field (e.g., `parent_uuid`, `manager`)
 - ✅ Interface view must have self-referencing association
   ```abap
-  association [0..1] to INTERFACE_VIEW as _Parent on $projection.ParentID = _Parent.ID
+  association [0..1] to INTERFACE_VIEW as _Parent on $projection.<ParentField> = _Parent.<KeyField>
   ```
 - ✅ Hierarchy uses `define hierarchy` syntax (not `define view entity`)
   ```abap
   define hierarchy HIERARCHY_NAME as parent child hierarchy(
     source INTERFACE_VIEW
     child to parent association _Parent
-    start where ParentID is initial
-    siblings order by Name
+    start where <ParentField> is initial
+    siblings order by <SortField>
   )
   ```
 - ✅ Projection view must have `@OData.hierarchy.recursiveHierarchy` annotation
@@ -377,12 +370,8 @@ define root view entity C_Entity as projection on R_Entity {
 - Check metadata endpoint for hierarchy annotations
 
 **RAP Specific:**
-
-**Implementation Guidelines:**
-- ✅ **ALWAYS fetch SAP Help Portal documentation first** using `fetch_webpage` tool
-- ✅ Use official SAP patterns from fetched docs, not skill examples
-- ✅ Verify `@OData.hierarchy.recursiveHierarchy` annotation in projection view
-- ✅ Always use ADT MCP when available
+- Always use ADT MCP when available
+- Verify `@OData.hierarchy.recursiveHierarchy` annotation in projection view
 
 **Metadata Extension Rules:**
 - ✅ **Add UI annotations** (`@UI.lineItem`, `@UI.identification`, `@UI.selectionField`) **and `@EndUserText.label` for business-relevant fields only**
@@ -400,16 +389,24 @@ define root view entity C_Entity as projection on R_Entity {
 
 **Before claiming completion, verify:**
 
-### Documentation Fetched:
-- [ ] Called `fetch_webpage` with all 7 SAP Help Portal URLs
+### Documentation Fetched (if available):
+- [ ] Fetched or referenced the 7 SAP Help Portal pages for the current patterns
 - [ ] Extracted official implementation patterns
 - [ ] Applied patterns to specific use case
 
-### ABAP Objects Created:
+### CAP Objects Configured (for CAP projects):
+- [ ] Self-referencing managed association added to db/schema.cds
+- [ ] `@hierarchy` annotation on service entity in srv/<service>.cds
+- [ ] manifest.json controlConfiguration has `type: "TreeTable"`
+- [ ] hierarchyQualifier set consistently with entity (e.g., `<EntityName>Hierarchy`)
+- [ ] Sample CSV in db/data/ with `parent_ID` column and empty parent_ID for roots
+- [ ] Service runs with `cds watch` without errors
+
+### ABAP Objects Created (for RAP projects):
 - [ ] Database table has parent field (UUID/ID type)
 - [ ] Interface view has self-referencing association with correct `on` clause
 - [ ] Hierarchy definition uses `define hierarchy` syntax
-- [ ] Hierarchy has `start where ParentID is initial` clause
+- [ ] Hierarchy has `start where <ParentField> is initial` clause
 - [ ] Projection view has `@OData.hierarchy.recursiveHierarchy` annotation
 - [ ] Projection view redirects association: `_Parent : redirected to ProjectionView`
 - [ ] All objects activated in correct order
@@ -423,5 +420,5 @@ define root view entity C_Entity as projection on R_Entity {
 
 ## References
 
-- **CAP Hierarchy**: https://cap.cloud.sap/docs/releases/2025/jun25#hierarchy-maintenance-in-tree-views
+- **CAP Hierarchy Guide**: https://cap.cloud.sap/docs/guides/uis/fiori#fiori-tree-views (Serving SAP Fiori UIs → Fiori Tree Views)
 - **ABAP RAP Hierarchies**: https://help.sap.com/docs/abap-cloud/abap-rap/implementing-hierarchical-view
