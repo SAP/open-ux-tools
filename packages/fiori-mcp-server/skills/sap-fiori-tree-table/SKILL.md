@@ -36,10 +36,10 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 - ✅ SAP Fiori Elements List Report application
 - ✅ CAP service must be exposed as OData V4 (recursive hierarchy is V4-only)
 - ✅ Entity uses `cuid` or has UUID primary key
-- ✅ CDS-MCP server tools available
+- ✅ CDS MCP server tools available
 
 ### 1. Check Current Entity Structure
-Use `cds-mcp` → `search_model` with projectPath, entityName, kind="entity"
+Use CDS MCP to search the model for the target entity structure before making changes
 
 ### 2. Add Hierarchy Association
 Add self-referencing managed association to `db/schema.cds`:
@@ -365,7 +365,7 @@ define root view entity C_Entity as projection on R_Entity {
 - Clear browser cache after backend changes
 
 **CAP Specific:**
-- Use `cds-mcp` to search model before editing
+- Use CDS MCP to search model before editing
 - Run `cds watch` to reload data
 - Check metadata endpoint for hierarchy annotations
 
