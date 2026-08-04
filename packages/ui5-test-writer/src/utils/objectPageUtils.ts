@@ -628,8 +628,11 @@ function isTableSection(section: BodySectionItem): boolean {
  * @returns true if the section is marked hidden
  */
 function isSectionHidden(section: SectionItem): boolean {
-    // hideByProperty holds a dynamic hide expression; any presence means the section may be hidden at runtime.
-    return section.properties?.hidden?.value === true || section.properties?.hideByProperty !== undefined;
+    // hideByProperty holds a dynamic hide expression; skip unless it is a static `false` (always visible).
+    return (
+        section.properties?.hidden?.value === true ||
+        (section.properties?.hideByProperty !== undefined && section.properties.hideByProperty.value !== false)
+    );
 }
 
 /**

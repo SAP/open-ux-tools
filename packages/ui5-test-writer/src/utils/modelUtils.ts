@@ -89,6 +89,9 @@ export async function getAppFeatures(
         // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
         const appAccess = await createApplicationAccess(basePath, { fs: fs });
         const specification = await appAccess.getSpecification<Specification>();
+        // `includeAnnotationProperties` only becomes available with ux-specification 1.144.8, but updating
+        // the dependency causes imports to break, due to a change in export mechanism
+        // TODO: Remove workaround when ux-specification is updated to 1.144.8 or later
         const readAppOptions: ReadAppParams & { includeAnnotationProperties: boolean } = {
             app: appAccess,
             fs: fs,

@@ -543,6 +543,13 @@ describe('Test getObjectPageFeatures()', () => {
                                             schema: { keys: [{ name: 'ID', value: 'hiddenFacet' }] },
                                             properties: { hidden: { value: true } },
                                             aggregations: {}
+                                        } as unknown as TreeAggregation,
+                                        stashedButHiddenSection: {
+                                            title: 'StashedHidden',
+                                            custom: false,
+                                            schema: { keys: [{ name: 'ID', value: 'stashedHiddenFacet' }] },
+                                            properties: { stashed: { freeText: true }, hidden: { value: true } },
+                                            aggregations: {}
                                         } as unknown as TreeAggregation
                                     }
                                 } as unknown as TreeAggregation
@@ -1217,10 +1224,18 @@ describe('Test getObjectPageFeatures()', () => {
                                     properties: { hidden: { value: false } },
                                     aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
                                 } as unknown as TreeAggregation,
-                                hiddenByValue: {
+                                staticVisibleByProperty: {
                                     isTable: false,
                                     custom: false,
                                     order: 2,
+                                    schema: { keys: [{ name: 'ID', value: 'StaticVisibleByProperty' }] },
+                                    properties: { hideByProperty: { value: false } },
+                                    aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
+                                } as unknown as TreeAggregation,
+                                hiddenByValue: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 3,
                                     schema: { keys: [{ name: 'ID', value: 'HiddenByValue' }] },
                                     properties: { hidden: { value: true } },
                                     aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
@@ -1228,7 +1243,7 @@ describe('Test getObjectPageFeatures()', () => {
                                 hiddenByPath: {
                                     isTable: false,
                                     custom: false,
-                                    order: 3,
+                                    order: 4,
                                     schema: { keys: [{ name: 'ID', value: 'HiddenByPath' }] },
                                     properties: { hideByProperty: { value: 'IsHiddenProp' } },
                                     aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
@@ -1242,8 +1257,11 @@ describe('Test getObjectPageFeatures()', () => {
             }
         };
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
-        expect(result[0].bodySections).toHaveLength(1);
-        expect(result[0].bodySections?.[0].id).toBe('GeneralInformation');
+        expect(result[0].bodySections).toHaveLength(2);
+        expect(result[0].bodySections?.map((section) => section.id)).toEqual([
+            'GeneralInformation',
+            'StaticVisibleByProperty'
+        ]);
     });
 
     test('should skip sub-sections marked hidden', async () => {
