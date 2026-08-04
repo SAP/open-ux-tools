@@ -324,6 +324,21 @@ BUMP: Rebuild bundle with updated @sap-ux/fiori-docs-embeddings
 
 **If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled dep set is derived automatically from the dependency graph.
 
+**pnpm workspace alias cascades:**
+
+Some packages declare workspace dependencies using pnpm aliases, where the key in `package.json` differs from the real package name:
+
+```json
+"@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
+"@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*"
+```
+
+The changesets `updateInternalDependencies` cascade only matches by key — it never sees the real package name behind the alias and silently skips the cascade. When the aliased package is published to npm the `workspace:` protocol is replaced with a pinned version, so consumers of the alias are permanently tied to whatever version was current at publish time.
+
+This is enforced automatically: `pnpm validate:changesets` scans all workspace `package.json` files to detect alias dependencies and will error if a consumer package is missing a changeset when the aliased real package is being released. No manual list to maintain — any new alias is picked up automatically.
+
+**If you add a new pnpm workspace alias dependency**, no extra configuration is needed — `validate-changesets.mjs` will detect it automatically and enforce the cascade.
+
 **Private packages and changesets:**
 
 Packages with `"private": true` in their `package.json` are NOT published to npm, but they **still require changesets** when their source code or runtime dependencies change. Use the package's exact `name` field from its `package.json` in the changeset frontmatter — for example:
@@ -854,6 +869,7 @@ Before submitting changes, verify:
 - [ ] `pnpm lint:dependency-versions` passes
 - [ ] Changeset created if source code or runtime dependencies changed
 - [ ] If releasing a bundled workspace devDep, cascade changeset added for each consumer in `scripts/validate-changesets.mjs`
+- [ ] If releasing a package consumed via a pnpm workspace alias, cascade changeset added for the alias consumer (`pnpm validate:changesets` will catch this automatically)
 - [ ] No pnpm audit vulnerabilities introduced
 - [ ] Code follows TypeScript and ESLint standards
 - [ ] Tests follow given/when/then pattern
