@@ -79,14 +79,12 @@ export function getCredentialsPrompts<T extends Answers>(
             mask: '*',
             default: '',
             validate: async (password: string, answers: T): Promise<ValidationResult> => {
-                if (
-                    !(
-                        connectionValidator.validatedUrl &&
-                        answers?.[usernamePromptName] &&
-                        password &&
-                        (!sapClient || sapClient.isValid)
-                    )
-                ) {
+                if (!(
+                    connectionValidator.validatedUrl &&
+                    answers?.[usernamePromptName] &&
+                    password &&
+                    (!sapClient || sapClient.isValid)
+                )) {
                     return false;
                 }
                 // We may have a previously selected system
