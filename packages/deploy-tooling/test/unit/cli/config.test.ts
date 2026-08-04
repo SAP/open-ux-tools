@@ -206,5 +206,12 @@ describe('cli/config', () => {
             const merged = await mergeConfig(baseConfig, {});
             expect(merged.exclude).toBeUndefined();
         });
+
+        test('bad config path yields undefined exclude (no crash)', async () => {
+            const merged = await mergeConfig(baseConfig, {
+                config: join(fixture, 'does-not-exist.yaml')
+            } as CliOptions);
+            expect(merged.exclude).toBeUndefined();
+        });
     });
 });

@@ -1,5 +1,6 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
+import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -166,7 +167,7 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
  * @param deployConfigPath - path to the ui5-deploy.yaml file
  * @returns normalised prefix patterns e.g. ['/test/', '/localService/']
  */
-async function readBuilderExcludes(deployConfigPath: string): Promise<string[]> {
+export async function readBuilderExcludes(deployConfigPath: string, logger?: Logger): Promise<string[]> {
     try {
         const content = readFileSync(deployConfigPath, 'utf-8');
         const ui5Config = await UI5Config.newInstance(content);
@@ -175,7 +176,8 @@ async function readBuilderExcludes(deployConfigPath: string): Promise<string[]> 
             const withSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
             return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
         });
-    } catch {
+    } catch (e) {
+        logger?.warn(`Could not read builder excludes from ${deployConfigPath}: ${(e as Error)?.message ?? String(e)}`);
         return [];
     }
 }
