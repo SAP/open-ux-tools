@@ -431,20 +431,18 @@ function createCommunicationContact(uri: string, targetName: string, phones: str
                             name: 'tel',
                             value: {
                                 type: 'Collection',
-                                Collection: phones.map(
-                                    (phone): AnnotationRecord => ({
-                                        type: PHONE_NUMBER_TYPE,
-                                        propertyValues: [
-                                            {
-                                                name: 'type',
-                                                value: {
-                                                    type: 'EnumMember',
-                                                    EnumMember: phone
-                                                }
+                                Collection: phones.map((phone): AnnotationRecord => ({
+                                    type: PHONE_NUMBER_TYPE,
+                                    propertyValues: [
+                                        {
+                                            name: 'type',
+                                            value: {
+                                                type: 'EnumMember',
+                                                EnumMember: phone
                                             }
-                                        ]
-                                    })
-                                )
+                                        }
+                                    ]
+                                }))
                             }
                         }
                     ]
@@ -2668,6 +2666,84 @@ rating : Rating;
                     expect(text).toMatchSnapshot();
                 });
 
+                test('with qualifiers and embedded annotation', async () => {
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with {
+                        priority @(
+                            ![Common.Text#abc] : priority.name,
+                            ![Common.Text#abc.@UI.TextArrangement#xyz] : #TextFirst,
+                        )
+                    };
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents/priority',
+                                    term: `${COMMON}.Text`,
+                                    qualifier: 'abc'
+                                },
+                                uri: project.files.annotations,
+                                pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].AxisScaling.ScaleBehavior: #AutoScale,
+                        ![UI.Chart#chartStatus].AxisScaling.AutoScaleBehavior.ZeroAlwaysVisible: true,
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/0/value/Record/propertyValues/1/value/Record/propertyValues/0/value'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
                 test('with properties and embedded annotation', async () => {
                     const project = PROJECTS.V4_CDS_START;
                     const root = project.root;
@@ -2989,18 +3065,15 @@ rating : Rating;
                     }
                 ],
                 getChanges: (files) =>
-                    Array.from(
-                        { length: collection.length },
-                        (_, i): DeleteChange => ({
-                            kind: ChangeType.Delete,
-                            pointer: `collection/${i}`,
-                            reference: {
-                                target: targetName,
-                                term: LINE_ITEM
-                            },
-                            uri: files.annotations
-                        })
-                    )
+                    Array.from({ length: collection.length }, (_, i): DeleteChange => ({
+                        kind: ChangeType.Delete,
+                        pointer: `collection/${i}`,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations
+                    }))
             });
         });
     });

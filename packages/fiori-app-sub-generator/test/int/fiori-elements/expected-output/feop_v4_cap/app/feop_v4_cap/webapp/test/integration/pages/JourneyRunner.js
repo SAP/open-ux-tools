@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (JourneyRunner, BooksObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('testNameSpace/feopv4cap') + '/test/flpSandbox.html#testNameSpacefeopv4cap-tile',
         pages: {
 			onTheBooksObjectPageGenerated: BooksObjectPageGenerated

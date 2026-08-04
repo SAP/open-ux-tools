@@ -1,8 +1,24 @@
 # @sap-ux/logger
 
+## 1.0.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 1.0.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 1.0.1
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -10,7 +26,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -45,7 +61,7 @@
 
 ## 0.9.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -53,7 +69,7 @@
 
 ## 0.8.6
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -61,7 +77,7 @@
 
 ## 0.8.5
 
-*Released: 2026-04-08T13:10:18Z*
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -69,7 +85,7 @@
 
 ## 0.8.4
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -77,7 +93,7 @@
 
 ## 0.8.3
 
-*Released: 2026-03-26T12:07:04Z*
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -87,7 +103,7 @@
 
 ## 0.8.2
 
-*Released: 2026-03-04T22:42:20Z*
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -95,7 +111,7 @@
 
 ## 0.8.1
 
-*Released: 2026-01-30T16:59:27Z*
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -103,7 +119,7 @@
 
 ## 0.8.0
 
-*Released: 2025-12-19T11:36:13Z*
+_Released: 2025-12-19T11:36:13Z_
 
 ### Minor Changes
 
@@ -111,7 +127,7 @@
 
 ## 0.7.3
 
-*Released: 2025-12-18T21:05:02Z*
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -119,7 +135,7 @@
 
 ## 0.7.2
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -127,7 +143,7 @@
 
 ## 0.7.1
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -135,7 +151,7 @@
 
 ## 0.7.0
 
-*Released: 2025-05-14T22:35:53Z*
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -143,7 +159,7 @@
 
 ## 0.6.0
 
-*Released: 2024-07-05T15:03:05Z*
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -151,7 +167,7 @@
 
 ## 0.5.1
 
-*Released: 2024-02-27T22:07:50Z*
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 
@@ -159,7 +175,7 @@
 
 ## 0.5.0
 
-*Released: 2024-02-08T13:37:06Z*
+_Released: 2024-02-08T13:37:06Z_
 
 ### Minor Changes
 
@@ -167,7 +183,7 @@
 
 ## 0.4.0
 
-*Released: 2023-10-19T12:06:19Z*
+_Released: 2023-10-19T12:06:19Z_
 
 ### Minor Changes
 
@@ -175,7 +191,7 @@
 
 ## 0.3.9
 
-*Released: 2023-10-17T08:28:48Z*
+_Released: 2023-10-17T08:28:48Z_
 
 ### Patch Changes
 
@@ -183,7 +199,7 @@
 
 ## 0.3.8
 
-*Released: 2023-09-20T13:13:51Z*
+_Released: 2023-09-20T13:13:51Z_
 
 ### Patch Changes
 
@@ -191,7 +207,7 @@
 
 ## 0.3.7
 
-*Released: 2023-06-27T14:58:54Z*
+_Released: 2023-06-27T14:58:54Z_
 
 ### Patch Changes
 
@@ -199,7 +215,7 @@
 
 ## 0.3.6
 
-*Released: 2023-06-12T06:59:29Z*
+_Released: 2023-06-12T06:59:29Z_
 
 ### Patch Changes
 
@@ -207,7 +223,7 @@
 
 ## 0.3.5
 
-*Released: 2023-02-23T13:56:23Z*
+_Released: 2023-02-23T13:56:23Z_
 
 ### Patch Changes
 
@@ -215,7 +231,7 @@
 
 ## 0.3.4
 
-*Released: 2023-02-10T14:09:06Z*
+_Released: 2023-02-10T14:09:06Z_
 
 ### Patch Changes
 
@@ -223,7 +239,7 @@
 
 ## 0.3.3
 
-*Released: 2022-12-16T11:48:52Z*
+_Released: 2022-12-16T11:48:52Z_
 
 ### Patch Changes
 
@@ -231,7 +247,7 @@
 
 ## 0.3.2
 
-*Released: 2022-12-05T07:50:58Z*
+_Released: 2022-12-05T07:50:58Z_
 
 ### Patch Changes
 
@@ -239,7 +255,7 @@
 
 ## 0.3.1
 
-*Released: 2022-10-11T14:06:32Z*
+_Released: 2022-10-11T14:06:32Z_
 
 ### Patch Changes
 
@@ -247,7 +263,7 @@
 
 ## 0.3.0
 
-*Released: 2022-08-26T23:41:09Z*
+_Released: 2022-08-26T23:41:09Z_
 
 ### Minor Changes
 
@@ -255,7 +271,7 @@
 
 ## 0.2.2
 
-*Released: 2022-07-21T14:10:31Z*
+_Released: 2022-07-21T14:10:31Z_
 
 ### Patch Changes
 
@@ -263,7 +279,7 @@
 
 ## 0.2.1
 
-*Released: 2022-07-04T13:03:56Z*
+_Released: 2022-07-04T13:03:56Z_
 
 ### Patch Changes
 
@@ -271,7 +287,7 @@
 
 ## 0.2.0
 
-*Released: 2022-06-13T09:53:27Z*
+_Released: 2022-06-13T09:53:27Z_
 
 ### Minor Changes
 
@@ -279,7 +295,7 @@
 
 ## 0.1.6
 
-*Released: 2022-05-19T14:38:34Z*
+_Released: 2022-05-19T14:38:34Z_
 
 ### Patch Changes
 
@@ -287,7 +303,7 @@
 
 ## 0.1.5
 
-*Released: 2022-03-29T13:57:37Z*
+_Released: 2022-03-29T13:57:37Z_
 
 ### Patch Changes
 
@@ -296,7 +312,7 @@
 
 ## 0.1.4
 
-*Released: 2022-03-24T07:10:57Z*
+_Released: 2022-03-24T07:10:57Z_
 
 ### Patch Changes
 
@@ -304,7 +320,7 @@
 
 ## 0.1.3
 
-*Released: 2022-03-22T19:34:16Z*
+_Released: 2022-03-22T19:34:16Z_
 
 ### Patch Changes
 
@@ -312,7 +328,7 @@
 
 ## 0.1.2
 
-*Released: 2022-01-21T17:35:11Z*
+_Released: 2022-01-21T17:35:11Z_
 
 ### Patch Changes
 

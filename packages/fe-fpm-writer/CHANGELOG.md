@@ -1,5 +1,194 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.20 → 1.0.21
+
+## 1.3.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Allow multiple aggregations to page BB except breadcrumbs and footer. [[4615b91](https://github.com/SAP/open-ux-tools/commit/4615b91b5351cc764a3af49ba3bb69383795715c)]
+
+## 1.3.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/fiori-annotation-api 1.0.19 → 1.0.20
+
+## 1.3.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Release Date
+
+2026-07-23
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.18 → 1.0.19
+
+## 1.3.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/fiori-annotation-api 1.0.17 → 1.0.18
+
+## 1.3.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.16 → 1.0.17
+
+## 1.3.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- Add missing namespace prefixes to TEMPLATE_NAMESPACES for xmldom [[c143424](https://github.com/SAP/open-ux-tools/commit/c143424d9ed3332a3c4c8a61cbcda79e325c2b95)]
+
+## 1.3.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/fiori-annotation-api 1.0.15 → 1.0.16
+
+## 1.3.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Use onError instead of errorHandler in DOMParser options for xmldom 0.9.x compatibility [[7249031](https://github.com/SAP/open-ux-tools/commit/7249031c3c38bcc8c8afe1d448fd49268a3f4695)]
+
+## 1.3.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Consolidate DOMParser instantiation behind getDOMParserOptions with correct errorHandler and xmlns support [[70ab106](https://github.com/SAP/open-ux-tools/commit/70ab106566883152b7483e96c297e5782a453e97)]
+
+## 1.3.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-16
+
+#### Features
+
+- Add option to create Page Building Block with full layout during app generation [[85b88aa](https://github.com/SAP/open-ux-tools/commit/85b88aa64241d65d7a0618222221281bae2e3e45)]
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- hide Page BB templateType prompt and default to basic when UI5 version is < 1.145.0 [[37a342f](https://github.com/SAP/open-ux-tools/commit/37a342f1995602638173bd358ba7b98e54f3d1d9)]
+
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-14
+
+#### Features
+
+- Add standalone fragment generation support [[5d0eb12](https://github.com/SAP/open-ux-tools/commit/5d0eb12b95f71b9ee7556564c639b19e04ada60f)]
+
+## 1.1.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/fiori-annotation-api 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.6 → 2.1.6
+
+## 1.1.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.13 → 1.0.14
+
+## 1.1.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.12 → 1.0.13
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.1.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
 ## 1.1.3
 
 ### Patch Changes

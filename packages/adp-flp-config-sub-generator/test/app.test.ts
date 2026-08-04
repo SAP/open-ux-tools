@@ -40,6 +40,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     generateInboundConfig: jest.fn(),
     getBaseAppInbounds: jest.fn(),
     getCfBaseAppInbounds: jest.fn(),
+    getSystemUI5Version: jest.fn().mockResolvedValue('1.143.0'),
     loadCfConfig: jest.fn().mockReturnValue({}),
     isLoggedInCf: jest.fn().mockResolvedValue(false),
     getAppParamsFromUI5Yaml: jest.fn().mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' }),
@@ -271,7 +272,9 @@ describe('FLPConfigGenerator Integration Tests', () => {
                     additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
                 }
             ]),
-            expect.anything()
+            expect.anything(),
+            '1.143.0',
+            false
         );
     });
 
@@ -334,7 +337,9 @@ describe('FLPConfigGenerator Integration Tests', () => {
                     additionalParameters: '{"param1":"test1","param2":"test2"}'
                 })
             ],
-            expect.anything()
+            expect.anything(),
+            '1.143.0',
+            false
         );
     });
 
@@ -401,7 +406,9 @@ describe('FLPConfigGenerator Integration Tests', () => {
                     additionalParameters: '{"param1":"test1","param2":"test2"}'
                 })
             ],
-            expect.anything()
+            expect.anything(),
+            '1.143.0',
+            false
         );
     });
 
@@ -533,7 +540,9 @@ describe('FLPConfigGenerator Integration Tests', () => {
                     additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
                 })
             ],
-            expect.anything()
+            expect.anything(),
+            undefined,
+            false
         );
     });
 
@@ -1150,12 +1159,12 @@ describe('FLPConfigGenerator Integration Tests', () => {
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
-        let callbackResult: string = '';
+        let callbackResult: boolean | undefined;
         jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
             async (
                 callback?: inquirerCommon.AdditionalValidation
             ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
-                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                callbackResult = await callback?.({ username: 'testUsername', password: 'testPassword' });
                 return Promise.resolve([
                     {
                         username: 'testUsername'

@@ -1,5 +1,61 @@
 # @sap-ux/ui-components
 
+## 3.0.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Upgrade sanitize-html 2.17.5 → 2.17.6 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+## 3.0.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Reformat source files after prettier 3.8.4 → 3.9.5 upgrade [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+## 3.0.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Override Fluent UI TextField validation message styles - remove border-radius and animation, add negative margin-top and dynamic border-top color per message type (error/warning/info) [[c8741b3](https://github.com/SAP/open-ux-tools/commit/c8741b3f8a925ad3a8be8a701920af9e0c8b6bbf)]
+
+## 3.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-07
+
+#### Features
+
+- use new vscode variable '--vscode-button-secondaryBorder' for secondary buttons [[647b8d2](https://github.com/SAP/open-ux-tools/commit/647b8d2ad5560f78f85bb146b9cae7549536bb81)]
+
+## 3.0.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 3.0.4
 
 ### Patch Changes

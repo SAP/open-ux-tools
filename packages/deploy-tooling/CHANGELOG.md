@@ -1,5 +1,153 @@
 # @sap-ux/deploy-tooling
 
+## 1.0.31
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-04
+
+#### Bug Fixes
+
+- Replace require() with dynamic import() in bin/deploy and bin/undeploy shims to fix ReferenceError in ESM context [[f16e7ca](https://github.com/SAP/open-ux-tools/commit/f16e7ca01dd11784337d29e265c7f28a343f4701)]
+
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/system-access 1.0.8 → 1.0.9
+- @sap-ux/project-input-validator 1.0.13 → 1.0.14
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/project-input-validator 1.0.12 → 1.0.13
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+- @sap-ux/project-input-validator 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/project-input-validator 1.0.10 → 1.0.11
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 1.0.20
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
+## 1.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/logger 1.0.1 → 1.0.2
+
 ## 1.0.18
 
 ### Patch Changes
