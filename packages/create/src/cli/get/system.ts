@@ -57,7 +57,7 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
         });
 
         // Use smart lookup to handle client mismatch scenarios
-        const system = await findSystemByUrl(url, client, service, BackendSystemKey);
+        const system = await findSystemByUrl(url, client, service);
 
         if (!system) {
             const key = new BackendSystemKey({ url, client });
