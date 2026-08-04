@@ -181,7 +181,7 @@ describe('ui5', () => {
             const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
             await task({ workspace, options: { projectName, configuration: configWithExclude } } as any);
             const callArgs = mockCreateUi5Archive.mock.calls[0][3] as string[];
-            expect(callArgs.filter((e) => e === '/test/').length).toBe(1);
+            expect(callArgs.filter((e) => e === '/test/')).toHaveLength(1);
         });
 
         test('passes empty array when builder excludes returns [] and config.exclude absent', async () => {
