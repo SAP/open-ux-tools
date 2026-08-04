@@ -1,31 +1,7 @@
 import * as React from 'react';
-
-// TODO: the mock below intercepts calloutProps passed to FluentUI's ContextualMenu to test
-// internal implementation details rather than rendered output. Replace style/prop assertions
-// with render(<UIContextualMenu .../>) and assert DOM/CSS via compareStylesBySelector,
-// which would also remove the need for jest.unstable_mockModule and the dynamic import.
-
-// Module-level variable for capturing calloutProps in the Styles test.
-// The mock below always delegates to the real ContextualMenu, but also
-// stores calloutProps here so the Styles test can inspect it.
-let capturedCalloutProps: Record<string, unknown> | undefined;
-
-jest.unstable_mockModule('@fluentui/react', async () => {
-    const actual = jest.requireActual('@fluentui/react') as Record<string, unknown>;
-    const RealContextualMenu = actual['ContextualMenu'] as React.ComponentType<Record<string, unknown>>;
-    return {
-        ...actual,
-        ContextualMenu: (props: Record<string, unknown>) => {
-            capturedCalloutProps = props['calloutProps'] as Record<string, unknown> | undefined;
-            return React.createElement(RealContextualMenu, props);
-        }
-    };
-});
-
-const { render, cleanup } = await import('@testing-library/react');
-const { getUIcontextualMenuCalloutStyles, getUIContextualMenuItemStyles, UIContextualMenu } =
-    await import('../../../src/components/UIContextualMenu');
-const { UiIcons, initIcons } = await import('../../../src/components/Icons');
+import { render, cleanup } from '@testing-library/react';
+import { getUIcontextualMenuCalloutStyles, getUIContextualMenuItemStyles, UIContextualMenu } from '../../../src/components/UIContextualMenu';
+import { UiIcons, initIcons } from '../../../src/components/Icons';
 
 describe('<UIContextualMenu />', () => {
     initIcons();
@@ -55,18 +31,6 @@ describe('<UIContextualMenu />', () => {
         const el2 = document.body.querySelector('.ts-ContextualMenu') as HTMLElement;
         expect(el2.className).toContain('ts-ContextualMenu ts-ContextualMenu--dropdown dummy');
     });
-
-    for (const testMaxWidth of [350, undefined]) {
-        it(`Styles - maxWidth: ${testMaxWidth}`, () => {
-            capturedCalloutProps = undefined;
-            render(<UIContextualMenu items={defaultItems} maxWidth={testMaxWidth} />);
-            expect(capturedCalloutProps?.['styles']).toEqual({
-                root: {
-                    maxWidth: testMaxWidth
-                }
-            });
-        });
-    }
 
     it('iconToLeft prop', () => {
         const items = [

@@ -11,10 +11,14 @@ import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
 
 // ---------------------------------------------------------------------------
-// TODO: the mock below intercepts props passed to FluentUI Dialog/DialogFooter to test
-// internal implementation details (styles, prop forwarding) rather than rendered output.
-// Replace style/prop assertions with render(<UIDialog .../>) and assert DOM/CSS via
-// compareStylesBySelector, which would also remove the need for jest.unstable_mockModule.
+// NOTE: jest.unstable_mockModule is used here intentionally. UIDialog passes
+// styles into deeply nested FluentUI sub-components (dialogContentProps.styles,
+// modalProps.overlay.styles, titleProps.style, DialogFooter styles) that have
+// no stable CSS selectors in jsdom — findStyleFromStyleSheets cannot reach them.
+// The mock is the pragmatic solution for verifying these nested style props.
+// The footer rendering tests (capturedFooterProps defined/undefined) could be
+// replaced with DOM queries, but the style assertions cannot.
+// Revisit when upgrading to FluentUI v9, which will require a full rewrite.
 // ---------------------------------------------------------------------------
 // Capture props passed to FluentUI Dialog and DialogFooter
 // jest.unstable_mockModule must be registered BEFORE any dynamic import of

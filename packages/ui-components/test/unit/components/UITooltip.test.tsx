@@ -1,37 +1,22 @@
 import * as React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
-import type { IStyleFunction, ICalloutContentStyles, ITooltipHostProps } from '@fluentui/react';
+import type { ICalloutContentStyles } from '@fluentui/react';
+import { UITooltip } from '../../../src/components/UITooltip/UITooltip';
+import type { UITooltipProps } from '../../../src/components/UITooltip/UITooltip';
+import { UIDefaultButton } from '../../../src/components/UIButton';
 
-// TODO: the mock below intercepts props passed to FluentUI's TooltipHost to test internal
-// style/prop details rather than rendered output. Replace with render(<UITooltip .../>) and
-// assert observable DOM behaviour via compareStylesBySelector, removing jest.unstable_mockModule.
-
-// Capture props that UITooltip passes down to TooltipHost
-let capturedProps: ITooltipHostProps | undefined;
-
-const actual = await import('@fluentui/react');
-const OriginalTooltipHost = actual.TooltipHost;
-const mocked = {
-    ...actual,
-    TooltipHost: (props: ITooltipHostProps) => {
-        capturedProps = props;
-        return React.createElement(OriginalTooltipHost as React.ComponentType<ITooltipHostProps>, props);
-    }
-};
-jest.unstable_mockModule('@fluentui/react', () => mocked);
-
-const { UITooltip } = await import('../../../src/components/UITooltip/UITooltip');
-const { UIDefaultButton } = await import('../../../src/components/UIButton');
-
-const getTooltipStyles = (): ICalloutContentStyles => {
-    return (capturedProps?.calloutProps?.styles as IStyleFunction<{}, {}>)({}) as ICalloutContentStyles;
-};
+// Extract the CalloutStyles function from a UITooltip render() call.
+// UITooltip is a class component that constructs the styles inline in render().
+function getCalloutStyles(props: Partial<UITooltipProps> = {}): ICalloutContentStyles {
+    const instance = new UITooltip(props as UITooltipProps);
+    const jsx = instance.render() as React.ReactElement;
+    // When showOnFocus is not true, render() wraps the TooltipHost in a <div>
+    const tooltipHost = props.showOnFocus === true ? jsx : jsx.props.children;
+    const calloutStylesFn = tooltipHost.props.calloutProps?.styles as (() => ICalloutContentStyles) | undefined;
+    return calloutStylesFn?.() ?? ({} as ICalloutContentStyles);
+}
 
 describe('<UITooltip />', () => {
-    beforeEach(() => {
-        capturedProps = undefined;
-    });
-
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -41,17 +26,16 @@ describe('<UITooltip />', () => {
         expect(container.querySelectorAll('.ms-TooltipHost')).toHaveLength(1);
     });
 
-    it('Property "maxWidth" - default', () => {
-        render(<UITooltip />);
-        const styles = getTooltipStyles();
-        expect(styles.calloutMain['maxWidth']).toEqual(200);
-    });
+    describe('Property "maxWidth"', () => {
+        it('default is 200', () => {
+            const styles = getCalloutStyles();
+            expect(styles.calloutMain['maxWidth']).toEqual(200);
+        });
 
-    it('Property "maxWidth" - custom', () => {
-        const maxWidth = 'auto';
-        render(<UITooltip maxWidth={maxWidth} />);
-        const styles = getTooltipStyles();
-        expect(styles.calloutMain['maxWidth']).toEqual(maxWidth);
+        it('custom value is applied', () => {
+            const styles = getCalloutStyles({ maxWidth: 'auto' });
+            expect(styles.calloutMain['maxWidth']).toEqual('auto');
+        });
     });
 
     describe('Property "showOnFocus"', () => {
@@ -62,7 +46,7 @@ describe('<UITooltip />', () => {
             onLayerMount = jest.fn();
         });
 
-        it('showOnFocus=true', async () => {
+        it('showOnFocus=true shows tooltip on focus', async () => {
             const { container } = render(
                 <UITooltip
                     content="This is the tooltip"
@@ -83,7 +67,7 @@ describe('<UITooltip />', () => {
             expect(onLayerMount).toHaveBeenCalledTimes(1);
         });
 
-        it('showOnFocus=false', async () => {
+        it('showOnFocus=false does not show tooltip on focus', async () => {
             const { container } = render(
                 <UITooltip
                     content="This is the tooltip"

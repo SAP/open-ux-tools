@@ -2,9 +2,12 @@ import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import type { ICalloutContentStyles } from '@fluentui/react';
 
-// TODO: the mock below intercepts getNextElement/getPreviousElement from @fluentui/react to spy
-// on focus navigation internals. Consider replacing with RTL userEvent interactions that
-// assert observable focus behaviour in the DOM instead.
+// NOTE: jest.unstable_mockModule is used here intentionally. The mock intercepts
+// getNextElement/getPreviousElement from @fluentui/react to verify that UICallout
+// calls the correct focus-navigation function on Tab/Shift+Tab. These functions
+// operate on FluentUI's internal focus zone DOM structure which is not fully
+// instantiated in jsdom, so RTL userEvent focus interactions would not trigger
+// the same code path. The mock is the right approach here.
 
 const { getNextElement: mockGetNextElement, getPreviousElement: mockGetPreviousElement } = await (async () => {
     const actual = await import('@fluentui/react');

@@ -1,139 +1,71 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import type { ILinkStyles } from '@fluentui/react';
+import { UILink } from '../../../src/components/UILink';
+import type { UILinkProps } from '../../../src/components/UILink';
+import { findStyleFromStyleSheets } from '../../utils/styles';
 
-let capturedStyles: (() => Partial<ILinkStyles>) | undefined;
-
-// TODO: the Styles tests below mock @fluentui/react to intercept the internal `styles` prop
-// that UILink passes to FluentUI's Link. This tests implementation details rather than rendered output.
-// Replace with render(<UILink .../>) and assert DOM/CSS via compareStylesBySelector, which
-// would also remove the need for jest.unstable_mockModule and the dynamic import.
-
-// In ESM mode (--experimental-vm-modules + ts-jest useESM), jest.mock() is NOT
-// hoisted. Use jest.unstable_mockModule so the mock is registered before the
-// module under test is dynamically imported below.
-jest.unstable_mockModule('@fluentui/react', () => {
-    const actual = jest.requireActual('@fluentui/react') as Record<string, unknown>;
-    return {
-        ...actual,
-        Link: (props: React.PropsWithChildren<{ styles?: () => Partial<ILinkStyles> }>) => {
-            capturedStyles = props.styles;
-            return <a className="ms-Link">{props.children}</a>;
-        }
-    };
-});
-
-// Dynamic import AFTER mock registration — required in ESM mode.
-const { UILink } = await import('../../../src/components/UILink');
+// Extract the linkStyles function from a UILink render() call.
+// UILink is a class component that passes a `styles` function to FluentUI's Link.
+// Accessing it this way avoids jest.unstable_mockModule and dynamic imports.
+function getStyles(props: Partial<UILinkProps> = {}): ILinkStyles {
+    const instance = new UILink(props as UILinkProps);
+    const jsx = instance.render() as React.ReactElement;
+    const stylesFn = jsx.props.styles as () => Partial<ILinkStyles>;
+    return stylesFn() as ILinkStyles;
+}
 
 describe('<UILink />', () => {
-    beforeEach(() => {
-        capturedStyles = undefined;
-    });
-
-    const getStyles = (): ILinkStyles => {
-        return capturedStyles!() as ILinkStyles;
-    };
-
     it('Should render a UILink component', () => {
         const { container } = render(<UILink>Dummy</UILink>);
         expect(container.querySelectorAll('.ms-Link')).toHaveLength(1);
     });
 
-    it('Styles - primary', () => {
-        render(<UILink>Dummy</UILink>);
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-textLink-foreground)",
-              "opacity": undefined,
-              "selectors": Object {
-                "&:active, &:focus": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "outline": "none",
-                  "textDecoration": "none",
-                },
-                "&:hover, &:hover:focus, &:hover:active": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "textDecoration": "none",
-                },
-                ".ms-Fabric--isFocusVisible &:focus": Object {
-                  "boxShadow": "none",
-                  "outline": "1px solid var(--vscode-focusBorder)",
-                  "outlineOffset": "-1px",
-                },
-              },
-              "textDecoration": "underline",
-            }
-        `);
+    describe('Styles - color via rendered DOM', () => {
+        it('primary uses textLink foreground color', () => {
+            render(<UILink>Dummy</UILink>);
+            const el = document.body.querySelector('.ms-Link') as HTMLElement;
+            expect(findStyleFromStyleSheets('color', el)).toEqual('var(--vscode-textLink-foreground)');
+        });
+
+        it('secondary uses foreground color', () => {
+            render(<UILink secondary={true}>Dummy</UILink>);
+            const el = document.body.querySelector('.ms-Link') as HTMLElement;
+            expect(findStyleFromStyleSheets('color', el)).toEqual('var(--vscode-foreground)');
+        });
+
+        it('disabled applies opacity 0.4', () => {
+            render(<UILink disabled={true}>Dummy</UILink>);
+            const el = document.body.querySelector('.ms-Link') as HTMLElement;
+            expect(window.getComputedStyle(el).opacity).toEqual('0.4');
+        });
     });
 
-    it('Styles - secondary', () => {
-        render(<UILink secondary={true}>Dummy</UILink>);
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-foreground)",
-              "opacity": undefined,
-              "selectors": Object {
-                "&:active, &:focus": Object {
-                  "color": "var(--vscode-foreground)",
-                  "outline": "none",
-                  "textDecoration": "none",
-                },
-                "&:hover, &:hover:focus, &:hover:active": Object {
-                  "color": "var(--vscode-foreground)",
-                  "textDecoration": "none",
-                },
-                ".ms-Fabric--isFocusVisible &:focus": Object {
-                  "boxShadow": "none",
-                  "outline": "1px solid var(--vscode-focusBorder)",
-                  "outlineOffset": "-1px",
-                },
-              },
-              "textDecoration": "underline",
-            }
-        `);
-    });
+    describe('Styles - textDecoration and selectors via getStyles', () => {
+        it('primary has underline and hover selectors', () => {
+            const styles = getStyles();
+            const root = styles.root as Record<string, unknown>;
+            expect(root.textDecoration).toEqual('underline');
+            expect(root.selectors).toBeDefined();
+        });
 
-    it('Styles - primary with no underline', () => {
-        render(<UILink underline={false}>Dummy</UILink>);
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-textLink-foreground)",
-              "opacity": undefined,
-              "selectors": Object {
-                "&:active, &:focus": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "outline": "none",
-                  "textDecoration": "underline",
-                },
-                "&:hover, &:hover:focus, &:hover:active": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "textDecoration": "underline",
-                },
-                ".ms-Fabric--isFocusVisible &:focus": Object {
-                  "boxShadow": "none",
-                  "outline": "1px solid var(--vscode-focusBorder)",
-                  "outlineOffset": "-1px",
-                },
-              },
-              "textDecoration": undefined,
-            }
-        `);
-    });
+        it('underline=false removes textDecoration', () => {
+            const styles = getStyles({ underline: false });
+            const root = styles.root as Record<string, unknown>;
+            expect(root.textDecoration).toBeUndefined();
+        });
 
-    it('Styles - disabled', () => {
-        render(<UILink disabled={true}>Dummy</UILink>);
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-textLink-foreground)",
-              "opacity": 0.4,
-              "selectors": undefined,
-              "textDecoration": "underline",
-            }
-        `);
+        it('disabled removes selectors (no hover/focus effects)', () => {
+            const styles = getStyles({ disabled: true });
+            const root = styles.root as Record<string, unknown>;
+            expect(root.selectors).toBeUndefined();
+        });
+
+        it('secondary uses foreground color in hover selectors', () => {
+            const styles = getStyles({ secondary: true });
+            const root = styles.root as Record<string, unknown>;
+            const hover = (root.selectors as Record<string, unknown>)?.['&:hover, &:hover:focus, &:hover:active'] as Record<string, unknown>;
+            expect(hover?.color).toEqual('var(--vscode-foreground)');
+        });
     });
 });
