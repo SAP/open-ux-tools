@@ -32,7 +32,7 @@ export async function checkSystemConnection(config: {
     // For basic auth with credentials, attempt actual connection
     if (config.authenticationType === 'basic' && config.username && config.password) {
         try {
-            const service = await createForAbap({
+            const service = createForAbap({
                 baseURL: config.url,
                 auth: {
                     username: config.username,

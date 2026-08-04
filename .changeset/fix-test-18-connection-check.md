@@ -1,5 +1,5 @@
 ---
-'@sap-ux/create': minor
+'@sap-ux/create': patch
 ---
 
 FIX: implement real connection check for add system command

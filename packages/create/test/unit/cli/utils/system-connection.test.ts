@@ -30,7 +30,7 @@ describe('system-connection', () => {
         mockCreateForAbap.mockReset();
 
         // Default: successful connection for basic auth with credentials
-        mockCreateForAbap.mockResolvedValue({
+        mockCreateForAbap.mockReturnValue({
             get: mockAxiosGet.mockResolvedValue({ status: 200 })
         });
     });
