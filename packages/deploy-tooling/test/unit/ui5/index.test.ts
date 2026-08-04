@@ -24,6 +24,13 @@ jest.unstable_mockModule('../../../src/ui5/archive.js', () => ({
     createUi5Archive: mockCreateUi5Archive
 }));
 
+const realCliConfig = await import('../../../src/cli/config.js');
+const mockReadBuilderExcludes = jest.fn<() => Promise<string[]>>().mockResolvedValue([]);
+jest.unstable_mockModule('../../../src/cli/config.js', () => ({
+    ...realCliConfig,
+    readBuilderExcludes: mockReadBuilderExcludes
+}));
+
 const ui5TaskModule = await import('../../../src/ui5/index.js');
 const ui5Task = ui5TaskModule.default;
 const { task } = await import('../../../src/index.js');
@@ -142,6 +149,44 @@ describe('ui5', () => {
                 expect.anything(),
                 expect.anything(),
                 []
+            );
+        });
+    });
+
+    describe('builder.resources.excludes derive', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockCreateUi5Archive.mockResolvedValue(Buffer.from(''));
+        });
+
+        test('derives builder excludes from process.cwd()/ui5-deploy.yaml and merges with config.exclude', async () => {
+            mockReadBuilderExcludes.mockResolvedValue(['/test/', '/localService/']);
+            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/extra/'] };
+            await task({ workspace, options: { projectName, configuration: configWithExclude } } as any);
+            expect(mockReadBuilderExcludes).toHaveBeenCalledWith(
+                join(process.cwd(), 'ui5-deploy.yaml'),
+                expect.anything()
+            );
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
+                expect.anything(), expect.anything(), expect.anything(),
+                expect.arrayContaining(['/extra/', '/test/', '/localService/'])
+            );
+        });
+
+        test('deduplicates excludes when builder excludes overlap with config.exclude', async () => {
+            mockReadBuilderExcludes.mockResolvedValue(['/test/', '/localService/']);
+            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
+            await task({ workspace, options: { projectName, configuration: configWithExclude } } as any);
+            const callArgs = mockCreateUi5Archive.mock.calls[0][3] as string[];
+            expect(callArgs.filter((e) => e === '/test/').length).toBe(1);
+        });
+
+        test('passes empty array when builder excludes returns [] and config.exclude absent', async () => {
+            mockReadBuilderExcludes.mockResolvedValue([]);
+            await task({ workspace, options: { projectName, configuration } } as any);
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
+                expect.anything(), expect.anything(), expect.anything(), []
             );
         });
     });
