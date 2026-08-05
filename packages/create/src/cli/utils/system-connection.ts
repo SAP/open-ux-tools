@@ -30,38 +30,59 @@ export async function checkSystemConnection(config: {
         return { success: false, error: text('systemConnection.invalidUrl', { url: config.url }) };
     }
 
-    // For basic auth with credentials, attempt actual connection
-    if (config.authenticationType === 'basic' && config.username && config.password) {
-        try {
-            const service = createForAbap({
-                baseURL: config.url,
-                auth: {
-                    username: config.username,
-                    password: config.password
-                },
-                params: config.client ? { 'sap-client': config.client } : undefined
-            });
+    // Attempt actual connection check
+    try {
+        const hasCredentials = config.authenticationType === 'basic' && config.username && config.password;
 
-            // Attempt lightweight request with 5-second timeout
+        const service = createForAbap({
+            baseURL: config.url,
+            auth: hasCredentials ? {
+                username: config.username!,
+                password: config.password!
+            } : undefined,
+            params: config.client ? { 'sap-client': config.client } : undefined
+        });
+
+        // Attempt lightweight request with 5-second timeout
+        // Use /sap/bc/ping for systems that support it, or root path as fallback
+        try {
             await service.get('/sap/bc/ping', { timeout: 5000 });
             return { success: true };
         } catch (error: any) {
-            if (error.response?.status === 401) {
+            // If /sap/bc/ping fails with 404, try root path to check if system is reachable
+            if (error.response?.status === 404) {
+                await service.get('/', { timeout: 5000 });
+                return { success: true };
+            }
+            throw error;
+        }
+    } catch (error: any) {
+        // 401 means system is reachable but auth failed (acceptable for non-basic auth types)
+        if (error.response?.status === 401) {
+            // For basic auth with credentials, 401 is a failure
+            if (config.authenticationType === 'basic' && config.username && config.password) {
                 return { success: false, error: 'Authentication failed (HTTP 401 Unauthorized)' };
             }
-            if (error.code === 'ECONNREFUSED') {
-                return { success: false, error: 'Connection refused - system may be unreachable' };
-            }
-            if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {
-                return { success: false, error: 'Connection timeout after 5000ms' };
-            }
-            return { success: false, error: error.message || 'Connection failed' };
+            // For other auth types, 401 means system is reachable (success)
+            return { success: true };
         }
-    }
 
-    // For other auth types or missing credentials, only validate URL format
-    // Re-entrance ticket and OAuth require browser flow, can't be tested here
-    return { success: true };
+        // Network errors indicate unreachable system
+        if (error.code === 'ECONNREFUSED') {
+            return { success: false, error: 'Connection refused - system may be unreachable' };
+        }
+        if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {
+            return { success: false, error: 'Connection timeout after 5000ms' };
+        }
+        if (error.code === 'ENOTFOUND') {
+            return { success: false, error: 'DNS lookup failed - hostname not found' };
+        }
+        if (error.code === 'ECONNRESET') {
+            return { success: false, error: 'Connection reset by server' };
+        }
+
+        return { success: false, error: error.message || 'Connection failed' };
+    }
 }
 
 /**
