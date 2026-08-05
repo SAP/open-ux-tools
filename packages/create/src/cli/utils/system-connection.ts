@@ -36,10 +36,12 @@ export async function checkSystemConnection(config: {
 
         const service = createForAbap({
             baseURL: config.url,
-            auth: hasCredentials ? {
-                username: config.username!,
-                password: config.password!
-            } : undefined,
+            auth: hasCredentials
+                ? {
+                      username: config.username!,
+                      password: config.password!
+                  }
+                : undefined,
             params: config.client ? { 'sap-client': config.client } : undefined
         });
 
@@ -125,7 +127,9 @@ export async function checkConnectionOrPrompt(
         return true;
     }
 
-    logger.warn(text('systemConnection.connectionFailed', { error: result.error || text('systemConnection.unknownError') }));
+    logger.warn(
+        text('systemConnection.connectionFailed', { error: result.error || text('systemConnection.unknownError') })
+    );
 
     const answer = await prompts({
         type: 'confirm',

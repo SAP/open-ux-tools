@@ -54,6 +54,7 @@ Example:
             '--password <string>',
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
+        .option('--no-credentials', 'Skip credential prompts (for mock systems or non-basic authentication)')
         .option('--skip-check', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
@@ -66,6 +67,7 @@ Example:
                 connectionType: options.connectionType,
                 username: options.username,
                 password: options.password,
+                noCredentials: !!options.noCredentials,
                 skipCheck: !!options.skipCheck
             });
         });
@@ -187,6 +189,7 @@ async function checkForDuplicates(
  * @param params.connectionType - connection type
  * @param params.username - optional username for basic auth
  * @param params.password - optional password for basic auth
+ * @param params.noCredentials - skip credential prompts entirely
  * @param params.skipCheck - skip connection verification
  */
 async function addSystem(params: {
@@ -198,6 +201,7 @@ async function addSystem(params: {
     connectionType?: string;
     username?: string;
     password?: string;
+    noCredentials?: boolean;
     skipCheck?: boolean;
 }): Promise<void> {
     const logger = getLogger();
@@ -217,7 +221,8 @@ async function addSystem(params: {
             authenticationType: params.authenticationType,
             connectionType: params.connectionType,
             username: params.username,
-            password: params.password
+            password: params.password,
+            noCredentials: params.noCredentials
         });
 
         replaceEnvVariables(config);

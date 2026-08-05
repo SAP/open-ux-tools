@@ -142,6 +142,7 @@ async function validateSystemNameUniquenessForUpdate(
  * @param partial.connectionType
  * @param partial.username
  * @param partial.password
+ * @param partial.noCredentials - skip credential prompts entirely
  * @returns Complete system configuration with all required fields
  */
 export async function promptForSystemConfig(partial: {
@@ -153,6 +154,7 @@ export async function promptForSystemConfig(partial: {
     connectionType?: string;
     username?: string;
     password?: string;
+    noCredentials?: boolean;
 }): Promise<{
     name: string;
     url: string;
@@ -219,7 +221,12 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
-    if (partial.username === undefined) {
+    // Only prompt for credentials if:
+    // 1. noCredentials flag is NOT set, AND
+    // 2. authenticationType is 'basic' (other types don't use username/password)
+    const shouldPromptCredentials = !partial.noCredentials && partial.authenticationType === 'basic';
+
+    if (shouldPromptCredentials && partial.username === undefined) {
         questions.push({
             type: 'text',
             name: 'username',
@@ -227,7 +234,7 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
-    if (partial.password === undefined) {
+    if (shouldPromptCredentials && partial.password === undefined) {
         questions.push({
             type: 'password',
             name: 'password',

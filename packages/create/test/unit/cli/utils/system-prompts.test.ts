@@ -24,7 +24,8 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
         const translations: Record<string, string> = {
             'systemPrompts.validation.fieldRequired': 'This field is required and cannot be empty',
             'systemPrompts.validation.invalidUrl': 'Please enter a valid URL (e.g., https://my-system.example.com)',
-            'systemPrompts.validation.systemNameExists': "A system with the name '{{name}}' already exists. Please choose a different name.",
+            'systemPrompts.validation.systemNameExists':
+                "A system with the name '{{name}}' already exists. Please choose a different name.",
             'systemPrompts.validation.checkNameFailed': 'Unable to check system name uniqueness. Please try again.',
             'systemPrompts.prompts.systemName': 'System name (display name):',
             'systemPrompts.prompts.systemUrl': 'System URL:',
@@ -1184,6 +1185,119 @@ describe('system-prompts', () => {
                     message: "Are you sure you want to remove system 'My Special System'?"
                 })
             );
+        });
+    });
+
+    describe('promptForSystemConfig with --no-credentials flag', () => {
+        beforeEach(() => {
+            mockPrompts.mockClear();
+            mockSystemNameExists.mockResolvedValue(false);
+        });
+
+        test('should skip credential prompts when noCredentials=true', async () => {
+            mockPrompts.mockResolvedValueOnce({
+                name: 'Mock System',
+                url: 'https://mock.example.com',
+                client: '',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                connectionType: 'abap_catalog'
+            });
+
+            const result = await promptForSystemConfig({
+                noCredentials: true
+            });
+
+            expect(result.name).toBe('Mock System');
+            expect(result.url).toBe('https://mock.example.com');
+            expect(result.authenticationType).toBe('basic');
+
+            // Verify username and password prompts were NOT added
+            const calls = mockPrompts.mock.calls;
+            const promptsCall = calls[0][0];
+            const questions = Array.isArray(promptsCall) ? promptsCall : [];
+
+            const hasUsernamePrompt = questions.some((q: any) => q.name === 'username');
+            const hasPasswordPrompt = questions.some((q: any) => q.name === 'password');
+
+            expect(hasUsernamePrompt).toBe(false);
+            expect(hasPasswordPrompt).toBe(false);
+        });
+
+        test('should skip credential prompts when noCredentials=true even with basic auth', async () => {
+            mockPrompts.mockResolvedValueOnce({});
+
+            await promptForSystemConfig({
+                name: 'Mock System',
+                url: 'https://mock.example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                connectionType: 'abap_catalog',
+                noCredentials: true
+            });
+
+            // Verify prompts was called with array that doesn't include username/password
+            const calls = mockPrompts.mock.calls;
+            const promptsCall = calls[0]?.[0];
+
+            if (Array.isArray(promptsCall)) {
+                const hasUsernamePrompt = promptsCall.some((q: any) => q.name === 'username');
+                const hasPasswordPrompt = promptsCall.some((q: any) => q.name === 'password');
+
+                expect(hasUsernamePrompt).toBe(false);
+                expect(hasPasswordPrompt).toBe(false);
+            }
+        });
+
+        test('should still prompt for credentials when noCredentials=false and auth=basic', async () => {
+            mockPrompts.mockResolvedValueOnce({
+                username: 'testuser',
+                password: 'testpass'
+            });
+
+            await promptForSystemConfig({
+                name: 'Regular System',
+                url: 'https://regular.example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                connectionType: 'abap_catalog',
+                noCredentials: false
+            });
+
+            const calls = mockPrompts.mock.calls;
+            const promptsCall = calls[0]?.[0];
+
+            if (Array.isArray(promptsCall)) {
+                const hasUsernamePrompt = promptsCall.some((q: any) => q.name === 'username');
+                const hasPasswordPrompt = promptsCall.some((q: any) => q.name === 'password');
+
+                expect(hasUsernamePrompt).toBe(true);
+                expect(hasPasswordPrompt).toBe(true);
+            }
+        });
+
+        test('should skip credential prompts for reentranceTicket auth regardless of noCredentials flag', async () => {
+            mockPrompts.mockResolvedValueOnce({});
+
+            await promptForSystemConfig({
+                name: 'BTP System',
+                url: 'https://btp.example.com',
+                systemType: 'AbapCloud',
+                authenticationType: 'reentranceTicket',
+                connectionType: 'abap_catalog'
+                // noCredentials not set - should still skip credentials for reentranceTicket
+            });
+
+            const calls = mockPrompts.mock.calls;
+            const promptsCall = calls[0]?.[0];
+
+            if (Array.isArray(promptsCall)) {
+                const hasUsernamePrompt = promptsCall.some((q: any) => q.name === 'username');
+                const hasPasswordPrompt = promptsCall.some((q: any) => q.name === 'password');
+
+                expect(hasUsernamePrompt).toBe(false);
+                expect(hasPasswordPrompt).toBe(false);
+            }
         });
     });
 });
