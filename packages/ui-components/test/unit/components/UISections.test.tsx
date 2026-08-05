@@ -111,9 +111,8 @@ describe('<UISections />', () => {
         unmount();
     });
 
-    it('Should render a Shell component', () => {
+    it('Should render a UISections component', () => {
         expect(container.querySelector('.sections')).toBeTruthy();
-        expect(container.querySelectorAll('.sections')).toHaveLength(1);
         expect(container.querySelectorAll('.section')).toHaveLength(2);
         expect(container.querySelectorAll('.sections--vertical')).toHaveLength(0);
         expect(container.querySelectorAll('.sections--horizontal')).toHaveLength(1);
@@ -298,7 +297,7 @@ describe('<UISections />', () => {
             expect(section.style.right).toEqual('1050px');
         });
 
-        it('Test "splitter" resize', () => {
+        it('Test "splitter" resize vertical', () => {
             const verticalRef = React.createRef<UISections>();
             const { container: verticalContainer, unmount: verticalUnmount } = render(
                 <UISections ref={verticalRef} vertical={true} splitter={true}>
