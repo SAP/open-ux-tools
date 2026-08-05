@@ -238,7 +238,7 @@ async function updateSystem(params: {
             return;
         }
 
-        const key = BackendSystemKey.from(existing);
+        const key = new BackendSystemKey({ url: existing.url, client: existing.client });
         await service.partialUpdate(key, patch);
         logger.info(`System '${existing.name}' updated.`);
     } catch (error) {

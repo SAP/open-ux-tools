@@ -73,7 +73,7 @@ async function removeSystem(url: string | undefined, client: string | undefined,
         if (deleted) {
             logger.info(`System '${system.name}' removed.`);
         } else {
-            const key = BackendSystemKey.from(system);
+            const key = new BackendSystemKey({ url: system.url, client: system.client });
             logger.error(`Failed to remove system: ${key.getId()}`);
         }
     } catch (error) {
