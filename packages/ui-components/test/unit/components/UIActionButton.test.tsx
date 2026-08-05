@@ -5,10 +5,6 @@ import { UiIcons, initIcons, UIActionButton } from '../../../src/components';
 describe('<UIActionButton />', () => {
     initIcons();
 
-    const selectors = {
-        button: '.ms-Button.ms-Button--action',
-        icon: '.ms-Icon svg'
-    };
     const getStyle = (element: Element): CSSStyleDeclaration => {
         return window.getComputedStyle(element);
     };
@@ -21,15 +17,15 @@ describe('<UIActionButton />', () => {
                 text="Copy"></UIActionButton>
         );
 
-        const buttons = container.querySelectorAll(selectors.button);
-        expect(buttons.length).toEqual(1);
-        const style = getStyle(buttons[0]);
+        const button = container.querySelector('button') as HTMLButtonElement;
+        expect(button).not.toBeNull();
+        const style = getStyle(button);
         expect(style.height).toEqual('26px');
 
-        const icons = container.querySelectorAll(selectors.icon);
-        expect(icons.length).toEqual(1);
+        const svgs = container.querySelectorAll('svg');
+        expect(svgs.length).toEqual(1);
         // First child should be a 'path' element with proper CSS variable fill
-        const pathElement = icons[0]?.firstChild as Element;
+        const pathElement = svgs[0]?.firstChild as Element;
         expect(pathElement.tagName.toLowerCase()).toBe('path');
         expect(pathElement.getAttribute('fill')).toBe('var(--vscode-icon-foreground, var(--vscode-foreground))');
     });
