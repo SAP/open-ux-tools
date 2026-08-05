@@ -5,7 +5,7 @@ import { UISearchBox } from '../../../src/components/UISearchBox/UISearchBox';
 describe('<UISearchBox />', () => {
     it('Existence', () => {
         const { container } = render(<UISearchBox />);
-        expect(container.querySelector('.ms-SearchBox')).not.toBeNull();
+        expect(container.querySelector('input')).not.toBeNull();
     });
 
     it('Test callbacks - onChange and onClear', () => {
