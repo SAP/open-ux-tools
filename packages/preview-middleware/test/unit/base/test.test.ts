@@ -30,6 +30,7 @@ describe('test', () => {
                 path: '/test/unitTests.qunit.html',
                 init: '/test/unitTests.qunit.js',
                 pattern: '/test/**/*Test.{js,ts}',
+                isolateJourneys: false,
                 isCustomInit: false
             });
         });
@@ -41,6 +42,7 @@ describe('test', () => {
                 path: '/test/opaTests.qunit.html',
                 init: '/test/opaTests.qunit.js',
                 pattern: '/test/**/*Journey{,.gen}.{js,ts}',
+                isolateJourneys: false,
                 isCustomInit: false
             });
         });
@@ -60,6 +62,7 @@ describe('test', () => {
                 path: '/custom/path.html',
                 init: '/custom/path.js',
                 pattern: 'custom/pattern',
+                isolateJourneys: false,
                 isCustomInit: true
             });
         });
@@ -79,6 +82,7 @@ describe('test', () => {
                 path: '/custom/path.html',
                 init: '/custom/path.js',
                 pattern: 'custom/pattern',
+                isolateJourneys: false,
                 isCustomInit: true
             });
         });
@@ -90,6 +94,7 @@ describe('test', () => {
                 path: '/test-resources/my/fe/v2/app/unitTests.qunit.html',
                 init: '/test-resources/my/fe/v2/app/unitTests.qunit.js',
                 pattern: '/test-resources/my/fe/v2/app/**/*Test.{js,ts}',
+                isolateJourneys: false,
                 isCustomInit: false
             });
         });
@@ -101,6 +106,7 @@ describe('test', () => {
                 path: '/test-resources/my/fe/v2/app/opaTests.qunit.html',
                 init: '/test-resources/my/fe/v2/app/opaTests.qunit.js',
                 pattern: '/test-resources/my/fe/v2/app/**/*Journey{,.gen}.{js,ts}',
+                isolateJourneys: false,
                 isCustomInit: false
             });
         });
@@ -115,6 +121,7 @@ describe('test', () => {
                 path: '/test-resources/my/fe/v2/app/unitTests.qunit.html',
                 init: '/test-resources/my/fe/v2/app/unitTests.qunit.js',
                 pattern: '/test-resources/my/fe/v2/app/custom/**/*Test.js',
+                isolateJourneys: false,
                 isCustomInit: false
             });
         });

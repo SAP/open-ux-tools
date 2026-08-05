@@ -11,19 +11,22 @@ const DEFAULTS: Record<string, Readonly<Required<TestConfig>>> = {
         path: '/test/unitTests.qunit.html',
         init: '/test/unitTests.qunit.js',
         pattern: '/test/**/*Test.{js,ts}',
-        framework: 'QUnit'
+        framework: 'QUnit',
+        isolateJourneys: false
     },
     opa5: {
         path: '/test/opaTests.qunit.html',
         init: '/test/opaTests.qunit.js',
         pattern: '/test/**/*Journey{,.gen}.{js,ts}',
-        framework: 'OPA5'
+        framework: 'OPA5',
+        isolateJourneys: false
     },
     testsuite: {
         path: '/test/testsuite.qunit.html',
         init: '/test/testsuite.qunit.js',
         pattern: '',
-        framework: 'Testsuite'
+        framework: 'Testsuite',
+        isolateJourneys: false
     }
 } as const satisfies TestConfigDefaults;
 
