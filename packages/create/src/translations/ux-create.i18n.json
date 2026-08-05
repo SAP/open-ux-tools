@@ -1,0 +1,49 @@
+{
+    "systemLookup": {
+        "multipleSystemsFound": "Multiple systems found with this URL:",
+        "selectSystemPrompt": "Which system do you want to use?",
+        "clientInfo": "(client: {{client}})",
+        "noClient": "(no client)"
+    },
+    "systemPrompts": {
+        "validation": {
+            "fieldRequired": "This field is required and cannot be empty",
+            "invalidUrl": "Please enter a valid URL (e.g., https://my-system.example.com)",
+            "systemNameExists": "A system with the name '{{name}}' already exists. Please choose a different name.",
+            "checkNameFailed": "Unable to check system name uniqueness. Please try again."
+        },
+        "prompts": {
+            "systemName": "System name (display name):",
+            "systemUrl": "System URL:",
+            "sapClient": "SAP client (optional, press Enter to skip):",
+            "systemType": "System type:",
+            "authenticationType": "Authentication type:",
+            "connectionType": "Connection type:",
+            "username": "Username (optional, press Enter to skip):",
+            "password": "Password (optional, press Enter to skip):"
+        },
+        "updateFields": {
+            "selectPrompt": "Select fields to update:",
+            "nameLabel": "Name (current: {{name}})",
+            "usernameLabel": "Username (current: {{username}})",
+            "usernameNone": "(none)",
+            "passwordLabel": "Password",
+            "minOneRequired": "At least one field must be selected",
+            "newNamePrompt": "New system name:",
+            "newUsernamePrompt": "New username:",
+            "newPasswordPrompt": "New password:"
+        },
+        "removeConfirmation": {
+            "prompt": "Are you sure you want to remove system '{{systemName}}'?"
+        }
+    },
+    "systemConnection": {
+        "invalidUrl": "Invalid URL: {{url}}",
+        "skippingCheck": "Skipping connection check (--skip-check flag provided)",
+        "verifying": "Verifying connection to backend system...",
+        "connectionSuccessful": "✓ Connection successful",
+        "connectionFailed": "Connection check failed: {{error}}",
+        "unknownError": "Unknown error",
+        "saveAnywayPrompt": "Connection check failed. Save system anyway?"
+    }
+}

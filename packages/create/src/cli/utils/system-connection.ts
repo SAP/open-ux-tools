@@ -1,6 +1,7 @@
 import prompts from 'prompts';
 import { createForAbap } from '@sap-ux/axios-extension';
 import { getLogger } from '../../tracing/index.js';
+import { text } from '../../i18n.js';
 
 /**
  * Checks connection to a backend system.
@@ -26,7 +27,7 @@ export async function checkSystemConnection(config: {
     try {
         new URL(config.url);
     } catch {
-        return { success: false, error: `Invalid URL: ${config.url}` };
+        return { success: false, error: text('systemConnection.invalidUrl', { url: config.url }) };
     }
 
     // For basic auth with credentials, attempt actual connection
@@ -91,24 +92,24 @@ export async function checkConnectionOrPrompt(
     const logger = getLogger();
 
     if (skipCheck) {
-        logger.info('Skipping connection check (--skip-check flag provided)');
+        logger.info(text('systemConnection.skippingCheck'));
         return true;
     }
 
-    logger.info('Verifying connection to backend system...');
+    logger.info(text('systemConnection.verifying'));
     const result = await checkSystemConnection(config);
 
     if (result.success) {
-        logger.info('✓ Connection successful');
+        logger.info(text('systemConnection.connectionSuccessful'));
         return true;
     }
 
-    logger.warn(`Connection check failed: ${result.error || 'Unknown error'}`);
+    logger.warn(text('systemConnection.connectionFailed', { error: result.error || text('systemConnection.unknownError') }));
 
     const answer = await prompts({
         type: 'confirm',
         name: 'saveAnyway',
-        message: 'Connection check failed. Save system anyway?',
+        message: text('systemConnection.saveAnywayPrompt'),
         initial: false
     });
 

@@ -8,6 +8,30 @@ const mockAxiosGet = jest.fn();
 const mockCreateForAbap = jest.fn();
 
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
+
+// Mock i18n
+jest.unstable_mockModule('../../../../src/i18n.js', () => ({
+    text: (key: string, options?: Record<string, unknown>) => {
+        const translations: Record<string, string> = {
+            'systemConnection.invalidUrl': 'Invalid URL: {{url}}',
+            'systemConnection.skippingCheck': 'Skipping connection check (--skip-check flag provided)',
+            'systemConnection.verifying': 'Verifying connection to backend system...',
+            'systemConnection.connectionSuccessful': '✓ Connection successful',
+            'systemConnection.connectionFailed': 'Connection check failed: {{error}}',
+            'systemConnection.unknownError': 'Unknown error',
+            'systemConnection.saveAnywayPrompt': 'Connection check failed. Save system anyway?'
+        };
+        let result = translations[key] || key;
+        if (options) {
+            Object.entries(options).forEach(([k, v]) => {
+                result = result.replace(`{{${k}}}`, String(v));
+            });
+        }
+        return result;
+    },
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 jest.unstable_mockModule('../../../../src/tracing/index.js', () => ({
     getLogger: () => ({
         info: mockLoggerInfo,

@@ -9,6 +9,47 @@ const mockGetAll = jest.fn();
 const mockSystemNameExists = jest.fn();
 const mockValidateClient = jest.fn();
 
+// Mock i18n to return the key as the value (for testing)
+jest.unstable_mockModule('../../../../src/i18n.js', () => ({
+    text: (key: string, options?: Record<string, unknown>) => {
+        // Return a simple string that includes interpolated values for testing
+        if (options) {
+            let result = key;
+            Object.entries(options).forEach(([k, v]) => {
+                result = result.replace(`{{${k}}}`, String(v));
+            });
+            return result;
+        }
+        // Map i18n keys to original English strings for test compatibility
+        const translations: Record<string, string> = {
+            'systemPrompts.validation.fieldRequired': 'This field is required and cannot be empty',
+            'systemPrompts.validation.invalidUrl': 'Please enter a valid URL (e.g., https://my-system.example.com)',
+            'systemPrompts.validation.systemNameExists': "A system with the name '{{name}}' already exists. Please choose a different name.",
+            'systemPrompts.validation.checkNameFailed': 'Unable to check system name uniqueness. Please try again.',
+            'systemPrompts.prompts.systemName': 'System name (display name):',
+            'systemPrompts.prompts.systemUrl': 'System URL:',
+            'systemPrompts.prompts.sapClient': 'SAP client (optional, press Enter to skip):',
+            'systemPrompts.prompts.systemType': 'System type:',
+            'systemPrompts.prompts.authenticationType': 'Authentication type:',
+            'systemPrompts.prompts.connectionType': 'Connection type:',
+            'systemPrompts.prompts.username': 'Username (optional, press Enter to skip):',
+            'systemPrompts.prompts.password': 'Password (optional, press Enter to skip):',
+            'systemPrompts.updateFields.selectPrompt': 'Select fields to update:',
+            'systemPrompts.updateFields.nameLabel': 'Name (current: {{name}})',
+            'systemPrompts.updateFields.usernameLabel': 'Username (current: {{username}})',
+            'systemPrompts.updateFields.usernameNone': '(none)',
+            'systemPrompts.updateFields.passwordLabel': 'Password',
+            'systemPrompts.updateFields.minOneRequired': 'At least one field must be selected',
+            'systemPrompts.updateFields.newNamePrompt': 'New system name:',
+            'systemPrompts.updateFields.newUsernamePrompt': 'New username:',
+            'systemPrompts.updateFields.newPasswordPrompt': 'New password:',
+            'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?"
+        };
+        return translations[key] || key;
+    },
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
 jest.unstable_mockModule('@sap-ux/store', () => ({
     SystemType,
