@@ -1,5 +1,13 @@
 # @sap-ux/serve-static-middleware
 
+## 1.0.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

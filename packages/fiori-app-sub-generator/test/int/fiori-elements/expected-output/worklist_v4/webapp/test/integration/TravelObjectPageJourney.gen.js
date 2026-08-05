@@ -26,7 +26,6 @@ sap.ui.define([
 
         opaTest("Navigate to TravelObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
 
@@ -37,16 +36,16 @@ sap.ui.define([
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
             // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction("Set Cancel Date to Tomorrow" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction("Set Cancel Date to Tomorrow");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction("Set To Booked" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction("Set To Booked");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction("Set To New" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction("Set To New");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction("Check Travel" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction("Check Travel");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction("Deduct Discount" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction("Deduct Discount");
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToBooked", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToBooked", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToNew", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToNew", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "Check", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "Check", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "deductDiscount", unbound: false });
         });
 
 
@@ -66,7 +65,7 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Status" });
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Booking" });
-            Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns({"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
+            Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns(undefined, {"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 

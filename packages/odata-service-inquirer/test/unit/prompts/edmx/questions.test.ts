@@ -1,6 +1,11 @@
 import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { TableType } from '@sap-ux/fiori-elements-writer';
+import {
+    PageTemplateType,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fe-fpm-writer';
 import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
@@ -681,18 +686,14 @@ describe('Test entity prompts', () => {
             (q) => q.name === EntityPromptNames.addPageBuildingBlock
         ) as ConfirmQuestion;
         expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.type).toBe('confirm');
         expect(addPageBuildingBlockQuestion.message).toBe(t('prompts.pageBuildingBlock.message'));
         expect(addPageBuildingBlockQuestion.default).toBe(false);
-        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
-        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
-            const message = addPageBuildingBlockQuestion.additionalMessages({
-                addPageBuildingBlock: true
-            } as PageBuildingBlockAnswers);
-            expect(message).toEqual({
-                message: t('prompts.pageBuildingBlock.warning'),
-                severity: Severity.warning
-            });
-        }
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(
+            t('prompts.pageBuildingBlock.tooltip', {
+                minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+            })
+        );
 
         const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
         expect(typeof pageBlockTitleQuestion?.when).toBe('function');
@@ -713,11 +714,11 @@ describe('Test entity prompts', () => {
             (q) => q.name === EntityPromptNames.addPageBuildingBlock
         ) as ConfirmQuestion;
         expect(addPageBuildingBlockQuestion).toBeDefined();
-        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
-        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
-            const message = addPageBuildingBlockQuestion.additionalMessages();
-            expect(message).toEqual(undefined);
-        }
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(
+            t('prompts.pageBuildingBlock.tooltip', {
+                minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+            })
+        );
 
         const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
         // Should not display when addPageBuildingBlock is false
@@ -725,6 +726,45 @@ describe('Test entity prompts', () => {
             expect(pageBlockTitleQuestion.when({ addPageBuildingBlock: false } as PageBuildingBlockAnswers)).toBe(
                 false
             );
+        }
+    });
+
+    test('pageBuildingBlockLayout question is displayed when addPageBuildingBlock is true', () => {
+        const promptOptions = { displayPageBuildingBlockPrompt: true };
+        const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+
+        const layoutQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.pageBuildingBlockLayout
+        ) as ConfirmQuestion;
+        expect(layoutQuestion).toBeDefined();
+        expect(layoutQuestion.type).toBe('confirm');
+        expect(layoutQuestion.message).toBe(t('prompts.pageBuildingBlock.layoutMessage'));
+        expect(layoutQuestion.default).toBe(true);
+        expect((layoutQuestion as any).labelTrue).toBe(t('prompts.pageBuildingBlock.choiceBasic'));
+        expect((layoutQuestion as any).labelFalse).toBe(t('prompts.pageBuildingBlock.choiceFull'));
+
+        if (typeof layoutQuestion?.when === 'function') {
+            expect(layoutQuestion.when({ addPageBuildingBlock: true } as PageBuildingBlockAnswers)).toBe(true);
+            expect(layoutQuestion.when({ addPageBuildingBlock: false } as PageBuildingBlockAnswers)).toBe(false);
+        }
+        if (typeof (layoutQuestion as any)?.filter === 'function') {
+            expect((layoutQuestion as any).filter(true)).toBe(PageTemplateType.Basic);
+            expect((layoutQuestion as any).filter(false)).toBe(PageTemplateType.Full);
+        }
+        if (typeof (layoutQuestion as any)?.additionalMessages === 'function') {
+            expect((layoutQuestion as any).additionalMessages(true)).toEqual({
+                message: t('prompts.pageBuildingBlock.basicLayoutWarning', {
+                    minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                }),
+                severity: Severity.warning
+            });
+            expect((layoutQuestion as any).additionalMessages(false)).toEqual({
+                message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
+                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                }),
+                severity: Severity.warning
+            });
+            expect((layoutQuestion as any).additionalMessages(undefined)).toBeUndefined();
         }
     });
 });

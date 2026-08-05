@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-info",
     "description": "SAP Fiori UI5 info",
-    "version": "1.0.4",
+    "version": "1.0.6",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -42,13 +42,13 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "axios": "1.18.1",
-        "semver": "7.8.4"
+        "semver": "7.8.5"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
         "@types/semver": "7.7.1",
         "mock-spawn": "0.2.6",
-        "nock": "14.0.15"
+        "nock": "14.0.16"
     },
     "engines": {
         "node": ">=22.x"

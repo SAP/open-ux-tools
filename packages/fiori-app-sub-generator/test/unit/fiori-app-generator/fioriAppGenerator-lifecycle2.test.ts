@@ -150,7 +150,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 
 // Import after all mocks are set up
 const { FioriAppGenerator } = await import('../../../src/fiori-app-generator/index.js');
-const { DefaultLogger, TelemetryHelper, sendTelemetry } = await import('@sap-ux/fiori-generator-shared');
+const { DefaultLogger, TelemetryHelper, sendTelemetry, getFloorplanLabel } =
+    await import('@sap-ux/fiori-generator-shared');
 const { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } =
     await import('../../../src/types/index.js');
 const { deleteCache, getYeomanUiStepConfig, t } = await import('../../../src/utils/index.js');
@@ -228,9 +229,7 @@ describe('Test FioriAppGenerator', () => {
                 expect.objectContaining({ info: expect.any(Function), error: expect.any(Function) })
             );
             expect(TelemetryHelper.createTelemetryData).toHaveBeenCalledWith({
-                Template: t(`floorplans.label.${floorplan}`, {
-                    odataVersion: mockState.service.version
-                }),
+                Template: getFloorplanLabel(floorplan, mockState.service.version),
                 DataSource: mockState.service.source,
                 UI5Version: mockState.project.ui5Version,
                 Theme: mockState.project.ui5Theme,

@@ -1,5 +1,33 @@
 # @sap-ux/control-property-editor
 
+## 1.0.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-28
+
+#### Bug Fixes
+
+- Add data-testid to info center container for reliable test selection. [[adb6019](https://github.com/SAP/open-ux-tools/commit/adb6019b4ac486a8f2dfeb64bbe628c95c0a4f0d)]
+
+## 1.0.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+## 1.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Reformat source files after prettier 3.8.4 → 3.9.5 upgrade [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
 ## 1.0.7
 
 ### Patch Changes

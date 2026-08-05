@@ -7,6 +7,7 @@ import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 import { UiIcons } from '../Icons.js';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
+const VSCODE_SECONDARY_BORDER_COLOR = `var(--vscode-button-secondaryBorder, ${VSCODE_BORDER_COLOR})`;
 export const BASE_STYLES = {
     color: 'var(--vscode-button-foreground)',
     checkedBorderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
@@ -19,10 +20,10 @@ export const BASE_STYLES = {
     },
     secondary: {
         backgroundColor: 'var(--vscode-button-secondaryBackground)',
-        disabledBorderColor: VSCODE_BORDER_COLOR,
-        borderColor: VSCODE_BORDER_COLOR,
+        disabledBorderColor: VSCODE_SECONDARY_BORDER_COLOR,
+        borderColor: VSCODE_SECONDARY_BORDER_COLOR,
         hoverBackgroundColor: 'var(--vscode-button-secondaryHoverBackground)',
-        hoverBorderColor: VSCODE_BORDER_COLOR,
+        hoverBorderColor: VSCODE_SECONDARY_BORDER_COLOR,
         color: 'var(--vscode-button-secondaryForeground)'
     },
     alert: {

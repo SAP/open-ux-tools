@@ -26,6 +26,7 @@ for (const dir of readdirSync(packagesDir)) {
 config.moduleNameMapper = {
     ...config.moduleNameMapper,
     ...workspaceSourceMap,
+    '^@sap/ux-cds-compiler-facade$': '<rootDir>/test/__mocks__/@sap/ux-cds-compiler-facade.ts'
 };
 // Allow @vscode-logging/logger CJS module to be transformed for ESM named-export interop
 config.transformIgnorePatterns = [

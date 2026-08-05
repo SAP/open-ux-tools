@@ -26,6 +26,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 const mockIsInternalFeaturesSettingEnabled = jest.fn<typeof realFeatureToggle.isInternalFeaturesSettingEnabled>();
 const mockGetDefaultProjectName = jest.fn<typeof realDefaultValues.getDefaultProjectName>();
+const mockWriteResult = jest.fn<(id: string, result: string) => void>();
 const mockValidateExtensibilityGenerator = jest.fn().mockReturnValue(true);
 const mockResolveNodeModuleGenerator = jest.fn().mockReturnValue('my-generator-path');
 const mockShowApplicationQuestion = jest.fn().mockReturnValue(true);
@@ -187,6 +188,12 @@ const realTemplates = await import('../src/utils/templates.js');
 jest.unstable_mockModule('../src/utils/templates', () => ({
     ...realTemplates,
     getTemplatesOverwritePath: mockGetTemplatesOverwritePath
+}));
+
+const realWriteResult = await import('../src/utils/write-result.js');
+jest.unstable_mockModule('../src/utils/write-result', () => ({
+    ...realWriteResult,
+    writeResult: mockWriteResult
 }));
 
 const realFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
@@ -742,12 +749,60 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(changeContent).toMatchSnapshot();
         });
 
+        it('should not call writeResult when json input has no id', async () => {
+            mockGetSupportedProject.mockRejectedValueOnce(new Error('no-id-error'));
+            const jsonInput: JsonInput = {
+                system: 'urlA',
+                username: 'user1',
+                password: 'pass1',
+                client: '010',
+                application: 'sap.ui.demoapps.f1',
+                projectName: 'noid.app',
+                namespace: 'customer.noid.app',
+                targetFolder: testOutputDir,
+                projectType: AdaptationProjectType.ON_PREMISE
+            };
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+                .withArguments([JSON.stringify(jsonInput)]);
+
+            await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+
+            expect(mockWriteResult).not.toHaveBeenCalled();
+        });
+
+        it('should write a failure result for the orchestrator when json generation fails', async () => {
+            mockGetSupportedProject.mockRejectedValueOnce(new Error('boom'));
+            const jsonInput: JsonInput = {
+                id: 'orchestrator-id',
+                system: 'urlA',
+                username: 'user1',
+                password: 'pass1',
+                client: '010',
+                application: 'sap.ui.demoapps.f1',
+                projectName: 'fail.app',
+                namespace: 'customer.fail.app',
+                targetFolder: testOutputDir,
+                projectType: AdaptationProjectType.ON_PREMISE
+            };
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+                .withArguments([JSON.stringify(jsonInput)]);
+
+            await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+
+            expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', 'Failure: boom');
+        });
+
         it('should create adaptation project from json correctly', async () => {
             // NOTE: This test uses .withArguments() which bypasses the normal yeoman prompting lifecycle and goes directly to the writing phase.
             // This can cause race conditions with other tests that use the same output directory, as the generator doesn't go through the standard prompting -> writing flow.
             // This test must be the last test in the file. Other tests below it must use a different output directory.
             mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
             const jsonInput: JsonInput = {
+                id: 'orchestrator-id',
                 system: 'urlA',
                 username: 'user1',
                 password: 'pass1',
@@ -785,6 +840,8 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(manifestContent).toMatchSnapshot();
             expect(i18nContent).toMatchSnapshot();
             expect(ui5Content).toMatchSnapshot();
+
+            expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', projectFolder);
         });
     });
 

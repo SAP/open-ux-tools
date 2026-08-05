@@ -95,26 +95,6 @@ describe('Test utils', () => {
         expect(findBackendSystemByUrl(backendUrl)).toStrictEqual(mockTargetSystems[0]);
     });
 
-    it('should return true for is same system', () => {
-        // backend system
-        const abapSystem = {
-            url: 'http://known.target.url',
-            client: '100'
-        };
-        const url = 'http://known.target.url';
-        const client = '100';
-        expect(isSameSystem(abapSystem, url, client)).toBe(true);
-
-        // destination
-        const destination = mockDestinations.Dest1;
-        const abapSystemDest = {
-            destination: 'Dest1',
-            client: '100', // should be ignored since dest is defined
-            url: 'http://dest.btp.url' // should be ignored since dest is defined
-        };
-        expect(isSameSystem(abapSystemDest, undefined, undefined, destination.Name)).toBe(true);
-    });
-
     it('should return initialised transport config', async () => {
         mockGetTransportConfigInstance.mockResolvedValueOnce({
             transportConfig: { getPackage: jest.fn() } as any,

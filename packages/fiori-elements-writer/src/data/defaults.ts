@@ -80,8 +80,7 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
         }
     } else if (template.type === TemplateType.ListReportObjectPage || template.type === TemplateType.Worklist) {
         const tableSettings: WorklistSettings | LROPSettings = template.settings as unknown as
-            | WorklistSettings
-            | LROPSettings;
+            WorklistSettings | LROPSettings;
         Object.assign(templateSettings, {
             tableType: tableSettings.tableType ?? TableType.RESPONSIVE // Overrides the UI5 default: ''
         });

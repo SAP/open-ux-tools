@@ -186,7 +186,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @returns - instance of @sap/ux-specification
      */
     async getSpecification<T>(): Promise<T> {
-        return getSpecification(this.app.appRoot);
+        return getSpecification(this.app.appRoot, { memFs: this.options?.fs });
     }
 
     /**

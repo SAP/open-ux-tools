@@ -18,7 +18,7 @@
 sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };

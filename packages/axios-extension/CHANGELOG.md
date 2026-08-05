@@ -1,5 +1,31 @@
 # @sap-ux/axios-extension
 
+## 2.0.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Upgrade qs 6.15.2 → 6.15.3 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+
+## 2.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/feature-toggle 1.0.4 → 1.0.5
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+
 ## 2.0.6
 
 ### Patch Changes
