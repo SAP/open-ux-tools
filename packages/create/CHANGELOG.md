@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.32 → 2.0.33
+
 ## 1.1.1
 
 ### Patch Changes
