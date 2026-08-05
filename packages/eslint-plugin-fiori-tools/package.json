@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/eslint-plugin-fiori-tools",
-    "version": "10.7.14",
+    "version": "10.8.0",
     "description": "Custom linting plugin for Fiori tools apps",
     "type": "module",
     "repository": {
@@ -31,7 +31,7 @@
         "@typescript-eslint/parser": "8.61.1"
     },
     "devDependencies": {
-        "@babel/core": "8.0.1",
+        "@babel/core": "8.0.0-rc.6",
         "@babel/eslint-parser": "8.0.0-rc.6",
         "@babel/parser": "8.0.0-rc.6",
         "@eslint/js": "10.0.1",
