@@ -10,13 +10,24 @@ jobs:
     check-themes:
         runs-on: ubuntu-latest
         timeout-minutes: 10
+        environment: ci-secrets
         permissions:
             contents: write
             issues: write
+            id-token: write
 
         steps:
+            - name: Generate app token
+              id: app-token
+              uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+              with:
+                  app-id: ${{ secrets.APP_ID }}
+                  private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
             - name: Checkout repository
               uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+              with:
+                  token: ${{ steps.app-token.outputs.token }}
 
             - name: Use Node.js 22.x
               uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -27,7 +38,7 @@ jobs:
               id: check
               run: |
                   set +e
-                  DIFF_OUTPUT="${{ runner.temp }}/theme-diff.json" node scripts/check-vscode-themes.mjs
+                  node scripts/check-vscode-themes.mjs
                   EXIT_CODE=$?
                   set -e
                   if [ $EXIT_CODE -ne 0 ] && [ $EXIT_CODE -ne 1 ]; then
@@ -43,19 +54,36 @@ jobs:
               env:
                   DIFF_OUTPUT: ${{ runner.temp }}/theme-diff.json
 
+            - name: Commit updated vscode_themes.json
+              if: steps.check.outputs.has_changes == 'true'
+              id: commit
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add design-tokens/vscode_themes.json
+                  git commit --no-verify -m "chore: PaletteBot — update vscode_themes.json with upstream theme changes"
+                  git push origin HEAD:main
+                  echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+            # Future: Figma board update step goes here.
+            # It should set an output (e.g. figma_status=success|failed) that the comment step can report on.
+
             - name: Post comment on tracking issue
               if: steps.check.outputs.has_changes == 'true'
               uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
               with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  github-token: ${{ steps.app-token.outputs.token }}
                   script: |
                       const fs = require('fs');
                       const diffPath = process.env.DIFF_FILE;
                       const report = JSON.parse(fs.readFileSync(diffPath, 'utf8'));
+                      const sha = process.env.COMMIT_SHA;
+                      const shortSha = sha.slice(0, 7);
+                      const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${sha}`;
 
-                      // Find or create the tracking issue
                       const TRACKING_LABEL = 'palettebot';
                       const TRACKING_TITLE = 'PaletteBot — VSCode Theme Changes';
+                      const ASSIGNEE = 'LiamM2004';
 
                       const { data: issues } = await github.rest.issues.listForRepo({
                         owner: context.repo.owner,
@@ -88,6 +116,7 @@ jobs:
                           repo: context.repo.repo,
                           title: TRACKING_TITLE,
                           labels: [TRACKING_LABEL],
+                          assignees: [ASSIGNEE],
                           body: [
                             '## 🎨 PaletteBot',
                             '',
@@ -107,18 +136,10 @@ jobs:
                         owner: context.repo.owner,
                         repo: context.repo.repo,
                         issue_number: issueNumber,
-                        body: report.body,
+                        body: `${report.body}\n_Committed: [${context.repo.owner}/${context.repo.repo}@\`${shortSha}\`](${commitUrl})_`,
                       });
 
                       core.notice(`Posted theme diff to issue #${issueNumber}`);
               env:
                   DIFF_FILE: ${{ steps.check.outputs.diff_file }}
-
-            - name: Commit updated vscode_themes.json
-              if: steps.check.outputs.has_changes == 'true'
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add design-tokens/vscode_themes.json
-                  git commit -m "chore: PaletteBot — update vscode_themes.json with upstream theme changes"
-                  git push origin HEAD:main
+                  COMMIT_SHA: ${{ steps.commit.outputs.sha }}

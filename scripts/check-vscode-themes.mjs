@@ -59,11 +59,6 @@ const THEMES = [
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
-/**
- *
- * @param filename
- * @param base
- */
 async function fetchAndParseColors(filename, base) {
     const res = await fetch(`${base}${filename}`);
     if (!res.ok) throw new Error(`Failed to fetch ${filename}: ${res.status}`);
@@ -215,9 +210,6 @@ function createFigmaVariable(vscodeKey, allUpstream, nextId) {
     };
 }
 
-/**
- *
- */
 async function main() {
     const tokens = JSON.parse(readFileSync(TOKENS_PATH, 'utf8'));
 
