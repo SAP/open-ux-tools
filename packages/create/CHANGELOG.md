@@ -1,5 +1,79 @@
 # @sap-ux/create
 
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/abap-deploy-config-inquirer 2.0.33 → 2.0.34
+- @sap-ux/abap-deploy-config-writer 1.0.19 → 1.0.20
+- @sap-ux/adp-tooling 1.0.39 → 1.0.40
+- @sap-ux/app-config-writer 1.1.14 → 1.1.15
+- @sap-ux/mockserver-config-writer 1.0.14 → 1.0.15
+- @sap-ux/odata-service-writer 1.0.16 → 1.0.17
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/flp-config-inquirer 1.0.39 → 1.0.40
+- @sap-ux/preview-middleware 1.1.0 → 1.1.1
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/cap-config-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.32 → 2.0.33
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.49 → 1.1.0
+- @sap-ux/app-config-writer 1.1.14 → 1.1.14
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-27
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/abap-deploy-config-inquirer 2.0.31 → 2.0.32
+- @sap-ux/adp-tooling 1.0.38 → 1.0.39
+- @sap-ux/app-config-writer 1.1.13 → 1.1.14
+- @sap-ux/preview-middleware 1.0.48 → 1.0.49
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/flp-config-inquirer 1.0.38 → 1.0.39
+- @sap-ux/abap-deploy-config-writer 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+- @sap-ux/cap-config-writer 1.0.26 → 1.0.27
+
 ## 1.0.62
 
 ### Patch Changes

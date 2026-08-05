@@ -1,5 +1,80 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Add timeout to resolveApplication() to prevent indefinite hangs on invalid or unreachable paths [[b63d35f](https://github.com/SAP/open-ux-tools/commit/b63d35f3897c64fb58a2696de6f226daffceeb9f)]
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.11.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
+## 1.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-31
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill with V4 pattern additions and API access guide [[246b33d](https://github.com/SAP/open-ux-tools/commit/246b33d5682dbe590e9a0c53914137aee14ed691)]
+
+## 1.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- add input validation and consistent error throwing to list_functionality and execute_functionality tools [[76e8011](https://github.com/SAP/open-ux-tools/commit/76e80113baa6ada117cf6efdc0698c82d559128c)]
+
+## 1.11.2
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+#### Release Date
+
+2026-07-27
+
+#### Bug Fixes
+
+- substantiate opa5 dev skill patterns [[de08dd1](https://github.com/SAP/open-ux-tools/commit/de08dd1ce292f7560a3d2693fe85f296d5d74b83)]
+
 ## 1.11.1
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 import opaTest from "sap/ui/test/opaQunit";
-import type { Given, When, Then } from "./types/OpaJourneyTypes";
+import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 import runner from "./pages/JourneyRunner";
 
 function journey() {

@@ -1,5 +1,36 @@
 # @sap-ux/preview-middleware
 
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.39 → 1.0.40
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Features
+
+- Add isolateJourneys option for OPA5 test config to run each journey in its own isolated test page [[c04b8aa](https://github.com/SAP/open-ux-tools/commit/c04b8aa2f91e8f669bc4b99ed521b6c4d63b0e53)]
+
+## 1.0.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.38 → 1.0.39
+- @sap-ux/system-access 1.0.9 → 1.0.10
+
 ## 1.0.48
 
 ### Patch Changes

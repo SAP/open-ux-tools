@@ -1,5 +1,41 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/abap-deploy-config-inquirer 2.0.33 → 2.0.34
+- @sap-ux/abap-deploy-config-writer 1.0.19 → 1.0.20
+- @sap-ux/adp-tooling 1.0.39 → 1.0.40
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+- @sap-ux/deploy-config-generator-shared 1.0.27 → 1.0.28
+
+## 1.0.44
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.32 → 2.0.33
+
+## 1.0.43
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.31 → 2.0.32
+- @sap-ux/adp-tooling 1.0.38 → 1.0.39
+- @sap-ux/deploy-config-generator-shared 1.0.26 → 1.0.27
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/abap-deploy-config-writer 1.0.18 → 1.0.19
+
 ## 1.0.42
 
 ### Patch Changes

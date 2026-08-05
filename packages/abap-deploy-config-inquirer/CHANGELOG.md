@@ -1,5 +1,41 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
+## 2.0.33
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Reject non-AbapServiceProvider to prevent "isAbapCloud is not a function" for full URL generic OData destinations [[8cef00e](https://github.com/SAP/open-ux-tools/commit/8cef00e93984bf467b3c44a333da54433deec9dd)]
+
+## 2.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
 ## 2.0.31
 
 ### Patch Changes

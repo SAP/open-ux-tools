@@ -1,5 +1,28 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.0.16
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
 ## 1.0.15
 
 ### Patch Changes

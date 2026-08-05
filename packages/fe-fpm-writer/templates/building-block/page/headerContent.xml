@@ -1,6 +1,6 @@
 <<%- macrosPrefix %>headerContent>
     <!-- Header content aggregation (content after avatar) -->
     <VBox id="<%- ids.VBox %>">
-        <Title id="<%- ids.Title %>" text="Page Title" />
+        <Title id="<%- ids.Title %>" text="Page Title <%- aggIndex %>" />
     </VBox>
 </<%- macrosPrefix %>headerContent>

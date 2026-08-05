@@ -1,5 +1,24 @@
 # @sap-ux/environment-check
 
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+
 ## 1.0.18
 
 ### Patch Changes
