@@ -1694,6 +1694,9 @@ importers:
       dotenv:
         specifier: 17.4.2
         version: 17.4.2
+      i18next:
+        specifier: 26.3.6
+        version: 26.3.6(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0

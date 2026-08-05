@@ -8,6 +8,26 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
+// Mock i18n
+jest.unstable_mockModule('../../../../src/i18n.js', () => ({
+    text: (key: string, options?: Record<string, unknown>) => {
+        const translations: Record<string, string> = {
+            'systemLookup.multipleSystemsFound': 'Multiple systems found with this URL:',
+            'systemLookup.selectSystemPrompt': 'Which system do you want to use?',
+            'systemLookup.clientInfo': '(client: {{client}})',
+            'systemLookup.noClient': '(no client)'
+        };
+        let result = translations[key] || key;
+        if (options) {
+            Object.entries(options).forEach(([k, v]) => {
+                result = result.replace(`{{${k}}}`, String(v));
+            });
+        }
+        return result;
+    },
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 // Mock prompts
 const mockPrompts = jest.fn().mockResolvedValue({});
 jest.unstable_mockModule('prompts', () => ({
