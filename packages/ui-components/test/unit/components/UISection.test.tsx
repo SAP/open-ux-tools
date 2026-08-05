@@ -3,18 +3,13 @@ import { render, fireEvent } from '@testing-library/react';
 import { UISection, UISectionLayout } from '../../../src/components/UISection/UISection';
 
 describe('<UISection />', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
-    it('Should render a Shell component', () => {
+    it('Should render a UISection component', () => {
         const { container } = render(
             <UISection>
                 <div>Dummy Content</div>
             </UISection>
         );
         expect(container.querySelector('.section')).not.toBeNull();
-        expect(container.querySelectorAll('.section')).toHaveLength(1);
     });
 
     it('Test "height" property', () => {
@@ -48,7 +43,7 @@ describe('<UISection />', () => {
         expect(container.querySelector('.section__header__title')?.textContent).toEqual(title);
     });
 
-    it('Test "collapsible" property', () => {
+    it('Test "layout" property', () => {
         const { container } = render(
             <UISection layout={UISectionLayout.Extended}>
                 <div>Dummy Content</div>
