@@ -19,8 +19,7 @@ describe('<MessageWrapper />', () => {
     });
 
     it('Default message - error', () => {
-        const messageTemp = JSON.parse(JSON.stringify(messageInfo));
-        messageTemp.type = undefined;
+        const messageTemp = { ...messageInfo, type: undefined };
         const { container, rerender } = render(
             <MessageWrapper message={messageInfo}>
                 <div className="dummyInput"></div>

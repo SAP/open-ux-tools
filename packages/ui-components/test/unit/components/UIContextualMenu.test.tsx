@@ -156,7 +156,7 @@ describe('<UIContextualMenu />', () => {
             });
         });
 
-        it('getUIcontextualMenuCalloutStyles - pass maxWidth', () => {
+        it('getUIcontextualMenuCalloutStyles - pass maxWidth and custom styles', () => {
             const defaultStyles = getUIcontextualMenuCalloutStyles({ root: { background: 'green' } }, 100);
             expect(defaultStyles).toEqual({
                 root: {

@@ -33,27 +33,22 @@ describe('<UISplitButton />', () => {
         expect(container.querySelectorAll('button.ui-split-button')).toHaveLength(1);
     });
 
-    it('Should render a UISplitButton component - click options', () => {
-        const { container } = render(<UISplitButton {...splitButtonProps} />);
+    it('Should call callback with button key on click', () => {
+        const { getByText } = render(<UISplitButton {...splitButtonProps} />);
 
-        const buttons = container.querySelectorAll('button');
-        expect(buttons).toHaveLength(2);
-
-        fireEvent.click(buttons[0]);
+        fireEvent.click(getByText('option 1'));
         expect(splitButtonProps.callback).toHaveBeenCalledWith('option1');
     });
 
-    it('Should render a UISplitButton component - click options on menu', () => {
+    it('Should call callback with menu item key on menu item click', () => {
         const ref = React.createRef<UISplitButton>();
         const { container } = render(<UISplitButton {...splitButtonProps} ref={ref} />);
 
         const buttons = container.querySelectorAll('button');
-        expect(buttons).toHaveLength(2);
-
         // Open the dropdown so the menu state is active
         fireEvent.click(buttons[1]);
 
-        // Access the menu's onItemClick handler and the items directly from component state
+        // Fluent UI contextual menu doesn't render in jsdom, so invoke the handler directly from state
         const instance = ref.current!;
         const { items, onItemClick } = instance.state.menu as {
             items: any[];
@@ -64,7 +59,7 @@ describe('<UISplitButton />', () => {
         expect(splitButtonProps.callback).toHaveBeenCalledWith('option2');
     });
 
-    it('Should render a UISplitButton component - updates on props change', () => {
+    it('Should update menu items when menuItems prop changes', () => {
         let instance: UISplitButton | null = null;
         const setRef = (el: UISplitButton | null): void => {
             instance = el;

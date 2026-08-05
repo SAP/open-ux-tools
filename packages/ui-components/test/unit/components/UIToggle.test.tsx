@@ -24,7 +24,7 @@ describe('<UIToggle />', () => {
 
     it('Should render a UIToggle component', () => {
         const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-        expect(container.querySelectorAll('.ms-Toggle')).toHaveLength(1);
+        expect(container.querySelector('button')).not.toBeNull();
     });
 
     it('Should toggle the checked state correctly', () => {

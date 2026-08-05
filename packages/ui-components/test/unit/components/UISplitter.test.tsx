@@ -26,7 +26,7 @@ describe('<UISplitter />', () => {
         document.body.dispatchEvent(event);
     };
 
-    it('Should render a PropertiesPanel component', () => {
+    it('Should render a UISplitter component', () => {
         const { container } = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
         expect(container.querySelector('.splitter')).toBeTruthy();
         expect(container.querySelectorAll('.splitter--horizontal')).toHaveLength(1);
@@ -79,7 +79,7 @@ describe('<UISplitter />', () => {
     }
 
     describe('Keyboard resize and toggle', () => {
-        it('Test spliter resize using keyboard', () => {
+        it('Test splitter resize using keyboard', () => {
             const onResizeStart = jest.fn();
             const onResizeEnd = jest.fn();
             const onToggle = jest.fn();
@@ -129,7 +129,7 @@ describe('<UISplitter />', () => {
             expect(onToggle).toHaveBeenCalledTimes(0);
         });
 
-        it('Test spliter toggle using keyboard', () => {
+        it('Test splitter toggle using keyboard', () => {
             const onResizeStart = jest.fn();
             const onResizeEnd = jest.fn();
             const onToggle = jest.fn();
@@ -164,7 +164,7 @@ describe('<UISplitter />', () => {
             expect(onToggle).toHaveBeenCalledTimes(1);
         });
 
-        it('Test spliter toggle - aria', () => {
+        it('Test splitter toggle - aria', () => {
             const { container, rerender } = render(<UISplitter type={UISplitterType.Toggle} onResize={onResize} />);
             const splitter = container.querySelector('.splitter--toggle') as HTMLElement;
             expect(splitter.getAttribute('role')).toEqual('button');
