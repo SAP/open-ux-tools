@@ -1,5 +1,17 @@
 # @sap-ux/deploy-tooling
 
+## 1.0.31
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-04
+
+#### Bug Fixes
+
+- Replace require() with dynamic import() in bin/deploy and bin/undeploy shims to fix ReferenceError in ESM context [[f16e7ca](https://github.com/SAP/open-ux-tools/commit/f16e7ca01dd11784337d29e265c7f28a343f4701)]
+
 ## 1.0.30
 
 ### Patch Changes

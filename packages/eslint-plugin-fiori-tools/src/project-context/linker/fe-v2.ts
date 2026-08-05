@@ -18,6 +18,7 @@ export interface ApplicationSetting {
     statePreservationMode: string;
     flexibleColumnLayout: FlexibleColumnLayoutSettings;
     tableColumnVerticalAlignment: TableColumnVerticalAlignmentValues;
+    cloudDevAdaptationStatus: string;
 }
 export interface PageSetting {
     createMode: string;
@@ -742,6 +743,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
     const twoColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
     const threeColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
     const tableColumnVerticalAlignmentValue = config.settings?.tableColumnVerticalAlignment;
+    const cloudDevAdaptationStatus = context.app.manifestObject['sap.fiori']?.cloudDevAdaptationStatus;
     const linkedApp: LinkedFeV2App = {
         type: 'fe-v2',
         pages: [],
@@ -772,6 +774,11 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
                 values: ['Bottom', 'Middle', 'Top'],
                 configurationPath: ['sap.ui.generic.app', 'settings', 'tableColumnVerticalAlignment'],
                 valueInFile: tableColumnVerticalAlignmentValue
+            },
+            cloudDevAdaptationStatus: {
+                values: ['released', 'deprecated', 'obsolete'],
+                configurationPath: ['sap.fiori', 'cloudDevAdaptationStatus'],
+                valueInFile: cloudDevAdaptationStatus
             }
         }
     };
