@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import * as zod from 'zod';
 import { logger } from './logger.js';
 
-const RESOLVE_APPLICATION_TIMEOUT_MS = 7000;
+export const RESOLVE_APPLICATION_TIMEOUT_MS = 7000;
 
 /**
  * Resolves the application details from a given path.

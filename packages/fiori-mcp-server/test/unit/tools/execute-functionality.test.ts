@@ -11,6 +11,7 @@ import {
     mockSpecificationReadAppWithModel,
     readAppWithModel
 } from '../utils.js';
+import { RESOLVE_APPLICATION_TIMEOUT_MS } from '../../../src/utils/schema-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -314,7 +315,7 @@ describe('executeFunctionality', () => {
                     functionalityId: 'add-page',
                     parameters: {}
                 });
-                jest.advanceTimersByTime(8000);
+                jest.advanceTimersByTime(RESOLVE_APPLICATION_TIMEOUT_MS);
                 await expect(promise).rejects.toThrow('resolveApplication timed out');
             } finally {
                 jest.useRealTimers();

@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ListFunctionalitiesOutput } from '../../../src/types/index.js';
 import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils.js';
+import { RESOLVE_APPLICATION_TIMEOUT_MS } from '../../../src/utils/schema-utils.js';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -172,7 +173,7 @@ describe('listFunctionalities', () => {
             try {
                 mockCreateApplicationAccess.mockImplementation(() => new Promise<never>(() => undefined));
                 const promise = listFunctionalities({ appPath: '/some/path' });
-                jest.advanceTimersByTime(8000);
+                jest.advanceTimersByTime(RESOLVE_APPLICATION_TIMEOUT_MS);
                 await expect(promise).rejects.toThrow('resolveApplication timed out');
             } finally {
                 jest.useRealTimers();
