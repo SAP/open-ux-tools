@@ -145,7 +145,7 @@ export class KeyStoreManager implements SecureStore {
                 }
             });
 
-            this.log.debug(`All credentials retrieved. Service: [${service}], Count: ${Object.keys(results).length}`);
+            this.log.debug(`All credentials retrieved. Service: [${service}]`);
             return results;
         } catch (e) {
             this.log.error(`Failed to retrieve credentials for Service: [${service}]. Error: ${errorString(e)}`);

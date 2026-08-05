@@ -142,7 +142,7 @@ describe('KeyStoreManager', () => {
                 account1: { value: 'value1' },
                 account2: { value: 'value2' }
             });
-            expect(log.debug).toHaveBeenCalledWith('All credentials retrieved. Service: [testService], Count: 2');
+            expect(log.debug).toHaveBeenCalledWith('All credentials retrieved. Service: [testService]');
         });
 
         it('should handle deserialization failures for individual credentials', async () => {
