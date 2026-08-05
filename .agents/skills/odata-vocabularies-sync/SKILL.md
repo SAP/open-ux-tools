@@ -54,7 +54,7 @@ Make all six additions. All six are mandatory — missing any one will cause a r
    ```typescript
    import <Alias> from './<namespace>.js';
    ```
-   Use the `$Alias` value from the JSON as the import identifier. **Exception:** if the alias is a reserved JS keyword or built-in (e.g. `JSON`, `Map`, `Error`), prefix it to form a valid identifier (e.g. `JSON` → `ODataJSON`). Check existing imports for precedent.
+   Use the `$Alias` value from the JSON as the import identifier. **Exception:** if the alias is a reserved JS keyword or built-in (e.g. `JSON`, `Map`, `Error`), prefix it to form a valid identifier (e.g. `JSON` → `ODataJSON`). Also check existing imports for precedent — some aliases are shortened for brevity (e.g. `Authorization` → `Auth`).
 
 2. **Namespace union type** — add to the matching family type:
    - OASIS → `OasisVocabularyNamespace`
