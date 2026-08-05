@@ -11,7 +11,6 @@ import {
     mockSpecificationReadAppWithModel,
     readAppWithModel
 } from '../utils.js';
-import { RESOLVE_APPLICATION_TIMEOUT_MS } from '../../../src/utils/schema-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -48,6 +47,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/flex', () => ({
 // Dynamic imports after mocks
 const { executeFunctionality } = await import('../../../src/tools/index.js');
 const addPageDependency = await import('../../../src/tools/functionalities/page/index.js');
+const { RESOLVE_APPLICATION_TIMEOUT_MS } = await import('../../../src/utils/schema-utils.js');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 const fsEditor = create(createStorage());

@@ -3,7 +3,6 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ListFunctionalitiesOutput } from '../../../src/types/index.js';
 import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils.js';
-import { RESOLVE_APPLICATION_TIMEOUT_MS } from '../../../src/utils/schema-utils.js';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -30,6 +29,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
 
 // Dynamic imports after mocks
 const { listFunctionalities } = await import('../../../src/tools/index.js');
+const { RESOLVE_APPLICATION_TIMEOUT_MS } = await import('../../../src/utils/schema-utils.js');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 
