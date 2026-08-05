@@ -44,6 +44,8 @@ Add an entry to `SUPPORTED_VOCABULARIES` in alphabetical order within the existi
 },
 ```
 
+> **Note:** The entry can include `update: false` to pin the vocabulary and exclude it from future automatic updates (e.g. `com.sap.vocabularies.CDS.v1` uses this because it is hand-maintained). Omit the field for normal auto-updating behaviour.
+
 ### 1c. Edit `src/resources/index.ts`
 
 Make all six additions. All six are mandatory — missing any one will cause a runtime error.
