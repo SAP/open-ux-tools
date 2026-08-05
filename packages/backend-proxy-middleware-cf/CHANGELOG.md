@@ -1,5 +1,62 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.38 → 1.0.39
+
+## 0.3.38
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Upgrade @sap/approuter 22.0.0 → 22.0.3 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/adp-tooling 1.0.37 → 1.0.38
+
+## 0.3.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.36 → 1.0.37
+
+## 0.3.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.35 → 1.0.36
+
+## 0.3.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.34 → 1.0.35
+
+## 0.3.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.33 → 1.0.34
+
 ## 0.3.33
 
 ### Patch Changes

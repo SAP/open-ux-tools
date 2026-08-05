@@ -81,13 +81,14 @@ sap.ui.define([
         QUnit.module("Feature Name Journey");
 
         opaTest("Start application", function (Given, When, Then) {
-            Given.iStartMyApp("<object>-<action>");
+            Given.iStartMyApp();
             Then.onTheEntityNameList.iSeeThisPage();
         });
 
         // ... additional test steps ...
 
-        opaTest("Teardown", function (Given, When, Then) {
+        opaTest("Should display the list report", function (Given, When, Then) {
+            Then.onTheEntityNameList.iSeeThisPage();
             Given.iTearDownMyApp();
         });
     }
@@ -96,7 +97,9 @@ sap.ui.define([
 });
 ```
 
-**`iStartMyApp("<object>-<action>")`** is the SAP Fiori elements equivalent of the base OPA5 `iStartMyAppInAFrame`. The argument is the FLP intent (`<object>-<action>`) - see "Finding the tile name" above for how to determine the correct value.
+**`iStartMyApp()`** launches the app using the intent already encoded in `launchUrl` in `JourneyRunner.js`. This is the standard form — use it when the runner is already configured with the correct hash.
+
+**`iStartMyApp("<object>-<action>")`** overrides the intent at call time. Use this when a journey needs to launch with a different intent than the one in `launchUrl`, or when you prefer to keep `launchUrl` intent-independent. The argument is the FLP intent (`<object>-<action>`) — see "Finding the tile name" above for how to determine the correct value.
 
 ---
 
@@ -120,7 +123,7 @@ sap.ui.require(
 );
 ```
 
-When the virtual endpoint is active (see SKILL.md "Generated Test Structure"), this file does not exist on disk - the middleware generates it automatically by scanning for journey files matching the configured pattern.
+When the virtual endpoint is active (see `v4-instructions.md` "Generated Test Structure"), this file does not exist on disk - the middleware generates it automatically by scanning for journey files matching the configured pattern.
 
 > If the entry point does not set `QUnit.config.autostart = false` before loading journey modules, tests may start before all modules are fully loaded, causing intermittent failures. If you encounter this, fix it by adding `window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } })` before the `sap.ui.require` call and ensuring `QUnit.start()` is called inside the require callback.
 
@@ -147,6 +150,7 @@ In both cases, no changes to `JourneyRunner.js` or page object files are needed 
 | `pages` | object | Map of accessor name (e.g., `onTheList`) to page object instance |
 | `async` | boolean | Set to `true` for async OPA execution (required for OData V4) |
 | `opaConfig` | object | OPA5 configuration passed to the test runner - use instead of `Opa5.extendConfig`. Recommended: `{ autoWait: true }` |
+| `launchParameters` | object | Optional. URL query parameters appended to the launch URL. Common keys: `serverDelay` (int, ms - slow down mock server responses), `responderOn` (bool - toggle mock server), `demoApp` (string - select demo app in multi-app sandboxes), `"sap-ui-language"` (string - set UI language). Example: `{ serverDelay: 0, responderOn: true, "sap-ui-language": "EN" }` |
 
 For full API documentation: `https://sapui5.hana.ondemand.com/#/api/sap.fe.test.JourneyRunner`
 
