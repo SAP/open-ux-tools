@@ -15,9 +15,9 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
         const translations: Record<string, string> = {
             'systemConnection.invalidUrl': 'Invalid URL: {{url}}',
             'systemConnection.skippingCheck': 'Skipping connection check (--skip-check flag provided)',
-            'systemConnection.verifying': 'Verifying connection to backend system...',
-            'systemConnection.connectionSuccessful': '✓ Connection successful',
-            'systemConnection.connectionFailed': 'Connection check failed: {{error}}',
+            'systemConnection.verifying': 'Verifying connection to the back-end system...',
+            'systemConnection.connectionSuccessful': '✓ Connection achieved',
+            'systemConnection.connectionFailed': 'Connection check failed. Error: {{error}}',
             'systemConnection.unknownError': 'Unknown error',
             'systemConnection.saveAnywayPrompt': 'Connection check failed. Save system anyway?'
         };
@@ -312,8 +312,8 @@ describe('system-connection', () => {
             );
 
             expect(result).toBe(true);
-            expect(mockLoggerInfo).toHaveBeenCalledWith('Verifying connection to backend system...');
-            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection successful');
+            expect(mockLoggerInfo).toHaveBeenCalledWith('Verifying connection to the back-end system...');
+            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection achieved');
             expect(mockPrompts).not.toHaveBeenCalled();
         });
 
@@ -385,7 +385,7 @@ describe('system-connection', () => {
             );
 
             expect(result).toBe(true);
-            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection successful');
+            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection achieved');
         });
 
         test('should display error message when available', async () => {

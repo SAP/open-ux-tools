@@ -20,30 +20,31 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
             });
             return result;
         }
-        // Map i18n keys to original English strings for test compatibility
+        // Map i18n keys to updated English strings per PR review
         const translations: Record<string, string> = {
             'systemPrompts.validation.fieldRequired': 'This field is required and cannot be empty',
-            'systemPrompts.validation.invalidUrl': 'Please enter a valid URL (e.g., https://my-system.example.com)',
+            'systemPrompts.validation.invalidUrl':
+                'Please enter a valid URL, for example https://my-system.example.com)',
             'systemPrompts.validation.systemNameExists':
                 "A system with the name '{{name}}' already exists. Please choose a different name.",
             'systemPrompts.validation.checkNameFailed': 'Unable to check system name uniqueness. Please try again.',
-            'systemPrompts.prompts.systemName': 'System name (display name):',
+            'systemPrompts.prompts.systemName': 'System Name:',
             'systemPrompts.prompts.systemUrl': 'System URL:',
-            'systemPrompts.prompts.sapClient': 'SAP client (optional, press Enter to skip):',
-            'systemPrompts.prompts.systemType': 'System type:',
-            'systemPrompts.prompts.authenticationType': 'Authentication type:',
-            'systemPrompts.prompts.connectionType': 'Connection type:',
-            'systemPrompts.prompts.username': 'Username (optional, press Enter to skip):',
-            'systemPrompts.prompts.password': 'Password (optional, press Enter to skip):',
-            'systemPrompts.updateFields.selectPrompt': 'Select fields to update:',
-            'systemPrompts.updateFields.nameLabel': 'Name (current: {{name}})',
-            'systemPrompts.updateFields.usernameLabel': 'Username (current: {{username}})',
+            'systemPrompts.prompts.sapClient': 'SAP Client (Optional: Press Enter to Skip):',
+            'systemPrompts.prompts.systemType': 'System Type:',
+            'systemPrompts.prompts.authenticationType': 'Authentication Type:',
+            'systemPrompts.prompts.connectionType': 'Connection Type:',
+            'systemPrompts.prompts.username': 'Username (Optional: Press Enter to Skip):',
+            'systemPrompts.prompts.password': 'Password (Optional: Press Enter to Skip):',
+            'systemPrompts.updateFields.selectPrompt': 'Select Fields to Update:',
+            'systemPrompts.updateFields.nameLabel': 'Name (Existing: {{name}})',
+            'systemPrompts.updateFields.usernameLabel': 'Username (Existing: {{username}})',
             'systemPrompts.updateFields.usernameNone': '(none)',
             'systemPrompts.updateFields.passwordLabel': 'Password',
-            'systemPrompts.updateFields.minOneRequired': 'At least one field must be selected',
-            'systemPrompts.updateFields.newNamePrompt': 'New system name:',
-            'systemPrompts.updateFields.newUsernamePrompt': 'New username:',
-            'systemPrompts.updateFields.newPasswordPrompt': 'New password:',
+            'systemPrompts.updateFields.minOneRequired': 'At least one field must be selected.',
+            'systemPrompts.updateFields.newNamePrompt': 'New System Name:',
+            'systemPrompts.updateFields.newUsernamePrompt': 'New Username:',
+            'systemPrompts.updateFields.newPasswordPrompt': 'New Password:',
             'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?"
         };
         return translations[key] || key;
@@ -119,7 +120,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'text',
                         name: 'name',
-                        message: 'System name (display name):'
+                        message: 'System Name:'
                     })
                 ])
             );
@@ -164,7 +165,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'text',
                         name: 'client',
-                        message: 'SAP client (optional, press Enter to skip):'
+                        message: 'SAP Client (Optional: Press Enter to Skip):'
                     })
                 ])
             );
@@ -190,7 +191,7 @@ describe('system-prompts', () => {
             expect(systemTypePrompt).toBeDefined();
             expect(systemTypePrompt.type).toBe('select');
             expect(systemTypePrompt.name).toBe('systemType');
-            expect(systemTypePrompt.message).toBe('System type:');
+            expect(systemTypePrompt.message).toBe('System Type:');
             expect(systemTypePrompt.choices).toEqual(
                 expect.arrayContaining([
                     expect.objectContaining({ value: 'OnPrem' }),
@@ -216,7 +217,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'select',
                         name: 'authenticationType',
-                        message: 'Authentication type:'
+                        message: 'Authentication Type:'
                     })
                 ])
             );
@@ -238,7 +239,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'select',
                         name: 'connectionType',
-                        message: 'Connection type:'
+                        message: 'Connection Type:'
                     })
                 ])
             );
@@ -261,7 +262,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'text',
                         name: 'username',
-                        message: 'Username (optional, press Enter to skip):'
+                        message: 'Username (Optional: Press Enter to Skip):'
                     })
                 ])
             );
@@ -284,7 +285,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'password',
                         name: 'password',
-                        message: 'Password (optional, press Enter to skip):'
+                        message: 'Password (Optional: Press Enter to Skip):'
                     })
                 ])
             );
@@ -958,10 +959,10 @@ describe('system-prompts', () => {
             expect(mockPrompts).toHaveBeenCalledWith({
                 type: 'multiselect',
                 name: 'fields',
-                message: 'Select fields to update:',
+                message: 'Select Fields to Update:',
                 choices: [
-                    { title: 'Name (current: ExistingSystem)', value: 'name' },
-                    { title: 'Username (current: existing-user)', value: 'username' },
+                    { title: 'Name (Existing: ExistingSystem)', value: 'name' },
+                    { title: 'Username (Existing: existing-user)', value: 'username' },
                     { title: 'Password', value: 'password' },
                     { title: 'Clear Credentials', value: 'clearCredentials' }
                 ],
@@ -977,7 +978,7 @@ describe('system-prompts', () => {
 
             expect(mockPrompts).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    choices: expect.arrayContaining([expect.objectContaining({ title: 'Username (current: (none))' })])
+                    choices: expect.arrayContaining([expect.objectContaining({ title: 'Username (Existing: (none))' })])
                 })
             );
         });
@@ -1017,7 +1018,7 @@ describe('system-prompts', () => {
 
             expect(namePrompt).toBeDefined();
             expect(namePrompt.type).toBe('text');
-            expect(namePrompt.message).toBe('New system name:');
+            expect(namePrompt.message).toBe('New System Name:');
             expect(namePrompt.initial).toBe('ExistingSystem');
         });
 
@@ -1035,7 +1036,7 @@ describe('system-prompts', () => {
 
             expect(usernamePrompt).toBeDefined();
             expect(usernamePrompt.type).toBe('text');
-            expect(usernamePrompt.message).toBe('New username:');
+            expect(usernamePrompt.message).toBe('New Username:');
             expect(usernamePrompt.initial).toBe('existing-user');
         });
 
@@ -1053,7 +1054,7 @@ describe('system-prompts', () => {
 
             expect(passwordPrompt).toBeDefined();
             expect(passwordPrompt.type).toBe('password');
-            expect(passwordPrompt.message).toBe('New password:');
+            expect(passwordPrompt.message).toBe('New Password:');
         });
 
         test('should prompt for multiple fields', async () => {
