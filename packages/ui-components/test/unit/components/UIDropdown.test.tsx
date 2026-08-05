@@ -210,15 +210,7 @@ describe('<UIDropdown />', () => {
             return undefined;
         };
 
-        it('Default', () => {
-            const styles = getCalloutStyles(
-                { options: data, selectedKey: 'EE', useDropdownAsMenuMinWidth: false },
-                100
-            );
-            expect(styles).toBeUndefined();
-        });
-
-        it('False', () => {
+        it('False - no callout styles applied', () => {
             const styles = getCalloutStyles(
                 { options: data, selectedKey: 'EE', useDropdownAsMenuMinWidth: false },
                 100
@@ -527,47 +519,34 @@ describe('<UIDropdown />', () => {
 });
 
 describe('Utils/getCalloutCollisionTransformationProps', () => {
-    const testCases = [
-        {
-            multiSelect: true,
-            enabled: true,
-            expectation: true
-        },
-        {
-            multiSelect: true,
-            enabled: false,
-            expectation: true
-        },
-        {
-            multiSelect: false,
-            enabled: true,
-            expectation: true
-        },
-        {
-            multiSelect: undefined,
-            enabled: undefined,
-            expectation: true
-        }
-    ];
-    for (const testCase of testCases) {
-        const { multiSelect, enabled, expectation } = testCase;
-        it(`getCalloutCollisionTransformationProps - multiSelect=${multiSelect}, enabled=${enabled}`, () => {
-            const source = React.createRef<HTMLElement>();
-            const menu = React.createRef<HTMLElement>();
-            const calloutCollisionTransform = new CalloutCollisionTransform(source, menu);
-            const props = getCalloutCollisionTransformationProps(calloutCollisionTransform, true, true);
+    const source = React.createRef<HTMLElement>();
+    const menu = React.createRef<HTMLElement>();
+    let calloutCollisionTransform: CalloutCollisionTransform;
 
-            expect(props).toEqual(
-                expectation
-                    ? {
-                          preventDismissOnEvent: calloutCollisionTransform.preventDismissOnEvent,
-                          layerProps: {
-                              onLayerDidMount: calloutCollisionTransform.applyTransformation,
-                              onLayerWillUnmount: calloutCollisionTransform.resetTransformation
-                          }
-                      }
-                    : undefined
-            );
+    beforeEach(() => {
+        calloutCollisionTransform = new CalloutCollisionTransform(source, menu);
+    });
+
+    it('returns callout props when multiSelect=true and enabled=true', () => {
+        const props = getCalloutCollisionTransformationProps(calloutCollisionTransform, true, true);
+        expect(props).toEqual({
+            preventDismissOnEvent: calloutCollisionTransform.preventDismissOnEvent,
+            layerProps: {
+                onLayerDidMount: calloutCollisionTransform.applyTransformation,
+                onLayerWillUnmount: calloutCollisionTransform.resetTransformation
+            }
         });
-    }
+    });
+
+    it('returns undefined when multiSelect=false', () => {
+        expect(getCalloutCollisionTransformationProps(calloutCollisionTransform, false, true)).toBeUndefined();
+    });
+
+    it('returns undefined when enabled=false', () => {
+        expect(getCalloutCollisionTransformationProps(calloutCollisionTransform, true, false)).toBeUndefined();
+    });
+
+    it('returns undefined when both are undefined', () => {
+        expect(getCalloutCollisionTransformationProps(calloutCollisionTransform, undefined, undefined)).toBeUndefined();
+    });
 });

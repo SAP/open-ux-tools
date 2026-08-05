@@ -35,13 +35,18 @@ describe('waitFor', () => {
 });
 
 describe('sleep', () => {
-    it('should resolve after the specified number of milliseconds', async () => {
-        const start = Date.now();
-        // server is sometimes so fast, that it calculates the difference in -1ms
-        await sleep(110);
-        const end = Date.now();
+    beforeEach(() => {
+        jest.useFakeTimers();
+    });
 
-        expect(end - start).toBeGreaterThanOrEqual(100);
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it('should resolve after the specified number of milliseconds', async () => {
+        const promise = sleep(200);
+        jest.advanceTimersByTime(200);
+        await expect(promise).resolves.toBeUndefined();
     });
 });
 

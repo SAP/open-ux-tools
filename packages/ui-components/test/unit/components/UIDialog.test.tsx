@@ -85,6 +85,7 @@ describe('<UIDialog />', () => {
     });
 
     beforeEach(() => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
         capturedDialogProps = undefined;
         capturedFooterProps = undefined;
         windowEventMock = mockDomEventListener(window);
@@ -105,6 +106,7 @@ describe('<UIDialog />', () => {
     });
 
     afterEach(() => {
+        jest.useRealTimers();
         jest.clearAllMocks();
     });
 
@@ -179,12 +181,12 @@ describe('<UIDialog />', () => {
     });
 
     describe('onResize', () => {
-        it('Resize attachment and detachment', async () => {
+        it('Resize attachment and detachment', () => {
             // Resize attached
             expect(windowEventMock.domEventListeners['resize'].length).toEqual(4);
             rerenderWith({ isOpen: false });
-            // Resize detached - test with close timeout
-            await new Promise((resolve) => setTimeout(resolve, 500));
+            // Resize detached - flush Fluent UI close animation timers
+            jest.runOnlyPendingTimers();
             expect(windowEventMock.domEventListeners['resize'].length).toEqual(2);
         });
 

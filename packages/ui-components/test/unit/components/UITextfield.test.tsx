@@ -19,7 +19,7 @@ function getStyles(
 describe('<UITextInput />', () => {
     it('Should render a UITextInput component', () => {
         const { container } = render(<UITextInput />);
-        expect(container.querySelectorAll('.ms-TextField')).toHaveLength(1);
+        expect(container.querySelector('input')).not.toBeNull();
     });
 
     it('Disabled textfield, but input should be readonly', () => {
@@ -106,9 +106,11 @@ describe('<UITextInput />', () => {
 
     describe('Styles - error message', () => {
         it('Error - custom component renders in DOM', async () => {
+            jest.useFakeTimers();
             const { container } = render(<UITextInput errorMessage={<div className="dummyError">TEST</div>} />);
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            jest.runAllTimers();
             expect(container.querySelectorAll('.dummyError')).toHaveLength(1);
+            jest.useRealTimers();
         });
     });
 

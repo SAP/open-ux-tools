@@ -44,6 +44,11 @@ describe('<UITooltip />', () => {
 
         beforeEach(() => {
             onLayerMount = jest.fn();
+            jest.useFakeTimers({ legacyFakeTimers: true });
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
         });
 
         it('showOnFocus=true shows tooltip on focus', async () => {
@@ -62,7 +67,7 @@ describe('<UITooltip />', () => {
             const button = container.querySelector(`button#${buttonId}`) as HTMLElement;
             fireEvent.focus(button);
             await act(async () => {
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+                jest.runAllTimers();
             });
             expect(onLayerMount).toHaveBeenCalledTimes(1);
         });
@@ -83,7 +88,7 @@ describe('<UITooltip />', () => {
             const button = container.querySelector(`button#${buttonId}`) as HTMLElement;
             fireEvent.focus(button);
             await act(async () => {
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+                jest.runAllTimers();
             });
             expect(onLayerMount).toHaveBeenCalledTimes(0);
         });

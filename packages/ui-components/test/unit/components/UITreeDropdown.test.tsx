@@ -72,6 +72,7 @@ describe('<UITreeDropdown />', () => {
         } else if (handlers?.onInput) {
             handlers.onInput({ target: input, currentTarget: input, type: 'input', bubbles: true });
         }
+        jest.runOnlyPendingTimers();
     };
 
     // Fluent UI renders menus in a Layer/Portal appended to document.body - query from document
@@ -130,7 +131,7 @@ describe('<UITreeDropdown />', () => {
             .mockImplementation(getElementsByClassName);
         const focusEvent = getFocusEvent(value);
         windowEventMock.simulateEvent('focus', focusEvent);
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        jest.runOnlyPendingTimers();
         jest.spyOn(document, 'getElementsByClassName').mockImplementation((name: string) => originalHandler(name));
         getElementsByClassNameSpy.mockClear();
     };
@@ -145,11 +146,13 @@ describe('<UITreeDropdown />', () => {
     };
 
     beforeEach(() => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
         windowEventMock = mockDomEventListener(window);
         renderResult = render(<UITreeDropdown {...defaultProps} />);
     });
 
     afterEach(() => {
+        jest.useRealTimers();
         jest.clearAllMocks();
     });
 
@@ -296,7 +299,7 @@ describe('<UITreeDropdown />', () => {
             expect(inputEl.value).toEqual('Title');
         });
 
-        it('Test "onInput"', async () => {
+        it('Test "onInput"', () => {
             const { container } = renderResult;
             const query = 'Title';
             const input = container.querySelector('input') as HTMLInputElement;
@@ -334,11 +337,11 @@ describe('<UITreeDropdown />', () => {
             expect(inputEl.value).toEqual('Title.SAP__Messages');
         });
 
-        it('Test menu open on Enter', async () => {
+        it('Test menu open on Enter', () => {
             const { container } = renderResult;
             const input = container.querySelector('input') as HTMLElement;
             fireEvent.keyDown(input, { key: 'Enter' });
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            jest.runOnlyPendingTimers();
             expect(queryAllContextMenus().length).toBeGreaterThan(0);
         });
 
@@ -350,18 +353,18 @@ describe('<UITreeDropdown />', () => {
             expect(queryAllContextMenus()).toHaveLength(0);
         });
 
-        it('Test input click to open context menu', async () => {
+        it('Test input click to open context menu', () => {
             const { container } = renderResult;
             const input = container.querySelector('input') as HTMLElement;
             fireEvent.click(input, document.createEvent('Events'));
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            jest.runOnlyPendingTimers();
             expect(queryAllContextMenus().length).toBeGreaterThan(0);
         });
 
         it('Test submenu item click', async () => {
             const { container } = renderResult;
             await triggerWindowKeydownWithFocus(container, 'Title');
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            jest.runOnlyPendingTimers();
             const splitMenuButton = querySplitMenuButton() as HTMLElement;
             fireEvent.click(splitMenuButton, document.createEvent('Events'));
             expect(document.querySelectorAll(`div.ui-treeDropDown-context-menu`)).toHaveLength(2);
@@ -426,7 +429,7 @@ describe('<UITreeDropdown />', () => {
             },
             // Without scrollbar
             {
-                name: 'Scrollable - 50 width',
+                name: 'Not scrollable - no offset',
                 scrollHeight: 1000,
                 clientHeight: 1000,
                 offsetWidth: 400,
@@ -485,10 +488,10 @@ describe('<UITreeDropdown />', () => {
             };
         };
 
-        it('Ordinary scenario', async () => {
+        it('Ordinary scenario', () => {
             const { container } = renderResult;
             openDropdown(container);
-            await new Promise((resolve) => setTimeout(resolve, 300));
+            jest.runOnlyPendingTimers();
             expect(windowEventMock.domEventListeners['keydown'].length).toEqual(3);
             const event = {
                 key: 'ArrowDown',
@@ -699,13 +702,13 @@ describe('<UITreeDropdown />', () => {
             focusSpy.mockClear();
         });
 
-        it('No value set', async () => {
+        it('No value set', () => {
             const { container } = localRenderResult;
             focusSpy.mockClear();
             // Open with Enter press
             const input = container.querySelector('input') as HTMLElement;
             fireEvent.keyDown(input, { key: 'Enter' });
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            jest.runOnlyPendingTimers();
             expect(queryAllContextMenus().length).toBeGreaterThan(0);
             expect(focusSpy).toHaveBeenCalledTimes(0);
         });
@@ -725,28 +728,28 @@ describe('<UITreeDropdown />', () => {
             }
         ];
         for (const testCase of firstLevelCases) {
-            it(`First level - index ${testCase.expectIndex}`, async () => {
+            it(`First level - index ${testCase.expectIndex}`, () => {
                 focusSpy.mockClear();
                 refreshRender(testCase.value);
                 const { container } = localRenderResult;
                 // Open with Enter press
                 const input = container.querySelector('input') as HTMLElement;
                 fireEvent.keyDown(input, { key: 'Enter' });
-                await new Promise((resolve) => setTimeout(resolve, 100));
+                jest.runOnlyPendingTimers();
                 expect(queryAllContextMenus().length).toBeGreaterThan(0);
                 expect(focusSpy).toHaveBeenCalledTimes(1);
                 expect(getFocusedElementIndexInList(0)).toEqual(testCase.expectIndex);
             });
         }
 
-        it(`Item not found`, async () => {
+        it(`Item not found`, () => {
             focusSpy.mockClear();
             refreshRender('Dummy404');
             const { container } = localRenderResult;
             // Open with Enter press
             const input = container.querySelector('input') as HTMLElement;
             fireEvent.keyDown(input, { key: 'Enter' });
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            jest.runOnlyPendingTimers();
             expect(queryAllContextMenus().length).toBeGreaterThan(0);
             expect(focusSpy).toHaveBeenCalledTimes(0);
         });
@@ -774,14 +777,14 @@ describe('<UITreeDropdown />', () => {
             }
         ];
         for (const testCase of secondLevelCases) {
-            it(`Second level - index ${testCase.expectIndex}`, async () => {
+            it(`Second level - index ${testCase.expectIndex}`, () => {
                 refreshRender(testCase.value);
                 const { container } = localRenderResult;
                 focusSpy.mockClear();
                 // Open with Enter press
                 const input = container.querySelector('input') as HTMLElement;
                 fireEvent.keyDown(input, { key: 'Enter' });
-                await new Promise((resolve) => setTimeout(resolve, 100));
+                jest.runOnlyPendingTimers();
                 expect(queryAllContextMenus().length).toBeGreaterThan(0);
                 expect(focusSpy).toHaveBeenCalledTimes(2);
                 // As first we need focus container to avoid focus blinking after we will focus submenu's item
