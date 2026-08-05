@@ -94,3 +94,4 @@ export const getService = jest.fn();
 export const getFilesystemWatcherFor = jest.fn();
 export const getSapToolsDirectory = jest.fn();
 export const getBackendSystemType = jest.fn();
+export const isSystemNameInUse = jest.fn();

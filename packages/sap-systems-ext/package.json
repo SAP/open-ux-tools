@@ -42,6 +42,7 @@
         "onCommand:sap.ux.tools.sapSystems.create",
         "onCommand:sap.ux.tools.sapSystems.delete",
         "onCommand:sap.ux.tools.sapSystems.import",
+        "onCommand:sap.ux.tools.sapSystems.importFromAdt",
         "onCommand:sap.ux.tools.sapSystems.refresh",
         "onCommand:sap.ux.tools.sapSystems.show",
         "onCommand:sap.ux.tools.sapSystems.launchAppGen"
@@ -118,6 +119,11 @@
                     "light": "resources/light/icon-import-light.svg",
                     "dark": "resources/dark/icon-import-dark.svg"
                 }
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.importFromAdt",
+                "title": "Import SAP Systems from ABAP Destinations",
+                "category": "SAP"
             },
             {
                 "command": "sap.ux.tools.sapSystems.create",

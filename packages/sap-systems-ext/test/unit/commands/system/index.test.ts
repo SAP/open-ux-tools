@@ -18,6 +18,6 @@ describe('Test registering the systems commands', () => {
 
         const subs = mockContext.subscriptions;
 
-        expect(subs.length).toBe(7);
+        expect(subs.length).toBe(8);
     });
 });

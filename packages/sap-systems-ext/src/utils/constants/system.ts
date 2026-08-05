@@ -8,6 +8,7 @@ export enum SystemCommands {
     Delete = 'sap.ux.tools.sapSystems.delete',
     Refresh = 'sap.ux.tools.sapSystems.refresh',
     Import = 'sap.ux.tools.sapSystems.import',
+    ImportFromAdt = 'sap.ux.tools.sapSystems.importFromAdt',
     LaunchAppGen = 'sap.ux.tools.sapSystems.launchAppGen'
 }
 

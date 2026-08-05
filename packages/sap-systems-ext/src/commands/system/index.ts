@@ -7,6 +7,7 @@ import { showSystemsCommandHandler } from './show';
 import { deleteSystemCommandHandler } from './delete';
 import { refreshSystemsCommandHandler } from './refresh';
 import { importSystemCommandHandler } from './import';
+import { importFromAdtCommandHandler } from './importFromAdt';
 import { launchAppGenCommandHandler } from './launchAppGen';
 
 export const commandHandlers: Record<string, SystemCommandHandler> = {
@@ -14,6 +15,7 @@ export const commandHandlers: Record<string, SystemCommandHandler> = {
     createNew: createNewSystemCommandHandler,
     show: showSystemsCommandHandler,
     import: importSystemCommandHandler,
+    importFromAdt: importFromAdtCommandHandler,
     delete: deleteSystemCommandHandler,
     refresh: refreshSystemsCommandHandler,
     launchAppGen: launchAppGenCommandHandler
@@ -38,6 +40,7 @@ export const registerSystemViewCommands = (context: SapSystemsExtContext): void 
         commands.registerCommand(SystemCommands.Show, commandHandlers.show(systemCommandContext)),
         commands.registerCommand(SystemCommands.Delete, commandHandlers.delete(systemCommandContext)),
         commands.registerCommand(SystemCommands.Import, commandHandlers.import(systemCommandContext)),
+        commands.registerCommand(SystemCommands.ImportFromAdt, commandHandlers.importFromAdt(systemCommandContext)),
         commands.registerCommand(SystemCommands.Refresh, commandHandlers.refresh(systemCommandContext)),
         commands.registerCommand(SystemCommands.LaunchAppGen, commandHandlers.launchAppGen(systemCommandContext))
     ];

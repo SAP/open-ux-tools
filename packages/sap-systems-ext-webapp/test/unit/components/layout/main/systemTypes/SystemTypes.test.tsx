@@ -4,13 +4,15 @@ import '@testing-library/jest-dom';
 import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('@sap-ux/ui-components', () => {
-    const UIDropdown = ({ onChange, options }: any) => (
+    const UIDropdown = ({ onChange, options, selectedKey }: any) => (
         <select
             data-testid="system-type-dropdown"
+            value={selectedKey ?? ''}
             onChange={(e: any) => {
                 const selectedOption = options.find((opt: any) => opt.key === e.target.value);
                 onChange(e, selectedOption);
             }}>
+            <option value="" />
             {options.map((option: any) => (
                 <option key={option.key} value={option.key}>
                     {option.text}
@@ -55,5 +57,14 @@ describe('<SystemTypes />', () => {
 
         expect(setSystemType).toHaveBeenCalledWith('OnPrem');
         expect(setAuthenticationType).toHaveBeenCalledWith('basic');
+    });
+
+    it('pre-populates the dropdown with the provided system type', () => {
+        render(
+            <SystemTypes setSystemType={jest.fn()} setAuthenticationType={jest.fn()} systemType={'OnPrem'} />
+        );
+
+        const dropdown = screen.getByTestId('system-type-dropdown') as HTMLSelectElement;
+        expect(dropdown.value).toBe('OnPrem');
     });
 });

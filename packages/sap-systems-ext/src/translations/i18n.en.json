@@ -25,7 +25,15 @@
         "connectionUpdated": "Connection [{{- system}}] updated.",
         "serviceMetadata": "Service metadata retrieved successfully.",
         "noServiceMetadata": "Service metadata not available.",
-        "serviceRequestCheckLogs": "{{- url}} returned service data. Check the debug logs for the full metadata."
+        "serviceRequestCheckLogs": "{{- url}} returned service data. Check the debug logs for the full metadata.",
+        "adtImport": {
+            "noDestinations": "No ABAP destinations were found to import.",
+            "pickTitle": "Import SAP System from ABAP Destination",
+            "pickPlaceholder": "Select an ABAP destination to import",
+            "enterPassword": "Enter the password for the imported system [{{- system}}] before connecting.",
+            "alreadyExists": "An SAP system [{{- system}}] already exists for this destination.",
+            "noneImported": "No ABAP destinations could be imported. Ensure destinations are logged on."
+        }
     },
     "warn": {
         "deletionCancelled": "Deletion cancelled for connection: [{{- system}}].",
@@ -36,6 +44,7 @@
         "importConfigFailed": "Failed to import the connection configuration.",
         "noConnectionsDefined": "No connections defined in the configuration file: {{- filePath}}",
         "incompleteConfig": "Connection configuration is incomplete. A URL is required.",
+        "adtImportFailed": "Failed to import ABAP destinations: {{- error}}",
         "loadingConnections": "Failed to load stored connections.",
         "connectionNotFound": "Connection [{{- backendKey}}] not found in the secure store. Please ensure the connection is saved correctly.",
         "exportFailure": "Failed to export connection information: {{- error}}.",
