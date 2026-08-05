@@ -16,7 +16,8 @@ import {
     TABLE_PERSONALIZATION,
     TEXT_ARRANGEMENT_HIDDEN,
     STRICT_UOM_FILTERING,
-    NO_LIVE_MODE
+    NO_LIVE_MODE,
+    CLOUD_DEV_ADAPTATION_STATUS
 } from '../language/diagnostics.js';
 
 // Import all rules
@@ -84,6 +85,7 @@ import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-n
 import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
+import cloudDevAdaptationStatus from './sap-cloud-dev-adaptation-status.js';
 
 import type { Rule } from 'eslint';
 
@@ -151,5 +153,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
     [TABLE_PERSONALIZATION]: tablePersonalization,
     [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden,
-    [NO_LIVE_MODE]: noLiveMode
+    [NO_LIVE_MODE]: noLiveMode,
+    [CLOUD_DEV_ADAPTATION_STATUS]: cloudDevAdaptationStatus
 };
