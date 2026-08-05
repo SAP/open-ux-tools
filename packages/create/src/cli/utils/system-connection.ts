@@ -76,7 +76,9 @@ export async function checkConnectionOrPrompt(
         return true;
     }
 
-    logger.warn(text('systemConnection.connectionFailed', { error: result.error || text('systemConnection.unknownError') }));
+    logger.warn(
+        text('systemConnection.connectionFailed', { error: result.error || text('systemConnection.unknownError') })
+    );
 
     const answer = await prompts({
         type: 'confirm',

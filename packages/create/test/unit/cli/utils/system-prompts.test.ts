@@ -24,7 +24,8 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
         const translations: Record<string, string> = {
             'systemPrompts.validation.fieldRequired': 'This field is required and cannot be empty',
             'systemPrompts.validation.invalidUrl': 'Please enter a valid URL (e.g., https://my-system.example.com)',
-            'systemPrompts.validation.systemNameExists': "A system with the name '{{name}}' already exists. Please choose a different name.",
+            'systemPrompts.validation.systemNameExists':
+                "A system with the name '{{name}}' already exists. Please choose a different name.",
             'systemPrompts.validation.checkNameFailed': 'Unable to check system name uniqueness. Please try again.',
             'systemPrompts.prompts.systemName': 'System name (display name):',
             'systemPrompts.prompts.systemUrl': 'System URL:',
