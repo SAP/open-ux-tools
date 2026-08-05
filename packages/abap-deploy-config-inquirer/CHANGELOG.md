@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.33
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Reject non-AbapServiceProvider to prevent "isAbapCloud is not a function" for full URL generic OData destinations [[8cef00e](https://github.com/SAP/open-ux-tools/commit/8cef00e93984bf467b3c44a333da54433deec9dd)]
+
 ## 2.0.32
 
 ### Patch Changes
