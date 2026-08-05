@@ -60,7 +60,10 @@ describe('system-connection', () => {
     });
 
     describe('checkSystemConnection', () => {
-        test('should return success for valid URL without credentials (no actual connection attempt)', async () => {
+        test('should attempt connection even without credentials', async () => {
+            // New behavior: always attempt HTTP connection to check if URL is reachable
+            mockAxiosGet.mockResolvedValueOnce({ status: 200 });
+
             const result = await checkSystemConnection({
                 url: 'https://valid.example.com',
                 systemType: 'OnPrem',
@@ -69,10 +72,12 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
-            expect(mockCreateForAbap).not.toHaveBeenCalled(); // No connection attempt without credentials
+            expect(mockCreateForAbap).toHaveBeenCalled(); // Now attempts connection even without credentials
         });
 
-        test('should return success for valid URL with client but no credentials', async () => {
+        test('should attempt connection with client parameter even without credentials', async () => {
+            mockAxiosGet.mockResolvedValueOnce({ status: 200 });
+
             const result = await checkSystemConnection({
                 url: 'https://valid.example.com',
                 client: '100',
@@ -82,7 +87,7 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
-            expect(mockCreateForAbap).not.toHaveBeenCalled();
+            expect(mockCreateForAbap).toHaveBeenCalled();
         });
 
         test('should attempt real connection with basic auth and credentials', async () => {
@@ -197,26 +202,32 @@ describe('system-connection', () => {
             expect(result.error).toBe('Network error');
         });
 
-        test('should return success for reentranceTicket auth (no connection attempt)', async () => {
+        test('should attempt connection for reentranceTicket auth and treat 401 as success', async () => {
+            // ReentranceTicket requires browser flow, so 401 means system is reachable
+            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
+
             const result = await checkSystemConnection({
                 url: 'https://example.com',
                 systemType: 'OnPrem',
                 authenticationType: 'reentranceTicket'
             });
 
-            expect(result.success).toBe(true);
-            expect(mockCreateForAbap).not.toHaveBeenCalled(); // No connection attempt for non-basic auth
+            expect(result.success).toBe(true); // 401 means system is reachable
+            expect(mockCreateForAbap).toHaveBeenCalled();
         });
 
-        test('should return success for oauth2 auth (no connection attempt)', async () => {
+        test('should attempt connection for oauth2 auth and treat 401 as success', async () => {
+            // OAuth2 requires browser flow, so 401 means system is reachable
+            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
+
             const result = await checkSystemConnection({
                 url: 'https://example.com',
                 systemType: 'OnPrem',
                 authenticationType: 'oauth2'
             });
 
-            expect(result.success).toBe(true);
-            expect(mockCreateForAbap).not.toHaveBeenCalled();
+            expect(result.success).toBe(true); // 401 means system is reachable
+            expect(mockCreateForAbap).toHaveBeenCalled();
         });
 
         test('should return error for invalid URL', async () => {
