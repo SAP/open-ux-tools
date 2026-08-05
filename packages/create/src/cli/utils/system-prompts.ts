@@ -259,8 +259,8 @@ export async function promptForSystemConfig(partial: {
         systemType: partial.systemType || answers.systemType,
         authenticationType: finalAuthType,
         connectionType: partial.connectionType || answers.connectionType,
-        username: partial.username ?? (credentialAnswers.username || undefined),
-        password: partial.password ?? (credentialAnswers.password || undefined)
+        username: partial.username ?? (credentialAnswers?.username || undefined),
+        password: partial.password ?? (credentialAnswers?.password || undefined)
     };
 }
 

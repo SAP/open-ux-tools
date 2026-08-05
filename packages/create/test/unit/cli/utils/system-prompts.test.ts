@@ -12,19 +12,11 @@ const mockValidateClient = jest.fn();
 // Mock i18n to return the key as the value (for testing)
 jest.unstable_mockModule('../../../../src/i18n.js', () => ({
     text: (key: string, options?: Record<string, unknown>) => {
-        // Return a simple string that includes interpolated values for testing
-        if (options) {
-            let result = key;
-            Object.entries(options).forEach(([k, v]) => {
-                result = result.replace(`{{${k}}}`, String(v));
-            });
-            return result;
-        }
         // Map i18n keys to updated English strings per PR review
         const translations: Record<string, string> = {
             'systemPrompts.validation.fieldRequired': 'This field is required and cannot be empty',
             'systemPrompts.validation.invalidUrl':
-                'Please enter a valid URL, for example https://my-system.example.com)',
+                'Please enter a valid URL, for example https://my-system.example.com',
             'systemPrompts.validation.systemNameExists':
                 "A system with the name '{{name}}' already exists. Please choose a different name.",
             'systemPrompts.validation.checkNameFailed': 'Unable to check system name uniqueness. Please try again.',
@@ -47,7 +39,15 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
             'systemPrompts.updateFields.newPasswordPrompt': 'New Password:',
             'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?"
         };
-        return translations[key] || key;
+        let result = translations[key] || key;
+        // Apply interpolation if options provided
+        if (options) {
+            Object.entries(options).forEach(([k, v]) => {
+                result = result.replace(`{{${k}}}`, String(v));
+            });
+        }
+        return result;
+    },
     },
     initI18n: jest.fn().mockResolvedValue(undefined)
 }));

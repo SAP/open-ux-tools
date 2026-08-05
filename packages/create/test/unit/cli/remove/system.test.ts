@@ -10,6 +10,24 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
+// Mock i18n
+jest.unstable_mockModule('../../../../src/i18n.js', () => ({
+    text: (key: string, options?: Record<string, unknown>) => {
+        const translations: Record<string, string> = {
+            'systemPrompts.prompts.sapClient': 'SAP Client (Optional: Press Enter to Skip):',
+            'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?"
+        };
+        let result = translations[key] || key;
+        if (options) {
+            Object.entries(options).forEach(([k, v]) => {
+                result = result.replace(`{{${k}}}`, String(v));
+            });
+        }
+        return result;
+    },
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 const isAppStudioMock = jest.fn().mockReturnValue(false);
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
