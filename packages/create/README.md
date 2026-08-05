@@ -416,7 +416,7 @@ Command group for updating saved resources. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest update [subcommand] [options]`
 
-The available subcommands are: `system` and `service`
+The available subcommands are: `system` and `service-metadata`
 
 
 --------------------------------
@@ -445,16 +445,16 @@ Options:
 
 --------------------------------
 
-## [`update service`](#update-service)
+## [`update service-metadata`](#update-service-metadata)
 
 Refresh the local OData service metadata.xml from the live backend for a Fiori application.
 Also fetches value-help (external) service metadata when available.
 
 Example:
 
-`npx --yes @sap-ux/create@latest update service /path/to/my-fiori-app`
+`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app`
 
-`npx --yes @sap-ux/create@latest update service /path/to/my-fiori-app --simulate`
+`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app --simulate`
 
 Options:
 - `--service <name>` - Name of the data source in manifest.json (defaults to mainService or first service)

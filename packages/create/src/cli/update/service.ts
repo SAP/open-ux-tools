@@ -166,20 +166,20 @@ async function fetchAnnotations(
 }
 
 /**
- * Add the "update service" subcommand to a passed command.
+ * Add the "update service-metadata" subcommand to a passed command.
  * Refreshes the local OData service metadata and value-help service metadata from the live backend.
  *
- * @param cmd - commander command to attach the service subcommand to
+ * @param cmd - commander command to attach the service-metadata subcommand to
  */
 export function addServiceUpdateCommand(cmd: Command): void {
-    cmd.command('service <appPath>')
+    cmd.command('service-metadata <appPath>')
         .description(
             `Refresh the local OData service metadata.xml from the live backend for a Fiori application.
 Also fetches value-help (external) service metadata when available.
 
 Example:
-    \`npx --yes @sap-ux/create@latest update service /path/to/my-fiori-app\`
-    \`npx --yes @sap-ux/create@latest update service /path/to/my-fiori-app --simulate\``
+    \`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app\`
+    \`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app --simulate\``
         )
         .option(
             '--service <name>',
@@ -212,7 +212,7 @@ async function updateService(
 ): Promise<void> {
     const logger = getLogger();
     try {
-        logger.debug(`Called update service for path '${appPath}'`);
+        logger.debug(`Called update service-metadata for path '${appPath}'`);
         await validateBasePath(appPath);
 
         const appAccess = await createApplicationAccess(appPath);
