@@ -18,11 +18,9 @@ initIcons();
 
 mockResizeObserver();
 
-const delay = async (time: number) => {
+const delay = async () => {
     await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(null);
-        }, time);
+        setTimeout(resolve, 0);
     });
 };
 
@@ -562,7 +560,7 @@ describe('<UIFlexibleTable />', () => {
                 fireEvent.click(button);
                 setProps({ isContentLoading: true });
                 await act(async () => {
-                    await delay(200);
+                    await delay();
                 });
                 setProps({ isContentLoading: false });
                 getByIdSpy.mockRestore();
@@ -577,7 +575,7 @@ describe('<UIFlexibleTable />', () => {
                 fireEvent.blur(root);
                 setProps({ isContentLoading: true });
                 await act(async () => {
-                    await delay(200);
+                    await delay();
                 });
                 setProps({ isContentLoading: false });
                 expect(focusSpy).toHaveBeenCalledTimes(0);
@@ -614,7 +612,7 @@ describe('<UIFlexibleTable />', () => {
                 fireEvent.click(button);
                 setProps({ isContentLoading: true });
                 await act(async () => {
-                    await delay(200);
+                    await delay();
                 });
                 setProps({ isContentLoading: false });
                 expect(getByIdSpy).toHaveBeenCalledTimes(4);
@@ -650,7 +648,7 @@ describe('<UIFlexibleTable />', () => {
                 fireEvent.click(button);
                 setProps({ isContentLoading: true });
                 await act(async () => {
-                    await delay(200);
+                    await delay();
                 });
                 setProps({ isContentLoading: false });
                 getByIdSpy.mockRestore();
@@ -692,7 +690,7 @@ describe('<UIFlexibleTable />', () => {
                 fireEvent.click(button);
                 setProps({ isContentLoading: true });
                 await act(async () => {
-                    await delay(200);
+                    await delay();
                 });
                 setProps({ isContentLoading: false });
                 expect(getByIdSpy).toHaveBeenCalledTimes(4);
