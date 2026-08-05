@@ -4,6 +4,7 @@ import translations from './translations/ux-create.i18n.json' with { type: 'json
 
 const NS = 'ux-create';
 let i18nInstance: i18n = i18next.createInstance();
+let isInitialized = false;
 
 /**
  * Initialize i18next for @sap-ux/create
@@ -23,6 +24,7 @@ export async function initI18n(): Promise<void> {
         interpolation: { escapeValue: false }
     });
     await i18nInstance.init();
+    isInitialized = true;
 }
 
 type StringMap = { [key: string]: unknown };
@@ -35,6 +37,10 @@ type StringMap = { [key: string]: unknown };
  * @returns Translated text
  */
 export function text(key: string, options?: string | TOptions<StringMap & TOptionsBase>): string {
+    if (!isInitialized) {
+        console.warn(`[i18n] text() called before initI18n() - returning key: ${key}`);
+        return key;
+    }
     return (i18nInstance.t as (key: string, opts?: TOptions<StringMap & TOptionsBase>) => string)(
         key,
         typeof options === 'string' ? { defaultValue: options } : options

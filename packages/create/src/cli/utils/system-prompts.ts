@@ -221,13 +221,21 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
+    // Prompt for basic questions first
+    const answers = questions.length > 0 ? await prompts(questions as any) : {};
+
+    // Determine final authenticationType (from partial or answers)
+    const finalAuthType = partial.authenticationType || answers.authenticationType;
+
     // Only prompt for credentials if:
     // 1. noCredentials flag is NOT set, AND
     // 2. authenticationType is 'basic' (other types don't use username/password)
-    const shouldPromptCredentials = !partial.noCredentials && partial.authenticationType === 'basic';
+    const shouldPromptCredentials = !partial.noCredentials && finalAuthType === 'basic';
+
+    const credentialQuestions: prompts.PromptObject[] = [];
 
     if (shouldPromptCredentials && partial.username === undefined) {
-        questions.push({
+        credentialQuestions.push({
             type: 'text',
             name: 'username',
             message: text('systemPrompts.prompts.username')
@@ -235,24 +243,24 @@ export async function promptForSystemConfig(partial: {
     }
 
     if (shouldPromptCredentials && partial.password === undefined) {
-        questions.push({
+        credentialQuestions.push({
             type: 'password',
             name: 'password',
             message: text('systemPrompts.prompts.password')
         });
     }
 
-    const answers = questions.length > 0 ? await prompts(questions as any) : {};
+    const credentialAnswers = credentialQuestions.length > 0 ? await prompts(credentialQuestions as any) : {};
 
     return {
         name: partial.name || answers.name,
         url: partial.url || answers.url,
         client: partial.client ?? (answers.client || undefined),
         systemType: partial.systemType || answers.systemType,
-        authenticationType: partial.authenticationType || answers.authenticationType,
+        authenticationType: finalAuthType,
         connectionType: partial.connectionType || answers.connectionType,
-        username: partial.username ?? (answers.username || undefined),
-        password: partial.password ?? (answers.password || undefined)
+        username: partial.username ?? (credentialAnswers.username || undefined),
+        password: partial.password ?? (credentialAnswers.password || undefined)
     };
 }
 

@@ -8,7 +8,7 @@
     "systemPrompts": {
         "validation": {
             "fieldRequired": "This field is required and cannot be empty",
-            "invalidUrl": "Please enter a valid URL, for example https://my-system.example.com)",
+            "invalidUrl": "Please enter a valid URL, for example https://my-system.example.com",
             "systemNameExists": "A system with the name '{{name}}' already exists. Please choose a different name.",
             "checkNameFailed": "Unable to check system name uniqueness. Please try again."
         },
@@ -44,6 +44,13 @@
         "connectionSuccessful": "✓ Connection achieved",
         "connectionFailed": "Connection check failed. Error: {{error}}",
         "unknownError": "Unknown error",
-        "saveAnywayPrompt": "Connection check failed. Save system anyway?"
+        "saveAnywayPrompt": "Connection check failed. Save system anyway?",
+        "errors": {
+            "authFailed": "Authentication failed (HTTP 401 Unauthorized)",
+            "connectionRefused": "Connection refused - system may be unreachable",
+            "connectionTimeout": "Connection timeout after {{timeout}}ms",
+            "hostNotFound": "Host not found (DNS resolution failed)",
+            "connectionReset": "Connection reset by server"
+        }
     }
 }

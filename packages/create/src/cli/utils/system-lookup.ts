@@ -94,8 +94,8 @@ async function promptToSelectSystem(systems: BackendSystem[]): Promise<BackendSy
         initial: 0
     });
 
-    if (answer.index === undefined) {
-        logger.debug('User cancelled system selection');
+    if (answer.index == null || answer.index < 0 || answer.index >= systems.length) {
+        logger.debug('User cancelled system selection or invalid index');
         return undefined;
     }
 

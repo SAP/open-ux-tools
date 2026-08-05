@@ -170,13 +170,27 @@ async function verifyCredentialsUpdate(
     existing: BackendSystem,
     params: { clearCredentials: boolean; skipCheck?: boolean }
 ): Promise<boolean> {
-    const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
-    const clearingCredentials = patch.username === '' && patch.password === '';
+    // Check if credentials are being updated (set to new values or cleared)
+    const hasUsernameChange = patch.username !== undefined;
+    const hasPasswordChange = patch.password !== undefined;
+    const updatingCredentials = hasUsernameChange || hasPasswordChange;
 
-    if (!updatingCredentials || params.clearCredentials || clearingCredentials) {
+    // Skip verification if:
+    // 1. No credential changes at all, OR
+    // 2. Explicitly clearing credentials (--clear-credentials flag), OR
+    // 3. Setting both to empty strings (clearing via interactive prompts)
+    if (!updatingCredentials) {
         return true;
     }
 
+    const clearingCredentials =
+        params.clearCredentials || (patch.username === '' && patch.password === '');
+
+    if (clearingCredentials) {
+        return true;
+    }
+
+    // Otherwise, verify the new credentials work
     return await checkConnectionOrPrompt(
         {
             url: existing.url,

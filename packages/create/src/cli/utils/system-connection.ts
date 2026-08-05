@@ -51,10 +51,19 @@ export async function checkSystemConnection(config: {
             await service.get('/sap/bc/ping', { timeout: 5000 });
             return { success: true };
         } catch (error: any) {
-            // If /sap/bc/ping fails with 404, try root path to check if system is reachable
+            // If /sap/bc/ping fails with 404, try root path
+            // Accept 401 from root as success (system is reachable, auth will happen later)
             if (error.response?.status === 404) {
-                await service.get('/', { timeout: 5000 });
-                return { success: true };
+                try {
+                    await service.get('/', { timeout: 5000 });
+                    return { success: true };
+                } catch (rootError: any) {
+                    if (rootError.response?.status === 401) {
+                        // 401 on root means system is reachable
+                        return { success: true };
+                    }
+                    throw rootError;
+                }
             }
             throw error;
         }
@@ -63,7 +72,7 @@ export async function checkSystemConnection(config: {
         if (error.response?.status === 401) {
             // For basic auth with credentials, 401 is a failure
             if (config.authenticationType === 'basic' && config.username && config.password) {
-                return { success: false, error: 'Authentication failed (HTTP 401 Unauthorized)' };
+                return { success: false, error: text('systemConnection.errors.authFailed') };
             }
             // For other auth types, 401 means system is reachable (success)
             return { success: true };
@@ -71,19 +80,19 @@ export async function checkSystemConnection(config: {
 
         // Network errors indicate unreachable system
         if (error.code === 'ECONNREFUSED') {
-            return { success: false, error: 'Connection refused - system may be unreachable' };
+            return { success: false, error: text('systemConnection.errors.connectionRefused') };
         }
         if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {
-            return { success: false, error: 'Connection timeout after 5000ms' };
+            return { success: false, error: text('systemConnection.errors.connectionTimeout', { timeout: 5000 }) };
         }
         if (error.code === 'ENOTFOUND') {
-            return { success: false, error: 'DNS lookup failed - hostname not found' };
+            return { success: false, error: text('systemConnection.errors.hostNotFound') };
         }
         if (error.code === 'ECONNRESET') {
-            return { success: false, error: 'Connection reset by server' };
+            return { success: false, error: text('systemConnection.errors.connectionReset') };
         }
 
-        return { success: false, error: error.message || 'Connection failed' };
+        return { success: false, error: error.message || text('systemConnection.unknownError') };
     }
 }
 
