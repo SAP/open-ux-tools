@@ -22,6 +22,15 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPrompts
 }));
 
+// Mock system prompts functions
+const mockPromptForUpdateFields = jest.fn().mockResolvedValue([]);
+const mockPromptForFieldUpdates = jest.fn().mockResolvedValue({});
+jest.unstable_mockModule('../../../../src/cli/utils/system-prompts', () => ({
+    promptForSystemIdentifier: jest.fn().mockResolvedValue({ url: 'https://example.com', client: undefined }),
+    promptForUpdateFields: (...args: any[]) => mockPromptForUpdateFields(...args),
+    promptForFieldUpdates: (...args: any[]) => mockPromptForFieldUpdates(...args)
+}));
+
 // Mock connection check to always succeed and not prompt
 const mockCheckConnectionOrPrompt = jest.fn().mockResolvedValue(true);
 jest.unstable_mockModule('../../../../src/cli/utils/system-connection', () => ({
@@ -36,10 +45,12 @@ const mockedService = {
     getAll: jest.fn<any>().mockResolvedValue([]),
     partialUpdate: jest.fn<any>().mockResolvedValue(undefined)
 };
+const mockIsSystemNameInUse = jest.fn().mockResolvedValue(false);
 const actualStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...actualStore,
-    getService: jest.fn().mockResolvedValue(mockedService)
+    getService: jest.fn().mockResolvedValue(mockedService),
+    isSystemNameInUse: (...args: any[]) => mockIsSystemNameInUse(...args)
 }));
 
 const { addSystemUpdateCommand } = await import('../../../../src/cli/update/system.js');
@@ -65,6 +76,9 @@ describe('system/update (update command group)', () => {
         mockedService.read.mockResolvedValue({ name: 'My System' });
         mockCheckConnectionOrPrompt.mockResolvedValue(true);
         mockPrompts.mockResolvedValue({});
+        mockIsSystemNameInUse.mockResolvedValue(false);
+        mockPromptForUpdateFields.mockResolvedValue([]);
+        mockPromptForFieldUpdates.mockResolvedValue({});
     });
 
     test('should update system name', async () => {
@@ -139,7 +153,7 @@ describe('system/update (update command group)', () => {
 
     test('should log error when no fields to update', async () => {
         // Given
-        mockPrompts.mockResolvedValueOnce({ fields: [] }); // User selects nothing in multi-select
+        mockPromptForUpdateFields.mockResolvedValueOnce([]); // User selects nothing in multi-select
         const command = new Command('update');
         addSystemUpdateCommand(command);
 
@@ -147,7 +161,9 @@ describe('system/update (update command group)', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--client', '']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith('At least one field must be selected');
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
+        );
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 
@@ -190,6 +206,100 @@ describe('system/update (update command group)', () => {
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should handle empty name validation error', async () => {
+        // Given
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', '   ']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith('System name cannot be empty or whitespace-only.');
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should handle connection check failure and log cancellation', async () => {
+        // Given
+        mockCheckConnectionOrPrompt.mockResolvedValueOnce(false); // User declines to save after connection failure
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When
+        await command.parseAsync(
+            getArgv(['system', '--url', 'https://example.com', '--username', 'newuser', '--password', 'newpass'])
+        );
+
+        // Then
+        expect(loggerMock.info).toHaveBeenCalledWith('System was not updated.');
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should log cancellation when no updates provided after prompting', async () => {
+        // Given - interactive mode returns empty object after prompting
+        mockPromptForUpdateFields.mockResolvedValueOnce([]);
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When - no explicit flags, will trigger interactive prompting
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
+        );
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should handle duplicate name error', async () => {
+        // Given
+        mockIsSystemNameInUse.mockResolvedValueOnce(true); // Name already exists
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', 'Existing System']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            "A system with the name 'Existing System' already exists. Please choose a different name."
+        );
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should handle interactive mode with clearCredentials', async () => {
+        // Given
+        mockPromptForUpdateFields.mockResolvedValueOnce(['clearCredentials']);
+        mockPromptForFieldUpdates.mockResolvedValueOnce({ clearCredentials: true });
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When - no explicit flags triggers interactive mode
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com']));
+
+        // Then
+        expect(mockedService.partialUpdate).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.objectContaining({ username: '', password: '' })
+        );
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated'));
+    });
+
+    test('should handle clear credentials cancellation in interactive mode', async () => {
+        // Given
+        mockPromptForUpdateFields.mockResolvedValueOnce(['clearCredentials']);
+        mockPromptForFieldUpdates.mockRejectedValueOnce(new Error('Clear credentials cancelled'));
+        const command = new Command('update');
+        addSystemUpdateCommand(command);
+
+        // When - no explicit flags triggers interactive mode
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com']));
+
+        // Then
+        expect(loggerMock.info).toHaveBeenCalledWith('Operation cancelled.');
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 });

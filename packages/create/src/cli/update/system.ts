@@ -132,7 +132,26 @@ async function determinePatch(
     }
 
     const fieldsToUpdate = await promptForUpdateFields(existing);
-    return await promptForFieldUpdates(fieldsToUpdate, existing);
+    let updateValues: Record<string, unknown>;
+    try {
+        updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
+    } catch (err) {
+        // User cancelled (e.g. declined clear-credentials confirmation)
+        if ((err as Error).message === 'Clear credentials cancelled') {
+            logger.info('Operation cancelled.');
+            return null;
+        }
+        throw err;
+    }
+
+    // Check if clearCredentials was selected in interactive mode
+    if (updateValues.clearCredentials) {
+        updateValues.username = '';
+        updateValues.password = '';
+        delete updateValues.clearCredentials;
+    }
+
+    return updateValues;
 }
 
 /**
@@ -151,8 +170,9 @@ async function verifyCredentialsUpdate(
     params: { clearCredentials: boolean; skipCheck?: boolean }
 ): Promise<boolean> {
     const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
+    const clearingCredentials = patch.username === '' && patch.password === '';
 
-    if (!updatingCredentials || params.clearCredentials) {
+    if (!updatingCredentials || params.clearCredentials || clearingCredentials) {
         return true;
     }
 
@@ -216,6 +236,7 @@ async function updateSystem(params: {
         const patchRecord = await determinePatch(params, existing, logger);
 
         if (!patchRecord) {
+            logger.info('System was not updated.');
             return;
         }
 
@@ -225,6 +246,7 @@ async function updateSystem(params: {
             logger.error(
                 'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
             );
+            logger.info('System was not updated.');
             return;
         }
 

@@ -316,6 +316,53 @@ describe('system-prompts', () => {
             });
         });
 
+        test('should display message for reentranceTicket auth and skip credential prompts', async () => {
+            const stdoutWrite = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+            mockPrompts.mockResolvedValueOnce({
+                authenticationType: AuthenticationType.ReentranceTicket
+            });
+
+            const result = await promptForSystemConfig({
+                name: 'Test',
+                url: 'https://test.example.com',
+                systemType: SystemType.OnPrem,
+                connectionType: ConnectionType.AbapCatalog
+            });
+
+            expect(result.authenticationType).toBe(AuthenticationType.ReentranceTicket);
+            expect(stdoutWrite).toHaveBeenCalledWith(
+                '\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n\n'
+            );
+            expect(result.username).toBeUndefined();
+            expect(result.password).toBeUndefined();
+
+            stdoutWrite.mockRestore();
+        });
+
+        test('should prompt for credentials only when auth type is basic', async () => {
+            mockPrompts
+                .mockResolvedValueOnce({
+                    authenticationType: AuthenticationType.Basic
+                })
+                .mockResolvedValueOnce({
+                    username: 'testuser',
+                    password: 'testpass'
+                });
+
+            const result = await promptForSystemConfig({
+                name: 'Test',
+                url: 'https://test.example.com',
+                systemType: SystemType.OnPrem,
+                connectionType: ConnectionType.AbapCatalog
+            });
+
+            expect(result.authenticationType).toBe(AuthenticationType.Basic);
+            expect(result.username).toBe('testuser');
+            expect(result.password).toBe('testpass');
+            expect(mockPrompts).toHaveBeenCalledTimes(2);
+        });
+
         test('should preserve provided client even if empty string', async () => {
             mockPrompts.mockResolvedValueOnce({});
 
@@ -873,7 +920,8 @@ describe('system-prompts', () => {
                 choices: [
                     { title: 'Name (current: ExistingSystem)', value: 'name' },
                     { title: 'Username (current: existing-user)', value: 'username' },
-                    { title: 'Password', value: 'password' }
+                    { title: 'Password', value: 'password' },
+                    { title: 'Clear Credentials', value: 'clearCredentials' }
                 ],
                 min: 1
             });
@@ -1016,6 +1064,41 @@ describe('system-prompts', () => {
             const result = await promptForFieldUpdates(['unknown' as any], mockSystem);
 
             expect(result).toEqual({});
+        });
+
+        test('should handle clearCredentials selection with confirmation', async () => {
+            mockPrompts
+                .mockResolvedValueOnce({ confirmClear: true }) // Confirmation prompt
+                .mockResolvedValueOnce({ name: 'UpdatedName' }); // Name update prompt
+
+            const result = await promptForFieldUpdates(['clearCredentials', 'name'], mockSystem);
+
+            expect(result).toEqual({
+                clearCredentials: true,
+                name: 'UpdatedName'
+            });
+            expect(mockPrompts).toHaveBeenCalledWith({
+                type: 'confirm',
+                name: 'confirmClear',
+                message: 'Are you sure you want to clear all stored credentials?',
+                initial: false
+            });
+        });
+
+        test('should throw error if clearCredentials confirmation is declined', async () => {
+            mockPrompts.mockResolvedValueOnce({ confirmClear: false });
+
+            await expect(promptForFieldUpdates(['clearCredentials'], mockSystem)).rejects.toThrow(
+                'Clear credentials cancelled'
+            );
+        });
+
+        test('should return clearCredentials flag when only clearCredentials selected', async () => {
+            mockPrompts.mockResolvedValueOnce({ confirmClear: true });
+
+            const result = await promptForFieldUpdates(['clearCredentials'], mockSystem);
+
+            expect(result).toEqual({ clearCredentials: true });
         });
     });
 

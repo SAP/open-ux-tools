@@ -223,12 +223,14 @@ async function addSystem(params: {
         replaceEnvVariables(config);
 
         if (!validateSystemConfig(config, logger)) {
+            logger.info('System was not added.');
             return;
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
         if (!(await checkForDuplicates(config, service, logger))) {
+            logger.info('System was not added.');
             return;
         }
 
