@@ -339,7 +339,7 @@ function extractBodySubSectionsData(
     // all-FieldGroup CollectionFacet is collapsed into one sub-section with inherited id from parent
     // Table or nested CollectionFacet sub-sections are kept as distinct sub-sections with their own ids
     return isFormOnlyCollectionFacet(childEntries)
-        ? [buildMergedFormSubSection(childEntries, parentSectionId, convertedMetadata, entitySetName)]
+        ? [buildMergedFormSubSection(childEntries, parentSectionId, section.order, convertedMetadata, entitySetName)]
         : childEntries.map(([key, child]) =>
               buildSubSection(key, child, parentSectionId, convertedMetadata, entitySetName)
           );
@@ -364,6 +364,7 @@ function isFormOnlyCollectionFacet(childEntries: [string, BodySectionItem][]): b
  *
  * @param childEntries - the section's sub-section aggregation entries (all form facets)
  * @param parentSectionId - identifier of the parent section, used as the sub-section id
+ * @param sectionOrder - order of the parent section, adopted by the collapsed sub-section
  * @param convertedMetadata - optional converted OData metadata
  * @param entitySetName - the entity set the section is bound to
  * @returns the merged sub-section feature data
@@ -371,6 +372,7 @@ function isFormOnlyCollectionFacet(childEntries: [string, BodySectionItem][]): b
 function buildMergedFormSubSection(
     childEntries: [string, BodySectionItem][],
     parentSectionId: string,
+    sectionOrder?: number,
     convertedMetadata?: ConvertedMetadata,
     entitySetName?: string
 ): BodySubSectionFeatureData {
@@ -382,7 +384,7 @@ function buildMergedFormSubSection(
         navigationProperty: undefined,
         isTable: false,
         custom: false,
-        order: childEntries[0][1]?.order ?? -1,
+        order: sectionOrder ?? -1,
         fields,
         tableColumns: {}
     };
