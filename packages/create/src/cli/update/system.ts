@@ -183,8 +183,7 @@ async function verifyCredentialsUpdate(
         return true;
     }
 
-    const clearingCredentials =
-        params.clearCredentials || (patch.username === '' && patch.password === '');
+    const clearingCredentials = params.clearCredentials || (patch.username === '' && patch.password === '');
 
     if (clearingCredentials) {
         return true;
