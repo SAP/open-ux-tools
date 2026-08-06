@@ -79,9 +79,7 @@ describe('system-lookup', () => {
 
         test('should normalize URL by removing trailing slash', async () => {
             // Given
-            const systems = [
-                { name: 'My System', url: 'https://example.com', client: '100' } as BackendSystem
-            ];
+            const systems = [{ name: 'My System', url: 'https://example.com', client: '100' } as BackendSystem];
             mockService.getAll = jest.fn<any>().mockResolvedValue(systems);
 
             // When - URL with trailing slash
