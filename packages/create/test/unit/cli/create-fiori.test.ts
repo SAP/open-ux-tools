@@ -24,6 +24,12 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
+// Mock i18n to prevent initialization issues
+jest.unstable_mockModule('../../../src/i18n.js', () => ({
+    text: jest.fn((key: string) => key),
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
