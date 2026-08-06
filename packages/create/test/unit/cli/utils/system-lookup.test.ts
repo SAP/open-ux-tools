@@ -61,38 +61,35 @@ describe('system-lookup', () => {
     });
 
     describe('findSystemByUrl', () => {
-        test('should return system when exact match found', async () => {
-            // Given
-            const exactMatch = {
-                name: 'My System',
-                url: 'https://example.com',
-                client: '100'
-            } as BackendSystem;
-            mockService.read = jest.fn<any>().mockResolvedValue(exactMatch);
+        test('should return system when exact match found (with client provided)', async () => {
+            // Given - multiple systems with same URL
+            const systems = [
+                { name: 'My System', url: 'https://example.com', client: '100' } as BackendSystem,
+                { name: 'Other System', url: 'https://example.com', client: '200' } as BackendSystem
+            ];
+            mockService.getAll = jest.fn<any>().mockResolvedValue(systems);
 
-            // When
+            // When - search with specific client
             const result = await findSystemByUrl('https://example.com', '100', mockService);
 
-            // Then
-            expect(result).toBe(exactMatch);
-            expect(mockService.read).toHaveBeenCalledTimes(1);
-            expect(mockService.getAll).not.toHaveBeenCalled();
+            // Then - returns exact match
+            expect(result).toBe(systems[0]);
+            expect(mockService.getAll).toHaveBeenCalledTimes(1);
         });
 
         test('should normalize URL by removing trailing slash', async () => {
             // Given
-            const exactMatch = {
-                name: 'My System',
-                url: 'https://example.com',
-                client: '100'
-            } as BackendSystem;
-            mockService.read = jest.fn<any>().mockResolvedValue(exactMatch);
+            const systems = [
+                { name: 'My System', url: 'https://example.com', client: '100' } as BackendSystem
+            ];
+            mockService.getAll = jest.fn<any>().mockResolvedValue(systems);
 
-            // When
-            await findSystemByUrl('https://example.com/', '100', mockService);
+            // When - URL with trailing slash
+            const result = await findSystemByUrl('https://example.com/', '100', mockService);
 
-            // Then
-            expect(mockService.read).toHaveBeenCalledTimes(1);
+            // Then - normalized URL matches system
+            expect(result).toBe(systems[0]);
+            expect(mockService.getAll).toHaveBeenCalledTimes(1);
         });
 
         test('should return undefined when no systems found', async () => {

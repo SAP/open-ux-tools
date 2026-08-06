@@ -905,13 +905,14 @@ describe('system-prompts', () => {
             expect(result.client).toBe('100');
         });
 
-        test('should prompt for missing client', async () => {
-            mockPrompts.mockResolvedValueOnce({ client: '200' });
-
+        test('should NOT prompt for client when URL is provided (smart lookup will handle it)', async () => {
+            // When URL is provided but client is not, we don't prompt for client
+            // Instead, we let findSystemByUrl handle multiple matches via smart lookup
             const result = await promptForSystemIdentifier({ url: 'https://test.example.com' });
 
             expect(result.url).toBe('https://test.example.com');
-            expect(result.client).toBe('200');
+            expect(result.client).toBeUndefined();
+            expect(mockPrompts).not.toHaveBeenCalled(); // No prompts when URL is provided
         });
 
         test('should prompt for both url and client', async () => {
