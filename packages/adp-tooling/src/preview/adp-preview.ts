@@ -23,8 +23,7 @@ import type {
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
-    CommonAdditionalChangeInfoProperties,
-    AdpPreviewConfigWithBuildPath
+    CommonAdditionalChangeInfoProperties
 } from '../types.js';
 import type { Editor } from 'mem-fs-editor';
 import {
@@ -39,8 +38,8 @@ import {
     isV4DescriptorChange
 } from './change-handler.js';
 import { addCustomFragment } from './descriptor-change-handler.js';
-import { getExistingAdpProjectType, readManifestFromBuildPath } from '../base/helper.js';
-import { runBuild } from '../base/project-builder.js';
+import { getExistingAdpProjectType } from '../base/helper.js';
+import { getPreviewManifest } from '../base/project-builder.js';
 import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -206,8 +205,7 @@ export class AdpPreview {
         this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
 
-        const config = this.config as AdpPreviewConfigWithBuildPath;
-        const manifest = readManifestFromBuildPath(config.cfBuildPath) as MergedAppDescriptor['manifest'];
+        const manifest = await getPreviewManifest(this.util.getProject().getRootPath()) as MergedAppDescriptor['manifest'];
         this.mergedDescriptor = {
             name: descriptorVariant.id,
             url: '/',
@@ -227,9 +225,7 @@ export class AdpPreview {
             return;
         }
         if (this.isCfBuildMode) {
-            await runBuild(this.util.getProject().getRootPath(), { ADP_BUILDER_MODE: 'preview' });
-            const buildPath = (this.config as AdpPreviewConfigWithBuildPath).cfBuildPath;
-            this.mergedDescriptor.manifest = readManifestFromBuildPath(buildPath) as MergedAppDescriptor['manifest'];
+            this.mergedDescriptor.manifest = await getPreviewManifest(this.util.getProject().getRootPath()) as MergedAppDescriptor['manifest'];
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {

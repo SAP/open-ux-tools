@@ -24,10 +24,9 @@ const mockGetExistingAdpProjectType = jest.fn<typeof realHelper.getExistingAdpPr
 const mockGetVariant = jest.fn<typeof realHelper.getVariant>();
 const mockGetAdpConfig = jest.fn<typeof realHelper.getAdpConfig>();
 const mockIsTypescriptSupported = jest.fn<typeof realHelper.isTypescriptSupported>();
-const mockReadManifestFromBuildPath = jest.fn<typeof realHelper.readManifestFromBuildPath>();
 
 // Named mocks for project-builder
-const mockRunBuild = jest.fn<typeof realProjectBuilder.runBuild>();
+const mockGetPreviewManifest = jest.fn<typeof realProjectBuilder.getPreviewManifest>();
 
 // Named mocks for other namespace modules
 const mockCreateAbapServiceProvider = jest.fn<typeof realSystemAccess.createAbapServiceProvider>();
@@ -127,13 +126,12 @@ jest.unstable_mockModule('../../../src/base/helper', () => ({
     getExistingAdpProjectType: mockGetExistingAdpProjectType,
     getVariant: mockGetVariant,
     getAdpConfig: mockGetAdpConfig,
-    isTypescriptSupported: mockIsTypescriptSupported,
-    readManifestFromBuildPath: mockReadManifestFromBuildPath
+    isTypescriptSupported: mockIsTypescriptSupported
 }));
 
 jest.unstable_mockModule('../../../src/base/project-builder', () => ({
     ...realProjectBuilder,
-    runBuild: mockRunBuild
+    getPreviewManifest: mockGetPreviewManifest
 }));
 
 jest.unstable_mockModule('@sap-ux/system-access/dist/base/connect', () => ({
@@ -333,7 +331,7 @@ describe('AdaptationProject', () => {
 
         test('should initialize with cfBuildPath mode', async () => {
             const mockCfManifest = { 'sap.app': { id: 'cf.test.app' } };
-            mockReadManifestFromBuildPath.mockReturnValue(mockCfManifest as any);
+            mockGetPreviewManifest.mockResolvedValue(mockCfManifest as any);
 
             const adp = new AdpPreview(
                 {
@@ -411,8 +409,7 @@ describe('AdaptationProject', () => {
 
         test('should return early when cfBuildPath is set and no sync required', async () => {
             const mockCfManifest = { 'sap.app': { id: 'cf.test.app' } };
-            mockReadManifestFromBuildPath.mockReturnValue(mockCfManifest as any);
-            mockRunBuild.mockResolvedValue();
+            mockGetPreviewManifest.mockResolvedValue(mockCfManifest as any);
 
             const testBackend = 'https://test-backend.example';
             const adp = new AdpPreview(
@@ -429,19 +426,19 @@ describe('AdaptationProject', () => {
 
             const parsedVariant = JSON.parse(descriptorVariant);
             await adp.init(parsedVariant);
+            mockGetPreviewManifest.mockClear();
 
             // sync should return early because mergedDescriptor is already set and no sync required
             await adp.sync();
-            expect(mockRunBuild).not.toHaveBeenCalled();
+            expect(mockGetPreviewManifest).not.toHaveBeenCalled();
         });
 
-        test('should rebuild and re-read manifest when sync required in cfBuildPath mode', async () => {
+        test('should re-fetch preview manifest when sync required in cfBuildPath mode', async () => {
             const initialManifest = { 'sap.app': { id: 'cf.test.app' } };
             const updatedManifest = { 'sap.app': { id: 'cf.test.app.updated' } };
-            mockReadManifestFromBuildPath
-                .mockReturnValueOnce(initialManifest as any)
-                .mockReturnValueOnce(updatedManifest as any);
-            mockRunBuild.mockResolvedValue();
+            mockGetPreviewManifest
+                .mockResolvedValueOnce(initialManifest as any)
+                .mockResolvedValueOnce(updatedManifest as any);
 
             const testBackend = '/test-backend';
             const adp = new AdpPreview(
@@ -459,15 +456,14 @@ describe('AdaptationProject', () => {
             const parsedVariant = JSON.parse(descriptorVariant);
             await adp.init(parsedVariant);
             expect(adp.descriptor.manifest).toEqual(initialManifest);
+            mockGetPreviewManifest.mockClear();
 
             // Trigger sync
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
             await adp.sync();
 
-            expect(mockRunBuild).toHaveBeenCalledWith('/projects/adp.project', {
-                ADP_BUILDER_MODE: 'preview'
-            });
-            expect(mockReadManifestFromBuildPath).toHaveBeenLastCalledWith('dist');
+            expect(mockGetPreviewManifest).toHaveBeenCalledTimes(1);
+            expect(mockGetPreviewManifest).toHaveBeenCalledWith('/projects/adp.project');
             expect(adp.descriptor.manifest).toEqual(updatedManifest);
         });
 
@@ -691,8 +687,7 @@ describe('AdaptationProject', () => {
 
         beforeAll(async () => {
             const mockCfManifest = { 'sap.app': { id: 'cf.proxy.test' } };
-            mockReadManifestFromBuildPath.mockReturnValue(mockCfManifest as any);
-            mockRunBuild.mockResolvedValue();
+            mockGetPreviewManifest.mockResolvedValue(mockCfManifest as any);
 
             const adp = new AdpPreview(
                 {
@@ -1220,7 +1215,7 @@ describe('AdaptationProject', () => {
     describe('addApis - cfBuildPath mode', () => {
         let cfBuildPathServer: supertest.Agent;
         beforeAll(async () => {
-            mockReadManifestFromBuildPath.mockReturnValue({
+            mockGetPreviewManifest.mockResolvedValue({
                 'sap.app': { id: 'cf.api.test' }
             } as any);
 

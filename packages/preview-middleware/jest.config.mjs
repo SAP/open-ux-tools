@@ -1,7 +1,13 @@
 import baseConfig from '../../jest.base.mjs';
+import { resolve } from 'node:path';
+const __dirname = import.meta.dirname;
 
 const config = {
-    ...baseConfig
+    ...baseConfig,
+    moduleNameMapper: {
+        ...baseConfig.moduleNameMapper,
+        '^@ui5/task-adaptation$': resolve(__dirname, '../adp-tooling/node_modules/@ui5/task-adaptation/dist/index.js')
+    }
 };
 
 config.modulePathIgnorePatterns.push('<rootDir>/test/test-output');
