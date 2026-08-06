@@ -28,8 +28,8 @@ Add a new ESLint rule to `@sap-ux/eslint-plugin-fiori-tools` following the estab
 |---|---|---|
 | **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files | `references/annotation.md` |
 | **Manifest JSON rule** | Validates `manifest.json` properties | `references/manifest-json.md` |
-| **Flex change file rule** | Validates `webapp/changes/*.change` (V2 flex settings) | `references/flex-change.md` |
-| **JavaScript rule** | Validates JS/TS source code | `references/js-rule.md` |
+| **Flex change file rule** | Validates `webapp/changes/*.change` (Applicable only to OData V2 flex change properties) | `references/flex-change.md` |
+| **JavaScript / TypeScript rule** | Validates JS/TS application source code (UI5 patterns, global variables, deprecated APIs) | `references/js-rule.md` |
 
 Infer from the request:
 - **Rule name** — `sap-[kebab-case-name]` pattern
@@ -43,7 +43,7 @@ Infer from the request:
 
 ## Steps 2–9: Implementation Checklist
 
-### Step 2 — Add diagnostic constant (Fiori language rules only; skip for JS rules)
+### Step 2 — Add diagnostic constant (Fiori language rules only; skip for JS/TS rules)
 
 In `packages/eslint-plugin-fiori-tools/src/language/diagnostics.ts`:
 ```typescript
@@ -70,7 +70,7 @@ import sapMyNewRule from './sap-my-new-rule.js';
 [MY_RULE]: sapMyNewRule,
 ```
 
-**`src/index.ts`** — add to `fioriLanguageConfig` rules (Fiori language rules) or `baseFioriToolsRules` (JS rules):
+**`src/index.ts`** — add to `fioriLanguageConfig` rules (Fiori language rules) or `baseFioriToolsRules` (JS/TS rules):
 ```typescript
 '@sap-ux/fiori-tools/sap-my-new-rule': 'warn',
 ```
@@ -97,10 +97,14 @@ Read `packages/eslint-plugin-fiori-tools/docs/rules/TEMPLATE.md` for structure. 
 
 ### Step 7 — Update README
 
-Add at the **top** of the rules table in `packages/eslint-plugin-fiori-tools/README.md`:
-```markdown
-|  new  | [sap-my-new-rule](docs/rules/sap-my-new-rule.md) | Short description | | ✅ |
-```
+In `packages/eslint-plugin-fiori-tools/README.md`, do **two things**:
+
+1. **Add your new rule** at the **top** of the rules table with `new` in the version column:
+   ```markdown
+   |  new  | [sap-my-new-rule](docs/rules/sap-my-new-rule.md) | Short description | | ✅ |
+   ```
+
+2. **Update the previously added rule**: find the row that still has `new` in the version column (there should be exactly one after your addition) and replace `new` with the version it was introduced in. Look up that version in `packages/eslint-plugin-fiori-tools/CHANGELOG.md` — find the first version entry that mentions the rule name.
 
 ### Step 8 — Run full quality gates (once)
 
@@ -143,7 +147,7 @@ FEAT: add sap-my-new-rule rule for [short description]
 
 | Rule type | Use in `check()` | Why |
 |---|---|---|
-| **Annotation** | `context.sourceCode.projectContext.index.apps` | `linkedModel.apps` silently excludes apps with unresolvable annotation targets |
-| **Manifest JSON** | `context.sourceCode.projectContext.linkedModel.apps` | Requires linked pages to find manifest config paths |
-| **Flex change** | `context.sourceCode.projectContext.linkedModel.apps` | Guard on `FioriChangeSourceCode` first; linked model provides change file config |
-| **JavaScript** | Standard ESLint `context` — no `projectContext` | JS rules don't use the Fiori project model |
+| **Annotation** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `getIndexedServiceForMainService` | `linkedModel.apps` provides page/lookup structure; `index.apps` provides the parsed service |
+| **Manifest JSON** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `parsedApp` (manifest URI, manifestObject) | Requires linked pages to find manifest config paths |
+| **Flex change** | `context.sourceCode.projectContext.linkedModel.apps` | Guard on `FioriChangeSourceCode` first; linked model provides change file config via `page.lookup['table']` |
+| **JavaScript / TypeScript** | Standard ESLint `context` — no `projectContext` | JS/TS rules don't use the Fiori project model; use `Rule.RuleModule`, not `createFioriRule` |
