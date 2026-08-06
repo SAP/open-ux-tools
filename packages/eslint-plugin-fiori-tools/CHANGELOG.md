@@ -1,5 +1,37 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.8.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
+## 10.8.1
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 10.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-04
+
+#### Features
+
+- add sap-cloud-dev-adaptation-status rule to warn when cloudDevAdaptationStatus is missing in sap.fiori manifest section. [[cca82b6](https://github.com/SAP/open-ux-tools/commit/cca82b6eb0687aa8afda56e8dc02ed40f4d3851b)]
+
 ## 10.7.15
 
 ### Patch Changes
