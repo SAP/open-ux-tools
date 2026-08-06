@@ -232,6 +232,11 @@ export async function promptForSystemConfig(partial: {
     // 2. authenticationType is 'basic' (other types don't use username/password)
     const shouldPromptCredentials = !partial.noCredentials && finalAuthType === 'basic';
 
+    // Display informational message for re-entrance ticket authentication
+    if (finalAuthType === 'reentranceTicket') {
+        console.log(text('systemPrompts.prompts.reentranceTicketNote'));
+    }
+
     const credentialQuestions: prompts.PromptObject[] = [];
 
     if (shouldPromptCredentials && partial.username === undefined) {

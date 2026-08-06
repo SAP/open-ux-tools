@@ -20,7 +20,8 @@
             "authenticationType": "Authentication Type:",
             "connectionType": "Connection Type:",
             "username": "Username (Optional: Press Enter to Skip):",
-            "password": "Password (Optional: Press Enter to Skip):"
+            "password": "Password (Optional: Press Enter to Skip):",
+            "reentranceTicketNote": "Note: Re-entrance ticket authentication will open a browser tab when the system is first used."
         },
         "updateFields": {
             "selectPrompt": "Select Fields to Update:",
