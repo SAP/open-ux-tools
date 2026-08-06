@@ -60,9 +60,7 @@ describe('<SystemTypes />', () => {
     });
 
     it('pre-populates the dropdown with the provided system type', () => {
-        render(
-            <SystemTypes setSystemType={jest.fn()} setAuthenticationType={jest.fn()} systemType={'OnPrem'} />
-        );
+        render(<SystemTypes setSystemType={jest.fn()} setAuthenticationType={jest.fn()} systemType={'OnPrem'} />);
 
         const dropdown = screen.getByTestId('system-type-dropdown') as HTMLSelectElement;
         expect(dropdown.value).toBe('OnPrem');

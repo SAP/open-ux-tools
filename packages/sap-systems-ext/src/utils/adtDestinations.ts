@@ -46,40 +46,63 @@ interface AdtDestinationsFile {
 }
 
 /**
- * Resolves ABAP destinations with their HTTP connection details.
+ * Lists ABAP destinations WITHOUT resolving their HTTP endpoints.
  *
- * Primary path: asks the ADT (adt-vscode) extension via its
- * `adt-vscode.getDestinationsWithHttpDetails` command, which resolves the authoritative HTTP
- * endpoint for each destination (over the RFC tunnel + ADT discovery for RFC destinations).
+ * Resolving an HTTP endpoint requires a logon/connection, so it must NOT be done for every
+ * destination just to build a list. This returns lightweight metadata only (id/protocol/systemId/
+ * client/user). Use {@link resolveAdtDestination} to resolve a single destination's endpoint.
  *
- * Fallback path: if the ADT extension/command is not available, reads
- * ~/.adtls/destinations.json directly and, for each destination, discovers the external HTTPS
- * endpoint by probing the message server / application server (see {@link discoverHttpsEndpoint}).
- * The RFC message-server port is never used for HTTP.
+ * Primary path: the ADT (adt-vscode) extension's `getDestinationsWithHttpDetails` command with an
+ * optional protocol filter (returns metadata, no connection). Fallback: read
+ * ~/.adtls/destinations.json directly.
  *
- * @returns the list of destinations with whatever HTTP details could be resolved
+ * @param protocol - optional protocol filter, e.g. `['rfc']`; when omitted all protocols are returned
+ * @returns metadata for the matching destinations (no url/host/port)
  */
-export async function resolveAdtDestinations(): Promise<AdtDestinationHttpDetails[]> {
-    const viaCommand = await resolveViaAdtCommand();
+export async function listAdtDestinations(protocol?: string[]): Promise<AdtDestinationHttpDetails[]> {
+    const viaCommand = await listViaAdtCommand(protocol);
     if (viaCommand) {
         return viaCommand;
     }
-    return resolveFromFile();
+    return listFromFile(protocol);
 }
 
 /**
- * Attempts to resolve destinations via the ADT extension command.
+ * Resolves the HTTP connection details for a SINGLE ABAP destination. This is the only call that
+ * triggers a connection/logon for that destination.
  *
- * @returns the resolved destinations, or undefined if the ADT extension/command is unavailable
+ * Primary path: the ADT command with a `{ id }` filter (resolves just that destination). Fallback:
+ * read the destination from ~/.adtls/destinations.json and discover its HTTPS endpoint by probing
+ * the message server / application server (see {@link discoverHttpsEndpoint}). The RFC message-server
+ * port is never used for HTTP.
+ *
+ * @param id destination id to resolve
+ * @returns the destination with its resolved url/host/port, or undefined if not found
  */
-async function resolveViaAdtCommand(): Promise<AdtDestinationHttpDetails[] | undefined> {
-    // Only attempt the command when the ADT extension is present; executeCommand would otherwise
-    // reject with "command not found", which we treat the same as "unavailable".
+export async function resolveAdtDestination(id: string): Promise<AdtDestinationHttpDetails | undefined> {
+    const viaCommand = await resolveViaAdtCommand(id);
+    if (viaCommand) {
+        return viaCommand;
+    }
+    return resolveFromFile(id);
+}
+
+/**
+ * Lists destinations via the ADT extension command (metadata only, no connection), optionally
+ * filtered by protocol.
+ *
+ * @param protocol - optional protocol filter
+ * @returns the destinations, or undefined if the ADT extension/command is unavailable
+ */
+async function listViaAdtCommand(protocol?: string[]): Promise<AdtDestinationHttpDetails[] | undefined> {
     if (!extensions.getExtension(ADT_EXTENSION_ID)) {
         return undefined;
     }
     try {
-        const result = await commands.executeCommand<AdtDestinationHttpDetails[]>(ADT_GET_DESTINATIONS_COMMAND);
+        const result = await commands.executeCommand<AdtDestinationHttpDetails[]>(
+            ADT_GET_DESTINATIONS_COMMAND,
+            protocol ? { protocol } : undefined
+        );
         return Array.isArray(result) ? result : undefined;
     } catch {
         // Command not registered (extension not activated / older version) — fall back to the file.
@@ -88,37 +111,85 @@ async function resolveViaAdtCommand(): Promise<AdtDestinationHttpDetails[] | und
 }
 
 /**
- * Reads destinations directly from ~/.adtls/destinations.json and, for each destination that has a
- * message server, discovers its external HTTPS endpoint (host/port/url). Destinations whose endpoint
- * cannot be discovered are still returned, but without url/host/port.
+ * Resolves a single destination via the ADT extension command, passing a `{ id }` filter so only
+ * that destination is connected to and resolved.
  *
- * @returns destination metadata with discovered HTTPS details where possible
+ * @param id destination id to resolve
+ * @returns the resolved destination, or undefined if the ADT extension/command is unavailable
  */
-async function resolveFromFile(): Promise<AdtDestinationHttpDetails[]> {
-    let raw: string;
+async function resolveViaAdtCommand(id: string): Promise<AdtDestinationHttpDetails | undefined> {
+    if (!extensions.getExtension(ADT_EXTENSION_ID)) {
+        return undefined;
+    }
     try {
-        raw = readFileSync(ADT_DESTINATIONS_FILE, 'utf8');
+        const result = await commands.executeCommand<AdtDestinationHttpDetails[]>(ADT_GET_DESTINATIONS_COMMAND, {
+            id
+        });
+        return Array.isArray(result) ? result.find((d) => d.id === id) : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
+/**
+ * Reads destinations' metadata directly from ~/.adtls/destinations.json (no endpoint discovery),
+ * optionally filtered by protocol.
+ *
+ * @param protocol - optional protocol filter
+ * @returns metadata for the matching destinations
+ */
+function listFromFile(protocol?: string[]): AdtDestinationHttpDetails[] {
+    const protocols = protocol?.map((p) => p.toLowerCase());
+    return readDestinationsFile()
+        .filter((dest) => !protocols || protocols.includes((dest.protocol ?? '').toLowerCase()))
+        .map((dest) => ({
+            id: dest.id,
+            protocol: dest.protocol,
+            systemId: dest.properties?.systemId,
+            client: dest.properties?.client,
+            user: dest.properties?.user
+        }));
+}
+
+/**
+ * Reads a single destination from ~/.adtls/destinations.json and discovers its external HTTPS
+ * endpoint (host/port/url) by probing the message server / application server.
+ *
+ * @param id destination id to resolve
+ * @returns the destination with discovered HTTPS details, or undefined if not found
+ */
+async function resolveFromFile(id: string): Promise<AdtDestinationHttpDetails | undefined> {
+    const dest = readDestinationsFile().find((d) => d.id === id);
+    if (!dest) {
+        return undefined;
+    }
+    const client = dest.properties?.client;
+    const messageServer = dest.properties?.messageServer;
+    const base: AdtDestinationHttpDetails = {
+        id: dest.id,
+        protocol: dest.protocol,
+        systemId: dest.properties?.systemId,
+        client,
+        user: dest.properties?.user
+    };
+    if (!messageServer) {
+        return base;
+    }
+    const endpoint = await discoverHttpsEndpoint(messageServer, client);
+    return endpoint ? { ...base, url: endpoint.url, host: endpoint.host, port: endpoint.port } : base;
+}
+
+/**
+ * Reads and parses the destinations array from ~/.adtls/destinations.json.
+ *
+ * @returns the destination entries, or an empty array if the file is missing/unreadable
+ */
+function readDestinationsFile(): NonNullable<AdtDestinationsFile['destinations']> {
+    try {
+        const raw = readFileSync(ADT_DESTINATIONS_FILE, 'utf8');
+        return (JSON.parse(raw) as AdtDestinationsFile).destinations ?? [];
     } catch {
         // No destinations file present.
         return [];
     }
-    const parsed = JSON.parse(raw) as AdtDestinationsFile;
-    return Promise.all(
-        (parsed.destinations ?? []).map(async (dest): Promise<AdtDestinationHttpDetails> => {
-            const client = dest.properties?.client;
-            const messageServer = dest.properties?.messageServer;
-            const base: AdtDestinationHttpDetails = {
-                id: dest.id,
-                protocol: dest.protocol,
-                systemId: dest.properties?.systemId,
-                client,
-                user: dest.properties?.user
-            };
-            if (!messageServer) {
-                return base;
-            }
-            const endpoint = await discoverHttpsEndpoint(messageServer, client);
-            return endpoint ? { ...base, url: endpoint.url, host: endpoint.host, port: endpoint.port } : base;
-        })
-    );
 }

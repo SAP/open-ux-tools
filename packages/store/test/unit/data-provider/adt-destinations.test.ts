@@ -14,10 +14,10 @@ jest.unstable_mockModule('node:fs', () => ({
     writeFileSync: mockWriteFileSync
 }));
 
-const { readAdtSystems, writeAdtSystem, deleteAdtSystem } = await import('../../../src/data-provider/adt-destinations.js');
-const { BackendSystem, SystemType, AuthenticationType, ConnectionType, SystemSource } = await import(
-    '../../../src/index.js'
-);
+const { readAdtSystems, writeAdtSystem, deleteAdtSystem } =
+    await import('../../../src/data-provider/adt-destinations.js');
+const { BackendSystem, SystemType, AuthenticationType, ConnectionType, SystemSource } =
+    await import('../../../src/index.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 const logger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -35,7 +35,11 @@ const DESTINATIONS = {
         {
             id: 'CLOUD',
             protocol: 'http',
-            properties: { authenticationKind: 'reentranceticket', systemUrl: 'https://app.example.com:44301', user: 'USER' }
+            properties: {
+                authenticationKind: 'reentranceticket',
+                systemUrl: 'https://app.example.com:44301',
+                user: 'USER'
+            }
         }
     ]
 };

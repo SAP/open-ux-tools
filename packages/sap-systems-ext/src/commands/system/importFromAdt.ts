@@ -1,43 +1,51 @@
 import type { SystemCommandContext } from '../../types/system';
 import { BackendSystem, isSystemNameInUse } from '@sap-ux/store';
 import { commands, window, type QuickPickItem } from 'vscode';
-import { t, resolveAdtDestinations, type AdtDestinationHttpDetails } from '../../utils';
+import { t, listAdtDestinations, resolveAdtDestination, type AdtDestinationHttpDetails } from '../../utils';
 import { TelemetryHelper } from '../../utils';
 import { SystemAction, SystemActionStatus, SystemCommands, SYSTEMS_EVENT } from '../../utils/constants';
 
 /**
- * Returns a command handler that lets the user pick an ABAP destination (resolved via the ADT
- * extension, or the local ~/.adtls/destinations.json fallback), opens it pre-filled in the system
- * edit webview via the existing "create system" command, and then prompts for the password.
+ * Returns a command handler that lets the user pick an ABAP (RFC) destination, resolves the HTTP
+ * connection details for just that one destination, opens it pre-filled in the system edit webview
+ * via the existing "create system" command, and then prompts for the password.
+ *
+ * Listing does NOT resolve HTTP endpoints (which would connect to every destination); only the
+ * single picked destination is resolved.
  *
  * @param _commandContext - the system command context (unused; the panel is opened via a command)
  * @returns - a command handler function
  */
 export const importFromAdtCommandHandler = (_commandContext: SystemCommandContext) => async (): Promise<void> => {
     try {
-        const destinations = await resolveAdtDestinations();
-        const importable = destinations.filter((d) => !!d.url);
-        if (importable.length === 0) {
-            window.showInformationMessage(
-                destinations.length === 0 ? t('info.adtImport.noDestinations') : t('info.adtImport.noneImported')
-            );
+        // List RFC destinations (metadata only, no connection) via the protocol filter.
+        const destinations = await listAdtDestinations(['rfc']);
+        if (destinations.length === 0) {
+            window.showInformationMessage(t('info.adtImport.noDestinations'));
             return;
         }
 
-        const selected = await pickDestination(importable);
-        if (!selected) {
+        const picked = await pickDestination(destinations);
+        if (!picked) {
             // user cancelled the picker
             return;
         }
 
         // A system name (the destination id) that is already in use would be rejected on save with a
-        // "connection name already exists" error, so tell the user up-front instead of opening the panel.
-        if (await isSystemNameInUse(selected.id)) {
-            window.showInformationMessage(t('info.adtImport.alreadyExists', { system: selected.id }));
+        // "connection name already exists" error, so tell the user up-front instead of connecting.
+        if (await isSystemNameInUse(picked.id)) {
+            window.showInformationMessage(t('info.adtImport.alreadyExists', { system: picked.id }));
             return;
         }
 
-        const backendSystem = toBackendSystem(selected);
+        // Resolve the HTTP details for the picked destination only (this is what connects).
+        const resolved = await resolveAdtDestination(picked.id);
+        if (!resolved?.url) {
+            window.showWarningMessage(t('info.adtImport.noneImported'));
+            return;
+        }
+
+        const backendSystem = toBackendSystem(resolved);
         // Reuse the public "create system" command, which opens the edit webview pre-filled.
         await commands.executeCommand(SystemCommands.Create, backendSystem);
 
@@ -52,9 +60,9 @@ export const importFromAdtCommandHandler = (_commandContext: SystemCommandContex
 };
 
 /**
- * Presents a quick pick of importable destinations and returns the chosen one.
+ * Presents a quick pick of destinations and returns the chosen one.
  *
- * @param destinations - destinations that have a resolved HTTPS url
+ * @param destinations - destinations to offer (metadata only)
  * @returns the selected destination, or undefined if the user cancelled
  */
 async function pickDestination(
@@ -62,7 +70,7 @@ async function pickDestination(
 ): Promise<AdtDestinationHttpDetails | undefined> {
     const items: (QuickPickItem & { dest: AdtDestinationHttpDetails })[] = destinations.map((dest) => ({
         label: dest.id,
-        description: dest.url,
+        description: dest.systemId,
         dest
     }));
     const picked = await window.showQuickPick(items, {
