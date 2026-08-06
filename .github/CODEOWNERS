@@ -22,27 +22,27 @@
 /README.md       @SAP/ux-tools-team
 
 # A1 — Foundations
-/packages/logger/                   @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/i18n/                     @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/store/                    @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/yaml/                     @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/ui5-config/               @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/ui5-info/                 @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/project-access/           @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/project-integrity/        @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/project-input-validator/  @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/nodejs-utils/             @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/btp-utils/                @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/axios-extension/          @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/system-access/            @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/telemetry/                @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/feature-toggle/           @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/fiori-tools-settings/     @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/guided-answers-helper/    @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/jest-environment-ui5/     @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/jest-file-matchers/       @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/jest-runner-puppeteer/    @SAP/ux-tools-foundations @SAP/ux-tools-architects
-/packages/playwright/               @SAP/ux-tools-foundations @SAP/ux-tools-architects
+/packages/logger/                   @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/i18n/                     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/store/                    @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/yaml/                     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/ui5-config/               @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/ui5-info/                 @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/project-access/           @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/project-integrity/        @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/project-input-validator/  @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/nodejs-utils/             @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/btp-utils/                @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/axios-extension/          @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/system-access/            @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/telemetry/                @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/feature-toggle/           @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/fiori-tools-settings/     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/guided-answers-helper/    @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/jest-environment-ui5/     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/jest-file-matchers/       @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/jest-runner-puppeteer/    @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/playwright/               @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
 
 # A2 — App Generators and Deploy
 /packages/fiori-elements-writer/               @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
