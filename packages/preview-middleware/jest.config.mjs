@@ -6,7 +6,7 @@ const config = {
     ...baseConfig,
     moduleNameMapper: {
         ...baseConfig.moduleNameMapper,
-        '^@ui5/task-adaptation$': resolve(__dirname, '../adp-tooling/node_modules/@ui5/task-adaptation/dist/index.js')
+        '^@ui5/task-adaptation/dist/index\\.js$': resolve(__dirname, '../adp-tooling/node_modules/@ui5/task-adaptation/dist/index.js')
     }
 };
 

@@ -1,5 +1,5 @@
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { previewManifest } from '@ui5/task-adaptation';
+import { previewManifest } from '@ui5/task-adaptation/dist/index.js';
 import type { Manifest } from '@sap-ux/project-access';
 import { readUi5Config } from '../base/helper.js';
 
