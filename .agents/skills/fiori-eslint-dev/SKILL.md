@@ -37,7 +37,7 @@ Infer from the request:
 - **Auto-fix** — yes/no
 - **Severity** — `error` or `warning`. Rules in `recommended-for-s4hana` MUST be `warn`.
 
-**Read the matching reference file immediately**, then read all the files it lists in a single parallel batch. If the rule spans multiple types (e.g. annotations + manifest, or annotations + flex changes), read all matching reference files and combine their templates and access patterns.
+**Read the matching reference file immediately**, then read all the files it lists in a single parallel batch. If the rule spans multiple types (e.g. annotations + manifest, or manifest + flex changes), read all matching reference files and combine their templates and access patterns.
 
 ---
 
