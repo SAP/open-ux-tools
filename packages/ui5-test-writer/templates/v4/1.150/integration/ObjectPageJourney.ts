@@ -31,6 +31,9 @@ const usesFormIdentifier = (bodySections || []).some(function(section) {
     });
     return subSectionsHaveForm || sectionHasFormFields || hasFormAction;
 });
+const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).some(function(section) {
+    return section.subSections && section.subSections.length > 0;
+});
 -%>
 <% if (usesFieldIdentifier) { -%>
 import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI";
@@ -65,7 +68,7 @@ function journey() {
 <% if (editButton?.visible) { -%>
         // Ensure the opened entity is not in Draft state before uncommenting
         // Then.onThe<%- name%>Generated.onHeader().iCheckEdit({ visible: true });
-        // When.onThe<%- name%>Generated.onHeader().iPressEdit();
+        // When.onThe<%- name%>Generated.onHeader().iExecuteEdit();
 <% } -%>
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
@@ -109,9 +112,9 @@ function journey() {
 <% } -%>
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
-    opaTest("Check the <%- section.id %> section of the Object Page", function (_Given: Given, <% if (bodySections?.length > 1) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
+    opaTest("Check the <%- section.id %> section of the Object Page", function (_Given: Given, <% if (usesWhenInBody) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (bodySections.length > 1) { -%>
-        When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
+        When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>" });
 <% } -%>
         Then.onThe<%- name%>Generated.iCheckSection({ section: "<%- section.id %>" }, {});
 <%  if (section.actions && section.actions.length > 0) { -%>
@@ -147,7 +150,7 @@ function journey() {
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
-        //When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
+        When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
         Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" }, {});
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>

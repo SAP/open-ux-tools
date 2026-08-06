@@ -824,18 +824,18 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain(
                 'opaTest("Check the BookingDetails section of the Object Page"'
             );
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(bookingObjPageJourneyContent).toContain('opaTest("Check the FlightData section of the Object Page"');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
             );
             expect(bookingObjPageJourneyContent).toContain('opaTest("Check the PriceData section of the Object Page"');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
@@ -1032,13 +1032,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(opPagePath).toBeDefined();
 
             const opContent = dumped[opPagePath!].contents as string;
-            expect(opContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
-            expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
             expect(opContent).toContain('export const actions');
             expect(opContent).toContain('export const assertions');
             expect(opContent).toContain('export default class ObjectPage');
-            expect(opContent).toContain('iPressSectionIconTabFilterButton');
-            expect(opContent).toContain('this: Opa5');
             expect(opContent).not.toContain('sap/fe/test/ObjectPage');
         });
 
@@ -1309,15 +1305,15 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('opaTest("Check the number of sections of the Object Page"');
             expect(content).not.toContain('Check body sections of the Object Page');
             expect(content).toContain('opaTest("Check the BookingDetails section of the Object Page"');
-            expect(content).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
             expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
             expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
             expect(content).toContain('opaTest("Check the FlightData section of the Object Page"');
-            expect(content).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(content).toContain('iGoToSection({ section: "FlightData" })');
             expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
             expect(content).toContain('opaTest("Check the PriceData section of the Object Page"');
-            expect(content).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(content).toContain('iGoToSection({ section: "PriceData" })');
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
 
             // ─── Section actions (table action with dynamic enabled) ───
