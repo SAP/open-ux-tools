@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.54
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.34 → 1.0.35
+
 ## 1.0.53
 
 ### Patch Changes
