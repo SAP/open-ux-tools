@@ -165,11 +165,12 @@ describe('Test the SAP Systems provider', () => {
                 }
             });
 
-            // ADT-owned system: distinct icon, -adt contextValue suffix, and owned-by-ADT tooltip.
+            // ADT-owned system: distinct icon and owned-by-ADT tooltip. The contextValue must remain
+            // `sapSystem-<connectionType>` (no ADT suffix) so existing context-menu actions still apply.
             const adtTreeItem = provider.getTreeItem(backendSystems[3]);
             expect(adtTreeItem).toEqual(
                 expect.objectContaining({
-                    contextValue: 'sapSystem-abap_catalog-adt',
+                    contextValue: 'sapSystem-abap_catalog',
                     label: 'ADT_CLOUD',
                     tooltip: expect.stringContaining('ADT'),
                     iconPath: {

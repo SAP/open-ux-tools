@@ -174,6 +174,37 @@ describe('BackendSystem service', () => {
         });
     });
 
+    describe('write', () => {
+        afterEach(() => jest.clearAllMocks());
+
+        it('throws on a duplicate key for a non-ADT system without force', async () => {
+            mockSystemDataProviderProto.read.mockResolvedValue({ name: 'existing', url: 'some_url' });
+            const systemService = new SystemService(logger);
+            await expect(
+                systemService.write(
+                    new BackendSystem({ name: 's', url: 'some_url', systemType: 'OnPrem', connectionType: 'abap_catalog' })
+                )
+            ).rejects.toThrow();
+            expect(mockSystemDataProviderProto.write).not.toHaveBeenCalled();
+        });
+
+        it('does not throw for an ADT-owned system even without force (edited in place)', async () => {
+            // Existing lookup returns the ADT system (as read() now does for ADT destinations).
+            mockSystemDataProviderProto.read.mockResolvedValue({ name: 's', url: 'some_url', source: 'adt' });
+            const systemService = new SystemService(logger);
+            await systemService.write(
+                new BackendSystem({
+                    name: 's',
+                    url: 'some_url',
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog',
+                    source: 'adt'
+                })
+            );
+            expect(mockSystemDataProviderProto.write).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe('partialUpdate', () => {
         it('partial update of non-existent system throws an error', async () => {
             mockSystemDataProviderProto.read.mockResolvedValue(undefined);

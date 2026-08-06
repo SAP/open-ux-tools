@@ -58,11 +58,13 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
     public getTreeItem(system: SapSystemTreeItem): TreeItem {
         const item = new TreeItem(system.name, TreeItemCollapsibleState.None);
         const props = this.getTreeItemProps(system);
-        const adtSuffix = system.source === 'adt' ? '-adt' : '';
+        // Note: the contextValue intentionally does NOT vary for ADT-owned systems — existing
+        // context-menu `when` clauses match `viewItem == sapSystem-<connectionType>` exactly, so a
+        // suffix would hide those actions for ADT systems. ADT ownership is conveyed via icon/tooltip.
         const systemTreeItem = {
             ...item,
             ...props,
-            contextValue: `sapSystem-${system.connectionType}${adtSuffix}`
+            contextValue: `sapSystem-${system.connectionType}`
         };
 
         return systemTreeItem;

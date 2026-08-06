@@ -1,7 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AddressInfo } from 'node:net';
 import axios from 'axios';
-import { Agent } from 'node:https';
 import open from 'open';
 import { defaultTimeout } from '../connection.js';
 import { ABAPVirtualHostProvider } from './abap-virtual-host-provider.js';
@@ -11,13 +10,17 @@ import { setupRedirectHandling } from './redirect.js';
 const REENTRANCE_ENDPOINT = '/sap/bc/sec/reentrance';
 /** ADT internal reentrance endpoint (used by older/internal systems that lack the cloud endpoint). */
 const ADT_REENTRANCE_ENDPOINT = '/sap/bc/adt/core/http/reentranceticket';
+/** Short timeout for the lightweight endpoint probe so a slow/unreachable host does not delay the browser logon. */
+const PROBE_TIMEOUT_MS = 3000;
 
 /**
  * Determines which reentrance-ticket endpoint the backend exposes.
  *
  * Prefers the cloud endpoint (`/sap/bc/sec/reentrance`); if that responds with 404 the backend is
  * an older/internal system, so the ADT endpoint (`/sap/bc/adt/core/http/reentranceticket`) is used
- * instead. This is checked BEFORE opening the browser so the user is sent to a working URL.
+ * instead. This is checked BEFORE opening the browser so the user is sent to a working URL. Any
+ * non-404 status (200/302/401/403/...) keeps the cloud endpoint, and a probe error (network/timeout)
+ * is treated as inconclusive and also keeps the cloud endpoint (the historical default).
  *
  * @param uiHostname resolved UI host origin
  * @param logger logger
@@ -29,12 +32,14 @@ async function resolveReentranceEndpoint(uiHostname: string, logger: Logger): Pr
         return override;
     }
     try {
+        // Lightweight best-effort probe: only the status code is inspected. Uses a short timeout and
+        // the same request style as getVirtualHosts (default TLS/agent handling) — deliberately not
+        // disabling certificate validation.
         const response = await axios.get(`${uiHostname}${REENTRANCE_ENDPOINT}`, {
             // Do not follow redirects or throw on any status — we only care whether it is a 404.
             maxRedirects: 0,
             validateStatus: () => true,
-            httpsAgent: new Agent({ rejectUnauthorized: false }),
-            timeout: defaultTimeout
+            timeout: PROBE_TIMEOUT_MS
         });
         if (response.status === 404) {
             logger.debug(`${REENTRANCE_ENDPOINT} not found (404); falling back to ${ADT_REENTRANCE_ENDPOINT}`);

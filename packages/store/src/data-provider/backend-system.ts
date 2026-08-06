@@ -28,16 +28,18 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
-            const adtSystem = readAdtSystems(this.logger)[key.getId()];
-            if (adtSystem) {
-                return adtSystem;
+            // Stored systems (systems.json) take precedence over ADT destinations on id collision,
+            // consistent with getAll()'s `{ ...adtSystems, ...systems }` merge.
+            const stored = await this.dataAccessor.read({ entityName: this.entityName, id: key.getId() });
+            if (stored) {
+                return stored;
             }
-            return this.dataAccessor.read({ entityName: this.entityName, id: key.getId() });
+            return readAdtSystems(this.logger)[key.getId()];
         }
 
         public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
             // Route ADT-owned systems back to destinations.json; never to systems.json.
-            if (this.isAdtSystem(entity)) {
+            if (await this.isAdtSystem(entity)) {
                 writeAdtSystem(entity, this.logger);
                 return entity;
             }
@@ -56,7 +58,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         public async delete(entity: BackendSystem): Promise<boolean> {
-            if (this.isAdtSystem(entity)) {
+            if (await this.isAdtSystem(entity)) {
                 return deleteAdtSystem(entity, this.logger);
             }
             return this.dataAccessor.del({
@@ -66,18 +68,28 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         /**
-         * Determines whether the given system is owned by ADT (backed by destinations.json). The
-         * in-memory `source` marker is authoritative; as a fallback the current ADT destinations are
-         * consulted by store id so a system round-tripped without the marker still routes correctly.
+         * Determines whether the given system is owned by ADT (backed by destinations.json).
+         *
+         * The in-memory `source` marker is authoritative. As a fallback (e.g. the entity was
+         * reconstructed and lost the marker) the current ADT destinations are consulted by store id —
+         * but ONLY when no system with that id exists in systems.json. This ensures a genuine stored
+         * system whose id happens to collide with an ADT destination is never misrouted to
+         * destinations.json (which would silently drop its stored credentials).
          *
          * @param entity - the system being written or deleted
          * @returns true if the system is an ADT-owned destination
          */
-        private isAdtSystem(entity: BackendSystem): boolean {
+        private async isAdtSystem(entity: BackendSystem): Promise<boolean> {
             if (entity.source === SystemSource.Adt) {
                 return true;
             }
-            return !!readAdtSystems(this.logger)[BackendSystemKey.from(entity).getId()];
+            const id = BackendSystemKey.from(entity).getId();
+            if (!readAdtSystems(this.logger)[id]) {
+                return false;
+            }
+            // Only treat as ADT-owned when there is no genuine stored system with this id.
+            const stored = await this.dataAccessor.read({ entityName: this.entityName, id });
+            return !stored;
         }
 
         public async getAll(providerRetrievalOptions?: BackendProviderRetrievalOptions): Promise<BackendSystem[]> {

@@ -4,6 +4,7 @@ import type { DataProvider } from '../data-provider/index.js';
 import type { ServiceOptions } from '../types.js';
 import { SystemDataProvider } from '../data-provider/backend-system.js';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system.js';
+import { SystemSource } from '../types.js';
 import { text } from '../i18n.js';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -76,7 +77,11 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         const entityKey = BackendSystemKey.from(entity);
         const existingSystem = await this.read(BackendSystemKey.from(entity));
 
-        if (!options?.force && existingSystem) {
+        // ADT-owned systems (backed by destinations.json) are always edited in place, so the
+        // duplicate-key guard must not block writing them even without `force`.
+        const isAdtOwned = entity.source === SystemSource.Adt || existingSystem?.source === SystemSource.Adt;
+
+        if (!options?.force && !isAdtOwned && existingSystem) {
             throw new Error(text('error.backendSystemEntityKeyExists', { entityKey: entityKey.getId() }));
         }
         return this.dataProvider.write(entity);

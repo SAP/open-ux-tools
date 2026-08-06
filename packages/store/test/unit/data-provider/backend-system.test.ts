@@ -512,5 +512,55 @@ describe('Backend system data provider', () => {
 
             expect(mockHybridStore.write).toHaveBeenCalled();
         });
+
+        it('does NOT route to destinations.json when a stored system exists for a colliding id (no data loss)', async () => {
+            mockFsReads();
+            // A genuine stored system exists at the same id as the ADT destination.
+            mockHybridStore.read.mockResolvedValue({
+                name: 'stored',
+                url: 'https://app.example.com:44301',
+                systemType: SystemType.AbapOnPrem,
+                connectionType: 'abap_catalog'
+            });
+            const provider = new SystemDataProvider(logger);
+            // Note: no `source` marker — id collides with the ADT destination but this is a real system.
+            const system = new BackendSystem({
+                name: 'stored',
+                url: 'https://app.example.com:44301',
+                systemType: SystemType.AbapOnPrem,
+                connectionType: 'abap_catalog'
+            });
+
+            await provider.write(system);
+
+            expect(mockHybridStore.write).toHaveBeenCalled();
+            expect(mockWriteFileSync).not.toHaveBeenCalled(); // never written to destinations.json
+        });
+
+        it('read prefers the stored system over an ADT destination on id collision', async () => {
+            mockFsReads();
+            mockHybridStore.read.mockResolvedValue({
+                name: 'stored',
+                url: 'https://app.example.com:44301',
+                systemType: SystemType.AbapOnPrem,
+                connectionType: 'abap_catalog'
+            });
+            const provider = new SystemDataProvider(logger);
+
+            const result = await provider.read(new BackendSystemKey({ url: 'https://app.example.com:44301' }));
+
+            expect(result?.name).toBe('stored');
+            expect((result as { source?: string })?.source).toBeUndefined();
+        });
+
+        it('read falls back to the ADT destination when no stored system exists', async () => {
+            mockFsReads();
+            mockHybridStore.read.mockResolvedValue(undefined);
+            const provider = new SystemDataProvider(logger);
+
+            const result = await provider.read(new BackendSystemKey({ url: 'https://app.example.com:44301' }));
+
+            expect(result?.source).toBe('adt');
+        });
     });
 });
