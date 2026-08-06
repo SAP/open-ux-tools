@@ -207,17 +207,16 @@ describe('Test abap deploy config inquirer conditions', () => {
             async (authType) => {
                 PromptState.abapDeployConfig.destination = 'SomeDest';
                 PromptState.abapDeployConfig.destinationAuthType = authType as Authentication;
-                const initTransportConfigSpy = jest.spyOn(utils, 'initTransportConfig');
                 const result = await showUsernameQuestion(undefined);
                 expect(result).toBe(false);
-                expect(initTransportConfigSpy).not.toHaveBeenCalled();
+                expect(mockInitTransportConfig).not.toHaveBeenCalled();
             }
         );
 
         it('should show username prompt when destination auth type is NoAuthentication', async () => {
             PromptState.abapDeployConfig.destination = 'NoAuthDest';
             PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication' as Authentication;
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            mockInitTransportConfig.mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
             });
@@ -228,7 +227,7 @@ describe('Test abap deploy config inquirer conditions', () => {
         it('should proceed with initTransportConfig when no destination is set (URL-based target)', async () => {
             PromptState.abapDeployConfig.destination = undefined;
             PromptState.abapDeployConfig.destinationAuthType = undefined;
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            mockInitTransportConfig.mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
             });
@@ -238,19 +237,26 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     describe('showPasswordQuestion - destination auth type suppression', () => {
+        it('should suppress via delegation when showUsernameQuestion was not called first', async () => {
+            PromptState.abapDeployConfig.destination = 'SomeDest';
+            PromptState.abapDeployConfig.destinationAuthType = 'SAMLAssertion' as Authentication;
+            // transportConfigNeedsCreds is undefined (never primed by showUsernameQuestion)
+            expect(await showPasswordQuestion(undefined)).toBe(false);
+            expect(mockInitTransportConfig).not.toHaveBeenCalled();
+        });
+
         it('should not show password prompt when destination auth type is SAMLAssertion', async () => {
             PromptState.abapDeployConfig.destination = 'SomeDest';
             PromptState.abapDeployConfig.destinationAuthType = 'SAMLAssertion' as Authentication;
-            const initTransportConfigSpy = jest.spyOn(utils, 'initTransportConfig');
             await showUsernameQuestion(undefined);
             expect(await showPasswordQuestion()).toBe(false);
-            expect(initTransportConfigSpy).not.toHaveBeenCalled();
+            expect(mockInitTransportConfig).not.toHaveBeenCalled();
         });
 
         it('should show password prompt when destination auth type is NoAuthentication and creds needed', async () => {
             PromptState.abapDeployConfig.destination = 'NoAuthDest';
             PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication' as Authentication;
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            mockInitTransportConfig.mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
             });

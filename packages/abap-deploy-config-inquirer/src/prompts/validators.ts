@@ -135,6 +135,8 @@ export function updateDestinationPromptState(destinationName: string, destinatio
         return;
     }
     PromptState.abapDeployConfig.destination = destination.Name;
+    // Destination.Authentication is typed as string in btp-utils, but the BTP API always
+    // returns one of the Authentication enum string values — cast is safe here.
     PromptState.abapDeployConfig.destinationAuthType = destination.Authentication as Authentication;
     updatePromptState({
         url: destination?.Host,
