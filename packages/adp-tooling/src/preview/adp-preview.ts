@@ -236,7 +236,9 @@ export class AdpPreview {
             res.status(200);
             // Rewrite ui5://<namespace>/ to absolute paths in the manifest so that
             // FLP Sandbox 2.0's CDM does not map enhanceWith bundleUrls to the backend.
-            const ui5Prefix = `ui5://${this.mergedDescriptor.name.replaceAll('.', '/')}/`;
+            // Use descriptorVariantId (from manifest.appdescr_variant) — the manifest's ui5:// URLs
+            // are built from the variant id, whereas mergedDescriptor.name is the base app reference.
+            const ui5Prefix = `ui5://${(this.descriptorVariantId ?? this.mergedDescriptor.name).replaceAll('.', '/')}/`;
             const manifest = JSON.stringify(this.descriptor.manifest, undefined, 2).replaceAll(ui5Prefix, '/');
             res.send(manifest);
         } else if (req.path === '/Component-preload.js') {
