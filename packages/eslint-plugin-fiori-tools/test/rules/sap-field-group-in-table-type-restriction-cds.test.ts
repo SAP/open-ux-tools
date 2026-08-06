@@ -53,6 +53,20 @@ annotate service.Incidents with @(UI.LineItem: [
 ]);
 `;
 
+// LineItem with two DataFieldForAnnotation entries targeting FieldGroup
+const CAP_LINEITEM_WITH_TWO_FIELDGROUPS = `
+annotate service.Incidents with @(UI.LineItem: [
+    {
+        $Type : 'UI.DataFieldForAnnotation',
+        Target: '@UI.FieldGroup#GroupA',
+    },
+    {
+        $Type : 'UI.DataFieldForAnnotation',
+        Target: '@UI.FieldGroup#GroupB',
+    }
+]);
+`;
+
 // CAP manifest: set GridTable on IncidentsList
 const CAP_MANIFEST_WITH_GRID_TABLE = getManifestAsCode(CAP_MANIFEST, [
     {
@@ -140,8 +154,8 @@ ruleTester.run(`${TEST_NAME} - CDS`, fieldGroupInTableTypeRestrictionRule, {
             {
                 name: 'DataFieldForAnnotation targeting FieldGroup in AnalyticalTable',
                 filename: CAP_ANNOTATIONS_PATH,
-                code: CAP_ANNOTATIONS + CAP_LINEITEM_WITH_FIELDGROUP + CAP_LINEITEM_WITH_OTHER_ANNOTATION,
-                errors: [{ messageId: TEST_NAME }]
+                code: CAP_ANNOTATIONS + CAP_LINEITEM_WITH_TWO_FIELDGROUPS,
+                errors: [{ messageId: TEST_NAME }, { messageId: TEST_NAME }]
             },
             [{ filename: CAP_MANIFEST_PATH, code: CAP_MANIFEST_WITH_ANALYTICAL_TABLE }]
         )
