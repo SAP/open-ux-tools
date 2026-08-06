@@ -1,5 +1,3 @@
-import { join as joinPosix } from 'node:path/posix';
-
 import { ODataVersion } from '../base/odata-service.js';
 import { ServiceProvider } from '../base/service-provider.js';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service.js';
