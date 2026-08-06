@@ -1,5 +1,30 @@
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
-import { registerAdpChangesResourceRoot, registerComponentDependencyPaths } from './common.js';
+import { registerComponentDependencyPaths } from './common.js';
+
+/**
+ * Registers the ADP variant's `changes` namespace to resolve against the local dev server.
+ *
+ * In FLP Sandbox 2.0 the CDM registers the ADP variant component namespace (e.g. `adp/v2app`)
+ * against the backend URL so the base app Component/manifest load from the backend. That would
+ * also route flex-change resources (fragments, code extensions under `<namespace>/changes/...`)
+ * to the backend. This registers the more-specific `<namespace>/changes` sub-path to the local
+ * dev-server root so UI5's longest-prefix loader resolution serves those local files, matching
+ * Sandbox 1 behaviour. The base component namespace registration is left untouched.
+ *
+ * @param projectId the ADP variant id (e.g. `adp.v2app`), as provided in flexSettings
+ * @param baseUrl the local base URL prefix for the dev server (maybe empty)
+ */
+function registerAdpChangesResourceRoot(projectId: string, baseUrl = ''): void {
+    if (!projectId) {
+        return;
+    }
+    const namespace = `${projectId.replaceAll('.', '/')}/changes`;
+    const config = {
+        paths: {} as Record<string, string>
+    };
+    config.paths[namespace] = `${baseUrl}/changes`;
+    sap.ui.loader.config(config);
+}
 
 /**
  * BeforeFlpStart hook for FLP Sandbox 2.0.
