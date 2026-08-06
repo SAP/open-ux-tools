@@ -226,8 +226,6 @@ Both templates share the same `check()` body and `createAnnotations()`:
 - ✅ Violation with a **qualifier** (e.g. `Qualifier="MyQualifier"` in XML, `@UI.Term #MyQualifier` in CDS) — required since `Object.values(annotationMap)` covers both
 - ✅ V2 and V4 variants where the rule applies to both
 - ✅ CAP/CDS suite mirrors the XML suite (same valid/invalid cases)
-- ⚠️ **CDS annotation merging** — appending two `annotate service.X with @(UI.SameTerm: [...])` blocks for the same entity and term causes CDS to merge them (the second overwrites the first). Use a single annotate block with multiple entries instead of concatenating separate blocks for the same term.
-
 ```typescript
 // packages/eslint-plugin-fiori-tools/test/rules/sap-[rule-name].test.ts
 import { RuleTester } from 'eslint';
@@ -280,6 +278,31 @@ ruleTester.run(TEST_NAME, myRule, {
     ]
 });
 ```
+
+## CDS annotations tests:
+
+**Imports — use CAP variants instead of XML variants:**
+
+```typescript
+import {
+    CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH,
+    setup
+} from '../test-helper.js';
+```
+
+**Key differences from the XML template:**
+
+| | XML | CDS |
+|---|---|---|
+| `setup()` | `setup(TEST_NAME)` | `setup(\"${TEST_NAME} - CDS\", CAP_APP_PATH)` — second arg triggers `npmInstall` and mocks `process.cwd()` to `CAP_PROJECT_PATH` |
+| `filename` | `V4_ANNOTATIONS_PATH` | `CAP_ANNOTATIONS_PATH` — the `.cds` extension is what selects the CDS parser |
+| Code construction | `getAnnotationsAsXmlCode(V4_ANNOTATIONS, snippet)` | `CAP_ANNOTATIONS + cdsSnippet` — plain concatenation, no helper |
+| Non-CDS file guard | not needed | add a valid case with `filename: 'other.json'` to confirm the rule skips non-CDS files |
+| Enum values | `EnumMember="UI.ImportanceType/High"` | `#High` |
+| Record types | `Type="UI.DataField"` attribute on `<Record>` | `$Type: 'UI.DataField'` property |
+| Qualified annotation | `Qualifier="MyQualifier"` attribute | `#MyQualifier` after the term: `UI.LineItem #MyQualifier` |
+
+⚠️ **CDS annotation merging** — appending two `annotate service.X with @(UI.SameTerm: [...])` blocks for the same entity and term causes CDS to merge them (the second overwrites the first). Use a single `annotate` block with multiple entries instead of concatenating separate blocks for the same term.
 
 ## Debug checklist (if tests show 0 errors when violations expected):
 
