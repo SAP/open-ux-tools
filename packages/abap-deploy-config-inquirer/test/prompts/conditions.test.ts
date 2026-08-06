@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import type { Authentication } from '@sap-ux/btp-utils';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -188,9 +189,85 @@ describe('Test abap deploy config inquirer conditions', () => {
         expect(await showUsernameQuestion(undefined)).toBe(false);
     });
 
-    test('should show password questions', () => {
-        PromptState.transportAnswers.areCredentialFieldsVisible = true;
-        expect(showPasswordQuestion()).toBe(true);
+    describe('showUsernameQuestion - destination auth type suppression', () => {
+        const nonNoAuthTypes = [
+            'SAMLAssertion',
+            'OAuth2ClientCredentials',
+            'OAuth2JWTBearer',
+            'OAuth2Password',
+            'OAuth2RefreshToken',
+            'OAuth2SAMLBearerAssertion',
+            'OAuth2UserTokenExchange',
+            'ClientCertificateAuthentication',
+            'BasicAuthentication'
+        ];
+
+        it.each(nonNoAuthTypes)(
+            'should not show username prompt when destination auth type is %s',
+            async (authType) => {
+                PromptState.abapDeployConfig.destination = 'SomeDest';
+                PromptState.abapDeployConfig.destinationAuthType = authType as Authentication;
+                const result = await showUsernameQuestion(undefined);
+                expect(result).toBe(false);
+                expect(mockInitTransportConfig).not.toHaveBeenCalled();
+            }
+        );
+
+        it('should show username prompt when destination auth type is NoAuthentication', async () => {
+            PromptState.abapDeployConfig.destination = 'NoAuthDest';
+            PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication' as Authentication;
+            mockInitTransportConfig.mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: true
+            });
+            const result = await showUsernameQuestion(undefined);
+            expect(result).toBe(true);
+        });
+
+        it('should proceed with initTransportConfig when no destination is set (URL-based target)', async () => {
+            PromptState.abapDeployConfig.destination = undefined;
+            PromptState.abapDeployConfig.destinationAuthType = undefined;
+            mockInitTransportConfig.mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: true
+            });
+            const result = await showUsernameQuestion(undefined);
+            expect(result).toBe(true);
+        });
+    });
+
+    describe('showPasswordQuestion - destination auth type suppression', () => {
+        it('should suppress via delegation when showUsernameQuestion was not called first', async () => {
+            PromptState.abapDeployConfig.destination = 'SomeDest';
+            PromptState.abapDeployConfig.destinationAuthType = 'SAMLAssertion' as Authentication;
+            // transportConfigNeedsCreds is undefined (never primed by showUsernameQuestion)
+            expect(await showPasswordQuestion(undefined)).toBe(false);
+            expect(mockInitTransportConfig).not.toHaveBeenCalled();
+        });
+
+        it('should not show password prompt when destination auth type is SAMLAssertion', async () => {
+            PromptState.abapDeployConfig.destination = 'SomeDest';
+            PromptState.abapDeployConfig.destinationAuthType = 'SAMLAssertion' as Authentication;
+            await showUsernameQuestion(undefined);
+            expect(await showPasswordQuestion()).toBe(false);
+            expect(mockInitTransportConfig).not.toHaveBeenCalled();
+        });
+
+        it('should show password prompt when destination auth type is NoAuthentication and creds needed', async () => {
+            PromptState.abapDeployConfig.destination = 'NoAuthDest';
+            PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication' as Authentication;
+            mockInitTransportConfig.mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: true
+            });
+            await showUsernameQuestion(undefined);
+            expect(await showPasswordQuestion()).toBe(true);
+        });
+    });
+
+    test('should show password questions', async () => {
+        PromptState.transportAnswers.transportConfigNeedsCreds = true;
+        expect(await showPasswordQuestion()).toBe(true);
     });
 
     test('should show ui5 app deploy config questions', () => {

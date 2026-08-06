@@ -75,7 +75,7 @@ describe('getAuthPrompts', () => {
         const passwordPrompt = authPrompts.find((prompt) => prompt.name === promptNames.password);
 
         if (passwordPrompt) {
-            expect((passwordPrompt.when as Function)()).toBe(true);
+            expect(await (passwordPrompt.when as Function)()).toBe(true);
             expect(passwordPrompt.message).toBe(t('prompts.auth.password.message'));
             expect(await (passwordPrompt.validate as Function)()).toBe(true);
         }
