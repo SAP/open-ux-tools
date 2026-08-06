@@ -340,6 +340,52 @@ describe('Test getObjectPageFeatures()', () => {
         expect(result[0].headerSections?.[0].stashed).toBe(false);
     });
 
+    test('should extract header title binding path from header.properties.title.value', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            properties: {
+                                title: { value: 'Customer' }
+                            },
+                            aggregations: {}
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], 'listReportPage', mockLogger);
+        expect(result).toHaveLength(1);
+        expect(result[0].headerTitle).toBe('Customer');
+    });
+
+    test('should leave headerTitle undefined when no title binding path is present', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            properties: { title: { value: '' } },
+                            aggregations: {}
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], 'listReportPage', mockLogger);
+        expect(result).toHaveLength(1);
+        expect(result[0].headerTitle).toBeUndefined();
+    });
+
     test('should extract header sections with facetId containing # replaced with ::', async () => {
         const objectPage = {
             name: 'objectPage1',
