@@ -67,7 +67,7 @@ Example:
                 connectionType: options.connectionType,
                 username: options.username,
                 password: options.password,
-                noCredentials: !!options.noCredentials,
+                noCredentials: options.credentials === false,
                 skipCheck: !!options.skipCheck
             });
         });
