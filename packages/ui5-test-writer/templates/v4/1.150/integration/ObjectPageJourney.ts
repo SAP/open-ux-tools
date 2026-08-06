@@ -83,6 +83,12 @@ function journey() {
     });
 <% } -%>
 
+<% if (headerTitle) { -%>
+    opaTest("Check header title of the Object Page", function (_Given: Given, _When: When, Then: Then) {
+        Then.onThe<%- name%>Generated.onHeader().iCheckTitlePath(<%- JSON.stringify(headerTitle) %>);
+    });
+
+<% } -%>
 <% if (headerSections?.length > 0) { -%>
     opaTest("Check header facets of the Object Page", function (_Given: Given, <% if (headerSections.some(function(section) { return section.contactCardFields?.length > 0; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% headerSections.forEach(function(section) { -%>

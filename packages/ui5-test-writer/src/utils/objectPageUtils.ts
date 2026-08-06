@@ -18,6 +18,7 @@ import {
     type AggregationItem,
     type BodySectionItem,
     type FieldItem,
+    type HeaderItem,
     type HeaderSectionItem,
     type SectionItem,
     getAggregations,
@@ -71,6 +72,8 @@ export async function getObjectPageFeatures(
             listReportPageKey,
             parentLRTableIdentifier
         );
+        // extract header title binding path (for iCheckTitlePath)
+        pageFeatureData.headerTitle = getHeaderTitlePath(objectPage);
         // extract header sections (facets)
         pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
         // extract body sections (includes section-level actions and standard create/delete buttons)
@@ -157,6 +160,25 @@ function getObjectPageNavigationParents(
         parentLRTableIdentifier,
         parentOPs
     };
+}
+
+/**
+ * Returns the OData property path the Object Page header title is bound to, for use with
+ * `iCheckTitlePath`. Returns undefined for static titles that expose no binding path.
+ *
+ * @param objectPage - object page from the application model
+ * @returns the title binding path, or undefined
+ */
+function getHeaderTitlePath(objectPage: PageWithModelV4): string | undefined {
+    if (!objectPage.model) {
+        return undefined;
+    }
+    const header = getAggregations(objectPage.model.root)['header'] as HeaderItem | undefined;
+    const titlePath = header?.properties?.title?.value;
+    if (!titlePath) {
+        return undefined;
+    }
+    return titlePath;
 }
 
 /**
