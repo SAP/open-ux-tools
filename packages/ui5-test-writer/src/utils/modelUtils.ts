@@ -3,7 +3,7 @@ import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
+import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type {
     TreeAggregation,
@@ -51,6 +51,13 @@ export interface HeaderSectionItem extends SectionItem {
     };
 }
 
+export interface HeaderItem extends TreeAggregation {
+    properties?: {
+        title?: { value?: string };
+        description?: { value?: string };
+    };
+}
+
 export interface PageWithModelV4WithProperties extends PageWithModelV4 {
     routePattern?: string;
 }
@@ -84,7 +91,12 @@ export async function getAppFeatures(
         // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
         const appAccess = await createApplicationAccess(basePath, { fs: fs });
         const specification = await appAccess.getSpecification<Specification>();
-        const appModel: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
+        const readAppOptions: ReadAppParams & { includeAnnotationProperties: boolean } = {
+            app: appAccess,
+            fs: fs,
+            includeAnnotationProperties: true
+        };
+        const appModel: ReadAppResult = await specification.readApp(readAppOptions);
 
         if (!projectMetadata) {
             const metadataPath = appAccess.project?.apps['']?.services?.mainService?.local;
