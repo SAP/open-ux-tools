@@ -1,18 +1,20 @@
-# UI.FieldGroup is not supported in grid, tree, and analytical tables (sap-field-group-in-table-type-restriction)
+# `UI.FieldGroup` Is Not Supported in Grid, Tree, and Analytical tables (`sap-field-group-in-table-type-restriction`)
 
 Detects `UI.FieldGroup` references inside `UI.LineItem` when the configured table type does not support them.
 
-The `UI.FieldGroup` annotation is only supported in `ResponsiveTable`. Using it in `GridTable`, `AnalyticalTable`, or `TreeTable` causes the annotation to be silently ignored — grouped fields will not appear in the table.
+The `UI.FieldGroup` annotation is only supported in `ResponsiveTable`. Using it in `GridTable`, `AnalyticalTable`, or `TreeTable` causes the annotation to be silently ignored. Grouped fields are not displayed in the table.
 
 ## Rule Details
 
-The rule checks every `UI.DataFieldForAnnotation` record inside a `UI.LineItem`. If its `Target` property points to a `UI.FieldGroup` and the table's configured `tableSettings.type` is one of the unsupported types (`GridTable`, `AnalyticalTable`, `TreeTable`), a violation is reported on the `DataFieldForAnnotation` record.
+The rule checks every `UI.DataFieldForAnnotation` record inside a `UI.LineItem`. If its `Target` property points to a `UI.FieldGroup` and the table's configured `tableSettings.type` is one of the unsupported types, that is, `GridTable`, `AnalyticalTable`, `TreeTable`, a violation is reported on the `DataFieldForAnnotation` record.
 
-Applies to OData V2 and V4 Fiori elements applications.
+Applies to SAP Fiori elements for OData V2 and OData V4 applications.
 
-#### UI.FieldGroup in unsupported table type
+### Warning
 
-##### Warning Message: `UI.FieldGroup is not supported in {{tableType}}. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.`
+`UI.FieldGroup` is not supported in {{tableType}}. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.
+
+#### XML Annotations
 
 The following patterns are considered warnings:
 
@@ -60,12 +62,38 @@ The following patterns are not considered warnings:
 </Annotations>
 ```
 
-## How to Fix
+#### CDS Annotations
 
-Either:
-1. Change the table type to `ResponsiveTable` in `manifest.json` under `tableSettings.type`.
-2. Replace each `UI.DataFieldForAnnotation` referencing a `UI.FieldGroup` with individual `UI.DataField` entries.
+The following patterns are considered warnings if the table type is `GridTable`, `AnalyticalTable` or `TreeTable`:
+
+```cds
+annotate service.Incidents with @(UI.LineItem: [
+    {
+        $Type : 'UI.DataFieldForAnnotation',
+        // Violation: FieldGroup not supported in GridTable
+        Target: '@UI.FieldGroup#ContactData',
+    }
+]);
+```
+
+The following annotationpatterns are not considered warnings:
+
+```cds
+// OK: DataFieldForAnnotation targeting a non-FieldGroup annotation
+annotate service.Incidents with @(UI.LineItem: [
+    {
+        $Type : 'UI.DataFieldForAnnotation',
+        Target: '@UI.Chart#SomeChart',
+    }
+]);
+```
+
+### How to Fix
+
+Proceed with one of the following options:
+- Change the table type to `ResponsiveTable` in the `manifest.json` file under `tableSettings.type`.
+- Replace each `UI.DataFieldForAnnotation` with a `UI.FieldGroup` or individual `UI.DataField` entries.
 
 ## Bug Report
 
-In case you detect an issue with the check please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you encounter an issue with the rule, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).

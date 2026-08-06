@@ -120,8 +120,8 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
-|  new      | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in `GridTable`, `AnalyticalTable`, or `TreeTable`, as it is only supported in `ResponsiveTable`. | | ✅ |
-|  new      | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |
+|  new      | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in `ResponsiveTable`. | | ✅ |
+|  10.8.0   | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |
 |  10.7.6   | [sap-no-live-mode](docs/rules/sap-no-live-mode.md) | Ensures that live mode is not enabled. | | ✅ |
 |  10.2.0   | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description text property referenced using the `Common.Text` annotation has a meaningful `Common.Label` annotation. It must not be a generic value such as "Name" or "Description", and not the same label as the `ID` property. | | ✅ |
 |  9.12.0   | [sap-text-arrangement-hidden](docs/rules/sap-text-arrangement-hidden.md) | Ensures that the text property referenced by a `UI.TextArrangement` annotation using the `Common.Text` annotation is not hidden by the `UI.Hidden` annotation | | ✅ |
