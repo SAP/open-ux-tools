@@ -18,3 +18,4 @@ Make it easier for reviewer by describing the tests you have done to verify your
 - [ ] Corresponding changes to the documentation has been done
 - [ ] Already existing and new unit tests pass locally
 - [ ] I have reviewed and addressed all Hyperspace bot findings (or explicitly explained dismissals)
+- [ ] I have done an Agentic review

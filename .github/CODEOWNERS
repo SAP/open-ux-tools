@@ -67,7 +67,6 @@
 /packages/cap-config-writer/                   @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/app-config-writer/                   @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/generator-odata-downloader/          @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
-/packages/odata-download-generator/            @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/deploy-tooling/                      @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/deploy-config-sub-generator/         @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 /packages/deploy-config-generator-shared/      @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
@@ -94,8 +93,6 @@
 /packages/reload-middleware/           @SAP/ux-tools-middlewares @SAP/ux-tools-architects
 /packages/preview-middleware/          @SAP/ux-tools-middlewares @SAP/ux-tools-architects
 /packages/preview-middleware-client/   @SAP/ux-tools-middlewares @SAP/ux-tools-architects
-/packages/cards-editor-middleware/     @SAP/ux-tools-middlewares @SAP/ux-tools-architects
-/packages/cards-editor-config-writer/  @SAP/ux-tools-middlewares @SAP/ux-tools-architects
 
 # A4 — Annotations and OData
 /packages/cds-annotation-parser/          @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects

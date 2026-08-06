@@ -62,12 +62,10 @@ Either reviewer may be the PR author's direct teammate; what matters is that bot
 All PRs are automatically reviewed by the Hyperspace static-analysis bot when opened or updated.
 
 - The bot posts findings as PR comments. Each finding must be **addressed before the PR is posted in the review channel**: either fix the underlying issue or reply to the comment with an explicit explanation of why the finding is dismissed.
-- Do not mark bot comment threads as resolved yourself — the bot tracks resolution state.
 - If the bot re-triggers on a new push, re-check its output before requesting re-review.
 
-## Review Channel
-
-All review requests must be posted in the dedicated channel **#up-open-ux-tools-pr-reviews**. Do not post review requests in individual team channels.
+## Review Channel (SAP Internal)
+All review requests must be posted in the dedicated Slack channel **#up-open-ux-tools-pr-reviews**. Do not post review requests in individual team channels.
 
 **Posting protocol:**
 1. Ensure the Hyperspace bot has run and all findings are addressed.
