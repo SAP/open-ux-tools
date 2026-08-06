@@ -71,4 +71,25 @@ describe('getReentranceTicket()', () => {
         expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('MYSCENARIO'));
         delete process.env.FIORI_TOOLS_SCENARIO;
     });
+
+    it('uses the cloud reentrance endpoint when it does not return 404', async () => {
+        nock(serverOrigin).get('/sap/bc/sec/reentrance').reply(200);
+        await getReentranceTicket({
+            backendUrl: serverOrigin,
+            logger: new ToolsLogger({ transports: [new NullTransport()] })
+        });
+        expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('/sap/bc/sec/reentrance'));
+        expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('scenario='));
+    });
+
+    it('falls back to the ADT reentrance endpoint when the cloud endpoint returns 404', async () => {
+        nock(serverOrigin).get('/sap/bc/sec/reentrance').reply(404);
+        await getReentranceTicket({
+            backendUrl: serverOrigin,
+            logger: new ToolsLogger({ transports: [new NullTransport()] })
+        });
+        expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('/sap/bc/adt/core/http/reentranceticket'));
+        // ADT endpoint does not use the scenario query param
+        expect(mockOpen).not.toHaveBeenCalledWith(expect.stringContaining('scenario='));
+    });
 });
