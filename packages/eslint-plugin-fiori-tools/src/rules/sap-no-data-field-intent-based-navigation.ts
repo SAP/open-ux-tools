@@ -13,6 +13,7 @@ import type {
 } from '../project-context/linker/fe-v4.js';
 import type { FeV2ListReport, FeV2ObjectPage, Table as FeV2Table } from '../project-context/linker/fe-v2.js';
 import { type ParsedService } from '../project-context/parser/index.js';
+import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 
 /**
  * Collects DataFieldForIntentBasedNavigation and DataFieldWithIntentBasedNavigation used in a page
@@ -128,6 +129,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
     },
     check(context) {
+        if (!(context.sourceCode instanceof FioriAnnotationSourceCode)) {
+            return [];
+        }
         const problems: NoDataFieldIntentBasedNavigation[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {

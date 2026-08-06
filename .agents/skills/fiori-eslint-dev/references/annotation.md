@@ -57,6 +57,7 @@ import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { MyRuleDiagnostic } from '../language/diagnostics.js';
 import { MY_RULE } from '../language/diagnostics.js';
+import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 import { getRecordType } from '../project-context/linker/annotations.js';
 import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
 import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
@@ -171,6 +172,9 @@ Both templates share the same `check()` body and `createAnnotations()`:
 
 ```typescript
     check(context) {
+        if (!(context.sourceCode instanceof FioriAnnotationSourceCode)) {
+            return [];
+        }
         const problems: MyRuleDiagnostic[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
