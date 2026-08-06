@@ -46,11 +46,11 @@
         "unknownError": "Unknown error",
         "saveAnywayPrompt": "Connection check failed. Save system anyway?",
         "errors": {
-            "authFailed": "Authentication failed (HTTP 401 Unauthorized)",
-            "connectionRefused": "Connection refused - system may be unreachable",
+            "authFailed": "Authentication failed. Error: HTTP 401 Unauthorized",
+            "connectionRefused": "Connection refused. System may be unreachable",
             "connectionTimeout": "Connection timeout after {{timeout}}ms",
-            "hostNotFound": "Host not found (DNS resolution failed)",
-            "connectionReset": "Connection reset by server"
+            "hostNotFound": "Host not found. DNS resolution failed",
+            "connectionReset": "Connection reset by server."
         }
     }
 }
