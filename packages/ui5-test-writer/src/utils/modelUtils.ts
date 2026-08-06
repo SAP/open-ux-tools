@@ -56,6 +56,13 @@ export interface HeaderSectionItem extends SectionItem {
     };
 }
 
+export interface HeaderItem extends TreeAggregation {
+    properties?: {
+        title?: { value?: string };
+        description?: { value?: string };
+    };
+}
+
 export interface PageWithModelV4WithProperties extends PageWithModelV4 {
     routePattern?: string;
 }
