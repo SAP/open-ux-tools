@@ -28,6 +28,8 @@
             "usernameLabel": "Username (Existing: {{username}})",
             "usernameNone": "(none)",
             "passwordLabel": "Password",
+            "clearCredentialsLabel": "Clear Credentials",
+            "clearCredentialsConfirm": "Are you sure you want to clear all stored credentials?",
             "minOneRequired": "At least one field must be selected.",
             "newNamePrompt": "New System Name:",
             "newUsernamePrompt": "New Username:",

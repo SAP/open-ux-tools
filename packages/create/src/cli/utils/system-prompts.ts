@@ -326,7 +326,8 @@ export async function promptForUpdateFields(existing: BackendSystem): Promise<st
                 }),
                 value: 'username'
             },
-            { title: text('systemPrompts.updateFields.passwordLabel'), value: 'password' }
+            { title: text('systemPrompts.updateFields.passwordLabel'), value: 'password' },
+            { title: text('systemPrompts.updateFields.clearCredentialsLabel'), value: 'clearCredentials' }
         ],
         min: 1
     });
@@ -349,6 +350,29 @@ export async function promptForFieldUpdates(
     fields: string[],
     existing: BackendSystem
 ): Promise<Record<string, unknown>> {
+    // Track if clearCredentials was requested
+    const clearCredentialsRequested = fields.includes('clearCredentials');
+
+    // Handle clearCredentials separately - it doesn't need a prompt, only confirmation
+    if (clearCredentialsRequested) {
+        const answer = await prompts({
+            type: 'confirm',
+            name: 'confirmClear',
+            message: text('systemPrompts.updateFields.clearCredentialsConfirm'),
+            initial: false
+        });
+
+        if (!answer.confirmClear) {
+            throw new Error('Clear credentials cancelled');
+        }
+
+        // Remove clearCredentials from fields to process
+        fields = fields.filter((f) => f !== 'clearCredentials');
+        if (fields.length === 0) {
+            return { clearCredentials: true };
+        }
+    }
+
     const questions = fields
         .map((field) => {
             switch (field) {
@@ -381,7 +405,14 @@ export async function promptForFieldUpdates(
         })
         .filter((q) => q !== null);
 
-    return await prompts(questions as any);
+    const result = await prompts(questions as any);
+
+    // Add clearCredentials flag if it was originally selected
+    if (clearCredentialsRequested) {
+        result.clearCredentials = true;
+    }
+
+    return result;
 }
 
 /**

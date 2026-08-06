@@ -182,7 +182,7 @@ describe('system/update (update command group)', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--client', '']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith('At least one field must be selected');
+        expect(loggerMock.error).toHaveBeenCalledWith('At least one field must be selected.');
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 
