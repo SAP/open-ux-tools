@@ -97,8 +97,6 @@ function checkTablesAndFieldGroupsInPage(
                     type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
                     pageNames: [page.targetName],
                     annotation: {
-                        file: tableOrFieldGroup.annotation.annotation.top.uri,
-                        annotationPath: tableOrFieldGroup.annotation.annotationPath,
                         reference: {
                             uri: tableOrFieldGroup.annotation.annotation.top.uri,
                             value: dataField
