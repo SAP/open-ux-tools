@@ -48,22 +48,29 @@ const rule: FioriRuleDefinition = createFioriRule({
     check(context) {
         const problems = [];
         // ✅ manifest rules use linkedModel.apps — pages are required to find manifest config paths
-        for (const [, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
-            if (!app.isV4) continue; // or isV2, or both
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            if (!app.isV4) continue; // or app.type !== 'fe-v2', or both
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
             for (const page of app.pages) {
-                const config = page.someTable?.configuration.myProperty;
-                if (config?.valueInFile !== undefined && config.valueInFile !== expectedValue) {
-                    const manifestUri = context.sourceCode.projectContext.getManifestUri();
-                    problems.push({
-                        type: MY_RULE,
-                        pageName: page.targetName,
-                        manifest: {
-                            uri: manifestUri ?? '',
-                            object: context.sourceCode.projectContext.getManifest()!,
-                            propertyPath: config.configurationPath,
-                            loc: { start: { line: 0, column: 0 }, end: { line: 0, column: 0 } }
-                        }
-                    });
+                // ✅ Use page.lookup['table'] to access tables — not page.someTable
+                for (const table of page.lookup['table'] ?? []) {
+                    const config = table.configuration.myProperty;
+                    if (config?.valueInFile !== undefined && config.valueInFile !== expectedValue) {
+                        const node = context.sourceCode.getNode(
+                            context.sourceCode.ast.body,
+                            config.configurationPath
+                        );
+                        problems.push({
+                            type: MY_RULE,
+                            pageName: page.targetName,
+                            manifest: {
+                                uri: parsedApp.manifest.manifestUri,
+                                object: parsedApp.manifestObject,
+                                propertyPath: config.configurationPath,
+                                loc: node.loc
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -119,5 +126,7 @@ ruleTester.run('sap-[rule-name]', myRule, {
 ## Debug checklist (if tests show 0 errors when violations expected):
 
 - Is `linkedModel.apps` used (correct for manifest rules)?
+- Is `index.apps[appKey]` used to get `parsedApp` for `manifest.manifestUri` and `manifestObject`?
+- Is `page.lookup['table']` used (not `page.someTable`) to access tables?
 - Is the property path in `config.configurationPath` correct?
 - Does `config?.valueInFile` actually contain a value from the test manifest?
