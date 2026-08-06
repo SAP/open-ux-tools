@@ -82,7 +82,11 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: MY_RULE,
-                fix: createJsonFixer({ deepestPathResult, node })
+                fix: createJsonFixer({ 
+                    context,
+                    deepestPathResult,
+                    node
+                 })
             });
         }
 });
