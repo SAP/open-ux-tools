@@ -197,8 +197,6 @@ export interface FieldGroupInTableTypeRestriction {
     pageNames: string[];
     tableType: string;
     annotation: {
-        file: string;
-        annotationPath: string;
         reference: AnnotationReference;
         reportedParent: Element;
     };

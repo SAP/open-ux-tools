@@ -5,8 +5,8 @@ import type { FioriRuleDefinition } from '../types.js';
 import type { FieldGroupInTableTypeRestriction } from '../language/diagnostics.js';
 import { FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION } from '../language/diagnostics.js';
 import { getRecordType } from '../project-context/linker/annotations.js';
-import type { FeV4ObjectPage, FeV4ListReport, Table as FeV4Table } from '../project-context/linker/fe-v4.js';
-import type { FeV2ListReport, FeV2ObjectPage, Table as FeV2Table } from '../project-context/linker/fe-v2.js';
+import type { Table as FeV4Table } from '../project-context/linker/fe-v4.js';
+import type { Table as FeV2Table } from '../project-context/linker/fe-v2.js';
 import type { ParsedService } from '../project-context/parser/index.js';
 
 const DATA_FIELD_FOR_ANNOTATION = 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation';
@@ -96,8 +96,6 @@ function checkTableForFieldGroupViolations(
                 pageNames: [pageName],
                 tableType,
                 annotation: {
-                    file: lineItem.top.uri,
-                    annotationPath: table.annotation.annotationPath,
                     reference: { uri: lineItem.top.uri, value: record },
                     reportedParent: lineItem.top.value
                 }
@@ -134,14 +132,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             }
 
             for (const page of app.pages) {
-                const pageAsLR = page as FeV4ListReport | FeV2ListReport;
-                const pageAsOP = page as FeV4ObjectPage | FeV2ObjectPage;
-
-                const tables = [...(pageAsLR.lookup?.['table'] ?? []), ...(pageAsOP.lookup?.['table'] ?? [])] as (
-                    FeV4Table | FeV2Table
-                )[];
-
-                for (const table of tables) {
+                for (const table of (page.lookup['table'] ?? []) as (FeV4Table | FeV2Table)[]) {
                     checkTableForFieldGroupViolations(table, parsedService, page.targetName, problems);
                 }
             }
