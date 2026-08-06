@@ -196,8 +196,6 @@ export interface NoSingleFacetInCollection {
     type: typeof NO_SINGLE_FACET_IN_COLLECTION;
     pageNames: string[];
     annotation: {
-        file: string;
-        annotationPath: string;
         reference: AnnotationReference;
         reportedParent: Element;
     };
