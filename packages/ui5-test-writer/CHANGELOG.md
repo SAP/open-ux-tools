@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.4.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Generate a separate, named opaTest block for each Object Page section instead of one combined "Check body sections" block, so large object pages produce readable, independently-failing journey tests [[ee1fcaf](https://github.com/SAP/open-ux-tools/commit/ee1fcafb1a96bb963e9f5882d783d5a80d7eae1e)]
+
 ## 1.4.1
 
 ### Patch Changes
