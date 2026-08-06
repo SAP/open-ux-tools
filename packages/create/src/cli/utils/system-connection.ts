@@ -68,13 +68,13 @@ export async function checkSystemConnection(config: {
             throw error;
         }
     } catch (error: any) {
-        // 401 means system is reachable but auth failed (acceptable for non-basic auth types)
+        // 401 means system is reachable but auth failed
         if (error.response?.status === 401) {
-            // For basic auth with credentials, 401 is a failure
-            if (config.authenticationType === 'basic' && config.username && config.password) {
+            // For basic auth (regardless of whether credentials were provided), 401 is a failure
+            if (config.authenticationType === 'basic') {
                 return { success: false, error: text('systemConnection.errors.authFailed') };
             }
-            // For other auth types, 401 means system is reachable (success)
+            // For other auth types (reentranceTicket, oauth2), 401 means system is reachable (success)
             return { success: true };
         }
 
