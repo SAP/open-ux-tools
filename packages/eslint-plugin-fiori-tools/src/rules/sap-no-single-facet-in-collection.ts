@@ -8,6 +8,7 @@ import { getRecordType } from '../project-context/linker/annotations.js';
 import { buildAnnotationIndexKey, type ParsedService } from '../project-context/parser/index.js';
 import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
 import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
+import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 
 const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
 const UI_COLLECTION_FACET = 'com.sap.vocabularies.UI.v1.CollectionFacet';
@@ -185,6 +186,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriAnnotationSourceCode)) {
+            return [];
+        }
         const problems: NoSingleFacetInCollection[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
