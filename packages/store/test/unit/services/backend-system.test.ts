@@ -182,7 +182,12 @@ describe('BackendSystem service', () => {
             const systemService = new SystemService(logger);
             await expect(
                 systemService.write(
-                    new BackendSystem({ name: 's', url: 'some_url', systemType: 'OnPrem', connectionType: 'abap_catalog' })
+                    new BackendSystem({
+                        name: 's',
+                        url: 'some_url',
+                        systemType: 'OnPrem',
+                        connectionType: 'abap_catalog'
+                    })
                 )
             ).rejects.toThrow();
             expect(mockSystemDataProviderProto.write).not.toHaveBeenCalled();
