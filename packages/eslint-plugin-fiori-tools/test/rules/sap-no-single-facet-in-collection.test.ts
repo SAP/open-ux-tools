@@ -161,6 +161,26 @@ const V2_TWO_FACETS_IN_COLLECTION = `
         </Annotation>
     </Annotations>`;
 
+// V4: single CollectionFacet with exactly one ReferenceFacet child, qualified — VIOLATION
+const V4_SINGLE_FACET_IN_COLLECTION_QUALIFIED = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.Facets" Qualifier="MyQualifier">
+            <Collection>
+                <Record Type="UI.CollectionFacet">
+                    <PropertyValue Property="ID" String="GeneralInfo"/>
+                    <PropertyValue Property="Label" String="General Information"/>
+                    <PropertyValue Property="Facets">
+                        <Collection>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
+                            </Record>
+                        </Collection>
+                    </PropertyValue>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>`;
+
 ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
     valid: [
         createValidTest(
@@ -236,6 +256,15 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
                 name: 'V2: CollectionFacet with single ReferenceFacet',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_SINGLE_FACET_IN_COLLECTION),
+                errors: [{ messageId: TEST_NAME }]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V4: qualified UI.Facets with single ReferenceFacet in CollectionFacet',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_SINGLE_FACET_IN_COLLECTION_QUALIFIED),
                 errors: [{ messageId: TEST_NAME }]
             },
             []

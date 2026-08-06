@@ -56,6 +56,17 @@ annotate service.Incidents with @(
 );
 `;
 
+// CollectionFacet with empty Facets collection — VALID
+const CAP_EMPTY_COLLECTION_FACET = `
+annotate service.Incidents with @(
+    UI.Facets: [{
+        $Type : 'UI.CollectionFacet',
+        ID    : 'GeneralInfo',
+        Facets: [],
+    }],
+);
+`;
+
 // Outer CollectionFacet with two children, inner CollectionFacet with one ReferenceFacet — VIOLATION on inner
 const CAP_NESTED_SINGLE_FACET_IN_COLLECTION = `
 annotate service.Incidents with @(
@@ -76,6 +87,21 @@ annotate service.Incidents with @(
                 }],
             },
         ],
+    }],
+);
+`;
+
+// Qualified UI.Facets with a single ReferenceFacet in CollectionFacet — VIOLATION
+const CAP_SINGLE_FACET_IN_COLLECTION_QUALIFIED = `
+annotate service.Incidents with @(
+    UI.Facets #MyQualifier: [{
+        $Type : 'UI.CollectionFacet',
+        ID    : 'GeneralInfo',
+        Label : 'General Information',
+        Facets: [{
+            $Type : 'UI.ReferenceFacet',
+            Target: '@UI.FieldGroup#Details',
+        }],
     }],
 );
 `;
@@ -108,6 +134,14 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 code: CAP_ANNOTATIONS + CAP_DIRECT_REFERENCE_FACET
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'CollectionFacet with empty Facets collection',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CAP_EMPTY_COLLECTION_FACET
+            },
+            []
         )
     ],
     invalid: [
@@ -125,6 +159,15 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 name: 'nested CollectionFacet with single ReferenceFacet',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_NESTED_SINGLE_FACET_IN_COLLECTION,
+                errors: [{ messageId: TEST_NAME }]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'qualified UI.Facets with single ReferenceFacet in CollectionFacet',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CAP_SINGLE_FACET_IN_COLLECTION_QUALIFIED,
                 errors: [{ messageId: TEST_NAME }]
             },
             []
