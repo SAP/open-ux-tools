@@ -1,5 +1,29 @@
 # @sap-ux/ui5-test-writer
 
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Features
+
+- Generate Object Page header title check using iCheckTitlePath (binding-path based) [[26f9d1a](https://github.com/SAP/open-ux-tools/commit/26f9d1a1aaf4cb71d8c8f7fa33a529d7fa654da6)]
+
+## 1.3.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Replace the deprecated `iPressEdit()`/`iPressSectionIconTabFilterButton()` calls in generated OPA tests with the current `iExecuteEdit()` and `iGoToSection({ section })` APIs, and drop the now-unneeded custom `iPressSectionIconTabFilterButton` helper from the page-object templates. [[a516ff1](https://github.com/SAP/open-ux-tools/commit/a516ff1d3481623e059501c2b56c66ac334ea224)]
+
 ## 1.3.2
 
 ### Patch Changes
