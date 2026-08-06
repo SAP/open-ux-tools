@@ -10,10 +10,11 @@ import type { Logger } from '@sap-ux/logger';
 import { getHybridStore } from '../data-access/hybrid.js';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system.js';
 import { Entities } from './constants.js';
-import { ConnectionType } from '../types.js';
+import { ConnectionType, SystemSource } from '../types.js';
 import { getBackendSystemType, getSapToolsDirectory, isMatch } from '../utils/index.js';
 import { join } from 'node:path';
 import { readFileSync, writeFileSync } from 'node:fs';
+import { readAdtSystems, writeAdtSystem, deleteAdtSystem } from './adt-destinations.js';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> =
     class implements DataProvider<BackendSystem, BackendSystemKey> {
@@ -27,10 +28,19 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
+            const adtSystem = readAdtSystems(this.logger)[key.getId()];
+            if (adtSystem) {
+                return adtSystem;
+            }
             return this.dataAccessor.read({ entityName: this.entityName, id: key.getId() });
         }
 
         public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
+            // Route ADT-owned systems back to destinations.json; never to systems.json.
+            if (this.isAdtSystem(entity)) {
+                writeAdtSystem(entity, this.logger);
+                return entity;
+            }
             let e: BackendSystem;
             if (!(entity instanceof BackendSystem)) {
                 // We need to use the correct class otherwise the annotations are not effective
@@ -46,10 +56,28 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         public async delete(entity: BackendSystem): Promise<boolean> {
+            if (this.isAdtSystem(entity)) {
+                return deleteAdtSystem(entity, this.logger);
+            }
             return this.dataAccessor.del({
                 entityName: this.entityName,
                 id: BackendSystemKey.from(entity).getId()
             });
+        }
+
+        /**
+         * Determines whether the given system is owned by ADT (backed by destinations.json). The
+         * in-memory `source` marker is authoritative; as a fallback the current ADT destinations are
+         * consulted by store id so a system round-tripped without the marker still routes correctly.
+         *
+         * @param entity - the system being written or deleted
+         * @returns true if the system is an ADT-owned destination
+         */
+        private isAdtSystem(entity: BackendSystem): boolean {
+            if (entity.source === SystemSource.Adt) {
+                return true;
+            }
+            return !!readAdtSystems(this.logger)[BackendSystemKey.from(entity).getId()];
         }
 
         public async getAll(providerRetrievalOptions?: BackendProviderRetrievalOptions): Promise<BackendSystem[]> {
@@ -72,7 +100,12 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
                 });
             }
 
-            return this.applyFilters(Object.values(systems), backendSystemFilter);
+            // Merge in ADT destinations (backed by destinations.json), without feeding them to the
+            // systems.json migration above. Stored systems take precedence on id collision.
+            const adtSystems = readAdtSystems(this.logger);
+            const merged = { ...adtSystems, ...systems };
+
+            return this.applyFilters(Object.values(merged), backendSystemFilter);
         }
 
         /**

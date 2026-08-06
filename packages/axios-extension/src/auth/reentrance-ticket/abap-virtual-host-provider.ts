@@ -2,9 +2,9 @@ import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import axios from 'axios';
 
 type RelatedUrls = {
-    relatedUrls: {
-        API: string;
-        UI: string;
+    relatedUrls?: {
+        API?: string;
+        UI?: string;
     };
 };
 /**
@@ -56,11 +56,16 @@ export class ABAPVirtualHostProvider {
     /**
      * Get the UI hostname, if not cached yet it will be fetched.
      *
+     * Mirrors ADT: when the backend's virtual host endpoint does not return a UI URL (e.g. it
+     * responds with `{}` because UCON is not active, or with 404 on older backends), fall back to
+     * the configured system URL rather than failing.
+     *
      * @returns UI hostname
      */
     async uiHostname(): Promise<string> {
         if (!this.uiURL) {
-            this.uiURL = new URL((await this.getVirtualHosts()).relatedUrls.UI);
+            const ui = (await this.getVirtualHosts()).relatedUrls?.UI;
+            this.uiURL = ui ? new URL(ui) : this.systemURL;
         }
         return this.uiURL.origin;
     }
@@ -68,11 +73,15 @@ export class ABAPVirtualHostProvider {
     /**
      * Get the API hostname, if not cached yet it will be fetched.
      *
+     * Mirrors ADT: when the backend's virtual host endpoint does not return an API URL, fall back
+     * to the configured system URL rather than failing.
+     *
      * @returns API hostname
      */
     async apiHostname(): Promise<string> {
         if (!this.apiURL) {
-            this.apiURL = new URL((await this.getVirtualHosts()).relatedUrls.API);
+            const api = (await this.getVirtualHosts()).relatedUrls?.API;
+            this.apiURL = api ? new URL(api) : this.systemURL;
         }
         return this.apiURL.origin;
     }

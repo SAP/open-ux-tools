@@ -30,3 +30,28 @@ describe('ABAPVirtualHostProvider', () => {
         expect(logoffURL.origin).toEqual('https://some.web.host');
     });
 });
+
+describe('ABAPVirtualHostProvider - virtual host fallback', () => {
+    const backendOrigin = 'https://backend.com';
+
+    afterEach(() => {
+        nock.cleanAll();
+    });
+
+    it('falls back to the system URL when the virtual host response is empty ({})', async () => {
+        // UCON not active on the backend -> endpoint returns an empty object.
+        nock(backendOrigin).get('/sap/public/bc/icf/virtualhost').reply(200, {});
+
+        const vhp = new ABAPVirtualHostProvider(`${backendOrigin}/some/path`);
+        expect(await vhp.uiHostname()).toEqual(backendOrigin);
+        expect(await vhp.apiHostname()).toEqual(backendOrigin);
+    });
+
+    it('falls back to the system URL when relatedUrls has no UI/API entries', async () => {
+        nock(backendOrigin).get('/sap/public/bc/icf/virtualhost').reply(200, { relatedUrls: {} });
+
+        const vhp = new ABAPVirtualHostProvider(`${backendOrigin}/some/path`);
+        expect(await vhp.uiHostname()).toEqual(backendOrigin);
+        expect(await vhp.apiHostname()).toEqual(backendOrigin);
+    });
+});

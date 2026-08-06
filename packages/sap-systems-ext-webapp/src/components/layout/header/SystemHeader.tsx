@@ -38,6 +38,7 @@ export function SystemHeader(): ReactElement {
     const connectionTypeTitle = systemInfo?.connectionType
         ? connectionTypeTitles[systemInfo.connectionType]
         : undefined;
+    const isAdtOwned = systemInfo?.source === 'adt';
 
     return (
         <div className="store-header">
@@ -52,6 +53,7 @@ export function SystemHeader(): ReactElement {
                     </div>
                 )
             )}
+            {isAdtOwned && <div className="store-header-adt-badge">{t('titles.ownedByAdt')}</div>}
         </div>
     );
 }

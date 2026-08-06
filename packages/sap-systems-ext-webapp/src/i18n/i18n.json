@@ -25,7 +25,8 @@
         "btpSystem": "ABAP Environment on SAP Business Technology Platform",
         "genericHost": "Generic Host",
         "catalog": "Catalog",
-        "serviceUrl": "Service URL"
+        "serviceUrl": "Service URL",
+        "ownedByAdt": "Managed by the ABAP Development Tools (ADT) extension"
     },
     "options": {
         "abapCatalog": "ABAP Catalog",

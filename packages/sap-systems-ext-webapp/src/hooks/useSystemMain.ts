@@ -193,7 +193,10 @@ export function useSystemMain(): {
 
     // Expose only systemInfo and other UI/setter fields
     return {
-        systemInfo: systemFields as SystemInfo,
+        // `source` (e.g. 'adt') is a read-only origin marker that is not an editable field; carry it
+        // through from the store state so it survives the webview round-trip and save/test can route
+        // the system back to its origin (e.g. ADT's destinations.json).
+        systemInfo: { ...systemFields, source: systemInfo?.source } as SystemInfo,
         systemUnSaved: unSaved,
         defaultName,
         setName,

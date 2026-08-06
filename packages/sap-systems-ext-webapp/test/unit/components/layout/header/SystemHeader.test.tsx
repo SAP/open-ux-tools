@@ -49,4 +49,22 @@ describe('SystemHeader', () => {
         expect(screen.getByText('titles.sapSystemDetails')).toBeInTheDocument();
         expect(screen.getByText('titles.btpSystem')).toBeInTheDocument();
     });
+
+    it('renders the ADT badge when the system is owned by ADT', () => {
+        mockUseSelector.mockImplementation((selectorFn: any) =>
+            selectorFn({ systemInfo: { systemType: 'AbapCloud', source: 'adt' }, addNewSapSystem: false })
+        );
+
+        render(<SystemHeader />);
+        expect(screen.getByText('titles.ownedByAdt')).toBeInTheDocument();
+    });
+
+    it('does not render the ADT badge for a non-ADT system', () => {
+        mockUseSelector.mockImplementation((selectorFn: any) =>
+            selectorFn({ systemInfo: { systemType: 'OnPrem' }, addNewSapSystem: false })
+        );
+
+        render(<SystemHeader />);
+        expect(screen.queryByText('titles.ownedByAdt')).not.toBeInTheDocument();
+    });
 });

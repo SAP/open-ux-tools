@@ -1,5 +1,5 @@
 import type { TreeDataProvider, Command, ExtensionContext, Event } from 'vscode';
-import type { BackendSystem, ConnectionType } from '@sap-ux/store';
+import type { BackendSystem, ConnectionType, SystemSource } from '@sap-ux/store';
 import { commands, TreeItem, TreeItemCollapsibleState, Uri, EventEmitter } from 'vscode';
 import { t, getDisplayName, getBackendSystemService } from '../utils';
 import { SystemCommands } from '../utils/constants';
@@ -10,6 +10,7 @@ interface SapSystemTreeItem extends TreeItem {
     url: string;
     client?: string;
     connectionType?: ConnectionType;
+    source?: SystemSource;
 }
 
 /**
@@ -41,7 +42,8 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
                     name: getDisplayName(s),
                     url: s.url,
                     client: s.client,
-                    connectionType: s.connectionType
+                    connectionType: s.connectionType,
+                    source: s.source
                 } as SapSystemTreeItem;
             })
             ?.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }));
@@ -56,10 +58,11 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
     public getTreeItem(system: SapSystemTreeItem): TreeItem {
         const item = new TreeItem(system.name, TreeItemCollapsibleState.None);
         const props = this.getTreeItemProps(system);
+        const adtSuffix = system.source === 'adt' ? '-adt' : '';
         const systemTreeItem = {
             ...item,
             ...props,
-            contextValue: `sapSystem-${system.connectionType}`
+            contextValue: `sapSystem-${system.connectionType}${adtSuffix}`
         };
 
         return systemTreeItem;
@@ -90,7 +93,9 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
         iconPath: { light: Uri; dark: Uri };
     } {
         const clientText = system.client ? ` ${t('views.client', { client: system.client })}` : '';
-        const tooltip = `${system.url}${clientText}`;
+        const isAdt = system.source === 'adt';
+        const adtText = isAdt ? `\n${t('views.ownedByAdt')}` : '';
+        const tooltip = `${system.url}${clientText}${adtText}`;
 
         const command: Command = {
             title: t('commands.openSystemDetails'),
@@ -98,9 +103,10 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
             arguments: [{ url: system.url, client: system.client }, false]
         };
 
+        const iconName = isAdt ? 'icon-adt' : 'icon-sap-logo';
         const iconPath = {
-            light: Uri.joinPath(this.context.extensionUri, 'resources/light/icon-sap-logo-light.svg'),
-            dark: Uri.joinPath(this.context.extensionUri, 'resources/dark/icon-sap-logo-dark.svg')
+            light: Uri.joinPath(this.context.extensionUri, `resources/light/${iconName}-light.svg`),
+            dark: Uri.joinPath(this.context.extensionUri, `resources/dark/${iconName}-dark.svg`)
         };
 
         return {

@@ -48,5 +48,5 @@ export type { ServiceOptions };
 export { Entity };
 export { getBackendSystemType } from './utils/index.js';
 export { getFioriToolsDirectory, getSapToolsDirectory, FioriToolsSettings, SapTools } from './utils/index.js';
-export { SystemType, AuthenticationType, ConnectionType } from './types.js';
+export { SystemType, AuthenticationType, ConnectionType, SystemSource } from './types.js';
 export { isSystemNameInUse } from './utils/system-name.js';

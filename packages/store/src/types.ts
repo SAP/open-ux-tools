@@ -30,5 +30,16 @@ export const ConnectionType = {
 
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType];
 
+/**
+ * Origin of a backend system that is not stored in `systems.json`.
+ * `'adt'` marks a system merged in from ADT's `destinations.json`; changes to such a system are
+ * written back to that file, never to `systems.json`. Runtime-only — never persisted.
+ */
+export const SystemSource = {
+    Adt: 'adt'
+} as const;
+
+export type SystemSource = (typeof SystemSource)[keyof typeof SystemSource];
+
 export type BackendSerializableKeys =
     'name' | 'url' | 'client' | 'systemType' | 'authenticationType' | 'connectionType' | 'systemInfo';

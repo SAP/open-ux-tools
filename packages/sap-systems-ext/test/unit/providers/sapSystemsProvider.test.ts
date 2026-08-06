@@ -33,7 +33,14 @@ describe('Test the SAP Systems provider', () => {
             userDisplayName: 'User2',
             connectionType: 'odata_service'
         },
-        { name: 'System C', url: 'https://system-c.com', systemType: 'AbapCloud', connectionType: 'abap_catalog' }
+        { name: 'System C', url: 'https://system-c.com', systemType: 'AbapCloud', connectionType: 'abap_catalog' },
+        {
+            name: 'ADT_CLOUD',
+            url: 'https://adt-cloud.com',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog',
+            source: 'adt'
+        }
     ];
 
     describe('getChildren', () => {
@@ -50,25 +57,35 @@ describe('Test the SAP Systems provider', () => {
             expect(executeCommandSpy).toHaveBeenCalledWith('setContext', 'sap.ux.tools.sapSystems.treeLoading', false);
             expect(executeCommandSpy).toHaveBeenCalledWith('setContext', 'sap.ux.tools.sapSystems.isTreeEmpty', false);
 
-            expect(systems.length).toBe(3);
+            expect(systems.length).toBe(4);
             expect(systems).toStrictEqual([
+                {
+                    name: 'ADT_CLOUD (ABAP Cloud)',
+                    url: 'https://adt-cloud.com',
+                    client: undefined,
+                    connectionType: 'abap_catalog',
+                    source: 'adt'
+                },
                 {
                     name: 'System A [User1]',
                     client: '100',
                     url: 'https://system-a.com',
-                    connectionType: 'abap_catalog'
+                    connectionType: 'abap_catalog',
+                    source: undefined
                 },
                 {
                     name: 'System B [User2]',
                     url: 'https://system-b.com/full/service/path',
                     client: undefined,
-                    connectionType: 'odata_service'
+                    connectionType: 'odata_service',
+                    source: undefined
                 },
                 {
                     name: 'System C (ABAP Cloud)',
                     url: 'https://system-c.com',
                     client: undefined,
-                    connectionType: 'abap_catalog'
+                    connectionType: 'abap_catalog',
+                    source: undefined
                 }
             ]);
         });
@@ -147,6 +164,20 @@ describe('Test the SAP Systems provider', () => {
                     dark: expect.stringContaining('resources/dark/icon-sap-logo-dark.svg')
                 }
             });
+
+            // ADT-owned system: distinct icon, -adt contextValue suffix, and owned-by-ADT tooltip.
+            const adtTreeItem = provider.getTreeItem(backendSystems[3]);
+            expect(adtTreeItem).toEqual(
+                expect.objectContaining({
+                    contextValue: 'sapSystem-abap_catalog-adt',
+                    label: 'ADT_CLOUD',
+                    tooltip: expect.stringContaining('ADT'),
+                    iconPath: {
+                        light: expect.stringContaining('resources/light/icon-adt-light.svg'),
+                        dark: expect.stringContaining('resources/dark/icon-adt-dark.svg')
+                    }
+                })
+            );
         });
     });
 

@@ -1,5 +1,5 @@
 import type { EntityKey } from './index.js';
-import type { AuthenticationType, ConnectionType, SystemType } from '../types.js';
+import type { AuthenticationType, ConnectionType, SystemType, SystemSource } from '../types.js';
 import { getSensitiveDataProperties, sensitiveData, serializable } from '../decorators/index.js';
 import { hasAnyValue } from '../utils/index.js';
 
@@ -17,6 +17,13 @@ export class BackendSystem {
     @sensitiveData public readonly refreshToken?: string;
     @sensitiveData public readonly username?: string;
     @sensitiveData public readonly password?: string;
+    /**
+     * Runtime-only marker for the origin of a system that is not stored in `systems.json`.
+     * Deliberately NOT `@serializable` so it is never persisted (the hybrid store writes only
+     * decorated properties). Set in memory for systems merged from an external source, e.g. `'adt'`
+     * for entries backed by ADT's `destinations.json`.
+     */
+    public readonly source?: SystemSource;
 
     constructor({
         name,
@@ -30,7 +37,8 @@ export class BackendSystem {
         userDisplayName,
         authenticationType,
         connectionType,
-        systemInfo
+        systemInfo,
+        source
     }: {
         name: string;
         url: string;
@@ -44,6 +52,7 @@ export class BackendSystem {
         userDisplayName?: string;
         authenticationType?: AuthenticationType;
         systemInfo?: { systemId: string; client: string };
+        source?: SystemSource;
     }) {
         this.name = name;
         this.url = url;
@@ -59,6 +68,7 @@ export class BackendSystem {
         const sensitiveProps = getSensitiveDataProperties<BackendSystem>(this);
         this.hasSensitiveData = hasAnyValue(this, sensitiveProps);
         this.systemInfo = systemInfo;
+        this.source = source;
     }
 }
 

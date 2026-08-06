@@ -426,4 +426,91 @@ describe('Backend system data provider', () => {
             includeSensitiveData: true
         });
     });
+
+    describe('ADT destinations merge and write routing', () => {
+        const MIGRATION_MARKER = JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
+        const ADT_FILE = JSON.stringify({
+            formatVersion: '1.0',
+            destinations: [
+                {
+                    id: 'CLOUD',
+                    protocol: 'http',
+                    properties: { authenticationKind: 'reentranceticket', systemUrl: 'https://app.example.com:44301' }
+                }
+            ]
+        });
+
+        // The provider reads the migration marker first, then the ADT destinations file.
+        const mockFsReads = (): void => {
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockImplementation((path: unknown) =>
+                String(path).endsWith('destinations.json') ? ADT_FILE : MIGRATION_MARKER
+            );
+        };
+
+        it('getAll merges ADT http destinations as ABAP-on-BTP systems', async () => {
+            mockFsReads();
+            mockHybridStore.readAll.mockResolvedValue({});
+            const provider = new SystemDataProvider(logger);
+
+            const systems = await provider.getAll();
+
+            const cloud = systems.find((s) => s.name === 'CLOUD');
+            expect(cloud).toMatchObject({
+                url: 'https://app.example.com:44301',
+                systemType: SystemType.AbapCloud,
+                source: 'adt'
+            });
+        });
+
+        it('write routes an ADT-owned system to destinations.json, not the hybrid store', async () => {
+            mockFsReads();
+            const provider = new SystemDataProvider(logger);
+            const adtSystem = new BackendSystem({
+                name: 'CLOUD',
+                url: 'https://app.example.com:44301',
+                systemType: SystemType.AbapCloud,
+                connectionType: 'abap_catalog',
+                source: 'adt'
+            });
+
+            await provider.write(adtSystem);
+
+            expect(mockWriteFileSync).toHaveBeenCalled();
+            expect(String(mockWriteFileSync.mock.calls[0][0])).toContain('destinations.json');
+            expect(mockHybridStore.write).not.toHaveBeenCalled();
+        });
+
+        it('delete routes an ADT-owned system to destinations.json, not the hybrid store', async () => {
+            mockFsReads();
+            const provider = new SystemDataProvider(logger);
+            const adtSystem = new BackendSystem({
+                name: 'CLOUD',
+                url: 'https://app.example.com:44301',
+                systemType: SystemType.AbapCloud,
+                connectionType: 'abap_catalog',
+                source: 'adt'
+            });
+
+            await provider.delete(adtSystem);
+
+            expect(mockWriteFileSync).toHaveBeenCalled();
+            expect(mockHybridStore.del).not.toHaveBeenCalled();
+        });
+
+        it('write routes a non-ADT system to the hybrid store', async () => {
+            mockExistsSync.mockReturnValue(false); // no ADT file
+            const provider = new SystemDataProvider(logger);
+            const system = new BackendSystem({
+                name: 'onprem',
+                url: 'https://onprem.example.com',
+                systemType: SystemType.AbapOnPrem,
+                connectionType: 'abap_catalog'
+            });
+
+            await provider.write(system);
+
+            expect(mockHybridStore.write).toHaveBeenCalled();
+        });
+    });
 });

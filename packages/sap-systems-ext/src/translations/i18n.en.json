@@ -1,6 +1,7 @@
 {
     "views": {
         "client": "Client: {{client}}",
+        "ownedByAdt": "Managed by the ABAP Development Tools (ADT) extension",
         "systemType": {
             "abapCloud": "ABAP Cloud"
         }
