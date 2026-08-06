@@ -1,5 +1,21 @@
 # @sap-ux/ui5-config
 
+## 1.0.7
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.0.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
 ## 1.0.5
 
 ### Patch Changes

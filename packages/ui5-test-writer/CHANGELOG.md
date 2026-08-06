@@ -1,5 +1,158 @@
 # @sap-ux/ui5-test-writer
 
+## 1.3.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/ui5-application-writer 2.1.2 → 2.1.3
+- @sap-ux/preview-middleware 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+
+## 1.3.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.49 → 1.1.0
+
+## 1.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support 2-bucket UI5 version template selection (1.84 / 1.150) for Fiori Elements OPA5 test generation [[8f7862f](https://github.com/SAP/open-ux-tools/commit/8f7862f37a8685a9cd9ece5910bd4c5dd94c1194)]
+
+## 1.2.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Only generate ux-specification-derived OPA journeys for List Report / Object Page (LROP) and Flexible Programming Model (FPM) apps. Object Page-only and Analytical List Page projects now receive the generic fallback FirstJourney instead. The fallback is also written (and wired into the existing `opaTests.qunit.js`) when regenerating an existing app whose test setup is compatible but produces no ux-spec journeys, without overwriting a user's existing fallback journey. [[dbde04c](https://github.com/SAP/open-ux-tools/commit/dbde04ce67b917a1fea61511fb045d15708778ca)]
+
+## 1.2.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-28
+
+#### Bug Fixes
+
+- Rename the generated OPA journey type-definition file to `OpaJourneyTypes.gen.d.ts` and update the generated journey imports to match [[6fdd7f9](https://github.com/SAP/open-ux-tools/commit/6fdd7f9a7d6f082135f25eff5a77252694648cfa)]
+
+## 1.2.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/preview-middleware 1.0.48 → 1.0.49
+
+## 1.2.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.47 → 1.0.48
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-application-writer 2.1.1 → 2.1.2
+
+## 1.2.31
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.1
+- @sap-ux/preview-middleware 1.0.46 → 1.0.47
+
+## 1.2.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.45 → 1.0.46
+
+## 1.2.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- correct List Report and Object Page OPA test generation for multi-tab, custom filter fields, and semantic-key adaptation
+
+    - Use stable OData property names (`iCheckFilterField({ property })`) for standard filter fields instead of translatable labels; custom filter fields fall back to their resolved label
+    - Exclude `@UI.HiddenFilter` and already-present properties from the semantic-key "add to filter bar" test, and add a value placeholder to `iChangeFilterField`
+    - Correct Given/When/Then subjects in the semantic-key adaptation block
+    - Target the correct table on multi-tab List Reports via `onTable("<key>")` and switch tabs with `iGoToView({ key })` before checking each tab's rows
+    - Object Page navigation from a multi-tab parent List Report now targets the parent's default tab [[32a32a5](https://github.com/SAP/open-ux-tools/commit/32a32a5b938b448fc31d43c974e0363c71a8ec39)]
+
+## 1.2.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/preview-middleware 1.0.44 → 1.0.45
+
+## 1.2.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- Register generated journeys in `AllJourneys.gen.json` when adding OPA tests to existing projects [[e93607c](https://github.com/SAP/open-ux-tools/commit/e93607cfbf5736f120f58067293732d0897a28ad)]
+
+## 1.2.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.43 → 1.0.44
+
+## 1.2.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/preview-middleware 1.0.42 → 1.0.43
+
 ## 1.2.24
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @sap-ux/cds-annotation-parser
 
+## 1.0.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-vocabularies 1.0.5 → 1.1.0
+
+## 1.0.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-vocabularies 1.0.4 → 1.0.5
+
 ## 1.0.4
 
 ### Patch Changes

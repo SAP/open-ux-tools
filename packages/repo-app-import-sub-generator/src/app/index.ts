@@ -412,8 +412,11 @@ export default class extends Generator {
             await runPostAppGenHook({
                 path: this.projectPath,
                 vscodeInstance: this.vscode,
-                postGenCommand: this.options.data?.postGenCommand,
-                deployConfig: this.deployConfig
+                postGenCommand: this.options.data?.postGenCommand ?? '',
+                deployConfig: this.deployConfig,
+                ...(this.downloadType === AppDownloadType.AbapRepository && {
+                    migrationTelemetryEvent: EventName.ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED
+                })
             });
         }
     }

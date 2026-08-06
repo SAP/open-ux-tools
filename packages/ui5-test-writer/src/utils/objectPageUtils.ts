@@ -1,4 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
@@ -27,6 +28,7 @@ import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
+import { getTableIdentifiers } from './listReportUtils.js';
 
 /**
  * Extracts feature data for object pages from the application model.
@@ -35,13 +37,15 @@ import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckE
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
+ * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
     objectPages: PageWithModelV4[],
     listReportPageKey?: string,
     log?: Logger,
-    metadata?: string
+    metadata?: string,
+    manifest?: Manifest
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
@@ -52,6 +56,9 @@ export async function getObjectPageFeatures(
     // attempt to get individual feature data for each object page
     const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
     const schemaNamespace = convertedMetadata?.namespace ?? '';
+    // The parent List Report's default (first) table tab. Empty for single-table LRs;
+    // used so the OP's "navigate from parent LR" step targets a concrete tab on multi-tab LRs.
+    const parentLRTableIdentifier = getTableIdentifiers(manifest, listReportPageKey)[0];
 
     for (const objectPage of objectPages) {
         const pageFeatureData: ObjectPageFeatures = {} as ObjectPageFeatures;
@@ -60,7 +67,8 @@ export async function getObjectPageFeatures(
         pageFeatureData.navigationParents = getObjectPageNavigationParents(
             objectPage.name!,
             objectPages,
-            listReportPageKey
+            listReportPageKey,
+            parentLRTableIdentifier
         );
         // extract header sections (facets)
         pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
@@ -110,12 +118,14 @@ export function getObjectPages(applicationModel: ApplicationModel): PageWithMode
  * @param targetObjectPageKey - key of the target object page
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
+ * @param parentLRTableIdentifier - the parent List Report's default table tab key (empty for single-table LRs)
  * @returns navigation data including the ordered ancestor Object Page chain
  */
 function getObjectPageNavigationParents(
     targetObjectPageKey: string,
     objectPages: PageWithModelV4[],
-    listReportPageKey?: string
+    listReportPageKey?: string,
+    parentLRTableIdentifier?: string
 ): ObjectPageNavigationParents {
     const parentOPs: ObjectPageNavigationParent[] = [];
     const visited = new Set<string>([targetObjectPageKey]); // guard against infinite loop in case of invalid manifest entries
@@ -143,6 +153,7 @@ function getObjectPageNavigationParents(
 
     return {
         parentLRName: listReportPageKey ?? '', // app is possibly malformed if no LR found
+        parentLRTableIdentifier,
         parentOPs
     };
 }

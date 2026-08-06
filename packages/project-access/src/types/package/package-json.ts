@@ -223,11 +223,7 @@ declare namespace PackageJson {
 	Entry points of a module, optionally with conditions and subpath exports.
      */
     export type Exports =
-        | null
-        | string
-        | Array<string | ExportConditions>
-        | ExportConditions
-        | { [path: string]: Exports };
+        null | string | Array<string | ExportConditions> | ExportConditions | { [path: string]: Exports };
 
     /**
 	Import map entries of a module, optionally with conditions.

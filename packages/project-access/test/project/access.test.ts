@@ -352,6 +352,15 @@ describe('Test function createApplicationAccess()', () => {
         expect(spec).toEqual({ test: 'specification' });
     });
 
+    test('Get instance of specification - use memFs', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        mockGetSpecification.mockResolvedValueOnce({ test: 'specification' });
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        const spec = await appAccess.getSpecification();
+        expect(spec).toEqual({ test: 'specification' });
+        expect(mockGetSpecification).toHaveBeenCalledWith(appRoot, { memFs });
+    });
+
     test('Error handling for non existing app', async () => {
         try {
             await createApplicationAccess('non-existing-app');
