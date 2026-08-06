@@ -5,7 +5,7 @@
 1. `packages/eslint-plugin-fiori-tools/src/language/diagnostics.ts`
 2. `packages/eslint-plugin-fiori-tools/src/rules/sap-enable-export.ts`
 3. `packages/eslint-plugin-fiori-tools/src/rules/sap-no-live-mode.ts`
-4. `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v2.ts` — see `getTablePropertyChangeConfig` for how `changeFileUri` is populated
+4. `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v2.ts` — see `getPropertyChangeConfig` for how `changeFileUri` is populated
 5. `packages/eslint-plugin-fiori-tools/src/rules/index.ts`
 6. `packages/eslint-plugin-fiori-tools/src/index.ts`
 7. `packages/eslint-plugin-fiori-tools/test/test-helper.ts`
@@ -31,9 +31,9 @@ export interface MyRuleDiagnostic {
 import type { FioriRuleDefinition } from '../types.js';
 import { MY_RULE } from '../language/diagnostics.js';
 import { createFioriRule } from '../language/rule-factory.js';
-import { createJsonFixer } from '../language/rule-fixer.js';
-import { FLEX_CHANGE_NEW_VALUE_PATH_RESULT } from '../utils/helpers.js';
 import { FioriChangeSourceCode } from '../language/change/source-code.js';
+import { createJsonFixer } from '../language/rule-fixer.js'; // only if auto-fix
+import { FLEX_CHANGE_NEW_VALUE_PATH_RESULT } from '../utils/helpers.js'; // only if auto-fixable
 import type { MemberNode } from '../language/json/types.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
@@ -42,7 +42,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         type: 'suggestion',
         docs: { recommended: true, description: 'Short description.' },
         messages: { [MY_RULE]: 'Error message.' },
-        fixable: 'code',
+        fixable: 'code', // add only if the rule provides an auto-fix
         schema: []
     },
 
@@ -54,14 +54,19 @@ const rule: FioriRuleDefinition = createFioriRule({
         const problems = [];
         for (const [, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             for (const page of app.pages) {
-                const config = page.someTable?.configuration.myProperty;
-                if (config?.valueInFile === false) {
-                    problems.push({
-                        type: MY_RULE,
-                        property: 'myPropertyName',      // ← as it appears in the .change file
-                        pageName: page.targetName,
-                        changeFileUri: config.changeFileUri  // ← enables Page Editor navigation
-                    });
+                // ✅ Use page.lookup['table'] to access tables — not page.someTable
+                for (const table of page.lookup['table'] ?? []) {
+                    const config = table.configuration.myProperty;
+                    // Check for the incorrect value — type and value depend on the property
+                    // e.g. !== true, === false, !== 'expectedValue', etc.
+                    if (config?.valueInFile !== expectedValue) {
+                        problems.push({
+                            type: MY_RULE,
+                            property: 'myPropertyName',      // ← as it appears in the .change file
+                            pageName: page.targetName,
+                            changeFileUri: config.changeFileUri  // ← enables Page Editor navigation
+                        });
+                    }
                 }
             }
         }
@@ -73,12 +78,13 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: MY_RULE,
+                // Add fix, if there is a single correct defined value:
                 fix: createJsonFixer({
                     context,
                     deepestPathResult: FLEX_CHANGE_NEW_VALUE_PATH_RESULT,
                     node,
                     operation: 'update',
-                    value: true
+                    value: correctValue  // ← the value to fix to; type matches the property (boolean, string, etc.)
                 })
             });
         };
@@ -132,5 +138,5 @@ ruleTester.run('sap-[rule-name]', myRule, {
 ## Debug checklist (if tests show 0 errors when violations expected):
 
 - Is the `FioriChangeSourceCode` guard in place?
-- Is `config.changeFileUri` populated? (check `getTablePropertyChangeConfig` in `fe-v2.ts`)
+- Is `config.changeFileUri` populated? (check `getPropertyChangeConfig` in `fe-v2.ts`)
 - Is `linkedModel.apps` used (correct for flex change rules)?
