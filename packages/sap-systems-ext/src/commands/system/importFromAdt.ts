@@ -1,7 +1,13 @@
 import type { SystemCommandContext } from '../../types/system';
 import { BackendSystem, isSystemNameInUse } from '@sap-ux/store';
 import { commands, window, type QuickPickItem } from 'vscode';
-import { t, listAdtDestinations, resolveAdtDestination, type AdtDestinationHttpDetails } from '../../utils';
+import {
+    t,
+    listAdtDestinations,
+    resolveAdtDestination,
+    getBackendSystem,
+    type AdtDestinationHttpDetails
+} from '../../utils';
 import { TelemetryHelper } from '../../utils';
 import { SystemAction, SystemActionStatus, SystemCommands, SYSTEMS_EVENT } from '../../utils/constants';
 
@@ -42,6 +48,16 @@ export const importFromAdtCommandHandler = (_commandContext: SystemCommandContex
         const resolved = await resolveAdtDestination(picked.id);
         if (!resolved?.url) {
             window.showWarningMessage(t('info.adtImport.noneImported'));
+            return;
+        }
+
+        // Check whether a system with the same resolved url+client is already stored, regardless of
+        // its name. If so, tell the user which system it already is rather than creating a duplicate.
+        const existingByUrl = await getBackendSystem({ url: resolved.url, client: resolved.client });
+        if (existingByUrl) {
+            window.showInformationMessage(
+                t('info.adtImport.urlAlreadyExists', { url: resolved.url, name: existingByUrl.name })
+            );
             return;
         }
 

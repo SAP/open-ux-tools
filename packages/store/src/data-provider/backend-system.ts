@@ -113,8 +113,16 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
             }
 
             // Merge in ADT destinations (backed by destinations.json), without feeding them to the
-            // systems.json migration above. Stored systems take precedence on id collision.
+            // systems.json migration above. Stored (systems.json) systems take precedence on id collision;
+            // log any ADT entries that are dropped so the collision is visible rather than silent.
             const adtSystems = readAdtSystems(this.logger);
+            for (const id of Object.keys(adtSystems)) {
+                if (systems[id]) {
+                    this.logger.info(
+                        `ADT destination '${id}' is already present in systems.json as '${systems[id].name}'; the stored system takes precedence.`
+                    );
+                }
+            }
             const merged = { ...adtSystems, ...systems };
 
             return this.applyFilters(Object.values(merged), backendSystemFilter);

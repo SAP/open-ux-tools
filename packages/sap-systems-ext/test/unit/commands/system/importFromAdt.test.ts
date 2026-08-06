@@ -7,12 +7,15 @@ import { SystemCommands } from '../../../../src/utils/constants';
 
 const listAdtDestinationsMock = jest.fn();
 const resolveAdtDestinationMock = jest.fn();
+const getBackendSystemMock = jest.fn();
 const isSystemNameInUseMock = isSystemNameInUse as jest.Mock;
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
     listAdtDestinations: (protocol?: string[]): unknown => listAdtDestinationsMock(protocol),
-    resolveAdtDestination: (id: string): unknown => resolveAdtDestinationMock(id)
+    resolveAdtDestination: (id: string): unknown => resolveAdtDestinationMock(id),
+    getBackendSystem: ({ url, client }: { url: string; client?: string }): unknown =>
+        getBackendSystemMock({ url, client })
 }));
 
 const RFC_DEST = { id: 'SID_100_USER_EN', protocol: 'rfc', systemId: 'SID', client: '000', user: 'USER' };
@@ -31,6 +34,7 @@ describe('Test the importFromAdt command handler', () => {
 
     beforeEach(() => {
         isSystemNameInUseMock.mockResolvedValue(false);
+        getBackendSystemMock.mockResolvedValue(null); // default: url not yet stored
     });
 
     afterEach(() => {
@@ -88,6 +92,21 @@ describe('Test the importFromAdt command handler', () => {
         expect(isSystemNameInUseMock).toHaveBeenCalledWith('SID_100_USER_EN');
         // Name check happens before resolving, so no connection is attempted.
         expect(resolveAdtDestinationMock).not.toHaveBeenCalled();
+        expect(executeCommandMock).not.toHaveBeenCalled();
+        expect(infoSpy).toHaveBeenCalled();
+    });
+
+    it('tells the user and does not open the panel when the resolved url+client is already stored as a different system', async () => {
+        listAdtDestinationsMock.mockResolvedValue([RFC_DEST]);
+        resolveAdtDestinationMock.mockResolvedValue({ ...RFC_DEST, url: 'https://host:port' });
+        jest.spyOn(vsCodeWindow, 'showQuickPick').mockImplementation(async (items) => (await items)[0]);
+        // The url is already stored under a different name.
+        getBackendSystemMock.mockResolvedValue({ name: 'EXISTING_SYSTEM', url: 'https://host:port' });
+        const infoSpy = jest.spyOn(vsCodeWindow, 'showInformationMessage');
+
+        await importFromAdtCommandHandler(mockContext)();
+
+        expect(getBackendSystemMock).toHaveBeenCalledWith({ url: 'https://host:port', client: '000' });
         expect(executeCommandMock).not.toHaveBeenCalled();
         expect(infoSpy).toHaveBeenCalled();
     });

@@ -33,6 +33,7 @@
             "pickPlaceholder": "Select an ABAP destination to import",
             "enterPassword": "Enter the password for the imported system [{{- system}}] before connecting.",
             "alreadyExists": "An SAP system [{{- system}}] already exists for this destination.",
+            "urlAlreadyExists": "The resolved endpoint [{{- url}}] is already stored as SAP system [{{- name}}]. Open that system instead.",
             "noneImported": "No ABAP destinations could be imported. Ensure destinations are logged on."
         }
     },
