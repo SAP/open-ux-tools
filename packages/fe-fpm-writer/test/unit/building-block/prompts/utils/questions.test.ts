@@ -441,6 +441,20 @@ describe('utils - questions', () => {
             // No page macro => no key contains the page segment => falls through to historic behavior.
             expect(getChecked(choices)).toBeUndefined();
         });
+
+        test('defaults to first tab when sap.m controls use a non-default namespace prefix (e.g. xmlns:m="sap.m")', async () => {
+            // The view declares sap.m as "m:" instead of the default namespace — IconTabBar/IconTabFilter
+            // nodes appear as "m:IconTabBar" / "m:IconTabFilter" in the XPath keys.
+            fs.write(
+                join(itemsAppPath, viewPath),
+                '<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:m="sap.m" xmlns:macros="sap.fe.macros">' +
+                    '\n<macros:Page id="Page"><macros:items><m:IconTabBar id="itb"><m:items>' +
+                    '<m:IconTabFilter id="itf" text="Tab 1"/></m:items></m:IconTabBar></macros:items></macros:Page>' +
+                    '\n</mvc:View>'
+            );
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items/m:IconTabBar/m:items/m:IconTabFilter');
+        });
     });
 
     test('getViewOrFragmentPathPrompt', async () => {

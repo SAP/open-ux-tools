@@ -294,15 +294,25 @@ function resolveDefaultKey(
 ): string | undefined {
     const keys = Object.keys(inputChoices);
     if (defaultTarget === 'items' && pageMacroDefinition) {
-        const macrosPrefix = pageMacroDefinition.split(':')[0];
-        const itemsKey = keys.find((k) => k.endsWith(`/${pageMacroDefinition}/${macrosPrefix}:items`));
+        // Use local-name matching throughout to handle non-default namespace prefixes (e.g. xmlns:m="sap.m").
+        const localName = (path: string) => path.split('/').pop()?.split(':').pop();
+        // Find the items slot as the direct child of the page macro node with local-name 'items'.
+        const pageKey = keys.find((k) => k.endsWith(`/${pageMacroDefinition}`));
+        const itemsKey = pageKey
+            ? keys.find(
+                  (k) =>
+                      k.startsWith(`${pageKey}/`) &&
+                      k.slice(pageKey.length + 1).split('/').length === 1 &&
+                      localName(k) === 'items'
+              )
+            : undefined;
         if (itemsKey) {
             // Prefer the first tab's content (IconTabFilter) directly under the items slot.
-            // The expected suffix is exactly 3 segments: IconTabBar/items/IconTabFilter.
+            // Depth check: exactly 3 segments after itemsKey (e.g. IconTabBar/items/IconTabFilter).
             const tabKey = keys.find(
                 (k) =>
                     k.startsWith(`${itemsKey}/`) &&
-                    k.endsWith('/IconTabFilter') &&
+                    localName(k) === 'IconTabFilter' &&
                     k.slice(itemsKey.length + 1).split('/').length === 3
             );
             return tabKey ?? itemsKey;
