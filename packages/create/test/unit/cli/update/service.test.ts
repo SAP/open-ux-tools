@@ -43,6 +43,7 @@ const mockAppAccess = {
         mainService: 'mainService',
         services: { mainService: { uri: '/sap/opu/odata/sap/ZTEST_SRV/' } }
     },
+    projectType: 'EDMXBackend',
     readManifest: mockReadManifest
 };
 const mockCreateApplicationAccess = jest.fn<any>().mockResolvedValue(mockAppAccess);
@@ -377,10 +378,31 @@ describe('update service-metadata command', () => {
         expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
+    test.each(['CAPNodejs', 'CAPJava'])(
+        'non-EDMXBackend (%s) project: logs unsupported error and exits without writing',
+        async (projectType) => {
+            // Given
+            mockCreateApplicationAccess.mockResolvedValue({ ...mockAppAccess, projectType });
+            const command = new Command('update');
+            addServiceUpdateCommand(command);
+
+            // When
+            await command.parseAsync(getArgv(['service-metadata', '/app/path']));
+
+            // Then
+            expect(loggerMock.error).toHaveBeenCalledWith(
+                'Update service-metadata is only supported for Fiori applications connected to an EDMX backend'
+            );
+            expect(mockUpdate).not.toHaveBeenCalled();
+            expect(mockFsCommit).not.toHaveBeenCalled();
+        }
+    );
+
     test('no service in manifest: logs error and exits without writing', async () => {
         // Given
         mockCreateApplicationAccess.mockResolvedValue({
             app: { mainService: undefined, services: {} },
+            projectType: 'EDMXBackend',
             readManifest: mockReadManifest
         });
         const command = new Command('update');
@@ -399,6 +421,7 @@ describe('update service-metadata command', () => {
         // Given
         mockCreateApplicationAccess.mockResolvedValue({
             app: { mainService: 'mainService', services: { mainService: { uri: undefined } } },
+            projectType: 'EDMXBackend',
             readManifest: mockReadManifest
         });
         const command = new Command('update');
@@ -515,6 +538,7 @@ describe('update service-metadata command', () => {
                     otherService: { uri: '/sap/opu/odata/sap/ZOTHER_SRV/' }
                 }
             },
+            projectType: 'EDMXBackend',
             readManifest: mockReadManifest
         });
         const command = new Command('update');
@@ -540,6 +564,7 @@ describe('update service-metadata command', () => {
                 mainService: 'mainService',
                 services: { mainService: { uri: '/sap/opu/odata/sap/ZTEST_SRV/' } }
             },
+            projectType: 'EDMXBackend',
             readManifest: mockReadManifest
         });
         const command = new Command('update');

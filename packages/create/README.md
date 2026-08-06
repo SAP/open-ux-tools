@@ -450,6 +450,9 @@ Options:
 Refresh the local OData service metadata.xml from the live backend for a Fiori application.
 Also fetches value-help (external) service metadata when available.
 
+Only supported for Fiori applications connected to an EDMX backend. CAP applications are not supported,
+as their service metadata is generated locally from the CDS model rather than fetched from a backend.
+
 Example:
 
 `npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app`

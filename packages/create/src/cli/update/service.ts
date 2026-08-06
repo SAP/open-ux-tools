@@ -177,6 +177,9 @@ export function addServiceUpdateCommand(cmd: Command): void {
             `Refresh the local OData service metadata.xml from the live backend for a Fiori application.
 Also fetches value-help (external) service metadata when available.
 
+Only supported for Fiori applications connected to an EDMX backend. CAP applications are not supported,
+as their service metadata is generated locally from the CDS model rather than fetched from a backend.
+
 Example:
     \`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app\`
     \`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app --simulate\``
@@ -216,6 +219,12 @@ async function updateService(
         await validateBasePath(appPath);
 
         const appAccess = await createApplicationAccess(appPath);
+        if (appAccess.projectType !== 'EDMXBackend') {
+            logger.error(
+                'Update service-metadata is only supported for Fiori applications connected to an EDMX backend'
+            );
+            return;
+        }
         const serviceName = serviceNameOpt ?? appAccess.app.mainService ?? Object.keys(appAccess.app.services)[0];
         if (!serviceName) {
             logger.error(`No OData service found in manifest for app at '${appPath}'`);
