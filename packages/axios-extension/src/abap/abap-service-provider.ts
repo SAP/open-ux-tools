@@ -307,7 +307,13 @@ export class AbapServiceProvider extends ServiceProvider {
         const valueListReferences: ExternalService[] = [];
         const allPromises = references.map(async (reference) => {
             const { serviceRootPath, value } = reference;
-            const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
+            // Properly resolve relative paths with '../' navigation
+            // Example: serviceRootPath='/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/'
+            //          value='../../../../srvd_f4/dmo/i_agency/0001/$metadata'
+            //          should resolve to '/srvd_f4/dmo/i_agency/0001'
+            const baseUrl = new URL(serviceRootPath, 'http://dummy');
+            const resolvedUrl = new URL(value, baseUrl);
+            const externalServicePath = resolvedUrl.pathname.replace('/$metadata', '');
             const externalService = this.service(externalServicePath);
             try {
                 const data = await externalService.metadata();
