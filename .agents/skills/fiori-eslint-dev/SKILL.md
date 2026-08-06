@@ -93,7 +93,15 @@ If tests show 0 errors when violations are expected, check the debug checklist a
 ### Step 6 — Write documentation
 
 Create `packages/eslint-plugin-fiori-tools/docs/rules/sap-[rule-name].md`.
-Read `packages/eslint-plugin-fiori-tools/docs/rules/TEMPLATE.md` for structure. Key sections: Rule Details, Why Was This Introduced?, Warning / Error Examples, Correct Patterns, How to Fix. Only include "Further Reading" if you have a real verifiable URL.
+Read `packages/eslint-plugin-fiori-tools/docs/rules/TEMPLATE.md` for structure. Key sections:
+
+- **H1 title** — one sentence describing the rule, with the rule ID in parentheses
+- **Intro paragraph** — 2–3 sentences: what it detects, **why it was introduced** (motivation belongs here, not in a separate H2), and what to do instead
+- **## Rule Details** — how the rule works; warning message; "The following patterns are considered warnings" + "The following patterns are not considered warnings" code examples
+- **### How to Fix** — steps to remediate (omit if obvious from the examples)
+- **## False Positives** — optional; include only if the rule can produce false positives
+- **## Bug Report** — link to GitHub issues
+- **## Further Reading** — optional; only include if you have a real, verifiable URL
 
 ### Step 7 — Update README
 
