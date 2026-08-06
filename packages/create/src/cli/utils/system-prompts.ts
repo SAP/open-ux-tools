@@ -292,7 +292,9 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
         });
     }
 
-    if (partial.client === undefined) {
+    // Only prompt for client if URL is also being prompted (fully interactive mode)
+    // When URL is provided via flag, skip client prompt - let smart lookup handle multiple matches
+    if (!partial.url && partial.client === undefined) {
         questions.push({
             type: 'text',
             name: 'client',

@@ -8,11 +8,10 @@ import { text } from '../../i18n.js';
  * Finds a backend system by URL with smart matching when client is not specified or doesn't match.
  *
  * Logic:
- * 1. Try exact match (URL + client).
- * 2. If no match, find all systems with the same URL (across all connection types).
- * 3. If exactly one system found, use it automatically.
- * 4. If multiple systems found, prompt user to select.
- * 5. If none found, return undefined.
+ * 1. Find all systems with the same URL (across all connection types).
+ * 2. If exactly one system found, use it automatically.
+ * 3. If multiple systems found, try exact match first, then prompt user to select if no exact match.
+ * 4. If none found, return undefined.
  *
  * @param url - URL of the backend system
  * @param client - optional SAP client
@@ -29,17 +28,9 @@ export async function findSystemByUrl(
     // Normalize URL for comparison (remove trailing slash)
     const normalizedUrl = url.trim().replace(/\/$/, '');
 
-    // Try exact match first
-    const exactKey = new BackendSystemKeyClass({ url: normalizedUrl, client });
-    const exactMatch = await service.read(exactKey);
-    if (exactMatch) {
-        logger.debug(`Found exact match for ${exactKey.getId()}`);
-        return exactMatch;
-    }
-
-    // No exact match - search all systems with this URL (across all connection types)
+    // Search all systems with this URL (across all connection types)
     // Pass backendSystemFilter with connectionType undefined to bypass the default 'abap_catalog' filter
-    logger.debug(`No exact match for ${exactKey.getId()}, searching by URL only`);
+    logger.debug(`Searching for systems with URL: ${normalizedUrl}`);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const allSystems = await service.getAll({ backendSystemFilter: { connectionType: undefined as any } });
     const matches = allSystems.filter((s) => {
@@ -57,7 +48,21 @@ export async function findSystemByUrl(
         return matches[0];
     }
 
-    // Multiple matches - prompt user to select
+    // Multiple matches - only try exact match if client was explicitly provided
+    if (client !== undefined) {
+        const exactKey = new BackendSystemKeyClass({ url: normalizedUrl, client });
+        const exactMatch = matches.find((s) => {
+            const systemClient = s.client || undefined;
+            return systemClient === client;
+        });
+
+        if (exactMatch) {
+            logger.debug(`Found exact match for ${exactKey.getId()}: ${exactMatch.name}`);
+            return exactMatch;
+        }
+    }
+
+    // No exact match or client not provided - prompt user to select from multiple matches
     return await promptToSelectSystem(matches);
 }
 
