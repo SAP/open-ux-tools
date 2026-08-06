@@ -1,4 +1,4 @@
-import { RapGeneratorService } from '../../../../src';
+import { RapGeneratorService } from '../../../../src/index.js';
 
 describe('RapGeneratorService', () => {
     let service: RapGeneratorService;

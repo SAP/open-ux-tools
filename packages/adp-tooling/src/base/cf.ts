@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { readFileSync, existsSync } from 'node:fs';
 import { readUi5Yaml } from '@sap-ux/project-access';
-import type { AdpPreviewConfig } from '../types';
+import type { AdpPreviewConfig } from '../types.js';
 
 /**
  * Check if the project is a CF project.

@@ -1,9 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
 import http from 'node:http';
-import { ConnectionError, TimeoutError } from '../error';
-import { prettyPrintTimeInMs } from '../../abap/message';
-import { redirectErrorHtml, redirectSuccessHtml } from '../static';
-import type { ABAPVirtualHostProvider } from './abap-virtual-host-provider';
+import { ConnectionError, TimeoutError } from '../error.js';
+import { prettyPrintTimeInMs } from '../../abap/message.js';
+import { redirectErrorHtml, redirectSuccessHtml } from '../static.js';
+import type { ABAPVirtualHostProvider } from './abap-virtual-host-provider.js';
 
 interface Redirect {
     server: http.Server;

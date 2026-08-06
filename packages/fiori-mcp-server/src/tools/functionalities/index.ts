@@ -1,1 +1,1 @@
-export * from './functionalities';
+export * from './functionalities.js';

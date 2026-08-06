@@ -1,11 +1,11 @@
-import { t } from './i18n';
-import { PromptState } from './prompts/prompt-state';
+import { t } from './i18n.js';
+import { PromptState } from './prompts/prompt-state.js';
 import {
     createTransportNumberFromService,
     getTransportListFromService,
     listPackagesFromService
-} from './service-provider-utils';
-import type { BackendTarget, SystemConfig, TransportListItem } from './types';
+} from './service-provider-utils/index.js';
+import type { BackendTarget, SystemConfig, TransportListItem } from './types.js';
 
 /**
  * Checks if the input is an empty string.

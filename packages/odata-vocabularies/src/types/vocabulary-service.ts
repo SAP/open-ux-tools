@@ -23,7 +23,7 @@ import type {
     Constraints
 } from '@sap-ux/odata-annotation-core-types';
 
-import type { VocabularyNamespace } from '../resources';
+import type { VocabularyNamespace } from '../resources/index.js';
 
 /**
  * OData vocabulary

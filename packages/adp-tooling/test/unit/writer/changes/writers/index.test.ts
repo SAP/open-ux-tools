@@ -1,46 +1,52 @@
+import { jest } from '@jest/globals';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-import {
-    writeAnnotationChange,
-    writeChangeToFolder,
-    findChangeWithInboundId,
-    writeChangeToFile,
-    getChange
-} from '../../../../../src/base/change-utils';
+const mockWriteAnnotationChange = jest.fn<typeof realChangeUtils.writeAnnotationChange>();
+const mockWriteChangeToFolder = jest.fn<typeof realChangeUtils.writeChangeToFolder>();
+const mockFindChangeWithInboundId = jest.fn<typeof realChangeUtils.findChangeWithInboundId>();
+const mockWriteChangeToFile = jest.fn<typeof realChangeUtils.writeChangeToFile>();
+const mockGetChange = jest.fn().mockReturnValue({});
+const mockAddConnectivityServiceToMta = jest.fn<typeof realYaml.addConnectivityServiceToMta>();
+
+const realChangeUtils = await import('../../../../../src/base/change-utils.js');
+
+jest.unstable_mockModule('../../../../../src/base/change-utils', () => ({
+    ...realChangeUtils,
+    writeAnnotationChange: mockWriteAnnotationChange,
+    writeChangeToFolder: mockWriteChangeToFolder,
+    getChange: mockGetChange,
+    findChangeWithInboundId: mockFindChangeWithInboundId,
+    writeChangeToFile: mockWriteChangeToFile
+}));
+
+const realYaml = await import('../../../../../src/cf/project/yaml.js');
+
+jest.unstable_mockModule('../../../../../src/cf/project/yaml', () => ({
+    ...realYaml,
+    addConnectivityServiceToMta: mockAddConnectivityServiceToMta
+}));
+
+jest.unstable_mockModule('../../../../../src/cf/services/ssh', () => ({
+    ensureTunnelAppExists: jest.fn().mockResolvedValue(undefined),
+    DEFAULT_TUNNEL_APP_NAME: 'adp-ssh-tunnel-app'
+}));
+
+const { AnnotationsWriter, ComponentUsagesWriter, DataSourceWriter, InboundWriter, NewModelWriter } =
+    await import('../../../../../src/writer/changes/writers/index.js');
+const { ChangeType, ServiceType } = await import('../../../../../src/index.js');
 import type {
     AnnotationsData,
     ComponentUsagesDataBase,
     ComponentUsagesDataWithLibrary,
     DataSourceData,
     NewModelData,
+    NewModelDataWithAnnotations,
     InboundData,
     DescriptorVariant
-} from '../../../../../src';
-import {
-    AnnotationsWriter,
-    ComponentUsagesWriter,
-    DataSourceWriter,
-    InboundWriter,
-    NewModelWriter
-} from '../../../../../src/writer/changes/writers';
-import { ChangeType } from '../../../../../src';
+} from '../../../../../src/index.js';
 
-jest.mock('../../../../../src/base/change-utils', () => ({
-    ...jest.requireActual('../../../../../src/base/change-utils'),
-    writeAnnotationChange: jest.fn(),
-    writeChangeToFolder: jest.fn(),
-    getChange: jest.fn().mockReturnValue({}),
-    findChangeWithInboundId: jest.fn(),
-    writeChangeToFile: jest.fn()
-}));
-
-const writeAnnotationChangeMock = writeAnnotationChange as jest.Mock;
-const getChangeMock = getChange as jest.Mock;
-const writeChangeToFolderMock = writeChangeToFolder as jest.Mock;
-const findChangeWithInboundIdMock = findChangeWithInboundId as jest.Mock;
-const writeChangeToFileMock = writeChangeToFile as jest.Mock;
-
-const mockProjectPath = '/mock/project/path';
+const mockProjectPath = join('mock', 'project', 'path');
 const mockTemplatePath = '/mock/template/path';
 
 describe('AnnotationsWriter', () => {
@@ -68,7 +74,7 @@ describe('AnnotationsWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+        expect(mockWriteAnnotationChange).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
             mockData.annotation,
@@ -98,7 +104,7 @@ describe('AnnotationsWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+        expect(mockWriteAnnotationChange).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
             mockData.annotation,
@@ -128,7 +134,7 @@ describe('AnnotationsWriter', () => {
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+        expect(mockWriteAnnotationChange).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
             mockData.annotation,
@@ -170,7 +176,7 @@ describe('ComponentUsagesWriter', () => {
     it('should write component usages and library reference changes when required', async () => {
         await writer.write(mockData);
 
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             expect.objectContaining({
@@ -186,14 +192,14 @@ describe('ComponentUsagesWriter', () => {
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             expect.objectContaining({ libraries: { mockLibrary: { lazy: false } } }),
             ChangeType.ADD_LIBRARY_REFERENCE
         );
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledTimes(2);
+        expect(mockWriteChangeToFolder).toHaveBeenCalledTimes(2);
     });
 
     it('should only write component usages changes when library reference is not required', async () => {
@@ -209,26 +215,34 @@ describe('ComponentUsagesWriter', () => {
 
         jest.useRealTimers();
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledTimes(1);
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+        expect(mockWriteChangeToFolder).toHaveBeenCalledTimes(1);
+        expect(mockWriteChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 });
 
 describe('NewModelWriter', () => {
     let writer: NewModelWriter;
+    const readJSONMock = jest.fn();
+    const writeJSONMock = jest.fn();
 
     beforeEach(() => {
-        writer = new NewModelWriter({} as Editor, mockProjectPath);
         jest.clearAllMocks();
+        readJSONMock.mockReturnValue({ routes: [] });
+        mockAddConnectivityServiceToMta.mockResolvedValue(undefined);
+        writer = new NewModelWriter(
+            { readJSON: readJSONMock, writeJSON: writeJSONMock } as unknown as Editor,
+            mockProjectPath
+        );
     });
 
     it('should correctly construct content and write new model change', async () => {
-        const mockData: NewModelData = {
+        const mockData: NewModelDataWithAnnotations = {
             variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
             service: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/custom',
-                modelName: 'ODataModel',
+                modelName: 'ODataService',
                 version: '4.0',
                 modelSettings: '"someSetting": "someValue"'
             },
@@ -241,7 +255,7 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             {
@@ -263,7 +277,7 @@ describe('NewModelWriter', () => {
                     }
                 },
                 'model': {
-                    'ODataModel': {
+                    'ODataService': {
                         'dataSource': mockData.service.name,
                         'settings': {
                             'someSetting': 'someValue'
@@ -274,7 +288,244 @@ describe('NewModelWriter', () => {
             ChangeType.ADD_NEW_MODEL
         );
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+        expect(mockWriteChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+    });
+
+    it('should omit the model block in HTTP service type scenario', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.HTTP,
+            service: {
+                name: 'HttpService',
+                uri: '/api/http/service/',
+                modelName: undefined,
+                version: undefined
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockGetChange).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            {
+                'dataSource': {
+                    'HttpService': {
+                        'uri': mockData.service.uri,
+                        'type': 'http',
+                        'settings': {}
+                    }
+                }
+            },
+            ChangeType.ADD_NEW_DATA_SOURCE
+        );
+    });
+
+    it('should construct CF change content with derived URI', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v4/',
+                modelName: 'customer.MyService',
+                version: '4.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockGetChange).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            {
+                'dataSource': {
+                    'customer.MyService': {
+                        'uri': 'customer/MyService/sap/opu/odata/v4/',
+                        'type': 'OData',
+                        'settings': {
+                            'odataVersion': '4.0'
+                        }
+                    }
+                },
+                'model': {
+                    'customer.MyService': {
+                        'dataSource': 'customer.MyService'
+                    }
+                }
+            },
+            ChangeType.ADD_NEW_MODEL
+        );
+    });
+
+    it('should apply user modelSettings for CF project', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v4/',
+                modelName: 'customer.MyService',
+                version: '4.0',
+                modelSettings: '"operationMode": "Server"'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockGetChange).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            expect.objectContaining({
+                'model': {
+                    'customer.MyService': {
+                        'dataSource': 'customer.MyService',
+                        'settings': { 'operationMode': 'Server' }
+                    }
+                }
+            }),
+            ChangeType.ADD_NEW_MODEL
+        );
+    });
+
+    it('should create xs-app.json with a new route for a CF project when xs-app.json does not exist', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V4,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v4/',
+                modelName: 'customer.MyService',
+                version: '4.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(readJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), { routes: [] });
+        expect(writeJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), {
+            routes: [
+                {
+                    source: '^/customer/MyService/sap/opu/odata/v4/(.*)',
+                    target: '/sap/opu/odata/v4/$1',
+                    destination: 'MY_CF_DEST'
+                }
+            ]
+        });
+    });
+
+    it('should append a route to existing xs-app.json routes for a CF project', async () => {
+        readJSONMock.mockReturnValue({
+            routes: [{ source: '^existing/route/(.*)', target: '/existing/$1', destination: 'OTHER_DEST' }]
+        });
+
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.NewService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'customer.NewService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(writeJSONMock).toHaveBeenCalledWith(join(mockProjectPath, 'webapp', 'xs-app.json'), {
+            routes: [
+                { source: '^existing/route/(.*)', target: '/existing/$1', destination: 'OTHER_DEST' },
+                {
+                    source: '^/customer/NewService/sap/opu/odata/v2/(.*)',
+                    target: '/sap/opu/odata/v2/$1',
+                    destination: 'MY_CF_DEST'
+                }
+            ]
+        });
+    });
+
+    it('should not write xs-app.json for a non-CF project', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            service: {
+                name: 'ODataService',
+                uri: '/sap/opu/odata/custom/',
+                modelName: 'ODataService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(readJSONMock).not.toHaveBeenCalled();
+        expect(writeJSONMock).not.toHaveBeenCalled();
+    });
+
+    it('should call addConnectivityServiceToMta when isCloudFoundry and isOnPremiseDestination', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: true,
+            isOnPremiseDestination: true,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'customer.MyService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockAddConnectivityServiceToMta).toHaveBeenCalledWith(join('mock', 'project'), expect.any(Object));
+    });
+
+    it('should not call addConnectivityServiceToMta when not in CF', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: false,
+            service: {
+                name: 'ODataService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'ODataService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockAddConnectivityServiceToMta).not.toHaveBeenCalled();
+    });
+
+    it('should not call addConnectivityServiceToMta when isOnPremiseDestination is false', async () => {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            serviceType: ServiceType.ODATA_V2,
+            isCloudFoundry: true,
+            isOnPremiseDestination: false,
+            destinationName: 'MY_CF_DEST',
+            service: {
+                name: 'customer.MyService',
+                uri: '/sap/opu/odata/v2/',
+                modelName: 'customer.MyService',
+                version: '2.0'
+            }
+        };
+
+        await writer.write(mockData);
+
+        expect(mockAddConnectivityServiceToMta).not.toHaveBeenCalled();
     });
 });
 
@@ -315,7 +566,7 @@ describe('DataSourceWriter', () => {
         jest.useFakeTimers().setSystemTime(systemTime);
         await writer.write(mockData);
         jest.useRealTimers();
-        expect(getChangeMock).toHaveBeenCalledWith(
+        expect(mockGetChange).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
             expect.objectContaining({
@@ -336,7 +587,7 @@ describe('DataSourceWriter', () => {
             expect.anything()
         );
 
-        expect(writeChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
+        expect(mockWriteChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 
     it('should add annotation change if annotationUri is provided', async () => {
@@ -344,8 +595,8 @@ describe('DataSourceWriter', () => {
 
         await writer.write(mockData);
 
-        expect(getChange).toHaveBeenCalledTimes(2);
-        expect(writeChangeToFolder).toHaveBeenCalledTimes(2);
+        expect(mockGetChange).toHaveBeenCalledTimes(2);
+        expect(mockWriteChangeToFolder).toHaveBeenCalledTimes(2);
     });
 });
 
@@ -369,12 +620,12 @@ describe('InboundWriter', () => {
             variant: {} as DescriptorVariant
         };
 
-        findChangeWithInboundIdMock.mockResolvedValue({ changeWithInboundId: null, filePath: '' });
+        mockFindChangeWithInboundId.mockResolvedValue({ changeWithInboundId: null, filePath: '' });
 
         await writer.write(mockData);
 
-        expect(getChangeMock).toHaveBeenCalled();
-        expect(writeChangeToFolderMock).toHaveBeenCalled();
+        expect(mockGetChange).toHaveBeenCalled();
+        expect(mockWriteChangeToFolder).toHaveBeenCalled();
     });
 
     it('should enhance existing inbound change content when found', async () => {
@@ -389,14 +640,14 @@ describe('InboundWriter', () => {
         };
 
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };
-        findChangeWithInboundIdMock.mockResolvedValue({
+        mockFindChangeWithInboundId.mockResolvedValue({
             changeWithInboundId: { content: existingChangeContent },
             filePath: `${mockProjectPath}/webapp/changes/manifest/inboundChange.change`
         });
 
         await writer.write(mockData as InboundData);
 
-        expect(writeChangeToFileMock).toHaveBeenCalledWith(
+        expect(mockWriteChangeToFile).toHaveBeenCalledWith(
             '/mock/project/path/webapp/changes/manifest/inboundChange.change',
             expect.objectContaining({ content: expect.objectContaining({ inboundId: 'testInboundId' }) }),
             {}

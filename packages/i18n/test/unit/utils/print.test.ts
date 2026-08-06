@@ -1,4 +1,4 @@
-import { SapShortTextType, printPropertiesI18nEntry } from '../../../src';
+import { SapShortTextType, printPropertiesI18nEntry } from '../../../src/index.js';
 
 describe('documentation', () => {
     describe('printPropertiesI18nEntry', () => {

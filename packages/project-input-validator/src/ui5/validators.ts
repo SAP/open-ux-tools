@@ -1,5 +1,5 @@
 import { join, posix } from 'node:path';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import { existsSync, lstatSync, accessSync, constants } from 'node:fs';
 import validateNpmPackageName from 'validate-npm-package-name';
 

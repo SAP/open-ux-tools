@@ -22,7 +22,12 @@ Object {
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "server:
+    "contents": "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
@@ -73,6 +78,11 @@ Object {
         annotations:
           - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -91,6 +101,11 @@ Object {
         backend:
           - path: /sap
             url: http://localhost
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -127,7 +142,6 @@ Object {
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -1679,8 +1693,7 @@ Object {
                     <Record>
                         <PropertyValue Property=\\"TargetEntities\\">
                             <Collection>
-                                <NavigationPropertyPath>
-                                </NavigationPropertyPath>
+                                <NavigationPropertyPath></NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductText</NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductTextInOriginalLang</NavigationPropertyPath>
                             </Collection>
@@ -1966,9 +1979,7 @@ Object {
                         <PropertyValue Property=\\"ChartType\\" EnumMember=\\"UI.ChartType/Column\\"/>
                         <PropertyValue Property=\\"Dimensions\\">
                             <Collection>
-                                <PropertyPath>
-                                    DeliveryMonth
-                                </PropertyPath>
+                                <PropertyPath>DeliveryMonth</PropertyPath>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property=\\"DimensionAttributes\\">
@@ -1981,9 +1992,7 @@ Object {
                         </PropertyValue>
                         <PropertyValue Property=\\"Measures\\">
                             <Collection>
-                                <PropertyPath>
-                                    Revenue
-                                </PropertyPath>
+                                <PropertyPath>Revenue</PropertyPath>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property=\\"MeasureAttributes\\">
@@ -2298,15 +2307,9 @@ Object {
                 </Annotation>
                 <Annotation Term=\\"UI.SelectionFields\\">
                     <Collection>
-                        <PropertyPath>
-                            to_ProductStock/StockAvailability
-                        </PropertyPath>
-                        <PropertyPath>
-                            to_PriceRange/PriceClassification
-                        </PropertyPath>
-                        <PropertyPath>
-                            to_ProductCategory/MainProductCategory
-                        </PropertyPath>
+                        <PropertyPath>to_ProductStock/StockAvailability</PropertyPath>
+                        <PropertyPath>to_PriceRange/PriceClassification</PropertyPath>
+                        <PropertyPath>to_ProductCategory/MainProductCategory</PropertyPath>
                     </Collection>
                 </Annotation>
             </Annotations>
@@ -2802,7 +2805,12 @@ Object {
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "server:
+    "contents": "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
@@ -2853,6 +2861,11 @@ Object {
         annotations:
           - localPath: ./webapp/localService/mainService/SEPM_XYZ_SERVICE.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -2871,22 +2884,22 @@ Object {
         backend:
           - path: /sap
             url: http://localhost
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
   "webapp/localService/mainService/SEPM_XYZ_SERVICE.xml": Object {
-    "contents": "<HELLO>
-    <ANNOTATION>
-    </ANNOTATION>
-</WORLD>
-</HELLO>",
+    "contents": "<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>",
     "state": "modified",
   },
   "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<HELLO>
     <WORLD>
-        <METADATA>
-        </METADATA>
+        <METADATA></METADATA>
     </WORLD>
 </HELLO>",
     "state": "modified",

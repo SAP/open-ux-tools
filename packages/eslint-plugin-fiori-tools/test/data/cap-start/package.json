@@ -1,0 +1,39 @@
+{
+    "name": "teched2020-iis360",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "dependencies": {
+        "@sap/cds": "^9",
+        "@sap/cds-dk": "^9.8.3"
+    },
+    "devDependencies": {},
+    "scripts": {},
+    "cds": {
+        "[development]": {
+            "requires": {
+                "db": {
+                    "kind": "sql"
+                }
+            }
+        },
+        "[test]": {
+            "requires": {
+                "db": {
+                    "kind": "sqlite",
+                    "credentials": {
+                        "database": "sqlite.db"
+                    }
+                }
+            }
+        },
+        "odata": {
+            "version": "v4"
+        }
+    },
+    "workspaces": [
+        "app/*"
+    ],
+    "sapux": [
+        "app/incidents"
+    ]
+}

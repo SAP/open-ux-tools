@@ -1,5 +1,5 @@
 import os from 'node:os';
-import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../../src/common/utils';
+import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../../src/common/utils.js';
 
 describe('insertTextAtPosition', () => {
     const content = `Line 0,${os.EOL}Line 1,${os.EOL}Line 2,${os.EOL}Line 3`;

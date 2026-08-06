@@ -1,6 +1,6 @@
 import type { AnnotationNode } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
-import type { Context, VisitorState } from './visitor-state';
+import type { Context, VisitorState } from './visitor-state.js';
 
 export type ConvertResult = Element | Subtree | undefined;
 export interface NodeHandler<N extends AnnotationNode> {

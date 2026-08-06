@@ -1,5 +1,9 @@
-import { join } from 'node:path';
-import type { Manifest, Package } from '../../src';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { Manifest, Package } from '../../src/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import {
     deleteDirectory,
     deleteFile,
@@ -10,7 +14,7 @@ import {
     updateManifestJSON,
     updatePackageJSON,
     writeFile
-} from '../../src/file';
+} from '../../src/file/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'node:fs';

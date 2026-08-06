@@ -1,16 +1,18 @@
 import { promises } from 'node:fs';
-import { pathToFileURL } from 'node:url';
-import { join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Editor } from 'mem-fs-editor';
 import { getProject } from '@sap-ux/project-access';
 
-import { pathFromUri } from '../../src/utils';
-import { FioriAnnotationService } from '../../src';
+import { pathFromUri } from '../../src/utils/index.js';
+import { FioriAnnotationService } from '../../src/index.js';
 
-import { createFsEditorForProject } from './virtual-fs';
-import { serialize } from './raw-metadata-serializer';
-import { PROJECTS } from './projects';
+import { createFsEditorForProject } from './virtual-fs.js';
+import { serialize } from './raw-metadata-serializer.js';
+import { PROJECTS } from './projects.js';
 
 async function updateDBLayerFile(root: string): Promise<Editor> {
     const srvFilePath = pathFromUri(pathToFileURL(join(root, 'db', 'schema.cds')).toString());

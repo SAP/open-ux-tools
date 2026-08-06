@@ -5,4 +5,4 @@ export {
     initProject,
     isProjectIntegrityEnabled,
     updateProjectIntegrity
-} from './project';
+} from './project.js';

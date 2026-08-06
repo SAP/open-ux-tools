@@ -5,6 +5,7 @@
 .project
 .DS_Store
 .pnpm-store
+.worktrees
 
 ## Original Source: https://github.com/github/gitignore/blob/master/Node.gitignore
 
@@ -186,6 +187,7 @@ nx-cloud.env
 
 # AI Coding Agents
 .claude/settings.local.json
+**/.claude/settings.json
 CLAUDE.local.md
 .cursorignore
 .codeiumignore
@@ -194,3 +196,7 @@ CLAUDE.local.md
 # Local Model/Agent Caches
 .anthropic/
 .claude/cache/
+dist-cjs/
+
+# Test fixture lock files
+packages/cds-odata-annotation-converter/test/data/bookshop/package-lock.json

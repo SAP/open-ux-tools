@@ -9,9 +9,9 @@ import {
     isCFEnvironment,
     type AdpPreviewConfigWithTarget
 } from '@sap-ux/adp-tooling';
-import { getLogger, traceChanges } from '../../tracing';
-import { promptYUIQuestions } from '../../common';
-import { validateAdpAppType } from '../../validation';
+import { getLogger, traceChanges } from '../../tracing/index.js';
+import { promptYUIQuestions } from '../../common/index.js';
+import { validateAdpAppType } from '../../validation/index.js';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { FileName } from '@sap-ux/project-access';
 

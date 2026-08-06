@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { ConnectionTypes } from '../../../../../../src/components/layout/main/systemInfo/ConnectionTypes';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/ui-components', () => {
+jest.unstable_mockModule('@sap-ux/ui-components', () => {
     const UIDropdown = ({ onChange, options, selectedKey }: any) => (
         <select
             data-testid="connection-type-dropdown"
             value={selectedKey}
-            onChange={(e) => {
+            onChange={(e: any) => {
                 const selectedOption = options.find((opt: any) => opt.key === e.target.value);
                 onChange(e, selectedOption);
             }}>
@@ -22,6 +22,8 @@ jest.mock('@sap-ux/ui-components', () => {
     UIDropdown.displayName = 'UIDropdown';
     return { UIDropdown };
 });
+
+const { ConnectionTypes } = await import('../../../../../../src/components/layout/main/systemInfo/ConnectionTypes');
 
 describe('<ConnectionTypes />', () => {
     it('should render with default abap_catalog selection when no connectionType is provided', () => {

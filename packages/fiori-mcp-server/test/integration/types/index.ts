@@ -1,1 +1,1 @@
-export { FOLDER_PATHS } from './const';
+export { FOLDER_PATHS } from './const.js';

@@ -1,2 +1,2 @@
-export * from './UITable';
-export * from './types';
+export * from './UITable.js';
+export * from './types.js';

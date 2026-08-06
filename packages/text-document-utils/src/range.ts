@@ -1,4 +1,4 @@
-import { positionAt } from './position';
+import { positionAt } from './position.js';
 import { Position, Range } from 'vscode-languageserver-types';
 /**
  * Create range.

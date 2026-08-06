@@ -3,8 +3,8 @@ import { TextSourceCodeBase } from '@eslint/plugin-kit';
 
 import type { XMLAstNode, XMLDocument, XMLToken } from '@xml-tools/ast';
 
-import { XMLVisitNodeStep, STEP_PHASE } from './traversal-step';
-import type { ProjectContext } from '../../project-context/project-context';
+import { XMLVisitNodeStep, STEP_PHASE } from './traversal-step.js';
+import type { ProjectContext } from '../../project-context/project-context.js';
 
 /**
  * Visitor keys mapping XML node types to their traversable child properties.

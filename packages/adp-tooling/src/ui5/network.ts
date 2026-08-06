@@ -1,4 +1,4 @@
-import type { NetworkError } from '../types';
+import type { NetworkError } from '../types.js';
 
 /**
  * In VS Code extension host, we can't rely on navigator.onLine.

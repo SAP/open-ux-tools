@@ -1,9 +1,9 @@
-import { FileName, readUi5Yaml } from '@sap-ux/project-access';
-import { MiddlewareConfigs } from '../types';
+import { FileName, readUi5Yaml, type Manifest, getWebappPath } from '@sap-ux/project-access';
+import { MiddlewareConfigs } from '../types/index.js';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
+import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types/index.js';
 import type { Editor } from 'mem-fs-editor';
-import { basename } from 'node:path';
+import { basename, join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 /**
  * Type guard to check if the given configuration is a deprecated preview middleware configuration.
@@ -95,4 +95,30 @@ export async function deleteFiles(fs: Editor, files: string[], logger?: ToolsLog
             );
         }
     });
+}
+
+/**
+ * Reads the manifest.json file from the application path.
+ *
+ * @param appPath - path to the application root
+ * @param fs - file system reference
+ * @returns object containing the parsed manifest and its file path
+ * @throws {Error} if manifest.json is not found or sap.app section is missing
+ */
+export async function readManifest(appPath: string, fs: Editor): Promise<{ manifest: Manifest; manifestPath: string }> {
+    const manifestPath = join(await getWebappPath(appPath, fs), FileName.Manifest);
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+
+    if (!manifest) {
+        throw new Error(`The \`manifest.json\` file was not found at path: ${manifestPath}. Check the file exists.`);
+    }
+
+    if (!manifest['sap.app']) {
+        throw new Error(`The \`manifest.json\` file is missing the \`sap.app\` required section.`);
+    }
+
+    return {
+        manifest,
+        manifestPath
+    };
 }

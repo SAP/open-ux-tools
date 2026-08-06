@@ -12,7 +12,7 @@ import {
     createIsDocument,
     createIsDocumentObject,
     createRememberDocument
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -29,7 +29,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {

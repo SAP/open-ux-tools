@@ -1,6 +1,6 @@
 import type { AnnotationFile, MetadataElement, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
 
-import type { TextFile } from './text-file';
+import type { TextFile } from './text-file.js';
 
 /**
  * CAP CDS service. All source files are available to the developer, but not all can be modified e.g @sap/cds/common.

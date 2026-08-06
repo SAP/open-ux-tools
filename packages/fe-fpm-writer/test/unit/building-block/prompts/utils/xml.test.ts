@@ -1,10 +1,18 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
-import { getOrAddNamespace } from '../../../../../src/building-block/prompts/utils/xml';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+    getOrAddNamespace,
+    getXPathStringsForXmlFile,
+    getDOMParserOptions,
+    TEMPLATE_NAMESPACES
+} from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
-import { isElementIdAvailable } from '../../../../../src/common/utils';
+import { isElementIdAvailable } from '../../../../../src/common/utils.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('utils - xml', () => {
     let fs: Editor;
@@ -176,5 +184,114 @@ describe('getOrAddNamespace', () => {
         const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
+    });
+});
+
+describe('getXPathStringsForXmlFile', () => {
+    let fs: Editor;
+
+    beforeAll(() => {
+        fs = create(createStorage());
+    });
+
+    it('synthesizes macros:items path when macros:Page exists but has no macros:items child', () => {
+        const viewPath = '/test/Cp.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp" description="cp">
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        expect(keys.some((k) => k.endsWith('macros:Page/macros:items'))).toBe(true);
+    });
+
+    it('does not synthesize macros:items path when macros:items already exists', () => {
+        const viewPath = '/test/CpWithItems.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp">
+                <macros:items>
+                </macros:items>
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        // macros:items is a real element in the DOM — it will appear as a real choice, not a duplicate
+        const macrosItemsKeys = keys.filter((k) => k.endsWith('macros:Page/macros:items'));
+        expect(macrosItemsKeys).toHaveLength(1);
+    });
+});
+
+describe('getDOMParserOptions', () => {
+    const validXml = '<root xmlns:macros="sap.fe.macros"><macros:Table id="T1"/></root>';
+    const invalidXml = '<a>aaa</b>';
+
+    test('default handler throws on parse error', () => {
+        const options = getDOMParserOptions();
+        expect(() => new DOMParser(options).parseFromString(invalidXml, 'text/xml')).toThrow(
+            /Unable to parse template file with building block data/
+        );
+    });
+
+    test('custom handler is called with level and message', () => {
+        const calls: [string, string][] = [];
+        const options = getDOMParserOptions(undefined, (level, message) => {
+            calls.push([level, message]);
+        });
+        new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        expect(calls.length).toBeGreaterThan(0);
+        expect(calls[0][0]).toBeDefined();
+    });
+
+    test('silent handler returns partial DOM without throwing', () => {
+        const options = getDOMParserOptions(undefined, () => {});
+        const doc = new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        expect(doc).toBeDefined();
+    });
+
+    test('xmlns option resolves macros prefix from TEMPLATE_NAMESPACES', () => {
+        const options = getDOMParserOptions(TEMPLATE_NAMESPACES);
+        const doc = new DOMParser(options).parseFromString(validXml, 'text/xml');
+        expect(doc.documentElement).toBeTruthy();
+    });
+
+    test.each([
+        ['mvc prefix', `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"><Page title="Main"/></mvc:View>`],
+        ['macros prefix', `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"><macros:Table id="T1"/></mvc:View>`],
+        [
+            'macrosTable prefix',
+            `<core:FragmentDefinition xmlns:core="sap.ui.core"><macrosTable:Action key="a1"/></core:FragmentDefinition>`
+        ],
+        [
+            'macrosChart prefix',
+            `<core:FragmentDefinition xmlns:core="sap.ui.core"><macrosChart:Chart id="C1"/></core:FragmentDefinition>`
+        ],
+        [
+            'richtexteditor prefix',
+            `<core:FragmentDefinition xmlns:core="sap.ui.core"><richtexteditor:RichTextEditor id="R1"/></core:FragmentDefinition>`
+        ]
+    ])('TEMPLATE_NAMESPACES resolves %s without NamespaceError', (_label, xml) => {
+        const options = getDOMParserOptions(TEMPLATE_NAMESPACES);
+        expect(() => new DOMParser(options).parseFromString(xml, 'text/xml')).not.toThrow();
+    });
+
+    test('returns onError and xmlns in options object', () => {
+        const handler = () => {};
+        const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
+        expect(options.onError).toBe(handler);
+        expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
     });
 });

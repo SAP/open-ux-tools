@@ -1,5 +1,5 @@
-import type { SapTextType } from '../types';
-import { SapLongTextType, SapShortTextType } from '../types';
+import type { SapTextType } from '../types.js';
+import { SapLongTextType, SapShortTextType } from '../types.js';
 
 /**
  * Get the calculated maximum text length for an i18n property value.

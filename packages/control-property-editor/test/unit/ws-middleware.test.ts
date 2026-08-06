@@ -1,7 +1,7 @@
 import type { Dispatch, AnyAction } from 'redux';
 import type { MiddlewareAPI } from '@reduxjs/toolkit';
-import { webSocketMiddleware } from '../../src/ws-middleware';
-import { fileChanged } from '../../src/slice';
+import { webSocketMiddleware } from '../../src/ws-middleware.js';
+import { fileChanged } from '../../src/slice.js';
 import { externalFileChange } from '@sap-ux-private/control-property-editor-common';
 
 const globalWebsocketOriginal = global.WebSocket;

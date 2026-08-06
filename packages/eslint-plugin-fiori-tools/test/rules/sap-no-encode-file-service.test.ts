@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-encode-file-service';
+import rule from '../../src/rules/sap-no-encode-file-service.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -32,16 +32,13 @@ ruleTester.run('sap-no-encode-file-service', rule, {
                 '',
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
                 },
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
                 },
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
                 }
             ]
         }

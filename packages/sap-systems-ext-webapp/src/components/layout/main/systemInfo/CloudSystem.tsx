@@ -1,11 +1,11 @@
 import React from 'react';
-import type { SystemInfo } from '../../../../types';
+import type { SystemInfo } from '../../../../types/index.js';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UITextInput, UITooltip, UITooltipUtils } from '@sap-ux/ui-components';
-import { ServicePath } from './ServicePath';
-import { ServiceKey } from './ServiceKey';
-import { getUrlErrorMessage, useTextInputOverflow } from './utils';
+import { ServicePath } from './ServicePath.js';
+import { ServiceKey } from './ServiceKey.js';
+import { getUrlErrorMessage, useTextInputOverflow } from './utils.js';
 
 import '../../../../styles/SystemMain.scss';
 

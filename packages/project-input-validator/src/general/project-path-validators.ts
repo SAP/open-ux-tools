@@ -1,8 +1,8 @@
 import { findCapProjectRoot, findRootsForPath, getCapProjectType } from '@sap-ux/project-access';
 import { join } from 'node:path';
-import { t } from '../i18n';
-import { validateProjectFolder } from '../ui5/validators';
-import { validateWindowsPathLength } from './validators';
+import { t } from '../i18n.js';
+import { validateProjectFolder } from '../ui5/validators.js';
+import { validateWindowsPathLength } from './validators.js';
 
 /**
  * Returns true if the specified target path does not contain an SAP Fiori project.

@@ -1,6 +1,6 @@
-import { tokenize } from '../lexer';
-import type { PropertiesParseResult } from '../types';
-import { getPropertyList } from './properties-parser';
+import { tokenize } from '../lexer/index.js';
+import type { PropertiesParseResult } from '../types.js';
+import { getPropertyList } from './properties-parser.js';
 
 /**
  * Parse properties text.

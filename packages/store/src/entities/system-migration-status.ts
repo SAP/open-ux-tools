@@ -1,5 +1,5 @@
-import type { EntityKey } from '.';
-import { serializable } from '../decorators';
+import type { EntityKey } from './index.js';
+import { serializable } from '../decorators/index.js';
 
 /** This represents the migration status of the systems from pure secure store
  * the hybrid filesystem/secure store

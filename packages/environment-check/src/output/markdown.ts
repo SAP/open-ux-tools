@@ -1,5 +1,5 @@
-import { countNumberOfServices, getServiceCountText } from '../formatter';
-import { Severity, UrlServiceType, Check, toolsExtensionListVSCode } from '../types';
+import { countNumberOfServices, getServiceCountText } from '../formatter.js';
+import { Severity, UrlServiceType, Check, toolsExtensionListVSCode } from '../types.js';
 import type {
     Endpoint,
     Environment,
@@ -9,8 +9,8 @@ import type {
     ToolsExtensions,
     CatalogServiceResult,
     EndpointResults
-} from '../types';
-import { t } from '../i18n';
+} from '../types.js';
+import { t } from '../i18n.js';
 /**
  * Output mapping from severity -> icon + text
  */

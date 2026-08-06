@@ -1,23 +1,26 @@
-import { t } from '../src/i18n';
-import {
-    type CfAppRouterDeployConfigQuestions,
-    type CfAppRouterDeployConfigPromptOptions,
-    RouterModuleType,
-    appRouterPromptNames
-} from '../src';
-import { type ListQuestion } from '@sap-ux/inquirer-common';
-import { getAppRouterQuestions } from '../src/prompts';
+import { jest } from '@jest/globals';
+
+// Pre-import real module before mocking
+const realCfTools = await import('@sap/cf-tools');
 
 let cfAbapServices: any[] = [];
 
-jest.mock('@sap/cf-tools', () => ({
-    ...jest.requireActual('@sap/cf-tools'),
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
     apiGetServicesInstancesFilteredByType: jest.fn().mockImplementation(() => cfAbapServices)
 }));
 
+const { t } = await import('../src/i18n.js');
+const { RouterModuleType, appRouterPromptNames } = await import('../src/index.js');
+const { getAppRouterQuestions } = await import('../src/prompts/index.js');
+import type { CfAppRouterDeployConfigQuestions, CfAppRouterDeployConfigPromptOptions } from '../src/index.js';
+import { type ListQuestion } from '@sap-ux/inquirer-common';
+import { initI18nCfDeployConfigInquirer } from '../src/i18n.js';
+
 describe('App Router Prompt Generation Tests', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
+        await initI18nCfDeployConfigInquirer();
     });
 
     describe('getMtaPathPrompt', () => {
@@ -30,7 +33,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(mtaPathPrompt?.default()).toBe('defaultMtaPath');
             expect(mtaPathPrompt?.message).toBe(t('prompts.mtaPathMessage'));
             expect(mtaPathPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.mtaPathBreadcrumbMessage'));
-            expect((mtaPathPrompt?.validate as Function)()).toBe(t('errors.folderDoesNotExistError'));
+            expect((mtaPathPrompt?.validate as Function)('')).toMatch(/folder path does not exist/i);
         });
     });
 
@@ -268,7 +271,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(await ((addServiceProviderPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 [
                   {
-                    "name": "errors.abapEnvsUnavailable",
+                    "name": "ABAP environments unavailable.",
                     "value": "NO_ABAP_ENVS",
                   },
                 ]

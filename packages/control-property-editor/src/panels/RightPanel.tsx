@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import { UISectionLayout, UISections, UISplitterLayoutType, UISplitterType } from '@sap-ux/ui-components';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
-import { PropertiesList } from './properties';
-import { QuickActionList } from './quick-actions';
-import { InfoCenter } from './info-center';
-import type { RootState } from '../store';
+import { PropertiesList } from './properties/index.js';
+import { QuickActionList } from './quick-actions/index.js';
+import { InfoCenter } from './info-center/index.js';
+import type { RootState } from '../store.js';
 import './RightPanel.scss';
 
 /**

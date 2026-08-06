@@ -1,1 +1,1 @@
-export * from './metadataHelpers';
+export * from './metadataHelpers.js';

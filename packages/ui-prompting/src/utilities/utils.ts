@@ -1,5 +1,5 @@
 import type { Answers, ChoiceOptions } from 'inquirer';
-import type { PromptQuestion, AnswerValue, PromptListChoices } from '../types';
+import type { PromptQuestion, AnswerValue, PromptListChoices } from '../types.js';
 import type { UISelectableOption } from '@sap-ux/ui-components';
 
 /**

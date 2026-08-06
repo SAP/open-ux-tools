@@ -6,14 +6,14 @@ import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type AppState from 'sap/ushell/services/AppState';
-import { getManifestAppdescr } from '../adp/api-handler';
-import { getError } from '../utils/error';
-import initConnectors from './initConnectors';
-import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { getManifestAppdescr } from '../adp/api-handler.js';
+import { getError } from '../utils/error.js';
+import initConnectors from './initConnectors.js';
+import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -42,6 +42,10 @@ const UI5_LIBS = [
     'sap.webanalytics',
     'sap.zen'
 ];
+
+const CONTROLLER_EXTENSION_PATH_REGEX = /\/changes\/coding\/.+\.(js|ts)/;
+
+type GlobalErrorEvent = ErrorEvent | PromiseRejectionEvent;
 
 interface Manifest {
     ['sap.ui5']?: {
@@ -185,9 +189,9 @@ export async function resetAppState(container: typeof sap.ushell.Container): Pro
 export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
-        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
+        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + encodeURIComponent(libs);
         const sapClient = urlParams.get('sap-client');
-        if (sapClient?.length === 3) {
+        if (sapClient?.length === 3 && /^\d+$/.test(sapClient)) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
@@ -279,6 +283,55 @@ function addCardGenerationUserAction(componentInstance: Component, container: ty
 }
 
 /**
+ * Extracts an Error object from a global error event.
+ * Handles both synchronous errors (ErrorEvent) and unhandled promise rejections (PromiseRejectionEvent).
+ *
+ * @param {GlobalErrorEvent} event - The global error or unhandled rejection event.
+ * @returns {Error | undefined} The extracted Error instance, or undefined if no Error could be extracted.
+ */
+function extractError(event: GlobalErrorEvent): Error | undefined {
+    if ('error' in event && event.error instanceof Error) {
+        return event.error;
+    }
+
+    if ('reason' in event && event.reason instanceof Error) {
+        return event.reason;
+    }
+
+    return undefined;
+}
+
+/**
+ * Reports controller extension errors to the Info Center.
+ * Filters events by checking if the stack trace contains 'ControllerExtension',
+ * and sends matching errors as error-level messages to the Info Center panel.
+ *
+ * @param {GlobalErrorEvent} event - The global error or unhandled rejection event.
+ */
+const reportControllerExtensionErrorToInfoCenter: (event: GlobalErrorEvent) => void = (event) => {
+    const error = extractError(event);
+    const stackTrace = error?.stack ?? '';
+    if (!CONTROLLER_EXTENSION_PATH_REGEX.test(stackTrace)) {
+        return;
+    }
+    void sendInfoCenterMessage({
+        title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+        description: error?.message ?? '',
+        type: MessageBarType.error,
+        details: stackTrace
+    });
+};
+
+/**
+ * Registers global event listeners for uncaught errors and unhandled promise rejections
+ * to detect and report controller extension errors to the Info Center.
+ */
+function registerForControllerExtensionErrors(): void {
+    globalThis.addEventListener('error', reportControllerExtensionErrorToInfoCenter);
+    globalThis.addEventListener('unhandledrejection', reportControllerExtensionErrorToInfoCenter);
+}
+
+/**
  * Apply additional configuration and initialize sandbox.
  *
  * @param params init parameters read from the script tag
@@ -309,6 +362,7 @@ export async function init({
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
+        registerForControllerExtensionErrors();
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
         container.attachRendererCreatedEvent(async function () {

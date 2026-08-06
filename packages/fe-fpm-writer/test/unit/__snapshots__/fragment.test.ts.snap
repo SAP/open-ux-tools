@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`generateFragment generate fragment with custom content 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Label text=\\"Custom Content\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`generateFragment generate fragment with custom folder 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text id=\\"Text\\" text=\\"Sample Text\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`generateFragment generate fragment with default options 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text id=\\"Text\\" text=\\"Sample Text\\" />
+</core:FragmentDefinition>"
+`;

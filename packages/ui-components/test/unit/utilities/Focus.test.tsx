@@ -1,11 +1,20 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
-import * as FluentUI from '@fluentui/react';
-import { focusToSibling } from '../../../src/utilities/Focus';
+
+const { getNextElement: mockGetNextElement, getPreviousElement: mockGetPreviousElement } = await (async () => {
+    const actual = await import('@fluentui/react');
+    const mocked = {
+        ...actual,
+        getNextElement: jest.fn(),
+        getPreviousElement: jest.fn()
+    };
+    jest.unstable_mockModule('@fluentui/react', () => mocked);
+    return mocked;
+})();
+
+const { focusToSibling } = await import('../../../src/utilities/Focus');
 
 describe('focusToSibling', () => {
-    let getNextElementSpy: jest.SpyInstance;
-    let getPreviousElementSpy: jest.SpyInstance;
     let testElements: {
         first: HTMLElement;
         middle: HTMLElement;
@@ -13,8 +22,7 @@ describe('focusToSibling', () => {
     };
 
     beforeEach(() => {
-        getNextElementSpy = jest.spyOn(FluentUI, 'getNextElement');
-        getPreviousElementSpy = jest.spyOn(FluentUI, 'getPreviousElement');
+        jest.clearAllMocks();
         render(
             <div>
                 <div id="test1" tabIndex={0} />
@@ -30,26 +38,26 @@ describe('focusToSibling', () => {
     });
 
     test('Focus next from middle', () => {
-        getNextElementSpy.mockReturnValue(testElements.last);
-        getPreviousElementSpy.mockReturnValue(testElements.first);
+        (mockGetNextElement as jest.Mock).mockReturnValue(testElements.last);
+        (mockGetPreviousElement as jest.Mock).mockReturnValue(testElements.first);
         expect(focusToSibling(testElements.middle, true)).toEqual(testElements.last);
     });
 
     test('Focus previous from middle', () => {
-        getNextElementSpy.mockReturnValue(testElements.last);
-        getPreviousElementSpy.mockReturnValue(testElements.first);
+        (mockGetNextElement as jest.Mock).mockReturnValue(testElements.last);
+        (mockGetPreviousElement as jest.Mock).mockReturnValue(testElements.first);
         expect(focusToSibling(testElements.middle, false)).toEqual(testElements.first);
     });
 
     test('Focus next from last element', () => {
-        getNextElementSpy.mockReturnValue(null);
-        getPreviousElementSpy.mockReturnValue(testElements.middle);
+        (mockGetNextElement as jest.Mock).mockReturnValue(null);
+        (mockGetPreviousElement as jest.Mock).mockReturnValue(testElements.middle);
         expect(focusToSibling(testElements.last, true)).toEqual(null);
     });
 
     test('Focus previous from first element', () => {
-        getNextElementSpy.mockReturnValue(testElements.middle);
-        getPreviousElementSpy.mockReturnValue(null);
+        (mockGetNextElement as jest.Mock).mockReturnValue(testElements.middle);
+        (mockGetPreviousElement as jest.Mock).mockReturnValue(null);
         expect(focusToSibling(testElements.first, false)).toEqual(null);
     });
 });

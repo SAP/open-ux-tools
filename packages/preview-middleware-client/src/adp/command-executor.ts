@@ -6,8 +6,8 @@ import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
-import { getError } from '../utils/error';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { getError } from '../utils/error.js';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
 type CommandNames = 'addXML' | 'codeExt' | 'appDescriptor';
 
 /**

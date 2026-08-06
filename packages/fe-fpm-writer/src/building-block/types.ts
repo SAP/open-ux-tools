@@ -1,5 +1,17 @@
-import type { IdGeneratorFunction } from '../common/file';
-import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
+import type { IdGeneratorFunction } from '../common/file.js';
+import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
+
+export const PageTemplateType = {
+    Full: 'full',
+    Basic: 'basic'
+} as const;
+
+export type PageTemplateType = (typeof PageTemplateType)[keyof typeof PageTemplateType];
+
+/** Minimum UI5 version required for page building blocks. */
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK = '1.136.0' as const;
+/** Minimum UI5 version required for full layout page building blocks. */
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT = '1.145.0' as const;
 
 /**
  * Building block type.
@@ -387,6 +399,18 @@ export interface Table extends BuildingBlock {
  * <macro:Page title="My Page Title" description="My Page Description" />
  * @extends {BuildingBlock}
  */
+export const PAGE_AGGREGATIONS = [
+    'breadcrumbs',
+    'navigationActions',
+    'titleContent',
+    'actions',
+    'headerContent',
+    'items',
+    'footer'
+] as const;
+
+export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
+
 export interface Page extends BuildingBlock {
     /**
      * The title of the page.
@@ -397,6 +421,40 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+
+    /**
+     * The template type for the page building block.
+     * 'full' generates a full page template with all aggregations.
+     * 'basic' generates a minimal self-closing <macros:Page/> with no aggregations.
+     */
+    templateType?: PageTemplateType;
+
+    /**
+     * Optional mContent strings keyed by aggregation name.
+     * When templateType is 'full', each entry is written as the inner XML of the corresponding aggregation.
+     */
+    aggregations?: Partial<Record<PageAggregationName, string>>;
+}
+
+export const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
+export const MACROS_NAMESPACE_URI = 'sap.fe.macros';
+
+/**
+ * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
+ * Used when re-ordering aggregation children under a macros:Page element.
+ */
+export type XmlAggregationGroup = { comments: Node[]; element: Element; originalIndex: number };
+
+/**
+ * Configuration for appending a named aggregation to an existing building block element in a view XML file.
+ */
+export interface GenerateBuildingBlockAggregationConfig {
+    /** Path to the view XML file, relative to basePath. */
+    viewPath: string;
+    /** Type of the building block whose aggregation should be appended. Currently only 'Page' is supported. */
+    buildingBlockType: BuildingBlockType;
+    /** Name of the aggregation to append. */
+    aggregationName: PageAggregationName;
 }
 
 /**

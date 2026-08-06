@@ -1,37 +1,36 @@
+import { jest } from '@jest/globals';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { initI18n, t } from '../../../../src/i18n';
-import { getFDCApps } from '../../../../src/cf/services/api';
-import { extractXSApp } from '../../../../src/cf/utils/validation';
-import {
-    getAppHostIds,
-    getCfApps,
-    getOAuthPathsFromXsApp,
-    getBackendUrlsFromServiceKeys,
-    getServiceKeyDestinations
-} from '../../../../src/cf/app/discovery';
-import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types';
+const mockGetFDCApps = jest.fn() as jest.Mock;
+const mockExtractXSApp = jest.fn() as jest.Mock;
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockCreate = jest.fn() as jest.Mock;
 
-jest.mock('mem-fs-editor', () => ({
-    create: jest.fn()
+jest.unstable_mockModule('mem-fs-editor', () => ({
+    create: mockCreate
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-jest.mock('../../../../src/cf/services/api', () => ({
-    getFDCApps: jest.fn()
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    getFDCApps: mockGetFDCApps
 }));
 
-jest.mock('../../../../src/cf/utils/validation', () => ({
-    ...jest.requireActual('../../../../src/cf/utils/validation'),
-    extractXSApp: jest.fn()
+jest.unstable_mockModule('../../../../src/cf/utils/validation', () => ({
+    extractXSApp: mockExtractXSApp,
+    validateSmartTemplateApplication: jest.fn(),
+    validateODataEndpoints: jest.fn()
 }));
 
-const mockGetFDCApps = getFDCApps as jest.MockedFunction<typeof getFDCApps>;
-const mockExtractXSApp = extractXSApp as jest.MockedFunction<typeof extractXSApp>;
+const { getAppHostIds, getCfApps, getOAuthPathsFromXsApp, getBackendUrlsFromServiceKeys, getServiceKeyDestinations } =
+    await import('../../../../src/cf/app/discovery.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types.js';
 
 const mockApps: CFApp[] = [
     {

@@ -1,7 +1,8 @@
-import type { Client } from './client';
-import { ToolsSuiteTelemetryClient } from '../../tooling-telemetry';
-import { TelemetrySettings } from '../config-state';
+import type { Client } from './client.js';
+import { ToolsSuiteTelemetryClient } from '../../tooling-telemetry/index.js';
+import { TelemetrySettings } from '../config-state.js';
 
+const instrumentationKeyPlaceholder = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 /**
  * Factory to get telemetry client instance.
  */
@@ -31,15 +32,27 @@ class ClientFactory {
         if (client) {
             return client;
         }
-        const ClientConstructor = clientConstructor;
-        client = new ClientConstructor(
-            TelemetrySettings.azureInstrumentationKey,
+
+        const connectionString = ClientFactory.buildConnectionString(TelemetrySettings.azureInstrumentationKey);
+        client = new clientConstructor(
+            connectionString,
             TelemetrySettings.consumerModuleName,
             TelemetrySettings.consumerModuleVersion
         );
 
         ClientFactory.clientMap.set(clientConstructor.name, client);
         return client;
+    }
+
+    private static buildConnectionString(key: string): string {
+        if (!key) {
+            return '';
+        }
+
+        // ApplicationInsights v3+ requires InstrumentationKey=<uuid> format
+        const instrumentationKey = key === instrumentationKeyPlaceholder ? '00000000-0000-0000-0000-000000000000' : key;
+
+        return `InstrumentationKey=${instrumentationKey}`;
     }
 }
 

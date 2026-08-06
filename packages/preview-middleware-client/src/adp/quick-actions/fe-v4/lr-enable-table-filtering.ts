@@ -3,13 +3,13 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type {
     NestedQuickActionDefinition,
     QuickActionContext
-} from '../../../cpe/quick-actions/quick-action-definition';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
 import type Table from 'sap/ui/mdc/Table';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { createManifestPropertyChange } from '../../../utils/fe-v4';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { MDC_TABLE_TYPE } from '../control-types';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils.js';
+import { createManifestPropertyChange } from '../../../utils/fe-v4.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
+import { MDC_TABLE_TYPE } from '../control-types.js';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 

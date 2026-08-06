@@ -1,4 +1,4 @@
-import type { UI5LibraryReferencePromptOptions, UI5LibraryReferenceQuestion, promptNames } from '../types';
+import type { UI5LibraryReferencePromptOptions, UI5LibraryReferenceQuestion, promptNames } from '../types.js';
 
 /**
  * Will remove prompts from the specified prompts based on prompt options

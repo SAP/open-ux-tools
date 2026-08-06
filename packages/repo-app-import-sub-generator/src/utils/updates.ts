@@ -2,12 +2,12 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
-import { t } from './i18n';
-import RepoAppDownloadLogger from './logger';
+import { t } from './i18n.js';
+import RepoAppDownloadLogger from './logger.js';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getUI5Versions } from '@sap-ux/ui5-info';
-import { readManifest } from './file-helpers';
-import { fioriAppSourcetemplateId } from './constants';
+import { readManifest } from './file-helpers.js';
+import { fioriAppSourcetemplateId } from './constants.js';
 
 /**
  * Validates and updates the UI5 version in the manifest.

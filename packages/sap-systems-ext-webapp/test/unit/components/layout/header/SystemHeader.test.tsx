@@ -1,21 +1,21 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { SystemHeader } from '../../../../../src/components/layout/header/SystemHeader';
-import { useSelector } from 'react-redux';
+import { jest } from '@jest/globals';
 
-// Mock useSelector and useTranslation
-jest.mock('react-redux', () => ({
-    useSelector: jest.fn()
+const mockUseSelector = jest.fn();
+
+jest.unstable_mockModule('react-redux', () => ({
+    useSelector: mockUseSelector
 }));
 
-jest.mock('react-i18next', () => ({
+jest.unstable_mockModule('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key })
 }));
 
-describe('SystemHeader', () => {
-    const mockUseSelector = useSelector as jest.Mock;
+const { SystemHeader } = await import('../../../../../src/components/layout/header/SystemHeader');
 
+describe('SystemHeader', () => {
     afterEach(() => {
         jest.resetAllMocks();
     });

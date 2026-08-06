@@ -10,21 +10,21 @@ import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { type AgentOptions, Agent as HttpsAgent } from 'node:https';
 import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 import { getProxyForUrl } from 'proxy-from-env';
 import { inspect } from 'node:util';
-import { AbapServiceProvider } from './abap';
-import type { RefreshTokenChanged, ServiceInfo } from './auth';
+import { AbapServiceProvider } from './abap/index.js';
+import type { RefreshTokenChanged, ServiceInfo } from './auth/index.js';
 import {
     attachBasicAuthInterceptor,
     attachConnectionHandler,
     attachReentranceTicketAuthInterceptor,
     attachUaaAuthInterceptor
-} from './auth';
-import type { ODataService } from './base/odata-service';
-import { TlsPatch } from './base/patchTls';
-import type { ProviderConfiguration } from './base/service-provider';
-import { ServiceProvider } from './base/service-provider';
+} from './auth/index.js';
+import type { ODataService } from './base/odata-service.js';
+import { TlsPatch } from './base/patchTls.js';
+import type { ProviderConfiguration } from './base/service-provider.js';
+import { ServiceProvider } from './base/service-provider.js';
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -72,16 +72,6 @@ function createInstance<T extends ServiceProvider>(
     const agentOptions = {
         rejectUnauthorized: !providerConfig.ignoreCertErrors
     };
-    const localProxy = getProxyForUrl(config.baseURL);
-    if (localProxy && !isAppStudio()) {
-        // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
-        providerConfig.httpsAgent = new PatchedHttpsProxyAgent(
-            localProxy,
-            agentOptions as HttpsProxyAgentOptions<string>
-        );
-        providerConfig.httpAgent = new HttpProxyAgent(localProxy);
-        providerConfig.proxy = false;
-    }
     // Default httpsAgent with optional parameters passed to the agent
     if (!providerConfig.httpsAgent) {
         providerConfig.httpsAgent = new HttpsAgent(agentOptions as AgentOptions);
@@ -97,6 +87,20 @@ function createInstance<T extends ServiceProvider>(
      */
     providerConfig.validateStatus = (status) => status < 400;
     const instance = new ProviderType(providerConfig);
+
+    // Resolve proxy per-request using the full URL (baseURL + path + params) so that
+    // NO_PROXY hostname matching works correctly against the actual target URL.
+    instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+        const fullUrl = instance.getUri(request);
+        const localProxy = getProxyForUrl(fullUrl);
+        if (localProxy && !isAppStudio()) {
+            // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
+            request.httpsAgent = new PatchedHttpsProxyAgent(localProxy, agentOptions as HttpsProxyAgentOptions<string>);
+            request.httpAgent = new HttpProxyAgent(localProxy);
+            request.proxy = false;
+        }
+        return request;
+    });
 
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},
@@ -224,9 +228,10 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
             }
             break;
         }
-        default:
+        default: {
             const opts: never = options;
             throw new Error(`Unknown environment type supplied: ${inspect(opts)}`);
+        }
     }
     return provider;
 }

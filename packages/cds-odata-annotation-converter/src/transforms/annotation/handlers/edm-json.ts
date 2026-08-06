@@ -20,10 +20,10 @@ import {
     BOOLEAN_TYPE,
     NUMBER_LITERAL_TYPE
 } from '@sap-ux/cds-annotation-parser';
-import { i18n } from '../../../i18n';
-import type { VisitorState } from '../visitor-state';
-import { numberHandler } from './number';
-import { isSubtree } from '../handler';
+import { i18n } from '../../../i18n.js';
+import type { VisitorState } from '../visitor-state.js';
+import { numberHandler } from './number.js';
+import { isSubtree } from '../handler.js';
 
 type VisitorTypes =
     | typeof RECORD_TYPE

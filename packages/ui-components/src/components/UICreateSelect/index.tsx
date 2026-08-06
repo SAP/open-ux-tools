@@ -1,1 +1,1 @@
-export * from './UICreateSelect';
+export * from './UICreateSelect.js';

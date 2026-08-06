@@ -1,8 +1,8 @@
 import { JSONSourceCode } from '@eslint/json';
-import type { DocumentNode } from '@humanwhocodes/momoa';
+import type { DocumentNode, MemberNode, ValueNode } from '@humanwhocodes/momoa';
 import type { Manifest } from '@sap-ux/project-access';
 
-import type { ProjectContext } from '../../project-context/project-context';
+import type { ProjectContext } from '../../project-context/project-context.js';
 
 /**
  * JSON Source Code class for Fiori tools.
@@ -59,5 +59,57 @@ export class FioriJSONSourceCode extends JSONSourceCode {
                 return isLast ? `Member[name.value="${segment}"]` : `Member[name.value="${segment}"] > Object`;
             })
             .join(' > ');
+    }
+
+    /**
+     * Gets the node by provided json path.
+     * Looks from provided starting node. You can begin search from ast body node.
+     * If node is not found, returns the parent of the node.
+     *
+     * @param node - Initial node, start from ast body or closer to the searched node
+     * @param path - Path to the node
+     * @param parentNode - Parent node of the searched node
+     * @returns Node at the given path, or the closest ancestor if the full path is not found
+     */
+    private readonly getNodeOrParent = (
+        node: ValueNode | MemberNode | undefined,
+        path: string[],
+        parentNode: MemberNode | ValueNode
+    ): ValueNode | MemberNode => {
+        if (node && path.length) {
+            const name = path[0];
+            if (node.type === 'Object') {
+                node = node.members.find((n) => {
+                    if (n.name.type === 'String') {
+                        return n.name.value === name;
+                    }
+                    return false;
+                });
+                if (node) {
+                    parentNode = node;
+                    return this.getNodeOrParent(node, path, parentNode);
+                }
+            } else if (node.type === 'Member' && path.length > 1) {
+                parentNode = node;
+                // Report the final node, not value of the final node
+                return this.getNodeOrParent(node.value, path.slice(1), parentNode);
+            }
+        }
+        return node ?? parentNode;
+    };
+
+    /**
+     * Gets the node by provided json path, or the parent of it.
+     * Looks from provided starting node. You can begin search from ast body node.
+     *
+     * @param node - Initial node, start from ast body or closer to the searched node
+     * @param path - Path to the node
+     * @returns - Node or the last found parent (initialnode of nothing found)
+     */
+    getNode(node: ValueNode | MemberNode, path: string[]): ValueNode | MemberNode {
+        if (!path.length) {
+            return node;
+        }
+        return this.getNodeOrParent(node, path, node);
     }
 }

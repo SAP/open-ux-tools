@@ -1,27 +1,65 @@
+import { jest } from '@jest/globals';
 import express from 'express';
 import supertest from 'supertest';
-import * as previewMiddleware from '../../../src/ui5/middleware';
-import type { MiddlewareConfig } from '../../../src/types';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import nock from 'nock';
-import type { EnhancedRouter } from '../../../src/base/flp';
-import { ToolsLogger } from '@sap-ux/logger';
-import * as projectAccess from '@sap-ux/project-access';
+import type { EnhancedRouter } from '../../../src/base/flp.js';
+import type { MiddlewareConfig } from '../../../src/types/index.js';
 
-jest.mock('@sap-ux/store', () => {
-    return {
-        ...jest.requireActual('@sap-ux/store'),
-        getService: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-                read: jest.fn().mockReturnValue({ username: '~user', password: '~pass' })
-            })
-        )
-    };
-});
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
-jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+// Mock node:module to intercept createRequire so that require.resolve works for
+// @sap-ux/control-property-editor-sources (its dist/app.js is not built in test env)
+const actualNodeModule = await import('node:module');
+jest.unstable_mockModule('node:module', () => ({
+    ...actualNodeModule,
+    createRequire: (url: string | URL) => {
+        const originalRequire = actualNodeModule.createRequire(url);
+        const wrappedRequire = Object.assign((id: string) => originalRequire(id), originalRequire);
+        const originalResolve = originalRequire.resolve.bind(originalRequire);
+        wrappedRequire.resolve = Object.assign(
+            (id: string, options?: { paths?: string[] }) => {
+                if (id === '@sap-ux/control-property-editor-sources') {
+                    // Return a dummy path; dirname() of this gives a usable directory for serveStatic
+                    return join(__dirname, '..', '..', 'fixtures', 'dummy-cpe', 'index.js');
+                }
+                return originalResolve(id, options);
+            },
+            { paths: originalRequire.resolve.paths }
+        ) as NodeJS.RequireResolve;
+        return wrappedRequire;
+    }
+}));
+
+// Pre-import actual modules before mocking
+const actualProjectAccess = await import('@sap-ux/project-access');
+const actualStore = await import('@sap-ux/store');
+
+// Mock @sap-ux/store
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: jest.fn().mockImplementation(() =>
+        Promise.resolve({
+            read: jest.fn().mockReturnValue({ username: '~user', password: '~pass' })
+        })
+    )
+}));
+
+// Mock @sap-ux/project-access
+const mockFindProjectRoot = jest.fn<() => Promise<string>>().mockResolvedValue('');
+const mockGetProjectType = jest.fn<() => Promise<string>>().mockResolvedValue('EDMXBackend');
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    findProjectRoot: mockFindProjectRoot,
+    getProjectType: mockGetProjectType
+}));
+
+// Import after mocking
+const previewMiddleware = await import('../../../src/ui5/middleware.js');
+const { ToolsLogger } = await import('@sap-ux/logger');
 
 async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
     return await (previewMiddleware as any).default({
@@ -104,8 +142,8 @@ describe('ui5/middleware', () => {
     }, 10000);
 
     test('unsupported editor config', async () => {
-        const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
-        const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
+        const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation((() => {}) as any);
+        const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation((() => {}) as any);
         const path = '/test/editor.html';
         const server = await getTestServer('simple-app', {
             rta: {

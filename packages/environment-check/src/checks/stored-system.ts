@@ -1,16 +1,16 @@
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import type { BackendSystem } from '@sap-ux/store';
-import type { ResultMessage, Endpoint, EndpointResults } from '../types';
-import { getLogger } from '../logger';
+import type { ResultMessage, Endpoint, EndpointResults } from '../types.js';
+import { getLogger } from '../logger.js';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import {
     getServiceProvider,
     checkCatalogServices,
     checkAtoCatalog,
     checkUi5AbapRepository,
     checkTransportRequests
-} from './service-checks';
+} from './service-checks.js';
 
 /**
  * Check a stored SAP system for service endpoints.

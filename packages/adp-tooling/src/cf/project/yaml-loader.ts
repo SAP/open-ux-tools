@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import yaml from 'js-yaml';
 
-import type { MtaYaml } from '../../types';
+import type { MtaYaml } from '../../types.js';
 
 /**
  * Parses the MTA file.

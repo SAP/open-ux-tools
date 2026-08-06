@@ -15,7 +15,7 @@ import {
     getElementAttributeValue
 } from '@sap-ux/odata-annotation-core';
 
-import type { ContainerItemType } from './primitives';
+import type { ContainerItemType } from './primitives.js';
 import {
     valuePair,
     struct,
@@ -25,9 +25,9 @@ import {
     keyAlone,
     PRIMITIVE_VALUE_ATTRIBUTE_NAMES,
     CDS_NULL_EXPRESSION_LITERAL
-} from './primitives';
-import { printEdmJson } from './edm-json';
-import { indent } from './indent';
+} from './primitives.js';
+import { printEdmJson } from './edm-json.js';
+import { indent } from './indent.js';
 
 /**
  * Kind of target which is annotated
@@ -100,11 +100,66 @@ function checkParenthesis(segments: string[]): number {
     return segments.findIndex((segment) => segment.indexOf('(') > 0 && segment.indexOf('(') < segment.indexOf(')'));
 }
 
+/**
+ * Format the annotation result string into the appropriate CDS annotate statement.
+ *
+ * @param target - the target being annotated
+ * @param result - the raw annotation terms string
+ * @param rootElementName - root element name from resolveTarget
+ * @param boundActionFunctionName - bound action/function name if applicable
+ * @param childSegments - child path segments from resolveTarget
+ * @param hasMultipleTerms - whether there are multiple annotation terms
+ * @param complexTypePathSegments - optional complex type path segments
+ * @returns formatted annotate statement
+ */
+function formatTargetResult(
+    target: Target,
+    result: string,
+    rootElementName: string,
+    boundActionFunctionName: string,
+    childSegments: string[],
+    hasMultipleTerms: boolean,
+    complexTypePathSegments?: string[]
+): string {
+    if (!childSegments || childSegments.length === 0) {
+        if (boundActionFunctionName) {
+            return getTargetForBoundActionFunctions(target, result, rootElementName, boundActionFunctionName);
+        }
+        // target is root element, use following syntax
+        // annotate <targetRootElementName> with @(
+        //    <term> <qualifier>: <value>
+        // );
+        return `annotate ${rootElementName} with @(\n${result});\n`;
+    }
+    if (childSegments.length === 1) {
+        if (boundActionFunctionName) {
+            return getTargetForBoundActionFunctions(
+                target,
+                result,
+                rootElementName,
+                boundActionFunctionName,
+                childSegments[0]
+            );
+        }
+        // target is child of root element, use following syntax
+        // annotate <targetRootElementName> with {
+        //     <targetChildElementName> @(
+        //        <term> <qualifier>: <value>
+        //     );
+        // }
+        const assignment = hasMultipleTerms ? `@(\n${result})` : `@${result}`;
+        if (complexTypePathSegments?.length) {
+            const complexTarget = complexTypePathSegments.join('.');
+            return `annotate ${rootElementName} : ${complexTarget} with ${assignment}\n`;
+        }
+        return `annotate ${rootElementName} with {\n${childSegments[0]} ${assignment}};\n`;
+    }
+    return result;
+}
+
 export const printTarget = (target: Target, complexTypePathSegments?: string[]): string => {
     const resolvedTarget = resolveTarget(target.name);
-    const rootElementName = resolvedTarget.rootElementName;
-    const childSegments = resolvedTarget.childSegments;
-    const boundActionFunctionName = resolvedTarget.boundActionFunctionName;
+    const { rootElementName, childSegments, boundActionFunctionName } = resolvedTarget;
     const options: FormatterOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 
     const terms = [...target.terms.flatMap((term) => internalPrint(term, options))];
@@ -115,41 +170,15 @@ export const printTarget = (target: Target, complexTypePathSegments?: string[]):
 
     let result = terms.join(',\n') + (complexTypePathSegments?.length ? ';' : '\n');
 
-    if (!childSegments || childSegments.length === 0) {
-        if (boundActionFunctionName) {
-            result = getTargetForBoundActionFunctions(target, result, rootElementName, boundActionFunctionName);
-        } else {
-            // target is root element, use following syntax
-            // annotate <targetRootElementName> with @(
-            //    <term> <qualifier>: <value>
-            // );
-            result = `annotate ${rootElementName} with @(\n${result});\n`;
-        }
-    } else if (childSegments.length === 1) {
-        if (boundActionFunctionName) {
-            result = getTargetForBoundActionFunctions(
-                target,
-                result,
-                rootElementName,
-                boundActionFunctionName,
-                childSegments[0]
-            );
-        } else {
-            // target is child of root element, use following syntax
-            // annotate <targetRootElementName> with {
-            //     <targetChildElementName> @(
-            //        <term> <qualifier>: <value>
-            //     );
-            // }
-            const assignment = terms.length > 1 ? `@(\n${result})` : `@${result}`;
-            if (complexTypePathSegments?.length) {
-                const complexTarget = complexTypePathSegments?.join('.');
-                result = `annotate ${rootElementName} : ${complexTarget} with ${assignment}\n`;
-            } else {
-                result = `annotate ${rootElementName} with {\n${childSegments[0]} ${assignment}};\n`;
-            }
-        }
-    }
+    result = formatTargetResult(
+        target,
+        result,
+        rootElementName,
+        boundActionFunctionName,
+        childSegments,
+        terms.length > 1,
+        complexTypePathSegments
+    );
 
     result = indent(result);
     return result;
@@ -206,7 +235,7 @@ const escapeText = (input: string): string => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/'/g, "''");
+    return input.replaceAll("'", "''");
 };
 
 export const printCsdlNode = (node: Element | TextNode, context: Element[], options: FormatterOptions): string => {
@@ -382,7 +411,7 @@ const annotationFilter = (node: Element | TextNode): node is Element =>
     node.type === ELEMENT_TYPE && node.name === Edm.Annotation;
 
 const encodeSnippet = (options: FormatterOptions, text: string): string =>
-    options.useSnippetSyntax ? text.replace(/\$/g, '\\$') : text;
+    options.useSnippetSyntax ? text.replace(/\\/g, '\\\\').replace(/\$/g, '\\$') : text;
 
 const printValue = (element: Element, context: Element[], options: FormatterOptions): string | undefined => {
     const valueElement =

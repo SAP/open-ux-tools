@@ -18,10 +18,10 @@ import type {
     KeyUserUsernamePromptOptions,
     KeyUserPasswordPromptOptions,
     KeyUserAdaptationPromptOptions
-} from '../types';
-import { t } from '../../utils/i18n';
-import { keyUserPromptNames } from '../types';
-import { getAdaptationChoices, getKeyUserSystemChoices } from './helper/choices';
+} from '../types.js';
+import { t } from '../../utils/i18n.js';
+import { keyUserPromptNames } from '../types.js';
+import { getAdaptationChoices, getKeyUserSystemChoices } from './helper/choices.js';
 
 export const DEFAULT_ADAPTATION_ID = 'DEFAULT';
 

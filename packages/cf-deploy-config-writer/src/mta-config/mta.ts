@@ -1,7 +1,6 @@
 import { format } from 'node:util';
 import { dirname, join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
 import { type Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -33,8 +32,8 @@ import {
     MAX_ABAP_SERVICE_PREFIX_LENGTH,
     MAX_ABAP_SERVICE_NAME_LENGTH,
     MAX_MTA_ID_LENGTH
-} from '../constants';
-import { t } from '../i18n';
+} from '../constants.js';
+import { t } from '../i18n.js';
 import type { Logger } from '@sap-ux/logger';
 import type { YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import {
@@ -45,7 +44,8 @@ import {
     type MTADestinationType,
     type SupportedResources,
     RouterModuleType
-} from '../types';
+} from '../types/index.js';
+import { renderTemplateToDisk } from './template-renderer.js';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
@@ -207,7 +207,7 @@ export class MtaConfig {
                 path: './xs-security.json',
                 'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
                 config: {
-                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}` + '-${space-guid}',
+                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
                     'tenant-mode': 'dedicated'
                 }
             }
@@ -402,14 +402,10 @@ export class MtaConfig {
                 service: 'xsuaa',
                 'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
                 'service-plan': 'application',
-                ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
-                    ? {
-                          config: {
-                              xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
-                              'tenant-mode': 'dedicated'
-                          }
-                      }
-                    : {})
+                config: {
+                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
+                    'tenant-mode': 'dedicated'
+                }
             }
         };
         await this.mta?.addResource(resource);
@@ -851,6 +847,16 @@ export class MtaConfig {
     }
 
     /**
+     * Validate if mta contains a specific resource i.e. destination
+     *
+     * @param resourceName
+     * @returns {boolean} true if the mta contains an XSUAA resource
+     */
+    public hasResource(resourceName: string): boolean {
+        return this.resources.has(resourceName);
+    }
+
+    /**
      * Add an mta extension config, either creating a new mtaext file or extending an existing one.
      *
      * @param {string} instanceDestName The name of the instance destination that will be created
@@ -906,8 +912,7 @@ export class MtaConfig {
                 destinationServiceName: destinationServiceName,
                 mtaVersion: '1.0.0'
             };
-            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
-            writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
+            renderTemplateToDisk(`app/${FileName.MtaExtYaml}`, mtaExtFilePath, mtaExt);
             this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         } else {
             // Create an entry in an existing mta extension file

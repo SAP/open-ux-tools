@@ -60,7 +60,9 @@ declare module 'sap/ui/rta/command/FlexCommand' {
             };
             setModuleName(moduleName: string): void;
         };
-        getPreparedChange(): Change<ChangeContentType>;
+        // This may return heterogeneous collection so it is wrong to 
+        // use the generic type when the method returns an array of changes.
+        getPreparedChange(): Change<ChangeContentType> | Change<unknown>[];
         getCommands(): FlexCommand[];
     }
 
@@ -105,7 +107,6 @@ declare module 'sap/ui/rta/plugin/ExtendControllerPlugin' {
         constructor(_: Arguments) {}
     }
 }
-
 
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
@@ -172,7 +173,7 @@ declare module 'sap/ui/fl/FakeLrepConnector' {
             fileName: string,
             kind: 'delete' | 'create',
             change?: T,
-            additionalChangeInfo?: U,
+            additionalChangeInfo?: U
         ) => void;
         static enableFakeConnector: () => void;
     }
@@ -225,9 +226,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
             flexEnabled?: boolean;
             componentUsages?: {
                 [key: string]: {
-                    name?: string
-                }
-            }
+                    name?: string;
+                };
+            };
         };
         'sap.ui.generic.app': {
             [key: string]: string;

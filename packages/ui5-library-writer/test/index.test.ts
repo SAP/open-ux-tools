@@ -1,8 +1,8 @@
-import { removeSync } from 'fs-extra';
+import { rmSync } from 'node:fs';
 import { join } from 'node:path';
-import type { UI5LibConfig } from '../src';
-import { generate } from '../src';
-import { debug, projectChecks, testOutputDir, updatePackageJSONDependencyToUseLocalPath } from './common';
+import type { UI5LibConfig } from '../src/index.js';
+import { generate } from '../src/index.js';
+import { debug, projectChecks, testOutputDir, updatePackageJSONDependencyToUseLocalPath } from './common.js';
 
 if (debug?.enabled) {
     jest.setTimeout(360000);
@@ -10,7 +10,7 @@ if (debug?.enabled) {
 
 describe('Reuse lib templates', () => {
     beforeAll(() => {
-        removeSync(testOutputDir); // even for in memory
+        rmSync(testOutputDir, { recursive: true, force: true }); // even for in memory
     });
 
     const ui5LibConfig: UI5LibConfig = {

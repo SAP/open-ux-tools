@@ -3,9 +3,9 @@ import Element from 'sap/ui/core/Element';
 import type DTElement from 'sap/ui/dt/Element';
 
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
-import { getError } from '../utils/error';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { getError } from '../utils/error.js';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 
 const syncViews = new Set<string>();
 let warningShown = false;

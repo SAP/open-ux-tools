@@ -1,5 +1,5 @@
 import type { Namespace, Reference } from '@sap-ux/odata-annotation-core-types';
-import { getAliasInformation, getAllNamespacesAndReferences } from '../../src';
+import { getAliasInformation, getAllNamespacesAndReferences } from '../../src/index.js';
 
 describe('names/namespaces.ts', () => {
     test('getAliasInformation', () => {

@@ -1,5 +1,5 @@
-import { getI18nConfiguration } from '../../../src/utils';
-import { getI18nFolderNames } from '../../../src';
+import { getI18nConfiguration } from '../../../src/utils/index.js';
+import { getI18nFolderNames } from '../../../src/index.js';
 
 describe('config', () => {
     const env = Object.freeze({

@@ -1,11 +1,23 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as projectAccessMock from '@sap-ux/project-access';
-import { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } from '../../../src/smartlinks-config/ui5-yaml';
+
+const mockReadUi5Yaml = jest.fn<typeof actualProjectAccess.readUi5Yaml>();
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args) => (actualProjectAccess.readUi5Yaml as any)(...args))
+}));
+
+const { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } =
+    await import('../../../src/smartlinks-config/ui5-yaml.js');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test readUi5DeployConfigTarget', () => {
     test('existing ui5-deploy.yaml', async () => {
@@ -27,7 +39,7 @@ describe('Test readUi5DeployConfigTarget', () => {
         }
     });
     test('non-existing `deploy-to-abap` in ui5-deploy.yaml', async () => {
-        jest.spyOn(projectAccessMock, 'readUi5Yaml').mockResolvedValueOnce(await UI5Config.newInstance(''));
+        mockReadUi5Yaml.mockResolvedValueOnce(await UI5Config.newInstance(''));
         const basePath = join(__dirname, '../../fixtures/no-ui5-config');
         try {
             await readUi5DeployConfigTarget(basePath);

@@ -1,6 +1,6 @@
 import type { Element, ElementChild } from '@sap-ux/odata-annotation-core-types';
 
-import type { JsonPointer } from '../types';
+import type { JsonPointer } from '../types/index.js';
 
 export const INSERT_ELEMENT = 'insert-element';
 export interface InsertElement {

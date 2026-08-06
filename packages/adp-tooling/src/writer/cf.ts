@@ -8,18 +8,18 @@ import { readUi5Yaml } from '@sap-ux/project-access';
 
 import {
     adjustMtaYaml,
-    getAppHostIds,
     getOrCreateServiceInstanceKeys,
     getCfUi5AppInfo,
     getProjectNameForXsSecurity
-} from '../cf';
-import { getApplicationType } from '../source';
-import { fillDescriptorContent } from './manifest';
-import type { CfAdpWriterConfig, Content, CfUi5AppInfo, CfConfig } from '../types';
-import { getCfVariant, writeCfTemplates, writeCfUI5Yaml } from './project-utils';
-import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import { getBaseAppId } from '../base/helper';
-import { runBuild } from '../base/project-builder';
+} from '../cf/index.js';
+import { getApplicationType } from '../source/index.js';
+import { fillDescriptorContent } from './manifest/index.js';
+import type { CfAdpWriterConfig, Content, CfConfig, CfUi5AppInfo } from '../types.js';
+import { getCfVariant, writeCfTemplates, writeCfUI5Yaml } from './project-utils.js';
+import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
+import { runBuild } from '../base/project-builder.js';
+import { getBaseAppId } from '../base/helper.js';
+import { getAppHostIds } from '../cf/app/discovery.js';
 
 /**
  * Writes the CF adp-project template to the mem-fs-editor instance.
@@ -164,5 +164,8 @@ export async function setupCfPreview(
     }
 
     await writeUi5AppInfo(basePath, ui5AppInfo, logger);
+
+    logger?.log('Starting build');
     await runBuild(basePath, { ADP_BUILDER_MODE: 'preview' });
+    logger?.log('Build completed');
 }

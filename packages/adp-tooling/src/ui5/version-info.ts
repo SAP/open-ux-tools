@@ -1,7 +1,12 @@
-import type { UI5Version } from '../types';
-import { fetchInternalVersions } from './fetch';
-import { isFeatureSupportedVersion, addSnapshot, buildSystemVersionLabel, formatUi5Version } from './format';
-import { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../base/constants';
+import type { UI5Version } from '../types.js';
+import { fetchInternalVersions } from './fetch.js';
+import { isFeatureSupportedVersion, addSnapshot, buildSystemVersionLabel, formatUi5Version } from './format.js';
+import {
+    CURRENT_SYSTEM_VERSION,
+    LATEST_VERSION,
+    SNAPSHOT_UNTESTED_VERSION,
+    SNAPSHOT_VERSION
+} from '../base/constants/index.js';
 
 export interface VersionLabels {
     formattedVersion: string;

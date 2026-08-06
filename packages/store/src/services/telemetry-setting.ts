@@ -1,8 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
-import type { Service } from '.';
-import type { DataProvider } from '../data-provider';
-import { TelemetryDataProvider } from '../data-provider/telemetry-setting';
-import type { TelemetrySetting, TelemetrySettingKey } from '../entities/telemetry-setting';
+import type { Service } from './index.js';
+import type { DataProvider } from '../data-provider/index.js';
+import { TelemetryDataProvider } from '../data-provider/telemetry-setting.js';
+import type { TelemetrySetting, TelemetrySettingKey } from '../entities/telemetry-setting.js';
 
 export class TelemetrySettingService implements Service<TelemetrySetting, TelemetrySettingKey> {
     private readonly dataProvider: DataProvider<TelemetrySetting, TelemetrySettingKey>;

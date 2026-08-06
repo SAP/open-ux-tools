@@ -1,4 +1,4 @@
-import type { FlpConfigOptions } from './types';
+import type { FlpConfigOptions } from './types.js';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import { join, basename } from 'node:path';
@@ -18,14 +18,16 @@ import {
     getBaseAppInbounds,
     getCfBaseAppInbounds,
     loadCfConfig,
+    isLoggedInCf,
     getAppParamsFromUI5Yaml,
+    getSystemUI5Version,
     type InternalInboundNavigation,
     type AdpPreviewConfigWithTarget,
     type DescriptorVariant,
     getExistingAdpProjectType
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
-import { EventName } from '../telemetryEvents';
+import { EventName } from '../telemetryEvents/index.js';
 import {
     getPrompts,
     getAdpFlpConfigPromptOptions,
@@ -36,7 +38,8 @@ import {
     tilePromptNames,
     tileActions
 } from '@sap-ux/flp-config-inquirer';
-import { AppWizard, Prompts, MessageType, type IPrompt } from '@sap-devx/yeoman-ui-types';
+import type { IPrompt, AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     DefaultLogger,
     TelemetryHelper,
@@ -47,7 +50,7 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName, getAppType } from '@sap-ux/project-access';
-import { AdpFlpConfigLogger, t, initI18n, getAbapServiceProvider } from '../utils';
+import { AdpFlpConfigLogger, t, initI18n, getAbapServiceProvider } from '../utils/index.js';
 import {
     ErrorHandler,
     type CredentialsAnswers,
@@ -57,7 +60,7 @@ import {
 import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
-import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache';
+import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache.js';
 /**
  * Generator for adding a FLP configuration to an adaptation project.
  *
@@ -65,10 +68,10 @@ import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../ut
  */
 export default class AdpFlpConfigGenerator extends Generator {
     setPromptsCallback: (fn: object) => void;
-    private prompts: Prompts;
+    private prompts: PromptsType;
     // Flag to determine if the generator was launched as a sub-generator or standalone
     private readonly launchAsSubGen: boolean;
-    private readonly appWizard: AppWizard;
+    private readonly appWizard: AppWizardType;
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
     private readonly projectRootPath: string = '';
@@ -86,6 +89,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private tileSettingsAnswers?: TileSettingsAnswers;
     private provider: AbapServiceProvider;
     private isCfProject: boolean = false;
+    private systemUI5Version: string | undefined;
 
     /**
      * Creates an instance of the generator.
@@ -161,7 +165,12 @@ export default class AdpFlpConfigGenerator extends Generator {
 
         const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
             this.inbounds,
-            getAdpFlpConfigPromptOptions(this.tileSettingsAnswers as TileSettingsAnswers, this.inbounds, this.variant)
+            getAdpFlpConfigPromptOptions(
+                this.tileSettingsAnswers as TileSettingsAnswers,
+                this.inbounds,
+                this.variant,
+                this.isCfProject
+            )
         );
         this.answers = await this.prompt(prompts);
     }
@@ -177,7 +186,13 @@ export default class AdpFlpConfigGenerator extends Generator {
                 this.tileSettingsAnswers as TileSettingsAnswers,
                 this.inbounds
             );
-            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation[], this.fs);
+            await generateInboundConfig(
+                this.projectRootPath,
+                config as InternalInboundNavigation[],
+                this.fs,
+                this.systemUI5Version,
+                this.isCfProject
+            );
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
@@ -244,6 +259,19 @@ export default class AdpFlpConfigGenerator extends Generator {
             }
         ]);
         await this.prompt(prompts);
+        await this._fetchSystemUI5Version();
+    }
+
+    /**
+     * Fetches and stores the system UI5 version. Swallows errors at debug level so a
+     * flaky version endpoint does not abort an otherwise-valid flow.
+     */
+    private async _fetchSystemUI5Version(): Promise<void> {
+        try {
+            this.systemUI5Version = await getSystemUI5Version(this.provider, this.toolsLogger);
+        } catch (error) {
+            this.toolsLogger.debug(`Could not fetch system UI5 version: ${error}`);
+        }
     }
 
     /**
@@ -324,7 +352,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             };
             return;
         }
-        this.prompts = this.options.prompts as Prompts;
+        this.prompts = this.options.prompts as PromptsType;
     }
 
     /**
@@ -518,6 +546,8 @@ export default class AdpFlpConfigGenerator extends Generator {
             }
             this._handleFetchingError(error);
         }
+
+        await this._fetchSystemUI5Version();
     }
 
     /**
@@ -527,7 +557,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private async _initializeCfGenerator(): Promise<void> {
         const cfConfig = loadCfConfig(this.toolsLogger);
-        if (!cfConfig?.token) {
+        if (!(await isLoggedInCf(cfConfig, this.toolsLogger))) {
             this._abortExecution(t('error.cfLoginRequired'));
             return;
         }

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { join as joinPosix } from 'node:path/posix';
-import type { ValueListReference } from './types/adapter';
+import type { ValueListReference } from './types/adapter.js';
 import { readFile, access, constants } from 'node:fs/promises';
 
 /**

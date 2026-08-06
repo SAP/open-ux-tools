@@ -1,23 +1,31 @@
 import * as z from 'zod';
-import { LATEST_UI5_VERSION } from '../../constant';
-import packageJson from '../../../package.json';
+import { LATEST_UI5_VERSION } from '../../constant.js';
+import { PACKAGE_NAME, PACKAGE_VERSION } from '../../package-info.js';
 
 // Extended type generators API use
 export const PREDEFINED_GENERATOR_VALUES = {
     // Config schema version
     version: '0.2',
     telemetryData: {
-        generationSourceName: packageJson.name,
-        generationSourceVersion: packageJson.version
+        generationSourceName: PACKAGE_NAME,
+        generationSourceVersion: PACKAGE_VERSION
     },
     project: {
         sapux: true
     }
 };
 
-export const floorplan = z
-    .literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE'])
-    .describe('SAP Fiori Elements floor plan type.');
+export const floorplan = z.union([
+    z.literal('FE_LROP').describe('List Report Object Page (OData V2/V4).'),
+    z.literal('FE_ALP').describe('Analytical List Page (OData V2/V4).'),
+    z.literal('FE_OVP').describe('Overview Page (OData V2/V4).'),
+    z.literal('FE_WORKLIST').describe('Worklist (OData V2/V4).'),
+    z.literal('FE_FEOP').describe('Form Entry Object Page (OData V4 only).'),
+    z.literal('FE_FPM').describe('Flexible Programming Model / Custom Page (OData V4 only).'),
+    z
+        .literal('FF_SIMPLE')
+        .describe('Basic (SAPUI5 Freestyle template) — data source is optional for this template, supports "None".')
+]);
 
 export const project = z.object({
     name: z
@@ -33,16 +41,25 @@ export const project = z.object({
 export const serviceOdata = z.object({
     servicePath: z
         .string()
-        .describe('The odata endpoint. If the parameter is not provided, the agent should ask the user for it.')
-        .meta({
-            examples: ['/sap/opu/odata/sap/<servicename>/', '/<servicename>/']
-        }),
+        .describe(
+            '🚨 DO NOT CONSTRUCT - This is provided by download_odata_service_metadata tool! ' +
+                'The odata endpoint path returned from the metadata download tool. ' +
+                'NEVER construct this yourself - always get it from download_odata_service_metadata output. ' +
+                'Required for all floorplans except FF_SIMPLE.'
+        ),
     host: z
         .url()
         .describe(
             'The host of the OData service. Must be an HTTPS endpoint. If the parameter is not provided, the agent should ask the user for it.'
         ),
     client: z.optional(z.string().describe('The client to be used for the OData service.')),
+    destination: z.optional(
+        z
+            .string()
+            .describe(
+                'The BTP destination name to be used for the OData service. This must be provided on SAP Business Application Studio.'
+            )
+    ),
     metadataFilePath: z.optional(z.string().describe('Path to a local metadata.xml file.'))
 });
 
@@ -85,8 +102,10 @@ export const entityConfig = z.object({
     mainEntity: z.object({
         entityName: z
             .string()
-            .describe('The name of the main entity. EntitySet Name attribute in OData Metadata.')
-            .meta({ examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"] })
+            .describe(
+                'The name of the main entity. EntitySet Name attribute in OData Metadata. Required for all floorplans except FF_SIMPLE.'
+            )
+            .meta({ examples: ['SalesOrder', 'PurchaseOrderHeader', 'MyEntity'] })
     }),
     generateFormAnnotations: z
         .boolean()

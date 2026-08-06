@@ -1,4 +1,4 @@
-export * from './types';
-export * from './transports';
-export { WinstonLogger as ToolsLogger } from './winston-logger';
-export { ExtensionLogger } from './extension-logger';
+export * from './types.js';
+export * from './transports/index.js';
+export { WinstonLogger as ToolsLogger } from './winston-logger/index.js';
+export { ExtensionLogger } from './extension-logger/index.js';

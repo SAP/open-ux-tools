@@ -1,10 +1,10 @@
-import type { EventName } from '../types/event-name';
-import type { SampleRate } from '../types/sample-rate';
-import { ClientFactory } from '../client';
-import type { Client } from '../client/client';
-import { PerformanceMeasurementAPI as performance } from '../performance/api';
-import type { ParamRecordConfig } from '../utils/param-processing';
-import { getParamsData } from '../utils/param-processing';
+import type { EventName } from '../types/event-name.js';
+import type { SampleRate } from '../types/sample-rate.js';
+import { ClientFactory } from '../client/index.js';
+import type { Client } from '../client/client.js';
+import { PerformanceMeasurementAPI as performance } from '../performance/api.js';
+import type { ParamRecordConfig } from '../utils/param-processing.js';
+import { getParamsData } from '../utils/param-processing.js';
 
 export const notify = (
     target: Record<string, object>,

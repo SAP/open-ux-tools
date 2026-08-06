@@ -1,7 +1,7 @@
 import type { IDropdownProps, IComboBoxProps, ICalloutProps } from '@fluentui/react';
-import type { CalloutCollisionTransform } from '../UICallout';
-import type { UIDropdown } from './UIDropdown';
-import type { UIComboBox } from '../UIComboBox';
+import type { CalloutCollisionTransform } from '../UICallout/index.js';
+import type { UIDropdown } from './UIDropdown.js';
+import type { UIComboBox } from '../UIComboBox/index.js';
 
 /**
  * Method checks if drodpown or combobox is empty or any value is selected.

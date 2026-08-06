@@ -15,13 +15,13 @@ describe('FeatureService', () => {
     }
 
     test('not enabled feature', async () => {
-        const { FeatureService } = await import('../../../src/cpe/feature-service');
+        const { FeatureService } = await import('../../../src/cpe/feature-service.js');
         expect(FeatureService.isFeatureEnabled('test.feature')).toStrictEqual(false);
     });
 
     test('enabled feature', async () => {
         setFeatureToggles(['test.feature']);
-        const { FeatureService } = await import('../../../src/cpe/feature-service');
+        const { FeatureService } = await import('../../../src/cpe/feature-service.js');
         expect(FeatureService.isFeatureEnabled('test.feature')).toStrictEqual(true);
     });
 });

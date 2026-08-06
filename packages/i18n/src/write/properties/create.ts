@@ -1,6 +1,6 @@
-import type { NewI18nEntry } from '../../types';
-import { doesExist, writeFile } from '../../utils';
-import { writeToExistingI18nPropertiesFile } from '../utils';
+import type { NewI18nEntry } from '../../types.js';
+import { doesExist, writeFile } from '../../utils/index.js';
+import { writeToExistingI18nPropertiesFile } from '../utils/index.js';
 import { basename } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 

@@ -1,5 +1,5 @@
-import type { AdtCategory } from '../../types';
-import { AdtService } from './adt-service';
+import type { AdtCategory } from '../../types/index.js';
+import { AdtService } from './adt-service.js';
 
 /**
  * UI5RtVersionService implements ADT requests to get UI5 Version

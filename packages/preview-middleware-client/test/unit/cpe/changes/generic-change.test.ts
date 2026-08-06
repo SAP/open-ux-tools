@@ -1,4 +1,4 @@
-import { getTextBundle } from '../../../../src/i18n';
+import { getTextBundle } from '../../../../src/i18n.js';
 import {
     ADD_NEW_ANNOTATION_FILE_CHANGE,
     RENAME_CHANGE,
@@ -7,7 +7,7 @@ import {
     NewAnnotationFileChange,
     MoveControlsChange,
     RenameChange
-} from '../../../../src/cpe/changes/generic-change';
+} from '../../../../src/cpe/changes/generic-change.js';
 
 describe('GENERIC_CHANGE_HANDLER', () => {
     let bundle: any;

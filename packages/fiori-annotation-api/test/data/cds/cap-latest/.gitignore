@@ -1,0 +1,33 @@
+# CAP teched2020-IIS360
+_out
+*.db
+connection.properties
+default-*.json
+gen/
+node_modules/
+target/
+
+# Web IDE, App Studio
+.che/
+.gen/
+
+# MTA
+*_mta_build_tmp
+*.mtar
+mta_archives/
+
+# Other
+.DS_Store
+*.orig
+*.log
+
+*.iml
+*.flattened-pom.xml
+.vscode
+package-lock.json
+
+# IDEs
+# .vscode
+.idea
+
+dist/

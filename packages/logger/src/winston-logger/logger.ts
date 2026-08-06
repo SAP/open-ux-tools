@@ -1,10 +1,10 @@
-import { ConsoleTransport } from '../transports';
-import type { ChildLoggerOptions, Log, Logger, LoggerOptions, Transport } from '../types';
-import { LogLevel } from '../types';
+import { ConsoleTransport } from '../transports/index.js';
+import type { ChildLoggerOptions, Log, Logger, LoggerOptions, Transport } from '../types.js';
+import { LogLevel } from '../types.js';
 import winston, { format } from 'winston';
-import { toWinstonLogLevel, toWinstonTransport } from './adapter';
+import { toWinstonLogLevel, toWinstonTransport } from './adapter.js';
 import type WinstonTransport from 'winston-transport';
-import { nextColor } from './utils';
+import { nextColor } from './utils.js';
 import { inspect } from 'node:util';
 
 const defaultLoggerOptions: LoggerOptions = {

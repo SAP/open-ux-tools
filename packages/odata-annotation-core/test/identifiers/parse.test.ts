@@ -1,4 +1,4 @@
-import { parseIdentifier } from '../../src/names/parse';
+import { parseIdentifier } from '../../src/names/parse.js';
 
 describe('identifiers', () => {
     describe('parser', () => {

@@ -1,7 +1,7 @@
 import React from 'react';
-import { UIFlexibleTableLayout } from './types';
-import type { UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
-import { composeClassNames } from './utils';
+import { UIFlexibleTableLayout } from './types.js';
+import type { UIFlexibleTableProps, UIFlexibleTableRowType } from './types.js';
+import { composeClassNames } from './utils.js';
 
 interface RowDataCellsProps<T> {
     tableProps: UIFlexibleTableProps<T>;

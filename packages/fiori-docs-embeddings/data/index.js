@@ -2,11 +2,8 @@
  * Data directory access point for @sap-ux/fiori-docs-embeddings
  */
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 /**
  * Export the current directory path (data directory)

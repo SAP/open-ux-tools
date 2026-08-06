@@ -1,4 +1,4 @@
-import { i18n, initI18n, t } from '../../src/i18n';
+import { i18n, initI18n, t } from '../../src/i18n.js';
 
 describe('i18n', () => {
     beforeAll(async () => {
@@ -51,7 +51,7 @@ describe('i18n', () => {
             // The module-level initI18n().catch() should prevent any errors
             // from breaking the module load. This test verifies the module
             // loaded successfully.
-            await expect(import('../../src/i18n')).resolves.toBeDefined();
+            await expect(import('../../src/i18n.js')).resolves.toBeDefined();
         });
     });
 });

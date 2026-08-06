@@ -1,1 +1,1 @@
-export * from './UITextInput';
+export * from './UITextInput.js';

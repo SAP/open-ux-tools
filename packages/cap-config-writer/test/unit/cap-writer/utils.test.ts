@@ -1,5 +1,5 @@
-import { getAppLaunchText } from '../../../src';
-import { t } from '../../../src/i18n';
+import { getAppLaunchText } from '../../../src/index.js';
+import { t } from '../../../src/i18n.js';
 
 describe('Launch Text utility function tests', () => {
     it('should generate correct launch text', async () => {

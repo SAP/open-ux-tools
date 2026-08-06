@@ -1,9 +1,9 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { getLaunchConfigs, getLaunchConfigByName } from '../../src';
-import { TestPaths } from '../test-data/utils';
-import { getAllLaunchConfigs, getLaunchJSONFilePaths } from '../../src/launch-config-crud/read';
+import { getLaunchConfigs, getLaunchConfigByName } from '../../src/index.js';
+import { TestPaths } from '../test-data/utils.js';
+import { getAllLaunchConfigs, getLaunchJSONFilePaths } from '../../src/launch-config-crud/read.js';
 import { DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 

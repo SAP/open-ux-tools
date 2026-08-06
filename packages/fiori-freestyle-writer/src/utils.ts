@@ -1,6 +1,6 @@
 import { sep } from 'node:path';
-import type { FreestyleApp } from './types';
-import { TemplateType } from './types';
+import type { FreestyleApp } from './types.js';
+import { TemplateType } from './types.js';
 import { gte } from 'semver';
 
 export const ui5LtsVersion_1_71 = '1.71.0';

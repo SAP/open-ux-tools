@@ -6,7 +6,7 @@ import {
     ELEMENT_TYPE
 } from '@sap-ux/odata-annotation-core-types';
 
-import { elementsWithName, getElementAttributeValue, getSingleTextNode, isElementWithName } from '../src';
+import { elementsWithName, getElementAttributeValue, getSingleTextNode, isElementWithName } from '../src/index.js';
 
 const rangeInfo = {
     start: {

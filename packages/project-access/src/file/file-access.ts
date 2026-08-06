@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
-import type { Manifest, Package } from '../types';
+import type { Manifest, Package } from '../types/index.js';
 import parseJsonError from 'json-parse-even-better-errors';
 
 /**

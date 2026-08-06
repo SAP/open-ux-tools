@@ -1,7 +1,21 @@
-import { getPrompts } from '../../../../src/prompts/change-data-source/index';
-import * as i18n from '../../../../src/i18n';
-import * as projectAccess from '@sap-ux/project-access';
+import { jest } from '@jest/globals';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import { initI18nProjectValidators } from '@sap-ux/project-input-validator';
+
+const mockFilterDataSourcesByType = jest.fn().mockImplementation((dataSources, type) => {
+    if (!dataSources) {
+        return {};
+    }
+    return Object.fromEntries(Object.entries(dataSources).filter(([, ds]) => ds.type === type));
+});
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    filterDataSourcesByType: mockFilterDataSourcesByType
+}));
+
+const { getPrompts } = await import('../../../../src/prompts/change-data-source/index.js');
+const i18n = await import('../../../../src/i18n.js');
 
 describe('getPrompts', () => {
     const dataSources = {
@@ -24,6 +38,17 @@ describe('getPrompts', () => {
 
     beforeAll(async () => {
         await i18n.initI18n();
+        await initI18nProjectValidators();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockFilterDataSourcesByType.mockImplementation((ds, type) => {
+            if (!ds) {
+                return {};
+            }
+            return Object.fromEntries(Object.entries(ds).filter(([, v]) => (v as any).type === type));
+        });
     });
 
     test('return prompts', () => {
@@ -31,7 +56,7 @@ describe('getPrompts', () => {
             'mainService': dataSources['mainService']
         };
         const dataSourceIds = Object.keys(filteredDataSources);
-        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce(filteredDataSources);
+        mockFilterDataSourcesByType.mockReturnValueOnce(filteredDataSources);
 
         const prompts = getPrompts(dataSources);
 
@@ -98,7 +123,7 @@ describe('getPrompts', () => {
                 }
             }
         } as Record<string, ManifestNamespace.DataSource>;
-        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce(noAnnotationDataSources);
+        mockFilterDataSourcesByType.mockReturnValueOnce(noAnnotationDataSources);
 
         const prompts = getPrompts(noAnnotationDataSources);
         const annotationWhen = (prompts[3] as any).when;
@@ -123,7 +148,7 @@ describe('getPrompts', () => {
                 }
             }
         } as Record<string, ManifestNamespace.DataSource>;
-        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce({
+        mockFilterDataSourcesByType.mockReturnValueOnce({
             'mainService': relativeAnnotationDataSources['mainService']
         });
 
@@ -133,7 +158,7 @@ describe('getPrompts', () => {
     });
 
     test('return prompts - no data sources', () => {
-        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce({});
+        mockFilterDataSourcesByType.mockReturnValueOnce({});
 
         const prompts = getPrompts({});
 
@@ -197,7 +222,7 @@ describe('getPrompts', () => {
             test('should return error message for empty URI', () => {
                 const uri = '';
                 const result = (getPrompts({})[1].validate as Function)(uri);
-                expect(result).toBe('general.inputCannotBeEmpty');
+                expect(result).toMatch(/cannot be empty/i);
             });
 
             test('should return error message for URI with whitespaces', () => {

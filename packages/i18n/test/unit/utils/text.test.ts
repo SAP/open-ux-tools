@@ -1,4 +1,4 @@
-import { convertToCamelCase, convertToPascalCase, getI18nMaxLength, getI18nTextType } from '../../../src';
+import { convertToCamelCase, convertToPascalCase, getI18nMaxLength, getI18nTextType } from '../../../src/index.js';
 
 describe('text', () => {
     test('getI18nMaxLength', () => {

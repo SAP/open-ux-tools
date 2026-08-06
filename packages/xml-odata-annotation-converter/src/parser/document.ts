@@ -21,10 +21,10 @@ import {
     ELEMENT_TYPE
 } from '@sap-ux/odata-annotation-core';
 
-import { adjustRange, getGapRangeBetween, transformElementRange, transformRange } from './range';
-import { getElementsWithName } from './element-getters';
-import { getElementAttributeByName } from './attribute-getters';
-import { removeEscapeSequences } from './escaping';
+import { adjustRange, getGapRangeBetween, transformElementRange, transformRange } from './range.js';
+import { getElementsWithName } from './element-getters.js';
+import { getElementAttributeByName } from './attribute-getters.js';
+import { removeEscapeSequences } from './escaping.js';
 
 interface NamespaceDetails {
     alias: string;

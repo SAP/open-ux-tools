@@ -1,9 +1,9 @@
 import type { Document, Node, YAMLMap } from 'yaml';
 import yaml, { isMap, isSeq, YAMLSeq } from 'yaml';
 
-import merge from 'lodash/merge';
-import { errorCode, errorTemplate, YAMLError } from './errors';
-import { interpolate } from './texts';
+import merge from 'lodash/merge.js';
+import { errorCode, errorTemplate, YAMLError } from './errors/index.js';
+import { interpolate } from './texts/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface NodeComment<T> {

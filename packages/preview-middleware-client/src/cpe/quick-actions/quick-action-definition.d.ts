@@ -11,9 +11,9 @@ import type {
     SIMPLE_QUICK_ACTION_KIND
 } from '@sap-ux-private/control-property-editor-common';
 
-import type { TextBundle } from '../../i18n';
-import type { ControlTreeIndex } from '../types';
-import type { ChangeService } from '../changes';
+import type { TextBundle } from '../../i18n.js';
+import type { ControlTreeIndex } from '../types.js';
+import type { ChangeService } from '../changes/index.js';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;

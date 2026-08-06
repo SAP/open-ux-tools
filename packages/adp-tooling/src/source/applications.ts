@@ -1,9 +1,9 @@
 import type { AbapServiceProvider, App } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { t } from '../i18n';
-import type { SourceApplication } from '../types';
-import { SupportedProject } from './systems';
+import { t } from '../i18n.js';
+import type { SourceApplication } from '../types.js';
+import { SupportedProject } from './systems.js';
 
 type UI5AppFilter = {
     fields: string;

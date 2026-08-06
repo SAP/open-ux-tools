@@ -6,7 +6,7 @@ import listReportConfig from './page-editor-api/test-data/config/ListReport.json
 import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json';
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
 import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
-import type { FlexChange } from '../../src/page-editor-api/flex';
+import type { FlexChange } from '../../src/page-editor-api/flex.js';
 import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 

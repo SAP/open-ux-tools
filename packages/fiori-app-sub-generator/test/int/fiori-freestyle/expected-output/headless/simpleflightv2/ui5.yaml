@@ -29,7 +29,8 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: test/flpSandbox.html
-          intent:
-            object: simpleflightv2
-            action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

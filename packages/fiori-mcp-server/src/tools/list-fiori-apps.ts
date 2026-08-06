@@ -1,6 +1,6 @@
 import { findFioriArtifacts, getProjectType } from '@sap-ux/project-access';
 import type { AllAppResults, ProjectType } from '@sap-ux/project-access';
-import type { FioriApp, ListFioriAppsInput, ListFioriAppsOutput } from '../types';
+import type { FioriApp, ListFioriAppsInput, ListFioriAppsOutput } from '../types/index.js';
 import { basename } from 'node:path';
 
 /**

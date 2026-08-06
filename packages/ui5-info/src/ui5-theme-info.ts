@@ -1,8 +1,8 @@
-import { defaultVersion, latestVersionString } from './constants';
-import type { UI5Theme } from './types';
+import { defaultVersion, latestVersionString } from './constants.js';
+import type { UI5Theme } from './types.js';
 import type { SemVer } from 'semver';
 import { coerce, gte, lt } from 'semver';
-import { getLatestUI5Version } from './ui5-version-info';
+import { getLatestUI5Version } from './ui5-version-info.js';
 
 const MIN_UI5_VER_DARK_THEME = '1.72.0';
 const MIN_UI5_VER_HORIZON_THEME = '1.102.0';

@@ -1,4 +1,4 @@
-export { GUIDED_ANSWERS_ICON } from './guided-answers-icon_svg_base64';
+export { GUIDED_ANSWERS_ICON } from './guided-answers-icon_svg_base64.js';
 
 /**
  * Mapping of human readable help topic to implementation specific ids
@@ -29,7 +29,8 @@ export const HELP_NODES = {
     DESTINATION_CONNECTION_ERRORS: 48366, // Non specific destination connection error help page, currently this is mapped to the same node as BAS_CATALOG_SERVICES_REQUEST_FAILED which will be updated in the future (and the entry here removed)
     UI_SERVICE_GENERATOR: 63068, // UI Service generator
     DESTINATION_GATEWAY_TIMEOUT: 57914, // Gateway timeout 504
-    ADT_APP_NOT_FOUND_ERROR: 63911 // Error when the ADT app is not found in the UI5 ABAP repository
+    ADT_APP_NOT_FOUND_ERROR: 63911, // Error when the ADT app is not found in the UI5 ABAP repository
+    DESTINATION_FULL_URL: 68172 // Full URL destination migration guide - covers preview and deployment flows
 };
 
 export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension';

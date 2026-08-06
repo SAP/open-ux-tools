@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-hardcoded-url';
+import rule from '../../src/rules/sap-no-hardcoded-url.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -27,8 +27,7 @@ ruleTester.run('sap-no-hardcoded-url', rule, {
             code: "var system = 'https://uxciebj.example.net:44315'; // EBJ",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'Literal'
+                    message: errorMessage
                 }
             ]
         },
@@ -36,8 +35,7 @@ ruleTester.run('sap-no-hardcoded-url', rule, {
             code: "var url_root = 'https://'+ host + '/sap/opu/odata/sap/';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'Literal'
+                    message: errorMessage
                 }
             ]
         },
@@ -45,8 +43,7 @@ ruleTester.run('sap-no-hardcoded-url', rule, {
             code: "system = 'https://ldciqi3.example.net:44375';",
             errors: [
                 {
-                    message: errorMessage,
-                    type: 'Literal'
+                    message: errorMessage
                 }
             ]
         }

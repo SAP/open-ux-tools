@@ -4,11 +4,11 @@ import type FilterBar from 'sap/ui/mdc/FilterBar';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../utils/core';
-import { executeToggleAction } from './utils';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { pageHasControlId } from '../../../cpe/quick-actions/utils.js';
+import { getControlById } from '../../../utils/core.js';
+import { executeToggleAction } from './utils.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
 const PROPERTY_NAME = 'showClearButton';

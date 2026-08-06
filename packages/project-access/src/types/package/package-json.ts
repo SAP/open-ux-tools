@@ -1,5 +1,5 @@
-import type { LiteralUnion } from './literal-union';
-import type { JsonObject, JsonValue } from './basic';
+import type { LiteralUnion } from './literal-union.js';
+import type { JsonObject, JsonValue } from './basic.js';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace PackageJson {
@@ -223,11 +223,7 @@ declare namespace PackageJson {
 	Entry points of a module, optionally with conditions and subpath exports.
      */
     export type Exports =
-        | null
-        | string
-        | Array<string | ExportConditions>
-        | ExportConditions
-        | { [path: string]: Exports };
+        null | string | Array<string | ExportConditions> | ExportConditions | { [path: string]: Exports };
 
     /**
 	Import map entries of a module, optionally with conditions.

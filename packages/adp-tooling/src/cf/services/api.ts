@@ -22,10 +22,11 @@ import type {
     ServiceInfo,
     CfUi5AppInfo,
     ServiceKeyCredentialsWithTags
-} from '../../types';
-import { t } from '../../i18n';
-import { getProjectNameForXsSecurity } from '../project';
-import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
+} from '../../types.js';
+import { t } from '../../i18n.js';
+import { getProjectNameForXsSecurity } from '../project/index.js';
+import { createServiceKey, getServiceKeys, requestCfApi } from './cli.js';
+import { getTemplatePath } from '../../templates.js';
 
 interface FDCResponse {
     results: CFApp[];
@@ -171,7 +172,7 @@ export async function getCfUi5AppInfo(
         appId
     )}&${appHostIdParams}`;
 
-    logger?.log(`Fetching ui5AppInfo.json from FDC: ${url}`);
+    logger?.log(`Fetching ui5AppInfo.json`);
 
     try {
         const response = await axios.get(url, requestArguments.options);
@@ -256,7 +257,7 @@ export async function createServiceInstance(
         if (xsSecurityProjectName) {
             let xsSecurity = null;
             try {
-                const baseTmplPath = path.join(__dirname, '../../../templates');
+                const baseTmplPath = getTemplatePath();
                 const templatePath = templatePathOverwrite ?? baseTmplPath;
                 const filePath = path.resolve(templatePath, 'cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');

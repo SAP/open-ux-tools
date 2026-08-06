@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 
-import translations from './translations/project-input-validator.i18n.json';
+import translations from './translations/project-input-validator.i18n.json' with { type: 'json' };
 
 export const PROJECT_INPUT_VALIDATOR_NS = 'project-input-validator';
 export const i18n: i18nNext = i18next.createInstance();
@@ -20,8 +20,7 @@ export function addi18nResourceBundle(): void {
 export async function initI18nProjectValidators(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en',
-        showSupportNotice: false
+        fallbackLng: 'en'
     });
     addi18nResourceBundle();
 }

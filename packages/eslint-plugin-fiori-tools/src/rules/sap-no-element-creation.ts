@@ -10,7 +10,7 @@ import {
     isLiteral,
     contains,
     createDocumentBasedRuleVisitors
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -20,7 +20,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {

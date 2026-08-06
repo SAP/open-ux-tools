@@ -1,12 +1,16 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import type { Manifest } from '@sap-ux/project-access';
 import { YamlDocument } from '@sap-ux/yaml';
-import template from './templates/manifest-fe-v2.json';
-import feV4ManifestTemplate from './templates/manifest-fe-v4.json';
-import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V4, FIORI_ELEMENTS_V4 } from './projects';
+import template from './templates/manifest-fe-v2.json' with { type: 'json' };
+import feV4ManifestTemplate from './templates/manifest-fe-v4.json' with { type: 'json' };
+import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V4, FIORI_ELEMENTS_V4 } from './projects.js';
 import { existsSync } from 'node:fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export interface ProjectParameters {
     id: string;

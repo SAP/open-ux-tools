@@ -1,1 +1,1 @@
-export * from './UIActionCallout';
+export * from './UIActionCallout.js';

@@ -7,7 +7,7 @@ import type {
     FioriAppGeneratorPromptSettings,
     State,
     YeomanUiStepConfig
-} from '../types';
+} from '../types/index.js';
 import type { UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
 
 /**

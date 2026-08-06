@@ -1,6 +1,6 @@
-import { addons, types } from '@storybook/manager-api';
-import { CodePreview } from './preview/component';
-import { ProjectSelector } from './project/component';
+import { addons, types } from 'storybook/manager-api';
+import { CodePreview } from './preview/component.js';
+import { ProjectSelector } from './project/component.js';
 
 const ADDONS = [
     {

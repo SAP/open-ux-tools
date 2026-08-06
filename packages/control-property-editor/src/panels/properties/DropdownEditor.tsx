@@ -10,11 +10,11 @@ import type {
     PropertyType,
     StringControlPropertyWithOptions
 } from '@sap-ux-private/control-property-editor-common';
-import { changeProperty } from '../../slice';
+import { changeProperty } from '../../slice.js';
 
-import { setCachedValue } from './propertyValuesCache';
-import type { PropertyInputProps } from './types';
-import { InputType } from './types';
+import { setCachedValue } from './propertyValuesCache.js';
+import type { PropertyInputProps } from './types.js';
+import { InputType } from './types.js';
 
 import './Properties.scss';
 import { debounce, reportTelemetry } from '@sap-ux-private/control-property-editor-common';

@@ -3,12 +3,12 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import type { ControlProperty, StringControlPropertyWithOptions } from '@sap-ux-private/control-property-editor-common';
-import { changeProperty } from '../../slice';
-import type { CacheValue } from './propertyValuesCache';
-import { getCachedValue } from './propertyValuesCache';
+import { changeProperty } from '../../slice.js';
+import type { CacheValue } from './propertyValuesCache.js';
+import { getCachedValue } from './propertyValuesCache.js';
 import styles from './InputTypeToggle.module.scss';
-import type { InputTypeToggleProps } from './types';
-import { InputType } from './types';
+import type { InputTypeToggleProps } from './types.js';
+import { InputType } from './types.js';
 import { reportTelemetry, STRING_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 
 /**

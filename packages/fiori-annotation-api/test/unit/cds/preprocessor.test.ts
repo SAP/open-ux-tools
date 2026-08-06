@@ -23,12 +23,12 @@ import {
     createDeleteAnnotationGroupItemsChange,
     createInsertEmbeddedAnnotationChange,
     createMoveCollectionChange
-} from '../../../src/cds/change';
-import { preprocessChanges } from '../../../src/cds/preprocessor';
+} from '../../../src/cds/change.js';
+import { preprocessChanges } from '../../../src/cds/preprocessor.js';
 
-import { getDocument } from '../../../src/cds/document';
-import type { Document } from '../../../src/cds/document';
-import { PROJECTS } from '../projects';
+import { getDocument } from '../../../src/cds/document.js';
+import type { Document } from '../../../src/cds/document.js';
+import { PROJECTS } from '../projects.js';
 
 const vocabularyService = new VocabularyService(true);
 

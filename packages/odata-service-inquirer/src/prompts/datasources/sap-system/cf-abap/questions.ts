@@ -1,9 +1,9 @@
 import type { Question } from 'inquirer';
-import type { OdataServicePromptOptions } from '../../../../types';
-import { ConnectionValidator } from '../../../connectionValidator';
-import { getCFDiscoverPrompts } from '../abap-on-btp/questions';
-import { getSystemServiceQuestion } from '../service-selection/questions';
-import type { ServiceAnswer } from '../service-selection/types';
+import type { OdataServicePromptOptions } from '../../../../types.js';
+import { ConnectionValidator } from '../../../connectionValidator.js';
+import { getCFDiscoverPrompts } from '../abap-on-btp/questions.js';
+import { getSystemServiceQuestion } from '../service-selection/questions.js';
+import type { ServiceAnswer } from '../service-selection/types.js';
 
 /**
  * Cloud Foundry ABAP system prompts specifically for BAS environment since it requires additional destination configuration.

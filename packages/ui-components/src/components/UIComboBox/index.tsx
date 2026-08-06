@@ -1,1 +1,1 @@
-export * from './UIComboBox';
+export * from './UIComboBox.js';

@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
-import { enhanceYaml } from '../../../src/mockserver-config/ui5-mock-yaml';
+import { enhanceYaml } from '../../../src/mockserver-config/ui5-mock-yaml.js';
 
 describe('Test enhanceYaml()', () => {
     const basePath = join('/');

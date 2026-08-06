@@ -14,11 +14,11 @@ import type {
     CfUI5Yaml,
     MtaYaml,
     ServiceKeys
-} from '../../types';
-import { AppRouterType } from '../../types';
-import { createServices } from '../services/api';
-import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader';
-import { getServiceKeyDestinations } from '../app/discovery';
+} from '../../types.js';
+import { AppRouterType } from '../../types.js';
+import { createServices, createServiceInstance, getOrCreateServiceInstanceKeys } from '../services/api.js';
+import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader.js';
+import { getServiceKeyDestinations } from '../app/discovery.js';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -42,6 +42,55 @@ interface AdjustMtaYamlParams {
  */
 export function isMtaProject(selectedPath: string): boolean {
     return fs.existsSync(path.join(selectedPath, 'mta.yaml'));
+}
+
+/**
+ * Adds a connectivity service resource to the project's mta.yaml if not already present,
+ * creates the CF service instance and generates a service key for it.
+ * Only applies to MTA projects. Required when the selected CF destination is OnPremise
+ * so the AppRouter can proxy requests through the Cloud Connector.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @param {Editor} memFs - The mem-fs editor instance.
+ * @param {ToolsLogger} [logger] - Optional logger.
+ */
+export async function addConnectivityServiceToMta(
+    projectPath: string,
+    memFs: Editor,
+    logger?: ToolsLogger
+): Promise<void> {
+    if (!isMtaProject(projectPath)) {
+        return;
+    }
+
+    const mtaYamlPath = path.join(projectPath, 'mta.yaml');
+    const yamlContent = getYamlContent<MtaYaml>(mtaYamlPath);
+    if (!yamlContent) {
+        return;
+    }
+
+    const projectName = yamlContent.ID.toLowerCase();
+    const connectivityResourceName = `${projectName}-connectivity`;
+
+    if (yamlContent.resources?.some((r: MtaResource) => r.name === connectivityResourceName)) {
+        return;
+    }
+
+    await createServiceInstance('lite', connectivityResourceName, 'connectivity', { logger });
+    await getOrCreateServiceInstanceKeys({ names: [connectivityResourceName] }, logger);
+
+    yamlContent.resources = yamlContent.resources ?? [];
+    yamlContent.resources.push({
+        name: connectivityResourceName,
+        type: CF_MANAGED_SERVICE,
+        parameters: {
+            service: 'connectivity',
+            'service-plan': 'lite',
+            'service-name': connectivityResourceName
+        }
+    });
+
+    memFs.write(mtaYamlPath, yaml.dump(yamlContent, { lineWidth: -1 }));
 }
 
 /**

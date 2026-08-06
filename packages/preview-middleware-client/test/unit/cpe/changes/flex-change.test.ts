@@ -1,4 +1,4 @@
-import { applyChange } from '../../../../src/cpe/changes/flex-change';
+import { applyChange } from '../../../../src/cpe/changes/flex-change.js';
 import type { UI5AdaptationOptions } from '../../../../src/cpe/types';
 import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import { sapCoreMock } from 'mock/window';

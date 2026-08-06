@@ -155,7 +155,8 @@ Array [
     "text": "
    \\"@odata.context\\": {
      \\"value\\": \\"test\\"
-   }",
+   }
+ ",
     "type": "insert",
   },
 ]

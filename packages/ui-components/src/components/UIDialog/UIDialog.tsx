@@ -1,8 +1,8 @@
 import React from 'react';
 import type { IDialogProps, IDialogFooterProps } from '@fluentui/react';
 import { Dialog as BaseDialog, DialogFooter } from '@fluentui/react';
-import { UIDefaultButton } from '../UIButton';
-import { deepMerge } from '../../utilities/DeepMerge';
+import { UIDefaultButton } from '../UIButton/index.js';
+import { deepMerge } from '../../utilities/DeepMerge.js';
 
 import '../../styles/_shadows.scss';
 
@@ -38,7 +38,7 @@ export const DIALOG_STYLES = {
     background: 'var(--vscode-editorWidget-background)',
     boxShadow: 'var(--ui-box-shadow-medium)',
     borderColor: 'var(--vscode-editorWidget-border)',
-    borderRadius: 4,
+    borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
     vPadding: 20,
     vPaddingHalf: 10,
     hPadding: 45,

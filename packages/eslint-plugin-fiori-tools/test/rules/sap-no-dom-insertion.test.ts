@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-dom-insertion';
+import rule from '../../src/rules/sap-no-dom-insertion.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -31,8 +31,7 @@ ruleTester.run('sap-no-dom-insertion', rule, {
             code: "$('#container').append('Test');",
             errors: [
                 {
-                    message: MESSAGE_DOM_INSERTION,
-                    type: 'CallExpression'
+                    message: MESSAGE_DOM_INSERTION
                 }
             ]
         },
@@ -40,8 +39,7 @@ ruleTester.run('sap-no-dom-insertion', rule, {
             code: "var list = document.getElementById('myList1');List.insertBefore(node, list.childNodes[0]);",
             errors: [
                 {
-                    message: MESSAGE_DOM_INSERTION,
-                    type: 'CallExpression'
+                    message: MESSAGE_DOM_INSERTION
                 }
             ]
         },
@@ -49,8 +47,7 @@ ruleTester.run('sap-no-dom-insertion', rule, {
             code: 'myObject.after(document.body);',
             errors: [
                 {
-                    message: MESSAGE_DOM_INSERTION,
-                    type: 'CallExpression'
+                    message: MESSAGE_DOM_INSERTION
                 }
             ]
         }

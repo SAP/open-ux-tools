@@ -3,15 +3,15 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
-import type { CustomTableColumn, InternalCustomTableColumn } from './types';
-import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
-import type { Manifest } from '../common/types';
-import { validateVersion, validateBasePath } from '../common/validate';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file';
-import { getTemplatePath } from '../templates';
+import type { CustomTableColumn, InternalCustomTableColumn } from './types.js';
+import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults.js';
+import type { Manifest } from '../common/types.js';
+import { validateVersion, validateBasePath } from '../common/validate.js';
+import { applyEventHandlerConfiguration } from '../common/event-handler.js';
+import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
+import { getTemplatePath } from '../templates.js';
 import { coerce, gte } from 'semver';
-import { getManifest } from '../common/utils';
+import { getManifest } from '../common/utils.js';
 
 /**
  * Get the template folder for the given UI5 version.

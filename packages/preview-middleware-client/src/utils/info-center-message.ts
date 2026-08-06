@@ -1,6 +1,6 @@
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import { CommunicationService } from '../cpe/communication-service';
-import { getTextBundle } from '../i18n';
+import { CommunicationService } from '../cpe/communication-service.js';
+import { getTextBundle } from '../i18n.js';
 
 /**
  * Localization key interface for defining message keys and optional parameters.

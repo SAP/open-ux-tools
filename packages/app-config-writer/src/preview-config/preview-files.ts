@@ -2,8 +2,8 @@ import { join } from 'node:path';
 import { getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml';
-import { deleteFiles } from '../common/utils';
+import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml.js';
+import { deleteFiles } from '../common/utils.js';
 
 const renameMessage = (filePath: string): string =>
     `Renamed '${filePath}' to '${filePath.slice(
@@ -24,6 +24,11 @@ const renameMessage = (filePath: string): string =>
 export async function renameSandbox(fs: Editor, basePath: string, path: string, logger?: ToolsLogger): Promise<void> {
     const filePath = join(await getWebappPath(basePath), path);
     if (fs.exists(filePath)) {
+        if (path.endsWith('unitTests.qunit.html')) {
+            logger?.warn(
+                `Unit test files will be discovered automatically using the default pattern '/test/**/*Test.{js,ts}'. If your unit test files do not match this pattern, add a 'pattern' property to the QUnit test entry in your UI5 YAML configuration (e.g. pattern: '/test/unit/controller/*.{js,ts}'). For more details see https://github.com/SAP/open-ux-tools/blob/main/packages/preview-middleware/README.md#configuration-option-test`
+            );
+        }
         fs.move(filePath, filePath.replace('.html', '_old.html'));
         logger?.info(renameMessage(path));
     } else if (

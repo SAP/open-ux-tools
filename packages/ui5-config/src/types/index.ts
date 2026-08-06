@@ -1,7 +1,7 @@
 import type { AuthenticationType } from '@sap-ux/store';
 
-export * from './ui5yaml';
-export * from './middlewares';
+export * from './ui5yaml.js';
+export * from './middlewares.js';
 
 export interface BspApp {
     name: string;
@@ -28,8 +28,7 @@ export interface DestinationAbapTarget {
 }
 
 export type AbapTarget =
-    | (UrlAbapTarget & Partial<DestinationAbapTarget>)
-    | (DestinationAbapTarget & Partial<UrlAbapTarget>);
+    (UrlAbapTarget & Partial<DestinationAbapTarget>) | (DestinationAbapTarget & Partial<UrlAbapTarget>);
 
 export interface AbapDeployConfig {
     target: AbapTarget;
@@ -79,6 +78,16 @@ export interface FioriPreviewConfig {
             action?: string; // Intent action
         };
     };
+    /**
+     * Configuration object for the local test setup
+     */
+    test?: Array<{
+        framework: 'OPA5' | 'QUnit' | 'Testsuite';
+        path?: string;
+        init?: string;
+        pattern?: string;
+        isolateJourneys?: boolean;
+    }>;
 }
 
 export interface ServeStaticPath {

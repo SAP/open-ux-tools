@@ -1,14 +1,14 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { FioriOptions, LaunchJSON } from '../types';
-import { LAUNCH_JSON_FILE } from '../types';
+import type { FioriOptions, LaunchJSON } from '../types/index.js';
+import { LAUNCH_JSON_FILE } from '../types/index.js';
 import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
 import { findNodeAtLocation, parse, parseTree } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
-import { generateNewFioriLaunchConfig, mergeArgs } from './utils';
+import { generateNewFioriLaunchConfig, mergeArgs } from './utils.js';
 import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
-import { updateLaunchJSON } from './writer';
+import { updateLaunchJSON } from './writer.js';
 
 export type configType = object | string | number | undefined;
 

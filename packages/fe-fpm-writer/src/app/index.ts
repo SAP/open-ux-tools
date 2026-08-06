@@ -4,10 +4,10 @@ import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { lt, valid } from 'semver';
 import { getMinUI5VersionAsArray, getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
-import { FCL_ROUTER } from '../common/defaults';
-import { getTemplatePath } from '../templates';
-import { addExtensionTypes, getManifest } from '../common/utils';
-import { copyTpl } from '../common/file';
+import { FCL_ROUTER } from '../common/defaults.js';
+import { getTemplatePath } from '../templates.js';
+import { addExtensionTypes, getManifest } from '../common/utils.js';
+import { copyTpl } from '../common/file.js';
 
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.

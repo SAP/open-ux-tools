@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
-import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
+import type { EdmxOdataService, OdataService, ProjectPaths } from './types.js';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
@@ -10,9 +10,9 @@ import {
     writeLocalServiceAnnotationXMLFiles,
     writeMetadata,
     writeRemoteServiceAnnotationXmlFiles
-} from './data/annotations';
-import { updatePackageJson } from './data/package';
-import { writeExternalServiceMetadata } from './data';
+} from './data/annotations.js';
+import { updatePackageJson } from './data/package.js';
+import { writeExternalServiceMetadata } from './data/index.js';
 
 /**
  * Generates mockserver middleware config for ui5-local.yaml file based on ui5-mock.yaml.
@@ -55,8 +55,9 @@ function extendBackendMiddleware(
     service: OdataService,
     ui5Config: UI5Config,
     ui5ConfigPath: string,
-    update = false
+    update: boolean = false
 ): void {
+    ui5Config.addBuilderResourceExcludes();
     if (update) {
         ui5Config.updateBackendToFioriToolsProxyMiddleware(service.previewSettings as ProxyBackend);
     } else {

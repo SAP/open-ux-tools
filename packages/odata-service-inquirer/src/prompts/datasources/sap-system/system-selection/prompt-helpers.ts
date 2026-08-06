@@ -10,16 +10,16 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { type BackendSystemKey, type BackendSystem } from '@sap-ux/store';
+import { type BackendSystemKey, type BackendSystem, type BackendSystemFilter } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import { t } from '../../../../i18n';
-import type { ConnectedSystem, DestinationFilters } from '../../../../types';
-import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
-import type { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
-import type { ValidationResult } from '../../../types';
+import { t } from '../../../../i18n.js';
+import type { ConnectedSystem, DestinationFilters } from '../../../../types.js';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils/index.js';
+import type { ConnectionValidator } from '../../../connectionValidator.js';
+import LoggerHelper from '../../../logger-helper.js';
+import type { ValidationResult } from '../../../types.js';
 import { getBackendSystemDisplayName } from '@sap-ux/fiori-generator-shared';
-import { getAllBackendSystems, getBackendSystemService } from '../../../../utils/store';
+import { getAllBackendSystems, getBackendSystemService } from '../../../../utils/store.js';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -83,7 +83,7 @@ export async function connectWithBackendSystem(
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion),
                 systemAuthType: 'reentranceTicket',
-                connectType: connectPath ? 'odata_path' : undefined // Assumption that if a connection path is provided its an odata service endpoint
+                connectType: connectPath ? 'odata_path' : 'abap_catalog' // Assumption that if a connection path is provided its an odata service endpoint
             });
         } else if (backendSystem.serviceKeys) {
             // Legacy backend system support
@@ -101,7 +101,7 @@ export async function connectWithBackendSystem(
                     isSystem: true,
                     odataVersion: convertODataVersionType(requiredOdataVersion),
                     sapClient: backendSystem.client,
-                    connectType: connectPath ? 'odata_path' : undefined // Assumption that if a connection path is provided its an odata service endpoint
+                    connectType: connectPath ? 'odata_path' : 'abap_catalog' // Assumption that if a connection path is provided its an odata service endpoint
                 }
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
@@ -213,12 +213,14 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
  * @param destinationFilters the filters to apply to the destination choices
  * @param includeCloudFoundryAbapEnvChoice whether to include the Cloud Foundry ABAP environment choice in the list
  * @param hideNewSystem - if true it will prevent adding the 'New System' option to the list
+ * @param backendSystemFilter - optional store filter to apply when retrieving backend systems
  * @returns a list of choices for the system selection prompt
  */
 export async function createSystemChoices(
     destinationFilters?: Partial<DestinationFilters>,
     includeCloudFoundryAbapEnvChoice = false,
-    hideNewSystem = false
+    hideNewSystem = false,
+    backendSystemFilter?: BackendSystemFilter
 ): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
     let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
@@ -258,7 +260,7 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendSystems = await getAllBackendSystems(false);
+        const backendSystems = await getAllBackendSystems(false, backendSystemFilter);
 
         // Cache the backend systems
         PromptState.backendSystemsCache = backendSystems;

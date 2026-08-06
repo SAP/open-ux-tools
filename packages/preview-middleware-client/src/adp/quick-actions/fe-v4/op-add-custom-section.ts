@@ -1,20 +1,17 @@
-import { getV4AppComponent } from '../../../utils/fe-v4';
-import { PageDescriptorV4 } from '../../controllers/types';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { OP_ADD_CUSTOM_SECTION } from '../common/op-add-custom-section';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { getV4AppComponent } from '../../../utils/fe-v4.js';
+import { PageDescriptorV4 } from '../../controllers/types.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { OP_ADD_CUSTOM_SECTION } from '../common/op-add-custom-section.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils.js';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { DialogFactory, DialogNames } from '../../dialog-factory';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { getPageId } from './utils.js';
 
 const OP_PAGE_LAYOUT = ['sap.uxap.ObjectPageLayout'];
-
-interface ViewDataType {
-    stableId: string;
-}
 /**
  * Quick Action for adding a custom page action.
  */
@@ -32,7 +29,7 @@ export class AddCustomSectionQuickAction
         )[0] as ObjectPageLayout;
         const sections = objectPageLayout.getSections();
         let anchor: string | null = null;
-        const pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
+        const pageId = getPageId(this.context);
         if (sections.length > 0) {
             // Use the first section as the anchor if available
             anchor = (this.context.view.getLocalId(sections[sections.length - 1].getId()) ?? '')

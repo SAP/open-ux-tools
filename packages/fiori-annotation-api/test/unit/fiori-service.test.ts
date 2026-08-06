@@ -1,6 +1,9 @@
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { promises } from 'node:fs';
-import { join, relative, sep, posix } from 'node:path';
+import { dirname, join, posix, relative, sep } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create as createEditor } from 'mem-fs-editor';
@@ -17,34 +20,28 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
-import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
-import { ExpressionType, ChangeType } from '../../src/types';
-import { FioriAnnotationService } from '../../src/fiori-service';
+import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types/index.js';
+import { ExpressionType, ChangeType } from '../../src/types/index.js';
+import { FioriAnnotationService } from '../../src/fiori-service.js';
 
-import { createFsEditorForProject } from './virtual-fs';
-import type { ProjectTestModel } from './projects';
-import { PROJECTS } from './projects';
-import { getLocalEDMXService } from '../../src/xml';
-import { normalizeCdsVersionInPath, serialize, serializeAnnotations } from './raw-metadata-serializer';
+import { createFsEditorForProject } from './virtual-fs.js';
+import type { ProjectTestModel } from './projects.js';
+import { PROJECTS } from './projects.js';
+import { getLocalEDMXService } from '../../src/xml/index.js';
+import { normalizeCdsVersionInPath, serialize, serializeAnnotations } from './raw-metadata-serializer.js';
 
-import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
+import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter.js';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
 import { DiagnosticSeverity, Range } from '@sap-ux/odata-annotation-core-types';
-import type { ApiError, FioriAnnotationServiceOptions } from '../../src';
+import type { ApiError, FioriAnnotationServiceOptions } from '../../src/index.js';
 
-import { pathFromUri } from '../../src/utils';
+import { pathFromUri } from '../../src/utils/index.js';
+import { testRead } from './test-read.js';
+export { testRead };
 
 /**
  * Configuration
  */
-
-jest.mock('../../src/cds/adapter', () => {
-    const act = jest.requireActual('../../src/cds/adapter');
-    return {
-        __esModule: true,
-        ...act
-    };
-});
 
 const SKIP_TARGETS = new Set<ProjectTestModel<Record<string, string>>>([
     // PROJECTS.V4_XML_START
@@ -217,25 +214,6 @@ function applyChanges(service: FioriAnnotationService, changes: Change[]): Set<s
         uris.add(change.uri);
     }
     return uris;
-}
-
-export async function testRead(
-    root: string,
-    initialChanges: Change[],
-    serviceName = 'mainService',
-    fsEditor?: Editor
-): Promise<FioriAnnotationService> {
-    const editor = fsEditor ?? (await createFsEditorForProject(root));
-    const project = await getProject(root);
-    const service = await FioriAnnotationService.createService(project, serviceName, '', editor, {
-        commitOnSave: false
-    });
-    await service.sync();
-    if (initialChanges.length > 0) {
-        service.edit(initialChanges);
-        await service.save({ resyncAfterSave: true });
-    }
-    return service;
 }
 
 async function testEditWithMockData(
@@ -453,20 +431,18 @@ function createCommunicationContact(uri: string, targetName: string, phones: str
                             name: 'tel',
                             value: {
                                 type: 'Collection',
-                                Collection: phones.map(
-                                    (phone): AnnotationRecord => ({
-                                        type: PHONE_NUMBER_TYPE,
-                                        propertyValues: [
-                                            {
-                                                name: 'type',
-                                                value: {
-                                                    type: 'EnumMember',
-                                                    EnumMember: phone
-                                                }
+                                Collection: phones.map((phone): AnnotationRecord => ({
+                                    type: PHONE_NUMBER_TYPE,
+                                    propertyValues: [
+                                        {
+                                            name: 'type',
+                                            value: {
+                                                type: 'EnumMember',
+                                                EnumMember: phone
                                             }
-                                        ]
-                                    })
-                                )
+                                        }
+                                    ]
+                                }))
                             }
                         }
                     ]
@@ -2690,6 +2666,84 @@ rating : Rating;
                     expect(text).toMatchSnapshot();
                 });
 
+                test('with qualifiers and embedded annotation', async () => {
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with {
+                        priority @(
+                            ![Common.Text#abc] : priority.name,
+                            ![Common.Text#abc.@UI.TextArrangement#xyz] : #TextFirst,
+                        )
+                    };
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents/priority',
+                                    term: `${COMMON}.Text`,
+                                    qualifier: 'abc'
+                                },
+                                uri: project.files.annotations,
+                                pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].AxisScaling.ScaleBehavior: #AutoScale,
+                        ![UI.Chart#chartStatus].AxisScaling.AutoScaleBehavior.ZeroAlwaysVisible: true,
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/0/value/Record/propertyValues/1/value/Record/propertyValues/0/value'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
                 test('with properties and embedded annotation', async () => {
                     const project = PROJECTS.V4_CDS_START;
                     const root = project.root;
@@ -3011,18 +3065,15 @@ rating : Rating;
                     }
                 ],
                 getChanges: (files) =>
-                    Array.from(
-                        { length: collection.length },
-                        (_, i): DeleteChange => ({
-                            kind: ChangeType.Delete,
-                            pointer: `collection/${i}`,
-                            reference: {
-                                target: targetName,
-                                term: LINE_ITEM
-                            },
-                            uri: files.annotations
-                        })
-                    )
+                    Array.from({ length: collection.length }, (_, i): DeleteChange => ({
+                        kind: ChangeType.Delete,
+                        pointer: `collection/${i}`,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations
+                    }))
             });
         });
     });

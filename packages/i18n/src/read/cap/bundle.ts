@@ -1,4 +1,4 @@
-import type { CdsEnvironment, I18nBundle } from '../../types';
+import type { CdsEnvironment, I18nBundle } from '../../types.js';
 import {
     getCapI18nFiles,
     getI18nConfiguration,
@@ -7,10 +7,10 @@ import {
     csvPath,
     doesExist,
     readFile
-} from '../../utils';
-import { jsonToI18nBundle } from '../../transformer/json';
-import { propertiesToI18nEntry } from '../../transformer/properties';
-import { csvToI18nBundle } from '../../transformer/csv';
+} from '../../utils/index.js';
+import { jsonToI18nBundle } from '../../transformer/json/index.js';
+import { propertiesToI18nEntry } from '../../transformer/properties/index.js';
+import { csvToI18nBundle } from '../../transformer/csv/index.js';
 import type { Editor } from 'mem-fs-editor';
 
 /**

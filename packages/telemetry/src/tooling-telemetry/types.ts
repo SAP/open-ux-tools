@@ -1,4 +1,4 @@
-import type { ProjectInfo, TelemetryMeasurements, TelemetryProperties } from '../base/types';
+import type { ProjectInfo, TelemetryMeasurements, TelemetryProperties } from '../base/types/index.js';
 import type { AppType } from '@sap-ux/project-access';
 
 export type TelemetryHelperProperties = {

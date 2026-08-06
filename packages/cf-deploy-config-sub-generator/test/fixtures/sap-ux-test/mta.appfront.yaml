@@ -27,6 +27,9 @@ resources:
       service: xsuaa
       service-name: sap-ux-test-xsuaa-service
       service-plan: application
+      config:
+        tenant-mode: dedicated
+        xsappname: 'sap-ux-test-${org}-${space}'
   - name: sap-ux-test-app-front
     type: org.cloudfoundry.managed-service
     parameters:

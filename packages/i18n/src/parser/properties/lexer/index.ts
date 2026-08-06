@@ -1,5 +1,5 @@
-import type { Token, TokenType } from '../types';
-import { COMMENT_START, WHITESPACE, END_OF_LINE, SEPARATOR } from '../constant';
+import type { Token, TokenType } from '../types.js';
+import { COMMENT_START, WHITESPACE, END_OF_LINE, SEPARATOR } from '../constant.js';
 
 /**
  * Check if character is whitespace.

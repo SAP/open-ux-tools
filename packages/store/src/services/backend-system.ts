@@ -1,14 +1,14 @@
 import type { Logger } from '@sap-ux/logger';
-import type { BackendServiceRetrievalOptions, Service } from '.';
-import type { DataProvider } from '../data-provider';
-import type { ServiceOptions } from '../types';
-import { SystemDataProvider } from '../data-provider/backend-system';
-import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
-import { text } from '../i18n';
+import type { BackendServiceRetrievalOptions, Service } from './index.js';
+import type { DataProvider } from '../data-provider/index.js';
+import type { ServiceOptions } from '../types.js';
+import { SystemDataProvider } from '../data-provider/backend-system.js';
+import { BackendSystem, BackendSystemKey } from '../entities/backend-system.js';
+import { text } from '../i18n.js';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { getFioriToolsDirectory, getSapToolsDirectory, getEntityFileName } from '../utils';
-import { Entity } from '../constants';
+import { getFioriToolsDirectory, getSapToolsDirectory, getEntityFileName } from '../utils/index.js';
+import { Entity } from '../constants.js';
 
 /**
  * Should not be used directly, use factory method `getService` instead.

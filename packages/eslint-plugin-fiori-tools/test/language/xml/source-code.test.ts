@@ -3,9 +3,9 @@ import { buildAst } from '@xml-tools/ast';
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';
 
-import type { ProjectContext } from '../../../src/project-context/project-context';
-import { FioriXMLSourceCode } from '../../../src/language/xml/source-code';
-import { STEP_PHASE } from '../../../src/language/xml/traversal-step';
+import type { ProjectContext } from '../../../src/project-context/project-context.js';
+import { FioriXMLSourceCode } from '../../../src/language/xml/source-code.js';
+import { STEP_PHASE } from '../../../src/language/xml/traversal-step.js';
 
 function getAst(text: string): XMLDocument {
     const { cst, tokenVector } = parse(text);

@@ -1,9 +1,14 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InboundContent } from '@sap-ux/axios-extension';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { t } from '../../i18n';
-import { promptNames } from '../../types';
-import type { FLPConfigQuestion, FLPConfigAnswers, IconPromptOptions } from '../../types';
+import { t } from '../../i18n.js';
+import { promptNames } from '../../types.js';
+import type {
+    FLPConfigQuestion,
+    FLPConfigAnswers,
+    IconPromptOptions,
+    ConfirmReplacePromptOptions
+} from '../../types.js';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
@@ -112,9 +117,10 @@ export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
 /**
  * Creates the 'confirmReplace' prompt for confirming tile replacement.
  *
+ * @param {ConfirmReplacePromptOptions} [options] - Optional configuration for the confirm replace prompt, including default values.
  * @returns {FLPConfigQuestion} The prompt configuration for confirming tile replacement.
  */
-export function getConfirmReplacePrompt(): FLPConfigQuestion {
+export function getConfirmReplacePrompt(options?: ConfirmReplacePromptOptions): FLPConfigQuestion {
     return {
         type: 'confirm',
         name: promptNames.confirmReplace,
@@ -123,7 +129,9 @@ export function getConfirmReplacePrompt(): FLPConfigQuestion {
         validate: (value): string | boolean => (value ? true : ' '),
         additionalMessages: (): IMessageSeverity => ({
             severity: Severity.information,
-            message: t('additionalMessages.confirmReplaceAdditionalMessage')
+            message: options?.isCF
+                ? t('additionalMessages.confirmReplaceAdditionalMessageCF')
+                : t('additionalMessages.confirmReplaceAdditionalMessage')
         })
     };
 }

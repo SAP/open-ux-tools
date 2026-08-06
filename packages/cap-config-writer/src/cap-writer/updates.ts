@@ -1,7 +1,7 @@
-import type { CapServiceCdsInfo, CapProjectSettings } from '../cap-config/types';
-import { updateRootPackageJson, updateAppPackageJson } from './package-json';
-import { updateTsConfig } from './tsconfig-and-yaml';
-import { enableCdsUi5Plugin as writeCdsUi5Plugin } from '../cap-config';
+import type { CapServiceCdsInfo, CapProjectSettings } from '../cap-config/types.js';
+import { updateRootPackageJson, updateAppPackageJson } from './package-json.js';
+import { updateTsConfig } from './tsconfig-and-yaml.js';
+import { enableCdsUi5Plugin as writeCdsUi5Plugin } from '../cap-config/index.js';
 import type { Editor } from 'mem-fs-editor';
 
 /**

@@ -19,10 +19,11 @@ export {
     checkCdsUi5PluginEnabled,
     processServices,
     getGlobalCdsHomePath
-} from './cap';
-export { filterDataSourcesByType, getMainService } from './service';
-export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';
-export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
+} from './cap.js';
+export { filterDataSourcesByType, getMainService, getUsedEntitiesFromManifest } from './service.js';
+export type { UsedEntity } from './service.js';
+export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies.js';
+export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n/index.js';
 export {
     getAppProgrammingLanguage,
     getAppType,
@@ -31,8 +32,8 @@ export {
     getMinimumUI5Version,
     getProject,
     getProjectType
-} from './info';
-export { loadModuleFromProject } from './module-loader';
+} from './info.js';
+export { loadModuleFromProject } from './module-loader.js';
 export {
     findAllApps,
     findCapProjects,
@@ -41,7 +42,7 @@ export {
     getAppRootFromWebappPath,
     findCapProjectRoot,
     findRootsForPath
-} from './search';
+} from './search.js';
 export {
     getWebappPath,
     readUi5Yaml,
@@ -50,14 +51,15 @@ export {
     getMockDataPath,
     getPathMappings,
     type PathMappings
-} from './ui5-config';
-export { getMtaPath } from './mta';
-export { createApplicationAccess, createProjectAccess } from './access';
-export { updatePackageScript, hasUI5CliV3 } from './script';
+} from './ui5-config.js';
+export { getMtaPath } from './mta.js';
+export { createApplicationAccess, createProjectAccess } from './access.js';
+export { updatePackageScript, hasUI5CliV3 } from './script.js';
 export {
     getSpecification,
     getSpecificationModuleFromCache,
     getSpecificationPath,
     refreshSpecificationDistTags
-} from './specification';
-export { readFlexChanges } from './flex-changes';
+} from './specification.js';
+export { readFlexChanges } from './flex-changes.js';
+export { isUI5IdUnique } from './ui5-xml-id-validator.js';

@@ -1,1 +1,1 @@
-export * from './applicationInfoHandler';
+export * from './applicationInfoHandler.js';

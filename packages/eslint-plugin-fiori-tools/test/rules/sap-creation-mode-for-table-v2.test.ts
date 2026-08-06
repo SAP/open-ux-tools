@@ -1,7 +1,7 @@
-import createTableRule from '../../src/rules/sap-creation-mode-for-table';
+import createTableRule from '../../src/rules/sap-creation-mode-for-table.js';
 import { RuleTester } from 'eslint';
-import { meta, languages } from '../../src/index';
-import { getManifestAsCode, setup, V2_MANIFEST, V2_MANIFEST_PATH } from '../test-helper';
+import { meta, languages } from '../../src/index.js';
+import { getManifestAsCode, setup, V2_MANIFEST, V2_MANIFEST_PATH } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -146,7 +146,8 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'invalidCreateMode'
+                        message:
+                            'Invalid createMode value: "badValue" in Products section. The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
                     }
                 ]
             },
@@ -188,7 +189,8 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'invalidCreateMode'
+                        message:
+                            'Invalid createMode value: "badValue". The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
                     }
                 ]
             },
@@ -212,7 +214,8 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'invalidCreateMode'
+                        message:
+                            'Invalid createMode value: "badValue". The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
                     }
                 ]
             },
@@ -275,7 +278,8 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'analyticalTableNotSupported'
+                        message:
+                            'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.'
                     }
                 ]
             },
@@ -336,7 +340,8 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'analyticalTableNotSupported'
+                        message:
+                            'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.'
                     }
                 ]
             },
@@ -360,7 +365,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'suggestAppLevel'
+                        message: 'Consider adding createMode at the application level for a better user experience.'
                     }
                 ]
             },
@@ -413,7 +418,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'suggestAppLevel'
+                        message: 'Consider adding createMode at the application level for a better user experience.'
                     }
                 ]
             },

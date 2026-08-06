@@ -18,6 +18,7 @@
         ':updateNotScheduled',
         'workarounds:typesNodeVersioning'
     ],
+    minimumReleaseAge: '3 days',
 
     enabledManagers: ['npm', 'github-actions'],
     branchPrefix: 'chore/renovate/',

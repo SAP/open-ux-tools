@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { ICheckboxStyles, IRawStyle, IStyleFunction } from '@fluentui/react';
 import { Checkbox } from '@fluentui/react';
 import type { UICheckboxProps } from '../../../src/components/UICheckbox';

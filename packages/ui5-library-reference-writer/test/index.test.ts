@@ -1,9 +1,12 @@
-import { reuseLibs } from './test-input/libs';
-import { generate } from '../src/index';
+import { reuseLibs } from './test-input/libs.js';
+import { generate } from '../src/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fsextra from 'fs-extra';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test UI5 Library Reference Writer', () => {
     const fs = create(createStorage());

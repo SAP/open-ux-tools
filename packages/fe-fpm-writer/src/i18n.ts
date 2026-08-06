@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions, TOptionsBase } from 'i18next';
 import i18next from 'i18next';
-import translations from './prompts/translations/i18n';
+import translations from './prompts/translations/i18n.js';
 const namespacePrefix = 'fe-fpm-writer';
 
 export const i18nNamespaces = {
@@ -21,8 +21,7 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: i18nNamespaces.buildingBlock,
-        ns: [i18nNamespaces.buildingBlock],
-        showSupportNotice: false
+        ns: [i18nNamespaces.buildingBlock]
     });
 }
 

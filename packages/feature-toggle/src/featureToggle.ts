@@ -1,11 +1,22 @@
-import type { FeatureToggle } from './types';
-import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants';
+import type { FeatureToggle } from './types.js';
+import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants.js';
+import { getVSCodeInstance, type VSCodeApi } from './vscode.js';
+
+// Module-level vscode instance cache, resolved synchronously at module evaluation time.
+const _vscodeInstance: VSCodeApi | undefined = getVSCodeInstance();
 
 /**
  * Utility class for accessing and managing feature toggles.
  */
 export class FeatureToggleAccess {
-    public static readonly vscode = getVSCodeInstance();
+    /**
+     * Returns the vscode instance if available.
+     *
+     * @returns instance of vscode or undefined
+     */
+    public static get vscode(): VSCodeApi | undefined {
+        return _vscodeInstance;
+    }
 
     /**
      * Retrieves the toggle state of the specified feature.
@@ -14,12 +25,13 @@ export class FeatureToggleAccess {
      * @returns the toggle state of the feature.
      */
     public static getFeatureToggle(feature: string): FeatureToggle {
-        let toggleConfigValue: boolean | undefined;
+        let toggleConfigValue: boolean | string | undefined;
 
-        if ((feature.includes(FeatureToggleKey) || feature === ExperimentalFeatures) && FeatureToggleAccess.vscode) {
+        const vscode = FeatureToggleAccess.vscode;
+        if ((feature.includes(FeatureToggleKey) || feature === ExperimentalFeatures) && vscode) {
             const toggleKey = feature.slice(0, feature.lastIndexOf('.'));
             const toggleId = feature.slice(feature.lastIndexOf('.') + 1, feature.length);
-            toggleConfigValue = FeatureToggleAccess.vscode.workspace.getConfiguration(toggleKey)?.get(toggleId);
+            toggleConfigValue = vscode.workspace.getConfiguration(toggleKey)?.get<boolean | string>(toggleId);
         } else {
             toggleConfigValue = false;
         }
@@ -55,23 +67,28 @@ export class FeatureToggleAccess {
      */
     public static getAllFeatureToggles(): Array<FeatureToggle> {
         const definedToggles: Array<FeatureToggle> = [];
-        if (FeatureToggleAccess.vscode) {
+        const vscode = FeatureToggleAccess.vscode;
+        if (vscode) {
             Object.keys(extensionConfigKeys).forEach((toggleConfigKey: string) => {
                 const toggleKey = `${extensionConfigKeys[toggleConfigKey]}.${FeatureToggleKey}`;
-                let toggles = {};
+                let config: ReturnType<typeof vscode.workspace.getConfiguration> | undefined;
+                let toggleIds: string[] = [];
                 try {
-                    toggles = JSON.parse(
-                        JSON.stringify(FeatureToggleAccess.vscode.workspace.getConfiguration(toggleKey))
-                    );
+                    // Read enumerable keys off the WorkspaceConfiguration proxy and drop
+                    // function-valued ones (mirrors the old `JSON.stringify` behavior).
+                    config = vscode.workspace.getConfiguration(toggleKey);
+                    toggleIds = Object.keys(config).filter((key) => typeof config?.[key] !== 'function');
                 } catch {
                     // Not valid toggles. Skip.
                 }
 
-                Object.keys(toggles).forEach((toggleId: string) => {
+                if (!config) {
+                    return;
+                }
+
+                toggleIds.forEach((toggleId: string) => {
                     // get full toggle value
-                    const toggleConfigValue = FeatureToggleAccess.vscode.workspace
-                        .getConfiguration(`${toggleKey}`)
-                        .get(`${toggleId}`);
+                    const toggleConfigValue = config.get(toggleId);
                     const toggle: FeatureToggle = {
                         feature: `${toggleKey}.${toggleId}`,
                         isEnabled: toggleConfigValue ? (toggleConfigValue as boolean) : false
@@ -93,22 +110,6 @@ export class FeatureToggleAccess {
         }
         return definedToggles;
     }
-}
-
-/**
- * Returns an instance of vscode vscode if available.
- *
- * @returns instance of vscode
- */
-function getVSCodeInstance(): any {
-    let vscode;
-    try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        vscode = require('vscode');
-    } catch {
-        // Vscode not available. Normally in CLI
-    }
-    return vscode;
 }
 
 /**
@@ -147,9 +148,10 @@ export function isFeatureEnabled(feature: string): boolean {
 export function isInternalFeaturesSettingEnabled(): boolean {
     const enableInternalFeaturesSetting = 'sap.ux.internal.enableInternalFeatures';
     let internalEnabled = false;
-    if (FeatureToggleAccess.vscode) {
-        const internalSetting = FeatureToggleAccess.vscode.workspace
-            ? FeatureToggleAccess.vscode.workspace.getConfiguration()?.get(enableInternalFeaturesSetting)
+    const vscode = FeatureToggleAccess.vscode;
+    if (vscode) {
+        const internalSetting = vscode.workspace
+            ? vscode.workspace.getConfiguration().get<boolean>(enableInternalFeaturesSetting)
             : false;
         internalEnabled = internalSetting ?? false;
     }

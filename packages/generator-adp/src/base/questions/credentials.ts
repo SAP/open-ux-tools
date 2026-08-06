@@ -5,9 +5,10 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../../utils/i18n';
-import type { Credentials } from '../../types';
-import { configPromptNames } from '../../app/types';
+import { t } from '../../utils/i18n.js';
+import type { Credentials } from '../../types.js';
+import { configPromptNames } from '../../app/types.js';
+
 import type { LayeredRepositoryService } from '@sap-ux/axios-extension';
 
 interface ClientCredentials {
@@ -92,9 +93,8 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
 }
 
 /**
- * Helper function which asserts whether a client is authenticated on an ABAP system or throws.
  * Since we do not have a dedicated api call to detect if a client is authenticated we use the
- * {@link LayeredRepositoryService.getSystemInfo} call which is a protected one.
+ * {@link LayeredRepositoryService.getCsrfToken} call which is a protected one.
  *
  * @param {ClientCredentials} credentials - Object containing client credentials to a specific ABAP system.
  * @param {ToolsLogger} logger - The logger instance.
@@ -104,5 +104,5 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
 async function assertAuthenticated(credentials: ClientCredentials, logger: ToolsLogger): Promise<void> {
     const abapProvider = await getConfiguredProvider(credentials, logger);
     const layeredRepositoryService = abapProvider.getLayeredRepository();
-    await layeredRepositoryService.getSystemInfo();
+    await layeredRepositoryService.getCsrfToken();
 }

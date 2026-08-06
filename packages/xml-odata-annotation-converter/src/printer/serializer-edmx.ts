@@ -16,13 +16,14 @@ import {
     Edmx,
     printOptions,
     getIndentLevel,
-    indent
+    indentWithTabs,
+    indentWithSpaces
 } from '@sap-ux/odata-annotation-core';
 
-import type { NamespaceAliasMap } from './csdl-to-xml';
-import { printCsdlNodeToXmlString } from './csdl-to-xml';
+import type { NamespaceAliasMap } from './csdl-to-xml.js';
+import { printCsdlNodeToXmlString } from './csdl-to-xml.js';
 import type { Vocabulary } from '@sap-ux/odata-vocabularies';
-import { EDMX_V4_NAMESPACE, EDM_V4_NAMESPACE } from './namespaces';
+import { EDMX_V4_NAMESPACE, EDM_V4_NAMESPACE } from './namespaces.js';
 
 const namespaces: NamespaceAliasMap = {
     Edmx: 'edmx'
@@ -166,10 +167,10 @@ export function getNewAnnotationFile(
         content: [
             createTextNode(
                 '\n' +
-                    indent(printOptions.tabWidth, printOptions.useTabs, 3) +
+                    (printOptions.useTabs ? indentWithTabs(3) : indentWithSpaces(printOptions.tabWidth, 3)) +
                     'INSERT_TOKEN' +
                     '\n' +
-                    indent(printOptions.tabWidth, printOptions.useTabs, 2)
+                    (printOptions.useTabs ? indentWithTabs(2) : indentWithSpaces(printOptions.tabWidth, 2))
             )
         ]
     });

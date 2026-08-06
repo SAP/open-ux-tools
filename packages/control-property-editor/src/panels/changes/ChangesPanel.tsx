@@ -7,18 +7,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@fluentui/react';
 import { UISearchBox } from '@sap-ux/ui-components';
 
-import type { ChangesSlice } from '../../slice';
-import { FilterName, filterNodes } from '../../slice';
-import type { RootState } from '../../store';
+import type { ChangesSlice } from '../../slice.js';
+import { FilterName, filterNodes } from '../../slice.js';
+import type { RootState } from '../../store.js';
 
-import { Separator } from '../../components';
-import { ChangeStack } from './ChangeStack';
-import { ChangeStackHeader } from './ChangeStackHeader';
+import { Separator } from '../../components/index.js';
+import { ChangeStack } from './ChangeStack.js';
+import { ChangeStackHeader } from './ChangeStackHeader.js';
 
 import styles from './ChangesPanel.module.scss';
-import { FileChange } from './FileChange';
-import { defaultFontSize } from '../properties/constants';
-import { NoChangesFound } from './NoChangesFound';
+import { FileChange } from './FileChange.js';
+import { defaultFontSize } from '../properties/constants.js';
+import { NoChangesFound } from './NoChangesFound.js';
+
+const SEPARATOR_STYLE = {
+    margin: '0 15px'
+};
 
 /**
  * React element for ChangePanel.
@@ -52,7 +56,6 @@ export function ChangesPanel(): ReactElement {
             <>
                 {fileChanges.length > 0 && (
                     <>
-                        <Separator />
                         <Icon iconName="Info" title={fileChangesTooltip} className={styles.infoIcon} />
                         <ChangeStackHeader
                             backgroundColor="var(--vscode-sideBar-background)"
@@ -68,29 +71,27 @@ export function ChangesPanel(): ReactElement {
 
                 {pending.length > 0 && (
                     <>
-                        <Separator />
                         <ChangeStackHeader
                             backgroundColor="var(--vscode-sideBar-background)"
                             color="var(--vscode-editor-foreground)"
                             text={t('CHANGE_SUMMARY_UNSAVED_CHANGES')}
                         />
-                        <Separator />
+                        <Separator style={SEPARATOR_STYLE} />
                         <ChangeStack key="pending-changes" changes={pending} />
                     </>
                 )}
                 {saved.length > 0 && (
                     <>
-                        <Separator />
                         <ChangeStackHeader
                             backgroundColor="var(--vscode-sideBar-background)"
                             color="var(--vscode-terminal-ansiGreen)"
                             text={t('CHANGE_SUMMARY_SAVED_CHANGES')}
                         />
-                        <Separator />
+                        <Separator style={SEPARATOR_STYLE} />
                         <ChangeStack key="saved-changes" changes={saved} />
                     </>
                 )}
-                <Separator />
+                <Separator style={SEPARATOR_STYLE} />
             </>
         );
     }

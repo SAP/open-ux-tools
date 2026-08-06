@@ -1,8 +1,8 @@
 import { DestinationProxyType, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 import type { BackendSystem } from '@sap-ux/store';
-import { ApiHubType } from '../../../src/types';
-import { getTelemetryBusinessHubType, getTelemetrySapSystemType } from '../../../src/utils/telemetry';
+import { ApiHubType } from '../../../src/types/index.js';
+import { getTelemetryBusinessHubType, getTelemetrySapSystemType } from '../../../src/utils/telemetry.js';
 
 describe('Test utils', () => {
     test('getTelemetrySapSystemType - ABAP', () => {

@@ -25,6 +25,9 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../cap-config-writer"
     },
     {
@@ -50,6 +53,9 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
     },
     {
       "path": "../store"

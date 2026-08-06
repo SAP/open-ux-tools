@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAppMode } from '@sap-ux-private/control-property-editor-common';
 import { UIDefaultButton, UILabel } from '@sap-ux/ui-components';
 
-import type { RootState } from '../store';
+import type { RootState } from '../store.js';
 
 import './ModeSwitcher.scss';
 

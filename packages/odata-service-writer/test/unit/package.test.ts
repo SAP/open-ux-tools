@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { Package } from '@sap-ux/project-access';
-import { updatePackageJson } from '../../src/data/package';
+import { updatePackageJson } from '../../src/data/package.js';
 
 describe('package', () => {
     let fs: Editor;

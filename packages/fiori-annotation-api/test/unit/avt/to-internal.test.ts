@@ -1,7 +1,7 @@
 import type { Expression, StringExpression } from '@sap-ux/vocabularies-types';
 import { createElementNode, type AliasInformation } from '@sap-ux/odata-annotation-core-types';
 
-import { convertExpressionToInternal } from '../../../src/avt/to-internal';
+import { convertExpressionToInternal } from '../../../src/avt/to-internal.js';
 
 describe('avt to internal', () => {
     const aliasInfo: AliasInformation = {

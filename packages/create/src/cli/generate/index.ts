@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addGenerateAdaptationProjectCommand } from './adaptation-project';
+import { addGenerateAdaptationProjectCommand } from './adaptation-project.js';
 
 /**
  * @returns 'generate *' commands. Commands include also the handler action.

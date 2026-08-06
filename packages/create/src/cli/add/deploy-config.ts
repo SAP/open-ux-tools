@@ -1,19 +1,21 @@
 import { type AppType, FileName, getAppType } from '@sap-ux/project-access';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 import {
     type AbapDeployConfigAnswers,
     type AbapDeployConfigPromptOptions,
     getPrompts as getAbapDeployConfigPrompts,
     reconcileAnswers
 } from '@sap-ux/abap-deploy-config-inquirer';
-import { prompt, type PromptObject } from 'prompts';
+import prompts, { type PromptObject } from 'prompts';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
-import { promptYUIQuestions } from '../../common';
+import { promptYUIQuestions } from '../../common/index.js';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+
+const { prompt } = prompts;
 
 /**
  * Add the "add deploy config" command to a passed command.

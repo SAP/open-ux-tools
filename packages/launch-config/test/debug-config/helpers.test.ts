@@ -3,7 +3,7 @@ import {
     formatCwd,
     isFolderInWorkspace,
     handleAppsNotInWorkspace
-} from '../../src/debug-config/helpers';
+} from '../../src/debug-config/helpers.js';
 import path from 'node:path';
 
 // Mock the vscode object

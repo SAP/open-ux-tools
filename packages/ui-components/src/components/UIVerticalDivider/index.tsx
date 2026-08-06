@@ -1,1 +1,1 @@
-export * from './UIVerticalDivider';
+export * from './UIVerticalDivider.js';

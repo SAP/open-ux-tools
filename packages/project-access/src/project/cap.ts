@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process';
 import { basename, dirname, join, normalize, relative, sep } from 'node:path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import { FileName, MinCdsVersion } from '../constants';
+import { FileName, MinCdsVersion } from '../constants.js';
 import type {
     CapCustomPaths,
     CapProjectType,
@@ -14,7 +14,7 @@ import type {
     ServiceInfo,
     CdsVersionInfo,
     CdsUi5PluginInfo
-} from '../types';
+} from '../types/index.js';
 import {
     deleteDirectory,
     deleteFile,
@@ -25,13 +25,13 @@ import {
     readJSON,
     updatePackageJSON,
     writeFile
-} from '../file';
-import { loadModuleFromProject } from './module-loader';
-import { findCapProjectRoot } from './search';
+} from '../file/index.js';
+import { loadModuleFromProject } from './module-loader.js';
+import { findCapProjectRoot } from './search.js';
 import { coerce, gte, satisfies } from 'semver';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { hasDependency } from './dependencies';
+import { hasDependency } from './dependencies.js';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };

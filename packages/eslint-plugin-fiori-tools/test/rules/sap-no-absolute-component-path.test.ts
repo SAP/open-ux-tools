@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-absolute-component-path';
+import rule from '../../src/rules/sap-no-absolute-component-path.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -51,12 +51,10 @@ ruleTester.run('sap-no-absolute-component-path', rule, {
                                         } ] } } });`,
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'CallExpression'
+                    message: ERROR_MSG
                 },
                 {
-                    message: ERROR_MSG,
-                    type: 'CallExpression'
+                    message: ERROR_MSG
                 }
             ]
         },
@@ -77,12 +75,10 @@ ruleTester.run('sap-no-absolute-component-path', rule, {
                                         } ] }  }  });`,
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'CallExpression'
+                    message: ERROR_MSG
                 },
                 {
-                    message: ERROR_MSG,
-                    type: 'CallExpression'
+                    message: ERROR_MSG
                 }
             ]
         },
@@ -98,12 +94,10 @@ ruleTester.run('sap-no-absolute-component-path', rule, {
                                         });`,
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'CallExpression'
+                    message: ERROR_MSG
                 },
                 {
-                    message: ERROR_MSG,
-                    type: 'CallExpression'
+                    message: ERROR_MSG
                 }
             ]
         }

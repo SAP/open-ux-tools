@@ -1,2 +1,2 @@
-export * from './fioriAppGenerator';
-export * from './fioriAppGeneratorOptions';
+export * from './fioriAppGenerator.js';
+export * from './fioriAppGeneratorOptions.js';

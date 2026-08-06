@@ -1,4 +1,4 @@
-import { t } from '../utils';
+import { t } from '../utils/index.js';
 import type { Question } from 'inquirer';
 
 /**

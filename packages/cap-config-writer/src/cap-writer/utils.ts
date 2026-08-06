@@ -1,4 +1,4 @@
-import { initI18n, t } from '../i18n';
+import { initI18n, t } from '../i18n.js';
 import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
 
 /**

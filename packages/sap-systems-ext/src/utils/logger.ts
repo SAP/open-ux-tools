@@ -13,7 +13,7 @@ export default class SystemsLogger {
      * @returns the logger
      */
     public static get logger(): Logger {
-        return SystemsLogger._logger as Logger;
+        return SystemsLogger._logger as unknown as Logger;
     }
 
     /**
@@ -22,7 +22,7 @@ export default class SystemsLogger {
      * @param value the logger to set
      */
     public static set logger(value: Logger) {
-        SystemsLogger._logger = value as ExtensionLogger;
+        SystemsLogger._logger = value as unknown as ExtensionLogger;
     }
 
     /**
