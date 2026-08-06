@@ -39,8 +39,8 @@ const mockAddControllerExtension = jest.fn<typeof realChangeHandler.addControlle
 // Named mock for descriptor-change-handler
 const mockAddCustomFragment = jest.fn<typeof realDescriptorChangeHandler.addCustomFragment>();
 
-// Named mock for rename-i18n-preprocessor (keep the real isRenameChange guard)
-const mockProcessRenameChangeI18n = jest.fn<typeof realRenamePreprocessor.processRenameChangeI18n>();
+// Named mock for change-texts-i18n-preprocessor (keep the real hasTranslatableText guard)
+const mockProcessChangeTextsI18n = jest.fn<typeof realChangeTextsPreprocessor.processChangeTextsI18n>();
 
 // Named mock for ejs
 const mockRenderFile = jest.fn<typeof realEjs.renderFile>();
@@ -55,7 +55,7 @@ const realServiceWriter = await import('@sap-ux/odata-service-writer/dist/data/a
 const realEditors = await import('../../../src/writer/editors.js');
 const realChangeHandler = await import('../../../src/preview/change-handler.js');
 const realDescriptorChangeHandler = await import('../../../src/preview/descriptor-change-handler.js');
-const realRenamePreprocessor = await import('../../../src/preview/rename-i18n-preprocessor.js');
+const realChangeTextsPreprocessor = await import('../../../src/preview/change-texts-i18n-preprocessor.js');
 const realStore = await import('@sap-ux/store');
 const realEjs = await import('ejs');
 const realOs = await import('node:os');
@@ -77,9 +77,9 @@ jest.unstable_mockModule('../../../src/preview/descriptor-change-handler', () =>
     addCustomFragment: mockAddCustomFragment
 }));
 
-jest.unstable_mockModule('../../../src/preview/rename-i18n-preprocessor', () => ({
-    ...realRenamePreprocessor,
-    processRenameChangeI18n: mockProcessRenameChangeI18n
+jest.unstable_mockModule('../../../src/preview/change-texts-i18n-preprocessor', () => ({
+    ...realChangeTextsPreprocessor,
+    processChangeTextsI18n: mockProcessChangeTextsI18n
 }));
 
 jest.unstable_mockModule('@sap-ux/store', () => ({
@@ -706,7 +706,7 @@ describe('AdaptationProject', () => {
             );
         });
 
-        it('should process i18n if type is "write" and change is a rename', async () => {
+        it('should process i18n if type is "write" and the change has a texts section', async () => {
             const renameChange = {
                 changeType: 'rename',
                 fileName: 'id_1_rename',
@@ -715,7 +715,7 @@ describe('AdaptationProject', () => {
 
             await adp.onChangeRequest('write', renameChange, mockFs, mockLogger);
 
-            expect(mockProcessRenameChangeI18n).toHaveBeenCalledWith(
+            expect(mockProcessChangeTextsI18n).toHaveBeenCalledWith(
                 '/projects/adp.project',
                 renameChange,
                 mockFs,
@@ -723,10 +723,10 @@ describe('AdaptationProject', () => {
             );
         });
 
-        it('should not process i18n for non-rename change types', async () => {
+        it('should not process i18n for changes without a texts section', async () => {
             await adp.onChangeRequest('write', addXMLChange, mockFs, mockLogger);
 
-            expect(mockProcessRenameChangeI18n).not.toHaveBeenCalled();
+            expect(mockProcessChangeTextsI18n).not.toHaveBeenCalled();
         });
 
         it('should add an custom XML fragment if type is "write" and change is v4 Descriptor change', async () => {

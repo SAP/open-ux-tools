@@ -22,7 +22,8 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
     createPropertiesI18nEntries: mockCreatePropertiesI18nEntries
 }));
 
-const { isRenameChange, processRenameChangeI18n } = await import('../../../src/preview/rename-i18n-preprocessor.js');
+const { hasTranslatableText, processChangeTextsI18n } =
+    await import('../../../src/preview/change-texts-i18n-preprocessor.js');
 
 const logger = new ToolsLogger();
 
@@ -43,20 +44,27 @@ function makeChange(overrides: Partial<CommonChangeProperties>): CommonChangePro
     } as CommonChangeProperties;
 }
 
-describe('isRenameChange', () => {
-    it.each(['rename', 'renameField', 'renameLabel', 'annotationRename'])('returns true for %s', (changeType) => {
-        expect(isRenameChange(makeChange({ changeType }))).toBe(true);
+describe('hasTranslatableText', () => {
+    it('returns true when the change has a non-empty texts section, regardless of change type', () => {
+        for (const changeType of ['rename', 'renameField', 'annotationRename', 'addXML', 'someFutureChange']) {
+            expect(hasTranslatableText(makeChange({ changeType, texts: { t: { value: 'x', type: 'XFLD' } } }))).toBe(
+                true
+            );
+        }
     });
 
-    it.each(['addXML', 'codeExt', 'propertyChange', 'appdescr_app_addAnnotationsToOData'])(
-        'returns false for %s',
-        (changeType) => {
-            expect(isRenameChange(makeChange({ changeType }))).toBe(false);
-        }
-    );
+    it('returns false when texts is empty', () => {
+        expect(hasTranslatableText(makeChange({ texts: {} }))).toBe(false);
+    });
+
+    it('returns false when texts is missing entirely', () => {
+        const change = makeChange({});
+        delete (change as { texts?: unknown }).texts;
+        expect(hasTranslatableText(change)).toBe(false);
+    });
 });
 
-describe('processRenameChangeI18n', () => {
+describe('processChangeTextsI18n', () => {
     const projectRoot = '/mock/project';
     const webappPath = join(projectRoot, 'webapp');
     let fs: Editor;
@@ -74,7 +82,7 @@ describe('processRenameChangeI18n', () => {
             texts: { newText: { value: 'Supplier Name', type: 'XGRP' } }
         });
 
-        const modified = await processRenameChangeI18n(projectRoot, change, fs, logger);
+        const modified = await processChangeTextsI18n(projectRoot, change, fs, logger);
 
         expect(modified).toBe(true);
         expect((change.texts as Record<string, { value: string }>).newText.value).toBe('{@i18n>id_1_rename_newText}');
@@ -93,7 +101,7 @@ describe('processRenameChangeI18n', () => {
             texts: { annotationText: { value: '{i18n>id_2_annotationRename_annotationText}', type: 'XFLD' } }
         });
 
-        const modified = await processRenameChangeI18n(projectRoot, change, fs, logger);
+        const modified = await processChangeTextsI18n(projectRoot, change, fs, logger);
 
         expect(modified).toBe(true);
         expect((change.texts as Record<string, { value: string }>).annotationText.value).toBe(
@@ -107,7 +115,7 @@ describe('processRenameChangeI18n', () => {
             texts: { newText: { value: '{@i18n>id_1_rename_newText}', type: 'XGRP' } }
         });
 
-        const modified = await processRenameChangeI18n(projectRoot, change, fs, logger);
+        const modified = await processChangeTextsI18n(projectRoot, change, fs, logger);
 
         expect(modified).toBe(false);
         expect(mockCreatePropertiesI18nEntries).not.toHaveBeenCalled();
@@ -116,7 +124,7 @@ describe('processRenameChangeI18n', () => {
     it('returns false when the change has no texts', async () => {
         const change = makeChange({ texts: {} });
 
-        const modified = await processRenameChangeI18n(projectRoot, change, fs, logger);
+        const modified = await processChangeTextsI18n(projectRoot, change, fs, logger);
 
         expect(modified).toBe(false);
         expect(mockCreatePropertiesI18nEntries).not.toHaveBeenCalled();
@@ -127,7 +135,7 @@ describe('processRenameChangeI18n', () => {
         // Force the top-level texts to be absent.
         delete (change as { texts?: unknown }).texts;
 
-        const modified = await processRenameChangeI18n(projectRoot, change, fs, logger);
+        const modified = await processChangeTextsI18n(projectRoot, change, fs, logger);
 
         expect(modified).toBe(false);
     });
@@ -137,7 +145,7 @@ describe('processRenameChangeI18n', () => {
             texts: { newText: { value: 123 as unknown as string, type: 'XFLD' } }
         });
 
-        const modified = await processRenameChangeI18n(projectRoot, change, fs, logger);
+        const modified = await processChangeTextsI18n(projectRoot, change, fs, logger);
 
         expect(modified).toBe(false);
         expect(mockCreatePropertiesI18nEntries).not.toHaveBeenCalled();
@@ -152,7 +160,7 @@ describe('processRenameChangeI18n', () => {
             }
         });
 
-        const modified = await processRenameChangeI18n(projectRoot, change, fs, logger);
+        const modified = await processChangeTextsI18n(projectRoot, change, fs, logger);
 
         expect(modified).toBe(true);
         const texts = change.texts as Record<string, { value: string }>;

@@ -8,32 +8,28 @@ import type { NewI18nEntry, SapTextType } from '@sap-ux/i18n';
 
 import type { CommonChangeProperties } from '../types.js';
 
-/**
- * Change types whose translatable text is authored in the adaptation editor and must be
- * bound against the `@i18n` model. Covers annotation renames (`annotation_change` files)
- * and control-level renames.
- */
-const RENAME_CHANGE_TYPES = new Set(['rename', 'renameField', 'renameLabel', 'annotationRename']);
-
 interface ChangeText {
     value?: unknown;
     type?: string;
 }
 
 /**
- * Determines whether a change is a rename/annotation change that carries translatable text
- * requiring an `@i18n` binding.
+ * Determines whether a change carries translatable text that must be bound against the
+ * `@i18n` model. The change type is intentionally not inspected: change types are owned by
+ * the individual control change handlers, not by us, and any of them may carry a `texts`
+ * section — so the presence of a non-empty `texts` object is the reliable signal.
  *
  * @param {CommonChangeProperties} change - The change to inspect.
- * @returns {boolean} `true` if the change type is one that carries translatable rename text.
+ * @returns {boolean} `true` if the change has a non-empty `texts` section.
  */
-export function isRenameChange(change: CommonChangeProperties): boolean {
-    return RENAME_CHANGE_TYPES.has(change.changeType);
+export function hasTranslatableText(change: CommonChangeProperties): boolean {
+    const texts = change.texts as Record<string, ChangeText> | undefined;
+    return !!texts && typeof texts === 'object' && Object.keys(texts).length > 0;
 }
 
 /**
- * Processes the translatable text of a rename/annotation change authored in the adaptation
- * editor so it resolves against the `@i18n` model:
+ * Processes the translatable text of a change authored in the adaptation editor so it
+ * resolves against the `@i18n` model:
  *
  * For each entry in the change's top-level `texts`:
  * - values already bound to `{@i18n>...}` are left untouched;
@@ -52,7 +48,7 @@ export function isRenameChange(change: CommonChangeProperties): boolean {
  * @param logger - Logger instance.
  * @returns {Promise<boolean>} `true` if any text binding was rewritten.
  */
-export async function processRenameChangeI18n(
+export async function processChangeTextsI18n(
     projectRoot: string,
     change: CommonChangeProperties,
     fs: Editor,
@@ -99,7 +95,7 @@ export async function processRenameChangeI18n(
         const webappPath = await getWebappPath(projectRoot, fs);
         const i18nFilePath = join(webappPath, 'i18n', 'i18n.properties');
         await createPropertiesI18nEntries(i18nFilePath, entries, undefined, fs);
-        logger.debug(`Extracted ${entries.length} rename text(s) into ${i18nFilePath}`);
+        logger.debug(`Extracted ${entries.length} text(s) into ${i18nFilePath}`);
     }
 
     return modified;
