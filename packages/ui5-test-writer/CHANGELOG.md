@@ -1,5 +1,32 @@
 # @sap-ux/ui5-test-writer
 
+## 1.3.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/ui5-application-writer 2.1.2 → 2.1.3
+- @sap-ux/preview-middleware 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+
+## 1.3.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.49 → 1.1.0
+
+## 1.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support 2-bucket UI5 version template selection (1.84 / 1.150) for Fiori Elements OPA5 test generation [[8f7862f](https://github.com/SAP/open-ux-tools/commit/8f7862f37a8685a9cd9ece5910bd4c5dd94c1194)]
+
 ## 1.2.35
 
 ### Patch Changes
