@@ -5,7 +5,7 @@
 1. `packages/eslint-plugin-fiori-tools/src/language/diagnostics.ts`
 2. `packages/eslint-plugin-fiori-tools/src/rules/sap-no-data-field-intent-based-navigation.ts`
 3. `packages/eslint-plugin-fiori-tools/src/project-context/linker/annotations.ts` — provides `getRecordType`, `elementsWithName`
-4. `packages/eslint-plugin-fiori-tools/src/project-context/parser/service.ts` — lines 50-57 show annotation index key format: `"target/@fullyQualifiedTerm"`
+4. `packages/eslint-plugin-fiori-tools/src/project-context/parser/service.ts` — `buildAnnotationIndexKey` shows annotation index key format: `"target/@fullyQualifiedTerm"`
 5. `packages/eslint-plugin-fiori-tools/src/rules/index.ts`
 6. `packages/eslint-plugin-fiori-tools/src/index.ts`
 7. `packages/eslint-plugin-fiori-tools/test/test-helper.ts`
@@ -15,10 +15,24 @@ For rules with nested AST walks, also read `src/rules/sap-no-single-facet-in-col
 
 ## Pre-flight checklist (read before writing `check()`):
 
-- ✅ Annotation index keys use `/@term` format: `key.endsWith('/@com.sap.vocabularies.UI.v1.Facets')` — **NOT** `'/com.sap.vocabularies.UI.v1.Facets'`
-- ✅ **Use `context.sourceCode.projectContext.index.apps`** — never `linkedModel.apps`. The linked model silently excludes apps where the linker couldn't resolve pages (e.g. unresolvable annotation targets), causing `check()` to return nothing with no error
+- ✅ **Go through application pages first** — use `linkedModel.apps` to iterate over apps, then `app.pages`
+- ✅ Use `index.apps[appKey]` (not `linkedModel.apps`) to get the `parsedApp` for `getIndexedServiceForMainService` — `linkedModel.apps` provides page structure but not the parsed service
+- ✅ **Access `page.lookup` directly** — never cast `page` to multiple page types (e.g. both LR and OP) and spread both results. All page types share the same `lookup` shape, so `page.lookup['table'] ?? []` is sufficient. The double-cast pattern silently processes each table twice.
 - ✅ `reportedParent` = the `<Annotation>` element (visitor entry point); `reference.value` = the inner element to report on
 - ✅ The visitor key `'target>element[name="Annotation"]'` matches `<Annotation ...>` nodes; `lookup` must contain the **parent** `Annotation` element, not the reported child
+- ✅ Use `page.targetName` for `pageNames`; if the same annotation is reused across pages, merge into the existing problem entry (see `sap-no-data-field-intent-based-navigation.ts` for the dedup pattern)
+- ✅ **Iterate all qualifiers** — use `Object.values(annotationMap)` not `annotationMap['undefined']`, so qualified annotations (e.g. `UI.Facets#MyQualifier`) are also checked
+
+## Annotation access path — choose by term
+
+| Annotation term | Access path | Example rule |
+|---|---|---|
+| Terms surfaced in the linked model (e.g. `UI.LineItem`, `UI.FieldGroup`) | `page.lookup['table']`, `page.lookup['field-group']`, etc. — the linker pre-resolved these | `sap-no-data-field-intent-based-navigation.ts` |
+| Terms **not** surfaced in the linked model (e.g. `UI.Facets`, `UI.HeaderFacets`) | `page.entity?.structuredType` → `buildAnnotationIndexKey(entityType, MY_TERM)` → look up in `parsedService.index.annotations` | `sap-no-single-facet-in-collection.ts` |
+
+**When to use `page.lookup`:** The linker only resolves annotations that map to a known control (tables, field groups, header sections). If your term has a lookup key, use it — the annotation reference is available via `item.annotation.annotation`.
+
+**When to use `buildAnnotationIndexKey`:** For terms like `UI.Facets` that the linker processes internally (to derive tables/sections) but does not expose in `page.lookup`. Derive the entity type from `page.entity?.structuredType` and look up directly from the service index.
 
 ## Required diagnostic fields:
 
@@ -27,15 +41,13 @@ export interface MyRuleDiagnostic {
     type: typeof MY_RULE;
     pageNames: string[];
     annotation: {
-        file: string;
-        annotationPath: string;
         reference: AnnotationReference;      // .value = the element to report on
         reportedParent: Element;             // the <Annotation> node — visitor entry point
     };
 }
 ```
 
-## Rule template:
+## Rule template — via `page.lookup` (terms surfaced in linked model):
 
 ```typescript
 // packages/eslint-plugin-fiori-tools/src/rules/sap-[rule-name].ts
@@ -46,58 +58,132 @@ import type { FioriRuleDefinition } from '../types.js';
 import type { MyRuleDiagnostic } from '../language/diagnostics.js';
 import { MY_RULE } from '../language/diagnostics.js';
 import { getRecordType } from '../project-context/linker/annotations.js';
+import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
+import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
+import { type ParsedService } from '../project-context/parser/index.js';
 
-const MY_TERM = 'com.sap.vocabularies.UI.v1.MyTerm'; // fully qualified
+function checkAnnotationsInPage(
+    page: FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage,
+    parsedService: ParsedService,
+    problems: MyRuleDiagnostic[]
+): void {
+    // Choose the lookup key(s) that match your annotation term: 'table', 'field-group', 'header-section'
+    for (const item of page.lookup['table'] ?? []) {
+        if (!item.annotation) {
+            continue;
+        }
+        const aliasInfo = parsedService.artifacts.aliasInfo[item.annotation.annotation.top.uri];
 
-const rule: FioriRuleDefinition = createFioriRule({
-    ruleId: MY_RULE,
-    meta: {
-        type: 'problem',
-        docs: {
-            recommended: true,
-            description: 'Short description.',
-            url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-[rule-name].md'
-        },
-        messages: { [MY_RULE]: 'Error message explaining the violation.' },
-        schema: []
-    },
+        // ... walk item.annotation.annotation.top.value to find violating elements ...
+        const violatingElements: Element[] = []; // replace with real logic
 
-    check(context) {
-        const problems: MyRuleDiagnostic[] = [];
-
-        // ✅ Always use index.apps — linkedModel.apps silently excludes apps with unresolvable annotations
-        for (const [, parsedApp] of Object.entries(context.sourceCode.projectContext.index.apps)) {
-            const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
-            if (!parsedService) {
-                continue;
-            }
-
-            for (const [key, annotationMap] of Object.entries(parsedService.index.annotations)) {
-                // ✅ Key format is "target/@fullyQualifiedTerm" — note the /@ prefix
-                if (!key.endsWith(`/@${MY_TERM}`)) {
-                    continue;
-                }
-                const annotation = annotationMap['undefined']; // 'undefined' = no qualifier
-                if (!annotation) {
-                    continue;
-                }
-
-                const aliasInfo = parsedService.artifacts.aliasInfo[annotation.top.uri];
-                // ... walk the AST, find violations ...
-
-                // When pushing a problem:
+        for (const violatingElement of violatingElements) {
+            const existingIndex = problems.findIndex(
+                (p) => p.annotation.reference.value === violatingElement
+            );
+            if (existingIndex > -1) {
+                problems[existingIndex] = {
+                    ...problems[existingIndex],
+                    pageNames: [...problems[existingIndex].pageNames, page.targetName]
+                };
+            } else {
                 problems.push({
                     type: MY_RULE,
-                    pageNames: [],
+                    pageNames: [page.targetName],
                     annotation: {
-                        file: annotation.top.uri,
-                        annotationPath: `@${MY_TERM}`,
-                        reference: { uri: annotation.top.uri, value: violatingElement },
+                        reference: {
+                            uri: item.annotation.annotation.top.uri,
+                            value: violatingElement
+                        },
+                        reportedParent: item.annotation.annotation.top.value  // ← the <Annotation> node
+                    }
+                });
+            }
+        }
+    }
+}
+```
+
+## Rule template — via `buildAnnotationIndexKey` (terms not in `page.lookup`):
+
+Use this when the annotation term (e.g. `UI.Facets`) is processed internally by the linker but not exposed in `page.lookup`. Access the entity type from `page.entity?.structuredType` and query the service index directly.
+
+```typescript
+import { buildAnnotationIndexKey, type ParsedService } from '../project-context/parser/index.js';
+
+const MY_TERM = 'com.sap.vocabularies.UI.v1.MyTerm';
+
+function checkAnnotationsInPage(
+    page: FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage,
+    parsedService: ParsedService,
+    problems: MyRuleDiagnostic[]
+): void {
+    const entityType = page.entity?.structuredType;
+    if (!entityType) {
+        return;
+    }
+
+    const annotationKey = buildAnnotationIndexKey(entityType, MY_TERM);
+    const annotationMap = parsedService.index.annotations[annotationKey];
+    if (!annotationMap) {
+        return;
+    }
+
+    // ✅ Iterate Object.values to cover both unqualified and qualified annotations
+    for (const annotation of Object.values(annotationMap)) {
+        const aliasInfo = parsedService.artifacts.aliasInfo[annotation.top.uri];
+        const [collection] = elementsWithName(Edm.Collection, annotation.top.value);
+        if (!collection) {
+            continue;
+        }
+
+        // ... walk collection to find violating elements ...
+        const violatingElements: Element[] = []; // replace with real logic
+
+        for (const violatingElement of violatingElements) {
+            const existingIndex = problems.findIndex(
+                (p) => p.annotation.reference.value === violatingElement
+            );
+            if (existingIndex > -1) {
+                problems[existingIndex] = {
+                    ...problems[existingIndex],
+                    pageNames: [...problems[existingIndex].pageNames, page.targetName]
+                };
+            } else {
+                problems.push({
+                    type: MY_RULE,
+                    pageNames: [page.targetName],
+                    annotation: {
+                        reference: {
+                            uri: annotation.top.uri,
+                            value: violatingElement
+                        },
                         reportedParent: annotation.top.value  // ← the <Annotation> node
                     }
                 });
             }
         }
+    }
+}
+```
+
+Both templates share the same `check()` body and `createAnnotations()`:
+
+```typescript
+    check(context) {
+        const problems: MyRuleDiagnostic[] = [];
+
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
+            if (!parsedService) {
+                continue;
+            }
+            for (const page of app.pages) {
+                checkAnnotationsInPage(page, parsedService, problems);
+            }
+        }
+
         return problems;
     },
 
@@ -105,7 +191,6 @@ const rule: FioriRuleDefinition = createFioriRule({
         if (validationResult.length === 0) {
             return {};
         }
-        // lookup by reportedParent (<Annotation> node) — this is what the visitor matches
         const lookup = new Set<Element>();
         for (const diagnostic of validationResult) {
             lookup.add(diagnostic.annotation.reportedParent);
@@ -119,19 +204,25 @@ const rule: FioriRuleDefinition = createFioriRule({
                     .filter((r) => r.annotation.reportedParent === node)
                     .forEach((r) => {
                         context.report({
-                            node: r.annotation.reference.value as Element,  // ← the actual violating node
+                            node: r.annotation.reference.value,
                             messageId: MY_RULE
                         });
                     });
             }
         };
     }
-});
-
-export default rule;
 ```
 
 ## Test template:
+
+**Coverage checklist — ensure tests exist for:**
+- ✅ No annotation present (valid)
+- ✅ Valid annotation
+- ✅ Violation (unqualified annotation)
+- ✅ Violation with a **qualifier** (e.g. `Qualifier="MyQualifier"` in XML, `@UI.Term #MyQualifier` in CDS) — required since `Object.values(annotationMap)` covers both
+- ✅ V2 and V4 variants where the rule applies to both
+- ✅ CAP/CDS suite mirrors the XML suite (same valid/invalid cases)
+- ⚠️ **CDS annotation merging** — appending two `annotate service.X with @(UI.SameTerm: [...])` blocks for the same entity and term causes CDS to merge them (the second overwrites the first). Use a single annotate block with multiple entries instead of concatenating separate blocks for the same term.
 
 ```typescript
 // packages/eslint-plugin-fiori-tools/test/rules/sap-[rule-name].test.ts
@@ -188,7 +279,11 @@ ruleTester.run(TEST_NAME, myRule, {
 
 ## Debug checklist (if tests show 0 errors when violations expected):
 
-- Is `index.apps` used instead of `linkedModel.apps`?
-- Is the annotation key using `/@term` format?
-- Is `reportedParent` set correctly on the diagnostic?
+- Is `linkedModel.apps` used for page iteration (not `index.apps` directly)?
+- Is `index.apps[appKey]` used to fetch `parsedApp` for `getIndexedServiceForMainService`?
+- **If using `page.lookup`:** is the correct key used (`'table'`, `'field-group'`, etc.)? Does the annotation term actually appear in the linked model lookup?
+- **If using `buildAnnotationIndexKey`:** is `page.entity?.structuredType` non-null? Is the key format correct (`entityType/@fullyQualifiedTerm`)?
+- Are **all qualifiers** covered? Use `Object.values(annotationMap)` — `annotationMap['undefined']` misses qualified annotations
+- Is there a test case with a qualified annotation (e.g. `Qualifier="MyQualifier"`)? Add one if missing.
+- Is `page.lookup['table']` used directly (not via a double-cast to both LR and OP types)? The double-cast pattern processes each table twice.
 - Is `parsedService` actually defined? (add a temporary `console.log` to verify)
