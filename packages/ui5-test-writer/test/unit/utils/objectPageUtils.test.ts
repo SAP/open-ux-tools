@@ -1630,6 +1630,224 @@ describe('Test getObjectPageFeatures()', () => {
         expect(subSection?.fields).toEqual([]);
     });
 
+    test('should collapse a FieldGroup form sub-section under the CollectionFacet id', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: { aggregations: { sections: { aggregations: {} } } } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
+                                    aggregations: {
+                                        subsections: {
+                                            aggregations: {
+                                                '@FieldGroup#Q1': {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    order: 1,
+                                                    schema: { keys: [{ name: 'ID', value: 'FieldGroup#Q1' }] },
+                                                    aggregations: {
+                                                        form: {
+                                                            schema: { keys: [] },
+                                                            aggregations: {
+                                                                fields: {
+                                                                    aggregations: {
+                                                                        field1: {
+                                                                            name: 'DataField::AccountingDocument',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Value',
+                                                                                        value: 'AccountingDocument'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation
+                                                                    }
+                                                                } as unknown as TreeAggregation
+                                                            } as unknown as TreeAggregation
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        const subSections = result[0].bodySections?.[0].subSections;
+        // FE collapses the single FieldGroup ReferenceFacet into a FormContainer of a sub-section
+        // that inherits the CollectionFacet id, so the sub-section id must be the section id.
+        expect(subSections).toHaveLength(1);
+        expect(subSections?.[0].id).toBe('GeneralInformation');
+        expect(subSections?.[0].fields).toEqual([{ property: 'AccountingDocument' }]);
+    });
+
+    test('should merge and dedupe multiple FieldGroup form sub-sections into one', async () => {
+        const makeForm = (property: string) =>
+            ({
+                isTable: false,
+                custom: false,
+                order: 1,
+                schema: { keys: [{ name: 'ID', value: `FieldGroup#${property}` }] },
+                aggregations: {
+                    form: {
+                        schema: { keys: [] },
+                        aggregations: {
+                            fields: {
+                                aggregations: {
+                                    field1: {
+                                        name: `DataField::${property}`,
+                                        schema: { keys: [{ name: 'Value', value: property }] }
+                                    } as unknown as TreeAggregation,
+                                    shared: {
+                                        name: 'DataField::Shared',
+                                        schema: { keys: [{ name: 'Value', value: 'Shared' }] }
+                                    } as unknown as TreeAggregation
+                                }
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    } as unknown as TreeAggregation
+                }
+            }) as unknown as TreeAggregation;
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: { aggregations: { sections: { aggregations: {} } } } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
+                                    aggregations: {
+                                        subsections: {
+                                            aggregations: {
+                                                fgA: makeForm('PropA'),
+                                                fgB: makeForm('PropB')
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        const subSections = result[0].bodySections?.[0].subSections;
+        expect(subSections).toHaveLength(1);
+        expect(subSections?.[0].id).toBe('GeneralInformation');
+        // 'Shared' appears in both FieldGroups but must be checked only once to avoid an ambiguous match.
+        expect(subSections?.[0].fields).toEqual([{ property: 'PropA' }, { property: 'Shared' }, { property: 'PropB' }]);
+    });
+
+    test('should not collapse form facets when a nested collection or table sibling exists', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: { aggregations: { sections: { aggregations: {} } } } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'DeliveryInvoice' }] },
+                                    aggregations: {
+                                        subsections: {
+                                            aggregations: {
+                                                '@FieldGroup#Terms': {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    order: 1,
+                                                    schema: { keys: [{ name: 'ID', value: 'FieldGroup#Terms' }] },
+                                                    aggregations: {
+                                                        form: {
+                                                            schema: { keys: [] },
+                                                            aggregations: {
+                                                                fields: {
+                                                                    aggregations: {
+                                                                        field1: {
+                                                                            name: 'DataField::Incoterms',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Value',
+                                                                                        value: 'Incoterms'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation
+                                                                    }
+                                                                } as unknown as TreeAggregation
+                                                            } as unknown as TreeAggregation
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation,
+                                                nestedCF: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    order: 2,
+                                                    schema: { keys: [{ name: 'ID', value: 'InvoiceProcessing' }] },
+                                                    aggregations: {
+                                                        subsections: { aggregations: {} } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation,
+                                                tableSub: {
+                                                    isTable: true,
+                                                    custom: false,
+                                                    order: 3,
+                                                    schema: { keys: [{ name: 'ID', value: 'ItemsTable' }] },
+                                                    aggregations: {
+                                                        table: { aggregations: {} } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        const subSections = result[0].bodySections?.[0].subSections;
+        // The FieldGroup form keeps its own id (not the section id) because FE lifts the children to
+        // separate sub-sections once a nested CollectionFacet is present.
+        expect(subSections?.map((sub) => sub.id)).toEqual(['FieldGroup::Terms', 'InvoiceProcessing', 'ItemsTable']);
+        expect(subSections?.[0].fields).toEqual([{ property: 'Incoterms' }]);
+        expect(subSections?.[2].isTable).toBe(true);
+    });
+
     test('should skip fields without Value key in schema', async () => {
         const objectPage = {
             name: 'objectPage1',
