@@ -6,6 +6,7 @@ Runs `update service-metadata` (see CLI reference in SKILL.md) to refresh the lo
 
 If the command fails with any of the following errors, stop and explain what the user must fix first - do NOT try to auto-fix these:
 
+- **"Update service-metadata is only supported for Fiori applications connected to an EDMX backend"** — the app is a CAP application. This command does not apply: CAP service metadata is generated locally from the CDS model (via `cds compile`), not fetched from a backend. Do NOT attempt to work around this; there is nothing to refresh for CAP apps.
 - **"No backend configuration found in ui5.yaml"** — the app's `ui5.yaml` has no `fiori-tools-proxy` middleware with a backend entry. The user must add a backend configuration pointing to their ABAP system.
 - **"No stored system found"** (VSCode only) — the backend URL is not stored in the secure store. Run `npx @sap-ux/create@latest add system` first.
 - **"No destination found in 'ui5.yaml'"** (SAP Business Application Studio only) — `ui5.yaml` has no `destination` under the backend config. The user must add a BTP destination name.
@@ -59,6 +60,7 @@ After a real (non-simulate) run, give a clear summary:
 
 | Error message | Cause | Fix |
 |---|---|---|
+| `Update service-metadata is only supported for Fiori applications connected to an EDMX backend` | App is a CAP project | Not applicable — CAP metadata is generated locally from the CDS model, not fetched from a backend |
 | `No stored system found for URL '...'` | System not in secure store | Run `npx @sap-ux/create@latest add system` |
 | `No destination found in 'ui5.yaml'` | BAS deployment without destination | Add `destination: MY_DEST` to backend config in `ui5.yaml` |
 | `No backend configuration found in ui5.yaml` | Missing fiori-tools-proxy backend | Add backend entry to `ui5.yaml` |

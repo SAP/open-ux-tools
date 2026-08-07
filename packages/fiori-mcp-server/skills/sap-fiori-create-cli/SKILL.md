@@ -442,6 +442,8 @@ Options:
 
 ## [`update service-metadata`](#update-service-metadata)
 
+> For the full workflow guide including prerequisites and manual steps, read `references/update-service-metadata.md`.
+
 Refresh the local OData service metadata.xml from the live backend for a Fiori application.
 Also fetches value-help (external) service metadata when available.
 
