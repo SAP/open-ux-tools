@@ -147,7 +147,14 @@ async function resolveServiceMetadata(
         logger.error(
             `Error creating the ABAP service provider: ${error instanceof Error ? error.message : String(error)}`
         );
+    }
+
+    if (!serviceProvider) {
+        // The provider could not be created (creation threw, the system was not found, or it is not an
+        // ABAP backend). The specific reason is already logged above or by getAbapServiceProvider, so
+        // just note the consequence once and skip the backend fetches.
         logger.warn('App will be generated without backend service metadata and annotations');
+        return { edmx: metadata };
     }
 
     return {
@@ -164,13 +171,13 @@ async function resolveServiceMetadata(
  * - Value help annotations for dropdowns and input fields
  * - Code list annotations for enumeration values
  *
- * @param serviceProvider - The shared AbapServiceProvider (created once and reused), or undefined if it could not be created
+ * @param serviceProvider - The shared AbapServiceProvider (created once and reused)
  * @param servicePath - The OData service path (e.g., '/sap/opu/odata/sap/MY_SERVICE/')
  * @param metadata - The OData service metadata (EDMX)
  * @returns Array of external services with metadata, or undefined if fetching fails or no external services are found
  */
 async function getExternalServiceMetadata(
-    serviceProvider: AbapServiceProvider | undefined,
+    serviceProvider: AbapServiceProvider,
     servicePath: string,
     metadata: string
 ): Promise<ExternalService[] | undefined> {
@@ -185,17 +192,10 @@ async function getExternalServiceMetadata(
 
         logger.info(`Found ${externalServiceRefs.length} external service reference(s), fetching metadata...`);
 
-        if (serviceProvider) {
-            const extServiceData = await serviceProvider.fetchExternalServices(externalServiceRefs);
-            const duration = (performance.now() - startTime).toFixed(0);
-            logger.info(`Successfully fetched ${extServiceData.length} external service(s) in ${duration}ms`);
-            return extServiceData;
-        } else {
-            logger.error(
-                'Failed to create AbapServiceProvider. External service (value help or code list) metadata cannot be fetched.'
-            );
-            return undefined;
-        }
+        const extServiceData = await serviceProvider.fetchExternalServices(externalServiceRefs);
+        const duration = (performance.now() - startTime).toFixed(0);
+        logger.info(`Successfully fetched ${extServiceData.length} external service(s) in ${duration}ms`);
+        return extServiceData;
     } catch (error) {
         const duration = (performance.now() - startTime).toFixed(0);
         logger.error(
@@ -214,13 +214,13 @@ async function getExternalServiceMetadata(
  * dataSource in the manifest (e.g. `SEPMRA_PROD_MAN_ANNO_MDL`). Only OData V2 needs a
  * catalog request; for V4 the annotations are already inline in the metadata.
  *
- * @param serviceProvider - The shared AbapServiceProvider (created once and reused), or undefined if it could not be created
+ * @param serviceProvider - The shared AbapServiceProvider (created once and reused)
  * @param servicePath - The OData service path (e.g., '/sap/opu/odata/sap/MY_SERVICE/')
  * @param metadata - The OData service metadata (EDMX), used to determine the OData version
  * @returns The first service annotation, or undefined if none are found or fetching fails
  */
 async function getServiceAnnotations(
-    serviceProvider: AbapServiceProvider | undefined,
+    serviceProvider: AbapServiceProvider,
     servicePath: string,
     metadata: string
 ): Promise<Annotations | undefined> {
@@ -228,11 +228,6 @@ async function getServiceAnnotations(
     try {
         // For OData V4 the annotations are already embedded in the metadata; no catalog request is needed.
         if (isODataV4(metadata)) {
-            return undefined;
-        }
-
-        if (!serviceProvider) {
-            logger.error('Failed to create AbapServiceProvider. Service annotations cannot be fetched.');
             return undefined;
         }
 

@@ -226,7 +226,10 @@ describe('generateFioriAppOData - External Services', () => {
 
     describe('External service fetching - no references', () => {
         test('should handle case when no external service references are found', async () => {
-            // Given: No external service references
+            // Given: A reachable ABAP provider but no external service references in the metadata
+            const mockSystem = { url: 'https://example.com', client: '100' };
+            mockFindSystem.mockResolvedValue({ system: mockSystem });
+            mockCreateAbapServiceProvider.mockReturnValue(new MockAbapServiceProvider());
             mockGetExternalServiceReferences.mockReturnValue([]);
 
             // When: Generating the app
