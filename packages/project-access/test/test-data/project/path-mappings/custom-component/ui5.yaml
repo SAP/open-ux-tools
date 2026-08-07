@@ -1,0 +1,9 @@
+specVersion: "3.0"
+type: component
+metadata:
+  name: test.custom.component
+resources:
+  configuration:
+    paths:
+      src: src/main/dummy
+

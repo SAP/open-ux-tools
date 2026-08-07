@@ -42,6 +42,13 @@ const rootProjectMock = {
     byGlob: jest.fn<any>().mockResolvedValue([])
 };
 
+const middlewareUtilMock = {
+    getProject: jest.fn().mockReturnValue({
+        getType: jest.fn().mockReturnValue('application'),
+        getNamespace: jest.fn().mockReturnValue('test/namespace')
+    })
+};
+
 /**
  * Middleware function wrapper for testing to simplify tests.
  *
@@ -51,8 +58,9 @@ const rootProjectMock = {
 async function getTestServer(configuration: Partial<UI5ProxyConfig> | undefined): Promise<any> {
     const router = await ui5ProxyMiddleware.default({
         resources: { rootProject: rootProjectMock },
-        options: { configuration }
-    } as any);
+        options: { configuration },
+        middlewareUtil: middlewareUtilMock
+    });
     const app = express();
     app.use(router);
     return supertest(app);
@@ -197,7 +205,8 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
@@ -210,7 +219,8 @@ describe('middleware', () => {
                 expect.objectContaining({ proxy: 'http://proxy.example' }),
                 expect.objectContaining({}),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
@@ -223,7 +233,8 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ logger: expect.objectContaining({}) }),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
@@ -240,11 +251,12 @@ describe('middleware', () => {
                 expect.objectContaining({ pathReplace: '/new-resources' }),
                 expect.objectContaining({}),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
-        test('secure', async () => {
+        test('secure enabled', async () => {
             await getTestServer({
                 ...config,
                 secure: true
@@ -253,11 +265,12 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
-        test('secure', async () => {
+        test('secure disabled', async () => {
             await getTestServer({
                 ...config,
                 secure: false
@@ -266,7 +279,8 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: false, logger: undefined }),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
@@ -327,7 +341,8 @@ describe('middleware', () => {
                 expect.objectContaining({ version: ui5Version }),
                 expect.objectContaining({}),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
@@ -342,7 +357,8 @@ describe('middleware', () => {
                 expect.objectContaining({ version: '' }),
                 expect.objectContaining({}),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
 
@@ -353,7 +369,8 @@ describe('middleware', () => {
                 expect.objectContaining({ version: '' }),
                 expect.objectContaining({}),
                 undefined,
-                expect.any(ToolsLogger)
+                expect.any(ToolsLogger),
+                expect.anything()
             );
         });
     });

@@ -5,7 +5,8 @@ import {
     findCapProjectRoot,
     FileName,
     checkCdsUi5PluginEnabled,
-    hasDependency
+    hasDependency,
+    readUi5Yaml
 } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isLowerThanMinimalVersion } from '../common/package-json.js';
@@ -58,6 +59,19 @@ export async function checkPrerequisites(
 
     if (!packageJson) {
         throw Error(`File '${FileName.Package}' not found at '${basePath}'`);
+    }
+
+    const ui5Yaml = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs).catch(() => undefined);
+    let projectType: string | undefined;
+    try {
+        projectType = ui5Yaml?.getType();
+    } catch {
+        // ui5.yaml exists but has no 'type' field — treat as application (legacy YAML)
+    }
+    if (projectType === 'component') {
+        throw new Error(
+            `Conversion to virtual preview is only supported for UI5 project type 'application'. Project type 'component' is not supported.`
+        );
     }
 
     if (hasDependency(packageJson, packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD)) {

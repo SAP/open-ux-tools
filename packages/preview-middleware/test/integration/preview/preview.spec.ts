@@ -47,6 +47,10 @@ server:
                 libs: true
                 rta:
                   layer: CUSTOMER_BASE
+              test:
+                - framework: QUnit
+                - framework: OPA5
+                - framework: Testsuite
               debug: true
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware
@@ -118,20 +122,68 @@ const check = async (param: { page: Page }) => {
     await expect(page.getByText('Product_0', { exact: true })).toBeVisible();
 };
 
-const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
+const checkQUnit = async (param: { page: Page }) => {
+    const { page } = param;
+    const client = await page.context().newCDPSession(page);
+    await client.send('Network.clearBrowserCache');
+    await page.goto(`${getUrl()}/test/unitTests.qunit.html`);
+    await expect(page.locator('#qunit')).toBeVisible();
+};
 
-for (const { version } of UI5Versions) {
+const checkTestsuite = async (param: { page: Page }) => {
+    const { page } = param;
+    const htmlResponse = await page.request.get(`${getUrl()}/test/testsuite.qunit.html`);
+    expect(htmlResponse.status()).toBe(200);
+    const jsResponse = await page.request.get(`${getUrl()}/test/testsuite.qunit.js`);
+    expect(jsResponse.status()).toBe(200);
+};
+
+const checkOPA5 = async (param: { page: Page }) => {
+    const { page } = param;
+    const client = await page.context().newCDPSession(page);
+    await client.send('Network.clearBrowserCache');
+    await page.goto(`${getUrl()}/test/opaTests.qunit.html`);
+    await expect(page.locator('#qunit-banner.qunit-pass')).toBeVisible({ timeout: 60000 });
+};
+
+const allUI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
+
+// Limit virtual test endpoint tests (QUnit/OPA5) to 3 representative versions instead of
+// the full maintained set — the FLP endpoint test runs for all versions for broad coverage.
+// - latest: catches regressions against current UI5
+// - 1.136.x: LTS version for long-term support validation
+// - 1.71.x: oldest supported version, boundary test
+const VIRTUAL_TEST_VERSIONS = new Set(['1.71', '1.136', allUI5Versions[0]?.version]);
+const isVirtualTestVersion = (version: string) => [...VIRTUAL_TEST_VERSIONS].some((v) => version.startsWith(v));
+
+for (const { version } of allUI5Versions) {
     test.describe(`UI5 version: ${version}`, () => {
         test.beforeAll(async () => {
             test.setTimeout(TIMEOUT);
             await prepare(version);
         });
 
-        test.afterEach(async () => {
+        test.afterAll(async () => {
             await teardownServer();
         });
+
         test('Click on Go button and check an element ', async ({ page }) => {
             await check({ page });
         });
+
+        if (isVirtualTestVersion(version)) {
+            test('virtual QUnit page is served and boots correctly', async ({ page }) => {
+                await checkQUnit({ page });
+            });
+
+            test('virtual OPA5 page runs a journey and loads app data', async ({ page }) => {
+                test.setTimeout(TIMEOUT);
+                await checkOPA5({ page });
+            });
+
+            test('virtual Testsuite page is served (HTTP 200)', async ({ page }) => {
+                await checkTestsuite({ page });
+            });
+        }
     });
 }
