@@ -6,8 +6,8 @@ import { dirname, join } from 'node:path';
 import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
-import type { ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
-import { createForDestination, AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
+import { createForDestination, AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider, findSystem } from './services/sap-system.js';
 import { WebIDEUsage } from '@sap-ux/btp-utils';
 
@@ -49,13 +49,28 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
             const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
             generatorConfig.service.edmx = metadata;
             if (generatorConfig.service.host || generatorConfig.service.destination) {
-                generatorConfig.service.externalServices = await getExternalServiceMetadata(
-                    generatorConfig.service.servicePath,
-                    generatorConfig.service.edmx,
-                    generatorConfig.service.host,
-                    generatorConfig.service.client,
-                    generatorConfig.service.destination
+                const service = generatorConfig.service;
+                // Resolve the stored SAP system and build the ABAP service provider once, then reuse it
+                // for both the external-service and annotation fetches. Reusing one provider means the
+                // backend authentication performed on the first request is shared, so cloud backends
+                // prompt for interactive (browser) auth only once. Failure to create the provider is
+                // non-fatal: the app is still generated, just without backend metadata/annotations.
+                let serviceProvider: AbapServiceProvider | undefined;
+                try {
+                    serviceProvider = await getAbapServiceProvider(service.host, service.client, service.destination);
+                } catch (error) {
+                    logger.error(
+                        `Error creating the ABAP service provider: ${error instanceof Error ? error.message : String(error)}`
+                    );
+                    logger.warn('App will be generated without backend service metadata and annotations');
+                }
+
+                service.externalServices = await getExternalServiceMetadata(
+                    serviceProvider,
+                    service.servicePath,
+                    metadata
                 );
+                service.annotations = await getServiceAnnotations(serviceProvider, service.servicePath, metadata);
             }
         }
 
@@ -117,19 +132,15 @@ export async function generateFioriAppOData(args: GeneratorConfigOData): Promise
  * - Value help annotations for dropdowns and input fields
  * - Code list annotations for enumeration values
  *
+ * @param serviceProvider - The shared AbapServiceProvider (created once and reused), or undefined if it could not be created
  * @param servicePath - The OData service path (e.g., '/sap/opu/odata/sap/MY_SERVICE/')
  * @param metadata - The OData service metadata (EDMX)
- * @param hostName - The SAP system host URL
- * @param client - Optional SAP client number (e.g., '100')
- * @param destinationName - Optional BTP destination name (used instead of host+client in BAS)
  * @returns Array of external services with metadata, or undefined if fetching fails or no external services are found
  */
 async function getExternalServiceMetadata(
+    serviceProvider: AbapServiceProvider | undefined,
     servicePath: string,
-    metadata: string,
-    hostName: string,
-    client?: string,
-    destinationName?: string
+    metadata: string
 ): Promise<ExternalService[] | undefined> {
     const startTime = performance.now();
     try {
@@ -142,8 +153,6 @@ async function getExternalServiceMetadata(
 
         logger.info(`Found ${externalServiceRefs.length} external service reference(s), fetching metadata...`);
 
-        // Create an AbapServiceProvider instance to fetch external service metadata
-        const serviceProvider = await getAbapServiceProvider(hostName, client, destinationName);
         if (serviceProvider) {
             const extServiceData = await serviceProvider.fetchExternalServices(externalServiceRefs);
             const duration = (performance.now() - startTime).toFixed(0);
@@ -163,6 +172,60 @@ async function getExternalServiceMetadata(
         logger.warn('App will be generated without external service metadata (value help and code lists)');
         return undefined;
     }
+}
+
+/**
+ * Fetches the backend annotations for the OData service via the ABAP catalog service.
+ *
+ * These are the "remote" annotations that the generator writes to
+ * `webapp/localService/<serviceName>/<name>.xml` and registers as an `ODataAnnotation`
+ * dataSource in the manifest (e.g. `SEPMRA_PROD_MAN_ANNO_MDL`). Only OData V2 needs a
+ * catalog request; for V4 the annotations are already inline in the metadata.
+ *
+ * @param serviceProvider - The shared AbapServiceProvider (created once and reused), or undefined if it could not be created
+ * @param servicePath - The OData service path (e.g., '/sap/opu/odata/sap/MY_SERVICE/')
+ * @param metadata - The OData service metadata (EDMX), used to determine the OData version
+ * @returns The first service annotation, or undefined if none are found or fetching fails
+ */
+async function getServiceAnnotations(
+    serviceProvider: AbapServiceProvider | undefined,
+    servicePath: string,
+    metadata: string
+): Promise<Annotations | undefined> {
+    const startTime = performance.now();
+    try {
+        // For OData V4 the annotations are already embedded in the metadata; no catalog request is needed.
+        if (isODataV4(metadata)) {
+            return undefined;
+        }
+
+        if (!serviceProvider) {
+            logger.error('Failed to create AbapServiceProvider. Service annotations cannot be fetched.');
+            return undefined;
+        }
+
+        const annotations = await serviceProvider.catalog(ODataVersion.v2).getAnnotations({ path: servicePath });
+        const duration = (performance.now() - startTime).toFixed(0);
+        logger.info(`Fetched ${annotations.length} service annotation(s) in ${duration}ms`);
+        return annotations[0];
+    } catch (error) {
+        const duration = (performance.now() - startTime).toFixed(0);
+        logger.error(
+            `Error fetching service annotations after ${duration}ms: ${error instanceof Error ? error.message : String(error)}`
+        );
+        logger.warn('App will be generated without backend service annotations');
+        return undefined;
+    }
+}
+
+/**
+ * Determines whether the given OData metadata (EDMX) is OData version 4.
+ *
+ * @param metadata - The OData service metadata (EDMX)
+ * @returns true if the metadata declares an OData V4 EDMX version, false otherwise
+ */
+function isODataV4(metadata: string): boolean {
+    return /<(?:edmx:)?Edmx[^>]*\bVersion\s*=\s*["']4\.\d+["']/i.test(metadata);
 }
 
 /**
