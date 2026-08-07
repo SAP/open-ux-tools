@@ -76,6 +76,11 @@ export function addGeneratedFiles(filePath: string, fs?: Editor): void {
 }
 
 /**
+ * @deprecated Use `addGeneratedFiles` instead. This is maintained for backward compatibility.
+ */
+export const writeApplicationInfoSettings = addGeneratedFiles;
+
+/**
  * Loads the file path from the `latestGeneratedFiles` array in the `appInfo.json` file,
  * removes it from the array, updates the file, and executes a VS Code command to load
  * the application info page for the generated project.
