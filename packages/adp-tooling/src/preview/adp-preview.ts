@@ -205,7 +205,9 @@ export class AdpPreview {
         this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
 
-        const manifest = await getPreviewManifest(this.util.getProject().getRootPath()) as MergedAppDescriptor['manifest'];
+        const manifest = (await getPreviewManifest(
+            this.util.getProject().getRootPath()
+        )) as MergedAppDescriptor['manifest'];
         this.mergedDescriptor = {
             name: descriptorVariant.id,
             url: '/',
@@ -225,7 +227,9 @@ export class AdpPreview {
             return;
         }
         if (this.isCfBuildMode) {
-            this.mergedDescriptor.manifest = await getPreviewManifest(this.util.getProject().getRootPath()) as MergedAppDescriptor['manifest'];
+            this.mergedDescriptor.manifest = (await getPreviewManifest(
+                this.util.getProject().getRootPath()
+            )) as MergedAppDescriptor['manifest'];
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {
