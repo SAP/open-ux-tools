@@ -1,7 +1,7 @@
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { AxiosRequestConfig, ODataService } from '@sap-ux/axios-extension';
 
-import { AbapServiceProvider, TlsPatch } from '@sap-ux/axios-extension';
+import { AbapCloudEnvironment, AbapServiceProvider, TlsPatch, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import { getService, getSapToolsDirectory } from '@sap-ux/store';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 import { logger } from '../../utils/index.js';
@@ -170,6 +170,12 @@ function findSapSystem(
  * @returns A configured AbapServiceProvider instance.
  */
 export function createAbapServiceProvider(backendSystem: BackendSystem): AbapServiceProvider {
+    if (backendSystem.authenticationType === 'reentranceTicket' || backendSystem.serviceKeys) {
+        return createForAbapOnCloud({
+            environment: AbapCloudEnvironment.EmbeddedSteampunk,
+            url: backendSystem.url
+        });
+    }
     const providerConfig: AxiosRequestConfig = {
         baseURL: backendSystem.url,
         params: { 'sap-client': backendSystem.client }
