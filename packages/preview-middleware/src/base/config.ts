@@ -720,7 +720,7 @@ export function qualifiesForNewSandbox(ui5Version: Ui5Version): boolean {
     return (
         ui5Version.major > 1 ||
         ui5Version.label?.includes('legacy-free') === true ||
-        (ui5Version.major === 1 && ui5Version.minor >= 150)
+        (ui5Version.major === 1 && ui5Version.minor >= 151)
     );
 }
 

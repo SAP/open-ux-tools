@@ -2526,7 +2526,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
             json: () =>
                 Promise.resolve({
                     name: 'SAPUI5 Distribution',
-                    libraries: [{ name: 'sap.ui.core', version: '1.150.0' }]
+                    libraries: [{ name: 'sap.ui.core', version: '1.151.0' }]
                 }),
             text: jest.fn(),
             ok: true
