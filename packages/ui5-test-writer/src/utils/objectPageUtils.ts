@@ -17,6 +17,7 @@ import {
     type AggregationItem,
     type BodySectionItem,
     type FieldItem,
+    type HeaderItem,
     type HeaderSectionItem,
     type SectionItem,
     getAggregations,
@@ -70,6 +71,8 @@ export async function getObjectPageFeatures(
             listReportPageKey,
             parentLRTableIdentifier
         );
+        // extract header title binding path (for iCheckTitlePath)
+        pageFeatureData.headerTitle = getHeaderTitlePath(objectPage);
         // extract header sections (facets)
         pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
         // extract body sections (includes section-level actions and standard create/delete buttons)
@@ -156,6 +159,25 @@ function getObjectPageNavigationParents(
         parentLRTableIdentifier,
         parentOPs
     };
+}
+
+/**
+ * Returns the OData property path the Object Page header title is bound to, for use with
+ * `iCheckTitlePath`. Returns undefined for static titles that expose no binding path.
+ *
+ * @param objectPage - object page from the application model
+ * @returns the title binding path, or undefined
+ */
+function getHeaderTitlePath(objectPage: PageWithModelV4): string | undefined {
+    if (!objectPage.model) {
+        return undefined;
+    }
+    const header = getAggregations(objectPage.model.root)['header'] as HeaderItem | undefined;
+    const titlePath = header?.properties?.title?.value;
+    if (!titlePath) {
+        return undefined;
+    }
+    return titlePath;
 }
 
 /**
@@ -334,23 +356,89 @@ function extractBodySubSectionsData(
     convertedMetadata?: ConvertedMetadata,
     entitySetName?: string
 ): BodySubSectionFeatureData[] {
-    const subSections: BodySubSectionFeatureData[] = [];
-    const subSectionsAggregation = getAggregations(section)['subsections'];
-    const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
-    Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
-        const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
-        const isTable = isTableSection(subSection);
-        subSections.push({
-            id: subSectionId,
-            navigationProperty: getNavigationPropertyFromKey(subSectionKey),
-            isTable,
-            custom: !!subSection.custom,
-            order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
-            tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
-        });
-    });
-    return subSections;
+    const subSectionItems = getAggregations(getAggregations(section)['subsections']) as Record<string, BodySectionItem>;
+    const childEntries = Object.entries(subSectionItems);
+    // all-FieldGroup CollectionFacet is collapsed into one sub-section with inherited id from parent
+    // Table or nested CollectionFacet sub-sections are kept as distinct sub-sections with their own ids
+    return isFormOnlyCollectionFacet(childEntries)
+        ? [buildMergedFormSubSection(childEntries, parentSectionId, section.order, convertedMetadata, entitySetName)]
+        : childEntries.map(([key, child]) =>
+              buildSubSection(key, child, parentSectionId, convertedMetadata, entitySetName)
+          );
+}
+
+/**
+ * Checks if a body section is a CollectionFacet that contains only form facets (FieldGroups) and no tables or custom facets.
+ *
+ * @param childEntries - the section's sub-section aggregation entries
+ * @returns true if every child is a plain form facet
+ */
+function isFormOnlyCollectionFacet(childEntries: [string, BodySectionItem][]): boolean {
+    return (
+        childEntries.length > 0 &&
+        childEntries.every(([, child]) => !child.custom && !isTableSection(child) && isFormSection(child))
+    );
+}
+
+/**
+ * Merges the fields of all FieldGroups of a form-only CollectionFacet into one sub-section keyed by the
+ * section id.
+ *
+ * @param childEntries - the section's sub-section aggregation entries (all form facets)
+ * @param parentSectionId - identifier of the parent section, used as the sub-section id
+ * @param sectionOrder - order of the parent section, adopted by the collapsed sub-section
+ * @param convertedMetadata - optional converted OData metadata
+ * @param entitySetName - the entity set the section is bound to
+ * @returns the merged sub-section feature data
+ */
+function buildMergedFormSubSection(
+    childEntries: [string, BodySectionItem][],
+    parentSectionId: string,
+    sectionOrder?: number,
+    convertedMetadata?: ConvertedMetadata,
+    entitySetName?: string
+): BodySubSectionFeatureData {
+    const fields = dedupeFormFields(
+        childEntries.flatMap(([, child]) => extractFormFields(child, convertedMetadata, entitySetName))
+    );
+    return {
+        id: parentSectionId,
+        navigationProperty: undefined,
+        isTable: false,
+        custom: false,
+        order: sectionOrder ?? -1,
+        fields,
+        tableColumns: {}
+    };
+}
+
+/**
+ * Builds feature data for a single body sub-section (form or table).
+ *
+ * @param subSectionKey - the sub-section aggregation key
+ * @param subSection - the sub-section entry from the application model
+ * @param parentSectionId - identifier of the parent section (fallback key prefix)
+ * @param convertedMetadata - optional converted OData metadata
+ * @param entitySetName - the entity set the section is bound to
+ * @returns the sub-section feature data
+ */
+function buildSubSection(
+    subSectionKey: string,
+    subSection: BodySectionItem,
+    parentSectionId: string,
+    convertedMetadata?: ConvertedMetadata,
+    entitySetName?: string
+): BodySubSectionFeatureData {
+    const isTable = isTableSection(subSection);
+    return {
+        id: getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`,
+        navigationProperty: getNavigationPropertyFromKey(subSectionKey),
+        isTable,
+        custom: !!subSection.custom,
+        order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
+        fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
+        tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
+    };
 }
 
 /**
@@ -401,6 +489,24 @@ function extractFormFields(
         }
     });
     return fields;
+}
+
+/**
+ * Returns a new field list with duplicates removed, keeping the first occurrence of each identifier.
+ *
+ * @param fields - the fields to dedupe
+ * @returns a new deduped field list
+ */
+function dedupeFormFields(fields: SectionFormField[]): SectionFormField[] {
+    return fields.filter(
+        (field, index) =>
+            fields.findIndex(
+                (candidate) =>
+                    candidate.property === field.property &&
+                    candidate.connectedFields === field.connectedFields &&
+                    candidate.fieldGroup === field.fieldGroup
+            ) === index
+    );
 }
 
 /**
