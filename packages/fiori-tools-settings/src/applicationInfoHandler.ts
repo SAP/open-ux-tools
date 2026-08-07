@@ -60,7 +60,9 @@ export function initAppInfoSettings(fs?: Editor): void {
  */
 export function addGeneratedFiles(filePath: string, fs?: Editor): void {
     fs = getFsInstance(fs);
-    const appInfoContents: AppInfoSettings = (fs.readJSON(appInfoFilePath) as unknown as AppInfoSettings) || { latestGeneratedFiles: [] };
+    const appInfoContents: AppInfoSettings = (fs.readJSON(appInfoFilePath) as unknown as AppInfoSettings) || {
+        latestGeneratedFiles: []
+    };
     if (appInfoContents.latestGeneratedFiles) {
         appInfoContents.latestGeneratedFiles.push(filePath);
     } else {
@@ -96,7 +98,7 @@ export const writeApplicationInfoSettings = addGeneratedFiles;
  * The function will be called with the file path from the `latestGeneratedFiles` array.
  * If not provided, the command execution step will be skipped.
  * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
- * @param {boolean} [autoOpen=true] - Whether to auto-open the Application Info Page.
+ * @param {boolean} [autoOpen] - Whether to auto-open the Application Info Page.
  * Defaults to true for backward compatibility (existing behavior before this parameter was added).
  * If false, the command execution will be skipped even if a file path is available.
  * @example
