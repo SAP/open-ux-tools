@@ -818,6 +818,10 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iClickLink({ property: "carrier/Contact" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
             expect(bookingObjPageJourneyContent).toContain(
                 'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
@@ -830,6 +834,9 @@ export type Then = Opa5 & BaseArrangements & {
             );
             expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'iGoToSection({ section: "BookingDetails", subSection: "BookingData" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(bookingObjPageJourneyContent).toContain('opaTest("Check the FlightData section of the Object Page"');
@@ -850,9 +857,31 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
             );
+            // OP-7: body-section form Contact Card
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "BookingData" }).iClickLink({ property: "_Customer/Contact" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
+            // Contact-card column included in iCheckColumns map keyed by aggregation key (matches MDC propertyKey)
+            expect(bookingObjPageJourneyContent).toContain(
+                '"DataFieldForAnnotation::_Carrier::Contact":{"header":"Carrier"}'
+            );
+            // OP table Contact Card
+            expect(bookingObjPageJourneyContent).toContain(
+                'onTable({ property: "_Supplements" }).iClickLink(0, "DataFieldForAnnotation::_Carrier::Contact")'
+            );
+
+            // LR-10: list-report table Contact Card
+            const travelListJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            expect(travelListJourneyContent).toContain(
+                'onTable().iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+            );
+            expect(travelListJourneyContent).toContain(
+                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
         });
 
         it('generates navigation cascade for v4 application with deeply-nested sub object page', async () => {
@@ -1311,6 +1340,7 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('opaTest("Check the BookingDetails section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails", subSection: "BookingData" })');
             expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
             expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
             expect(content).toContain('opaTest("Check the FlightData section of the Object Page"');
@@ -1319,6 +1349,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('opaTest("Check the PriceData section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "PriceData" })');
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
+
+            // ─── Header Contact Card (OP-8) ───
+            expect(content).toContain(
+                'onHeader().iClickLink({ property: "carrier/Contact" } as unknown as FieldIdentifier)'
+            );
+            expect(content).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── Section actions (table action with dynamic enabled) ───
             expect(content).toContain(
@@ -1335,15 +1371,80 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain(
                 'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "FlightDate" })'
             );
+            // OP-7: body-section form Contact Card
+            expect(content).toContain(
+                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iClickLink({ property: "_Customer/Contact" })'
+            );
 
             // ─── Sub-section table columns ───
             expect(content).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(content).toContain('"ConnectionId":{"header":"Connection"}');
             expect(content).toContain('"AirportCode":{"header":"Airport"}');
+            // Contact-card column included in iCheckColumns map keyed by aggregation key (matches MDC propertyKey)
+            expect(content).toContain('"DataFieldForAnnotation::_Carrier::Contact":{"header":"Carrier"}');
+            // OP table Contact Card
+            expect(content).toContain(
+                'onTable({ property: "_Supplements" }).iClickLink(0, "DataFieldForAnnotation::_Carrier::Contact")'
+            );
+
+            // ─── LR-10: list-report table Contact Card ───
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
+            expect(lrJourneyPath).toBeDefined();
+            const lrContent = dumped[lrJourneyPath!].contents as string;
+            expect(lrContent).toContain('onTable("").iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")');
+            expect(lrContent).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── No JS leakage ───
             expect(content).not.toContain('sap.ui.define');
             expect(content).not.toContain("'use strict'");
+        });
+
+        it('marks When as unused (_When) in the header-facets test when no header field is a Contact card', async () => {
+            // OP with a header facet (microchart) but no @Communication.Contact header field: When would be unused.
+            const appModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            appModel.applicationModel.pages.BookingObjectPage.navigation = {
+                _BookSupplement: { route: 'BookingSupplementObjectPage' }
+            };
+            appModel.applicationModel.pages.BookingSupplementObjectPage = {
+                pageType: 'ObjectPage',
+                entitySet: 'BookingSupplement',
+                contextPath: '/BookingSupplement',
+                template: 'sap.fe.templates.ObjectPage',
+                model: {
+                    root: {
+                        aggregations: {
+                            header: {
+                                aggregations: {
+                                    sections: {
+                                        aggregations: {
+                                            priceChart: {
+                                                title: 'Supplement Price',
+                                                schema: { dataType: 'ChartDefinition' }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, subOPMetadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const journeyPath = Object.keys(dumped).find((p) =>
+                p.includes('BookingSupplementObjectPageJourney.gen.ts')
+            );
+            expect(journeyPath).toBeDefined();
+            const content = dumped[journeyPath!].contents as string;
+            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+            expect(content).toContain(
+                'opaTest("Check header facets of the Object Page", function (_Given: Given, _When: When, Then: Then)'
+            );
         });
 
         it('does not modify tsconfig.json', async () => {
