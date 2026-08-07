@@ -24,6 +24,10 @@ export {
     INCORRECT_EXPRESSION_TYPE,
     CORRECT_EXPRESSION_TYPE,
     EXPRESSION_TYPES,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_PATH_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_PROPERTY_SEGMENT_TYPE,
     nodeRange,
     isContainer
 } from './annotation-ast-nodes.js';
@@ -56,7 +60,12 @@ export type {
     AnnotationNode,
     Assignment,
     Separator,
-    NarrowAnnotationNode
+    NarrowAnnotationNode,
+    FlattenedExpression,
+    FlattenedPath,
+    FlattenedPathSegment,
+    FlattenedAnnotationSegment,
+    FlattenedPropertySegment
 } from './annotation-ast-nodes.js';
 
 export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './range.js';

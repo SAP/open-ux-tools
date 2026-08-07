@@ -1,17 +1,10 @@
 import type { Annotation, AnnotationNode, Identifier } from '@sap-ux/cds-annotation-parser';
-import {
-    copyRange,
-    ANNOTATION_TYPE,
-    nodeRange,
-    EMPTY_VALUE_TYPE,
-    ReservedProperties
-} from '@sap-ux/cds-annotation-parser';
+import { ANNOTATION_TYPE, nodeRange, EMPTY_VALUE_TYPE, ReservedProperties } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
-import { convertFlattenedPath } from '../flattened.js';
 
-import type { ConvertResult, NodeHandler, Subtree } from '../handler.js';
+import type { ConvertResult, NodeHandler } from '../handler.js';
 import { getTerm } from '../type-resolver.js';
 import type { VisitorState } from '../visitor-state.js';
 import { createQualifierAttribute, createTermAttribute } from '../creators.js';
@@ -42,19 +35,21 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
     });
 
     const isEmbeddedAnnotation = state.elementStack.length > 0;
-    const termSegments = getTermSegments(annotation, isEmbeddedAnnotation);
 
-    const termName =
-        state.context.groupName && !isEmbeddedAnnotation
-            ? [state.context.groupName, ...termSegments.slice(0, 1)].join('.')
-            : termSegments.slice(0, 2).join('.');
+    const parsedTermName = parseTermName(state.context.groupName, annotation, isEmbeddedAnnotation);
 
     element.attributes[Edm.Term] = createTermAttribute(
-        termName,
-        getTermNameRange(state, annotation, isEmbeddedAnnotation)
+        parsedTermName.qualifiedName,
+        getTermNameRange(state, annotation, isEmbeddedAnnotation, parsedTermName)
     );
+    if (parsedTermName.qualifier) {
+        element.attributes[Edm.Qualifier] = createQualifierAttribute(
+            parsedTermName.qualifier,
+            parsedTermName.qualifierRange
+        );
+    }
 
-    const [namespaceOrAlias, termSimpleIdentifier] = termName.split('.');
+    const [namespaceOrAlias, termSimpleIdentifier] = parsedTermName.qualifiedName.split('.');
     const term = getTerm(state.vocabularyService, namespaceOrAlias, termSimpleIdentifier);
     if (isEmbeddedAnnotation) {
         state.pushContext({
@@ -71,7 +66,8 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
         });
     }
 
-    if (annotation.qualifier) {
+    if (!parsedTermName.qualifier && annotation.qualifier) {
+        // TODO: check all variations
         element.attributes[Edm.Qualifier] = createQualifierAttribute(
             annotation.qualifier.value,
             nodeRange(annotation.qualifier, false)
@@ -89,26 +85,78 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
                 : Position.create(0, 0);
         }
     }
-    const flattenedSubtree = handleFlattenedStructure(state, annotation, element);
+    // const flattenedSubtree = handleFlattenedStructure(state, annotation, element);
 
-    if (flattenedSubtree) {
-        return flattenedSubtree;
-    }
+    // if (flattenedSubtree) {
+    //     return flattenedSubtree;
+    // }
 
     return element;
 }
 
+interface ParsedTermName {
+    qualifiedName: string;
+    termNameRange?: Range;
+    qualifier?: string;
+    qualifierRange?: Range;
+}
+
 /**
- * Get the term segments from an annotation.
+ * Parses term name.
  *
- * @param annotation - The annotation object.
- * @param isEmbeddedAnnotation - A flag indicating whether the annotation is embedded.
- * @returns An array of string segments extracted from the annotation's term property.
+ * @param groupName - annotation group name (vocabulary)
+ * @param annotation - annotation object
+ * @param isEmbeddedAnnotation - flag that is set to true for embedded annotations
+ * @returns parsed annotation term
  */
-function getTermSegments(annotation: Annotation, isEmbeddedAnnotation: boolean): string[] {
-    return annotation.term.segments.map((identifier, index) =>
-        index === 0 && isEmbeddedAnnotation ? identifier.value.slice(1) : identifier.value
-    );
+function parseTermName(
+    groupName: string | undefined,
+    annotation: Annotation,
+    isEmbeddedAnnotation: boolean
+): ParsedTermName {
+    const termSegments = annotation.term.segments;
+    if (groupName && !isEmbeddedAnnotation) {
+        return parseTerm(groupName, termSegments[0]);
+    } else {
+        if (termSegments.length < 2) {
+            // if term segments are less than 2, we can't parse it as a term
+            return parseTerm('', termSegments[0]);
+        }
+        return parseTerm(termSegments[0].value, termSegments[1], termSegments[0].range?.start);
+    }
+}
+
+function parseTerm(namespace: string | undefined, identifier: Identifier, namespaceStart?: Position): ParsedTermName {
+    const [term, qualifier] = identifier.value.split('#');
+    const segmentRange = nodeRange(identifier, false);
+    const termNameRange =
+        namespaceStart && segmentRange ? Range.create(namespaceStart, segmentRange.end) : segmentRange;
+    if (namespace?.startsWith('@')) {
+        namespace = namespace.substring(1);
+        if (termNameRange) {
+            // termNameRange.start.character += 1; // remove @ from the start of the name
+        }
+    }
+    const nameSegments = [];
+    if (namespace) {
+        nameSegments.push(namespace);
+    }
+    nameSegments.push(term);
+    const qualifiedName = nameSegments.join('.');
+    const parsedTermName: ParsedTermName = {
+        qualifiedName,
+        termNameRange
+    };
+    if (qualifier) {
+        parsedTermName.qualifier = qualifier;
+        const qualifierRange = nodeRange(identifier, false);
+        if (qualifierRange) {
+            qualifierRange.start.character += term.length + 1; // +1 for the #
+            parsedTermName.qualifierRange = qualifierRange;
+        }
+    }
+
+    return parsedTermName;
 }
 
 /**
@@ -117,9 +165,15 @@ function getTermSegments(annotation: Annotation, isEmbeddedAnnotation: boolean):
  * @param state - The visitor state.
  * @param node - The annotation node containing the term.
  * @param isEmbeddedAnnotation - Indicates whether the annotation is embedded within another element.
+ * @param parsedTermName - The parsed term name containing the qualified name and segments.
  * @returns Returns the range for the term name, or undefined if not applicable.
  */
-function getTermNameRange(state: VisitorState, node: Annotation, isEmbeddedAnnotation: boolean): Range | undefined {
+function getTermNameRange(
+    state: VisitorState,
+    node: Annotation,
+    isEmbeddedAnnotation: boolean,
+    parsedTermName: ParsedTermName
+): Range | undefined {
     const segments =
         state.context.groupName && !isEmbeddedAnnotation
             ? node.term.segments.slice(0, 1)
@@ -129,67 +183,5 @@ function getTermNameRange(state: VisitorState, node: Annotation, isEmbeddedAnnot
         // use full node if it is a complete match and no flattened syntax is used
         return nodeRange(node.term, false);
     }
-    const start = segments[0];
-    const end = segments.slice(-1)[0];
-    if (!start || !end) {
-        return undefined;
-    }
-    const startPosition = nodeRange(start, false)?.start;
-    const endPosition = nodeRange(end, false)?.end;
-    if (!startPosition || !endPosition) {
-        return undefined;
-    }
-    return Range.create(startPosition, endPosition);
-}
-
-/**
- * Gets the flattened segments from the term of the given annotation, considering the context and nesting.
- *
- * @param state - The visitor state.
- * @param annotation - The annotation containing the term with segments.
- * @returns Returns the flattened segments of the term.
- */
-function getFlattenedSegments(state: VisitorState, annotation: Annotation): Identifier[] {
-    const isEmbeddedAnnotation = state.elementStack.length > 0;
-    const trailingTermSegmentStart = state.context.groupName && !isEmbeddedAnnotation ? 1 : 2;
-    return annotation.term.segments.slice(trailingTermSegmentStart);
-}
-
-/**
- * Handles a flattened structure in the CDS syntax and builds nested structures.
- *
- * @param state - The visitor state.
- * @param annotation - The annotation containing the flattened structure.
- * @param element - The element to which the flattened structure will be added.
- * @returns Returns a Subtree representing the nested structures, or undefined if not applicable.
- */
-function handleFlattenedStructure(state: VisitorState, annotation: Annotation, element: Element): Subtree | undefined {
-    // Build nested structures for CDS flattened syntax
-    // e.g UI.Chart.AxisScaling.ScaleBehavior : #AutoScale, @Common.Text.@UI.TextArrangement : #TextFirst
-    const flattenedSegments = getFlattenedSegments(state, annotation);
-    if (flattenedSegments.length) {
-        const subtree = convertFlattenedPath(state, flattenedSegments, annotation.value);
-        if (subtree) {
-            const range = subtree.root.range ? copyRange(subtree.root.range) : undefined;
-            if (subtree.root.name === Edm.PropertyValue) {
-                const record = createElementNode({
-                    name: Edm.Record,
-                    range,
-                    contentRange: range
-                });
-                record.content.push(subtree.root);
-                element.content.push(record);
-            } else {
-                element.content.push(subtree.root);
-            }
-
-            element.contentRange = range ? copyRange(range) : undefined;
-
-            return {
-                root: element,
-                leaf: subtree.leaf
-            };
-        }
-    }
-    return undefined;
+    return parsedTermName.termNameRange;
 }

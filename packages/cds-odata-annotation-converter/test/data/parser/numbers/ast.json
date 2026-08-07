@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(26,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,12)..(1,13)]"
+                    "range": "[(1,12)..(1,13)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "collection",
@@ -469,8 +469,8 @@
                 "range": "[(27,4)..(30,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(27,16)..(27,17)]"
+                    "range": "[(27,16)..(27,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -576,8 +576,8 @@
                 "range": "[(31,4)..(34,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(31,16)..(31,17)]"
+                    "range": "[(31,16)..(31,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -683,8 +683,8 @@
                 "range": "[(35,4)..(38,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(35,16)..(35,17)]"
+                    "range": "[(35,16)..(35,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",

@@ -38,6 +38,7 @@ export {
     copyPosition,
     arePositionsEqual,
     createRange,
-    createRangeWithPosition
+    createRangeWithPosition,
+    compareByRange
 } from './range.js';
 export { printOptions } from './text-formatting.js';

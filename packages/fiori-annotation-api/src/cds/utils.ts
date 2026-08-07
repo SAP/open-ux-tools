@@ -80,7 +80,7 @@ function findAnnotation(node: AstNode, parent?: AstNode, greatGrandParent?: AstN
         const assignment = node.assignments[0];
         if (assignment) {
             const annotation = assignment?.type === 'annotation-group' ? assignment.items.items[0] : assignment;
-            return [annotation, node];
+            return [annotation as Annotation, node];
         }
     } else if (node?.type === ANNOTATION_TYPE) {
         if (parent?.type === TARGET_TYPE) {

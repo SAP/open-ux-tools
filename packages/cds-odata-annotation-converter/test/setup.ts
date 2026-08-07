@@ -38,7 +38,8 @@ export type TestCaseName =
     | 'array-spread-operator'
     | 'nested-record-type'
     | 'expression'
-    | 'flattened-nested-record';
+    | 'flattened-nested-record'
+    | 'flatten-embedded-annotation-with-qualifiers';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
