@@ -250,6 +250,7 @@ exports[`config generatePreviewFiles sandbox 2 selection minUI5Version 1.150.0 g
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon\\"
         data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.app\\":\\"..\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-open-ux-preview-base-url=''>
@@ -318,6 +319,7 @@ exports[`config generatePreviewFiles sandbox 2 selection minUI5Version 2.0.0 gen
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon\\"
         data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.app\\":\\"..\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
