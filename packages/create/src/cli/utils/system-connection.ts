@@ -48,7 +48,10 @@ async function attemptRootEndpoint(service: any): Promise<{ success: boolean }> 
  * @param authenticationType - Authentication type being used
  * @returns Error result with message
  */
-function categorizeConnectionError(error: any, authenticationType: string): { success: false; error: string } {
+function categorizeConnectionError(
+    error: any,
+    authenticationType: string
+): { success: boolean; error?: string } {
     // 401 means system is reachable but auth failed
     if (error.response?.status === 401) {
         // For basic auth, 401 is a failure
@@ -56,7 +59,7 @@ function categorizeConnectionError(error: any, authenticationType: string): { su
             return { success: false, error: text('systemConnection.errors.authFailed') };
         }
         // For other auth types (reentranceTicket, oauth2), 401 means system is reachable (treat as success)
-        return { success: true } as any;
+        return { success: true };
     }
 
     // Network errors indicate unreachable system
