@@ -2,8 +2,8 @@
     "systemLookup": {
         "multipleSystemsFound": "Multiple systems found with this URL:",
         "selectSystemPrompt": "Which system do you want to use?",
-        "clientInfo": "(client: {{client}})",
-        "noClient": "(no client)"
+        "clientInfo": "(Client: {{client}})",
+        "noClient": "(No Client)"
     },
     "systemPrompts": {
         "validation": {

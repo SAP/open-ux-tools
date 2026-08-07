@@ -14,8 +14,8 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
         const translations: Record<string, string> = {
             'systemLookup.multipleSystemsFound': 'Multiple systems found with this URL:',
             'systemLookup.selectSystemPrompt': 'Which system do you want to use?',
-            'systemLookup.clientInfo': '(client: {{client}})',
-            'systemLookup.noClient': '(no client)'
+            'systemLookup.clientInfo': '(Client: {{client}})',
+            'systemLookup.noClient': '(No Client)'
         };
         let result = translations[key] || key;
         if (options) {
@@ -192,8 +192,8 @@ describe('system-lookup', () => {
             expect(mockPrompts).toHaveBeenCalledWith(
                 expect.objectContaining({
                     choices: expect.arrayContaining([
-                        expect.objectContaining({ title: expect.stringContaining('(no client)') }),
-                        expect.objectContaining({ title: expect.stringContaining('(client: 100)') })
+                        expect.objectContaining({ title: expect.stringContaining('(No Client)') }),
+                        expect.objectContaining({ title: expect.stringContaining('(Client: 100)') })
                     ])
                 })
             );

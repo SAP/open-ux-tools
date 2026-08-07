@@ -8,8 +8,7 @@ describe('KeyStoreManager', () => {
     const log: Logger = {
         info: jest.fn(),
         warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn()
+        error: jest.fn()
     } as unknown as Logger;
 
     let keyStoreManager: KeyStoreManager;
@@ -142,7 +141,7 @@ describe('KeyStoreManager', () => {
                 account1: { value: 'value1' },
                 account2: { value: 'value2' }
             });
-            expect(log.debug).toHaveBeenCalledWith('All credentials retrieved. Service: [testService]');
+            expect(log.info).toHaveBeenCalledWith('All credentials retrieved. Service: [testService], Count: 2');
         });
 
         it('should handle deserialization failures for individual credentials', async () => {
