@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 1.0.30
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Clear password field on system change to prevent stale credentials resubmission. [[27840a8](https://github.com/SAP/open-ux-tools/commit/27840a818dc9c2a06c03a0bc0a402bf4af1da960)]
+
 ## 1.0.29
 
 ### Patch Changes
