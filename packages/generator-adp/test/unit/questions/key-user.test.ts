@@ -385,6 +385,16 @@ describe('KeyUserImportPrompter', () => {
                 expect(prompt.when({})).toBe(false);
             });
         });
+
+        it('should have applyDefaultWhenDirty set to true to prevent stale credentials being resubmitted on system change', () => {
+            const prompt = (prompter as any).getPasswordPrompt();
+            expect(prompt.guiOptions?.applyDefaultWhenDirty).toBe(true);
+        });
+
+        it('should have an empty string default to ensure field is cleared when system changes', () => {
+            const prompt = (prompter as any).getPasswordPrompt();
+            expect(prompt.default).toBe('');
+        });
     });
 
     describe('Adaptation Prompt', () => {

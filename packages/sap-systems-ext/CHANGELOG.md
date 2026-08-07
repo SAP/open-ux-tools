@@ -1,5 +1,13 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
 ## 1.0.16
 
 ### Patch Changes

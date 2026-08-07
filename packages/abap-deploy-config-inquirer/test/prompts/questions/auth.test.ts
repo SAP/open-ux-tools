@@ -40,7 +40,9 @@ describe('getAuthPrompts', () => {
                 "when": [Function],
               },
               Object {
+                "default": "",
                 "guiOptions": Object {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                   "type": "login",
                 },
@@ -53,6 +55,13 @@ describe('getAuthPrompts', () => {
               },
             ]
         `);
+    });
+
+    test('password prompt should have applyDefaultWhenDirty and empty default to prevent stale credentials on system change', () => {
+        const authPrompts = getAuthPrompts({});
+        const passwordPrompt = authPrompts.find((prompt) => prompt.name === promptNames.password);
+        expect(passwordPrompt?.guiOptions?.applyDefaultWhenDirty).toBe(true);
+        expect((passwordPrompt as any)?.default).toBe('');
     });
 
     test('should return expected values from username prompt methods', async () => {
