@@ -44,7 +44,8 @@ jest.unstable_mockModule('../../../src/base/helper', () => ({
 }));
 
 jest.unstable_mockModule('../../../src/base/project-builder', () => ({
-    runBuild: mockRunBuild
+    runBuild: mockRunBuild,
+    getPreviewManifest: jest.fn()
 }));
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({

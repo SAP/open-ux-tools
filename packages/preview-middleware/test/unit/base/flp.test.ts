@@ -2058,6 +2058,7 @@ describe('initAdp', () => {
                 descriptor: { manifest: {}, name: 'descriptorName', url, asyncHints: { requests: [] } },
                 resources: [],
                 proxy: jest.fn(),
+                cfProxy: jest.fn(),
                 sync: syncSpy,
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),

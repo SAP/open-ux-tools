@@ -19,6 +19,7 @@ import RoutesHandler from './routes-handler.js';
 import OvpRoutesHandler from './ovp-routes-handler.js';
 import type {
     AdpPreviewConfig,
+    AdpPreviewConfigWithTarget,
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
@@ -38,6 +39,7 @@ import {
 } from './change-handler.js';
 import { addCustomFragment } from './descriptor-change-handler.js';
 import { getExistingAdpProjectType } from '../base/helper.js';
+import { getPreviewManifest } from '../base/project-builder.js';
 import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -79,6 +81,10 @@ export class AdpPreview {
     private lrep: LayeredRepositoryService | undefined;
     private descriptorVariantId: string | undefined;
     private projectTypeValue?: AdaptationProjectType;
+    /**
+     * Flag to indicate if the preview is running in CF ADP build mode, where the manifest is read from the build output instead of being fetched from the backend.
+     */
+    private readonly isCfBuildMode: boolean;
 
     /**
      * @returns merged manifest.
@@ -153,7 +159,9 @@ export class AdpPreview {
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.isCfBuildMode = 'cfBuildPath' in config;
+    }
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -162,14 +170,15 @@ export class AdpPreview {
      * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        if ('cfBuildPath' in this.config) {
+        if (this.isCfBuildMode) {
             return this.initCfBuildMode(descriptorVariant);
         }
 
+        const config = this.config as AdpPreviewConfigWithTarget;
         this.descriptorVariantId = descriptorVariant.id;
         this.provider = await createAbapServiceProvider(
-            this.config.target,
-            { ignoreCertErrors: this.config.ignoreCertErrors },
+            config.target,
+            { ignoreCertErrors: config.ignoreCertErrors },
             true,
             this.logger
         );
@@ -195,6 +204,17 @@ export class AdpPreview {
         this.descriptorVariantId = descriptorVariant.id;
         this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
+
+        const manifest = (await getPreviewManifest(
+            this.util.getProject().getRootPath()
+        )) as MergedAppDescriptor['manifest'];
+        this.mergedDescriptor = {
+            name: descriptorVariant.id,
+            url: '/',
+            manifest,
+            asyncHints: { libs: [], components: [] }
+        };
+
         return descriptorVariant.layer;
     }
 
@@ -203,10 +223,13 @@ export class AdpPreview {
      * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
-        if ('cfBuildPath' in this.config) {
+        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }
-        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
+        if (this.isCfBuildMode) {
+            this.mergedDescriptor.manifest = (await getPreviewManifest(
+                this.util.getProject().getRootPath()
+            )) as MergedAppDescriptor['manifest'];
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {
@@ -254,6 +277,23 @@ export class AdpPreview {
             } else {
                 next();
             }
+        }
+    }
+
+    /**
+     * CF build mode proxy that intercepts manifest.json requests and delegates everything else to the next middleware.
+     *
+     * @param req incoming request
+     * @param res outgoing response object
+     * @param next next middleware that is to be called if the request cannot be handled
+     */
+    async cfProxy(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (req.path === '/manifest.json') {
+            await this.sync();
+            res.status(200);
+            res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
+        } else {
+            next();
         }
     }
 
