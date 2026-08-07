@@ -7,6 +7,7 @@ import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
+import { findSystemByUrl } from '../utils/system-lookup.js';
 
 /**
  * Add the "update system" subcommand to a passed command.
@@ -132,7 +133,26 @@ async function determinePatch(
     }
 
     const fieldsToUpdate = await promptForUpdateFields(existing);
-    return await promptForFieldUpdates(fieldsToUpdate, existing);
+    let updateValues: Record<string, unknown>;
+    try {
+        updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
+    } catch (err) {
+        // User cancelled (e.g. declined clear-credentials confirmation)
+        if ((err as Error).message === 'Clear credentials cancelled') {
+            logger.info('Operation cancelled.');
+            return null;
+        }
+        throw err;
+    }
+
+    // Check if clearCredentials was selected in interactive mode
+    if (updateValues.clearCredentials) {
+        updateValues.username = '';
+        updateValues.password = '';
+        delete updateValues.clearCredentials;
+    }
+
+    return updateValues;
 }
 
 /**
@@ -150,12 +170,26 @@ async function verifyCredentialsUpdate(
     existing: BackendSystem,
     params: { clearCredentials: boolean; skipCheck?: boolean }
 ): Promise<boolean> {
-    const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
+    // Check if credentials are being updated (set to new values or cleared)
+    const hasUsernameChange = patch.username !== undefined;
+    const hasPasswordChange = patch.password !== undefined;
+    const updatingCredentials = hasUsernameChange || hasPasswordChange;
 
-    if (!updatingCredentials || params.clearCredentials) {
+    // Skip verification if:
+    // 1. No credential changes at all, OR
+    // 2. Explicitly clearing credentials (--clear-credentials flag), OR
+    // 3. Setting both to empty strings (clearing via interactive prompts)
+    if (!updatingCredentials) {
         return true;
     }
 
+    const clearingCredentials = params.clearCredentials || (patch.username === '' && patch.password === '');
+
+    if (clearingCredentials) {
+        return true;
+    }
+
+    // Otherwise, verify the new credentials work
     return await checkConnectionOrPrompt(
         {
             url: existing.url,
@@ -205,10 +239,12 @@ async function updateSystem(params: {
         });
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
-        const existing = await service.read(key);
+
+        // Use smart lookup to handle client mismatch scenarios
+        const existing = await findSystemByUrl(identifier.url, identifier.client, service);
 
         if (!existing) {
+            const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
             logger.error(`System not found: ${key.getId()}`);
             return;
         }
@@ -216,6 +252,7 @@ async function updateSystem(params: {
         const patchRecord = await determinePatch(params, existing, logger);
 
         if (!patchRecord) {
+            logger.info('System was not updated.');
             return;
         }
 
@@ -225,6 +262,7 @@ async function updateSystem(params: {
             logger.error(
                 'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
             );
+            logger.info('System was not updated.');
             return;
         }
 
@@ -235,8 +273,9 @@ async function updateSystem(params: {
             return;
         }
 
+        const key = new BackendSystemKey({ url: existing.url, client: existing.client });
         await service.partialUpdate(key, patch);
-        logger.info(`System '${key.getId()}' updated.`);
+        logger.info(`System '${existing.name}' updated.`);
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);

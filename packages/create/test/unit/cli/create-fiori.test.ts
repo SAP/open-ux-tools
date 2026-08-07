@@ -24,6 +24,12 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
+// Mock i18n to prevent initialization issues
+jest.unstable_mockModule('../../../src/i18n.js', () => ({
+    text: jest.fn((key: string) => key),
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
@@ -169,7 +175,8 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
 }));
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
-    AdaptationProjectType: { ON_PREMISE: 'ON_PREMISE', CLOUD: 'CLOUD' }
+    AdaptationProjectType: { ON_PREMISE: 'ON_PREMISE', CLOUD: 'CLOUD' },
+    createForAbap: jest.fn()
 }));
 
 jest.unstable_mockModule('prompts', () => ({
@@ -190,7 +197,7 @@ describe('Test handleCreateFioriCommand()', () => {
         });
     });
 
-    test('Execute command create-fiori --version', () => {
+    test('Execute command create-fiori --version', async () => {
         // Mock setup
         process.stdout.write = jest.fn() as any;
         jest.spyOn(process, 'exit').mockImplementation(() => {
@@ -202,13 +209,13 @@ describe('Test handleCreateFioriCommand()', () => {
         ).version;
 
         // Test execution
-        handleCreateFioriCommand([process.argv[0], 'create-fiori', '--version']);
+        await handleCreateFioriCommand([process.argv[0], 'create-fiori', '--version']);
 
         // Result check
         expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining(version));
     });
 
-    test('Execute command create-fiori help, should show help', () => {
+    test('Execute command create-fiori help, should show help', async () => {
         // Mock setup
         const mockLogger = { error: jest.fn(), debug: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
         mockGetLogger.mockReturnValue(mockLogger);
@@ -218,14 +225,14 @@ describe('Test handleCreateFioriCommand()', () => {
         });
 
         // Test execution
-        handleCreateFioriCommand([process.argv[0], 'create-fiori', '--help']);
+        await handleCreateFioriCommand([process.argv[0], 'create-fiori', '--help']);
 
         // Result check
         expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('create-fiori [options] [command]'));
         expect(mockLogger.error).not.toHaveBeenCalled();
     });
 
-    test('Execute command create-fiori --generateJsonSpec, should show json spec', () => {
+    test('Execute command create-fiori --generateJsonSpec, should show json spec', async () => {
         // Mock setup
         const mockLogger = {
             error: jest.fn(),
@@ -236,7 +243,7 @@ describe('Test handleCreateFioriCommand()', () => {
         process.stdout.write = jest.fn() as any;
 
         // Test execution
-        handleCreateFioriCommand([process.argv[0], 'create-fiori', '--generateJsonSpec']);
+        await handleCreateFioriCommand([process.argv[0], 'create-fiori', '--generateJsonSpec']);
 
         // Result check
         expect(mockLogger.info).toHaveBeenCalledWith(expect.any(String));

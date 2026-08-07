@@ -1,0 +1,59 @@
+{
+    "systemLookup": {
+        "multipleSystemsFound": "Multiple systems found with this URL:",
+        "selectSystemPrompt": "Which system do you want to use?",
+        "clientInfo": "(Client: {{client}})",
+        "noClient": "(No Client)"
+    },
+    "systemPrompts": {
+        "validation": {
+            "fieldRequired": "This field is required and cannot be empty",
+            "invalidUrl": "Please enter a valid URL, for example https://my-system.example.com",
+            "systemNameExists": "A system with the name '{{name}}' already exists. Please choose a different name.",
+            "checkNameFailed": "Unable to check system name uniqueness. Please try again."
+        },
+        "prompts": {
+            "systemName": "System Name:",
+            "systemUrl": "System URL:",
+            "sapClient": "SAP Client (Optional: Press Enter to Skip):",
+            "systemType": "System Type:",
+            "authenticationType": "Authentication Type:",
+            "connectionType": "Connection Type:",
+            "username": "Username (Optional: Press Enter to Skip):",
+            "password": "Password (Optional: Press Enter to Skip):",
+            "reentranceTicketNote": "Note: Re-entrance ticket authentication will open a browser tab when the system is first used."
+        },
+        "updateFields": {
+            "selectPrompt": "Select Fields to Update:",
+            "nameLabel": "Name (Existing: {{name}})",
+            "usernameLabel": "Username (Existing: {{username}})",
+            "usernameNone": "(none)",
+            "passwordLabel": "Password",
+            "clearCredentialsLabel": "Clear Credentials",
+            "clearCredentialsConfirm": "Are you sure you want to clear all stored credentials?",
+            "minOneRequired": "At least one field must be selected.",
+            "newNamePrompt": "New System Name:",
+            "newUsernamePrompt": "New Username:",
+            "newPasswordPrompt": "New Password:"
+        },
+        "removeConfirmation": {
+            "prompt": "Are you sure you want to remove system '{{systemName}}'?"
+        }
+    },
+    "systemConnection": {
+        "invalidUrl": "Invalid URL: {{url}}",
+        "skippingCheck": "Skipping connection check (--skip-check flag provided)",
+        "verifying": "Verifying connection to the back-end system...",
+        "connectionSuccessful": "✓ Connection achieved",
+        "connectionFailed": "Connection check failed. Error: {{error}}",
+        "unknownError": "Unknown error",
+        "saveAnywayPrompt": "Connection check failed. Save system anyway?",
+        "errors": {
+            "authFailed": "Authentication failed. Error: HTTP 401 Unauthorized",
+            "connectionRefused": "Connection refused. System may be unreachable",
+            "connectionTimeout": "Connection timeout after {{timeout}}ms",
+            "hostNotFound": "Host not found. DNS resolution failed",
+            "connectionReset": "Connection reset by server."
+        }
+    }
+}

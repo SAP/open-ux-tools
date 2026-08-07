@@ -9,6 +9,51 @@ const mockGetAll = jest.fn();
 const mockSystemNameExists = jest.fn();
 const mockValidateClient = jest.fn();
 
+// Mock i18n to return the key as the value (for testing)
+jest.unstable_mockModule('../../../../src/i18n.js', () => ({
+    text: (key: string, options?: Record<string, unknown>) => {
+        // Map i18n keys to updated English strings per PR review
+        const translations: Record<string, string> = {
+            'systemPrompts.validation.fieldRequired': 'This field is required and cannot be empty',
+            'systemPrompts.validation.invalidUrl':
+                'Please enter a valid URL, for example https://my-system.example.com',
+            'systemPrompts.validation.systemNameExists':
+                "A system with the name '{{name}}' already exists. Please choose a different name.",
+            'systemPrompts.validation.checkNameFailed': 'Unable to check system name uniqueness. Please try again.',
+            'systemPrompts.prompts.systemName': 'System Name:',
+            'systemPrompts.prompts.systemUrl': 'System URL:',
+            'systemPrompts.prompts.sapClient': 'SAP Client (Optional: Press Enter to Skip):',
+            'systemPrompts.prompts.systemType': 'System Type:',
+            'systemPrompts.prompts.authenticationType': 'Authentication Type:',
+            'systemPrompts.prompts.connectionType': 'Connection Type:',
+            'systemPrompts.prompts.username': 'Username (Optional: Press Enter to Skip):',
+            'systemPrompts.prompts.password': 'Password (Optional: Press Enter to Skip):',
+            'systemPrompts.updateFields.selectPrompt': 'Select Fields to Update:',
+            'systemPrompts.updateFields.nameLabel': 'Name (Existing: {{name}})',
+            'systemPrompts.updateFields.usernameLabel': 'Username (Existing: {{username}})',
+            'systemPrompts.updateFields.usernameNone': '(none)',
+            'systemPrompts.updateFields.passwordLabel': 'Password',
+            'systemPrompts.updateFields.minOneRequired': 'At least one field must be selected.',
+            'systemPrompts.updateFields.newNamePrompt': 'New System Name:',
+            'systemPrompts.updateFields.newUsernamePrompt': 'New Username:',
+            'systemPrompts.updateFields.newPasswordPrompt': 'New Password:',
+            'systemPrompts.updateFields.clearCredentialsLabel': 'Clear Credentials',
+            'systemPrompts.updateFields.clearCredentialsConfirm':
+                'Are you sure you want to clear all stored credentials?',
+            'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?"
+        };
+        let result = translations[key] || key;
+        // Apply interpolation if options provided
+        if (options) {
+            Object.entries(options).forEach(([k, v]) => {
+                result = result.replace(`{{${k}}}`, String(v));
+            });
+        }
+        return result;
+    },
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
 jest.unstable_mockModule('@sap-ux/store', () => ({
     SystemType,
@@ -77,7 +122,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'text',
                         name: 'name',
-                        message: 'System name (display name):'
+                        message: 'System Name:'
                     })
                 ])
             );
@@ -122,7 +167,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'text',
                         name: 'client',
-                        message: 'SAP client (optional, press Enter to skip):'
+                        message: 'SAP Client (Optional: Press Enter to Skip):'
                     })
                 ])
             );
@@ -148,7 +193,7 @@ describe('system-prompts', () => {
             expect(systemTypePrompt).toBeDefined();
             expect(systemTypePrompt.type).toBe('select');
             expect(systemTypePrompt.name).toBe('systemType');
-            expect(systemTypePrompt.message).toBe('System type:');
+            expect(systemTypePrompt.message).toBe('System Type:');
             expect(systemTypePrompt.choices).toEqual(
                 expect.arrayContaining([
                     expect.objectContaining({ value: 'OnPrem' }),
@@ -174,7 +219,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'select',
                         name: 'authenticationType',
-                        message: 'Authentication type:'
+                        message: 'Authentication Type:'
                     })
                 ])
             );
@@ -196,14 +241,16 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'select',
                         name: 'connectionType',
-                        message: 'Connection type:'
+                        message: 'Connection Type:'
                     })
                 ])
             );
         });
 
         test('should prompt for missing username', async () => {
-            mockPrompts.mockResolvedValueOnce({ username: 'prompted-user' });
+            mockPrompts
+                .mockResolvedValueOnce({}) // First call for basic questions (all provided)
+                .mockResolvedValueOnce({ username: 'prompted-user' }); // Second call for credentials
 
             const result = await promptForSystemConfig({
                 name: 'Test',
@@ -219,14 +266,16 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'text',
                         name: 'username',
-                        message: 'Username (optional, press Enter to skip):'
+                        message: 'Username (Optional: Press Enter to Skip):'
                     })
                 ])
             );
         });
 
         test('should prompt for missing password', async () => {
-            mockPrompts.mockResolvedValueOnce({ password: 'prompted-pass' });
+            mockPrompts
+                .mockResolvedValueOnce({}) // First call for basic questions (all provided)
+                .mockResolvedValueOnce({ password: 'prompted-pass' }); // Second call for credentials
 
             const result = await promptForSystemConfig({
                 name: 'Test',
@@ -242,7 +291,7 @@ describe('system-prompts', () => {
                     expect.objectContaining({
                         type: 'password',
                         name: 'password',
-                        message: 'Password (optional, press Enter to skip):'
+                        message: 'Password (Optional: Press Enter to Skip):'
                     })
                 ])
             );
@@ -263,7 +312,9 @@ describe('system-prompts', () => {
         });
 
         test('should handle empty username as undefined', async () => {
-            mockPrompts.mockResolvedValueOnce({ username: '' });
+            mockPrompts
+                .mockResolvedValueOnce({}) // First call for basic questions
+                .mockResolvedValueOnce({ username: '' }); // Second call for credentials
 
             const result = await promptForSystemConfig({
                 name: 'Test',
@@ -277,7 +328,9 @@ describe('system-prompts', () => {
         });
 
         test('should handle empty password as undefined', async () => {
-            mockPrompts.mockResolvedValueOnce({ password: '' });
+            mockPrompts
+                .mockResolvedValueOnce({}) // First call for basic questions
+                .mockResolvedValueOnce({ password: '' }); // Second call for credentials
 
             const result = await promptForSystemConfig({
                 name: 'Test',
@@ -291,16 +344,19 @@ describe('system-prompts', () => {
         });
 
         test('should prompt for all missing fields', async () => {
-            mockPrompts.mockResolvedValueOnce({
-                name: 'FullSystem',
-                url: 'https://full.example.com',
-                client: '300',
-                systemType: SystemType.OnPrem,
-                authenticationType: AuthenticationType.Basic,
-                connectionType: ConnectionType.AbapCatalog,
-                username: 'fulluser',
-                password: 'fullpass'
-            });
+            mockPrompts
+                .mockResolvedValueOnce({
+                    name: 'FullSystem',
+                    url: 'https://full.example.com',
+                    client: '300',
+                    systemType: SystemType.OnPrem,
+                    authenticationType: AuthenticationType.Basic,
+                    connectionType: ConnectionType.AbapCatalog
+                })
+                .mockResolvedValueOnce({
+                    username: 'fulluser',
+                    password: 'fullpass'
+                });
 
             const result = await promptForSystemConfig({});
 
@@ -314,6 +370,47 @@ describe('system-prompts', () => {
                 username: 'fulluser',
                 password: 'fullpass'
             });
+        });
+
+        test('should display message for reentranceTicket auth and skip credential prompts', async () => {
+            mockPrompts.mockResolvedValueOnce({
+                authenticationType: AuthenticationType.ReentranceTicket
+            });
+
+            const result = await promptForSystemConfig({
+                name: 'Test',
+                url: 'https://test.example.com',
+                systemType: SystemType.OnPrem,
+                connectionType: ConnectionType.AbapCatalog
+            });
+
+            expect(result.authenticationType).toBe(AuthenticationType.ReentranceTicket);
+            // Note: The console message for reentranceTicket was removed
+            expect(result.username).toBeUndefined();
+            expect(result.password).toBeUndefined();
+        });
+
+        test('should prompt for credentials only when auth type is basic', async () => {
+            mockPrompts
+                .mockResolvedValueOnce({
+                    authenticationType: AuthenticationType.Basic
+                })
+                .mockResolvedValueOnce({
+                    username: 'testuser',
+                    password: 'testpass'
+                });
+
+            const result = await promptForSystemConfig({
+                name: 'Test',
+                url: 'https://test.example.com',
+                systemType: SystemType.OnPrem,
+                connectionType: ConnectionType.AbapCatalog
+            });
+
+            expect(result.authenticationType).toBe(AuthenticationType.Basic);
+            expect(result.username).toBe('testuser');
+            expect(result.password).toBe('testpass');
+            expect(mockPrompts).toHaveBeenCalledTimes(2);
         });
 
         test('should preserve provided client even if empty string', async () => {
@@ -554,7 +651,7 @@ describe('system-prompts', () => {
 
                 // Test invalid URL
                 const invalidResult = urlPrompt.validate('not-a-valid-url');
-                expect(invalidResult).toBe('Please enter a valid URL (e.g., https://my-system.example.com)');
+                expect(invalidResult).toBe('Please enter a valid URL, for example https://my-system.example.com');
             });
 
             test('should reject empty URL', async () => {
@@ -781,7 +878,7 @@ describe('system-prompts', () => {
 
                 // Test invalid URL
                 const invalidResult = urlPrompt.validate('invalid');
-                expect(invalidResult).toBe('Please enter a valid URL (e.g., https://my-system.example.com)');
+                expect(invalidResult).toBe('Please enter a valid URL, for example https://my-system.example.com');
             });
         });
     });
@@ -808,13 +905,14 @@ describe('system-prompts', () => {
             expect(result.client).toBe('100');
         });
 
-        test('should prompt for missing client', async () => {
-            mockPrompts.mockResolvedValueOnce({ client: '200' });
-
+        test('should NOT prompt for client when URL is provided (smart lookup will handle it)', async () => {
+            // When URL is provided but client is not, we don't prompt for client
+            // Instead, we let findSystemByUrl handle multiple matches via smart lookup
             const result = await promptForSystemIdentifier({ url: 'https://test.example.com' });
 
             expect(result.url).toBe('https://test.example.com');
-            expect(result.client).toBe('200');
+            expect(result.client).toBeUndefined();
+            expect(mockPrompts).not.toHaveBeenCalled(); // No prompts when URL is provided
         });
 
         test('should prompt for both url and client', async () => {
@@ -869,11 +967,12 @@ describe('system-prompts', () => {
             expect(mockPrompts).toHaveBeenCalledWith({
                 type: 'multiselect',
                 name: 'fields',
-                message: 'Select fields to update:',
+                message: 'Select Fields to Update:',
                 choices: [
-                    { title: 'Name (current: ExistingSystem)', value: 'name' },
-                    { title: 'Username (current: existing-user)', value: 'username' },
-                    { title: 'Password', value: 'password' }
+                    { title: 'Name (Existing: ExistingSystem)', value: 'name' },
+                    { title: 'Username (Existing: existing-user)', value: 'username' },
+                    { title: 'Password', value: 'password' },
+                    { title: 'Clear Credentials', value: 'clearCredentials' }
                 ],
                 min: 1
             });
@@ -887,7 +986,7 @@ describe('system-prompts', () => {
 
             expect(mockPrompts).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    choices: expect.arrayContaining([expect.objectContaining({ title: 'Username (current: (none))' })])
+                    choices: expect.arrayContaining([expect.objectContaining({ title: 'Username (Existing: (none))' })])
                 })
             );
         });
@@ -927,7 +1026,7 @@ describe('system-prompts', () => {
 
             expect(namePrompt).toBeDefined();
             expect(namePrompt.type).toBe('text');
-            expect(namePrompt.message).toBe('New system name:');
+            expect(namePrompt.message).toBe('New System Name:');
             expect(namePrompt.initial).toBe('ExistingSystem');
         });
 
@@ -945,7 +1044,7 @@ describe('system-prompts', () => {
 
             expect(usernamePrompt).toBeDefined();
             expect(usernamePrompt.type).toBe('text');
-            expect(usernamePrompt.message).toBe('New username:');
+            expect(usernamePrompt.message).toBe('New Username:');
             expect(usernamePrompt.initial).toBe('existing-user');
         });
 
@@ -963,7 +1062,7 @@ describe('system-prompts', () => {
 
             expect(passwordPrompt).toBeDefined();
             expect(passwordPrompt.type).toBe('password');
-            expect(passwordPrompt.message).toBe('New password:');
+            expect(passwordPrompt.message).toBe('New Password:');
         });
 
         test('should prompt for multiple fields', async () => {
@@ -1017,6 +1116,41 @@ describe('system-prompts', () => {
 
             expect(result).toEqual({});
         });
+
+        test('should handle clearCredentials selection with confirmation', async () => {
+            mockPrompts
+                .mockResolvedValueOnce({ confirmClear: true }) // Confirmation prompt
+                .mockResolvedValueOnce({ name: 'UpdatedName' }); // Name update prompt
+
+            const result = await promptForFieldUpdates(['clearCredentials', 'name'], mockSystem);
+
+            expect(result).toEqual({
+                clearCredentials: true,
+                name: 'UpdatedName'
+            });
+            expect(mockPrompts).toHaveBeenCalledWith({
+                type: 'confirm',
+                name: 'confirmClear',
+                message: 'Are you sure you want to clear all stored credentials?',
+                initial: false
+            });
+        });
+
+        test('should throw error if clearCredentials confirmation is declined', async () => {
+            mockPrompts.mockResolvedValueOnce({ confirmClear: false });
+
+            await expect(promptForFieldUpdates(['clearCredentials'], mockSystem)).rejects.toThrow(
+                'Clear credentials cancelled'
+            );
+        });
+
+        test('should return clearCredentials flag when only clearCredentials selected', async () => {
+            mockPrompts.mockResolvedValueOnce({ confirmClear: true });
+
+            const result = await promptForFieldUpdates(['clearCredentials'], mockSystem);
+
+            expect(result).toEqual({ clearCredentials: true });
+        });
     });
 
     describe('promptForRemoveConfirmation', () => {
@@ -1060,6 +1194,119 @@ describe('system-prompts', () => {
                     message: "Are you sure you want to remove system 'My Special System'?"
                 })
             );
+        });
+    });
+
+    describe('promptForSystemConfig with --no-credentials flag', () => {
+        beforeEach(() => {
+            mockPrompts.mockClear();
+            mockSystemNameExists.mockResolvedValue(false);
+        });
+
+        test('should skip credential prompts when noCredentials=true', async () => {
+            mockPrompts.mockResolvedValueOnce({
+                name: 'Mock System',
+                url: 'https://mock.example.com',
+                client: '',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                connectionType: 'abap_catalog'
+            });
+
+            const result = await promptForSystemConfig({
+                noCredentials: true
+            });
+
+            expect(result.name).toBe('Mock System');
+            expect(result.url).toBe('https://mock.example.com');
+            expect(result.authenticationType).toBe('basic');
+
+            // Verify username and password prompts were NOT added
+            const calls = mockPrompts.mock.calls;
+            const promptsCall = calls[0][0];
+            const questions = Array.isArray(promptsCall) ? promptsCall : [];
+
+            const hasUsernamePrompt = questions.some((q: any) => q.name === 'username');
+            const hasPasswordPrompt = questions.some((q: any) => q.name === 'password');
+
+            expect(hasUsernamePrompt).toBe(false);
+            expect(hasPasswordPrompt).toBe(false);
+        });
+
+        test('should skip credential prompts when noCredentials=true even with basic auth', async () => {
+            mockPrompts.mockResolvedValueOnce({});
+
+            await promptForSystemConfig({
+                name: 'Mock System',
+                url: 'https://mock.example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                connectionType: 'abap_catalog',
+                noCredentials: true
+            });
+
+            // Verify prompts was called with array that doesn't include username/password
+            const calls = mockPrompts.mock.calls;
+            const promptsCall = calls[0]?.[0];
+
+            if (Array.isArray(promptsCall)) {
+                const hasUsernamePrompt = promptsCall.some((q: any) => q.name === 'username');
+                const hasPasswordPrompt = promptsCall.some((q: any) => q.name === 'password');
+
+                expect(hasUsernamePrompt).toBe(false);
+                expect(hasPasswordPrompt).toBe(false);
+            }
+        });
+
+        test('should still prompt for credentials when noCredentials=false and auth=basic', async () => {
+            mockPrompts
+                .mockResolvedValueOnce({}) // First call for basic questions (none needed since all provided)
+                .mockResolvedValueOnce({ username: 'testuser', password: 'testpass' }); // Second call for credentials
+
+            await promptForSystemConfig({
+                name: 'Regular System',
+                url: 'https://regular.example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                connectionType: 'abap_catalog',
+                noCredentials: false
+            });
+
+            const calls = mockPrompts.mock.calls;
+            // Credentials are prompted in the second call
+            const credentialPrompts = calls[1]?.[0];
+
+            if (Array.isArray(credentialPrompts)) {
+                const hasUsernamePrompt = credentialPrompts.some((q: any) => q.name === 'username');
+                const hasPasswordPrompt = credentialPrompts.some((q: any) => q.name === 'password');
+
+                expect(hasUsernamePrompt).toBe(true);
+                expect(hasPasswordPrompt).toBe(true);
+            }
+        });
+
+        test('should skip credential prompts for reentranceTicket auth regardless of noCredentials flag', async () => {
+            mockPrompts.mockResolvedValueOnce({});
+
+            await promptForSystemConfig({
+                name: 'BTP System',
+                url: 'https://btp.example.com',
+                systemType: 'AbapCloud',
+                authenticationType: 'reentranceTicket',
+                connectionType: 'abap_catalog'
+                // noCredentials not set - should still skip credentials for reentranceTicket
+            });
+
+            const calls = mockPrompts.mock.calls;
+            const promptsCall = calls[0]?.[0];
+
+            if (Array.isArray(promptsCall)) {
+                const hasUsernamePrompt = promptsCall.some((q: any) => q.name === 'username');
+                const hasPasswordPrompt = promptsCall.some((q: any) => q.name === 'password');
+
+                expect(hasUsernamePrompt).toBe(false);
+                expect(hasPasswordPrompt).toBe(false);
+            }
         });
     });
 });
