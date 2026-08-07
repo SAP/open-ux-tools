@@ -1,8 +1,83 @@
 import prompts from 'prompts';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { AxiosError } from '@sap-ux/axios-extension';
 import { getLogger } from '../../tracing/index.js';
 import { text } from '../../i18n.js';
+
+/**
+ * Attempts to ping the system endpoint, with fallback to root if ping is not supported.
+ *
+ * @param service - Service provider
+ * @returns Success result or throws error
+ */
+async function attemptSystemPing(service: any): Promise<{ success: boolean }> {
+    try {
+        await service.get('/sap/bc/ping', { timeout: 5000 });
+        return { success: true };
+    } catch (error: any) {
+        // If /sap/bc/ping fails with 404, try root path
+        if (error.response?.status === 404) {
+            return attemptRootEndpoint(service);
+        }
+        throw error;
+    }
+}
+
+/**
+ * Attempts to connect to the root endpoint as fallback.
+ *
+ * @param service - Service provider
+ * @returns Success result or throws error
+ */
+async function attemptRootEndpoint(service: any): Promise<{ success: boolean }> {
+    try {
+        await service.get('/', { timeout: 5000 });
+        return { success: true };
+    } catch (rootError: any) {
+        // 401 on root means system is reachable
+        if (rootError.response?.status === 401) {
+            return { success: true };
+        }
+        throw rootError;
+    }
+}
+
+/**
+ * Categorizes connection errors and returns appropriate error message.
+ *
+ * @param error - Error from connection attempt
+ * @param authenticationType - Authentication type being used
+ * @returns Error result with message
+ */
+function categorizeConnectionError(
+    error: any,
+    authenticationType: string
+): { success: false; error: string } {
+    // 401 means system is reachable but auth failed
+    if (error.response?.status === 401) {
+        // For basic auth, 401 is a failure
+        if (authenticationType === 'basic') {
+            return { success: false, error: text('systemConnection.errors.authFailed') };
+        }
+        // For other auth types (reentranceTicket, oauth2), 401 means system is reachable (treat as success)
+        return { success: true } as any;
+    }
+
+    // Network errors indicate unreachable system
+    if (error.code === 'ECONNREFUSED') {
+        return { success: false, error: text('systemConnection.errors.connectionRefused') };
+    }
+    if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {
+        return { success: false, error: text('systemConnection.errors.connectionTimeout', { timeout: 5000 }) };
+    }
+    if (error.code === 'ENOTFOUND') {
+        return { success: false, error: text('systemConnection.errors.hostNotFound') };
+    }
+    if (error.code === 'ECONNRESET') {
+        return { success: false, error: text('systemConnection.errors.connectionReset') };
+    }
+
+    return { success: false, error: error.message || text('systemConnection.unknownError') };
+}
 
 /**
  * Checks connection to a backend system.
@@ -58,53 +133,9 @@ export async function checkSystemConnection(config: {
         const service = await createAbapServiceProvider(target, requestOptions, false, logger);
 
         // Attempt lightweight request with 5-second timeout
-        // Use /sap/bc/ping for systems that support it, or root path as fallback
-        try {
-            await service.get('/sap/bc/ping', { timeout: 5000 });
-            return { success: true };
-        } catch (error: any) {
-            // If /sap/bc/ping fails with 404, try root path
-            // Accept 401 from root as success (system is reachable, auth will happen later)
-            if (error.response?.status === 404) {
-                try {
-                    await service.get('/', { timeout: 5000 });
-                    return { success: true };
-                } catch (rootError: any) {
-                    if (rootError.response?.status === 401) {
-                        // 401 on root means system is reachable
-                        return { success: true };
-                    }
-                    throw rootError;
-                }
-            }
-            throw error;
-        }
+        return await attemptSystemPing(service);
     } catch (error: any) {
-        // 401 means system is reachable but auth failed
-        if (error.response?.status === 401) {
-            // For basic auth (regardless of whether credentials were provided), 401 is a failure
-            if (config.authenticationType === 'basic') {
-                return { success: false, error: text('systemConnection.errors.authFailed') };
-            }
-            // For other auth types (reentranceTicket, oauth2), 401 means system is reachable (success)
-            return { success: true };
-        }
-
-        // Network errors indicate unreachable system
-        if (error.code === 'ECONNREFUSED') {
-            return { success: false, error: text('systemConnection.errors.connectionRefused') };
-        }
-        if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {
-            return { success: false, error: text('systemConnection.errors.connectionTimeout', { timeout: 5000 }) };
-        }
-        if (error.code === 'ENOTFOUND') {
-            return { success: false, error: text('systemConnection.errors.hostNotFound') };
-        }
-        if (error.code === 'ECONNRESET') {
-            return { success: false, error: text('systemConnection.errors.connectionReset') };
-        }
-
-        return { success: false, error: error.message || text('systemConnection.unknownError') };
+        return categorizeConnectionError(error, config.authenticationType);
     }
 }
 
