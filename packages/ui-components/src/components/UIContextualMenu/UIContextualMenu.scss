@@ -1,4 +1,4 @@
-@use "sass:math";
+@use 'sass:math';
 @import './_variables.scss';
 
 $layout-dropdown-menu-border-color: $menu-border-color;
@@ -14,7 +14,6 @@ $layout-contextual-menu-item-hover-background: var(--vscode-menu-selectionBackgr
 $layout-contextual-menu-item-hover-color: var(--vscode-menu-selectionForeground, var(--vscode-menu-foreground));
 $layout-contextual-menu-item-focus-background: $layout-contextual-menu-item-hover-background;
 $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-color;
-
 
 @mixin menu-item-contrast-border($outline: null) {
     &:after {
@@ -85,7 +84,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
             .ts-ContextualMenu {
                 padding: 2px 0;
                 .ms-ContextualMenu-link {
-                    &.is-checked  .ms-ContextualMenu-checkmarkIcon {
+                    &.is-checked .ms-ContextualMenu-checkmarkIcon {
                         margin-right: 2px;
                         margin-left: -2px;
                     }
@@ -123,7 +122,11 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
             &:hover,
             &:active,
             &.is-expanded {
-                @include menu-item-color($layout-dropdown-menu-item-hover-background, $layout-dropdown-menu-item-hover-color, $layout-dropdown-menu-item-hover-color);
+                @include menu-item-color(
+                    $layout-dropdown-menu-item-hover-background,
+                    $layout-dropdown-menu-item-hover-color,
+                    $layout-dropdown-menu-item-hover-color
+                );
 
                 & ~ .ms-ContextualMenu-splitMenu {
                     @include menu-item-color(
@@ -136,7 +139,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
         }
 
         > .ms-ContextualMenu-link {
-            &.is-checked  .ms-ContextualMenu-checkmarkIcon {
+            &.is-checked .ms-ContextualMenu-checkmarkIcon {
                 margin-right: math.div($menu-item-horizontal-padding, 2);
                 margin-left: math.div(-$menu-item-horizontal-padding, 2);
             }
@@ -305,8 +308,12 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                 &:hover,
                 &:active,
                 &.is-expanded {
-                    @include menu-item-color($layout-contextual-menu-item-hover-background, $layout-contextual-menu-item-hover-color, $layout-contextual-menu-item-hover-color);
-    
+                    @include menu-item-color(
+                        $layout-contextual-menu-item-hover-background,
+                        $layout-contextual-menu-item-hover-color,
+                        $layout-contextual-menu-item-hover-color
+                    );
+
                     & ~ .ms-ContextualMenu-splitMenu {
                         @include menu-item-color(
                             $layout-contextual-menu-item-hover-background,
@@ -316,7 +323,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                     }
                 }
             }
-    
+
             // High contrast
             // Single item - high contrast
             > .ms-ContextualMenu-link,
@@ -325,7 +332,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                     @include menu-item-contrast-border($menu-item-hover-contrast-border);
                 }
             }
-    
+
             // Keyboard navigation and focus
             // Single menu item
             > .ms-ContextualMenu-link {
@@ -336,7 +343,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                         $layout-contextual-menu-item-focus-color,
                         $menu-item-focus-border
                     );
-    
+
                     // Context menu focus follows hover - use hover as more important
                     &:hover {
                         @include menu-item-color(
@@ -363,7 +370,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                             $layout-contextual-menu-item-focus-color,
                             $layout-contextual-menu-item-focus-color
                         );
-    
+
                         & ~ .ms-ContextualMenu-splitMenu {
                             @include menu-item-color(
                                 $layout-contextual-menu-item-focus-background,
@@ -372,7 +379,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                             );
                         }
                     }
-    
+
                     // Context menu focus follows hover - use hover as more important
                     &:hover > button:first-child {
                         @include menu-item-color(
@@ -380,7 +387,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                             $layout-contextual-menu-item-hover-color,
                             $layout-contextual-menu-item-hover-color
                         );
-    
+
                         & ~ .ms-ContextualMenu-splitMenu {
                             @include menu-item-color(
                                 $layout-contextual-menu-item-hover-background,
@@ -389,16 +396,16 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                             );
                         }
                     }
-    
+
                     // High contrast
                     @include menu-item-contrast-border($menu-item-focus-border);
                 }
-    
+
                 // High contrast
                 &:hover {
                     @include menu-item-contrast-border($menu-item-hover-contrast-border);
                 }
-    
+
                 // Right split button as separate
                 .ms-ContextualMenu-splitMenu.is-expanded {
                     @include menu-item-color(
@@ -406,7 +413,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                         $layout-contextual-menu-item-focus-color,
                         $layout-contextual-menu-item-focus-color
                     );
-    
+
                     &:hover {
                         @include menu-item-color(
                             $layout-contextual-menu-item-hover-background,

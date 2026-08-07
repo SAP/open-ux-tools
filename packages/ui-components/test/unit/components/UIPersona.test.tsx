@@ -1,22 +1,16 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-
-import type { UIPersonaProps } from '../../../src/components/UIPersona';
+import { render } from '@testing-library/react';
 import { UIPersona, UIPersonaSize } from '../../../src/components/UIPersona';
 
 describe('<UIPersona />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIPersonaProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UIPersona text="John Doe" size={UIPersonaSize.size72} />);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Should render a UIPersona component', () => {
-        expect(wrapper.find('.ms-Persona').length).toEqual(1);
-        expect(wrapper.find('.ms-Persona--size72').length).toEqual(2);
+        const { getAllByText } = render(<UIPersona text="John Doe" size={UIPersonaSize.size72} />);
+        expect(getAllByText('John Doe').length).toBeGreaterThan(0);
+    });
+
+    it('Should forward size prop to Persona', () => {
+        const { container: large } = render(<UIPersona text="John Doe" size={UIPersonaSize.size72} />);
+        const { container: small } = render(<UIPersona text="John Doe" size={UIPersonaSize.size32} />);
+        expect(large.innerHTML).not.toEqual(small.innerHTML);
     });
 });

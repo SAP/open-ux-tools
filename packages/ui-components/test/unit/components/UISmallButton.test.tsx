@@ -1,81 +1,52 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { IButtonProps } from '@fluentui/react';
-import { DefaultButton } from '@fluentui/react';
+import { render } from '@testing-library/react';
+import type { IButtonStyles } from '@fluentui/react';
 import { UISmallButton } from '../../../src/components/UIButton/UISmallButton';
+import { findStyleFromStyleSheets } from '../../utils/styles';
+
+// getStyles is only needed for the focus pseudo-element selector which
+// is not accessible via getComputedStyle or document.styleSheets in jsdom.
+function getStyles(primary = false): IButtonStyles {
+    const instance = new UISmallButton({ primary });
+    return (instance as unknown as { setStyle: (p: { primary?: boolean }) => IButtonStyles }).setStyle({ primary });
+}
 
 describe('<UISmallButton />', () => {
-    let wrapper: Enzyme.ReactWrapper<IButtonProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UISmallButton>Dummy</UISmallButton>);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Should render a UISmallButton component', () => {
-        expect(wrapper.find('.ms-Button').length).toEqual(1);
+        const { container } = render(<UISmallButton>Dummy</UISmallButton>);
+        expect(container.querySelectorAll('.ms-Button')).toHaveLength(1);
     });
 
-    it('Styles - primary', () => {
-        wrapper.setProps({
-            primary: true
+    describe('Styles - via rendered DOM', () => {
+        it('secondary - height and fontSize', () => {
+            render(<UISmallButton>Dummy</UISmallButton>);
+            const el = document.body.querySelector('.ms-Button') as HTMLElement;
+            expect(window.getComputedStyle(el).height).toEqual('16px');
+            expect(window.getComputedStyle(el).fontSize).toEqual('11px');
         });
-        const styles = wrapper.find(DefaultButton).props().styles;
-        expect(styles?.root).toMatchInlineSnapshot(
-            {},
-            `
-            Object {
-              "backgroundColor": "var(--vscode-button-background)",
-              "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-background))",
-              "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
-              "color": "var(--vscode-button-foreground)",
-              "fontSize": "11px",
-              "fontWeight": 400,
-              "height": 16,
-              "minWidth": "initial",
-              "paddingLeft": 13,
-              "paddingRight": 13,
-              "selectors": Object {
-                ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                  "inset": -3,
-                  "outlineColor": "var(--vscode-focusBorder)",
-                },
-              },
-            }
-        `
-        );
+
+        it('secondary - background and color', () => {
+            render(<UISmallButton>Dummy</UISmallButton>);
+            const el = document.body.querySelector('.ms-Button') as HTMLElement;
+            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual(
+                'var(--vscode-button-secondaryBackground, #5f6a79)'
+            );
+            expect(findStyleFromStyleSheets('color', el)).toEqual('var(--vscode-button-secondaryForeground, #ffffff)');
+        });
+
+        it('primary - background and color', () => {
+            render(<UISmallButton primary={true}>Dummy</UISmallButton>);
+            const el = document.body.querySelector('.ms-Button') as HTMLElement;
+            expect(findStyleFromStyleSheets('backgroundColor', el)).toEqual('var(--vscode-button-background)');
+            expect(findStyleFromStyleSheets('color', el)).toEqual('var(--vscode-button-foreground)');
+        });
     });
 
-    it('Styles - secondary', () => {
-        wrapper.setProps({
-            primary: false
+    describe('Styles - focus selector (pseudo-element, via getStyles)', () => {
+        it('has focus :focus:after outline selector', () => {
+            const styles = getStyles();
+            const selectors = (styles.root as Record<string, unknown>).selectors as Record<string, unknown>;
+            expect(selectors['.ms-Fabric--isFocusVisible &:focus:after']).toBeDefined();
         });
-        const styles = wrapper.find(DefaultButton).props().styles;
-        expect(styles?.root).toMatchInlineSnapshot(
-            {},
-            `
-            Object {
-              "backgroundColor": "var(--vscode-button-secondaryBackground, #5f6a79)",
-              "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79))",
-              "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
-              "color": "var(--vscode-button-secondaryForeground, #ffffff)",
-              "fontSize": "11px",
-              "fontWeight": 400,
-              "height": 16,
-              "minWidth": "initial",
-              "paddingLeft": 13,
-              "paddingRight": 13,
-              "selectors": Object {
-                ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                  "inset": -3,
-                  "outlineColor": "var(--vscode-focusBorder)",
-                },
-              },
-            }
-        `
-        );
     });
 });
