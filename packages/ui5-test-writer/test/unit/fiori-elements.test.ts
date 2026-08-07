@@ -805,6 +805,10 @@ export type Then = Opa5 & BaseArrangements & {
 
             const bookingObjPageJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.gen.js'].contents;
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckTitlePath("BookingID")');
+            const travelObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelObjectPageJourney.gen.js'].contents;
+            expect(travelObjPageJourneyContent).toContain('onHeader().iCheckTitlePath("TravelID")');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
@@ -819,16 +823,23 @@ export type Then = Opa5 & BaseArrangements & {
                 'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
             );
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(bookingObjPageJourneyContent).toContain('opaTest("Check the number of sections of the Object Page"');
+            expect(bookingObjPageJourneyContent).not.toContain('Check body sections of the Object Page');
+            expect(bookingObjPageJourneyContent).toContain(
+                'opaTest("Check the BookingDetails section of the Object Page"'
+            );
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('opaTest("Check the FlightData section of the Object Page"');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
             );
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(bookingObjPageJourneyContent).toContain('opaTest("Check the PriceData section of the Object Page"');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
@@ -1025,13 +1036,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(opPagePath).toBeDefined();
 
             const opContent = dumped[opPagePath!].contents as string;
-            expect(opContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
-            expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
             expect(opContent).toContain('export const actions');
             expect(opContent).toContain('export const assertions');
             expect(opContent).toContain('export default class ObjectPage');
-            expect(opContent).toContain('iPressSectionIconTabFilterButton');
-            expect(opContent).toContain('this: Opa5');
             expect(opContent).not.toContain('sap/fe/test/ObjectPage');
         });
 
@@ -1299,13 +1306,18 @@ export type Then = Opa5 & BaseArrangements & {
 
             // ─── Section navigation ───
             expect(content).toContain('iCheckNumberOfSections(3)');
-            expect(content).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(content).toContain('opaTest("Check the number of sections of the Object Page"');
+            expect(content).not.toContain('Check body sections of the Object Page');
+            expect(content).toContain('opaTest("Check the BookingDetails section of the Object Page"');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
             expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
             expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
-            expect(content).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(content).toContain('opaTest("Check the FlightData section of the Object Page"');
+            expect(content).toContain('iGoToSection({ section: "FlightData" })');
             expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
-            expect(content).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(content).toContain('opaTest("Check the PriceData section of the Object Page"');
+            expect(content).toContain('iGoToSection({ section: "PriceData" })');
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
 
             // ─── Section actions (table action with dynamic enabled) ───
@@ -1403,6 +1415,69 @@ export type Then = Opa5 & BaseArrangements & {
         afterEach(() => {
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);
+        });
+    });
+
+    describe('generateOPAFiles UI5 version buckets', () => {
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+
+        describe('version selector', () => {
+            it.each([
+                { ui5Version: undefined, expectedBucket: '1.150' },
+                { ui5Version: '', expectedBucket: '1.150' },
+                { ui5Version: '1.100.0', expectedBucket: '1.84' },
+                { ui5Version: '1.120.0', expectedBucket: '1.84' },
+                { ui5Version: '1.149.9', expectedBucket: '1.84' },
+                { ui5Version: '1.150.0', expectedBucket: '1.150' },
+                { ui5Version: '1.160.0', expectedBucket: '1.150' }
+            ])('ui5Version $ui5Version → bucket $expectedBucket', async ({ ui5Version, expectedBucket }) => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
+
+                const templatePaths = copyTplSpy.mock.calls.map((call) => String(call[0]));
+                expect(templatePaths.some((p) => p.includes(join('v4', expectedBucket)))).toBe(true);
+                copyTplSpy.mockRestore();
+            });
+        });
+
+        describe('snapshot per bucket — JS', () => {
+            it('bucket 1.84 generates correct output (JS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.120.0' }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket 1.150 generates correct output (JS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.150.0' }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('snapshot per bucket — TS', () => {
+            it('bucket 1.84 generates correct output (TS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.120.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket 1.150 generates correct output (TS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.150.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
         });
     });
 });

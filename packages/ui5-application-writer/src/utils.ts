@@ -1,4 +1,4 @@
-import { gte } from 'semver';
+import { gte, coerce } from 'semver';
 import { type UI5, type TemplateOptions } from './types.js';
 import { join } from 'node:path';
 import { FileName } from '@sap-ux/project-access';
@@ -19,7 +19,14 @@ export function compareUI5VersionGte(ui5VersionA: string, ui5VersionB: string): 
         // latest version
         return true;
     } else {
-        return gte(ui5VersionA, ui5VersionB, { loose: true });
+        const coercedUi5VersionA = coerce(ui5VersionA, { loose: true });
+        const coercedUi5VersionB = coerce(ui5VersionB, { loose: true });
+
+        if (!coercedUi5VersionA || !coercedUi5VersionB) {
+            return false;
+        }
+
+        return gte(coercedUi5VersionA, coercedUi5VersionB, { loose: true });
     }
 }
 
