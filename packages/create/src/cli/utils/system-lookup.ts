@@ -1,6 +1,6 @@
 import prompts from 'prompts';
 import type { BackendSystem, BackendSystemKey, Service } from '@sap-ux/store';
-import { BackendSystemKey as BackendSystemKeyClass } from '@sap-ux/store';
+import { BackendSystemKey as BackendSystemKeyClass, ConnectionType } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 import { text } from '../../i18n.js';
 
@@ -29,10 +29,13 @@ export async function findSystemByUrl(
     const normalizedUrl = url.trim().replace(/\/$/, '');
 
     // Search all systems with this URL (across all connection types)
-    // Pass backendSystemFilter with connectionType undefined to bypass the default 'abap_catalog' filter
+    // Explicitly specify all connection types to bypass the default 'abap_catalog' filter
     logger.debug(`Searching for systems with URL: ${normalizedUrl}`);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const allSystems = await service.getAll({ backendSystemFilter: { connectionType: undefined as any } });
+    const allSystems = await service.getAll({
+        backendSystemFilter: {
+            connectionType: Object.values(ConnectionType)
+        }
+    });
     const matches = allSystems.filter((s) => {
         const systemUrl = s.url.trim().replace(/\/$/, '');
         return systemUrl === normalizedUrl;
