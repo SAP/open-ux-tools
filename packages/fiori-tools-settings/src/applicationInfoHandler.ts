@@ -60,7 +60,7 @@ export function initAppInfoSettings(fs?: Editor): void {
  */
 export function addGeneratedFiles(filePath: string, fs?: Editor): void {
     fs = getFsInstance(fs);
-    const appInfoContents: AppInfoSettings = fs.readJSON(appInfoFilePath) as unknown as AppInfoSettings;
+    const appInfoContents: AppInfoSettings = (fs.readJSON(appInfoFilePath) as unknown as AppInfoSettings) || { latestGeneratedFiles: [] };
     if (appInfoContents.latestGeneratedFiles) {
         appInfoContents.latestGeneratedFiles.push(filePath);
     } else {
