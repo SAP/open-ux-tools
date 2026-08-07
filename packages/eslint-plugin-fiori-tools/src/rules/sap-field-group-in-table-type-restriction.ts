@@ -1,43 +1,16 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
-import { Edm, elementsWithName, elements, getElementAttributeValue, ELEMENT_TYPE } from '@sap-ux/odata-annotation-core';
+import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { FieldGroupInTableTypeRestriction } from '../language/diagnostics.js';
 import { FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION } from '../language/diagnostics.js';
-import { getRecordType } from '../project-context/linker/annotations.js';
+import { getRecordType, getTargetAnnotationPath } from '../project-context/linker/annotations.js';
 import type { Table as FeV4Table } from '../project-context/linker/fe-v4.js';
 import type { Table as FeV2Table } from '../project-context/linker/fe-v2.js';
 import type { ParsedService } from '../project-context/parser/index.js';
 
 const DATA_FIELD_FOR_ANNOTATION = 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation';
 const UNSUPPORTED_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTable']);
-
-/**
- * Checks if a DataFieldForAnnotation record's Target annotation path references a FieldGroup.
- *
- * @param record - The DataFieldForAnnotation record element
- * @returns true if the Target annotation path contains "FieldGroup"
- */
-function targetIsFieldGroup(record: Element): boolean {
-    const propertyValues = elementsWithName(Edm.PropertyValue, record);
-    const targetProp = propertyValues.find((pv) => getElementAttributeValue(pv, Edm.Property) === 'Target');
-    if (!targetProp) {
-        return false;
-    }
-
-    // Target as XML attribute: <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#..."/>
-    const annotationPath = getElementAttributeValue(targetProp, Edm.AnnotationPath);
-    if (annotationPath) {
-        return annotationPath.includes('FieldGroup');
-    }
-
-    // Target as child element: <AnnotationPath>@UI.FieldGroup#...</AnnotationPath>
-    const annotationPathChild = targetProp.content.find(
-        (c) => c.type === ELEMENT_TYPE && (c as Element).name === Edm.AnnotationPath
-    ) as Element | undefined;
-    const childText = annotationPathChild?.content?.find((c) => c.type === 'text')?.text;
-    return !!childText && childText.includes('FieldGroup');
-}
 
 /**
  * Collects FieldGroup violations from a table whose type is unsupported.
@@ -80,7 +53,7 @@ function checkTableForFieldGroupViolations(
     }, collection);
 
     for (const record of dataFieldForAnnotationRecords) {
-        if (!targetIsFieldGroup(record)) {
+        if (!getTargetAnnotationPath(record)?.includes('FieldGroup')) {
             continue;
         }
 
