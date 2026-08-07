@@ -18,6 +18,7 @@ import {
     createProjectAccess,
     getWebappPath,
     getMinimumUI5Version,
+    getProjectType,
     type Manifest,
     type UI5FlexLayer
 } from '@sap-ux/project-access';
@@ -293,11 +294,18 @@ export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], 
  *
  * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
  * @param isCap whether this is a CAP project - LrepConnector is omitted for CAP
+ * @param logger optional logger instance
  * @returns An array of flexibility service configurations, each specifying a connector
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
-function getFlexSettings(isAdp = false, isCap = false): TemplateConfig['ui5']['flex'] {
+function getFlexSettings(isAdp = false, isCap = false, logger?: Logger): TemplateConfig['ui5']['flex'] {
     const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
+
+    if (isCap) {
+        logger?.debug(`The ABAP connector is not being used because this is a CAP project.`);
+    } else {
+        logger?.debug(`The ABAP connector is being used.`);
+    }
 
     const connectors: TemplateConfig['ui5']['flex'] = [
         ...(!isCap ? [{ connector: 'LrepConnector', layers: [] as string[], url: '/sap/bc/lrep' }] : []),
@@ -307,7 +315,10 @@ function getFlexSettings(isAdp = false, isCap = false): TemplateConfig['ui5']['f
             custom: true
         }
     ];
-    if (!isAdp) {
+    if (isAdp) {
+        logger?.debug(`The local storage connector is not being used because this is an ADP project.`);
+    } else {
+        logger?.debug(`The local storage connector is being used.`);
         connectors.push({ connector: 'LocalStorageConnector', layers: ['CUSTOMER', 'USER'] });
     }
     return connectors;
@@ -441,15 +452,19 @@ export function remapResourcesForPath(config: TemplateConfig, newPagePath: strin
  * @param manifest application manifest
  * @param resources additional resources
  * @param isAdp whether this is an adaptation project
+ * @param isCap whether this is a CAP project
+ * @param logger optional logger instance
  * @returns configuration object for the sandbox.html template
  */
 export function createFlpTemplateConfig(
     config: FlpConfig,
     manifest: Partial<Manifest>,
     resources: Record<string, string> = {},
-    isAdp = false
+    isAdp = false,
+    isCap = false,
+    logger?: Logger
 ): TemplateConfig {
-    const flex = getFlexSettings(isAdp);
+    const flex = getFlexSettings(isAdp, isCap, logger);
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';
@@ -506,14 +521,16 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  * @param templateConfig the current template configuration containing apps
  * @param flpConfig the FLP configuration containing the intent
  * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
- * @param isCap whether this is a CAP project - LrepConnector is omitted for CAP
+ * @param isCap whether this is a CAP project
+ * @param logger optional logger instance
  * @returns the sandbox app config object
  */
 export function generateSandboxAppConfig(
     templateConfig: TemplateConfig,
     flpConfig: FlpConfig,
     isAdp = false,
-    isCap = false
+    isCap = false,
+    logger?: Logger
 ): SandboxAppConfig {
     // Build a url→intent map: primary app + additional apps with explicit intent
     const intentByUrl = new Map<string, Intent>();
@@ -550,7 +567,7 @@ export function generateSandboxAppConfig(
         beforeFlpStart: 'module:open/ux/preview/client/flp/sandbox2BeforeInit',
         afterFlpStart: 'module:open/ux/preview/client/flp/sandbox2AfterInit',
         restricted: {
-            flexibilityServices: getFlexSettings(isAdp, isCap)
+            flexibilityServices: getFlexSettings(isAdp, isCap, logger)
         }
     };
 }
@@ -640,6 +657,8 @@ function generateTestRunners(
  * @param flpConfig - the resolved FLP configuration
  * @param manifest - the app manifest (must contain a valid minUI5Version)
  * @param isAdp - whether this is an adaptation project
+ * @param isCap - whether this is a CAP project
+ * @param logger - optional logger instance
  * @param fs - file system editor
  */
 function generateSandbox2Files(
@@ -648,13 +667,15 @@ function generateSandbox2Files(
     flpConfig: FlpConfig,
     manifest: Manifest,
     isAdp: boolean,
+    isCap: boolean,
+    logger: Logger | undefined,
     fs: Editor
 ): void {
     const [major] = getMinimumUI5Version(manifest)!.split('.').map(Number);
     flpTemplConfig.ui5.versionMajor = major;
     fs.write(
         join(dirname(flpPath), 'fioriSandboxAppConfig.json'),
-        JSON.stringify(generateSandboxAppConfig(flpTemplConfig, flpConfig, isAdp), null, 4)
+        JSON.stringify(generateSandboxAppConfig(flpTemplConfig, flpConfig, isAdp, isCap, logger), null, 4)
     );
     fs.write(flpPath, render(readFileSync(join(TEMPLATE_PATH, 'flp/sandbox2.ejs'), 'utf-8'), flpTemplConfig));
 }
@@ -754,6 +775,7 @@ export async function generatePreviewFiles(
     fs ??= create(createStorage());
 
     const flpConfig = getFlpConfigWithDefaults(config.flp);
+    const isCap = (await getProjectType(basePath)) !== 'EDMXBackend';
 
     const webappPath = await getWebappPath(basePath, fs);
     let manifest: Manifest | undefined;
@@ -764,7 +786,7 @@ export async function generatePreviewFiles(
     let flpPath: string;
 
     if (manifest) {
-        flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
+        flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest, {}, false, isCap, logger);
         flpPath = join(webappPath, flpConfig.path);
         await addApp(
             flpTemplConfig,
@@ -778,14 +800,24 @@ export async function generatePreviewFiles(
         );
         generateTestRunners(config.test, manifest, fs, webappPath, flpTemplConfig);
     } else {
-        flpTemplConfig = createFlpTemplateConfig(flpConfig, {});
+        flpTemplConfig = createFlpTemplateConfig(flpConfig, {}, {}, false, isCap, logger);
         flpPath = join(basePath, flpConfig.path);
     }
 
     await addAdditionalApps(flpConfig, basePath, flpTemplConfig, fs, logger);
 
     if (shouldUseSandbox2(manifest, flpConfig, basePath, fs)) {
-        generateSandbox2Files(flpPath, flpTemplConfig, flpConfig, manifest!, config.adp !== undefined, fs);
+        // manifest is guaranteed non-undefined here: shouldUseSandbox2 returns false when manifest is undefined
+        generateSandbox2Files(
+            flpPath,
+            flpTemplConfig,
+            flpConfig,
+            manifest!,
+            config.adp !== undefined,
+            isCap,
+            logger,
+            fs
+        );
     } else {
         fs.write(flpPath, render(readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8'), flpTemplConfig));
     }

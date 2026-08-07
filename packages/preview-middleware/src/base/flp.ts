@@ -195,7 +195,14 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, adp !== undefined);
+        this.templateConfig = createFlpTemplateConfig(
+            this.flpConfig,
+            manifest,
+            resources,
+            adp !== undefined,
+            this.projectType !== 'EDMXBackend',
+            this.logger
+        );
         this.adp = adp;
         this.manifest = manifest;
 
@@ -308,18 +315,6 @@ export class FlpSandbox {
             }
         } else {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
-        }
-        if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
-            config.ui5.flex = config.ui5?.flex?.filter(
-                (connector) =>
-                    !isFlexConnector(connector) ||
-                    (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
-            );
-            this.logger.debug(
-                `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
-            );
-        } else {
-            this.logger.debug(`The ABAP connector is being used.`);
         }
     }
 
@@ -577,9 +572,14 @@ export class FlpSandbox {
             return;
         }
         // check for user-provided fioriSandboxAppConfig.json and merge if present
-        const isCap = this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs';
         const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
-        let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig, this.adp !== undefined, isCap);
+        let config = generateSandboxAppConfig(
+            this.templateConfig,
+            this.flpConfig,
+            this.adp !== undefined,
+            this.projectType !== 'EDMXBackend',
+            this.logger
+        );
         if (userConfigFile) {
             const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
             config = {
