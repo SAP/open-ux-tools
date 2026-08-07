@@ -1,5 +1,29 @@
 # @sap-ux/ui5-test-writer
 
+## 1.4.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Generate a separate, named opaTest block for each Object Page section instead of one combined "Check body sections" block, so large object pages produce readable, independently-failing journey tests [[ee1fcaf](https://github.com/SAP/open-ux-tools/commit/ee1fcafb1a96bb963e9f5882d783d5a80d7eae1e)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Object Page OPA tests now use the correct sub-section id for CollectionFacets whose children are only FieldGroup/Identification facets. Fiori elements renders these as a single sub-section inheriting the CollectionFacet id (with one FormContainer per FieldGroup), so the generated `iCheckSubSection`/`onForm` calls no longer reference non-existent per-FieldGroup ids (e.g. `FieldGroup::Q1`). [[d53e168](https://github.com/SAP/open-ux-tools/commit/d53e1680c38ec87558007ea1527943fc5059ef40)]
+
 ## 1.4.0
 
 ### Minor Changes
