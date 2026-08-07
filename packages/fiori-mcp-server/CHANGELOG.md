@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
 ## 1.11.6
 
 ### Patch Changes
