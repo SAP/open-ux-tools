@@ -46,32 +46,17 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
 
     try {
         if (generatorConfig.service) {
-            const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
-            generatorConfig.service.edmx = metadata;
-            if (generatorConfig.service.host || generatorConfig.service.destination) {
-                const service = generatorConfig.service;
-                // Resolve the stored SAP system and build the ABAP service provider once, then reuse it
-                // for both the external-service and annotation fetches. Reusing one provider means the
-                // backend authentication performed on the first request is shared, so cloud backends
-                // prompt for interactive (browser) auth only once. Failure to create the provider is
-                // non-fatal: the app is still generated, just without backend metadata/annotations.
-                let serviceProvider: AbapServiceProvider | undefined;
-                try {
-                    serviceProvider = await getAbapServiceProvider(service.host, service.client, service.destination);
-                } catch (error) {
-                    logger.error(
-                        `Error creating the ABAP service provider: ${error instanceof Error ? error.message : String(error)}`
-                    );
-                    logger.warn('App will be generated without backend service metadata and annotations');
-                }
-
-                service.externalServices = await getExternalServiceMetadata(
-                    serviceProvider,
-                    service.servicePath,
-                    metadata
-                );
-                service.annotations = await getServiceAnnotations(serviceProvider, service.servicePath, metadata);
-            }
+            const { servicePath, host, client, destination } = generatorConfig.service;
+            const { edmx, externalServices, annotations } = await resolveServiceMetadata(
+                metadataPath,
+                servicePath,
+                host,
+                client,
+                destination
+            );
+            generatorConfig.service.edmx = edmx;
+            generatorConfig.service.externalServices = externalServices;
+            generatorConfig.service.annotations = annotations;
         }
 
         const content = JSON.stringify(generatorConfig, null, 4);
@@ -123,6 +108,53 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
 export async function generateFioriAppOData(args: GeneratorConfigOData): Promise<GenerateAppOutput> {
     const validAppConfig = generatorConfigOData.parse(args);
     return executeOData(validAppConfig, validAppConfig.project?.targetFolder ?? '');
+}
+
+/**
+ * Reads the OData metadata and, when a backend system is configured, fetches the backend external
+ * services and annotations for the service. Returns the resolved data for the caller to assign;
+ * it does not mutate the passed-in service.
+ *
+ * The ABAP service provider is created once and reused for both the external-service and annotation
+ * fetches. Reusing one provider means the backend authentication performed on the first request is
+ * shared, so cloud backends prompt for interactive (browser) auth only once. Failure to create the
+ * provider is non-fatal: the app is still generated, just without backend metadata/annotations.
+ *
+ * @param metadataPath - Path to the downloaded OData metadata (EDMX) file
+ * @param servicePath - The OData service path (e.g. '/sap/opu/odata/sap/MY_SERVICE/')
+ * @param host - The SAP system host URL
+ * @param client - Optional SAP client number
+ * @param destination - Optional BTP destination name
+ * @returns The OData metadata (edmx) and, when a backend is configured, the fetched external services and annotations
+ */
+async function resolveServiceMetadata(
+    metadataPath: string,
+    servicePath: string,
+    host: string,
+    client?: string,
+    destination?: string
+): Promise<Pick<NonNullable<GeneratorConfigODataWithAPI['service']>, 'edmx' | 'externalServices' | 'annotations'>> {
+    const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
+
+    if (!host && !destination) {
+        return { edmx: metadata };
+    }
+
+    let serviceProvider: AbapServiceProvider | undefined;
+    try {
+        serviceProvider = await getAbapServiceProvider(host, client, destination);
+    } catch (error) {
+        logger.error(
+            `Error creating the ABAP service provider: ${error instanceof Error ? error.message : String(error)}`
+        );
+        logger.warn('App will be generated without backend service metadata and annotations');
+    }
+
+    return {
+        edmx: metadata,
+        externalServices: await getExternalServiceMetadata(serviceProvider, servicePath, metadata),
+        annotations: await getServiceAnnotations(serviceProvider, servicePath, metadata)
+    };
 }
 
 /**
