@@ -68,7 +68,7 @@ export function replaceTextsWithI18nBindings(
     for (const textId of Object.keys(contentTexts)) {
         const entry = { ...contentTexts[textId] };
         const generatedKey = `${fileName}_${textId}`;
-        entry.value = `{i18n>${generatedKey}}`;
+        entry.value = `{@i18n>${generatedKey}}`;
         result[textId] = entry;
     }
 

@@ -16,6 +16,16 @@ exports[`Adaptation Project Generator Integration Test ABAP Environment should c
       "texts": {
         "i18n": "i18n/i18n.properties"
       }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "@i18n",
+        "createIfMissing": true
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
     }
   ]
 }
@@ -124,6 +134,16 @@ exports[`Adaptation Project Generator Integration Test ABAP Environment should g
     {
       "changeType": "appdescr_app_setTitle",
       "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "@i18n",
+        "createIfMissing": true
+      },
       "texts": {
         "i18n": "i18n/i18n.properties"
       }
