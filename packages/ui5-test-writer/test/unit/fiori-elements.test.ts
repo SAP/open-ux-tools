@@ -903,6 +903,25 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingPressSupplement).toBeGreaterThan(bookingCheckSupplement);
             expect(targetSee).toBeGreaterThan(bookingPressSupplement);
         });
+
+        it('skips object page sections marked with UI.Hidden', async () => {
+            const appModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            appModel.applicationModel.pages.BookingObjectPage.model.root.aggregations.sections.aggregations.FlightDataSection.properties =
+                { hidden: { value: true } };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
+
+            const bookingObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.gen.js'].contents;
+            expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(2)');
+            expect(bookingObjPageJourneyContent).not.toContain('iCheckSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).not.toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
+        });
     });
 
     describe('generateOPAFiles TypeScript', () => {

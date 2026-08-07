@@ -565,6 +565,53 @@ describe('Test getObjectPageFeatures()', () => {
         expect(result[0].headerSections).toEqual([]);
     });
 
+    test('should skip header section marked hidden', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: {
+                                    aggregations: {
+                                        visibleSection: {
+                                            title: 'Visible',
+                                            custom: false,
+                                            schema: { keys: [{ name: 'ID', value: 'visibleFacet' }] },
+                                            properties: { hidden: { value: false } },
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation,
+                                        hiddenSection: {
+                                            title: 'Hidden',
+                                            custom: false,
+                                            schema: { keys: [{ name: 'ID', value: 'hiddenFacet' }] },
+                                            properties: { hidden: { value: true } },
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation,
+                                        stashedButHiddenSection: {
+                                            title: 'StashedHidden',
+                                            custom: false,
+                                            schema: { keys: [{ name: 'ID', value: 'stashedHiddenFacet' }] },
+                                            properties: { stashed: { freeText: true }, hidden: { value: true } },
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], 'listReportPage', mockLogger);
+        expect(result[0].headerSections).toHaveLength(1);
+        expect(result[0].headerSections?.[0].facetId).toBe('visibleFacet');
+    });
+
     test('should identify microChart sections', async () => {
         const objectPage = {
             name: 'objectPage1',
@@ -1201,6 +1248,118 @@ describe('Test getObjectPageFeatures()', () => {
         expect(result[0].bodySections?.[0].id).toBe('GeneralInformation');
         expect(result[0].bodySections?.[0].isTable).toBe(false);
         expect(result[0].bodySections?.[0].subSections).toEqual([]);
+    });
+
+    test('should skip body sections marked hidden', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: { sections: { aggregations: {} } as unknown as TreeAggregation }
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                visibleSection: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
+                                    properties: { hidden: { value: false } },
+                                    aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
+                                } as unknown as TreeAggregation,
+                                staticVisibleByProperty: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 2,
+                                    schema: { keys: [{ name: 'ID', value: 'StaticVisibleByProperty' }] },
+                                    properties: { hideByProperty: { value: false } },
+                                    aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
+                                } as unknown as TreeAggregation,
+                                hiddenByValue: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 3,
+                                    schema: { keys: [{ name: 'ID', value: 'HiddenByValue' }] },
+                                    properties: { hidden: { value: true } },
+                                    aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
+                                } as unknown as TreeAggregation,
+                                hiddenByPath: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 4,
+                                    schema: { keys: [{ name: 'ID', value: 'HiddenByPath' }] },
+                                    properties: { hideByProperty: { value: 'IsHiddenProp' } },
+                                    aggregations: { subsections: { aggregations: {} } as unknown as TreeAggregation }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        expect(result[0].bodySections).toHaveLength(2);
+        expect(result[0].bodySections?.map((section) => section.id)).toEqual([
+            'GeneralInformation',
+            'StaticVisibleByProperty'
+        ]);
+    });
+
+    test('should skip sub-sections marked hidden', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: { sections: { aggregations: {} } as unknown as TreeAggregation }
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
+                                    aggregations: {
+                                        subsections: {
+                                            aggregations: {
+                                                visibleSub: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    order: 1,
+                                                    schema: { keys: [{ name: 'ID', value: 'VisibleSub' }] },
+                                                    aggregations: {}
+                                                } as unknown as TreeAggregation,
+                                                hiddenSub: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    order: 2,
+                                                    schema: { keys: [{ name: 'ID', value: 'HiddenSub' }] },
+                                                    properties: { hidden: { value: true } },
+                                                    aggregations: {}
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        expect(result[0].bodySections?.[0].subSections).toHaveLength(1);
+        expect(result[0].bodySections?.[0].subSections?.[0].id).toBe('VisibleSub');
     });
 
     test('should return body section identifier from Key schema entry', async () => {
