@@ -1,10 +1,10 @@
 import type { AliasInformation, Element } from '@sap-ux/odata-annotation-core';
-import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
+import { Edm, elementsWithName } from '@sap-ux/odata-annotation-core';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { NoSingleFacetInCollection } from '../language/diagnostics.js';
 import { NO_SINGLE_FACET_IN_COLLECTION } from '../language/diagnostics.js';
-import { getRecordType } from '../project-context/linker/annotations.js';
+import { getRecordType, getPropertyValueElement } from '../project-context/linker/annotations.js';
 import { buildAnnotationIndexKey, type ParsedService } from '../project-context/parser/index.js';
 import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
 import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
@@ -21,14 +21,11 @@ const UI_REFERENCE_FACET = 'com.sap.vocabularies.UI.v1.ReferenceFacet';
  * @returns The child Collection element, or undefined
  */
 function getFacetsChildCollection(record: Element): Element | undefined {
-    const facetsPropertyValue = elements(
-        (el) => el.name === Edm.PropertyValue && el.attributes[Edm.Property]?.value === 'Facets',
-        record
-    );
-    if (facetsPropertyValue.length === 0) {
+    const facetsPropertyValue = getPropertyValueElement(record, 'Facets');
+    if (!facetsPropertyValue) {
         return undefined;
     }
-    const [childCollection] = elementsWithName(Edm.Collection, facetsPropertyValue[0]);
+    const [childCollection] = elementsWithName(Edm.Collection, facetsPropertyValue);
     return childCollection;
 }
 
