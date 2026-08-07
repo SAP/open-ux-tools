@@ -62,8 +62,10 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
         mask: '*',
         guiOptions: {
             mandatory: true,
-            type: 'login'
+            type: 'login',
+            applyDefaultWhenDirty: true
         },
+        default: '',
         validate: async (value: string, answers: Credentials): Promise<boolean | string> => {
             const validationResult = validateEmptyString(value);
             if (typeof validationResult === 'string') {
