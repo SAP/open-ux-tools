@@ -128,8 +128,10 @@ describe('Credentials Prompts', () => {
                 mask: '*',
                 guiOptions: {
                     mandatory: true,
-                    type: 'login'
+                    type: 'login',
+                    applyDefaultWhenDirty: true
                 },
+                default: '',
                 validate: expect.any(Function)
             });
         });
