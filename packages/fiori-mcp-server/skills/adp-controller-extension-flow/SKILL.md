@@ -180,6 +180,8 @@ The final summary (Step 13) must include, per change: chosen control, action, an
 
 ## Workflow
 
+> **One session per handover (hard rule).** Call `start` (Step 1) **exactly once** and `stop` (Step 13) **exactly once**, no matter how many changes are requested. Parse the full change list upfront, then run **all** changes as iterations of Steps 3–9 *inside* the single session, and `save` (Step 11) **once** at the end. **Never re-enter Step 1 (`start`) per change** — a fresh `start`/`stop` per change is the single most common misuse of this skill. When the handover prompt hands you a list of changes, that entire list is **one** session, not one session per bullet.
+
 ### Step 1 — Start RTA
 
 Call `run_rta_workflow_step` with `step: "start"`, payload `{ site, frameId: "preview" }`. Verify `rtaStarted: true`. Store the returned `sessionId`. On `false`, wait 3 s and retry once.
@@ -272,6 +274,8 @@ Call `step: "get_context"`, payload `{ controlId, actionId }`. The response is r
 - `availableModels` — the binding environment in effect at this control, keyed by model name. Each entry has `modelName`, `modelClass`, `defaultBindingMode`, `contextPath`, and **`contextEntityType`** (resolved via OData V4 async meta model or V2 sync meta model). Non-OData models with no active binding context on this element are filtered out — they carry no payload-relevant information.
 - `actionSpecificContext` — whatever the action's own `getContext` hook returns (action-dependent).
 
+> **Grounding gate (hard rule).** `get_context` (this step) is **not optional** whenever the change involves a data binding, an entity, or any property/path. You MUST call it and read its output before Step 8. **Every binding path, entity type, entity set, and property name you emit in a payload or in generated fragment/controller content MUST come from `get_context` (`contextEntityType`, `contextPath`, `availableModels`) or from `read_odata_metadata_adp` (Step 7) — never from the control's id, the user's phrasing, or a plausible-looking guess.** If neither tool gives you the path you need, **stop and run Step 7**; if Step 7 still doesn't yield it, **ask the user** (Step 8 required-field rule). Inventing a binding is the single most common cause of "the button renders but the search/data never triggers" — a change that reports `success: true` yet does nothing. Never skip the tools because a binding "looks obvious."
+
 #### Use `availableModels` before reaching for OData metadata
 
 `availableModels[<name>].contextEntityType` already tells you which entity the control is bound to and `contextPath` gives you the OData path. For the common "what is this bound to / what's the entity type here" question that Step 7 (OData metadata) used to answer, **inspect `availableModels` first** — it short-circuits the metadata call entirely. Only fall through to `read_odata_metadata_adp` (Step 7) when you need information `availableModels` can't give you: property-level details, navigation paths, annotation-driven hints, alternative entity sets, or the full EDMX of an unbound area.
@@ -342,6 +346,7 @@ Build `actionPayload` from the action's `parameters` schema (Step 5), the elemen
 
 General rules:
 - Fill structural fields from `get_context`; fill value fields from instructions.
+- **Binding provenance (hard rule):** any binding path, entity type, entity set, or property name in this payload (and in the Step 12 fragment/controller content) must trace to a specific field of the Step 6 `get_context` response or the Step 7 EDMX. If you cannot point to where a path came from, you are inventing it — stop, run Step 7, and if it still isn't there, ask. See the Grounding gate in Step 6.
 - Validate types match the schema (string vs int vs boolean — `index` is int, not string).
 
 **Confidence gating** (thresholds: high ≥ 0.90, ask < 0.70 — strictest of the three because a successful `call_action` with a wrong payload is the worst silent failure):
@@ -359,7 +364,7 @@ Call `step: "call_action"`, payload `{ controlId, actionId, actionPayload }`. On
 
 ### Step 10 — Loop for multiple changes
 
-If the user requested multiple changes, repeat Steps 3–9 once per change (the UI may have changed, so re-run `get_overlays` between changes — and re-run `get_page_actions` if a fresh navigation is needed).
+If the user requested multiple changes, repeat **Steps 3–9 only** (never Steps 1–2, never a fresh `start`) once per change, all under the same `sessionId`. The UI may have changed, so re-run `get_overlays` between changes — and re-run `get_page_actions` if a fresh navigation is needed.
 A single change request can still require multiple operations and changes to be created.
 If a single request implies multiple operations (e.g. "add a button that calls a function" = fragment + controller extension), execute each as a separate iteration.
 

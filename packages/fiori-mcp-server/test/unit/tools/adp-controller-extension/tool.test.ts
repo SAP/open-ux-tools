@@ -58,7 +58,7 @@ describe('adpControllerExtension', () => {
             expect(result.status).toBe('info');
             expect(result.message).toContain('Prompt received: "add a button"');
             expect(result.message).toContain('Layer: CUSTOMER_BASE');
-            expect(result.message).toContain('Customer prefix required: YES');
+            expect(result.message).toContain('Variant ID (namespace base — use verbatim): customer.adapt.demo');
         } finally {
             rmSync(appPath, { recursive: true, force: true });
         }

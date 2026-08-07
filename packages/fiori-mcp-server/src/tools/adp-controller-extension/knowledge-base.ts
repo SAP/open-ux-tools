@@ -13,33 +13,65 @@ IMPORTANT RULES:
 ADAPTATION PROJECT DETECTION:
 1. Check for the manifest.appdescr_variant file under the webapp folder
 2. If present, this is an adaptation project context
-3. CRITICAL: Read the "layer" property from manifest.appdescr_variant to determine if a customer prefix is needed:
-   - If layer is "CUSTOMER_BASE": Use "customer" prefix in controller extension namespace and fragment event handlers
-   - If layer is anything else: Do NOT use "customer" prefix
-4. Read "id" property from manifest.appdescr_variant and use it as namespace for change files
-5. Use the project root folder name (folder containing webapp) for controller extension namespaces
+3. Read the "id" property from manifest.appdescr_variant — this is the namespace BASE for controller
+   extensions, fragment handlers, and Fragment.load names (see NAMESPACE BASE section below)
+4. Read the "layer" property - informational only. For CUSTOMER_BASE projects the "customer." segment is
+   already baked into the id, so you never add a "customer." prefix yourself
+5. The project root folder name (folder containing webapp) is informational only — do NOT build
+   namespaces from it
 6. ALWAYS check the manifest.appdescr_variant file before generating code
 
 CONTROLLER EXTENSION NAMESPACE PATTERN:
+
+NAMESPACE BASE = THE VARIANT ID (CRITICAL):
+- The base namespace for controller extensions, fragment handlers, and Fragment.load names is the
+  "id" property from manifest.appdescr_variant (surfaced as "Variant ID" in PROJECT CONTEXT), NOT the
+  project folder name. Example id: "customer.app.variant2".
+- The variant id ALREADY contains the "customer." prefix when the layer is CUSTOMER_BASE — the tooling
+  bakes it into the id at project creation. Do NOT prepend "customer." yourself; that would double it
+  (e.g. "customer.customer.app.variant2"). Use the id verbatim as the base.
+- For layers other than CUSTOMER_BASE the id simply has no "customer." segment — again, use it verbatim.
+- The project folder name is informational only. Do not construct namespaces from it.
+
 FRAGMENT FILES (XML) - Event Handler References:
-- Standard layer: press=".extension.{project-folder-name}.{controller-extension-name}.{methodName}"
-- CUSTOMER_BASE layer: press=".extension.customer.{project-folder-name}.{controller-extension-name}.{methodName}"
-- Example (standard layer): press=".extension.myapp.ControllerExt.onPressAction"
-- Example (CUSTOMER_BASE layer): press=".extension.customer.myapp.ControllerExt.onPressAction"
+- Pattern: press=".extension.{variant-id}.{controller-extension-name}.{methodName}"
+- Example (CUSTOMER_BASE, id "customer.app.variant2"): press=".extension.customer.app.variant2.ObjectPageExt.onPressAction"
+- Example (standard, id "app.variant2"): press=".extension.app.variant2.ObjectPageExt.onPressAction"
 - The ".extension" prefix is ONLY used in fragment XML event handlers
-- The "customer" prefix is ONLY added in fragment XML when layer is CUSTOMER_BASE
-- The {project-folder-name} must be the adaptation project root folder name (the folder above webapp)
+- The "customer." segment appears only because it is part of the variant id — never add it separately
+
+FRAGMENT LOAD PATH DECIDES THE HANDLER FORM (CRITICAL):
+- UI5 resolves ".extension.{...}.{method}" as a nested-property walk on the fragment's controller:
+  ".extension.{variant-id}.MyExt.onPress" -> controller.extension.{variant-id}.MyExt.onPress.
+  That "extension" property chain ONLY exists on a view controller that has the extension REGISTERED.
+- Therefore the ".extension.{variant-id}.*" prefix is correct ONLY for fragments that are AGGREGATION-ADOPTED
+  into an XML view (toolbar buttons, table cells, subsection actions). The view supplies its controller,
+  and the extension is reachable under ".extension.*".
+- A fragment opened PROGRAMMATICALLY via Fragment.load({ controller: this }) from inside the controller
+  extension (typically a Dialog) receives the extension INSTANCE itself as its controller. Handlers defined
+  directly on that instance are reached with a BARE method name (press="onClose"), NOT the ".extension.*"
+  path — a no-dot handler name resolves as controller["onClose"]. Using the ".extension.*" form here fails,
+  because the passed instance has no ".extension" chain.
+- Rule of thumb: is the fragment loaded with Fragment.load({ controller: this })? -> BARE method name.
+  Is it aggregation-adopted into the view? -> ".extension.{variant-id}.*" prefix. Both handler kinds may live
+  on the SAME extension object; the difference is the LOAD PATH, not the method.
+- When generating a Fragment.load call, ALWAYS pass "controller: this" so the fragment's handlers resolve
+  against the extension instance. Omitting the controller is the real cause of "button renders but press
+  does nothing". No Component#runAsOwner wrapper is needed here — inside a controller extension "this" is
+  already owned by the base component, so Fragment.load inherits the owner and resolves extensions.
+- The Fragment.load "name" is a dotted module path based on the variant id, NOT the folder name:
+  "{variant-id}.changes.fragments.{FragmentName}".
+  Example: Fragment.load({ name: "customer.app.variant2.changes.fragments.SupplierContactDialog", controller: this }).
 
 CONTROLLER EXTENSION FILES (JS/TS) - File Paths and Namespaces:
-- File path: webapp/changes/coding/{controller-extension-name}.js (NO customer prefix in file path)
-- Namespace in ControllerExtension.extend():
-  * Standard layer: ControllerExtension.extend("{project-folder}.{ControllerExtName}", {...})
-  * CUSTOMER_BASE layer: ControllerExtension.extend("customer.{project-folder}.{ControllerExtName}", {...})
-- Example (standard): ControllerExtension.extend("adapt.blog.ControllerExt", {...})
-- Example (CUSTOMER_BASE): ControllerExtension.extend("customer.adapt.blog.ControllerExt", {...})
-- The "customer" prefix is added to the extend() namespace when layer is CUSTOMER_BASE
+- File path: webapp/changes/coding/{controller-extension-name}.js
+- Namespace in ControllerExtension.extend(): use the variant id as the base:
+  * ControllerExtension.extend("{variant-id}.{ControllerExtName}", {...})
+- Example (CUSTOMER_BASE, id "customer.app.variant2"): ControllerExtension.extend("customer.app.variant2.ControllerExt", {...})
+- Example (standard, id "app.variant2"): ControllerExtension.extend("app.variant2.ControllerExt", {...})
+- The "customer." segment is present only because it is part of the variant id — do NOT add it separately
 - Do NOT use ".extension" prefix in the controller extension namespace
-- The controller file path does NOT include "customer" - only the namespace in the code does
+- The extend() namespace must match the change file's moduleName (variant id with dots as slashes + "/changes/coding/{ControllerExtName}") — deriving both from the variant id keeps them in sync
 
 ID & CONTROL HANDLING:
 - CRITICAL: Do NOT add an id attribute to Dialog controls in controller extension files. Dialogs should be created without an id property.
@@ -63,33 +95,33 @@ IMPORTANT: The controlType comment refers to the PARENT control that will contai
 
 CONTROLLER EXTENSION WORKFLOW:
 1. Read manifest.appdescr_variant:
-   - Extract 'id' property (app variant ID) - used for change file namespace
-   - Extract 'layer' property - determines if a customer prefix is needed
-   - CUSTOMER_BASE layer requires "customer" prefix in:
-     * Fragment event handlers: press=".extension.customer.{project}.{Controller}.{method}"
-     * Controller extension namespace: ControllerExtension.extend("customer.{project}.{Controller}", {...})
+   - Extract 'id' property (app variant id) - this is the BASE for the change file namespace,
+     the ControllerExtension.extend() namespace, the fragment handler paths, and Fragment.load names
+   - Extract 'layer' property - informational; the "customer." segment (when present) is already part
+     of the id for CUSTOMER_BASE projects, so you never add it separately
 
-2. Determine project folder name:
-   - Use the adaptation project root folder name (the folder that contains webapp)
-   - This is used in both fragment event handlers and controller extension namespace
+2. Use the variant id verbatim as the namespace base:
+   - The project folder name is informational only — do NOT build namespaces from it
+   - The same variant id feeds fragment handlers, the extend() namespace, and Fragment.load names
 
 3. Create controller extension file:
-   - File path: webapp/changes/coding/{ControllerExtName}.js (NO customer prefix in path)
+   - File path: webapp/changes/coding/{ControllerExtName}.js
    - Do NOT add .controller to the file name
    - Use sap.ui.define with "sap/ui/core/mvc/ControllerExtension" (NOT sap/ui/core/mvc/Controller)
-   - Namespace pattern:
-     * Standard layer: return ControllerExtension.extend("{project-folder}.{ControllerExtName}", {...});
-     * CUSTOMER_BASE layer: return ControllerExtension.extend("customer.{project-folder}.{ControllerExtName}", {...});
-   - Example (standard): ControllerExtension.extend("adapt.blog.ControllerExt", {...})
-   - Example (CUSTOMER_BASE): ControllerExtension.extend("customer.adapt.blog.ControllerExt", {...})
+   - Namespace pattern: return ControllerExtension.extend("{variant-id}.{ControllerExtName}", {...});
+   - Example (CUSTOMER_BASE, id "customer.app.variant2"): ControllerExtension.extend("customer.app.variant2.ControllerExt", {...})
+   - Example (standard, id "app.variant2"): ControllerExtension.extend("app.variant2.ControllerExt", {...})
 
 4. Create XML fragment file (if needed):
    - Add stable, unique IDs to ALL controls and sub-elements
-   - Wire event handlers with proper namespace pattern:
-     * Standard layer: press=".extension.{project-folder}.{ControllerExt}.{methodName}"
-     * CUSTOMER_BASE layer: press=".extension.customer.{project-folder}.{ControllerExt}.{methodName}"
-   - The "customer" prefix matches the controller extension namespace
+   - Wire event handlers with the variant-id-based pattern:
+     * press=".extension.{variant-id}.{ControllerExt}.{methodName}"
    - The ".extension" prefix is ONLY used in fragment XML event handlers
+   - The "customer." segment appears only because it is part of the variant id — never add it separately
+   - EXCEPTION — dialog / programmatically-loaded fragments: if this fragment is opened via
+     Fragment.load({ controller: this }) (not adopted into a view), use BARE method names
+     (press="onClose"), NOT the ".extension.*" path. See "FRAGMENT LOAD PATH DECIDES THE
+     HANDLER FORM" above. Emit "controller: this" in every generated Fragment.load call.
 
 5. Do not create duplicate files:
    - Do not create a new controller extension file if one already exists for the selected view
@@ -133,9 +165,9 @@ export function buildKnowledgeBaseResponse(
     if (projectContext) {
         message += `=== PROJECT CONTEXT ===\n`;
         message += `- Layer: ${projectContext.layer}\n`;
-        message += `- Variant ID: ${projectContext.variantId}\n`;
-        message += `- Project folder name: ${projectContext.projectFolderName}\n`;
-        message += `- Customer prefix required: ${projectContext.layer === 'CUSTOMER_BASE' ? 'YES' : 'NO'}\n\n`;
+        message += `- Variant ID (namespace base — use verbatim): ${projectContext.variantId}\n`;
+        message += `- Project folder name (informational only — do NOT use for namespaces): ${projectContext.projectFolderName}\n`;
+        message += `- Namespace base is the Variant ID above; the "customer." segment (if any) is already part of it — do NOT add a "customer." prefix separately\n\n`;
     }
 
     if (existingFiles && existingFiles.length > 0) {

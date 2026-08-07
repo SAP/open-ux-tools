@@ -1,9 +1,37 @@
 import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { join } from 'node:path';
 import { existsSync, promises as FSpromises } from 'node:fs';
-import { runCmd, logger } from '../utils/index.js';
+import { runCmdArgs, logger } from '../utils/index.js';
 import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
 import { fetchKeyUserChanges } from './generate-adaptation-project/key-user-changes.js';
+
+/** Maximum time to wait for the key user changes fetch before aborting generation. */
+const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;
+
+/** Maximum time to allow the adaptation project generator to run before it is terminated. */
+const GENERATION_TIMEOUT_MS = 5 * 60_000;
+
+/**
+ * Rejects with a descriptive error if the given promise does not settle within `timeoutMs`.
+ *
+ * @param promise - The promise to guard.
+ * @param timeoutMs - Timeout in milliseconds.
+ * @param onTimeoutMessage - Error message used when the timeout elapses.
+ * @returns The resolved value of `promise` if it settles in time.
+ */
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutMessage: string): Promise<T> {
+    let timer: NodeJS.Timeout | undefined;
+    const timeout = new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => reject(new Error(onTimeoutMessage)), timeoutMs);
+    });
+    try {
+        return await Promise.race([promise, timeout]);
+    } finally {
+        if (timer) {
+            clearTimeout(timer);
+        }
+    }
+}
 
 /**
  * Generates a new SAP Fiori adaptation project by invoking the @sap-ux/adp Yeoman generator.
@@ -67,14 +95,20 @@ export async function generateAdaptationProject(
         }
 
         if (importKeyUserChanges) {
-            const keyUserChanges = await fetchKeyUserChanges({
-                system,
-                application,
-                client,
-                username,
-                password,
-                logger
-            });
+            const keyUserChanges = await withTimeout(
+                fetchKeyUserChanges({
+                    system,
+                    application,
+                    client,
+                    username,
+                    password,
+                    logger
+                }),
+                KEY_USER_CHANGES_TIMEOUT_MS,
+                `Fetching key user changes for '${application}' on '${system}' timed out after ` +
+                    `${KEY_USER_CHANGES_TIMEOUT_MS}ms. The system may be unreachable or require credentials; ` +
+                    'pass "username" and "password" or set importKeyUserChanges to false.'
+            );
             // Only attach a payload when we have content so we don't override
             // the user's intent with an empty array.
             if (keyUserChanges.length > 0) {
@@ -88,9 +122,14 @@ export async function generateAdaptationProject(
 
         await FSpromises.mkdir(finalTargetFolder, { recursive: true });
 
+        // Pass the JSON payload as a single argv element (not interpolated into a shell string) so
+        // quotes, spaces or apostrophes in values cannot corrupt it. A corrupted payload would make
+        // the generator silently fall back to interactive prompts and hang with no attached stdin.
         const jsonString = JSON.stringify(jsonInput);
-        const command = `npx -y yo@4 @sap-ux/adp '${jsonString}' --force`;
-        const { stdout, stderr } = await runCmd(command, { cwd: process.cwd() });
+        const { stdout, stderr } = await runCmdArgs('npx', ['-y', 'yo@4', '@sap-ux/adp', jsonString, '--force'], {
+            cwd: process.cwd(),
+            timeout: GENERATION_TIMEOUT_MS
+        });
 
         logger.info(stdout);
         if (stderr) {

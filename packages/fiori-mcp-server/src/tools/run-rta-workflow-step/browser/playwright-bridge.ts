@@ -76,6 +76,18 @@ async function createPageRPC(page: Page): Promise<PageRPC> {
             executionContext = matched;
         }
 
+        // Wait up to 60 s for the bridge to be registered (RTA needs time to start).
+        await (executionContext as Page | Frame).waitForFunction(
+            () =>
+                !!(
+                    window as unknown as {
+                        sapdas?: { webclientBridge?: { getFrontendActions?: () => unknown } };
+                    }
+                ).sapdas?.webclientBridge?.getFrontendActions,
+            undefined,
+            { timeout: 60000 }
+        );
+
         const response = await executionContext.evaluate(
             async ({ name, p }: { name: string; p: Record<string, unknown> }) => {
                 const bridge = (window as unknown as WebclientBridgeWindow).sapdas?.webclientBridge;
