@@ -48,15 +48,6 @@ function hasSingleReferenceFacet(childCollection: Element, aliasInfo: AliasInfor
 }
 
 /**
- * Finds CollectionFacet records that contain exactly one ReferenceFacet child.
- * Checks both the top-level UI.Facets collection and one level of nesting inside
- * CollectionFacets (second-level CollectionFacets). Third-level and beyond are out of scope.
- *
- * @param facetsCollection - The Collection element directly under the UI.Facets Annotation
- * @param aliasInfo - Alias information for resolving qualified names
- * @returns Array of CollectionFacet elements containing exactly one ReferenceFacet
- */
-/**
  * Checks one level of nested CollectionFacets inside a parent CollectionFacet's child collection.
  * Pushes any nested CollectionFacet that itself has exactly one ReferenceFacet child.
  *
@@ -222,7 +213,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     .filter((r) => r.annotation.reportedParent === node)
                     .forEach((r) => {
                         context.report({
-                            node: r.annotation.reference.value as Element,
+                            node: r.annotation.reference.value,
                             messageId: NO_SINGLE_FACET_IN_COLLECTION
                         });
                     });
