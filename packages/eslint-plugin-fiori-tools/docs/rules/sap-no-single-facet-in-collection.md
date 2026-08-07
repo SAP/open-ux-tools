@@ -13,6 +13,45 @@ This rule scans `UI.Facets` annotations and reports any `UI.CollectionFacet` rec
 
 The following patterns are considered warnings:
 
+```cds
+// CollectionFacet with a single ReferenceFacet child
+annotate service.Incidents with @(
+    UI.Facets: [{
+        $Type : 'UI.CollectionFacet',
+        ID    : 'GeneralInfo',
+        Label : 'General Information',
+        Facets: [{
+            $Type : 'UI.ReferenceFacet',
+            Target: '@UI.FieldGroup#Details',
+        }],
+    }],
+);
+```
+
+```cds
+// Nested CollectionFacet with a single ReferenceFacet child (inner violation)
+annotate service.Incidents with @(
+    UI.Facets: [{
+        $Type : 'UI.CollectionFacet',
+        ID    : 'Outer',
+        Facets: [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Target: '@UI.FieldGroup#Details',
+            },
+            {
+                $Type : 'UI.CollectionFacet',
+                ID    : 'Inner',
+                Facets: [{
+                    $Type : 'UI.ReferenceFacet',
+                    Target: '@UI.FieldGroup#Address',
+                }],
+            },
+        ],
+    }],
+);
+```
+
 ```xml
 <!-- CollectionFacet with a single ReferenceFacet child -->
 <Annotations Target="MyService.MyEntity">
@@ -35,6 +74,39 @@ The following patterns are considered warnings:
 ```
 
 The following patterns are not considered warnings:
+
+```cds
+// ReferenceFacet used directly under UI.Facets
+annotate service.Incidents with @(
+    UI.Facets: [{
+        $Type : 'UI.ReferenceFacet',
+        ID    : 'GeneralInfo',
+        Label : 'General Information',
+        Target: '@UI.FieldGroup#Details',
+    }],
+);
+```
+
+```cds
+// CollectionFacet with multiple ReferenceFacet children
+annotate service.Incidents with @(
+    UI.Facets: [{
+        $Type : 'UI.CollectionFacet',
+        ID    : 'GeneralInfo',
+        Label : 'General Information',
+        Facets: [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Target: '@UI.FieldGroup#Details',
+            },
+            {
+                $Type : 'UI.ReferenceFacet',
+                Target: '@UI.FieldGroup#Address',
+            },
+        ],
+    }],
+);
+```
 
 ```xml
 <!-- ReferenceFacet used directly under UI.Facets -->
