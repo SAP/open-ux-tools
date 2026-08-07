@@ -1,5 +1,6 @@
 import prompts from 'prompts';
-import { createForAbap } from '@sap-ux/axios-extension';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import type { AxiosError } from '@sap-ux/axios-extension';
 import { getLogger } from '../../tracing/index.js';
 import { text } from '../../i18n.js';
 
@@ -32,18 +33,29 @@ export async function checkSystemConnection(config: {
 
     // Attempt actual connection check
     try {
-        const hasCredentials = config.authenticationType === 'basic' && config.username && config.password;
+        const logger = getLogger();
 
-        const service = createForAbap({
-            baseURL: config.url,
-            auth: hasCredentials
+        // Build target configuration for system-access
+        const target = {
+            url: config.url,
+            client: config.client,
+            authenticationType: config.authenticationType as any
+        };
+
+        // Build request options with auth if provided
+        const requestOptions =
+            config.authenticationType === 'basic' && config.username && config.password
                 ? {
-                      username: config.username!,
-                      password: config.password!
+                      auth: {
+                          username: config.username,
+                          password: config.password
+                      }
                   }
-                : undefined,
-            params: config.client ? { 'sap-client': config.client } : undefined
-        });
+                : undefined;
+
+        // Create service provider using system-access utilities
+        // prompt=false because we're in non-interactive connection check mode
+        const service = await createAbapServiceProvider(target, requestOptions, false, logger);
 
         // Attempt lightweight request with 5-second timeout
         // Use /sap/bc/ping for systems that support it, or root path as fallback

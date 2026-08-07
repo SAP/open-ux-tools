@@ -4,8 +4,9 @@ import type prompts from 'prompts';
 const mockPrompts = jest.fn() as unknown as typeof prompts;
 const mockLoggerInfo = jest.fn();
 const mockLoggerWarn = jest.fn();
+const mockLoggerDebug = jest.fn();
 const mockAxiosGet = jest.fn();
-const mockCreateForAbap = jest.fn();
+const mockCreateAbapServiceProvider = jest.fn();
 
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
 
@@ -40,11 +41,12 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
 jest.unstable_mockModule('../../../../src/tracing/index.js', () => ({
     getLogger: () => ({
         info: mockLoggerInfo,
-        warn: mockLoggerWarn
+        warn: mockLoggerWarn,
+        debug: mockLoggerDebug
     })
 }));
-jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
-    createForAbap: (...args: any[]) => mockCreateForAbap(...args)
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: (...args: any[]) => mockCreateAbapServiceProvider(...args)
 }));
 
 const { checkSystemConnection, checkConnectionOrPrompt } =
@@ -55,11 +57,12 @@ describe('system-connection', () => {
         mockPrompts.mockReset();
         mockLoggerInfo.mockReset();
         mockLoggerWarn.mockReset();
+        mockLoggerDebug.mockReset();
         mockAxiosGet.mockReset();
-        mockCreateForAbap.mockReset();
+        mockCreateAbapServiceProvider.mockReset();
 
-        // Default: successful connection for basic auth with credentials
-        mockCreateForAbap.mockReturnValue({
+        // Default: successful connection
+        mockCreateAbapServiceProvider.mockResolvedValue({
             get: mockAxiosGet.mockResolvedValue({ status: 200 })
         });
     });
@@ -77,7 +80,7 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
-            expect(mockCreateForAbap).toHaveBeenCalled(); // Now attempts connection even without credentials
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled(); // Now attempts connection even without credentials
         });
 
         test('should attempt connection with client parameter even without credentials', async () => {
@@ -92,7 +95,7 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
-            expect(mockCreateForAbap).toHaveBeenCalled();
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
         });
 
         test('should attempt real connection with basic auth and credentials', async () => {
@@ -106,14 +109,20 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
-            expect(mockCreateForAbap).toHaveBeenCalledWith({
-                baseURL: 'https://valid.example.com',
-                auth: {
-                    username: 'testuser',
-                    password: 'testpass'
-                },
-                params: undefined
-            });
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    url: 'https://valid.example.com',
+                    authenticationType: 'basic'
+                }),
+                expect.objectContaining({
+                    auth: {
+                        username: 'testuser',
+                        password: 'testpass'
+                    }
+                }),
+                false, // prompt
+                expect.anything() // logger
+            );
             expect(mockAxiosGet).toHaveBeenCalledWith('/sap/bc/ping', { timeout: 5000 });
         });
 
@@ -128,14 +137,21 @@ describe('system-connection', () => {
             });
 
             expect(result.success).toBe(true);
-            expect(mockCreateForAbap).toHaveBeenCalledWith({
-                baseURL: 'https://valid.example.com',
-                auth: {
-                    username: 'testuser',
-                    password: 'testpass'
-                },
-                params: { 'sap-client': '100' }
-            });
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    url: 'https://valid.example.com',
+                    client: '100',
+                    authenticationType: 'basic'
+                }),
+                expect.objectContaining({
+                    auth: {
+                        username: 'testuser',
+                        password: 'testpass'
+                    }
+                }),
+                false,
+                expect.anything()
+            );
         });
 
         test('should return error for HTTP 401 Unauthorized', async () => {
@@ -218,7 +234,7 @@ describe('system-connection', () => {
             });
 
             expect(result.success).toBe(true); // 401 means system is reachable
-            expect(mockCreateForAbap).toHaveBeenCalled();
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
         });
 
         test('should attempt connection for oauth2 auth and treat 401 as success', async () => {
@@ -232,7 +248,7 @@ describe('system-connection', () => {
             });
 
             expect(result.success).toBe(true); // 401 means system is reachable
-            expect(mockCreateForAbap).toHaveBeenCalled();
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
         });
 
         test('should return error for invalid URL', async () => {
