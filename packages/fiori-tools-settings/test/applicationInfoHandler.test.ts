@@ -82,4 +82,42 @@ describe('Application Info Settings', () => {
         expect(executeCommand).toHaveBeenCalledWith(testPath); // Should execute (default: true)
         expect(fs.exists(appInfoFilePath)).toBe(false);
     });
+
+    it('addGeneratedFiles should handle commit errors gracefully', (done) => {
+        const testPath = 'test-file-path';
+        const mockFs = create(createStorage());
+        const originalCommit = mockFs.commit.bind(mockFs);
+        const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+
+        // Mock commit to trigger error callback
+        mockFs.commit = (callback: (err: Error | null) => void) => {
+            callback(new Error('Mock commit error'));
+        };
+
+        addGeneratedFiles(testPath, mockFs);
+
+        setTimeout(() => {
+            expect(consoleLogSpy).toHaveBeenCalledWith(expect.any(Error));
+            consoleLogSpy.mockRestore();
+            done();
+        }, 50);
+    });
+
+    it('initAppInfoSettings should handle commit errors gracefully', (done) => {
+        const mockFs = create(createStorage());
+        const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+
+        // Mock commit to trigger error callback
+        mockFs.commit = (callback: (err: Error | null) => void) => {
+            callback(new Error('Mock commit error'));
+        };
+
+        initAppInfoSettings(mockFs);
+
+        setTimeout(() => {
+            expect(consoleLogSpy).toHaveBeenCalledWith(expect.any(Error));
+            consoleLogSpy.mockRestore();
+            done();
+        }, 50);
+    });
 });
