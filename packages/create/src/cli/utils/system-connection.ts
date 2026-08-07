@@ -48,10 +48,7 @@ async function attemptRootEndpoint(service: any): Promise<{ success: boolean }> 
  * @param authenticationType - Authentication type being used
  * @returns Error result with message
  */
-function categorizeConnectionError(
-    error: any,
-    authenticationType: string
-): { success: boolean; error?: string } {
+function categorizeConnectionError(error: any, authenticationType: string): { success: boolean; error?: string } {
     // 401 means system is reachable but auth failed
     if (error.response?.status === 401) {
         // For basic auth, 401 is a failure
