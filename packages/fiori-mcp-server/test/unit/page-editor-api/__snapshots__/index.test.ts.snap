@@ -6496,16 +6496,16 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
               "text": "",
             },
             Object {
-              "key": "AnalyticalTable",
-              "text": "AnalyticalTable",
+              "key": "ResponsiveTable",
+              "text": "ResponsiveTable",
             },
             Object {
               "key": "GridTable",
               "text": "GridTable",
             },
             Object {
-              "key": "ResponsiveTable",
-              "text": "ResponsiveTable",
+              "key": "AnalyticalTable",
+              "text": "AnalyticalTable",
             },
             Object {
               "key": "TreeTable",
@@ -6820,6 +6820,33 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
                 "table",
                 "personalization",
                 "filter",
+              ],
+              "type": "boolean",
+              "value": undefined,
+            },
+            Object {
+              "artifactType": "Manifest",
+              "description": "Defines whether the user can group data of a given table.",
+              "displayName": "Group",
+              "name": "group",
+              "options": Array [
+                Object {
+                  "key": undefined,
+                  "text": "",
+                },
+                Object {
+                  "key": true,
+                  "text": "True",
+                },
+                Object {
+                  "key": false,
+                  "text": "False",
+                },
+              ],
+              "schemaPath": Array [
+                "table",
+                "personalization",
+                "group",
               ],
               "type": "boolean",
               "value": undefined,

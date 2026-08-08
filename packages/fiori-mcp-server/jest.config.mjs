@@ -24,8 +24,7 @@ export default {
         // Stub fe-fpm-writer to prevent the CJS require chain: ux-specification → fe-fpm-writer →
         // fiori-annotation-api → @sap/ux-cds-compiler-facade which conflicts with the ESM mock
         '^@sap-ux/fe-fpm-writer$': '<rootDir>/test/__mocks__/@sap-ux/fe-fpm-writer.cjs',
-        '^@sap/ux-specification$': '<rootDir>/test/__mocks__/@sap/ux-specification.mjs',
-        ...baseConfig.moduleNameMapper,
+...baseConfig.moduleNameMapper,
         '^@huggingface/transformers$': '<rootDir>/test/__mocks__/@huggingface/transformers.cjs'
     }
 };
