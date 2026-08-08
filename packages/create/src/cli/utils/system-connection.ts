@@ -1,4 +1,4 @@
-import prompts from 'prompts';
+import { confirm } from '@inquirer/prompts';
 import { getLogger } from '../../tracing/index.js';
 
 /**
@@ -77,12 +77,10 @@ export async function checkConnectionOrPrompt(
 
     logger.warn(`Connection check failed: ${result.error || 'Unknown error'}`);
 
-    const answer = await prompts({
-        type: 'confirm',
-        name: 'saveAnyway',
+    const saveAnyway = await confirm({
         message: 'Connection check failed. Save system anyway?',
-        initial: false
+        default: false
     });
 
-    return answer.saveAnyway === true;
+    return saveAnyway;
 }

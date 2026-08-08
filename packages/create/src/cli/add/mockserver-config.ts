@@ -1,14 +1,11 @@
 import { relative } from 'node:path';
 import type { Command } from 'commander';
-import prompts from 'prompts';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig, getMockserverConfigQuestions } from '@sap-ux/mockserver-config-writer';
 import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
 import { validateBasePath } from '../../validation/index.js';
 import { runNpmInstallCommand } from '../../common/index.js';
-
-const { prompt } = prompts;
 
 /**
  * Add the "add mockserver config" command to a passed command.
@@ -63,8 +60,29 @@ async function addMockserverConfig(
         const config: MockserverConfig = { webappPath };
         if (interactive) {
             const questions = getMockserverConfigQuestions({ webappPath, askForOverwrite: true });
-            // User responses for webappPath and whether to overwrite existing services in mockserver config
-            config.ui5MockYamlConfig = await prompt(questions);
+            // getMockserverConfigQuestions returns prompts-format questions, convert them on the fly
+            const answers: Record<string, any> = {};
+            const {
+                input: inquirerInput,
+                confirm: inquirerConfirm,
+                select: inquirerSelect
+            } = await import('@inquirer/prompts');
+            for (const q of questions) {
+                const message = typeof q.message === 'string' ? q.message : String(q.message);
+                const qType = typeof q.type === 'string' ? q.type : 'text';
+                if (qType === 'text' || qType === 'number') {
+                    answers[q.name as string] = await inquirerInput({ message });
+                } else if (qType === 'confirm') {
+                    answers[q.name as string] = await inquirerConfirm({ message, default: false });
+                } else if (qType === 'select') {
+                    const rawChoices = (q.choices ?? []) as Array<{ title: string; value: unknown }>;
+                    answers[q.name as string] = await inquirerSelect({
+                        message,
+                        choices: rawChoices.map((c) => ({ name: c.title, value: c.value }))
+                    });
+                }
+            }
+            config.ui5MockYamlConfig = answers;
         }
         const fs = await generateMockserverConfig(basePath, config);
         await traceChanges(fs);
