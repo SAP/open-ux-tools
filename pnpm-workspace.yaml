@@ -55,7 +55,7 @@ overrides:
     "picomatch@>=4.0.0 <4.0.4": "4.0.4"
     "router>path-to-regexp": "0.1.13"
     "express>path-to-regexp": "0.1.13"
-    "router@^2.0.0>path-to-regexp": "8.4.0"
+    "router@^2.0.0>path-to-regexp": "8.4.2"
     tar: ">=7.5.15"
     "cacache@15>tar": ">=7.5.15"
     "cacache@16>tar": ">=7.5.15"
