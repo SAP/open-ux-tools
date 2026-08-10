@@ -1,5 +1,14 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/ui5-test-writer 1.4.3 → 1.4.4
+
 ## 3.1.27
 
 ### Patch Changes

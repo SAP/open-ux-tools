@@ -14,13 +14,16 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 const mockAbapServiceProvider = jest.fn<any>();
 const mockTlsPatchApply = jest.fn();
 const mockTlsPatchIsPatchRequired = jest.fn<(url: string) => boolean>().mockReturnValue(false);
+const mockCreateForAbapOnCloud = jest.fn<any>().mockImplementation(() => new (mockAbapServiceProvider as any)());
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
+    AbapCloudEnvironment: { EmbeddedSteampunk: 'EmbeddedSteampunk' },
     ODataVersion,
     TlsPatch: {
         isPatchRequired: mockTlsPatchIsPatchRequired,
         apply: mockTlsPatchApply
-    }
+    },
+    createForAbapOnCloud: mockCreateForAbapOnCloud
 }));
 
 const realLogger = await import('@sap-ux/logger');
