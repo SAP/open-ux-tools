@@ -1,12 +1,14 @@
 import React from 'react';
-import type { IButtonProps, IButtonStyles } from '@fluentui/react';
+import type { IButton, IButtonProps, IButtonStyles } from '@fluentui/react';
 import { ActionButton } from '@fluentui/react';
 
 import { UIContextualMenu } from '../UIContextualMenu/index.js';
 import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
 import { BASE_STYLES } from './UIDefaultButton.js';
+import { handleMenuKeyDown } from './utils.js';
+import type { UIBaseButtonProps } from './utils.js';
 
-interface UIButtonProps extends IButtonProps {
+interface UIButtonProps extends IButtonProps, UIBaseButtonProps {
     menuProps?: UIIContextualMenuProps;
 }
 
@@ -19,6 +21,8 @@ interface UIButtonProps extends IButtonProps {
  * @extends {React.Component<IButtonProps, {}>}
  */
 export class UIActionButton extends React.Component<UIButtonProps, {}> {
+    private _buttonRef = React.createRef<IButton>();
+
     /**
      * Initializes component properties.
      *
@@ -91,6 +95,19 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        return <ActionButton {...this.props} styles={this.setStyle()} menuAs={UIContextualMenu} />;
+        const { propagateMenuOpenKeyDown = true, ...props } = this.props;
+        return (
+            <ActionButton
+                componentRef={this._buttonRef}
+                {...props}
+                onKeyDown={
+                    propagateMenuOpenKeyDown
+                        ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown)
+                        : props.onKeyDown
+                }
+                styles={this.setStyle()}
+                menuAs={UIContextualMenu}
+            />
+        );
     }
 }
