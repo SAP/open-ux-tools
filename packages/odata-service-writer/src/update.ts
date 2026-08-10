@@ -203,7 +203,7 @@ export async function addServicesData(
  * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
  * @param {EdmxOdataService} service - the OData service instance
  * @param {Editor} fs - the memfs editor instance
- * @param {boolean} updateMiddlewares - whether the YAML files for the service (mock-server and fiori-tools-proxy middlewares) should be updated
+ * @param {boolean} updateMiddlewares - whether the backend proxy (fiori-tools-proxy) middleware in ui5*.yaml should be updated. The mockserver (sap-fe-mockserver) middleware is additionally regenerated whenever external (value-help) services are present, so the written external metadata stays resolvable.
  */
 export async function updateServicesData(
     basePath: string,
@@ -215,15 +215,23 @@ export async function updateServicesData(
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
 
-    if (updateMiddlewares) {
-        if (paths.ui5Yaml) {
-            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+    // The mockserver middleware is derived from the manifest and must stay consistent with the external
+    // (value-help) metadata files we write. Regenerate it whenever external services are present, even
+    // when the backend proxy middlewares are being preserved (updateMiddlewares === false).
+    const updateMockserver = updateMiddlewares || !!service.externalServices?.length;
+
+    if (updateMockserver && paths.ui5Yaml) {
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        // Only re-point the backend proxy middleware when explicitly requested.
+        if (updateMiddlewares) {
             // Update ui5.yaml with backend middleware
             extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml, true);
         }
+    }
+    if (updateMockserver && paths.ui5LocalYaml) {
+        ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
         // Update ui5-local.yaml with backend middleware
-        if (paths.ui5LocalYaml) {
-            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+        if (updateMiddlewares) {
             extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml, true);
         }
     }
@@ -250,7 +258,7 @@ export async function updateServicesData(
  * @param {UI5Config | undefined} ui5Config - ui5.yaml configuration
  * @param {UI5Config | undefined} ui5LocalConfig - ui5-local.yaml configuration
  * @param {Editor} fs - the memfs editor instance
- * @param {boolean} updateMiddlewares - whether the YAML files for the service (mock-server and fiori-tools-proxy middlewares) should be updated
+ * @param {boolean} updateMiddlewares - whether the backend proxy (fiori-tools-proxy) middleware should be updated
  * @returns {Promise<string | undefined>} webapp path if metadata was written, undefined otherwise
  */
 async function updateMetadata(
@@ -266,8 +274,12 @@ async function updateMetadata(
         return undefined;
     }
     const webappPath = await getWebappPath(basePath, fs);
+    // The mockserver middleware is derived from the manifest and must stay consistent with the external
+    // (value-help) metadata files we write. Regenerate it whenever external services are present, even
+    // when the backend proxy middlewares are being preserved (updateMiddlewares === false).
+    const updateMockserver = updateMiddlewares || !!service.externalServices?.length;
     // Generate mockserver only when ui5-mock.yaml already exists
-    if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMiddlewares) {
+    if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMockserver) {
         const config: MockserverConfig = {
             webappPath: webappPath,
             // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
@@ -289,8 +301,9 @@ async function updateMetadata(
         await generateMockserverConfig(basePath, config, fs);
         // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml
         await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
-        // Update ui5-mock.yaml with backend middleware
-        if (paths.ui5MockYaml) {
+        // Update ui5-mock.yaml with backend middleware only when the backend proxy is being (re)pointed;
+        // a metadata re-sync (updateMiddlewares === false) preserves the existing proxy configuration.
+        if (updateMiddlewares && paths.ui5MockYaml) {
             const ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
             extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml, true);
         }
