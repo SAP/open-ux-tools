@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Features
+
+- Skip UI.Hidden Object Page sections when generating OPA5 tests [[bb84331](https://github.com/SAP/open-ux-tools/commit/bb843314c9d6ca0f6762cb03c6f89e161b7ca42f)]
+
 ## 1.4.4
 
 ### Patch Changes
