@@ -1,9 +1,10 @@
 import * as React from 'react';
 import Enzyme from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
-import { UiIcons } from '../../../src/components/Icons';
+import { UiIcons, initIcons } from '../../../src/components/Icons';
 
 describe('<UIDefaultButton />', () => {
     let wrapper: Enzyme.ReactWrapper<UIDefaultButtonProps>;
@@ -675,6 +676,85 @@ describe('<UIDefaultButton />', () => {
               },
             }
         `);
+    });
+
+    describe('propagateMenuOpenKeyDown', () => {
+        const menuProps = { items: [{ key: 'item1', text: 'Item 1' }] };
+
+        beforeAll(() => {
+            initIcons();
+        });
+
+        it('calls preventDefault on Alt+Down by default', () => {
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(
+                <UIDefaultButton menuProps={menuProps} onKeyDown={onKeyDown}>
+                    Test
+                </UIDefaultButton>
+            );
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(true);
+        });
+
+        it('calls preventDefault on Alt+Down when propagateMenuOpenKeyDown is true', () => {
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(
+                <UIDefaultButton menuProps={menuProps} propagateMenuOpenKeyDown={true} onKeyDown={onKeyDown}>
+                    Test
+                </UIDefaultButton>
+            );
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(true);
+        });
+
+        it('does not call preventDefault on Alt+Down when propagateMenuOpenKeyDown is false', () => {
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(
+                <UIDefaultButton menuProps={menuProps} propagateMenuOpenKeyDown={false} onKeyDown={onKeyDown}>
+                    Test
+                </UIDefaultButton>
+            );
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(false);
+        });
+
+        it('does not call preventDefault for non-Alt+Down keys', () => {
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(
+                <UIDefaultButton menuProps={menuProps} onKeyDown={onKeyDown}>
+                    Test
+                </UIDefaultButton>
+            );
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'Enter' });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(false);
+        });
+
+        it('forwards onKeyDown when propagateMenuOpenKeyDown is false', () => {
+            const onKeyDown = jest.fn();
+            const { container } = render(
+                <UIDefaultButton propagateMenuOpenKeyDown={false} onKeyDown={onKeyDown}>
+                    Test
+                </UIDefaultButton>
+            );
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe('Menu', () => {
