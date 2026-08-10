@@ -109,7 +109,7 @@ function journey() {
 <% } -%>
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
-    opaTest("Check the <%- section.id %> section of the Object Page", function (_Given: Given, <% if (bodySections?.length > 1) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
+    opaTest("Check the <%- section.id %> section of the Object Page", function (_Given: Given, <% if (bodySections.length > 1) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (bodySections.length > 1) { -%>
         When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
