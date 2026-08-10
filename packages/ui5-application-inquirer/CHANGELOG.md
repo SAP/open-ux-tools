@@ -1,5 +1,23 @@
 # @sap-ux/ui5-application-inquirer
 
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/project-input-validator 1.0.14 → 1.0.15
+
 ## 1.0.28
 
 ### Patch Changes

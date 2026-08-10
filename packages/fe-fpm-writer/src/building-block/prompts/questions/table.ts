@@ -128,13 +128,17 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 },
                 [UIAnnotationTerms.LineItem]
             ),
-            getAggregationPathPrompt(context, {
-                message: t('aggregation') as string,
-                guiOptions: {
-                    groupId: groupIds.commonTableBuildingBlockProperties,
-                    mandatory: true
-                }
-            }),
+            getAggregationPathPrompt(
+                context,
+                {
+                    message: t('aggregation') as string,
+                    guiOptions: {
+                        groupId: groupIds.commonTableBuildingBlockProperties,
+                        mandatory: true
+                    }
+                },
+                { defaultTarget: 'items' }
+            ),
             getFilterBarIdPrompt(context, {
                 message: t('filterBar.message') as string,
                 type: 'list',

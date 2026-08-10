@@ -1,5 +1,45 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
+## 1.11.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Add timeout to resolveApplication() to prevent indefinite hangs on invalid or unreachable paths [[b63d35f](https://github.com/SAP/open-ux-tools/commit/b63d35f3897c64fb58a2696de6f226daffceeb9f)]
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.11.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
 ## 1.11.4
 
 ### Patch Changes
