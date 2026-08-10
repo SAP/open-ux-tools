@@ -34,6 +34,29 @@ Library that contains the most recent copies of the OData vocabularies authored 
 * Support
 * UI
 
+## Maintaining Vocabularies
+
+Use the `odata-vocabularies-sync` skill (`.agents/skills/odata-vocabularies-sync/SKILL.md`) via an AI agent:
+
+- No argument — update all existing vocabularies to their latest published versions
+- With a JSON URL (must end in `.json`, XML is not supported) — register a new vocabulary, then update all
+
+## Local testing in tools-suite
+
+To test local changes to this package inside the XML annotation language server of `tools-suite`, use [yalc](https://github.com/wclr/yalc). `pnpm link` does not work there because the language server is an esbuild bundle and dependencies are resolved at build time.
+
+**Quick reference — after every change:**
+```bash
+# in open-ux-tools/packages/odata-vocabularies
+pnpm --filter @sap-ux/odata-vocabularies build
+yalc push
+
+# in tools-suite root
+yalc add @sap-ux/odata-vocabularies
+yarn build:scope sap-ux-annotation-modeler-extension
+# restart the Extension Host in VS Code
+```
+
 ## Installation
 Npm
 `npm install --save @sap-ux/odata-vocabularies`
@@ -50,7 +73,7 @@ Pnpm
 1. Import the needed functions in your modules
 
     ```typescript
-    import { VocabularyService } from '@sap/ux-odata-vocabularies';
+    import { VocabularyService } from '@sap-ux/odata-vocabularies';
     ```
 
 ## Vocabulary API
