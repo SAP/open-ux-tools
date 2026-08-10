@@ -30,5 +30,3 @@ export function handleMenuKeyDown(
     }
     onKeyDown?.(ev);
 }
-
-
