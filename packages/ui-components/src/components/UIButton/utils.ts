@@ -17,8 +17,11 @@ export interface UIBaseButtonProps {
  * sets ev.defaultPrevented=true, which causes Fluent to skip its own stopPropagation().
  * The Down keydown then bubbles up, preventing the host application's menubar from
  * stealing focus after the menu is dismissed.
+ *
+ * @param ev
+ * @param buttonRef
+ * @param onKeyDown
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function handleMenuKeyDown(
     ev: React.KeyboardEvent<any>,
     buttonRef: React.RefObject<IButton>,
