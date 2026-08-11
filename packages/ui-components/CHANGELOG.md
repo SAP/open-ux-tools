@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- UIButtons - menu open shortcut(alt + arrow down) does not propagate event which leads to issue that focus is left from button. Allow to propagate event [[830573e](https://github.com/SAP/open-ux-tools/commit/830573e1da6ec7e3768f8b1c58f70513ef269d29)]
+
 ## 3.0.9
 
 ### Patch Changes
