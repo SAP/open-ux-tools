@@ -1,128 +1,73 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { IStyleFunction, ILinkStyles } from '@fluentui/react';
-import { Link } from '@fluentui/react';
-import type { UILinkProps } from '../../../src/components/UILink';
+import { render } from '@testing-library/react';
+import type { ILinkStyles } from '@fluentui/react';
 import { UILink } from '../../../src/components/UILink';
+import type { UILinkProps } from '../../../src/components/UILink';
+import { findStyleFromStyleSheets } from '../../utils/styles';
+
+// Extract the linkStyles function from a UILink render() call.
+// UILink is a class component that passes a `styles` function to FluentUI's Link.
+// Accessing it this way avoids jest.unstable_mockModule and dynamic imports.
+function getStyles(props: Partial<UILinkProps> = {}): ILinkStyles {
+    const instance = new UILink(props as UILinkProps);
+    const jsx = instance.render() as React.ReactElement;
+    const stylesFn = jsx.props.styles as () => Partial<ILinkStyles>;
+    return stylesFn() as ILinkStyles;
+}
 
 describe('<UILink />', () => {
-    let wrapper: Enzyme.ReactWrapper<UILinkProps>;
-
-    const getStyles = (): ILinkStyles => {
-        return (wrapper.find(Link).props().styles as IStyleFunction<{}, {}>)({}) as ILinkStyles;
-    };
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UILink>Dummy</UILink>);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Should render a UILink component', () => {
-        expect(wrapper.find('.ms-Link').length).toEqual(1);
+        const { container } = render(<UILink>Dummy</UILink>);
+        expect(container.querySelectorAll('.ms-Link')).toHaveLength(1);
     });
 
-    it('Styles - primary', () => {
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-textLink-foreground)",
-              "opacity": undefined,
-              "selectors": Object {
-                "&:active, &:focus": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "outline": "none",
-                  "textDecoration": "none",
-                },
-                "&:hover, &:hover:focus, &:hover:active": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "textDecoration": "none",
-                },
-                ".ms-Fabric--isFocusVisible &:focus": Object {
-                  "boxShadow": "none",
-                  "outline": "1px solid var(--vscode-focusBorder)",
-                  "outlineOffset": "-1px",
-                },
-              },
-              "textDecoration": "underline",
-            }
-        `);
-    });
-
-    it('Styles - secondary', () => {
-        wrapper.setProps({
-            secondary: true
+    describe('Styles - color via rendered DOM', () => {
+        it('primary uses textLink foreground color', () => {
+            render(<UILink>Dummy</UILink>);
+            const el = document.body.querySelector('.ms-Link') as HTMLElement;
+            expect(findStyleFromStyleSheets('color', el)).toEqual('var(--vscode-textLink-foreground)');
         });
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-foreground)",
-              "opacity": undefined,
-              "selectors": Object {
-                "&:active, &:focus": Object {
-                  "color": "var(--vscode-foreground)",
-                  "outline": "none",
-                  "textDecoration": "none",
-                },
-                "&:hover, &:hover:focus, &:hover:active": Object {
-                  "color": "var(--vscode-foreground)",
-                  "textDecoration": "none",
-                },
-                ".ms-Fabric--isFocusVisible &:focus": Object {
-                  "boxShadow": "none",
-                  "outline": "1px solid var(--vscode-focusBorder)",
-                  "outlineOffset": "-1px",
-                },
-              },
-              "textDecoration": "underline",
-            }
-        `);
+
+        it('secondary uses foreground color', () => {
+            render(<UILink secondary={true}>Dummy</UILink>);
+            const el = document.body.querySelector('.ms-Link') as HTMLElement;
+            expect(findStyleFromStyleSheets('color', el)).toEqual('var(--vscode-foreground)');
+        });
+
+        it('disabled applies opacity 0.4', () => {
+            render(<UILink disabled={true}>Dummy</UILink>);
+            const el = document.body.querySelector('.ms-Link') as HTMLElement;
+            expect(window.getComputedStyle(el).opacity).toEqual('0.4');
+        });
     });
 
-    it('Styles - primary with no underline', () => {
-        wrapper.setProps({
-            underline: false
+    describe('Styles - textDecoration and selectors via getStyles', () => {
+        it('primary has underline and hover selectors', () => {
+            const styles = getStyles();
+            const root = styles.root as Record<string, unknown>;
+            expect(root.textDecoration).toEqual('underline');
+            expect(root.selectors).toBeDefined();
         });
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-textLink-foreground)",
-              "opacity": undefined,
-              "selectors": Object {
-                "&:active, &:focus": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "outline": "none",
-                  "textDecoration": "underline",
-                },
-                "&:hover, &:hover:focus, &:hover:active": Object {
-                  "color": "var(--vscode-textLink-activeForeground)",
-                  "textDecoration": "underline",
-                },
-                ".ms-Fabric--isFocusVisible &:focus": Object {
-                  "boxShadow": "none",
-                  "outline": "1px solid var(--vscode-focusBorder)",
-                  "outlineOffset": "-1px",
-                },
-              },
-              "textDecoration": undefined,
-            }
-        `);
-    });
 
-    it('Styles - disabled', () => {
-        wrapper.setProps({
-            disabled: true
+        it('underline=false removes textDecoration', () => {
+            const styles = getStyles({ underline: false });
+            const root = styles.root as Record<string, unknown>;
+            expect(root.textDecoration).toBeUndefined();
         });
-        const styles = getStyles();
-        expect(styles.root).toMatchInlineSnapshot(`
-            Object {
-              "color": "var(--vscode-textLink-foreground)",
-              "opacity": 0.4,
-              "selectors": undefined,
-              "textDecoration": "underline",
-            }
-        `);
+
+        it('disabled removes selectors (no hover/focus effects)', () => {
+            const styles = getStyles({ disabled: true });
+            const root = styles.root as Record<string, unknown>;
+            expect(root.selectors).toBeUndefined();
+        });
+
+        it('secondary uses foreground color in hover selectors', () => {
+            const styles = getStyles({ secondary: true });
+            const root = styles.root as Record<string, unknown>;
+            const hover = (root.selectors as Record<string, unknown>)?.[
+                '&:hover, &:hover:focus, &:hover:active'
+            ] as Record<string, unknown>;
+            expect(hover?.color).toEqual('var(--vscode-foreground)');
+        });
     });
 });

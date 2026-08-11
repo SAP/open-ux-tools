@@ -81,10 +81,10 @@ describe('UIQuickNavigation', () => {
 
     it('Render with external', () => {
         render(<QuickNavigationTest groups={['A', 'b', 'C', '3']} inline={false} />);
-        expect(findInlineContainers().length).toEqual(0);
-        expect(findExternalContainers().length).toEqual(0);
+        expect(findInlineContainers()).toHaveLength(0);
+        expect(findExternalContainers()).toHaveLength(0);
         activateQuickNavigation();
-        expect(findInlineContainers().length).toEqual(0);
+        expect(findInlineContainers()).toHaveLength(0);
         const externalContainers = findExternalContainers();
         expect(externalContainers.length).toEqual(1);
         const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
@@ -174,10 +174,10 @@ describe('UIQuickNavigation', () => {
             it(name, () => {
                 mockRectangles(sizes);
                 render(<QuickNavigationTest groups={['A', 'b', 'C', 'd']} inline={false} offset={offset} />);
-                expect(findInlineContainers().length).toEqual(0);
-                expect(findExternalContainers().length).toEqual(0);
+                expect(findInlineContainers()).toHaveLength(0);
+                expect(findExternalContainers()).toHaveLength(0);
                 activateQuickNavigation();
-                expect(findInlineContainers().length).toEqual(0);
+                expect(findInlineContainers()).toHaveLength(0);
                 const externalContainers = findExternalContainers();
                 expect(externalContainers.length).toEqual(1);
                 const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
@@ -252,20 +252,20 @@ describe('UIQuickNavigation', () => {
 
     it('Render with inline', () => {
         render(<QuickNavigationTest groups={['A', 'B', 'C']} inline={true} />);
-        expect(findInlineContainers().length).toEqual(0);
-        expect(findExternalContainers().length).toEqual(0);
+        expect(findInlineContainers()).toHaveLength(0);
+        expect(findExternalContainers()).toHaveLength(0);
         activateQuickNavigation();
-        expect(findInlineContainers().length).toEqual(1);
-        expect(findExternalContainers().length).toEqual(0);
+        expect(findInlineContainers()).toHaveLength(1);
+        expect(findExternalContainers()).toHaveLength(0);
     });
 
     it('Render with default inline(false)', () => {
         render(<QuickNavigationTest groups={['A', 'B', 'C']} />);
-        expect(findInlineContainers().length).toEqual(0);
-        expect(findExternalContainers().length).toEqual(0);
+        expect(findInlineContainers()).toHaveLength(0);
+        expect(findExternalContainers()).toHaveLength(0);
         activateQuickNavigation();
-        expect(findInlineContainers().length).toEqual(0);
-        expect(findExternalContainers().length).toEqual(1);
+        expect(findInlineContainers()).toHaveLength(0);
+        expect(findExternalContainers()).toHaveLength(1);
     });
 
     const keyActivationTest = [
@@ -312,9 +312,9 @@ describe('UIQuickNavigation', () => {
     ];
     it.each(keyActivationTest)('Activation test - $name', (testCase) => {
         render(<QuickNavigationTest groups={['A', 'B']} inline={false} />);
-        expect(findExternalContainers().length).toEqual(0);
+        expect(findExternalContainers()).toHaveLength(0);
         activateQuickNavigation(testCase.code, testCase.ctrlKey, testCase.metaKey, testCase.altKey);
-        expect(findExternalContainers().length).toEqual(testCase.activated ? 1 : 0);
+        expect(findExternalContainers()).toHaveLength(testCase.activated ? 1 : 0);
     });
 
     const finalKeyTest = [
@@ -365,11 +365,11 @@ describe('UIQuickNavigation', () => {
         const { inline, code, focusedElement, valid } = testCase;
         render(<QuickNavigationTest groups={['A', 'B', 'c', '2']} inline={inline} />);
         const findContainers = inline ? findInlineContainers : findExternalContainers;
-        expect(findContainers().length).toEqual(0);
+        expect(findContainers()).toHaveLength(0);
         activateQuickNavigation();
-        expect(findContainers().length).toEqual(1);
+        expect(findContainers()).toHaveLength(1);
         activateQuickNavigation(code);
-        expect(findContainers().length).toEqual(valid ? 0 : 1);
+        expect(findContainers()).toHaveLength(valid ? 0 : 1);
         if (valid) {
             expect(document.activeElement?.id).toEqual(focusedElement);
             const keyDownEvent = createEvent.keyDown(document.body, {
@@ -415,21 +415,21 @@ describe('UIQuickNavigation', () => {
         const { code, ctrlKey, metaKey, altKey, activated } = testCase;
         render(<QuickNavigationTest groups={['A', 'B', 'C']} />);
         activateQuickNavigation();
-        expect(findExternalContainers().length).toEqual(1);
+        expect(findExternalContainers()).toHaveLength(1);
         fireEvent.keyUp(document.body, {
             ctrlKey,
             metaKey,
             altKey,
             code
         });
-        expect(findExternalContainers().length).toEqual(activated ? 1 : 0);
+        expect(findExternalContainers()).toHaveLength(activated ? 1 : 0);
     });
 
     it('Unfocus window', () => {
         render(<QuickNavigationTest groups={['A', 'B', 'C']} />);
         activateQuickNavigation();
-        expect(findExternalContainers().length).toEqual(1);
+        expect(findExternalContainers()).toHaveLength(1);
         fireEvent.blur(window);
-        expect(findExternalContainers().length).toEqual(0);
+        expect(findExternalContainers()).toHaveLength(0);
     });
 });
