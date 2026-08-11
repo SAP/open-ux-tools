@@ -302,11 +302,11 @@ The script:
 
 **Always pass the control from `definedIn`, not the leaf control.** The script does not walk the inheritance chain — for an aggregation inherited from `sap.m.FlexBox`, pass `--control sap.m.FlexBox --lib sap.m`, not the SmartTable. `aggregationsByClass[].definedIn` already gives you this.
 
-Use this whenever:
-- Picking `targetAggregation` and several look plausible (`content` vs `items` vs `headerContent`).
-- Picking `targetAggregation` but none seems plausible with a high enough confidence (you might have selected the wrong control)
-- The aggregation's `controlType` doesn't obviously match what you intend to insert (verify the type accepts what your fragment provides).
-- You're unsure whether an aggregation is `0..1` (single child — inserting will replace) vs `0..n` (multi — `index` matters).
+**Always run this script for every `targetAggregation` you intend to use in a `CTX_ADDXML` payload** — before writing the fragment content. The script confirms the aggregation name exists on the control, its accepted `controlType`, and its cardinality (`0..1` vs `0..n`). Do not skip this step.
+
+If the aggregation's accepted type does not directly match the intended control, check whether a wrapper element accepted by that aggregation can host the intended control before seeking an alternative placement outside the target container.
+
+> **Static API only.** The script confirms the aggregation is declared, not that it renders. Cross-check against `get_overlays` — if the aggregation has no existing children visible there, prefer a container that is already populated before committing to it. Also verify the aggregation has no state-dependent visibility; if the control name implies a mode-aware context, check the full API docs before committing.
 
 ### Step 7 — Read OData metadata (conditional, only when a data binding is involved)
 
@@ -325,6 +325,7 @@ Typical triggers:
 - Adding a bound text/value/description/title to a control
 - Binding a table column or list item to an entity property
 - Wiring a new control, fragment, or section to a backing entity set, navigation property, or function import
+- A controller handler will read one or more model properties at runtime (e.g. to build a URL, compute a value, or populate a dialog)
 
 If the change is purely structural or behavioral (static labels, visibility toggles, controller-only logic, etc.) and does not reference any backing data, skip this step.
 
@@ -336,7 +337,7 @@ Build `actionPayload` from the action's `parameters` schema (Step 5), the elemen
 
 **For `CTX_ADDXML`:**
 - `fragmentPath`: `fragments/<Name>.fragment.xml` — pick `<Name>` from the user's intent (e.g. `OrderDetailsButton`). The fragment file itself is created in Step 12.
-- `targetAggregation`: from `get_context` (e.g. `content` for a Toolbar). When two aggregations on the same control look plausible (e.g. `content` vs `items`, `customToolbar` vs `headerToolbar`), call the `lookup-aggregation.mjs` script (see Step 6) before picking — getting this wrong inserts the fragment into the wrong slot and `call_action` will still report `success: true`.
+- `targetAggregation`: from `get_context`. Always run the `lookup-aggregation.mjs` script (see Step 6) to confirm the aggregation name exists on the control, its accepted `controlType`, and its cardinality before finalising the payload — getting this wrong inserts the fragment into the wrong slot and `call_action` will still report `success: true`.
 - `index`: `0` for "at the beginning"; for "append at end" use the current child count, which is `aggregationsByClass[<class with the aggregation>].aggregations[<aggregation name>].contentLength` from the Step 6 response (fall back to `defaultChildAggregation.content.length` when the aggregation is the default and `aggregationsByClass` wasn't populated). Ask if the user said "after the X" and the position isn't determinable from context.
 
 **For `CTX_EXTEND_CONTROLLER`:**
@@ -347,6 +348,10 @@ Build `actionPayload` from the action's `parameters` schema (Step 5), the elemen
 General rules:
 - Fill structural fields from `get_context`; fill value fields from instructions.
 - **Binding provenance (hard rule):** any binding path, entity type, entity set, or property name in this payload (and in the Step 12 fragment/controller content) must trace to a specific field of the Step 6 `get_context` response or the Step 7 EDMX. If you cannot point to where a path came from, you are inventing it — stop, run Step 7, and if it still isn't there, ask. See the Grounding gate in Step 6.
+- **Runtime property availability check (hard rule):** whenever a controller handler will read model properties at runtime (e.g. `getProperty`, `getObject`, or any expression binding), call `read_odata_metadata_adp` (Step 7) and derive the effective `$select` from the UI annotations on the bound entity type. Only properties provably included in that annotation-driven set may be read synchronously. Every other property — including annotation companions (`sap:unit`, `sap:text`, `sap:scale`, etc.) — must be fetched on demand with an explicit `$select`. When the handler constructs any computed output from the properties (URL, concatenated string, arithmetic), always fetch regardless of annotation membership — a silent `undefined` produces no error at `call_action` time and is only discoverable at runtime. **Dropping the property from the handler is never an acceptable alternative — if the user's intent requires it, fetch it.** The safe patterns are:
+  - OData V2: `oModel.read(oContext.getPath(), { urlParameters: { "$select": "PropA,PropB" }, success: function(oData) { … } })`
+  - OData V4: `oContext.requestProperty(["PropA", "PropB"]).then(function([vA, vB]) { … })`
+- **Existing change awareness:** before finalising any payload or generated code, review the existing changes in the project (imported key user changes and any developer changes already in `webapp/changes/`) for related intent. When an existing change addresses something similar to the current requirement, align the new output with it — reuse the same property names, URL patterns, entity paths, and logic rather than re-deriving them independently. Silently diverging from an established pattern in the same project is a defect.
 - Validate types match the schema (string vs int vs boolean — `index` is int, not string).
 
 **Confidence gating** (thresholds: high ≥ 0.90, ask < 0.70 — strictest of the three because a successful `call_action` with a wrong payload is the worst silent failure):
