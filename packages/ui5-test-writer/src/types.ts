@@ -134,6 +134,7 @@ export type SectionFormField = {
     property: string;
     connectedFields?: string;
     fieldGroup?: string;
+    targetAnnotation?: string;
 };
 
 export type TableColumn = {
@@ -142,6 +143,10 @@ export type TableColumn = {
 
 export type TableColumnFeatureData = Record<string, TableColumn>;
 
+export type ContactCardField = {
+    property: string;
+};
+
 export type BodySubSectionFeatureData = {
     id: string;
     navigationProperty?: string;
@@ -149,7 +154,9 @@ export type BodySubSectionFeatureData = {
     custom: boolean;
     order: number;
     fields: SectionFormField[];
+    contactCardFields: ContactCardField[];
     tableColumns: TableColumnFeatureData;
+    contactCardColumns: ContactCardField[];
 };
 
 export type BodySectionFeatureData = {
@@ -159,7 +166,9 @@ export type BodySectionFeatureData = {
     custom: boolean;
     order: number;
     fields: SectionFormField[];
+    contactCardFields: ContactCardField[];
     tableColumns: TableColumnFeatureData;
+    contactCardColumns: ContactCardField[];
     subSections: BodySubSectionFeatureData[];
     actions?: ActionButtonState[];
     createButton?: ButtonState;
@@ -201,6 +210,7 @@ export type ListReportFeatures = {
     };
     filterBarItems?: FilterBarItem[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
+    contactCardColumns: ContactCardField[];
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
     /**
@@ -300,6 +310,7 @@ export type HeaderSectionFeatureData = {
     form?: boolean;
     stashed?: boolean | string;
     fields?: FormField[];
+    contactCardFields: ContactCardField[];
 };
 
 export interface ButtonState {

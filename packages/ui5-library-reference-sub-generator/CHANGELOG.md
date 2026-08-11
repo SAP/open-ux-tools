@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 1.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-library-reference-inquirer 1.0.31 → 1.0.32
+
 ## 1.0.31
 
 ### Patch Changes
