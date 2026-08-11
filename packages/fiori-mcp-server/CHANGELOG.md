@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Fetch backend service annotations so generated v2 OData apps include the remote annotation dataSource. [[fdd1864](https://github.com/SAP/open-ux-tools/commit/fdd1864adf6cf67aa72888ab124f1a06c319584e)]
+
 ## 1.11.8
 
 ### Patch Changes
