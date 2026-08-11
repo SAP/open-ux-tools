@@ -1,5 +1,37 @@
 # @sap-ux/ui5-test-writer
 
+## 1.6.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Features
+
+- Generate Contact Card OPA5 tests across Object Page header field groups, body-section forms, body-section tables, and List Report tables. `DataFieldForAnnotation::<property>::Contact` entries are detected in the spec model and emitted as `iClickLink({ property: "<property>/Contact" })` followed by `iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })`. Drops the `iPressSectionIconTabFilterButton` page-object workaround in favor of the public `iGoToSection` API and unconditionally emits `iCheckNumberOfSections` (now valid for any section count). [[58e4ffb](https://github.com/SAP/open-ux-tools/commit/58e4ffb1a6e6c96383673c5c321ccdd3b5ffefeb)]
+
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Features
+
+- Skip UI.Hidden Object Page sections when generating OPA5 tests [[bb84331](https://github.com/SAP/open-ux-tools/commit/bb843314c9d6ca0f6762cb03c6f89e161b7ca42f)]
+
+## 1.4.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.2 → 1.1.3
+
 ## 1.4.3
 
 ### Patch Changes

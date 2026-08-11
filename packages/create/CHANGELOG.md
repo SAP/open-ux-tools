@@ -1,5 +1,37 @@
 # @sap-ux/create
 
+## 1.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add update metadata command to refresh local OData service metadata from backend [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Bug Fixes
+
+- Restrict `update service-metadata` to ABAP backend applications with a clear error message [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+#### Release Date
+
+2026-08-10
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/adp-tooling 1.0.41 → 1.0.42
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+- @sap-ux/flp-config-inquirer 1.0.41 → 1.0.42
+- @sap-ux/preview-middleware 1.1.2 → 1.1.3
+- @sap-ux/abap-deploy-config-inquirer 2.0.35 → 2.0.36
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
 ## 1.1.4
 
 ### Patch Changes
