@@ -83,7 +83,7 @@ jobs:
 
                       const TRACKING_LABEL = 'palettebot';
                       const TRACKING_TITLE = 'PaletteBot — VSCode Theme Changes';
-                      const ASSIGNEE = 'LiamM2004';
+                      const ASSIGNEES = ['ux-design-reviewers'];
 
                       const { data: issues } = await github.rest.issues.listForRepo({
                         owner: context.repo.owner,
@@ -116,7 +116,7 @@ jobs:
                           repo: context.repo.repo,
                           title: TRACKING_TITLE,
                           labels: [TRACKING_LABEL],
-                          assignees: [ASSIGNEE],
+                          assignees: ASSIGNEES,
                           body: [
                             '## 🎨 PaletteBot',
                             '',
