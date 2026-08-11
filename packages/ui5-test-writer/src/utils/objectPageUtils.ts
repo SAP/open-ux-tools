@@ -3,6 +3,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
+    ContactCardField,
     FormField,
     SectionFormField,
     BodySectionFeatureData,
@@ -23,7 +24,7 @@ import {
     getAggregations,
     parseDataFieldForAnnotationName
 } from './modelUtils.js';
-import { extractTableColumnsFromNode } from './tableUtils.js';
+import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -193,6 +194,9 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
         const sectionsAggregation = getAggregations(headerAggregation)['sections'];
         const sections = getAggregations(sectionsAggregation) as Record<string, HeaderSectionItem>;
         Object.values(sections).forEach((section) => {
+            if (isSectionHidden(section)) {
+                return;
+            }
             const facetId = getSectionIdentifier(section);
             if (!facetId) {
                 // if no identifier can be found for the section, it is not possible to reliably identify it in tests, so skip it
@@ -205,10 +209,12 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
                 microChart: isSectionMicroChart(section),
                 form: isFormSection(section),
                 // collection: false // TODO: find out how to identify collection facets
-                title: section.title
+                title: section.title,
+                contactCardFields: []
             };
             if (sectionData.form) {
                 sectionData.fields = getHeaderSectionFormFields(section);
+                sectionData.contactCardFields = pickContactCardFieldsFromHeader(sectionData.fields);
             }
             headerSections.push(sectionData);
         });
@@ -238,21 +244,27 @@ function extractObjectPageBodySectionsData(
         const sectionsAggregation = getAggregations(objectPage.model.root)['sections'];
         const sections = getAggregations(sectionsAggregation) as Record<string, BodySectionItem>;
         Object.entries(sections).forEach(([sectionKey, section]) => {
+            if (isSectionHidden(section)) {
+                return;
+            }
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
             const subSections = extractBodySubSectionsData(section, sectionId, convertedMetadata, objectPage.entitySet);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
             const isTable = isTableSection(section);
+            const fields =
+                section.custom || isTable ? [] : extractFormFields(section, convertedMetadata, objectPage.entitySet);
+            const tableColumns = section.custom || !isTable ? {} : extractTableColumnsFromNode(section);
+            const contactCardColumns = section.custom || !isTable ? [] : extractContactCardColumnsFromNode(section);
             const sectionData: BodySectionFeatureData = {
                 id: sectionId,
                 navigationProperty,
                 isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields:
-                    section.custom || isTable
-                        ? []
-                        : extractFormFields(section, convertedMetadata, objectPage.entitySet),
-                tableColumns: section.custom || !isTable ? {} : extractTableColumnsFromNode(section),
+                fields,
+                tableColumns,
+                contactCardFields: pickContactCardFields(fields),
+                contactCardColumns,
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
@@ -357,7 +369,7 @@ function extractBodySubSectionsData(
     entitySetName?: string
 ): BodySubSectionFeatureData[] {
     const subSectionItems = getAggregations(getAggregations(section)['subsections']) as Record<string, BodySectionItem>;
-    const childEntries = Object.entries(subSectionItems);
+    const childEntries = Object.entries(subSectionItems).filter(([, child]) => !isSectionHidden(child));
     // all-FieldGroup CollectionFacet is collapsed into one sub-section with inherited id from parent
     // Table or nested CollectionFacet sub-sections are kept as distinct sub-sections with their own ids
     return isFormOnlyCollectionFacet(childEntries)
@@ -408,6 +420,8 @@ function buildMergedFormSubSection(
         custom: false,
         order: sectionOrder ?? -1,
         fields,
+        contactCardFields: pickContactCardFields(fields),
+        contactCardColumns: [],
         tableColumns: {}
     };
 }
@@ -430,15 +444,48 @@ function buildSubSection(
     entitySetName?: string
 ): BodySubSectionFeatureData {
     const isTable = isTableSection(subSection);
+    const fields = subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName);
+    const contactCardColumns = subSection.custom || !isTable ? [] : extractContactCardColumnsFromNode(subSection);
     return {
         id: getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`,
         navigationProperty: getNavigationPropertyFromKey(subSectionKey),
         isTable,
         custom: !!subSection.custom,
         order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-        fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
+        fields,
+        // Contact-card fields are kept in `fields` too so the test also asserts `iCheckField` alongside `iClickLink` / `iCheckContactDialog` (dual diagnostic).
+        contactCardFields: pickContactCardFields(fields),
+        contactCardColumns,
         tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
     };
+}
+
+/**
+ * Filters form fields down to those rendered as Contact-card links (`@Communication.Contact`).
+ *
+ * @param fields - all form fields of a (sub-)section
+ * @returns Contact-card fields, addressed via the qualified `<property>/<targetAnnotation>` form
+ */
+function pickContactCardFields(fields: SectionFormField[]): ContactCardField[] {
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact')
+        .map((field) => ({ property: field.property }));
+}
+
+/**
+ * Filters header field-group fields down to Contact-card entries and projects them to
+ * the `<property>/Contact` form expected by `onHeader().iClickLink({ property })`.
+ *
+ * @param fields - header field-group fields with optional `field` and `targetAnnotation`
+ * @returns Contact-card descriptors usable as `iClickLink` / `iCheckLink` arguments
+ */
+function pickContactCardFieldsFromHeader(fields: FormField[] | undefined): ContactCardField[] {
+    if (!fields) {
+        return [];
+    }
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact' && field.field)
+        .map((field) => ({ property: `${field.field}/${field.targetAnnotation}` }));
 }
 
 /**
@@ -473,7 +520,12 @@ function extractFormFields(
 
         if (annotationParts) {
             const qualifier = annotationParts.targetAnnotation;
-            if (annotationParts.property === 'ConnectedFields' && entityType) {
+            if (qualifier === 'Contact') {
+                fields.push({
+                    property: `${baseProperty}/${qualifier}`,
+                    targetAnnotation: qualifier
+                });
+            } else if (annotationParts.property === 'ConnectedFields' && entityType) {
                 resolveConnectedFieldsInnerProperties(entityType, qualifier).forEach((property) => {
                     fields.push({ property, connectedFields: qualifier });
                 });
@@ -716,6 +768,20 @@ function isSectionMicroChart(section: SectionItem): boolean {
  */
 function isTableSection(section: BodySectionItem): boolean {
     return !!section.isTable || !!getAggregations(section).table;
+}
+
+/**
+ * Checks whether a section is hidden by a UI.Hidden annotation and should be skipped.
+ *
+ * @param section - section entry from ux specification
+ * @returns true if the section is marked hidden
+ */
+function isSectionHidden(section: SectionItem): boolean {
+    // hideByProperty holds a dynamic hide expression; skip unless it is a static `false` (always visible).
+    return (
+        section.properties?.hidden?.value === true ||
+        (section.properties?.hideByProperty !== undefined && section.properties.hideByProperty.value !== false)
+    );
 }
 
 /**

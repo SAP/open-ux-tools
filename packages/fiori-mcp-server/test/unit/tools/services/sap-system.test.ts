@@ -27,10 +27,14 @@ const mockMetadata = jest.fn<any>();
 const mockTlsIsPatchRequired = jest.fn<any>().mockReturnValue(false);
 const mockTlsApply = jest.fn<any>();
 
+const mockCreateForAbapOnCloud = jest.fn<any>().mockImplementation(() => new (mockAbapServiceProvider as any)());
+
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
+    AbapCloudEnvironment: { EmbeddedSteampunk: 'EmbeddedSteampunk' },
     ODataVersion: { v4: 'v4' },
-    TlsPatch: { isPatchRequired: mockTlsIsPatchRequired, apply: mockTlsApply }
+    TlsPatch: { isPatchRequired: mockTlsIsPatchRequired, apply: mockTlsApply },
+    createForAbapOnCloud: mockCreateForAbapOnCloud
 }));
 
 const mockParseEdmx = jest.fn<any>();
@@ -256,5 +260,28 @@ describe('getServiceMetadata — VSCode', () => {
             throw new Error('unexpected token');
         });
         await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(/unexpected token/);
+    });
+
+    test('reentranceTicket system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        const reentranceSystem = { ...SYSTEM_A, authenticationType: 'reentranceTicket' };
+        await getServiceMetadata(reentranceSystem as any, '/sap/svc/');
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: SYSTEM_A.url
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
+    });
+
+    test('serviceKeys system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        const serviceKeySystem = {
+            ...SYSTEM_A,
+            serviceKeys: { uaa: { clientid: 'c', clientsecret: 's', url: 'https://auth.example.com' } }
+        };
+        await getServiceMetadata(serviceKeySystem as any, '/sap/svc/');
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: SYSTEM_A.url
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
     });
 });

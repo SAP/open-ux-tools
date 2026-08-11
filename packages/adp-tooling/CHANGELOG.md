@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 1.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+
 ## 1.0.41
 
 ### Patch Changes

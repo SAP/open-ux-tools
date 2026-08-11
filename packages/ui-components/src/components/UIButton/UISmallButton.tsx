@@ -1,11 +1,21 @@
 import React from 'react';
-import type { IButtonProps, IButtonStyles } from '@fluentui/react';
+import type { IButton, IButtonProps, IButtonStyles } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
+import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
+
+export interface UISmallButtonProps extends IButtonProps, UIBaseButtonProps {}
 
 /**
+ * UISmallButton component
+ * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/button
  *
+ * @exports
+ * @class UISmallButton
+ * @extends {React.Component<UISmallButtonProps, {}>}
  */
-export class UISmallButton extends React.Component<IButtonProps, {}> {
+export class UISmallButton extends React.Component<UISmallButtonProps, {}> {
+    private readonly _buttonRef: React.MutableRefObject<IButton | null> = { current: null };
     private readonly buttonSecondaryForeground = '--vscode-button-secondaryForeground';
 
     /**
@@ -112,6 +122,18 @@ export class UISmallButton extends React.Component<IButtonProps, {}> {
      * @returns {JSX.Element} the rendered component.
      */
     render(): JSX.Element {
-        return <DefaultButton {...this.props} styles={this.setStyle(this.props)} />;
+        const { propagateMenuOpenKeyDown = true, componentRef: externalRef, ...props } = this.props;
+        return (
+            <DefaultButton
+                {...props}
+                componentRef={mergeButtonRef(this._buttonRef, externalRef)}
+                onKeyDown={
+                    propagateMenuOpenKeyDown
+                        ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown, props.menuProps)
+                        : props.onKeyDown
+                }
+                styles={this.setStyle(props)}
+            />
+        );
     }
 }
