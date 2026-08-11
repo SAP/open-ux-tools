@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+
 ## 1.0.30
 
 ### Patch Changes
