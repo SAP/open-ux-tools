@@ -1,6 +1,31 @@
 import type { IButton } from '@fluentui/react';
 import type React from 'react';
 
+/**
+ * Returns a ref that populates both the internal mutable ref and an optional external ref.
+ * Handles both callback refs and RefObject externals.
+ *
+ * @param internalRef - Component-owned mutable ref used for internal logic (e.g. opening a menu).
+ * @param externalRef - Caller-supplied ref, if any.
+ * @returns A merged React.Ref that satisfies both.
+ */
+export function mergeButtonRef<T>(
+    internalRef: React.MutableRefObject<T | null>,
+    externalRef: React.Ref<T> | undefined
+): React.Ref<T> {
+    if (!externalRef) {
+        return internalRef;
+    }
+    return (instance: T | null) => {
+        internalRef.current = instance;
+        if (typeof externalRef === 'function') {
+            externalRef(instance);
+        } else {
+            (externalRef as React.MutableRefObject<T | null>).current = instance;
+        }
+    };
+}
+
 export interface UIBaseButtonProps {
     /**
      * When true, the component handles Alt+Down internally to open the contextual menu,

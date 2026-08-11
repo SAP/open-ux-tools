@@ -4,7 +4,7 @@ import { IconButton } from '@fluentui/react';
 
 import { UIContextualMenu } from '../UIContextualMenu/index.js';
 import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
-import { handleMenuKeyDown } from './utils.js';
+import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
 import type { UIBaseButtonProps } from './utils.js';
 
 export enum UIIconButtonSizes {
@@ -26,7 +26,7 @@ export interface ButtonProps extends IBaseButtonProps, UIBaseButtonProps {
  * @extends {React.Component<ButtonProps, {}>}
  */
 export class UIIconButton extends React.Component<ButtonProps, {}> {
-    private readonly _buttonRef = React.createRef<IButton>();
+    private readonly _buttonRef: React.MutableRefObject<IButton | null> = { current: null };
 
     /**
      * Initializes component properties.
@@ -139,11 +139,11 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const { propagateMenuOpenKeyDown = true, ...props } = this.props;
+        const { propagateMenuOpenKeyDown = true, componentRef: externalRef, ...props } = this.props;
         return (
             <IconButton
-                componentRef={this._buttonRef}
                 {...props}
+                componentRef={mergeButtonRef(this._buttonRef, externalRef)}
                 onKeyDown={
                     propagateMenuOpenKeyDown
                         ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown)

@@ -5,7 +5,7 @@ import { ActionButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu/index.js';
 import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
 import { BASE_STYLES } from './UIDefaultButton.js';
-import { handleMenuKeyDown } from './utils.js';
+import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
 import type { UIBaseButtonProps } from './utils.js';
 
 interface UIButtonProps extends IButtonProps, UIBaseButtonProps {
@@ -21,7 +21,7 @@ interface UIButtonProps extends IButtonProps, UIBaseButtonProps {
  * @extends {React.Component<IButtonProps, {}>}
  */
 export class UIActionButton extends React.Component<UIButtonProps, {}> {
-    private readonly _buttonRef = React.createRef<IButton>();
+    private readonly _buttonRef: React.MutableRefObject<IButton | null> = { current: null };
 
     /**
      * Initializes component properties.
@@ -95,11 +95,11 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const { propagateMenuOpenKeyDown = true, ...props } = this.props;
+        const { propagateMenuOpenKeyDown = true, componentRef: externalRef, ...props } = this.props;
         return (
             <ActionButton
-                componentRef={this._buttonRef}
                 {...props}
+                componentRef={mergeButtonRef(this._buttonRef, externalRef)}
                 onKeyDown={
                     propagateMenuOpenKeyDown
                         ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown)

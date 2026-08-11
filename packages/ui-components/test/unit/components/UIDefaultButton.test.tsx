@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Enzyme from 'enzyme';
 import { render, fireEvent } from '@testing-library/react';
+import type { IButton } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
@@ -754,6 +755,48 @@ describe('<UIDefaultButton />', () => {
             );
             fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
             expect(onKeyDown).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('componentRef', () => {
+        const menuProps = { items: [{ key: 'item1', text: 'Item 1' }] };
+
+        it('populates an external RefObject on mount', () => {
+            const externalRef: React.RefObject<IButton> = React.createRef();
+            render(<UIDefaultButton>Test</UIDefaultButton>);
+            // Without external ref the internal ref is used — confirm component mounts fine
+            expect(externalRef.current).toBeNull();
+
+            const { unmount } = render(<UIDefaultButton componentRef={externalRef}>Test</UIDefaultButton>);
+            expect(externalRef.current).not.toBeNull();
+            unmount();
+            expect(externalRef.current).toBeNull();
+        });
+
+        it('calls an external callback ref on mount and null on unmount', () => {
+            const callbackRef = jest.fn();
+            const { unmount } = render(<UIDefaultButton componentRef={callbackRef}>Test</UIDefaultButton>);
+            expect(callbackRef).toHaveBeenCalledTimes(1);
+            expect(callbackRef.mock.calls[0][0]).not.toBeNull();
+            unmount();
+            expect(callbackRef).toHaveBeenCalledTimes(2);
+            expect(callbackRef.mock.calls[1][0]).toBeNull();
+        });
+
+        it('still calls preventDefault on Alt+Down when external componentRef is provided', () => {
+            const externalRef: React.RefObject<IButton> = React.createRef();
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(
+                <UIDefaultButton componentRef={externalRef} menuProps={menuProps} onKeyDown={onKeyDown}>
+                    Test
+                </UIDefaultButton>
+            );
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(true);
         });
     });
 
