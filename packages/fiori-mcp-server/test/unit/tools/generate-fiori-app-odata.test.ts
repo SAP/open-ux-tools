@@ -21,6 +21,12 @@ jest.unstable_mockModule('../../../src/utils', () => ({
     validateWithSchema: mockValidateWithSchema
 }));
 
+// Avoid real backend-system store access via the annotation/external-service fetch path
+jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
+    findSystem: jest.fn<any>().mockResolvedValue({ system: undefined }),
+    createAbapServiceProvider: jest.fn<any>()
+}));
+
 const actualFs = await import('node:fs');
 const mockWriteFile = jest.fn<any>().mockResolvedValue(undefined);
 const mockMkdir = jest.fn<any>().mockResolvedValue(undefined);
