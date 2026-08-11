@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Enzyme from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import type { IButtonProps } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
 import { UISmallButton } from '../../../src/components/UIButton/UISmallButton';
@@ -77,5 +78,33 @@ describe('<UISmallButton />', () => {
             }
         `
         );
+    });
+
+    describe('propagateMenuOpenKeyDown', () => {
+        it('calls preventDefault on Alt+Down by default', () => {
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(<UISmallButton onKeyDown={onKeyDown}>Test</UISmallButton>);
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(true);
+        });
+
+        it('does not call preventDefault on Alt+Down when propagateMenuOpenKeyDown is false', () => {
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(
+                <UISmallButton propagateMenuOpenKeyDown={false} onKeyDown={onKeyDown}>
+                    Test
+                </UISmallButton>
+            );
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(false);
+        });
     });
 });
