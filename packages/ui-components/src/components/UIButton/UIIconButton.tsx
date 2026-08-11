@@ -146,7 +146,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
                 componentRef={mergeButtonRef(this._buttonRef, externalRef)}
                 onKeyDown={
                     propagateMenuOpenKeyDown
-                        ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown)
+                        ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown, props.menuProps)
                         : props.onKeyDown
                 }
                 styles={this.setStyle(this.props)}

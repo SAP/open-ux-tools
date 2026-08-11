@@ -81,12 +81,18 @@ describe('<UISmallButton />', () => {
     });
 
     describe('propagateMenuOpenKeyDown', () => {
+        const menuProps = { items: [{ key: 'item1', text: 'Item 1' }] };
+
         it('calls preventDefault on Alt+Down by default', () => {
             let defaultPrevented: boolean | undefined;
             const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
                 defaultPrevented = ev.defaultPrevented;
             });
-            const { container } = render(<UISmallButton onKeyDown={onKeyDown}>Test</UISmallButton>);
+            const { container } = render(
+                <UISmallButton menuProps={menuProps} onKeyDown={onKeyDown}>
+                    Test
+                </UISmallButton>
+            );
             fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
             expect(onKeyDown).toHaveBeenCalledTimes(1);
             expect(defaultPrevented).toBe(true);
@@ -98,7 +104,7 @@ describe('<UISmallButton />', () => {
                 defaultPrevented = ev.defaultPrevented;
             });
             const { container } = render(
-                <UISmallButton propagateMenuOpenKeyDown={false} onKeyDown={onKeyDown}>
+                <UISmallButton menuProps={menuProps} propagateMenuOpenKeyDown={false} onKeyDown={onKeyDown}>
                     Test
                 </UISmallButton>
             );

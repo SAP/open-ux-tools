@@ -756,6 +756,17 @@ describe('<UIDefaultButton />', () => {
             fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
             expect(onKeyDown).toHaveBeenCalledTimes(1);
         });
+
+        it('does not call preventDefault on Alt+Down when menuProps is not provided', () => {
+            let defaultPrevented: boolean | undefined;
+            const onKeyDown = jest.fn((ev: React.KeyboardEvent) => {
+                defaultPrevented = ev.defaultPrevented;
+            });
+            const { container } = render(<UIDefaultButton onKeyDown={onKeyDown}>Test</UIDefaultButton>);
+            fireEvent.keyDown(container.querySelector('.ms-Button')!, { key: 'ArrowDown', altKey: true });
+            expect(onKeyDown).toHaveBeenCalledTimes(1);
+            expect(defaultPrevented).toBe(false);
+        });
     });
 
     describe('componentRef', () => {

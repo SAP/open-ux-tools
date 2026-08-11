@@ -1,4 +1,4 @@
-import type { IButton } from '@fluentui/react';
+import type { IButton, IContextualMenuProps } from '@fluentui/react';
 import type React from 'react';
 
 /**
@@ -32,17 +32,20 @@ export function mergeButtonRef<T>(
  * sets ev.defaultPrevented=true, which causes Fluent to skip its own stopPropagation().
  * The Down keydown then bubbles up, preventing the host application's menubar from
  * stealing focus after the menu is dismissed.
+ * No-ops when menuProps is absent — Alt+Down is only intercepted when a menu is present.
  *
  * @param ev - The React keyboard event from the button's onKeyDown handler.
  * @param buttonRef - Ref to the Fluent IButton instance used to programmatically open the menu.
  * @param onKeyDown - Optional caller-supplied onKeyDown handler, forwarded after internal handling.
+ * @param menuProps - Menu configuration; Alt+Down is only intercepted when this is defined.
  */
 export function handleMenuKeyDown(
     ev: React.KeyboardEvent<any>,
     buttonRef: React.RefObject<IButton>,
-    onKeyDown?: (ev: React.KeyboardEvent<any>) => void
+    onKeyDown?: (ev: React.KeyboardEvent<any>) => void,
+    menuProps?: IContextualMenuProps
 ): void {
-    if (ev.altKey && ev.key === 'ArrowDown') {
+    if (ev.altKey && ev.key === 'ArrowDown' && menuProps) {
         ev.preventDefault();
         buttonRef.current?.openMenu(false, true);
     }
