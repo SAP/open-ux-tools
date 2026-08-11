@@ -21,7 +21,7 @@ interface UIButtonProps extends IButtonProps, UIBaseButtonProps {
  * @extends {React.Component<IButtonProps, {}>}
  */
 export class UIActionButton extends React.Component<UIButtonProps, {}> {
-    private _buttonRef = React.createRef<IButton>();
+    private readonly _buttonRef = React.createRef<IButton>();
 
     /**
      * Initializes component properties.
