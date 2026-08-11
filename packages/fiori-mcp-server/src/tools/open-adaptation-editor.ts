@@ -38,7 +38,6 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             args = ['run', 'start-editor'];
         }
 
-        const startTime = Date.now();
         logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
 
         const childProcess: ChildProcess = spawn(command, args, {
@@ -66,7 +65,6 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
                 const cleanup = () => {
                     clearTimeout(timeoutId);
-                    childProcess.stdout?.destroy();
                     done();
                 };
 
@@ -75,13 +73,13 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
                     rl.on('line', (line: string) => {
                         const clean = line.replace(/\x1b\[[0-9;]*m/g, '');
-                        logger.info(`[+${Date.now() - startTime}ms] Editor: ${clean}`);
+                        logger.debug(`Editor: ${clean}`);
 
                         if (!foundEditorPath) {
                             const pathMatch = line.match(/fiori run --open\s+([^\s]+)/);
                             if (pathMatch?.[1]) {
                                 foundEditorPath = pathMatch[1];
-                                logger.info(`Extracted editor path: ${foundEditorPath}`);
+                                logger.debug(`Extracted editor path: ${foundEditorPath}`);
                             }
                         }
 
@@ -94,8 +92,10 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
                         }
 
                         if (foundServerUrl) {
-                            logger.info(`[+${Date.now() - startTime}ms] URL found, resolving`);
+                            // Stop parsing lines, but keep the stdout pipe draining in the
+                            // background so its buffer never fills and blocks/kills the child.
                             rl.close();
+                            childProcess.stdout?.resume();
                             cleanup();
                         }
                     });
@@ -109,8 +109,6 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
                 });
             }
         );
-
-        logger.info(`[+${Date.now() - startTime}ms] Promise resolved, serverUrl: ${serverUrl}`);
 
         if (!serverUrl) {
             if (childProcess.pid) {
@@ -160,6 +158,12 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             // URL parse failure is non-critical
         }
 
+        // Keep draining stdout so its pipe buffer never fills and blocks (or kills via
+        // EPIPE) the child once we stop parsing lines. Do NOT destroy the stream — that
+        // sends EPIPE to the child on its next write and terminates the editor server.
+        // The child intentionally stays in this process's group so it is cleaned up when
+        // the MCP server exits, rather than being orphaned via detach.
+        childProcess.stdout?.resume();
         childProcess.unref();
 
         const killPort = port;
