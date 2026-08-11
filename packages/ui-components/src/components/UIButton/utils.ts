@@ -26,16 +26,6 @@ export function mergeButtonRef<T>(
     };
 }
 
-export interface UIBaseButtonProps {
-    /**
-     * When true, the component handles Alt+Down internally to open the contextual menu,
-     * preventing the host application's menubar from stealing focus on menu dismiss.
-     *
-     * @default true
-     */
-    propagateMenuOpenKeyDown?: boolean;
-}
-
 /**
  * Shared keydown handler for buttons with a contextual menu.
  * Intercepts Alt+Down before Fluent's _onMenuKeyDown runs: calling preventDefault()
@@ -43,9 +33,9 @@ export interface UIBaseButtonProps {
  * The Down keydown then bubbles up, preventing the host application's menubar from
  * stealing focus after the menu is dismissed.
  *
- * @param ev
- * @param buttonRef
- * @param onKeyDown
+ * @param ev - The React keyboard event from the button's onKeyDown handler.
+ * @param buttonRef - Ref to the Fluent IButton instance used to programmatically open the menu.
+ * @param onKeyDown - Optional caller-supplied onKeyDown handler, forwarded after internal handling.
  */
 export function handleMenuKeyDown(
     ev: React.KeyboardEvent<any>,

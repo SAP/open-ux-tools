@@ -5,7 +5,7 @@ import { IconButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu/index.js';
 import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
 import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
-import type { UIBaseButtonProps } from './utils.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
 
 export enum UIIconButtonSizes {
     Default = 'Default',

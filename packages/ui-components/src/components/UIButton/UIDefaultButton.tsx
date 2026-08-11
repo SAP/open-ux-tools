@@ -6,7 +6,7 @@ import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
 import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 import { UiIcons } from '../Icons.js';
 import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
-import type { UIBaseButtonProps } from './utils.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
 const VSCODE_SECONDARY_BORDER_COLOR = `var(--vscode-button-secondaryBorder, ${VSCODE_BORDER_COLOR})`;

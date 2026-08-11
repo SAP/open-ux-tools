@@ -6,7 +6,7 @@ import { UIContextualMenu } from '../UIContextualMenu/index.js';
 import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
 import { BASE_STYLES } from './UIDefaultButton.js';
 import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
-import type { UIBaseButtonProps } from './utils.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
 
 interface UIButtonProps extends IButtonProps, UIBaseButtonProps {
     menuProps?: UIIContextualMenuProps;

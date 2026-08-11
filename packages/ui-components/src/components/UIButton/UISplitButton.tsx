@@ -4,7 +4,7 @@ import { UIDefaultButton } from './UIDefaultButton.js';
 import { UIContextualMenu } from '../UIContextualMenu/index.js';
 import { UiIcons } from '../Icons.js';
 import type { UIContextualMenuProps, UIContextualMenuItem } from '../UIContextualMenu/index.js';
-import type { UIBaseButtonProps } from './utils.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
 import { getUIId } from '../../utilities/index.js';
 
 export interface UISplitButtonProps extends UIBaseButtonProps {
