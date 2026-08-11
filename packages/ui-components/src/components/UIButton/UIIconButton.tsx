@@ -149,7 +149,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
                         ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown, props.menuProps)
                         : props.onKeyDown
                 }
-                styles={this.setStyle(this.props)}
+                styles={this.setStyle(props)}
                 menuAs={UIContextualMenu}
             />
         );

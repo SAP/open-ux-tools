@@ -132,7 +132,7 @@ export class UISmallButton extends React.Component<UISmallButtonProps, {}> {
                         ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown, props.menuProps)
                         : props.onKeyDown
                 }
-                styles={this.setStyle(this.props)}
+                styles={this.setStyle(props)}
             />
         );
     }
