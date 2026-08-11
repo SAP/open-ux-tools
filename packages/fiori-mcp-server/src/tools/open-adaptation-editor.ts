@@ -1,89 +1,12 @@
 import type { ExecuteFunctionalityOutput, OpenAdaptationEditorInput } from '../types/index.js';
-import { spawn, type ChildProcess, exec } from 'node:child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 import { createInterface } from 'node:readline';
-import { promisify } from 'node:util';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { logger } from '../utils/index.js';
 import { OPEN_ADAPTATION_EDITOR_ID } from '../constant.js';
 
 const TIMEOUT_MS = 30000;
-const execAsync = promisify(exec);
-
-/**
- * Gets the actual port number that a process is listening on.
- *
- * @param pid Process ID to check
- * @param preferredPort Optional port to prefer if found
- * @returns Port number if found, undefined otherwise
- */
-async function getPortFromPid(pid: number, preferredPort?: number): Promise<number | undefined> {
-    const isWindows = process.platform === 'win32';
-    const foundPorts: number[] = [];
-
-    try {
-        if (isWindows) {
-            const { stdout } = await execAsync(`netstat -ano | findstr ${pid}`);
-            const lines = stdout.split('\n');
-            for (const line of lines) {
-                const match = line.match(/TCP\s+[\d.]+:(\d+)\s+[\d.]+\s+LISTENING\s+\d+/);
-                if (match?.[1]) {
-                    const port = parseInt(match[1], 10);
-                    if (!isNaN(port)) {
-                        foundPorts.push(port);
-                        if (preferredPort && port === preferredPort) {
-                            return port;
-                        }
-                    }
-                }
-            }
-        } else {
-            const pidsToCheck = [pid];
-            try {
-                const { stdout: childrenStdout } = await execAsync(`pgrep -P ${pid}`);
-                const childPids = childrenStdout
-                    .trim()
-                    .split('\n')
-                    .filter((line) => line.trim())
-                    .map((line) => parseInt(line.trim(), 10))
-                    .filter((p) => !isNaN(p));
-                pidsToCheck.push(...childPids);
-            } catch {
-                // pgrep may fail if no children exist
-            }
-
-            for (const checkPid of pidsToCheck) {
-                try {
-                    const { stdout } = await execAsync(`lsof -p ${checkPid} -iTCP -sTCP:LISTEN -n -P`);
-                    const lines = stdout.split('\n');
-                    for (const line of lines) {
-                        if (line.trim().startsWith('COMMAND')) {
-                            continue;
-                        }
-                        const match = line.match(/TCP\s+(?:[\d.]+|\[?[\da-f:]+\]?|\*):(\d+)\s+\(LISTEN\)/);
-                        if (match?.[1]) {
-                            const port = parseInt(match[1], 10);
-                            if (!isNaN(port)) {
-                                foundPorts.push(port);
-                                if (preferredPort && port === preferredPort) {
-                                    return port;
-                                }
-                            }
-                        }
-                    }
-                } catch {
-                    // lsof may fail for some PIDs
-                }
-            }
-        }
-
-        if (foundPorts.length > 0) {
-            return foundPorts[0];
-        }
-    } catch (error) {
-        logger.warn(`Failed to get port from PID ${pid}: ${error instanceof Error ? error.message : String(error)}`);
-    }
-
-    return undefined;
-}
 
 /**
  * Starts the adaptation editor server by spawning `npx fiori run /test/adaptation-editor.html`
@@ -97,93 +20,97 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
     try {
         const isWindows = process.platform === 'win32';
-        const command = isWindows ? 'npx.cmd' : 'npx';
-        const args = ['fiori', 'run', '/test/adaptation-editor.html'];
 
+        // Invoke the local fiori CLI directly via node to avoid npm/npx resolution overhead.
+        // Falls back to npm run start-editor if the symlink target can't be resolved.
+        const fioriBin = join(appPath, 'node_modules', '.bin', isWindows ? 'fiori.cmd' : 'fiori');
+        const fioriBinTarget = join(appPath, 'node_modules', '@sap', 'ux-ui5-tooling', 'bin', 'fiori.cjs');
+        let command: string;
+        let args: string[];
+        if (existsSync(fioriBinTarget)) {
+            command = process.execPath;
+            args = [fioriBinTarget, 'run', '/test/adaptation-editor.html'];
+        } else if (existsSync(fioriBin)) {
+            command = fioriBin;
+            args = ['run', '/test/adaptation-editor.html'];
+        } else {
+            command = isWindows ? 'npm.cmd' : 'npm';
+            args = ['run', 'start-editor'];
+        }
+
+        const startTime = Date.now();
         logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
 
         const childProcess: ChildProcess = spawn(command, args, {
             cwd: appPath,
-            stdio: ['ignore', 'pipe', 'pipe'],
+            stdio: ['ignore', 'pipe', 'ignore'],
             shell: false
         });
 
-        let editorPath: string | undefined;
-        let serverUrl: string | undefined;
-        let resolved = false;
+        const { serverUrl, editorPath } = await new Promise<{ serverUrl: string | undefined; editorPath: string | undefined }>(
+            (resolve) => {
+                let foundServerUrl: string | undefined;
+                let foundEditorPath: string | undefined;
 
-        if (childProcess.stdout) {
-            const rl = createInterface({
-                input: childProcess.stdout,
-                crlfDelay: Infinity
-            });
+                let settled = false;
+                const done = () => {
+                    if (settled) return;
+                    settled = true;
+                    resolve({ serverUrl: foundServerUrl, editorPath: foundEditorPath });
+                };
 
-            rl.on('line', (line: string) => {
-                logger.debug(`Editor output: ${line}`);
+                const timeoutId = setTimeout(() => {
+                    logger.warn('Timeout waiting for editor URL');
+                    done();
+                }, TIMEOUT_MS);
 
-                if (!editorPath) {
-                    const pathMatch = line.match(/fiori run --open\s+([^\s]+)/);
-                    if (pathMatch?.[1]) {
-                        editorPath = pathMatch[1];
-                        logger.info(`Extracted editor path: ${editorPath}`);
-                    }
-                }
-
-                if (!serverUrl) {
-                    const urlMatch = line.match(/^URL:\s*(https?:\/\/[^\s]+)/);
-                    if (urlMatch?.[1]) {
-                        serverUrl = urlMatch[1];
-                        logger.info(`Extracted server URL: ${serverUrl}`);
-                    }
-                }
-
-                if (serverUrl && editorPath && !resolved) {
-                    resolved = true;
-                    rl.close();
-                }
-            });
-
-            rl.on('close', () => {
-                if (!resolved && serverUrl && editorPath) {
-                    resolved = true;
-                }
-            });
-        }
-
-        if (childProcess.stderr) {
-            const stderrRl = createInterface({
-                input: childProcess.stderr,
-                crlfDelay: Infinity
-            });
-
-            stderrRl.on('line', (line: string) => {
-                logger.debug(`Editor stderr: ${line}`);
-            });
-        }
-
-        childProcess.on('error', (error) => {
-            logger.error(`Editor process error: ${error.message}`);
-            if (!resolved) {
-                resolved = true;
-            }
-        });
-
-        const timeoutId = setTimeout(() => {
-            if (!resolved) {
-                resolved = true;
-                logger.warn('Timeout waiting for editor URL');
-            }
-        }, TIMEOUT_MS);
-
-        await new Promise<void>((resolve) => {
-            const checkInterval = setInterval(() => {
-                if (resolved) {
-                    clearInterval(checkInterval);
+                const cleanup = () => {
                     clearTimeout(timeoutId);
-                    resolve();
+                    childProcess.stdout?.destroy();
+                    done();
+                };
+
+                if (childProcess.stdout) {
+                    const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
+
+                    rl.on('line', (line: string) => {
+                        const clean = line.replace(/\x1b\[[0-9;]*m/g, '');
+                        logger.info(`[+${Date.now() - startTime}ms] Editor: ${clean}`);
+
+                        if (!foundEditorPath) {
+                            const pathMatch = line.match(/fiori run --open\s+([^\s]+)/);
+                            if (pathMatch?.[1]) {
+                                foundEditorPath = pathMatch[1];
+                                logger.info(`Extracted editor path: ${foundEditorPath}`);
+                            }
+                        }
+
+                        if (!foundServerUrl) {
+                            const urlMatch = line.match(/^URL:\s*(https?:\/\/[^\s]+)/);
+                            if (urlMatch?.[1]) {
+                                foundServerUrl = urlMatch[1];
+                                logger.info(`Extracted server URL: ${foundServerUrl}`);
+                            }
+                        }
+
+                        if (foundServerUrl) {
+                            logger.info(`[+${Date.now() - startTime}ms] URL found, resolving`);
+                            rl.close();
+                            cleanup();
+                        }
+                    });
+
+                    rl.on('close', cleanup);
                 }
-            }, 100);
-        });
+
+                childProcess.on('error', (error) => {
+                    logger.error(`Editor process error: ${error.message}`);
+                    cleanup();
+                });
+            }
+        );
+
+        logger.info(`[+${Date.now() - startTime}ms] Promise resolved, serverUrl: ${serverUrl}`);
 
         if (!serverUrl) {
             if (childProcess.pid) {
@@ -221,23 +148,19 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             };
         }
 
-        let preferredPort: number | undefined;
+        let port: number | undefined;
         try {
             const urlObj = new URL(serverUrl);
             if (urlObj.port) {
-                preferredPort = parseInt(urlObj.port, 10);
+                port = parseInt(urlObj.port, 10);
             } else {
-                preferredPort = urlObj.protocol === 'https:' ? 443 : 80;
+                port = urlObj.protocol === 'https:' ? 443 : 80;
             }
         } catch {
             // URL parse failure is non-critical
         }
 
         childProcess.unref();
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const detectedPort = await getPortFromPid(processId, preferredPort);
-        const port = detectedPort ?? preferredPort;
 
         const killPort = port;
         let killPortCommands = '';
