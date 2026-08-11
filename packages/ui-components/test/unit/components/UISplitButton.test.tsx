@@ -141,10 +141,9 @@ describe('<UISplitButton />', () => {
 
         it('does not call preventDefault on Alt+Down when propagateMenuOpenKeyDown is false', () => {
             const Proxy = (p: UISplitButtonProps): JSX.Element => <UISplitButton {...p} />;
-            wrapper = Enzym.mount<UISplitButton>(
-                <Proxy {...defaultProps} propagateMenuOpenKeyDown={false} />,
-                { attachTo: app }
-            );
+            wrapper = Enzym.mount<UISplitButton>(<Proxy {...defaultProps} propagateMenuOpenKeyDown={false} />, {
+                attachTo: app
+            });
             const button = app.querySelector('.ms-Button')!;
             const event = createEvent.keyDown(button, { key: 'ArrowDown', altKey: true });
             fireEvent(button, event);
