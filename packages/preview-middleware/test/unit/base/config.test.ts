@@ -115,7 +115,7 @@ describe('config', () => {
                 }
             } as unknown as MiddlewareUtils;
             const flpConfig = getFlpConfigWithDefaults({ init: 'custom-init' }, mockComponentUtils);
-            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, false, mockComponentUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, false, false, mockComponentUtils);
             expect(templateConfig.init).toBe('my/app/custom-init');
         });
 
@@ -622,6 +622,8 @@ describe('config', () => {
                 flpConfig,
                 { 'sap.app': { id: componentAppId } } as Manifest,
                 {},
+                false,
+                false,
                 mockComponentUtils
             );
             config.ui5.resources[componentAppId] = config.appBasePath;
@@ -660,6 +662,8 @@ describe('config', () => {
                 flpConfig,
                 { 'sap.app': { id: componentAppId } } as Manifest,
                 {},
+                false,
+                false,
                 mockComponentUtils
             );
             config.ui5.resources[componentAppId] = config.appBasePath;
@@ -689,6 +693,8 @@ describe('config', () => {
                 flpConfig,
                 { 'sap.app': { id: componentAppId } } as Manifest,
                 {},
+                false,
+                false,
                 mockComponentUtils
             );
             config.ui5.resources[componentAppId] = config.appBasePath;

@@ -556,6 +556,7 @@ export class FlpSandbox {
             next();
         } else {
             const patchedRouterBaseUrl = (this.templateConfig.baseUrl =
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
             const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
             const ui5Version = await this.getUi5VersionFromRequest(req, patchedRouterBaseUrl);
@@ -587,6 +588,7 @@ export class FlpSandbox {
         configJsonPath: string
     ): Promise<void> {
         const baseUrl = (this.templateConfig.baseUrl =
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
 
         const file = await this.project.byPath(`${baseUrl}${this.flpConfig.path}`);
@@ -1494,7 +1496,7 @@ export class FlpSandbox {
      *
      * @param config configuration from the ui5.yaml
      * @param utils middleware utils
-     * @throws Error in case no manifest.appdescr_variant found
+     * @throws {Error} in case no manifest.appdescr_variant found
      */
     async initAdp(config: AdpPreviewConfig, utils: MiddlewareUtils): Promise<void> {
         const variant = await loadAppVariant(this.project, utils);
