@@ -420,10 +420,7 @@ function buildMenuActionState(
  * @param resolveLabel - resolver for i18n placeholder labels
  * @returns the custom action button state, or undefined if it has no usable label
  */
-function buildCustomActionState(
-    item: ActionAggregationItem,
-    resolveLabel: I18nLabelResolver
-): ActionButtonState | undefined {
+function buildCustomActionState(item: AggregationItem, resolveLabel: I18nLabelResolver): ActionButtonState | undefined {
     const { label, unresolved } = resolveLabel(item.description);
     if (!label) {
         return undefined;

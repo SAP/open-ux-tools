@@ -253,9 +253,7 @@ export function extractCustomToolBarActions(
     const actionAggregations = getToolBarActions(pageModel);
     const customActions: ActionButtonState[] = [];
     for (const key of Object.keys(actionAggregations ?? {})) {
-        const item = actionAggregations[key as keyof TreeAggregations] as unknown as AggregationItem & {
-            schema?: { actionType?: string };
-        };
+        const item = actionAggregations[key as keyof TreeAggregations] as unknown as AggregationItem;
         if (item?.schema?.actionType !== 'Custom') {
             continue;
         }

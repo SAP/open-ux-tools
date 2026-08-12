@@ -22,6 +22,7 @@ export interface AggregationItem extends TreeAggregation {
     schema: {
         keys: { name: string; value: string }[];
         dataType?: string;
+        actionType?: string;
     };
     /** Present on action nodes that are menus (drop-downs): 'Annotation' or 'CustomMenu'. */
     menuType?: string;
