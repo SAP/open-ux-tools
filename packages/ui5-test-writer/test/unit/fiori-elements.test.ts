@@ -41,6 +41,13 @@ jest.unstable_mockModule('../../src/utils/opaQUnitUtils.js', () => ({
     addPathsToQUnitJs: addPathsToQUnitJsMock
 }));
 
+const actualModelUtils = await import('../../src/utils/modelUtils.js');
+const getAppFeaturesMock = jest.fn<typeof actualModelUtils.getAppFeatures>();
+jest.unstable_mockModule('../../src/utils/modelUtils.js', () => ({
+    ...actualModelUtils,
+    getAppFeatures: getAppFeaturesMock
+}));
+
 const { generateOPAFiles } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
@@ -54,6 +61,10 @@ describe('ui5-test-writer', () => {
 
         const realOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
         addPathsToQUnitJsMock.mockImplementation(realOpaQUnitUtils.addPathsToQUnitJs);
+
+        // getAppFeatures passes through to the real implementation by default; individual
+        // tests override it (e.g. to inject an FPM feature) and restore in afterEach.
+        getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
     });
 
     function prepareTestFiles(testConfigurationName: string): string {
@@ -749,11 +760,13 @@ export type Then = Opa5 & BaseArrangements & {
                     // New TravelObjectPage entries spliced into both unions and as imports
                     expect(updatedTypes).toContain('import type { actions as TravelObjectPageGeneratedCustomActions');
                     expect(updatedTypes).toContain(
-                        'onTheTravelObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions'
+                        'onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions'
                     );
                     expect(updatedTypes).toContain(
-                        'onTheTravelObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions'
+                        'onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions'
                     );
+                    // WithAnd<T> definition is present so the spliced references resolve
+                    expect(updatedTypes).toContain('type WithAnd<T> = {');
                 });
             });
 
@@ -1025,14 +1038,15 @@ export type Then = Opa5 & BaseArrangements & {
             expect(typesContent).toContain('export type Given');
             expect(typesContent).toContain('export type When');
             expect(typesContent).toContain('export type Then');
+            expect(typesContent).toContain('type WithAnd<T> = {');
             expect(typesContent).toContain(
-                'onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions'
+                'onTheEmployeesListGenerated: WithAnd<Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions>'
             );
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions'
+                'onTheEmployeesObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions>'
             );
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions'
+                'onTheEmployeesObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions>'
             );
             expect(typesContent).toContain('onTheShell: Shell');
             expect(typesContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
@@ -1478,12 +1492,31 @@ export type Then = Opa5 & BaseArrangements & {
         });
     });
 
-    describe('generateOPAFiles FPM forces JavaScript', () => {
+    describe('generateOPAFiles FPM TypeScript support', () => {
         const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
 
-        it('generates .js files when app has an FPM page and enableTypeScript is true', async () => {
+        it('generates .ts files when app has an FPM page and enableTypeScript is true', async () => {
             const projectDir = prepareTestFiles('CustomOP');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const paths = Object.keys(fs.dump(projectDir));
+            const integrationFiles = paths.filter(
+                (p) => p.includes('integration/') && !p.includes('opaTests.qunit') && !p.includes('OpaJourneyTypes')
+            );
+            for (const file of integrationFiles) {
+                expect(file).toMatch(/\.ts$/);
+            }
+            // No JS integration files remain (FPM no longer forces the whole app to JS)
+            expect(integrationFiles.some((p) => p.endsWith('.js'))).toBe(false);
+            // TypeScript type-defs file is emitted
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(true);
+            // The FPM page object is emitted as .ts
+            expect(paths.some((p) => p.includes('integration/pages/') && p.endsWith('.gen.ts'))).toBe(true);
+        });
+
+        it('generates .js files when app has an FPM page and enableTypeScript is false', async () => {
+            const projectDir = prepareTestFiles('CustomOP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: false }, metadata, fs);
 
             const paths = Object.keys(fs.dump(projectDir));
             const integrationFiles = paths.filter(
@@ -1496,7 +1529,7 @@ export type Then = Opa5 & BaseArrangements & {
             expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(false);
         });
 
-        it('generates .js files when app has an FPM page and tsconfig.json exists in standalone mode', async () => {
+        it('generates .ts files when app has an FPM page and tsconfig.json exists in standalone mode', async () => {
             const realExistsSync = actualFs.existsSync;
             const projectDir = prepareTestFiles('CustomOP');
             hasVirtualOPA5Mock.mockResolvedValue(false);
@@ -1524,17 +1557,65 @@ export type Then = Opa5 & BaseArrangements & {
                     !p.includes('integration_old')
             );
             for (const file of integrationFiles) {
-                expect(file).toMatch(/\.js$/);
+                expect(file).toMatch(/\.ts$/);
             }
-            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(true);
 
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);
         });
 
+        it('writes an FPM journey (.ts) with filter-bar and table-column checks when appFeatures has an fpm entry', async () => {
+            const projectDir = prepareTestFiles('CustomOP');
+            // Inject an FPM feature directly so the writeJourneyFiles FPM branch fires with
+            // its filterBarItems / tableColumns sub-branches (the ux-spec fixture model does
+            // not populate appFeatures.fpm reliably in unit tests).
+            getAppFeaturesMock.mockResolvedValueOnce({
+                fpm: {
+                    name: 'MyCustomPage',
+                    filterBarItems: ['CompanyCode', 'Customer'],
+                    tableColumns: { col0: { Value: 'Name' } }
+                }
+            });
+
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const fpmJourneyPath = Object.keys(dumped).find((p) => p.includes('MyCustomPageJourney.gen.ts'));
+            expect(fpmJourneyPath).toBeDefined();
+
+            const content = dumped[fpmJourneyPath!].contents as string;
+            // ES module imports (TS journey), not sap.ui.define
+            expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
+            expect(content).toContain('import runner from "./pages/JourneyRunner"');
+            // filterBarItems sub-branch rendered
+            expect(content).toContain('iCheckFilterField({ property: "CompanyCode" })');
+            expect(content).toContain('iCheckFilterField({ property: "Customer" })');
+            // tableColumns sub-branch rendered
+            expect(content).toContain('iCheckColumns(undefined,');
+            // no JS FPM journey emitted alongside
+            expect(Object.keys(dumped).some((p) => p.includes('MyCustomPageJourney.gen.js'))).toBe(false);
+        });
+
+        it('writes an FPM journey as .js when enableTypeScript is false', async () => {
+            const projectDir = prepareTestFiles('CustomOP');
+            // getFPMFeatures always populates filterBarItems/tableColumns (possibly empty),
+            // so mirror that shape rather than a bare { name }.
+            getAppFeaturesMock.mockResolvedValueOnce({
+                fpm: { name: 'MyCustomPage', filterBarItems: [], tableColumns: {} }
+            });
+
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: false }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            expect(Object.keys(dumped).some((p) => p.includes('MyCustomPageJourney.gen.js'))).toBe(true);
+            expect(Object.keys(dumped).some((p) => p.includes('MyCustomPageJourney.gen.ts'))).toBe(false);
+        });
+
         afterEach(() => {
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);
+            getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
         });
     });
 
@@ -1610,6 +1691,41 @@ export type Then = Opa5 & BaseArrangements & {
             it('bucket latest generates correct output (TS)', async () => {
                 const projectDir = prepareTestFiles('FullScreenLROPContextPath');
                 fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('snapshot per bucket — FPM TS', () => {
+            it('bucket 1.84 generates correct FPM output (TS)', async () => {
+                const projectDir = prepareTestFiles('CustomOP');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.120.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket 1.148 generates correct FPM output (TS)', async () => {
+                const projectDir = prepareTestFiles('CustomOP');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.148.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket latest generates correct FPM output (TS)', async () => {
+                const projectDir = prepareTestFiles('CustomOP');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.149.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
