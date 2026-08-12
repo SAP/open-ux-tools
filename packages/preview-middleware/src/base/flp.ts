@@ -555,7 +555,6 @@ export class FlpSandbox {
             this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
             next();
         } else {
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             const patchedRouterBaseUrl = (this.templateConfig.baseUrl =
                 ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
             const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);

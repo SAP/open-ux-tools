@@ -1992,9 +1992,13 @@ describe('FlpSandbox', () => {
                     }
                 } as unknown as MiddlewareUtils;
                 const mockProjectWithHtml = {
-                    byPath: jest.fn().mockImplementation((p: string) =>
-                        p.endsWith('flp.html') ? Promise.resolve({ getString: () => Promise.resolve('<html/>') }) : Promise.resolve(undefined)
-                    ),
+                    byPath: jest
+                        .fn()
+                        .mockImplementation((p: string) =>
+                            p.endsWith('flp.html')
+                                ? Promise.resolve({ getString: () => Promise.resolve('<html/>') })
+                                : Promise.resolve(undefined)
+                        ),
                     byGlob: jest.fn().mockResolvedValue([])
                 } as unknown as ReaderCollection;
                 const flp = new FlpSandbox(
@@ -2003,7 +2007,9 @@ describe('FlpSandbox', () => {
                     mockUtilsWithComponentType,
                     logger
                 );
-                const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-component/src/manifest.json'), 'utf-8'));
+                const manifest = JSON.parse(
+                    readFileSync(join(fixtures, 'simple-component/src/manifest.json'), 'utf-8')
+                );
                 await flp.init(manifest);
                 const app = express();
                 app.use(flp.router);
@@ -2943,9 +2949,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route with type:component', () =
 
     test('returns generated fioriSandboxAppConfig.json at test-resources prefix', async () => {
         await setupServer(jest.fn().mockResolvedValue(undefined), { useNewSandbox: true });
-        const response = await server
-            .get('/test-resources/test/fe/v2/app/fioriSandboxAppConfig.json')
-            .expect(200);
+        const response = await server.get('/test-resources/test/fe/v2/app/fioriSandboxAppConfig.json').expect(200);
         expect(response.type).toBe('application/json');
         const config = JSON.parse(response.text) as { tiles: { rootPath: string }[]; beforeFlpStart: string };
         expect(config.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
@@ -2955,9 +2959,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route with type:component', () =
 
     test('tile rootPath uses absolute /resources/<ns>/ for component type', async () => {
         await setupServer(jest.fn().mockResolvedValue(undefined), { useNewSandbox: true });
-        const response = await server
-            .get('/test-resources/test/fe/v2/app/fioriSandboxAppConfig.json')
-            .expect(200);
+        const response = await server.get('/test-resources/test/fe/v2/app/fioriSandboxAppConfig.json').expect(200);
         const config = JSON.parse(response.text) as { tiles: { rootPath: string }[] };
         expect(config.tiles.length).toBeGreaterThan(0);
         // primary app tile must use absolute /resources/<ns>/ path
@@ -2974,10 +2976,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route with type:component', () =
                     rta: {
                         layer: 'CUSTOMER_BASE',
                         // raw paths — adjustRtaConfigPaths in the constructor prepends /test-resources/test/fe/v2/app
-                        endpoints: [
-                            { path: '/my/rta.html' },
-                            { path: '/other/editor.html' }
-                        ]
+                        endpoints: [{ path: '/my/rta.html' }, { path: '/other/editor.html' }]
                     },
                     // raw path — adjustCardGeneratorPath in the constructor prepends /test-resources/test/fe/v2/app
                     cardGenerator: { path: '/cards/sandbox.html' }
@@ -3003,9 +3002,11 @@ describe('FlpSandbox fioriSandboxAppConfig.json route with type:component', () =
 
     test('passes through (next) when a real HTML file exists at the component FLP path', async () => {
         const realFile = { getString: () => Promise.resolve('<html>real</html>') };
-        const byPathMock = jest.fn().mockImplementation((p: string) =>
-            p.endsWith('flp.html') ? Promise.resolve(realFile) : Promise.resolve(undefined)
-        );
+        const byPathMock = jest
+            .fn()
+            .mockImplementation((p: string) =>
+                p.endsWith('flp.html') ? Promise.resolve(realFile) : Promise.resolve(undefined)
+            );
         await setupServer(byPathMock, { useNewSandbox: true });
         // handler must call next() — no JSON returned
         await server.get('/test-resources/test/fe/v2/app/fioriSandboxAppConfig.json').expect(404);
