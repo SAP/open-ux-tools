@@ -2718,10 +2718,78 @@ describe('Test getObjectPageFeatures()', () => {
             label: 'Mass Process',
             action: 'MassProcess',
             service: 'TestService',
-            unbound: true,
+            unbound: false,
+            visible: true,
+            enabled: false,
+            dynamicPath: undefined
+        });
+    });
+
+    test('should extract a custom (manifest) action from a table section', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                '_Items::@com.sap.vocabularies.UI.v1.LineItem': {
+                                    isTable: true,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'Items' }] },
+                                    aggregations: {
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
+                                        table: {
+                                            aggregations: {
+                                                columns: { aggregations: {} } as unknown as TreeAggregation,
+                                                toolBar: {
+                                                    aggregations: {
+                                                        actions: {
+                                                            aggregations: {
+                                                                MyCustomAction: {
+                                                                    description: 'My Custom Action',
+                                                                    schema: { actionType: 'Custom' },
+                                                                    path: [],
+                                                                    aggregations: {}
+                                                                } as unknown as TreeAggregation
+                                                            }
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        const section = result[0].bodySections?.[0];
+        expect(section?.actions).toHaveLength(1);
+        // Custom actions have no OData identifier, so they are matched by label (visible-only check).
+        expect(section?.actions?.[0]).toMatchObject({
+            label: 'My Custom Action',
+            action: '',
             visible: true,
             enabled: true,
-            dynamicPath: undefined
+            custom: true
         });
     });
 
@@ -2978,8 +3046,8 @@ describe('Test getObjectPageFeatures()', () => {
                     visible: true,
                     service: 'TestService',
                     action: 'MassProcess',
-                    unbound: true,
-                    enabled: true,
+                    unbound: false,
+                    enabled: false,
                     dynamicPath: undefined
                 }
             ]

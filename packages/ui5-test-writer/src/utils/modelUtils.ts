@@ -15,6 +15,7 @@ import type { AppFeatures, FPMFeatures } from '../types.js';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
+import { buildI18nLabelResolver, passthroughLabelResolver, type I18nLabelResolver } from './i18nUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -92,6 +93,7 @@ export async function getAppFeatures(
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
+    let resolveLabel: I18nLabelResolver = passthroughLabelResolver;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
@@ -115,6 +117,16 @@ export async function getAppFeatures(
             }
         }
 
+        try {
+            resolveLabel = buildI18nLabelResolver(await appAccess.getI18nBundles());
+        } catch (error) {
+            log?.debug?.(
+                `Unable to read the app i18n bundle; i18n action labels will be emitted unresolved. ${
+                    error instanceof Error ? error.message : String(error)
+                }`
+            );
+        }
+
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
         fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel) : fpmPage;
@@ -134,7 +146,13 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
+            featureData.listReport = getListReportFeatures(
+                listReportPage,
+                log,
+                projectMetadata,
+                manifest,
+                resolveLabel
+            );
         }
         if (objectPages) {
             featureData.objectPages = await getObjectPageFeatures(
@@ -143,7 +161,8 @@ export async function getAppFeatures(
                 log,
                 projectMetadata,
                 manifest,
-                listReportPage?.entitySet
+                listReportPage?.entitySet,
+                resolveLabel
             );
         }
         if (fpmPage) {

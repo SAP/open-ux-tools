@@ -11,6 +11,7 @@ import type {
     FEV4ManifestTarget,
     JourneyParams,
     AppFeatures,
+    ActionButtonState,
     WriteContext,
     OPAGenerationOptions
 } from './types.js';
@@ -47,6 +48,33 @@ function getTemplateUi5Version(ui5Version?: string): string {
         }
     }
     return V4_TEMPLATE_1_84;
+}
+
+/**
+ * Removes custom (manifest-declared) action tests from the feature data.
+ *
+ * Custom actions are matched by label via `iCheckAction("<label>")`; the required `sap.fe.test.api`
+ * support ships only with the latest SAPUI5 version, so for older template buckets these actions are
+ * dropped. The generated journeys then simply omit them (a coverage gap) instead of emitting
+ * assertions that would fail on older runtimes.
+ *
+ * @param appFeatures - the extracted app feature data (mutated in place)
+ */
+function removeCustomActions(appFeatures: AppFeatures): void {
+    const withoutCustom = (action: ActionButtonState): boolean => !action.custom;
+    if (appFeatures.listReport?.toolBarActions) {
+        appFeatures.listReport.toolBarActions = appFeatures.listReport.toolBarActions.filter(withoutCustom);
+    }
+    appFeatures.objectPages?.forEach((objectPage) => {
+        if (objectPage.headerActions) {
+            objectPage.headerActions = objectPage.headerActions.filter(withoutCustom);
+        }
+        objectPage.bodySections?.forEach((section) => {
+            if (section.actions) {
+                section.actions = section.actions.filter(withoutCustom);
+            }
+        });
+    });
 }
 
 /**
@@ -87,6 +115,11 @@ export async function generateOPAFiles(
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
+    // Custom (manifest-declared) action tests rely on sap.fe.test.api support available only in the
+    // latest SAPUI5 version, so they are only emitted for the `latest` template bucket.
+    if (templateUi5Version !== V4_TEMPLATE_LATEST) {
+        removeCustomActions(appFeatures);
+    }
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);

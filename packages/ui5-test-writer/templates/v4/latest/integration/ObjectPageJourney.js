@@ -63,6 +63,12 @@ sap.ui.define([
             // When.onThe<%- name%>Generated.onHeader().iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                 } -%>
 <%             }); -%>
+<%         } else if (action.custom) { -%>
+<%             if (action.labelUnresolved) { -%>
+            // TODO: label is an unresolved i18n key; replace with the rendered action text
+<%             } -%>
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
+            // When.onThe<%- name%>Generated.onHeader().iPressAction(<%- JSON.stringify(action.label) %>);
 <%         } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
             // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
@@ -132,6 +138,12 @@ sap.ui.define([
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                      } -%>
 <%                  }); -%>
+<%              } else if (action.custom) { -%>
+<%                  if (action.labelUnresolved) { -%>
+            // TODO: label is an unresolved i18n key; replace with the rendered action text
+<%                  } -%>
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction(<%- JSON.stringify(action.label) %>);
 <%              } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
@@ -149,6 +161,12 @@ sap.ui.define([
             // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                      } -%>
 <%                  }); -%>
+<%              } else if (action.custom) { -%>
+<%                  if (action.labelUnresolved) { -%>
+            // TODO: label is an unresolved i18n key; replace with the rendered action text
+<%                  } -%>
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction(<%- JSON.stringify(action.label) %>);
 <%              } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
             // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
