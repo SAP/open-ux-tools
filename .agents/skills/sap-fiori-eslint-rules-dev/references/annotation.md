@@ -17,7 +17,10 @@ For rules with nested AST walks, also read `src/rules/sap-no-single-facet-in-col
 
 - ✅ **Go through application pages first** — use `linkedModel.apps` to iterate over apps, then `app.pages`
 - ✅ Use `index.apps[appKey]` (not `linkedModel.apps`) to get the `parsedApp` for `getIndexedServiceForMainService` — `linkedModel.apps` provides page structure but not the parsed service
-- ✅ **Access `page.lookup` directly** — never cast `page` to multiple page types (e.g. both LR and OP) and spread both results. All page types share the same `lookup` shape, so `page.lookup['table'] ?? []` is sufficient. The double-cast pattern silently processes each table twice.
+- ✅ **Object pages vs list-report pages have different table structures:**
+  - `list-report-page` → tables are in `page.lookup['table'] ?? []`
+  - `object-page` → tables are nested in sections: iterate `page.sections`, filter for `type === 'table-section'`, then take `section.children.find(c => c.type === 'table')`. `page.lookup['table']` is empty for object pages.
+  - Always branch on `page.type`. Never use `page.lookup['table']` unconditionally for all page types.
 - ✅ `reportedParent` = the `<Annotation>` element (visitor entry point); `reference.value` = the inner element to report on
 - ✅ The visitor key `'target>element[name="Annotation"]'` matches `<Annotation ...>` nodes; `lookup` must contain the **parent** `Annotation` element, not the reported child
 - ✅ Use `page.targetName` for `pageNames`; if the same annotation is reused across pages, merge into the existing problem entry (see `sap-no-data-field-intent-based-navigation.ts` for the dedup pattern)
@@ -30,7 +33,7 @@ For rules with nested AST walks, also read `src/rules/sap-no-single-facet-in-col
 | Terms surfaced in the linked model (e.g. `UI.LineItem`, `UI.FieldGroup`) | `page.lookup['table']`, `page.lookup['field-group']`, etc. — the linker pre-resolved these | `sap-no-data-field-intent-based-navigation.ts` |
 | Terms **not** surfaced in the linked model (e.g. `UI.Facets`, `UI.HeaderFacets`) | `page.entity?.structuredType` → `buildAnnotationIndexKey(entityType, MY_TERM)` → look up in `parsedService.index.annotations` | `sap-no-single-facet-in-collection.ts` |
 
-**When to use `page.lookup`:** The linker only resolves annotations that map to a known control (tables, field groups, header sections). If your term has a lookup key, use it — the annotation reference is available via `item.annotation.annotation`.
+**When to use `page.lookup`:** The linker only resolves annotations that map to a known control (tables, field groups, header sections). If your term has a lookup key, use it — the annotation reference is available via `item.annotation.annotation`. Note: for `'table'`, list-report pages expose tables via `page.lookup['table']` but object pages expose them via `page.sections` (see template above).
 
 **When to use `buildAnnotationIndexKey`:** For terms like `UI.Facets` that the linker processes internally (to derive tables/sections) but does not expose in `page.lookup`. Derive the entity type from `page.entity?.structuredType` and look up directly from the service index.
 
@@ -59,46 +62,70 @@ import type { MyRuleDiagnostic } from '../language/diagnostics.js';
 import { MY_RULE } from '../language/diagnostics.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 import { getRecordType } from '../project-context/linker/annotations.js';
+import type { TableNode } from '../project-context/linker/annotations.js';
 import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
 import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
 import { type ParsedService } from '../project-context/parser/index.js';
+
+// Extract per-table logic into a helper so it can be called from both page branches.
+function processTableItem(
+    item: { annotation?: TableNode },
+    targetName: string,
+    parsedService: ParsedService,
+    problems: MyRuleDiagnostic[]
+): void {
+    if (!item.annotation) {
+        return;
+    }
+    const aliasInfo = parsedService.artifacts.aliasInfo[item.annotation.annotation.top.uri];
+
+    // ... walk item.annotation.annotation.top.value to find violating elements ...
+    const violatingElements: Element[] = []; // replace with real logic
+
+    for (const violatingElement of violatingElements) {
+        const existingIndex = problems.findIndex(
+            (p) => p.annotation.reference.value === violatingElement
+        );
+        if (existingIndex > -1) {
+            problems[existingIndex] = {
+                ...problems[existingIndex],
+                pageNames: [...problems[existingIndex].pageNames, targetName]
+            };
+        } else {
+            problems.push({
+                type: MY_RULE,
+                pageNames: [targetName],
+                annotation: {
+                    reference: {
+                        uri: item.annotation.annotation.top.uri,
+                        value: violatingElement
+                    },
+                    reportedParent: item.annotation.annotation.top.value  // ← the <Annotation> node
+                }
+            });
+        }
+    }
+}
 
 function checkAnnotationsInPage(
     page: FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage,
     parsedService: ParsedService,
     problems: MyRuleDiagnostic[]
 ): void {
-    // Choose the lookup key(s) that match your annotation term: 'table', 'field-group', 'header-section'
-    for (const item of page.lookup['table'] ?? []) {
-        if (!item.annotation) {
-            continue;
+    if (page.type === 'list-report-page') {
+        // List-report: tables are directly in page.lookup['table']
+        for (const item of page.lookup['table'] ?? []) {
+            processTableItem(item, page.targetName, parsedService, problems);
         }
-        const aliasInfo = parsedService.artifacts.aliasInfo[item.annotation.annotation.top.uri];
-
-        // ... walk item.annotation.annotation.top.value to find violating elements ...
-        const violatingElements: Element[] = []; // replace with real logic
-
-        for (const violatingElement of violatingElements) {
-            const existingIndex = problems.findIndex(
-                (p) => p.annotation.reference.value === violatingElement
-            );
-            if (existingIndex > -1) {
-                problems[existingIndex] = {
-                    ...problems[existingIndex],
-                    pageNames: [...problems[existingIndex].pageNames, page.targetName]
-                };
-            } else {
-                problems.push({
-                    type: MY_RULE,
-                    pageNames: [page.targetName],
-                    annotation: {
-                        reference: {
-                            uri: item.annotation.annotation.top.uri,
-                            value: violatingElement
-                        },
-                        reportedParent: item.annotation.annotation.top.value  // ← the <Annotation> node
-                    }
-                });
+    } else {
+        // Object-page: tables are nested inside table sections — page.lookup['table'] is empty here
+        for (const section of page.sections) {
+            if (section.type !== 'table-section') {
+                continue;
+            }
+            const item = section.children.find((c) => c.type === 'table');
+            if (item) {
+                processTableItem(item, page.targetName, parsedService, problems);
             }
         }
     }
@@ -308,6 +335,7 @@ import {
 
 - Is `linkedModel.apps` used for page iteration (not `index.apps` directly)?
 - Is `index.apps[appKey]` used to fetch `parsedApp` for `getIndexedServiceForMainService`?
+- **Object page tables not found?** `page.lookup['table']` is empty for object pages — tables live in `page.sections` as `table-section` children. Always branch on `page.type` (see template above).
 - **If using `page.lookup`:** is the correct key used (`'table'`, `'field-group'`, etc.)? Does the annotation term actually appear in the linked model lookup?
 - **If using `buildAnnotationIndexKey`:** is `page.entity?.structuredType` non-null? Is the key format correct (`entityType/@fullyQualifiedTerm`)?
 - Are **all qualifiers** covered? Use `Object.values(annotationMap)` — `annotationMap['undefined']` misses qualified annotations

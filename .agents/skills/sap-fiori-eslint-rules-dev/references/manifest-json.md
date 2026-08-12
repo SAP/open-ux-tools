@@ -49,7 +49,11 @@ const rule: FioriRuleDefinition = createFioriRule({
         const problems = [];
         // ✅ manifest rules use linkedModel.apps — pages are required to find manifest config paths
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
-            if (!app.isV4) continue; // or app.type !== 'fe-v2', or both
+            // Scope guard — pick ONE based on which OData versions this rule covers:
+            //   V4-only:  if (!app.isV4) continue;
+            //   V2-only:  if (app.isV4) continue;
+            //   V4 + V2:  omit the guard entirely
+            if (!app.isV4) continue;
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
             for (const page of app.pages) {
                 // ✅ Use page.lookup['table'] to access tables — not page.someTable
@@ -82,11 +86,15 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: MY_RULE,
-                fix: createJsonFixer({ 
+                fix: createJsonFixer({
                     context,
                     deepestPathResult,
-                    node
-                 })
+                    node,
+                    // operation and value are both optional — inferred from deepestPathResult when omitted:
+                    //   insert (path missing):  operation: 'insert', value: correctValue
+                    //   update (path exists):   operation: 'update', value: correctValue
+                    //   delete:                 operation: 'delete'  (omit value)
+                })
             });
         }
 });

@@ -1,9 +1,9 @@
 ---
-name: fiori-eslint-dev
+name: sap-fiori-eslint-rules-dev
 description: "Develop a new ESLint rule for @sap-ux/eslint-plugin-fiori-tools. Always use this skill when adding any rule to the plugin, implementing manifest.json/XML/CDS/flex-change validation, writing rule tests with project context, or creating rule documentation — even if the request sounds simple or the user doesn't mention 'ESLint' explicitly. Guides through the complete workflow: diagnostics constant, rule implementation, unit tests, docs, and registration."
 compatibility: Requires the open-ux-tools monorepo at packages/eslint-plugin-fiori-tools. Assumes pnpm workspace with TypeScript 5+.
 metadata:
-  author: sap-ux
+  author: sap-fiori-tools
   version: "0.0.1"
 ---
 
