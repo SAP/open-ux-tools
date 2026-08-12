@@ -463,7 +463,7 @@ describe('AdaptationProject', () => {
             await adp.sync();
 
             expect(mockGetPreviewManifest).toHaveBeenCalledTimes(1);
-            expect(mockGetPreviewManifest).toHaveBeenCalledWith('/projects/adp.project');
+            expect(mockGetPreviewManifest).toHaveBeenCalledWith('/projects/adp.project', mockProject);
             expect(adp.descriptor.manifest).toEqual(updatedManifest);
         });
 

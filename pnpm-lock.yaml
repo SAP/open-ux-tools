@@ -371,7 +371,7 @@ importers:
         version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.27.4)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.27.4)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -398,13 +398,13 @@ importers:
         version: 8.18.1
       babel-loader:
         specifier: 10.1.1
-        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
         specifier: 7.1.4
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
       eslint:
         specifier: 9.39.1
         version: 9.39.1
@@ -434,19 +434,19 @@ importers:
         version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
       storybook:
         specifier: 10.5.1
         version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
       style-loader:
         specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
       ts-loader:
         specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)
@@ -773,8 +773,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       '@ui5/task-adaptation':
-        specifier: 1.6.7
-        version: 1.6.7(buffer@6.0.3)(typescript@5.9.3)
+        specifier: 1.6.8
+        version: 1.6.8(buffer@6.0.3)(typescript@5.9.3)
       adm-zip:
         specifier: 0.6.0
         version: 0.6.0
@@ -4478,7 +4478,7 @@ importers:
         version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.27.4)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.27.4)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
@@ -4511,13 +4511,13 @@ importers:
         version: 30.4.1(@babel/core@7.29.0)
       babel-loader:
         specifier: 10.1.1
-        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
+        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
         specifier: 7.1.4
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       enzyme:
         specifier: 3.11.0
         version: 3.11.0
@@ -4556,19 +4556,19 @@ importers:
         version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       storybook:
         specifier: 10.5.1
         version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
+        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       style-loader:
         specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       ts-loader:
         specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.22))
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
 
   packages/ui-prompting:
     dependencies:
@@ -10920,8 +10920,8 @@ packages:
     resolution: {integrity: sha512-YB+Qq+Z6dvnbqZb6tfSciLIw31MWIpGtA+WhircB065ckga1sOW2Y8R7Wk3tXBbPyR154e7Z4OfpK5lQK8XFBg==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
-  '@ui5/task-adaptation@1.6.7':
-    resolution: {integrity: sha512-BX5qSl2RPLy7M+9jtpQasH9IG7stWQaYc7zAL8wkbqNsBzof6wcfyy9G7oPMxkkcn+w+5aLEFSRv5P+nw9sVnA==}
+  '@ui5/task-adaptation@1.6.8':
+    resolution: {integrity: sha512-O0dOMkpFlr0vA7OkQWxZdqJ7AiB7yu6KOj2xbbGwugJq2h1f4ePTsr0+8tkDwiwFRHm0RUeUqALAv2MyVU46Ng==}
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -27621,7 +27621,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ui5/task-adaptation@1.6.7(buffer@6.0.3)(typescript@5.9.3)':
+  '@ui5/task-adaptation@1.6.8(buffer@6.0.3)(typescript@5.9.3)':
     dependencies:
       '@sap-ux/axios-extension': 2.0.8
       '@sap-ux/btp-utils': 2.0.6

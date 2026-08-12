@@ -1,7 +1,8 @@
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { previewManifest } from '@ui5/task-adaptation/dist/index.js';
-import type { Manifest } from '@sap-ux/project-access';
-import { readUi5Config } from '../base/helper.js';
+import { previewManifest } from '@ui5/task-adaptation';
+import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import { readUi5Config, extractCfBuildTask } from './helper.js';
 
 /**
  * Executes a build command in the specified project directory.
@@ -28,32 +29,29 @@ export async function runBuild(projectPath: string, env?: NodeJS.ProcessEnv): Pr
 }
 
 /**
- * Produces the merged manifest.json for a CF ADP project using the cached base app
- * files from the last full build. Much faster than a full rebuild — no HTML5 Repo
- * fetch, just descriptor variant application on top of the cached base app.
+ * Produces the merged manifest.json for a CF ADP project using the workspace
+ * and cached base app files from the last full build.
  *
  * Precondition: a full build must have run at least once so the base app files are
  * in the local cache. Throws if the cache is empty.
  *
  * @param {string} projectPath - Absolute path to the project root (where ui5.yaml lives).
- * @returns {Promise<Manifest>} The merged manifest.
+ * @param {ReaderCollection} workspace - The UI5 project workspace (this.project in AdpPreview).
+ * @returns {Promise<MergedAppDescriptor['manifest']>} The merged manifest.
  */
-export async function getPreviewManifest(projectPath: string): Promise<Manifest> {
+export async function getPreviewManifest(
+    projectPath: string,
+    workspace: ReaderCollection
+): Promise<MergedAppDescriptor['manifest']> {
     const ui5Config = await readUi5Config(projectPath, 'ui5.yaml');
-    const buildTask = ui5Config.findCustomTask<{ module: string; [key: string]: unknown }>(
-        'app-variant-bundler-build'
-    )?.configuration;
-
-    if (!buildTask) {
-        throw new Error('No app-variant-bundler-build task found in ui5.yaml');
-    }
-
+    const buildTask = extractCfBuildTask(ui5Config) as unknown as { module: string; [key: string]: unknown };
     const { module: projectNamespace, ...configuration } = buildTask;
-
-    return previewManifest({
+    const manifest = await previewManifest({
+        workspace,
         options: {
             configuration,
             projectNamespace
         }
-    } as any) as Promise<Manifest>;
+    } as any);
+    return manifest as MergedAppDescriptor['manifest'];
 }
