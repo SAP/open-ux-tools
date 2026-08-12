@@ -229,6 +229,7 @@ export class AdpPreview {
                 this.util.getProject().getRootPath(),
                 this.project
             );
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {

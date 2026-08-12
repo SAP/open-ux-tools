@@ -44,7 +44,7 @@ export async function getPreviewManifest(
     workspace: ReaderCollection
 ): Promise<MergedAppDescriptor['manifest']> {
     const ui5Config = await readUi5Config(projectPath, 'ui5.yaml');
-    const buildTask = extractCfBuildTask(ui5Config) as unknown as { module: string; [key: string]: unknown };
+    const buildTask = extractCfBuildTask(ui5Config);
     const { module: projectNamespace, ...configuration } = buildTask;
     const manifest = await previewManifest({
         workspace,

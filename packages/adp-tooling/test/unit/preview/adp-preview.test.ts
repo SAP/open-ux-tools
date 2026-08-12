@@ -465,6 +465,7 @@ describe('AdaptationProject', () => {
             expect(mockGetPreviewManifest).toHaveBeenCalledTimes(1);
             expect(mockGetPreviewManifest).toHaveBeenCalledWith('/projects/adp.project', mockProject);
             expect(adp.descriptor.manifest).toEqual(updatedManifest);
+            expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBe(false);
         });
 
         test('updates merged descriptor', async () => {
