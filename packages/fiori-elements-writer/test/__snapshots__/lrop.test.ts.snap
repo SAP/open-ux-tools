@@ -18753,7 +18753,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -18861,7 +18860,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 
@@ -22629,8 +22627,11 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
             Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
@@ -22641,10 +22642,13 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
+        });
+
+        opaTest(\\"Check the BookingSupplement section of the Object Page\\", function (_Given, When, Then) {
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
             Then.onTheBookingObjectPageGenerated.onTable({ property: \\"_BookSupplement\\" }).iCheckColumns(undefined, {\\"BookingSupplementID\\":{\\"header\\":\\"Book. Supp. Number\\"},\\"SupplementID\\":{\\"header\\":\\"Product ID\\"},\\"Price\\":{\\"header\\":\\"Product Price\\"}});
-       });
+        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -22797,8 +22801,11 @@ sap.ui.define([
         });
 
 
-        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest(\\"Check the Travel section of the Object Page\\", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Travel\\");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
@@ -22811,10 +22818,13 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
+        });
+
+        opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckColumns(undefined, {\\"BookingID\\":{\\"header\\":\\"Booking Number\\"},\\"BookingDate\\":{\\"header\\":\\"Booking Date\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"AirlineID\\":{\\"header\\":\\"Airline ID\\"},\\"ConnectionID\\":{\\"header\\":\\"Flight Number\\"},\\"FlightDate\\":{\\"header\\":\\"Flight Date\\"},\\"FlightPrice\\":{\\"header\\":\\"Flight Price\\"},\\"DestinationRisk\\":{\\"header\\":\\"Destination Risk\\"}});
-       });
+        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -26231,7 +26241,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -26339,7 +26348,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 
