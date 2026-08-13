@@ -1,5 +1,23 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Do not delete existing remote annotation files/dataSources on update when annotations are not provided, and regenerate the sap-fe-mockserver middleware in ui5-mock.yaml when external (value-help) services are written (even when backend proxy middlewares are preserved) so the written external service metadata is resolved by the mockserver. [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/mockserver-config-writer 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.9 → 2.1.10
+
 ## 1.0.16
 
 ### Patch Changes

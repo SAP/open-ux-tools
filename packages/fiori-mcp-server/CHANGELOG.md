@@ -1,5 +1,61 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Fetch backend service annotations so generated v2 OData apps include the remote annotation dataSource. [[fdd1864](https://github.com/SAP/open-ux-tools/commit/fdd1864adf6cf67aa72888ab124f1a06c319584e)]
+
+## 1.11.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-docs-embeddings [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.11.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
+## 1.11.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Add timeout to resolveApplication() to prevent indefinite hangs on invalid or unreachable paths [[b63d35f](https://github.com/SAP/open-ux-tools/commit/b63d35f3897c64fb58a2696de6f226daffceeb9f)]
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
 ## 1.11.5
 
 ### Patch Changes
