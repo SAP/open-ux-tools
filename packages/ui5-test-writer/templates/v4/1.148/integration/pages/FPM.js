@@ -15,7 +15,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
     'use strict';
 
     const CustomPageDefinitions = {
@@ -23,12 +23,8 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
         assertions: {}
     };
 
-    return new ObjectPage(
-        {
-            appId: 'testnamepsace.lropv4noui5version',
-            componentId: 'TravelObjectPage',
-            contextPath: '/Travel'
-        },
+    return new TemplatePage(
+        '<%- appID %>::<%- componentID %>',
         CustomPageDefinitions
     );
 });

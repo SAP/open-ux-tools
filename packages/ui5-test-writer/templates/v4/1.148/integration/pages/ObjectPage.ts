@@ -15,20 +15,21 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
-    'use strict';
+import type Opa5 from "sap/ui/test/Opa5";
+import Press from "sap/ui/test/actions/Press";
 
-    const CustomPageDefinitions = {
-        actions: {},
-        assertions: {}
-    };
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(`.*--fe::FacetSection::${section}-anchor$`),
+            actions: new Press()
+        });
+    }
+};
 
-    return new ObjectPage(
-        {
-            appId: 'testnamepsace.lropv4noui5version',
-            componentId: 'TravelObjectPage',
-            contextPath: '/Travel'
-        },
-        CustomPageDefinitions
-    );
-});
+export const assertions = {};
+
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
