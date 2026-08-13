@@ -306,6 +306,49 @@ ruleTester.run(TEST_NAME, myRule, {
 });
 ```
 
+## CDS vs XML: reading annotation values
+
+In XML, annotation values are stored as **attributes**. In CDS, they are stored as **child elements** containing a text node. This affects every value type — `Path`, `String`, `AnnotationPath`, etc.
+
+| Value type | XML | CDS |
+|---|---|---|
+| Path | `<Annotation Term="UI.SomeTerm" Path="myProp"/>` | `![@UI.SomeTerm]: myProp` → child `<Path>myProp</Path>` |
+| String | `<PropertyValue Property="Label" String="My Label"/>` | `Label: 'My Label'` → child `<String>My Label</String>` |
+| PropertyValue path | `<PropertyValue Property="Value" Path="title"/>` | `Value: title` → child `<Path>title</Path>` |
+
+**Always use this helper when reading any value** that could be either an attribute or a child element:
+
+```typescript
+import { Edm, elementsWithName, getElementAttributeValue } from '@sap-ux/odata-annotation-core';
+import type { Element } from '@sap-ux/odata-annotation-core';
+
+function getAttrOrChildText(element: Element, valueName: string): string {
+    const fromAttr = getElementAttributeValue(element, valueName);
+    if (fromAttr) {
+        return fromAttr;
+    }
+    const [childEl] = elementsWithName(valueName, element);
+    const textNode = childEl?.content?.find((c) => c.type === 'text');
+    return textNode?.type === 'text' && textNode.text ? textNode.text : '';
+}
+```
+
+Examples:
+```typescript
+// Read a Path value from an Annotation or PropertyValue element
+const pathValue = getAttrOrChildText(ann, Edm.Path);
+
+// Read a String value from a PropertyValue element
+const labelValue = getAttrOrChildText(propValueEl, Edm.String);
+
+// Read an AnnotationPath value
+const annotationPath = getAttrOrChildText(propValueEl, Edm.AnnotationPath);
+```
+
+Replace any bare `getElementAttributeValue(el, Edm.Path)` / `getElementAttributeValue(el, Edm.String)` call with `getAttrOrChildText` so the rule works for both XML and CDS files.
+
+---
+
 ## CDS annotations tests:
 
 **Imports — use CAP variants instead of XML variants:**
@@ -333,6 +376,7 @@ import {
 
 ## Debug checklist (if tests show 0 errors when violations expected):
 
+- **CDS rule fires for XML but not CDS (or vice versa)?** XML stores annotation values as attributes; CDS stores them as child elements containing a text node. Use `getAttrOrChildText(el, valueName)` (see "CDS vs XML: reading annotation values" above) instead of bare `getElementAttributeValue(el, Edm.Path)` / `getElementAttributeValue(el, Edm.String)` calls.
 - Is `linkedModel.apps` used for page iteration (not `index.apps` directly)?
 - Is `index.apps[appKey]` used to fetch `parsedApp` for `getIndexedServiceForMainService`?
 - **Object page tables not found?** `page.lookup['table']` is empty for object pages — tables live in `page.sections` as `table-section` children. Always branch on `page.type` (see template above).
