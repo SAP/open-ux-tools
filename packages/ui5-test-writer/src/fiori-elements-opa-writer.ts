@@ -60,7 +60,7 @@ function getTemplateUi5Version(ui5Version?: string): string {
  *
  * @param appFeatures - the extracted app feature data (mutated in place)
  */
-function removeCustomActions(appFeatures: AppFeatures): void {
+export function removeCustomActions(appFeatures: AppFeatures): void {
     const withoutCustom = (action: ActionButtonState): boolean => !action.custom;
     if (appFeatures.listReport?.toolBarActions) {
         appFeatures.listReport.toolBarActions = appFeatures.listReport.toolBarActions.filter(withoutCustom);

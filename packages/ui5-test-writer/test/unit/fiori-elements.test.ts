@@ -48,7 +48,7 @@ jest.unstable_mockModule('../../src/utils/modelUtils.js', () => ({
     getAppFeatures: getAppFeaturesMock
 }));
 
-const { generateOPAFiles } = await import('../../src/fiori-elements-opa-writer.js');
+const { generateOPAFiles, removeCustomActions } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
@@ -1709,5 +1709,29 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
+    });
+});
+
+describe('removeCustomActions()', () => {
+    type Action = { label: string; custom?: boolean };
+    const odata = (label: string): Action => ({ label });
+    const custom = (label: string): Action => ({ label, custom: true });
+
+    it('drops custom actions from LR toolbar, OP header and section actions; keeps OData actions', () => {
+        const features = {
+            listReport: { toolBarActions: [odata('Keep'), custom('DropTB')] },
+            objectPages: [
+                {
+                    headerActions: [custom('DropH'), odata('KeepH')],
+                    bodySections: [{ actions: [odata('KeepS'), custom('DropS')] }]
+                }
+            ]
+        } as unknown as Parameters<typeof removeCustomActions>[0];
+
+        removeCustomActions(features);
+
+        expect(features.listReport?.toolBarActions?.map((a) => a.label)).toEqual(['Keep']);
+        expect(features.objectPages?.[0].headerActions?.map((a) => a.label)).toEqual(['KeepH']);
+        expect(features.objectPages?.[0].bodySections?.[0].actions?.map((a) => a.label)).toEqual(['KeepS']);
     });
 });
