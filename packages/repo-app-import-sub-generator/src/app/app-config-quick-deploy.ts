@@ -13,24 +13,7 @@ import { FileName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { getUI5Versions, type UI5Version } from '@sap-ux/ui5-info';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import { resolveTransportRequest } from '../utils/download-utils.js';
-
-/**
- * Fetches the metadata of a given service from the provided ABAP service provider.
- *
- * @param {AbapServiceProvider} provider - The ABAP service provider instance.
- * @param {string} serviceUrl - The URL of the service to retrieve metadata for.
- * @returns {Promise<string | undefined>} - A promise resolving to the service metadata.
- */
-const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: string): Promise<string | undefined> => {
-    try {
-        const metadata = await provider.service(serviceUrl).metadata();
-        RepoAppDownloadLogger.logger?.debug('Metadata fetched successfully');
-        return metadata as string | undefined;
-    } catch (err) {
-        RepoAppDownloadLogger.logger?.error(t('error.metadataFetchError', { error: err.message }));
-    }
-};
+import { resolveTransportRequest, fetchServiceMetadata } from '../utils/download-utils.js';
 
 /**
  * Gets the application configuration based on the provided user answers and manifest data.

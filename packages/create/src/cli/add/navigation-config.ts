@@ -12,6 +12,7 @@ import {
     isCFEnvironment,
     loadCfConfig,
     getAppParamsFromUI5Yaml,
+    getSystemUI5Version,
     type InternalInboundNavigation,
     type DescriptorVariant,
     type AdpPreviewConfigWithTarget
@@ -89,12 +90,13 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         }
 
         const inbounds = await getInbounds(basePath, yamlPath, fs, logger, variant);
+        const { data: inboundData, systemUI5Version, isCfProject } = inbounds;
         let tileSettingsAnswers: TileSettingsAnswers | undefined;
-        if (inbounds && isAdp) {
-            tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(inbounds), false);
+        if (inboundData && isAdp) {
+            tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(inboundData), false);
         }
 
-        const answers = await getUserAnswers(inbounds, isAdp, tileSettingsAnswers);
+        const answers = await getUserAnswers(inboundData, isAdp, tileSettingsAnswers);
 
         if (!answers && tileSettingsAnswers?.tileHandlingAction !== tileActions.REPLACE) {
             logger.info('User chose not to overwrite existing inbound navigation configuration.');
@@ -109,7 +111,9 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
             },
             variant,
             fs,
-            inbounds
+            inboundData,
+            systemUI5Version,
+            isCfProject
         );
 
         if (!simulate) {
@@ -125,13 +129,14 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
 
 /**
  * Retrieves the inbounds for the given project, handling both ADP and Fiori scenarios.
+ * For ABAP ADP projects also returns the system UI5 version to enable version-based change type selection.
  *
  * @param {string} basePath - The base path to the project.
  * @param {string} yamlPath - The path to the project configuration file in YAML format.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
  * @param {DescriptorVariant} [variant] - The descriptor variant, if applicable.
- * @returns {Promise<ManifestNamespace.Inbound | undefined>} The inbounds from the manifest or mapped from the system.
+ * @returns {Promise<{data, systemUI5Version, isCfProject}>} Inbounds plus optional version/CF context.
  */
 async function getInbounds(
     basePath: string,
@@ -139,18 +144,27 @@ async function getInbounds(
     fs: Editor,
     logger: ToolsLogger,
     variant: Variant
-): Promise<ManifestNamespace.Inbound | undefined> {
+): Promise<{
+    data: ManifestNamespace.Inbound | undefined;
+    systemUI5Version: string | undefined;
+    isCfProject: boolean;
+}> {
     if (variant.isAdp) {
         if (await isCFEnvironment(basePath)) {
-            return getCfInbounds(basePath, variant.content, logger);
+            const data = await getCfInbounds(basePath, variant.content, logger);
+            return { data, systemUI5Version: undefined, isCfProject: true };
         }
         const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(basePath, yamlPath);
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-        return getBaseAppInbounds(variant.content.reference as string, provider);
+        const [data, systemUI5Version] = await Promise.all([
+            getBaseAppInbounds(variant.content.reference as string, provider),
+            getSystemUI5Version(provider, logger)
+        ]);
+        return { data, systemUI5Version, isCfProject: false };
     }
 
     const manifest = await retrieveManifest(basePath, fs);
-    return getInboundsFromManifest(manifest);
+    return { data: getInboundsFromManifest(manifest), systemUI5Version: undefined, isCfProject: false };
 }
 
 /**
@@ -235,6 +249,8 @@ async function getUserAnswers(
  * @param {Variant} variant - The descriptor variant information.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ManifestNamespace.Inbound} [inbounds] - Base application inbounds
+ * @param {string} [systemUI5Version] - System UI5 version, used to select change type for ABAP projects.
+ * @param {boolean} [isCfProject] - Whether this is a CF adaptation project.
  * @returns {Promise<void>} A promise that resolves when the configuration is generated.
  */
 async function generateConfig(
@@ -245,7 +261,9 @@ async function generateConfig(
     },
     variant: Variant,
     fs: Editor,
-    inbounds?: ManifestNamespace.Inbound
+    inbounds?: ManifestNamespace.Inbound,
+    systemUI5Version?: string,
+    isCfProject = false
 ): Promise<void> {
     const { flpConfigAnswers, tileSettingsAnswers } = answers;
     if (variant.isAdp) {
@@ -255,7 +273,7 @@ async function generateConfig(
             tileSettingsAnswers,
             inbounds
         );
-        await generateInboundConfig(basePath, config as InternalInboundNavigation[], fs);
+        await generateInboundConfig(basePath, config as InternalInboundNavigation[], fs, systemUI5Version, isCfProject);
     } else {
         await generateInboundNavigationConfig(basePath, flpConfigAnswers, true, fs);
     }

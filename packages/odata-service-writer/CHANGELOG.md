@@ -1,5 +1,142 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Do not delete existing remote annotation files/dataSources on update when annotations are not provided, and regenerate the sap-fe-mockserver middleware in ui5-mock.yaml when external (value-help) services are written (even when backend proxy middlewares are preserved) so the written external service metadata is resolved by the mockserver. [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/mockserver-config-writer 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.9 → 2.1.10
+
+## 1.0.16
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Release Date
+
+2026-07-24
+
+#### Bug Fixes
+
+- Resolve TypeScript strict null check error in manifest.ts localUriParts guard [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/mockserver-config-writer 1.0.13 → 1.0.14
+
+## 1.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- Handle newlines in value list reference strings from formatted XML [[d1f129b](https://github.com/SAP/open-ux-tools/commit/d1f129b98564bef9f42c51e0bad04381c025631b)]
+
+#### Workspace Updates
+
+- @sap-ux/mockserver-config-writer 1.0.12 → 1.0.13
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/mockserver-config-writer 1.0.11 → 1.0.12
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/mockserver-config-writer 1.0.10 → 1.0.11
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/mockserver-config-writer 1.0.9 → 1.0.10
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Replace unmaintained prettify-xml with xml-formatter [[7717377](https://github.com/SAP/open-ux-tools/commit/7717377a60beb8c331bd11e0f41fa387fe3d9284)]
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/mockserver-config-writer 1.0.8 → 1.0.9
+
+## 1.0.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/mockserver-config-writer 1.0.7 → 1.0.8
+
+## 1.0.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.0.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/mockserver-config-writer 1.0.6 → 1.0.7
+
 ## 1.0.7
 
 ### Patch Changes
@@ -10,7 +147,7 @@
 
 ## 1.0.6
 
-*Released: 2026-06-10T09:57:42Z*
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -21,7 +158,7 @@
 
 ## 1.0.5
 
-*Released: 2026-06-04T13:54:21Z*
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -31,7 +168,7 @@
 
 ## 1.0.4
 
-*Released: 2026-06-04T10:19:37Z*
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -41,7 +178,7 @@
 
 ## 1.0.3
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -53,7 +190,7 @@
 
 ## 1.0.2
 
-*Released: 2026-06-03T13:52:44Z*
+_Released: 2026-06-03T13:52:44Z_
 
 ### Patch Changes
 
@@ -64,7 +201,7 @@
 
 ## 1.0.1
 
-*Released: 2026-06-01T15:15:26Z*
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -74,7 +211,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -116,7 +253,7 @@
 
 ## 0.32.2
 
-*Released: 2026-05-21T16:21:11Z*
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -127,7 +264,7 @@
 
 ## 0.32.1
 
-*Released: 2026-05-19T15:16:46Z*
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -137,7 +274,7 @@
 
 ## 0.32.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -152,7 +289,7 @@
 
 ## 0.31.15
 
-*Released: 2026-05-14T21:28:41Z*
+_Released: 2026-05-14T21:28:41Z_
 
 ### Patch Changes
 
@@ -160,7 +297,7 @@
 
 ## 0.31.14
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -172,7 +309,7 @@
 
 ## 0.31.13
 
-*Released: 2026-05-13T09:36:59Z*
+_Released: 2026-05-13T09:36:59Z_
 
 ### Patch Changes
 
@@ -183,7 +320,7 @@
 
 ## 0.31.12
 
-*Released: 2026-05-06T23:02:00Z*
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -194,7 +331,7 @@
 
 ## 0.31.11
 
-*Released: 2026-04-30T14:23:24Z*
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -203,7 +340,7 @@
 
 ## 0.31.10
 
-*Released: 2026-04-29T15:24:37Z*
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -214,7 +351,7 @@
 
 ## 0.31.9
 
-*Released: 2026-04-27T19:47:46Z*
+_Released: 2026-04-27T19:47:46Z_
 
 ### Patch Changes
 
@@ -224,7 +361,7 @@
 
 ## 0.31.8
 
-*Released: 2026-04-23T12:54:21Z*
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -234,7 +371,7 @@
 
 ## 0.31.7
 
-*Released: 2026-04-14T12:35:35Z*
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -245,7 +382,7 @@
 
 ## 0.31.6
 
-*Released: 2026-04-08T13:10:18Z*
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -256,7 +393,7 @@
 
 ## 0.31.5
 
-*Released: 2026-04-01T11:49:37Z*
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -266,7 +403,7 @@
 
 ## 0.31.4
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -278,7 +415,7 @@
 
 ## 0.31.3
 
-*Released: 2026-03-26T20:06:10Z*
+_Released: 2026-03-26T20:06:10Z_
 
 ### Patch Changes
 
@@ -288,7 +425,7 @@
 
 ## 0.31.2
 
-*Released: 2026-03-26T12:07:04Z*
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -302,7 +439,7 @@
 
 ## 0.31.1
 
-*Released: 2026-03-25T12:56:41Z*
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 

@@ -7670,7 +7670,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -9222,8 +9221,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                     <Record>
                         <PropertyValue Property=\\"TargetEntities\\">
                             <Collection>
-                                <NavigationPropertyPath>
-                                </NavigationPropertyPath>
+                                <NavigationPropertyPath></NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductText</NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductTextInOriginalLang</NavigationPropertyPath>
                             </Collection>
@@ -14072,7 +14070,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -15624,8 +15621,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                     <Record>
                         <PropertyValue Property=\\"TargetEntities\\">
                             <Collection>
-                                <NavigationPropertyPath>
-                                </NavigationPropertyPath>
+                                <NavigationPropertyPath></NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductText</NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductTextInOriginalLang</NavigationPropertyPath>
                             </Collection>
@@ -17485,7 +17481,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -19037,8 +19032,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                     <Record>
                         <PropertyValue Property=\\"TargetEntities\\">
                             <Collection>
-                                <NavigationPropertyPath>
-                                </NavigationPropertyPath>
+                                <NavigationPropertyPath></NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductText</NavigationPropertyPath>
                                 <NavigationPropertyPath>to_ProductTextInOriginalLang</NavigationPropertyPath>
                             </Collection>

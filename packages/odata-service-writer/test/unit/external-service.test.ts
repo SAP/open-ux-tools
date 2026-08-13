@@ -117,7 +117,7 @@ describe('writeValueListReferenceMetadata', () => {
                 'DunningProcedure',
                 'metadata.xml'
             ),
-            '<metadata>'
+            '<metadata></metadata>'
         );
     });
 
@@ -174,7 +174,7 @@ describe('writeValueListReferenceMetadata', () => {
                 'DunningProcedure',
                 'metadata.xml'
             ),
-            '<metadata>'
+            '<metadata></metadata>'
         );
     });
 
@@ -243,7 +243,7 @@ describe('writeValueListReferenceMetadata', () => {
                 'DunningProcedure',
                 'metadata.xml'
             ),
-            '<metadata>'
+            '<metadata></metadata>'
         );
     });
 
@@ -278,7 +278,7 @@ describe('writeValueListReferenceMetadata', () => {
         expect(spy).toHaveBeenNthCalledWith(
             2,
             join(root, 'localService', 'myService', 'default', 'iwbep', 'common', '0001', 'metadata.xml'),
-            '<metadata>'
+            '<metadata></metadata>'
         );
     });
 });

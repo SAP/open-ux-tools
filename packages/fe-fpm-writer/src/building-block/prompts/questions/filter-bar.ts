@@ -91,10 +91,14 @@ export async function getFilterBarBuildingBlockPrompts(
                       })
                   ]
                 : []),
-            getAggregationPathPrompt(context, {
-                message: t('aggregation') as string,
-                guiOptions: { groupId: groupIds.commonFilterBarBuildingBlockProperties, mandatory: true }
-            }),
+            getAggregationPathPrompt(
+                context,
+                {
+                    message: t('aggregation') as string,
+                    guiOptions: { groupId: groupIds.commonFilterBarBuildingBlockProperties, mandatory: true }
+                },
+                { defaultTarget: 'items' }
+            ),
             getEntityPrompt(context, {
                 message: t('entity') as string,
                 guiOptions: {

@@ -10,6 +10,26 @@ import { TransportChecksService } from '@sap-ux/axios-extension';
 import { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';
 
 /**
+ * Fetches the metadata of a given service from the provided ABAP service provider.
+ *
+ * @param {AbapServiceProvider} provider - The ABAP service provider instance.
+ * @param {string} serviceUrl - The URL of the service to retrieve metadata for.
+ * @returns {Promise<string | undefined>} - A promise resolving to the service metadata XML string.
+ */
+export async function fetchServiceMetadata(
+    provider: AbapServiceProvider,
+    serviceUrl: string
+): Promise<string | undefined> {
+    try {
+        const metadata = await provider.service(serviceUrl).metadata();
+        RepoAppDownloadLogger.logger?.debug('Metadata fetched successfully');
+        return metadata as string | undefined;
+    } catch (err) {
+        RepoAppDownloadLogger.logger?.error(t('error.metadataFetchError', { error: (err as Error).message }));
+    }
+}
+
+/**
  * Checks whether the ZIP archive contains an entry named qfa.json
  * and verifies that a file named qfa.json exists  in the archive.
  *

@@ -6,6 +6,8 @@ import type { Rule } from 'eslint';
 import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 // Type aliases for better readability
 export type ASTNode = Rule.Node;
@@ -772,6 +774,11 @@ export interface DeepestExistingPathResult {
     missingSegments: string[];
 }
 
+export const FLEX_CHANGE_NEW_VALUE_PATH_RESULT: DeepestExistingPathResult = {
+    validatedPath: ['content', 'newValue'],
+    missingSegments: []
+};
+
 /**
  * Validates that a path exists and returns the deepest existing level.
  *
@@ -806,16 +813,19 @@ export function findDeepestExistingPath(
  *
  * @param page - Application page
  * @param parsedApp - Parsed application
+ * @param sourceCode - FioriJSONSourceCode | FioriChangeSourceCode instance
  * @param checkConfiguration - Function to check a specific property in the table configuration
  * @returns Found rule diagnostic issues
  */
 export function checkAppTablesConfiguration<DiagnosticType>(
     page: FeV4PageType | FeV2PageType,
     parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
     checkConfiguration: (
         page: any,
         table: any,
         parsedApp: ParsedApp,
+        sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
         problems: DiagnosticType[],
         pageSectionLabel?: string
     ) => void
@@ -823,13 +833,13 @@ export function checkAppTablesConfiguration<DiagnosticType>(
     const problems: DiagnosticType[] = [];
     if (page.type === 'list-report-page') {
         for (const table of page.lookup['table'] ?? []) {
-            checkConfiguration(page, table, parsedApp, problems);
+            checkConfiguration(page, table, parsedApp, sourceCode, problems);
         }
     } else if (page.type === 'object-page') {
         for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
             const table = tableSection.children.find((element) => element.type === 'table');
             if (table) {
-                checkConfiguration(page, table, parsedApp, problems, tableSection.annotation?.label);
+                checkConfiguration(page, table, parsedApp, sourceCode, problems, tableSection.annotation?.label);
             }
         }
     }
@@ -844,4 +854,16 @@ export function checkAppTablesConfiguration<DiagnosticType>(
  */
 export function isV2Table(table: TableV2 | TableV4): table is TableV2 {
     return 'showPasteButton' in (table as TableV2).configuration;
+}
+
+/**
+ * Checks if given page is ODataV2 type.
+ * Create mode is a page configuration setting in ODataV2.
+ * But create mode can be set only on an application in ODataV4.
+ *
+ * @param page ODataV2 or ODataV4 page
+ * @returns true for ODataV2 page
+ */
+export function isV2Page(page: FeV4PageType | FeV2PageType): page is FeV2PageType {
+    return 'createMode' in (page as FeV2PageType).configuration;
 }

@@ -1,5 +1,4 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types.js';
 import { validateBindingModel } from './validator.js';
@@ -45,6 +44,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
             [property]: change.value
         };
 
+        const CommandFactory = (await import('sap/ui/rta/command/CommandFactory')).default;
         const command = await CommandFactory.getCommandFor<FlexCommand>(
             modifiedControl,
             changeType,

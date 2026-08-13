@@ -1,35 +1,43 @@
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
-import type { AppInfo, AbapRepositoryContext } from '../app/types.js';
+import type { AppInfo, AbapRepositoryContext, AbapRepoAppConfig } from '../app/types.js';
 import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import RepoAppDownloadLogger from '../utils/logger.js';
 import { t } from '../utils/i18n.js';
 import { getFlpId } from '@sap-ux/fiori-generator-shared';
-import { FileName, getMainService } from '@sap-ux/project-access';
-import { resolveTransportRequest } from '../utils/download-utils.js';
+import { FileName, DirName, getMainService } from '@sap-ux/project-access';
+import { resolveTransportRequest, fetchServiceMetadata } from '../utils/download-utils.js';
 import { AuthenticationType } from '@sap-ux/store';
-import { readManifest } from '../utils/file-helpers.js';
+import { readManifest, getTemplateTypeFromManifest } from '../utils/file-helpers.js';
 import { join } from 'node:path';
 
 /**
- * App configuration derived from the downloaded manifest for the ABAP repository flow.
- * Used only for README generation, launch config creation, and adding a minimal package.json.
+ * Fetches OData metadata for the main service and writes it to local service folder in the webapp.
+ *
+ * @param {AbapServiceProvider} provider - The connected ABAP service provider.
+ * @param {string} webappPath - Absolute path to the webapp folder.
+ * @param {Editor} fs - The mem-fs editor.
  */
-export interface AbapRepoAppConfig {
-    app: {
-        id: string;
-        title: string;
-        flpAppId: string;
-    };
-    service: {
-        url: string | undefined;
-        version: OdataVersion;
-    };
-    ui5: {
-        version: string;
-    };
+export async function writeServiceMetadata(
+    provider: AbapServiceProvider,
+    webappPath: string,
+    fs: Editor
+): Promise<void> {
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
+    const serviceName = getMainService(manifest);
+    const serviceUri = serviceName ? manifest?.['sap.app']?.dataSources?.[serviceName]?.uri : undefined;
+
+    if (!serviceName || !serviceUri) {
+        RepoAppDownloadLogger.logger?.debug('No main service URI found in manifest; skipping metadata fetch.');
+        return;
+    }
+
+    const metadata = await fetchServiceMetadata(provider, serviceUri);
+    if (metadata) {
+        fs.write(join(webappPath, DirName.LocalService, serviceName, 'metadata.xml'), metadata);
+    }
 }
 
 /**
@@ -52,6 +60,7 @@ export function getAbapRepoAppConfig(webappPath: string, appInfo: AppInfo, fs: E
         ? manifest?.['sap.app']?.dataSources?.[mainServiceName]?.settings?.odataVersion
         : undefined;
     const odataVersion = odataVersionStr === '4.0' ? OdataVersion.v4 : OdataVersion.v2;
+    const templateType = getTemplateTypeFromManifest(manifest);
     return {
         app: {
             id: appId,
@@ -64,6 +73,9 @@ export function getAbapRepoAppConfig(webappPath: string, appInfo: AppInfo, fs: E
         },
         ui5: {
             version: ui5Version
+        },
+        template: {
+            type: templateType
         }
     };
 }

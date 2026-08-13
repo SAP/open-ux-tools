@@ -10,6 +10,7 @@ import type { Editor } from 'mem-fs-editor';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockResolveTransportRequest = jest.fn();
+const mockFetchServiceMetadata: jest.Mock = jest.fn();
 
 jest.unstable_mockModule('../src/utils/logger', () => {
     const mock = {
@@ -25,10 +26,12 @@ jest.unstable_mockModule('../src/utils/logger', () => {
 });
 
 jest.unstable_mockModule('../src/utils/download-utils', () => ({
-    resolveTransportRequest: mockResolveTransportRequest
+    resolveTransportRequest: mockResolveTransportRequest,
+    fetchServiceMetadata: mockFetchServiceMetadata
 }));
 
-const { getAbapRepoAppConfig, getAbapRepoDeployConfig } = await import('../src/app/app-config-abap-repo.js');
+const { getAbapRepoAppConfig, getAbapRepoDeployConfig, writeServiceMetadata } =
+    await import('../src/app/app-config-abap-repo.js');
 const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
 const { resolveTransportRequest } = await import('../src/utils/download-utils.js');
 
@@ -68,6 +71,7 @@ describe('getAbapRepoAppConfig', () => {
             'sap.app': {
                 id: 'abapRepositoryTestApp',
                 title: 'App From Manifest',
+                sourceTemplate: { id: '@sap/generator-fiori:lrop' },
                 dataSources: {
                     mainService: {
                         settings: { odataVersion: '4.0' }
@@ -94,6 +98,9 @@ describe('getAbapRepoAppConfig', () => {
             },
             ui5: {
                 version: '1.145.2'
+            },
+            template: {
+                type: 'lrop'
             }
         });
     });
@@ -277,5 +284,76 @@ describe('getAbapRepoDeployConfig', () => {
 
         expect(resolveTransportRequest).toHaveBeenCalledWith(context.serviceProvider, '', mockAppInfo.repoName);
         expect(result.app.package).toBe('');
+    });
+});
+
+describe('writeServiceMetadata', () => {
+    const mockMetadata = '<edmx:Edmx Version="4.0"/>';
+
+    let mockFs: { readJSON: jest.Mock; exists: jest.Mock; write: jest.Mock };
+    let mockProvider: AbapServiceProvider;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockFs = {
+            readJSON: jest.fn(),
+            exists: jest.fn().mockReturnValue(true),
+            write: jest.fn()
+        };
+        mockProvider = {} as unknown as AbapServiceProvider;
+    });
+
+    it('should fetch metadata and write it to localService/<serviceName>/metadata.xml', async () => {
+        mockFs.readJSON.mockReturnValue({
+            'sap.app': {
+                dataSources: {
+                    mainService: {
+                        uri: '/sap/opu/odata4/dmo/ui_agency/0001/',
+                        settings: { odataVersion: '4.0' }
+                    }
+                }
+            },
+            'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+        });
+        mockFetchServiceMetadata.mockImplementation(() => Promise.resolve(mockMetadata));
+
+        await writeServiceMetadata(mockProvider, fixtureWebappPath, mockFs as any);
+
+        expect(mockFetchServiceMetadata).toHaveBeenCalledWith(mockProvider, '/sap/opu/odata4/dmo/ui_agency/0001/');
+        expect(mockFs.write).toHaveBeenCalledWith(
+            join(fixtureWebappPath, 'localService', 'mainService', 'metadata.xml'),
+            mockMetadata
+        );
+    });
+
+    it('should not write when fetchServiceMetadata returns undefined', async () => {
+        mockFs.readJSON.mockReturnValue({
+            'sap.app': {
+                dataSources: {
+                    mainService: {
+                        uri: '/sap/opu/odata4/dmo/ui_agency/0001/',
+                        settings: { odataVersion: '4.0' }
+                    }
+                }
+            },
+            'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+        });
+        mockFetchServiceMetadata.mockImplementation(() => Promise.resolve(undefined));
+
+        await writeServiceMetadata(mockProvider, fixtureWebappPath, mockFs as any);
+
+        expect(mockFs.write).not.toHaveBeenCalled();
+    });
+
+    it('should skip fetch and not write when manifest has no main service URI', async () => {
+        mockFs.readJSON.mockReturnValue({
+            'sap.app': { dataSources: {} },
+            'sap.ui5': {}
+        });
+
+        await writeServiceMetadata(mockProvider, fixtureWebappPath, mockFs as any);
+
+        expect(mockFetchServiceMetadata).not.toHaveBeenCalled();
+        expect(mockFs.write).not.toHaveBeenCalled();
     });
 });

@@ -1,8 +1,379 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Fetch backend service annotations so generated v2 OData apps include the remote annotation dataSource. [[fdd1864](https://github.com/SAP/open-ux-tools/commit/fdd1864adf6cf67aa72888ab124f1a06c319584e)]
+
+## 1.11.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-docs-embeddings [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.11.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
+## 1.11.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Add timeout to resolveApplication() to prevent indefinite hangs on invalid or unreachable paths [[b63d35f](https://github.com/SAP/open-ux-tools/commit/b63d35f3897c64fb58a2696de6f226daffceeb9f)]
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.11.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
+## 1.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-31
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill with V4 pattern additions and API access guide [[246b33d](https://github.com/SAP/open-ux-tools/commit/246b33d5682dbe590e9a0c53914137aee14ed691)]
+
+## 1.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- add input validation and consistent error throwing to list_functionality and execute_functionality tools [[76e8011](https://github.com/SAP/open-ux-tools/commit/76e80113baa6ada117cf6efdc0698c82d559128c)]
+
+## 1.11.2
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+#### Release Date
+
+2026-07-27
+
+#### Bug Fixes
+
+- substantiate opa5 dev skill patterns [[de08dd1](https://github.com/SAP/open-ux-tools/commit/de08dd1ce292f7560a3d2693fe85f296d5d74b83)]
+
+## 1.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/nodejs-utils, @sap-ux/project-access, @sap-ux/telemetry, @sap-ux/ui5-config [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- Add external service metadata fetching (value help and code lists) to OData app generation [[d1f129b](https://github.com/SAP/open-ux-tools/commit/d1f129b98564bef9f42c51e0bad04381c025631b)]
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+## 1.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- adjust opa5 test development skill initial workflow [[eb0d618](https://github.com/SAP/open-ux-tools/commit/eb0d618bf0cc168efec98465964d6e01fc74f512)]
+
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- add support for odata v2 to opa test development skill [[b45d339](https://github.com/SAP/open-ux-tools/commit/b45d339815670265f2c6013d98f636924514a24a)]
+
+## 1.9.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
+## 1.9.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
+## 1.9.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 1.9.1
+
+### Patch Changes
+
+#### Features
+
+- Add sap.fe.test JSDoc API as a new embedded data source [[d54fc9a](https://github.com/SAP/open-ux-tools/commit/d54fc9a6937632e19e5b50dbf79ba50f279b3a39)]
+
+## 1.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- add skill for opa5 test development for fiori apps [[f189d25](https://github.com/SAP/open-ux-tools/commit/f189d253808541f2f58fa950e28b7e14679c80a5)]
+
+## 1.8.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 1.8.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
+## 1.8.7
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+## 1.8.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/odata-vocabularies, @sap-ux/ui5-config, @sap-ux/telemetry [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 1.8.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.8.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Bug Fixes
+
+- Adds service lookup. Improve MCP server instructions and schema descriptions to prevent AI clients from constructing invalid parameters. Enhanced tool descriptions with explicit DO/DON'T guidance, removed misleading examples that were being treated as templates, added catalog error reporting in service lookup failures, and strengthened server-level instructions with visual markers and consequence warnings. [[13f8400](https://github.com/SAP/open-ux-tools/commit/13f8400cea408fc68db50077a66aa52fc118c086)]
+
+## 1.8.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f25db35](https://github.com/SAP/open-ux-tools/commit/f25db35917824f4c91e6f688f6566ffd5298c4f1)]
+
+## 1.8.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Trigger @sap-ux/fiori-mcp-server release [[17354e0](https://github.com/SAP/open-ux-tools/commit/17354e08c50f44f031ad2bedcbcb6ce01acd96ba)]
+
+## 1.8.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+## 1.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Features
+
+- add ESLint agent skills for Fiori projects (setup, migrate, lint) [[045738d](https://github.com/SAP/open-ux-tools/commit/045738db600206b7a6bf1e28fdf6d344ea6485ca)]
+
+## 1.7.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- rename skill name to sap-fiori-app-development [[88f17e9](https://github.com/SAP/open-ux-tools/commit/88f17e9a249caffcd2334a5fd6ac360dc8ab3c57)]
+
+## 1.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add skill for usage of @sap-ux/create cli [[2733268](https://github.com/SAP/open-ux-tools/commit/2733268fc635cdef7bded697ecafc5237a59e6b7)]
+
+## 1.6.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add new skill for fiori elements development [[b021644](https://github.com/SAP/open-ux-tools/commit/b021644a977c70bc4ed5c548e0121ce65975feed)]
+
+## 1.5.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Update visual and analytical chart creation with RAP scenario [[46d6081](https://github.com/SAP/open-ux-tools/commit/46d6081f7b6956bc9406c880ea22d6b90ae65262)]
+
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-22
+
+#### Features
+
+- promote static functionalities to top-level MCP tools
+
+    Promotes generate-fiori-ui-application, generate-fiori-ui-application-cap, fetch-service-metadata, and list-sap-systems to dedicated top-level MCP tools, removing them from the 3-step list/get_details/execute workflow. Reduces round-trips for generation workflows from 3 calls to 1. list_sap_systems and download_odata_service_metadata are environment-aware: on SAP Business Application Studio they use BTP destinations, on VSCode they use the Fiori tools system store. download_odata_service_metadata returns a destination field on BAS which must be passed into the generator service config. Errors from fetch-service-metadata return a structured response instead of propagating as unhandled exceptions. Entity names in generator config are normalised by stripping wrapping single quotes. Generator wrappers use Zod-inferred types instead of Record<string, unknown>. [[fdc185d](https://github.com/SAP/open-ux-tools/commit/fdc185d3db4046847d3d660354f1b371eff88c19)]
+
 ## 1.4.1
 
-*Released: 2026-06-16T21:19:36Z*
+_Released: 2026-06-16T21:19:36Z_
 
 ### Patch Changes
 
@@ -12,7 +383,7 @@
 
 ## 1.4.0
 
-*Released: 2026-06-12T13:04:20Z*
+_Released: 2026-06-12T13:04:20Z_
 
 ### Minor Changes
 
@@ -20,7 +391,7 @@
 
 ## 1.3.0
 
-*Released: 2026-06-11T19:07:40Z*
+_Released: 2026-06-11T19:07:40Z_
 
 ### Minor Changes
 
@@ -28,7 +399,7 @@
 
 ## 1.2.0
 
-*Released: 2026-06-11T16:48:19Z*
+_Released: 2026-06-11T16:48:19Z_
 
 ### Minor Changes
 
@@ -36,7 +407,7 @@
 
 ## 1.1.4
 
-*Released: 2026-06-10T16:48:39Z*
+_Released: 2026-06-10T16:48:39Z_
 
 ### Patch Changes
 
@@ -50,7 +421,7 @@
 
 ## 1.1.3
 
-*Released: 2026-06-08T12:39:24Z*
+_Released: 2026-06-08T12:39:24Z_
 
 ### Patch Changes
 
@@ -58,7 +429,7 @@
 
 ## 1.1.2
 
-*Released: 2026-06-05T20:41:12Z*
+_Released: 2026-06-05T20:41:12Z_
 
 ### Patch Changes
 
@@ -66,7 +437,7 @@
 
 ## 1.1.1
 
-*Released: 2026-06-05T16:17:23Z*
+_Released: 2026-06-05T16:17:23Z_
 
 ### Patch Changes
 
@@ -74,7 +445,7 @@
 
 ## 1.1.0
 
-*Released: 2026-06-05T11:08:04Z*
+_Released: 2026-06-05T11:08:04Z_
 
 ### Minor Changes
 
@@ -83,7 +454,7 @@
 
 ## 1.0.3
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -94,7 +465,7 @@
 
 ## 1.0.2
 
-*Released: 2026-06-01T17:22:37Z*
+_Released: 2026-06-01T17:22:37Z_
 
 ### Patch Changes
 
@@ -103,7 +474,7 @@
 
 ## 1.0.1
 
-*Released: 2026-05-31T21:32:23Z*
+_Released: 2026-05-31T21:32:23Z_
 
 ### Patch Changes
 
@@ -113,7 +484,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -154,7 +525,7 @@
 
 ## 0.7.2
 
-*Released: 2026-05-27T10:42:47Z*
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -164,7 +535,7 @@
 
 ## 0.7.1
 
-*Released: 2026-05-21T05:46:16Z*
+_Released: 2026-05-21T05:46:16Z_
 
 ### Patch Changes
 
@@ -173,7 +544,7 @@
 
 ## 0.7.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -187,7 +558,7 @@
 
 ## 0.6.60
 
-*Released: 2026-05-14T12:51:22Z*
+_Released: 2026-05-14T12:51:22Z_
 
 ### Patch Changes
 
@@ -197,7 +568,7 @@
 
 ## 0.6.59
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -208,7 +579,7 @@
 
 ## 0.6.58
 
-*Released: 2026-05-13T17:45:03Z*
+_Released: 2026-05-13T17:45:03Z_
 
 ### Patch Changes
 
@@ -216,7 +587,7 @@
 
 ## 0.6.57
 
-*Released: 2026-05-12T23:31:37Z*
+_Released: 2026-05-12T23:31:37Z_
 
 ### Patch Changes
 
@@ -224,7 +595,7 @@
 
 ## 0.6.56
 
-*Released: 2026-05-11T09:58:34Z*
+_Released: 2026-05-11T09:58:34Z_
 
 ### Patch Changes
 
@@ -233,7 +604,7 @@
 
 ## 0.6.55
 
-*Released: 2026-05-07T13:23:43Z*
+_Released: 2026-05-07T13:23:43Z_
 
 ### Patch Changes
 
@@ -241,7 +612,7 @@
 
 ## 0.6.54
 
-*Released: 2026-05-07T11:24:28Z*
+_Released: 2026-05-07T11:24:28Z_
 
 ### Patch Changes
 
@@ -249,7 +620,7 @@
 
 ## 0.6.53
 
-*Released: 2026-05-04T15:49:13Z*
+_Released: 2026-05-04T15:49:13Z_
 
 ### Patch Changes
 
@@ -258,7 +629,7 @@
 
 ## 0.6.52
 
-*Released: 2026-04-28T09:04:02Z*
+_Released: 2026-04-28T09:04:02Z_
 
 ### Patch Changes
 
@@ -266,7 +637,7 @@
 
 ## 0.6.51
 
-*Released: 2026-04-23T10:18:53Z*
+_Released: 2026-04-23T10:18:53Z_
 
 ### Patch Changes
 
@@ -274,7 +645,7 @@
 
 ## 0.6.50
 
-*Released: 2026-04-23T09:36:26Z*
+_Released: 2026-04-23T09:36:26Z_
 
 ### Patch Changes
 
@@ -282,7 +653,7 @@
 
 ## 0.6.49
 
-*Released: 2026-04-14T09:46:36Z*
+_Released: 2026-04-14T09:46:36Z_
 
 ### Patch Changes
 
@@ -290,7 +661,7 @@
 
 ## 0.6.48
 
-*Released: 2026-04-08T13:10:18Z*
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -300,7 +671,7 @@
 
 ## 0.6.47
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -311,7 +682,7 @@
 
 ## 0.6.46
 
-*Released: 2026-03-26T12:07:04Z*
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -321,7 +692,7 @@
 
 ## 0.6.45
 
-*Released: 2026-03-23T14:11:51Z*
+_Released: 2026-03-23T14:11:51Z_
 
 ### Patch Changes
 

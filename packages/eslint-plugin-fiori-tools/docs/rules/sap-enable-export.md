@@ -4,7 +4,7 @@
 
 ### For OData V2 Applications
 
-Since the `enableExport` is a flex change property, this rule checks if there is a `.change` file for the `enableExport` property, where the `newValue` is set to `false`. This property defines whether to enable the export button in a table.
+Since the `enableExport` is a flex change property, this rule checks if there is a `.change` file for the `enableExport` property, where the `newValue` is set to `false`. This property defines whether to enable the export button in a table. This property rule is applicable to OData V2 applications with a minimum SAPUI5 version of 1.145 or higher. For OData V2 applications with a lower minimum SAPUI5 version, the property name to enable the table export button is `useExportToExcel`.
 
 ### For OData V4 Applications
 
@@ -39,7 +39,18 @@ The `enableExport` property is set to `false` which hides the "Export" button.
 }
 ```
 
-The `newValue` of the `enableExport` property is set to `false` which hides the "Export" button.
+or for applications with a minimum SAPUI5 version lower than 1.145:
+
+```json
+{
+  "content": {
+    "property": "useExportToExcel",
+    "newValue": false
+  }
+}
+```
+
+The `newValue` of the `enableExport` or `useExportToExcel` property is set to `false` which hides the "Export" button.
 
 #### Correct `manifest.json` File in OData V4
 
@@ -64,7 +75,18 @@ The `enableExport` property is correctly set to `true` or omitted from  `tableSe
 }
 ```
 
-The `newValue` of the `enableExport` property is set to `true` to display the "Export" button.
+or for applications with a minimum SAPUI5 version lower than 1.145:
+
+```json
+{
+  "content": {
+    "property": "useExportToExcel",
+    "newValue": true
+  }
+}
+```
+
+The `newValue` of the `enableExport` or `useExportToExcel` property is set to `true` to display the "Export" button.
 
 ## How to Fix in OData V4
 

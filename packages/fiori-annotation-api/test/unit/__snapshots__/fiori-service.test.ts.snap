@@ -18,6 +18,17 @@ exports[`fiori annotation service delete annotation all annotations EDMXBackend 
 "
 `;
 
+exports[`fiori annotation service delete annotation cds clean up related flattened structures partial annotation deletion 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].AxisScaling.ScaleBehavior: #AutoScale,
+                        );
+                    "
+`;
+
 exports[`fiori annotation service delete annotation cds clean up related flattened structures preserve other target annotations 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
@@ -56,6 +67,14 @@ exports[`fiori annotation service delete annotation cds clean up related flatten
 
                     using from '../../srv/common';
 
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures with qualifiers and embedded annotation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
                     "
 `;
 

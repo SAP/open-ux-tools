@@ -241,6 +241,10 @@ export async function findRootsForPath(
         // Check if app is included in CAP project
         const projectRoot = await findCapProjectRoot(appRoot, undefined, { memFs, cache });
         if (projectRoot) {
+            if (projectRoot === appRoot) {
+                // appRoot is the CAP root itself, meaning there is no enclosing CAP project - not a supported app layout
+                return null;
+            }
             // App included in CAP
             return {
                 appRoot,
@@ -281,7 +285,7 @@ export async function findCapProjectRoot(
         }
         const { memFs, cache } = getFindOptions(options);
         const { root } = parse(path);
-        let projectRoot = dirname(path);
+        let projectRoot = path;
         while (projectRoot !== root) {
             if (!cache.capProjectType.has(projectRoot)) {
                 cache.capProjectType.set(projectRoot, await getCapProjectType(projectRoot, memFs));

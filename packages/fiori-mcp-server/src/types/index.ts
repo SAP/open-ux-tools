@@ -6,13 +6,17 @@ import type {
     GetFunctionalityDetailsInputSchema,
     ListFioriAppsInputSchema,
     ListFunctionalitiesInputSchema,
-    DocSearchInputSchema
+    DocSearchInputSchema,
+    DownloadODataServiceMetadataInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
     GetFunctionalityDetailsOutputSchema,
     ListFioriAppsOutputSchema,
-    ListFunctionalitiesOutputSchema
+    ListFunctionalitiesOutputSchema,
+    FetchServiceMetadataOutputSchema,
+    GenerateAppOutputSchema,
+    ListSapSystemsOutputSchema
 } from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
@@ -33,6 +37,10 @@ export type ExecuteFunctionalityInput = zod.infer<typeof ExecuteFunctionalityInp
 export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOutputSchema>;
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
+export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
+export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
+export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
+export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;
 
 /**
  * Interface for functionality handlers

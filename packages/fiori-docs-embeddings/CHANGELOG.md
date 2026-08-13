@@ -1,5 +1,49 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Dependency Updates
+
+- Rebuild embeddings with updated @sap-ux/create docs (update metadata command, --service and --no-value-help options, EDMX-backend-only limitation) [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.2.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- Add sap.fe.test JSDoc API as a new embedded data source [[d54fc9a](https://github.com/SAP/open-ux-tools/commit/d54fc9a6937632e19e5b50dbf79ba50f279b3a39)]
+
+## 1.2.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.2.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Bug Fixes
+
+- Trigger @sap-ux/fiori-mcp-server release [[17354e0](https://github.com/SAP/open-ux-tools/commit/17354e08c50f44f031ad2bedcbcb6ce01acd96ba)]
+
 ## 1.2.3
 
 ### Patch Changes
@@ -38,7 +82,7 @@
 
 ## 1.2.0
 
-*Released: 2026-06-12T08:20:17Z*
+_Released: 2026-06-12T08:20:17Z_
 
 ### Minor Changes
 
@@ -46,7 +90,7 @@
 
 ## 1.1.1
 
-*Released: 2026-06-11T15:27:53Z*
+_Released: 2026-06-11T15:27:53Z_
 
 ### Patch Changes
 
@@ -54,7 +98,7 @@
 
 ## 1.1.0
 
-*Released: 2026-06-05T11:08:04Z*
+_Released: 2026-06-05T11:08:04Z_
 
 ### Minor Changes
 
@@ -62,7 +106,7 @@
 
 ## 1.0.1
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -70,7 +114,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -105,7 +149,7 @@
 
 ## 0.5.1
 
-*Released: 2026-05-21T05:46:16Z*
+_Released: 2026-05-21T05:46:16Z_
 
 ### Patch Changes
 
@@ -113,7 +157,7 @@
 
 ## 0.5.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -121,7 +165,7 @@
 
 ## 0.4.20
 
-*Released: 2026-05-14T12:51:22Z*
+_Released: 2026-05-14T12:51:22Z_
 
 ### Patch Changes
 
@@ -129,7 +173,7 @@
 
 ## 0.4.19
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -137,7 +181,7 @@
 
 ## 0.4.18
 
-*Released: 2026-05-11T09:58:34Z*
+_Released: 2026-05-11T09:58:34Z_
 
 ### Patch Changes
 
@@ -145,7 +189,7 @@
 
 ## 0.4.17
 
-*Released: 2026-05-04T15:49:13Z*
+_Released: 2026-05-04T15:49:13Z_
 
 ### Patch Changes
 

@@ -246,6 +246,12 @@ Object {
         "uri": "",
       },
       Object {
+        "alias": "Support",
+        "name": "com.sap.vocabularies.Support.v1",
+        "type": "reference",
+        "uri": "",
+      },
+      Object {
         "alias": "UI",
         "name": "com.sap.vocabularies.UI.v1",
         "type": "reference",
@@ -1492,6 +1498,11 @@ Object {
       Object {
         "alias": "Session",
         "name": "com.sap.vocabularies.Session.v1",
+        "type": "reference",
+      },
+      Object {
+        "alias": "Support",
+        "name": "com.sap.vocabularies.Support.v1",
         "type": "reference",
       },
       Object {

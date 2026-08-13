@@ -7,53 +7,12 @@ Array [
     "functionalityId": "add-page",
   },
   Object {
-    "description": "Creates (generates) a new SAP Fiori UI application within an existing CAP project.
-                To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
-                As a fallback, only if no such tool is available, you should manually read and parse all .cds files in the projectPath to extract this information.
-                The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
-                The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
-                The configuration **MUST** be based on the project files in the projectPath.",
-    "functionalityId": "generate-fiori-ui-application-cap",
-  },
-  Object {
     "description": "Remove existing fiori elements page from the application",
     "functionalityId": "delete-page",
   },
   Object {
     "description": "Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.",
     "functionalityId": "create-controller-extension",
-  },
-  Object {
-    "description": "Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP). Steps:
-
-        1. Crucially, you must first construct the appGenConfig JSON argument.
-            - If the user has not provided a valid servicePath and host (URL) of the OData service they want to use, you **MUST** ask for it.
-
-            - If the user provided a reference to a SAP system (name, host or full URL), or provided a full URL as a service,
-                you **MUST** try to retrieve the service's metadata using the \\"fetch-service-metadata\\" functionality with \\"execute_functionality\\" tool.
-                This tool will store the metadata EDMX file in the user selected folder as metadata.xml for the next step,
-                and provide you with service's host, servicePath and client, needed for the appGenConfig JSON argument.
-
-                **IMPORTANT**: If the service requires authentication, and it does not belong to a SAP system previously mentioned by the user, you MUST NOT ask the user for credentials!
-                Instead, ask them to store the SAP system first and then repeat the request.
-                Avoid using curl or similar tools to fetch the metadata yourself, as this may expose user credentials in logs.
-
-        2. Once the metadata EDMX is stored as metadata.xml (either from the \\"fetch-service-metadata\\" functionality or your own GET request),
-            you can parse the metadata.xml file to understand the data model structure, entities, and associations.
-
-        3. After that, you can proceed to generate the SAP Fiori UI application based on the parsed metadata and the user's requirements.
-            **IMPORTANT**: Before calling the functionality \\"generate-fiori-ui-application\\",
-            you must ensure that the appGenConfig JSON argument is properly constructed and matches the functionality's input parameters!",
-    "functionalityId": "generate-fiori-ui-application",
-  },
-  Object {
-    "description": "(Used by 'generate-fiori-ui-application' functionality).
-        Retrieves a list of user stored SAP Systems and matches the name, host or a URL to the sapSystemQuery provided by the user.
-        Then retrieves the metadata of a specific SAP service using the matched SAP system and servicePath provided by the user.
-        (if the user provided a full URL - pass the whole URL as sapSystemQuery parameter and just the path as servicePath).
-        Finally, it stores the fetched metadata in the appPath folder as metadata.xml,
-        and returns service details: host, servicePath, client and metadataFilePath.",
-    "functionalityId": "fetch-service-metadata",
   },
   Object {
     "description": "Represents a prefix that is prepended in front of the viewName",
@@ -88,6 +47,13 @@ Array [
     "functionalityId": Array [
       "settings",
       "enableLazyLoading",
+    ],
+  },
+  Object {
+    "description": "Disables strict filtering. Strict filtering requires users to enter a single value in the unit of measure field when filtering for measure field values.",
+    "functionalityId": Array [
+      "settings",
+      "disableStrictUomFiltering",
     ],
   },
   Object {
@@ -207,6 +173,47 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
+    "description": "Inline edit allows users to directly edit a field or a group of fields in the active version without switching the entire object to draft. Inline edit supports the same features as the regular edit mode.",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "inlineEdit",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are inline editable.
+If empty or undefined, all fields within the page are inline editable except for fields specified in 'Disabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "enabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are not inline editable.
+If empty or undefined, all fields within the page are not inline editable except for those specified in 'Enabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "disabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of arrays of fields which are edited inline together.
+Fields specified in 'Connected Fields' must not be included in 'Enabled Fields' or 'Disabled Fields'.
+May contain direct properties, navigation properties, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "connectedFields",
+    ],
+  },
+  Object {
     "description": "Allows you to hide the filter bar.",
     "functionalityId": Array [
       "TravelList",
@@ -320,7 +327,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+    "description": "Mass edit allows users to simultaneously change multiple objects that share the same editable properties.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -400,7 +407,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Define how the changes using mass edit should be applied. The default mode for mass editing is 'ChangeSet' on the Object Page and 'Isolated' in the List Report.
+    "description": "Define how changes using mass edit are applied. The default mode for mass edit is 'ChangeSet' on object pages and 'Isolated' on list report pages.
 
 - ChangeSet: Grouped for all objects within the same request.
 - Isolated: Separately for each object (as an individual OData change set in the same request).",
@@ -411,7 +418,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog. If empty or undefined, all fields within the page appear in the edit dialog except for read-only fields and fields specified in 'Disabled Fields'.",
     "functionalityId": Array [
       "table",
       "enableMassEdit",
@@ -419,7 +426,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table. If empty or undefined, all fields within the page appear in the edit dialog except for fields specified in 'Visible Fields'. If 'Visible Fields' are defined, this field is ignored.",
     "functionalityId": Array [
       "table",
       "enableMassEdit",
@@ -587,7 +594,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "enableOnSelect",
     ],
   },
@@ -598,7 +605,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "overflowGroup",
     ],
   },
@@ -609,7 +616,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "priority",
     ],
   },
@@ -620,7 +627,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
     ],
   },
@@ -630,7 +637,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
       "navigateToInstance",
     ],
@@ -641,7 +648,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
       "enableAutoScroll",
     ],

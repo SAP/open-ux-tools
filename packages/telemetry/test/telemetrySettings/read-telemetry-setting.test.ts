@@ -5,12 +5,12 @@ const mockGetService = jest.fn<typeof realStore.getService>();
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
+        public setUseDiskRetryCaching: any;
         public addTelemetryProcessor: any;
         public trackEvent: any;
         constructor() {
             this.config = { samplingPercentage: 0 };
-            this.channel = { setUseDiskRetryCaching: jest.fn() };
+            this.setUseDiskRetryCaching = jest.fn();
             this.addTelemetryProcessor = jest.fn();
             this.trackEvent = jest.fn();
         }

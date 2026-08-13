@@ -226,14 +226,10 @@ function buildPageEntry(page: OpaPageWriteInfo, pageIndent: string, innerIndent:
     const framework = page.template ?? 'ListReport';
     const innerProps: string[] = [
         `${innerIndent}    appId: "${page.appID ?? ''}"`,
-        `${innerIndent}    componentId: "${page.componentID ?? ''}"`
+        `${innerIndent}    componentId: "${page.componentID ?? ''}"`,
+        `${innerIndent}    entitySet: "${page.entitySet ?? ''}"`,
+        `${innerIndent}    contextPath: "${page.contextPath ?? ''}"`
     ];
-    if (page.entitySet) {
-        innerProps.push(`${innerIndent}    entitySet: "${page.entitySet}"`);
-    }
-    if (page.contextPath) {
-        innerProps.push(`${innerIndent}    contextPath: "${page.contextPath}"`);
-    }
     return [
         `${pageIndent}onThe${page.targetKey}Generated: new ${framework}(`,
         `${innerIndent}{`,

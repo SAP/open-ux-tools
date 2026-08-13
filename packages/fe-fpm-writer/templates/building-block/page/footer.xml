@@ -1,4 +1,8 @@
 <<%- macrosPrefix %>footer>
     <!-- Footer aggregation -->
-    <%- mContent %>
+    <OverflowToolbar id="<%- ids.OverflowToolbar %>">
+        <ToolbarSpacer id="<%- ids.ToolbarSpacer %>" />
+        <Button id="<%- ids.Button %>" text="Approve" press=".onFooterApprove" type="Accept" icon="" />
+        <Button id="<%- ids.Button1 %>" text="Reject" press=".onFooterReject" type="Reject" icon="" />
+    </OverflowToolbar>
 </<%- macrosPrefix %>footer>

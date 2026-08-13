@@ -1,5 +1,125 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.0
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Register the ADP variant's changes namespace to the local dev server in FLP Sandbox 2.0 so flex-change resources (fragments, controller extensions) resolve locally instead of the backend, matching Sandbox 1 behaviour. [[6fac8d4](https://github.com/SAP/open-ux-tools/commit/6fac8d45439a76e078fd6e6f6964b05d797e411e)]
+
+## 1.1.3
+
+## 1.1.2
+
+## 1.1.1
+
+## 1.1.0
+
+## 1.0.49
+
+## 1.0.48
+
+## 1.0.47
+
+## 1.0.46
+
+## 1.0.45
+
+## 1.0.44
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- Show the original browser error text in the InfoCenter when an orphaned change file can't be loaded, instead of a fixed localized message. [[ee2db1b](https://github.com/SAP/open-ux-tools/commit/ee2db1b968ae892b12954f10219b89195b09be49)]
+
+## 1.0.43
+
+## 1.0.42
+
+## 1.0.41
+
+## 1.0.40
+
+## 1.0.39
+
+## 1.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux-private/control-property-editor-common 1.0.4 → 1.0.4
+
+## 1.0.37
+
+## 1.0.36
+
+## 1.0.35
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux-private/control-property-editor-common 1.0.3 → 1.0.4
+
+## 1.0.34
+
+## 1.0.33
+
+## 1.0.32
+
+## 1.0.31
+
+## 1.0.30
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+## 1.0.29
+
+## 1.0.28
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Dependency Updates
+
+- Update dependency @ui5/manifest to v1.86.0 [[666a17e](https://github.com/SAP/open-ux-tools/commit/666a17eb6f8cb5f4b414e64b1d66b234ca3a1a57)]
+
+## 1.0.27
+
+## 1.0.26
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- remove static import to avoid eager sap.ui.dt load [[78d79c8](https://github.com/SAP/open-ux-tools/commit/78d79c8836a2a7768b8634ab226f1674b4bd0e78)]
+
 ## 1.0.25
 
 ## 1.0.24

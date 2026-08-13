@@ -1,0 +1,700 @@
+import { jest } from '@jest/globals';
+import { MessageBarType, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import IconPoolMock from 'mock/sap/ui/core/IconPool';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { fetchMock, sapMock } from 'mock/window';
+import NewsContainer from 'sap/cux/home/NewsContainer';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
+import type Component from 'sap/ui/core/Component';
+import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
+
+const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
+const getManifestAppdescrMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/api-handler', () => ({
+    ..._apiHandler,
+    getManifestAppdescr: getManifestAppdescrMock
+}));
+
+jest.unstable_mockModule('sap/cux/home/NewsContainer', () => {
+    return { default: NewsContainer, __esModule: true };
+});
+
+jest.unstable_mockModule('open/ux/preview/client/utils/info-center-message', () => ({
+    sendInfoCenterMessage: jest.fn()
+}));
+
+import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller.js';
+const { init, loadI18nResourceBundle, registerSAPFonts, setI18nTitle } = await import(
+    'open/ux/preview/client/flp/sandbox1Init'
+);
+const {
+    registerComponentDependencyPaths,
+    resetAppState,
+    addCardGenerationUserAction
+} = await import('open/ux/preview/client/flp/common');
+const infoCenterMessage = await import('open/ux/preview/client/utils/info-center-message');
+type ManifestAppdescr = import('../../../src/adp/api-handler.js').ManifestAppdescr;
+
+describe('flp/sandbox1Init', () => {
+    afterEach(() => {
+        sapMock.ushell.Container.getServiceAsync.mockReset();
+        window.location.hash = '';
+    });
+    test('registerSAPFonts', () => {
+        registerSAPFonts();
+        expect(IconPoolMock.registerFont).toHaveBeenCalledTimes(2);
+    });
+    test('setI18nTitle', () => {
+        const title = '~testTitle';
+        const mockResourceBundle = {
+            hasText: jest.fn().mockReturnValueOnce(true),
+            getText: jest.fn().mockReturnValueOnce(title)
+        };
+
+        setI18nTitle(mockResourceBundle, title);
+        expect(document.title).toBe(title);
+
+        mockResourceBundle.hasText.mockReturnValueOnce(false);
+        setI18nTitle(mockResourceBundle);
+        expect(document.title).toBe(title);
+    });
+    test('loadI18nResourceBundle', async () => {
+        getManifestAppdescrMock.mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as ManifestAppdescr);
+        await loadI18nResourceBundle('other' as Scenario);
+        expect(mockBundle.create).toHaveBeenCalledWith({
+            url: 'i18n/i18n.properties'
+        });
+    });
+    test('loadI18nResourceBundle - adaptation project', async () => {
+        getManifestAppdescrMock.mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as ManifestAppdescr);
+        await loadI18nResourceBundle('ADAPTATION_PROJECT');
+        expect(mockBundle.create).toHaveBeenCalledWith({
+            url: '../i18n/i18n.properties',
+            enhanceWith: [
+                {
+                    bundleUrl: '../i18n/test/i18n.properties'
+                }
+            ]
+        });
+    });
+
+    describe('registerComponentDependencyPaths', () => {
+        const loaderMock = sap.ui.loader.config as jest.Mock;
+        const testManifest = {
+            'sap.ui5': {
+                dependencies: {
+                    libs: {} as Record<string, unknown>
+                },
+                componentUsages: {
+                    componentUsage1: {
+                        'name': '',
+                        'lazy': true
+                    }
+                }
+            }
+        };
+
+        beforeEach(() => {
+            loaderMock.mockReset();
+            fetchMock.mockReset();
+        });
+
+        test('single app, no reuse libs', async () => {
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => testManifest });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).not.toHaveBeenCalled();
+        });
+
+        test('single app, one reuse lib', async () => {
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].dependencies.libs['sap.m'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: true,
+                json: () => ({
+                    'test.lib': {
+                        dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    }
+                })
+            });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
+        });
+
+        test('single app, one reuse lib, no VersionInfo', async () => {
+            VersionInfo.load.mockResolvedValue(undefined);
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].dependencies.libs['sap.m'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: true,
+                json: () => ({
+                    'test.lib': {
+                        dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    }
+                })
+            });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
+        });
+
+        test('single app, one reuse lib and one componentUsage', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].componentUsages = {
+                componentUsage1: {
+                    'name': 'test.componentUsage',
+                    'lazy': true
+                }
+            };
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: true,
+                json: () => ({
+                    'test.lib': {
+                        dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    },
+                    'test.componentUsage': {
+                        dependencies: [{ url: '~url2', type: 'UI5COMP', componentId: 'test.componentUsage' }]
+                    }
+                })
+            });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
+        });
+
+        test('registerComponentDependencyPaths: error case 1 (invalid manifest json)', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: true,
+                json: () => {
+                    throw new Error('Error');
+                }
+            });
+            CommunicationService.sendAction = jest.fn();
+
+            try {
+                await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            } catch (error) {
+                expect(error).toEqual('Error');
+            }
+        });
+
+        test('registerComponentDependencyPaths: error case 2 (no app index data)', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: false,
+                json: () => {
+                    throw new Error('Error');
+                }
+            });
+            CommunicationService.sendAction = jest.fn();
+
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+
+            expect(loaderMock).not.toHaveBeenCalled();
+        });
+
+        test('registerComponentDependencyPaths: error case 3 (no manifest json)', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: false });
+            CommunicationService.sendAction = jest.fn();
+
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+
+            expect(loaderMock).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('resetAppState', () => {
+        let Container: typeof sap.ushell.Container;
+
+        const mockService = {
+            deleteAppState: jest.fn()
+        };
+
+        beforeEach(() => {
+            Container = sap.ushell.Container;
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            window.location.hash = '';
+        });
+
+        test('default', async () => {
+            window.location.hash = 'preview-app';
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).not.toHaveBeenCalled();
+        });
+
+        test('hash key equals "/?sap-iapp-state"', async () => {
+            window.location.hash = 'preview-app&/?sap-iapp-state=dummyHash1234';
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).toHaveBeenCalled();
+            expect(mockService.deleteAppState).toHaveBeenCalledWith('dummyHash1234');
+        });
+
+        test('hash key equals "sap-iapp-state"', async () => {
+            window.location.hash = 'preview-app&/?sap-iapp-state-history&sap-iapp-state=dummyHash5678';
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).toHaveBeenCalled();
+            expect(mockService.deleteAppState).toHaveBeenCalledWith('dummyHash5678');
+        });
+    });
+
+    describe('addCardGenerationUserAction', () => {
+        const mockComponentInstance = {} as unknown as import('sap/ui/core/Component').default;
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('loads CardGenerator and wires press handler to initializeAsync', async () => {
+            const initializeAsyncMock = jest.fn();
+            const showForCurrentAppMock = jest.fn();
+            const createUserActionMock = jest.fn().mockResolvedValue({ showForCurrentApp: showForCurrentAppMock });
+            const extensionServiceMock = { createUserAction: createUserActionMock };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValue(extensionServiceMock);
+
+            (sapMock.ui.require as jest.Mock).mockImplementation((_libs: string[], cb: Function) => {
+                cb({ initializeAsync: initializeAsyncMock });
+            });
+
+            addCardGenerationUserAction(mockComponentInstance, sap.ushell.Container);
+            // addCardGenerationUserAction returns void; the sap.ui.require callback is fired
+            // synchronously by the mock but contains two awaits internally. Yielding via
+            // setTimeout(0) drains the microtask queue so those awaits resolve before asserting.
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            expect(sapMock.ui.require).toHaveBeenCalledWith(
+                ['sap/cards/ap/generator/CardGenerator'],
+                expect.any(Function)
+            );
+            expect(createUserActionMock).toHaveBeenCalledWith(
+                expect.objectContaining({ id: 'generate_card', text: 'Generate Card' }),
+                expect.objectContaining({ controlType: 'sap.ushell.ui.launchpad.ActionItem' })
+            );
+            expect(showForCurrentAppMock).toHaveBeenCalled();
+        });
+
+        test('calls CardGenerator.initializeAsync with component instance on press', async () => {
+            const initializeAsyncMock = jest.fn();
+            const showForCurrentAppMock = jest.fn();
+            const createUserActionMock = jest.fn().mockResolvedValue({ showForCurrentApp: showForCurrentAppMock });
+            const extensionServiceMock = { createUserAction: createUserActionMock };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValue(extensionServiceMock);
+
+            (sapMock.ui.require as jest.Mock).mockImplementation((_libs: string[], cb: Function) => {
+                cb({ initializeAsync: initializeAsyncMock });
+            });
+
+            addCardGenerationUserAction(mockComponentInstance, sap.ushell.Container);
+            // same flush as above — wait for the internal awaits to resolve
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            // simulate press
+            const pressHandler = createUserActionMock.mock.calls[0][0].press as () => void;
+            pressHandler();
+            expect(initializeAsyncMock).toHaveBeenCalledWith(mockComponentInstance);
+        });
+    });
+
+    describe('init', () => {
+        const reloadSpy = jest.fn();
+        beforeEach(() => {
+            sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
+            sapMock.ui.require.mockReset();
+            jest.clearAllMocks();
+
+            (window as any).__locationImpl.reload = reloadSpy;
+        });
+
+        afterEach(() => {
+            (window as any).__locationImpl.reload = (window as any).__locationImplOriginalReload;
+        });
+
+        test('nothing configured', async () => {
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
+            CommunicationService.sendAction = jest.fn();
+            await init({});
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRendererInternal).not.toHaveBeenCalled();
+        });
+
+        test('flex configured', async () => {
+            const flexSettings = {
+                layer: 'CUSTOMER_BASE',
+                pluginScript: 'my/script'
+            };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+            });
+
+            // testing the nested callbacks
+            const mockService = {
+                attachAppLoaded: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+            expect(mockService.attachAppLoaded).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
+
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#app-preview';
+            loadedCb({ getParameter: () => {} });
+            expect(sapMock.ui.require).toHaveBeenCalledWith(
+                ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
+                expect.anything()
+            );
+        });
+
+        test('flex configured - skips startAdaptation when hash is Shell-home', async () => {
+            const flexSettings = {
+                layer: 'CUSTOMER_BASE',
+                pluginScript: 'my/script'
+            };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+            });
+
+            const mockService = {
+                attachAppLoaded: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#Shell-home';
+            loadedCb({ getParameter: () => {} });
+            expect(sapMock.ui.require).not.toHaveBeenCalledWith(
+                expect.arrayContaining(['sap/ui/rta/api/startAdaptation']),
+                expect.anything()
+            );
+        });
+
+        test('flex configured & ui5 version is 1.71.60', async () => {
+            const flexSettings = {
+                layer: 'CUSTOMER_BASE',
+                pluginScript: 'my/script'
+            };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.71.60' }]
+            });
+
+            // testing the nested callbacks
+            const mockService = {
+                attachAppLoaded: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+            expect(mockService.attachAppLoaded).toHaveBeenCalled();
+
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#app-preview';
+            loadedCb({ getParameter: () => {} });
+            expect(sapMock.ui.require).toHaveBeenCalledWith(
+                ['open/ux/preview/client/flp/initRta', flexSettings.pluginScript],
+                expect.anything()
+            );
+
+            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
+                initRta: InitRtaScript,
+                pluginScript?: RTAPlugin
+            ) => Promise<void>;
+            const initRtaMock = jest.fn();
+            const plugnScriptMock = jest.fn();
+            await requireCb(initRtaMock, plugnScriptMock);
+            expect(initRtaMock).toHaveBeenCalled();
+        });
+
+        test('custom init module configured & ui5 version is 1.120.9', async () => {
+            const customInit = 'my/app/test/integration/opaTests.qunit';
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.120.9' }]
+            });
+
+            await init({ customInit: customInit });
+
+            expect(sapMock.ui.require).toHaveBeenCalledWith([customInit]);
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
+        });
+
+        test('custom init module configured & ui5 version is 2.0.0', async () => {
+            const customInit = 'my/app/test/integration/opaTests.qunit';
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+            });
+
+            await init({ customInit: customInit });
+
+            expect(sapMock.ushell.Container.createRendererInternal).toHaveBeenCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toHaveBeenCalled();
+            expect(sapMock.ui.require).toHaveBeenCalledWith([customInit]);
+        });
+
+        test('custom init module configured & ui5 version is legacy-free', async () => {
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+            });
+
+            await init({});
+
+            expect(sapMock.ushell.Container.createRendererInternal).toHaveBeenCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toHaveBeenCalled();
+        });
+
+        test('handle higher layer changes', async () => {
+            const flexSettings = {
+                layer: 'VENDOR',
+                pluginScript: 'my/script'
+            };
+
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.84.50' }]
+            });
+
+            const reloadComplete = new Promise((resolve) => {
+                // Mocking `sap.ui.require` to throw the correct error structure
+                sapMock.ui.require.mockImplementation(async (libs, callback) => {
+                    if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
+                        callback({}); // WorkspaceConnector
+                        return;
+                    }
+
+                    await callback(() => Promise.reject('Reload triggered'));
+                    resolve(undefined);
+                });
+            });
+
+            CommunicationService.sendAction = jest.fn();
+
+            await init({ flex: JSON.stringify(flexSettings) });
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            const mockService = {
+                attachAppLoaded: jest.fn().mockImplementation((callback) => {
+                    callback({ getParameter: jest.fn() });
+                })
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+
+            window.location.hash = '#app-preview';
+            await rendererCb();
+
+            // Wait for the reload to complete before continue with the test cases.
+            await reloadComplete;
+
+            expect(infoCenterMessage.sendInfoCenterMessage).toHaveBeenCalledWith({
+                title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
+                description: expect.any(String),
+                type: MessageBarType.error
+            });
+            expect(reloadSpy).toHaveBeenCalled();
+        });
+
+        test('cardGenerator mode is enabled', async () => {
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.124.50' }]
+            });
+            const mockComponentInstance = {} as Component;
+            const mockService = {
+                attachAppLoaded: jest.fn().mockImplementation((callback: () => void) => {
+                    const mockEvent = {
+                        getParameter: jest.fn().mockReturnValue(mockComponentInstance)
+                    };
+                    callback(mockEvent);
+                }),
+                createUserAction: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ enableCardGenerator: true });
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+            expect(mockService.attachAppLoaded).toHaveBeenCalled();
+            expect(mockService.attachAppLoaded).toHaveBeenCalledTimes(1);
+            expect(mockService.attachAppLoaded.mock.calls[0][0]).toBeInstanceOf(Function);
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
+        });
+
+        test('enhancedHomePage mode is enabled', async () => {
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.106.0' }]
+            });
+            await init({ enhancedHomePage: true });
+
+            expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
+        });
+
+        test('enhancedHomePage view - use new NewsContainer control when available', (done) => {
+            const mockPage = {
+                insertContent: jest.fn()
+            };
+
+            const controller = new MyHomeController('testController');
+            controller.getView = jest.fn().mockReturnValue({
+                getId: jest.fn().mockReturnValue('testView'),
+                byId: jest.fn().mockReturnValue(mockPage)
+            });
+
+            controller.onInit();
+            setTimeout(() => {
+                expect(mockPage.insertContent).toHaveBeenCalled();
+                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
+
+                // Verify it's an instance of NewsContainer (when available)
+                expect(insertedContainer).toBeInstanceOf(NewsContainer);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+                done();
+            });
+        });
+    });
+    describe('registerForControllerExtensionErrors', () => {
+        let sendInfoCenterMessageSpy: jest.SpyInstance;
+
+        beforeEach(async () => {
+            sendInfoCenterMessageSpy = jest
+                .spyOn(infoCenterMessage, 'sendInfoCenterMessage')
+                .mockResolvedValue(undefined);
+
+            const flexSettings = { layer: 'CUSTOMER_BASE' };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
+            CommunicationService.sendAction = jest.fn();
+            await init({ flex: JSON.stringify(flexSettings) });
+        });
+
+        afterEach(() => {
+            sendInfoCenterMessageSpy.mockRestore();
+        });
+
+        test('reports error event with controller extension path in stack trace', async () => {
+            const error = new Error('Something went wrong');
+            error.stack = 'Error: Something went wrong\n    at /changes/coding/MyExtension.js:10:5';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith({
+                title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+                description: 'Something went wrong',
+                type: MessageBarType.error,
+                details: error.stack
+            });
+        });
+
+        test('reports unhandled rejection with controller extension .ts path in stack trace', async () => {
+            const error = new Error('Async failure');
+            error.stack = 'Error: Async failure\n    at /changes/coding/MyExtension.ts:20:3';
+
+            const rejectionEvent = new Event('unhandledrejection') as any;
+            rejectionEvent.reason = error;
+            globalThis.dispatchEvent(rejectionEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith({
+                title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+                description: 'Async failure',
+                type: MessageBarType.error,
+                details: error.stack
+            });
+        });
+
+        test('ignores error event without controller extension path in stack trace', async () => {
+            const error = new Error('Unrelated error');
+            error.stack = 'Error: Unrelated error\n    at /some/other/path.js:5:1';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('ignores error event when error is not an Error instance', async () => {
+            const errorEvent = new ErrorEvent('error', { error: 'string error' } as any);
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('ignores error event when error is undefined', async () => {
+            const errorEvent = new ErrorEvent('error', {});
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('reports error with empty message when error.message is empty', async () => {
+            const error = new Error('');
+            error.stack = 'Error\n    at /changes/coding/Controller.js:1:1';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    description: '',
+                    type: MessageBarType.error
+                })
+            );
+        });
+    });
+});

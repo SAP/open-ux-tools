@@ -205,7 +205,7 @@ await esbuild.build({
     format: 'esm',
     outfile: path.join(DIST, 'index.js'),
     minify: !isDev,
-    sourcemap: isDev ? 'inline' : false,
+    sourcemap: isDev ? 'linked' : false,
     mainFields: ['module', 'main'],
     // Force CJS condition for @huggingface/transformers so esbuild picks
     // transformers.node.cjs rather than transformers.node.mjs (which has a

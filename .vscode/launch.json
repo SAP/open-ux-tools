@@ -270,7 +270,10 @@
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "cwd": "${workspaceFolder}/packages/eslint-plugin-fiori-tools"
+            "cwd": "${workspaceFolder}/packages/eslint-plugin-fiori-tools",
+             "env": {
+                "NODE_OPTIONS": "--experimental-vm-modules"
+            }
         },
         {
             "type": "node",

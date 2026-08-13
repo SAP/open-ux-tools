@@ -262,7 +262,7 @@ function removeUnusedAnnotations(
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param dataSources - dataSources from manifest.json
  * @param serviceName - name of the OData service instance
- * @param {EdmxAnnotationsInfo | EdmxAnnotationsInfo[]} serviceRemoteAnnotations - remote annotations of the OData service instance
+ * @param {EdmxAnnotationsInfo | EdmxAnnotationsInfo[]} serviceRemoteAnnotations - remote annotations of the OData service instance; `undefined` preserves existing remote annotations (nothing pruned), an empty array prunes them
  * @param {boolean} cleanOldAnnotations - if true, checks and updates service annotations
  * @returns created annotation dataSources list for service.
  */
@@ -275,6 +275,22 @@ function addRemoteAnnotationDataSources(
     cleanOldAnnotations?: boolean
 ): string[] {
     const createdAnnotations: string[] = [];
+    // `undefined` means the caller did not fetch annotations ("unknown"). Preserve the service's
+    // existing remote annotation references, dataSource entries and files - never treat unknown as
+    // "none". An explicit empty array is a caller-asserted "no annotations" and still prunes below.
+    if (serviceRemoteAnnotations === undefined) {
+        if (cleanOldAnnotations) {
+            const serviceAnnotations = dataSources?.[serviceName]?.settings?.annotations ?? [];
+            serviceAnnotations.forEach((name) => {
+                const dataSource = dataSources[name];
+                // Only re-collect remote annotations for the current service (uri differs from localUri).
+                if (dataSource?.type === 'ODataAnnotation' && dataSource.uri !== dataSource.settings?.localUri) {
+                    createdAnnotations.push(name);
+                }
+            });
+        }
+        return createdAnnotations;
+    }
     if (Array.isArray(serviceRemoteAnnotations)) {
         serviceRemoteAnnotations.forEach((remoteAnnotation) => {
             if (remoteAnnotation.name) {
@@ -371,7 +387,7 @@ function convertSingleService(
         const localUri = settings.localUri;
         // -> ["localService", "metadata.xml"]
         const localUriParts = localUri ? localUri.split('/') : undefined;
-        if (localUriParts?.[0] === DirName.LocalService && localUriParts.length === 2) {
+        if (localUriParts && localUriParts[0] === DirName.LocalService && localUriParts.length === 2) {
             const localFileName = localUriParts[localUriParts.length - 1];
             settings.localUri = `${DirName.LocalService}/${dataSourceKey}/${localFileName}`;
             // move related files to service folder

@@ -15,9 +15,17 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
     valid: [
         createValidTest(
             {
-                name: ' Non-manifest files should be ignored',
+                name: ' Non-manifest json files should be ignored',
                 filename: 'some-other-file.json',
                 code: '{"sap.ui5":{"flexEnabled":false}}'
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: ' Non-json files should be ignored',
+                filename: 'some-other-file.xml',
+                code: '<>'
             },
             []
         ),
