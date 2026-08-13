@@ -25,8 +25,28 @@ import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const V4_TEMPLATE_LATEST = 'latest';
+const V4_TEMPLATE_1_84 = '1.84';
+const V4_TEMPLATE_BUCKETS = [
+    { minVersion: '1.149.0', template: V4_TEMPLATE_LATEST },
+    { minVersion: '1.148.0', template: '1.148' }
+];
+
+function getTemplateUi5Version(ui5Version?: string): string {
+    if (!ui5Version) {
+        return V4_TEMPLATE_LATEST;
+    }
+    for (const bucket of V4_TEMPLATE_BUCKETS) {
+        if (compareUI5VersionGte(ui5Version, bucket.minVersion)) {
+            return bucket.template;
+        }
+    }
+    return V4_TEMPLATE_1_84;
+}
 
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
@@ -64,7 +84,8 @@ export async function generateOPAFiles(
         !hasFPMPage && (options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig))));
     const dotFileExtension: DotFileExtension = enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
-    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
+    const templateUi5Version = getTemplateUi5Version(options.ui5Version);
+    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`, templateUi5Version);
     const testOutDirPath = join(await getWebappPath(basePath), 'test');
 
     // Access ux-specification to get feature data for OPA test generation
@@ -102,6 +123,7 @@ export async function generateOPAFiles(
         log,
         journeyParams,
         dotFileExtension,
+        templateUi5Version,
         generateUxSpecJourneys,
         modifiedFiles: []
     };

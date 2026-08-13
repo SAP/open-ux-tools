@@ -36,7 +36,7 @@ sap.ui.define([
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteEdit();
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false } /* , { enabled: true } */);
             // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false });
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToBooked", unbound: false } /* , { enabled: true } */);
@@ -50,9 +50,12 @@ sap.ui.define([
         });
 
 
-        opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+        opaTest("Check the number of sections of the Object Page", function (_Given, _When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Travel");
+        });
+
+        opaTest("Check the Travel section of the Object Page", function (_Given, When, Then) {
+            When.onTheTravelObjectPageGenerated.iGoToSection({ section: "Travel" });
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Travel" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "TravelID" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "AgencyID" });
@@ -64,10 +67,13 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "LatestCancellationDate" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Memo" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Status" });
-            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
+        });
+
+        opaTest("Check the Booking section of the Object Page", function (_Given, When, Then) {
+            When.onTheTravelObjectPageGenerated.iGoToSection({ section: "Booking" });
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Booking" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns(undefined, {"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
-       });
+        });
 
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
