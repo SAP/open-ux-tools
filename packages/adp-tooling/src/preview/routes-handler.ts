@@ -173,14 +173,19 @@ export default class RoutesHandler {
         next: NextFunction
     ): Promise<void> => {
         try {
-            const query = req.query as { name: string };
+            const query = req.query as { name: string; viewId?: string };
             const controllerName = query.name;
+            const viewId = query.viewId;
             const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
 
-            let controllerPathFromRoot = '';
-            let controllerExists = false;
-            let controllerPath = '';
-            let changeFilePath = '';
+            let baseControllerExists = false;
+            let baseControllerPath = '';
+            let baseControllerPathFromRoot = '';
+            let instanceControllerExists = false;
+            let instanceControllerPath = '';
+            let instanceControllerPathFromRoot = '';
+            let missingControllerPath = '';
+            let missingChangeFilePath = '';
 
             const project = this.util.getProject();
             const sourcePath = project.getSourcePath();
@@ -196,19 +201,43 @@ export default class RoutesHandler {
                 const fileStr = await file.getString();
                 const change = JSON.parse(fileStr) as CodeExtChange;
 
-                if (change.selector.controllerName === controllerName) {
-                    const baseFileName = change.content.codeRef.replace('coding/', '');
-                    const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
-                    controllerPath = getPath(sourcePath, fileName);
-                    controllerPathFromRoot = getPath(projectName, fileName);
-                    changeFilePath = getPath(projectName, file.getName(), '');
-                    controllerExists = true;
-                    break;
+                if (change.selector.controllerName !== controllerName) {
+                    continue;
+                }
+
+                const changeViewId = change.content.viewId;
+                const isBase = !changeViewId;
+                const isInstanceForView = !!viewId && changeViewId === viewId;
+
+                if (!isBase && !isInstanceForView) {
+                    continue;
+                }
+
+                const baseFileName = change.content.codeRef.replace('coding/', '');
+                const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
+                const controllerPath = getPath(sourcePath, fileName);
+                const controllerPathFromRoot = getPath(projectName, fileName);
+                const changeFilePath = getPath(projectName, file.getName(), '');
+
+                if (!fs.existsSync(controllerPath)) {
+                    missingControllerPath = controllerPath;
+                    missingChangeFilePath = changeFilePath;
+                    continue;
+                }
+
+                if (isBase) {
+                    baseControllerExists = true;
+                    baseControllerPath = controllerPath;
+                    baseControllerPathFromRoot = controllerPathFromRoot;
+                } else {
+                    instanceControllerExists = true;
+                    instanceControllerPath = controllerPath;
+                    instanceControllerPathFromRoot = controllerPathFromRoot;
                 }
             }
 
-            if (controllerExists && !fs.existsSync(controllerPath)) {
-                const errorMsg = `Please delete the change file at "${changeFilePath}" and retry creating the controller extension.`;
+            if (!baseControllerExists && !instanceControllerExists && missingControllerPath) {
+                const errorMsg = `Please delete the change file at "${missingChangeFilePath}" and retry creating the controller extension.`;
                 this.logger.debug(errorMsg);
                 res.status(HttpStatusCodes.NOT_FOUND).send({ message: errorMsg });
                 return;
@@ -216,17 +245,23 @@ export default class RoutesHandler {
 
             const isRunningInBAS = isAppStudio();
 
+            const toResponsePath = (controllerPath: string) =>
+                controllerPath && os.platform() === 'win32' ? `/${controllerPath}` : controllerPath;
+
             this.sendFilesResponse(res, {
-                controllerExists,
-                controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
-                controllerPathFromRoot,
+                baseControllerExists,
+                baseControllerPath: toResponsePath(baseControllerPath),
+                baseControllerPathFromRoot,
+                instanceControllerExists,
+                instanceControllerPath: toResponsePath(instanceControllerPath),
+                instanceControllerPathFromRoot,
                 isRunningInBAS,
                 isTsSupported
             });
             this.logger.debug(
-                controllerExists
-                    ? `Controller exists at '${controllerPath}'`
-                    : `Controller with controllerName '${controllerName}' does not exist`
+                `Controller '${controllerName}' existence — base: ${baseControllerExists}, instance (viewId '${
+                    viewId ?? ''
+                }'): ${instanceControllerExists}`
             );
         } catch (e) {
             this.handleErrorMessage(res, next, e);

@@ -113,9 +113,72 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
         return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
     });
 }
+
+/**
+ * Collects the `content.viewId` values of all pending `codeExt` changes in the RTA command stack for a
+ * given controller. A base page controller extension has no `viewId` (yields `undefined`), while an
+ * instance-specific extension yields the ID of the view it is bound to.
+ *
+ * @param {RuntimeAuthoring} rta - The RuntimeAuthoring instance to inspect.
+ * @param {string} controllerName - The controller name to match against `selector.controllerName`.
+ * @returns {(string | undefined)[]} The `content.viewId` of each matching pending codeExt change.
+ */
+export function getPendingCodeExtViewIds(rta: RuntimeAuthoring, controllerName: string): (string | undefined)[] {
+    const allCommands = rta.getCommandStack().getCommands();
+    const viewIds: (string | undefined)[] = [];
+
+    const collectFromCommand = (command: FlexCommand): void => {
+        getFlexChangeList(command).forEach((change) => {
+            const changeDefinition = getChangeDefinition(change);
+            if (getNestedProperty(changeDefinition, 'changeType') !== 'codeExt') {
+                return;
+            }
+            if (getNestedProperty(changeDefinition, 'selector.controllerName') !== controllerName) {
+                return;
+            }
+            const viewId = getNestedProperty(changeDefinition, 'content.viewId');
+            viewIds.push(typeof viewId === 'string' ? viewId : undefined);
+        });
+    };
+
+    allCommands.forEach((command: FlexCommand) => {
+        if (typeof command.getCommands === 'function') {
+            command.getCommands().forEach((subCommand: FlexCommand) => {
+                if (subCommand?.getProperty('name') === 'codeExt') {
+                    collectFromCommand(subCommand);
+                }
+            });
+        } else {
+            collectFromCommand(command);
+        }
+    });
+
+    return viewIds;
+}
+
 interface ControllerInfo {
     controllerName: string;
     viewId: string;
+}
+
+interface ViewLike {
+    getId(): string;
+    getControllerModuleName?(): string | undefined;
+    getController?(): { getMetadata(): { getName(): string } } | undefined;
+    getParent?(): ManagedObject | null;
+}
+
+/**
+ * Resolves the controller name of a view, preferring the typed controller module name and falling
+ * back to the controller instance's metadata name. Returns an empty string when the view owns no
+ * controller.
+ *
+ * @param view The view to resolve the controller name for.
+ * @returns The controller name (`module:...` or class name), or an empty string when none is resolvable.
+ */
+function resolveControllerName(view: ViewLike): string {
+    const moduleName = view?.getControllerModuleName?.();
+    return moduleName ? `module:${moduleName}` : view?.getController?.()?.getMetadata?.().getName() ?? '';
 }
 
 /**
@@ -125,11 +188,23 @@ interface ControllerInfo {
  * @returns The controller name and view ID.
  */
 export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
-    const view = FlexUtils.getViewForControl(control);
-    const moduleName = view?.getControllerModuleName?.();
-    const controllerName = moduleName ? `module:${moduleName}` : view.getController()?.getMetadata().getName();
-    const viewId = view.getId();
-    return { controllerName, viewId };
+    let view = FlexUtils.getViewForControl(control) as ViewLike;
+    let controllerName = resolveControllerName(view);
+
+    while (!controllerName) {
+        const parent = view?.getParent?.();
+        if (!parent) {
+            break;
+        }
+        const parentView = FlexUtils.getViewForControl(parent) as ViewLike;
+        if (!parentView || parentView === view) {
+            break;
+        }
+        view = parentView;
+        controllerName = resolveControllerName(view);
+    }
+
+    return { controllerName, viewId: view.getId() };
 }
 
 /**

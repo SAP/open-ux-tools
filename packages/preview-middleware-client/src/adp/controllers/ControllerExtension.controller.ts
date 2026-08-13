@@ -2,6 +2,7 @@
 import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import Input from 'sap/m/Input';
+import type RadioButtonGroup from 'sap/m/RadioButtonGroup';
 
 /** sap.ui.core */
 import type UI5Element from 'sap/ui/core/Element';
@@ -30,11 +31,11 @@ import type { CodeExtResponse, ControllersResponse } from '../api-handler.js';
 import { getExistingController, readControllers, writeChange, writeController } from '../api-handler.js';
 import CommandExecutor from '../command-executor.js';
 import type { DeferredExtendControllerData, ExtendControllerData } from '../extend-controller.js';
-import { checkForExistingChange, getControllerInfo } from '../utils.js';
+import { checkForExistingChange, getControllerInfo, getPendingCodeExtViewIds } from '../utils.js';
 import BaseDialog from './BaseDialog.controller.js';
 
 interface ControllerExtensionService {
-    add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
+    add: (codeRef: string, viewId: string, includeViewId?: boolean) => Promise<{ creation: string }>;
 }
 
 type ControllerList = {
@@ -49,8 +50,14 @@ type ControllerModel = JSONModel & {
     getProperty(sPath: '/controllerExists'): boolean;
     getProperty(sPath: '/newControllerName'): string;
     getProperty(sPath: '/viewId'): string;
-    getProperty(sPath: '/controllerPath'): string;
+    getProperty(sPath: '/baseControllerPath'): string;
+    getProperty(sPath: '/instanceControllerPath'): string;
     getProperty(sPath: '/controllerExtension'): string;
+    getProperty(sPath: '/isInstanceSpecific'): boolean;
+    getProperty(sPath: '/instanceSpecificVisibility'): boolean;
+    getProperty(sPath: '/baseControllerEnabled'): boolean;
+    getProperty(sPath: '/instanceControllerEnabled'): boolean;
+    getProperty(sPath: '/controllerTypeSelectedIndex'): number;
 };
 
 /**
@@ -59,6 +66,8 @@ type ControllerModel = JSONModel & {
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
     /* The minimum version of UI5 framework which supports controller extensions. */
     private static readonly CONTROLLER_EXT_MIN_UI5_VERSION = { major: 1, minor: 135 };
+    /* The minimum version of UI5 framework which supports instance-specific controller extensions. */
+    private static readonly INSTANCE_SPECIFIC_MIN_UI5_VERSION = { major: 1, minor: 143 };
     public readonly data?: ExtendControllerData;
     private bundle: TextBundle;
 
@@ -181,10 +190,12 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
             const controllerName = this.model.getProperty('/newControllerName');
             const viewId = this.model.getProperty('/viewId');
+            const isInstanceSpecific = this.model.getProperty('/isInstanceSpecific');
 
-            const controllerRef = {
+            const controllerRef: DeferredExtendControllerData = {
                 codeRef: `coding/${controllerName}.js`,
-                viewId
+                viewId,
+                instanceSpecific: isInstanceSpecific
             };
 
             if (this.data) {
@@ -200,9 +211,6 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
                     type: MessageBarType.info
                 });
             }
-        } else {
-            const controllerPath = this.model.getProperty('/controllerPath');
-            window.open(`vscode://file${controllerPath}`);
         }
 
         this.handleDialogClose();
@@ -216,47 +224,64 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
 
         const { controllerName, viewId } = getControllerInfo(overlayControl);
-        const data = await this.getExistingController(controllerName);
+        const data = await this.getExistingController(controllerName, viewId);
 
-        const hasPendingChangeForView = checkForExistingChange(
-            this.rta,
-            'codeExt',
-            'selector.controllerName',
-            controllerName
-        );
+        if (!data) {
+            return;
+        }
 
-        if (data) {
-            if (hasPendingChangeForView) {
+        // Combine persisted (server) and pending (command stack) changes to determine whether a base
+        // page controller and/or an instance-specific controller for this view already exist.
+        const pendingViewIds = getPendingCodeExtViewIds(this.rta, controllerName);
+        const baseExists = data.baseControllerExists || pendingViewIds.some((id) => !id);
+        const instanceExists = data.instanceControllerExists || pendingViewIds.some((id) => id === viewId);
+
+        const showInstanceSpecificOption = await this.isInstanceSpecificSupported();
+
+        if (!showInstanceSpecificOption) {
+            if (pendingViewIds.some((id) => !id)) {
                 this.updateModelForExistingPendingChange();
-            } else if (data?.controllerExists) {
+            } else if (data.baseControllerExists) {
                 this.updateModelForExistingController(data);
             } else {
-                this.updateModelForNewController(viewId, data.isTsSupported);
-
+                this.updateModelForNewController(viewId, data.isTsSupported, false, false, false);
                 await this.getControllers();
             }
+            return;
         }
+
+        if (baseExists && instanceExists) {
+            if (data.baseControllerExists || data.instanceControllerExists) {
+                this.updateModelForExistingController(data);
+            } else {
+                this.updateModelForExistingPendingChange();
+            }
+            return;
+        }
+
+        this.updateModelForNewController(viewId, data.isTsSupported, true, baseExists, instanceExists);
+        await this.getControllers();
     }
     /**
-     * Updates the model properties for an existing controller.
+     * Updates the model properties for existing controller(s).
+     * Shows all persisted controllers (base and/or instance) in the existing-controller form, each with its own link to open in VS Code.
      *
-     * @param {CodeExtResponse} data - Existing controller data from the server.
+     * @param {CodeExtResponse} data - Server response containing existence flags and file paths.
      */
     private updateModelForExistingController(data: CodeExtResponse): void {
-        const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } = data;
-
-        this.model.setProperty('/controllerExists', controllerExists);
-        this.model.setProperty('/controllerPath', controllerPath);
-        this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
+        this.model.setProperty('/controllerExists', true);
+        this.model.setProperty('/baseControllerExists', data.baseControllerExists);
+        this.model.setProperty('/baseControllerPath', data.baseControllerPath);
+        this.model.setProperty('/baseControllerPathFromRoot', data.baseControllerPathFromRoot);
+        this.model.setProperty('/instanceControllerExists', data.instanceControllerExists);
+        this.model.setProperty('/instanceControllerPath', data.instanceControllerPath);
+        this.model.setProperty('/instanceControllerPathFromRoot', data.instanceControllerPathFromRoot);
+        this.model.setProperty('/isRunningInBAS', data.isRunningInBAS);
         this.model.setProperty('/inputFormVisibility', false);
         this.model.setProperty('/pendingChangeFormVisibility', false);
         this.model.setProperty('/existingControllerFormVisibility', true);
 
-        if (isRunningInBAS) {
-            this.dialog.getBeginButton().setVisible(false);
-        } else {
-            this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
-        }
+        this.dialog.getBeginButton().setVisible(false);
         this.dialog.getEndButton().setText('Close');
     }
 
@@ -277,25 +302,41 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      *
      * @param {string} viewId - The view ID.
      * @param {boolean} isTsSupported - Whether TypeScript supported for the current project.
+     * @param {boolean} showInstanceSpecificOption - Whether to show the instance-specific radio button option.
+     * @param {boolean} baseExists - Whether a base page controller extension already exists.
+     * @param {boolean} instanceExists - Whether an instance-specific extension already exists for this view.
      */
-    private updateModelForNewController(viewId: string, isTsSupported: boolean): void {
+    private updateModelForNewController(
+        viewId: string,
+        isTsSupported: boolean,
+        showInstanceSpecificOption: boolean,
+        baseExists: boolean,
+        instanceExists: boolean
+    ): void {
         this.model.setProperty('/viewId', viewId);
         this.model.setProperty('/controllerExtension', isTsSupported ? '.ts' : '.js');
         this.model.setProperty('/existingControllerFormVisibility', false);
         this.model.setProperty('/pendingChangeFormVisibility', false);
         this.model.setProperty('/inputFormVisibility', true);
+        this.model.setProperty('/instanceSpecificVisibility', showInstanceSpecificOption);
+        this.model.setProperty('/baseControllerEnabled', !baseExists);
+        this.model.setProperty('/instanceControllerEnabled', !instanceExists);
+        const selectedIndex = baseExists ? 1 : 0;
+        this.model.setProperty('/controllerTypeSelectedIndex', selectedIndex);
+        this.model.setProperty('/isInstanceSpecific', selectedIndex === 1);
     }
 
     /**
      * Retrieves existing controller data if found in the project's workspace.
      *
      * @param controllerName Controller name that exists in the view.
+     * @param viewId ID of the current view, used to detect an existing instance-specific extension.
      * @returns Returns existing controller data.
      */
-    private async getExistingController(controllerName: string): Promise<CodeExtResponse | undefined> {
+    private async getExistingController(controllerName: string, viewId: string): Promise<CodeExtResponse | undefined> {
         let data: CodeExtResponse | undefined;
         try {
-            data = await getExistingController(controllerName);
+            data = await getExistingController(controllerName, viewId);
         } catch (e) {
             const error = getError(e);
             await sendInfoCenterMessage({
@@ -346,7 +387,11 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
             const service = await this.rta.getService<ControllerExtensionService>('controllerExtension');
 
-            const change = await service.add(controllerRef.codeRef, controllerRef.viewId);
+            const change = await service.add(
+                controllerRef.codeRef,
+                controllerRef.viewId,
+                controllerRef.instanceSpecific
+            );
             change.creation = new Date().toISOString();
 
             await writeChange(change);
@@ -404,5 +449,34 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     private async isControllerExtensionSupported(): Promise<boolean> {
         const ui5Version = await getUi5Version();
         return !isLowerThanMinimalUi5Version(ui5Version, ControllerExtension.CONTROLLER_EXT_MIN_UI5_VERSION);
+    }
+
+    /**
+     * Handles selection change on the controller type radio button group.
+     *
+     * @param event Event
+     */
+    onControllerTypeSelectionChange(event: Event): void {
+        const group = event.getSource<RadioButtonGroup>();
+        this.model.setProperty('/isInstanceSpecific', group.getSelectedIndex() === 1);
+    }
+
+    /**
+     * Opens the base page controller extension file in VS Code.
+     */
+    onOpenBaseController(): void {
+        window.open(`vscode://file${this.model.getProperty('/baseControllerPath')}`);
+    }
+
+    /**
+     * Opens the instance-specific controller extension file in VS Code.
+     */
+    onOpenInstanceController(): void {
+        window.open(`vscode://file${this.model.getProperty('/instanceControllerPath')}`);
+    }
+
+    private async isInstanceSpecificSupported(): Promise<boolean> {
+        const ui5Version = await getUi5Version();
+        return !isLowerThanMinimalUi5Version(ui5Version, ControllerExtension.INSTANCE_SPECIFIC_MIN_UI5_VERSION);
     }
 }
