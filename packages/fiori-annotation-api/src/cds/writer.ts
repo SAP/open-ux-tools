@@ -20,7 +20,7 @@ import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
 const { createMetadataCollector } = cdsCompilerFacade;
 
-import type { Annotation, Collection, Token } from '@sap-ux/cds-annotation-parser';
+import type { Annotation, Collection, FlattenedExpression, Token } from '@sap-ux/cds-annotation-parser';
 import {
     copyRange,
     ENUM_TYPE,
@@ -502,7 +502,11 @@ export class CDSWriter implements ChangeHandler {
         // preprocessor converts these changes to DeleteAnnotationGroup
     };
 
-    private getDeletionRange(annotation: Annotation, target: Target, index: number): DeletionRange | undefined {
+    private getDeletionRange(
+        annotation: Annotation | FlattenedExpression,
+        target: Target,
+        index: number
+    ): DeletionRange | undefined {
         const { edmxPath } = this.facade.collectMetadataForAbsolutePath(
             target.name,
             target.kind,
