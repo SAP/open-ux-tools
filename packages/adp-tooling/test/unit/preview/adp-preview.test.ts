@@ -629,6 +629,46 @@ describe('AdaptationProject', () => {
             expect(response.status).toBe(200);
             expect(mockProject.byGlob).not.toHaveBeenCalled();
         });
+
+        test('rewrites ui5://<variant-id>/ prefixes in the manifest to local paths', async () => {
+            // The manifest built by the backend references bundleUrls via the ui5:// scheme
+            // using the descriptor variant id (my.adaptation), not the base app name
+            // (the.original.app). FLP Sandbox 2.0's CDM maps that namespace to the backend,
+            // so these must be rewritten to local absolute paths.
+            const rewriteDescriptor = {
+                ...mockMergedDescriptor,
+                manifest: {
+                    'sap.app': {
+                        id: 'my.adaptation',
+                        i18n: {
+                            bundleUrl: 'ui5://my/adaptation/i18n/i18n.properties',
+                            enhanceWith: [{ bundleUrl: 'ui5://my/adaptation/i18n/ListReport/i18n.properties' }]
+                        }
+                    }
+                }
+            };
+            const rewriteAdp = new AdpPreview(
+                { target: { url: backend } },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+            // Set the state that init()/sync() would normally populate, so the proxy can run
+            // without a backend round-trip. The rewrite uses descriptorVariantId, not name.
+            (rewriteAdp as any).mergedDescriptor = rewriteDescriptor;
+            (rewriteAdp as any).descriptorVariantId = 'my.adaptation';
+            (rewriteAdp as any).lrep = {};
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+
+            const rewriteApp = express();
+            rewriteApp.use(rewriteDescriptor.url, rewriteAdp.proxy.bind(rewriteAdp));
+            const response = await supertest(rewriteApp).get(`${rewriteDescriptor.url}/manifest.json`).expect(200);
+
+            const manifest = JSON.parse(response.text);
+            expect(manifest['sap.app'].i18n.bundleUrl).toBe('/i18n/i18n.properties');
+            expect(manifest['sap.app'].i18n.enhanceWith[0].bundleUrl).toBe('/i18n/ListReport/i18n.properties');
+            expect(response.text).not.toContain('ui5://');
+        });
     });
 
     describe('onChangeRequest', () => {
