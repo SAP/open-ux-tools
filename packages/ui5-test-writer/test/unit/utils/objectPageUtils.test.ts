@@ -2725,6 +2725,49 @@ describe('Test getObjectPageFeatures()', () => {
         });
     });
 
+    test('drops a custom header action with no resolvable label and unknown action entries', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation,
+                                actions: {
+                                    aggregations: {
+                                        EmptyCustom: {
+                                            description: '',
+                                            schema: { actionType: 'Custom' },
+                                            path: [],
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation,
+                                        UnknownEntry: {
+                                            description: 'Ignored',
+                                            schema: { actionType: 'Standard' },
+                                            path: [],
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        expect(result[0].headerActions).toEqual([]);
+    });
+
     test('should extract a custom (manifest) action from a table section', async () => {
         const objectPage = {
             name: 'objectPage1',

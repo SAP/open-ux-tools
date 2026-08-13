@@ -479,7 +479,7 @@ function extractHeaderActions(
     objectPage: PageWithModelV4,
     convertedMetadata: ConvertedMetadata,
     schemaNamespace: string,
-    resolveLabel: I18nLabelResolver = passthroughLabelResolver
+    resolveLabel: I18nLabelResolver
 ): ActionButtonState[] {
     if (!objectPage.model) {
         return [];
@@ -506,7 +506,7 @@ function extractSectionActions(
     section: BodySectionItem,
     convertedMetadata: ConvertedMetadata,
     schemaNamespace: string,
-    resolveLabel: I18nLabelResolver = passthroughLabelResolver
+    resolveLabel: I18nLabelResolver
 ): ActionButtonState[] {
     let actionsAgg: AggregationItem | undefined;
 
