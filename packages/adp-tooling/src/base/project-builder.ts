@@ -1,5 +1,4 @@
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { previewManifest } from '@ui5/task-adaptation';
 import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import { readUi5Config, extractCfBuildTask } from './helper.js';
@@ -46,6 +45,12 @@ export async function getPreviewManifest(
     const ui5Config = await readUi5Config(projectPath, 'ui5.yaml');
     const buildTask = extractCfBuildTask(ui5Config);
     const { module: projectNamespace, ...configuration } = buildTask;
+
+    // Dynamic import keeps @ui5/task-adaptation out of the static module graph of adp-tooling.
+    // A static import would leak task-adaptation's node:child_process imports into every
+    // consumer's Jest test environment, breaking mocks in packages like @sap-ux/create
+    // that mock node:child_process without spreading the real module.
+    const { previewManifest } = await import('@ui5/task-adaptation');
     const manifest = await previewManifest({
         workspace,
         options: {
