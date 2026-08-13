@@ -46,6 +46,18 @@ export interface AnnotationDataSourceResponse {
 
 type ControllerInfo = { controllerName: string };
 
+interface ControllerExtensionLookup {
+    baseControllerExists: boolean;
+    baseControllerPath: string;
+    baseControllerPathFromRoot: string;
+    instanceControllerExists: boolean;
+    instanceControllerPath: string;
+    instanceControllerPathFromRoot: string;
+    missingControllerPath: string;
+    missingChangeFilePath: string;
+    isTsSupported: boolean;
+}
+
 /**
  * @description Handles API Routes
  */
@@ -178,63 +190,18 @@ export default class RoutesHandler {
             const viewId = query.viewId;
             const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
 
-            let baseControllerExists = false;
-            let baseControllerPath = '';
-            let baseControllerPathFromRoot = '';
-            let instanceControllerExists = false;
-            let instanceControllerPath = '';
-            let instanceControllerPathFromRoot = '';
-            let missingControllerPath = '';
-            let missingChangeFilePath = '';
-
-            const project = this.util.getProject();
-            const sourcePath = project.getSourcePath();
-            const rootPath = this.util.getProject().getRootPath();
-            const projectName = project.getName();
-
-            const isTsSupported = isTypescriptSupported(rootPath);
-
-            const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
-                path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
-
-            for (const file of codeExtFiles) {
-                const fileStr = await file.getString();
-                const change = JSON.parse(fileStr) as CodeExtChange;
-
-                if (change.selector.controllerName !== controllerName) {
-                    continue;
-                }
-
-                const changeViewId = change.content.viewId;
-                const isBase = !changeViewId;
-                const isInstanceForView = !!viewId && changeViewId === viewId;
-
-                if (!isBase && !isInstanceForView) {
-                    continue;
-                }
-
-                const baseFileName = change.content.codeRef.replace('coding/', '');
-                const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
-                const controllerPath = getPath(sourcePath, fileName);
-                const controllerPathFromRoot = getPath(projectName, fileName);
-                const changeFilePath = getPath(projectName, file.getName(), '');
-
-                if (!fs.existsSync(controllerPath)) {
-                    missingControllerPath = controllerPath;
-                    missingChangeFilePath = changeFilePath;
-                    continue;
-                }
-
-                if (isBase) {
-                    baseControllerExists = true;
-                    baseControllerPath = controllerPath;
-                    baseControllerPathFromRoot = controllerPathFromRoot;
-                } else {
-                    instanceControllerExists = true;
-                    instanceControllerPath = controllerPath;
-                    instanceControllerPathFromRoot = controllerPathFromRoot;
-                }
-            }
+            const lookup = await this.resolveControllerExtensions(codeExtFiles, controllerName, viewId);
+            const {
+                baseControllerExists,
+                baseControllerPath,
+                baseControllerPathFromRoot,
+                instanceControllerExists,
+                instanceControllerPath,
+                instanceControllerPathFromRoot,
+                missingControllerPath,
+                missingChangeFilePath,
+                isTsSupported
+            } = lookup;
 
             if (!baseControllerExists && !instanceControllerExists && missingControllerPath) {
                 const errorMsg = `Please delete the change file at "${missingChangeFilePath}" and retry creating the controller extension.`;
@@ -267,6 +234,79 @@ export default class RoutesHandler {
             this.handleErrorMessage(res, next, e);
         }
     };
+
+    /**
+     * Resolves base and instance-specific controller extensions from the workspace's codeExt change files.
+     *
+     * @param codeExtFiles codeExt change files read from the workspace
+     * @param controllerName Controller name to match against each change's selector
+     * @param viewId Optional view ID used to detect an instance-specific extension for the current view
+     * @returns Existence flags and paths for base/instance controllers, plus any stale change reference
+     */
+    private async resolveControllerExtensions(
+        codeExtFiles: Resource[],
+        controllerName: string,
+        viewId: string | undefined
+    ): Promise<ControllerExtensionLookup> {
+        const project = this.util.getProject();
+        const sourcePath = project.getSourcePath();
+        const projectName = project.getName();
+        const isTsSupported = isTypescriptSupported(project.getRootPath());
+
+        const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
+            path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
+
+        const lookup: ControllerExtensionLookup = {
+            baseControllerExists: false,
+            baseControllerPath: '',
+            baseControllerPathFromRoot: '',
+            instanceControllerExists: false,
+            instanceControllerPath: '',
+            instanceControllerPathFromRoot: '',
+            missingControllerPath: '',
+            missingChangeFilePath: '',
+            isTsSupported
+        };
+
+        for (const file of codeExtFiles) {
+            const change = JSON.parse(await file.getString()) as CodeExtChange;
+
+            const changeViewId = change.content.viewId;
+            const isBase = !changeViewId;
+            const isInstanceForView = !!viewId && changeViewId === viewId;
+
+            if (change.selector.controllerName !== controllerName || (!isBase && !isInstanceForView)) {
+                continue;
+            }
+
+            const baseFileName = change.content.codeRef.replace('coding/', '');
+            const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
+            const controllerPath = getPath(sourcePath, fileName);
+            const controllerPathFromRoot = getPath(projectName, fileName);
+            const changeFilePath = getPath(projectName, file.getName(), '');
+
+            if (!fs.existsSync(controllerPath)) {
+                lookup.missingControllerPath = controllerPath;
+                lookup.missingChangeFilePath = changeFilePath;
+                this.logger.debug(
+                    `Change file at "${changeFilePath}" references a missing controller at "${controllerPath}".`
+                );
+                continue;
+            }
+
+            if (isBase) {
+                lookup.baseControllerExists = true;
+                lookup.baseControllerPath = controllerPath;
+                lookup.baseControllerPathFromRoot = controllerPathFromRoot;
+            } else {
+                lookup.instanceControllerExists = true;
+                lookup.instanceControllerPath = controllerPath;
+                lookup.instanceControllerPathFromRoot = controllerPathFromRoot;
+            }
+        }
+
+        return lookup;
+    }
 
     /**
      * Handler for writing a controller extension file to the workspace.

@@ -234,7 +234,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         // page controller and/or an instance-specific controller for this view already exist.
         const pendingViewIds = getPendingCodeExtViewIds(this.rta, controllerName);
         const baseExists = data.baseControllerExists || pendingViewIds.some((id) => !id);
-        const instanceExists = data.instanceControllerExists || pendingViewIds.some((id) => id === viewId);
+        const instanceExists = data.instanceControllerExists || pendingViewIds.includes(viewId);
 
         const showInstanceSpecificOption = await this.isInstanceSpecificSupported();
 
