@@ -161,9 +161,12 @@ interface GetControllersResponse {
 }
 
 interface CodeExtResponse {
-    controllerExists: boolean;
-    controllerPath: string;
-    controllerPathFromRoot: string;
+    baseControllerExists: boolean;
+    baseControllerPath: string;
+    baseControllerPathFromRoot: string;
+    instanceControllerExists: boolean;
+    instanceControllerPath: string;
+    instanceControllerPathFromRoot: string;
 }
 
 const mockProject = {
@@ -1004,7 +1007,8 @@ describe('AdaptationProject', () => {
                 .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport')
                 .expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
-            expect(data.controllerExists).toEqual(true);
+            expect(data.baseControllerExists).toEqual(true);
+            expect(data.instanceControllerExists).toEqual(false);
         });
 
         test('GET /adp/api/code_ext - returns existing controller data with new syntax', async () => {
@@ -1023,7 +1027,80 @@ describe('AdaptationProject', () => {
                 )
                 .expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
-            expect(data.controllerExists).toEqual(true);
+            expect(data.baseControllerExists).toEqual(true);
+        });
+
+        test('GET /adp/api/code_ext - returns instance-specific controller data when viewId matches', async () => {
+            mockExistsSyncFn.mockReturnValue(true);
+            const changeFileStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js","viewId":"view1"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr,
+                    getName: () => 'id_124_codeExt.change'
+                }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.instanceControllerExists).toEqual(true);
+            expect(data.baseControllerExists).toEqual(false);
+        });
+
+        test('GET /adp/api/code_ext - ignores instance-specific controller bound to a different view', async () => {
+            mockExistsSyncFn.mockReturnValue(true);
+            const changeFileStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js","viewId":"otherView"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr,
+                    getName: () => 'id_124_codeExt.change'
+                }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.baseControllerExists).toEqual(false);
+            expect(data.instanceControllerExists).toEqual(false);
+        });
+
+        test('GET /adp/api/code_ext - detects both base and instance-specific controllers', async () => {
+            mockExistsSyncFn.mockReturnValue(true);
+            const baseChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/base.js"}}';
+            const instanceChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/instance.js","viewId":"view1"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                { getString: () => baseChangeStr, getName: () => 'id_1_codeExt.change' },
+                { getString: () => instanceChangeStr, getName: () => 'id_2_codeExt.change' }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.baseControllerExists).toEqual(true);
+            expect(data.instanceControllerExists).toEqual(true);
+        });
+
+        test('GET /adp/api/code_ext - ignores a stale base controller and returns the valid instance-specific one', async () => {
+            // Base controller file is missing (stale change), instance-specific file exists.
+            mockExistsSyncFn.mockImplementation((p) => !String(p).includes('base'));
+            const baseChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/base.js"}}';
+            const instanceChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/instance.js","viewId":"view1"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                { getString: () => baseChangeStr, getName: () => 'id_1_codeExt.change' },
+                { getString: () => instanceChangeStr, getName: () => 'id_2_codeExt.change' }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.baseControllerExists).toEqual(false);
+            expect(data.instanceControllerExists).toEqual(true);
         });
 
         test('GET /adp/api/code_ext - returns empty existing controller data (no control found)', async () => {
@@ -1037,7 +1114,8 @@ describe('AdaptationProject', () => {
             ]);
             const response = await server.get('/adp/api/code_ext?name=sap.suite.ui.generic.template.Dummy').expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
-            expect(data.controllerExists).toEqual(false);
+            expect(data.baseControllerExists).toEqual(false);
+            expect(data.instanceControllerExists).toEqual(false);
         });
 
         test('GET /adp/api/code_ext - returns not found if no controller extension file was found locally', async () => {

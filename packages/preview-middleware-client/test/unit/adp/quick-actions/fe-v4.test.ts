@@ -128,16 +128,10 @@ describe('FE V4 quick actions', () => {
         // Re-establish pass-through defaults after clearAllMocks wipes implementations.
         // With jest.unstable_mockModule + spread pattern, jest.fn() mocks lose their
         // implementation on clearAllMocks, unlike jest.spyOn which preserves it.
-        getUi5VersionMock.mockImplementation((...args) =>
-            (_versionUtils.getUi5Version as Function)(...args)
-        );
+        getUi5VersionMock.mockImplementation((...args) => (_versionUtils.getUi5Version as Function)(...args));
         checkForExistingChangeMock.mockReturnValue(false);
-        getV4AppComponentMock.mockImplementation((...args) =>
-            (_utils.getV4AppComponent as Function)(...args)
-        );
-        getParentContainerMock.mockImplementation((...args) =>
-            (_QCUtils.getParentContainer as Function)(...args)
-        );
+        getV4AppComponentMock.mockImplementation((...args) => (_utils.getV4AppComponent as Function)(...args));
+        getParentContainerMock.mockImplementation((...args) => (_QCUtils.getParentContainer as Function)(...args));
         getExistingControllerMock.mockImplementation((...args) =>
             (_apiHandler.getExistingController as Function)(...args)
         );
@@ -307,8 +301,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp.v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp.v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -555,8 +549,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp/v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp/v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -582,7 +576,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -598,7 +592,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -632,7 +626,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -648,7 +642,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -664,7 +658,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -678,7 +672,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -735,7 +729,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -751,7 +745,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -767,7 +761,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -781,7 +775,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1570,8 +1564,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp/v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp/v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -1609,7 +1603,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1625,7 +1619,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1671,7 +1665,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1687,7 +1681,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1703,7 +1697,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1717,7 +1711,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1783,7 +1777,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1799,7 +1793,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1815,7 +1809,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1829,7 +1823,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1895,7 +1889,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1911,7 +1905,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1927,7 +1921,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1941,7 +1935,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -2502,8 +2496,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp/v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp/v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -2543,7 +2537,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2551,7 +2545,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: '\'MySecondTab\' table',
+                                            label: "'MySecondTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2568,7 +2562,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2576,7 +2570,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2593,11 +2587,11 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: true,
                                             children: []
                                         },
-                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
+                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
                                     ]
                                 },
                                 {
@@ -2608,13 +2602,13 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
                                                 'Custom columns defined in the manifest.json file are not supported when using the Table building block.'
                                         },
-                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
+                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
                                     ]
                                 }
                             ]
@@ -3545,13 +3539,11 @@ describe('FE V4 quick actions', () => {
                                 jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                     return 'component-id';
                                 });
-                                jest.spyOn(Component, 'getComponentById').mockImplementation(
-                                    (id) => {
-                                        if (id === 'component-id') {
-                                            return component as unknown as ComponentMock;
-                                        }
+                                jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
+                                    if (id === 'component-id') {
+                                        return component as unknown as ComponentMock;
                                     }
-                                );
+                                });
                                 container.getCurrentPage.mockImplementation(() => {
                                     return componentContainer;
                                 });
@@ -4267,8 +4259,8 @@ describe('FE V4 quick actions', () => {
                         ]
                     });
                     getExistingControllerMock.mockResolvedValue({
-                        controllerPathFromRoot: 'adp.v4/test.js',
-                        controllerExists: true,
+                        baseControllerPathFromRoot: 'adp.v4/test.js',
+                        baseControllerExists: true,
                         isRunningInBAS: false,
                         controllerPath: 'webapp/adp/v4/test.js',
                         isTsSupported: false
