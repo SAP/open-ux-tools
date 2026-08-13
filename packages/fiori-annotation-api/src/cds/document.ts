@@ -199,9 +199,12 @@ export function getItems(container: ContainerNode): AstNode[] {
         case 'target':
             return container.assignments;
         case 'record':
-            return container.annotations?.length
-                ? [...container.properties, ...container.annotations].sort(compareByRange)
-                : container.properties;
+            return [
+                ...container.properties,
+                ...(container.annotations ?? []),
+                ...(container.flattenedExpressions ?? [])
+            ].sort(compareByRange);
+
         case 'annotation-group-items':
         case 'collection':
             return container.items;
