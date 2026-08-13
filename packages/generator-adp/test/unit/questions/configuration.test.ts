@@ -668,6 +668,20 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(`Authentication error: ${axiosError.message}`);
         });
 
+        it('password prompt should have applyDefaultWhenDirty set to true to prevent stale credentials being resubmitted on system change', () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            expect((passwordPrompt as any)?.guiOptions?.applyDefaultWhenDirty).toBe(true);
+        });
+
+        it('password prompt should have an empty string default to ensure field is cleared when system changes', () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            expect(passwordPrompt?.default).toBe('');
+        });
+
         it('password prompt additionalMessages should return undefined if system additional messages are already set', async () => {
             const prompts = configPrompter.getPrompts();
             const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);

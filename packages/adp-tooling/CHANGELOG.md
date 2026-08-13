@@ -1,5 +1,34 @@
 # @sap-ux/adp-tooling
 
+## 1.0.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Rewrite ui5:// manifest prefixes using the descriptor variant id instead of the base app name, so FLP Sandbox 2.0 resolves i18n enhanceWith bundles locally [[6fac8d4](https://github.com/SAP/open-ux-tools/commit/6fac8d45439a76e078fd6e6f6964b05d797e411e)]
+
+## 1.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+
+## 1.0.41
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+
 ## 1.0.40
 
 ### Patch Changes
