@@ -15,7 +15,6 @@ export default {
         [`^@sap-ux/(?!${externalSapUx})([^/]+)$`]: resolve(__dirname, '../$1/src/index.ts'),
         '^@sap-ux-private/([^/]+)$': resolve(__dirname, '../$1/src/index.ts'),
         // Map relative src paths to absolute paths for jest.mock() resolution
-        '^(\\.\\.[\\/])+src[\\/](.*)$': resolve(__dirname, 'src/$2'),
-        '^@ui5/task-adaptation$': resolve(__dirname, 'node_modules/@ui5/task-adaptation/dist/index.js')
+        '^(\\.\\.[\\/])+src[\\/](.*)$': resolve(__dirname, 'src/$2')
     }
 };
