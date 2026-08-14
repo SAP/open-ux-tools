@@ -281,7 +281,7 @@ export interface ActionButtonState {
     custom?: boolean;
     /**
      * Set when `label` is still an unresolved i18n placeholder (the app i18n bundle had no matching key).
-     * The writer emits a `// TODO: resolve i18n label` comment so the developer can fix the assertion.
+     * The writer emits a follow-up marker comment so the developer can fix the assertion.
      */
     labelUnresolved?: boolean;
 }

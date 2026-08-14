@@ -1,7 +1,7 @@
 /**
  * Resolves an action/menu label that may be an i18n placeholder (`{i18n>key}` or `{{key}}`) to its
  * translated text. `unresolved` is true when a placeholder had no matching key in the app i18n bundle,
- * so the writer can emit a `// TODO` comment for the developer.
+ * so the writer can emit a follow-up marker comment for the developer.
  */
 export type I18nLabelResolver = (label: string | undefined) => { label: string; unresolved: boolean };
 
