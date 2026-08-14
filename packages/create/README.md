@@ -34,7 +34,7 @@ Command group for generating SAP Fiori applications. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
-The available subcommands are: `adaptation-project`
+The available subcommands are: `adaptation-project` and `opa-tests`
 
 
 --------------------------------
@@ -59,6 +59,21 @@ Options:
 - `--ts` - Enable TypeScript support for the generated project.
 - `--package [package]` - The ABAP package to be used for deployments.
 - `--transport [transport]` - The ABAP transport to be used for deployments.
+
+--------------------------------
+
+## [`generate opa-tests`](#generate-opa-tests)
+
+Generate OPA5 integration tests for an existing SAP Fiori elements (OData V4) application.
+
+Example:
+
+`npx --yes @sap-ux/create@latest generate opa-tests`
+
+Options:
+- `-t, --typescript` - Force generation of TypeScript test files. Otherwise, TypeScript is auto-detected from the presence of a `tsconfig.json`.
+- `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
