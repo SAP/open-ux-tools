@@ -118,7 +118,7 @@ export async function getAppFeatures(
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
-    let resolveLabel: I18nLabelResolver = passthroughLabelResolver;
+    let resolveLabel: I18nLabelResolver;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
