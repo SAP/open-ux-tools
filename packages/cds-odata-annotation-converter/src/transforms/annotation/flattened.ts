@@ -133,52 +133,15 @@ function createNewContext(expandedStructures: ExpandedStructure[]): Context {
 }
 
 /**
- * Handle an embedded annotation segment (starts with '@') and push the resulting entry to expandedStructure.
+ * Internal converter
  *
- * @param state - visitor state
- * @param segments - all segments
- * @param i - current segment index (must be the '@'-segment)
- * @param propertyRange - range for the property
- * @param expandedStructure - output array to push to
- * @returns number of extra segments consumed (1 if a name segment follows, 0 otherwise)
+ * @param state VisitorSate for which context will be updated with the inferred value types.
+ * @param segments Array with flattened expression segments
+ * @param i Segment index
+ * @param value AnnotationValue
+ * @param expandedStructure Array with expanded structure elements
+ * @returns a flag that indicates whether to continue segment conversion loop
  */
-// function handleEmbeddedAnnotationSegment(
-//     state: VisitorState,
-//     segments: FlattenedPathSegment[],
-//     i: number,
-//     propertyRange: Range | undefined,
-//     expandedStructure: ExpandedStructure[]
-// ): number {
-//     const segment = segments[i];
-//     const vocabularyNameOrAlias = segment.value.substring(1);
-//     const termNameSegment = segments[i + 1];
-
-//     const termQualifiedName = termNameSegment
-//         ? `${vocabularyNameOrAlias}.${termNameSegment.value}`
-//         : vocabularyNameOrAlias;
-//     const termValueRange = termNameSegment
-//         ? createRange(segment.range?.start, termNameSegment.range?.end)
-//         : structuredClone(segment.range);
-
-//     const embeddedAnnotation = createElementNode({
-//         name: Edm.Annotation,
-//         range: propertyRange,
-//         attributes: {
-//             [Edm.Term]: createTermAttribute(termQualifiedName, termValueRange)
-//         },
-//         content: []
-//     });
-
-//     expandedStructure.push({
-//         kind: 'annotation',
-//         name: termQualifiedName,
-//         vocabularyObject: getTerm(state.vocabularyService, vocabularyNameOrAlias, termNameSegment?.value),
-//         element: embeddedAnnotation
-//     });
-
-//     return termNameSegment ? 1 : 0;
-// }
-
 function convertAnnotationSegment(
     state: VisitorState,
     segments: FlattenedPathSegment[],
