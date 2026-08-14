@@ -15,6 +15,8 @@ For rules with nested AST walks, also read `src/rules/sap-no-single-facet-in-col
 
 ## Pre-flight checklist (read before writing `check()`):
 
+- ✅ **Only check page-referenced annotations** — never scan all annotations for a term across the entire service. Annotations that exist in annotation files but are not referenced from any application page must produce **no diagnostic**. This applies to all annotation types.
+- ✅ **`pageNames` = only pages that reference the specific annotation** — if the same `IndexedAnnotation` is referenced from multiple pages, merge them; never list every page in the app
 - ✅ **Go through application pages first** — use `linkedModel.apps` to iterate over apps, then `app.pages`
 - ✅ Use `index.apps[appKey]` (not `linkedModel.apps`) to get the `parsedApp` for `getIndexedServiceForMainService` — `linkedModel.apps` provides page structure but not the parsed service
 - ✅ **Object pages vs list-report pages have different table structures:**
@@ -32,10 +34,75 @@ For rules with nested AST walks, also read `src/rules/sap-no-single-facet-in-col
 |---|---|---|
 | Terms surfaced in the linked model (e.g. `UI.LineItem`, `UI.FieldGroup`) | `page.lookup['table']`, `page.lookup['field-group']`, etc. — the linker pre-resolved these | `sap-no-data-field-intent-based-navigation.ts` |
 | Terms **not** surfaced in the linked model (e.g. `UI.Facets`, `UI.HeaderFacets`) | `page.entity?.structuredType` → `buildAnnotationIndexKey(entityType, MY_TERM)` → look up in `parsedService.index.annotations` | `sap-no-single-facet-in-collection.ts` |
+| Secondary annotation types linked **from** page nodes (e.g. `UI.Chart` reachable via `DataFieldForAnnotation` in `UI.LineItem` or `ReferenceFacet` in `UI.Facets`) | Build `Map<IndexedAnnotation, string[]>` from `page.lookup['chart']` (or the relevant key); check only map entries — annotations absent from the map are not page-referenced and must not produce a diagnostic | `sap-micro-chart-requires-navigation-entity.ts` |
 
 **When to use `page.lookup`:** The linker only resolves annotations that map to a known control (tables, field groups, header sections). If your term has a lookup key, use it — the annotation reference is available via `item.annotation.annotation`. Note: for `'table'`, list-report pages expose tables via `page.lookup['table']` but object pages expose them via `page.sections` (see template above).
 
 **When to use `buildAnnotationIndexKey`:** For terms like `UI.Facets` that the linker processes internally (to derive tables/sections) but does not expose in `page.lookup`. Derive the entity type from `page.entity?.structuredType` and look up directly from the service index.
+
+**When to use the page-annotation-map pattern:** For annotation types that are reachable only indirectly — e.g. `UI.Chart` referenced via a `DataFieldForAnnotation` column in a `UI.LineItem`, or via a `ReferenceFacet` in `UI.Facets`. The linker populates a secondary lookup key (e.g. `lookup['chart']`) while processing tables/sections. Build a `Map<IndexedAnnotation, string[]>` from that key and check only those annotations.
+
+## Rule template — page-annotation-map (secondary lookup key):
+
+Use this when your annotation type is a secondary node linked from tables or sections — for example `UI.Chart`. The linker populates `page.lookup['chart']` while processing page-facing annotations; the rule reads that map and checks only annotations present in it.
+
+```typescript
+import type { IndexedAnnotation } from '../project-context/parser/index.js';
+import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
+
+/**
+ * Builds a map from each IndexedAnnotation to the page target-names that reference it,
+ * reading from the secondary lookup key the linker populates (e.g. 'chart').
+ */
+function buildAnnotationPageMap(
+    sourceCode: FioriAnnotationSourceCode,
+    lookupKey: string
+): Map<IndexedAnnotation, string[]> {
+    const map = new Map<IndexedAnnotation, string[]>();
+    for (const appKey of Object.keys(sourceCode.projectContext.linkedModel.apps)) {
+        const linkedApp = sourceCode.projectContext.linkedModel.apps[appKey];
+        for (const page of linkedApp.pages) {
+            const items = (
+                page as { lookup?: Record<string, { annotation?: { annotation?: IndexedAnnotation } }[]> }
+            ).lookup?.[lookupKey];
+            if (!items) {
+                continue;
+            }
+            for (const item of items) {
+                const indexedAnnotation = item.annotation?.annotation;
+                if (!indexedAnnotation) {
+                    continue;
+                }
+                const names = map.get(indexedAnnotation) ?? [];
+                if (!names.includes(page.targetName)) {
+                    names.push(page.targetName);
+                }
+                map.set(indexedAnnotation, names);
+            }
+        }
+    }
+    return map;
+}
+
+// In check():
+check(context) {
+    if (!(context.sourceCode instanceof FioriAnnotationSourceCode)) {
+        return [];
+    }
+    const problems: MyRuleDiagnostic[] = [];
+    const annotationPageMap = buildAnnotationPageMap(context.sourceCode, 'chart'); // or your key
+    for (const [annotation, pageNames] of annotationPageMap) {
+        checkAnnotation(annotation, pageNames, problems);
+    }
+    return problems;
+}
+```
+
+> **Important:** The linker populates `lookup['chart']` by collecting charts that are referenced from page-facing annotations (table columns via `DataFieldForAnnotation`, sections via `ReferenceFacet`). Charts that exist in annotation files but are not referenced from any page will NOT appear in `lookup['chart']` and will therefore never be checked. This is the correct behaviour — **do not add a fallback that scans all entity annotations**.
+
+> **Test fixture requirement:** For this pattern to trigger in tests, the test snippet must include a reference from a page annotation to the chart/annotation under test. Add a `UI.Facets` `ReferenceFacet` or a `UI.LineItem` `DataFieldForAnnotation` pointing to the annotation. Without this reference, the annotation will not appear in `lookup['chart']` and the rule will produce 0 errors even for invalid Measures.
+
+
 
 ## Required diagnostic fields:
 
@@ -376,6 +443,7 @@ import {
 
 ## Debug checklist (if tests show 0 errors when violations expected):
 
+- **Using the page-annotation-map pattern?** The annotation must be referenced from a page-facing annotation or the lookup key will be empty. Add a `UI.Facets` `ReferenceFacet` or `UI.LineItem` `DataFieldForAnnotation` pointing to the annotation under test. Without this reference, the linker never populates `lookup['chart']` (or equivalent) and `buildAnnotationPageMap` returns an empty map — the rule produces 0 errors even for invalid content.
 - **CDS rule fires for XML but not CDS (or vice versa)?** XML stores annotation values as attributes; CDS stores them as child elements containing a text node. Use `getAttrOrChildText(el, valueName)` (see "CDS vs XML: reading annotation values" above) instead of bare `getElementAttributeValue(el, Edm.Path)` / `getElementAttributeValue(el, Edm.String)` calls.
 - Is `linkedModel.apps` used for page iteration (not `index.apps` directly)?
 - Is `index.apps[appKey]` used to fetch `parsedApp` for `getIndexedServiceForMainService`?

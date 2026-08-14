@@ -155,7 +155,7 @@ FEAT: add sap-my-new-rule rule for [short description]
 
 | Rule type | Use in `check()` | Why |
 |---|---|---|
-| **Annotation** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `getIndexedServiceForMainService` | `linkedModel.apps` provides page/lookup structure; `index.apps` provides the parsed service |
+| **Annotation** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `getIndexedServiceForMainService` | Only check annotations **referenced from pages** — never scan all entity annotations. `pageNames` must list only pages that reference the specific annotation. See `annotation.md` for access patterns and the page-annotation-map template. |
 | **Manifest JSON** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `parsedApp` (manifest URI, manifestObject) | Requires linked pages to find manifest config paths |
 | **Flex change** | `context.sourceCode.projectContext.linkedModel.apps` | Guard on `FioriChangeSourceCode` first; linked model provides change file config via `page.lookup['table']` |
 | **JavaScript / TypeScript** | Standard ESLint `context` — no `projectContext` | JS/TS rules don't use the Fiori project model; use `Rule.RuleModule`, not `createFioriRule` |
