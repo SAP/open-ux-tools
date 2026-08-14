@@ -124,7 +124,11 @@ class Visitor {
             const annotationIndex = findNodeIndexByRange(astNode.items.items, node.range);
             const annotation = astNode.items.items[annotationIndex];
             this.inVocabularyGroup = true;
-            const result = this.annotation(annotation as Annotation, node, pointer);
+
+            const result =
+                annotation.type === FLATTENED_EXPRESSION_TYPE
+                    ? this.flattenedExpression(annotation, node, pointer)
+                    : this.annotation(annotation, node, pointer);
             if (result) {
                 result.pointer = ['items', 'items', annotationIndex.toString(), ...result.pointer];
                 return result;
@@ -512,6 +516,14 @@ class Visitor {
                 result.flattenedExpressionPathIndex = this.currentFlattenedSegmentIndexInPath;
                 return result;
             }
+        } else if (segment === 'attributes' && indexSegment === 'Property' && segments[0] === 'value') {
+            return {
+                pointer: [
+                    'path',
+                    'segments',
+                    (astNode.path.segments.length - 1 - this.flattenedSegments.length).toFixed(0)
+                ]
+            };
         }
         return undefined;
     }

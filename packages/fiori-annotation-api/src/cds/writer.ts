@@ -574,7 +574,7 @@ export class CDSWriter implements ChangeHandler {
 
     [DELETE_EMBEDDED_ANNOTATION_CHANGE_TYPE] = (change: DeleteEmbeddedAnnotation, reversePath: AstNode[]): void => {
         const [astNode, parent] = reversePath;
-        if (astNode?.type === ANNOTATION_TYPE) {
+        if (astNode?.type === ANNOTATION_TYPE || astNode?.type === FLATTENED_EXPRESSION_TYPE) {
             if (parent.type === RECORD_TYPE) {
                 // Transform $value back to normal primitive value representation if last embedded annotation is being deleted
                 const firstProperty = parent.properties[0];

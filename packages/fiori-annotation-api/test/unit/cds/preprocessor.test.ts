@@ -347,7 +347,7 @@ describe('cds preprocessor', () => {
                     [
                         createDeleteAnnotationChange('/targets/0/assignments/0'),
                         createDeleteRecordPropertyChange('/targets/0/assignments/1/value/properties/0'),
-                        createDeleteRecordPropertyChange('/targets/0/assignments/2/value/properties/0')
+                        createDeleteRecordPropertyChange('/targets/0/assignments/2/value/flattenedExpressions/0')
                     ],
                     [createDeleteTargetChange('/targets/0')]
                 );
