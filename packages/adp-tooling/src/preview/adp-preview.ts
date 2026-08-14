@@ -20,6 +20,7 @@ import OvpRoutesHandler from './ovp-routes-handler.js';
 import type {
     AdpPreviewConfig,
     AdpPreviewConfigWithTarget,
+    AdpPreviewConfigWithBuildPath,
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
@@ -38,7 +39,7 @@ import {
     isV4DescriptorChange
 } from './change-handler.js';
 import { addCustomFragment } from './descriptor-change-handler.js';
-import { getExistingAdpProjectType } from '../base/helper.js';
+import { getExistingAdpProjectType, readManifestFromBuildPath } from '../base/helper.js';
 import { getPreviewManifest } from '../base/project-builder.js';
 import path from 'node:path';
 declare global {
@@ -205,7 +206,8 @@ export class AdpPreview {
         this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
 
-        const manifest = await getPreviewManifest(this.util.getProject().getRootPath(), this.project);
+        const config = this.config as AdpPreviewConfigWithBuildPath;
+        const manifest = readManifestFromBuildPath(config.cfBuildPath) as MergedAppDescriptor['manifest'];
         this.mergedDescriptor = {
             name: descriptorVariant.id,
             url: '/',

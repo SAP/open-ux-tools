@@ -24,6 +24,7 @@ const mockGetExistingAdpProjectType = jest.fn<typeof realHelper.getExistingAdpPr
 const mockGetVariant = jest.fn<typeof realHelper.getVariant>();
 const mockGetAdpConfig = jest.fn<typeof realHelper.getAdpConfig>();
 const mockIsTypescriptSupported = jest.fn<typeof realHelper.isTypescriptSupported>();
+const mockReadManifestFromBuildPath = jest.fn<typeof realHelper.readManifestFromBuildPath>();
 
 // Named mocks for project-builder
 const mockGetPreviewManifest = jest.fn<typeof realProjectBuilder.getPreviewManifest>();
@@ -126,7 +127,8 @@ jest.unstable_mockModule('../../../src/base/helper', () => ({
     getExistingAdpProjectType: mockGetExistingAdpProjectType,
     getVariant: mockGetVariant,
     getAdpConfig: mockGetAdpConfig,
-    isTypescriptSupported: mockIsTypescriptSupported
+    isTypescriptSupported: mockIsTypescriptSupported,
+    readManifestFromBuildPath: mockReadManifestFromBuildPath
 }));
 
 jest.unstable_mockModule('../../../src/base/project-builder', () => ({
@@ -331,7 +333,7 @@ describe('AdaptationProject', () => {
 
         test('should initialize with cfBuildPath mode', async () => {
             const mockCfManifest = { 'sap.app': { id: 'cf.test.app' } };
-            mockGetPreviewManifest.mockResolvedValue(mockCfManifest as any);
+            mockReadManifestFromBuildPath.mockReturnValue(mockCfManifest as any);
 
             const adp = new AdpPreview(
                 {
@@ -409,7 +411,7 @@ describe('AdaptationProject', () => {
 
         test('should return early when cfBuildPath is set and no sync required', async () => {
             const mockCfManifest = { 'sap.app': { id: 'cf.test.app' } };
-            mockGetPreviewManifest.mockResolvedValue(mockCfManifest as any);
+            mockReadManifestFromBuildPath.mockReturnValue(mockCfManifest as any);
 
             const testBackend = 'https://test-backend.example';
             const adp = new AdpPreview(
@@ -436,9 +438,8 @@ describe('AdaptationProject', () => {
         test('should re-fetch preview manifest when sync required in cfBuildPath mode', async () => {
             const initialManifest = { 'sap.app': { id: 'cf.test.app' } };
             const updatedManifest = { 'sap.app': { id: 'cf.test.app.updated' } };
-            mockGetPreviewManifest
-                .mockResolvedValueOnce(initialManifest as any)
-                .mockResolvedValueOnce(updatedManifest as any);
+            mockReadManifestFromBuildPath.mockReturnValue(initialManifest as any);
+            mockGetPreviewManifest.mockResolvedValueOnce(updatedManifest as any);
 
             const testBackend = '/test-backend';
             const adp = new AdpPreview(
@@ -728,7 +729,7 @@ describe('AdaptationProject', () => {
 
         beforeAll(async () => {
             const mockCfManifest = { 'sap.app': { id: 'cf.proxy.test' } };
-            mockGetPreviewManifest.mockResolvedValue(mockCfManifest as any);
+            mockReadManifestFromBuildPath.mockReturnValue(mockCfManifest as any);
 
             const adp = new AdpPreview(
                 {
@@ -1256,7 +1257,7 @@ describe('AdaptationProject', () => {
     describe('addApis - cfBuildPath mode', () => {
         let cfBuildPathServer: supertest.Agent;
         beforeAll(async () => {
-            mockGetPreviewManifest.mockResolvedValue({
+            mockReadManifestFromBuildPath.mockReturnValue({
                 'sap.app': { id: 'cf.api.test' }
             } as any);
 
