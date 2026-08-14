@@ -29,13 +29,21 @@ import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const UI5_VERSION_1_150 = '1.150.0';
+const V4_TEMPLATE_LATEST = 'latest';
 const V4_TEMPLATE_1_84 = '1.84';
-const V4_TEMPLATE_1_150 = '1.150';
+const V4_TEMPLATE_BUCKETS = [
+    { minVersion: '1.149.0', template: V4_TEMPLATE_LATEST },
+    { minVersion: '1.148.0', template: '1.148' }
+];
 
 function getTemplateUi5Version(ui5Version?: string): string {
-    if (!ui5Version || compareUI5VersionGte(ui5Version, UI5_VERSION_1_150)) {
-        return V4_TEMPLATE_1_150;
+    if (!ui5Version) {
+        return V4_TEMPLATE_LATEST;
+    }
+    for (const bucket of V4_TEMPLATE_BUCKETS) {
+        if (compareUI5VersionGte(ui5Version, bucket.minVersion)) {
+            return bucket.template;
+        }
     }
     return V4_TEMPLATE_1_84;
 }

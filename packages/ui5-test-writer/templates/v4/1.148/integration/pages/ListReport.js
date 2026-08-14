@@ -15,7 +15,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
     const CustomPageDefinitions = {
@@ -23,11 +23,12 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
         assertions: {}
     };
 
-    return new ObjectPage(
+    return new ListReport(
         {
-            appId: 'testnamepsace.lropv4noui5version',
-            componentId: 'TravelObjectPage',
-            contextPath: '/Travel'
+            appId: '<%- appID %>',
+            componentId: '<%- componentID %>',<% if (locals.contextPath) { %>
+            contextPath: '<%- contextPath %>'<% } else if (locals.entitySet) { %>
+            entitySet: '<%- entitySet %>'<% } %>
         },
         CustomPageDefinitions
     );
