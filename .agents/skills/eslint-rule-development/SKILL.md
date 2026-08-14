@@ -93,6 +93,21 @@ Use the test template from the reference file. Run only the new test file during
 NODE_OPTIONS="--experimental-vm-modules" npx jest --testPathPatterns="sap-my-new-rule" --no-coverage
 ```
 
+**Always check `message`, never `messageId`, in `errors` arrays.** When a rule message contains interpolated data (e.g. `{{tableType}}`), checking only `messageId` would accept any value for that placeholder and miss regressions. Use the fully resolved string instead:
+
+```typescript
+// ✅ Correct — verifies the interpolated value
+errors: [
+    {
+        message:
+            '"TreeTable" is not supported in Flexible Column Layout with a draft-enabled service.'
+    }
+]
+
+// ❌ Wrong — does not verify the data interpolated into the message
+errors: [{ messageId: 'sap-my-new-rule' }]
+```
+
 If tests show 0 errors when violations are expected, check the debug checklist at the bottom of the reference file.
 
 ### Step 6 — Write documentation
