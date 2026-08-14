@@ -104,7 +104,12 @@ ruleTester.run(`${TEST_NAME} - CDS`, noPathHiddenOnInteractiveColumnsRule, {
                 name: 'dynamic UI.Hidden on interactive column (no capabilities)',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CDS_DYNAMIC_HIDDEN_VIOLATION,
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                    }
+                ]
             },
             []
         )

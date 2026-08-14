@@ -209,7 +209,12 @@ ruleTester.run(TEST_NAME, noPathHiddenOnInteractiveColumnsRule, {
                 name: 'V4: dynamic UI.Hidden on interactive column (no capabilities)',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_LINE_ITEM_DYNAMIC_HIDDEN_VIOLATION),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                    }
+                ]
             },
             []
         ),
@@ -221,7 +226,12 @@ ruleTester.run(TEST_NAME, noPathHiddenOnInteractiveColumnsRule, {
                     V4_ANNOTATIONS_WITH_CAPS,
                     V4_LINE_ITEM_DYNAMIC_HIDDEN_SORT_ONLY_RESTRICTED
                 ),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                    }
+                ]
             },
             []
         ),
@@ -230,7 +240,12 @@ ruleTester.run(TEST_NAME, noPathHiddenOnInteractiveColumnsRule, {
                 name: 'V4: qualified UI.LineItem with dynamic UI.Hidden on interactive column',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_LINE_ITEM_QUALIFIED_DYNAMIC_HIDDEN),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                    }
+                ]
             },
             []
         ),
@@ -239,7 +254,12 @@ ruleTester.run(TEST_NAME, noPathHiddenOnInteractiveColumnsRule, {
                 name: 'V2: dynamic UI.Hidden on interactive column (no capabilities)',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_LINE_ITEM_DYNAMIC_HIDDEN_VIOLATION),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                    }
+                ]
             },
             []
         )
