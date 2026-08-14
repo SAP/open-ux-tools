@@ -29,4 +29,18 @@ describe('i18n label resolver', () => {
         const resolve = buildI18nLabelResolver({ models: {} });
         expect(resolve('Literal Label')).toEqual({ label: 'Literal Label', unresolved: false });
     });
+
+    test('model bundle wins over sap.app on key collision', () => {
+        const resolve = buildI18nLabelResolver({
+            'sap.app': { shared: [{ value: { value: 'From sap.app' } }] },
+            models: { i18n: { shared: [{ value: { value: 'From model' } }] } }
+        });
+        expect(resolve('{i18n>shared}')).toEqual({ label: 'From model', unresolved: false });
+    });
+
+    test('trims surrounding whitespace in the returned label', () => {
+        const resolve = buildI18nLabelResolver({ models: {} });
+        expect(resolve('  Padded  ')).toEqual({ label: 'Padded', unresolved: false });
+        expect(resolve('  {i18n>missing}  ')).toEqual({ label: '{i18n>missing}', unresolved: true });
+    });
 });

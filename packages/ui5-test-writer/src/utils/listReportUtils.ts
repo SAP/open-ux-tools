@@ -139,7 +139,7 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to detect ALP configuration
- * @param resolveLabel
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
@@ -171,6 +171,8 @@ export function getListReportFeatures(
     }
 
     // Custom (manifest-declared) toolbar actions have no OData counterpart and are matched by label.
+    // extractCustomToolBarActions filters strictly on actionType === 'Custom', so annotation-backed
+    // actions (already captured via safeCheckActionButtonStates) are never duplicated here.
     toolBarActions = toolBarActions.concat(extractCustomToolBarActions(listReportPage.model, resolveLabel));
 
     // Custom filter fields are matched by rendered label, so resolve unresolved i18n

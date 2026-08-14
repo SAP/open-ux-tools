@@ -265,7 +265,7 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
  * @param schemaNamespace - optional OData schema namespace used as service identifier in action assertions
  * @param metadata - optional raw metadata XML for resolving standard button visibility (Create/Delete)
  * @param log - optional logger instance
- * @param resolveLabel
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns body sections data including sub-sections
  */
 function extractObjectPageBodySectionsData(
@@ -344,7 +344,7 @@ function isMenuActionItem(item: AggregationItem): boolean {
  * @param menuItem - the menu container aggregation entry
  * @param convertedMetadata - converted OData metadata for resolving annotation actions
  * @param schemaNamespace - OData schema namespace used as service identifier
- * @param resolveLabel
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns array of menu item states
  */
 function buildMenuItemStates(
@@ -472,7 +472,7 @@ function buildActionOrMenuState(
  * @param objectPage - object page from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
- * @param resolveLabel
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns array of action button states for the header toolbar
  */
 function extractHeaderActions(
@@ -499,7 +499,7 @@ function extractHeaderActions(
  * @param section - body section entry from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
- * @param resolveLabel
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns array of action button states for the section toolbar
  */
 function extractSectionActions(
