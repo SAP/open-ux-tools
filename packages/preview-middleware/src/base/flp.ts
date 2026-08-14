@@ -84,6 +84,8 @@ import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
+/** UI5 minor version from which the ushell uses LocalStorageContainer for ADP personalization instead of the ABAP backend. */
+const UI5_ADP_LOCAL_PERSO_MIN_MINOR = 148;
 
 /**
  * Convert an application id to its namespace by replacing dots with slashes.
@@ -319,6 +321,17 @@ export class FlpSandbox {
     }
 
     /**
+     * Returns true if the ADP personalization fix is required for the given UI5 version.
+     * On UI5 < 1.148, the ushell routes UI2 personalization writes to the ABAP backend instead of local storage.
+     *
+     * @param ui5Version - the resolved UI5 version
+     * @returns true if appVariantStorage should be disabled
+     */
+    private needsAppVariantStorageDisabled(ui5Version: Ui5Version): boolean {
+        return this.adp !== undefined && ui5Version.major === 1 && ui5Version.minor < UI5_ADP_LOCAL_PERSO_MIN_MINOR;
+    }
+
+    /**
      * Generates the FLP sandbox for an editor.
      *
      * @param req the request
@@ -344,6 +357,7 @@ export class FlpSandbox {
         const config = structuredClone(this.templateConfig);
         config.ui5.versionMajor = ui5Version.major;
         this.checkDeleteConnectors(config, ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+        config.disableAppVariantStorage = this.needsAppVariantStorageDisabled(ui5Version);
         if (!config.ui5.libs.includes('sap.ui.rta')) {
             // sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects
             config.ui5.libs += ',sap.ui.rta';
@@ -532,6 +546,7 @@ export class FlpSandbox {
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
             }
+            this.templateConfig.disableAppVariantStorage = this.needsAppVariantStorageDisabled(ui5Version);
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(await this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
