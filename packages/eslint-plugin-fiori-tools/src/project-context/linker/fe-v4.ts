@@ -2,8 +2,15 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser/index.js';
 import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types.js';
 import { getParsedServiceByName } from '../utils.js';
-import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations.js';
-import { collectTables, collectSections, collectHeaderSections } from './annotations.js';
+import type {
+    AnnotationNode,
+    ChartNode,
+    FieldGroupNode,
+    HeaderSectionNode,
+    TableNode,
+    TableSectionNode
+} from './annotations.js';
+import { collectPageCharts, collectTables, collectSections, collectHeaderSections } from './annotations.js';
 
 export interface ApplicationSetting {
     createMode: string;
@@ -26,7 +33,7 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page', Pa
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup | Chart>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -35,7 +42,7 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     contextPath: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section | FieldGroup>;
+    lookup: NodeLookup<Table | Section | FieldGroup | Chart>;
     header: {
         anchorBarVisible: ConfigurationProperty<boolean>;
         visible: ConfigurationProperty<boolean>;
@@ -73,6 +80,7 @@ export interface TableSettings {
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
 export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
+export type Chart = AnnotationBasedNode<ChartNode, {}>;
 
 interface ManifestApplicationSettings {
     macros?: {
@@ -224,7 +232,7 @@ function getCreationModeValues(tableType?: string): string[] {
     return ['InlineCreationRows', 'NewPage'];
 }
 
-export type Node = Section | Table | OrphanTable | FieldGroup;
+export type Node = Section | Table | OrphanTable | FieldGroup | Chart;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
@@ -291,35 +299,61 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
         const path = ['sap.ui5', 'routing', 'targets'];
         if (target.name === 'sap.fe.templates.ListReport') {
             linkListReport(context, linkedApp, path, name, contextPath, entity, target);
-        } else if (target.name === 'sap.fe.templates.ObjectPage' && entity.structuredType) {
-            const sections = collectSections('v4', entity.structuredType, mainService);
-
-            const page: FeV4ObjectPage = {
-                type: 'object-page',
-                targetName: name,
-                componentName: target.name,
-                contextPath,
-                entity: entity,
-                configuration: {},
-                sections: [],
-                lookup: {},
-                header: {
-                    anchorBarVisible: {
-                        values: [true, false],
-                        configurationPath: []
-                    },
-                    visible: {
-                        values: [true, false],
-                        configurationPath: []
-                    }
-                }
-            };
-            linkV4ObjectPageSections(page, path, name, sections, target);
-            linkObjectPageHeader(page, target);
-            linkedApp.pages.push(page);
+        } else if (target.name === 'sap.fe.templates.ObjectPage') {
+            linkObjectPage(linkedApp, path, name, contextPath, entity, target, mainService);
         }
     }
     return linkedApp;
+}
+
+/**
+ * Links a Fiori Elements V4 object page, collecting sections and charts.
+ *
+ * @param linkedApp - The linked app structure to push the page into
+ * @param path - Configuration path segments to the page
+ * @param name - The routing target name
+ * @param contextPath - The entity context path
+ * @param entity - The entity metadata element
+ * @param target - The routing target configuration
+ * @param mainService - The parsed OData service
+ */
+function linkObjectPage(
+    linkedApp: LinkedFeV4App,
+    path: string[],
+    name: string,
+    contextPath: string,
+    entity: MetadataElement,
+    target: Target,
+    mainService: ParsedService
+): void {
+    if (!entity.structuredType) {
+        return;
+    }
+    const sections = collectSections('v4', entity.structuredType, mainService);
+    const page: FeV4ObjectPage = {
+        type: 'object-page',
+        targetName: name,
+        componentName: 'sap.fe.templates.ObjectPage',
+        contextPath,
+        entity: entity,
+        configuration: {},
+        sections: [],
+        lookup: {},
+        header: {
+            anchorBarVisible: {
+                values: [true, false],
+                configurationPath: []
+            },
+            visible: {
+                values: [true, false],
+                configurationPath: []
+            }
+        }
+    };
+    linkV4ObjectPageSections(page, path, name, sections, target);
+    linkObjectPageHeader(page, target);
+    collectPageCharts(page, mainService);
+    linkedApp.pages.push(page);
 }
 
 interface Target {
@@ -414,6 +448,7 @@ function linkListReport(
         lookup: {}
     };
     linkListReportTable(page, [...path, name], tables, target);
+    collectPageCharts(page, mainService);
     linkedApp.pages.push(page);
 }
 
