@@ -61,6 +61,11 @@ export interface MyRuleDiagnostic {
 
 Use the template from the reference file for your rule type.
 
+**Code quality requirements for every new or modified function:**
+
+- **JSDoc** — add a JSDoc block (`@param`, `@returns`) to every new function. When modifying an existing function, update its JSDoc to reflect any signature or behaviour changes.
+- **Cognitive complexity ≤ 15** — enforced by `sonarjs/cognitive-complexity`. If a function exceeds 15, extract branches or loops into well-named helper functions until the complexity falls within the limit. Do not inline complex logic in a single function to avoid this.
+
 ### Step 4 — Register the rule
 
 **`src/rules/index.ts`** — add import + entry (alphabetical order):
@@ -116,9 +121,23 @@ In `packages/eslint-plugin-fiori-tools/README.md`, do **two things**:
 
 ### Step 8 — Run full quality gates (once)
 
+Run `lint:fix` to auto-fix ESLint errors and apply Prettier formatting across all modified files, then verify no issues remain:
+
 ```bash
+# Fix lint errors and apply Prettier formatting
 pnpm --filter @sap-ux/eslint-plugin-fiori-tools lint:fix
+
+# Verify no remaining issues
+pnpm --filter @sap-ux/eslint-plugin-fiori-tools lint
 ```
+
+If `lint` reports errors after `lint:fix`:
+
+- **`sonarjs/cognitive-complexity`** — the function exceeds complexity 15. Extract branches or loops into named helpers and re-run until the error is gone.
+- **`prettier/prettier`** — a formatting issue could not be auto-fixed. Apply the suggested change manually (usually a line that is too long or a multiline expression that needs restructuring).
+- **`@typescript-eslint/no-unsafe-*`** — replace `any` casts or untyped values with proper interfaces or `unknown` + type guards.
+
+Do not proceed to Step 9 until `pnpm lint` exits with code 0.
 
 ### Step 9 — Create changeset
 
