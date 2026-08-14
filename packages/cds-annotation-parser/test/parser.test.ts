@@ -62,11 +62,11 @@ describe('cds annotation parser', () => {
             continue;
         }
 
-        // // Sonar is compaining about test.only(). Use this code for debugging purposes only
+        // // Sonar is complaining about test.only(). Use this code for debugging purposes only
         if (only.includes(t)) {
-            test.only(`${t}`, async () => {
-                await testParser(t, t.startsWith('valid'));
-            });
+            // test.only(`${t}`, async () => {
+            //     await testParser(t, t.startsWith('valid'));
+            // });
             continue;
         }
 

@@ -179,6 +179,81 @@ function createNewContext(expandedStructures: ExpandedStructure[]): Context {
 //     return termNameSegment ? 1 : 0;
 // }
 
+function convertAnnotationSegment(
+    state: VisitorState,
+    segments: FlattenedPathSegment[],
+    i: number,
+    value: AnnotationValue | undefined,
+    expandedStructure: ExpandedStructure[]
+): boolean {
+    const valueRange = value?.range;
+    const lastSegment = valueRange ? undefined : segments.at(-1);
+    const initialType = state.context.recordType ?? state.context.termType;
+    const segment = segments[i];
+    const propertyRange = createRange(segment.range?.start, valueRange?.end ?? lastSegment?.range?.end);
+
+    if (segment.type === FLATTENED_ANNOTATION_SEGMENT_TYPE) {
+        // handle embedded annotation syntax (supported starting with cds-compiler v3)
+        // e.g. @Common.Text.@UI.TextArrangement : #TextFirst
+        const vocabulary = segment.vocabulary?.value ?? state.context.groupName;
+        if (i === 0 && segment.vocabulary?.value && state.context.groupName) {
+            // first segment specifies a vocabulary while inside an annotation group — warn once (embedded annotations at i > 0 are exempt)
+            addDiagnosticForGroupNameAndTermVocabulary(state, segment);
+        }
+        const termName = vocabulary ? `${vocabulary}.${segment.term.value}` : segment.term.value;
+        const termValueRange = createRange(segment.range?.start, segment.term.range?.end);
+        const embeddedAnnotation = createElementNode({
+            name: Edm.Annotation,
+            range: propertyRange,
+            attributes: {
+                [Edm.Term]: createTermAttribute(termName, termValueRange)
+            },
+            content: []
+        });
+
+        if (segment.qualifier) {
+            embeddedAnnotation.attributes[Edm.Qualifier] = createQualifierAttribute(
+                segment.qualifier.value,
+                segment.qualifier.range
+            );
+        }
+
+        expandedStructure.push({
+            kind: 'annotation',
+            name: termName,
+            vocabularyObject: getTerm(state.vocabularyService, vocabulary ?? '', segment.term.value),
+            element: embeddedAnnotation
+        });
+    } else if (segment.type === FLATTENED_PROPERTY_SEGMENT_TYPE) {
+        if (segment.name.value === ReservedProperties.Type) {
+            const hasSegmentAhead = segments[i + 1];
+            if (hasSegmentAhead) {
+                addDiagnosticForSegmentAfterType(state, segments.slice(i + 1), valueRange);
+                return false;
+            }
+            createRecordTypeAttribute(state, expandedStructure, segment, value, propertyRange);
+        } else {
+            const flatProperty: Element = createElementNode({
+                name: Edm.PropertyValue,
+                range: propertyRange,
+                contentRange: propertyRange,
+                attributes: {
+                    [Edm.Property]: createPropertyAttribute(segment.name.value, segment.range)
+                }
+            });
+
+            const parentType = expandedStructure.at(-1)?.vocabularyObject?.type ?? initialType;
+            expandedStructure.push({
+                kind: 'property',
+                name: segment.name.value,
+                vocabularyObject: getPropertyType(state.vocabularyService, parentType, segment.name.value),
+                element: flatProperty
+            });
+        }
+    }
+    return true;
+}
+
 /**
  * Converts segments to expanded structure.
  *
@@ -194,73 +269,11 @@ function convertToExpandedStructure(
 ): ExpandedStructure[] {
     const valueRange = value?.range;
     const expandedStructure: ExpandedStructure[] = [];
-    const initialType = state.context.recordType ?? state.context.termType;
     const segments = expression.path.segments;
-    const lastSegment = valueRange ? undefined : segments[segments.length - 1];
     let i = 0;
     while (i < segments.length) {
-        const segment = segments[i];
-        const propertyRange = createRange(segment.range?.start, valueRange?.end ?? lastSegment?.range?.end);
-
-        if (segment.type === FLATTENED_ANNOTATION_SEGMENT_TYPE) {
-            // handle embedded annotation syntax (supported starting with cds-compiler v3)
-            // e.g. @Common.Text.@UI.TextArrangement : #TextFirst
-            const vocabulary = segment.vocabulary?.value ?? state.context.groupName;
-            if (i === 0 && segment.vocabulary?.value && state.context.groupName) {
-                // first segment specifies a vocabulary while inside an annotation group — warn once (embedded annotations at i > 0 are exempt)
-                addDiagnosticForGroupNameAndTermVocabulary(state, segment);
-            }
-            const termName = vocabulary ? `${vocabulary}.${segment.term.value}` : segment.term.value;
-            const termValueRange = createRange(segment.range?.start, segment.term.range?.end);
-            const embeddedAnnotation = createElementNode({
-                name: Edm.Annotation,
-                range: propertyRange,
-                attributes: {
-                    [Edm.Term]: createTermAttribute(termName, termValueRange)
-                },
-                content: []
-            });
-
-            if (segment.qualifier) {
-                embeddedAnnotation.attributes[Edm.Qualifier] = createQualifierAttribute(
-                    segment.qualifier.value,
-                    segment.qualifier.range
-                );
-            }
-
-            expandedStructure.push({
-                kind: 'annotation',
-                name: termName,
-                vocabularyObject: getTerm(state.vocabularyService, vocabulary ?? '', segment.term.value),
-                element: embeddedAnnotation
-            });
-        } else if (segment.type === FLATTENED_PROPERTY_SEGMENT_TYPE) {
-            if (segment.name.value === ReservedProperties.Type) {
-                const hasSegmentAhead = segments[i + 1];
-                if (hasSegmentAhead) {
-                    addDiagnosticForSegmentAfterType(state, segments.slice(i + 1), valueRange);
-                    break;
-                }
-                createRecordTypeAttribute(state, expandedStructure, segment, value, propertyRange);
-            } else {
-                const flatProperty: Element = createElementNode({
-                    name: Edm.PropertyValue,
-                    range: propertyRange,
-                    contentRange: propertyRange,
-                    attributes: {
-                        [Edm.Property]: createPropertyAttribute(segment.name.value, segment.range)
-                    }
-                });
-
-                const parentType =
-                    expandedStructure[expandedStructure.length - 1]?.vocabularyObject?.type ?? initialType;
-                expandedStructure.push({
-                    kind: 'property',
-                    name: segment.name.value,
-                    vocabularyObject: getPropertyType(state.vocabularyService, parentType, segment.name.value),
-                    element: flatProperty
-                });
-            }
+        if (!convertAnnotationSegment(state, segments, i, value, expandedStructure)) {
+            break;
         }
         i++;
     }

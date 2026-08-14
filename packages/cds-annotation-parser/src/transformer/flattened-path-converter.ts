@@ -29,7 +29,7 @@ export class FlattenedPathConverter {
     private separators: Separator[];
     private path: Path;
     private index: number;
-    private supportedVocabularyAliases: Set<string>;
+    private readonly supportedVocabularyAliases: Set<string>;
     private firstSegmentIsAnnotation: boolean;
     private lastSegmentQualifier: Qualifier | undefined;
     /**
