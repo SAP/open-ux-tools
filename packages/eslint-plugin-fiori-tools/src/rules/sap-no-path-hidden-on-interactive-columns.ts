@@ -157,7 +157,7 @@ function processTableItem(
             (el) => el.name === Edm.PropertyValue && getElementAttributeValue(el, Edm.Property) === 'Value',
             record
         );
-        const valuePath = valuePV ? getElementAttributeValue(valuePV, Edm.Path) : '';
+        const valuePath = valuePV ? getPathValue(valuePV) : '';
         if (!valuePath) {
             continue;
         }
