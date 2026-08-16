@@ -40,6 +40,20 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
     const configFileName = `${appName}-generator-config.json`;
     const configPath = join(targetDir, configFileName);
 
+    if (existsSync(resolvedAppPath)) {
+        return {
+            status: 'Error',
+            message:
+                `The target app folder already exists: "${resolvedAppPath}". ` +
+                `The generator cannot run because it would delete and recreate this folder. ` +
+                `Either remove the folder manually, use a different project name, or choose a different targetFolder.`,
+            parameters: validated,
+            appPath: resolvedAppPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
     await checkIfGeneratorInstalled();
 
     const metadataPath = generatorConfig.service?.metadataFilePath ?? join(targetDir, 'metadata.xml');

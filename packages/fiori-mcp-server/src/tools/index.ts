@@ -104,6 +104,11 @@ export const tools = [
         name: 'generate_fiori_app_odata',
         description: `Creates (generates) a new SAP Fiori UI application either within an existing CAP project or standalone. ALWAYS read ALL of the following instructions carefully before calling this tool.
 
+        🚨 CRITICAL - TARGET FOLDER MUST NOT EXIST 🚨
+        The app subfolder <project.targetFolder>/<project.name> MUST NOT already exist before calling this tool.
+        If it exists the tool will STOP and return an error — it will NOT overwrite or merge.
+        Do NOT pre-create that subfolder. Only the parent targetFolder may exist.
+
         🚨 CRITICAL - READ SCHEMA FIRST 🚨
         Before calling this tool, you MUST:
         1. Examine the inputSchema below to understand the EXACT structure required
@@ -164,6 +169,12 @@ export const tools = [
     {
         name: 'generate_fiori_app_cap',
         description: `Creates (generates) a new SAP Fiori UI application within an existing CAP project.
+
+        🚨 CRITICAL - TARGET FOLDER MUST NOT EXIST 🚨
+        The app subfolder <project.targetFolder>/app/<project.name> MUST NOT already exist before calling this tool.
+        If it exists the tool will STOP and return an error — it will NOT overwrite or merge.
+        Do NOT pre-create that subfolder. Only the parent targetFolder may exist.
+
                     To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
                     As a fallback, only if no such tool is available, manually read and parse all .cds files in the projectPath.
                     The configuration **MUST** be a valid JSON object matching the tool's inputSchema and based on the project files.`,
