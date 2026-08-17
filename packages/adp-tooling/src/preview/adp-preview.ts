@@ -82,10 +82,6 @@ export class AdpPreview {
     private lrep: LayeredRepositoryService | undefined;
     private descriptorVariantId: string | undefined;
     private projectTypeValue?: AdaptationProjectType;
-    /**
-     * Flag to indicate if the preview is running in CF ADP build mode, where the manifest is read from the build output instead of being fetched from the backend.
-     */
-    private readonly isCfBuildMode: boolean;
 
     /**
      * @returns merged manifest.
@@ -160,9 +156,7 @@ export class AdpPreview {
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {
-        this.isCfBuildMode = 'cfBuildPath' in config;
-    }
+    ) {}
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -171,7 +165,7 @@ export class AdpPreview {
      * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        if (this.isCfBuildMode) {
+        if (this.isCloudFoundry) {
             return this.initCfBuildMode(descriptorVariant);
         }
 
@@ -226,7 +220,7 @@ export class AdpPreview {
         if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }
-        if (this.isCfBuildMode) {
+        if (this.isCloudFoundry) {
             this.mergedDescriptor.manifest = await getPreviewManifest(
                 this.util.getProject().getRootPath(),
                 this.project
@@ -249,6 +243,24 @@ export class AdpPreview {
     }
 
     /**
+     * Sync the merged descriptor and send its manifest.json as the response.
+     *
+     * Rewrites `ui5://<namespace>/` to absolute paths in the manifest so that
+     * FLP Sandbox 2.0's CDM does not map enhanceWith bundleUrls to the backend.
+     * Uses descriptorVariantId (from manifest.appdescr_variant) — the manifest's ui5:// URLs
+     * are built from the variant id, whereas mergedDescriptor.name is the base app reference.
+     *
+     * @param res outgoing response object
+     */
+    private async sendManifest(res: Response): Promise<void> {
+        await this.sync();
+        res.status(200);
+        const ui5Prefix = `ui5://${(this.descriptorVariantId ?? this.mergedDescriptor.name).replaceAll('.', '/')}/`;
+        const manifest = JSON.stringify(this.descriptor.manifest, undefined, 2).replaceAll(ui5Prefix, '/');
+        res.send(manifest);
+    }
+
+    /**
      * Proxy for the merged application manifest.json and blocking of preload files.
      *
      * @param req incoming request
@@ -257,15 +269,7 @@ export class AdpPreview {
      */
     async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
-            await this.sync();
-            res.status(200);
-            // Rewrite ui5://<namespace>/ to absolute paths in the manifest so that
-            // FLP Sandbox 2.0's CDM does not map enhanceWith bundleUrls to the backend.
-            // Use descriptorVariantId (from manifest.appdescr_variant) — the manifest's ui5:// URLs
-            // are built from the variant id, whereas mergedDescriptor.name is the base app reference.
-            const ui5Prefix = `ui5://${(this.descriptorVariantId ?? this.mergedDescriptor.name).replaceAll('.', '/')}/`;
-            const manifest = JSON.stringify(this.descriptor.manifest, undefined, 2).replaceAll(ui5Prefix, '/');
-            res.send(manifest);
+            await this.sendManifest(res);
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
         } else if (req.path.startsWith('/i18n/') && req.path.endsWith('.properties')) {
@@ -297,9 +301,7 @@ export class AdpPreview {
      */
     async cfProxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
-            await this.sync();
-            res.status(200);
-            res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
+            await this.sendManifest(res);
         } else {
             next();
         }

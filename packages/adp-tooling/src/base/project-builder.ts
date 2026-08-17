@@ -6,6 +6,8 @@ import { readUi5Config, extractCfBuildTask } from './helper.js';
 /**
  * Executes a build command in the specified project directory.
  *
+ * This function uses the `CommandRunner` to run the build process via the command `npm run build`.
+ *
  * @param {string} projectPath - The absolute path to the project directory where the build command will be executed.
  * @param {NodeJS.ProcessEnv} [env] - Optional environment variables to be used during the build process.
  * @returns {Promise<void>} Resolves when the build process has completed successfully.
@@ -57,6 +59,6 @@ export async function getPreviewManifest(
             configuration,
             projectNamespace
         }
-    } as any);
+    } as unknown as Parameters<typeof previewManifest>[0]);
     return manifest as MergedAppDescriptor['manifest'];
 }
