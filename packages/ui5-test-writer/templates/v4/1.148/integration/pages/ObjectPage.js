@@ -15,19 +15,27 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     const CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(`.*--fe::FacetSection::${section}-anchor$`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
     return new ObjectPage(
         {
-            appId: 'testnamepsace.lropv4noui5version',
-            componentId: 'TravelObjectPage',
-            contextPath: '/Travel'
+            appId: '<%- appID %>',
+            componentId: '<%- componentID %>',<% if (locals.contextPath) { %>
+            contextPath: '<%- contextPath %>'<% } else if (locals.entitySet) { %>
+            entitySet: '<%- entitySet %>'<% } %>
         },
         CustomPageDefinitions
     );

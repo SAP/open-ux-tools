@@ -15,20 +15,11 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
-    'use strict';
+export const actions = {};
 
-    const CustomPageDefinitions = {
-        actions: {},
-        assertions: {}
-    };
+export const assertions = {};
 
-    return new ObjectPage(
-        {
-            appId: 'testnamepsace.lropv4noui5version',
-            componentId: 'TravelObjectPage',
-            contextPath: '/Travel'
-        },
-        CustomPageDefinitions
-    );
-});
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
