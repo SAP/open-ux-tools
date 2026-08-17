@@ -135,7 +135,6 @@ export async function getAppFeatures(
             featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
         }
         if (objectPages) {
-            log?.warn('Extracting Object Page features from application model');
             featureData.objectPages = await getObjectPageFeatures(
                 objectPages,
                 listReportPage?.name,
@@ -143,7 +142,6 @@ export async function getAppFeatures(
                 projectMetadata,
                 manifest
             );
-            log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {
             featureData.fpm = getFPMFeatures(fpmPage, log);
@@ -211,7 +209,6 @@ export function getListReportPage(applicationModel: ApplicationModel): PageWithM
 export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        log?.warn('pageType:' + page.pageType);
         if (page.pageType === PageTypeV4.FPMCustomPage) {
             page.name = pageKey; // store page key as name for later identification
             return page;
