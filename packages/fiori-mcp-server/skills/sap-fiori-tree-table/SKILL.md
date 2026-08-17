@@ -19,8 +19,10 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 **STOP and ASK the user for ALL of these inputs if ANY are missing from the prompt:**
 
 ### For ABAP RAP Projects:
-1. **Package name** - Where to create hierarchy objects ($TMP for local, or specific package like Z_MAINT)
-2. **Entity name** - The entity to make hierarchical (e.g., "Equipment", "Category", "FunctionalLocation")
+1. **Package name** - Where to create or find backend hierarchy objects ($TMP for local, or specific package like Z_MAINT)
+2. **Transport Required**: Depends on package type (No for local packages like $TMP, Yes for transportable packages)
+3. **Entity name** - The entity to make hierarchical (e.g., "Equipment", "Category", "FunctionalLocation")
+4. ABAP system with RAP and OData V4 support
 
 ### For CAP Projects:
 1. **Entity name** - The entity to make hierarchical (e.g., "Travel", "Category", "ProductCategory")
@@ -116,6 +118,25 @@ npm run watch-<app-name>
 
 ## ABAP RAP Implementation (4 Steps)
 
+### 0. Decision: Read-Only vs. Editable Hierarchy
+
+**CRITICAL: Check user requirements for editing capabilities FIRST**
+
+**Indicators for EDITABLE hierarchy (use Editable Treeviews Guide):**
+- User mentions: "edit", "create", "delete", "draft", "inline creation", "move nodes", "reorder"
+- User wants: transactional operations, modify hierarchy structure, manage parent-child relationships
+- Example phrases: "support inline creation under manager", "editing and deletion", "draft handling"
+- 📖 Use **Editable Treeviews Guide** - 9-step directory pattern implementation
+
+**Indicators for READ-ONLY hierarchy (use Read-Only Treeviews Guide):**
+- User mentions: "display", "view", "browse", "navigate", "read-only", "show"
+- User wants: visualization only, no structural modifications
+- Example phrases: "display hierarchy", "view reporting structure", "browse categories"
+- 📖 Use **Read-Only Treeviews Guide** - 6-step simple implementation
+
+**When in doubt:** Ask the user explicitly:
+> "Do you need to edit the hierarchy structure (create/delete/move nodes) or just display it?"
+
 ### 1. Check for Existing Hierarchy
 Examine `webapp/localService/mainService/metadata.xml` for:
 - `SAP__hierarchy.RecursiveHierarchySupported`
@@ -130,65 +151,14 @@ Examine `webapp/localService/mainService/metadata.xml` for:
 - Backend needs hierarchy implementation
 - Proceed to Step 2
 
-### 2. Implement Backend Hierarchy
-**� Best Practice: Fetch SAP Documentation First**
+### 2. Implement Hierarchy in Backend
 
-**If `fetch_webpage` (or an equivalent web fetch tool) is available, retrieve the following SAP Help Portal pages for the latest patterns:**
+**Treeviews Overview:**
+**[Treeviews Introduction](./references/treeviews-introduction.md)** - Foundation concepts, features, architecture comparison
 
-   - **[Developing Apps with Hierarchical Data Structures](https://help.sap.com/docs/abap-cloud/abap-rap/implementing-hierarchical-view)** - Overview
-   - **[Treeviews with Read-Only Capabilities](https://help.sap.com/docs/abap-cloud/abap-rap/treeview-with-read-only-capability)** - Architecture
-   - **[Creating the Database Table](https://help.sap.com/docs/abap-cloud/abap-rap/creating-database-table)** - Parent-child table structure
-   - **[Creating the Interface View](https://help.sap.com/docs/abap-cloud/abap-rap/creating-interface-view)** - Self-association logic
-   - **[Creating the Hierarchy Node](https://help.sap.com/docs/abap-cloud/abap-rap/creating-hierarchy-node)** - Hierarchy definition
-   - **[Creating the Projection View](https://help.sap.com/docs/abap-cloud/abap-rap/creating-consumption-view)** - Projection with redirected association
-   - **[Displaying Treeview on SAP Fiori UI](https://help.sap.com/docs/abap-cloud/abap-rap/hierarchical-treeview-on-ui)** - UI configuration
-
-**Example fetch_webpage usage:**
-```
-fetch_webpage(
-  query: "ABAP RAP hierarchy, interface view self-referencing association, define hierarchy syntax, projection view redirect",
-  urls: [all 7 URLs above]
-)
-```
-
-**If `fetch_webpage` is not available,** apply the canonical patterns documented below (which match the official SAP documentation as of this skill's creation).
-
-**Implementation patterns (authoritative fallback):**
-
-**CRITICAL Requirements (from SAP documentation):**
-- ✅ Database table with parent field (e.g., `parent_uuid`, `manager`)
-- ✅ Interface view must have self-referencing association
-  ```abap
-  association [0..1] to INTERFACE_VIEW as _Parent on $projection.<ParentField> = _Parent.<KeyField>
-  ```
-- ✅ Hierarchy uses `define hierarchy` syntax (not `define view entity`)
-  ```abap
-  define hierarchy HIERARCHY_NAME as parent child hierarchy(
-    source INTERFACE_VIEW
-    child to parent association _Parent
-    start where <ParentField> is initial
-    siblings order by <SortField>
-  )
-  ```
-- ✅ Projection view must have `@OData.hierarchy.recursiveHierarchy` annotation
-  ```abap
-  @OData.hierarchy.recursiveHierarchy:[{ entity.name: 'HIERARCHY_NAME' }]
-  ```
-- ✅ Projection view must redirect parent association to itself
-  ```abap
-  _Parent : redirected to PROJECTION_VIEW
-  ```
-
-**Additional Notes:**
-- ❌ No "Create Hierarchy" tool in ADT/MCP - must create Data Definition manually
-- ✅ Create Data Definition first → replace with `define hierarchy` syntax
-- ❌ Never create ABAP programs for populating test data (optional helper class OK)
-- ✅ All objects must be activated in correct order: Table → Interface → Hierarchy → Projection → Service → Binding
-
-**After implementation:**
-- Activate all objects in correct order
-- Verify `@OData.hierarchy.recursiveHierarchy` annotation is in projection view
-- Return to Step 1 to extract Qualifier from metadata
+**Implementation Guides:**
+- **[Read-Only Treeviews Guide](./references/read-only-treeviews-guide.md)** - 6-step implementation for read-only hierarchies
+- **[Editable Treeviews Guide](./references/editable-treeviews-guide.md)** - 9-step implementation with draft, directories, and actions
 
 ### 3. Configure TreeTable in Manifest
 Update List Report target in `webapp/manifest.json`:
@@ -270,76 +240,6 @@ using { cuid, managed } from '@sap/cds/common';
 
 ---
 
-### RAP Errors
-
-**"Entity references hierarchy which contains errors"**
-- Use `define hierarchy` (not `define view entity`)
-- Created as Data Definition (DDLS/DF)
-- Activate in correct order
-
-**"Primary keys don't match"**
-```abap
-// ❌ Wrong
-define hierarchy HIERARCHY_NAME as parent child hierarchy(...) {
-  UUID,  // Missing key!
-}
-
-// ✅ Correct
-define hierarchy HIERARCHY_NAME as parent child hierarchy(...) {
-  key UUID,
-}
-```
-
-**"No parent association found"**
-```abap
-// ❌ Wrong
-define root view entity C_Entity as projection on R_Entity {
-  _ParentCategory  // Not redirected!
-}
-
-// ✅ Correct
-define root view entity C_Entity as projection on R_Entity {
-  _ParentCategory : redirected to C_Entity
-}
-```
-
-**"child to parent association not found"**
-- Add self-association in interface view (R_*)
-
-**"Hierarchy cannot be activated"**
-- Activate order: Table → Interface → Hierarchy → Projection → Service → Binding
-- Use mass activation
-- Check syntax errors first
-
-**"Association target does not exist"**
-- Create and activate projection view first
-
-**"hierarchyQualifier not found"**
-- Extract EXACT Qualifier from `metadata.xml`
-- Search for `SAP__hierarchy.RecursiveHierarchy`
-- Case-sensitive match required
-
-**"Failed to parse metadata"**
-- Check activation errors in all objects
-- Verify service binding is published (not just activated)
-- Ensure OData V4 (not V2)
-- Check transport issues
-
-**"TreeTable not rendering"**
-- `hierarchyQualifier` matches metadata exactly
-- Projection view redirects parent association
-- Hierarchy annotation in service metadata
-- Clear browser cache
-
-**"Data not loading"**
-- Database table has parent-child data
-- Parent ID references existing records
-- Root items have NULL parent ID
-- Interface view association correct
-- Hierarchy `start where` clause correct
-
----
-
 ## Key Differences
 
 **CAP:**
@@ -347,12 +247,6 @@ define root view entity C_Entity as projection on R_Entity {
 - `@hierarchy` annotation on service
 - CSV data with `parent_ID` column
 - Test with `npm run watch`
-
-**RAP:**
-- Database table → Interface → Hierarchy → Projection → Service
-- Metadata extension for UI annotations
-- Qualifier from OData metadata
-- Preview from service binding
 
 ---
 
@@ -368,54 +262,6 @@ define root view entity C_Entity as projection on R_Entity {
 - Use CDS MCP to search model before editing
 - Run `cds watch` to reload data
 - Check metadata endpoint for hierarchy annotations
-
-**RAP Specific:**
-- Always use ADT MCP when available
-- Verify `@OData.hierarchy.recursiveHierarchy` annotation in projection view
-
-**Metadata Extension Rules:**
-- ✅ **Add UI annotations** (`@UI.lineItem`, `@UI.identification`, `@UI.selectionField`) **and `@EndUserText.label` for business-relevant fields only**
-  - For example: CategoryName, Description, OrgUnitName, ManagerName, Location
-- ❌ **NEVER add UI annotations** (`@UI.lineItem`, `@UI.identification`, `@UI.selectionField`) **for technical/system fields:**
-  - ❌ UUID (technical key)
-  - ❌ LocalCreatedBy (audit field)
-  - ❌ LocalCreatedAt (audit field)
-  - ❌ LocalLastChangedBy (audit field)
-  - ❌ LocalLastChangedAt (audit field)
-  - ❌ LastChangedAt (audit field)
-  - ❌ Parent field (e.g., ParentCategory, ParentOrgUnit) - used internally for hierarchy structure
-
-## ✅ Implementation Verification Checklist
-
-**Before claiming completion, verify:**
-
-### Documentation Fetched (if available):
-- [ ] Fetched or referenced the 7 SAP Help Portal pages for the current patterns
-- [ ] Extracted official implementation patterns
-- [ ] Applied patterns to specific use case
-
-### CAP Objects Configured (for CAP projects):
-- [ ] Self-referencing managed association added to db/schema.cds
-- [ ] `@hierarchy` annotation on service entity in srv/<service>.cds
-- [ ] manifest.json controlConfiguration has `type: "TreeTable"`
-- [ ] hierarchyQualifier set consistently with entity (e.g., `<EntityName>Hierarchy`)
-- [ ] Sample CSV in db/data/ with `parent_ID` column and empty parent_ID for roots
-- [ ] Service runs with `cds watch` without errors
-
-### ABAP Objects Created (for RAP projects):
-- [ ] Database table has parent field (UUID/ID type)
-- [ ] Interface view has self-referencing association with correct `on` clause
-- [ ] Hierarchy definition uses `define hierarchy` syntax
-- [ ] Hierarchy has `start where <ParentField> is initial` clause
-- [ ] Projection view has `@OData.hierarchy.recursiveHierarchy` annotation
-- [ ] Projection view redirects association: `_Parent : redirected to ProjectionView`
-- [ ] All objects activated in correct order
-
-### Fiori App Configured:
-- [ ] manifest.json has `"type": "TreeTable"`
-- [ ] manifest.json has `hierarchyQualifier` matching hierarchy name
-- [ ] Dependencies installed (`npm install`)
-
 ---
 
 ## References
