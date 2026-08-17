@@ -26,6 +26,8 @@ import { CommunicationService } from '../cpe/communication-service.js';
 import { initOrphanedChangeDetection } from './change-file-validator.js';
 
 export default async function (rta: RuntimeAuthoring) {
+    const cancelOrphanedChangeDetection = initOrphanedChangeDetection();
+
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
         enableTelemetry();
@@ -86,12 +88,9 @@ export default async function (rta: RuntimeAuthoring) {
             type: MessageBarType.error
         });
         CommunicationService.sendAction(toggleAppPreviewVisibility(false));
+        cancelOrphanedChangeDetection();
         return;
     }
-
-    initOrphanedChangeDetection().catch((error) => {
-        log.error('Failed to run orphaned change detection', error);
-    });
 
     log.debug('ADP init executed.');
 }

@@ -1,5 +1,260 @@
 # @sap-ux/create
 
+## 1.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.42 → 1.0.43
+- @sap-ux/preview-middleware 1.1.3 → 1.2.0
+- @sap-ux/flp-config-inquirer 1.0.42 → 1.0.43
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
+## 1.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add update metadata command to refresh local OData service metadata from backend [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Bug Fixes
+
+- Restrict `update service-metadata` to ABAP backend applications with a clear error message [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+#### Release Date
+
+2026-08-10
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/adp-tooling 1.0.41 → 1.0.42
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+- @sap-ux/flp-config-inquirer 1.0.41 → 1.0.42
+- @sap-ux/preview-middleware 1.1.2 → 1.1.3
+- @sap-ux/abap-deploy-config-inquirer 2.0.35 → 2.0.36
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.34 → 2.0.35
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+- @sap-ux/adp-tooling 1.0.40 → 1.0.41
+- @sap-ux/flp-config-inquirer 1.0.40 → 1.0.41
+- @sap-ux/preview-middleware 1.1.1 → 1.1.2
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/abap-deploy-config-inquirer 2.0.33 → 2.0.34
+- @sap-ux/abap-deploy-config-writer 1.0.19 → 1.0.20
+- @sap-ux/adp-tooling 1.0.39 → 1.0.40
+- @sap-ux/app-config-writer 1.1.14 → 1.1.15
+- @sap-ux/mockserver-config-writer 1.0.14 → 1.0.15
+- @sap-ux/odata-service-writer 1.0.16 → 1.0.17
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/flp-config-inquirer 1.0.39 → 1.0.40
+- @sap-ux/preview-middleware 1.1.0 → 1.1.1
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/cap-config-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.32 → 2.0.33
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.49 → 1.1.0
+- @sap-ux/app-config-writer 1.1.14 → 1.1.14
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-27
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/abap-deploy-config-inquirer 2.0.31 → 2.0.32
+- @sap-ux/adp-tooling 1.0.38 → 1.0.39
+- @sap-ux/app-config-writer 1.1.13 → 1.1.14
+- @sap-ux/preview-middleware 1.0.48 → 1.0.49
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/flp-config-inquirer 1.0.38 → 1.0.39
+- @sap-ux/abap-deploy-config-writer 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+- @sap-ux/cap-config-writer 1.0.26 → 1.0.27
+
+## 1.0.62
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/preview-middleware 1.0.47 → 1.0.48
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/abap-deploy-config-writer 1.0.17 → 1.0.18
+- @sap-ux/app-config-writer 1.1.12 → 1.1.13
+- @sap-ux/cap-config-writer 1.0.25 → 1.0.26
+- @sap-ux/nodejs-utils 1.0.8 → 1.0.9
+- @sap-ux/odata-service-writer 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/abap-deploy-config-inquirer 2.0.30 → 2.0.31
+- @sap-ux/adp-tooling 1.0.37 → 1.0.38
+- @sap-ux/flp-config-inquirer 1.0.37 → 1.0.38
+- @sap-ux/system-access 1.0.8 → 1.0.9
+- @sap-ux/mockserver-config-writer 1.0.13 → 1.0.14
+
+## 1.0.61
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.29 → 2.0.30
+- @sap-ux/adp-tooling 1.0.36 → 1.0.37
+- @sap-ux/app-config-writer 1.1.11 → 1.1.12
+- @sap-ux/cap-config-writer 1.0.24 → 1.0.25
+- @sap-ux/flp-config-inquirer 1.0.36 → 1.0.37
+- @sap-ux/mockserver-config-writer 1.0.12 → 1.0.13
+- @sap-ux/nodejs-utils 1.0.7 → 1.0.8
+- @sap-ux/odata-service-writer 1.0.14 → 1.0.15
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/preview-middleware 1.0.46 → 1.0.47
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+- @sap-ux/abap-deploy-config-writer 1.0.16 → 1.0.17
+
+## 1.0.60
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.35 → 1.0.36
+- @sap-ux/flp-config-inquirer 1.0.35 → 1.0.36
+- @sap-ux/preview-middleware 1.0.45 → 1.0.46
+- @sap-ux/app-config-writer 1.1.11 → 1.1.11
+
+## 1.0.59
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/abap-deploy-config-writer 1.0.15 → 1.0.16
+- @sap-ux/adp-tooling 1.0.34 → 1.0.35
+- @sap-ux/app-config-writer 1.1.10 → 1.1.11
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/cap-config-writer 1.0.23 → 1.0.24
+- @sap-ux/flp-config-inquirer 1.0.34 → 1.0.35
+- @sap-ux/mockserver-config-writer 1.0.11 → 1.0.12
+- @sap-ux/odata-service-writer 1.0.13 → 1.0.14
+- @sap-ux/preview-middleware 1.0.44 → 1.0.45
+- @sap-ux/system-access 1.0.7 → 1.0.7
+- @sap-ux/abap-deploy-config-inquirer 2.0.28 → 2.0.29
+
+## 1.0.58
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.43 → 1.0.44
+- @sap-ux/app-config-writer 1.1.10 → 1.1.10
+
+## 1.0.57
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/abap-deploy-config-writer 1.0.14 → 1.0.15
+- @sap-ux/adp-tooling 1.0.33 → 1.0.34
+- @sap-ux/app-config-writer 1.1.9 → 1.1.10
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/cap-config-writer 1.0.22 → 1.0.23
+- @sap-ux/flp-config-inquirer 1.0.33 → 1.0.34
+- @sap-ux/mockserver-config-writer 1.0.10 → 1.0.11
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.13
+- @sap-ux/preview-middleware 1.0.42 → 1.0.43
+- @sap-ux/system-access 1.0.7 → 1.0.7
+- @sap-ux/abap-deploy-config-inquirer 2.0.27 → 2.0.28
+
+## 1.0.56
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.26 → 2.0.27
+
+## 1.0.55
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-16
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.25 → 2.0.26
+- @sap-ux/cap-config-writer 1.0.21 → 1.0.22
+- @sap-ux/flp-config-inquirer 1.0.32 → 1.0.33
+- @sap-ux/adp-tooling 1.0.32 → 1.0.33
+- @sap-ux/preview-middleware 1.0.41 → 1.0.42
+- @sap-ux/app-config-writer 1.1.9 → 1.1.9
+
 ## 1.0.54
 
 ### Patch Changes

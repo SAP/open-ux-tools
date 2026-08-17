@@ -15,8 +15,7 @@ i18n.use(initReactI18next).init({
     interpolation: {
         escapeValue: false
     },
-    showSupportNotice: false,
-    initImmediate: false
+    initAsync: false
 });
 initIcons();
 

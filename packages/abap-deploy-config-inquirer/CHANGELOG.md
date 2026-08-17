@@ -1,5 +1,151 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+
+## 2.0.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-07
+
+#### Bug Fixes
+
+- Clear password field on system change to prevent stale credentials resubmission. [[27840a8](https://github.com/SAP/open-ux-tools/commit/27840a818dc9c2a06c03a0bc0a402bf4af1da960)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+
+## 2.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
+## 2.0.33
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Reject non-AbapServiceProvider to prevent "isAbapCloud is not a function" for full URL generic OData destinations [[8cef00e](https://github.com/SAP/open-ux-tools/commit/8cef00e93984bf467b3c44a333da54433deec9dd)]
+
+## 2.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
+## 2.0.31
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Upgrade @sap-devx/yeoman-ui-types 1.25.0 → 1.25.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/nodejs-utils 1.0.8 → 1.0.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/system-access 1.0.8 → 1.0.9
+
+## 2.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/nodejs-utils 1.0.7 → 1.0.8
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 2.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 2.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 2.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-17
+
+#### Bug Fixes
+
+- [BAS][Deploy] Password field in the deploy page disappears when the user edits the username. [[ff7fc25](https://github.com/SAP/open-ux-tools/commit/ff7fc25829f6b29a5083a56c8899e646d3c8569d)]
+
+## 2.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
 ## 2.0.25
 
 ### Patch Changes

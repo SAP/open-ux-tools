@@ -25,6 +25,141 @@ const aliasInfo: AliasInformation = {
     }
 };
 
+it('getVocabularies()', () => {
+    const vocabularies = vocabularyService.getVocabularies();
+
+    // Expect
+    expect(vocabularies).toMatchInlineSnapshot(`
+        Map {
+          "Org.OData.Aggregation.V1" => Object {
+            "defaultAlias": "Aggregation",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.xml",
+            "namespace": "Org.OData.Aggregation.V1",
+          },
+          "Org.OData.Authorization.V1" => Object {
+            "defaultAlias": "Auth",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Authorization.V1.xml",
+            "namespace": "Org.OData.Authorization.V1",
+          },
+          "Org.OData.Capabilities.V1" => Object {
+            "defaultAlias": "Capabilities",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml",
+            "namespace": "Org.OData.Capabilities.V1",
+          },
+          "Org.OData.Core.V1" => Object {
+            "defaultAlias": "Core",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml",
+            "namespace": "Org.OData.Core.V1",
+          },
+          "Org.OData.Measures.V1" => Object {
+            "defaultAlias": "Measures",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Measures.V1.xml",
+            "namespace": "Org.OData.Measures.V1",
+          },
+          "Org.OData.Repeatability.V1" => Object {
+            "defaultAlias": "Repeatability",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Repeatability.V1.xml",
+            "namespace": "Org.OData.Repeatability.V1",
+          },
+          "Org.OData.Temporal.V1" => Object {
+            "defaultAlias": "Temporal",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Temporal.V1.xml",
+            "namespace": "Org.OData.Temporal.V1",
+          },
+          "Org.OData.Validation.V1" => Object {
+            "defaultAlias": "Validation",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.xml",
+            "namespace": "Org.OData.Validation.V1",
+          },
+          "Org.OData.JSON.V1" => Object {
+            "defaultAlias": "JSON",
+            "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.JSON.V1.xml",
+            "namespace": "Org.OData.JSON.V1",
+          },
+          "com.sap.vocabularies.Analytics.v1" => Object {
+            "defaultAlias": "Analytics",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Analytics.xml",
+            "namespace": "com.sap.vocabularies.Analytics.v1",
+          },
+          "com.sap.vocabularies.Auditing.v1" => Object {
+            "defaultAlias": "Auditing",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Auditing.xml",
+            "namespace": "com.sap.vocabularies.Auditing.v1",
+          },
+          "com.sap.vocabularies.CodeList.v1" => Object {
+            "defaultAlias": "CodeList",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/CodeList.xml",
+            "namespace": "com.sap.vocabularies.CodeList.v1",
+          },
+          "com.sap.vocabularies.Common.v1" => Object {
+            "defaultAlias": "Common",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Common.xml",
+            "namespace": "com.sap.vocabularies.Common.v1",
+          },
+          "com.sap.vocabularies.Communication.v1" => Object {
+            "defaultAlias": "Communication",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml",
+            "namespace": "com.sap.vocabularies.Communication.v1",
+          },
+          "com.sap.vocabularies.DataIntegration.v1" => Object {
+            "defaultAlias": "DataIntegration",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/DataIntegration.xml",
+            "namespace": "com.sap.vocabularies.DataIntegration.v1",
+          },
+          "com.sap.vocabularies.DirectEdit.v1" => Object {
+            "defaultAlias": "DirectEdit",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/DirectEdit.xml",
+            "namespace": "com.sap.vocabularies.DirectEdit.v1",
+          },
+          "com.sap.vocabularies.Graph.v1" => Object {
+            "defaultAlias": "Graph",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Graph.xml",
+            "namespace": "com.sap.vocabularies.Graph.v1",
+          },
+          "com.sap.vocabularies.ODM.v1" => Object {
+            "defaultAlias": "ODM",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/ODM.xml",
+            "namespace": "com.sap.vocabularies.ODM.v1",
+          },
+          "com.sap.vocabularies.PDF.v1" => Object {
+            "defaultAlias": "PDF",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/PDF.xml",
+            "namespace": "com.sap.vocabularies.PDF.v1",
+          },
+          "com.sap.vocabularies.PersonalData.v1" => Object {
+            "defaultAlias": "PersonalData",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/PersonalData.xml",
+            "namespace": "com.sap.vocabularies.PersonalData.v1",
+          },
+          "com.sap.vocabularies.Hierarchy.v1" => Object {
+            "defaultAlias": "Hierarchy",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Hierarchy.xml",
+            "namespace": "com.sap.vocabularies.Hierarchy.v1",
+          },
+          "com.sap.vocabularies.Session.v1" => Object {
+            "defaultAlias": "Session",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Session.xml",
+            "namespace": "com.sap.vocabularies.Session.v1",
+          },
+          "com.sap.vocabularies.Support.v1" => Object {
+            "defaultAlias": "Support",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Support.xml",
+            "namespace": "com.sap.vocabularies.Support.v1",
+          },
+          "com.sap.vocabularies.UI.v1" => Object {
+            "defaultAlias": "UI",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/UI.xml",
+            "namespace": "com.sap.vocabularies.UI.v1",
+          },
+          "com.sap.vocabularies.HTML5.v1" => Object {
+            "defaultAlias": "HTML5",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/HTML5.xml",
+            "namespace": "com.sap.vocabularies.HTML5.v1",
+          },
+        }
+    `);
+});
+
 it('getVocabularies() contains UI but not CDS', () => {
     const vocabularies = vocabularyService.getVocabularies();
 

@@ -20,7 +20,8 @@ import {
     sendTelemetry,
     TelemetryHelper,
     getFlpId,
-    getFloorplanLabel
+    getFloorplanLabel,
+    initI18nFioriGeneratorShared
 } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -127,6 +128,7 @@ export class FioriAppGenerator extends Generator {
     async initializing(): Promise<void> {
         // Ensure i18n bundles are loaded, default loading is unreliable
         await initI18nFioriAppSubGenerator();
+        await initI18nFioriGeneratorShared();
         // When running in YUI context back navigation is supported and state may be cached.
         if (this.options.appWizard) {
             this.appWizard = this.options.appWizard;

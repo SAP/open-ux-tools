@@ -1,5 +1,427 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.31 → 3.1.32
+- @sap-ux/fiori-freestyle-writer 3.0.76 → 3.0.77
+- @sap-ux/odata-service-inquirer 3.2.8 → 3.2.8
+
+## 1.2.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.30 → 3.1.31
+- @sap-ux/fiori-freestyle-writer 3.0.75 → 3.0.76
+- @sap-ux/odata-service-inquirer 3.2.8 → 3.2.8
+
+## 1.2.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.29 → 3.1.30
+- @sap-ux/fiori-freestyle-writer 3.0.74 → 3.0.75
+- @sap-ux/odata-service-inquirer 3.2.8 → 3.2.8
+
+## 1.2.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.28 → 3.1.29
+- @sap-ux/fiori-freestyle-writer 3.0.73 → 3.0.74
+- @sap-ux/odata-service-inquirer 3.2.8 → 3.2.8
+
+## 1.2.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.27 → 3.1.28
+- @sap-ux/fiori-freestyle-writer 3.0.72 → 3.0.73
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+- @sap-ux/odata-service-inquirer 3.2.7 → 3.2.8
+
+## 1.2.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+- @sap-ux/odata-service-inquirer 3.2.6 → 3.2.7
+- @sap-ux/fiori-elements-writer 3.1.26 → 3.1.27
+- @sap-ux/fiori-freestyle-writer 3.0.71 → 3.0.72
+
+## 1.2.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.25 → 3.1.26
+- @sap-ux/fiori-freestyle-writer 3.0.70 → 3.0.71
+- @sap-ux/odata-service-inquirer 3.2.6 → 3.2.6
+
+## 1.2.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.24 → 3.1.25
+- @sap-ux/fiori-freestyle-writer 3.0.69 → 3.0.70
+- @sap-ux/odata-service-inquirer 3.2.6 → 3.2.6
+
+## 1.2.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.23 → 3.1.24
+- @sap-ux/fiori-freestyle-writer 3.0.68 → 3.0.69
+- @sap-ux/odata-service-inquirer 3.2.6 → 3.2.6
+
+## 1.2.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.22 → 3.1.23
+- @sap-ux/fiori-freestyle-writer 3.0.67 → 3.0.68
+- @sap-ux/odata-service-inquirer 3.2.6 → 3.2.6
+
+## 1.2.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.21 → 3.1.22
+- @sap-ux/odata-service-inquirer 3.2.6 → 3.2.6
+
+## 1.2.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.20 → 3.1.21
+- @sap-ux/fiori-freestyle-writer 3.0.67 → 3.0.67
+- @sap-ux/odata-service-inquirer 3.2.6 → 3.2.6
+
+## 1.2.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-writer 1.0.19 → 1.0.20
+- @sap-ux/fiori-elements-writer 3.1.19 → 3.1.20
+- @sap-ux/fiori-freestyle-writer 3.0.66 → 3.0.67
+- @sap-ux/launch-config 1.0.16 → 1.0.17
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/odata-service-inquirer 3.2.5 → 3.2.6
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+- @sap-ux/project-input-validator 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
+## 1.2.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.18 → 3.1.19
+- @sap-ux/fiori-freestyle-writer 3.0.65 → 3.0.66
+- @sap-ux/odata-service-inquirer 3.2.5 → 3.2.5
+
+## 1.2.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.17 → 3.1.18
+- @sap-ux/fiori-freestyle-writer 3.0.65 → 3.0.65
+- @sap-ux/odata-service-inquirer 3.2.5 → 3.2.5
+
+## 1.2.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.16 → 3.1.17
+- @sap-ux/odata-service-inquirer 3.2.5 → 3.2.5
+- @sap-ux/fiori-freestyle-writer 3.0.64 → 3.0.65
+
+## 1.2.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.15 → 3.1.16
+- @sap-ux/fiori-freestyle-writer 3.0.63 → 3.0.64
+- @sap-ux/odata-service-inquirer 3.2.5 → 3.2.5
+
+## 1.2.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.14 → 3.1.15
+- @sap-ux/odata-service-inquirer 3.2.5 → 3.2.5
+
+## 1.2.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.13 → 3.1.14
+- @sap-ux/fiori-freestyle-writer 3.0.62 → 3.0.63
+- @sap-ux/odata-service-inquirer 3.2.5 → 3.2.5
+
+## 1.2.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.4 → 3.2.5
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/abap-deploy-config-writer 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+- @sap-ux/fiori-elements-writer 3.1.12 → 3.1.13
+- @sap-ux/fiori-freestyle-writer 3.0.61 → 3.0.62
+
+## 1.2.14
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap-devx/yeoman-ui-types 1.25.0 → 1.25.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/abap-deploy-config-writer 1.0.17 → 1.0.18
+- @sap-ux/fiori-elements-writer 3.1.11 → 3.1.12
+- @sap-ux/fiori-freestyle-writer 3.0.60 → 3.0.61
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+- @sap-ux/odata-service-inquirer 3.2.3 → 3.2.4
+- @sap-ux/system-access 1.0.8 → 1.0.9
+- @sap-ux/launch-config 1.0.15 → 1.0.16
+- @sap-ux/project-input-validator 1.0.13 → 1.0.14
+
+## 1.2.13
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.10 → 3.1.11
+- @sap-ux/fiori-freestyle-writer 3.0.59 → 3.0.60
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/launch-config 1.0.14 → 1.0.15
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.3
+- @sap-ux/project-input-validator 1.0.12 → 1.0.13
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/abap-deploy-config-writer 1.0.16 → 1.0.17
+
+## 1.2.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+#### Release Date
+
+2026-07-22
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.9 → 3.1.10
+- @sap-ux/fiori-freestyle-writer 3.0.58 → 3.0.59
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.2
+
+## 1.2.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.8 → 3.1.9
+- @sap-ux/fiori-freestyle-writer 3.0.57 → 3.0.58
+- @sap-ux/odata-service-inquirer 3.2.2 → 3.2.2
+
+## 1.2.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/fiori-elements-writer 3.1.7 → 3.1.8
+- @sap-ux/fiori-freestyle-writer 3.0.56 → 3.0.57
+- @sap-ux/abap-deploy-config-writer 1.0.15 → 1.0.16
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+- @sap-ux/launch-config 1.0.13 → 1.0.14
+- @sap-ux/odata-service-inquirer 3.2.1 → 3.2.2
+- @sap-ux/project-input-validator 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.2.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.6 → 3.1.7
+- @sap-ux/fiori-freestyle-writer 3.0.55 → 3.0.56
+- @sap-ux/odata-service-inquirer 3.2.1 → 3.2.1
+
+## 1.2.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.5 → 3.1.6
+- @sap-ux/fiori-freestyle-writer 3.0.55 → 3.0.55
+- @sap-ux/odata-service-inquirer 3.2.1 → 3.2.1
+
+## 1.2.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.4 → 3.1.5
+- @sap-ux/odata-service-inquirer 3.2.1 → 3.2.1
+
+## 1.2.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.3 → 3.1.4
+- @sap-ux/fiori-freestyle-writer 3.0.54 → 3.0.55
+- @sap-ux/odata-service-inquirer 3.2.1 → 3.2.1
+
+## 1.2.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/fiori-elements-writer 3.1.2 → 3.1.3
+- @sap-ux/fiori-freestyle-writer 3.0.53 → 3.0.54
+- @sap-ux/abap-deploy-config-writer 1.0.14 → 1.0.15
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/launch-config 1.0.12 → 1.0.13
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.1
+- @sap-ux/project-input-validator 1.0.10 → 1.0.11
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.2.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.1 → 3.1.2
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.0
+
+## 1.2.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Features
+
+- add telemetry event to track migration triggered via ABAP repository download [[cd55989](https://github.com/SAP/open-ux-tools/commit/cd559894de83a3b70b69147805861ed796cc2a62)]
+
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.0 → 3.1.1
+- @sap-ux/odata-service-inquirer 3.2.0 → 3.2.0
+
+## 1.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.1.0 → 3.2.0
+- @sap-ux/fiori-elements-writer 3.0.60 → 3.1.0
+
+## 1.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add backendSystemFilter option to system selection and filter full-service-URL systems in repo app import; move getFloorplanLabel and floorplan label/description translations to fiori-generator-shared and export tFioriGeneratorShared [[22c974b](https://github.com/SAP/open-ux-tools/commit/22c974bbd38773e62e87aa34b60481ee6a3da62f)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.25 → 3.1.0
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/fiori-elements-writer 3.0.59 → 3.0.60
+- @sap-ux/fiori-freestyle-writer 3.0.52 → 3.0.53
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
 ## 1.1.44
 
 ### Patch Changes

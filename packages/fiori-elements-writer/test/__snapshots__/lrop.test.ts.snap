@@ -18753,7 +18753,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -18791,6 +18790,8 @@ sap.ui.define([
     function journey() {
         QUnit.module(\\"TravelListListReport journey\\");
 
+        const defaultTableId = \\"\\";
+
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -18802,25 +18803,19 @@ sap.ui.define([
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
+        //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
         // });
-
-
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelListGenerated.onTable().iCheckRows();
-
-            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheTravelListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -18865,7 +18860,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 
@@ -22633,8 +22627,11 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
             Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
@@ -22645,10 +22642,13 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
+        });
+
+        opaTest(\\"Check the BookingSupplement section of the Object Page\\", function (_Given, When, Then) {
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
             Then.onTheBookingObjectPageGenerated.onTable({ property: \\"_BookSupplement\\" }).iCheckColumns(undefined, {\\"BookingSupplementID\\":{\\"header\\":\\"Book. Supp. Number\\"},\\"SupplementID\\":{\\"header\\":\\"Product ID\\"},\\"Price\\":{\\"header\\":\\"Product Price\\"}});
-       });
+        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -22687,6 +22687,8 @@ sap.ui.define([
     function journey() {
         QUnit.module(\\"TravelListListReport journey\\");
 
+        const defaultTableId = \\"\\";
+
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -22694,56 +22696,49 @@ sap.ui.define([
         });
 
         opaTest(\\"Check filter bar\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"Travel ID\\");
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"Agency ID\\");
-            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField(\\"Customer ID\\");
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"TravelID\\" });
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"AgencyID\\" });
+            Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"CustomerID\\" });
         });
 
         // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
+        //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
         // });
 
         opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable().iCheckCreate({ visible: true });
-            // Then.onTheTravelListGenerated.onTable().iPressCreate();
-            // Then.onTheTravelListGenerated.onTable().iPressDelete();
-            Then.onTheTravelListGenerated.onTable().iCheckDelete({ visible: true });
-            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Draft Template\\");
-            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Draft Template\\", { enabled: true });
-            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Active Template\\");
-            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Active Template\\", { enabled: true });
-            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Deduct Discount\\");
-            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Deduct Discount\\", { enabled: false });
-            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Check Travel\\");
-            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Check Travel\\", { enabled: false });
-            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Set To New\\");
-            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Set To New\\", { enabled: false });
-            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Set To Booked\\");
-            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Set To Booked\\", { enabled: false });
-            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Set Cancel Date to Tomorrow\\");
-            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Set Cancel Date to Tomorrow\\", { enabled: false });
-            Then.onTheTravelListGenerated.onTable().iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
-
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckCreate({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressCreate();
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressDelete();
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Draft Template\\");
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Draft Template\\", { enabled: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Active Template\\");
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Active Template\\", { enabled: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Deduct Discount\\");
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Deduct Discount\\", { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Check Travel\\");
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Check Travel\\", { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Set To New\\");
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Set To New\\", { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Set To Booked\\");
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Set To Booked\\", { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Set Cancel Date to Tomorrow\\");
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Set Cancel Date to Tomorrow\\", { enabled: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
         });
-
-
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelListGenerated.onTable().iCheckRows();
-
-            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheTravelListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -22793,21 +22788,24 @@ sap.ui.define([
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
             // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set Cancel Date to Tomorrow\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Set Cancel Date to Tomorrow\\");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set To Booked\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Set To Booked\\");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set To New\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Set To New\\");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Check Travel\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Check Travel\\");
-            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Deduct Discount\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Deduct Discount\\");
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToBooked\\", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToBooked\\", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToNew\\", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToNew\\", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"Check\\", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"Check\\", unbound: false });
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"deductDiscount\\", unbound: false } /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"deductDiscount\\", unbound: false });
         });
 
 
-        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest(\\"Check the Travel section of the Object Page\\", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Travel\\");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
@@ -22820,10 +22818,13 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
+        });
+
+        opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckColumns(undefined, {\\"BookingID\\":{\\"header\\":\\"Booking Number\\"},\\"BookingDate\\":{\\"header\\":\\"Booking Date\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"AirlineID\\":{\\"header\\":\\"Airline ID\\"},\\"ConnectionID\\":{\\"header\\":\\"Flight Number\\"},\\"FlightDate\\":{\\"header\\":\\"Flight Date\\"},\\"FlightPrice\\":{\\"header\\":\\"Flight Price\\"},\\"DestinationRisk\\":{\\"header\\":\\"Destination Risk\\"}});
-       });
+        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -24693,7 +24694,7 @@ appDescription=A Fiori application.",
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes.gen\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
@@ -24944,7 +24945,7 @@ export default class ObjectPage {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+  "webapp/test/integration/types/OpaJourneyTypes.gen.d.ts": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -26240,7 +26241,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -26278,6 +26278,8 @@ sap.ui.define([
     function journey() {
         QUnit.module(\\"TravelListListReport journey\\");
 
+        const defaultTableId = \\"\\";
+
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -26289,25 +26291,19 @@ sap.ui.define([
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
+        //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
         // });
-
-
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelListGenerated.onTable().iCheckRows();
-
-            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheTravelListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -26352,7 +26348,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 

@@ -1,5 +1,84 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Do not delete existing remote annotation files/dataSources on update when annotations are not provided, and regenerate the sap-fe-mockserver middleware in ui5-mock.yaml when external (value-help) services are written (even when backend proxy middlewares are preserved) so the written external service metadata is resolved by the mockserver. [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/mockserver-config-writer 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.9 → 2.1.10
+
+## 1.0.16
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Release Date
+
+2026-07-24
+
+#### Bug Fixes
+
+- Resolve TypeScript strict null check error in manifest.ts localUriParts guard [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/mockserver-config-writer 1.0.13 → 1.0.14
+
+## 1.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- Handle newlines in value list reference strings from formatted XML [[d1f129b](https://github.com/SAP/open-ux-tools/commit/d1f129b98564bef9f42c51e0bad04381c025631b)]
+
+#### Workspace Updates
+
+- @sap-ux/mockserver-config-writer 1.0.12 → 1.0.13
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/mockserver-config-writer 1.0.11 → 1.0.12
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/mockserver-config-writer 1.0.10 → 1.0.11
+
 ## 1.0.12
 
 ### Patch Changes
