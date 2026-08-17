@@ -19,6 +19,7 @@ export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
+export const NO_INLINE_DELETE_WITH_MULTISELECT = 'sap-no-inline-delete-with-multiselect';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -192,6 +193,13 @@ export interface CloudDevAdaptationStatus {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface NoInlineDeleteWithMultiselect {
+    type: typeof NO_INLINE_DELETE_WITH_MULTISELECT;
+    pageName: string;
+    pageSectionName?: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -209,4 +217,5 @@ export type Diagnostic =
     | TextArrangementHidden
     | StrictUomFiltering
     | NoLiveMode
-    | CloudDevAdaptationStatus;
+    | CloudDevAdaptationStatus
+    | NoInlineDeleteWithMultiselect;
