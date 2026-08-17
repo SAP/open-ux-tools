@@ -1,5 +1,34 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- default aggregation path page building block for items aggregations [[63e8a93](https://github.com/SAP/open-ux-tools/commit/63e8a938100394679b623fb382dbaee383b64efc)]
+
+## 1.3.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.22 → 1.0.23
+
+## 1.3.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/fiori-annotation-api 1.0.21 → 1.0.22
+
 ## 1.3.10
 
 ### Patch Changes
