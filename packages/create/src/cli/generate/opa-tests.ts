@@ -67,7 +67,9 @@ async function generateOpaTests(basePath: string, simulate: boolean, forceTypeSc
             await traceChanges(fs);
         }
     } catch (error) {
-        logger.error(`Error while executing generate opa-tests '${error instanceof Error ? error.message : String(error)}'`);
+        logger.error(
+            `Error while executing generate opa-tests '${error instanceof Error ? error.message : String(error)}'`
+        );
         logger.debug(error as Error);
     }
 }
