@@ -1,5 +1,25 @@
 # @sap-ux/ui5-test-writer
 
+## 1.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-13
+
+#### Features
+
+- Align FE V4 OPA5 test template buckets to LTM versions (1.150 -> 1.148), add a "latest" bucket, and confine iCheckTitlePath / iGoToSection features to latest [[caf4bda](https://github.com/SAP/open-ux-tools/commit/caf4bdafcada373166752b48e1b982d42993539e)]
+
+## 1.6.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.3 → 1.2.0
+
 ## 1.6.0
 
 ### Minor Changes
