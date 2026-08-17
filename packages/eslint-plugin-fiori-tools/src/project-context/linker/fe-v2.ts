@@ -119,22 +119,25 @@ const getPropertyChangeConfig = (
  *
  * @param pathToPage
  * @param pageTableChanges
+ * @param settings
+ * @param settings.createMode
+ * @param settings.tableType
+ * @param settings.copy
+ * @param settings.inlineDelete
+ * @param settings.multiSelect
  * @param minUI5Version
- * @param createMode
- * @param tableType
- * @param copy
- * @param inlineDelete
- * @param multiSelect
  */
 function createTableConfiguration(
     pathToPage: string[],
     pageTableChanges: FlexChange[],
-    minUI5Version?: MinUI5Version,
-    createMode?: string,
-    tableType?: string,
-    copy?: boolean,
-    inlineDelete?: boolean,
-    multiSelect?: boolean
+    settings: {
+        createMode?: string;
+        tableType?: string;
+        copy?: boolean;
+        inlineDelete?: boolean;
+        multiSelect?: boolean;
+    },
+    minUI5Version?: MinUI5Version
 ) {
     const exportProperty =
         minUI5Version && isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 145 })
@@ -146,17 +149,17 @@ function createTableConfiguration(
         createMode: {
             values: createModeValues,
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'createMode'],
-            valueInFile: createMode
+            valueInFile: settings.createMode
         },
         tableType: {
             values: tableTypeValues,
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'type'],
-            valueInFile: tableType
+            valueInFile: settings.tableType
         },
         copy: {
             values: [true, false],
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'copy'],
-            valueInFile: copy
+            valueInFile: settings.copy
         },
         enableExport: {
             values: [true, false],
@@ -175,12 +178,12 @@ function createTableConfiguration(
         inlineDelete: {
             values: [true, false],
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'inlineDelete'],
-            valueInFile: inlineDelete
+            valueInFile: settings.inlineDelete
         },
         multiSelect: {
             values: [true, false],
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'multiSelect'],
-            valueInFile: multiSelect
+            valueInFile: settings.multiSelect
         }
     };
 }
@@ -192,22 +195,26 @@ function createTableConfiguration(
  * @param minUI5Version
  * @param sectionKey
  * @param createMode
- * @param tableType
- * @param copy
  * @param pageTableChanges
- * @param inlineDelete
- * @param multiSelect
+ * @param settings
+ * @param settings.tableType
+ * @param settings.copy
+ * @param settings.inlineDelete
+ * @param settings.multiSelect
+ * @returns
  */
 function createSectionTableConfiguration(
     pathToPage: string[],
     minUI5Version: MinUI5Version | undefined,
     sectionKey: string,
     createMode: string | undefined,
-    tableType: string | undefined,
-    copy: boolean | undefined,
     pageTableChanges: FlexChange[],
-    inlineDelete?: boolean,
-    multiSelect?: boolean
+    settings: {
+        tableType: string | undefined;
+        copy: boolean | undefined;
+        inlineDelete?: boolean;
+        multiSelect?: boolean;
+    }
 ) {
     const exportProperty =
         minUI5Version && isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 145 })
@@ -232,7 +239,7 @@ function createSectionTableConfiguration(
                 'tableSettings',
                 'type'
             ],
-            valueInFile: tableType
+            valueInFile: settings.tableType
         },
         copy: {
             values: [true, false],
@@ -245,7 +252,7 @@ function createSectionTableConfiguration(
                 'tableSettings',
                 'copy'
             ],
-            valueInFile: copy
+            valueInFile: settings.copy
         },
         enableExport: {
             values: [true, false],
@@ -272,7 +279,7 @@ function createSectionTableConfiguration(
                 'tableSettings',
                 'inlineDelete'
             ],
-            valueInFile: inlineDelete
+            valueInFile: settings.inlineDelete
         },
         multiSelect: {
             values: [true, false],
@@ -285,7 +292,7 @@ function createSectionTableConfiguration(
                 'tableSettings',
                 'multiSelect'
             ],
-            valueInFile: multiSelect
+            valueInFile: settings.multiSelect
         }
     };
 }
@@ -373,11 +380,13 @@ function createLinkedTableForSection(
             minUI5Version,
             sectionSettings.sectionKey,
             sectionSettings.createMode,
-            sectionSettings.tableType,
-            sectionSettings.copy,
             pageTableChanges,
-            sectionSettings.inlineDelete,
-            sectionSettings.multiSelect
+            {
+                tableType: sectionSettings.tableType,
+                copy: sectionSettings.copy,
+                inlineDelete: sectionSettings.inlineDelete,
+                multiSelect: sectionSettings.multiSelect
+            }
         ),
         children: []
     };
@@ -725,12 +734,8 @@ function linkListReportTable(
         configuration: createTableConfiguration(
             pathToPage,
             pageTableChanges,
-            minUI5Version,
-            createMode,
-            tableType,
-            copy,
-            inlineDelete,
-            multiSelect
+            { createMode, tableType, copy, inlineDelete, multiSelect },
+            minUI5Version
         ),
         children: []
     };
@@ -809,11 +814,8 @@ function linkObjectPageSections(
                     app.manifest.minUI5Version,
                     sectionKey,
                     createMode,
-                    tableType,
-                    copy,
                     [],
-                    inlineDelete,
-                    multiSelect
+                    { tableType, copy, inlineDelete, multiSelect }
                 )
             };
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
