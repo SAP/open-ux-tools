@@ -34,8 +34,17 @@ Add a new ESLint rule to `@sap-ux/eslint-plugin-fiori-tools` following the estab
 Infer from the request:
 - **Rule name** — `sap-[kebab-case-name]` pattern
 - **OData version** — V2 only, V4 only, or both
+- **Page scope** — which page types to check. **Default: all page types** (list report, object page, etc.) unless the spec explicitly restricts the scope. Do not limit to one page type based on the examples in the spec.
 - **Auto-fix** — yes/no
 - **Severity** — `error` or `warning`. Rules in `recommended-for-s4hana` MUST be `warn`.
+
+**OData version determines the linker file — always follow the stated version:**
+
+| OData version | Linker file | Manifest root |
+|---|---|---|
+| V2 only | `src/project-context/linker/fe-v2.ts` | `sap.ui.generic.app.pages.*` |
+| V4 only | `src/project-context/linker/fe-v4.ts` | `sap.ui5.routing.targets.*` |
+| Both | both linker files | both roots |
 
 **Read the matching reference file immediately**, then read all the files it lists in a single parallel batch. If the rule spans multiple types (e.g. annotations + manifest, or manifest + flex changes), read all matching reference files and combine their templates and access patterns.
 
