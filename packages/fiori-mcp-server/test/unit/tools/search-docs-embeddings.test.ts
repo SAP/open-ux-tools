@@ -56,7 +56,10 @@ describe('search_docs embeddings coverage', () => {
     }, 120000);
 
     it('returns content from sap-fiori-opa5-test-development/v4-standard-patterns.md', async () => {
-        const result = await searchDocs('iStartMyApp iTearDownMyApp OPA5 journey sap.fe.test quick-reference catalogue', 5);
+        const result = await searchDocs(
+            'iStartMyApp iTearDownMyApp OPA5 journey sap.fe.test quick-reference catalogue',
+            5
+        );
         expect(result).toContain('iStartMyApp');
     }, 120000);
 
