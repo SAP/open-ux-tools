@@ -22,7 +22,7 @@ overrides:
   drizzle-orm: '>=0.45.2'
   socket.io-parser: '>=4.2.6'
   underscore: '>=1.13.8'
-  undici@>=6.0.0 <6.24.0: ^6.24.0
+  undici@>=6.0.0 <6.24.0: ^7.29.0
   undici@>=7.0.0 <7.24.0: ^7.24.0
   lodash: 4.18.1
   mta-local: 1.0.8
@@ -1127,7 +1127,7 @@ importers:
         version: link:../logger
       '@sap/approuter':
         specifier: 22.0.3
-        version: 22.0.3(supports-color@7.2.0)(undici@6.24.1)
+        version: 22.0.3(supports-color@7.2.0)(undici@7.29.0)
       content-type:
         specifier: ^1.0.5
         version: 1.0.5
@@ -14150,7 +14150,7 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       tough-cookie: ^4.0.0 || ^5.0.0
-      undici: ^6.24.0
+      undici: ^7.29.0
     peerDependenciesMeta:
       undici:
         optional: true
@@ -18749,16 +18749,16 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici@6.24.1:
-    resolution: {integrity: sha512-sC+b0tB1whOCzbtlx20fx3WgCXwkW627p4EA9uM+/tNNPkSS+eSEld6pAs9nDv7WbY1UUljBMYPtu9BCOrCWKA==}
-    engines: {node: '>=18.17'}
-
   undici@7.25.0:
     resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
     engines: {node: '>=20.18.1'}
 
   undici@7.28.0:
     resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
+    engines: {node: '>=20.18.1'}
+
+  undici@7.29.0:
+    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
     engines: {node: '>=20.18.1'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -25260,7 +25260,7 @@ snapshots:
       lodash: 4.18.1
       yaml: 2.8.3
 
-  '@sap/approuter@22.0.3(supports-color@7.2.0)(undici@6.24.1)':
+  '@sap/approuter@22.0.3(supports-color@7.2.0)(undici@7.29.0)':
     dependencies:
       '@sap/audit-logging': 7.0.0(supports-color@7.2.0)
       '@sap/e2e-trace': 6.0.0
@@ -25269,7 +25269,7 @@ snapshots:
       '@sap/xssec': 4.12.2(supports-color@7.2.0)
       agentkeepalive: 4.6.0
       axios: 1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      axios-cookiejar-support: 5.0.5(axios@1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))(tough-cookie@4.1.4)(undici@6.24.1)
+      axios-cookiejar-support: 5.0.5(axios@1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))(tough-cookie@4.1.4)(undici@7.29.0)
       axios-retry: 4.5.0(axios@1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))
       base64-url: 2.3.3
       basic-auth: 1.1.0
@@ -28282,10 +28282,10 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios-cookiejar-support@5.0.5(axios@1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))(tough-cookie@4.1.4)(undici@6.24.1):
+  axios-cookiejar-support@5.0.5(axios@1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))(tough-cookie@4.1.4)(undici@7.29.0):
     dependencies:
       axios: 1.16.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      http-cookie-agent: 6.0.8(tough-cookie@4.1.4)(undici@6.24.1)
+      http-cookie-agent: 6.0.8(tough-cookie@4.1.4)(undici@7.29.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - undici
@@ -28926,7 +28926,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 6.24.1
+      undici: 7.29.0
       whatwg-mimetype: 4.0.0
 
   cheerio@1.0.0-rc.12:
@@ -31643,12 +31643,12 @@ snapshots:
 
   http-cache-semantics@4.2.0: {}
 
-  http-cookie-agent@6.0.8(tough-cookie@4.1.4)(undici@6.24.1):
+  http-cookie-agent@6.0.8(tough-cookie@4.1.4)(undici@7.29.0):
     dependencies:
       agent-base: 7.1.4
       tough-cookie: 4.1.4
     optionalDependencies:
-      undici: 6.24.1
+      undici: 7.29.0
 
   http-deceiver@1.2.7: {}
 
@@ -37743,11 +37743,11 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici@6.24.1: {}
-
   undici@7.25.0: {}
 
   undici@7.28.0: {}
+
+  undici@7.29.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
