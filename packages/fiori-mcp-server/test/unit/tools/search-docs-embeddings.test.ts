@@ -1,7 +1,7 @@
 /**
  * Integration tests that run search_docs against the built MCP server (dist/index.js)
- * to verify the tool is reachable and returns results. Corpus content coverage is
- * verified separately in fiori-docs-embeddings/test/build-embeddings-integration.test.ts.
+ * without mocking @sap-ux/fiori-docs-embeddings, to verify that content from the
+ * OPA5 skill reference files and sap_fe_test_api.md is present and retrievable in the embeddings.
  */
 
 import { MultiServerMCPClient } from '@langchain/mcp-adapters';
@@ -50,15 +50,21 @@ async function searchDocs(query: string, maxResults = 5): Promise<string> {
 }
 
 describe('search_docs embeddings coverage', () => {
-    it('returns results for an OPA5 query', async () => {
-        const result = await searchDocs('OData V4 OPA5 sap.fe.test JourneyRunner', 5);
-        expect(result.length).toBeGreaterThan(0);
-        expect(result).toContain('Result 1:');
+    it('returns content from sap-fiori-opa5-test-development/v4-instructions.md', async () => {
+        const result = await searchDocs('OData V4 sap.fe.test JourneyRunner generated test structure', 5);
+        expect(result).toContain('OData V4');
     }, 120000);
 
-    it('returns results for a sap.fe.test API query', async () => {
-        const result = await searchDocs('sap.fe.test column adaptation OPA5 API', 5);
-        expect(result.length).toBeGreaterThan(0);
-        expect(result).toContain('Result 1:');
+    it('returns content from sap-fiori-opa5-test-development/v4-standard-patterns.md', async () => {
+        const result = await searchDocs('iStartMyApp iTearDownMyApp OPA5 journey sap.fe.test quick-reference catalogue', 5);
+        expect(result).toContain('iStartMyApp');
+    }, 120000);
+
+    it('returns content from sap_fe_test_api.md', async () => {
+        const result = await searchDocs(
+            'sap.fe.test.api.DialogValueHelpActions DialogCreateActions DialogMessageActions',
+            5
+        );
+        expect(result).toContain('sap.fe.test.api');
     }, 120000);
 });
