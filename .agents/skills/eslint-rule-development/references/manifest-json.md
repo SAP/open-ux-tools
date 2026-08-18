@@ -127,7 +127,7 @@ ruleTester.run('sap-[rule-name]', myRule, {
             { name: 'wrong value', filename: V4_MANIFEST_PATH, code: getManifestAsCode(V4_MANIFEST, [{ path: ['sap.ui5', 'myProp'], value: 'wrong' }]) },
             [],
             {
-                errors: [{ messageId: 'sap-[rule-name]' }],
+                errors: [{ message: '<fully resolved error message string>' }],
                 // output: getManifestAsCode(V4_MANIFEST, []) // include if fixable
             }
         )

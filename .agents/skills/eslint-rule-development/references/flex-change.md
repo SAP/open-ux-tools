@@ -34,7 +34,7 @@ import { createFioriRule } from '../language/rule-factory.js';
 import { FioriChangeSourceCode } from '../language/change/source-code.js';
 import { createJsonFixer } from '../language/rule-fixer.js'; // only if auto-fix
 import { FLEX_CHANGE_NEW_VALUE_PATH_RESULT } from '../utils/helpers.js'; // only if auto-fixable
-import type { MemberNode } from '../language/json/types.js';
+import type { MemberNode } from '@humanwhocodes/momoa';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: MY_RULE,
@@ -59,7 +59,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     const config = table.configuration.myProperty;
                     // Check for the incorrect value — type and value depend on the property
                     // e.g. !== true, === false, !== 'expectedValue', etc.
-                    if (config?.valueInFile !== expectedValue) {
+                    if (config && config.valueInFile !== expectedValue) {
                         problems.push({
                             type: MY_RULE,
                             property: 'myPropertyName',      // ← as it appears in the .change file
@@ -129,7 +129,7 @@ ruleTester.run('sap-[rule-name]', myRule, {
         createInvalidTest(
             { name: 'V2: property set incorrectly', filename: V2_FLEX_CHANGE_FILE_PATH, code: JSON.stringify({ ...V2_FLEX_CHANGE_CONTENT, content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'myProp', newValue: false } }, undefined, 2) },
             [],
-            { errors: [{ messageId: 'sap-[rule-name]' }] }
+            { errors: [{ message: '<fully resolved error message string>' }] }
         )
     ]
 });

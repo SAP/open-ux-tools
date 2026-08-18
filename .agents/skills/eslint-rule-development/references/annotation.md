@@ -291,7 +291,7 @@ ruleTester.run(TEST_NAME, myRule, {
         createInvalidTest(
             { name: 'V4: violation', filename: V4_ANNOTATIONS_PATH, code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_VIOLATION) },
             [],
-            { errors: [{ messageId: TEST_NAME }] }
+            { errors: [{ message: '<fully resolved error message string>' }] }
         )
     ]
 });
