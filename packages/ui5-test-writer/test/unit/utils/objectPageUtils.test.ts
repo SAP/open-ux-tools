@@ -1,7 +1,7 @@
 import type { ApplicationModel, TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Logger } from '@sap-ux/logger';
-import { getObjectPageFeatures } from '../../../src/utils/objectPageUtils.js';
+import { getObjectPageFeatures, resolveOriginatingView } from '../../../src/utils/objectPageUtils.js';
 import type { ObjectPageFeatures, HeaderSectionFeatureData } from '../../../src/types.js';
 
 describe('Test getObjectPageFeatures()', () => {
@@ -3139,5 +3139,49 @@ describe('Contact Card extraction', () => {
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
         const headerSection = result[0].headerSections?.[0];
         expect(headerSection?.contactCardFields).toEqual([{ property: 'carrier/Contact' }]);
+    });
+});
+
+describe('resolveOriginatingView()', () => {
+    // Mirrors fin.test.v4.lr2: views 1/2/3 show the main entity (Customer), view 6 shows CompanyCodeDetail.
+    const lr2Views = [
+        { key: '1', entitySet: undefined },
+        { key: '2', entitySet: undefined },
+        { key: '3', entitySet: undefined },
+        { key: '6', entitySet: 'CompanyCodeDetail' }
+    ];
+
+    test('returns undefined for a single-table List Report (no views)', () => {
+        expect(resolveOriginatingView([], 'Customer', 'Customer')).toBeUndefined();
+    });
+
+    test('maps a main-entity Object Page to the first (default) view', () => {
+        // CustomerObjectPage has entitySet Customer; the default views inherit the LR main entity set.
+        expect(resolveOriginatingView(lr2Views, 'Customer', 'Customer')).toEqual({ key: '1', isDefault: true });
+    });
+
+    test('maps an Object Page to the non-default view that declares its entity set', () => {
+        // CompanyCodeDetailObjectPage → view 6 (entitySet CompanyCodeDetail), a non-default tab.
+        expect(resolveOriginatingView(lr2Views, 'CompanyCodeDetail', 'Customer')).toEqual({
+            key: '6',
+            isDefault: false
+        });
+    });
+
+    test('falls back to the first view (default) when no view matches the Object Page entity set', () => {
+        expect(resolveOriginatingView(lr2Views, 'Unrelated', 'Customer')).toEqual({ key: '1', isDefault: true });
+    });
+
+    test('falls back to the first view when the Object Page has no entity set', () => {
+        expect(resolveOriginatingView(lr2Views, undefined, 'Customer')).toEqual({ key: '1', isDefault: true });
+    });
+
+    test('matches a view by its explicit entity set even when it is the first view', () => {
+        const views = [
+            { key: 'A', entitySet: 'Books' },
+            { key: 'B', entitySet: 'Authors' }
+        ];
+        expect(resolveOriginatingView(views, 'Books', 'Books')).toEqual({ key: 'A', isDefault: true });
+        expect(resolveOriginatingView(views, 'Authors', 'Books')).toEqual({ key: 'B', isDefault: false });
     });
 });

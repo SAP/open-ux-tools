@@ -63,6 +63,38 @@ export function transformTableColumns(columnAggregations: ColumnAggregations): T
 }
 
 /**
+ * Resolves the table node that actually carries `columns`/`toolBar` aggregations.
+ * Single-table List Reports and Object Page sections expose these directly under `table`.
+ * Multi-view List Reports nest one table node per tab under `table.views[key]`; the first
+ * non-empty (non-custom) view node is returned, matching the default table tab.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns the table node holding column/toolbar aggregations, or undefined if none is found
+ */
+export function resolvePrimaryTableNode(node: TreeAggregation): TreeAggregation | undefined {
+    const tableAggregation = getAggregations(node)['table'];
+    if (!tableAggregation) {
+        return undefined;
+    }
+    const tableChildren = getAggregations(tableAggregation);
+    if (tableChildren['columns']) {
+        return tableAggregation;
+    }
+    const views = tableChildren['views'];
+    if (!views) {
+        return tableAggregation;
+    }
+    const viewNodes = getAggregations(views);
+    for (const key of Object.keys(viewNodes)) {
+        const viewNode = viewNodes[key] as TreeAggregation;
+        if (getAggregations(viewNode)['columns']) {
+            return viewNode;
+        }
+    }
+    return undefined;
+}
+
+/**
  * Extracts table column data from a spec model node that contains a 'table' aggregation.
  * Covers both page-level nodes (List Report, FPM) via their root and section-level nodes
  * (Object Page body sections) — both are TreeAggregation nodes that expose a 'table' aggregation.
@@ -71,11 +103,11 @@ export function transformTableColumns(columnAggregations: ColumnAggregations): T
  * @returns a map of column identifiers to column state objects for use with iCheckColumns()
  */
 export function extractTableColumnsFromNode(node: TreeAggregation): TableColumnFeatureData {
-    const tableAggregation = getAggregations(node)['table'];
-    if (!tableAggregation) {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
         return {};
     }
-    const columnsAggregation = getAggregations(tableAggregation)['columns'];
+    const columnsAggregation = getAggregations(tableNode)['columns'];
     if (!columnsAggregation) {
         return {};
     }
@@ -90,11 +122,11 @@ export function extractTableColumnsFromNode(node: TreeAggregation): TableColumnF
  * @returns array of Contact-card field descriptors for use with iClickLink/iCheckLink
  */
 export function extractContactCardColumnsFromNode(node: TreeAggregation): ContactCardField[] {
-    const tableAggregation = getAggregations(node)['table'];
-    if (!tableAggregation) {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
         return [];
     }
-    const columnsAggregation = getAggregations(tableAggregation)['columns'];
+    const columnsAggregation = getAggregations(tableNode)['columns'];
     if (!columnsAggregation) {
         return [];
     }

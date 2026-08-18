@@ -141,7 +141,8 @@ export async function getAppFeatures(
                 listReportPage?.name,
                 log,
                 projectMetadata,
-                manifest
+                manifest,
+                listReportPage?.entitySet
             );
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
