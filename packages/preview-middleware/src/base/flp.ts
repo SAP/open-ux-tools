@@ -23,6 +23,7 @@ import {
     getProjectType,
     type ProjectType,
     findProjectRoot,
+    findCapProjectRoot,
     type Manifest,
     FileName,
     type ManifestNamespace,
@@ -58,7 +59,8 @@ import type {
     TestConfig,
     CardGeneratorConfig,
     MultiCardsPayload,
-    I18nEntry
+    I18nEntry,
+    Ui5Version
 } from '../types/index.js';
 import {
     getFlpConfigWithDefaults,
@@ -71,7 +73,9 @@ import {
     getAppName,
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
-    remapResourcesForPath
+    remapResourcesForPath,
+    generateSandboxAppConfig,
+    qualifiesForNewSandbox
 } from './config.js';
 import { generateCdm } from './cdm.js';
 import { readFileSync } from 'node:fs';
@@ -80,6 +84,16 @@ import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
+
+/**
+ * Convert an application id to its namespace by replacing dots with slashes.
+ *
+ * @param id application id from manifest (e.g. 'test.fe.v2.app')
+ * @returns namespace string (e.g. 'test/fe/v2/app')
+ */
+function toNamespace(id: string): string {
+    return id.replaceAll('.', '/');
+}
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -100,17 +114,6 @@ type OnChangeRequestHandler = (
     logger: Logger,
     extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
-
-type Ui5Version = {
-    major: number;
-    minor: number;
-    patch: number;
-    label?: string;
-    /**
-     * Indicates if the UI5 version is served from CDN.
-     */
-    isCdn: boolean;
-};
 
 type RtaDeveloperModeTemplateConfig = {
     previewUrl: string;
@@ -186,12 +189,20 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        const projectRoot = await findProjectRoot(process.cwd(), false, true);
+        const projectRoot =
+            (await findCapProjectRoot(process.cwd(), false)) ?? (await findProjectRoot(process.cwd(), false, true));
         this.projectType = await getProjectType(projectRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(
+            this.flpConfig,
+            manifest,
+            resources,
+            adp !== undefined,
+            this.projectType !== 'EDMXBackend',
+            this.logger
+        );
         this.adp = adp;
         this.manifest = manifest;
 
@@ -229,7 +240,7 @@ export class FlpSandbox {
                 this.test.filter((config) => config.framework !== 'Testsuite'),
                 id
             );
-            this.createTestSuite(this.test);
+            await this.createTestSuite(this.test, id);
         }
 
         if (this.flpConfig.enhancedHomePage) {
@@ -278,16 +289,20 @@ export class FlpSandbox {
      * Also deletes the ABAP connector in case of a CAP project.
      * Deletes all connectors if UI5 version is < 1.84 and served from npmjs.
      *
+     * @param config - the template config to mutate (must be a per-request clone, not the shared this.templateConfig)
      * @param ui5VersionMajor - the major version of UI5
      * @param ui5VersionMinor - the minor version of UI5
      * @param isCDN - whether the UI5 sources are served from CDN
      * @private
      */
-    private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number, isCDN: boolean): void {
+    private checkDeleteConnectors(
+        config: TemplateConfig,
+        ui5VersionMajor: number,
+        ui5VersionMinor: number,
+        isCDN: boolean
+    ): void {
         if (ui5VersionMajor === 1 && ui5VersionMinor < 84) {
-            this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter((connector) =>
-                isFlexConnector(connector)
-            );
+            config.ui5.flex = config.ui5?.flex?.filter((connector) => isFlexConnector(connector));
             this.logger.debug(
                 `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it.${
                     isCDN ? 'The Fiori Tools fake connector (FakeLrepConnector) will be used instead.' : ''
@@ -300,18 +315,6 @@ export class FlpSandbox {
             }
         } else {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
-        }
-        if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
-            this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter(
-                (connector) =>
-                    !isFlexConnector(connector) ||
-                    (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
-            );
-            this.logger.debug(
-                `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
-            );
-        } else {
-            this.logger.debug(`The ABAP connector is being used.`);
         }
     }
 
@@ -331,7 +334,6 @@ export class FlpSandbox {
         await this.setApplicationDependencies();
         this.templateConfig.baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, this.templateConfig.baseUrl);
-        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
@@ -340,6 +342,8 @@ export class FlpSandbox {
         }
 
         const config = structuredClone(this.templateConfig);
+        config.ui5.versionMajor = ui5Version.major;
+        this.checkDeleteConnectors(config, ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (!config.ui5.libs.includes('sap.ui.rta')) {
             // sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects
             config.ui5.libs += ',sap.ui.rta';
@@ -358,7 +362,7 @@ export class FlpSandbox {
         const appId = this.manifest['sap.app']?.id ?? '';
         remapResourcesForPath(config, editor.path, appId);
 
-        return render(this.getSandboxTemplate(ui5Version), config);
+        return render(await this.getSandboxTemplate(ui5Version), config);
     }
 
     /**
@@ -368,7 +372,7 @@ export class FlpSandbox {
      * @returns Promise that resolves when the application dependencies are set
      */
     private async setApplicationDependencies(): Promise<void> {
-        if (this.adp) {
+        if (this.adp && !this.adp.isCloudFoundry) {
             await this.adp.sync();
             const appName = getAppName(this.manifest, this.flpConfig.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
@@ -514,7 +518,7 @@ export class FlpSandbox {
         await this.setApplicationDependencies();
         // get filepath from request. Use dummy url to extract it from originalUrl if needed
         const filePath = 'query' in req ? req.path : new URL('http://dummyHost' + req.originalUrl!).pathname; //NOSONAR
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const file = await this.project.byPath(filePath);
         if (file) {
             this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
@@ -522,22 +526,71 @@ export class FlpSandbox {
         } else {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
-            const ui5Version = await this.getUi5Version(
-                //use protocol from request header referer as fallback for connect API (karma test runner)
-                'protocol' in req
-                    ? req.protocol
-                    : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http'),
-                req.headers.host,
-                this.templateConfig.baseUrl
-            );
-            this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+            const ui5Version = await this.getUi5VersionFromRequest(req, this.templateConfig.baseUrl);
+            this.templateConfig.ui5.versionMajor = ui5Version.major;
+            this.checkDeleteConnectors(this.templateConfig, ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
             }
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
-            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
+            const html = render(await this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
+    }
+
+    /**
+     * Handler for GET requests to fioriSandboxAppConfig.json (Sandbox 2.0).
+     * Serves a virtual config, optionally merged with a user-provided file.
+     * If a real HTML file exists at the FLP path, no virtual config is served.
+     *
+     * @param req incoming request
+     * @param res server response
+     * @param next next middleware function
+     * @param configJsonPath project-relative path to fioriSandboxAppConfig.json
+     */
+    private async sandboxAppConfigGetHandler(
+        req: EnhancedRequest | connect.IncomingMessage,
+        res: Response | http.ServerResponse,
+        next: NextFunction,
+        configJsonPath: string
+    ): Promise<void> {
+        const baseUrl = (this.templateConfig.baseUrl =
+            ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
+
+        const file = await this.project.byPath(`${baseUrl}${this.flpConfig.path}`);
+        if (file) {
+            this.logger.info(
+                `HTML file returned at '${this.flpConfig.path}'. No virtual 'fioriSandboxAppConfig.json' will be served.`
+            );
+            next();
+            return;
+        }
+        // If the legacy fioriSandboxConfig.json exists, sandbox 2 is disabled — no config to serve.
+        const legacyFile = await this.project.byPath(`${baseUrl}/appconfig/fioriSandboxConfig.json`);
+        if (legacyFile) {
+            next();
+            return;
+        }
+        // check for user-provided fioriSandboxAppConfig.json and merge if present
+        const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
+        let config = generateSandboxAppConfig(
+            this.templateConfig,
+            this.flpConfig,
+            this.adp !== undefined,
+            this.projectType !== 'EDMXBackend',
+            this.logger
+        );
+        if (userConfigFile) {
+            const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
+            config = {
+                ...config,
+                ...userConfig,
+                // beforeFlpStart and afterFlpStart must always point to our hooks
+                beforeFlpStart: config.beforeFlpStart,
+                afterFlpStart: config.afterFlpStart
+            };
+        }
+        this.sendResponse(res, 'application/json', 200, JSON.stringify(config));
     }
 
     /**
@@ -558,6 +611,43 @@ export class FlpSandbox {
                 await this.flpGetHandler(req, res, next);
             }
         );
+
+        // add routes for fioriSandboxAppConfig.json (Sandbox 2.0) — only when sandbox 2 is not explicitly disabled.
+        // The config must be served at the directory of every sandbox HTML endpoint,
+        // since each endpoint fetches fioriSandboxAppConfig.json relative to its own location.
+        if (this.flpConfig.useNewSandbox === true) {
+            const sandboxDirs = new Set<string>();
+            sandboxDirs.add(dirname(this.flpConfig.path));
+            if (this.cardGenerator?.path) {
+                const cardGeneratorPath = this.cardGenerator.path.startsWith('/')
+                    ? this.cardGenerator.path
+                    : `/${this.cardGenerator.path}`;
+                sandboxDirs.add(dirname(cardGeneratorPath));
+            }
+            if (this.rta) {
+                for (const editor of this.rta.endpoints) {
+                    sandboxDirs.add(dirname(editor.path));
+                }
+            }
+            // Register one route per directory rather than passing an array to router.get()
+            // sandboxAppConfigGetHandler needs the concrete configJsonPath to look up the user-provided
+            // file via project.byPath(), and connect.IncomingMessage does not expose req.path,
+            // so we cannot derive the path from the request inside the handler.
+            for (const dir of sandboxDirs) {
+                const configJsonPath = `${dir}/fioriSandboxAppConfig.json`;
+                this.logger.debug(`Add route for ${configJsonPath}`);
+                this.router.get(
+                    configJsonPath,
+                    async (
+                        req: EnhancedRequest | connect.IncomingMessage,
+                        res: Response | http.ServerResponse,
+                        next: NextFunction
+                    ) => {
+                        await this.sandboxAppConfigGetHandler(req, res, next, configJsonPath);
+                    }
+                );
+            }
+        }
     }
 
     /**
@@ -579,9 +669,46 @@ export class FlpSandbox {
                 next: NextFunction
             ) => {
                 this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
+                if (this.templateConfig.enableCardGenerator) {
+                    // check for min ui5 version of card generator feature
+                    const baseUrl = 'ui5-patched-router' in req ? (req['ui5-patched-router']?.baseUrl ?? '') : '';
+                    const ui5Version = await this.getUi5VersionFromRequest(req, baseUrl);
+                    const minMinor = this.projectType === 'CAPNodejs' || this.projectType === 'CAPJava' ? 149 : 121;
+                    if (
+                        (ui5Version.major === 1 && ui5Version.minor < minMinor) ||
+                        ui5Version.major >= 2 ||
+                        ui5Version.label?.includes('legacy-free')
+                    ) {
+                        this.templateConfig.enableCardGenerator = false;
+                        this.logger.warn(
+                            `Feature cardGenerator disabled: UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch} does not meet the minimum required version 1.${minMinor}.0 for project type '${this.projectType}'.`
+                        );
+                    }
+                }
                 await this.flpGetHandler(req, res, next);
             }
         );
+    }
+
+    /**
+     * Extracts protocol and baseUrl from a request and calls getUi5Version.
+     * Handles both express Request and connect IncomingMessage (karma test runner).
+     *
+     * @param req - the incoming request
+     * @param baseUrl - the base path to include when fetching the UI5 version
+     * @returns the parsed UI5 version
+     * @private
+     */
+    private async getUi5VersionFromRequest(
+        req: EnhancedRequest | connect.IncomingMessage,
+        baseUrl: string = ''
+    ): Promise<Ui5Version> {
+        // use protocol from request header referer as fallback for connect API (karma test runner)
+        const protocol =
+            'protocol' in req
+                ? req.protocol
+                : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http');
+        return this.getUi5Version(protocol, req.headers.host, baseUrl);
     }
 
     /**
@@ -607,8 +734,7 @@ export class FlpSandbox {
             try {
                 const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
-                    | { name: string; libraries: { name: string; version: string }[] }
-                    | undefined;
+                    { name: string; libraries: { name: string; version: string }[] } | undefined;
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
                 isCdn = responseJson?.name === 'SAPUI5 Distribution';
             } catch (error) {
@@ -623,12 +749,19 @@ export class FlpSandbox {
         const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
 
+        // check for min ui5 version of flp.enhancedHomePage feature
         if (
             this.flpConfig.enhancedHomePage &&
             ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free'))
         ) {
             this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
             this.logger.warn(`Feature enhancedHomePage disabled: UI5 version: ${version} not supported.`);
+        }
+
+        // enhancedHomePage (CDM) is not supported with Sandbox 2 — fall back to sandbox 1
+        if (this.flpConfig.enhancedHomePage && qualifiesForNewSandbox({ major, minor, patch, label, isCdn })) {
+            this.flpConfig.useNewSandbox = false;
+            this.logger.warn(`New FLP Sandbox disabled: enhancedHomePage is not supported with Sandbox 2.`);
         }
 
         return {
@@ -642,17 +775,26 @@ export class FlpSandbox {
 
     /**
      * Read the sandbox template file based on the given UI5 version.
+     * Also checks for a legacy 'appconfig/fioriSandboxConfig.json' and falls back to Sandbox 1 if found.
      *
      * @param ui5Version - the UI5 version
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate(ui5Version: Ui5Version): string {
+    private async getSandboxTemplate(ui5Version: Ui5Version): Promise<string> {
         this.logger.info(
             `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
-        const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
+        const qualifies = qualifiesForNewSandbox(ui5Version);
+        const legacyConfigPresent = qualifies
+            ? await this.hasLegacySandboxConfig(ui5Version, this.templateConfig.baseUrl)
+            : false;
+        const useNewSandbox = qualifies && this.flpConfig.useNewSandbox === true && !legacyConfigPresent;
+        if (qualifies && !useNewSandbox && !this.flpConfig.enhancedHomePage) {
+            this.logger.info('New FLP Sandbox disabled in configuration.');
+        }
+        const filePrefix = useNewSandbox ? '2' : '';
         const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
         return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.ejs`), 'utf-8');
     }
@@ -668,6 +810,29 @@ export class FlpSandbox {
                 appDependencies.asyncHints.requests = [];
             }
         }
+    }
+
+    /**
+     * Checks if a legacy 'appconfig/fioriSandboxConfig.json' file is present when using the new FLP Sandbox.
+     * If found, warns the user to migrate and returns true so the caller can fall back to the classic Sandbox
+     * for this request.
+     *
+     * @param ui5Version - the resolved UI5 version
+     * @param baseUrl - the base URL of the current request
+     * @returns true if the legacy file is present and sandbox 2 should be suppressed
+     * @private
+     */
+    private async hasLegacySandboxConfig(ui5Version: Ui5Version, baseUrl: string): Promise<boolean> {
+        if (qualifiesForNewSandbox(ui5Version) && this.flpConfig.useNewSandbox === true) {
+            const legacyFile = await this.project.byPath(`${baseUrl}/appconfig/fioriSandboxConfig.json`);
+            if (legacyFile) {
+                this.logger.warn(
+                    `Found legacy file at 'appconfig/fioriSandboxConfig.json'. Falling back to the classic Sandbox. Please migrate your application configuration first.`
+                );
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -849,6 +1014,8 @@ export class FlpSandbox {
      * @param config the test configuration
      * @param initTemplate the test runner template
      * @param testPaths the paths to the test files
+     * @param opa5Path optional relative path from testsuite to OPA5 HTML page
+     * @param journeyNamesForIsolation optional list of journey module paths for isolated runs
      * @private
      */
     private async testSuiteJsGetHandler(
@@ -856,7 +1023,9 @@ export class FlpSandbox {
         next: NextFunction,
         config: CompleteTestConfig,
         initTemplate: string,
-        testPaths: string[]
+        testPaths: string[],
+        opa5Path?: string,
+        journeyNamesForIsolation?: string[]
     ): Promise<void> {
         const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
         if (files?.length > 0) {
@@ -864,9 +1033,10 @@ export class FlpSandbox {
             next();
         } else {
             this.logger.debug(`Serving test route: ${config.init}`);
-            const templateConfig = {
-                testPaths: testPaths
-            };
+            const templateConfig: Record<string, unknown> =
+                opa5Path && journeyNamesForIsolation?.length
+                    ? { testPaths, opa5Path, journeyNames: journeyNamesForIsolation }
+                    : { testPaths };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
         }
@@ -876,9 +1046,10 @@ export class FlpSandbox {
      * If it is part of TestConfig, create a test suite for the test configurations.
      *
      * @param configs test configurations
+     * @param id application id from manifest
      * @private
      */
-    private createTestSuite(configs: TestConfig[]): void {
+    private async createTestSuite(configs: TestConfig[], id: string): Promise<void> {
         const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
         if (!testsuiteConfig) {
             //silent skip: create a testsuite only if it is explicitly part of the test configuration
@@ -905,16 +1076,36 @@ export class FlpSandbox {
             return;
         }
 
+        const ns = toNamespace(id);
+        const qunitConfig = configs.find((c) => c.framework === 'QUnit');
+        const opa5Config = configs.find((c) => c.framework === 'OPA5');
+        const mergedOpa5Config = opa5Config ? mergeTestConfigDefaults(opa5Config) : undefined;
+
         const testPaths: string[] = [];
-        for (const testConfig of configs) {
-            if (testConfig.framework === 'Testsuite') {
-                continue;
+        let opa5Path: string | undefined;
+        let journeyNamesForIsolation: string[] | undefined;
+
+        if (qunitConfig) {
+            testPaths.push(posix.relative(posix.dirname(config.path), mergeTestConfigDefaults(qunitConfig).path));
+        }
+        if (mergedOpa5Config) {
+            if (mergedOpa5Config.isolateJourneys) {
+                try {
+                    const journeyFiles = await this.project.byGlob(mergedOpa5Config.pattern);
+                    journeyNamesForIsolation = generateImportList(ns, journeyFiles);
+                    opa5Path = posix.relative(posix.dirname(config.path), mergedOpa5Config.path);
+                } catch (e) {
+                    this.logger.error(
+                        `Failed to discover journey files: ${(e as Error).message}. OPA5 page will be added to testsuite without isolated journeys.`
+                    );
+                    testPaths.push(posix.relative(posix.dirname(config.path), mergedOpa5Config.path));
+                }
+            } else {
+                testPaths.push(posix.relative(posix.dirname(config.path), mergedOpa5Config.path));
             }
-            const mergedConfig = mergeTestConfigDefaults(testConfig);
-            testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
         }
 
-        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit-init.ejs'), 'utf-8');
         this.logger.debug(`Add route for ${config.init}`);
         this.router.get(
             config.init,
@@ -923,7 +1114,15 @@ export class FlpSandbox {
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                await this.testSuiteJsGetHandler(res, next, config, initTemplate, testPaths);
+                await this.testSuiteJsGetHandler(
+                    res,
+                    next,
+                    config,
+                    initTemplate,
+                    testPaths,
+                    opa5Path,
+                    journeyNamesForIsolation
+                );
             }
         );
     }
@@ -963,7 +1162,7 @@ export class FlpSandbox {
         id: string
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const file = await this.project.byPath(config.path);
         if (file) {
             this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
@@ -1000,7 +1199,13 @@ export class FlpSandbox {
             next();
         } else {
             const testFiles = await this.project.byGlob(config.pattern);
-            const templateConfig = { tests: generateImportList(ns, testFiles) };
+            if (testFiles.length === 0) {
+                this.logger.warn(`No test files found for pattern '${config.pattern}'.`);
+            }
+            const templateConfig = {
+                tests: generateImportList(ns, testFiles),
+                isolateJourneys: config.isolateJourneys === true
+            };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
         }
@@ -1013,7 +1218,7 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: TestConfig[], id: string): void {
-        const ns = id.replace(/\./g, '/');
+        const ns = toNamespace(id);
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const testConfig of configs) {
             const config = mergeTestConfigDefaults(testConfig);
@@ -1034,7 +1239,7 @@ export class FlpSandbox {
                 continue;
             }
             // add route for the init file
-            const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
+            const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit-init.ejs'), 'utf-8');
             this.logger.debug(`Add route for ${config.init}`);
             this.router.get(
                 config.init,
@@ -1238,7 +1443,7 @@ export class FlpSandbox {
         if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false, true);
-            await this.init(manifest, variant.reference);
+            await this.init(manifest, variant.reference, {}, adp);
             await this.setupAdpCommonHandlers(adp);
             return;
         }

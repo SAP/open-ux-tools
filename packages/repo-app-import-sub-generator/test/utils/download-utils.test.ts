@@ -21,7 +21,7 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { downloadApp, extractZip, hasQfaJson } = await import('../../src/utils/download-utils.js');
+const { downloadApp, extractZip, hasQfaJson, fetchServiceMetadata } = await import('../../src/utils/download-utils.js');
 const { PromptState } = await import('../../src/prompts/prompt-state.js');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 const AdmZipModule = await import('adm-zip');
@@ -123,6 +123,38 @@ describe('App Download Utils', () => {
 
             expect(mockDownload).toHaveBeenCalledWith('Z_TEST_REPO');
             expect(PromptState.admZip).toBeInstanceOf(AdmZip);
+        });
+    });
+
+    describe('fetchServiceMetadata', () => {
+        it('should return metadata string when service call succeeds', async () => {
+            const mockMetadata = '<edmx:Edmx Version="4.0"/>';
+            const mockProvider = {
+                service: jest.fn().mockReturnValue({
+                    metadata: jest.fn().mockResolvedValue(mockMetadata)
+                })
+            } as unknown as AbapServiceProvider;
+
+            const result = await fetchServiceMetadata(mockProvider, '/sap/opu/odata4/srvd/test/0001');
+
+            expect(mockProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/srvd/test/0001');
+            expect(result).toBe(mockMetadata);
+        });
+
+        it('should return undefined and log error when service call fails', async () => {
+            const fetchError = new Error('Network timeout');
+            const mockProvider = {
+                service: jest.fn().mockReturnValue({
+                    metadata: jest.fn().mockRejectedValue(fetchError)
+                })
+            } as unknown as AbapServiceProvider;
+
+            const result = await fetchServiceMetadata(mockProvider, '/sap/opu/odata4/srvd/test/0001');
+
+            expect(result).toBeUndefined();
+            expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+                t('error.metadataFetchError', { error: fetchError.message })
+            );
         });
     });
 });

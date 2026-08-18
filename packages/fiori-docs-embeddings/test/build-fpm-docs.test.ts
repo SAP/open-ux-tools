@@ -105,6 +105,28 @@ describe('FpmDocumentationBuilder', () => {
                 'GitHub host and token are required'
             );
         });
+
+        it('should throw error when GitHub host contains invalid characters', async () => {
+            process.env.GITHUB_HOST = 'github.test.com; rm -rf /';
+            process.env.GITHUB_TOKEN = 'valid-token-123';
+
+            const builder = new FpmDocumentationBuilder();
+
+            await expect((builder as any).initializeGitHubConfig()).rejects.toThrow(
+                'Invalid GitHub host: must contain only alphanumeric characters, dots, and hyphens'
+            );
+        });
+
+        it('should throw error when GitHub token contains invalid characters', async () => {
+            process.env.GITHUB_HOST = 'github.test.com';
+            process.env.GITHUB_TOKEN = 'token with spaces';
+
+            const builder = new FpmDocumentationBuilder();
+
+            await expect((builder as any).initializeGitHubConfig()).rejects.toThrow(
+                'Invalid GitHub token: must contain only alphanumeric characters, dots, underscores, and hyphens'
+            );
+        });
     });
 
     describe('directoryExists', () => {

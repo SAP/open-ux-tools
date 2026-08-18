@@ -1,6 +1,6 @@
 /**
  * Get rids of the missing requestAnimationFrame polyfill warning.
- *
+ * @param callback
  * @link https://reactjs.org/docs/javascript-environment-requirements.html
  * @copyright 2004-present Facebook. All Rights Reserved.
  */

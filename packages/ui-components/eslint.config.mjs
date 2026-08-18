@@ -1,23 +1,18 @@
 import base from '../../eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
-const __dirname = import.meta.dirname;
 
 export default [
-    { ignores: ['stories', 'storybook', 'test'] },
+    { ignores: ['stories', 'storybook'] },
     ...base,
     reactPlugin.configs.flat.recommended,
     //   ...storybook.configs['flat/recommended'],
     {
-        ignores: ['stories', './test/**/*.tsx'],
+        ignores: ['stories'],
         plugins: {
             reactPlugin
         },
         languageOptions: {
-            parserOptions: {
-                project: './tsconfig.eslint.json',
-                tsconfigRootDir: __dirname
-            },
             globals: {
                 ...globals.browser
             }
@@ -39,11 +34,6 @@ export default [
         }
     },
     {
-        languageOptions: {
-            'parser': '@typescript-eslint/parser',
-            project: './tsconfig.eslint.json',
-            tsconfigRootDir: __dirname
-        },
         files: ['./test/**/*.tsx'],
         rules: {
             'no-loop-func': 'off'

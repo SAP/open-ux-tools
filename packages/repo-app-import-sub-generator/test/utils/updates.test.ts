@@ -77,16 +77,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
 
     it('should not modify the manifest if minUI5Version is valid', async () => {
         const manifest = {
-            'sap.ui5': {
-                dependencies: {
-                    minUI5Version: '1.90.0'
-                }
-            },
-            'sap.app': {
-                sourceTemplate: {
-                    id: fioriAppSourcetemplateId
-                }
-            }
+            'sap.ui5': { dependencies: { minUI5Version: '1.90.0' } },
+            'sap.app': { sourceTemplate: { id: 'old-template-id' } }
         };
         mockReadManifest.mockReturnValue(manifest);
         mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
@@ -97,16 +89,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
 
     it('should update minUI5Version to internal version if internal features are enabled', async () => {
         const manifest = {
-            'sap.ui5': {
-                dependencies: {
-                    minUI5Version: '1.80.0'
-                }
-            },
-            'sap.app': {
-                sourceTemplate: {
-                    id: fioriAppSourcetemplateId
-                }
-            }
+            'sap.ui5': { dependencies: { minUI5Version: '1.80.0' } },
+            'sap.app': { sourceTemplate: { id: 'old-template-id' } }
         };
         mockReadManifest.mockReturnValue(manifest);
         mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
@@ -117,16 +101,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
         expect(fs.writeJSON).toHaveBeenCalledWith(
             'path/to/manifest.json',
             {
-                'sap.ui5': {
-                    dependencies: {
-                        minUI5Version: '${sap.ui5.dist.version}'
-                    }
-                },
-                'sap.app': {
-                    sourceTemplate: {
-                        id: fioriAppSourcetemplateId
-                    }
-                }
+                'sap.ui5': { dependencies: { minUI5Version: '${sap.ui5.dist.version}' } },
+                'sap.app': { sourceTemplate: { id: fioriAppSourcetemplateId } }
             },
             undefined,
             2
@@ -135,16 +111,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
 
     it('should update minUI5Version to the closest available version if invalid', async () => {
         const manifest = {
-            'sap.ui5': {
-                dependencies: {
-                    minUI5Version: '1.70.0'
-                }
-            },
-            'sap.app': {
-                sourceTemplate: {
-                    id: fioriAppSourcetemplateId
-                }
-            }
+            'sap.ui5': { dependencies: { minUI5Version: '1.70.0' } },
+            'sap.app': { sourceTemplate: { id: 'old-template-id' } }
         };
         mockReadManifest.mockReturnValue(manifest);
         mockGetUI5Versions.mockResolvedValue([{ version: '1.90.0' }]);
@@ -155,16 +123,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
         expect(fs.writeJSON).toHaveBeenCalledWith(
             'path/to/manifest.json',
             {
-                'sap.ui5': {
-                    dependencies: {
-                        minUI5Version: '1.90.0'
-                    }
-                },
-                'sap.app': {
-                    sourceTemplate: {
-                        id: fioriAppSourcetemplateId
-                    }
-                }
+                'sap.ui5': { dependencies: { minUI5Version: '1.90.0' } },
+                'sap.app': { sourceTemplate: { id: fioriAppSourcetemplateId } }
             },
             undefined,
             2

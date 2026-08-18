@@ -4,7 +4,7 @@ import type { i18n as i18nNext, TOptions } from 'i18next';
 import { addi18nResourceBundle as addInquirerCommonResourceBundle } from '@sap-ux/inquirer-common';
 import { addi18nResourceBundle as addProjectInputValidatorBundle } from '@sap-ux/project-input-validator';
 
-import translations from '../translations/generator-adp.i18n.json' with { type: 'json' };
+import translations from '../translations/generator-adp.i18n.json';
 
 const adpGeneratorI18nNamespace = 'generator-adp';
 export const i18n: i18nNext = i18next.createInstance();
@@ -15,8 +15,7 @@ export const i18n: i18nNext = i18next.createInstance();
 export async function initI18n(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en',
-        showSupportNotice: false
+        fallbackLng: 'en'
     });
     i18n.addResourceBundle('en', adpGeneratorI18nNamespace, translations);
 

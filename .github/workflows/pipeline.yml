@@ -23,6 +23,15 @@ jobs:
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
+            - name: Enable long paths on Windows
+              if: runner.os == 'Windows'
+              shell: pwsh
+              run: |
+                  # node-gyp extracts deeply nested OpenSSL headers during native module builds
+                  # (e.g. better-sqlite3), which exceeds the default 260-char MAX_PATH limit.
+                  # The registry key enables long-path support OS-wide; git config covers git ops.
+                  git config --system core.longpaths true
+                  New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
@@ -128,14 +137,21 @@ jobs:
         environment: release
         permissions:
             contents: write
+            id-token: write
         outputs:
             changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
         steps:
+            - name: Generate app token
+              id: app-token
+              uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+              with:
+                  app-id: ${{ secrets.APP_ID }}
+                  private-key: ${{ secrets.APP_PRIVATE_KEY }}
             - name: Checkout code repository
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
-                  token: ${{ secrets.ACCESS_PAT }}
+                  token: ${{ steps.app-token.outputs.token }}
             - name: Use Node.js 22.x
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
@@ -237,11 +253,35 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: Detect extension publication
-              if: steps.changesetPublish.outputs.published == 'true'
               run: |
-                  PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
-                  # Extract the first package name matching sap-ux-*-ext
-                  EXT_PKG=$(echo "$PUBLISHED" | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+                  EXT_PKG=""
+
+                  # Primary path: extension was published in this run
+                  if [ "${{ steps.changesetPublish.outputs.published }}" == "true" ]; then
+                    PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
+                    EXT_PKG=$(echo "$PUBLISHED" | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+                  fi
+
+                  # Fallback: extension is on npm but GitHub Release is missing the vsix asset.
+                  # This covers the case where a previous run published to npm but crashed before
+                  # creating the GitHub Release (e.g. due to a concurrent versioning commit).
+                  if [ -z "$EXT_PKG" ]; then
+                    # Enumerate all extension packages in the workspace
+                    EXT_PKGS=$(find packages -maxdepth 2 -name "package.json" -exec sh -c 'jq -r "select(.name | test(\"^sap-ux-.*-ext$\")) | .name" "$1" 2>/dev/null' _ {} \;)
+                    for PKG in $EXT_PKGS; do
+                      NPM_VERSION=$(npm view "$PKG" version 2>/dev/null || true)
+                      if [ -z "$NPM_VERSION" ]; then
+                        continue
+                      fi
+                      TAG="${PKG}@${NPM_VERSION}"
+                      # Check whether a GitHub Release for this tag already has a vsix asset
+                      ASSET_COUNT=$(gh release view "$TAG" --repo ${{ github.repository }} --json assets --jq '[.assets[].name | select(endswith(".vsix"))] | length' 2>/dev/null || echo "0")
+                      if [ "$ASSET_COUNT" == "0" ]; then
+                        EXT_PKG="$PKG"
+                        break
+                      fi
+                    done
+                  fi
 
                   if [ -n "$EXT_PKG" ]; then
                     echo "EXTENSION_UPDATED=true" >> $GITHUB_ENV

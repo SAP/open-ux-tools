@@ -125,32 +125,37 @@ describe('generate', () => {
                 fs
             );
             expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
-                            "resources:
-                              configuration: {}
-                            server:
-                              customMiddleware:
-                                - name: fiori-tools-proxy
-                                  afterMiddleware: compression
-                                  configuration:
-                                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-                                    backend:
-                                      - path: /sap
-                                        url: https://localhost/updated
-                                - name: sap-fe-mockserver
-                                  beforeMiddleware: csp
-                                  configuration:
-                                    mountPath: /
-                                    services:
-                                      - urlPath: /sap
-                                        metadataPath: ./webapp/localService/mainService/metadata.xml
-                                        mockdataPath: ./webapp/localService/mainService/data
-                                        generateMockData: true
-                                        resolveExternalServiceReferences: true
-                                    annotations:
-                                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
-                                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-                            "
-                    `);
+                "resources:
+                  configuration: {}
+                builder:
+                  resources:
+                    excludes:
+                      - /test/**
+                      - /localService/**
+                server:
+                  customMiddleware:
+                    - name: fiori-tools-proxy
+                      afterMiddleware: compression
+                      configuration:
+                        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                        backend:
+                          - path: /sap
+                            url: https://localhost/updated
+                    - name: sap-fe-mockserver
+                      beforeMiddleware: csp
+                      configuration:
+                        mountPath: /
+                        services:
+                          - urlPath: /sap
+                            metadataPath: ./webapp/localService/mainService/metadata.xml
+                            mockdataPath: ./webapp/localService/mainService/data
+                            generateMockData: true
+                            resolveExternalServiceReferences: true
+                        annotations:
+                          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+                "
+            `);
             // Value List references are saved
             expect(
                 fs.read(
@@ -570,6 +575,11 @@ describe('generate', () => {
                             apiHub: true
                             scp: false
                             pathPrefix: /~prefix
+                builder:
+                  resources:
+                    excludes:
+                      - /test/**
+                      - /localService/**
                 "
             `);
             // verify the updated package.json
@@ -1071,6 +1081,11 @@ describe('update', () => {
                         - /resources
                         - /test-resources
                       url: https://ui5.sap.com
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
@@ -1100,6 +1115,11 @@ describe('update', () => {
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
@@ -1129,6 +1149,11 @@ describe('update', () => {
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         // No changes in package.json expected
@@ -1217,6 +1242,11 @@ describe('update', () => {
                         - /resources
                         - /test-resources
                       url: https://ui5.sap.com
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
@@ -1246,6 +1276,11 @@ describe('update', () => {
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
@@ -1275,6 +1310,11 @@ describe('update', () => {
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         // No changes in package.json expected
@@ -1350,6 +1390,11 @@ describe('update', () => {
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         // Value List references are saved
@@ -1367,6 +1412,87 @@ describe('update', () => {
                 )
             )
         ).toBe('ValueListReferences');
+    });
+
+    it('Update an existing service with value list references while preserving backend middleware', async () => {
+        // given - a metadata re-sync (updateMiddlewares === false) that writes external (value-help) services
+        // but does not re-fetch annotations (annotations === undefined)
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost/updated', // Changed URL - must NOT be re-pointed on the backend proxy
+                path: '/sap', // Backends are matched by path, use existing path
+                type: ServiceType.EDMX,
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4,
+                externalServices: [
+                    {
+                        type: 'value-list',
+                        metadata: 'ValueListReferences',
+                        path: '/sap/my_service',
+                        target: 'MyEntity/MyProperty'
+                    }
+                ]
+            },
+            fs,
+            false
+        );
+        // then - the mockserver middleware is regenerated so the written external services are resolvable
+        // (resolveExternalServiceReferences: true), while the fiori-tools-proxy backend url is preserved
+        // (still https://localhost, not https://localhost/updated)
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                        resolveExternalServiceReferences: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+        // and the value list references metadata is written
+        expect(
+            fs.read(
+                join(
+                    testDir,
+                    'webapp',
+                    'localService',
+                    'mainService',
+                    'my_service',
+                    'MyEntity',
+                    'MyProperty',
+                    'metadata.xml'
+                )
+            )
+        ).toBe('ValueListReferences');
+        // and the existing remote annotation is preserved (annotations not provided => not deleted)
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<Manifest>;
+        expect(manifest?.['sap.app']?.dataSources?.['mainService']?.settings?.annotations).toStrictEqual([
+            'SEPMRA_PROD_MAN',
+            'annotation'
+        ]);
     });
 
     it('Update an existing service without backend changes', async () => {
@@ -1650,6 +1776,11 @@ describe('update', () => {
                         - /resources
                         - /test-resources
                       url: https://ui5.sap.com
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
@@ -1679,6 +1810,11 @@ describe('update', () => {
                     annotations:
                       - localPath: ./webapp/localService/mainService/DIFFERENT_ANNOTATION.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='DIFFERENT_ANNOTATION',Version='0001')/$value/
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
@@ -1708,6 +1844,11 @@ describe('update', () => {
                     annotations:
                       - localPath: ./webapp/localService/mainService/DIFFERENT_ANNOTATION.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='DIFFERENT_ANNOTATION',Version='0001')/$value/
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         // No changes in package.json expected
@@ -1802,6 +1943,11 @@ describe('update', () => {
                         - /resources
                         - /test-resources
                       url: https://ui5.sap.com
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
         expect(fs.exists(join(testDir, 'ui5-local.yaml'))).toBe(false);

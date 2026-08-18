@@ -230,10 +230,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"basicapp\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -261,10 +260,10 @@ modules:
         parameters:
           service-key:
             name: basicapp-repo-host-key
-      - name: basicapp-uaa
+      - name: basicapp-auth
         parameters:
           service-key:
-            name: basicapp-uaa-key
+            name: basicapp-auth-key
     parameters:
       content:
         instance:
@@ -274,9 +273,9 @@ modules:
               ServiceKeyName: basicapp-repo-host-key
               sap.cloud.service: basicapp
             - Authentication: OAuth2UserTokenExchange
-              Name: basicapp_uaa
+              Name: basicapp_auth
               ServiceInstanceName: basicapp-xsuaa-service
-              ServiceKeyName: basicapp-uaa-key
+              ServiceKeyName: basicapp-auth-key
               sap.cloud.service: basicapp
           existing_destinations_policy: update
     build-parameters:
@@ -324,13 +323,20 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-  - name: basicapp-uaa
+  - name: basicapp-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: basicapp-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: basicapp-xsuaa-service
+      config:
+        xsappname: basicapp-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: basicapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -622,10 +628,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"multiproject\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -650,10 +655,10 @@ modules:
         parameters:
           service-key:
             name: multiproject-repo-host-key
-      - name: multiproject-uaa
+      - name: multiproject-auth
         parameters:
           service-key:
-            name: multiproject-uaa-key
+            name: multiproject-auth-key
     parameters:
       content:
         instance:
@@ -663,9 +668,9 @@ modules:
               ServiceKeyName: multiproject-repo-host-key
               sap.cloud.service: multiproject
             - Authentication: OAuth2UserTokenExchange
-              Name: multiproject_uaa
+              Name: multiproject_auth
               ServiceInstanceName: multiproject-xsuaa-service
-              ServiceKeyName: multiproject-uaa-key
+              ServiceKeyName: multiproject-auth-key
               sap.cloud.service: multiproject
           existing_destinations_policy: update
     build-parameters:
@@ -713,13 +718,20 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-  - name: multiproject-uaa
+  - name: multiproject-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: multiproject-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: multiproject-xsuaa-service
+      config:
+        xsappname: multiproject-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: multiproject-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1014,10 +1026,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"comfioritoolslrop\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -1045,10 +1056,10 @@ modules:
         parameters:
           service-key:
             name: comfioritoolslrop-repo-host-key
-      - name: comfioritoolslrop-uaa
+      - name: comfioritoolslrop-auth
         parameters:
           service-key:
-            name: comfioritoolslrop-uaa-key
+            name: comfioritoolslrop-auth-key
     parameters:
       content:
         instance:
@@ -1058,9 +1069,9 @@ modules:
               ServiceKeyName: comfioritoolslrop-repo-host-key
               sap.cloud.service: comfioritoolslrop
             - Authentication: OAuth2UserTokenExchange
-              Name: comfioritoolslrop_uaa
+              Name: comfioritoolslrop_auth
               ServiceInstanceName: comfioritoolslrop-xsuaa-service
-              ServiceKeyName: comfioritoolslrop-uaa-key
+              ServiceKeyName: comfioritoolslrop-auth-key
               sap.cloud.service: comfioritoolslrop
           existing_destinations_policy: update
     build-parameters:
@@ -1108,13 +1119,20 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-  - name: comfioritoolslrop-uaa
+  - name: comfioritoolslrop-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: comfioritoolslrop-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: comfioritoolslrop-xsuaa-service
+      config:
+        xsappname: comfioritoolslrop-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: comfioritoolslrop-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1354,10 +1372,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"basicappnodatasource\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -1596,10 +1613,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"basicapp\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -1642,10 +1658,9 @@ archive.zip
 
 exports[`CF Writer App Generate deployment configs - generateSupportingConfig read mtaId read from file 3`] = `
 "{
-  \\"xsappname\\": \\"captestproject\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 "

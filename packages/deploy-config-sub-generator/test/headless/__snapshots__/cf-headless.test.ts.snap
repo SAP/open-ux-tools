@@ -29,7 +29,7 @@ modules:
       build-result: target/*-exec.[wj]ar
     requires:
       - name: managedAppCAPProjectJava-db
-      - name: managedAppCAPProjectJava-uaa
+      - name: managedAppCAPProjectJava-auth
     provides:
       - name: srv-api
         properties:
@@ -51,10 +51,10 @@ modules:
         parameters:
           service-key:
             name: managedAppCAPProjectJava-repo-host-key
-      - name: managedAppCAPProjectJava-uaa
+      - name: managedAppCAPProjectJava-auth
         parameters:
           service-key:
-            name: managedAppCAPProjectJava-uaa-key
+            name: managedAppCAPProjectJava-auth-key
     parameters:
       content:
         instance:
@@ -64,9 +64,9 @@ modules:
               ServiceKeyName: managedAppCAPProjectJava-repo-host-key
               sap.cloud.service: managedAppCAPProjectJava
             - Authentication: OAuth2UserTokenExchange
-              Name: managedAppCAPProjectJava_uaa
+              Name: managedAppCAPProjectJava_auth
               ServiceInstanceName: managedAppCAPProjectJava-xsuaa-service
-              ServiceKeyName: managedAppCAPProjectJava-uaa-key
+              ServiceKeyName: managedAppCAPProjectJava-auth-key
               sap.cloud.service: managedAppCAPProjectJava
           existing_destinations_policy: update
     build-parameters:
@@ -137,13 +137,20 @@ resources:
                 HTML5.ForwardAuthToken: true
     requires:
       - name: srv-api
-  - name: managedAppCAPProjectJava-uaa
+  - name: managedAppCAPProjectJava-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: managedAppCAPProjectJava-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: managedAppCAPProjectJava-xsuaa-service
+      config:
+        xsappname: managedAppCAPProjectJava-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: managedAppCAPProjectJava-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -155,10 +162,9 @@ resources:
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 2`] = `
 "{
-  "xsappname": "managedAppCAPProjectJava",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -296,7 +302,7 @@ modules:
         properties:
           srv-url: \${default-url}
     requires:
-      - name: cappapp-uaa
+      - name: cappapp-auth
   - name: cappapp-db-deployer
     type: hdb
     path: gen/db
@@ -314,10 +320,10 @@ modules:
         parameters:
           service-key:
             name: cappapp-repo-host-key
-      - name: cappapp-uaa
+      - name: cappapp-auth
         parameters:
           service-key:
-            name: cappapp-uaa-key
+            name: cappapp-auth-key
     parameters:
       content:
         instance:
@@ -327,9 +333,9 @@ modules:
               ServiceKeyName: cappapp-repo-host-key
               sap.cloud.service: cappapp
             - Authentication: OAuth2UserTokenExchange
-              Name: cappapp_uaa
+              Name: cappapp_auth
               ServiceInstanceName: cappapp-xsuaa-service
-              ServiceKeyName: cappapp-uaa-key
+              ServiceKeyName: cappapp-auth-key
               sap.cloud.service: cappapp
           existing_destinations_policy: update
     build-parameters:
@@ -393,13 +399,20 @@ resources:
                 HTML5.ForwardAuthToken: true
     requires:
       - name: srv-api
-  - name: cappapp-uaa
+  - name: cappapp-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: cappapp-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: cappapp-xsuaa-service
+      config:
+        xsappname: cappapp-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -411,10 +424,9 @@ resources:
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 2`] = `
 "{
-  "xsappname": "cappapp",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -585,10 +597,10 @@ modules:
         parameters:
           service-key:
             name: existing-id-deploy-repo-host-key
-      - name: existing-id-deploy-uaa
+      - name: existing-id-deploy-auth
         parameters:
           service-key:
-            name: existing-id-deploy-uaa-key
+            name: existing-id-deploy-auth-key
     parameters:
       content:
         instance:
@@ -598,9 +610,9 @@ modules:
               ServiceKeyName: existing-id-deploy-repo-host-key
               sap.cloud.service: existing-id-deploy
             - Authentication: OAuth2UserTokenExchange
-              Name: existing-id-deploy_uaa
+              Name: existing-id-deploy_auth
               ServiceInstanceName: existing-id-deploy-xsuaa-service
-              ServiceKeyName: existing-id-deploy-uaa-key
+              ServiceKeyName: existing-id-deploy-auth-key
               sap.cloud.service: existing-id-deploy
           existing_destinations_policy: update
     build-parameters:
@@ -648,13 +660,20 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-  - name: existing-id-deploy-uaa
+  - name: existing-id-deploy-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: existing-id-deploy-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: existing-id-deploy-xsuaa-service
+      config:
+        xsappname: existing-id-deploy-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: existing-id-deploy-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -761,10 +780,9 @@ archive.zip
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  6`] = `
 "{
-  "xsappname": "existing-id-deploy",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -815,10 +833,10 @@ modules:
         parameters:
           service-key:
             name: cappapp-repo-host-key
-      - name: cappapp-uaa
+      - name: cappapp-auth
         parameters:
           service-key:
-            name: cappapp-uaa-key
+            name: cappapp-auth-key
     parameters:
       content:
         instance:
@@ -828,9 +846,9 @@ modules:
               ServiceKeyName: cappapp-repo-host-key
               sap.cloud.service: cappapp
             - Authentication: OAuth2UserTokenExchange
-              Name: cappapp_uaa
+              Name: cappapp_auth
               ServiceInstanceName: cappapp-xsuaa-service
-              ServiceKeyName: cappapp-uaa-key
+              ServiceKeyName: cappapp-auth-key
               sap.cloud.service: cappapp
           existing_destinations_policy: update
     build-parameters:
@@ -885,13 +903,20 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-  - name: cappapp-uaa
+  - name: cappapp-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: cappapp-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: cappapp-xsuaa-service
+      config:
+        xsappname: cappapp-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -937,10 +962,9 @@ mta_archives/
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 3`] = `
 "{
-  "xsappname": "cappapp",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -1111,10 +1135,10 @@ modules:
         parameters:
           service-key:
             name: existing-id-deploy-repo-host-key
-      - name: existing-id-deploy-uaa
+      - name: existing-id-deploy-auth
         parameters:
           service-key:
-            name: existing-id-deploy-uaa-key
+            name: existing-id-deploy-auth-key
     parameters:
       content:
         instance:
@@ -1124,9 +1148,9 @@ modules:
               ServiceKeyName: existing-id-deploy-repo-host-key
               sap.cloud.service: existing-id-deploy
             - Authentication: OAuth2UserTokenExchange
-              Name: existing-id-deploy_uaa
+              Name: existing-id-deploy_auth
               ServiceInstanceName: existing-id-deploy-xsuaa-service
-              ServiceKeyName: existing-id-deploy-uaa-key
+              ServiceKeyName: existing-id-deploy-auth-key
               sap.cloud.service: existing-id-deploy
           existing_destinations_policy: update
     build-parameters:
@@ -1188,13 +1212,20 @@ resources:
                 Authentication: NoAuthentication
                 HTML5.DynamicDestination: true
                 HTML5.ForwardAuthToken: true
-  - name: existing-id-deploy-uaa
+  - name: existing-id-deploy-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: existing-id-deploy-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: existing-id-deploy-xsuaa-service
+      config:
+        xsappname: existing-id-deploy-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: existing-id-deploy-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1455,10 +1486,9 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
 
 exports[`Test headless generator Test: Headless deploy-config 1`] = `
 "{
-  "xsappname": "existing-id-deploy",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "
@@ -1803,10 +1833,9 @@ exports[`Test headless generator Test: Headless deploy-config 7`] = `
 
 exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 1`] = `
 "{
-  "xsappname": "existing-id-deploy_ts",
-  "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],
+  "attributes": [],
   "role-templates": []
 }
 "

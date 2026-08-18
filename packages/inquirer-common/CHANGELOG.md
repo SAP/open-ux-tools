@@ -1,6 +1,287 @@
 # @sap-ux/inquirer-common
 
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+
+## 1.0.30
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Clear password field on system change to prevent stale credentials resubmission. [[27840a8](https://github.com/SAP/open-ux-tools/commit/27840a818dc9c2a06c03a0bc0a402bf4af1da960)]
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.16 → 1.0.17
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/telemetry 1.0.23 → 1.0.24
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/telemetry 1.0.22 → 1.0.23
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.21 → 1.0.22
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/odata-service-writer 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/odata-service-writer 1.0.14 → 1.0.15
+- @sap-ux/telemetry 1.0.20 → 1.0.21
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/odata-service-writer 1.0.13 → 1.0.14
+- @sap-ux/telemetry 1.0.19 → 1.0.20
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.18 → 1.0.19
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/feature-toggle 1.0.4 → 1.0.5
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/telemetry 1.0.17 → 1.0.18
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.12
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.16 → 1.0.17
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+
+## 1.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/telemetry 1.0.15 → 1.0.16
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/odata-service-writer 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.10 → 1.0.11
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/feature-toggle 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/telemetry 1.0.14 → 1.0.15
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/logger 1.0.1 → 1.0.2
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.9 → 1.0.10
+- @sap-ux/telemetry 1.0.11 → 1.0.12
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/telemetry 1.0.9 → 1.0.10
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.6 → 1.0.7
+
+## 1.0.11
+
+_Released: 2026-06-12T06:53:23Z_
+
+### Patch Changes
+
+- Updated dependencies [41b3908]
+    - @sap-ux/feature-toggle@1.0.2
+    - @sap-ux/fiori-generator-shared@1.0.11
+    - @sap-ux/odata-service-writer@1.0.6
+
+## 1.0.10
+
+_Released: 2026-06-11T10:54:17Z_
+
+### Patch Changes
+
+- Updated dependencies [7bfa518]
+    - @sap-ux/telemetry@1.0.9
+    - @sap-ux/fiori-generator-shared@1.0.10
+
+## 1.0.9
+
+_Released: 2026-06-10T09:57:42Z_
+
+### Patch Changes
+
+- @sap-ux/odata-service-writer@1.0.6
+- @sap-ux/project-access@2.1.2
+- @sap-ux/telemetry@1.0.8
+- @sap-ux/fiori-generator-shared@1.0.9
+
+## 1.0.8
+
+_Released: 2026-06-09T14:35:01Z_
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/telemetry@1.0.7
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 1.0.7
+
+_Released: 2026-06-09T13:18:16Z_
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+
 ## 1.0.6
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -12,6 +293,8 @@
 
 ## 1.0.5
 
+_Released: 2026-06-04T10:19:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -21,6 +304,8 @@
     - @sap-ux/telemetry@1.0.5
 
 ## 1.0.4
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -38,6 +323,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-writer@1.0.2
@@ -47,12 +334,16 @@
 
 ## 1.0.2
 
+_Released: 2026-06-02T11:35:17Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@1.0.2
 - @sap-ux/fiori-generator-shared@1.0.2
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -63,6 +354,8 @@
     - @sap-ux/telemetry@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -110,12 +403,16 @@
 
 ## 0.13.6
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [a1c9cd7]
     - @sap-ux/guided-answers-helper@0.5.1
 
 ## 0.13.5
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -124,12 +421,16 @@
 
 ## 0.13.4
 
+_Released: 2026-05-27T10:42:47Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.15.5
 - @sap-ux/telemetry@0.7.4
 
 ## 0.13.3
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -141,6 +442,8 @@
 
 ## 0.13.2
 
+_Released: 2026-05-21T16:21:11Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-writer@0.32.2
@@ -149,6 +452,8 @@
 - @sap-ux/fiori-generator-shared@0.15.3
 
 ## 0.13.1
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -160,6 +465,8 @@
 
 ## 0.13.0
 
+_Released: 2026-05-15T13:12:06Z_
+
 ### Minor Changes
 
 - 2c76f8f: feat(inquirer-common): add ShowOutputTabLink and OutputTabLinkResult types; add showOutputTabLink property to YUIQuestion, InputQuestion, ListQuestion, ConfirmQuestion, CheckBoxQuestion
@@ -170,6 +477,8 @@
     - @sap-ux/fiori-generator-shared@0.15.1
 
 ## 0.12.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -190,12 +499,16 @@
 
 ## 0.11.48
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [138246a]
     - @sap-ux/odata-service-writer@0.31.15
 
 ## 0.11.47
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -213,6 +526,8 @@
 
 ## 0.11.46
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -223,12 +538,16 @@
 
 ## 0.11.45
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
     - @sap-ux/fiori-generator-shared@0.14.0
 
 ## 0.11.44
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -244,6 +563,8 @@
 
 ## 0.11.43
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -253,6 +574,8 @@
     - @sap-ux/project-access@1.36.2
 
 ## 0.11.42
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -264,6 +587,8 @@
 
 ## 0.11.41
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -273,6 +598,8 @@
     - @sap-ux/telemetry@0.6.101
 
 ## 0.11.40
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -284,6 +611,8 @@
 
 ## 0.11.39
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -292,12 +621,16 @@
 
 ## 0.11.38
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [9a48e63]
     - @sap-ux/ui5-info@0.13.20
 
 ## 0.11.37
+
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -306,6 +639,8 @@
     - @sap-ux/fiori-generator-shared@0.13.99
 
 ## 0.11.36
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -316,6 +651,8 @@
     - @sap-ux/odata-service-writer@0.31.7
 
 ## 0.11.35
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -329,6 +666,8 @@
     - @sap-ux/project-access@1.35.20
 
 ## 0.11.34
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -344,6 +683,8 @@
 
 ## 0.11.33
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -353,6 +694,8 @@
     - @sap-ux/telemetry@0.6.95
 
 ## 0.11.32
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -373,6 +716,8 @@
 
 ## 0.11.31
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [e92850e]
@@ -380,6 +725,8 @@
     - @sap-ux/fiori-generator-shared@0.13.93
 
 ## 0.11.30
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -391,6 +738,8 @@
 
 ## 0.11.29
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -400,6 +749,8 @@
     - @sap-ux/telemetry@0.6.91
 
 ## 0.11.28
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -420,6 +771,8 @@
 
 ## 0.11.27
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -429,6 +782,8 @@
     - @sap-ux/telemetry@0.6.89
 
 ## 0.11.26
+
+_Released: 2026-03-20T16:07:49Z_
 
 ### Patch Changes
 
@@ -440,12 +795,16 @@
 
 ## 0.11.25
 
+_Released: 2026-03-18T16:51:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [ae6758f]
     - @sap-ux/fiori-generator-shared@0.13.87
 
 ## 0.11.24
+
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -460,12 +819,16 @@
 
 ## 0.11.23
 
+_Released: 2026-03-06T13:19:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [3edf6d7]
     - @sap-ux/odata-service-writer@0.30.0
 
 ## 0.11.22
+
+_Released: 2026-03-05T16:08:22Z_
 
 ### Patch Changes
 
@@ -476,6 +839,8 @@
     - @sap-ux/telemetry@0.6.86
 
 ## 0.11.21
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -490,12 +855,16 @@
 
 ## 0.11.20
 
+_Released: 2026-03-05T10:41:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [5aff25c]
     - @sap-ux/odata-service-writer@0.29.32
 
 ## 0.11.19
+
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -512,6 +881,8 @@
 
 ## 0.11.18
 
+_Released: 2026-03-04T15:52:08Z_
+
 ### Patch Changes
 
 - 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
@@ -521,6 +892,8 @@
 
 ## 0.11.17
 
+_Released: 2026-03-04T14:39:10Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-writer@0.29.29
@@ -529,6 +902,8 @@
 - @sap-ux/fiori-generator-shared@0.13.82
 
 ## 0.11.16
+
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -540,6 +915,8 @@
 
 ## 0.11.15
 
+_Released: 2026-02-26T10:46:59Z_
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
@@ -550,6 +927,8 @@
 
 ## 0.11.14
 
+_Released: 2026-02-23T22:35:31Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.9
@@ -558,6 +937,8 @@
 - @sap-ux/telemetry@0.6.80
 
 ## 0.11.13
+
+_Released: 2026-02-23T19:07:48Z_
 
 ### Patch Changes
 
@@ -569,6 +950,8 @@
 
 ## 0.11.12
 
+_Released: 2026-02-20T21:31:31Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-writer@0.29.24
@@ -577,6 +960,8 @@
 - @sap-ux/fiori-generator-shared@0.13.77
 
 ## 0.11.11
+
+_Released: 2026-02-20T20:20:17Z_
 
 ### Patch Changes
 
@@ -589,6 +974,8 @@
 
 ## 0.11.10
 
+_Released: 2026-02-20T16:17:11Z_
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
@@ -598,6 +985,8 @@
     - @sap-ux/telemetry@0.6.77
 
 ## 0.11.9
+
+_Released: 2026-02-20T13:46:55Z_
 
 ### Patch Changes
 
@@ -613,6 +1002,8 @@
 
 ## 0.11.8
 
+_Released: 2026-02-18T21:45:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
@@ -622,6 +1013,8 @@
     - @sap-ux/telemetry@0.6.75
 
 ## 0.11.7
+
+_Released: 2026-02-16T18:48:13Z_
 
 ### Patch Changes
 
@@ -633,6 +1026,8 @@
 
 ## 0.11.6
 
+_Released: 2026-02-16T16:08:11Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.72
@@ -642,12 +1037,16 @@
 
 ## 0.11.5
 
+_Released: 2026-02-13T16:18:58Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.71
 - @sap-ux/telemetry@0.6.72
 
 ## 0.11.4
+
+_Released: 2026-02-13T09:54:38Z_
 
 ### Patch Changes
 
@@ -659,6 +1058,8 @@
 
 ## 0.11.3
 
+_Released: 2026-02-12T10:29:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -668,6 +1069,8 @@
     - @sap-ux/telemetry@0.6.70
 
 ## 0.11.2
+
+_Released: 2026-02-10T23:50:15Z_
 
 ### Patch Changes
 
@@ -682,11 +1085,15 @@
 
 ## 0.11.1
 
+_Released: 2026-02-09T15:13:41Z_
+
 ### Patch Changes
 
 - 1ad56d1: Fix for previous errors shown as info under services selection prompt
 
 ## 0.11.0
+
+_Released: 2026-02-09T11:21:43Z_
 
 ### Minor Changes
 
@@ -702,6 +1109,8 @@
 
 ## 0.10.26
 
+_Released: 2026-02-05T20:09:45Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.66
@@ -710,6 +1119,8 @@
 
 ## 0.10.25
 
+_Released: 2026-02-05T13:53:56Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.65
@@ -717,12 +1128,16 @@
 
 ## 0.10.24
 
+_Released: 2026-02-05T11:39:04Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.64
 - @sap-ux/telemetry@0.6.65
 
 ## 0.10.23
+
+_Released: 2026-02-05T08:38:39Z_
 
 ### Patch Changes
 
@@ -734,6 +1149,8 @@
     - @sap-ux/telemetry@0.6.64
 
 ## 0.10.22
+
+_Released: 2026-02-04T22:31:27Z_
 
 ### Patch Changes
 
@@ -747,6 +1164,8 @@
 
 ## 0.10.21
 
+_Released: 2026-02-03T15:42:23Z_
+
 ### Patch Changes
 
 - Updated dependencies [89175fe]
@@ -755,6 +1174,8 @@
     - @sap-ux/telemetry@0.6.62
 
 ## 0.10.20
+
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -769,6 +1190,8 @@
 
 ## 0.10.19
 
+_Released: 2026-01-29T14:02:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [6d71400]
@@ -779,12 +1202,16 @@
 
 ## 0.10.18
 
+_Released: 2026-01-28T00:19:05Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.58
 - @sap-ux/telemetry@0.6.59
 
 ## 0.10.17
+
+_Released: 2026-01-23T23:57:30Z_
 
 ### Patch Changes
 
@@ -793,6 +1220,8 @@
     - @sap-ux/fiori-generator-shared@0.13.57
 
 ## 0.10.16
+
+_Released: 2026-01-23T22:30:10Z_
 
 ### Patch Changes
 
@@ -803,6 +1232,8 @@
 
 ## 0.10.15
 
+_Released: 2026-01-23T12:49:27Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.55
@@ -810,12 +1241,16 @@
 
 ## 0.10.14
 
+_Released: 2026-01-19T12:47:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [9aad34c]
     - @sap-ux/ui5-info@0.13.8
 
 ## 0.10.13
+
+_Released: 2026-01-16T13:57:39Z_
 
 ### Patch Changes
 
@@ -825,12 +1260,16 @@
 
 ## 0.10.12
 
+_Released: 2026-01-16T12:32:24Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.53
 - @sap-ux/telemetry@0.6.55
 
 ## 0.10.11
+
+_Released: 2026-01-15T14:14:39Z_
 
 ### Patch Changes
 
@@ -840,6 +1279,8 @@
 
 ## 0.10.10
 
+_Released: 2026-01-14T17:56:49Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.51
@@ -848,6 +1289,8 @@
 
 ## 0.10.9
 
+_Released: 2026-01-12T12:01:34Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.50
@@ -855,6 +1298,8 @@
 - @sap-ux/telemetry@0.6.52
 
 ## 0.10.8
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -865,6 +1310,8 @@
 
 ## 0.10.7
 
+_Released: 2026-01-08T17:12:17Z_
+
 ### Patch Changes
 
 - 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
@@ -874,11 +1321,15 @@
 
 ## 0.10.6
 
+_Released: 2026-01-07T10:20:40Z_
+
 ### Patch Changes
 
 - 6382440: update error map to add EPROTO code
 
 ## 0.10.5
+
+_Released: 2026-01-06T14:37:31Z_
 
 ### Patch Changes
 
@@ -888,12 +1339,16 @@
 
 ## 0.10.4
 
+_Released: 2026-01-05T14:16:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [62bb798]
     - @sap-ux/fiori-generator-shared@0.13.47
 
 ## 0.10.3
+
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -906,6 +1361,8 @@
     - @sap-ux/odata-service-writer@0.29.2
 
 ## 0.10.2
+
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -920,12 +1377,16 @@
 
 ## 0.10.1
 
+_Released: 2025-12-18T13:13:52Z_
+
 ### Patch Changes
 
 - Updated dependencies [691ab27]
     - @sap-ux/odata-service-writer@0.29.0
 
 ## 0.10.0
+
+_Released: 2025-12-18T08:56:52Z_
 
 ### Minor Changes
 
@@ -939,12 +1400,16 @@
 
 ## 0.9.17
 
+_Released: 2025-12-16T11:43:52Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.44
 - @sap-ux/telemetry@0.6.48
 
 ## 0.9.16
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -961,6 +1426,8 @@
 
 ## 0.9.15
 
+_Released: 2025-12-12T12:38:21Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.42
@@ -969,12 +1436,16 @@
 
 ## 0.9.14
 
+_Released: 2025-12-12T09:02:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [e1647fe]
     - @sap-ux/odata-service-writer@0.27.36
 
 ## 0.9.13
+
+_Released: 2025-12-10T20:04:51Z_
 
 ### Patch Changes
 
@@ -984,6 +1455,8 @@
 
 ## 0.9.12
 
+_Released: 2025-12-10T09:08:56Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.40
@@ -991,6 +1464,8 @@
 - @sap-ux/telemetry@0.6.44
 
 ## 0.9.11
+
+_Released: 2025-12-08T17:56:48Z_
 
 ### Patch Changes
 
@@ -1001,12 +1476,16 @@
 
 ## 0.9.10
 
+_Released: 2025-12-05T12:18:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [d202c17]
     - @sap-ux/fiori-generator-shared@0.13.38
 
 ## 0.9.9
+
+_Released: 2025-12-04T10:42:12Z_
 
 ### Patch Changes
 
@@ -1016,6 +1495,8 @@
 
 ## 0.9.8
 
+_Released: 2025-11-27T14:58:09Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.36
@@ -1023,6 +1504,8 @@
 - @sap-ux/telemetry@0.6.41
 
 ## 0.9.7
+
+_Released: 2025-11-26T14:39:37Z_
 
 ### Patch Changes
 
@@ -1033,6 +1516,8 @@
 
 ## 0.9.6
 
+_Released: 2025-11-26T12:17:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [1c45a4d]
@@ -1040,11 +1525,15 @@
 
 ## 0.9.5
 
+_Released: 2025-11-26T00:12:42Z_
+
 ### Patch Changes
 
 - 597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
 
 ## 0.9.4
+
+_Released: 2025-11-24T12:45:14Z_
 
 ### Patch Changes
 
@@ -1054,12 +1543,16 @@
 
 ## 0.9.3
 
+_Released: 2025-11-07T13:23:57Z_
+
 ### Patch Changes
 
 - Updated dependencies [fef7496]
     - @sap-ux/ui5-info@0.13.2
 
 ## 0.9.2
+
+_Released: 2025-11-06T15:12:51Z_
 
 ### Patch Changes
 
@@ -1068,6 +1561,8 @@
     - @sap-ux/fiori-generator-shared@0.13.33
 
 ## 0.9.1
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -1084,11 +1579,15 @@
 
 ## 0.9.0
 
+_Released: 2025-11-03T10:50:00Z_
+
 ### Minor Changes
 
 - 4ddcff3: Add a message for the Tree table default. Move and export shouldUseAnalyticalTable() for use in other repos.
 
 ## 0.8.10
+
+_Released: 2025-10-31T13:35:34Z_
 
 ### Patch Changes
 
@@ -1097,12 +1596,16 @@
 
 ## 0.8.9
 
+_Released: 2025-10-29T17:02:38Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.30
 - @sap-ux/telemetry@0.6.35
 
 ## 0.8.8
+
+_Released: 2025-10-29T11:04:17Z_
 
 ### Patch Changes
 
@@ -1111,12 +1614,16 @@
 
 ## 0.8.7
 
+_Released: 2025-10-27T13:41:31Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.28
 - @sap-ux/telemetry@0.6.33
 
 ## 0.8.6
+
+_Released: 2025-10-22T18:56:41Z_
 
 ### Patch Changes
 
@@ -1126,6 +1633,8 @@
 
 ## 0.8.5
 
+_Released: 2025-10-22T09:32:12Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.27
@@ -1133,11 +1642,15 @@
 
 ## 0.8.4
 
+_Released: 2025-10-21T09:37:06Z_
+
 ### Patch Changes
 
 - 06bc541: Check Transformations for Analytical default table.
 
 ## 0.8.3
+
+_Released: 2025-10-21T07:47:50Z_
 
 ### Patch Changes
 
@@ -1146,12 +1659,16 @@
 
 ## 0.8.2
 
+_Released: 2025-10-17T11:37:38Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.25
 - @sap-ux/telemetry@0.6.30
 
 ## 0.8.1
+
+_Released: 2025-10-17T09:45:11Z_
 
 ### Patch Changes
 
@@ -1160,11 +1677,15 @@
 
 ## 0.8.0
 
+_Released: 2025-10-15T16:45:46Z_
+
 ### Minor Changes
 
 - 4053369: Determine the default table type based on the service capabilities. Auto-populate qualifier from RecursiveHierarchy annotation if available.
 
 ## 0.7.51
+
+_Released: 2025-10-14T13:22:30Z_
 
 ### Patch Changes
 
@@ -1175,12 +1696,16 @@
 
 ## 0.7.50
 
+_Released: 2025-10-10T13:53:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [bba16a6]
     - @sap-ux/ui5-info@0.13.0
 
 ## 0.7.49
+
+_Released: 2025-10-10T12:22:06Z_
 
 ### Patch Changes
 
@@ -1189,12 +1714,16 @@
 
 ## 0.7.48
 
+_Released: 2025-10-07T13:15:25Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.27
 - @sap-ux/fiori-generator-shared@0.13.21
 
 ## 0.7.47
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -1207,12 +1736,16 @@
 
 ## 0.7.46
 
+_Released: 2025-10-06T10:53:53Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.25
 - @sap-ux/fiori-generator-shared@0.13.19
 
 ## 0.7.45
+
+_Released: 2025-09-23T20:14:56Z_
 
 ### Patch Changes
 
@@ -1222,6 +1755,8 @@
     - @sap-ux/telemetry@0.6.24
 
 ## 0.7.44
+
+_Released: 2025-09-19T16:36:41Z_
 
 ### Patch Changes
 
@@ -1234,12 +1769,16 @@
 
 ## 0.7.43
 
+_Released: 2025-09-19T00:44:48Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.16
 - @sap-ux/telemetry@0.6.22
 
 ## 0.7.42
+
+_Released: 2025-09-18T07:30:28Z_
 
 ### Patch Changes
 
@@ -1248,6 +1787,8 @@
 
 ## 0.7.41
 
+_Released: 2025-09-16T06:28:11Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.20
@@ -1255,12 +1796,16 @@
 
 ## 0.7.40
 
+_Released: 2025-09-11T11:04:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [3c094af]
     - @sap-ux/fiori-generator-shared@0.13.13
 
 ## 0.7.39
+
+_Released: 2025-09-02T13:22:05Z_
 
 ### Patch Changes
 
@@ -1270,12 +1815,16 @@
 
 ## 0.7.38
 
+_Released: 2025-09-01T12:06:20Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.19
 - @sap-ux/fiori-generator-shared@0.13.12
 
 ## 0.7.37
+
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 
@@ -1288,12 +1837,16 @@
 
 ## 0.7.36
 
+_Released: 2025-08-21T14:27:46Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.17
 - @sap-ux/fiori-generator-shared@0.13.10
 
 ## 0.7.35
+
+_Released: 2025-08-14T14:36:13Z_
 
 ### Patch Changes
 
@@ -1302,6 +1855,8 @@
 
 ## 0.7.34
 
+_Released: 2025-08-13T10:00:10Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.8
@@ -1309,12 +1864,16 @@
 
 ## 0.7.33
 
+_Released: 2025-08-12T14:05:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [b6ce4a2]
     - @sap-ux/guided-answers-helper@0.4.0
 
 ## 0.7.32
+
+_Released: 2025-08-07T06:27:29Z_
 
 ### Patch Changes
 
@@ -1324,6 +1883,8 @@
 
 ## 0.7.31
 
+_Released: 2025-08-01T09:39:39Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.13
@@ -1331,11 +1892,15 @@
 
 ## 0.7.30
 
+_Released: 2025-07-31T11:23:22Z_
+
 ### Patch Changes
 
 - 9fa7f0b: move aggregration entity helpers to inq-common
 
 ## 0.7.29
+
+_Released: 2025-07-30T19:33:46Z_
 
 ### Patch Changes
 
@@ -1344,12 +1909,16 @@
 
 ## 0.7.28
 
+_Released: 2025-07-28T22:57:52Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.4
 - @sap-ux/telemetry@0.6.11
 
 ## 0.7.27
+
+_Released: 2025-07-22T13:05:35Z_
 
 ### Patch Changes
 
@@ -1358,12 +1927,16 @@
 
 ## 0.7.26
 
+_Released: 2025-07-21T13:01:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [07d4e25]
     - @sap-ux/ui5-info@0.12.1
 
 ## 0.7.25
+
+_Released: 2025-07-16T12:23:18Z_
 
 ### Patch Changes
 
@@ -1372,12 +1945,16 @@
 
 ## 0.7.24
 
+_Released: 2025-07-10T11:49:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [d75db00]
     - @sap-ux/fiori-generator-shared@0.13.2
 
 ## 0.7.23
+
+_Released: 2025-07-08T12:06:04Z_
 
 ### Patch Changes
 
@@ -1386,12 +1963,16 @@
 
 ## 0.7.22
 
+_Released: 2025-07-07T08:44:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [58abe82]
     - @sap-ux/fiori-generator-shared@0.13.0
 
 ## 0.7.21
+
+_Released: 2025-07-04T15:18:17Z_
 
 ### Patch Changes
 
@@ -1402,6 +1983,8 @@
 
 ## 0.7.20
 
+_Released: 2025-07-04T09:34:59Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.8
@@ -1409,12 +1992,16 @@
 
 ## 0.7.19
 
+_Released: 2025-07-03T12:14:55Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.12.14
 - @sap-ux/telemetry@0.6.7
 
 ## 0.7.18
+
+_Released: 2025-06-30T08:46:50Z_
 
 ### Patch Changes
 
@@ -1424,12 +2011,16 @@
 
 ## 0.7.17
 
+_Released: 2025-06-27T16:39:38Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.12.12
 - @sap-ux/telemetry@0.6.6
 
 ## 0.7.16
+
+_Released: 2025-06-27T07:08:06Z_
 
 ### Patch Changes
 
@@ -1438,12 +2029,16 @@
 
 ## 0.7.15
 
+_Released: 2025-06-24T14:02:12Z_
+
 ### Patch Changes
 
 - Updated dependencies [4fef16a]
     - @sap-ux/fiori-generator-shared@0.12.10
 
 ## 0.7.14
+
+_Released: 2025-06-24T07:18:46Z_
 
 ### Patch Changes
 
@@ -1452,12 +2047,16 @@
 
 ## 0.7.13
 
+_Released: 2025-06-17T07:58:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [163522f]
     - @sap-ux/fiori-generator-shared@0.12.8
 
 ## 0.7.12
+
+_Released: 2025-06-16T09:52:52Z_
 
 ### Patch Changes
 
@@ -1467,6 +2066,8 @@
 
 ## 0.7.11
 
+_Released: 2025-06-13T14:12:57Z_
+
 ### Patch Changes
 
 - Updated dependencies [7f35f6c]
@@ -1474,11 +2075,15 @@
 
 ## 0.7.10
 
+_Released: 2025-06-13T10:58:52Z_
+
 ### Patch Changes
 
 - bf752f3: Adds more specific cert error messages with GA links.
 
 ## 0.7.9
+
+_Released: 2025-06-10T07:40:27Z_
 
 ### Patch Changes
 
@@ -1487,11 +2092,15 @@
 
 ## 0.7.8
 
+_Released: 2025-06-09T09:48:34Z_
+
 ### Patch Changes
 
 - d6943aa: Adds GA link to deploy.
 
 ## 0.7.7
+
+_Released: 2025-06-05T12:32:35Z_
 
 ### Patch Changes
 
@@ -1500,12 +2109,16 @@
 
 ## 0.7.6
 
+_Released: 2025-06-05T07:23:07Z_
+
 ### Patch Changes
 
 - Updated dependencies [15ec5c4]
     - @sap-ux/fiori-generator-shared@0.12.5
 
 ## 0.7.5
+
+_Released: 2025-05-30T09:02:15Z_
 
 ### Patch Changes
 
@@ -1514,12 +2127,16 @@
 
 ## 0.7.4
 
+_Released: 2025-05-30T07:18:36Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.6.3
 - @sap-ux/fiori-generator-shared@0.12.3
 
 ## 0.7.3
+
+_Released: 2025-05-27T17:59:17Z_
 
 ### Patch Changes
 
@@ -1529,11 +2146,15 @@
 
 ## 0.7.2
 
+_Released: 2025-05-27T15:05:11Z_
+
 ### Patch Changes
 
 - b3fe5b8: Adds support for bypassing cert errors in limited situations
 
 ## 0.7.1
+
+_Released: 2025-05-15T13:36:04Z_
 
 ### Patch Changes
 
@@ -1542,6 +2163,8 @@
     - @sap-ux/fiori-generator-shared@0.12.1
 
 ## 0.7.0
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -1560,12 +2183,16 @@
 
 ## 0.6.43
 
+_Released: 2025-05-13T10:46:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [5585f0d]
     - @sap-ux/feature-toggle@0.2.4
 
 ## 0.6.42
+
+_Released: 2025-05-05T13:48:20Z_
 
 ### Patch Changes
 
@@ -1574,12 +2201,16 @@
 
 ## 0.6.41
 
+_Released: 2025-05-01T13:52:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [2050952]
     - @sap-ux/ui5-info@0.10.1
 
 ## 0.6.40
+
+_Released: 2025-04-28T14:29:23Z_
 
 ### Patch Changes
 
@@ -1588,6 +2219,8 @@
 
 ## 0.6.39
 
+_Released: 2025-04-24T15:01:01Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.5.77
@@ -1595,12 +2228,16 @@
 
 ## 0.6.38
 
+_Released: 2025-04-23T15:22:38Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.11.1
 - @sap-ux/telemetry@0.5.76
 
 ## 0.6.37
+
+_Released: 2025-04-23T13:59:14Z_
 
 ### Patch Changes
 
@@ -1610,12 +2247,16 @@
 
 ## 0.6.36
 
+_Released: 2025-04-17T12:52:13Z_
+
 ### Patch Changes
 
 - Updated dependencies [e5f4915]
     - @sap-ux/guided-answers-helper@0.2.2
 
 ## 0.6.35
+
+_Released: 2025-04-15T10:10:52Z_
 
 ### Patch Changes
 
@@ -1624,6 +2265,8 @@
     - @sap-ux/fiori-generator-shared@0.10.2
 
 ## 0.6.34
+
+_Released: 2025-04-14T22:24:07Z_
 
 ### Patch Changes
 
@@ -1634,6 +2277,8 @@
 
 ## 0.6.33
 
+_Released: 2025-04-10T13:52:38Z_
+
 ### Patch Changes
 
 - Updated dependencies [23e055a]
@@ -1641,11 +2286,15 @@
 
 ## 0.6.32
 
+_Released: 2025-03-26T12:15:41Z_
+
 ### Patch Changes
 
 - ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
 
 ## 0.6.31
+
+_Released: 2025-03-19T08:54:25Z_
 
 ### Patch Changes
 
@@ -1654,12 +2303,16 @@
 
 ## 0.6.30
 
+_Released: 2025-03-18T09:41:03Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.5.71
 - @sap-ux/fiori-generator-shared@0.9.10
 
 ## 0.6.29
+
+_Released: 2025-03-10T20:40:35Z_
 
 ### Patch Changes
 
@@ -1672,12 +2325,16 @@
 
 ## 0.6.28
 
+_Released: 2025-03-06T16:16:20Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.9.8
 - @sap-ux/telemetry@0.5.69
 
 ## 0.6.27
+
+_Released: 2025-03-05T11:16:53Z_
 
 ### Patch Changes
 
@@ -1686,12 +2343,16 @@
 
 ## 0.6.26
 
+_Released: 2025-03-05T09:14:02Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.5.67
 - @sap-ux/fiori-generator-shared@0.9.6
 
 ## 0.6.25
+
+_Released: 2025-03-04T08:55:15Z_
 
 ### Patch Changes
 
@@ -1700,12 +2361,16 @@
 
 ## 0.6.24
 
+_Released: 2025-03-03T11:06:12Z_
+
 ### Patch Changes
 
 - Updated dependencies [d47a1b1]
     - @sap-ux/fiori-generator-shared@0.9.4
 
 ## 0.6.23
+
+_Released: 2025-02-28T15:10:48Z_
 
 ### Patch Changes
 
@@ -1714,12 +2379,16 @@
 
 ## 0.6.22
 
+_Released: 2025-02-27T19:24:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [88520b4]
     - @sap-ux/ui5-info@0.9.0
 
 ## 0.6.21
+
+_Released: 2025-02-27T14:15:03Z_
 
 ### Patch Changes
 
@@ -1729,12 +2398,16 @@
 
 ## 0.6.20
 
+_Released: 2025-02-27T08:22:17Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.9.1
 - @sap-ux/telemetry@0.5.63
 
 ## 0.6.19
+
+_Released: 2025-02-24T09:17:17Z_
 
 ### Patch Changes
 
@@ -1743,12 +2416,16 @@
 
 ## 0.6.18
 
+_Released: 2025-02-17T13:42:22Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.8.1
 - @sap-ux/telemetry@0.5.62
 
 ## 0.6.17
+
+_Released: 2025-02-13T17:39:11Z_
 
 ### Patch Changes
 
@@ -1757,12 +2434,16 @@
 
 ## 0.6.16
 
+_Released: 2025-02-13T10:58:34Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.29
 - @sap-ux/telemetry@0.5.61
 
 ## 0.6.15
+
+_Released: 2025-02-07T19:58:32Z_
 
 ### Patch Changes
 
@@ -1771,12 +2452,16 @@
 
 ## 0.6.14
 
+_Released: 2025-02-05T17:08:20Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.27
 - @sap-ux/telemetry@0.5.59
 
 ## 0.6.13
+
+_Released: 2025-02-05T14:44:29Z_
 
 ### Patch Changes
 
@@ -1787,12 +2472,16 @@
 
 ## 0.6.12
 
+_Released: 2025-02-04T15:39:07Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.25
 - @sap-ux/telemetry@0.5.57
 
 ## 0.6.11
+
+_Released: 2025-02-04T14:25:43Z_
 
 ### Patch Changes
 
@@ -1803,6 +2492,8 @@
 
 ## 0.6.10
 
+_Released: 2025-01-30T10:04:50Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.23
@@ -1810,11 +2501,15 @@
 
 ## 0.6.9
 
+_Released: 2025-01-29T17:41:08Z_
+
 ### Patch Changes
 
 - 5e3a5f8: Adds support for `showCollaborativeDraftWarning` option
 
 ## 0.6.8
+
+_Released: 2025-01-29T13:31:31Z_
 
 ### Patch Changes
 
@@ -1825,6 +2520,8 @@
 
 ## 0.6.7
 
+_Released: 2025-01-28T09:20:06Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.21
@@ -1832,12 +2529,16 @@
 
 ## 0.6.6
 
+_Released: 2025-01-27T18:57:16Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.5.52
 - @sap-ux/fiori-generator-shared@0.7.20
 
 ## 0.6.5
+
+_Released: 2025-01-22T17:11:37Z_
 
 ### Patch Changes
 
@@ -1847,6 +2548,8 @@
 
 ## 0.6.4
 
+_Released: 2025-01-16T02:22:29Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.19
@@ -1854,11 +2557,15 @@
 
 ## 0.6.3
 
+_Released: 2025-01-08T15:30:03Z_
+
 ### Patch Changes
 
 - 40ba546: Add support to read additional ABAP service types
 
 ## 0.6.2
+
+_Released: 2025-01-08T11:51:44Z_
 
 ### Patch Changes
 
@@ -1868,6 +2575,8 @@
 
 ## 0.6.1
 
+_Released: 2024-12-20T15:43:15Z_
+
 ### Patch Changes
 
 - Updated dependencies [fe0878d]
@@ -1875,11 +2584,15 @@
 
 ## 0.6.0
 
+_Released: 2024-12-19T17:24:19Z_
+
 ### Minor Changes
 
 - 112d29a: Include the name label for default UI5 choice
 
 ## 0.5.15
+
+_Released: 2024-12-18T10:32:41Z_
 
 ### Patch Changes
 
@@ -1887,12 +2600,16 @@
 
 ## 0.5.14
 
+_Released: 2024-12-17T15:31:53Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.17
 - @sap-ux/telemetry@0.5.50
 
 ## 0.5.13
+
+_Released: 2024-12-17T13:32:02Z_
 
 ### Patch Changes
 
@@ -1903,6 +2620,8 @@
 
 ## 0.5.12
 
+_Released: 2024-12-10T16:04:29Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.5.48
@@ -1910,11 +2629,15 @@
 
 ## 0.5.11
 
+_Released: 2024-12-10T14:32:00Z_
+
 ### Patch Changes
 
 - 0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
 
 ## 0.5.10
+
+_Released: 2024-12-10T11:51:29Z_
 
 ### Patch Changes
 
@@ -1923,12 +2646,16 @@
 
 ## 0.5.9
 
+_Released: 2024-12-06T21:07:01Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.7.13
 - @sap-ux/telemetry@0.5.47
 
 ## 0.5.8
+
+_Released: 2024-12-04T15:30:32Z_
 
 ### Patch Changes
 
@@ -1937,6 +2664,8 @@
     - @sap-ux/guided-answers-helper@0.1.1
 
 ## 0.5.7
+
+_Released: 2024-12-04T12:27:41Z_
 
 ### Patch Changes
 
@@ -1948,12 +2677,16 @@
 
 ## 0.5.6
 
+_Released: 2024-12-04T11:05:53Z_
+
 ### Patch Changes
 
 - Updated dependencies [d04a40e]
     - @sap-ux/feature-toggle@0.2.3
 
 ## 0.5.5
+
+_Released: 2024-12-02T16:28:38Z_
 
 ### Patch Changes
 
@@ -1962,11 +2695,15 @@
 
 ## 0.5.4
 
+_Released: 2024-11-21T11:48:14Z_
+
 ### Patch Changes
 
 - 74dc5fe: Fix CAP loading errors messages
 
 ## 0.5.3
+
+_Released: 2024-11-19T13:21:01Z_
 
 ### Patch Changes
 
@@ -1974,6 +2711,8 @@
     - @sap-ux/fiori-generator-shared@0.7.10
 
 ## 0.5.2
+
+_Released: 2024-11-18T22:28:16Z_
 
 ### Patch Changes
 
@@ -1984,12 +2723,16 @@
 
 ## 0.5.1
 
+_Released: 2024-11-18T20:38:37Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.5.43
 - @sap-ux/fiori-generator-shared@0.7.8
 
 ## 0.5.0
+
+_Released: 2024-11-14T17:04:56Z_
 
 ### Minor Changes
 
@@ -2002,12 +2745,16 @@
 
 ## 0.4.10
 
+_Released: 2024-11-01T07:47:25Z_
+
 ### Patch Changes
 
 - Updated dependencies [1cccbf1]
     - @sap-ux/ui5-info@0.8.3
 
 ## 0.4.9
+
+_Released: 2024-10-30T13:01:12Z_
 
 ### Patch Changes
 
@@ -2016,17 +2763,23 @@
 
 ## 0.4.8
 
+_Released: 2024-10-24T14:04:35Z_
+
 ### Patch Changes
 
 - 02e4f29: add resource bundle for inquirer common in consumers
 
 ## 0.4.7
 
+_Released: 2024-10-23T12:50:19Z_
+
 ### Patch Changes
 
 - d29b1a3: update ui5 default version logic
 
 ## 0.4.6
+
+_Released: 2024-08-19T09:48:14Z_
 
 ### Patch Changes
 
@@ -2035,12 +2788,16 @@
 
 ## 0.4.5
 
+_Released: 2024-08-16T10:46:05Z_
+
 ### Patch Changes
 
 - Updated dependencies [cc1ac72]
     - @sap-ux/ui5-info@0.8.0
 
 ## 0.4.4
+
+_Released: 2024-08-08T13:01:35Z_
 
 ### Patch Changes
 
@@ -2049,11 +2806,15 @@
 
 ## 0.4.3
 
+_Released: 2024-08-01T10:59:20Z_
+
 ### Patch Changes
 
 - 7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
 
 ## 0.4.2
+
+_Released: 2024-07-22T13:28:51Z_
 
 ### Patch Changes
 
@@ -2062,11 +2823,15 @@
 
 ## 0.4.1
 
+_Released: 2024-07-18T11:50:01Z_
+
 ### Patch Changes
 
 - 108336f: Adds prompts for abap on premise systems to odata-service-inquirer
 
 ## 0.4.0
+
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -2079,17 +2844,23 @@
 
 ## 0.3.1
 
+_Released: 2024-06-27T07:14:34Z_
+
 ### Patch Changes
 
 - 65bfb244: Add Adaptation Project's Change Data Source generator prompting
 
 ## 0.3.0
 
+_Released: 2024-06-17T12:35:55Z_
+
 ### Minor Changes
 
 - 1ea831d5: Adds support for service url prompting
 
 ## 0.2.8
+
+_Released: 2024-05-10T15:53:32Z_
 
 ### Patch Changes
 
@@ -2098,17 +2869,23 @@
 
 ## 0.2.7
 
+_Released: 2024-05-03T11:39:22Z_
+
 ### Patch Changes
 
 - 4098bed2: Moves some prompting code to inquirer-common. Adds new module odata-service-inquirer
 
 ## 0.2.6
 
+_Released: 2024-04-16T14:18:28Z_
+
 ### Patch Changes
 
 - f8b24a3a: fix additional msgs and readme
 
 ## 0.2.5
+
+_Released: 2024-04-16T13:12:31Z_
 
 ### Patch Changes
 
@@ -2117,17 +2894,23 @@
 
 ## 0.2.4
 
+_Released: 2024-04-15T16:20:25Z_
+
 ### Patch Changes
 
 - 98496d57: adds new module @sap-ux/ui5-library-reference-inquirer
 
 ## 0.2.3
 
+_Released: 2024-03-22T12:43:23Z_
+
 ### Patch Changes
 
 - c17bc130: When passing a default UI5 version its availability will be verified before offering as a choice
 
 ## 0.2.2
+
+_Released: 2024-03-22T08:51:54Z_
 
 ### Patch Changes
 
@@ -2136,6 +2919,8 @@
     - @sap-ux/ui5-info@0.3.3
 
 ## 0.2.1
+
+_Released: 2024-03-21T17:43:52Z_
 
 ### Patch Changes
 

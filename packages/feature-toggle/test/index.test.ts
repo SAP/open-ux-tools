@@ -6,9 +6,11 @@ const mockWorkspace = {
     getConfiguration: jest.fn()
 };
 
-// Mock vscode before importing the source module
-jest.unstable_mockModule('vscode', () => ({
-    workspace: mockWorkspace
+// Mock the internal vscode resolver before importing the source module.
+// Mocking our own in-repo module is reliable under Jest's ESM mocker, unlike mocking
+// the host-injected `vscode` module directly.
+jest.unstable_mockModule('../src/vscode.js', () => ({
+    getVSCodeInstance: () => ({ workspace: mockWorkspace })
 }));
 
 // Import source modules after mocking (dynamic import so mock is in place)

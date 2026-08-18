@@ -92,6 +92,15 @@ export class AdpPreview {
     }
 
     /**
+     * @returns `true` when the preview was initialized for a Cloud Foundry adaptation
+     * project that serves a pre-built bundle from `cfBuildPath`. CF mode skips the
+     * backend descriptor merge, so callers must avoid touching `descriptor`/`resources`.
+     */
+    get isCloudFoundry(): boolean {
+        return 'cfBuildPath' in this.config;
+    }
+
+    /**
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
     get resources(): {
@@ -225,9 +234,23 @@ export class AdpPreview {
         if (req.path === '/manifest.json') {
             await this.sync();
             res.status(200);
-            res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
+            // Rewrite ui5://<namespace>/ to absolute paths in the manifest so that
+            // FLP Sandbox 2.0's CDM does not map enhanceWith bundleUrls to the backend.
+            // Use descriptorVariantId (from manifest.appdescr_variant) — the manifest's ui5:// URLs
+            // are built from the variant id, whereas mergedDescriptor.name is the base app reference.
+            const ui5Prefix = `ui5://${(this.descriptorVariantId ?? this.mergedDescriptor.name).replaceAll('.', '/')}/`;
+            const manifest = JSON.stringify(this.descriptor.manifest, undefined, 2).replaceAll(ui5Prefix, '/');
+            res.send(manifest);
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
+        } else if (req.path.startsWith('/i18n/') && req.path.endsWith('.properties')) {
+            // Without this branch, the generic file-exists check below would 302 to
+            // the ADP's local i18n.properties whenever one exists, shadowing the
+            // base app's complete bundle. Explicitly pass i18n .properties requests
+            // through so the base app's bundle is served instead. Covers the default
+            // bundle, locale variants, and per-page bundles
+            // (/i18n/ListReport/<entity>/i18n.properties). See changeset for details.
+            next();
         } else {
             // check if the requested file exists in the file system (replace .js with .* for typescript)
             const files = await this.project.byGlob(req.path.replace('.js', '.*'));

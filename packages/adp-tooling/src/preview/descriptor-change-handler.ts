@@ -1,13 +1,11 @@
 import type { Editor } from 'mem-fs-editor';
 import { type AppDescriptorV4Change } from '../types.js';
 import type { Logger } from '@sap-ux/logger';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { getFragmentPathFromTemplate } from './utils.js';
 import { randomBytes } from 'node:crypto';
 import { render } from 'ejs';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { getTemplatePath } from '../templates.js';
 
 export const customFragmentConfig = {
     path: 'v4/custom-section.xml',
@@ -94,7 +92,7 @@ export function addCustomFragment(basePath: string, change: AppDescriptorV4Chang
             }
             const fragmentPath = `${path}.fragment.xml`;
             const fullPath = join(basePath, fragmentPath);
-            const fragmentTemplatePath = join(__dirname, '../../templates/rta', config.path);
+            const fragmentTemplatePath = getTemplatePath(`rta/${config.path}`);
             const text = fs.read(fragmentTemplatePath);
             // Safe: Template files are from our own codebase (templates/rta/), config.path is from getConfig()
             // which only returns predefined paths (customFragmentConfig or customColumnFragmentConfig).

@@ -63,14 +63,15 @@ const { ChangeType, FlexLayer } = await import('../../../src/index.js');
 
 describe('Change Utils', () => {
     describe('writeChangeToFolder', () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
         const projectPath = 'project';
         const change = { key: 'value', fileName: 'something' };
         const writeJsonSpy = jest.fn();
         const mockFs = { writeJSON: writeJsonSpy };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+            writeJsonSpy.mockReset();
+        });
 
         it('should write change to the specified folder without subdirectory', async () => {
             await writeChangeToFolder(
@@ -110,6 +111,47 @@ describe('Change Utils', () => {
                 )
             ).rejects.toThrow(
                 `Could not write change to folder. Reason: Could not write change to file: ${expectedPath}. Reason: Corrupted json.`
+            );
+        });
+
+        it('should derive file suffix from fileType', async () => {
+            const ctrlVariant = {
+                fileName: 'id_1764681430941_753_flVariant',
+                fileType: 'ctrl_variant'
+            } as unknown as ManifestChangeProperties;
+
+            await writeChangeToFolder(projectPath, ctrlVariant, mockFs as unknown as Editor);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining(`${ctrlVariant.fileName}.ctrl_variant`),
+                ctrlVariant
+            );
+        });
+
+        it('should write annotation_change suffix for annotation changes', async () => {
+            const annotationChange = {
+                fileName: 'id_1764681437035_762_annotation',
+                fileType: 'annotation_change'
+            } as unknown as ManifestChangeProperties;
+
+            await writeChangeToFolder(projectPath, annotationChange, mockFs as unknown as Editor);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining(`${annotationChange.fileName}.annotation_change`),
+                annotationChange
+            );
+        });
+
+        it('should fall back to .change suffix when fileType is missing', async () => {
+            const noFileType = {
+                fileName: 'id_legacy_payload'
+            } as unknown as ManifestChangeProperties;
+
+            await writeChangeToFolder(projectPath, noFileType, mockFs as unknown as Editor);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining(`${noFileType.fileName}.change`),
+                noFileType
             );
         });
     });
@@ -641,6 +683,71 @@ describe('Change Utils', () => {
             await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
 
             expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should write each change with the suffix matching its fileType', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_1764681430941_753_flVariant',
+                        fileType: 'ctrl_variant',
+                        changeType: 'variant'
+                    }
+                },
+                {
+                    content: {
+                        fileName: 'id_1764681437035_762_appdescr_fe_changePageConfiguration',
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration'
+                    }
+                },
+                {
+                    content: {
+                        fileName: 'id_1764684339956_1120_flVariant',
+                        fileType: 'ctrl_variant',
+                        changeType: 'variant'
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(3);
+            expect(writeJsonSpy).toHaveBeenNthCalledWith(
+                1,
+                expect.stringContaining('id_1764681430941_753_flVariant.ctrl_variant'),
+                expect.any(Object)
+            );
+            expect(writeJsonSpy).toHaveBeenNthCalledWith(
+                2,
+                expect.stringContaining('id_1764681437035_762_appdescr_fe_changePageConfiguration.change'),
+                expect.any(Object)
+            );
+            expect(writeJsonSpy).toHaveBeenNthCalledWith(
+                3,
+                expect.stringContaining('id_1764684339956_1120_flVariant.ctrl_variant'),
+                expect.any(Object)
+            );
+        });
+
+        it('should write annotation_change suffix for annotation key-user changes', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_1764700000000_1_annotation',
+                        fileType: 'annotation_change',
+                        changeType: 'appdescr_app_addAnnotationsToOData'
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(1);
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining('id_1764700000000_1_annotation.annotation_change'),
+                expect.any(Object)
+            );
         });
 
         it('should transform key user changes for ADP format', async () => {

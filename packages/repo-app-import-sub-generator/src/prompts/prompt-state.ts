@@ -1,5 +1,6 @@
 import AdmZip from 'adm-zip';
 import { DatasourceType, type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
+import type { AuthenticationType } from '@sap-ux/store';
 
 /**
  * Much of the values returned by the app downloader prompting are derived from prompt answers and are not direct answer values.
@@ -76,6 +77,15 @@ export class PromptState {
      */
     public static get destinationName(): string | undefined {
         return this._systemSelection.connectedSystem?.destination?.Name;
+    }
+
+    /**
+     * Get authentication type from the connected system's service provider defaults.
+     *
+     * @returns {AuthenticationType | undefined} authentication type
+     */
+    public static get authenticationType(): AuthenticationType | undefined {
+        return this._systemSelection.connectedSystem?.backendSystem?.authenticationType;
     }
 
     static reset(): void {

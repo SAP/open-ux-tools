@@ -208,6 +208,28 @@ describe('Test validators', () => {
 
             expect(result).toBe(true);
         });
+
+        it('[ADP] should return false when the destination is empty even if the ADP project type is onPrem', async () => {
+            const adpProjectType = AdaptationProjectType.ON_PREMISE;
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+
+            const result = await validateDestinationQuestion('', mockDestinations, undefined, adpProjectType);
+
+            expect(PromptState.abapDeployConfig.destination).toBe(undefined);
+            expect(PromptState.abapDeployConfig.url).toBe(undefined);
+            expect(result).toBe(false);
+        });
+
+        it('[ADP] should return false when the destination is only whitespace even if the ADP project type is onPrem', async () => {
+            const adpProjectType = AdaptationProjectType.ON_PREMISE;
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+
+            const result = await validateDestinationQuestion('   ', mockDestinations, undefined, adpProjectType);
+
+            expect(PromptState.abapDeployConfig.destination).toBe(undefined);
+            expect(PromptState.abapDeployConfig.url).toBe(undefined);
+            expect(result).toBe(false);
+        });
     });
 
     describe('validateTargetSystem', () => {

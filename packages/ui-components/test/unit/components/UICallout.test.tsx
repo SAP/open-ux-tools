@@ -15,7 +15,7 @@ const { getNextElement: mockGetNextElement, getPreviousElement: mockGetPreviousE
 
 const { Callout } = await import('@fluentui/react');
 const { UICallout, UICalloutContentPadding } = await import('../../../src/components/UICallout');
-type UICalloutProps = import('../../../src/components/UICallout').UICalloutProps;
+import type { UICalloutProps } from '../../../src/components/UICallout';
 
 describe('<UICallout />', () => {
     let wrapper: Enzyme.ReactWrapper<UICalloutProps>;

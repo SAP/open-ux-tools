@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import type { i18n as i18nNext, TOptions } from 'i18next';
-import i18ntranslations from '../translations/odataDownloadGenerator.i18n.json' with { type: 'json' };
+import i18ntranslations from '../translations/odataDownloadGenerator.i18n.json';
 export const i18n: i18nNext = i18next.createInstance();
 
 export const odataDownloadGenerator = 'odata-dowload-generator';
@@ -19,8 +19,7 @@ export async function initI18nODataDownloadGenerator(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: odataDownloadGenerator,
         ns: [odataDownloadGenerator],
-        missingInterpolationHandler: () => '', // Called when interpolation values are undefined, prevents outputting of `{{undefinedProperty}}`
-        showSupportNotice: false
+        missingInterpolationHandler: () => '' // Called when interpolation values are undefined, prevents outputting of `{{undefinedProperty}}`
     });
 }
 

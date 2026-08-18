@@ -86,7 +86,7 @@ modules:
               ServiceKeyName: captestproject-html5-repo-host-key
               sap.cloud.service: captestproject
             - Authentication: OAuth2UserTokenExchange
-              Name: captestproject_uaa
+              Name: captestproject_auth
               ServiceInstanceName: captestproject-xsuaa-service
               ServiceKeyName: captestproject-auth-key
               sap.cloud.service: captestproject
@@ -255,7 +255,7 @@ modules:
       memory: 256M
     requires:
       - name: captestproject-html5-repo-runtime
-      - name: captestproject-uaa
+      - name: captestproject-auth
       - name: captestproject-destination
         group: destinations
         properties:
@@ -309,16 +309,6 @@ resources:
       path: ./xs-security.json
       config:
         xsappname: captestproject-\${org}-\${space}
-        tenant-mode: dedicated
-  - name: captestproject-uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      service-name: captestproject-xsuaa-service
-      config:
-        xsappname: captestproject-\${space-guid}
         tenant-mode: dedicated
   - name: captestproject-html5-repo-runtime
     type: org.cloudfoundry.managed-service

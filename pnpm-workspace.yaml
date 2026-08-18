@@ -112,6 +112,8 @@ overrides:
     "css-loader>postcss": ">=8.5.10"
     "sanitize-html>postcss": ">=8.5.10"
     sanitize-html: ">=2.17.4"
+    "enzyme>cheerio": "1.0.0-rc.12"
+    "jest-environment-jsdom@29.7.0>jest-mock": "30.4.1"
     "socks>ip-address": ">=10.1.1"
     "express-rate-limit>ip-address": ">=10.1.1"
     ip-address: ">=10.1.1"

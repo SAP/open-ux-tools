@@ -12,6 +12,9 @@ export { generateActionMenu } from './action-menu/index.js';
 export type { CustomTableColumn } from './column/types.js';
 export { generateCustomColumn } from './column/index.js';
 
+export type { Fragment } from './fragment/types.js';
+export { generateFragment } from './fragment/index.js';
+
 export type { CustomHeaderSection, CustomSection, CustomSubSection } from './section/types.js';
 export { RequestGroupId, DesignTime } from './section/types.js';
 export { generateCustomSection, generateCustomSubSection, generateCustomHeaderSection } from './section/index.js';
@@ -28,7 +31,13 @@ export type { FPMConfig } from './app/index.js';
 export { validateBasePath, validateVersion } from './common/validate.js';
 export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
 
-export { BuildingBlockType } from './building-block/types.js';
+export {
+    BuildingBlockType,
+    PageTemplateType,
+    PAGE_AGGREGATIONS,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from './building-block/types.js';
 export type {
     FilterBar,
     Form,
@@ -45,7 +54,12 @@ export type {
     ButtonGroupConfig,
     Action
 } from './building-block/types.js';
-export { generateBuildingBlock, getSerializedFileContent } from './building-block/index.js';
+export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
+export {
+    generateBuildingBlock,
+    getSerializedFileContent,
+    generateBuildingBlockAggregation
+} from './building-block/index.js';
 export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,

@@ -842,6 +842,49 @@ describe('Test prompts', () => {
                 jest.useRealTimers();
             });
         });
+
+        describe('showOutputTabLink', () => {
+            it('should not show output tab link before validate has produced a result', () => {
+                const showOutputTabLinkFn = (entitySelectionPrompt as any).showOutputTabLink;
+                expect(showOutputTabLinkFn).toBeDefined();
+                expect(showOutputTabLinkFn()).toEqual({
+                    show: false,
+                    linkMessage: realT('prompts.relatedEntitySelection.openLogs')
+                });
+            });
+
+            it('should show output tab link after a successful validate', async () => {
+                jest.useFakeTimers();
+                const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const mockQueryResult = { odataQueryResult: [{ id: 1 }] };
+                mockGetData.mockResolvedValue(mockQueryResult);
+
+                const result = await getODataDownloaderPrompts();
+                result.answers.application.relatedEntityChoices.choices = mockChoices;
+                result.answers.application.referencedEntities = {
+                    listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+                };
+
+                const freshEntityPrompt = result.questions.find(
+                    (q: any) => q.name === promptNames.relatedEntitySelection
+                ) as CheckBoxQuestion;
+
+                const selectedEntities = [mockChoices[0].value];
+                const validatePromise = freshEntityPrompt.validate!(selectedEntities, {
+                    [promptNames.relatedEntitySelection]: selectedEntities,
+                    'entityKeyIdx:0': 'testKey'
+                });
+                jest.advanceTimersByTime(1000);
+                await validatePromise;
+
+                expect((freshEntityPrompt as any).showOutputTabLink()).toEqual({
+                    show: true,
+                    linkMessage: realT('prompts.relatedEntitySelection.openLogs')
+                });
+
+                jest.useRealTimers();
+            });
+        });
     });
 
     describe('Reset Selection Prompt', () => {

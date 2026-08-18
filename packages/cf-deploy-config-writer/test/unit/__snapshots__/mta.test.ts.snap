@@ -18,10 +18,10 @@ modules:
         parameters:
           service-key:
             name: basicApp-repo-host-key
-      - name: basicApp-uaa
+      - name: basicApp-auth
         parameters:
           service-key:
-            name: basicApp-uaa-key
+            name: basicApp-auth-key
     parameters:
       content:
         instance:
@@ -31,9 +31,9 @@ modules:
               ServiceKeyName: basicApp-repo-host-key
               sap.cloud.service: basicApp
             - Authentication: OAuth2UserTokenExchange
-              Name: basicApp_uaa
+              Name: basicApp_auth
               ServiceInstanceName: basicApp-xsuaa-service
-              ServiceKeyName: basicApp-uaa-key
+              ServiceKeyName: basicApp-auth-key
               sap.cloud.service: basicApp
           existing_destinations_policy: update
     build-parameters:
@@ -81,13 +81,20 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-  - name: basicApp-uaa
+  - name: basicApp-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: basicApp-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: basicApp-xsuaa-service
+      config:
+        xsappname: basicApp-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: basicApp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -132,7 +139,7 @@ modules:
           srv-url: \${default-url}
     requires:
       - name: managedAppCAPProject-db
-      - name: managedAppCAPProject-uaa
+      - name: managedAppCAPProject-auth
   - name: managedAppCAPProject-db-deployer
     type: hdb
     path: gen/db
@@ -150,10 +157,10 @@ modules:
         parameters:
           service-key:
             name: managedAppCAPProject-repo-host-key
-      - name: managedAppCAPProject-uaa
+      - name: managedAppCAPProject-auth
         parameters:
           service-key:
-            name: managedAppCAPProject-uaa-key
+            name: managedAppCAPProject-auth-key
     parameters:
       content:
         instance:
@@ -163,9 +170,9 @@ modules:
               ServiceKeyName: managedAppCAPProject-repo-host-key
               sap.cloud.service: managedAppCAPProject
             - Authentication: OAuth2UserTokenExchange
-              Name: managedAppCAPProject_uaa
+              Name: managedAppCAPProject_auth
               ServiceInstanceName: managedAppCAPProject-xsuaa-service
-              ServiceKeyName: managedAppCAPProject-uaa-key
+              ServiceKeyName: managedAppCAPProject-auth-key
               sap.cloud.service: managedAppCAPProject
           existing_destinations_policy: update
     build-parameters:
@@ -227,13 +234,20 @@ resources:
                 HTML5.ForwardAuthToken: true
     requires:
       - name: srv-api
-  - name: managedAppCAPProject-uaa
+  - name: managedAppCAPProject-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: managedAppCAPProject-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: managedAppCAPProject-xsuaa-service
+      config:
+        xsappname: managedAppCAPProject-\${org}-\${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: managedAppCAPProject-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -265,7 +279,7 @@ modules:
       memory: 256M
     requires:
       - name: standaloneBasic-html5-repo-runtime
-      - name: standaloneBasic-uaa
+      - name: standaloneBasic-auth
       - name: standaloneBasic-destination-service
         group: destinations
         properties:
@@ -299,7 +313,7 @@ modules:
         - npm run build:cf
       supported-platforms: []
 resources:
-  - name: standaloneBasic-uaa
+  - name: standaloneBasic-auth
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
@@ -307,8 +321,12 @@ resources:
       path: ./xs-security.json
       service-name: standaloneBasic-xsuaa-service
       config:
-        xsappname: standaloneBasic-\${space-guid}
+        xsappname: standaloneBasic-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: standaloneBasic-html5-repo-runtime
     type: org.cloudfoundry.managed-service
     parameters:

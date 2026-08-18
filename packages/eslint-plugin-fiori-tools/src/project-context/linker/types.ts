@@ -22,6 +22,14 @@ export type ConfigurationProperty<T> = {
      * Absolute path in manifest where this configuration is defined.
      */
     configurationPath: string[];
+    /**
+     * Flex change file uri.
+     */
+    changeFileUri?: string;
+    /**
+     * Flex change selector id
+     */
+    selector?: string;
 };
 
 export interface ConfigurationBase<T extends string, Configuration extends object = {}> {

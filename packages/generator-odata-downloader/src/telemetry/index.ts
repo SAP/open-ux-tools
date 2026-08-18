@@ -8,7 +8,7 @@ import {
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { randomUUID } from 'node:crypto';
 import osName from 'os-name';
-import packageJson from '../../package.json' with { type: 'json' };
+import packageJson from '../../package.json';
 import { ODataDownloadGenerator } from '../data-download/index.js';
 import { t } from '../utils/i18n.js';
 

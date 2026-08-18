@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Annotations } from '@sap-ux/axios-extension';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -8,7 +8,11 @@ import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types/index.js';
-import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants.js';
+import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants.js';
+import {
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fe-fpm-writer';
 import type { Logger } from '@sap-ux/logger';
 
 // Pre-import actual modules
@@ -67,11 +71,11 @@ const {
     getAnnotations,
     getAppId,
     getCdsAnnotations,
+    getFloorplanLabel,
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
-    getRequiredOdataVersion,
-    restoreServiceProviderLoggers
+    getRequiredOdataVersion
 } = await import('../../../src/utils/common.js');
 
 describe('Test utils', () => {
@@ -137,7 +141,23 @@ describe('Test utils', () => {
 
     test('getMinSupportedUI5Version - FPM with page building block enabled returns minimum required version', () => {
         const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
-        expect(result).toBe(minUi5VersionForPageBuildingBlock);
+        expect(result).toBe(MIN_UI5_VERSION_PAGE_BUILDING_BLOCK);
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block full layout returns full layout minimum version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, {
+            addPageBuildingBlock: true,
+            pageBuildingBlockLayout: 'full'
+        });
+        expect(result).toBe(MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT);
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block basic layout returns basic minimum version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, {
+            addPageBuildingBlock: true,
+            pageBuildingBlockLayout: undefined
+        });
+        expect(result).toBe(MIN_UI5_VERSION_PAGE_BUILDING_BLOCK);
     });
 
     test('getMinSupportedUI5Version - FPM with page building block disabled returns minimum version support based on service version', () => {
@@ -393,26 +413,5 @@ describe('Test utils', () => {
             expect(mockCreateLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(mockWriteApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
-    });
-
-    test('restoreServiceProviderLoggers should re-add removed log ref', () => {
-        const logger = {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn()
-        } as unknown as Logger;
-
-        const serviceProvider = {
-            log: {},
-            services: {
-                service1: { log: {} },
-                service2: { log: {} }
-            }
-        } as unknown as ServiceProvider;
-
-        const restoredServiceProvider = restoreServiceProviderLoggers(logger, serviceProvider);
-        expect(restoredServiceProvider?.log).toBe(logger);
-        expect((restoredServiceProvider as any)?.services.service1.log).toBe(logger);
-        expect((restoredServiceProvider as any)?.services.service2.log).toBe(logger);
     });
 });

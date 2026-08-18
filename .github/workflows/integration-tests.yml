@@ -16,7 +16,7 @@ jobs:
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
-                key: ui5-versions
+                key: ui5-versions-dummy
                 restore-keys: ui5-versions-
             - name: Output UI5 versions
               id: output-ui5-versions
@@ -75,8 +75,8 @@ jobs:
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
-                key: ui5-versions-
-                restore-keys: ui5-versions
+                key: ui5-versions-dummy
+                restore-keys: ui5-versions-
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:

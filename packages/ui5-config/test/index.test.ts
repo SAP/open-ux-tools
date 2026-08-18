@@ -845,6 +845,42 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('addBuilderResourceExcludes', () => {
+        test('adds both default excludes to empty config', () => {
+            ui5Config.addBuilderResourceExcludes();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('is idempotent — calling twice does not duplicate entries', () => {
+            ui5Config.addBuilderResourceExcludes();
+            ui5Config.addBuilderResourceExcludes();
+            const result = ui5Config.toString();
+            expect([...result.matchAll(/\/test\/\*\*/g)]).toHaveLength(1);
+            expect([...result.matchAll(/\/localService\/\*\*/g)]).toHaveLength(1);
+        });
+
+        test('does not duplicate an entry that already exists', async () => {
+            const partial = await UI5Config.newInstance(`builder:\n  resources:\n    excludes:\n      - /test/**\n`);
+            partial.addBuilderResourceExcludes();
+            const result = partial.toString();
+            expect([...result.matchAll(/\/test\/\*\*/g)]).toHaveLength(1);
+            expect(result).toContain('/localService/**');
+        });
+
+        test('returns this for chaining', () => {
+            expect(ui5Config.addBuilderResourceExcludes()).toBe(ui5Config);
+        });
+
+        test('handles malformed excludes (null value) — replaces null with sequence', async () => {
+            const malformed = await UI5Config.newInstance(`builder:\n  resources:\n    excludes: ~\n`);
+            expect(() => malformed.addBuilderResourceExcludes()).not.toThrow();
+            const result = malformed.toString();
+            expect(result).toContain('/test/**');
+            expect(result).toContain('/localService/**');
+            expect(result).not.toContain('excludes: ~');
+        });
+    });
+
     describe('addAbapDeployTask', () => {
         const app: BspApp = {
             name: '~name',

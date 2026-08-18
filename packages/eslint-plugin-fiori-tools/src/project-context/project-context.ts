@@ -29,10 +29,16 @@ function getWorkerPath(name: string): string {
     // Create sync function to call the working draft-toggle-worker
     const currentDir = dirname(fileURLToPath(import.meta.url));
 
-    // Try multiple possible worker locations
+    // Try multiple possible worker locations.
+    // import.meta.url differs by build tool:
+    //   tsc:     lib/project-context/project-context.js  → currentDir = lib/project-context/
+    //   esbuild: lib/index.js                            → currentDir = lib/
+    // Path 2 (../../lib/project-context/) only resolves correctly for tsc inside the workspace;
+    // when installed in node_modules ../../ exits the package root entirely.
     const workerPaths = [
-        join(currentDir, name), // src location
-        join(currentDir, '..', '..', 'lib', 'project-context', name) // dist location
+        join(currentDir, name), // tsc: lib/project-context/ → lib/project-context/artifacts.js
+        join(currentDir, 'project-context', name), // esbuild: lib/ → lib/project-context/artifacts.js
+        join(currentDir, '..', '..', 'lib', 'project-context', name) // ts-node from src/ during development
     ];
 
     let workerPath = null;
@@ -190,8 +196,9 @@ export class ProjectContext {
 
     /**
      * If set to true, forces re-indexing on the first update of a file.
+     * If updated file is not found in cache, forceReindexOnFirstUpdate is set to true.
      */
-    public static forceReindexOnFirstUpdate = false; // NOSONAR - Property must be mutable for test setup
+    private static forceReindexOnFirstUpdate = false;
 
     /**
      * Creates a ProjectContext for the given file path.
@@ -215,6 +222,7 @@ export class ProjectContext {
      * @returns The ProjectContext instance for the file
      */
     public static updateFile(uri: string, content: string): ProjectContext {
+        this.forceReindexOnFirstUpdate = !this.fileCache.get(uri);
         this.fileCache.set(uri, content);
         const numberOfUpdates = this.updateCache.get(uri) ?? 0;
         this.updateCache.set(uri, numberOfUpdates + 1);
@@ -228,7 +236,7 @@ export class ProjectContext {
 
         return context;
     }
-    private static readonly fileCache = new Map<string, string>();
+    public static fileCache = new Map<string, string>(); // NOSONAR - Property must be mutable for test setup
     private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
             if (prop === 'get') {

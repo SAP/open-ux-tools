@@ -1,7 +1,7 @@
 import { expect, type Page } from '@sap-ux-private/playwright';
-import { test } from '../../fixture';
-import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
-import { AdaptationEditorShell, ListReport, waitUntilFileIsDeleted } from '../test-utils';
+import { test } from '../../fixture.js';
+import { ADP_FIORI_ELEMENTS_V2 } from '../../project/index.js';
+import { AdaptationEditorShell, ListReport, waitUntilFileIsDeleted } from '../test-utils.js';
 import { join } from 'node:path';
 /**
  * Creates changes under filter by toggling `enabled` property multiple times from properties panel,

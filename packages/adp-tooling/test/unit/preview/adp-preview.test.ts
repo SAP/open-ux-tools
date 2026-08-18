@@ -341,6 +341,22 @@ describe('AdaptationProject', () => {
             expect(adp['descriptorVariantId']).toBe(parsedVariant.id);
             expect(adp['routesHandler']).toBeDefined();
             expect(adp['provider']).toBeUndefined();
+            expect(adp.isCloudFoundry).toBe(true);
+        });
+
+        test('isCloudFoundry returns false when cfBuildPath is not configured', () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            expect(adp.isCloudFoundry).toBe(false);
         });
     });
 
@@ -372,6 +388,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('should return early when cfBuildPath is set', async () => {
@@ -539,6 +556,9 @@ describe('AdaptationProject', () => {
             const app = express();
             app.use(adp.descriptor.url, adp.proxy.bind(adp));
             app.get(`${mockMergedDescriptor.url}/original.file`, next);
+            // Catch i18n .properties pass-throughs so tests can verify proxy() called next()
+            // without redirecting. Mirrors how fiori-tools-proxy would handle them in real runs.
+            app.get(new RegExp(`^${mockMergedDescriptor.url}/i18n/.*\\.properties$`), next);
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = supertest(app);
@@ -550,6 +570,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('/manifest.json with sync', async () => {
@@ -584,6 +605,66 @@ describe('AdaptationProject', () => {
         test('/original.file', async () => {
             await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
             expect(next).toHaveBeenCalled();
+        });
+
+        test('/i18n/i18n.properties is passed through (not redirected)', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n.properties`);
+
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('/i18n/i18n_de.properties (locale variant) is passed through', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n_de.properties`);
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('/i18n/ListReport/Foo/i18n.properties (per-page bundle) is passed through', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/ListReport/Foo/i18n.properties`);
+
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('rewrites ui5://<variant-id>/ prefixes in the manifest to local paths', async () => {
+            // The manifest built by the backend references bundleUrls via the ui5:// scheme
+            // using the descriptor variant id (my.adaptation), not the base app name
+            // (the.original.app). FLP Sandbox 2.0's CDM maps that namespace to the backend,
+            // so these must be rewritten to local absolute paths.
+            const rewriteDescriptor = {
+                ...mockMergedDescriptor,
+                manifest: {
+                    'sap.app': {
+                        id: 'my.adaptation',
+                        i18n: {
+                            bundleUrl: 'ui5://my/adaptation/i18n/i18n.properties',
+                            enhanceWith: [{ bundleUrl: 'ui5://my/adaptation/i18n/ListReport/i18n.properties' }]
+                        }
+                    }
+                }
+            };
+            const rewriteAdp = new AdpPreview(
+                { target: { url: backend } },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+            // Set the state that init()/sync() would normally populate, so the proxy can run
+            // without a backend round-trip. The rewrite uses descriptorVariantId, not name.
+            (rewriteAdp as any).mergedDescriptor = rewriteDescriptor;
+            (rewriteAdp as any).descriptorVariantId = 'my.adaptation';
+            (rewriteAdp as any).lrep = {};
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+
+            const rewriteApp = express();
+            rewriteApp.use(rewriteDescriptor.url, rewriteAdp.proxy.bind(rewriteAdp));
+            const response = await supertest(rewriteApp).get(`${rewriteDescriptor.url}/manifest.json`).expect(200);
+
+            const manifest = JSON.parse(response.text);
+            expect(manifest['sap.app'].i18n.bundleUrl).toBe('/i18n/i18n.properties');
+            expect(manifest['sap.app'].i18n.enhanceWith[0].bundleUrl).toBe('/i18n/ListReport/i18n.properties');
+            expect(response.text).not.toContain('ui5://');
         });
     });
 

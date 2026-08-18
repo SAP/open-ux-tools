@@ -69,6 +69,15 @@ describe('UI5 templates', () => {
         `);
     });
 
+    it('generated ui5.yaml contains builder.resources.excludes', async () => {
+        const projectDir = join(outputDir, 'testapp-builder-excludes');
+        await generate(projectDir, ui5AppConfig, fs);
+        const ui5Yaml = fs.read(join(projectDir, 'ui5.yaml'));
+        expect(ui5Yaml).toContain('builder:');
+        expect(ui5Yaml).toContain('/test/**');
+        expect(ui5Yaml).toContain('/localService/**');
+    });
+
     // Test to ensure the appid does not contain any characters that result in malfored docs
     it('validate appid', async () => {
         const projectDir = join(outputDir, 'testapp-fail');
@@ -105,6 +114,15 @@ describe('UI5 templates', () => {
         fs.write(join(projectDir, 'ui5.yaml'), '');
         fs.delete(join(projectDir, 'webapp/manifest.json'));
         await expect(enableTypescript(projectDir, fs)).rejects.toThrow();
+    });
+
+    it('enableTypescript does not throw when Component.js does not exist (TypeScript project)', async () => {
+        const projectDir = join(outputDir, 'testapp-ts-no-component');
+        await generate(projectDir, { ...ui5AppConfig, ui5: { minUI5Version: '1.96.1' } }, fs);
+        fs.delete(join(projectDir, 'webapp/Component.js'));
+        await expect(enableTypescript(projectDir, fs)).resolves.not.toThrow();
+        expect(fs.exists(join(projectDir, 'webapp/Component.js'))).toBe(false);
+        expect(fs.exists(join(projectDir, 'webapp/Component.js.old'))).toBe(false);
     });
 
     it('Check webapp/index.html templates are generated correctly for CAP application with ui5 version ', async () => {
@@ -189,6 +207,11 @@ describe('UI5 templates', () => {
                   configuration:
                     flp:
                       theme: sap_fiori_3
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
     });

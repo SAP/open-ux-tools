@@ -1,6 +1,9 @@
 import { jest } from '@jest/globals';
-import path, { join } from 'node:path';
+import path, { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const realFs = await import('node:fs');
 const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
@@ -124,6 +127,8 @@ describe('Project Utils', () => {
             const result = getPackageJSONInfo();
 
             expect(result).toEqual(mockJSON);
+            const packageJsonPath = mockReadFileSync.mock.calls[0][0];
+            expect(packageJsonPath).toEqual(join(__dirname, '../../../package.json'));
         });
 
         it('should return default package info on read failure', () => {
@@ -272,6 +277,20 @@ describe('Project Utils', () => {
                 expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
         });
+
+        it('should include builder.resources.excludes in written ui5.yaml', async () => {
+            const captureFs = {
+                write: jest.fn(),
+                read: jest.fn().mockReturnValue(ui5Yaml)
+            };
+            await writeUI5Yaml(projectPath, data, captureFs as unknown as Editor);
+            const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
+            expect(writtenContent).toContain('resources:');
+            expect(writtenContent).toContain('excludes:');
+            expect(writtenContent).toContain('/test/**');
+            expect(writtenContent).toContain('/localService/**');
+        });
     });
 
     describe('writeUI5DeployYaml', () => {
@@ -356,6 +375,20 @@ metadata:
             } catch (error: any) {
                 expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
+        });
+
+        it('should include builder.resources.excludes in written ui5.yaml', async () => {
+            const captureFs = {
+                write: jest.fn(),
+                read: jest.fn().mockReturnValue(ui5YamlContent)
+            };
+            await writeCfUI5Yaml(projectPath, cfData, captureFs as unknown as Editor);
+            const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
+            expect(writtenContent).toContain('resources:');
+            expect(writtenContent).toContain('excludes:');
+            expect(writtenContent).toContain('/test/**');
+            expect(writtenContent).toContain('/localService/**');
         });
     });
 });

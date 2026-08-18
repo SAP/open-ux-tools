@@ -2,6 +2,8 @@
 
 ## 1.0.0
 
+*Released: 2026-05-30T20:54:07Z*
+
 ### Major Changes
 
 - 32609a7: # Migration to ECMAScript Modules (ESM)
@@ -35,11 +37,15 @@
 
 ## 0.2.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.1.1
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -47,11 +53,15 @@
 
 ## 0.1.0
 
+*Released: 2026-03-28T09:24:50Z*
+
 ### Minor Changes
 
 - 2d20f19: adds support for the generic host connection type
 
 ## 0.0.4
+
+*Released: 2026-01-16T12:32:24Z*
 
 ### Patch Changes
 
@@ -59,11 +69,15 @@
 
 ## 0.0.3
 
+*Released: 2026-01-12T09:10:27Z*
+
 ### Patch Changes
 
 - d667a5e: fix: add repository field to package.json
 
 ## 0.0.2
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 

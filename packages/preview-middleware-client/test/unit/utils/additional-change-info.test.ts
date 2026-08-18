@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import FlexChange from 'mock/sap/ui/fl/Change';
-import type { FlexChange as Change } from '../../../src/flp/common.js';
 import type { AddXMLAdditionalInfo } from '../../../src/cpe/additional-change-info/add-xml-additional-info.js';
+import type { FlexChange as Change } from '../../../src/flp/common.js';
 
 const getAddXMLAdditionalInfoMock = jest.fn();
 jest.unstable_mockModule('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info', () => ({
@@ -35,30 +35,15 @@ describe('additional-change-info.ts', () => {
             });
             getAddXMLAdditionalInfoMock.mockReturnValueOnce(mockAdditionalInfo);
 
-            setAdditionalChangeInfo(mockChange);
+            setAdditionalChangeInfo([mockChange]);
 
             expect(getAddXMLAdditionalInfoMock).toHaveBeenCalledWith(mockChange, undefined);
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual(mockAdditionalInfo);
         });
 
-        it('should not set additional change info for unsupported change type', () => {
-            const mockChange = new FlexChange({
-                selector: { id: 'mockSelectorId', idIsLocal: false },
-                changeType: 'unsupportedType',
-                layer: 'CUSTOMER_BASE',
-                fileName: 'mockFileName'
-            });
-
-            setAdditionalChangeInfo(mockChange);
-
-            expect(getAddXMLAdditionalInfoMock).not.toHaveBeenCalled();
-            const result = getAdditionalChangeInfo(mockChange as unknown as Change);
-            expect(result).toBeUndefined();
-        });
-
         it('should not set additional change info if change is undefined', () => {
-            setAdditionalChangeInfo(undefined);
+            setAdditionalChangeInfo([]);
 
             expect(getAddXMLAdditionalInfoMock).not.toHaveBeenCalled();
         });
@@ -74,8 +59,8 @@ describe('additional-change-info.ts', () => {
                 .mockReturnValueOnce({ templateName: 'template' })
                 .mockReturnValueOnce({ controlType: 'test' });
 
-            setAdditionalChangeInfo(mockChange);
-            setAdditionalChangeInfo(mockChange);
+            setAdditionalChangeInfo([mockChange]);
+            setAdditionalChangeInfo([mockChange]);
 
             expect(getAddXMLAdditionalInfoMock).toHaveBeenCalledTimes(2);
 
@@ -110,7 +95,7 @@ describe('additional-change-info.ts', () => {
             });
             getAddXMLAdditionalInfoMock.mockReturnValueOnce(mockAdditionalInfo);
 
-            setAdditionalChangeInfo(mockChange);
+            setAdditionalChangeInfo([mockChange]);
 
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual(mockAdditionalInfo);

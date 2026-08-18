@@ -30,7 +30,7 @@ config.transform = {
         'ts-jest',
         {
             useESM: true,
-            tsconfig: path.join(__dirname, 'tsconfig.eslint.json')
+            tsconfig: path.join(__dirname, 'test/tsconfig.json')
         }
     ]
 };

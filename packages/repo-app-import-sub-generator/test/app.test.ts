@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { platform } from 'node:os';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { PromptNames } from '../src/app/types.js';
+import { PromptNames, AppDownloadType } from '../src/app/types.js';
+import { EventName } from '../src/telemetryEvents/index.js';
 import fs from 'node:fs';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
@@ -12,22 +13,25 @@ import {
     adtSourceTemplateId,
     fioriAppSourcetemplateId,
     extractedFilePath,
-    qfaJsonFileName
+    qfaJsonFileName,
+    generatorName
 } from '../src/utils/constants.js';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
 import { t } from '../src/utils/i18n.js';
-import { EventName } from '../src/telemetryEvents/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Pre-import actual modules before mocking
 const actualPromptHelpers = await import('../src/prompts/prompt-helpers.js');
 const actualLaunchConfig = await import('@sap-ux/launch-config');
-const actualAppConfig = await import('../src/app/app-config.js');
+const actualAppConfig = await import('../src/app/app-config-quick-deploy.js');
+const actualAbapRepoConfig = await import('../src/app/app-config-abap-repo.js');
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualProjectAccess = await import('@sap-ux/project-access');
+const actualFileHelpers = await import('../src/utils/file-helpers.js');
+const actualEventHook = await import('../src/utils/event-hook.js');
 
 const mockGetAppConfig = jest.fn<typeof actualAppConfig.getAppConfig>();
 const mockIsValidPromptState = jest.fn() as jest.Mock;
@@ -62,9 +66,16 @@ jest.unstable_mockModule('../src/utils/download-utils', () => ({
     downloadApp: jest.fn().mockResolvedValue(undefined)
 }));
 
-jest.unstable_mockModule('../src/app/app-config', () => ({
+jest.unstable_mockModule('../src/app/app-config-quick-deploy', () => ({
     ...actualAppConfig,
-    getAppConfig: mockGetAppConfig
+    getAppConfig: mockGetAppConfig,
+    getAdtDeployConfig: jest.fn()
+}));
+
+jest.unstable_mockModule('../src/app/app-config-abap-repo', () => ({
+    ...actualAbapRepoConfig,
+    getAbapRepoAppConfig: jest.fn(),
+    getAbapRepoDeployConfig: jest.fn()
 }));
 
 jest.unstable_mockModule('../src/utils/validators', () => ({
@@ -105,15 +116,33 @@ jest.unstable_mockModule('../src/prompts/prompts', () => ({
     getPrompts: mockGetPrompts
 }));
 
+jest.unstable_mockModule('../src/utils/file-helpers', () => ({
+    ...actualFileHelpers,
+    cleanupArtifacts: jest.fn(),
+    addPackageJsonIfNotFound: jest.fn()
+}));
+
+jest.unstable_mockModule('../src/utils/event-hook', () => ({
+    ...actualEventHook,
+    runPostAppGenHook: jest.fn()
+}));
+
 const yeomanTest = (await import('yeoman-test')).default;
 const RepoAppDownloadGeneratorModule = await import('../src/app/index.js');
 const RepoAppDownloadGenerator = RepoAppDownloadGeneratorModule.default;
 const { TestFixture } = await import('./fixtures/index.js');
 const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
 const { TelemetryHelper } = await import('@sap-ux/fiori-generator-shared');
-const { handleWorkspaceConfig } = await import('@sap-ux/launch-config');
+const { handleWorkspaceConfig, createLaunchConfig } = await import('@sap-ux/launch-config');
 const env = (await import('yeoman-environment')).default;
 const { FileName, DirName } = await import('@sap-ux/project-access');
+const { getUI5Versions } = await import('@sap-ux/ui5-info');
+const { validateQfaJsonFile } = await import('../src/utils/validators.js');
+const { getAdtDeployConfig } = await import('../src/app/app-config-quick-deploy.js');
+const { getAbapRepoDeployConfig, getAbapRepoAppConfig } = await import('../src/app/app-config-abap-repo.js');
+const { runPostAppGenHook } = await import('../src/utils/event-hook.js');
+const downloadUtils = await import('../src/utils/download-utils.js');
+const fileHelpers = await import('../src/utils/file-helpers.js');
 
 function createAppConfig(appId: string, metadata: string): FioriElementsApp<LROPSettings> {
     return {
@@ -328,7 +357,22 @@ describe('Repo App Download', () => {
                 file: jest.fn((path: string) => ({ fsPath: path }))
             }
         };
-        mockGetUI5Versions.mockResolvedValue([{ version: '1.134.1' }]);
+        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.1' }]);
+        (validateQfaJsonFile as jest.Mock).mockReturnValue(true);
+        (getAdtDeployConfig as jest.Mock).mockResolvedValue({
+            target: { url: 'https://test-url.com', client: '100', destination: 'TEST_DESTINATION' },
+            app: { name: appId, package: 'MY_PKG', description: '', transport: 'REPLACE_WITH_TRANSPORT' }
+        });
+        (getAbapRepoDeployConfig as jest.Mock).mockResolvedValue({
+            target: { url: 'https://test-url.com', client: '100' },
+            app: { name: 'app-1-repo', package: 'MY_PKG', description: '', transport: 'REPLACE_WITH_TRANSPORT' }
+        });
+        (getAbapRepoAppConfig as jest.Mock).mockReturnValue({
+            app: { id: appId, title: 'App Title', flpAppId: `${appId}-tile` },
+            service: { url: 'https://test-url.com', version: OdataVersion.v4 },
+            ui5: { version: '1.145.2' },
+            template: { type: 'lrop' }
+        });
     });
 
     it('Should successfully run app download from repository', async () => {
@@ -367,13 +411,13 @@ describe('Repo App Download', () => {
         ).resolves.not.toThrow();
         verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
         expect(mockAppWizard.showInformation).toHaveBeenCalledWith(
-            t('info.repoAppDownloadCompleteMsg'),
+            t('info.adtQuickDeploy.repoAppDownloadCompleteMsg'),
             MessageType.notification
         );
         expect(mockSendTelemetry).toHaveBeenCalledWith(
-            EventName.GENERATION_SUCCESS,
+            EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS,
             TelemetryHelper.createTelemetryData({
-                appType: 'repo-app-import-sub-generator'
+                appType: generatorName
             })
         );
         expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(
@@ -423,7 +467,7 @@ describe('Repo App Download', () => {
         ).resolves.not.toThrow();
         verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
         expect(mockAppWizard.showInformation).toHaveBeenCalledWith(
-            t('info.repoAppDownloadCompleteMsg'),
+            t('info.adtQuickDeploy.repoAppDownloadCompleteMsg'),
             MessageType.notification
         );
         expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(
@@ -511,15 +555,68 @@ describe('Repo App Download', () => {
                     })
             ).resolves.not.toThrow();
             expect(mockSendTelemetry).toHaveBeenCalledWith(
-                EventName.GENERATION_SUCCESS,
+                EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS,
                 TelemetryHelper.createTelemetryData({
-                    appType: 'repo-app-import-sub-generator'
+                    appType: generatorName
                 })
             );
             expect(handleWorkspaceConfig).toHaveBeenCalled();
             verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
         }
     );
+
+    it('should pass deployConfig to runPostAppGenHook for AbapRepository download type', async () => {
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
+        const mockDeployConfig = {
+            target: { url: 'https://test-url.com', client: '100' },
+            app: { name: 'app-1-repo', package: 'MY_PKG', description: '', transport: 'TR000123' }
+        };
+        (getAbapRepoDeployConfig as jest.Mock).mockResolvedValue(mockDeployConfig);
+        (handleWorkspaceConfig as jest.Mock).mockReturnValue({
+            launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+            cwd: testOutputDir,
+            workspaceFolderUri: undefined,
+            appNotInWorkspace: false
+        });
+
+        await expect(
+            yeomanTest
+                .run(RepoAppDownloadGenerator, { resolved: repoAppDownloadGenPath })
+                .cd('.')
+                .withOptions({
+                    appRootPath: testOutputDir,
+                    appWizard: mockAppWizard,
+                    vscode: mockVSCode,
+                    skipInstall: true,
+                    data: {
+                        appDownloadType: AppDownloadType.AbapRepository,
+                        postGenCommand: 'test-post-gen-command'
+                    }
+                })
+                .withPrompts({
+                    systemSelection: 'system3',
+                    selectedApp: {
+                        appId: appConfig.app.id,
+                        title: appConfig.app.title,
+                        description: appConfig.app.description,
+                        repoName: 'app-1-repo',
+                        url: 'url-1'
+                    },
+                    targetFolder: testOutputDir
+                })
+        ).resolves.not.toThrow();
+
+        expect(runPostAppGenHook).toHaveBeenCalledWith(
+            expect.objectContaining({
+                postGenCommand: 'test-post-gen-command',
+                deployConfig: mockDeployConfig
+            })
+        );
+        expect(mockAppWizard.showInformation).toHaveBeenCalledWith(
+            t('info.abapRepository.repoAppDownloadCompleteMsg'),
+            MessageType.notification
+        );
+    });
 
     it('should successfully download a quick deployed app from repository', async () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
@@ -650,5 +747,191 @@ describe('Repo App Download', () => {
         generator.setPromptsCallback(mockFn);
 
         expect(generator['prompts'].setCallback).toHaveBeenCalledWith(mockFn);
+    });
+
+    it('should successfully run app download for AbapRepository download type', async () => {
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
+
+        await expect(
+            yeomanTest
+                .run(RepoAppDownloadGenerator, {
+                    resolved: repoAppDownloadGenPath
+                })
+                .cd('.')
+                .withOptions({
+                    appRootPath: testOutputDir,
+                    appWizard: mockAppWizard,
+                    vscode: mockVSCode,
+                    skipInstall: true,
+                    data: { appDownloadType: AppDownloadType.AbapRepository }
+                })
+                .withPrompts({
+                    systemSelection: 'system3',
+                    selectedApp: {
+                        appId: appConfig.app.id,
+                        title: appConfig.app.title,
+                        description: appConfig.app.description,
+                        repoName: 'app-1-repo',
+                        url: 'url-1'
+                    },
+                    targetFolder: testOutputDir
+                })
+        ).resolves.not.toThrow();
+
+        expect(downloadUtils.extractZip).toHaveBeenCalled();
+        expect(fileHelpers.cleanupArtifacts).toHaveBeenCalled();
+        expect(getAbapRepoDeployConfig).toHaveBeenCalled();
+        expect(mockSendTelemetry).toHaveBeenCalledWith(
+            EventName.ABAP_REPO_DOWNLOAD_SUCCESS,
+            TelemetryHelper.createTelemetryData({
+                appType: generatorName
+            })
+        );
+    });
+
+    it('should generate README for AbapRepository download type', async () => {
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
+
+        await yeomanTest
+            .run(RepoAppDownloadGenerator, { resolved: repoAppDownloadGenPath })
+            .cd('.')
+            .withOptions({
+                appRootPath: testOutputDir,
+                appWizard: mockAppWizard,
+                skipInstall: true,
+                data: { appDownloadType: AppDownloadType.AbapRepository }
+            })
+            .withPrompts({
+                systemSelection: 'system3',
+                selectedApp: {
+                    appId: appConfig.app.id,
+                    title: appConfig.app.title,
+                    description: appConfig.app.description,
+                    repoName: repoName,
+                    url: 'url-1'
+                },
+                targetFolder: testOutputDir
+            });
+
+        const readMePath = join(testOutputDir, appId, 'README.md');
+        expect(fs.existsSync(readMePath)).toBe(true);
+        const readMeContent = fs.readFileSync(readMePath, 'utf-8');
+        expect(readMeContent).toContain(appId);
+        expect(readMeContent).toContain('List Report Page');
+        expect(readMeContent).not.toContain('lrop');
+    });
+
+    it('should generate launch config for AbapRepository download type when vscode is provided', async () => {
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
+        (handleWorkspaceConfig as jest.Mock).mockReturnValue({
+            launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+            cwd: testOutputDir,
+            workspaceFolderUri: 'testUri',
+            appNotInWorkspace: true
+        });
+
+        await yeomanTest
+            .run(RepoAppDownloadGenerator, { resolved: repoAppDownloadGenPath })
+            .cd('.')
+            .withOptions({
+                appRootPath: testOutputDir,
+                appWizard: mockAppWizard,
+                vscode: mockVSCode,
+                skipInstall: true,
+                data: { appDownloadType: AppDownloadType.AbapRepository }
+            })
+            .withPrompts({
+                systemSelection: 'system3',
+                selectedApp: {
+                    appId: appConfig.app.id,
+                    title: appConfig.app.title,
+                    description: appConfig.app.description,
+                    repoName: repoName,
+                    url: 'url-1'
+                },
+                targetFolder: testOutputDir
+            });
+
+        expect(createLaunchConfig).toHaveBeenCalledWith(
+            join(testOutputDir, appId),
+            expect.objectContaining({
+                name: appId,
+                debugOptions: expect.objectContaining({
+                    flpAppId: `${appId}-tile`,
+                    odataVersion: '4.0'
+                })
+            }),
+            expect.anything(),
+            expect.anything()
+        );
+    });
+
+    it('should send ADT_QUICK_DEPLOY_DOWNLOAD_FAIL telemetry when writing phase throws for ADTQuickDeploy', async () => {
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
+        (downloadUtils.extractZip as jest.Mock).mockRejectedValue(new Error('extract failed'));
+
+        await expect(
+            yeomanTest
+                .run(RepoAppDownloadGenerator, { resolved: repoAppDownloadGenPath })
+                .cd('.')
+                .withOptions({
+                    appRootPath: testOutputDir,
+                    appWizard: mockAppWizard,
+                    skipInstall: true
+                })
+                .withPrompts({
+                    systemSelection: 'system3',
+                    selectedApp: {
+                        appId: appConfig.app.id,
+                        title: appConfig.app.title,
+                        description: appConfig.app.description,
+                        repoName: repoName,
+                        url: 'url-1'
+                    },
+                    targetFolder: testOutputDir
+                })
+        ).rejects.toThrow('extract failed');
+
+        expect(mockSendTelemetry).toHaveBeenCalledWith(
+            EventName.ADT_QUICK_DEPLOY_DOWNLOAD_FAIL,
+            TelemetryHelper.createTelemetryData({
+                appType: generatorName
+            })
+        );
+    });
+
+    it('should send ABAP_REPO_DOWNLOAD_FAIL telemetry when writing phase throws for AbapRepository', async () => {
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
+        (downloadUtils.extractZip as jest.Mock).mockRejectedValue(new Error('extract failed'));
+
+        await expect(
+            yeomanTest
+                .run(RepoAppDownloadGenerator, { resolved: repoAppDownloadGenPath })
+                .cd('.')
+                .withOptions({
+                    appRootPath: testOutputDir,
+                    appWizard: mockAppWizard,
+                    skipInstall: true,
+                    data: { appDownloadType: AppDownloadType.AbapRepository }
+                })
+                .withPrompts({
+                    systemSelection: 'system3',
+                    selectedApp: {
+                        appId: appConfig.app.id,
+                        title: appConfig.app.title,
+                        description: appConfig.app.description,
+                        repoName: repoName,
+                        url: 'url-1'
+                    },
+                    targetFolder: testOutputDir
+                })
+        ).rejects.toThrow('extract failed');
+
+        expect(mockSendTelemetry).toHaveBeenCalledWith(
+            EventName.ABAP_REPO_DOWNLOAD_FAIL,
+            TelemetryHelper.createTelemetryData({
+                appType: generatorName
+            })
+        );
     });
 });

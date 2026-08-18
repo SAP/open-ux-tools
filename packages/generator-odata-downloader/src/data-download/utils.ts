@@ -384,7 +384,8 @@ function resolveParentPropertyFromFile(
     if (!jsFile || !existsSync(jsFile)) {
         return undefined;
     }
-    const existing = createRequire(import.meta.url)(jsFile) as {
+
+    const existing = createRequire(__filename)(jsFile) as {
         getReferentialConstraints?: (nav: {
             name: string;
             referentialConstraint: [];
@@ -394,7 +395,7 @@ function resolveParentPropertyFromFile(
     ODataDownloadGenerator.logger.debug(
         `getHierarchyEntities: '${entitySetName}' loaded constraints from existing file: ${JSON.stringify(constraints)}`
     );
-    return constraints[0]?.targetProperty;
+    return constraints[0]?.sourceProperty;
 }
 
 function resolveParentProperty(

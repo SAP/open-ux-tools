@@ -281,7 +281,12 @@ export default [
     },
     {
         name: 'typescript-eslint-1',
-        languageOptions: {},
+        languageOptions: {
+            parserOptions: {
+                projectService: true,
+                tsconfigRootDir: __dirname
+            }
+        },
         files: ['**/*.ts', '**/*.tsx'],
         // 'extends': ['plugin:@typescript-eslint/recommended'],
         rules: {

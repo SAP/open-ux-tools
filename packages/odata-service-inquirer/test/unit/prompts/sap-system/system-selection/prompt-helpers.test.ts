@@ -125,6 +125,19 @@ describe('Test system selection prompt helpers', () => {
             ]);
         });
 
+        test('Should call getAll with backendSystemFilter', async () => {
+            const mockGetAll = jest.fn().mockResolvedValue(backendSystems);
+            mockGetService.mockImplementationOnce(() => ({ getAll: mockGetAll }));
+
+            await createSystemChoices(undefined, false, true, { connectionType: ['abap_catalog'] });
+
+            expect(mockGetAll).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    backendSystemFilter: { connectionType: ['abap_catalog'] }
+                })
+            );
+        });
+
         test('Should return index of default', async () => {
             const nonBasChoices = await createSystemChoices();
             expect(findDefaultSystemSelectionIndex(nonBasChoices, 'no such system')).toEqual(-1);
@@ -303,5 +316,54 @@ describe('connectWithBackendSystem', () => {
         );
 
         loggerWarnSpy.mockRestore();
+    });
+
+    test('should pass connectType abap_catalog when no connectPath is given and odata_path when connectPath is given', async () => {
+        // Given a reentrance ticket backend system
+        const backendSystem: BackendSystem = {
+            name: 'Cloud System',
+            url: 'https://cloud.system.com',
+            authenticationType: 'reentranceTicket',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
+        };
+        mockGetService.mockImplementation(() => ({
+            read: jest.fn().mockResolvedValue(backendSystem)
+        }));
+
+        const validateUrlMock = jest.fn().mockResolvedValue(true);
+        const mockConnectionValidator = {
+            validateUrl: validateUrlMock,
+            serviceProvider: { name: 'mockProvider' },
+            setConnectedSystem: jest.fn()
+        } as unknown as ConnectionValidator;
+
+        const backendKey = BackendSystemKey.from(backendSystem);
+
+        // When connectWithBackendSystem is called without a connectPath
+        await connectWithBackendSystem(backendKey, mockConnectionValidator);
+
+        // Then connectType should be abap_catalog
+        expect(validateUrlMock).toHaveBeenCalledWith(
+            'https://cloud.system.com',
+            expect.objectContaining({ connectType: 'abap_catalog' })
+        );
+
+        validateUrlMock.mockClear();
+
+        // When connectWithBackendSystem is called with a connectPath
+        await connectWithBackendSystem(
+            backendKey,
+            mockConnectionValidator,
+            undefined,
+            undefined,
+            '/sap/opu/odata/sap/MY_SERVICE'
+        );
+
+        // Then connectType should be odata_path
+        expect(validateUrlMock).toHaveBeenCalledWith(
+            'https://cloud.system.com/sap/opu/odata/sap/MY_SERVICE',
+            expect.objectContaining({ connectType: 'odata_path' })
+        );
     });
 });

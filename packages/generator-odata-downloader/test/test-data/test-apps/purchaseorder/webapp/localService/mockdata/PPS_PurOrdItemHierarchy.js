@@ -4,8 +4,8 @@ module.exports = {
         if (navigationProperty.name === "_Parent") {
             return [
                 {
-                    "sourceProperty": "PurchaseOrderItem",
-                    "targetProperty": "PurchasingParentItem"
+                    "sourceProperty": "PurchasingParentItem",
+                    "targetProperty": "PurchaseOrderItem"
                 }
             ];
         }

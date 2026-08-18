@@ -1,6 +1,16 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 1.0.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -35,11 +45,15 @@
 
 ## 0.3.0
 
+_Released: 2026-05-15T08:12:20Z_
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.2.10
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -47,11 +61,15 @@
 
 ## 0.2.9
 
+_Released: 2026-03-03T08:27:12Z_
+
 ### Patch Changes
 
 - 4af92b5: add node: proto prefix to imports
 
 ## 0.2.8
+
+_Released: 2026-03-02T13:05:37Z_
 
 ### Patch Changes
 
@@ -60,11 +78,15 @@
 
 ## 0.2.7
 
+_Released: 2026-02-23T22:35:31Z_
+
 ### Patch Changes
 
 - 469c90c: fix(deps): update dependency which to v6
 
 ## 0.2.6
+
+_Released: 2026-02-20T20:20:17Z_
 
 ### Patch Changes
 
@@ -72,11 +94,15 @@
 
 ## 0.2.5
 
+_Released: 2026-02-10T21:03:43Z_
+
 ### Patch Changes
 
 - 3795bb2: Add Node.js engine requirement (>=20.x)
 
 ## 0.2.4
+
+_Released: 2026-02-04T22:31:27Z_
 
 ### Patch Changes
 
@@ -84,11 +110,15 @@
 
 ## 0.2.3
 
+_Released: 2025-12-15T10:50:50Z_
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
 
 ## 0.2.2
+
+_Released: 2025-11-26T15:31:06Z_
 
 ### Patch Changes
 
@@ -96,11 +126,15 @@
 
 ## 0.2.1
 
+_Released: 2025-11-05T06:53:42Z_
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.2.0
+
+_Released: 2025-10-08T10:34:44Z_
 
 ### Minor Changes
 
@@ -108,17 +142,23 @@
 
 ## 0.1.2
 
+_Released: 2025-10-06T17:09:01Z_
+
 ### Patch Changes
 
 - 43a2446: chore: fix Sonar issues
 
 ## 0.1.1
 
+_Released: 2024-10-04T15:21:13Z_
+
 ### Patch Changes
 
 - 93f8a83: chore - upgrade typescript 5.6.2
 
 ## 0.1.0
+
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
