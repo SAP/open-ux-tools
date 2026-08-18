@@ -1705,12 +1705,7 @@ export type Then = Opa5 & BaseArrangements & {
                 ['latest', '1.149.0']
             ])('bucket %s generates correct FPM output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('CustomOP');
-                fs = await generateOPAFiles(
-                    projectDir,
-                    { ui5Version, enableTypeScript: true },
-                    metadata,
-                    fs
-                );
+                fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
