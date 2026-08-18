@@ -62,7 +62,7 @@
         "source-map-support": "0.5.21",
         "stream-browserify": "3.0.0",
         "ts-import-plugin": "3.0.0",
-        "ts-jest": "29.4.12",
+        "ts-jest": "29.4.11",
         "uuid": "11.1.1"
     },
     "engines": {

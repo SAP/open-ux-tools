@@ -217,8 +217,8 @@ importers:
         specifier: 6.1.3
         version: 6.1.3
       ts-jest:
-        specifier: 29.4.12
-        version: 29.4.12(@babel/core@7.29.0)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 29.4.11
+        version: 29.4.11(@babel/core@7.29.0)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -325,7 +325,7 @@ importers:
         version: 5.2.14
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
 
   examples/ui-prompting-examples:
     dependencies:
@@ -513,7 +513,7 @@ importers:
         version: 2.0.2
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -777,7 +777,7 @@ importers:
         version: 0.6.0
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -969,7 +969,7 @@ importers:
         version: 7.7.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       nock:
         specifier: 14.0.17
         version: 14.0.17
@@ -990,7 +990,7 @@ importers:
         version: 0.8.14
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       detect-content-type:
         specifier: 1.2.0
         version: 1.2.0
@@ -1170,7 +1170,7 @@ importers:
         version: 3.3.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -1599,8 +1599,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0(typescript@5.9.3)
       ts-jest:
-        specifier: 29.4.12
-        version: 29.4.12(@babel/core@8.0.1)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@8.0.1))(esbuild@0.27.7)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 29.4.11
+        version: 29.4.11(@babel/core@8.0.1)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@8.0.1))(esbuild@0.27.7)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
       uuid:
         specifier: 11.1.1
         version: 11.1.1
@@ -1617,8 +1617,8 @@ importers:
         specifier: 6.1.3
         version: 6.1.3
       ts-jest:
-        specifier: 29.4.12
-        version: 29.4.12(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 29.4.11
+        version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/create:
     dependencies:
@@ -1903,7 +1903,7 @@ importers:
         version: 0.6.0
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       chalk:
         specifier: 5.6.2
         version: 5.6.2
@@ -1958,7 +1958,7 @@ importers:
         version: 7.0.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       glob-gitignore:
         specifier: 1.0.15
         version: 1.0.15
@@ -2010,11 +2010,11 @@ importers:
         specifier: 8.0.0-rc.6
         version: 8.0.0-rc.6
       '@babel/eslint-parser':
-        specifier: 8.0.1
-        version: 8.0.1(@babel/core@8.0.0-rc.6)(eslint@9.39.1)
+        specifier: 8.0.0-rc.6
+        version: 8.0.0-rc.6(@babel/core@8.0.0-rc.6)(eslint@9.39.1)
       '@babel/parser':
-        specifier: 8.0.4
-        version: 8.0.4
+        specifier: 8.0.0-rc.6
+        version: 8.0.0-rc.6
       '@eslint/config-helpers':
         specifier: 0.5.3
         version: 0.5.3
@@ -3207,7 +3207,7 @@ importers:
         version: 3.3.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       chalk:
         specifier: 5.6.2
         version: 5.6.2
@@ -3531,7 +3531,7 @@ importers:
         version: 3.3.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       axios-logger:
         specifier: 2.8.1
         version: 2.8.1
@@ -3666,7 +3666,7 @@ importers:
         version: 30.4.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       npm-run-all2:
         specifier: 9.0.3
         version: 9.0.3
@@ -3979,7 +3979,7 @@ importers:
         version: 7.2.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       express:
         specifier: 4.22.1
         version: 4.22.1
@@ -4401,7 +4401,7 @@ importers:
         version: 3.15.1
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       performance-now:
         specifier: 2.1.0
         version: 2.1.0
@@ -4966,7 +4966,7 @@ importers:
         version: 8.18.0
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       js-yaml:
         specifier: 4.2.0
         version: 4.2.0
@@ -4997,7 +4997,7 @@ importers:
         version: link:../logger
       axios:
         specifier: '>=1.16.0'
-        version: 1.16.1(debug@4.4.3)
+        version: 1.16.1(supports-color@7.2.0)
       semver:
         specifier: 7.8.5
         version: 7.8.5
@@ -5984,11 +5984,11 @@ packages:
     resolution: {integrity: sha512-5FgxM4dLQpMJHSiVATk8foW263dVHQHBVpXYiimNECVWG01f4nFyEbQixeT6Mwvg7TayREJ2gpKl3o2RoMdnqw==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@babel/eslint-parser@8.0.1':
-    resolution: {integrity: sha512-2javO8pAQv/ld6sS6OcxoLAlzZEZy+xm99bnoAfMhzKSumKhdF5wylpbZB7XTorWr3KLPtx5K95eduJPOy1mzA==}
+  '@babel/eslint-parser@8.0.0-rc.6':
+    resolution: {integrity: sha512-qVHD7K5PyUXj57bsJWbyT5V9JtOX/4dtX9QSQpqGfBG4xiVE/mrCYCT25Ih+wHvISR98Lctl9BtvEUtGyYsrvA==}
     engines: {node: ^22.18.0 || >=24.11.0}
     peerDependencies:
-      '@babel/core': ^8.0.0
+      '@babel/core': ^8.0.0-rc.6
       eslint: ^9.0.0 || ^10.0.0
 
   '@babel/generator@7.29.7':
@@ -6122,14 +6122,14 @@ packages:
     resolution: {integrity: sha512-wfbi91pM3py96oIiJEz7qIpyXDytgr9zQC1HEWwlGNVRAEmItuU/0a41ZUKu1sJGyhhOIpc4t5vk4PYzt8wpsg==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@babel/parser@7.29.7':
-    resolution: {integrity: sha512-hnORnjP/1P/zFEndoeX+n+t1RwWRJiJpM/jO7FW32Kn9r5+sJB2JWOdYo4L6k78j15eCwY3Gm/7364B1EMwtNg==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-
   '@babel/parser@7.29.8':
     resolution: {integrity: sha512-E8lTAYNB1KW+FH+VGJuZM1ioAx2E6oVlvQFRrf5P8ZZmsiJXYAD9vTFV7yyEURNzgh1dFqMZuO6tUwcARbqFCA==}
     engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/parser@8.0.0-rc.6':
+    resolution: {integrity: sha512-rOS8IpdO7mQELkTPlCsTgPejO0bFuZdEDCGQJouYbYf9e1FLTym7Fei2pEjq8q7MWbX0ravcd7QQYKs1TxOuog==}
+    engines: {node: ^22.18.0 || >=24.11.0}
     hasBin: true
 
   '@babel/parser@8.0.4':
@@ -19094,8 +19094,8 @@ packages:
     peerDependencies:
       typescript: '>= 4.8'
 
-  ts-jest@29.4.12:
-    resolution: {integrity: sha512-Ov6ClY53Fflh6BGAnY2DlTq1hYDrTycz2PVTXBWFW2CU+9zrEqAp9fWdGXl42EXO5RLSFAcAZ2JFKbP+zBTFfw==}
+  ts-jest@29.4.11:
+    resolution: {integrity: sha512-IrFl7l9AuB/qrNw5quqvAv/hmKMb8dhWOH4jQOGo0Oq8tCeo1O86/iTFG1FaRimgUkF13l4PcepO8ATFT6Ns4g==}
     engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -20991,7 +20991,7 @@ snapshots:
       '@babel/helper-compilation-targets': 7.29.7
       '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.0)
       '@babel/helpers': 7.29.7
-      '@babel/parser': 7.29.7
+      '@babel/parser': 7.29.8
       '@babel/template': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
@@ -21062,7 +21062,7 @@ snapshots:
       obug: 2.1.4
       semver: 7.8.5
 
-  '@babel/eslint-parser@8.0.1(@babel/core@8.0.0-rc.6)(eslint@9.39.1)':
+  '@babel/eslint-parser@8.0.0-rc.6(@babel/core@8.0.0-rc.6)(eslint@9.39.1)':
     dependencies:
       '@babel/core': 8.0.0-rc.6
       eslint: 9.39.1
@@ -21072,8 +21072,8 @@ snapshots:
 
   '@babel/generator@7.29.7':
     dependencies:
-      '@babel/parser': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/parser': 7.29.8
+      '@babel/types': 7.29.8
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
@@ -21185,7 +21185,7 @@ snapshots:
   '@babel/helper-function-name@7.24.7':
     dependencies:
       '@babel/template': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
 
   '@babel/helper-globals@7.29.7': {}
 
@@ -21295,20 +21295,20 @@ snapshots:
   '@babel/helpers@7.29.7':
     dependencies:
       '@babel/template': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
 
   '@babel/helpers@8.0.0':
     dependencies:
       '@babel/template': 8.0.0
       '@babel/types': 8.0.4
 
-  '@babel/parser@7.29.7':
-    dependencies:
-      '@babel/types': 7.29.7
-
   '@babel/parser@7.29.8':
     dependencies:
       '@babel/types': 7.29.8
+
+  '@babel/parser@8.0.0-rc.6':
+    dependencies:
+      '@babel/types': 8.0.4
 
   '@babel/parser@8.0.4':
     dependencies:
@@ -22232,7 +22232,7 @@ snapshots:
       '@babel/helper-module-imports': 7.29.7
       '@babel/helper-plugin-utils': 7.29.7
       '@babel/plugin-syntax-jsx': 7.29.7(@babel/core@7.29.0)
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
     transitivePeerDependencies:
       - supports-color
 
@@ -22555,14 +22555,14 @@ snapshots:
     dependencies:
       '@babel/core': 7.29.0
       '@babel/helper-plugin-utils': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
       esutils: 2.0.3
 
   '@babel/preset-modules@0.1.6-no-external-plugins(@babel/core@7.29.7)':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/helper-plugin-utils': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
       esutils: 2.0.3
 
   '@babel/preset-react@7.28.5(@babel/core@7.29.0)':
@@ -22606,8 +22606,8 @@ snapshots:
   '@babel/template@7.29.7':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/parser': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/parser': 7.29.8
+      '@babel/types': 7.29.8
 
   '@babel/template@8.0.0':
     dependencies:
@@ -22620,9 +22620,9 @@ snapshots:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.7
       '@babel/helper-globals': 7.29.7
-      '@babel/parser': 7.29.7
+      '@babel/parser': 7.29.8
       '@babel/template': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
       debug: 4.4.3(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
@@ -26246,7 +26246,7 @@ snapshots:
 
   '@sap/bas-sdk@3.13.14':
     dependencies:
-      axios: 1.16.1(debug@4.4.3)
+      axios: 1.16.1
       cross-spawn: 7.0.6
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
@@ -26296,7 +26296,7 @@ snapshots:
 
   '@sap/service-provider-apis@2.10.0':
     dependencies:
-      axios: 1.16.1(debug@4.4.3)
+      axios: 1.16.1
       lodash: 4.18.1
       xml2js: 0.6.2
     transitivePeerDependencies:
@@ -28953,6 +28953,16 @@ snapshots:
       axios: 1.16.1(debug@4.4.3)
       is-retry-allowed: 2.2.0
 
+  axios@1.16.1:
+    dependencies:
+      follow-redirects: 1.16.0(debug@4.3.4)
+      form-data: 4.0.5
+      https-proxy-agent: 5.0.1(supports-color@7.2.0)
+      proxy-from-env: 2.1.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+
   axios@1.16.1(debug@4.4.3):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
@@ -28965,7 +28975,7 @@ snapshots:
 
   axios@1.16.1(supports-color@7.2.0):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3)
+      follow-redirects: 1.16.0(debug@4.3.4)
       form-data: 4.0.5
       https-proxy-agent: 5.0.1(supports-color@7.2.0)
       proxy-from-env: 2.1.0
@@ -31075,7 +31085,7 @@ snapshots:
   eslint-scope@9.1.2:
     dependencies:
       '@types/esrecurse': 4.3.1
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
       esrecurse: 4.3.0
       estraverse: 5.3.0
 
@@ -32771,7 +32781,7 @@ snapshots:
 
   is-reference@1.2.1:
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
 
   is-regex@1.2.1:
     dependencies:
@@ -34377,7 +34387,7 @@ snapshots:
 
   mta@1.0.8:
     dependencies:
-      axios: 1.16.1(debug@4.4.3)
+      axios: 1.16.1
       tar: 7.5.15
       unzip-stream: 0.3.4
     transitivePeerDependencies:
@@ -34830,7 +34840,7 @@ snapshots:
       escape-string-regexp: 1.0.5
       figures: 3.2.0
       flat: 5.0.2
-      follow-redirects: 1.16.0(debug@4.4.3)
+      follow-redirects: 1.16.0(debug@4.3.4)
       form-data: 4.0.5
       fs-constants: 1.0.0
       function-bind: 1.1.2
@@ -38014,7 +38024,7 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  ts-jest@29.4.12(@babel/core@7.29.0)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
+  ts-jest@29.4.11(@babel/core@7.29.0)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -38035,7 +38045,7 @@ snapshots:
       esbuild: 0.27.4
       jest-util: 30.4.1
 
-  ts-jest@29.4.12(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
+  ts-jest@29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -38056,7 +38066,7 @@ snapshots:
       esbuild: 0.27.4
       jest-util: 30.4.1
 
-  ts-jest@29.4.12(@babel/core@8.0.1)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@8.0.1))(esbuild@0.27.7)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
+  ts-jest@29.4.11(@babel/core@8.0.1)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@8.0.1))(esbuild@0.27.7)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.23))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
