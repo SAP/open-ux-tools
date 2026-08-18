@@ -43,6 +43,7 @@
         "eslint-plugin-react": "7.37.5",
         "http-proxy-middleware": "3.0.7",
         "i18next": "26.3.6",
+        "jest-environment-jsdom": "30.4.1",
         "jest-scss-transform": "1.0.4",
         "npm-run-all2": "9.0.2",
         "react": "16.14.0",

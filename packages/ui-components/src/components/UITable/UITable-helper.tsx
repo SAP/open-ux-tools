@@ -1,7 +1,7 @@
 import React from 'react';
 import type { IDetailsHeaderProps, IRenderFunction, IDetailsListStyles, IDetailsList } from '@fluentui/react';
 import { Sticky } from '@fluentui/react';
-import { UIIcon } from '../index.js';
+import { UIIcon } from '../UIIcon/index.js';
 import type { UIColumn, EditedCell, UITableProps, UITableState } from './index.js';
 
 /**
