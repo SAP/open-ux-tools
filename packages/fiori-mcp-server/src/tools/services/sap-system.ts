@@ -219,7 +219,7 @@ function isEdmx(body: string): boolean {
     if (/^<!doctype\s+html/i.test(trimmed) || /^<html[\s>]/i.test(trimmed)) {
         return false;
     }
-    return trimmed.startsWith('<?xml') || /<(?:[a-z0-9]+:)?Edmx[\s>]/i.test(trimmed);
+    return trimmed.startsWith('<?xml') || /<(?:[a-z0-9]+:)?Edmx[\s/>]/i.test(trimmed);
 }
 
 /**

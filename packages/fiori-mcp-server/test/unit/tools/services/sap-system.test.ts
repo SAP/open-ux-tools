@@ -257,9 +257,12 @@ describe('getServiceMetadata — VSCode', () => {
         );
     });
 
-    test('does not claim the service is not OData V4', async () => {
+    test('reports a version-neutral parse error and does not claim the service is not OData V4', async () => {
         mockParseEdmx.mockReturnValue(undefined);
-        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.not.toThrow(/OData V4/);
+        const error = await getServiceMetadata(SYSTEM_A, '/sap/svc/').catch((e: unknown) => e);
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toContain('Failed to parse the service metadata as valid OData');
+        expect((error as Error).message).not.toContain('OData V4');
     });
 
     test('throws a system-unavailable error when metadata is empty', async () => {
@@ -282,6 +285,15 @@ describe('getServiceMetadata — VSCode', () => {
         mockMetadata.mockResolvedValue(SAMPLE_METADATA);
         const result = await getServiceMetadata(SYSTEM_A, '/sap/svc/');
         expect(result).toBe(SAMPLE_METADATA);
+    });
+
+    test('accepts a self-closing Edmx root element', async () => {
+        const selfClosing = '<edmx:Edmx Version="4.0"/>';
+        mockMetadata.mockResolvedValue(selfClosing);
+        mockXmlFormat.mockReturnValue(selfClosing);
+        const result = await getServiceMetadata(SYSTEM_A, '/sap/svc/');
+        expect(result).toBe(selfClosing);
+        expect(mockParseEdmx).toHaveBeenCalledWith(selfClosing);
     });
 
     test('includes parse error reason in thrown message', async () => {
