@@ -252,7 +252,36 @@ describe('getServiceMetadata — VSCode', () => {
 
     test('throws when metadata is not parseable EDMX', async () => {
         mockParseEdmx.mockReturnValue(undefined);
-        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(/Failed to parse service metadata/);
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /Failed to parse the service metadata as valid OData/
+        );
+    });
+
+    test('does not claim the service is not OData V4', async () => {
+        mockParseEdmx.mockReturnValue(undefined);
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.not.toThrow(/OData V4/);
+    });
+
+    test('throws a system-unavailable error when metadata is empty', async () => {
+        mockMetadata.mockResolvedValue('   ');
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /No metadata was returned by the service/
+        );
+        expect(mockParseEdmx).not.toHaveBeenCalled();
+    });
+
+    test('throws an error-page error when an HTML page is returned', async () => {
+        mockMetadata.mockResolvedValue('<!DOCTYPE html><html><body>503 Service Unavailable</body></html>');
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /did not return OData metadata — an HTML or error page was received/
+        );
+        expect(mockParseEdmx).not.toHaveBeenCalled();
+    });
+
+    test('accepts EDMX metadata without an XML declaration', async () => {
+        mockMetadata.mockResolvedValue(SAMPLE_METADATA);
+        const result = await getServiceMetadata(SYSTEM_A, '/sap/svc/');
+        expect(result).toBe(SAMPLE_METADATA);
     });
 
     test('includes parse error reason in thrown message', async () => {
