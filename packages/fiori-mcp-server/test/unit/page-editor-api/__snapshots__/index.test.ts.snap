@@ -6457,36 +6457,6 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
         },
         Object {
           "artifactType": "Manifest",
-          "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
-          "displayName": "Popin Layout",
-          "name": "popinLayout",
-          "options": Array [
-            Object {
-              "key": "",
-              "text": "",
-            },
-            Object {
-              "key": "Block",
-              "text": "Block",
-            },
-            Object {
-              "key": "GridLarge",
-              "text": "GridLarge",
-            },
-            Object {
-              "key": "GridSmall",
-              "text": "GridSmall",
-            },
-          ],
-          "schemaPath": Array [
-            "table",
-            "popinLayout",
-          ],
-          "type": "string",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
           "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
           "displayName": "Type",
           "name": "type",
@@ -6496,16 +6466,16 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
               "text": "",
             },
             Object {
-              "key": "AnalyticalTable",
-              "text": "AnalyticalTable",
+              "key": "ResponsiveTable",
+              "text": "ResponsiveTable",
             },
             Object {
               "key": "GridTable",
               "text": "GridTable",
             },
             Object {
-              "key": "ResponsiveTable",
-              "text": "ResponsiveTable",
+              "key": "AnalyticalTable",
+              "text": "AnalyticalTable",
             },
             Object {
               "key": "TreeTable",
@@ -6738,6 +6708,36 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
           "value": undefined,
         },
         Object {
+          "artifactType": "Manifest",
+          "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
+          "displayName": "Popin Layout",
+          "name": "popinLayout",
+          "options": Array [
+            Object {
+              "key": "",
+              "text": "",
+            },
+            Object {
+              "key": "Block",
+              "text": "Block",
+            },
+            Object {
+              "key": "GridLarge",
+              "text": "GridLarge",
+            },
+            Object {
+              "key": "GridSmall",
+              "text": "GridSmall",
+            },
+          ],
+          "schemaPath": Array [
+            "table",
+            "popinLayout",
+          ],
+          "type": "string",
+          "value": undefined,
+        },
+        Object {
           "artifactType": undefined,
           "description": "",
           "displayName": "personalization",
@@ -6820,6 +6820,33 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
                 "table",
                 "personalization",
                 "filter",
+              ],
+              "type": "boolean",
+              "value": undefined,
+            },
+            Object {
+              "artifactType": "Manifest",
+              "description": "Defines whether the user can group data of a given table.",
+              "displayName": "Group",
+              "name": "group",
+              "options": Array [
+                Object {
+                  "key": undefined,
+                  "text": "",
+                },
+                Object {
+                  "key": true,
+                  "text": "True",
+                },
+                Object {
+                  "key": false,
+                  "text": "False",
+                },
+              ],
+              "schemaPath": Array [
+                "table",
+                "personalization",
+                "group",
               ],
               "type": "boolean",
               "value": undefined,
