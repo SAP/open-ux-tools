@@ -1,1 +1,3 @@
+ERROR: Error loading examples/ui-prompting-examples/.storybook/main.ts (Circularity detected while resolving configuration: examples/ui-prompting-examples/.storybook/tsconfig.json)
+ERROR: Please fix or visit https://knip.dev/reference/known-issues
 The versions.json file is missing. Please run "node version.js" in the tests/integration/adaptation-editor directory to generate it.

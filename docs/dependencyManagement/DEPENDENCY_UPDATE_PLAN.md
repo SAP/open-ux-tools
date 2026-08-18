@@ -1,6 +1,6 @@
 # Dependency Update Plan
 
-**Generated:** 2026-08-17
+**Generated:** 2026-08-18
 **Scope:** All dependencies (including @sap-ux/* packages)
 
 ---
@@ -16,9 +16,9 @@
 | **Dependencies Older Than 6 Months** | 191 | 65.0% |
 | **Dependencies Older Than 6 Months with Updates Available** | 81 | 27.6% |
 | **Major Updates Available** | 81 | 27.6% |
-| **Minor Updates Available** | 40 | 13.6% |
+| **Minor Updates Available** | 41 | 13.9% |
 | **Patch Updates Available** | 24 | 8.2% |
-| **Up to Date** | 148 | 50.3% |
+| **Up to Date** | 147 | 50.0% |
 | **Version Inconsistencies** | 8 | 2.7% |
 
 ### 🎯 Update Priority Summary
@@ -26,8 +26,8 @@
 - 🔴 **CRITICAL** (12 deps): Major updates affecting 10+ packages
 - 🟠 **HIGH** (12 deps): Major updates affecting 5-9 packages
 - 🟡 **MEDIUM** (57 deps): Other major updates or version conflicts
-- 🟢 **LOW** (64 deps): Minor and patch updates
-- ✅ **NONE** (148 deps): Already up to date
+- 🟢 **LOW** (65 deps): Minor and patch updates
+- ✅ **NONE** (147 deps): Already up to date
 
 ---
 
@@ -127,11 +127,11 @@ Major version updates may include breaking changes. Review changelogs and test t
 | 🔴 | `open` | 8.4.2 → 11.0.1 | 3 years old | 1 | [Link](https://github.com/sindresorhus/open) |
 | 🔴 | `yeoman-environment` | 3.19.3 → 6.1.0 | 3 years old | 2 | [Link](https://github.com/yeoman/environment) |
 | 🔴 | `jest-environment-jsdom` | 29.7.0 → 30.4.1 | 2 years old | 3 | [Link](https://github.com/jestjs/jest) |
-| 🔴 | `eslint-plugin-storybook` | 0.6.15 → 10.5.8 | 2 years old | 3 | [Link](https://github.com/storybookjs/storybook) |
+| 🔴 | `eslint-plugin-storybook` | 0.6.15 → 10.5.9 | 2 years old | 3 | [Link](https://github.com/storybookjs/storybook) |
 | 🔴 | `@types/mime-types` | 2.1.4 → 3.0.1 | 2 years old | 1 | [Link](https://github.com/DefinitelyTyped/DefinitelyTyped) |
 | 🔴 | `@types/serve-static` | 1.15.5 → 2.2.0 | 2 years old | 1 | [Link](https://github.com/DefinitelyTyped/DefinitelyTyped) |
 | 🔴 | `@testing-library/dom` | 9.3.4 → 10.4.1 | 2 years old | 2 | [Link](https://github.com/testing-library/dom-testing-library) |
-| 🔴 | `marked` | 12.0.0 → 18.0.9 | 2 years old | 1 | [Link](https://github.com/markedjs/marked) |
+| 🔴 | `marked` | 12.0.0 → 18.0.10 | 2 years old | 1 | [Link](https://github.com/markedjs/marked) |
 | 🔴 | `http-proxy-agent` | 7.0.2 → 9.1.0 | 2 years old | 1 | [Link](https://github.com/TooTallNate/proxy-agents) |
 | 🔴 | `archiver` | 7.0.1 → 8.0.0 | 2 years old | 1 | [Link](https://github.com/archiverjs/node-archiver) |
 | 🔴 | `@sap/cds-compiler` | 4.8.0 → 7.0.3 | 2 years old | 1 | N/A |
@@ -156,10 +156,10 @@ Major version updates may include breaking changes. Review changelogs and test t
 | 🟡 | `@babel/preset-env` | 7.29.2 → 8.0.2 | 5 months old | 3 | [Link](https://github.com/babel/babel) |
 | 🟡 | `puppeteer-core` | 24.40.0 → 25.8.0 | 5 months old | 1 | [Link](https://github.com/puppeteer/puppeteer.git#main) |
 | 🟡 | `diff` | 8.0.4 → 9.0.0 | 4 months old | 1 | [Link](https://github.com/kpdecker/jsdiff) |
-| 🟡 | `eslint-plugin-jsdoc` | 62.8.1 → 64.2.0 | 4 months old | 2 | [Link](https://github.com/gajus/eslint-plugin-jsdoc) |
+| 🟡 | `eslint-plugin-jsdoc` | 62.8.1 → 64.2.1 | 4 months old | 2 | [Link](https://github.com/gajus/eslint-plugin-jsdoc) |
 | 🟡 | `nx` | 22.7.5 → 23.1.1 | 2 months old | 1 | [Link](https://github.com/nrwl/nx) |
 | 🟡 | `http-proxy-middleware` | 3.0.7 → 4.2.0 | 2 months old | 4 | [Link](https://github.com/chimurai/http-proxy-middleware) |
-| 🟡 | `@sap/approuter` | 22.0.3 → 23.0.0 | 1 month old | 1 | N/A |
+| 🟡 | `@sap/approuter` | 22.0.3 → 23.0.0 | 2 months old | 1 | N/A |
 | 🟡 | `@types/node` | 22.20.1 → 26.2.0 | 1 month old | 2 | [Link](https://github.com/DefinitelyTyped/DefinitelyTyped) |
 | 🟡 | `@changesets/cli` | 2.31.1 → 3.0.0 | 1 month old | 1 | [Link](https://github.com/changesets/changesets) |
 | 🟡 | `@types/content-type` | 1.0.0 → 2.0.0 | unknown | 1 | N/A |
@@ -167,12 +167,12 @@ Major version updates may include breaking changes. Review changelogs and test t
 
 </details>
 
-### 🟡 Minor Updates (40 dependencies)
+### 🟡 Minor Updates (41 dependencies)
 
 Minor version updates include new features but should be backward compatible.
 
 <details>
-<summary>Click to expand (40 dependencies)</summary>
+<summary>Click to expand (41 dependencies)</summary>
 
 | Status | Dependency | Current → Latest | Age | Packages Affected |
 |--------|------------|------------------|-----|-------------------|
@@ -191,6 +191,7 @@ Minor version updates include new features but should be backward compatible.
 | 🟡 | `fs-extra` | 11.3.6 → 11.4.0 | 1 month old | 15 |
 | 🟡 | `@types/vscode` | 1.109.0 → 1.125.0 | 6 months old | 10 |
 | 🟡 | `@sap-ux/vocabularies-types` | 0.15.0 → 0.16.0 | 6 months old | 12 |
+| 🟡 | `@sap/ux-cds-compiler-facade` | 1.23.0 → 1.25.0 | 2 months old | 2 |
 | 🟡 | `@typescript-eslint/eslint-plugin` | 8.61.1 → 8.67.0 | 2 months old | 1 |
 | 🟡 | `@typescript-eslint/parser` | 8.61.1 → 8.67.0 | 2 months old | 1 |
 | 🟡 | `@eslint/core` | 1.1.1 → 1.2.1 | 5 months old | 1 |
@@ -207,8 +208,8 @@ Minor version updates include new features but should be backward compatible.
 | 🟡 | `zod` | 4.3.6 → 4.4.3 | 6 months old | 1 |
 | 🟡 | `odata-query` | 8.0.5 → 8.1.0 | 11 months old | 1 |
 | 🟡 | `@sapui5/types` | 1.120.5 → 1.151.0 | 2 years old | 1 |
-| 🟡 | `ui5-tooling-modules` | 3.35.0 → 3.38.0 | 5 months old | 1 |
-| 🟡 | `ui5-tooling-transpile` | 3.11.3 → 3.12.0 | 2 months old | 1 |
+| 🟡 | `ui5-tooling-modules` | 3.35.0 → 3.38.1 | 5 months old | 1 |
+| 🟡 | `ui5-tooling-transpile` | 3.11.3 → 3.13.0 | 2 months old | 1 |
 | 🟡 | `@ui5/manifest` | 1.88.0 → 1.89.0 | 1 month old | 3 |
 | 🟡 | `@zowe/secrets-for-zowe-sdk` | 8.32.0 → 8.35.3 | 3 months old | 2 |
 | 🟡 | `@vscode/vsce` | 3.7.1 → 3.9.2 | 8 months old | 1 |
@@ -233,9 +234,9 @@ Patch updates include bug fixes only. Safe to update with minimal risk.
 | 🟢 | `prettier` | 3.9.5 → 3.9.6 | 3 |
 | 🟢 | `ts-jest` | 29.4.11 → 29.4.12 | 3 |
 | 🟢 | `sanitize-html` | 2.17.6 → 2.17.7 | 2 |
-| 🟢 | `@storybook/react` | 10.5.1 → 10.5.8 | 3 |
-| 🟢 | `@storybook/react-webpack5` | 10.5.1 → 10.5.8 | 3 |
-| 🟢 | `storybook` | 10.5.1 → 10.5.8 | 3 |
+| 🟢 | `@storybook/react` | 10.5.1 → 10.5.9 | 3 |
+| 🟢 | `@storybook/react-webpack5` | 10.5.1 → 10.5.9 | 3 |
+| 🟢 | `storybook` | 10.5.1 → 10.5.9 | 3 |
 | 🟢 | `ws` | 8.21.0 → 8.21.3 | 1 |
 | 🟢 | `@types/lodash` | 4.17.24 → 4.17.25 | 15 |
 | 🟢 | `nock` | 14.0.16 → 14.0.17 | 10 |
@@ -248,9 +249,9 @@ Patch updates include bug fixes only. Safe to update with minimal risk.
 | 🟢 | `@humanwhocodes/momoa` | 3.3.9 → 3.3.10 | 1 |
 | 🟢 | `synckit` | 0.11.12 → 0.11.13 | 1 |
 | 🟢 | `tsx` | 4.23.1 → 4.23.12 | 2 |
-| 🟢 | `@sap/ux-specification` | 1.144.5 → 1.144.9 | 3 |
+| 🟢 | `@sap/ux-specification` | 1.144.5 → 1.144.10 | 3 |
 | 🟢 | `@ui5/cli` | 4.0.57 → 4.0.62 | 3 |
-| 🟢 | `@testing-library/user-event` | 14.6.1 → 14.6.4 | 1 |
+| 🟢 | `@testing-library/user-event` | 14.6.1 → 14.6.5 | 1 |
 | 🟢 | `@sap-ux/ui5-middleware-fe-mockserver` | 2.4.10 → 2.4.16 | 1 |
 
 </details>
@@ -294,9 +295,9 @@ The following 8 dependencies have multiple versions in use across the workspace:
 
 **Tasks:**
 - Update 57 medium-priority major dependencies
-- Apply 40 minor updates
+- Apply 41 minor updates
 
-**Estimated Effort:** 231h
+**Estimated Effort:** 233h
 **Risk Level:** MEDIUM
 
 ### Phase 3: High Priority Major Updates (Weeks 8-12)
@@ -324,7 +325,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 
 ### Total Estimated Effort
 
-**463 hours** across 12-18 weeks
+**465 hours** across 12-18 weeks
 
 ---
 
@@ -352,7 +353,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟢 | ~~`eslint-config-prettier`~~ | 10.1.8 | 10.1.8 | 1 year old | NONE | 1 | Up to date |
 | 🟢 | ~~`eslint-import-resolver-typescript`~~ | 4.4.5 | 4.4.5 | 2 months old | NONE | 1 | Up to date |
 | 🟢 | ~~`eslint-plugin-import`~~ | 2.32.0 | 2.32.0 | 1 year old | NONE | 1 | Up to date |
-| 🟡 | `eslint-plugin-jsdoc` | 62.8.1 | 64.2.0 | 4 months old | MAJOR | 2 | Should update |
+| 🟡 | `eslint-plugin-jsdoc` | 62.8.1 | 64.2.1 | 4 months old | MAJOR | 2 | Should update |
 | 🟢 | ~~`eslint-plugin-prettier`~~ | 5.5.6 | 5.5.6 | 2 months old | NONE | 1 | Up to date |
 | 🟡 | `eslint-plugin-promise` | 7.2.1 | 7.3.0 | 1 year old | MINOR | 1 | Should update |
 | 🟡 | `eslint-plugin-sonarjs` | 4.0.3 | 4.2.0 | 4 months old | MINOR | 1 | Should update |
@@ -362,7 +363,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟢 | ~~`jest-sonar`~~ | 0.2.16 | 0.2.16 | 3 years old | NONE | 1 | Up to date |
 | 🟢 | `npm-run-all2` | 9.0.2 | 9.0.3 | 2 months old | PATCH | 22 | Safe to update |
 | 🟡 | `nx` | 22.7.5 | 23.1.1 | 2 months old | MAJOR | 1 | Should update |
-| 🟢 | `postcss` | 8.5.22 | 8.5.26 | 26 days old | PATCH | 1 | Safe to update |
+| 🟢 | `postcss` | 8.5.22 | 8.5.26 | 27 days old | PATCH | 1 | Safe to update |
 | 🟢 | ~~`prebuild-install`~~ | 7.1.3 | 7.1.3 | 1 year old | NONE | 1 | Up to date |
 | 🟢 | `prettier` | 3.9.5 | 3.9.6 | 1 month old | PATCH | 3 | Safe to update |
 | 🟢 | ~~`pretty-quick`~~ | 4.2.2 | 4.2.2 | 1 year old | NONE | 1 | Up to date |
@@ -395,8 +396,8 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟡 | `@babel/preset-env` | 7.29.2 | 8.0.2 | 5 months old | MAJOR | 3 | Should update |
 | 🔴 | `@babel/preset-react` | 7.28.5 | 8.0.1 | 9 months old | MAJOR | 3 | Review required |
 | 🔴 | `@babel/preset-typescript` | 7.28.5 | 8.0.1 | 9 months old | MAJOR | 3 | Review required |
-| 🟢 | `@storybook/react` | 10.5.1 | 10.5.8 | 1 month old | PATCH | 3 | Safe to update |
-| 🟢 | `@storybook/react-webpack5` | 10.5.1 | 10.5.8 | 1 month old | PATCH | 3 | Safe to update |
+| 🟢 | `@storybook/react` | 10.5.1 | 10.5.9 | 1 month old | PATCH | 3 | Safe to update |
+| 🟢 | `@storybook/react-webpack5` | 10.5.1 | 10.5.9 | 1 month old | PATCH | 3 | Safe to update |
 | 🔴 | `@types/react` | 16.14.69 | 19.2.18 | 6 months old | MAJOR | 5 | Review required |
 | 🔴 | `@types/react-dom` | 16.9.25 | 19.2.4 | 1 year old | MAJOR | 5 | Review required |
 | 🟢 | ~~`@types/sanitize-html`~~ | 2.16.1 | 2.16.1 | 5 months old | NONE | 2 | Up to date |
@@ -406,12 +407,12 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟢 | ~~`copyfiles`~~ | 2.4.1 | 2.4.1 | 5 years old | NONE | 4 | Up to date |
 | 🟢 | ~~`css-loader`~~ | 7.1.4 | 7.1.4 | 6 months old | NONE | 3 | Up to date |
 | 🟢 | ~~`eslint-plugin-react`~~ | 7.37.5 | 7.37.5 | 1 year old | NONE | 4 | Up to date |
-| 🔴 | `eslint-plugin-storybook` | 0.6.15 | 10.5.8 | 2 years old | MAJOR | 3 | Review required |
+| 🔴 | `eslint-plugin-storybook` | 0.6.15 | 10.5.9 | 2 years old | MAJOR | 3 | Review required |
 | 🔴 | `react` | 16.14.0 | 19.2.8 | 5 years old | MAJOR | 5 | Review required |
 | 🔴 | `react-dom` | 16.14.0 | 19.2.8 | 5 years old | MAJOR | 5 | Review required |
 | 🟡 | `sass` | 1.101.0 | 1.102.0 | 2 months old | MINOR | 3 | Should update |
 | 🔴 | `sass-loader` | 16.0.7 | 17.0.0 | 6 months old | MAJOR | 3 | Review required |
-| 🟢 | `storybook` | 10.5.1 | 10.5.8 | 1 month old | PATCH | 3 | Safe to update |
+| 🟢 | `storybook` | 10.5.1 | 10.5.9 | 1 month old | PATCH | 3 | Safe to update |
 | 🟢 | ~~`storybook-addon-turbo-build`~~ | 2.0.1 | 2.0.1 | 3 years old | NONE | 3 | Up to date |
 | 🟢 | ~~`style-loader`~~ | 4.0.0 | 4.0.0 | 2 years old | NONE | 3 | Up to date |
 | 🟢 | ~~`ts-loader`~~ | 9.6.2 | 9.6.2 | 1 month old | NONE | 3 | Up to date |
@@ -441,7 +442,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🔴 | `ejs` | 3.1.10 | 6.0.1 | 2 years old | MAJOR | 12 | Review required |
 | 🟡 | `js-yaml` | 4.2.0 | 5.3.0 | 2 months old | MAJOR | 5 | Should update |
 | 🟢 | ~~`prompts`~~ | 2.4.2 | 2.4.2 | 4 years old | NONE | 8 | Up to date |
-| 🟢 | ~~`sanitize-filename`~~ | 1.6.4 | 1.6.4 | 4 months old | NONE | 1 | Up to date |
+| 🟢 | ~~`sanitize-filename`~~ | 1.6.4 | 1.6.4 | 5 months old | NONE | 1 | Up to date |
 | 🟡 | `uuid` | 11.1.1 | 14.0.1 | 3 months old | MAJOR | 5 | Should update |
 | 🟢 | ~~`@types/adm-zip`~~ | 0.5.8 | 0.5.8 | 5 months old | NONE | 4 | Up to date |
 | 🟢 | ~~`@types/ejs`~~ | 3.1.5 | 3.1.5 | 2 years old | NONE | 11 | Up to date |
@@ -470,7 +471,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟢 | ~~`@types/connect`~~ | 3.4.38 | 3.4.38 | 2 years old | NONE | 2 | Up to date |
 | 🟢 | ~~`@types/http-proxy`~~ | 1.17.17 | 1.17.17 | 9 months old | NONE | 2 | Up to date |
 | 🟢 | ~~`connect`~~ | 3.7.0 | 3.7.0 | 7 years old | NONE | 2 | Up to date |
-| 🟡 | `@sap/approuter` | 22.0.3 | 23.0.0 | 1 month old | MAJOR | 1 | Should update |
+| 🟡 | `@sap/approuter` | 22.0.3 | 23.0.0 | 2 months old | MAJOR | 1 | Should update |
 | 🔴 | `content-type` | 1.0.5 | 2.1.0 | 3 years old | MAJOR | 1 | Review required |
 | 🔴 | `mime-types` | 2.1.35 | 3.0.2 | 4 years old | MAJOR | 1 | Review required |
 | 🟢 | ~~`portfinder`~~ | 1.0.38 | 1.0.38 | 11 months old | NONE | 4 | Up to date |
@@ -479,7 +480,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟢 | `@sap/bas-sdk` | 3.13.10 | 3.13.14 | 1 month old | PATCH | 3 | Safe to update |
 | 🟢 | ~~`xml-js`~~ | 1.6.11 | 1.6.11 | 7 years old | NONE | 1 | Up to date |
 | 🔴 | `chevrotain` | 7.1.1 | 13.2.0 | 5 years old | MAJOR | 2 | Review required |
-| 🟢 | ~~`@sap/ux-cds-compiler-facade`~~ | 1.23.0 | 1.23.0 | 2 months old | NONE | 2 | Up to date |
+| 🟡 | `@sap/ux-cds-compiler-facade` | 1.23.0 | 1.25.0 | 2 months old | MINOR | 2 | Should update |
 | 🟢 | ~~`hasbin`~~ | 1.2.3 | 1.2.3 | 10 years old | NONE | 3 | Up to date |
 | 🟢 | ~~`@types/hasbin`~~ | 1.2.2 | 1.2.2 | 2 years old | NONE | 3 | Up to date |
 | 🟢 | ~~`@sap/mta-lib`~~ | 1.7.4 | 1.7.4 | 4 years old | NONE | 3 | Up to date |
@@ -546,7 +547,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟢 | ~~`@npm/types`~~ | 2.1.0 | 2.1.0 | 1 year old | NONE | 1 | Up to date |
 | 🟢 | ~~`gray-matter`~~ | 4.0.3 | 4.0.3 | 5 years old | NONE | 1 | Up to date |
 | 🟢 | ~~`jsdoc-api`~~ | 9.3.6 | 9.3.6 | 3 months old | NONE | 1 | Up to date |
-| 🔴 | `marked` | 12.0.0 | 18.0.9 | 2 years old | MAJOR | 1 | Review required |
+| 🔴 | `marked` | 12.0.0 | 18.0.10 | 2 years old | MAJOR | 1 | Review required |
 | 🟢 | ~~`node-fetch`~~ | 3.3.2 | 3.3.2 | 3 years old | NONE | 1 | Up to date |
 | 🟢 | `tsx` | 4.23.1 | 4.23.12 | 1 month old | PATCH | 2 | Safe to update |
 | 🔴 | `read-pkg-up` | 7.0.1 | 11.0.0 | 6 years old | MAJOR | 3 | Review required |
@@ -556,7 +557,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟡 | `@modelcontextprotocol/sdk` | 1.29.0 | 1.30.0 | 4 months old | MINOR | 1 | Should update |
 | 🟡 | `@sap-ai-sdk/foundation-models` | 2.9.0 | 2.14.0 | 5 months old | MINOR | 1 | Should update |
 | 🟡 | `@sap-ai-sdk/langchain` | 2.9.0 | 2.14.0 | 5 months old | MINOR | 1 | Should update |
-| 🟢 | `@sap/ux-specification` | 1.144.5 | 1.144.9 | 2 months old | PATCH | 3 | Safe to update |
+| 🟢 | `@sap/ux-specification` | 1.144.5 | 1.144.10 | 2 months old | PATCH | 3 | Safe to update |
 | 🟢 | ~~`@types/json-schema`~~ | 7.0.15 | 7.0.15 | 2 years old | NONE | 1 | Up to date |
 | 🟡 | `promptfoo` | 0.121.19 | 0.122.0 | 1 month old | MINOR | 1 | Should update |
 | 🟡 | `zod` | 4.3.6 | 4.4.3 | 6 months old | MINOR | 1 | Should update |
@@ -590,8 +591,8 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟢 | ~~`qrcode`~~ | 1.5.4 | 1.5.4 | 2 years old | NONE | 1 | Up to date |
 | 🟢 | ~~`@types/qrcode`~~ | 1.5.6 | 1.5.6 | 9 months old | NONE | 1 | Up to date |
 | 🟡 | `@sapui5/types` | 1.120.5 | 1.151.0 | 2 years old | MINOR | 1 | Should update |
-| 🟡 | `ui5-tooling-modules` | 3.35.0 | 3.38.0 | 5 months old | MINOR | 1 | Should update |
-| 🟡 | `ui5-tooling-transpile` | 3.11.3 | 3.12.0 | 2 months old | MINOR | 1 | Should update |
+| 🟡 | `ui5-tooling-modules` | 3.35.0 | 3.38.1 | 5 months old | MINOR | 1 | Should update |
+| 🟡 | `ui5-tooling-transpile` | 3.11.3 | 3.13.0 | 2 months old | MINOR | 1 | Should update |
 | 🟡 | `@ui5/manifest` | 1.88.0 | 1.89.0 | 1 month old | MINOR | 3 | Should update |
 | 🟢 | ~~`findit2`~~ | 2.2.3 | 2.2.3 | 11 years old | NONE | 1 | Up to date |
 | 🔴 | `json-parse-even-better-errors` | 5.0.0 | 6.0.0 | 9 months old | MAJOR | 1 | Review required |
@@ -608,7 +609,7 @@ The following 8 dependencies have multiple versions in use across the workspace:
 | 🟡 | `@zowe/secrets-for-zowe-sdk` | 8.32.0 | 8.35.3 | 3 months old | MINOR | 2 | Should update |
 | 🟢 | ~~`normalize-path`~~ | 3.0.0 | 3.0.0 | 8 years old | NONE | 1 | Up to date |
 | 🟡 | `@vscode/vsce` | 3.7.1 | 3.9.2 | 8 months old | MINOR | 1 | Should update |
-| 🟢 | `@testing-library/user-event` | 14.6.1 | 14.6.4 | 1 year old | PATCH | 1 | Safe to update |
+| 🟢 | `@testing-library/user-event` | 14.6.1 | 14.6.5 | 1 year old | PATCH | 1 | Safe to update |
 | 🔴 | `serve-static` | 1.16.2 | 2.2.1 | 1 year old | MAJOR | 1 | Review required |
 | 🔴 | `@types/serve-static` | 1.15.5 | 2.2.0 | 2 years old | MAJOR | 1 | Review required |
 | 🟢 | ~~`pluralize`~~ | 8.0.0 | 8.0.0 | 7 years old | NONE | 1 | Up to date |
@@ -692,5 +693,5 @@ node ./docs/dependencyManagement/generate-dependency-update-plan.cjs
 
 ---
 
-**Last Updated:** 2026-08-17
+**Last Updated:** 2026-08-18
 **Generated by:** dependency update automation script

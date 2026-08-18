@@ -1,14 +1,14 @@
 {
-  "generatedDate": "2026-08-17",
+  "generatedDate": "2026-08-18",
   "analysisScope": "All dependencies (including @sap-ux/* packages)",
   "summary": {
     "totalPackages": 97,
     "totalUniqueExternalDependencies": 294,
     "dependenciesOlderThan6Months": 191,
     "majorUpdates": 81,
-    "minorUpdates": 40,
+    "minorUpdates": 41,
     "patchUpdates": 24,
-    "upToDate": 148,
+    "upToDate": 147,
     "multipleVersionsUsed": 8
   },
   "dependencies": [
@@ -319,7 +319,7 @@
     {
       "name": "eslint-plugin-jsdoc",
       "currentVersion": "62.8.1",
-      "latestVersion": "64.2.0",
+      "latestVersion": "64.2.1",
       "currentVersionAge": "2026-03-25 (4 months old)",
       "isOlderThan6Months": false,
       "updateType": "MAJOR",
@@ -533,7 +533,7 @@
       "name": "postcss",
       "currentVersion": "8.5.22",
       "latestVersion": "8.5.26",
-      "currentVersionAge": "2026-07-22 (26 days old)",
+      "currentVersionAge": "2026-07-22 (27 days old)",
       "isOlderThan6Months": false,
       "updateType": "PATCH",
       "status": "green",
@@ -1436,7 +1436,7 @@
     {
       "name": "@storybook/react",
       "currentVersion": "10.5.1",
-      "latestVersion": "10.5.8",
+      "latestVersion": "10.5.9",
       "currentVersionAge": "2026-07-16 (1 month old)",
       "isOlderThan6Months": false,
       "updateType": "PATCH",
@@ -1457,7 +1457,7 @@
     {
       "name": "@storybook/react-webpack5",
       "currentVersion": "10.5.1",
-      "latestVersion": "10.5.8",
+      "latestVersion": "10.5.9",
       "currentVersionAge": "2026-07-16 (1 month old)",
       "isOlderThan6Months": false,
       "updateType": "PATCH",
@@ -1671,7 +1671,7 @@
     {
       "name": "eslint-plugin-storybook",
       "currentVersion": "0.6.15",
-      "latestVersion": "10.5.8",
+      "latestVersion": "10.5.9",
       "currentVersionAge": "2023-10-08 (2 years old)",
       "isOlderThan6Months": true,
       "updateType": "MAJOR",
@@ -1780,7 +1780,7 @@
     {
       "name": "storybook",
       "currentVersion": "10.5.1",
-      "latestVersion": "10.5.8",
+      "latestVersion": "10.5.9",
       "currentVersionAge": "2026-07-16 (1 month old)",
       "isOlderThan6Months": false,
       "updateType": "PATCH",
@@ -2690,7 +2690,7 @@
       "name": "sanitize-filename",
       "currentVersion": "1.6.4",
       "latestVersion": "1.6.4",
-      "currentVersionAge": "2026-03-20 (4 months old)",
+      "currentVersionAge": "2026-03-20 (5 months old)",
       "isOlderThan6Months": false,
       "updateType": "NONE",
       "status": "green",
@@ -3345,7 +3345,7 @@
       "name": "@sap/approuter",
       "currentVersion": "22.0.3",
       "latestVersion": "23.0.0",
-      "currentVersionAge": "2026-06-18 (1 month old)",
+      "currentVersionAge": "2026-06-18 (2 months old)",
       "isOlderThan6Months": false,
       "updateType": "MAJOR",
       "status": "yellow",
@@ -3521,18 +3521,18 @@
     {
       "name": "@sap/ux-cds-compiler-facade",
       "currentVersion": "1.23.0",
-      "latestVersion": "1.23.0",
+      "latestVersion": "1.25.0",
       "currentVersionAge": "2026-06-09 (2 months old)",
       "isOlderThan6Months": false,
-      "updateType": "NONE",
-      "status": "green",
-      "statusEmoji": "🟢",
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
       "usedInPackages": [
         "@sap-ux/cds-odata-annotation-converter",
         "@sap-ux/fiori-annotation-api"
       ],
       "changelogUrl": null,
-      "recommendedAction": "Up to date",
+      "recommendedAction": "Should update",
       "hasMultipleVersions": false,
       "allVersionsUsed": [
         "1.23.0"
@@ -4854,7 +4854,7 @@
     {
       "name": "marked",
       "currentVersion": "12.0.0",
-      "latestVersion": "18.0.9",
+      "latestVersion": "18.0.10",
       "currentVersionAge": "2024-02-03 (2 years old)",
       "isOlderThan6Months": true,
       "updateType": "MAJOR",
@@ -5048,7 +5048,7 @@
     {
       "name": "@sap/ux-specification",
       "currentVersion": "1.144.5",
-      "latestVersion": "1.144.9",
+      "latestVersion": "1.144.10",
       "currentVersionAge": "2026-06-15 (2 months old)",
       "isOlderThan6Months": false,
       "updateType": "PATCH",
@@ -5705,7 +5705,7 @@
     {
       "name": "ui5-tooling-modules",
       "currentVersion": "3.35.0",
-      "latestVersion": "3.38.0",
+      "latestVersion": "3.38.1",
       "currentVersionAge": "2026-03-13 (5 months old)",
       "isOlderThan6Months": false,
       "updateType": "MINOR",
@@ -5724,7 +5724,7 @@
     {
       "name": "ui5-tooling-transpile",
       "currentVersion": "3.11.3",
-      "latestVersion": "3.12.0",
+      "latestVersion": "3.13.0",
       "currentVersionAge": "2026-06-16 (2 months old)",
       "isOlderThan6Months": false,
       "updateType": "MINOR",
@@ -6053,7 +6053,7 @@
     {
       "name": "@testing-library/user-event",
       "currentVersion": "14.6.1",
-      "latestVersion": "14.6.4",
+      "latestVersion": "14.6.5",
       "currentVersionAge": "2025-01-21 (1 year old)",
       "isOlderThan6Months": true,
       "updateType": "PATCH",
