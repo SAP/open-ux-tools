@@ -51,27 +51,32 @@ function getTemplateUi5Version(ui5Version?: string): string {
 }
 
 /**
- * Removes custom (manifest-declared) action tests from the feature data.
- *
- * Custom actions are matched by label via `iCheckAction("<label>")`; the required `sap.fe.test.api`
- * support ships only with the latest SAPUI5 version, so for older template buckets these actions are
- * dropped. The generated journeys then simply omit them (a coverage gap) instead of emitting
- * assertions that would fail on older runtimes.
+ * Removes action tests the target template bucket cannot render, so journeys omit them instead of
+ * emitting assertions that fail on older runtimes:
+ * - custom (manifest-declared) actions: rendered only by the `latest` bucket.
+ * - menu (drop-down) actions: rendered by `1.148` and `latest`; the `1.84` bucket has no menu template.
  *
  * @param appFeatures - the extracted app feature data (mutated in place)
+ * @param templateUi5Version - the selected template bucket ('1.84' / '1.148' / 'latest')
  */
-export function removeCustomActions(appFeatures: AppFeatures): void {
-    const withoutCustom = (action: ActionButtonState): boolean => !action.custom;
+export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Version: string): void {
+    const stripCustom = templateUi5Version !== V4_TEMPLATE_LATEST;
+    const stripMenu = templateUi5Version === V4_TEMPLATE_1_84;
+    if (!stripCustom && !stripMenu) {
+        return;
+    }
+    const keep = (action: ActionButtonState): boolean =>
+        !(stripCustom && action.custom) && !(stripMenu && action.menuType);
     if (appFeatures.listReport?.toolBarActions) {
-        appFeatures.listReport.toolBarActions = appFeatures.listReport.toolBarActions.filter(withoutCustom);
+        appFeatures.listReport.toolBarActions = appFeatures.listReport.toolBarActions.filter(keep);
     }
     appFeatures.objectPages?.forEach((objectPage) => {
         if (objectPage.headerActions) {
-            objectPage.headerActions = objectPage.headerActions.filter(withoutCustom);
+            objectPage.headerActions = objectPage.headerActions.filter(keep);
         }
         objectPage.bodySections?.forEach((section) => {
             if (section.actions) {
-                section.actions = section.actions.filter(withoutCustom);
+                section.actions = section.actions.filter(keep);
             }
         });
     });
@@ -115,11 +120,9 @@ export async function generateOPAFiles(
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
-    // Custom (manifest-declared) action tests rely on sap.fe.test.api support available only in the
-    // latest SAPUI5 version, so they are only emitted for the `latest` template bucket.
-    if (templateUi5Version !== V4_TEMPLATE_LATEST) {
-        removeCustomActions(appFeatures);
-    }
+    // Drop action tests the target template bucket cannot render (custom actions: latest only;
+    // menu actions: 1.148 and latest).
+    removeUnsupportedActions(appFeatures, templateUi5Version);
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);

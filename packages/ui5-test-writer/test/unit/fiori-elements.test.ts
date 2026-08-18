@@ -48,7 +48,7 @@ jest.unstable_mockModule('../../src/utils/modelUtils.js', () => ({
     getAppFeatures: getAppFeaturesMock
 }));
 
-const { generateOPAFiles, removeCustomActions } = await import('../../src/fiori-elements-opa-writer.js');
+const { generateOPAFiles, removeUnsupportedActions } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
@@ -1712,26 +1712,52 @@ export type Then = Opa5 & BaseArrangements & {
     });
 });
 
-describe('removeCustomActions()', () => {
-    type Action = { label: string; custom?: boolean };
+describe('removeUnsupportedActions()', () => {
+    type Action = { label: string; custom?: boolean; menuType?: string };
     const odata = (label: string): Action => ({ label });
     const custom = (label: string): Action => ({ label, custom: true });
+    const menu = (label: string): Action => ({ label, menuType: 'CustomMenu' });
 
-    it('drops custom actions from LR toolbar, OP header and section actions; keeps OData actions', () => {
-        const features = {
-            listReport: { toolBarActions: [odata('Keep'), custom('DropTB')] },
+    const makeFeatures = () =>
+        ({
+            listReport: { toolBarActions: [odata('KeepTB'), custom('CustomTB'), menu('MenuTB')] },
             objectPages: [
                 {
-                    headerActions: [custom('DropH'), odata('KeepH')],
-                    bodySections: [{ actions: [odata('KeepS'), custom('DropS')] }]
+                    headerActions: [custom('CustomH'), menu('MenuH'), odata('KeepH')],
+                    bodySections: [{ actions: [odata('KeepS'), custom('CustomS'), menu('MenuS')] }]
                 }
             ]
-        } as unknown as Parameters<typeof removeCustomActions>[0];
+        }) as unknown as Parameters<typeof removeUnsupportedActions>[0];
 
-        removeCustomActions(features);
+    const labels = (features: Parameters<typeof removeUnsupportedActions>[0]) => ({
+        tb: features.listReport?.toolBarActions?.map((a) => a.label),
+        header: features.objectPages?.[0].headerActions?.map((a) => a.label),
+        section: features.objectPages?.[0].bodySections?.[0].actions?.map((a) => a.label)
+    });
 
-        expect(features.listReport?.toolBarActions?.map((a) => a.label)).toEqual(['Keep']);
-        expect(features.objectPages?.[0].headerActions?.map((a) => a.label)).toEqual(['KeepH']);
-        expect(features.objectPages?.[0].bodySections?.[0].actions?.map((a) => a.label)).toEqual(['KeepS']);
+    it('1.84: strips both custom and menu actions (only OData renders)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.84');
+        expect(labels(features)).toEqual({ tb: ['KeepTB'], header: ['KeepH'], section: ['KeepS'] });
+    });
+
+    it('1.148: strips custom actions but keeps menu actions (menu template was downported)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.148');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'MenuTB'],
+            header: ['MenuH', 'KeepH'],
+            section: ['KeepS', 'MenuS']
+        });
+    });
+
+    it('latest: keeps all action types', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, 'latest');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'CustomTB', 'MenuTB'],
+            header: ['CustomH', 'MenuH', 'KeepH'],
+            section: ['KeepS', 'CustomS', 'MenuS']
+        });
     });
 });
