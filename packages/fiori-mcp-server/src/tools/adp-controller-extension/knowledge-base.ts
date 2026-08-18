@@ -126,6 +126,46 @@ CONTROLLER EXTENSION WORKFLOW:
 5. Do not create duplicate files:
    - Do not create a new controller extension file if one already exists for the selected view
 
+RUNTIME DATA ACCESS PATTERNS:
+
+BINDING CONTEXT — CONTROL VS. VIEW (CRITICAL):
+- \`this.base.getView().getBindingContext()\` always returns the root entity the whole page is bound to
+  (e.g. the product entity on a product Object Page).
+- \`oEvent.getSource().getBindingContext()\` returns the entity the PRESSED CONTROL is bound to — which
+  may be a completely different entity type when the control lives inside a container with a relative
+  binding (a table row, a list item, a form section bound to a navigation property, etc.).
+- These two contexts are only the same when the control sits directly at the view root level. In all
+  other cases, assume they differ.
+- Rule: to work with the entity a specific control is bound to, always derive the path from
+  \`oEvent.getSource().getBindingContext().getPath()\`. Only reach for the view's binding context when
+  you specifically need the root page entity.
+- Example: a button inside a SmartForm section that is navigation-bound to a related entity will have
+  \`oEvent.getSource().getBindingContext()\` resolve to the related entity, not to the root page entity.
+  Reading fields of the related entity from the root entity path will return 404.
+
+ON-DEMAND PROPERTY FETCHING (CRITICAL):
+- The framework's initial \$batch load only fetches properties referenced in the OData annotations
+  driving the current view (visible columns, SmartForm fields, etc.). Any other property returns
+  \`undefined\` when read via \`oContext.getProperty()\` or \`oModel.getProperty()\` in a press handler.
+- Never assume a property is pre-loaded unless you have verified it is referenced in the view's
+  annotations. Unit fields (Currency, UoM), auxiliary codes, or any field not shown in the UI are
+  routinely absent from the initial load.
+- Rule: for any property that may be absent from the initial load, always fetch it on demand:
+  OData V2: \`oModel.read(sPath, { urlParameters: { '$select': 'PropA,PropB' }, success: fn })\`
+  OData V4: \`oContext.requestProperty(['PropA', 'PropB']).then(fn)\`
+  Work with the data inside the success/then callback — never outside it.
+- This applies even when the property "should" be there logically. A handler that constructs a URL,
+  a label, or any computed output from model properties must fetch those properties explicitly.
+
+PROGRAMMATIC FRAGMENT CONTROLS (CRITICAL):
+- Fragment.load() resolves with the root control instance, not a fragment holder.
+  The root control has no byId method — calling byId on it throws a TypeError.
+- To read or write data in fragment controls, set a JSONModel on the root control
+  and bind the fragment's fields to model properties in XML. Never find controls by ID
+  just to set their values.
+- If a control must be found by ID: pass an id to Fragment.load and use the static
+  sap.ui.core.Fragment.byId(sFragmentId, sControlId).
+
 OUTPUT REQUIREMENTS:
 - Each response must be self-contained and production-ready.
 - Each file must be complete, not partial.

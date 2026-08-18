@@ -302,11 +302,13 @@ The script:
 
 **Always pass the control from `definedIn`, not the leaf control.** The script does not walk the inheritance chain — for an aggregation inherited from `sap.m.FlexBox`, pass `--control sap.m.FlexBox --lib sap.m`, not the SmartTable. `aggregationsByClass[].definedIn` already gives you this.
 
-**Always run this script for every `targetAggregation` you intend to use in a `CTX_ADDXML` payload** — before writing the fragment content. The script confirms the aggregation name exists on the control, its accepted `controlType`, and its cardinality (`0..1` vs `0..n`). Do not skip this step.
+**Do not write any fragment XML until you have run this script for every aggregation you plan to use** — `targetAggregation` and every named child aggregation inside the fragment. Run it against the control that owns each aggregation. Three hard rules on the output:
 
-If the aggregation's accepted type does not directly match the intended control, check whether a wrapper element accepted by that aggregation can host the intended control before seeking an alternative placement outside the target container.
+- **Missing:** an aggregation not returned does not exist; unknown aggregations are silently discarded while `call_action` still reports `success: true`.
+- **Cardinality:** if the result is `0..1` but you need multiple instances (e.g. per-row content), this aggregation cannot serve that purpose — find the correct multi-instance aggregation on the parent container.
+- **No existing children:** if the aggregation has no existing children in `get_overlays`, do not use it as a placement target — it may render hidden or inactive at runtime.
 
-> **Static API only.** The script confirms the aggregation is declared, not that it renders. Cross-check against `get_overlays` — if the aggregation has no existing children visible there, prefer a container that is already populated before committing to it. Also verify the aggregation has no state-dependent visibility; if the control name implies a mode-aware context, check the full API docs before committing.
+If the accepted type doesn't match, check for a wrapper before seeking an alternative placement. Before using a control from a library not in `aggregationsByClass[].libraryName` for this session, run the script against one of its aggregations — a 404 means the library is absent from this runtime.
 
 ### Step 7 — Read OData metadata (conditional, only when a data binding is involved)
 
