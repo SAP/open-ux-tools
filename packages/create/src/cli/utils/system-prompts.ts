@@ -1,4 +1,4 @@
-import prompts from 'prompts';
+import { input, select, password, confirm, checkbox } from '@inquirer/prompts';
 import type { BackendSystem } from '@sap-ux/store';
 import { SystemType, AuthenticationType, ConnectionType, isSystemNameInUse } from '@sap-ux/store';
 import { validateClient } from '@sap-ux/project-input-validator';
@@ -162,79 +162,73 @@ export async function promptForSystemConfig(partial: {
     username?: string;
     password?: string;
 }> {
-    const questions: prompts.PromptObject[] = [];
+    const answers: Record<string, any> = {};
 
     if (!partial.name) {
-        questions.push({
-            type: 'text',
-            name: 'name',
+        answers.name = await input({
             message: 'System name (display name):',
-            validate: (value: string) => validateSystemNameUniqueness(value)
+            validate: async (value: string) => {
+                const result = await validateSystemNameUniqueness(value);
+                return result === true ? true : result;
+            }
         });
     }
 
     if (!partial.url) {
-        questions.push({
-            type: 'text',
-            name: 'url',
+        answers.url = await input({
             message: 'System URL:',
-            validate: validateUrlField
+            validate: (value: string) => {
+                const result = validateUrlField(value);
+                return result === true ? true : result;
+            }
         });
     }
 
     if (partial.client === undefined) {
-        questions.push({
-            type: 'text',
-            name: 'client',
+        answers.client = await input({
             message: 'SAP client (optional, press Enter to skip):',
-            validate: validateClientField
+            validate: (value: string) => {
+                if (!value) {
+                    return true;
+                }
+                const result = validateClientField(value);
+                return result === true ? true : result;
+            }
         });
     }
 
     if (!partial.systemType) {
-        questions.push({
-            type: 'select',
-            name: 'systemType',
+        answers.systemType = await select({
             message: 'System type:',
-            choices: Object.values(SystemType).map((type) => ({ title: type, value: type }))
+            choices: Object.values(SystemType).map((type) => ({ name: type, value: type }))
         });
     }
 
     if (!partial.authenticationType) {
-        questions.push({
-            type: 'select',
-            name: 'authenticationType',
+        answers.authenticationType = await select({
             message: 'Authentication type:',
-            choices: Object.values(AuthenticationType).map((type) => ({ title: type, value: type }))
+            choices: Object.values(AuthenticationType).map((type) => ({ name: type, value: type }))
         });
     }
 
     if (!partial.connectionType) {
-        questions.push({
-            type: 'select',
-            name: 'connectionType',
+        answers.connectionType = await select({
             message: 'Connection type:',
-            choices: Object.values(ConnectionType).map((type) => ({ title: type, value: type }))
+            choices: Object.values(ConnectionType).map((type) => ({ name: type, value: type }))
         });
     }
 
     if (partial.username === undefined) {
-        questions.push({
-            type: 'text',
-            name: 'username',
+        answers.username = await input({
             message: 'Username (optional, press Enter to skip):'
         });
     }
 
     if (partial.password === undefined) {
-        questions.push({
-            type: 'password',
-            name: 'password',
+        answers.password = await password({
             message: 'Password (optional, press Enter to skip):'
         });
     }
-
-    const answers = questions.length > 0 ? await prompts(questions as any) : {};
 
     return {
         name: partial.name || answers.name,
@@ -260,27 +254,30 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
     url: string;
     client?: string;
 }> {
-    const questions: prompts.PromptObject[] = [];
+    const answers: Record<string, any> = {};
 
     if (!partial.url) {
-        questions.push({
-            type: 'text',
-            name: 'url',
+        answers.url = await input({
             message: 'System URL:',
-            validate: validateUrlField
+            validate: (value: string) => {
+                const result = validateUrlField(value);
+                return result === true ? true : result;
+            }
         });
     }
 
     if (partial.client === undefined) {
-        questions.push({
-            type: 'text',
-            name: 'client',
+        answers.client = await input({
             message: 'SAP client (optional, press Enter to skip):',
-            validate: validateClientField
+            validate: (value: string) => {
+                if (!value) {
+                    return true;
+                }
+                const result = validateClientField(value);
+                return result === true ? true : result;
+            }
         });
     }
-
-    const answers = questions.length > 0 ? await prompts(questions as any) : {};
 
     return {
         url: partial.url || answers.url,
@@ -295,23 +292,22 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
  * @returns Array of field names to update
  */
 export async function promptForUpdateFields(existing: BackendSystem): Promise<string[]> {
-    const answer = await prompts({
-        type: 'multiselect',
-        name: 'fields',
+    const fields = await checkbox({
         message: 'Select fields to update:',
         choices: [
-            { title: `Name (current: ${existing.name})`, value: 'name' },
-            { title: `Username (current: ${existing.username || '(none)'})`, value: 'username' },
-            { title: 'Password', value: 'password' }
+            { name: `Name (current: ${existing.name})`, value: 'name' },
+            { name: `Username (current: ${existing.username || '(none)'})`, value: 'username' },
+            { name: 'Password', value: 'password' }
         ],
-        min: 1
+        validate: (selected: readonly { value: string }[]) => {
+            if (selected.length === 0) {
+                return 'At least one field must be selected';
+            }
+            return true;
+        }
     });
 
-    if (!answer.fields || answer.fields.length === 0) {
-        throw new Error('At least one field must be selected');
-    }
-
-    return answer.fields;
+    return fields;
 }
 
 /**
@@ -325,39 +321,43 @@ export async function promptForFieldUpdates(
     fields: string[],
     existing: BackendSystem
 ): Promise<Record<string, unknown>> {
-    const questions = fields
-        .map((field) => {
-            switch (field) {
-                case 'name':
-                    return {
-                        type: 'text',
-                        name: 'name',
-                        message: 'New system name:',
-                        initial: existing.name,
-                        validate: (value: string) => validateSystemNameUniquenessForUpdate(value, existing)
-                    };
-                case 'username':
-                    return {
-                        type: 'text',
-                        name: 'username',
-                        message: 'New username:',
-                        initial: existing.username || '',
-                        validate: validateNonEmpty
-                    };
-                case 'password':
-                    return {
-                        type: 'password',
-                        name: 'password',
-                        message: 'New password:',
-                        validate: validateNonEmpty
-                    };
-                default:
-                    return null;
-            }
-        })
-        .filter((q) => q !== null);
+    const answers: Record<string, unknown> = {};
 
-    return await prompts(questions as any);
+    for (const field of fields) {
+        switch (field) {
+            case 'name':
+                answers.name = await input({
+                    message: 'New system name:',
+                    default: existing.name,
+                    validate: async (value: string) => {
+                        const result = await validateSystemNameUniquenessForUpdate(value, existing);
+                        return result === true ? true : result;
+                    }
+                });
+                break;
+            case 'username':
+                answers.username = await input({
+                    message: 'New username:',
+                    default: existing.username || '',
+                    validate: (value: string) => {
+                        const result = validateNonEmpty(value);
+                        return result === true ? true : result;
+                    }
+                });
+                break;
+            case 'password':
+                answers.password = await password({
+                    message: 'New password:',
+                    validate: (value: string) => {
+                        const result = validateNonEmpty(value);
+                        return result === true ? true : result;
+                    }
+                });
+                break;
+        }
+    }
+
+    return answers;
 }
 
 /**
@@ -367,12 +367,10 @@ export async function promptForFieldUpdates(
  * @returns True if user confirms, false otherwise
  */
 export async function promptForRemoveConfirmation(systemName: string): Promise<boolean> {
-    const answer = await prompts({
-        type: 'confirm',
-        name: 'confirm',
+    const result = await confirm({
         message: `Are you sure you want to remove system '${systemName}'?`,
-        initial: false
+        default: false
     });
 
-    return answer.confirm === true;
+    return result;
 }

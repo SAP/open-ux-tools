@@ -8,14 +8,12 @@ import {
     getPrompts as getAbapDeployConfigPrompts,
     reconcileAnswers
 } from '@sap-ux/abap-deploy-config-inquirer';
-import prompts, { type PromptObject } from 'prompts';
+import { select } from '@inquirer/prompts';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common/index.js';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-
-const { prompt } = prompts;
 
 /**
  * Add the "add deploy config" command to a passed command.
@@ -59,16 +57,13 @@ Example:
  */
 async function getTarget(target?: string): Promise<'abap' | 'cf'> {
     if (!target || (target !== 'abap' && target !== 'cf')) {
-        const question: PromptObject = {
-            name: 'target',
-            type: 'select',
+        return await select({
             message: 'Select the target for deployment',
             choices: [
-                { title: 'ABAP', value: 'abap' }
-                // { title: 'Cloud Foundry', value: 'cf' }
+                { name: 'ABAP', value: 'abap' }
+                // { name: 'Cloud Foundry', value: 'cf' }
             ]
-        };
-        return (await prompt(question)).target;
+        });
     } else {
         return target;
     }

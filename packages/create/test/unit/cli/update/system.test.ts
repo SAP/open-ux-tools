@@ -16,10 +16,18 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: isAppStudioMock
 }));
 
-// Mock prompts - return empty object (no interactive prompting)
-const mockPrompts = jest.fn().mockResolvedValue({});
-jest.unstable_mockModule('prompts', () => ({
-    default: mockPrompts
+// Mock @inquirer/prompts - return empty values (no interactive prompting)
+const mockInput = jest.fn().mockResolvedValue('');
+const mockSelect = jest.fn().mockResolvedValue('');
+const mockPassword = jest.fn().mockResolvedValue('');
+const mockConfirm = jest.fn().mockResolvedValue(false);
+const mockCheckbox = jest.fn().mockResolvedValue([]);
+jest.unstable_mockModule('@inquirer/prompts', () => ({
+    input: mockInput,
+    select: mockSelect,
+    password: mockPassword,
+    confirm: mockConfirm,
+    checkbox: mockCheckbox
 }));
 
 // Mock connection check to always succeed and not prompt
@@ -64,7 +72,7 @@ describe('system/update (update command group)', () => {
         // Default: system exists
         mockedService.read.mockResolvedValue({ name: 'My System' });
         mockCheckConnectionOrPrompt.mockResolvedValue(true);
-        mockPrompts.mockResolvedValue({});
+        mockCheckbox.mockResolvedValue([]);
     });
 
     test('should update system name', async () => {
@@ -139,7 +147,8 @@ describe('system/update (update command group)', () => {
 
     test('should log error when no fields to update', async () => {
         // Given
-        mockPrompts.mockResolvedValueOnce({ fields: [] }); // User selects nothing in multi-select
+        // checkbox resolves with [] (already the default mock) – the empty-patch guard in updateSystem logs the error
+        mockCheckbox.mockResolvedValueOnce([]);
         const command = new Command('update');
         addSystemUpdateCommand(command);
 
@@ -147,7 +156,9 @@ describe('system/update (update command group)', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--client', '']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith('At least one field must be selected');
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
+        );
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 
