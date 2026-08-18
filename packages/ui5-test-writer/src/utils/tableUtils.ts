@@ -76,11 +76,16 @@ export function resolvePrimaryTableNode(node: TreeAggregation): TreeAggregation 
     if (!tableAggregation) {
         return undefined;
     }
+    // A usable table node exposes `columns` and/or `toolBar` directly.
+    const isTableNode = (candidate: TreeAggregation): boolean => {
+        const children = getAggregations(candidate);
+        return !!children['columns'] || !!children['toolBar'];
+    };
     const tableChildren = getAggregations(tableAggregation);
-    if (tableChildren['columns']) {
+    if (isTableNode(tableAggregation)) {
         return tableAggregation;
     }
-    // Multi-view List Report: per-tab nodes live under `views`; return the first with columns, else undefined.
+    // Multi-view List Report: per-tab nodes live under `views`; return the first usable one, else undefined.
     const views = tableChildren['views'];
     if (!views) {
         return undefined;
@@ -88,7 +93,7 @@ export function resolvePrimaryTableNode(node: TreeAggregation): TreeAggregation 
     const viewNodes = getAggregations(views);
     for (const key of Object.keys(viewNodes)) {
         const viewNode = viewNodes[key] as TreeAggregation;
-        if (getAggregations(viewNode)['columns']) {
+        if (isTableNode(viewNode)) {
             return viewNode;
         }
     }
