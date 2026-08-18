@@ -25,7 +25,7 @@ allowBuilds:
     unrs-resolver: true
 
 overrides:
-    "@sap-ux/vocabularies-types": "0.15.0"
+    "@sap-ux/vocabularies-types": "0.16.0"
     "@storybook/manager-api>store2": "2.14.4"
     "axios-logger>axios": "^1.16.0"
     "@sap/subaccount-destination-service-provider>@sap/bas-sdk": "^3.13.7"
