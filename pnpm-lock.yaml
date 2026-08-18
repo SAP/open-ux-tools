@@ -46,7 +46,7 @@ overrides:
   yaml@>=1.0.0 <1.10.3: '>=1.10.3'
   yaml@>=2.0.0 <2.8.3: 2.8.3
   brace-expansion@>=1.0.0 <1.1.13: ^1.1.13
-  brace-expansion@>=2.0.0 <2.0.3: ^2.0.3
+  brace-expansion@>=2.0.0 <2.0.3: ^5.0.0
   brace-expansion@>=4.0.0 <5.0.6: 5.0.6
   '@sap/approuter>http-proxy-agent': '>=7.0.0'
   '@sap/approuter>axios': '>=1.16.0'
@@ -11768,9 +11768,6 @@ packages:
 
   brace-expansion@1.1.13:
     resolution: {integrity: sha512-9ZLprWS6EENmhEOpjCYW2c8VkmOvckIJZfkr7rBW6dObmfgJ/L1GpSYW5Hpo9lDz4D1+n0Ckz8rU7FwHDQiG/w==}
-
-  brace-expansion@2.0.3:
-    resolution: {integrity: sha512-MCV/fYJEbqx68aE58kv2cA/kiky1G8vux3OR6/jbS+jIMe/6fJWa0DTzJU7dqijOWYwHi1t29FlfYI9uytqlpA==}
 
   brace-expansion@5.0.6:
     resolution: {integrity: sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==}
@@ -28686,10 +28683,6 @@ snapshots:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@2.0.3:
-    dependencies:
-      balanced-match: 1.0.2
-
   brace-expansion@5.0.6:
     dependencies:
       balanced-match: 4.0.4
@@ -33462,15 +33455,15 @@ snapshots:
 
   minimatch@5.1.9:
     dependencies:
-      brace-expansion: 2.0.3
+      brace-expansion: 5.0.6
 
   minimatch@7.4.9:
     dependencies:
-      brace-expansion: 2.0.3
+      brace-expansion: 5.0.6
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 2.0.3
+      brace-expansion: 5.0.6
 
   minimist@1.2.8: {}
 
