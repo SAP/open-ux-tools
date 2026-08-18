@@ -26,7 +26,7 @@ import { getResourceModel, getTextBundle, TextBundle } from '../../i18n.js';
 import { getControlById } from '../../utils/core.js';
 import { getError } from '../../utils/error.js';
 import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version.js';
+import { getUi5Version, isLowerThanMinimalUi5Version, type Ui5VersionInfo } from '../../utils/version.js';
 import type { CodeExtResponse, ControllersResponse } from '../api-handler.js';
 import { getExistingController, readControllers, writeChange, writeController } from '../api-handler.js';
 import CommandExecutor from '../command-executor.js';
@@ -70,6 +70,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     private static readonly INSTANCE_SPECIFIC_MIN_UI5_VERSION = { major: 1, minor: 143 };
     public readonly data?: ExtendControllerData;
     private bundle: TextBundle;
+    private ui5Version: Ui5VersionInfo;
 
     constructor(
         name: string,
@@ -97,6 +98,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         const resourceModel = await getResourceModel('open.ux.preview.client');
         this.bundle = await getTextBundle();
+        this.ui5Version = await getUi5Version();
 
         await this.buildDialogData();
 
@@ -204,7 +206,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
                 await this.createNewController(controllerName, controllerRef);
             }
 
-            if (this.data && (await this.isControllerExtensionSupported())) {
+            if (this.data && this.isControllerExtensionSupported()) {
                 await sendInfoCenterMessage({
                     title: { key: 'ADP_CREATE_CONTROLLER_EXTENSION_TITLE' },
                     description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName] },
@@ -236,13 +238,13 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const baseExists = data.baseControllerExists || pendingViewIds.some((id) => !id);
         const instanceExists = data.instanceControllerExists || pendingViewIds.includes(viewId);
 
-        const showInstanceSpecificOption = await this.isInstanceSpecificSupported();
+        const showInstanceSpecificOption = this.isInstanceSpecificSupported();
 
         if (!showInstanceSpecificOption) {
             if (pendingViewIds.some((id) => !id)) {
                 this.updateModelForExistingPendingChange();
             } else if (data.baseControllerExists) {
-                this.updateModelForExistingController(data);
+                this.updateModelForExistingController(data, true);
             } else {
                 this.updateModelForNewController(viewId, data.isTsSupported, false, false, false);
                 await this.getControllers();
@@ -266,9 +268,10 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * Updates the model properties for existing controller(s).
      * Shows all persisted controllers (base and/or instance) in the existing-controller form, each with its own link to open in VS Code.
      *
-     * @param {CodeExtResponse} data - Server response containing existence flags and file paths.
+     * @param data - Server response containing existence flags and file paths.
+     * @param showVsCodeButton - When true (pre-1.143 single-controller path), shows an "Open in VS Code" begin-button instead of relying on the inline fragment links.
      */
-    private updateModelForExistingController(data: CodeExtResponse): void {
+    private updateModelForExistingController(data: CodeExtResponse, showVsCodeButton = false): void {
         this.model.setProperty('/controllerExists', true);
         this.model.setProperty('/baseControllerExists', data.baseControllerExists);
         this.model.setProperty('/baseControllerPath', data.baseControllerPath);
@@ -281,7 +284,11 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         this.model.setProperty('/pendingChangeFormVisibility', false);
         this.model.setProperty('/existingControllerFormVisibility', true);
 
-        this.dialog.getBeginButton().setVisible(false);
+        if (showVsCodeButton && !data.isRunningInBAS) {
+            this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+        } else {
+            this.dialog.getBeginButton().setVisible(false);
+        }
         this.dialog.getEndButton().setText('Close');
     }
 
@@ -378,7 +385,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         controllerName: string,
         controllerRef: DeferredExtendControllerData
     ): Promise<void> {
-        if (await this.isControllerExtensionSupported()) {
+        if (this.isControllerExtensionSupported()) {
             await this.createControllerCommand(controllerName, controllerRef);
             return;
         }
@@ -446,9 +453,8 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         });
     }
 
-    private async isControllerExtensionSupported(): Promise<boolean> {
-        const ui5Version = await getUi5Version();
-        return !isLowerThanMinimalUi5Version(ui5Version, ControllerExtension.CONTROLLER_EXT_MIN_UI5_VERSION);
+    private isControllerExtensionSupported(): boolean {
+        return !isLowerThanMinimalUi5Version(this.ui5Version, ControllerExtension.CONTROLLER_EXT_MIN_UI5_VERSION);
     }
 
     /**
@@ -475,8 +481,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         window.open(`vscode://file${this.model.getProperty('/instanceControllerPath')}`);
     }
 
-    private async isInstanceSpecificSupported(): Promise<boolean> {
-        const ui5Version = await getUi5Version();
-        return !isLowerThanMinimalUi5Version(ui5Version, ControllerExtension.INSTANCE_SPECIFIC_MIN_UI5_VERSION);
+    private isInstanceSpecificSupported(): boolean {
+        return !isLowerThanMinimalUi5Version(this.ui5Version, ControllerExtension.INSTANCE_SPECIFIC_MIN_UI5_VERSION);
     }
 }

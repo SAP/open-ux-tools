@@ -305,6 +305,10 @@ export default class RoutesHandler {
             }
         }
 
+        // A stale change file (missing controller on disk) is only fatal when no valid controller
+        // was found at all. If a valid base or instance controller exists alongside the stale entry,
+        // the 200 response reflects what is actually present and the debug log above provides
+        // server-side visibility of the dangling change file.
         return lookup;
     }
 

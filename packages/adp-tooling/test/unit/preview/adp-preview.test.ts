@@ -1141,6 +1141,7 @@ describe('AdaptationProject', () => {
             const data: CodeExtResponse = JSON.parse(response.text);
             expect(data.baseControllerExists).toEqual(false);
             expect(data.instanceControllerExists).toEqual(true);
+            expect(data).not.toHaveProperty('message'); // stale entry does not turn the 200 into an error payload
         });
 
         test('GET /adp/api/code_ext - returns empty existing controller data (no control found)', async () => {

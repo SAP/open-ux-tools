@@ -127,7 +127,7 @@ describe('ControllerExtension', () => {
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
 
-        test('fills json model with data (controller exists: true | env: VS Code)', async () => {
+        test('fills json model with data (controller exists: true | env: VS Code, pre-1.143)', async () => {
             checkForExistingChangeMock.mockReturnValue(false);
             isLowerThanMinimalUi5VersionMock.mockReturnValue(true);
             const overlays = {
@@ -164,7 +164,9 @@ describe('ControllerExtension', () => {
 
             const openSpy = jest.fn();
             const setTextSpy = jest.fn();
+            const setEnabledSpy = jest.fn();
             const setVisibleSpy = jest.fn();
+            setTextSpy.mockReturnValue({ setEnabled: setEnabledSpy });
 
             controllerExt.byId = jest.fn().mockReturnValueOnce({}).mockReturnValue({
                 setVisible: jest.fn()
@@ -172,7 +174,7 @@ describe('ControllerExtension', () => {
 
             await controllerExt.setup({
                 open: openSpy,
-                getBeginButton: jest.fn().mockReturnValue({ setVisible: setVisibleSpy }),
+                getBeginButton: jest.fn().mockReturnValue({ setVisible: setVisibleSpy, setText: setTextSpy }),
                 getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy }),
                 setEscapeHandler: jest.fn(),
                 setModel: jest.fn(),
@@ -180,7 +182,8 @@ describe('ControllerExtension', () => {
             } as unknown as Dialog);
 
             expect(openSpy).toHaveBeenCalledTimes(1);
-            expect(setVisibleSpy).toHaveBeenCalledWith(false);
+            expect(setTextSpy).toHaveBeenCalledWith('Open in VS Code');
+            expect(setEnabledSpy).toHaveBeenCalledWith(true);
             expect(setTextSpy).toHaveBeenCalledWith('Close');
         });
 
