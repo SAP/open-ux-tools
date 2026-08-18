@@ -40,6 +40,7 @@ import { getListReportViews } from './listReportUtils.js';
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
+ * @param listReportEntitySet
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
