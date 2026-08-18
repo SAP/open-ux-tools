@@ -43,9 +43,9 @@
     },
     "devDependencies": {
         "@types/fs-extra": "11.0.4",
-        "@types/lodash": "4.17.24",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/lodash": "4.17.25",
         "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.7.1",
         "fs-extra": "11.3.6"
     }

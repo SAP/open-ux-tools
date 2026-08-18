@@ -34,16 +34,16 @@
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
         "ajv": "8.18.0",
+        "axios": "1.18.1",
         "js-yaml": "4.2.0",
         "lodash": "4.18.1",
-        "semver": "7.8.5",
-        "axios": "1.18.1"
+        "semver": "7.8.5"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
-        "@types/lodash": "4.17.24",
-        "@types/semver": "7.7.1",
-        "@types/js-yaml": "4.0.9"
+        "@types/js-yaml": "4.0.9",
+        "@types/lodash": "4.17.25",
+        "@types/semver": "7.7.1"
     },
     "engines": {
         "node": ">=22.x"

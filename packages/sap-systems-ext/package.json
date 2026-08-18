@@ -46,29 +46,28 @@
         "onCommand:sap.ux.tools.sapSystems.show",
         "onCommand:sap.ux.tools.sapSystems.launchAppGen"
     ],
-    "dependencies": {},
     "devDependencies": {
         "@sap-ux/axios-extension": "workspace:*",
-        "@sap-ux/guided-answers-helper": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
-        "@sap-ux/ui-components": "workspace:*",
+        "@sap-ux/guided-answers-helper": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "@sap-ux/store": "workspace:*",
         "@sap-ux/sap-systems-ext-types": "workspace:*",
         "@sap-ux/sap-systems-ext-webapp": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
+        "@sap-ux/ui-components": "workspace:*",
         "@types/normalize-path": "3.0.2",
         "@types/vscode": "1.109.0",
+        "@vscode/vsce": "3.7.1",
         "@zowe/secrets-for-zowe-sdk": "8.32.0",
         "cross-env": "10.1.0",
         "fast-glob": "3.3.3",
         "i18next": "26.3.6",
         "jsonc-parser": "3.3.1",
         "normalize-path": "3.0.0",
-        "npm-run-all2": "9.0.2",
+        "npm-run-all2": "9.0.3",
         "os-name": "4.0.1",
-        "vscode-uri": "3.1.0",
-        "@vscode/vsce": "3.7.1"
+        "vscode-uri": "3.1.0"
     },
     "contributes": {
         "viewsContainers": {

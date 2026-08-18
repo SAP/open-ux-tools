@@ -18,16 +18,16 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@sap-ux/ui5-info": "workspace:*",
+        "@playwright/test": "1.60.0",
         "@sap-ux-private/playwright": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/yaml": "workspace:*",
-        "@playwright/test": "1.60.0",
         "adm-zip": "0.6.0",
         "dotenv": "17.4.2",
         "express": "4.22.1",
         "jest-dev-server": "11.0.0",
-        "npm-run-all2": "9.0.2",
+        "npm-run-all2": "9.0.3",
         "portfinder": "1.0.38",
         "semver": "7.8.5"
     },
