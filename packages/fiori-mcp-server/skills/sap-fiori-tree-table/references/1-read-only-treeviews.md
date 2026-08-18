@@ -2,12 +2,17 @@
 
 **Use ADT MCP RAP generator to create base business object:**
 - RAP generator creates the foundation (tables, views, behavior definitions)
+- Creates `define table entity` (modern ABAP Cloud syntax - CDS table + view in one)
 
 **CRITICAL Requirements (from below referenced SAP documentation):**
-- ✅ Database table with parent field (e.g., `parent_uuid`, `parent_ID`, `manager`)
-- ✅ Interface view must have self-referencing association
+- ✅ Database table (hierarchy entity) must have a parent reference field (e.g., `ManagerID`) linking to a key field (e.g., `EmployeeID` marked as primary or composite key)
+- ✅ Interface view or base view (hierarchy entity) must have self-referencing association
   ```abap
   association [0..1] to INTERFACE_VIEW as _Parent on $projection.<ParentField> = _Parent.<KeyField>
+  ```
+  Example (employee-manager hierarchy):
+  ```abap
+  _Manager : association to VIEW on $projection.ManagerID = _Manager.EmployeeID; (EmployeeID should be primary/composite key)
   ```
 - ✅ Hierarchy uses `define hierarchy` syntax (not `define view entity`)
   ```abap
@@ -15,7 +20,7 @@
     source INTERFACE_VIEW
     child to parent association _Parent
     start where <ParentField> is initial
-    siblings order by <SortField>
+    siblings order by <KeyField>
   )
   ```
 - ✅ Projection view must have `@OData.hierarchy.recursiveHierarchy` annotation
@@ -32,11 +37,17 @@
 - ✅ Create Data Definition first → replace with `define hierarchy` syntax
 - ❌ Never create ABAP programs for populating test data (optional helper class OK)
 - ✅ All objects must be activated in correct order: Table → Interface → Hierarchy → Projection → Service → Binding
+- ✅ **Hide UUID fields from UI:** Add `@UI.hidden: true` to UUID and ParentUUID fields in metadata extension (technical UUIDs only, not SiblingOrderNumber)
 
 **After implementation:**
 - Activate all objects in correct order
 - Verify `@OData.hierarchy.recursiveHierarchy` annotation is in projection view
 - Return to Step 1 to extract Qualifier from metadata
+
+## Next Steps After Backend Completion - Ask User
+
+1. **Create Fiori Elements App** - Before generating, verify system availability using fiori mcp to ensure the target ABAP system is accessible. Then download metadata and generate the app with TreeTable configuration for the hierarchy entity.
+2. **Generate Test Data**: Create data population program
 
 ### RAP Errors
 
@@ -105,6 +116,23 @@ define root view entity C_Entity as projection on R_Entity {
 - Root items have NULL parent ID
 - Interface view association correct
 - Hierarchy `start where` clause correct
+
+## Sample Prompt for Complete Implementation
+
+```
+/sap-fiori-tree-table 
+Create an OData V4 service and SAP Fiori elements List Report application with a hierarchical tree table for the Employee entity.
+
+The hierarchy should be read-only and display employees in a manager-employee structure.
+
+The Employee entity has the following fields: Employee ID (primary key), Name, Job Title, Manager (self-reference for hierarchy), Location, Employment Status.
+
+Package: <PACKAGE_NAME>
+Transport request: (Local - No transport) OR <TRANSPORT_NUMBER>
+Hierarchy Type: Read-only (display only)
+Hierarchy Structure: Employees with manager-employee hierarchy
+System: <SYSTEM_ID> client <CLIENT>
+```
 
 ## References
 

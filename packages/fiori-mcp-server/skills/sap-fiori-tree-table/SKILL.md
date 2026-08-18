@@ -12,8 +12,6 @@ metadata:
 ## Purpose
 Configure **hierarchical tree table** to display parent-child relationships in a recursive structure (organizational hierarchies, category trees, nested data).
 
----
-
 ## MANDATORY: Gather Required Inputs First
 
 **STOP and ASK the user for ALL of these inputs if ANY are missing from the prompt:**
@@ -113,29 +111,47 @@ ID;Name;Description;parent_ID
 ```bash
 npm run watch-<app-name>
 ```
-
 ---
 
 ## ABAP RAP Implementation (4 Steps)
 
 ### 0. Decision: Read-Only vs. Editable Hierarchy
 
-**CRITICAL: Check user requirements for editing capabilities FIRST**
+**CRITICAL: Understand the fundamental difference between hierarchy types**
 
-**Indicators for EDITABLE hierarchy (use Editable Treeviews Guide):**
-- User mentions: "edit", "create", "delete", "draft", "inline creation", "move nodes", "reorder"
-- User wants: transactional operations, modify hierarchy structure, manage parent-child relationships
-- Example phrases: "support inline creation under manager", "editing and deletion", "draft handling"
-- 📖 Use **Editable Treeviews Guide** - 9-step directory pattern implementation
+#### Read-Only Hierarchy (WITHOUT Directory Table)
+- **Display Location:** List Report page ONLY
+- **Cannot be shown:** Object Page (no composition support without directory)
+- **Capabilities:** View-only, navigation, filtering
+- **Use Case:** Display organizational charts, browse categories, view reporting structure
+- **Backend:** Simple self-referencing association, no directory table
+- **Example:** Employee list showing manager-employee hierarchy on main page
 
-**Indicators for READ-ONLY hierarchy (use Read-Only Treeviews Guide):**
-- User mentions: "display", "view", "browse", "navigate", "read-only", "show"
-- User wants: visualization only, no structural modifications
-- Example phrases: "display hierarchy", "view reporting structure", "browse categories"
-- 📖 Use **Read-Only Treeviews Guide** - 6-step simple implementation
+#### Editable Hierarchy (WITH Directory Table)
+- **Display Location:** List Report AND Object Page
+- **Required:** Directory table pattern with composition
+- **Capabilities:** Create, delete, move nodes, draft handling, inline creation
+- **Use Case:** Manage hierarchical data, modify structure, transactional operations
+- **Backend:** Directory + hierarchy tables, managed associations, draft support
+- **Example:** Department object page showing editable employee hierarchy in subsection
 
-**When in doubt:** Ask the user explicitly:
-> "Do you need to edit the hierarchy structure (create/delete/move nodes) or just display it?"
+**Decision Criteria:**
+
+**Use READ-ONLY when:**
+- User wants: "display", "view", "browse", "show", "list"
+- Hierarchy appears: On main List Report page only
+- No editing needed
+- 📖 **Reference:** [Read-Only Treeviews Guide](./references/1-read-only-treeviews.md)
+
+**Use EDITABLE when:**
+- User wants: "edit", "create", "delete", "manage", "modify"
+- Hierarchy appears: On Object Page (as child composition)
+- Transactional operations required
+- 📖 **Reference:** [Editable Treeviews Guide](./references/2-editable-treeviews.md)
+
+**When in doubt, ask:**
+> "1. Where should the hierarchy appear? (List Report only, or Object Page subsection?)
+> 2. Do you need to edit the hierarchy (create/delete/move nodes) or just view it?"
 
 ### 1. Check for Existing Hierarchy
 Examine `webapp/localService/mainService/metadata.xml` for:
@@ -153,12 +169,9 @@ Examine `webapp/localService/mainService/metadata.xml` for:
 
 ### 2. Implement Hierarchy in Backend
 
-**Treeviews Overview:**
-**[Treeviews Introduction](./references/treeviews-introduction.md)** - Foundation concepts, features, architecture comparison
-
 **Implementation Guides:**
-- **[Read-Only Treeviews Guide](./references/read-only-treeviews-guide.md)** - 6-step implementation for read-only hierarchies
-- **[Editable Treeviews Guide](./references/editable-treeviews-guide.md)** - 9-step implementation with draft, directories, and actions
+- **[Read-Only Treeviews Guide](./references/1-read-only-treeviews.md)** - 6-step implementation for read-only hierarchies
+- **[Editable Treeviews Guide](./references/2-editable-treeviews.md)** - 9-step implementation with draft, directories, and actions
 
 ### 3. Configure TreeTable in Manifest
 Update List Report target in `webapp/manifest.json`:
@@ -237,6 +250,18 @@ using { cuid, managed } from '@sap/cds/common';
 - Semicolon (`;`) delimiter
 - Valid UUIDs
 - Run `cds watch` to load data
+
+---
+
+### ABAP RAP Errors
+
+**"Element X must not be search enabled in baseview"**
+- Remove `@Search.searchable` and `@Search.defaultSearchElement` annotations from projection view with `@OData.hierarchy.recursiveHierarchy`
+- See detailed solution in [Troubleshooting Guide](./references/2.5-troubleshooting-checklist.md)
+
+**"Primary keys do not match"**
+- Child table must have composite key (child UUID + parent UUID both as keys)
+- See detailed solution in [Troubleshooting Guide](./references/2.5-troubleshooting-checklist.md)
 
 ---
 

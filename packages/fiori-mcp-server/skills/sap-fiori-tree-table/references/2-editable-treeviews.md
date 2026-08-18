@@ -4,25 +4,7 @@
 
 Ask user to choose from the following options:
 
-### Option 1: Manual Implementation (Using SAP Documentation) 📚
-
-**For**: Experienced ABAP developers who want full control and deep learning
-
-**Workflow**: Follow SAP's official documentation to manually create all artifacts
-
-**Documentation**: [Editable Treeviews: Development Process in Overview](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)
-
-**Background Reading**: For conceptual understanding, read `2.2-treeviews-introduction.md`:
-- What treeviews are and business context
-- Available features (managed vs unmanaged)
-- Hierarchy directories explained
-- Architecture comparison (read-only vs editable)
-
-**After completion**: Proceed to frontend application generation
-
----
-
-### Option 2: RAP Generator + Modifications ⭐ **RECOMMENDED**
+### Option 1: RAP Generator + Modifications ⭐ **RECOMMENDED**
 
 **For**: Teams using RAP generator who want guided step-by-step modifications
 
@@ -45,11 +27,11 @@ Ask user to choose from the following options:
 
 **Transport Required**: Depends on package type ($TMP: No, Others: Yes)
 
-**📖 Detailed Guide**: See `2.3-option2-with-generator.md`
+**📖 Detailed Guide**: See `2.3-with-generator.md`
 
 ---
 
-### Option 3: Fully Automated Step-by-Step (From Scratch) 🔧
+### Option 2: Fully Automated Step-by-Step (From Scratch) 🔧
 
 **For**: Learning the complete 5-layer architecture or when generator unavailable
 
@@ -61,7 +43,25 @@ Ask user to choose from the following options:
 
 **Transport Required**: Depends on package type ($TMP: No, Others: Yes)
 
-**📖 Detailed Guide**: See `2.4-option3-without-generator.md`
+**📖 Detailed Guide**: See `2.4-without-generator.md`
+
+---
+
+### Option 3: Manual Implementation (Using SAP Documentation) 📚
+
+**For**: Experienced ABAP developers who want full control and deep learning
+
+**Workflow**: Follow SAP's official documentation to manually create all artifacts
+
+**Documentation**: [Editable Treeviews: Development Process in Overview](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)
+
+**Background Reading**: For conceptual understanding, read `2.2-treeviews-introduction.md`:
+- What treeviews are and business context
+- Available features (managed vs unmanaged)
+- Hierarchy directories explained
+- Architecture comparison (read-only vs editable)
+
+**After completion**: Proceed to frontend application generation
 
 ---
 
@@ -101,25 +101,11 @@ Ask user to choose from the following options:
 
 ---
 
-## Key Features Enabled
+## Next Steps After Backend Completion - Ask User
 
-After completion, your service will support:
-
-✅ Tree table rendering with expand/collapse
-✅ Drag-and-drop parent assignment
-✅ Managed reordering (move items up/down)
-✅ Unlimited nesting levels
-✅ Draft support (create, edit, activate, discard)
-✅ Cascading delete
-✅ Proper sibling sequencing
-
----
-
-## Next Steps After Backend Completion
-
-1. **Create Fiori Elements App**: Use fiori-frontend skill
-2. **Generate Test Data**: Create population program
-3. **Implement Business Logic**: Add validation, determinations
+1. **Create Fiori Elements App** - Before generating, verify system availability using fiori mcp to ensure the target ABAP system is accessible. Then download metadata and generate the app with TreeTable configuration for the hierarchy entity.
+2. **Generate Test Data**:  Create data population program
+3. **Implement Business Logic**: Add validation, determinations, move up, down, drag/drop, Draft support (create, edit, discard) - Inform user to implement in backend.
 4. **Add Authorization**: Replace `#NOT_REQUIRED` with proper auth
 
 ---
@@ -144,10 +130,28 @@ After completion, your service will support:
 
 ---
 
+## Sample Prompt for Complete Implementation
+
+```
+/sap-fiori-tree-table 
+Create OData V4 service with editable tree table for Department-Employee hierarchy.
+
+Department (root entity) with: Department ID, Name, Country, Address
+
+Employee (child composition) with: Employee ID, Name, Job Title, 
+Manager (self-reference for hierarchy), Location, Employment Status
+
+Package: <PACKAGE_NAME>
+Transport request: (Local - No transport)
+Hierarchy Type: Edit with Draft
+Hierarchy Structure: Employees with manager-employee hierarchy
+System:  <SYSTEM_ID> client <CLIENT>
+```
+
 ## References
 
 - **[SAP Documentation](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)**
 - **Prerequisites & Concepts**: `2.1-prerequisites-and-concepts.md`
-- **Option 2 Guide**: `2.3-option2-with-generator.md`
-- **Option 3 Guide**: `2.4-option3-without-generator.md`
+- **Option 1 Guide**: `2.3-with-generator.md`
+- **Option 2 Guide**: `2.4-without-generator.md`
 - **Troubleshooting**: `2.5-troubleshooting-checklist.md`
