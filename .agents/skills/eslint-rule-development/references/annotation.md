@@ -22,7 +22,7 @@ For rules with nested AST walks: also read `src/rules/sap-no-single-facet-in-col
 - ✅ `reportedParent` = the `<Annotation>` element; `reference.value` = the inner element to report on
 - ✅ Visitor key `'target>element[name="Annotation"]'` matches `<Annotation ...>` nodes; `lookup` must contain the parent `Annotation` element
 - ✅ Use `page.targetName` for `pageNames`
-- ✅ **Iterate all qualifiers** — use `Object.values(annotationMap)`, not `annotationMap['undefined']`
+- ✅ **Iterate all qualifiers** — use `Object.values(annotationMap)` (see debug checklist for the anti-pattern)
 
 ## Annotation access path — choose by term
 
@@ -321,7 +321,6 @@ import { CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH, setup } from '../t
 - **Page-annotation-map:** annotation must be referenced from a page-facing annotation (`UI.Facets ReferenceFacet` or `UI.LineItem DataFieldForAnnotation`); without it `lookup[key]` is empty
 - **CDS fires for XML but not CDS (or vice versa):** use `getAttrOrChildText` instead of bare `getElementAttributeValue`
 - **Object-page tables not found:** `page.lookup['table']` is empty for object pages — branch on `page.type`
-- **`linkedModel.apps` vs `index.apps`:** use `linkedModel.apps` for page iteration; `index.apps[appKey]` for `parsedApp`
 - **All qualifiers covered?** `Object.values(annotationMap)` — `annotationMap['undefined']` misses qualified ones
 - **`page.lookup` key correct?** (`'table'`, `'field-group'`, etc.) — does the term appear in the linked model?
 - **`buildAnnotationIndexKey`:** is `page.entity?.structuredType` non-null? Is key format correct?

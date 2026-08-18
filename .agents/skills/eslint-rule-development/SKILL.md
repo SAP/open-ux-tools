@@ -157,7 +157,7 @@ pnpm --filter @sap-ux/eslint-plugin-fiori-tools lint
 
 If `lint` reports errors after `lint:fix`:
 
-- **`sonarjs/cognitive-complexity`** — the function exceeds complexity 15. Extract branches or loops into named helpers and re-run until the error is gone.
+- **`sonarjs/cognitive-complexity`** — resolve per the cognitive complexity guidance in Step 3.
 - **`prettier/prettier`** — a formatting issue could not be auto-fixed. Apply the suggested change manually (usually a line that is too long or a multiline expression that needs restructuring).
 - **`@typescript-eslint/no-unsafe-*`** — replace `any` casts or untyped values with proper interfaces or `unknown` + type guards.
 
