@@ -1,12 +1,12 @@
 // ESM re-export wrapper for @sap/ux-specification
-// The published package is CJS, but Jest's ESM mode cannot extract named exports from CJS modules.
-// This wrapper uses createRequire to load the CJS bundle and re-exports all properties as named ESM exports.
+// 1.144.10+ ships ESM-only (index-min.mjs).
+// We load the real package directly by path to avoid Jest mock cycle resolution.
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
-const __dirname = import.meta.dirname;
-const require = createRequire(import.meta.url);
-const distPath = resolve(__dirname, '..', '..', '..', 'node_modules', '@sap', 'ux-specification', 'dist', 'index-min.js');
-const mod = require(distPath);
+import { fileURLToPath } from 'node:url';
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const pkgPath = resolve(__dirname, '..', '..', '..', 'node_modules', '@sap', 'ux-specification', 'dist', 'index-min.mjs');
+const mod = await import(pkgPath);
 
 // Named exports used by fiori-mcp-server source and tests
 export const {
