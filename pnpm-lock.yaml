@@ -3839,8 +3839,8 @@ importers:
         specifier: 4.0.57
         version: 4.0.57(supports-color@8.1.1)
       '@ui5/manifest':
-        specifier: 1.88.0
-        version: 1.88.0
+        specifier: 1.89.0
+        version: 1.89.0
       eslint-plugin-jsdoc:
         specifier: 62.8.1
         version: 62.8.1(eslint@10.7.0(supports-color@8.1.1))(supports-color@8.1.1)
@@ -3866,8 +3866,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.88.0
-        version: 1.88.0
+        specifier: 1.89.0
+        version: 1.89.0
       fast-xml-parser:
         specifier: 5.8.0
         version: 5.8.0
@@ -4907,8 +4907,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.88.0
-        version: 1.88.0
+        specifier: 1.89.0
+        version: 1.89.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -10864,8 +10864,8 @@ packages:
     resolution: {integrity: sha512-uscDCQyHFeenh4r2RbYuffTMn6IQdcNC1tXrQ4BF+apAFjmDGP11IHdAwVCKwxgyPrIC17HT2gub3ZugGM8kpQ==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
-  '@ui5/manifest@1.88.0':
-    resolution: {integrity: sha512-H1qFnigxsXLyLFeSej7gYosB14ksKhDYTEo40Ujm9550bWo5vePpvjKNZT/syqQ0hb+xTg+POOeifkNysdxNVg==}
+  '@ui5/manifest@1.89.0':
+    resolution: {integrity: sha512-+Zr48MkYn9VBvp+Yq3Fsc2MtShB2XbHuT/TGf+3XeeAAX4vRQyyXWrO0r+GF+wl09r76C7SfRIJpZTNBMRFFxg==}
 
   '@ui5/project@4.0.15':
     resolution: {integrity: sha512-Fo1g1t15NCLb9xKxVVJ4jD7BTGimk2CoE+4nMTg0NEA9DGv0UUWkfVygnNnmur1NJg4HV4sqK/mKO1yszFpCAQ==}
@@ -27480,7 +27480,7 @@ snapshots:
       cli-progress: 3.12.0
       figures: 6.1.0
 
-  '@ui5/manifest@1.88.0': {}
+  '@ui5/manifest@1.89.0': {}
 
   '@ui5/project@4.0.15(@ui5/builder@4.2.0)(supports-color@8.1.1)':
     dependencies:
