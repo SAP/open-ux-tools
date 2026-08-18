@@ -54,9 +54,9 @@
         "@types/prompts": "2.4.9",
         "@types/proxy-from-env": "1.0.4",
         "@types/supertest": "7.2.1",
-        "express": "4.22.1",
         "connect": "^3.7.0",
-        "nock": "14.0.16",
+        "express": "4.22.1",
+        "nock": "14.0.17",
         "supertest": "7.2.2",
         "yaml": "2.9.0"
     },
