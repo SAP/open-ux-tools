@@ -26,14 +26,6 @@ function journey() {
         Given.iStartMyApp();
         <%_ startPages.forEach(function(pageName) { %>
         Then.onThe<%- pageName %>Generated.iSeeThisPage();
-        <%_ if (filterBarItems && filterBarItems.length > 0) { -%>
-            <%_ filterBarItems.forEach(function(item) { _%>
-        Then.onThe<%- pageName%>Generated.onFilterBar().iCheckFilterField({ property: "<%- item %>" });
-            <%_ }); -%>
-        <%_ } -%>
-        <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { _%>
-        Then.onThe<%- pageName %>Generated.onTable().iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-        <%_ } %>
         <%_ }); -%>
     });
 

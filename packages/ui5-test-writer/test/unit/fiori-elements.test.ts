@@ -1565,11 +1565,12 @@ export type Then = Opa5 & BaseArrangements & {
             existsSyncMock.mockImplementation(actualFs.existsSync);
         });
 
-        it('writes an FPM journey (.ts) with filter-bar and table-column checks when appFeatures has an fpm entry', async () => {
+        it('writes an FPM journey (.ts) with only iSeeThisPage, never onFilterBar/onTable (TemplatePage has neither)', async () => {
             const projectDir = prepareTestFiles('CustomOP');
-            // Inject an FPM feature directly so the writeJourneyFiles FPM branch fires with
-            // its filterBarItems / tableColumns sub-branches (the ux-spec fixture model does
-            // not populate appFeatures.fpm reliably in unit tests).
+            // Inject an FPM feature with populated filterBarItems / tableColumns to prove that even
+            // then the FPM journey does NOT emit onFilterBar()/onTable(): an FPM page is a bare
+            // TemplatePage, whose runtime API has no public onFilterBar/onTable (those are added by
+            // ListReport/ObjectPage). Emitting them fails at runtime and fails tsc.
             getAppFeaturesMock.mockResolvedValueOnce({
                 fpm: {
                     name: 'MyCustomPage',
@@ -1588,11 +1589,13 @@ export type Then = Opa5 & BaseArrangements & {
             // ES module imports (TS journey), not sap.ui.define
             expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
             expect(content).toContain('import runner from "./pages/JourneyRunner"');
-            // filterBarItems sub-branch rendered
-            expect(content).toContain('iCheckFilterField({ property: "CompanyCode" })');
-            expect(content).toContain('iCheckFilterField({ property: "Customer" })');
-            // tableColumns sub-branch rendered
-            expect(content).toContain('iCheckColumns(undefined,');
+            // The only page assertion is iSeeThisPage()
+            expect(content).toContain('.iSeeThisPage()');
+            // onFilterBar/onTable are NOT emitted for an FPM page — TemplatePage has neither.
+            expect(content).not.toContain('onFilterBar');
+            expect(content).not.toContain('onTable');
+            expect(content).not.toContain('iCheckFilterField');
+            expect(content).not.toContain('iCheckColumns');
             // no JS FPM journey emitted alongside
             expect(Object.keys(dumped).some((p) => p.includes('MyCustomPageJourney.gen.js'))).toBe(false);
         });
@@ -1696,33 +1699,15 @@ export type Then = Opa5 & BaseArrangements & {
         });
 
         describe('snapshot per bucket — FPM TS', () => {
-            it('bucket 1.84 generates correct FPM output (TS)', async () => {
+            it.each([
+                ['1.84', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', '1.149.0']
+            ])('bucket %s generates correct FPM output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('CustomOP');
                 fs = await generateOPAFiles(
                     projectDir,
-                    { ui5Version: '1.120.0', enableTypeScript: true },
-                    metadata,
-                    fs
-                );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket 1.148 generates correct FPM output (TS)', async () => {
-                const projectDir = prepareTestFiles('CustomOP');
-                fs = await generateOPAFiles(
-                    projectDir,
-                    { ui5Version: '1.148.0', enableTypeScript: true },
-                    metadata,
-                    fs
-                );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket latest generates correct FPM output (TS)', async () => {
-                const projectDir = prepareTestFiles('CustomOP');
-                fs = await generateOPAFiles(
-                    projectDir,
-                    { ui5Version: '1.149.0', enableTypeScript: true },
+                    { ui5Version, enableTypeScript: true },
                     metadata,
                     fs
                 );
