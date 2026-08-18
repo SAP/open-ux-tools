@@ -39,7 +39,7 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 - ✅ CDS MCP server tools available
 
 ### 1. Check Current Entity Structure
-Use CDS MCP to search the model for the target entity structure before making changes
+Use the CDS MCP to search the model for the target entity structure before making changes
 
 ### 2. Add Hierarchy Association
 Add self-referencing managed association to `db/schema.cds`:
@@ -117,7 +117,7 @@ npm run watch-<app-name>
 
 ### 0. Decision: Read-Only vs. Editable Hierarchy
 
-**CRITICAL: Understand the fundamental difference between hierarchy types**
+**CRITICAL: Understand the fundamental differences between hierarchy types**
 
 #### Read-Only Hierarchy (WITHOUT Directory Table)
 - **Display Location:** List Report page ONLY
@@ -231,7 +231,7 @@ using { cuid, managed } from '@sap/cds/common';
 
 **"hierarchyQualifier not found"**
 - Verify `@hierarchy` in `srv/<service>.cds`
-- Check metadata: `http://localhost:4004/service/$metadata`
+- Check metadata: `http://localhost:<port>/service/$metadata`
 - Restart CAP service
 
 **"Failed to parse metadata"**
@@ -278,15 +278,15 @@ using { cuid, managed } from '@sap/cds/common';
 ## Best Practices
 
 - Always use managed associations in CAP (no `on` condition)
-- Name parent field `parent` for auto `parent_ID` foreign key
-- Create 2-3 hierarchy levels minimum for demo
+- Name the parent field `parent` for auto `parent_ID` foreign key
+- Create 2-3 hierarchy levels at minimum for demo
 - Test with different data volumes
 - Clear browser cache after backend changes
 
 **CAP Specific:**
-- Use CDS MCP to search model before editing
+- Use the CDS MCP to search the model before editing
 - Run `cds watch` to reload data
-- Check metadata endpoint for hierarchy annotations
+- Check the metadata endpoint for hierarchy annotations
 ---
 
 ## References

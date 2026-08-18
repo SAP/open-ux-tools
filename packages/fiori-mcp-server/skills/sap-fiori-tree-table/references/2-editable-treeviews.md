@@ -31,23 +31,7 @@ Ask user to choose from the following options:
 
 ---
 
-### Option 2: Fully Automated Step-by-Step (From Scratch) 🔧
-
-**For**: Learning the complete 5-layer architecture or when generator unavailable
-
-**Time**: 60-90 minutes
-
-**Complexity**: High (requires sequential execution)
-
-**Workflow**: Create everything manually - tables, interface views, hierarchy, behaviors, projections, metadata, service
-
-**Transport Required**: Depends on package type ($TMP: No, Others: Yes)
-
-**📖 Detailed Guide**: See `2.4-without-generator.md`
-
----
-
-### Option 3: Manual Implementation (Using SAP Documentation) 📚
+### Option 2: Manual Implementation (Referring to Official SAP Documentation) 📚
 
 **For**: Experienced ABAP developers who want full control and deep learning
 
@@ -69,11 +53,11 @@ Ask user to choose from the following options:
 
 📋 **Prerequisites & Core Concepts**: `2.1-prerequisites-and-concepts.md`
 - ABAP object creation workflow
-- Architecture patterns (3-layer vs 5-layer)
+- Architecture patterns (3-layer for generator, 5-layer for manual)
 - Behavior definition workarounds
 - Communication guidelines
 
-🔧 **Troubleshooting & Validation**: `2.5-troubleshooting-checklist.md`
+🔧 **Troubleshooting & Validation**: `2.4-troubleshooting-checklist.md`
 - Common errors and solutions
 - Draft table field naming rules
 - UUID vs ID confusion fixes
@@ -153,5 +137,4 @@ System:  <SYSTEM_ID> client <CLIENT>
 - **[SAP Documentation](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)**
 - **Prerequisites & Concepts**: `2.1-prerequisites-and-concepts.md`
 - **Option 1 Guide**: `2.3-with-generator.md`
-- **Option 2 Guide**: `2.4-without-generator.md`
-- **Troubleshooting**: `2.5-troubleshooting-checklist.md`
+- **Troubleshooting**: `2.4-troubleshooting-checklist.md`

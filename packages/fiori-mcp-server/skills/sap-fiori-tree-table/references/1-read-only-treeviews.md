@@ -1,7 +1,7 @@
 # ABAP RAP Read-Only Treeviews - Implementation Guide
 
-**Use ADT MCP RAP generator to create base business object:**
-- RAP generator creates the foundation (tables, views, behavior definitions)
+**Use the ADT MCP RAP generator to create the base business object:**
+- The RAP generator creates the foundation (tables, views, behavior definitions)
 - Creates `define table entity` (modern ABAP Cloud syntax - CDS table + view in one)
 
 **CRITICAL Requirements (from below referenced SAP documentation):**
@@ -35,14 +35,14 @@
 **Additional Notes:**
 - ❌ No "Create Hierarchy" tool in ADT/MCP - must create Data Definition manually
 - ✅ Create Data Definition first → replace with `define hierarchy` syntax
-- ❌ Never create ABAP programs for populating test data (optional helper class OK)
-- ✅ All objects must be activated in correct order: Table → Interface → Hierarchy → Projection → Service → Binding
-- ✅ **Hide UUID fields from UI:** Add `@UI.hidden: true` to UUID and ParentUUID fields in metadata extension (technical UUIDs only, not SiblingOrderNumber)
+- ❌ Never create ABAP programs for populating test data (optional helper class is OK)
+- ✅ All objects must be activated in the correct order: Table → Interface → Hierarchy → Projection → Service → Binding
+- ✅ **Hide UUID fields from UI:** Add `@UI.hidden: true` to UUID and ParentUUID fields in the metadata extension (technical UUIDs only, not SiblingOrderNumber)
 
 **After implementation:**
-- Activate all objects in correct order
-- Verify `@OData.hierarchy.recursiveHierarchy` annotation is in projection view
-- Return to Step 1 to extract Qualifier from metadata
+- Activate all objects in the correct order
+- Verify the `@OData.hierarchy.recursiveHierarchy` annotation is in the projection view
+- Return to Step 1 to extract the Qualifier from metadata
 
 ## Next Steps After Backend Completion - Ask User
 
