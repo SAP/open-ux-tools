@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { createApplicationAccess } from '@sap-ux/project-access';
+import { createApplicationAccess, getWebappPath } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
@@ -14,6 +14,7 @@ import type {
 import type { AppFeatures, FPMFeatures } from '../types.js';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
+import { readAnnotationXmls } from './metadataXmlUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
@@ -90,6 +91,7 @@ export async function getAppFeatures(
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
+    let annotationXmls: string[] = [];
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
@@ -113,6 +115,12 @@ export async function getAppFeatures(
             }
         }
 
+        try {
+            annotationXmls = readAnnotationXmls(manifest, await getWebappPath(basePath, fs), fs);
+        } catch (error) {
+            log?.debug(`Failed to read annotation files: ${error instanceof Error ? error.message : String(error)}`);
+        }
+
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
         fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
@@ -132,7 +140,13 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
+            featureData.listReport = getListReportFeatures(
+                listReportPage,
+                log,
+                projectMetadata,
+                manifest,
+                annotationXmls
+            );
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
@@ -141,7 +155,8 @@ export async function getAppFeatures(
                 listReportPage?.name,
                 log,
                 projectMetadata,
-                manifest
+                manifest,
+                annotationXmls
             );
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }

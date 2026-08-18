@@ -14,8 +14,31 @@ import type {
 import type { Logger } from '@sap-ux/logger';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
+import { getMergedConvertedMetadata } from './metadataXmlUtils.js';
 
 const DATA_FIELD_FOR_ACTION = 'DataFieldForAction';
+
+/**
+ * Collects the names of actions annotated with `Common.IsActionCritical`.
+ *
+ * @param metadataXml The service metadata XML (metadata.xml), or undefined
+ * @param annotationXmls Annotation XML documents to merge, in manifest order
+ * @returns The set of critical action method names (empty if none or on failure)
+ */
+export function getCriticalActionNames(metadataXml?: string, annotationXmls: string[] = []): Set<string> {
+    const names = new Set<string>();
+    try {
+        const merged = getMergedConvertedMetadata(metadataXml, annotationXmls);
+        for (const action of merged?.actions ?? []) {
+            if (action.name && isActionCritical(merged as ConvertedMetadata, action.name)) {
+                names.add(action.name);
+            }
+        }
+    } catch {
+        // On any parse/merge/convert failure, fall back to no critical actions.
+    }
+    return names;
+}
 
 type OperationAvailableWithPaths = OperationAvailable & { $Path?: string; path?: string };
 type RestrictionValueWithPaths = (boolean | { $Path?: string; path?: string }) | undefined;
@@ -140,9 +163,14 @@ export function extractEnumMemberValue(enumValue: unknown): string | undefined {
  *
  * @param item The DataFieldForAction annotation item
  * @param metadata The converted metadata
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns ActionButtonState for the action
  */
-export function buildActionButtonState(item: DataFieldForAction, metadata: ConvertedMetadata): ActionButtonState {
+export function buildActionButtonState(
+    item: DataFieldForAction,
+    metadata: ConvertedMetadata,
+    criticalActions?: Set<string>
+): ActionButtonState {
     const actionString = (item.Action as string) || '';
     const actionMethod = extractActionMethodName(actionString);
     const operationAvailable = findOperationAvailableAnnotation(metadata, actionMethod);
@@ -161,7 +189,8 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
         visible: true,
         enabled,
         dynamicPath,
-        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined
+        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined,
+        isCritical: criticalActions?.has(actionMethod) ?? false
     };
 }
 
@@ -175,13 +204,15 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
  * @param label Display label from the spec model item description
  * @param convertedMetadata The converted OData metadata
  * @param schemaNamespace The OData schema namespace (used as service identifier)
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns ActionButtonState or undefined if the key is not a DataFieldForAction key
  */
 export function buildActionStateFromSpecModelKey(
     aggregationKey: string,
     label: string | undefined,
     convertedMetadata: ConvertedMetadata,
-    schemaNamespace: string
+    schemaNamespace: string,
+    criticalActions?: Set<string>
 ): ActionButtonState | undefined {
     const keyParts = aggregationKey.split('::');
     if (keyParts[0] !== DATA_FIELD_FOR_ACTION || !keyParts[1]) {
@@ -207,8 +238,25 @@ export function buildActionStateFromSpecModelKey(
         unbound: !isEntityBound,
         visible: true,
         enabled,
-        dynamicPath
+        dynamicPath,
+        isCritical: criticalActions?.has(actionMethod) ?? false
     };
+}
+
+/**
+ * Determines whether an action is annotated with `Common.IsActionCritical`.
+ * Critical actions trigger a confirmation dialog at runtime.
+ *
+ * @param metadata The converted metadata
+ * @param actionMethodName The action method name
+ * @returns true if the action carries `Common.IsActionCritical` = true
+ */
+export function isActionCritical(metadata: ConvertedMetadata, actionMethodName: string): boolean {
+    const foundAction = metadata.actions?.find(
+        (action) => action.name === actionMethodName || action.fullyQualifiedName?.includes(`.${actionMethodName}(`)
+    );
+    const common = foundAction?.annotations?.Common as { IsActionCritical?: boolean } | undefined;
+    return common?.IsActionCritical?.valueOf() === true;
 }
 
 /**

@@ -100,6 +100,23 @@ function journey() {
     });
 <%_ } -%>
 
+<%_ if (toolBarActions && toolBarActions.some(function(item) { return item.visible && item.isCritical; })) { -%>
+    opaTest("Check critical action confirmation dialog", function (_Given: Given, When: When, Then: Then) {
+        <%_ if (!hideFilterBar) { -%>
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } -%>
+        <%_ toolBarActions.forEach(function(item) { _%>
+        <%_ if (item.visible && item.isCritical) { _%>
+        <%_ if (item.enabled !== true) { _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+        <%_ } _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
+        Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+        When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+        <%_ } _%>
+        <%_ }); -%>
+    });
+<%_ } -%>
 <%_ if (contactCardColumns.length > 0) { -%>
     opaTest("Check contact card links", function (_Given: Given, When: When, Then: Then) {
         <%_ contactCardColumns.forEach(function(column) { _%>

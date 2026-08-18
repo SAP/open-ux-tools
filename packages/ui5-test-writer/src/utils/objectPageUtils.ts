@@ -29,7 +29,12 @@ import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js'
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
-import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
+import {
+    buildActionStateFromSpecModelKey,
+    getCriticalActionNames,
+    safeCheckButtonVisibility,
+    safeCheckEditVisibility
+} from './actionUtils.js';
 import { getTableIdentifiers } from './listReportUtils.js';
 
 /**
@@ -40,6 +45,7 @@ import { getTableIdentifiers } from './listReportUtils.js';
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
+ * @param annotationXmls - optional annotation XML documents to merge with the metadata (for annotation-only terms)
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
@@ -47,7 +53,8 @@ export async function getObjectPageFeatures(
     listReportPageKey?: string,
     log?: Logger,
     metadata?: string,
-    manifest?: Manifest
+    manifest?: Manifest,
+    annotationXmls?: string[]
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
@@ -58,6 +65,9 @@ export async function getObjectPageFeatures(
     // attempt to get individual feature data for each object page
     const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
     const schemaNamespace = convertedMetadata?.namespace ?? '';
+    // IsActionCritical is an annotation-only term (typically in a separate annotation.xml), resolved
+    // separately so the merge cannot affect the main metadata conversion.
+    const criticalActions = getCriticalActionNames(metadata, annotationXmls);
     // The parent List Report's default (first) table tab. Empty for single-table LRs;
     // used so the OP's "navigate from parent LR" step targets a concrete tab on multi-tab LRs.
     const parentLRTableIdentifier = getTableIdentifiers(manifest, listReportPageKey)[0];
@@ -82,11 +92,12 @@ export async function getObjectPageFeatures(
             convertedMetadata,
             schemaNamespace,
             metadata,
-            log
+            log,
+            criticalActions
         );
         // extract header-level actions
         pageFeatureData.headerActions = convertedMetadata
-            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace)
+            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace, criticalActions)
             : [];
         // determine edit button visibility from UpdateRestrictions on the OP entity set
         if (metadata && objectPage.entitySet) {
@@ -230,6 +241,7 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
  * @param schemaNamespace - optional OData schema namespace used as service identifier in action assertions
  * @param metadata - optional raw metadata XML for resolving standard button visibility (Create/Delete)
  * @param log - optional logger instance
+ * @param criticalActions
  * @returns body sections data including sub-sections
  */
 function extractObjectPageBodySectionsData(
@@ -237,7 +249,8 @@ function extractObjectPageBodySectionsData(
     convertedMetadata?: ConvertedMetadata,
     schemaNamespace?: string,
     metadata?: string,
-    log?: Logger
+    log?: Logger,
+    criticalActions?: Set<string>
 ): BodySectionFeatureData[] {
     const bodySections: BodySectionFeatureData[] = [];
     if (objectPage.model) {
@@ -268,7 +281,7 @@ function extractObjectPageBodySectionsData(
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
-                        ? extractSectionActions(section, convertedMetadata, schemaNamespace)
+                        ? extractSectionActions(section, convertedMetadata, schemaNamespace, criticalActions)
                         : []
             };
             // For table sections, resolve Create/Delete visibility from target entity set
@@ -297,12 +310,14 @@ function extractObjectPageBodySectionsData(
  * @param objectPage - object page from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns array of action button states for the header toolbar
  */
 function extractHeaderActions(
     objectPage: PageWithModelV4,
     convertedMetadata: ConvertedMetadata,
-    schemaNamespace: string
+    schemaNamespace: string,
+    criticalActions?: Set<string>
 ): ActionButtonState[] {
     if (!objectPage.model) {
         return [];
@@ -312,7 +327,7 @@ function extractHeaderActions(
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
         .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
+            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace, criticalActions)
         )
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
@@ -324,12 +339,14 @@ function extractHeaderActions(
  * @param section - body section entry from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns array of action button states for the section toolbar
  */
 function extractSectionActions(
     section: BodySectionItem,
     convertedMetadata: ConvertedMetadata,
-    schemaNamespace: string
+    schemaNamespace: string,
+    criticalActions?: Set<string>
 ): ActionButtonState[] {
     let actionsAgg: AggregationItem | undefined;
 
@@ -348,7 +365,7 @@ function extractSectionActions(
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
         .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
+            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace, criticalActions)
         )
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }

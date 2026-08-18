@@ -165,6 +165,89 @@ describe('ui5-test-writer', () => {
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
+        describe('critical actions (Common.IsActionCritical)', () => {
+            // The mock spec models used above do not populate the LR toolbar `actions` aggregation, so a
+            // full generateOPAFiles run cannot exercise toolbar-action rendering. Render the real journey
+            // template directly with a synthetic critical action to verify the generated test code.
+            const renderListReportJourney = (toolBarActions: Record<string, unknown>[]): string => {
+                const templatePath = join(__dirname, '../../templates/v4/latest/integration/ListReportJourney.js');
+                const outPath = join(__dirname, '../test-output/critical/ListReportJourney.gen.js');
+                const editor = create(createStorage());
+                editor.copyTpl(templatePath, outPath, {
+                    startPages: ['TravelList'],
+                    startLR: 'TravelList',
+                    navigatedOP: undefined,
+                    hideFilterBar: false,
+                    name: 'TravelList',
+                    appPath: 'project1',
+                    createButton: { visible: false },
+                    deleteButton: { visible: false },
+                    isALP: false,
+                    filterBarItems: [],
+                    semanticKey: { semanticKeyProperties: [], missingFromFilterBar: [] },
+                    tableColumns: {},
+                    contactCardColumns: [],
+                    tableIdentifiers: [],
+                    toolBarActions
+                });
+                return editor.read(outPath);
+            };
+
+            it('renders the confirmation-dialog steps only for critical toolbar actions', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
+                    { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
+                ]);
+                expect(journey).toContain('Check critical action confirmation dialog');
+                expect(journey).toContain('iPressAction("Set To Booked")');
+                expect(journey).toContain('onMessageDialog().iCheckState()');
+                expect(journey).toContain('onMessageDialog().iCancel()');
+                // Bound (enabled !== true) critical action selects a row first.
+                expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
+                // The non-critical action's press stays commented out (no confirmation-dialog assertions after it).
+                expect(journey).toContain(
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Copy")'
+                );
+            });
+
+            it('omits the confirmation-dialog block when no action is critical', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
+                ]);
+                expect(journey).not.toContain('Check critical action confirmation dialog');
+                expect(journey).not.toContain('onMessageDialog');
+            });
+
+            it('renders the confirmation-dialog steps for critical Object Page header actions', () => {
+                const templatePath = join(__dirname, '../../templates/v4/latest/integration/ObjectPageJourney.js');
+                const outPath = join(__dirname, '../test-output/critical/ObjectPageJourney.gen.js');
+                const editor = create(createStorage());
+                editor.copyTpl(templatePath, outPath, {
+                    name: 'TravelObjectPage',
+                    hideFilterBar: false,
+                    navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
+                    headerTitle: undefined,
+                    headerSections: [],
+                    bodySections: [],
+                    editButton: undefined,
+                    headerActions: [
+                        {
+                            service: 'TestService',
+                            action: 'setToBooked',
+                            unbound: false,
+                            visible: true,
+                            enabled: false,
+                            isCritical: true
+                        }
+                    ]
+                });
+                const journey = editor.read(outPath);
+                expect(journey).toContain('onMessageDialog().iCheckState()');
+                expect(journey).toContain('onMessageDialog().iCancel()');
+                expect(journey).toContain('onHeader().iPressAction({ service: "TestService", action: "setToBooked"');
+            });
+        });
+
         it('No manifest', async () => {
             const projectDir = prepareTestFiles('Not_Here');
             let error: string | undefined;

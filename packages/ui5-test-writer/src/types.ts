@@ -258,6 +258,11 @@ export interface ActionButtonState {
      * Populated for both List Report and Object Page actions extracted via metadata.
      */
     unbound?: boolean;
+    /**
+     * Whether the action is annotated with `Common.IsActionCritical`. Critical actions trigger a
+     * confirmation dialog at runtime, which the generated test asserts and then cancels.
+     */
+    isCritical?: boolean;
 }
 
 export type FPMFeatures = {

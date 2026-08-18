@@ -1,13 +1,21 @@
 import type { Action, ActionParameter, ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import {
     extractActionMethodName,
     findOperationAvailableAnnotation,
     analyzeOperationAvailability,
     extractEnumMemberValue,
     buildActionButtonState,
-    buildActionStateFromSpecModelKey
+    buildActionStateFromSpecModelKey,
+    isActionCritical,
+    getCriticalActionNames
 } from '../../../src/utils/actionUtils.js';
+import { getMergedConvertedMetadata } from '../../../src/utils/metadataXmlUtils.js';
 
 describe('extractActionMethodName()', () => {
     test('extracts method name from fully qualified action with parentheses', () => {
@@ -307,7 +315,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -326,7 +335,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: true,
             visible: true,
             enabled: true,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -368,7 +378,100 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: 'dynamic',
-            dynamicPath: 'IsReady'
+            dynamicPath: 'IsReady',
+            isCritical: false
         });
+    });
+
+    test('sets isCritical when the action is in the criticalActions set', () => {
+        const metadata = {
+            entitySets: [],
+            actions: [
+                {
+                    name: 'Activate',
+                    fullyQualifiedName: 'TestService.Activate(TestService.Order)',
+                    isBound: true,
+                    parameters: [{ isCollection: false }]
+                }
+            ]
+        } as unknown as ConvertedMetadata;
+
+        const result = buildActionStateFromSpecModelKey(
+            'DataFieldForAction::TestService.Activate::TestService.OrderType',
+            'Activate',
+            metadata,
+            'TestService',
+            new Set(['Activate'])
+        );
+
+        expect(result?.isCritical).toBe(true);
+    });
+});
+
+describe('isActionCritical()', () => {
+    const metadata = {
+        actions: [
+            {
+                name: 'SetToBooked',
+                fullyQualifiedName: 'TestService.SetToBooked(TestService.Order)',
+                annotations: { Common: { IsActionCritical: Boolean(true) } }
+            },
+            {
+                name: 'NotCritical',
+                fullyQualifiedName: 'TestService.NotCritical(TestService.Order)',
+                annotations: { Common: { IsActionCritical: Boolean(false) } }
+            },
+            {
+                name: 'NoAnnotation',
+                fullyQualifiedName: 'TestService.NoAnnotation(TestService.Order)',
+                annotations: {}
+            }
+        ]
+    } as unknown as ConvertedMetadata;
+
+    test('returns true for an action annotated Common.IsActionCritical = true', () => {
+        expect(isActionCritical(metadata, 'SetToBooked')).toBe(true);
+    });
+
+    test('returns false when the annotation value is false', () => {
+        expect(isActionCritical(metadata, 'NotCritical')).toBe(false);
+    });
+
+    test('returns false when the annotation is absent', () => {
+        expect(isActionCritical(metadata, 'NoAnnotation')).toBe(false);
+    });
+
+    test('returns false for an unknown action', () => {
+        expect(isActionCritical(metadata, 'Unknown')).toBe(false);
+    });
+});
+
+describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from annotation files', () => {
+    const appPath = join(__dirname, '../../test-input/fin.test.rap.lr3/webapp');
+    const metadataXml = readFileSync(join(appPath, 'localService/mainService/metadata.xml')).toString();
+    const annotationXml = readFileSync(join(appPath, 'annotations/annotation.xml')).toString();
+
+    test('returns undefined when no metadata is provided', () => {
+        expect(getMergedConvertedMetadata(undefined)).toBeUndefined();
+    });
+
+    test('IsActionCritical is not visible from metadata.xml alone', () => {
+        const converted = getMergedConvertedMetadata(metadataXml);
+        expect(converted && isActionCritical(converted, 'setToBooked')).toBe(false);
+    });
+
+    test('IsActionCritical becomes visible once the annotation file is merged', () => {
+        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
+        expect(converted && isActionCritical(converted, 'setToBooked')).toBe(true);
+        expect(converted && isActionCritical(converted, 'setToNew')).toBe(true);
+    });
+
+    test('LR toolbar action states carry isCritical from the merged metadata', async () => {
+        const { checkActionButtonStatesFromMetadata } = await import('../../../src/utils/listReportUtils.js');
+        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
+        const criticalActions = getCriticalActionNames(metadataXml, [annotationXml]);
+        const { actions } = checkActionButtonStatesFromMetadata(converted!, 'Travel', undefined, criticalActions);
+        const critical = actions.filter((a) => a.isCritical).map((a) => a.action);
+        expect(critical).toEqual(expect.arrayContaining(['setToBooked', 'setToNew']));
     });
 });

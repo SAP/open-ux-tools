@@ -55,7 +55,13 @@ sap.ui.define([
 <%         } else { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%         } -%>
+<%         if (action.isCritical) { -%>
+            When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%         } else { -%>
             // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%         } -%>
 <%     } -%>
 <%     }); -%>
         });
@@ -114,14 +120,29 @@ sap.ui.define([
 <%              } else { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
+<%              if (action.isCritical) { -%>
+            // Critical action (Common.IsActionCritical): select a row, press it, assert the confirmation dialog opens, then cancel so it is not executed.
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iSelectRows(0);
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%              } else { -%>
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%              } -%>
 <%          } else { -%>
 <%              if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%              } else { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
+<%              if (action.isCritical) { -%>
+            // Critical action (Common.IsActionCritical): press it, assert the confirmation dialog opens, then cancel so it is not executed.
+            When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%              } else { -%>
             // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%              } -%>
 <%          } -%>
 <%      } -%>
 <%      }); -%>
