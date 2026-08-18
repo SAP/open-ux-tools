@@ -62,7 +62,7 @@ describe('search_docs embeddings coverage', () => {
     }, 120000);
 
     it('returns content from sap_fe_test_api.md', async () => {
-        const result = await searchDocs('sap.fe.test.api.DialogActions OPA5 testing', 5);
-        expect(result).toContain('sap.fe.test.api.DialogActions');
+        const result = await searchDocs('iOpenColumnAdaptation iConfirmColumnAdaptation sap.fe.test API', 5);
+        expect(result).toContain('iOpenColumnAdaptation');
     }, 120000);
 });
