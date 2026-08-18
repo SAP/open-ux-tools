@@ -1,20 +1,20 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Admin
-/.github/                    @SAP/ux-tools-admin
-/.LICENSES/                  @SAP/ux-tools-admin
-/.well-known/                @SAP/ux-tools-admin
-/.husky/                     @SAP/ux-tools-admin
-/.reuse/                     @SAP/ux-tools-admin
-/.eslintrc                   @SAP/ux-tools-admin
-/.gitignore                  @SAP/ux-tools-admin
-/.npmrc                      @SAP/ux-tools-admin
-/.prettierignore             @SAP/ux-tools-admin
-/.prettierrc.js              @SAP/ux-tools-admin
-/LICENSE                     @SAP/ux-tools-admin
-/package.json                @SAP/ux-tools-admin
-/sonar-project.properties    @SAP/ux-tools-admin
-/tsconfig.json               @SAP/ux-tools-admin
+/.github/                    @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.LICENSES/                  @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.well-known/                @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.husky/                     @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.reuse/                     @SAP/ux-tools-architects SAP/ux-tools-admin
+/.eslintrc                   @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.gitignore                  @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.npmrc                      @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.prettierignore             @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.prettierrc.js              @SAP/ux-tools-architects @SAP/ux-tools-admin
+/LICENSE                     @SAP/ux-tools-architects @SAP/ux-tools-admin
+/package.json                @SAP/ux-tools-architects @SAP/ux-tools-admin
+/sonar-project.properties    @@SAP/ux-tools-architects SAP/ux-tools-admin
+/tsconfig.json               @@SAP/ux-tools-architects SAP/ux-tools-admin
 
 # Docs
 /docs/           @SAP/ux-tools-team
