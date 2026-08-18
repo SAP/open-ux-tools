@@ -20,6 +20,10 @@ This guide explains how to update and manage the local documentation files for t
     - [Prerequisites](#prerequisites)
     - [Command](#command-2)
     - [Output](#output-2)
+  - [Skill Reference Files](#skill-reference-files)
+    - [Source](#source)
+    - [How it works](#how-it-works)
+    - [Output](#output-3)
   - [Adding Custom Documentation](#adding-custom-documentation)
     - [Example](#example)
     - [File Structure](#file-structure)
@@ -73,7 +77,7 @@ AI_CORE_SERVICE_KEY='...' pnpm run update-docs-opa-guide
 AI_CORE_SERVICE_KEY='...' pnpm run update-docs-script -- --source=fiori-tools-opa-guide
 ```
 
-Available source IDs: `btp-fiori-tools`, `sapui5`, `fiori-samples`, `fiori-showcase`, `tools-suite`, `fiori-tools-opa-guide`
+Available source IDs: `btp-fiori-tools`, `sapui5`, `fiori-samples`, `fiori-showcase`, `tools-suite`
 
 ### Environment Variables
 
@@ -101,7 +105,6 @@ For sources requiring authenticated access (e.g., internal repositories):
 | `fiori-samples` | github | SAP-samples/fiori-tools-samples — Sample applications |
 | `fiori-showcase` | github | SAP-samples/fiori-elements-feature-showcase — Feature examples |
 | `tools-suite` | github | ux-engineering/tools-suite — Internal Fiori Tools commands (requires `GITHUB_TOKEN`) |
-| `fiori-tools-opa-guide` | github-raw | sap-tutorials/Tutorials — OPA mock server testing guide |
 
 ### Output
 
@@ -111,7 +114,6 @@ This command generates or updates the following files:
 data_local/btp-fiori-tools.md
 data_local/fiori-samples.md
 data_local/fiori-showcase.md
-data_local/fiori-tools-opa-guide.md
 data_local/sapui5.md
 data_local/tools-suite.md
 ```
@@ -153,6 +155,56 @@ data_local/sap_fe_test_api.md
 ```
 
 The file contains one chunk per public class (actions/assertions), plus a combined type definitions chunk and a combined enumerations chunk.
+
+---
+
+## Skill Reference Files
+
+Skill reference files are automatically copied from `packages/fiori-mcp-server/skills/` into `data_local/skills_copy/` as part of `pnpm build`. Each skill in that directory contributes its `SKILL.md` and any `references/*.md` files to the embeddings corpus.
+
+### Source
+
+```
+packages/fiori-mcp-server/skills/
+├── sap-fiori-add-visual-filter/SKILL.md
+├── sap-fiori-analytical-chart/SKILL.md
+├── sap-fiori-app-development/SKILL.md
+├── sap-fiori-create-cli/SKILL.md
+│   ├── references/convert-preview-config.md
+│   └── references/update-service-metadata.md
+├── sap-fiori-eslint-plugin/SKILL.md
+│   ├── references/lint.md
+│   ├── references/migrate.md
+│   └── references/setup.md
+└── sap-fiori-opa5-test-development/SKILL.md
+    ├── references/fiori-elements-v2-test-library.md
+    ├── references/v2-instructions.md
+    ├── references/v4-custom-selectors.md
+    ├── references/v4-instructions.md
+    ├── references/v4-journeyrunner.md
+    ├── references/v4-sap-fe-test-api-guide.md
+    └── references/v4-standard-patterns.md
+```
+
+### How it works
+
+The `copy-opa5-skill-refs` build script (`src/scripts/copy-skill-refs.ts`) mirrors this structure into `data_local/skills_copy/`, converting `---` markdown HR separators to `--------------------------------` so the embedding pipeline can split each file into fine-grained chunks.
+
+A relative path to `../fiori-mcp-server/skills/` is used intentionally — adding `fiori-mcp-server` as a workspace dependency would create a circular dependency since `fiori-mcp-server` already depends on `fiori-docs-embeddings`.
+
+### Output
+
+```
+data_local/skills_copy/
+├── sap-fiori-add-visual-filter/SKILL.md
+├── sap-fiori-analytical-chart/SKILL.md
+├── sap-fiori-app-development/SKILL.md
+├── sap-fiori-create-cli/SKILL.md, convert-preview-config.md, update-service-metadata.md
+├── sap-fiori-eslint-plugin/SKILL.md, lint.md, migrate.md, setup.md
+└── sap-fiori-opa5-test-development/SKILL.md, fiori-elements-v2-test-library.md, v2-instructions.md, ...
+```
+
+To add a new skill to the embeddings, add its directory under `packages/fiori-mcp-server/skills/` — the copy script picks it up automatically on the next build.
 
 ---
 
