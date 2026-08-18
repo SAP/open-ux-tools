@@ -27,7 +27,7 @@ Command group for generating SAP Fiori applications. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
-The available subcommands are: `adaptation-project` and `opa-tests`
+The available subcommands are: `adaptation-project` and `opa5-tests`
 
 
 --------------------------------
@@ -55,13 +55,13 @@ Options:
 
 --------------------------------
 
-## [`generate opa-tests`](#generate-opa-tests)
+## [`generate opa5-tests`](#generate-opa5-tests)
 
 Generate OPA5 integration tests for an existing SAP Fiori elements (OData V4) application.
 
 Example:
 
-`npx --yes @sap-ux/create@latest generate opa-tests`
+`npx --yes @sap-ux/create@latest generate opa5-tests`
 
 Options:
 - `-t, --typescript` - Force generation of TypeScript test files. Otherwise, TypeScript is auto-detected from the presence of a `tsconfig.json`.

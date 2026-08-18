@@ -43,9 +43,9 @@ jest.unstable_mockModule('@sap-ux/project-access', () =>
     })
 );
 
-const { addGenerateOpaTestsCommand } = await import('../../../../src/cli/generate/opa-tests.js');
+const { addGenerateOpa5TestsCommand } = await import('../../../../src/cli/generate/opa5-tests.js');
 
-describe('generate/opa-tests', () => {
+describe('generate/opa5-tests', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
 
     let loggerMock: ToolsLogger;
@@ -78,8 +78,8 @@ describe('generate/opa-tests', () => {
 
     test('should generate OPA tests and write changes', async () => {
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests', appRoot]));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests', appRoot]));
 
         expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(mockGenerateOPAFiles).toHaveBeenCalledWith(
@@ -98,8 +98,8 @@ describe('generate/opa-tests', () => {
 
     test('should generate OPA tests --simulate (no write, verbose set)', async () => {
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests', appRoot, '--simulate']));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests', appRoot, '--simulate']));
 
         expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(mockGenerateOPAFiles).toHaveBeenCalled();
@@ -111,8 +111,8 @@ describe('generate/opa-tests', () => {
 
     test('should set verbose with --verbose', async () => {
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests', appRoot, '--verbose']));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests', appRoot, '--verbose']));
 
         expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
@@ -120,8 +120,8 @@ describe('generate/opa-tests', () => {
 
     test('should force TypeScript with --typescript', async () => {
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests', appRoot, '--typescript']));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests', appRoot, '--typescript']));
 
         expect(mockGenerateOPAFiles).toHaveBeenCalledWith(
             appRoot,
@@ -137,8 +137,8 @@ describe('generate/opa-tests', () => {
         mockGetMinUI5VersionAsArray.mockReturnValue(['2.0.0', '1.120.0']);
 
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests', appRoot]));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests', appRoot]));
 
         expect(mockGenerateOPAFiles).toHaveBeenCalledWith(
             appRoot,
@@ -154,8 +154,8 @@ describe('generate/opa-tests', () => {
         mockGetMinUI5VersionAsArray.mockReturnValue([]);
 
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests', appRoot]));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests', appRoot]));
 
         expect(mockGenerateOPAFiles).toHaveBeenCalledWith(appRoot, {}, undefined, undefined, loggerMock, true);
     });
@@ -164,8 +164,8 @@ describe('generate/opa-tests', () => {
         const cwd = process.cwd();
 
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests']));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests']));
 
         expect(mockCreateApplicationAccess).toHaveBeenCalledWith(cwd);
         expect(mockGenerateOPAFiles).toHaveBeenCalledWith(
@@ -183,10 +183,12 @@ describe('generate/opa-tests', () => {
         mockGenerateOPAFiles.mockRejectedValueOnce(errorObj);
 
         const command = new Command('generate');
-        addGenerateOpaTestsCommand(command);
-        await command.parseAsync(getArgv(['opa-tests', appRoot, '--verbose']));
+        addGenerateOpa5TestsCommand(command);
+        await command.parseAsync(getArgv(['opa5-tests', appRoot, '--verbose']));
 
-        expect(loggerMock.error).toHaveBeenCalledWith(`Error while executing generate opa-tests '${errorObj.message}'`);
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            `Error while executing generate opa5-tests '${errorObj.message}'`
+        );
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
 });

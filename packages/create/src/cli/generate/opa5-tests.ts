@@ -5,16 +5,16 @@ import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index
 import { validateBasePath } from '../../validation/index.js';
 
 /**
- * Add the "generate opa-tests" command to a passed command.
+ * Add the "generate opa5-tests" command to a passed command.
  *
- * @param cmd - commander command for generating OPA tests
+ * @param cmd - commander command for generating OPA5 tests
  */
-export function addGenerateOpaTestsCommand(cmd: Command): void {
-    cmd.command('opa-tests [path]')
+export function addGenerateOpa5TestsCommand(cmd: Command): void {
+    cmd.command('opa5-tests [path]')
         .description(
             `Generate OPA5 integration tests for an existing SAP Fiori elements (OData V4) application.\n
 Example:
-    \`npx --yes @sap-ux/create@latest generate opa-tests\``
+    \`npx --yes @sap-ux/create@latest generate opa5-tests\``
         )
         .option(
             '-t, --typescript',
@@ -26,7 +26,7 @@ Example:
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await generateOpaTests(path || process.cwd(), !!options.simulate, !!options.typescript);
+            await generateOpa5Tests(path || process.cwd(), !!options.simulate, !!options.typescript);
         });
 }
 
@@ -37,12 +37,11 @@ Example:
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param forceTypeScript - if true, force TypeScript test files instead of auto-detecting
  */
-async function generateOpaTests(basePath: string, simulate: boolean, forceTypeScript: boolean): Promise<void> {
+async function generateOpa5Tests(basePath: string, simulate: boolean, forceTypeScript: boolean): Promise<void> {
     const logger = getLogger();
     try {
-        logger.debug(`Called generate opa-tests for path '${basePath}', simulate is '${simulate}'`);
+        logger.debug(`Called generate opa5-tests for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
-
         const appAccess = await createApplicationAccess(basePath);
         const manifest = await appAccess.readManifest();
         const versions = getMinUI5VersionAsArray(manifest);
@@ -68,8 +67,8 @@ async function generateOpaTests(basePath: string, simulate: boolean, forceTypeSc
         }
     } catch (error) {
         logger.error(
-            `Error while executing generate opa-tests '${error instanceof Error ? error.message : String(error)}'`
+            `Error while executing generate opa5-tests '${error instanceof Error ? error.message : String(error)}'`
         );
-        logger.debug(error as Error);
+        logger.debug(error instanceof Error ? error : String(error));
     }
 }

@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { addGenerateAdaptationProjectCommand } from './adaptation-project.js';
-import { addGenerateOpaTestsCommand } from './opa-tests.js';
+import { addGenerateOpa5TestsCommand } from './opa5-tests.js';
 
 /**
  * @returns 'generate *' commands. Commands include also the handler action.
@@ -8,6 +8,6 @@ import { addGenerateOpaTestsCommand } from './opa-tests.js';
 export function getGenerateCommands(): Command {
     const genCommands = new Command('generate');
     addGenerateAdaptationProjectCommand(genCommands);
-    addGenerateOpaTestsCommand(genCommands);
+    addGenerateOpa5TestsCommand(genCommands);
     return genCommands;
 }
