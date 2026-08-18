@@ -1,4 +1,7 @@
 import { CommandRunner } from '@sap-ux/nodejs-utils';
+import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import { readUi5Config, extractCfBuildTask } from './helper.js';
 
 /**
  * Executes a build command in the specified project directory.
@@ -24,4 +27,38 @@ export async function runBuild(projectPath: string, env?: NodeJS.ProcessEnv): Pr
         console.error(`Error during build and clean: ${e.message}`);
         throw e;
     }
+}
+
+/**
+ * Produces the merged manifest.json for a CF ADP project using the workspace
+ * and cached base app files from the last full build.
+ *
+ * Precondition: a full build must have run at least once so the base app files are
+ * in the local cache. Throws if the cache is empty.
+ *
+ * @param {string} projectPath - Absolute path to the project root (where ui5.yaml lives).
+ * @param {ReaderCollection} workspace - The UI5 project workspace (this.project in AdpPreview).
+ * @returns {Promise<MergedAppDescriptor['manifest']>} The merged manifest.
+ */
+export async function getPreviewManifest(
+    projectPath: string,
+    workspace: ReaderCollection
+): Promise<MergedAppDescriptor['manifest']> {
+    const ui5Config = await readUi5Config(projectPath, 'ui5.yaml');
+    const buildTask = extractCfBuildTask(ui5Config);
+    const { module: projectNamespace, ...configuration } = buildTask;
+
+    // Dynamic import keeps @ui5/task-adaptation out of the static module graph of adp-tooling.
+    // A static import would leak task-adaptation's node:child_process imports into every
+    // consumer's Jest test environment, breaking mocks in packages like @sap-ux/create
+    // that mock node:child_process without spreading the real module.
+    const { previewManifest } = await import('@ui5/task-adaptation');
+    const manifest = await previewManifest({
+        workspace,
+        options: {
+            configuration,
+            projectNamespace
+        }
+    } as unknown as Parameters<typeof previewManifest>[0]);
+    return manifest as MergedAppDescriptor['manifest'];
 }
