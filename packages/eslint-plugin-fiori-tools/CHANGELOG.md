@@ -1,5 +1,53 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.8.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
+## 10.8.1
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 10.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-04
+
+#### Features
+
+- add sap-cloud-dev-adaptation-status rule to warn when cloudDevAdaptationStatus is missing in sap.fiori manifest section. [[cca82b6](https://github.com/SAP/open-ux-tools/commit/cca82b6eb0687aa8afda56e8dc02ed40f4d3851b)]
+
+## 10.7.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-03
+
+#### Bug Fixes
+
+- The bump to 8.0.1 in #4956 caused the esbuild step to fail silently — @babel/core@8.0.1 pulls in @babel/parser@8.0.4 (via its ^8.0.0 peer range) which broke the patchBabelEslintParser plugin, so the published 10.7.14 lib/index.js is raw tsc output rather than a bundle. Consumers hit ERR_MODULE_NOT_FOUND for @babel/eslint-parser at runtime. [[3afeb75](https://github.com/SAP/open-ux-tools/commit/3afeb75992181d3050f08905f6bb6b04247dac64)]
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
 ## 10.7.14
 
 ### Patch Changes

@@ -1506,14 +1506,14 @@ describe('Test getListReportFeatures()', () => {
                             aggregations: {
                                 columns: {
                                     aggregations: {
-                                        col1: {
+                                        'DataField::IDColumn': {
                                             description: 'ID',
                                             custom: false,
                                             schema: {
                                                 keys: [{ name: 'Value', value: 'IDColumn' }]
                                             }
                                         } as unknown as TreeAggregation,
-                                        col2: {
+                                        'DataField::NameColumn': {
                                             description: 'Name',
                                             custom: false,
                                             schema: {
@@ -2100,6 +2100,87 @@ describe('Test safeGetSemanticKeyProperties()', () => {
         safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent', mockLogger);
         const [loggedMessage] = (mockLogger.debug as jest.Mock).mock.calls[0];
         expect(loggedMessage).toMatch(/Failed to get semantic key properties: .+/);
+    });
+});
+
+describe('getListReportFeatures() — contactCardColumns extraction', () => {
+    let mockLogger: Logger;
+
+    beforeEach(() => {
+        mockLogger = {
+            warn: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+    });
+
+    test('exposes Contact-annotated table columns as contactCardColumns', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        TravelIDCol: {
+                                            schema: { keys: [{ name: 'Value', value: 'TravelID' }] },
+                                            description: 'Travel'
+                                        } as unknown as TreeAggregation,
+                                        'DataFieldForAnnotation::_Agency::Contact': {
+                                            schema: {
+                                                keys: [
+                                                    {
+                                                        name: 'Target',
+                                                        value: '_Agency/@Communication.Contact'
+                                                    }
+                                                ]
+                                            },
+                                            description: 'Agency'
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(pageModel, mockLogger);
+        expect(result.contactCardColumns).toEqual([{ property: 'DataFieldForAnnotation::_Agency::Contact' }]);
+    });
+
+    test('returns an empty contactCardColumns array when no Contact columns exist', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        TravelIDCol: {
+                                            schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(pageModel, mockLogger);
+        expect(result.contactCardColumns).toEqual([]);
     });
 });
 

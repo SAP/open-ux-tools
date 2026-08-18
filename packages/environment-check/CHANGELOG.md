@@ -1,5 +1,27 @@
 # @sap-ux/environment-check
 
+## 1.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-18
+
+#### Dependency Updates
+
+- Upgrade ignore 5.2.4 → 7.0.6 [[b3ee302](https://github.com/SAP/open-ux-tools/commit/b3ee3025fc2018aa63546a5d7be8ab535857ab3c)]
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+
 ## 1.0.19
 
 ### Patch Changes
