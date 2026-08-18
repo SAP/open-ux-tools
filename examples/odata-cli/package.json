@@ -26,8 +26,5 @@
     ],
     "engines": {
         "node": ">=20.x"
-    },
-    "devDependencies": {
-        "fast-xml-parser": "5.11.0"
     }
 }
