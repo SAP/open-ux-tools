@@ -6,19 +6,31 @@ import { fileURLToPath } from 'node:url';
 
 const packageRoot = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 const skillsRoot = path.join(packageRoot, '..', 'fiori-mcp-server', 'skills');
-const destRoot = path.join(packageRoot, 'data_local', 'skills');
+const destRoot = path.join(packageRoot, 'data_local', 'skills_copy');
 
 for (const skill of fs.readdirSync(skillsRoot)) {
-    const refsDir = path.join(skillsRoot, skill, 'references');
-    if (!fs.existsSync(refsDir)) {
+    const skillDir = path.join(skillsRoot, skill);
+    if (!fs.statSync(skillDir).isDirectory()) {
         continue;
     }
     const dest = path.join(destRoot, skill);
     fs.mkdirSync(dest, { recursive: true });
-    for (const file of fs.readdirSync(refsDir).filter((f) => f.endsWith('.md'))) {
-        const content = fs
-            .readFileSync(path.join(refsDir, file), 'utf8')
-            .replace(/^---$/gm, '--------------------------------');
-        fs.writeFileSync(path.join(dest, file), content);
+
+    // Copy SKILL.md if present
+    const skillMd = path.join(skillDir, 'SKILL.md');
+    if (fs.existsSync(skillMd)) {
+        const content = fs.readFileSync(skillMd, 'utf8').replace(/^---$/gm, '--------------------------------');
+        fs.writeFileSync(path.join(dest, 'SKILL.md'), content);
+    }
+
+    // Copy references/*.md if the directory exists
+    const refsDir = path.join(skillDir, 'references');
+    if (fs.existsSync(refsDir)) {
+        for (const file of fs.readdirSync(refsDir).filter((f) => f.endsWith('.md'))) {
+            const content = fs
+                .readFileSync(path.join(refsDir, file), 'utf8')
+                .replace(/^---$/gm, '--------------------------------');
+            fs.writeFileSync(path.join(dest, file), content);
+        }
     }
 }

@@ -145,7 +145,7 @@ class EmbeddingBuilder {
             this.logger.warn(`Failed to read data_local directory: ${error.message}`);
         }
 
-        const skillsPath = './data_local/skills';
+        const skillsPath = './data_local/skills_copy';
 
         try {
             const skillDirs = await fs.readdir(skillsPath, { withFileTypes: true });
@@ -154,14 +154,14 @@ class EmbeddingBuilder {
                 const files = await fs.readdir(skillDir);
                 const mdFiles = files.filter((file) => file.endsWith('.md'));
 
-                this.logger.info(`Found ${mdFiles.length} markdown files in data_local/skills/${entry.name}`);
+                this.logger.info(`Found ${mdFiles.length} markdown files in data_local/skills_copy/${entry.name}`);
 
                 for (const file of mdFiles) {
                     await this.processLocalMarkdownFile(skillDir, file);
                 }
             }
         } catch (error) {
-            this.logger.warn(`Failed to read data_local/skills directory: ${error.message}`);
+            this.logger.warn(`Failed to read data_local/skills_copy directory: ${error.message}`);
         }
 
         this.logger.info(`✓ Loaded ${this.documents.length} documents`);

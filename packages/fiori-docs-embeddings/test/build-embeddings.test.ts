@@ -130,7 +130,7 @@ This is another test content.`;
             await builder.loadDocuments();
 
             expect(mockFs.readdir).toHaveBeenCalledWith('./data_local');
-            expect(mockFs.readdir).toHaveBeenCalledWith('./data_local/skills', { withFileTypes: true });
+            expect(mockFs.readdir).toHaveBeenCalledWith('./data_local/skills_copy', { withFileTypes: true });
             expect(builder.documents.length).toBeGreaterThan(0);
         });
 
