@@ -232,7 +232,7 @@ function isEdmx(body: string): boolean {
  * @throws An error if the metadata is not valid.
  */
 function checkMetadata(metadata: string): void {
-    if (!metadata || !metadata.trim()) {
+    if (!metadata?.trim()) {
         throw new Error(
             'No metadata was returned by the service. The system may be temporarily unavailable, or the service path may be incorrect.'
         );
