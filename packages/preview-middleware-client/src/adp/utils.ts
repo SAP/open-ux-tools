@@ -204,6 +204,10 @@ export function getControllerInfoForControl(control: ManagedObject): ControllerI
         controllerName = resolveControllerName(view);
     }
 
+    // viewId is intentionally the controller-bearing view's ID (which may be an ancestor of the
+    // original view). The change file binds controllerName and viewId as a pair — returning the
+    // innermost view's ID when it has no controller would create an inconsistent pair that the
+    // server could never match.
     return { controllerName, viewId: view.getId() };
 }
 
