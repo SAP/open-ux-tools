@@ -27,6 +27,7 @@ export const STEPS = [
     'call_action',
     'save',
     'stop',
+    'restart',
     'get_page_actions',
     'call_page_action',
     'press_interactive'
@@ -75,6 +76,11 @@ export interface StopStepResult {
     stopped: true;
 }
 
+export interface RestartStepResult {
+    sessionId: string;
+    rtaStarted: boolean;
+}
+
 export interface GetPageActionsStepResult {
     registered: RegisteredPageAction[];
     interactive: InteractiveElement[];
@@ -97,6 +103,7 @@ export type RunRtaWorkflowStepResult =
     | CallActionStepResult
     | SaveStepResult
     | StopStepResult
+    | RestartStepResult
     | GetPageActionsStepResult
     | CallPageActionStepResult
     | PressInteractiveStepResult;

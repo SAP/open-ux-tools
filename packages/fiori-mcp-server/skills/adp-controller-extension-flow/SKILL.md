@@ -49,6 +49,7 @@ A single tool, dispatched by the `step` argument. Pass `payload` for steps that 
 | `call_action` | required | `{ controlId, actionId, actionPayload }` | `{ success: boolean }` |
 | `save` | required | — | `{ saved: boolean }` |
 | `stop` | required | — | `{ stopped: true }` |
+| `restart` | required | — | `{ sessionId, rtaStarted: true }` |
 
 `Overlay` = `{ overlayId, controlId, label, controlType, parentElementId, parentAggregationName, index?, actionIds: string[] }` — `index` is the 0-based position within `parentAggregationName` and is omitted when the parent/aggregation can't be resolved or the aggregation is single-cardinality. `actionIds` lists the RTA actions available on this overlay; rich metadata for each id is in the top-level `actionsCatalog`.
 `Action` = `{ id, label, description?, parameters: [{ name, type, required?, description? }] }` — keyed by `actionId` in `actionsCatalog`. The catalog is **deduplicated across all overlays** in a single `get_overlays` response, so an id appears once even when many overlays expose it.
@@ -176,11 +177,11 @@ When executing many changes in one session, the cumulative chance of a wrong sil
 
 ### Reporting
 
-The final summary (Step 13) must include, per change: chosen control, action, and the confidence the model assigned to each AI decision. This makes silent high-confidence decisions auditable after the fact.
+The final summary (Step 14) must include, per change: chosen control, action, and the confidence the model assigned to each AI decision. This makes silent high-confidence decisions auditable after the fact.
 
 ## Workflow
 
-> **One session per handover (hard rule).** Call `start` (Step 1) **exactly once** and `stop` (Step 13) **exactly once**, no matter how many changes are requested. Parse the full change list upfront, then run **all** changes as iterations of Steps 3–9 *inside* the single session, and `save` (Step 11) **once** at the end. **Never re-enter Step 1 (`start`) per change** — a fresh `start`/`stop` per change is the single most common misuse of this skill. When the handover prompt hands you a list of changes, that entire list is **one** session, not one session per bullet.
+> **One session per handover (hard rule).** Call `start` (Step 1) **exactly once**, `restart` (Step 13) **at most once** (only after all fragment/controller files have been written to disk), and `stop` (Step 14) **exactly once** at the very end, no matter how many changes are requested. Parse the full change list upfront, then run **all** changes as iterations of Steps 3–9 *inside* the single session, and `save` (Step 11) **once** at the end. **Never re-enter Step 1 (`start`) per change** — a fresh `start`/`stop` per change is the single most common misuse of this skill. When the handover prompt hands you a list of changes, that entire list is **one** session, not one session per bullet.
 
 ### Step 1 — Start RTA
 
@@ -419,7 +420,18 @@ Include XML comments inside fragments for context hints:
 <!-- targetAggregation: <from context> -->
 ```
 
-### Step 13 — Cleanup
+### Step 13 — Validate
+
+After generating all files, call `restart` to reload the editor so it picks up the newly written fragment and controller extension files.
+
+```
+run_rta_workflow_step { step: "restart", sessionId }
+→ { sessionId: <newSessionId>, rtaStarted: true }
+```
+
+Store the new `sessionId`. Then navigate to the editing target (repeat Step 2 as needed — the page reloads with the fresh session) and call `get_overlays`. Verify that the inserted controls appear in the overlay list. If the expected overlays are present, the change is confirmed. If they are missing, report the discrepancy to the user before proceeding.
+
+### Step 14 — Cleanup
 
 Call `step: "stop"`. The server closes the session; if it was the last one, the browser shuts down too.
 
@@ -456,7 +468,7 @@ When the user requests multiple changes:
 3. Save once at the end (Step 11).
 4. If one change fails, save the successful ones and report which failed.
 5. Generate content for all fragments / extensions together in Step 12.
-6. Stop the session (Step 13) only after everything is done.
+6. Stop the session (Step 14) only after everything is done.
 
 ## Example Session
 
@@ -483,4 +495,5 @@ This intent maps to **two actions** (see *Disambiguation by intent*): `CTX_ADDXM
 9. `save` → `saved: true`
 10. `adp_controller_extension` Phase 1 → knowledge base
 11. Generate fragment XML (`OrderDetailsButton.fragment.xml`) + controller extension (`OrderDetailsExt.js` with the press handler that opens the dialog), Phase 2 writes files
-12. `stop`, then kill the editor server. Report done — including the confidence the model assigned to each AI decision.
+12. `restart` → new `sessionId` + `rtaStarted: true`. Navigate to the Object Page toolbar again via `get_page_actions` / `call_page_action`, then `get_overlays` — confirm the inserted fragment overlay (`OrderDetailsButton`) appears.
+13. `stop`, then kill the editor server. Report done — including the confidence the model assigned to each AI decision.

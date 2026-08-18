@@ -119,6 +119,14 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 }
                 return { stopped: true };
             }
+            case 'restart': {
+                const { id, session } = getSession(input.sessionId);
+                sessions.delete(id);
+                const result = await startRta(defaultTransport, session);
+                const sessionId = randomUUID();
+                sessions.set(sessionId, session);
+                return { sessionId, ...result };
+            }
             case 'get_page_actions': {
                 const { session } = getSession(input.sessionId);
                 const { registered, interactive, interactiveTruncated } = await getPageActions(

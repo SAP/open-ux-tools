@@ -146,7 +146,8 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         .describe(
             'Which RTA workflow step to run. The first six steps map to the existing Joule RTA frontend ' +
                 'actions. The last three (get_page_actions, call_page_action, press_interactive) drive ' +
-                'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan.'
+                'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan. ' +
+                'restart is a mid-workflow step that reloads the editor to pick up files written to disk.'
         ),
     sessionId: zod
         .string()
@@ -158,6 +159,7 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         .describe(
             'Step-specific arguments. ' +
                 'start: { site: string, frameId?: string }. ' +
+                'restart: sessionId only (inherits site/frameId from the current session). ' +
                 'get_context: { controlId: string, actionId: string }. ' +
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'call_page_action: { id: string }. ' +
