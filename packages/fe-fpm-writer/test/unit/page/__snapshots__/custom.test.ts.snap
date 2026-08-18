@@ -1101,27 +1101,27 @@ exports[`CustomPage generateCustomPage: only page, no others should generate a c
             <!-- Breadcrumbs aggregation -->
             <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
                 <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+                <Link id=\\"breadcrumbs_link1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:navigationActions>
             <!-- Navigation actions aggregation -->
-            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen1\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
         <macros:titleContent>
             <!-- Title content aggregation (content next to title) -->
-            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status 1\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
         <macros:actions>
             <!-- Actions aggregation -->
             <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
-            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
         </macros:actions>
         <macros:headerContent>
             <!-- Header content aggregation (content after avatar) -->
             <VBox id=\\"headerContent_vbox\\">
-                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+                <Title id=\\"headerContent_title\\" text=\\"Page Title 1\\"/>
             </VBox>
         </macros:headerContent>
         <macros:items>
@@ -1138,7 +1138,7 @@ exports[`CustomPage generateCustomPage: only page, no others should generate a c
             <OverflowToolbar id=\\"footer_overflowToolbar\\">
                 <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
                 <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+                <Button id=\\"footer_button1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
             </OverflowToolbar>
         </macros:footer>
     </macros:Page>
@@ -1165,27 +1165,27 @@ exports[`CustomPage generateCustomPage: only page, no others should use full lay
             <!-- Breadcrumbs aggregation -->
             <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
                 <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+                <Link id=\\"breadcrumbs_link1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:navigationActions>
             <!-- Navigation actions aggregation -->
-            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen1\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
         <macros:titleContent>
             <!-- Title content aggregation (content next to title) -->
-            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status 1\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
         <macros:actions>
             <!-- Actions aggregation -->
             <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
-            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
         </macros:actions>
         <macros:headerContent>
             <!-- Header content aggregation (content after avatar) -->
             <VBox id=\\"headerContent_vbox\\">
-                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+                <Title id=\\"headerContent_title\\" text=\\"Page Title 1\\"/>
             </VBox>
         </macros:headerContent>
         <macros:items>
@@ -1202,7 +1202,7 @@ exports[`CustomPage generateCustomPage: only page, no others should use full lay
             <OverflowToolbar id=\\"footer_overflowToolbar\\">
                 <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
                 <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+                <Button id=\\"footer_button1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
             </OverflowToolbar>
         </macros:footer>
     </macros:Page>
@@ -1217,27 +1217,27 @@ exports[`CustomPage generateCustomPage: only page, no others should use full lay
             <!-- Breadcrumbs aggregation -->
             <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
                 <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+                <Link id=\\"breadcrumbs_link1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:navigationActions>
             <!-- Navigation actions aggregation -->
-            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen1\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
         <macros:titleContent>
             <!-- Title content aggregation (content next to title) -->
-            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status 1\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
         <macros:actions>
             <!-- Actions aggregation -->
             <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
-            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
         </macros:actions>
         <macros:headerContent>
             <!-- Header content aggregation (content after avatar) -->
             <VBox id=\\"headerContent_vbox\\">
-                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
+                <Title id=\\"headerContent_title\\" text=\\"Page Title 1\\"/>
             </VBox>
         </macros:headerContent>
         <macros:items>
@@ -1254,7 +1254,7 @@ exports[`CustomPage generateCustomPage: only page, no others should use full lay
             <OverflowToolbar id=\\"footer_overflowToolbar\\">
                 <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
                 <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+                <Button id=\\"footer_button1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
             </OverflowToolbar>
         </macros:footer>
     </macros:Page>

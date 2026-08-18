@@ -1,5 +1,52 @@
 # @sap-ux/generator-adp
 
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.42 → 1.0.43
+
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/adp-tooling 1.0.41 → 1.0.42
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+
+## 1.0.44
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Clear password field on system change to prevent stale credentials resubmission. [[27840a8](https://github.com/SAP/open-ux-tools/commit/27840a818dc9c2a06c03a0bc0a402bf4af1da960)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+- @sap-ux/adp-tooling 1.0.40 → 1.0.41
+
+## 1.0.43
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.39 → 1.0.40
+- @sap-ux/odata-service-writer 1.0.16 → 1.0.17
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/telemetry 1.0.23 → 1.0.24
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+- @sap-ux/project-input-validator 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
 ## 1.0.42
 
 ### Patch Changes

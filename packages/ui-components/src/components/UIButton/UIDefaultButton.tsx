@@ -1,10 +1,12 @@
 import React from 'react';
-import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
+import type { IButton, IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu/index.js';
 import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
 import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 import { UiIcons } from '../Icons.js';
+import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
 const VSCODE_SECONDARY_BORDER_COLOR = `var(--vscode-button-secondaryBorder, ${VSCODE_BORDER_COLOR})`;
@@ -49,7 +51,7 @@ export const BASE_STYLES = {
 };
 const ICON_SELECTOR = 'svg > path, svg > rect';
 
-export interface UIDefaultButtonProps extends IButtonProps {
+export interface UIDefaultButtonProps extends IButtonProps, UIBaseButtonProps {
     /**
      * Changes the visual presentation of the button to be transparent.
      *
@@ -70,6 +72,8 @@ export interface UIDefaultButtonProps extends IButtonProps {
  * @extends {React.Component<UIDefaultButtonProps, {}>}
  */
 export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
+    private readonly _buttonRef: React.MutableRefObject<IButton | null> = { current: null };
+
     /**
      * Initializes component properties.
      *
@@ -464,16 +468,24 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const defaultMenuIconProps = this.props.menuProps?.items
+        const { propagateMenuOpenKeyDown = true, componentRef: externalRef, ...props } = this.props;
+        const defaultMenuIconProps = props.menuProps?.items
             ? {
                   // Overwrite build-in fluentui icon
                   iconName: UiIcons.ArrowDown
               }
             : undefined;
+        const mergedRef = mergeButtonRef(this._buttonRef, externalRef);
         return (
             <DefaultButton
                 menuIconProps={defaultMenuIconProps}
-                {...this.props}
+                {...props}
+                componentRef={mergedRef}
+                onKeyDown={
+                    propagateMenuOpenKeyDown
+                        ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown, props.menuProps)
+                        : props.onKeyDown
+                }
                 styles={this.setStyle(this.props)}
                 menuAs={UIContextualMenu}
             />

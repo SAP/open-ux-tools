@@ -1,5 +1,37 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-17
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[50c09b5](https://github.com/SAP/open-ux-tools/commit/50c09b507035c9876f4d098cfa4294864d73e0e8)]
+
+## 1.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[830573e](https://github.com/SAP/open-ux-tools/commit/830573e1da6ec7e3768f8b1c58f70513ef269d29)]
+
+## 1.0.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
 ## 1.0.16
 
 ### Patch Changes
