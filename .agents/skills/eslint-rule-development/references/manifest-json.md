@@ -135,6 +135,17 @@ ruleTester.run('sap-[rule-name]', myRule, {
 });
 ```
 
+## V2 manifest test differences:
+
+| | V4 | V2 |
+|---|---|---|
+| OData guard in `check()` | `if (!app.isV4) continue;` | `if (app.isV4) continue;` |
+| Test imports | `V4_MANIFEST, V4_MANIFEST_PATH` | `V2_MANIFEST, V2_MANIFEST_PATH` |
+| Base test code | `JSON.stringify(V4_MANIFEST, undefined, 2)` | `JSON.stringify(V2_MANIFEST, undefined, 2)` |
+| Modified test code | `getManifestAsCode(V4_MANIFEST, [...])` | `getManifestAsCode(V2_MANIFEST, [...])` |
+
+For a rule covering both V2 and V4, omit the OData guard and include valid/invalid cases for both `V4_MANIFEST_PATH` and `V2_MANIFEST_PATH`.
+
 ## Debug checklist (if tests show 0 errors when violations expected):
 
 - Is `linkedModel.apps` used (correct for manifest rules)?

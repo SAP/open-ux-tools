@@ -173,6 +173,15 @@ Select `@sap-ux/eslint-plugin-fiori-tools`, choose `minor` for new rules:
 FEAT: add sap-my-new-rule rule for [short description]
 ```
 
+### Step 10 — Report
+
+Summarise what was done:
+- **Rule name and type** — rule ID and which type (annotation / manifest JSON / flex change / JS/TS)
+- **Files created** — rule implementation, test file, doc file
+- **Files modified** — diagnostics.ts, rules/index.ts, src/index.ts, README.md
+- **Test results** — number of valid and invalid cases, all passing
+- **Changeset** — package, bump type (`minor`), summary line
+
 ---
 
 ## Quick Reference: Key Files

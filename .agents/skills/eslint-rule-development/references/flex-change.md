@@ -140,3 +140,5 @@ ruleTester.run('sap-[rule-name]', myRule, {
 - Is the `FioriChangeSourceCode` guard in place?
 - Is `config.changeFileUri` populated? (check `getPropertyChangeConfig` in `fe-v2.ts`)
 - Is `linkedModel.apps` used (correct for flex change rules)?
+- Is `page.lookup['table']` used (not `page.someTable`) to access tables?
+- Hybrid V2+V4 rule: is the `FioriJSONSourceCode` guard also in place for the manifest branch of `check()`? (`context.sourceCode instanceof FioriJSONSourceCode`)

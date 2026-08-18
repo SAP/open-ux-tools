@@ -68,15 +68,17 @@ ruleTester.run('sap-[rule-name]', rule, {
     invalid: [
         {
             code: 'invalidCode();',
-            errors: [{ messageId: 'myMessageId' }]
+            errors: [{ message: 'Error message.' }]
         },
         {
             code: 'anotherInvalidCode();',
-            errors: [{ messageId: 'myMessageId', data: { placeholder: 'value' } }]
+            errors: [{ message: 'Error message. Use value for dynamic data.' }]
         }
     ]
 });
 ```
+
+**`message` vs `messageId` in test assertions:** Always check `message` (the fully resolved string), not `messageId`. If the rule has no dynamic data the resolved message equals the string in `meta.messages`. If it has `{{placeholder}}` data write the fully resolved string — using `messageId` alone accepts any interpolated value and misses regressions.
 
 **Note on TypeScript source:** JS/TS rules in this plugin lint UI5 application source code (JS/TS files). The `RuleTester` tests use plain JavaScript snippets — no TypeScript parser is needed in tests because the rules check patterns that appear in both JS and TS. The rule implementation itself is written in TypeScript (`Rule.RuleModule`), but it targets JS/TS AST nodes from ESLint's default parser.
 
@@ -89,7 +91,7 @@ JS/TS rules go into `baseFioriToolsRules` in `src/index.ts` (not `fioriLanguageC
 '@sap-ux/fiori-tools/sap-my-new-rule': 'warn',
 ```
 
-Skip Step 2 (diagnostic constant) of the main checklist — no `diagnostics.ts` entry needed.
+No `diagnostics.ts` entry needed — JS/TS rules declare messages directly in `meta.messages`.
 
 In `src/rules/index.ts`, add the import and entry in alphabetical order:
 ```typescript
