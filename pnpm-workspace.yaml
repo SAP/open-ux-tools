@@ -42,7 +42,7 @@ overrides:
     drizzle-orm: ">=0.45.2"
     socket.io-parser: ">=4.2.6"
     underscore: ">=1.13.8"
-    "undici@>=6.0.0 <6.24.0": "^6.24.0"
+    "undici@>=6.0.0 <6.24.0": "^7.29.0"
     "undici@>=7.0.0 <7.24.0": "^7.24.0"
     lodash: "4.18.1"
     mta-local: "1.0.8"
