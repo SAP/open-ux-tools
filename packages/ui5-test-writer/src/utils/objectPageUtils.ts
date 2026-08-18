@@ -184,6 +184,7 @@ export function resolveOriginatingView(
     if (views.length === 0) {
         return undefined;
     }
+    // No match falls back to the first (default) view, which is where a main-entity OP belongs — this also covers an undefined listReportEntitySet.
     const matchIndex = objectPageEntitySet
         ? views.findIndex((view) => (view.entitySet ?? listReportEntitySet) === objectPageEntitySet)
         : -1;

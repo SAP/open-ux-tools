@@ -80,9 +80,10 @@ export function resolvePrimaryTableNode(node: TreeAggregation): TreeAggregation 
     if (tableChildren['columns']) {
         return tableAggregation;
     }
+    // Multi-view List Report: per-tab nodes live under `views`; return the first with columns, else undefined.
     const views = tableChildren['views'];
     if (!views) {
-        return tableAggregation;
+        return undefined;
     }
     const viewNodes = getAggregations(views);
     for (const key of Object.keys(viewNodes)) {
