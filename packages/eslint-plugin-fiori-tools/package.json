@@ -32,8 +32,8 @@
     },
     "devDependencies": {
         "@babel/core": "8.0.0-rc.6",
-        "@babel/eslint-parser": "8.0.1",
-        "@babel/parser": "8.0.4",
+        "@babel/eslint-parser": "8.0.0-rc.6",
+        "@babel/parser": "8.0.0-rc.6",
         "@eslint/config-helpers": "0.5.3",
         "@eslint/core": "1.1.1",
         "@eslint/js": "10.0.1",
