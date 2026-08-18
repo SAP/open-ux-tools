@@ -121,18 +121,42 @@ This is test content for the document.
 
 This is another test content.`;
 
-            mockFs.readdir.mockResolvedValue(['test1.md', 'test2.md'] as never);
+            mockFs.readdir
+                .mockResolvedValueOnce(['test1.md', 'test2.md'] as never) // data_local
+                .mockResolvedValueOnce([] as never); // data_local/skills (no skill dirs)
             mockFs.readFile.mockResolvedValueOnce(mockMarkdownContent).mockResolvedValueOnce(mockMarkdownContent);
 
             const builder = new EmbeddingBuilder();
             await builder.loadDocuments();
 
             expect(mockFs.readdir).toHaveBeenCalledWith('./data_local');
+            expect(mockFs.readdir).toHaveBeenCalledWith('./data_local/skills', { withFileTypes: true });
+            expect(builder.documents.length).toBeGreaterThan(0);
+        });
+
+        it('should load documents from skill subdirectories in data_local/skills', async () => {
+            const mockSkillContent = `**TITLE**: Skill Document
+**TAGS**: opa5, testing
+
+Skill content here.`;
+
+            const mockSkillDir = { name: 'sap-fiori-opa5-test-development', isDirectory: () => true };
+            mockFs.readdir
+                .mockResolvedValueOnce([] as never) // data_local
+                .mockResolvedValueOnce([mockSkillDir] as never) // data_local/skills dirs
+                .mockResolvedValueOnce(['v4-instructions.md'] as never); // files inside skill dir
+            mockFs.readFile.mockResolvedValueOnce(mockSkillContent);
+
+            const builder = new EmbeddingBuilder();
+            await builder.loadDocuments();
+
             expect(builder.documents.length).toBeGreaterThan(0);
         });
 
         it('should handle document loading errors gracefully', async () => {
-            mockFs.readdir.mockResolvedValue(['test.md'] as never);
+            mockFs.readdir
+                .mockResolvedValueOnce(['test.md'] as never) // data_local
+                .mockResolvedValueOnce([] as never); // data_local/skills (no skill dirs)
             mockFs.readFile.mockRejectedValue(new Error('File not found'));
 
             const builder = new EmbeddingBuilder();
@@ -441,6 +465,7 @@ This is another test content.`;
 
             mockFs.readdir
                 .mockRejectedValueOnce(new Error('Directory read error')) // loadDocuments -> data_local
+                .mockResolvedValueOnce([] as never) // loadDocuments -> data_local/skills
                 .mockResolvedValue([] as never); // cleanStaleArtifacts -> embeddings path
 
             mockFs.mkdir.mockResolvedValue(undefined as never);
@@ -463,6 +488,7 @@ This is test content for embedding generation.`;
 
             mockFs.readdir
                 .mockResolvedValueOnce(['test.md'] as never) // loadDocuments -> data_local
+                .mockResolvedValueOnce([] as never) // loadDocuments -> data_local/skills
                 .mockResolvedValue([] as never); // cleanStaleArtifacts -> embeddings path
             mockFs.readFile.mockResolvedValue(mockMarkdownContent);
             mockFs.mkdir.mockResolvedValue(undefined as never);
@@ -482,7 +508,7 @@ This is test content for embedding generation.`;
                 throw new Error(`process.exit called with code ${code}`);
             }) as never);
 
-            mockFs.readdir.mockResolvedValueOnce(['test.md'] as never);
+            mockFs.readdir.mockResolvedValueOnce(['test.md'] as never).mockResolvedValueOnce([] as never);
             mockFs.readFile.mockResolvedValue('**TITLE**: Test\n\nContent');
             mockFs.mkdir.mockRejectedValue(new Error('Disk full'));
 

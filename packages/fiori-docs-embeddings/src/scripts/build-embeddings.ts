@@ -126,7 +126,7 @@ class EmbeddingBuilder {
     }
 
     /**
-     * Load Local markdown documents from data_local directory.
+     * Load Local markdown documents from data_local directory and data_local/skills subdirectories.
      * These files use -------------------------------- as chunk delimiters.
      */
     async loadLocalDocuments(): Promise<void> {
@@ -141,11 +141,30 @@ class EmbeddingBuilder {
             for (const file of mdFiles) {
                 await this.processLocalMarkdownFile(dataLocalPath, file);
             }
-
-            this.logger.info(`✓ Loaded ${this.documents.length} documents`);
         } catch (error) {
             this.logger.warn(`Failed to read data_local directory: ${error.message}`);
         }
+
+        const skillsPath = './data_local/skills';
+
+        try {
+            const skillDirs = await fs.readdir(skillsPath, { withFileTypes: true });
+            for (const entry of skillDirs.filter((e) => e.isDirectory())) {
+                const skillDir = path.join(skillsPath, entry.name);
+                const files = await fs.readdir(skillDir);
+                const mdFiles = files.filter((file) => file.endsWith('.md'));
+
+                this.logger.info(`Found ${mdFiles.length} markdown files in data_local/skills/${entry.name}`);
+
+                for (const file of mdFiles) {
+                    await this.processLocalMarkdownFile(skillDir, file);
+                }
+            }
+        } catch (error) {
+            this.logger.warn(`Failed to read data_local/skills directory: ${error.message}`);
+        }
+
+        this.logger.info(`✓ Loaded ${this.documents.length} documents`);
     }
 
     /**
