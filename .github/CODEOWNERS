@@ -13,8 +13,8 @@
 /.prettierrc.js              @SAP/ux-tools-architects @SAP/ux-tools-admin
 /LICENSE                     @SAP/ux-tools-architects @SAP/ux-tools-admin
 /package.json                @SAP/ux-tools-architects @SAP/ux-tools-admin
-/sonar-project.properties    @@SAP/ux-tools-architects SAP/ux-tools-admin
-/tsconfig.json               @@SAP/ux-tools-architects SAP/ux-tools-admin
+/sonar-project.properties    @SAP/ux-tools-architects @SAP/ux-tools-admin
+/tsconfig.json               @SAP/ux-tools-architects @SAP/ux-tools-admin
 
 # Docs
 /docs/           @SAP/ux-tools-team
