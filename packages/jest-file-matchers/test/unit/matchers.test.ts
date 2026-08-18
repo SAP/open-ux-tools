@@ -1,6 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
+import os from 'node:os';
 import type { MatcherIgnore } from '../../src/matchers/types.js';
 import { README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types.js';
 import { toMatchFolder, toContainAllFilesIn } from '../../src/index.js';
@@ -98,5 +99,60 @@ describe('Test matchers', () => {
 
     it('works with .not for binary files', () => {
         expect(fs.readFileSync(join(__dirname, '../__fixtures__/minimal.pdf'), 'binary')).not.toMatchFile();
+    });
+
+    describe('toContainAllFilesIn with updateSnapshot', () => {
+        let tmpDir: string;
+
+        beforeEach(() => {
+            tmpDir = fs.mkdtempSync(join(os.tmpdir(), 'jest-file-matchers-'));
+        });
+
+        afterEach(() => {
+            fs.rmSync(tmpDir, { recursive: true, force: true });
+        });
+
+        it('should delete a stale file from the snapshot folder when updateSnapshot is true', () => {
+            // given: received has file.txt, snapshot has file.txt + stale.txt
+            const receivedFolder = join(tmpDir, 'received');
+            const snapshotFolder = join(tmpDir, 'snapshot');
+            fs.mkdirSync(receivedFolder);
+            fs.mkdirSync(snapshotFolder);
+            fs.writeFileSync(join(receivedFolder, 'file.txt'), '');
+            fs.writeFileSync(join(snapshotFolder, 'file.txt'), '');
+            fs.writeFileSync(join(snapshotFolder, 'stale.txt'), '');
+            const context = { isNot: false, snapshotState: { _updateSnapshot: 'all', updated: 0 } };
+
+            // when
+            const result = toContainAllFilesIn.call(context as unknown as jest.MatcherContext, receivedFolder, snapshotFolder);
+
+            // then: stale.txt is deleted, pass is true, updated incremented
+            expect(result.pass).toBe(true);
+            expect(context.snapshotState.updated).toBe(1);
+            expect(fs.existsSync(join(snapshotFolder, 'stale.txt'))).toBe(false);
+            expect(fs.existsSync(join(snapshotFolder, 'file.txt'))).toBe(true);
+        });
+
+        it('should delete a stale nested directory from the snapshot folder when updateSnapshot is true', () => {
+            // given: received has file.txt, snapshot has file.txt + stale-dir/nested.js
+            const receivedFolder = join(tmpDir, 'received');
+            const snapshotFolder = join(tmpDir, 'snapshot');
+            fs.mkdirSync(receivedFolder);
+            fs.mkdirSync(snapshotFolder);
+            fs.writeFileSync(join(receivedFolder, 'file.txt'), '');
+            fs.writeFileSync(join(snapshotFolder, 'file.txt'), '');
+            const staleDir = join(snapshotFolder, 'stale-dir');
+            fs.mkdirSync(staleDir);
+            fs.writeFileSync(join(staleDir, 'nested.js'), '');
+            const context = { isNot: false, snapshotState: { _updateSnapshot: 'all', updated: 0 } };
+
+            // when
+            const result = toContainAllFilesIn.call(context as unknown as jest.MatcherContext, receivedFolder, snapshotFolder);
+
+            // then: stale-dir and its contents are deleted, pass is true
+            expect(result.pass).toBe(true);
+            expect(fs.existsSync(staleDir)).toBe(false);
+            expect(fs.existsSync(join(snapshotFolder, 'file.txt'))).toBe(true);
+        });
     });
 });
