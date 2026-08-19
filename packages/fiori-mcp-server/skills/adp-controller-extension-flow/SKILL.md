@@ -48,8 +48,8 @@ A single tool, dispatched by the `step` argument. Pass `payload` for steps that 
 | `get_context` | required | `{ controlId, actionId }` | `{ context }` |
 | `call_action` | required | `{ controlId, actionId, actionPayload }` | `{ success: boolean }` |
 | `save` | required | — | `{ saved: boolean }` |
-| `stop` | required | — | `{ stopped: true }` |
 | `restart` | required | — | `{ sessionId, rtaStarted: true }` |
+| `stop` | required | — | `{ stopped: true }` |
 
 `Overlay` = `{ overlayId, controlId, label, controlType, parentElementId, parentAggregationName, index?, actionIds: string[] }` — `index` is the 0-based position within `parentAggregationName` and is omitted when the parent/aggregation can't be resolved or the aggregation is single-cardinality. `actionIds` lists the RTA actions available on this overlay; rich metadata for each id is in the top-level `actionsCatalog`.
 `Action` = `{ id, label, description?, parameters: [{ name, type, required?, description? }] }` — keyed by `actionId` in `actionsCatalog`. The catalog is **deduplicated across all overlays** in a single `get_overlays` response, so an id appears once even when many overlays expose it.
