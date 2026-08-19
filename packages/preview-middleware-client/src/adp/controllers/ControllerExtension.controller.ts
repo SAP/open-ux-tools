@@ -241,7 +241,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const showInstanceSpecificOption = this.isInstanceSpecificSupported();
 
         if (!showInstanceSpecificOption) {
-            if (pendingViewIds.some((id) => !id)) {
+            if (pendingViewIds.length > 0) {
                 this.updateModelForExistingPendingChange();
             } else if (data.baseControllerExists) {
                 this.updateModelForExistingController(data, true);

@@ -1174,6 +1174,24 @@ describe('AdaptationProject', () => {
                 .expect(404);
         });
 
+        test('GET /adp/api/code_ext - lists all stale change file paths when multiple controllers are missing', async () => {
+            mockExistsSyncFn.mockReturnValue(false);
+            const makeChangeFile = (codeRef: string, name: string) => ({
+                getString: () =>
+                    `{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"${codeRef}"}}`,
+                getName: () => name
+            });
+            mockProject.byGlob.mockResolvedValueOnce([
+                makeChangeFile('coding/share.js', 'id_001_codeExt.change'),
+                makeChangeFile('coding/other.js', 'id_002_codeExt.change')
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport')
+                .expect(404);
+            expect(response.body.message).toContain('id_001_codeExt.change');
+            expect(response.body.message).toContain('id_002_codeExt.change');
+        });
+
         test('GET /adp/api/code_ext - throws error', async () => {
             const errorMsg = 'Could not retrieve existing controller data!';
             mockProject.byGlob.mockResolvedValueOnce([

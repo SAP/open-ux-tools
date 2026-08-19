@@ -246,6 +246,65 @@ describe('ControllerExtension', () => {
             getPendingCodeExtViewIdsMock.mockReturnValue([]);
         });
 
+        test('shows pending-change form for pre-1.143 when a pending instance-specific change exists', async () => {
+            checkForExistingChangeMock.mockReturnValue(false);
+            isLowerThanMinimalUi5VersionMock.mockReturnValue(true);
+            getPendingCodeExtViewIdsMock.mockReturnValue(['::Toolbar']);
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const overlayControl = {
+                getElement: jest.fn().mockReturnValue({
+                    getId: jest.fn().mockReturnValue('::Toolbar')
+                })
+            };
+            sapCoreMock.byId.mockReturnValue(overlayControl);
+
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    baseControllerExists: false,
+                    baseControllerPath: '',
+                    baseControllerPathFromRoot: '',
+                    instanceControllerExists: false,
+                    instanceControllerPath: '',
+                    instanceControllerPathFromRoot: '',
+                    isRunningInBAS: false,
+                    isTsSupported: false
+                }),
+                text: jest.fn(),
+                ok: true
+            });
+
+            const openSpy = jest.fn();
+            const setTextSpy = jest.fn();
+            const setVisibleSpy = jest.fn();
+
+            controllerExt.byId = jest.fn().mockReturnValueOnce({}).mockReturnValue({
+                setVisible: jest.fn()
+            });
+
+            await controllerExt.setup({
+                open: openSpy,
+                getBeginButton: jest.fn().mockReturnValue({ setVisible: setVisibleSpy }),
+                getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy }),
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn(),
+                getContent: jest.fn().mockReturnValue([{ setVisible: jest.fn() }, { setVisible: jest.fn() }])
+            } as unknown as Dialog);
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
+            expect(setVisibleSpy).toHaveBeenCalledWith(false);
+            expect(setTextSpy).toHaveBeenCalledWith('Close');
+            getPendingCodeExtViewIdsMock.mockReturnValue([]);
+        });
+
         test('throws error when trying to get existing controller data', async () => {
             const errorMsg = 'Could not retrieve existing controller!';
             const overlays = {

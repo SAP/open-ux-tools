@@ -53,8 +53,7 @@ interface ControllerExtensionLookup {
     instanceControllerExists: boolean;
     instanceControllerPath: string;
     instanceControllerPathFromRoot: string;
-    missingControllerPath: string;
-    missingChangeFilePath: string;
+    missingChangeFilePaths: string[];
     isTsSupported: boolean;
 }
 
@@ -66,6 +65,8 @@ export default class RoutesHandler {
      * Whether this is running in build path mode (CF ADP using build output).
      */
     private readonly isBuildPathMode: boolean;
+
+    private readonly isWin32 = os.platform() === 'win32';
 
     /**
      * Constructor taking project as input.
@@ -198,13 +199,12 @@ export default class RoutesHandler {
                 instanceControllerExists,
                 instanceControllerPath,
                 instanceControllerPathFromRoot,
-                missingControllerPath,
-                missingChangeFilePath,
+                missingChangeFilePaths,
                 isTsSupported
             } = lookup;
 
-            if (!baseControllerExists && !instanceControllerExists && missingControllerPath) {
-                const errorMsg = `Please delete the change file at "${missingChangeFilePath}" and retry creating the controller extension.`;
+            if (!baseControllerExists && !instanceControllerExists && missingChangeFilePaths.length > 0) {
+                const errorMsg = `Please delete the change file(s) at "${missingChangeFilePaths.join('", "')}" and retry creating the controller extension.`;
                 this.logger.debug(errorMsg);
                 res.status(HttpStatusCodes.NOT_FOUND).send({ message: errorMsg });
                 return;
@@ -212,15 +212,12 @@ export default class RoutesHandler {
 
             const isRunningInBAS = isAppStudio();
 
-            const toResponsePath = (controllerPath: string) =>
-                controllerPath && os.platform() === 'win32' ? `/${controllerPath}` : controllerPath;
-
             this.sendFilesResponse(res, {
                 baseControllerExists,
-                baseControllerPath: toResponsePath(baseControllerPath),
+                baseControllerPath: this.toResponsePath(baseControllerPath),
                 baseControllerPathFromRoot,
                 instanceControllerExists,
-                instanceControllerPath: toResponsePath(instanceControllerPath),
+                instanceControllerPath: this.toResponsePath(instanceControllerPath),
                 instanceControllerPathFromRoot,
                 isRunningInBAS,
                 isTsSupported
@@ -263,8 +260,7 @@ export default class RoutesHandler {
             instanceControllerExists: false,
             instanceControllerPath: '',
             instanceControllerPathFromRoot: '',
-            missingControllerPath: '',
-            missingChangeFilePath: '',
+            missingChangeFilePaths: [],
             isTsSupported
         };
 
@@ -286,8 +282,7 @@ export default class RoutesHandler {
             const changeFilePath = getPath(projectName, file.getName(), '');
 
             if (!fs.existsSync(controllerPath)) {
-                lookup.missingControllerPath = controllerPath;
-                lookup.missingChangeFilePath = changeFilePath;
+                lookup.missingChangeFilePaths.push(changeFilePath);
                 this.logger.debug(
                     `Change file at "${changeFilePath}" references a missing controller at "${controllerPath}".`
                 );
@@ -459,7 +454,7 @@ export default class RoutesHandler {
                     const annotationExists = fs.existsSync(annotationPath);
                     apiResponse[dataSourceId].annotationDetails = {
                         fileName: path.parse(localAnnotationUri).base,
-                        annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
+                        annotationPath: this.toResponsePath(annotationPath),
                         annotationPathFromRoot,
                         annotationExistsInWS: annotationExists
                     };
@@ -482,6 +477,10 @@ export default class RoutesHandler {
         const variant = await getVariant(basePath);
 
         return await ManifestService.initMergedManifest(this.provider, basePath, variant, this.logger);
+    }
+
+    private toResponsePath(p: string): string {
+        return p && this.isWin32 ? `/${p}` : p;
     }
 }
 
