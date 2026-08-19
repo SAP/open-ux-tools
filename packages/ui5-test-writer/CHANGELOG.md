@@ -1,5 +1,20 @@
 # @sap-ux/ui5-test-writer
 
+## 1.7.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/ui5-application-writer 2.1.3 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.2.6 → 1.2.7
+- @sap-ux/preview-middleware 1.2.1 → 1.2.2
+
 ## 1.7.3
 
 ### Patch Changes
