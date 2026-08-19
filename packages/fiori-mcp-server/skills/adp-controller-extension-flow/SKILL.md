@@ -424,14 +424,16 @@ Include XML comments inside fragments for context hints:
 
 > **Validate before stopping (hard rule).** After generating files (Step 12), you MUST call `restart` before `stop`. Fragment and controller extension controls only appear in `get_overlays` after the editor reloads with the written files on disk. **`stop` must never immediately follow file generation** — the step between them is always `restart` + overlay verification. Skipping this step means the change is unverified; calling `stop` first makes recovery impossible within the session.
 
-After generating all files, call `restart` to reload the editor so it picks up the newly written fragment and controller extension files.
+After generating all files, call `restart` to reload the current editor browser with the newly written fragment and controller extension files.
 
 ```
 run_rta_workflow_step { step: "restart", sessionId }
 → { sessionId: <newSessionId>, rtaStarted: true }
 ```
 
-Store the new `sessionId`. Then navigate to the editing target (repeat Step 2 as needed — the page reloads with the fresh session) and call `get_overlays`. Verify that the inserted controls appear in the overlay list. If the expected overlays are present, the change is confirmed. If they are missing, report the discrepancy to the user before proceeding.
+Store the new `sessionId`. Navigate back to the editing target (repeat Step 2 as needed) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
+
+If an expected control is missing from the overlay list: inspect the relevant change file and fragment XML for errors (wrong `fragmentPath`, malformed XML, namespace mismatch), fix the file, call `restart` again with the new `sessionId`, re-navigate, and call `get_overlays` again. Repeat until all inserted controls are confirmed present.
 
 ### Step 14 — Cleanup
 
