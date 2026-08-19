@@ -1,5 +1,22 @@
 # @sap-ux/ui5-test-writer
 
+## 1.7.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Correct OPA5 test generation for multi-view (multi-tab) List Reports
+
+    - A plain multi-view List Report is no longer mis-detected as an Analytical List Page; detection now uses the single `isALPManifestTarget` predicate, so the start page variable resolves and the filter-bar / navigate-to-ObjectPage steps render with the correct page name.
+    - The "Check table columns and actions" test is generated again for multi-view List Reports: column, action and contact-card extraction now reads the first non-custom view's table node (`table.views[key]`) instead of only `table.columns`.
+    - The ObjectPage journey navigates from the tab that actually exposes the page: it emits `iGoToView({ key })` and targets `onTable("<viewKey>")` for a non-default view (matched by the view's entity set), and keeps the single-table behaviour for the default view and single-table List Reports.
+    - The commented global-search template now includes a search-field cleanup (`iChangeSearchField(undefined)` / `iCheckSearchField(undefined)`) at the end of the flow. [[06f4e10](https://github.com/SAP/open-ux-tools/commit/06f4e1010ec247ea87f60cd9d95760d4f10a1310)]
+
 ## 1.7.2
 
 ### Patch Changes
