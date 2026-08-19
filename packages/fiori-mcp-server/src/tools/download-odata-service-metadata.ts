@@ -86,9 +86,10 @@ export async function downloadODataServiceMetadata(
             timestamp: new Date().toISOString()
         };
     } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
         return {
             status: 'Error',
-            message: error instanceof Error ? error.message : String(error),
+            message: `Could not fetch metadata for service '${servicePath}': ${reason}`,
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],

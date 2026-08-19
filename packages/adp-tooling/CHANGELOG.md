@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 1.0.44
+
+### Patch Changes
+
+#### Features
+
+- Ability to create entity specific controller extensions [[57cb8f9](https://github.com/SAP/open-ux-tools/commit/57cb8f93bb625ca20a4a0096a4f7369bb1e3ec75)]
+
 ## 1.0.43
 
 ### Patch Changes

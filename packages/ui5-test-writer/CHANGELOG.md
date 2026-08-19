@@ -1,5 +1,21 @@
 # @sap-ux/ui5-test-writer
 
+## 1.7.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Remove debug warn log statements from modelUtils and drop unused log parameter from getFPMPage [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.7.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.0 → 1.2.1
+
 ## 1.7.0
 
 ### Minor Changes
