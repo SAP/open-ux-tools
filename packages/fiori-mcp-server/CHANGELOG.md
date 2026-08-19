@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- Regenerate create CLI skill index to include the `generate opa5-tests` command [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
 ## 1.11.10
 
 ### Patch Changes
