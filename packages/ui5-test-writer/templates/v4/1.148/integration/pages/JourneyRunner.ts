@@ -15,9 +15,7 @@ const runner = new JourneyRunner({
     pages: {
 <%- pages.map((page) =>
     page.template === 'FPM'
-? '        // FPM custom pages have no dedicated sap/fe/test class; TemplatePage is the runtime\n' +
-'        // base page. Its @sapui5/types constructor is protected, so cast to construct it.\n' +
-'        onThe' + page.targetKey + 'Generated: new (TemplatePage as unknown as new (id: string, defs: object) => object)(\n' +
+? '        onThe' + page.targetKey + 'Generated: new (TemplatePage as unknown as new (id: string, defs: object) => object)(\n' +
 '            "' + page.appID + '::' + page.componentID + '",\n' +
 '            Custom' + page.targetKey + 'Generated\n' +
 '        )'

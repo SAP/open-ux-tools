@@ -224,9 +224,7 @@ function findPagesToAdd(fileContent: string, pages: OpaPageWriteInfo[]): OpaPage
  */
 function buildPageEntry(page: OpaPageWriteInfo, pageIndent: string, innerIndent: string): string {
     const framework = page.template ?? 'ListReport';
-    // FPM custom pages have no dedicated sap/fe/test class; the runtime page is a TemplatePage,
-    // constructed via a cast because its @sapui5/types constructor is protected. Mirror the
-    // fresh-generation JourneyRunner template.
+    // FPM pages have no dedicated sap/fe/test class; construct a TemplatePage via cast, mirroring the template.
     if (framework === 'FPM') {
         return [
             `${pageIndent}onThe${page.targetKey}Generated: new (TemplatePage as unknown as new (id: string, defs: object) => object)(`,

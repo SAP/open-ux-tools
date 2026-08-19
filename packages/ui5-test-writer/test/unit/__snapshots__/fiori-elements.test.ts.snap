@@ -14462,8 +14462,6 @@ const runner = new JourneyRunner({
             },
             CustomEmployeesObjectPageTargetGenerated
         ),
-        // FPM custom pages have no dedicated sap/fe/test class; TemplatePage is the runtime
-        // base page. Its @sapui5/types constructor is protected, so cast to construct it.
         onTheEmployeesCustomPageTargetGenerated: new (TemplatePage as unknown as new (id: string, defs: object) => object)(
             \\"projectservice::EmployeesCustomPage\\",
             CustomEmployeesCustomPageTargetGenerated
@@ -14992,8 +14990,6 @@ const runner = new JourneyRunner({
             },
             CustomEmployeesObjectPageTargetGenerated
         ),
-        // FPM custom pages have no dedicated sap/fe/test class; TemplatePage is the runtime
-        // base page. Its @sapui5/types constructor is protected, so cast to construct it.
         onTheEmployeesCustomPageTargetGenerated: new (TemplatePage as unknown as new (id: string, defs: object) => object)(
             \\"projectservice::EmployeesCustomPage\\",
             CustomEmployeesCustomPageTargetGenerated
@@ -15512,8 +15508,6 @@ const runner = new JourneyRunner({
             },
             CustomEmployeesObjectPageTargetGenerated
         ),
-        // FPM custom pages have no dedicated sap/fe/test class; TemplatePage is the runtime
-        // base page. Its @sapui5/types constructor is protected, so cast to construct it.
         onTheEmployeesCustomPageTargetGenerated: new (TemplatePage as unknown as new (id: string, defs: object) => object)(
             \\"projectservice::EmployeesCustomPage\\",
             CustomEmployeesCustomPageTargetGenerated
