@@ -41,4 +41,17 @@ describe('ClientFactory Tests', () => {
         const telemetryClient2: Client = ClientFactory.getTelemetryClient();
         expect(telemetryClient).toEqual(telemetryClient2);
     });
+
+    test('Built connection string includes configured Ingestion/Live endpoints', () => {
+        TelemetrySettings.azureInstrumentationKey = 'test-key';
+        TelemetrySettings.azureIngestionEndpoint = 'https://custom-ingest.example.com/';
+        TelemetrySettings.azureLiveEndpoint = 'https://custom-live.example.com/';
+        ClientFactory['clientMap'].clear();
+
+        const connectionString = ClientFactory.getTelemetryClient().getApplicationKey();
+
+        expect(connectionString).toContain('InstrumentationKey=test-key');
+        expect(connectionString).toContain('IngestionEndpoint=https://custom-ingest.example.com/');
+        expect(connectionString).toContain('LiveEndpoint=https://custom-live.example.com/');
+    });
 });
