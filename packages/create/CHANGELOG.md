@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.43 → 1.0.44
+- @sap-ux/preview-middleware 1.2.0 → 1.2.1
+- @sap-ux/flp-config-inquirer 1.0.43 → 1.0.44
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
 ## 1.2.1
 
 ### Patch Changes
