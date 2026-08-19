@@ -20,6 +20,7 @@ import {
     safeGetSemanticKeyProperties,
     getCustomFilterFieldProperties,
     getTableIdentifiers,
+    getListReportViews,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
     getFilterFieldItems
@@ -2286,6 +2287,56 @@ describe('Test getTableIdentifiers()', () => {
             { key: '2', template: '' }
         ]);
         expect(getTableIdentifiers(manifest, 'MyLR')).toEqual(['1', '2']);
+    });
+});
+
+describe('Test getListReportViews()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { views: { paths } } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('returns empty array when manifest or target key is undefined', () => {
+        expect(getListReportViews(undefined, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest([{ key: '1' }]), undefined)).toEqual([]);
+    });
+
+    test('returns empty array when views.paths is missing or not an array', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest('not-an-array'), 'MyLR')).toEqual([]);
+    });
+
+    test('returns each non-custom view with its optional entity set, in manifest order', () => {
+        // Mirrors the fin.test.v4.lr2 CustomerList views: default tabs (no entitySet) plus a
+        // CompanyCodeDetail tab; the custom (template) tab and keyless entries are skipped.
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '2' },
+            { key: '3' },
+            { key: '5', template: 'my.app.ext.CustomTab' },
+            { key: '' },
+            undefined,
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([
+            { key: '1', entitySet: undefined },
+            { key: '2', entitySet: undefined },
+            { key: '3', entitySet: undefined },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+    });
+
+    test('returns a single view (does not collapse to empty like getTableIdentifiers)', () => {
+        // Unlike getTableIdentifiers, a single non-custom view is still returned so the OP mapping
+        // can resolve its originating tab.
+        expect(getListReportViews(makeManifest([{ key: '1' }]), 'MyLR')).toEqual([{ key: '1', entitySet: undefined }]);
     });
 });
 

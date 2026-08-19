@@ -140,7 +140,8 @@ export async function getAppFeatures(
                 listReportPage?.name,
                 log,
                 projectMetadata,
-                manifest
+                manifest,
+                listReportPage?.entitySet
             );
         }
         if (fpmPage) {
