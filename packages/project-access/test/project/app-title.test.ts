@@ -115,4 +115,14 @@ describe('resolveApplicationTitle()', () => {
 
         expect(result).toBeUndefined();
     });
+
+    test('when i18n properties file cannot be read, returns undefined', async () => {
+        mockReadJSON.mockResolvedValue(makeManifest('{{appTitle}}'));
+        mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
+        mockGetPropertiesI18nBundle.mockRejectedValue(new Error('ENOENT: file not found'));
+
+        const result = await resolveApplicationTitle({ manifestPath: MANIFEST_PATH });
+
+        expect(result).toBeUndefined();
+    });
 });

@@ -41,7 +41,11 @@ export async function resolveApplicationTitle(
         return undefined;
     }
 
-    const i18nPaths = await getI18nPropertiesPaths(manifestPath, manifest, memFs);
-    const bundle = await getPropertiesI18nBundle(i18nPaths['sap.app'], memFs);
-    return bundle[i18nKey]?.[0]?.value.value;
+    try {
+        const i18nPaths = await getI18nPropertiesPaths(manifestPath, manifest, memFs);
+        const bundle = await getPropertiesI18nBundle(i18nPaths['sap.app'], memFs);
+        return bundle[i18nKey]?.[0]?.value.value;
+    } catch {
+        return undefined;
+    }
 }
