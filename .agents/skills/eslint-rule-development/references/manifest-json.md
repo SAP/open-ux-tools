@@ -46,7 +46,7 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
-        const problems = [];
+        const problems: MyRuleDiagnostic[] = [];
         // ✅ manifest rules use linkedModel.apps — pages are required to find manifest config paths
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             // Scope guard — pick ONE based on which OData versions this rule covers:
@@ -115,9 +115,10 @@ const ruleTester = new RuleTester({
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
-const { createValidTest, createInvalidTest } = setup('sap-[rule-name]');
+const TEST_NAME = 'sap-[rule-name]';
+const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run('sap-[rule-name]', myRule, {
+ruleTester.run(TEST_NAME, myRule, {
     valid: [
         createValidTest({ name: 'property not set', filename: V4_MANIFEST_PATH, code: JSON.stringify(V4_MANIFEST, undefined, 2) }, []),
         createValidTest({ name: 'correct value', filename: V4_MANIFEST_PATH, code: getManifestAsCode(V4_MANIFEST, [{ path: ['sap.ui5', 'myProp'], value: 'correct' }]) }, [])

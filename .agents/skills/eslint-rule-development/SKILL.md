@@ -29,14 +29,14 @@ Add a new ESLint rule to `@sap-ux/eslint-plugin-fiori-tools` following the estab
 | **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files | `references/annotation.md` |
 | **Manifest JSON rule** | Validates `manifest.json` properties | `references/manifest-json.md` |
 | **Flex change file rule** | Validates `webapp/changes/*.change` (Applicable only to OData V2 flex change properties) | `references/flex-change.md` |
-| **JavaScript / TypeScript rule** | Validates JS/TS application source code (UI5 patterns, global variables, deprecated APIs) | `references/js-rule.md` |
+| **JavaScript / TypeScript rule** | Validates JS/TS application source code (UI5 patterns, global variables, deprecated APIs) | `references/js-ts-rule.md` |
 
 Infer from the request:
 - **Rule name** — `sap-[kebab-case-name]` pattern
 - **OData version** — V2 only, V4 only, or both
 - **Page scope** — which page types to check. **Default: all page types** (list report, object page, etc.) unless the spec explicitly restricts the scope. Do not limit to one page type based on the examples in the spec.
 - **Auto-fix** — yes/no
-- **Severity** — `error` or `warning`. Rules in `recommended-for-s4hana` MUST be `warn`.
+- **Severity** — `error` or `warn`. Rules in `recommended-for-s4hana` MUST be `warn`.
 
 **OData version determines the linker file — always follow the stated version:**
 
@@ -50,9 +50,9 @@ Infer from the request:
 
 ---
 
-## Steps 2–9: Implementation Checklist
+## Steps 2–10: Implementation Checklist
 
-### Step 2 — Add diagnostic constant (Fiori language rules only; skip for JS/TS rules)
+### Step 2 — Add diagnostic constant (annotation, manifest JSON, and flex change rules only; skip for JS/TS rules)
 
 In `packages/eslint-plugin-fiori-tools/src/language/diagnostics.ts`:
 ```typescript
@@ -97,10 +97,7 @@ If the rule should also apply to S/4HANA projects, add it to the `recommended-fo
 
 ### Step 5 — Write tests
 
-Use the test template from the reference file. Run only the new test file during development:
-```bash
-NODE_OPTIONS="--experimental-vm-modules" npx jest --testPathPatterns="sap-my-new-rule" --no-coverage
-```
+Use the test template from the reference file; run only the new test file (see efficiency rules at the top).
 
 **Always check `message`, never `messageId`, in `errors` arrays.** When a rule message contains interpolated data (e.g. `{{tableType}}`), checking only `messageId` would accept any value for that placeholder and miss regressions. Use the fully resolved string instead:
 
@@ -141,7 +138,7 @@ In `packages/eslint-plugin-fiori-tools/README.md`, do **two things**:
    |  new  | [sap-my-new-rule](docs/rules/sap-my-new-rule.md) | Short description | | ✅ |
    ```
 
-2. **Update the previously added rule**: find the row that still has `new` in the version column (there should be exactly one after your addition) and replace `new` with the version it was introduced in. Look up that version in `packages/eslint-plugin-fiori-tools/CHANGELOG.md` — find the first version entry that mentions the rule name.
+2. **Backfill any pending `new` versions**: if any rows still show `new` from prior rule additions that have since been released, look up each rule's release version in `packages/eslint-plugin-fiori-tools/CHANGELOG.md` and replace `new` with that version. After this cleanup, your newly added rule should be the only row showing `new`.
 
 ### Step 8 — Run full quality gates (once)
 
@@ -163,6 +160,12 @@ If `lint` reports errors after `lint:fix`:
 
 Do not proceed to Step 9 until `pnpm lint` exits with code 0.
 
+Then confirm all tests still pass:
+
+```bash
+pnpm --filter @sap-ux/eslint-plugin-fiori-tools test
+```
+
 ### Step 9 — Create changeset
 
 ```bash
@@ -175,7 +178,7 @@ FEAT: add sap-my-new-rule rule for [short description]
 
 ### Step 10 — Report
 
-Summarise what was done:
+Summarize what was done:
 - **Rule name and type** — rule ID and which type (annotation / manifest JSON / flex change / JS/TS)
 - **Files created** — rule implementation, test file, doc file
 - **Files modified** — diagnostics.ts, rules/index.ts, src/index.ts, README.md

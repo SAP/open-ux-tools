@@ -29,7 +29,7 @@ For rules with nested AST walks: also read `src/rules/sap-no-single-facet-in-col
 | Annotation term | Access path | Example rule |
 |---|---|---|
 | Terms in linked model (`UI.LineItem`, `UI.FieldGroup`) | `page.lookup['table']`, `page.lookup['field-group']`, etc. | `sap-no-data-field-intent-based-navigation.ts` |
-| Terms **not** in `page.lookup` (`UI.Facets`, `UI.HeaderFacets`) | `page.entity?.structuredType` → `buildAnnotationIndexKey` → `parsedService.index.annotations` | `sap-no-single-facet-in-collection.ts` |
+| Terms only accessible via the raw annotation index (`UI.Facets`, `UI.HeaderFacets`) | `page.entity?.structuredType` → `buildAnnotationIndexKey` → `parsedService.index.annotations` | `sap-no-single-facet-in-collection.ts` |
 | Secondary annotations linked **from** page nodes (`UI.Chart` via `DataFieldForAnnotation` or `ReferenceFacet`) | `buildAnnotationPageMap(sourceCode, 'chart')` — builds `Map<IndexedAnnotation, string[]>` from `page.lookup[lookupKey]` | `sap-micro-chart-requires-navigation-entity.ts` |
 
 ## Required diagnostic interface:
@@ -87,7 +87,7 @@ check(context) {
 }
 ```
 
-> **Test fixture:** The test snippet must include a reference from a page annotation to the annotation under test (a `UI.Facets` `ReferenceFacet` or `UI.LineItem` `DataFieldForAnnotation`). Without it the linker never populates the lookup key → 0 errors even for invalid content. Never add a fallback that scans all entity annotations.
+> **Test fixture:** The test snippet must include a reference from a page annotation to the annotation under test (a `UI.Facets` `ReferenceFacet` or `UI.LineItem` `DataFieldForAnnotation`). Without it the linker never populates the lookup key → 0 errors even for invalid content.
 
 ## Template B — via `page.lookup` (terms in linked model):
 
@@ -112,7 +112,7 @@ function processTableItem(
     problems: MyRuleDiagnostic[]
 ): void {
     if (!item.annotation) return;
-    const aliasInfo = parsedService.artifacts.aliasInfo[item.annotation.annotation.top.uri];
+    const aliasInfo = parsedService.artifacts.aliasInfo[item.annotation.annotation.top.uri]; // use to resolve alias-prefixed term names
     const violatingElements: Element[] = []; // replace with real logic
 
     for (const violatingElement of violatingElements) {
@@ -174,7 +174,7 @@ function checkAnnotationsInPage(
     if (!annotationMap) return;
 
     for (const annotation of Object.values(annotationMap)) {
-        const aliasInfo = parsedService.artifacts.aliasInfo[annotation.top.uri];
+        const aliasInfo = parsedService.artifacts.aliasInfo[annotation.top.uri]; // use to resolve alias-prefixed term names
         const [collection] = elementsWithName(Edm.Collection, annotation.top.value);
         if (!collection) continue;
 
@@ -301,7 +301,7 @@ ruleTester.run(TEST_NAME, myRule, {
 
 | | XML | CDS |
 |---|---|---|
-| `setup()` | `setup(TEST_NAME)` | `setup("${TEST_NAME} - CDS", CAP_APP_PATH)` |
+| `setup()` | `setup(TEST_NAME)` | `` setup(`${TEST_NAME} - CDS`, CAP_APP_PATH) `` |
 | `filename` | `V4_ANNOTATIONS_PATH` | `CAP_ANNOTATIONS_PATH` (`.cds` selects CDS parser) |
 | Code construction | `getAnnotationsAsXmlCode(V4_ANNOTATIONS, snippet)` | `CAP_ANNOTATIONS + cdsSnippet` |
 | Non-CDS guard | not needed | add valid case with `filename: 'other.json'` |

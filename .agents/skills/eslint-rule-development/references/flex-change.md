@@ -52,7 +52,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             return [];
         }
         const problems = [];
-        for (const [, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+        for (const [, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) { // appKey unused — flex change rules don't need manifest URI
             for (const page of app.pages) {
                 // ✅ Use page.lookup['table'] to access tables — not page.someTable
                 for (const table of page.lookup['table'] ?? []) {
@@ -94,7 +94,7 @@ const rule: FioriRuleDefinition = createFioriRule({
 export default rule;
 ```
 
-For a rule covering both V2 flex change **and** V4 manifest, add `FioriJSONSourceCode` to the guard and add a `manifest` field to the diagnostic. See `sap-no-live-mode.ts` for the full pattern.
+For a rule covering both V2 flex change **and** V4 manifest, add `FioriJSONSourceCode` (from `'../language/json/source-code.js'`) to the guard and add a `manifest` field to the diagnostic. See `sap-no-live-mode.ts` for the full pattern.
 
 ## Test template:
 
@@ -112,9 +112,10 @@ const ruleTester = new RuleTester({
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
-const { createValidTest, createInvalidTest } = setup('sap-[rule-name]');
+const TEST_NAME = 'sap-[rule-name]';
+const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run('sap-[rule-name]', myRule, {
+ruleTester.run(TEST_NAME, myRule, {
     valid: [
         createValidTest(
             { name: 'V2: property not set in change file', filename: V2_FLEX_CHANGE_FILE_PATH, code: JSON.stringify(V2_FLEX_CHANGE_CONTENT, undefined, 2) },

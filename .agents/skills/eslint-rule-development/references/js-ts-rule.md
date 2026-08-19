@@ -78,7 +78,7 @@ ruleTester.run('sap-[rule-name]', rule, {
 });
 ```
 
-**`message` vs `messageId` in test assertions:** Always check `message` (the fully resolved string), not `messageId`. If the rule has no dynamic data the resolved message equals the string in `meta.messages`. If it has `{{placeholder}}` data write the fully resolved string — using `messageId` alone accepts any interpolated value and misses regressions.
+**`message` vs `messageId` in test assertions:** Always check `message` (the fully resolved string), not `messageId` — see Step 5 in the skill for the rationale and examples.
 
 **Note on TypeScript source:** JS/TS rules in this plugin lint UI5 application source code (JS/TS files). The `RuleTester` tests use plain JavaScript snippets — no TypeScript parser is needed in tests because the rules check patterns that appear in both JS and TS. The rule implementation itself is written in TypeScript (`Rule.RuleModule`), but it targets JS/TS AST nodes from ESLint's default parser.
 
