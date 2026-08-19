@@ -236,9 +236,9 @@ export default class RoutesHandler {
      * Resolves base and instance-specific controller extensions from the workspace's codeExt change files.
      *
      * @param codeExtFiles codeExt change files read from the workspace
-     * @param controllerName Controller name to match against each change's selector
+     * @param controllerName Controller name matched to each change's selector
      * @param viewId Optional view ID used to detect an instance-specific extension for the current view
-     * @returns Existence flags and paths for base/instance controllers, plus any stale change reference
+     * @returns Existence flags and paths for base or instance controllers, plus any stale change reference
      */
     private async resolveControllerExtensions(
         codeExtFiles: Resource[],

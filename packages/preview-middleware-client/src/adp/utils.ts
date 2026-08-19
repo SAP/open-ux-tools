@@ -173,7 +173,7 @@ interface ViewLike {
  * back to the controller instance's metadata name. Returns an empty string when the view owns no
  * controller.
  *
- * @param view The view to resolve the controller name for.
+ * @param view The view for which to resolve the controller name.
  * @returns The controller name (`module:...` or class name), or an empty string when none is resolvable.
  */
 function resolveControllerName(view: ViewLike): string {

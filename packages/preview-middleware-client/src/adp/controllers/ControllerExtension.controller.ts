@@ -458,7 +458,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     }
 
     /**
-     * Handles selection change on the controller type radio button group.
+     * Handles the selection change on the controller type for the radio button group.
      *
      * @param event Event
      */
