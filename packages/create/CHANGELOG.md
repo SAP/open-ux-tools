@@ -1,5 +1,27 @@
 # @sap-ux/create
 
+## 1.3.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Features
+
+- Add `generate opa5-tests` command to generate OPA5 integration tests for an existing Fiori elements (OData V4) application [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.7.1 → 1.7.2
+
 ## 1.2.2
 
 ### Patch Changes

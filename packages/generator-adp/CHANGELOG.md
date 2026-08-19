@@ -1,5 +1,17 @@
 # @sap-ux/generator-adp
 
+## 1.0.48
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Read key-user changes from a temp file in JSON mode instead of the CLI [[2191bb7](https://github.com/SAP/open-ux-tools/commit/2191bb75b8ddd84cf832a699eb269630f659f7c7)]
+
 ## 1.0.47
 
 ### Patch Changes
