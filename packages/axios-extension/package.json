@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
-        "@sap-ux/vocabularies-types": "0.15.0",
+        "@sap-ux/vocabularies-types": "0.16.0",
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.17.24",
         "nock": "14.0.16",
