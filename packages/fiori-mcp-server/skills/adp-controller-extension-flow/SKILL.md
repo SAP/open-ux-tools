@@ -422,6 +422,8 @@ Include XML comments inside fragments for context hints:
 
 ### Step 13 — Validate
 
+> **Validate before stopping (hard rule).** After generating files (Step 12), you MUST call `restart` before `stop`. Fragment and controller extension controls only appear in `get_overlays` after the editor reloads with the written files on disk. **`stop` must never immediately follow file generation** — the step between them is always `restart` + overlay verification. Skipping this step means the change is unverified; calling `stop` first makes recovery impossible within the session.
+
 After generating all files, call `restart` to reload the editor so it picks up the newly written fragment and controller extension files.
 
 ```
