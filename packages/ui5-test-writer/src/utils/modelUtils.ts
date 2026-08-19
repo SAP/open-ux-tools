@@ -3,7 +3,7 @@ import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
+import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type {
     TreeAggregation,
@@ -33,6 +33,11 @@ export interface SectionItem extends AggregationItem {
     custom?: boolean;
     name?: string;
     order?: number;
+    properties?: {
+        stashed?: { freeText: string | boolean };
+        hidden?: { value: boolean };
+        hideByProperty?: { value: string | boolean };
+    };
     schema: {
         keys: { name: string; value: string }[];
         dataType?: string;
@@ -48,6 +53,13 @@ export interface HeaderSectionItem extends SectionItem {
         stashed: {
             freeText: string | boolean;
         };
+    };
+}
+
+export interface HeaderItem extends TreeAggregation {
+    properties?: {
+        title?: { value?: string };
+        description?: { value?: string };
     };
 }
 
@@ -84,7 +96,15 @@ export async function getAppFeatures(
         // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
         const appAccess = await createApplicationAccess(basePath, { fs: fs });
         const specification = await appAccess.getSpecification<Specification>();
-        const appModel: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
+        // `includeAnnotationProperties` only becomes available with ux-specification 1.144.8, but updating
+        // the dependency causes imports to break, due to a change in export mechanism
+        // TODO: Remove workaround when ux-specification is updated to 1.144.8 or later
+        const readAppOptions: ReadAppParams & { includeAnnotationProperties: boolean } = {
+            app: appAccess,
+            fs: fs,
+            includeAnnotationProperties: true
+        };
+        const appModel: ReadAppResult = await specification.readApp(readAppOptions);
 
         if (!projectMetadata) {
             const metadataPath = appAccess.project?.apps['']?.services?.mainService?.local;
@@ -95,7 +115,7 @@ export async function getAppFeatures(
 
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
-        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
+        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel) : fpmPage;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -115,7 +135,6 @@ export async function getAppFeatures(
             featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
         }
         if (objectPages) {
-            log?.warn('Extracting Object Page features from application model');
             featureData.objectPages = await getObjectPageFeatures(
                 objectPages,
                 listReportPage?.name,
@@ -123,7 +142,6 @@ export async function getAppFeatures(
                 projectMetadata,
                 manifest
             );
-            log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {
             featureData.fpm = getFPMFeatures(fpmPage, log);
@@ -185,13 +203,11 @@ export function getListReportPage(applicationModel: ApplicationModel): PageWithM
  * Retrieves all FPM Custom Page definitions from the given application model.
  *
  * @param applicationModel - The application model containing page definitions.
- * @param log - optional logger instance
  * @returns An array of FPM Custom Page definitions.
  */
-export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): PageWithModelV4 | null {
+export function getFPMPage(applicationModel: ApplicationModel): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        log?.warn('pageType:' + page.pageType);
         if (page.pageType === PageTypeV4.FPMCustomPage) {
             page.name = pageKey; // store page key as name for later identification
             return page;
