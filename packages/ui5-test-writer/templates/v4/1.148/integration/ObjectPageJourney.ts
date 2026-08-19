@@ -46,11 +46,15 @@ function journey() {
     opaTest("Navigate to <%- name%>ObjectPage", function (Given: Given, When: When, Then: Then) {
         Given.iStartMyApp();
 <% if(navigationParents.parentLRName) { -%>
+<% const parentTableId = navigationParents.parentLRViewKey ? '"' + navigationParents.parentLRViewKey + '"' : '""'; -%>
 <% if (!hideFilterBar) { -%>
         When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
 <% } -%>
-        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iCheckRows();
-        When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iPressRow(0);
+<% if (navigationParents.parentLRViewKey && !navigationParents.parentLRViewIsDefault) { -%>
+        When.onThe<%- navigationParents.parentLRName%>Generated.iGoToView({ key: "<%- navigationParents.parentLRViewKey %>" });
+<% } -%>
+        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iCheckRows();
+        When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iPressRow(0);
 <% } -%>
 <% navigationParents.parentOPs.forEach(function(parent) { %>
         Then.onThe<%- parent.name %>Generated.iSeeThisPage();
@@ -101,12 +105,15 @@ function journey() {
     });
 <% } -%>
 
-<% if (bodySections?.length > 0) { -%>
-    opaTest("Check body sections of the Object Page", function (_Given: Given, <% if (bodySections?.length > 1) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (bodySections?.length > 1) { -%>
+    opaTest("Check the number of sections of the Object Page", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- name%>Generated.iCheckNumberOfSections(<%- bodySections.length %>);
+    });
+
 <% } -%>
+<% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
+    opaTest("Check the <%- section.id %> section of the Object Page", function (_Given: Given, <% if (bodySections.length > 1) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (bodySections.length > 1) { -%>
         When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
@@ -165,10 +172,10 @@ function journey() {
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(section.tableColumns) %>);
 <% } -%>
 <% } -%>
-<% }) -%>
-   });
-<% } -%>
+    });
 
+<% }) -%>
+<% } -%>
     opaTest("Teardown", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();

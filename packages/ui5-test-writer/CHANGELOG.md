@@ -1,5 +1,129 @@
 # @sap-ux/ui5-test-writer
 
+## 1.7.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Remove debug warn log statements from modelUtils and drop unused log parameter from getFPMPage [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.7.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.0 → 1.2.1
+
+## 1.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-13
+
+#### Features
+
+- Align FE V4 OPA5 test template buckets to LTM versions (1.150 -> 1.148), add a "latest" bucket, and confine iCheckTitlePath / iGoToSection features to latest [[caf4bda](https://github.com/SAP/open-ux-tools/commit/caf4bdafcada373166752b48e1b982d42993539e)]
+
+## 1.6.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.3 → 1.2.0
+
+## 1.6.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Features
+
+- Generate Contact Card OPA5 tests across Object Page header field groups, body-section forms, body-section tables, and List Report tables. `DataFieldForAnnotation::<property>::Contact` entries are detected in the spec model and emitted as `iClickLink({ property: "<property>/Contact" })` followed by `iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })`. Drops the `iPressSectionIconTabFilterButton` page-object workaround in favor of the public `iGoToSection` API and unconditionally emits `iCheckNumberOfSections` (now valid for any section count). [[58e4ffb](https://github.com/SAP/open-ux-tools/commit/58e4ffb1a6e6c96383673c5c321ccdd3b5ffefeb)]
+
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Features
+
+- Skip UI.Hidden Object Page sections when generating OPA5 tests [[bb84331](https://github.com/SAP/open-ux-tools/commit/bb843314c9d6ca0f6762cb03c6f89e161b7ca42f)]
+
+## 1.4.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.2 → 1.1.3
+
+## 1.4.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.1 → 1.1.2
+
+## 1.4.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Generate a separate, named opaTest block for each Object Page section instead of one combined "Check body sections" block, so large object pages produce readable, independently-failing journey tests [[ee1fcaf](https://github.com/SAP/open-ux-tools/commit/ee1fcafb1a96bb963e9f5882d783d5a80d7eae1e)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Object Page OPA tests now use the correct sub-section id for CollectionFacets whose children are only FieldGroup/Identification facets. Fiori elements renders these as a single sub-section inheriting the CollectionFacet id (with one FormContainer per FieldGroup), so the generated `iCheckSubSection`/`onForm` calls no longer reference non-existent per-FieldGroup ids (e.g. `FieldGroup::Q1`). [[d53e168](https://github.com/SAP/open-ux-tools/commit/d53e1680c38ec87558007ea1527943fc5059ef40)]
+
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Features
+
+- Generate Object Page header title check using iCheckTitlePath (binding-path based) [[26f9d1a](https://github.com/SAP/open-ux-tools/commit/26f9d1a1aaf4cb71d8c8f7fa33a529d7fa654da6)]
+
+## 1.3.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Replace the deprecated `iPressEdit()`/`iPressSectionIconTabFilterButton()` calls in generated OPA tests with the current `iExecuteEdit()` and `iGoToSection({ section })` APIs, and drop the now-unneeded custom `iPressSectionIconTabFilterButton` helper from the page-object templates. [[a516ff1](https://github.com/SAP/open-ux-tools/commit/a516ff1d3481623e059501c2b56c66ac334ea224)]
+
 ## 1.3.2
 
 ### Patch Changes

@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-service-writer"
     },
-    "version": "1.0.17",
+    "version": "1.0.18",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -33,7 +33,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.21",
+        "@sap-ux/annotation-converter": "0.10.22",
         "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
@@ -49,7 +49,7 @@
     "devDependencies": {
         "@jest/globals": "30.4.1",
         "@sap-ux/axios-extension": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.15.0",
+        "@sap-ux/vocabularies-types": "0.16.0",
         "@types/ejs": "3.1.5",
         "@types/fs-extra": "11.0.4",
         "@types/mem-fs": "1.1.2",

@@ -20,6 +20,7 @@ import {
     safeGetSemanticKeyProperties,
     getCustomFilterFieldProperties,
     getTableIdentifiers,
+    getListReportViews,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
     getFilterFieldItems
@@ -1506,14 +1507,14 @@ describe('Test getListReportFeatures()', () => {
                             aggregations: {
                                 columns: {
                                     aggregations: {
-                                        col1: {
+                                        'DataField::IDColumn': {
                                             description: 'ID',
                                             custom: false,
                                             schema: {
                                                 keys: [{ name: 'Value', value: 'IDColumn' }]
                                             }
                                         } as unknown as TreeAggregation,
-                                        col2: {
+                                        'DataField::NameColumn': {
                                             description: 'Name',
                                             custom: false,
                                             schema: {
@@ -2103,6 +2104,87 @@ describe('Test safeGetSemanticKeyProperties()', () => {
     });
 });
 
+describe('getListReportFeatures() — contactCardColumns extraction', () => {
+    let mockLogger: Logger;
+
+    beforeEach(() => {
+        mockLogger = {
+            warn: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+    });
+
+    test('exposes Contact-annotated table columns as contactCardColumns', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        TravelIDCol: {
+                                            schema: { keys: [{ name: 'Value', value: 'TravelID' }] },
+                                            description: 'Travel'
+                                        } as unknown as TreeAggregation,
+                                        'DataFieldForAnnotation::_Agency::Contact': {
+                                            schema: {
+                                                keys: [
+                                                    {
+                                                        name: 'Target',
+                                                        value: '_Agency/@Communication.Contact'
+                                                    }
+                                                ]
+                                            },
+                                            description: 'Agency'
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(pageModel, mockLogger);
+        expect(result.contactCardColumns).toEqual([{ property: 'DataFieldForAnnotation::_Agency::Contact' }]);
+    });
+
+    test('returns an empty contactCardColumns array when no Contact columns exist', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        TravelIDCol: {
+                                            schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(pageModel, mockLogger);
+        expect(result.contactCardColumns).toEqual([]);
+    });
+});
+
 describe('Test getCustomFilterFieldProperties()', () => {
     const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
         ({
@@ -2205,6 +2287,56 @@ describe('Test getTableIdentifiers()', () => {
             { key: '2', template: '' }
         ]);
         expect(getTableIdentifiers(manifest, 'MyLR')).toEqual(['1', '2']);
+    });
+});
+
+describe('Test getListReportViews()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { views: { paths } } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('returns empty array when manifest or target key is undefined', () => {
+        expect(getListReportViews(undefined, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest([{ key: '1' }]), undefined)).toEqual([]);
+    });
+
+    test('returns empty array when views.paths is missing or not an array', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest('not-an-array'), 'MyLR')).toEqual([]);
+    });
+
+    test('returns each non-custom view with its optional entity set, in manifest order', () => {
+        // Mirrors the fin.test.v4.lr2 CustomerList views: default tabs (no entitySet) plus a
+        // CompanyCodeDetail tab; the custom (template) tab and keyless entries are skipped.
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '2' },
+            { key: '3' },
+            { key: '5', template: 'my.app.ext.CustomTab' },
+            { key: '' },
+            undefined,
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([
+            { key: '1', entitySet: undefined },
+            { key: '2', entitySet: undefined },
+            { key: '3', entitySet: undefined },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+    });
+
+    test('returns a single view (does not collapse to empty like getTableIdentifiers)', () => {
+        // Unlike getTableIdentifiers, a single non-custom view is still returned so the OP mapping
+        // can resolve its originating tab.
+        expect(getListReportViews(makeManifest([{ key: '1' }]), 'MyLR')).toEqual([{ key: '1', entitySet: undefined }]);
     });
 });
 

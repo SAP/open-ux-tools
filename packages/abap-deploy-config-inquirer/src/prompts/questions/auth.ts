@@ -38,8 +38,10 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
         mask: '*',
         guiOptions: {
             type: 'login',
-            mandatory: true
+            mandatory: true,
+            applyDefaultWhenDirty: true
         },
+        default: '',
         validate: async (
             input: string,
             previousAnswers: AbapDeployConfigAnswersInternal

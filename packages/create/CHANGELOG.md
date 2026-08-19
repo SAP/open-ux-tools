@@ -1,5 +1,94 @@
 # @sap-ux/create
 
+## 1.3.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Features
+
+- Add `generate opa5-tests` command to generate OPA5 integration tests for an existing Fiori elements (OData V4) application [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.7.1 → 1.7.2
+
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.43 → 1.0.44
+- @sap-ux/preview-middleware 1.2.0 → 1.2.1
+- @sap-ux/flp-config-inquirer 1.0.43 → 1.0.44
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
+## 1.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.42 → 1.0.43
+- @sap-ux/preview-middleware 1.1.3 → 1.2.0
+- @sap-ux/flp-config-inquirer 1.0.42 → 1.0.43
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
+## 1.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add update metadata command to refresh local OData service metadata from backend [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Bug Fixes
+
+- Restrict `update service-metadata` to ABAP backend applications with a clear error message [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+#### Release Date
+
+2026-08-10
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/adp-tooling 1.0.41 → 1.0.42
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+- @sap-ux/flp-config-inquirer 1.0.41 → 1.0.42
+- @sap-ux/preview-middleware 1.1.2 → 1.1.3
+- @sap-ux/abap-deploy-config-inquirer 2.0.35 → 2.0.36
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.34 → 2.0.35
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+- @sap-ux/adp-tooling 1.0.40 → 1.0.41
+- @sap-ux/flp-config-inquirer 1.0.40 → 1.0.41
+- @sap-ux/preview-middleware 1.1.1 → 1.1.2
+- @sap-ux/app-config-writer 1.1.15 → 1.1.15
+
 ## 1.1.3
 
 ### Patch Changes

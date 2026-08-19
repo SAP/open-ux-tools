@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Standalone approuter no longer creates duplicate XSUAA resource when one already exists in mta.yaml; new XSUAA resources now use `-auth` suffix instead of `-uaa` [[3d5c396](https://github.com/SAP/open-ux-tools/commit/3d5c396818cb9e75670292fa8bd91588905d0d64)]
+
 ## 1.0.21
 
 ### Patch Changes
