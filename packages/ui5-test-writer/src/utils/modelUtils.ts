@@ -115,7 +115,7 @@ export async function getAppFeatures(
 
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
-        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
+        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel) : fpmPage;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -135,7 +135,6 @@ export async function getAppFeatures(
             featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
         }
         if (objectPages) {
-            log?.warn('Extracting Object Page features from application model');
             featureData.objectPages = await getObjectPageFeatures(
                 objectPages,
                 listReportPage?.name,
@@ -143,7 +142,6 @@ export async function getAppFeatures(
                 projectMetadata,
                 manifest
             );
-            log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {
             featureData.fpm = getFPMFeatures(fpmPage, log);
@@ -205,13 +203,11 @@ export function getListReportPage(applicationModel: ApplicationModel): PageWithM
  * Retrieves all FPM Custom Page definitions from the given application model.
  *
  * @param applicationModel - The application model containing page definitions.
- * @param log - optional logger instance
  * @returns An array of FPM Custom Page definitions.
  */
-export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): PageWithModelV4 | null {
+export function getFPMPage(applicationModel: ApplicationModel): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        log?.warn('pageType:' + page.pageType);
         if (page.pageType === PageTypeV4.FPMCustomPage) {
             page.name = pageKey; // store page key as name for later identification
             return page;
