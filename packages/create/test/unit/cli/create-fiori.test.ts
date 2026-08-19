@@ -164,6 +164,10 @@ jest.unstable_mockModule('@sap-ux/preview-middleware', () => ({
     generatePreviewFiles: jest.fn()
 }));
 
+jest.unstable_mockModule('@sap-ux/ui5-test-writer', () => ({
+    generateOPAFiles: jest.fn()
+}));
+
 jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
     UI5Config: {
         newInstance: jest.fn().mockResolvedValue({
