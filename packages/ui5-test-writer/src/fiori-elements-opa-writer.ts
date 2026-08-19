@@ -25,6 +25,7 @@ import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+import { isALPManifestTarget } from './utils/listReportUtils.js';
 import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -452,7 +453,7 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
             fileName: targetKey + '.gen'
         };
 
-        if (target.options?.settings?.views) {
+        if (isALPManifestTarget(target)) {
             pageConfig.template = 'AnalyticalListPage';
         }
 
