@@ -122,6 +122,7 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'restart': {
                 const { id, session } = getSession(input.sessionId);
                 sessions.delete(id);
+                await defaultTransport.disconnectSite(session.site);
                 const result = await startRta(defaultTransport, session);
                 const sessionId = randomUUID();
                 sessions.set(sessionId, session);
