@@ -1,5 +1,37 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Features
+
+- Ability to create entity specific controller extensions [[57cb8f9](https://github.com/SAP/open-ux-tools/commit/57cb8f93bb625ca20a4a0096a4f7369bb1e3ec75)]
+
+## 1.2.0
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Register the ADP variant's changes namespace to the local dev server in FLP Sandbox 2.0 so flex-change resources (fragments, controller extensions) resolve locally instead of the backend, matching Sandbox 1 behaviour. [[6fac8d4](https://github.com/SAP/open-ux-tools/commit/6fac8d45439a76e078fd6e6f6964b05d797e411e)]
+
+## 1.1.3
+
+## 1.1.2
+
+## 1.1.1
+
+## 1.1.0
+
 ## 1.0.49
 
 ## 1.0.48
