@@ -1,5 +1,9 @@
 # ABAP RAP Editable Treeviews with Draft - Quick Start Guide
 
+📖 **CRITICAL:** Before starting, review [RAP Generator Requirements](./0-rap-generator-requirements.md) for correct generator usage.
+
+---
+
 ## Choose Your Implementation Approach
 
 Ask user to choose from the following options:
@@ -89,7 +93,12 @@ Ask user to choose from the following options:
 
 1. **Create Fiori Elements App** - Before generating, verify system availability using fiori mcp to ensure the target ABAP system is accessible. Then download metadata and generate the app with TreeTable configuration for the hierarchy entity.
 2. **Generate Test Data**:  Create data population program
-3. **Implement Business Logic**: Add validation, determinations, move up, down, drag/drop, Draft support (create, edit, discard) - Inform user to implement in backend.
+3. **Implement Business Logic**: Add validation, determinations, and hierarchy-specific operations. Refer to [SAP Documentation: Treeview Features](https://help.sap.com/docs/abap-cloud/abap-rap/treeview-features) for implementing:
+   - Move up/down actions
+   - Drag-and-drop reordering (via `changeNextSibling`)
+   - Link/unlink parent operations
+   - Custom hierarchy validations
+   - Draft support (create, edit, discard)
 4. **Add Authorization**: Replace `#NOT_REQUIRED` with proper auth
 
 ---
@@ -126,7 +135,7 @@ Employee (child composition) with: Employee ID, Name, Job Title,
 Manager (self-reference for hierarchy), Location, Employment Status
 
 Package: <PACKAGE_NAME>
-Transport request: (Local - No transport)
+Transport request: (Local - No transport) OR <TRANSPORT_NUMBER>
 Hierarchy Type: Edit with Draft
 Hierarchy Structure: Employees with manager-employee hierarchy
 System:  <SYSTEM_ID> client <CLIENT>
@@ -134,7 +143,8 @@ System:  <SYSTEM_ID> client <CLIENT>
 
 ## References
 
-- **[SAP Documentation](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)**
+- **[SAP Documentation: Editable Treeviews Development Process](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)**
+- **[SAP Documentation: Treeview Features (Business Logic Implementation)](https://help.sap.com/docs/abap-cloud/abap-rap/treeview-features)**
 - **Prerequisites & Concepts**: `2.1-prerequisites-and-concepts.md`
 - **Option 1 Guide**: `2.3-with-generator.md`
 - **Troubleshooting**: `2.4-troubleshooting-checklist.md`

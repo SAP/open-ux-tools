@@ -3,6 +3,7 @@
 **Use the ADT MCP RAP generator to create the base business object:**
 - The RAP generator creates the foundation (tables, views, behavior definitions)
 - Creates `define table entity` (modern ABAP Cloud syntax - CDS table + view in one)
+- 📖 **CRITICAL:** See [RAP Generator Requirements](./0-rap-generator-requirements.md) for correct usage
 
 **CRITICAL Requirements (from below referenced SAP documentation):**
 - ✅ Database table (hierarchy entity) must have a parent reference field (e.g., `ManagerID`) linking to a key field (e.g., `EmployeeID` marked as primary or composite key)
