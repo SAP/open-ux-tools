@@ -123,7 +123,11 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         const contentTexts = change['texts'] as Record<string, Record<string, unknown>> | undefined;
         const topLevelTexts = entry.texts;
 
-        // Replace content.texts values with i18n bindings and write translations to .properties files
+        // Replace content.texts values with {@i18n>...} bindings and write translations to
+        // .properties files. The binding rewrite and the translation write are inseparable:
+        // both require the paired content.texts + top-level texts the backend delivers together.
+        // The @i18n model itself is registered by the generator scaffold (getManifestContent),
+        // which always runs during the same generation, so no per-change registration is needed here.
         if (contentTexts && topLevelTexts && Object.keys(topLevelTexts).length > 0) {
             change['texts'] = replaceTextsWithI18nBindings(contentTexts, fileName);
             await writeKeyUserTranslations(projectPath, fileName, topLevelTexts, fs);
