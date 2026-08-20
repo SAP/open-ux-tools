@@ -22,6 +22,8 @@ export interface AggregationItem extends TreeAggregation {
         keys: { name: string; value: string }[];
         dataType?: string;
     };
+    /** Present on action nodes that are menus (drop-downs): 'Annotation' or 'CustomMenu'. */
+    menuType?: string;
 }
 
 export interface FieldItem extends AggregationItem {

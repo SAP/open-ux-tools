@@ -54,12 +54,22 @@ sap.ui.define([
 <% } -%>
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
-<%         if (action.enabled === 'dynamic') { -%>
+<%         if (action.menuActions) { -%>
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>);
+            When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%             action.menuActions.forEach(function(menuAction) { -%>
+<%                 if (menuAction.visible) { -%>
+            Then.onThe<%- name%>Generated.onHeader().iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
+            // When.onThe<%- name%>Generated.onHeader().iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
+<%                 } -%>
+<%             }); -%>
+<%         } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
+            // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%         } else { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
-<%         } -%>
             // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%         } -%>
 <%     } -%>
 <%     }); -%>
         });
@@ -104,7 +114,7 @@ sap.ui.define([
 <% } -%>
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
-        opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1 || (section.subSections && section.subSections.length > 1) || (section.contactCardFields && section.contactCardFields.length > 0) || (section.contactCardColumns && section.contactCardColumns.length > 0) || (section.subSections || []).some(function(sub){ return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); })) { %>When<% } else { %>_When<% } %>, Then) {
+        opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1 || (section.subSections && section.subSections.length > 1) || (section.contactCardFields && section.contactCardFields.length > 0) || (section.contactCardColumns && section.contactCardColumns.length > 0) || (section.subSections || []).some(function(sub){ return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); }) || (section.actions && section.actions.some(function(a) { return a.visible && a.menuActions; }))) { %>When<% } else { %>_When<% } %>, Then) {
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>" });
 <% } -%>
@@ -113,19 +123,39 @@ sap.ui.define([
 <%      section.actions.forEach(function(action) { -%>
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
-<%              if (action.enabled === 'dynamic') { -%>
+<%              if (action.menuActions) { -%>
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  action.menuActions.forEach(function(menuAction) { -%>
+<%                      if (menuAction.visible) { -%>
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
+<%                      } -%>
+<%                  }); -%>
+<%              } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
-<%              } -%>
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%              } -%>
 <%          } else { -%>
-<%              if (action.enabled === 'dynamic') { -%>
+<%              if (action.menuActions) { -%>
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+            When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  action.menuActions.forEach(function(menuAction) { -%>
+<%                      if (menuAction.visible) { -%>
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
+<%                      } -%>
+<%                  }); -%>
+<%              } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
-<%              } -%>
             // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%              } -%>
 <%          } -%>
 <%      } -%>
 <%      }); -%>
