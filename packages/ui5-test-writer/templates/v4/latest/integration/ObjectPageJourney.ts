@@ -32,7 +32,10 @@ const usesFormIdentifier = (bodySections || []).some(function(section) {
     return subSectionsHaveForm || sectionHasFormFields || hasFormAction;
 });
 const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).some(function(section) {
-    return (section.subSections && section.subSections.length > 0)
+    return (section.subSections && section.subSections.length > 1)
+        || (section.contactCardFields && section.contactCardFields.length > 0)
+        || (section.contactCardColumns && section.contactCardColumns.length > 0)
+        || (section.subSections || []).some(function(sub) { return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); })
         || (section.actions || []).some(function(action) { return action.visible && action.isCritical; });
 });
 -%>
@@ -50,11 +53,15 @@ function journey() {
     opaTest("Navigate to <%- name%>ObjectPage", function (Given: Given, When: When, Then: Then) {
         Given.iStartMyApp();
 <% if(navigationParents.parentLRName) { -%>
+<% const parentTableId = navigationParents.parentLRViewKey ? '"' + navigationParents.parentLRViewKey + '"' : '""'; -%>
 <% if (!hideFilterBar) { -%>
         When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
 <% } -%>
-        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iCheckRows();
-        When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iPressRow(0);
+<% if (navigationParents.parentLRViewKey && !navigationParents.parentLRViewIsDefault) { -%>
+        When.onThe<%- navigationParents.parentLRName%>Generated.iGoToView({ key: "<%- navigationParents.parentLRViewKey %>" });
+<% } -%>
+        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iCheckRows();
+        When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iPressRow(0);
 <% } -%>
 <% navigationParents.parentOPs.forEach(function(parent) { %>
         Then.onThe<%- parent.name %>Generated.iSeeThisPage();
@@ -186,8 +193,10 @@ function journey() {
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
+<% if (section.subSections.length > 1) { -%>
         When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
         Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" }, {});
+<% } -%>
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });

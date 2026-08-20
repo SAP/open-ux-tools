@@ -81,6 +81,9 @@ export type FEV4ManifestTarget = {
             };
             views?: {
                 paths?: Array<{
+                    key?: string;
+                    entitySet?: string;
+                    template?: string;
                     primary?: unknown[];
                     secondary?: unknown[];
                     defaultPath?: string;
@@ -126,7 +129,8 @@ export type ObjectPageNavigationParent = {
 
 export type ObjectPageNavigationParents = {
     parentLRName?: string;
-    parentLRTableIdentifier?: string;
+    parentLRViewKey?: string;
+    parentLRViewIsDefault?: boolean;
     parentOPs: ObjectPageNavigationParent[];
 };
 

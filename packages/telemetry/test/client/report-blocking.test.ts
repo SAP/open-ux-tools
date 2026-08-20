@@ -6,8 +6,8 @@ const flushMock = jest.fn();
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
+        public context: any;
         public setUseDiskRetryCaching: any;
-        public addTelemetryProcessor: any;
         public trackEvent: any;
         public flush: any;
 
@@ -15,10 +15,8 @@ jest.unstable_mockModule('applicationinsights', () => {
             this.config = {
                 samplingPercentage: 0
             };
+            this.context = { tags: {} };
             this.setUseDiskRetryCaching = jest.fn();
-            this.addTelemetryProcessor = (fn: any) => {
-                fn({ tags: {} });
-            };
             this.trackEvent = (event: any) => trackEventMock(event);
             this.flush = (options: any) => {
                 flushMock(options);

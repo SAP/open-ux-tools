@@ -16,7 +16,7 @@ import {
     type AggregationItem,
     getAggregations
 } from './modelUtils.js';
-import { extractContactCardColumnsFromNode } from './tableUtils.js';
+import { extractContactCardColumnsFromNode, resolvePrimaryTableNode } from './tableUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -239,9 +239,11 @@ export function getListReportFeatures(
  * @returns The toolbar actions aggregation object.
  */
 export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
-    const table = getAggregations(pageModel.root)['table'];
-    const tableAggregations = getAggregations(table);
-    const toolBar = tableAggregations['toolBar'];
+    const tableNode = resolvePrimaryTableNode(pageModel.root);
+    if (!tableNode) {
+        return {} as TreeAggregations;
+    }
+    const toolBar = getAggregations(tableNode)['toolBar'];
     const toolBarAggregations = getAggregations(toolBar);
     const actions = toolBarAggregations['actions'];
     const actionAggregations = getAggregations(actions);
@@ -365,7 +367,7 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
               options?: {
                   settings?: {
                       views?: {
-                          paths?: Array<{ key?: string; template?: string } | undefined>;
+                          paths?: Array<{ key?: string; entitySet?: string; template?: string } | undefined>;
                       };
                   };
               };
@@ -391,6 +393,41 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
         return [];
     }
     return identifiers;
+}
+
+/**
+ * Returns the non-custom view tabs of a List Report with their optional entity set, in manifest
+ * order, used to map an Object Page to the tab that exposes it. Custom tabs (backed by an app
+ * fragment via `template`) are skipped as they host no navigable table.
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @returns array of `{ key, entitySet? }` for non-custom tabs, empty when there is no views block
+ */
+export function getListReportViews(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined
+): { key: string; entitySet?: string }[] {
+    if (!manifest || !targetKey) {
+        return [];
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as FEV4ManifestTarget | undefined;
+    const paths = target?.options?.settings?.views?.paths;
+    if (!Array.isArray(paths)) {
+        return [];
+    }
+    const views: { key: string; entitySet?: string }[] = [];
+    for (const path of paths) {
+        if (
+            path &&
+            typeof path.key === 'string' &&
+            path.key.length > 0 &&
+            !(typeof path.template === 'string' && path.template.length > 0)
+        ) {
+            views.push({ key: path.key, entitySet: path.entitySet });
+        }
+    }
+    return views;
 }
 
 /**
