@@ -433,7 +433,15 @@ run_rta_workflow_step { step: "restart", sessionId }
 
 Store the new `sessionId`. Navigate back to the editing target (repeat Step 2 as needed) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
 
-If an expected control is missing from the overlay list: inspect the relevant change file and fragment XML for errors (wrong `fragmentPath`, malformed XML, namespace mismatch), fix the file, call `restart` again with the new `sessionId`, re-navigate, and call `get_overlays` again. Repeat until all inserted controls are confirmed present.
+**Child overlay rule (hard rule).** For each control you added via `CTX_ADDXML`, you must find an overlay whose `controlId` matches that control's own id — not its parent's. The parent aggregation container appearing in `get_overlays` is **not** proof that the inserted child was accepted. If the parent is present but no overlay for the new control's id exists, the runtime silently rejected the fragment content (the change file was written and `call_action` returned `success: true`, but the control never rendered). This is a distinct failure state from "fragment not found."
+
+**Absent child overlay → diagnose immediately:**
+1. Check the wrapper element type used in the fragment. SAPUI5 aggregations enforce type contracts: e.g. `SmartForm.groupElements` requires children that implement `IFormGroupElement` (`sap.ui.comp.smartform.GroupElement` qualifies; `sap.ui.layout.HorizontalLayout` does not). A wrong wrapper is silently dropped with no error.
+2. Re-run the `lookup-aggregation.mjs` script (Step 6) for the target aggregation and compare its accepted `controlType` against what your fragment root element actually is.
+3. Replace the wrapper with the correct SAPUI5 type, write the corrected fragment file, call `restart`, re-navigate, and call `get_overlays` again.
+4. Repeat until the new control's own overlay entry is present.
+
+If an expected control is missing from the overlay list for other reasons (wrong `fragmentPath`, malformed XML, namespace mismatch): inspect the relevant change file and fragment XML, fix the file, call `restart` again with the new `sessionId`, re-navigate, and call `get_overlays` again. Repeat until all inserted controls are confirmed present.
 
 ### Step 14 — Cleanup
 
