@@ -32,7 +32,10 @@ const usesFormIdentifier = (bodySections || []).some(function(section) {
     return subSectionsHaveForm || sectionHasFormFields || hasFormAction;
 });
 const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).some(function(section) {
-    return section.subSections && section.subSections.length > 0;
+    return (section.subSections && section.subSections.length > 1)
+        || (section.contactCardFields && section.contactCardFields.length > 0)
+        || (section.contactCardColumns && section.contactCardColumns.length > 0)
+        || (section.subSections || []).some(function(sub) { return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); });
 });
 -%>
 <% if (usesFieldIdentifier) { -%>

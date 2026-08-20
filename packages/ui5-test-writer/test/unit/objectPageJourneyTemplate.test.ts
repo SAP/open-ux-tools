@@ -46,6 +46,8 @@ describe('ObjectPageJourney template - sub-section assertions', () => {
         expect(content).toContain(
             'onForm({ section: "GeneralInformation" }).iCheckField({ property: "AccountingDocument" })'
         );
+        // When is unused (no iGoToSection/iCheckSubSection emitted), so it must be prefixed with _
+        expect(content).toContain('function (_Given, _When, Then)');
     });
 
     test('multiple sub-sections are each checked via iCheckSubSection', () => {
@@ -61,7 +63,37 @@ describe('ObjectPageJourney template - sub-section assertions', () => {
                 subSections: [makeSubSection('S1', 'X'), makeSubSection('S2', 'Y')]
             }
         ]);
+        expect(content).toContain('iGoToSection({ section: "Details", subSection: "S1" })');
+        expect(content).toContain('iGoToSection({ section: "Details", subSection: "S2" })');
         expect(content).toContain('iCheckSubSection({ section: "S1" })');
         expect(content).toContain('iCheckSubSection({ section: "S2" })');
+        // When is used by iGoToSection, so it must not be prefixed with _
+        expect(content).toContain('function (_Given, When, Then)');
+    });
+
+    test('single sub-section with a contact-card link keeps When (iClickLink uses it)', () => {
+        const content = renderJourney([
+            {
+                id: 'GeneralInformation',
+                isTable: false,
+                actions: [],
+                contactCardColumns: [],
+                contactCardFields: [],
+                fields: [],
+                tableColumns: {},
+                subSections: [
+                    {
+                        id: 'GeneralInformation',
+                        fields: [{ property: 'Author' }],
+                        contactCardFields: [{ property: 'Author' }],
+                        contactCardColumns: [],
+                        tableColumns: {}
+                    }
+                ]
+            }
+        ]);
+        expect(content).not.toContain('iCheckSubSection');
+        expect(content).toContain('iClickLink({ property: "Author" })');
+        expect(content).toContain('function (_Given, When, Then)');
     });
 });
