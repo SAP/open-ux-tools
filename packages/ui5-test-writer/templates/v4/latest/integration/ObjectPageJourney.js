@@ -104,7 +104,7 @@ sap.ui.define([
 <% } -%>
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
-        opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1 || (section.subSections && section.subSections.length > 0)) { %>When<% } else { %>_When<% } %>, Then) {
+        opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1 || (section.subSections && section.subSections.length > 1) || (section.contactCardFields && section.contactCardFields.length > 0) || (section.contactCardColumns && section.contactCardColumns.length > 0) || (section.subSections || []).some(function(sub){ return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); })) { %>When<% } else { %>_When<% } %>, Then) {
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>" });
 <% } -%>
@@ -146,8 +146,10 @@ sap.ui.define([
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
+<% if (section.subSections.length > 1) { -%>
             When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
             Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" });
+<% } -%>
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });

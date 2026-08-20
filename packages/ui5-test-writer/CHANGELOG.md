@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.8.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Bug Fixes
+
+- Object Page OPA tests no longer emit `iCheckSubSection`/`iGoToSection(subSection)` for sections that render a single sub-section (e.g. a form-only CollectionFacet). Fiori elements renders such a section inline with no distinct sub-section, so the assertion had no matching control. Sub-section assertions are now only generated when a section has more than one sub-section. [[ecf9652](https://github.com/SAP/open-ux-tools/commit/ecf9652e47e17112195db18d1fb3ee83651785a9)]
+
 ## 1.8.0
 
 ### Minor Changes
