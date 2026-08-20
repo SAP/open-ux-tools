@@ -86,6 +86,14 @@ sap.ui.define([
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
+            <%_ if (item.custom) { _%>
+            <%_ if (item.labelUnresolved) { _%>
+            // TODO: label is an unresolved i18n key; replace with the rendered action text
+            <%_ } _%>
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { visible: true });
+            <%_ } else { _%>
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
             <%_ if (item.isCritical) { _%>
             <%_ if (item.enabled !== true) { _%>
@@ -99,6 +107,7 @@ sap.ui.define([
             When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
             <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ } _%>
             <%_ } _%>
             <%_ } _%>
             <%_ }); -%>

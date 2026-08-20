@@ -48,7 +48,7 @@ jest.unstable_mockModule('../../src/utils/modelUtils.js', () => ({
     getAppFeatures: getAppFeaturesMock
 }));
 
-const { generateOPAFiles } = await import('../../src/fiori-elements-opa-writer.js');
+const { generateOPAFiles, removeUnsupportedActions } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
@@ -946,7 +946,7 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: false }, { enabled: false })'
             );
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
@@ -1478,7 +1478,7 @@ export type Then = Opa5 & BaseArrangements & {
                 '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
             );
             expect(content).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: false }, { enabled: false })'
             );
 
             // ─── onForm with FormIdentifier cast (TS adaptation) ───
@@ -1792,6 +1792,56 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
+        });
+    });
+});
+
+describe('removeUnsupportedActions()', () => {
+    type Action = { label: string; custom?: boolean; menuType?: string };
+    const odata = (label: string): Action => ({ label });
+    const custom = (label: string): Action => ({ label, custom: true });
+    const menu = (label: string): Action => ({ label, menuType: 'CustomMenu' });
+
+    const makeFeatures = () =>
+        ({
+            listReport: { toolBarActions: [odata('KeepTB'), custom('CustomTB'), menu('MenuTB')] },
+            objectPages: [
+                {
+                    headerActions: [custom('CustomH'), menu('MenuH'), odata('KeepH')],
+                    bodySections: [{ actions: [odata('KeepS'), custom('CustomS'), menu('MenuS')] }]
+                }
+            ]
+        }) as unknown as Parameters<typeof removeUnsupportedActions>[0];
+
+    const labels = (features: Parameters<typeof removeUnsupportedActions>[0]) => ({
+        tb: features.listReport?.toolBarActions?.map((a) => a.label),
+        header: features.objectPages?.[0].headerActions?.map((a) => a.label),
+        section: features.objectPages?.[0].bodySections?.[0].actions?.map((a) => a.label)
+    });
+
+    it('1.84: strips both custom and menu actions (only OData renders)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.84');
+        expect(labels(features)).toEqual({ tb: ['KeepTB'], header: ['KeepH'], section: ['KeepS'] });
+    });
+
+    it('1.148: strips custom actions but keeps menu actions (menu template was downported)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.148');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'MenuTB'],
+            header: ['MenuH', 'KeepH'],
+            section: ['KeepS', 'MenuS']
+        });
+    });
+
+    it('latest: keeps all action types', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, 'latest');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'CustomTB', 'MenuTB'],
+            header: ['CustomH', 'MenuH', 'KeepH'],
+            section: ['KeepS', 'CustomS', 'MenuS']
         });
     });
 });

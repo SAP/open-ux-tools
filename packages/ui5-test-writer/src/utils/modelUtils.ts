@@ -16,13 +16,17 @@ import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
 import { readAnnotationXmls } from './metadataXmlUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
+import { buildI18nLabelResolver, passthroughLabelResolver, type I18nLabelResolver } from './i18nUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
     schema: {
         keys: { name: string; value: string }[];
         dataType?: string;
+        actionType?: string;
     };
+    /** Present on action nodes that are menus (drop-downs): 'Annotation' or 'CustomMenu'. */
+    menuType?: string;
 }
 
 export interface FieldItem extends AggregationItem {
@@ -69,6 +73,30 @@ export interface PageWithModelV4WithProperties extends PageWithModelV4 {
 }
 
 /**
+ * Builds the i18n label resolver from the app bundles, falling back to a passthrough resolver when
+ * the bundle can't be read (labels are then emitted unresolved).
+ *
+ * @param appAccess - application access used to read the i18n bundles
+ * @param log - optional logger instance
+ * @returns a resolver for `{i18n>key}` placeholder labels
+ */
+async function buildLabelResolver(
+    appAccess: Awaited<ReturnType<typeof createApplicationAccess>>,
+    log?: Logger
+): Promise<I18nLabelResolver> {
+    try {
+        return buildI18nLabelResolver(await appAccess.getI18nBundles());
+    } catch (error) {
+        log?.debug?.(
+            `Unable to read the app i18n bundle; i18n action labels will be emitted unresolved. ${
+                error instanceof Error ? error.message : String(error)
+            }`
+        );
+        return passthroughLabelResolver;
+    }
+}
+
+/**
  * Gets app features from the application model using ux-specification.
  *
  * @param basePath - the absolute target path where the application will be generated
@@ -92,6 +120,7 @@ export async function getAppFeatures(
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
     let annotationXmls: string[] = [];
+    let resolveLabel: I18nLabelResolver = passthroughLabelResolver;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
@@ -120,6 +149,7 @@ export async function getAppFeatures(
         } catch (error) {
             log?.debug(`Failed to read annotation files: ${error instanceof Error ? error.message : String(error)}`);
         }
+        resolveLabel = await buildLabelResolver(appAccess, log);
 
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
@@ -145,6 +175,7 @@ export async function getAppFeatures(
                 log,
                 projectMetadata,
                 manifest,
+                resolveLabel,
                 annotationXmls
             );
         }
@@ -156,6 +187,7 @@ export async function getAppFeatures(
                 projectMetadata,
                 manifest,
                 listReportPage?.entitySet,
+                resolveLabel,
                 annotationXmls
             );
         }

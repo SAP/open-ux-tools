@@ -3,6 +3,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
+    MenuActionState,
     ContactCardField,
     FormField,
     SectionFormField,
@@ -24,6 +25,7 @@ import {
     getAggregations,
     parseDataFieldForAnnotationName
 } from './modelUtils.js';
+import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
 import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
@@ -45,7 +47,8 @@ import { getListReportViews } from './listReportUtils.js';
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
- * @param listReportEntitySet - optional entity set of the parent List Report, used to resolve the originating view
+ * @param listReportEntitySet - entity set of the parent List Report, used to resolve the originating view
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @param annotationXmls - optional annotation XML documents to merge with the metadata (for annotation-only terms)
  * @returns a record of object page feature data
  */
@@ -56,6 +59,7 @@ export async function getObjectPageFeatures(
     metadata?: string,
     manifest?: Manifest,
     listReportEntitySet?: string,
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver,
     annotationXmls?: string[]
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
@@ -95,11 +99,12 @@ export async function getObjectPageFeatures(
             schemaNamespace,
             metadata,
             log,
+            resolveLabel,
             criticalActions
         );
         // extract header-level actions
         pageFeatureData.headerActions = convertedMetadata
-            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace, criticalActions)
+            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace, resolveLabel, criticalActions)
             : [];
         // determine edit button visibility from UpdateRestrictions on the OP entity set
         if (metadata && objectPage.entitySet) {
@@ -271,7 +276,8 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
  * @param schemaNamespace - optional OData schema namespace used as service identifier in action assertions
  * @param metadata - optional raw metadata XML for resolving standard button visibility (Create/Delete)
  * @param log - optional logger instance
- * @param criticalActions
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns body sections data including sub-sections
  */
 function extractObjectPageBodySectionsData(
@@ -280,6 +286,7 @@ function extractObjectPageBodySectionsData(
     schemaNamespace?: string,
     metadata?: string,
     log?: Logger,
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver,
     criticalActions?: Set<string>
 ): BodySectionFeatureData[] {
     const bodySections: BodySectionFeatureData[] = [];
@@ -311,7 +318,13 @@ function extractObjectPageBodySectionsData(
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
-                        ? extractSectionActions(section, convertedMetadata, schemaNamespace, criticalActions)
+                        ? extractSectionActions(
+                              section,
+                              convertedMetadata,
+                              schemaNamespace,
+                              resolveLabel,
+                              criticalActions
+                          )
                         : []
             };
             // For table sections, resolve Create/Delete visibility from target entity set
@@ -335,11 +348,158 @@ function extractObjectPageBodySectionsData(
 }
 
 /**
+ * Determines whether an action aggregation entry is a menu (drop-down) grouping several actions.
+ *
+ * @param item - action aggregation entry from the spec model
+ * @returns true if the entry represents an annotation menu or a manifest (custom) menu
+ */
+function isMenuActionItem(item: AggregationItem): boolean {
+    return item.menuType !== undefined || item.schema?.dataType === 'DataFieldForActionGroup';
+}
+
+/**
+ * Builds the individual menu item states contained in a menu action node.
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @returns array of menu item states
+ */
+function buildMenuItemStates(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): MenuActionState[] {
+    const innerContainer = getAggregations(menuItem)['actions'];
+    if (!innerContainer) {
+        return [];
+    }
+    const innerEntries = getAggregations(innerContainer) as Record<string, AggregationItem>;
+    return Object.entries(innerEntries).map(([childKey, child]) => {
+        const annotationState = buildActionStateFromSpecModelKey(
+            childKey,
+            child.description,
+            convertedMetadata,
+            schemaNamespace
+        );
+        if (annotationState) {
+            return {
+                label: annotationState.label,
+                visible: annotationState.visible,
+                service: annotationState.service,
+                action: annotationState.action,
+                unbound: annotationState.unbound,
+                enabled: annotationState.enabled,
+                dynamicPath: annotationState.dynamicPath
+            };
+        }
+        const { label, unresolved } = resolveLabel(child.description);
+        return { label, visible: true, labelUnresolved: unresolved || undefined };
+    });
+}
+
+/**
+ * Builds a menu action button state from a menu aggregation entry (annotation or custom menu).
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns the menu action button state
+ */
+function buildMenuActionState(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): ActionButtonState {
+    const menuType =
+        menuItem.menuType === 'Annotation' || menuItem.schema?.dataType === 'DataFieldForActionGroup'
+            ? 'Annotation'
+            : 'CustomMenu';
+    const { label, unresolved } = resolveLabel(menuItem.description);
+    return {
+        label,
+        action: '',
+        visible: true,
+        enabled: true,
+        menuType,
+        labelUnresolved: unresolved || undefined,
+        menuActions: buildMenuItemStates(menuItem, convertedMetadata, schemaNamespace, resolveLabel)
+    };
+}
+
+/**
+ * Builds an action button state for a custom (manifest-declared) action that has no OData
+ * `DataFieldForAction` counterpart. These are matched at runtime by their rendered label.
+ *
+ * @param item - the custom action aggregation entry
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns the custom action button state, or undefined if it has no usable label
+ */
+function buildCustomActionState(item: AggregationItem, resolveLabel: I18nLabelResolver): ActionButtonState | undefined {
+    const { label, unresolved } = resolveLabel(item.description);
+    if (!label) {
+        return undefined;
+    }
+    return {
+        label,
+        action: '',
+        visible: true,
+        enabled: true,
+        custom: true,
+        labelUnresolved: unresolved || undefined
+    };
+}
+
+/**
+ * Builds an action button state for a single action or a menu from a spec model aggregation entry.
+ *
+ * @param key - aggregation key
+ * @param item - aggregation entry
+ * @param convertedMetadata - converted OData metadata
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
+ * @returns the action or menu button state, or undefined if the entry is neither
+ */
+function buildActionOrMenuState(
+    key: string,
+    item: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver,
+    criticalActions?: Set<string>
+): ActionButtonState | undefined {
+    if (isMenuActionItem(item)) {
+        return buildMenuActionState(item, convertedMetadata, schemaNamespace, resolveLabel);
+    }
+    const odataState = buildActionStateFromSpecModelKey(
+        key,
+        item.description,
+        convertedMetadata,
+        schemaNamespace,
+        criticalActions
+    );
+    if (odataState) {
+        return odataState;
+    }
+    // Custom (manifest-declared) actions have no OData action; the spec model tags them `actionType: 'Custom'`.
+    if (item.schema?.actionType === 'Custom') {
+        return buildCustomActionState(item, resolveLabel);
+    }
+    return undefined;
+}
+
+/**
  * Extracts header-level action button states from an object page model.
  *
  * @param objectPage - object page from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns array of action button states for the header toolbar
  */
@@ -347,6 +507,7 @@ function extractHeaderActions(
     objectPage: PageWithModelV4,
     convertedMetadata: ConvertedMetadata,
     schemaNamespace: string,
+    resolveLabel: I18nLabelResolver,
     criticalActions?: Set<string>
 ): ActionButtonState[] {
     if (!objectPage.model) {
@@ -357,7 +518,7 @@ function extractHeaderActions(
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
         .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace, criticalActions)
+            buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel, criticalActions)
         )
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
@@ -369,6 +530,7 @@ function extractHeaderActions(
  * @param section - body section entry from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns array of action button states for the section toolbar
  */
@@ -376,6 +538,7 @@ function extractSectionActions(
     section: BodySectionItem,
     convertedMetadata: ConvertedMetadata,
     schemaNamespace: string,
+    resolveLabel: I18nLabelResolver,
     criticalActions?: Set<string>
 ): ActionButtonState[] {
     let actionsAgg: AggregationItem | undefined;
@@ -395,7 +558,7 @@ function extractSectionActions(
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
         .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace, criticalActions)
+            buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel, criticalActions)
         )
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
