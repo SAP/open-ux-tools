@@ -218,11 +218,7 @@ importers:
         version: 6.1.3
       ts-jest:
         specifier: 29.4.11
-<<<<<<< HEAD
-        version: 29.4.11(@babel/core@7.29.0(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
-=======
-        version: 29.4.11(@babel/core@7.29.0)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 29.4.11(@babel/core@7.29.0(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -372,11 +368,7 @@ importers:
         version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-<<<<<<< HEAD
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)
-=======
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.28.2)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -403,21 +395,13 @@ importers:
         version: 8.18.1
       babel-loader:
         specifier: 10.1.1
-<<<<<<< HEAD
-        version: 10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-=======
-        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
         specifier: 7.1.4
-<<<<<<< HEAD
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-=======
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       eslint:
         specifier: 9.39.1
         version: 9.39.1(supports-color@7.2.0)
@@ -447,33 +431,19 @@ importers:
         version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-<<<<<<< HEAD
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-=======
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
         version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
-<<<<<<< HEAD
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       style-loader:
         specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       ts-loader:
         specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-=======
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-      style-loader:
-        specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-      ts-loader:
-        specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)
@@ -1627,11 +1597,7 @@ importers:
         version: 3.0.0(typescript@5.9.3)
       ts-jest:
         specifier: 29.4.11
-<<<<<<< HEAD
-        version: 29.4.11(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
-=======
-        version: 29.4.11(@babel/core@8.0.1)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@8.0.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 29.4.11(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
       uuid:
         specifier: 11.1.1
         version: 11.1.1
@@ -1649,11 +1615,7 @@ importers:
         version: 6.1.3
       ts-jest:
         specifier: 29.4.11
-<<<<<<< HEAD
-        version: 29.4.11(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
-=======
-        version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 29.4.11(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/create:
     dependencies:
@@ -4513,11 +4475,7 @@ importers:
         version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-<<<<<<< HEAD
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
-=======
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.28.2)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
@@ -4550,21 +4508,13 @@ importers:
         version: 30.4.1(@babel/core@7.29.0(supports-color@8.1.1))(supports-color@8.1.1)
       babel-loader:
         specifier: 10.1.1
-<<<<<<< HEAD
-        version: 10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
         specifier: 7.1.4
-<<<<<<< HEAD
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       enzyme:
         specifier: 3.11.0
         version: 3.11.0
@@ -4603,33 +4553,19 @@ importers:
         version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-<<<<<<< HEAD
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
         version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
-<<<<<<< HEAD
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       style-loader:
         specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       ts-loader:
         specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      style-loader:
-        specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      ts-loader:
-        specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
 
   packages/ui-prompting:
     dependencies:
@@ -4669,11 +4605,7 @@ importers:
         version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-<<<<<<< HEAD
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
-=======
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.28.2)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
@@ -4694,21 +4626,13 @@ importers:
         version: 30.4.1(@babel/core@7.29.0(supports-color@8.1.1))(supports-color@8.1.1)
       babel-loader:
         specifier: 10.1.1
-<<<<<<< HEAD
-        version: 10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
         specifier: 7.1.4
-<<<<<<< HEAD
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       eslint:
         specifier: 9.39.1
         version: 9.39.1(supports-color@8.1.1)
@@ -4738,33 +4662,19 @@ importers:
         version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-<<<<<<< HEAD
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
         version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
-<<<<<<< HEAD
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       style-loader:
         specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       ts-loader:
         specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      style-loader:
-        specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      ts-loader:
-        specifier: 9.6.2
-        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)
@@ -16307,10 +16217,6 @@ packages:
   obug@2.1.1:
     resolution: {integrity: sha512-uTqF9MuPraAQ+IsnPf366RG4cP9RtUi7MLO1N3KEc+wb0a6yKpeL0lmk2IB1jY5KHPAlTc6T/JRdC/YqxHNwkQ==}
 
-  obug@2.1.4:
-    resolution: {integrity: sha512-4a+OsYv9UktOJKE+l1A4OufDgdRF9PifWj+tJnHURo/P+WOxpG4GzUFL9qCalmWauao6ogiG+QvnCovwPoyAWA==}
-    engines: {node: '>=12.20.0'}
-
   odata-query@8.0.5:
     resolution: {integrity: sha512-uteX6kmx4Y8LkEjdLuhXagI2GXQbJHvmfbI6z4PKcGj7vv5bLM6cX3vrBQsLr2JQStk0MUouRtkcja4pQhFKhg==}
 
@@ -20616,30 +20522,7 @@ snapshots:
       obug: 2.1.1
       semver: 7.8.5
 
-<<<<<<< HEAD
   '@babel/eslint-parser@8.0.0-rc.6(@babel/core@8.0.0-rc.6)(eslint@9.39.1(supports-color@8.1.1))':
-=======
-  '@babel/core@8.0.1':
-    dependencies:
-      '@babel/code-frame': 8.0.0
-      '@babel/generator': 8.0.0
-      '@babel/helper-compilation-targets': 8.0.0
-      '@babel/helpers': 8.0.0
-      '@babel/parser': 8.0.4
-      '@babel/template': 8.0.0
-      '@babel/traverse': 8.0.4
-      '@babel/types': 8.0.4
-      '@types/gensync': 1.0.5
-      convert-source-map: 2.0.0
-      empathic: 2.0.1
-      gensync: 1.0.0-beta.2
-      import-meta-resolve: 4.2.0
-      json5: 2.2.3
-      obug: 2.1.4
-      semver: 7.8.5
-
-  '@babel/eslint-parser@8.0.0-rc.6(@babel/core@8.0.0-rc.6)(eslint@9.39.1)':
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
     dependencies:
       '@babel/core': 8.0.0-rc.6
       eslint: 9.39.1(supports-color@8.1.1)
@@ -26266,42 +26149,23 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-<<<<<<< HEAD
-  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)':
-=======
-  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)':
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
       '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
       case-sensitive-paths-webpack-plugin: 2.4.0
       cjs-module-lexer: 1.4.3
-<<<<<<< HEAD
-      css-loader: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+      css-loader: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       es-module-lexer: 1.7.0
-      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-      html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+      html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       magic-string: 0.30.21
       semver: 7.8.5
       storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+      style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       ts-dedent: 2.2.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
-      webpack-dev-middleware: 6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-=======
-      css-loader: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-      es-module-lexer: 1.7.0
-      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-      html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-      magic-string: 0.30.21
-      semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-      ts-dedent: 2.2.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-      webpack-dev-middleware: 6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack-dev-middleware: 6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       webpack-hot-middleware: 2.26.1
       webpack-virtual-modules: 0.6.2
     optionalDependencies:
@@ -26322,42 +26186,23 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-<<<<<<< HEAD
-  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)':
-=======
-  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)':
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
       '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
       case-sensitive-paths-webpack-plugin: 2.4.0
       cjs-module-lexer: 1.4.3
-<<<<<<< HEAD
-      css-loader: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+      css-loader: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       es-module-lexer: 1.7.0
-      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-      html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+      html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       magic-string: 0.30.21
       semver: 7.8.5
       storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+      style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
+      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       ts-dedent: 2.2.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-      webpack-dev-middleware: 6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-      css-loader: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      es-module-lexer: 1.7.0
-      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      magic-string: 0.30.21
-      semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
-      ts-dedent: 2.2.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
-      webpack-dev-middleware: 6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
+      webpack-dev-middleware: 6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       webpack-hot-middleware: 2.26.1
       webpack-virtual-modules: 0.6.2
     optionalDependencies:
@@ -26394,17 +26239,10 @@ snapshots:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
 
-<<<<<<< HEAD
-  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)':
+  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
       '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(supports-color@7.2.0)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-=======
-  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)':
-    dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(supports-color@7.2.0)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       '@types/semver': 7.7.1
       magic-string: 0.30.21
       react: 16.14.0
@@ -26414,11 +26252,7 @@ snapshots:
       semver: 7.8.5
       storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       tsconfig-paths: 4.2.0
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -26437,17 +26271,10 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-<<<<<<< HEAD
-  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
+  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
       '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(supports-color@8.1.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)':
-    dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(supports-color@8.1.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       '@types/semver': 7.7.1
       magic-string: 0.30.21
       react: 16.14.0
@@ -26457,11 +26284,7 @@ snapshots:
       semver: 7.8.5
       storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       tsconfig-paths: 4.2.0
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -26480,11 +26303,7 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-<<<<<<< HEAD
-  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(supports-color@7.2.0)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))':
-=======
-  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))':
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(supports-color@7.2.0)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))':
     dependencies:
       debug: 4.4.3(supports-color@7.2.0)
       endent: 2.1.0
@@ -26494,19 +26313,11 @@ snapshots:
       react-docgen-typescript: 2.4.0(typescript@5.9.3)
       tslib: 2.8.1
       typescript: 5.9.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(supports-color@8.1.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))':
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))':
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(supports-color@8.1.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       endent: 2.1.0
@@ -26516,11 +26327,7 @@ snapshots:
       react-docgen-typescript: 2.4.0(typescript@5.9.3)
       tslib: 2.8.1
       typescript: 5.9.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -26533,19 +26340,11 @@ snapshots:
       '@types/react': 16.14.69
       '@types/react-dom': 16.9.25(@types/react@16.14.69)
 
-<<<<<<< HEAD
-  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)':
+  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
-      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)
-      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)
+      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)
+      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@7.2.0)(typescript@5.9.3)(uglify-js@3.19.3)
       '@storybook/react': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
-=======
-  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.28.2)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)':
-    dependencies:
-      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
-      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
-      '@storybook/react': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
       storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -26570,19 +26369,11 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-<<<<<<< HEAD
-  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
+  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
-      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)
-      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
+      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)
+      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
       '@storybook/react': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
-=======
-  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(esbuild@0.28.2)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)':
-    dependencies:
-      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
-      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
-      '@storybook/react': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
       storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -28684,33 +28475,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  babel-loader@10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  babel-loader@10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  babel-loader@10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       '@babel/core': 7.29.0(supports-color@8.1.1)
       find-up: 5.0.0
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
 
-  babel-loader@10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-
-  babel-loader@10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  babel-loader@10.1.1(@babel/core@7.29.0(supports-color@8.1.1))(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       '@babel/core': 7.29.0(supports-color@8.1.1)
       find-up: 5.0.0
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
 
   babel-plugin-istanbul@7.0.1(supports-color@8.1.1):
     dependencies:
@@ -29651,11 +29428,7 @@ snapshots:
   crypt@0.0.2:
     optional: true
 
-<<<<<<< HEAD
-  css-loader@7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  css-loader@7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  css-loader@7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.15)
       postcss: 8.5.15
@@ -29666,15 +29439,9 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.4
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
 
-  css-loader@7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-
-  css-loader@7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  css-loader@7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.15)
       postcss: 8.5.15
@@ -29685,11 +29452,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.4
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
 
   css-select@4.3.0:
     dependencies:
@@ -30396,35 +30159,20 @@ snapshots:
   es6-promisify@7.0.0:
     optional: true
 
-<<<<<<< HEAD
-  esbuild-loader@4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  esbuild-loader@4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  esbuild-loader@4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       esbuild: 0.28.2
       get-tsconfig: 4.13.6
       loader-utils: 2.0.4
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
       webpack-sources: 3.5.0
 
-  esbuild-loader@4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-      webpack-sources: 3.5.0
-
-  esbuild-loader@4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  esbuild-loader@4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       esbuild: 0.28.2
       get-tsconfig: 4.13.6
       loader-utils: 2.0.4
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
       webpack-sources: 3.5.0
 
   esbuild-plugin-alias@0.2.1: {}
@@ -31388,11 +31136,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-<<<<<<< HEAD
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chalk: 4.1.2
@@ -31407,15 +31151,9 @@ snapshots:
       semver: 7.8.5
       tapable: 2.3.0
       typescript: 5.9.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
 
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chalk: 4.1.2
@@ -31430,11 +31168,7 @@ snapshots:
       semver: 7.8.5
       tapable: 2.3.0
       typescript: 5.9.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
 
   form-data@4.0.4:
     dependencies:
@@ -31972,11 +31706,7 @@ snapshots:
       lodash.camelcase: 4.3.0
       react: 16.14.0
 
-<<<<<<< HEAD
-  html-webpack-plugin@5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  html-webpack-plugin@5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  html-webpack-plugin@5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
@@ -31984,15 +31714,9 @@ snapshots:
       pretty-error: 4.0.0
       tapable: 2.3.0
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
 
-  html-webpack-plugin@5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-
-  html-webpack-plugin@5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  html-webpack-plugin@5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
@@ -32000,11 +31724,7 @@ snapshots:
       pretty-error: 4.0.0
       tapable: 2.3.0
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
 
   htmlparser2@10.1.0:
     dependencies:
@@ -34610,8 +34330,6 @@ snapshots:
 
   obug@2.1.1: {}
 
-  obug@2.1.4: {}
-
   odata-query@8.0.5:
     dependencies:
       tslib: 2.8.1
@@ -36618,35 +36336,21 @@ snapshots:
       sass-embedded-win32-arm64: 1.97.3
       sass-embedded-win32-x64: 1.97.3
 
-<<<<<<< HEAD
-  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
       sass: 1.101.0
       sass-embedded: 1.97.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
 
-  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-
-  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
       sass: 1.101.0
       sass-embedded: 1.97.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
 
   sass@1.101.0:
     dependencies:
@@ -37257,27 +36961,15 @@ snapshots:
   stopwords-iso@1.1.0:
     optional: true
 
-<<<<<<< HEAD
-  storybook-addon-turbo-build@2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
+  storybook-addon-turbo-build@2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
-      esbuild-loader: 4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
+      esbuild-loader: 4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
     transitivePeerDependencies:
       - webpack
 
-  storybook-addon-turbo-build@2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
+  storybook-addon-turbo-build@2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
-      esbuild-loader: 4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-  storybook-addon-turbo-build@2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
-    dependencies:
-      esbuild-loader: 4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
-    transitivePeerDependencies:
-      - webpack
-
-  storybook-addon-turbo-build@2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
-    dependencies:
-      esbuild-loader: 4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      esbuild-loader: 4.4.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
     transitivePeerDependencies:
       - webpack
 
@@ -37499,23 +37191,13 @@ snapshots:
 
   stubborn-utils@1.0.2: {}
 
-<<<<<<< HEAD
-  style-loader@4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
+  style-loader@4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
 
-  style-loader@4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
+  style-loader@4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-  style-loader@4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
-    dependencies:
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-
-  style-loader@4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
-    dependencies:
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
 
   stylis@4.2.0: {}
 
@@ -37664,57 +37346,33 @@ snapshots:
       ansi-escapes: 7.3.0
       supports-hyperlinks: 3.2.0
 
-<<<<<<< HEAD
-  terser-webpack-plugin@5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  terser-webpack-plugin@5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  terser-webpack-plugin@5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
-<<<<<<< HEAD
       terser: 5.49.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
     optionalDependencies:
       '@swc/core': 1.15.46(@swc/helpers@0.5.19)
       clean-css: 5.3.3
-      esbuild: 0.27.4
-      html-minifier-terser: 6.1.0
-=======
-      terser: 5.46.1
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-    optionalDependencies:
-      '@swc/core': 1.15.46(@swc/helpers@0.5.19)
       esbuild: 0.28.2
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      html-minifier-terser: 6.1.0
       postcss: 8.5.15
       uglify-js: 3.19.3
 
-<<<<<<< HEAD
-  terser-webpack-plugin@5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-  terser-webpack-plugin@5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  terser-webpack-plugin@5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
-<<<<<<< HEAD
       terser: 5.49.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
     optionalDependencies:
       '@swc/core': 1.15.46(@swc/helpers@0.5.19)
       clean-css: 5.3.3
-      esbuild: 0.27.4
-      html-minifier-terser: 6.1.0
-=======
-      terser: 5.46.1
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
-    optionalDependencies:
-      '@swc/core': 1.15.46(@swc/helpers@0.5.19)
       esbuild: 0.28.2
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      html-minifier-terser: 6.1.0
       postcss: 8.5.22
       uglify-js: 3.19.3
 
@@ -37863,11 +37521,7 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-<<<<<<< HEAD
-  ts-jest@29.4.11(@babel/core@7.29.0(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
-=======
-  ts-jest@29.4.11(@babel/core@7.29.0)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  ts-jest@29.4.11(@babel/core@7.29.0(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.0(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -37884,19 +37538,11 @@ snapshots:
       '@babel/core': 7.29.0(supports-color@8.1.1)
       '@jest/transform': 30.4.1(supports-color@8.1.1)
       '@jest/types': 30.4.1
-<<<<<<< HEAD
       babel-jest: 30.4.1(@babel/core@7.29.0(supports-color@8.1.1))(supports-color@8.1.1)
-      esbuild: 0.27.4
-      jest-util: 30.4.1
-
-  ts-jest@29.4.11(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.4)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
-=======
-      babel-jest: 30.4.1(@babel/core@7.29.0)
       esbuild: 0.28.2
       jest-util: 30.4.1
 
-  ts-jest@29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  ts-jest@29.4.11(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -37913,68 +37559,27 @@ snapshots:
       '@babel/core': 7.29.7(supports-color@8.1.1)
       '@jest/transform': 30.4.1(supports-color@8.1.1)
       '@jest/types': 30.4.1
-<<<<<<< HEAD
       babel-jest: 30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
-      esbuild: 0.27.4
-      jest-util: 30.4.1
-
-  ts-loader@9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-      babel-jest: 30.4.1(@babel/core@7.29.7)
       esbuild: 0.28.2
       jest-util: 30.4.1
 
-  ts-jest@29.4.11(@babel/core@8.0.1)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@8.0.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
-    dependencies:
-      bs-logger: 0.2.6
-      fast-json-stable-stringify: 2.1.0
-      handlebars: 4.7.9
-      jest: 30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3))
-      json5: 2.2.3
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.8.5
-      type-fest: 4.41.0
-      typescript: 5.9.3
-      yargs-parser: 21.1.1
-    optionalDependencies:
-      '@babel/core': 8.0.1
-      '@jest/transform': 30.4.1
-      '@jest/types': 30.4.1
-      babel-jest: 30.4.1(@babel/core@8.0.1)
-      esbuild: 0.28.2
-      jest-util: 30.4.1
-
-  ts-loader@9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  ts-loader@9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       chalk: 4.1.2
       picomatch: 4.0.4
       source-map: 0.7.6
       typescript: 5.9.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
     optionalDependencies:
       loader-utils: 3.3.1
 
-  ts-loader@9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-    optionalDependencies:
-      loader-utils: 3.3.1
-
-  ts-loader@9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  ts-loader@9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       chalk: 4.1.2
       picomatch: 4.0.4
       source-map: 0.7.6
       typescript: 5.9.3
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
     optionalDependencies:
       loader-utils: 3.3.1
 
@@ -38585,11 +38190,7 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-<<<<<<< HEAD
-  webpack-dev-middleware@6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
-=======
-  webpack-dev-middleware@6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  webpack-dev-middleware@6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)):
     dependencies:
       colorette: 2.0.20
       memfs: 3.4.13
@@ -38597,15 +38198,9 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.3
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)
 
-  webpack-dev-middleware@6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)
-
-  webpack-dev-middleware@6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  webpack-dev-middleware@6.1.3(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)):
     dependencies:
       colorette: 2.0.20
       memfs: 3.4.13
@@ -38613,11 +38208,7 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.3
     optionalDependencies:
-<<<<<<< HEAD
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
-=======
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)
 
   webpack-hot-middleware@2.26.1:
     dependencies:
@@ -38629,11 +38220,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-<<<<<<< HEAD
-  webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3):
-=======
-  webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -38657,11 +38244,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-<<<<<<< HEAD
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
-=======
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.15))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.15)(uglify-js@3.19.3))
       watchpack: 2.5.1
       webpack-sources: 3.5.0
     transitivePeerDependencies:
@@ -38678,11 +38261,7 @@ snapshots:
       - postcss
       - uglify-js
 
-<<<<<<< HEAD
-  webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3):
-=======
-  webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22):
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+  webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -38706,11 +38285,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-<<<<<<< HEAD
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.27.4)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
-=======
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(esbuild@0.28.2)(postcss@8.5.22))
->>>>>>> 12b6ce870 (chore: align version inconsistencies (Aug 2026))
+      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.22)(uglify-js@3.19.3))
       watchpack: 2.5.1
       webpack-sources: 3.5.0
     transitivePeerDependencies:
