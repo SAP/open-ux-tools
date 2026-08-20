@@ -5346,8 +5346,8 @@ importers:
   packages/ui5-test-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.21
-        version: 0.10.21
+        specifier: 0.10.22
+        version: 0.10.22
       '@sap-ux/edmx-parser':
         specifier: 0.10.0
         version: 0.10.0
