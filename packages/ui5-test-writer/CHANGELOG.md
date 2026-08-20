@@ -1,5 +1,21 @@
 # @sap-ux/ui5-test-writer
 
+## 1.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Features
+
+- Generate OPA action tests for custom (manifest-declared) actions, matched by their (i18n-resolved) label via `iCheckAction("<label>")`. Custom-action tests are emitted only for the `latest` template bucket, where the required `sap.fe.test.api` support is available. Also fix bound actions with a collection binding parameter: they are now correctly treated as bound (`unbound: false`) and disabled-by-default (require a selection), matching the SAP FE runtime. [[09099e5](https://github.com/SAP/open-ux-tools/commit/09099e5aaed4cea169ebc18b8c9e52b1f53dda8e)]
+
+#### Features
+
+- Generate Object Page OPA tests for menu (drop-down) actions. Actions grouped in an annotation menu (`DataFieldForActionGroup`) or a manifest menu (`CustomMenu`) are now detected from the specification model and emitted with the menu-aware `iCheckMenuAction` / `iExecuteMenuAction` test API. [[7fe592d](https://github.com/SAP/open-ux-tools/commit/7fe592d42db7b3f5e48e88d8155e1fd399cf69fd)]
+
 ## 1.8.2
 
 ### Patch Changes
