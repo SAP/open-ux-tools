@@ -121,7 +121,7 @@ export interface TemplateConfig {
     locateReuseLibsScript?: boolean;
     enhancedHomePage?: boolean;
     enableCardGenerator?: boolean;
-    /** Disables UI2 personalization writes to the ABAP backend during ADP preview (ushell bug on UI5 < 1.148). */
+    /** Disables UI2 personalization writes to the ABAP backend during ADP preview (ushell uses wrong adapter in sandbox 1). */
     disableAppVariantStorage?: boolean;
 }
 
