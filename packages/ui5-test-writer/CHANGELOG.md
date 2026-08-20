@@ -1,5 +1,32 @@
 # @sap-ux/ui5-test-writer
 
+## 1.8.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Bug Fixes
+
+- Object Page OPA tests no longer emit `iCheckSubSection`/`iGoToSection(subSection)` for sections that render a single sub-section (e.g. a form-only CollectionFacet). Fiori elements renders such a section inline with no distinct sub-section, so the assertion had no matching control. Sub-section assertions are now only generated when a section has more than one sub-section. [[ecf9652](https://github.com/SAP/open-ux-tools/commit/ecf9652e47e17112195db18d1fb3ee83651785a9)]
+
+## 1.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Features
+
+- Generate TypeScript OPA5 tests for FPM pages and add WithAnd<T> fluent `.and` chaining support
+
+    - FPM (`sap.fe.core.fpm`) pages no longer force generated OPA5 tests to JavaScript; they now honour the configured/auto-detected TypeScript setting, emitting `FPMJourney.ts` and `pages/FPM.ts` symmetric with the List Report / Object Page templates. The FPM page is constructed via `sap/fe/test/TemplatePage` (cast to work around the missing `sap/fe/test/FPM` type in `@sapui5/types`).
+    - Generated `OpaJourneyTypes.gen.d.ts` now emits a `WithAnd<T>` utility type and wraps each page's `When`/`Then` intersection in it, enabling the OPA5 fluent `.and.iCheckX()` chaining pattern in TypeScript journeys. The standalone splicer backfills the `WithAnd<T>` definition into type files generated before this change. [[aec42e9](https://github.com/SAP/open-ux-tools/commit/aec42e9be5fa2c76aea51dbc56eb30f07aadec9a)]
+
 ## 1.7.4
 
 ### Patch Changes
