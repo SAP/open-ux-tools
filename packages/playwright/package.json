@@ -34,7 +34,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@playwright/test": "1.60.0",
+        "@playwright/test": "1.62.1",
         "@sap-ux/logger": "workspace:*",
         "fs-extra": "11.3.6",
         "jest-dev-server": "11.0.0",
