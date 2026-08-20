@@ -30,7 +30,7 @@ import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
-import { getTableIdentifiers } from './listReportUtils.js';
+import { getListReportViews } from './listReportUtils.js';
 
 /**
  * Extracts feature data for object pages from the application model.
@@ -40,6 +40,7 @@ import { getTableIdentifiers } from './listReportUtils.js';
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
+ * @param listReportEntitySet
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
@@ -47,7 +48,8 @@ export async function getObjectPageFeatures(
     listReportPageKey?: string,
     log?: Logger,
     metadata?: string,
-    manifest?: Manifest
+    manifest?: Manifest,
+    listReportEntitySet?: string
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
@@ -58,9 +60,9 @@ export async function getObjectPageFeatures(
     // attempt to get individual feature data for each object page
     const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
     const schemaNamespace = convertedMetadata?.namespace ?? '';
-    // The parent List Report's default (first) table tab. Empty for single-table LRs;
-    // used so the OP's "navigate from parent LR" step targets a concrete tab on multi-tab LRs.
-    const parentLRTableIdentifier = getTableIdentifiers(manifest, listReportPageKey)[0];
+    // Non-custom tabs of the parent List Report with their optional entity set. Used to pick the
+    // tab a given Object Page is reached from on multi-view LRs; empty for single-table LRs.
+    const listReportViews = getListReportViews(manifest, listReportPageKey);
 
     for (const objectPage of objectPages) {
         const pageFeatureData: ObjectPageFeatures = {} as ObjectPageFeatures;
@@ -70,7 +72,7 @@ export async function getObjectPageFeatures(
             objectPage.name!,
             objectPages,
             listReportPageKey,
-            parentLRTableIdentifier
+            resolveOriginatingView(listReportViews, objectPage.entitySet, listReportEntitySet)
         );
         // extract header title binding path (for iCheckTitlePath)
         pageFeatureData.headerTitle = getHeaderTitlePath(objectPage);
@@ -122,14 +124,14 @@ export function getObjectPages(applicationModel: ApplicationModel): PageWithMode
  * @param targetObjectPageKey - key of the target object page
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
- * @param parentLRTableIdentifier - the parent List Report's default table tab key (empty for single-table LRs)
+ * @param originatingView - the parent List Report view/tab this Object Page is reached from (undefined for single-table LRs)
  * @returns navigation data including the ordered ancestor Object Page chain
  */
 function getObjectPageNavigationParents(
     targetObjectPageKey: string,
     objectPages: PageWithModelV4[],
     listReportPageKey?: string,
-    parentLRTableIdentifier?: string
+    originatingView?: OriginatingView
 ): ObjectPageNavigationParents {
     const parentOPs: ObjectPageNavigationParent[] = [];
     const visited = new Set<string>([targetObjectPageKey]); // guard against infinite loop in case of invalid manifest entries
@@ -157,9 +159,37 @@ function getObjectPageNavigationParents(
 
     return {
         parentLRName: listReportPageKey ?? '', // app is possibly malformed if no LR found
-        parentLRTableIdentifier,
+        parentLRViewKey: originatingView?.key,
+        parentLRViewIsDefault: originatingView?.isDefault,
         parentOPs
     };
+}
+
+type OriginatingView = { key: string; isDefault: boolean };
+
+/**
+ * Resolves which List Report view/tab exposes a given Object Page. A view inherits the List Report's
+ * main entity set when it declares none of its own; the first non-custom view is the default tab.
+ *
+ * @param views - the parent List Report's non-custom views, in manifest order
+ * @param objectPageEntitySet - the Object Page's entity set
+ * @param listReportEntitySet - the List Report's main entity set
+ * @returns the originating view, or undefined for single-table List Reports
+ */
+export function resolveOriginatingView(
+    views: { key: string; entitySet?: string }[],
+    objectPageEntitySet?: string,
+    listReportEntitySet?: string
+): OriginatingView | undefined {
+    if (views.length === 0) {
+        return undefined;
+    }
+    // No match falls back to the first (default) view, which is where a main-entity OP belongs — this also covers an undefined listReportEntitySet.
+    const matchIndex = objectPageEntitySet
+        ? views.findIndex((view) => (view.entitySet ?? listReportEntitySet) === objectPageEntitySet)
+        : -1;
+    const index = matchIndex >= 0 ? matchIndex : 0;
+    return { key: views[index].key, isDefault: index === 0 };
 }
 
 /**

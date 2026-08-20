@@ -74,8 +74,8 @@
     "engines": {
         "npm": "please-use-pnpm",
         "yarn": "please-use-pnpm",
-        "pnpm": "11.1.2",
+        "pnpm": "11.22.0",
         "node": ">=22.22.2"
     },
-    "packageManager": "pnpm@11.1.2"
+    "packageManager": "pnpm@11.22.0"
 }
