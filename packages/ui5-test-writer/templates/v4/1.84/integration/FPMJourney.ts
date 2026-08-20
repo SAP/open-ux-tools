@@ -15,27 +15,24 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define([
-    "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"
-], function (opaTest, runner) {
-    "use strict";
+import opaTest from "sap/ui/test/opaQunit";
+import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
+import runner from "./pages/JourneyRunner";
 
-    function journey() {
-        QUnit.module("FPM journey");
+function journey() {
+    QUnit.module("FPM journey");
 
-        opaTest("Start application", function (Given, When, Then) {
-            Given.iStartMyApp();
-            <%_ startPages.forEach(function(pageName) { %>
-            Then.onThe<%- pageName %>Generated.iSeeThisPage();
-            <%_ }); -%>
-        });
+    opaTest("Start application", function (Given: Given, _When: When, Then: Then) {
+        Given.iStartMyApp();
+        <%_ startPages.forEach(function(pageName) { %>
+        Then.onThe<%- pageName %>Generated.iSeeThisPage();
+        <%_ }); -%>
+    });
 
-        opaTest("Teardown", function (Given, When, Then) { 
-            // Cleanup
-            Given.iTearDownMyApp();
-        });
-    }
+    opaTest("Teardown", function (Given: Given) {
+        // Cleanup
+        Given.iTearDownMyApp();
+    });
+}
 
-    runner.run([journey]);
-});
+runner.run([journey]);
