@@ -52,6 +52,13 @@ overrides:
     "undici@>=7.0.0 <7.29.0": "^7.29.0"
     lodash: "4.18.1"
     mta-local: "1.0.8"
+    # Collapse supports-color onto a single resolution. Otherwise lockfile churn can split
+    # @sap/mta-lib (via mta/mta-local -> debug -> supports-color peer) into multiple virtual
+    # store instances differing only by the supports-color peer, which breaks tests that mock
+    # @sap/mta-lib — the mocked specifier and the instance the writer imports diverge. A scoped
+    # debug>supports-color override is insufficient (mta-lib still resolves multiple debug peer
+    # combos); only a global pin collapses it. 8.1.1 is API-compatible with the 7.x it replaces.
+    supports-color: "8.1.1"
     "@modelcontextprotocol/sdk": ">=1.29.0"
     hono: ">=4.12.34"
     "@hono/node-server": ">=1.19.15"
