@@ -262,6 +262,27 @@ export interface ActionButtonState {
      * Populated for both List Report and Object Page actions extracted via metadata.
      */
     unbound?: boolean;
+    /**
+     * Set when this entry is a menu (drop-down) button rather than a single action.
+     * `menuActions` then holds the individual actions inside the menu.
+     */
+    menuType?: 'Annotation' | 'CustomMenu';
+    /**
+     * The individual actions contained in a menu. Only set when `menuType` is present.
+     * Menu items are matched at runtime by label (the FE test API `iCheckMenuAction` /
+     * `iExecuteMenuAction` match menu entries by their rendered text, not by a stable id).
+     */
+    menuActions?: MenuActionState[];
+}
+
+export interface MenuActionState {
+    label: string;
+    visible: boolean;
+    service?: string;
+    action?: string;
+    unbound?: boolean;
+    enabled?: boolean | 'dynamic';
+    dynamicPath?: string;
 }
 
 export type FPMFeatures = {

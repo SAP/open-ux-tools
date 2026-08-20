@@ -3,6 +3,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
+    MenuActionState,
     ContactCardField,
     FormField,
     SectionFormField,
@@ -322,6 +323,104 @@ function extractObjectPageBodySectionsData(
 }
 
 /**
+ * Determines whether an action aggregation entry is a menu (drop-down) grouping several actions.
+ *
+ * @param item - action aggregation entry from the spec model
+ * @returns true if the entry represents an annotation menu or a manifest (custom) menu
+ */
+function isMenuActionItem(item: AggregationItem): boolean {
+    return item.menuType !== undefined || item.schema?.dataType === 'DataFieldForActionGroup';
+}
+
+/**
+ * Builds the individual menu item states contained in a menu action node.
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @returns array of menu item states
+ */
+function buildMenuItemStates(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string
+): MenuActionState[] {
+    const innerContainer = getAggregations(menuItem)['actions'];
+    if (!innerContainer) {
+        return [];
+    }
+    const innerEntries = getAggregations(innerContainer) as Record<string, AggregationItem>;
+    return Object.entries(innerEntries).map(([childKey, child]) => {
+        const annotationState = buildActionStateFromSpecModelKey(
+            childKey,
+            child.description,
+            convertedMetadata,
+            schemaNamespace
+        );
+        if (annotationState) {
+            return {
+                label: annotationState.label,
+                visible: annotationState.visible,
+                service: annotationState.service,
+                action: annotationState.action,
+                unbound: annotationState.unbound,
+                enabled: annotationState.enabled,
+                dynamicPath: annotationState.dynamicPath
+            };
+        }
+        return { label: child.description ?? '', visible: true };
+    });
+}
+
+/**
+ * Builds a menu action button state from a menu aggregation entry (annotation or custom menu).
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @returns the menu action button state
+ */
+function buildMenuActionState(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string
+): ActionButtonState {
+    const menuType =
+        menuItem.menuType === 'Annotation' || menuItem.schema?.dataType === 'DataFieldForActionGroup'
+            ? 'Annotation'
+            : 'CustomMenu';
+    return {
+        label: menuItem.description ?? '',
+        action: '',
+        visible: true,
+        enabled: true,
+        menuType,
+        menuActions: buildMenuItemStates(menuItem, convertedMetadata, schemaNamespace)
+    };
+}
+
+/**
+ * Builds an action button state for a single action or a menu from a spec model aggregation entry.
+ *
+ * @param key - aggregation key
+ * @param item - aggregation entry
+ * @param convertedMetadata - converted OData metadata
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @returns the action or menu button state, or undefined if the entry is neither
+ */
+function buildActionOrMenuState(
+    key: string,
+    item: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string
+): ActionButtonState | undefined {
+    if (isMenuActionItem(item)) {
+        return buildMenuActionState(item, convertedMetadata, schemaNamespace);
+    }
+    return buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace);
+}
+
+/**
  * Extracts header-level action button states from an object page model.
  *
  * @param objectPage - object page from the application model
@@ -341,9 +440,7 @@ function extractHeaderActions(
     const actionsAgg = getAggregations(headerAgg)['actions'];
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
-        .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
-        )
+        .map(([key, item]) => buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace))
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
 
@@ -377,9 +474,7 @@ function extractSectionActions(
     }
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
-        .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
-        )
+        .map(([key, item]) => buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace))
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
 
