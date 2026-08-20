@@ -35,11 +35,9 @@ afterAll(async () => {
 });
 
 async function searchDocs(query: string, maxResults = 5): Promise<string> {
-    const result = await client.callTool(
-        { name: 'search_docs', arguments: { query, maxResults } },
-        undefined,
-        { timeout: REQUEST_TIMEOUT_MS }
-    );
+    const result = await client.callTool({ name: 'search_docs', arguments: { query, maxResults } }, undefined, {
+        timeout: REQUEST_TIMEOUT_MS
+    });
     return typeof result === 'string' ? result : JSON.stringify(result);
 }
 
