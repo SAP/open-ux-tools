@@ -10,22 +10,31 @@
         "type": "annotation-group-items",
         "items": [
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "HeaderInfo.TypeName",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "HeaderInfo",
-                            "range": "[(1,4)..(1,14)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "HeaderInfo",
+                                "range": "[(1,4)..(1,14)]",
+                                "quoted": false
+                            },
+                            "range": "[(1,4)..(1,14)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "TypeName",
-                            "range": "[(1,15)..(1,23)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "TypeName",
+                                "range": "[(1,15)..(1,23)]",
+                                "quoted": false
+                            },
+                            "range": "[(1,15)..(1,23)]"
                         }
                     ],
                     "separators": [
@@ -41,8 +50,8 @@
                 "range": "[(1,4)..(1,37)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,23)..(1,24)]"
+                    "range": "[(1,23)..(1,24)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -61,22 +70,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "HeaderInfo.TypeNamePlural",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "HeaderInfo",
-                            "range": "[(2,4)..(2,14)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "HeaderInfo",
+                                "range": "[(2,4)..(2,14)]",
+                                "quoted": false
+                            },
+                            "range": "[(2,4)..(2,14)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "TypeNamePlural",
-                            "range": "[(2,15)..(2,29)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "TypeNamePlural",
+                                "range": "[(2,15)..(2,29)]",
+                                "quoted": false
+                            },
+                            "range": "[(2,15)..(2,29)]"
                         }
                     ],
                     "separators": [
@@ -92,8 +110,8 @@
                 "range": "[(2,4)..(2,31)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(2,29)..(2,30)]"
+                    "range": "[(2,29)..(2,30)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "empty-value",
@@ -101,22 +119,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "HeaderInfo.Title",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "HeaderInfo",
-                            "range": "[(3,4)..(3,14)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "HeaderInfo",
+                                "range": "[(3,4)..(3,14)]",
+                                "quoted": false
+                            },
+                            "range": "[(3,4)..(3,14)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Title",
-                            "range": "[(3,15)..(3,20)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Title",
+                                "range": "[(3,15)..(3,20)]",
+                                "quoted": false
+                            },
+                            "range": "[(3,15)..(3,20)]"
                         }
                     ],
                     "separators": [
@@ -132,8 +159,8 @@
                 "range": "[(3,4)..(6,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(3,20)..(3,21)]"
+                    "range": "[(3,20)..(3,21)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -241,22 +268,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "HeaderInfo.ImageUrl",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "HeaderInfo",
-                            "range": "[(7,4)..(7,14)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "HeaderInfo",
+                                "range": "[(7,4)..(7,14)]",
+                                "quoted": false
+                            },
+                            "range": "[(7,4)..(7,14)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "ImageUrl",
-                            "range": "[(7,15)..(7,23)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "ImageUrl",
+                                "range": "[(7,15)..(7,23)]",
+                                "quoted": false
+                            },
+                            "range": "[(7,15)..(7,23)]"
                         }
                     ],
                     "separators": [
@@ -272,8 +308,8 @@
                 "range": "[(7,4)..(7,36)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(7,23)..(7,24)]"
+                    "range": "[(7,23)..(7,24)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -292,34 +328,51 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Chart.AxisScaling.AutoScaleBehavior.ZeroAlwaysVisible",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Chart",
-                            "range": "[(8,4)..(8,9)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Chart",
+                                "range": "[(8,4)..(8,9)]",
+                                "quoted": false
+                            },
+                            "range": "[(8,4)..(8,9)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "AxisScaling",
-                            "range": "[(8,10)..(8,21)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "AxisScaling",
+                                "range": "[(8,10)..(8,21)]",
+                                "quoted": false
+                            },
+                            "range": "[(8,10)..(8,21)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "AutoScaleBehavior",
-                            "range": "[(8,22)..(8,39)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "AutoScaleBehavior",
+                                "range": "[(8,22)..(8,39)]",
+                                "quoted": false
+                            },
+                            "range": "[(8,22)..(8,39)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "ZeroAlwaysVisible",
-                            "range": "[(8,40)..(8,57)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "ZeroAlwaysVisible",
+                                "range": "[(8,40)..(8,57)]",
+                                "quoted": false
+                            },
+                            "range": "[(8,40)..(8,57)]"
                         }
                     ],
                     "separators": [
@@ -347,8 +400,8 @@
                 "range": "[(8,4)..(8,63)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(8,57)..(8,58)]"
+                    "range": "[(8,57)..(8,58)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "boolean",
@@ -357,22 +410,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Chart.ChartType",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Chart",
-                            "range": "[(9,4)..(9,9)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Chart",
+                                "range": "[(9,4)..(9,9)]",
+                                "quoted": false
+                            },
+                            "range": "[(9,4)..(9,9)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "ChartType",
-                            "range": "[(9,10)..(9,19)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "ChartType",
+                                "range": "[(9,10)..(9,19)]",
+                                "quoted": false
+                            },
+                            "range": "[(9,10)..(9,19)]"
                         }
                     ],
                     "separators": [
@@ -388,8 +450,8 @@
                 "range": "[(9,4)..(9,26)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(9,19)..(9,20)]"
+                    "range": "[(9,19)..(9,20)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "enum",
@@ -429,8 +491,8 @@
                 "range": "[(10,4)..(14,7)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(10,17)..(10,18)]"
+                    "range": "[(10,17)..(10,18)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -518,30 +580,57 @@
                                 "range": "[(12,18)..(12,19)]",
                                 "value": ":"
                             }
+                        }
+                    ],
+                    "range": "[(10,19)..(14,7)]",
+                    "commas": [
+                        {
+                            "type": "token",
+                            "value": ",",
+                            "range": "[(11,44)..(11,45)]"
                         },
                         {
-                            "type": "record-property",
-                            "name": {
-                                "type": "path",
+                            "type": "token",
+                            "value": ",",
+                            "range": "[(12,24)..(12,25)]"
+                        }
+                    ],
+                    "flattenedExpressions": [
+                        {
+                            "type": "flattened-expression",
+                            "path": {
+                                "type": "flattened-path",
                                 "value": "AxisScaling.AutoScaleBehavior.ZeroAlwaysVisible",
                                 "segments": [
                                     {
-                                        "type": "identifier",
-                                        "value": "AxisScaling",
-                                        "range": "[(13,8)..(13,19)]",
-                                        "quoted": false
+                                        "type": "flattened-property-segment",
+                                        "name": {
+                                            "type": "identifier",
+                                            "value": "AxisScaling",
+                                            "range": "[(13,8)..(13,19)]",
+                                            "quoted": false
+                                        },
+                                        "range": "[(13,8)..(13,19)]"
                                     },
                                     {
-                                        "type": "identifier",
-                                        "value": "AutoScaleBehavior",
-                                        "range": "[(13,20)..(13,37)]",
-                                        "quoted": false
+                                        "type": "flattened-property-segment",
+                                        "name": {
+                                            "type": "identifier",
+                                            "value": "AutoScaleBehavior",
+                                            "range": "[(13,20)..(13,37)]",
+                                            "quoted": false
+                                        },
+                                        "range": "[(13,20)..(13,37)]"
                                     },
                                     {
-                                        "type": "identifier",
-                                        "value": "ZeroAlwaysVisible",
-                                        "range": "[(13,38)..(13,55)]",
-                                        "quoted": false
+                                        "type": "flattened-property-segment",
+                                        "name": {
+                                            "type": "identifier",
+                                            "value": "ZeroAlwaysVisible",
+                                            "range": "[(13,38)..(13,55)]",
+                                            "quoted": false
+                                        },
+                                        "range": "[(13,38)..(13,55)]"
                                     }
                                 ],
                                 "separators": [
@@ -560,30 +649,17 @@
                                 ],
                                 "range": "[(13,8)..(13,55)]"
                             },
-                            "value": {
-                                "type": "boolean",
-                                "value": false,
-                                "range": "[(13,57)..(13,62)]"
-                            },
                             "range": "[(13,8)..(13,62)]",
                             "colon": {
                                 "type": "token",
                                 "range": "[(13,55)..(13,56)]",
                                 "value": ":"
+                            },
+                            "value": {
+                                "type": "boolean",
+                                "value": false,
+                                "range": "[(13,57)..(13,62)]"
                             }
-                        }
-                    ],
-                    "range": "[(10,19)..(14,7)]",
-                    "commas": [
-                        {
-                            "type": "token",
-                            "value": ",",
-                            "range": "[(11,44)..(11,45)]"
-                        },
-                        {
-                            "type": "token",
-                            "value": ",",
-                            "range": "[(12,24)..(12,25)]"
                         }
                     ],
                     "openToken": {
@@ -599,22 +675,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "HeaderInfo.TypeImageUrl",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "HeaderInfo",
-                            "range": "[(15,4)..(15,14)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "HeaderInfo",
+                                "range": "[(15,4)..(15,14)]",
+                                "quoted": false
+                            },
+                            "range": "[(15,4)..(15,14)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "TypeImageUrl",
-                            "range": "[(15,15)..(15,27)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "TypeImageUrl",
+                                "range": "[(15,15)..(15,27)]",
+                                "quoted": false
+                            },
+                            "range": "[(15,15)..(15,27)]"
                         }
                     ],
                     "separators": [
@@ -630,8 +715,8 @@
                 "range": "[(15,4)..(16,0)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(15,27)..(15,28)]"
+                    "range": "[(15,27)..(15,28)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "empty-value",

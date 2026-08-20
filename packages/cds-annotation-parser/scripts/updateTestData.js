@@ -1,8 +1,10 @@
-const { stat, readdirSync, readFileSync, writeFileSync, statSync } = require('fs');
-const { join, dirname } = require('path');
-const { parse } = require('../dist/parser');
-const { buildAst } = require('../dist/transformer');
-const {
+import { stat, readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+import { parse } from '../dist/parser/index.js';
+import { buildAst } from '../dist/transformer/index.js';
+import {
     TOKEN_TYPE,
     EMPTY_VALUE_TYPE,
     NUMBER_LITERAL_TYPE,
@@ -24,8 +26,12 @@ const {
     QUALIFIER_TYPE,
     ANNOTATION_TYPE,
     ANNOTATION_GROUP_TYPE,
-    ANNOTATION_GROUP_ITEMS_TYPE
-} = require('../dist');
+    ANNOTATION_GROUP_ITEMS_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_PATH_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_PROPERTY_SEGMENT_TYPE
+} from '../dist/index.js';
 const compactPosition = (position) => `(${position.line},${position.character})`;
 const compactRange = (range) => `[${compactPosition(range.start)}..${compactPosition(range.end)}]`;
 const rangePropertyPattern = /[a-z]*ranges?/i;
@@ -52,12 +58,23 @@ const NODE_PROPERTIES = {
     [INCORRECT_EXPRESSION_TYPE]: [...nodeProperties, 'message', ...expressionProperties],
     [CORRECT_EXPRESSION_TYPE]: [...nodeProperties, 'operatorName', ...expressionProperties],
     [RECORD_PROPERTY_TYPE]: [...nodeProperties, 'colon', 'name', 'value'],
-    [RECORD_TYPE]: [...nodeProperties, 'properties', 'annotations', 'commas', ...delimiterTokens],
+    [RECORD_TYPE]: [
+        ...nodeProperties,
+        'properties',
+        'annotations',
+        'flattenedExpressions',
+        'commas',
+        ...delimiterTokens
+    ],
     [COLLECTION_TYPE]: [...nodeProperties, 'items', 'commas', ...delimiterTokens],
     [QUALIFIER_TYPE]: [...valueNodeProperties],
     [ANNOTATION_TYPE]: [...nodeProperties, 'term', 'qualifier', 'colon', 'value'],
     [ANNOTATION_GROUP_TYPE]: [...nodeProperties, 'name', 'colon', 'items'],
     [ANNOTATION_GROUP_ITEMS_TYPE]: [...nodeProperties, ...delimiterTokens, 'items', 'commas'],
+    [FLATTENED_EXPRESSION_TYPE]: [...nodeProperties, 'path', 'colon', 'value'],
+    [FLATTENED_PATH_TYPE]: [...nodeProperties, 'value', 'segments', 'separators'],
+    [FLATTENED_ANNOTATION_SEGMENT_TYPE]: [...nodeProperties, 'value', 'prefix', 'vocabulary', 'term', 'qualifier'],
+    [FLATTENED_PROPERTY_SEGMENT_TYPE]: [...nodeProperties, 'name']
 };
 
 const compactAst = (key, value) => {
@@ -105,17 +122,17 @@ const compactCst = (key, value) => {
         return compactRange(value);
     }
     if (typeof value === 'object' && !Array.isArray(value)) {
-        const sortedKeys = Object.keys(value).sort((a,b) => {
+        const sortedKeys = Object.keys(value).sort((a, b) => {
             const indexA = CST_NODE_PROPERTIES.indexOf(a);
             const indexB = CST_NODE_PROPERTIES.indexOf(b);
-            if (indexA === -1 && indexB === -1 ) {
+            if (indexA === -1 && indexB === -1) {
                 return a.localeCompare(b);
             }
             if (indexA === -1) {
                 return 1;
             }
             if (indexB === -1) {
-                return -1
+                return -1;
             }
             return indexA - indexB;
         });
@@ -210,6 +227,7 @@ const getAllAssignments = (base, allAssignment = []) => {
 const update = async () => {
     const args = process.argv[2];
     const cstOrAst = process.argv[3];
+    const __dirname = dirname(fileURLToPath(import.meta.url));
     const BASE = join(__dirname, '..', 'test', 'data');
     const allAssignments = getAllAssignments(BASE);
     const tests = args ? [join(BASE, args, 'assignment.txt')] : allAssignments;

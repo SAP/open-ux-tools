@@ -61,3 +61,9 @@ annotate identified with {
     };
     identifier @(Common.FieldControl : #Mandatory);
 }
+
+annotate Orders with @(
+  odata: {
+    draft.enabled
+  }
+);

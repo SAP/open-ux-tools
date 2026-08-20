@@ -5,8 +5,8 @@ const { createMetadataCollector } = cdsCompilerFacade;
 import type { Range } from '@sap-ux/odata-annotation-core-types';
 import { GHOST_FILENAME_PREFIX } from '@sap-ux/odata-annotation-core-types';
 
-import type { Annotation } from '@sap-ux/cds-annotation-parser';
-import { ANNOTATION_TYPE, ANNOTATION_GROUP_ITEMS_TYPE } from '@sap-ux/cds-annotation-parser';
+import type { Annotation, FlattenedExpression } from '@sap-ux/cds-annotation-parser';
+import { ANNOTATION_TYPE, ANNOTATION_GROUP_ITEMS_TYPE, FLATTENED_EXPRESSION_TYPE } from '@sap-ux/cds-annotation-parser';
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import { TARGET_TYPE } from '@sap-ux/cds-odata-annotation-converter';
 
@@ -63,7 +63,7 @@ export function getAnnotationFromAssignment(
     node: AstNode,
     parent?: AstNode,
     greatGrandParent?: AstNode
-): [Annotation, string] {
+): [Annotation | FlattenedExpression, string] {
     const [annotation, target] = findAnnotation(node, parent, greatGrandParent);
 
     const { edmxPath } = facade.collectMetadataForAbsolutePath(
@@ -74,15 +74,19 @@ export function getAnnotationFromAssignment(
     return [annotation, edmxPath];
 }
 
-function findAnnotation(node: AstNode, parent?: AstNode, greatGrandParent?: AstNode): [Annotation, Target] {
+function findAnnotation(
+    node: AstNode,
+    parent?: AstNode,
+    greatGrandParent?: AstNode
+): [Annotation | FlattenedExpression, Target] {
     if (node.type === TARGET_TYPE) {
         // if no assignment is specified we default to the first one
         const assignment = node.assignments[0];
         if (assignment) {
             const annotation = assignment?.type === 'annotation-group' ? assignment.items.items[0] : assignment;
-            return [annotation, node];
+            return [annotation as Annotation, node];
         }
-    } else if (node?.type === ANNOTATION_TYPE) {
+    } else if (node?.type === ANNOTATION_TYPE || node?.type === FLATTENED_EXPRESSION_TYPE) {
         if (parent?.type === TARGET_TYPE) {
             return [node, parent];
         } else if (greatGrandParent?.type === TARGET_TYPE && parent?.type === ANNOTATION_GROUP_ITEMS_TYPE) {
