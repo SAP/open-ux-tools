@@ -25,7 +25,7 @@ import {
     parseDataFieldForAnnotationName
 } from './modelUtils.js';
 import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';

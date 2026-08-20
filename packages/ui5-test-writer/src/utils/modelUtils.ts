@@ -2,8 +2,8 @@ import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
-import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type {
     TreeAggregation,
