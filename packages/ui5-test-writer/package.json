@@ -34,7 +34,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.21",
+        "@sap-ux/annotation-converter": "0.10.22",
         "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/logger": "workspace:*",
