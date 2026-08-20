@@ -183,6 +183,7 @@ exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSand
 
 exports[`FlpSandbox init Card generator is enabled for the application 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
@@ -192,12 +193,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -234,6 +235,7 @@ exports[`FlpSandbox init add default libs if no libs in manifest.json 1`] = `"sa
 
 exports[`FlpSandbox init additional apps 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
@@ -264,12 +266,12 @@ Object {
       "url": "/simple/app",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -321,6 +323,7 @@ exports[`FlpSandbox init do not add component to applications single 1`] = `Obje
 
 exports[`FlpSandbox init i18n key more that a word 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
@@ -330,12 +333,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -370,6 +373,7 @@ Object {
 
 exports[`FlpSandbox init i18n manifest 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
@@ -379,12 +383,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -419,6 +423,7 @@ Object {
 
 exports[`FlpSandbox init i18n manifest w/o bundle 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
@@ -428,12 +433,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -468,6 +473,7 @@ Object {
 
 exports[`FlpSandbox init i18n manifest with unknown propertyI18nKey 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
@@ -477,12 +483,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -517,6 +523,7 @@ Object {
 
 exports[`FlpSandbox init minimal manifest 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
@@ -526,12 +533,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -566,6 +573,7 @@ Object {
 
 exports[`FlpSandbox init optional configurations 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
@@ -575,12 +583,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -617,6 +625,7 @@ exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.
 
 exports[`FlpSandbox init ui5Theme 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
@@ -626,12 +635,12 @@ Object {
       "url": "..",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -762,7 +771,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 3`] = `
@@ -825,7 +835,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 5`] = `
@@ -989,7 +1000,8 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
@@ -1052,7 +1064,8 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `
@@ -2093,6 +2106,7 @@ exports[`FlpSandbox router rta 1`] = `"Found. Redirecting to /my/rta.html?sap-ui
 
 exports[`FlpSandbox router rta with adp instance - preview 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=myComponent",
@@ -2109,12 +2123,12 @@ Object {
       "url": "/yet/another/app",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2217,6 +2231,7 @@ exports[`FlpSandbox router rta with adp instance - preview 2`] = `
 
 exports[`FlpSandbox router rta with adp instance 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=myComponent",
@@ -2233,12 +2248,12 @@ Object {
       "url": "/yet/another/app",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2685,6 +2700,7 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
 
 exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=myComponent",
@@ -2701,12 +2717,12 @@ Object {
       "url": "/yet/another/app",
     },
   },
-  "basePath": "..",
   "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2852,7 +2868,8 @@ exports[`FlpSandbox router with isolateJourneys OPA5 OPA5 HTML page is served 1`
 	<div id=\\"qunit\\"></div>
 	<div id=\\"qunit-fixture\\"></div>
 </body>
-</html>"
+</html>
+"
 `;
 
 exports[`FlpSandbox router with isolateJourneys OPA5 OPA5 init JS contains URL param filtering and inlined journey list 1`] = `

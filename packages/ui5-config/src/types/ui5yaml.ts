@@ -67,11 +67,20 @@ export type Ui5Document =
           };
       })
     | (Ui5DocumentBase & {
+          type: 'component';
+          configuration?: {
+              paths?: {
+                  src?: string;
+                  test?: string;
+              };
+          };
+      })
+    | (Ui5DocumentBase & {
           type: 'library';
           configuration?: {
               paths?: {
-                  src: string;
-                  test: string;
+                  src?: string;
+                  test?: string;
               };
           };
       })
@@ -79,8 +88,8 @@ export type Ui5Document =
           type: 'theme-library';
           configuration?: {
               paths?: {
-                  src: string;
-                  test: string;
+                  src?: string;
+                  test?: string;
               };
           };
       })

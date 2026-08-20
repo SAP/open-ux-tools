@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { getWebappPath } from '@sap-ux/project-access';
+import { getWebappTestPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml.js';
@@ -22,7 +22,9 @@ const renameMessage = (filePath: string): string =>
  * @param logger logger to report info to the user
  */
 export async function renameSandbox(fs: Editor, basePath: string, path: string, logger?: ToolsLogger): Promise<void> {
-    const filePath = join(await getWebappPath(basePath), path);
+    const webappTestPath = await getWebappTestPath(basePath);
+    const relativePath = path.replace(/^\/?test\//, '');
+    const filePath = join(webappTestPath, relativePath);
     if (fs.exists(filePath)) {
         if (path.endsWith('unitTests.qunit.html')) {
             logger?.warn(
@@ -56,7 +58,7 @@ export async function renameSandbox(fs: Editor, basePath: string, path: string, 
  * @param logger logger to report info to the user
  */
 export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
+    const defaultSandboxPaths = ['test/flpSandbox.html', 'test/flpSandboxMockserver.html'];
     for (const path of defaultSandboxPaths) {
         await renameSandbox(fs, basePath, path, logger);
     }
@@ -91,7 +93,7 @@ export async function deleteNoLongerUsedFiles(
     convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<void> {
-    const webappTestPath = join(await getWebappPath(basePath, fs), 'test');
+    const webappTestPath = await getWebappTestPath(basePath, fs);
     const files = [
         join(webappTestPath, 'locate-reuse-libs.js'),
         join(webappTestPath, 'changes_loader.js'),
