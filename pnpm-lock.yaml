@@ -3836,8 +3836,8 @@ importers:
         specifier: workspace:*
         version: link:../i18n
       '@sapui5/types':
-        specifier: 1.151.0
-        version: 1.151.0
+        specifier: 1.120.5
+        version: 1.120.5
       '@ui5/cli':
         specifier: 4.0.57
         version: 4.0.57(supports-color@8.1.1)
@@ -3851,11 +3851,11 @@ importers:
         specifier: 9.0.2
         version: 9.0.2
       ui5-tooling-modules:
-        specifier: 3.38.1
-        version: 3.38.1(@ui5/project@4.0.17(@ui5/builder@4.2.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 3.35.0
+        version: 3.35.0(@ui5/project@4.0.17(@ui5/builder@4.2.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       ui5-tooling-transpile:
-        specifier: 3.13.0
-        version: 3.13.0(@babel/plugin-transform-react-jsx@7.28.6(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(babel-plugin-istanbul@7.0.1(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: 3.11.3
+        version: 3.11.3(supports-color@8.1.1)
       vscode-languageserver-textdocument:
         specifier: 1.0.12
         version: 1.0.12
@@ -9262,15 +9262,6 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/pluginutils@5.3.0':
-    resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
   '@rollup/pluginutils@5.4.0':
     resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
@@ -9635,8 +9626,8 @@ packages:
     resolution: {integrity: sha512-x2f1AvS9KDs3djtDsRgH4Md3Ze5vc2NZHAlpCf+oRokWaQCmMNmS57DE6Zm80IVCCzo1mr8VtSrjWMPTshfUpw==}
     engines: {node: '>=18'}
 
-  '@sapui5/types@1.151.0':
-    resolution: {integrity: sha512-3aQRw0vhDNGiGq56YH0uJR2NMKOsuJw6eqCBd10szJ7cuRu6/05QdnTPap6yNGwJ+gyUe06yEvGXPo55Jn7AUg==}
+  '@sapui5/types@1.120.5':
+    resolution: {integrity: sha512-5n0pzbS4sP1eA0m1bFgnD1cKQT7BJQn9b1JADWanteElZTbyJjoaTFzSHIUjrCU+vxOwkHTajCjp+/6UNJ1KbQ==}
 
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
@@ -18686,24 +18677,17 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
 
-  ui5-tooling-modules@3.38.1:
-    resolution: {integrity: sha512-qrhN3yHprM1Z9MUT0VqwRNRzhaVAOacLGaS4597S9mnkqJF5F5M5P+FCRBeOl0+YaLRJ3/s0T2ABKS+Q20izIA==}
-    hasBin: true
+  ui5-tooling-modules@3.35.0:
+    resolution: {integrity: sha512-s0qXcGdTMfwQQsaTsHP09ea7GuGqS6OBPVHZecq2fYrfNjLvpLpxv9mKQPRxQXfnPwJRZZLuH+1OwkeHkpbIxA==}
     peerDependencies:
       '@ui5/project': '>=3 <5'
 
-  ui5-tooling-transpile@3.13.0:
-    resolution: {integrity: sha512-/8sE+C0zquoKRsZ0WvS1WlE2U5H5atM79cdj8jhpU3WvA3LsaWaFwzOyraKAfwuzZGE6OKj/n/+7pTsl9yR++A==}
+  ui5-tooling-transpile@3.11.3:
+    resolution: {integrity: sha512-G3jdENord30GIvfHAPcG6gsCL008CxHldceReRVHD6yG1l+3RuZx+qSenvC3aI5FS2RzR1IsgFMehgcWBPRdRQ==}
     peerDependencies:
-      '@babel/plugin-transform-react-jsx': ^7.0.0
       '@ui5/ts-interface-generator': '>=0.8.0'
-      babel-plugin-istanbul: '>=6.0.0'
     peerDependenciesMeta:
-      '@babel/plugin-transform-react-jsx':
-        optional: true
       '@ui5/ts-interface-generator':
-        optional: true
-      babel-plugin-istanbul:
         optional: true
 
   uid-safe@2.1.5:
@@ -21517,18 +21501,6 @@ snapshots:
       '@babel/types': 7.29.7
     transitivePeerDependencies:
       - supports-color
-
-  '@babel/plugin-transform-react-jsx@7.28.6(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)':
-    dependencies:
-      '@babel/core': 7.29.7(supports-color@8.1.1)
-      '@babel/helper-annotate-as-pure': 7.29.7
-      '@babel/helper-module-imports': 7.29.7(supports-color@8.1.1)
-      '@babel/helper-plugin-utils': 7.29.7
-      '@babel/plugin-syntax-jsx': 7.29.7(@babel/core@7.29.7(supports-color@8.1.1))
-      '@babel/types': 7.29.7
-    transitivePeerDependencies:
-      - supports-color
-    optional: true
 
   '@babel/plugin-transform-react-pure-annotations@7.27.1(@babel/core@7.29.0(supports-color@8.1.1))':
     dependencies:
@@ -24783,7 +24755,7 @@ snapshots:
 
   '@rollup/plugin-commonjs@29.0.3(rollup@4.62.4)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.62.4)
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
       commondir: 1.0.1
       estree-walker: 2.0.2
       fdir: 6.5.0(picomatch@4.0.4)
@@ -24795,7 +24767,7 @@ snapshots:
 
   '@rollup/plugin-inject@5.0.5(rollup@4.62.4)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.62.4)
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
       estree-walker: 2.0.2
       magic-string: 0.30.21
     optionalDependencies:
@@ -24803,13 +24775,13 @@ snapshots:
 
   '@rollup/plugin-json@6.1.0(rollup@4.62.4)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.62.4)
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
     optionalDependencies:
       rollup: 4.62.4
 
   '@rollup/plugin-replace@6.0.3(rollup@4.62.4)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.62.4)
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
       magic-string: 0.30.21
     optionalDependencies:
       rollup: 4.62.4
@@ -24822,17 +24794,9 @@ snapshots:
     optionalDependencies:
       rollup: 4.62.4
 
-  '@rollup/pluginutils@5.3.0(rollup@4.62.4)':
-    dependencies:
-      '@types/estree': 1.0.8
-      estree-walker: 2.0.2
-      picomatch: 4.0.4
-    optionalDependencies:
-      rollup: 4.62.4
-
   '@rollup/pluginutils@5.4.0(rollup@4.62.4)':
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
       estree-walker: 2.0.2
       picomatch: 4.0.4
     optionalDependencies:
@@ -25424,7 +25388,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sapui5/types@1.151.0':
+  '@sapui5/types@1.120.5':
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4
@@ -30529,7 +30493,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
 
   esutils@2.0.3: {}
 
@@ -32104,7 +32068,7 @@ snapshots:
 
   is-reference@1.2.1:
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
 
   is-regex@1.2.1:
     dependencies:
@@ -37625,7 +37589,7 @@ snapshots:
   uglify-js@3.19.3:
     optional: true
 
-  ui5-tooling-modules@3.38.1(@ui5/project@4.0.17(@ui5/builder@4.2.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3):
+  ui5-tooling-modules@3.35.0(@ui5/project@4.0.17(@ui5/builder@4.2.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3):
     dependencies:
       '@javascript-obfuscator/escodegen': 2.4.2
       '@prettier/sync': 0.6.1(prettier@3.9.5)
@@ -37638,13 +37602,13 @@ snapshots:
       '@typescript-eslint/typescript-estree': 8.64.0(supports-color@8.1.1)(typescript@5.9.3)
       '@ui5/project': 4.0.17(@ui5/builder@4.2.0)(supports-color@8.1.1)
       chokidar: 5.0.0
-      comment-json: 5.0.0
+      comment-json: 4.6.2
       estree-walker: 3.0.3
       fast-xml-parser: 5.8.0
       handlebars: 4.7.9
       ignore-walk: 8.0.0
       js-yaml: 4.2.0
-      minimatch: 10.2.5
+      minimatch: 7.4.9
       prettier: 3.9.5
       rollup: 4.62.4
       rollup-plugin-polyfill-node: 0.13.0(rollup@4.62.4)
@@ -37654,7 +37618,7 @@ snapshots:
       - supports-color
       - typescript
 
-  ui5-tooling-transpile@3.13.0(@babel/plugin-transform-react-jsx@7.28.6(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(babel-plugin-istanbul@7.0.1(supports-color@8.1.1))(supports-color@8.1.1):
+  ui5-tooling-transpile@3.11.3(supports-color@8.1.1):
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
       '@babel/preset-env': 7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
@@ -37665,10 +37629,6 @@ snapshots:
       browserslist: 4.28.2
       comment-json: 5.0.0
       js-yaml: 4.2.0
-      minimatch: 10.2.5
-    optionalDependencies:
-      '@babel/plugin-transform-react-jsx': 7.28.6(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
-      babel-plugin-istanbul: 7.0.1(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
