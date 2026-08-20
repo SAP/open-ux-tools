@@ -27,11 +27,15 @@ sap.ui.define([
         opaTest("Navigate to <%- name%>ObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
 <% if(navigationParents.parentLRName) { -%>
+<% const parentTableId = navigationParents.parentLRViewKey ? '"' + navigationParents.parentLRViewKey + '"' : ''; -%>
 <% if (!hideFilterBar) { -%>
             When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
 <% } -%>
-            Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '' %>).iCheckRows();
-            When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '' %>).iPressRow(0);
+<% if (navigationParents.parentLRViewKey && !navigationParents.parentLRViewIsDefault) { -%>
+            When.onThe<%- navigationParents.parentLRName%>Generated.iGoToView({ key: "<%- navigationParents.parentLRViewKey %>" });
+<% } -%>
+            Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iCheckRows();
+            When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iPressRow(0);
 <% } -%>
 <% navigationParents.parentOPs.forEach(function(parent) { %>
             Then.onThe<%- parent.name %>Generated.iSeeThisPage();

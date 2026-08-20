@@ -1,5 +1,13 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.8.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
 ## 10.8.2
 
 ### Patch Changes
