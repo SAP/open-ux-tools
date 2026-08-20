@@ -193,28 +193,29 @@ describe('ui5-test-writer', () => {
                 return editor.read(outPath);
             };
 
-            it('renders the confirmation-dialog steps only for critical toolbar actions', () => {
+            it('integrates confirmation-dialog steps into the actions block only for critical actions', () => {
                 const journey = renderListReportJourney([
                     { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
                     { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
                 ]);
-                expect(journey).toContain('Check critical action confirmation dialog');
-                expect(journey).toContain('iPressAction("Set To Booked")');
+                // No separate opaTest block — critical steps live in "Check table columns and actions".
+                expect(journey).not.toContain('Check critical action confirmation dialog');
+                expect(journey).toContain('iCheckAction("Set To Booked"');
+                expect(journey).toContain('onTable(defaultTableId).iExecuteAction("Set To Booked")');
                 expect(journey).toContain('onMessageDialog().iCheckState()');
                 expect(journey).toContain('onMessageDialog().iCancel()');
                 // Bound (enabled !== true) critical action selects a row first.
                 expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
-                // The non-critical action's press stays commented out (no confirmation-dialog assertions after it).
+                // The non-critical action's execute stays commented out.
                 expect(journey).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Copy")'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("Copy")'
                 );
             });
 
-            it('omits the confirmation-dialog block when no action is critical', () => {
+            it('omits the confirmation-dialog steps when no action is critical', () => {
                 const journey = renderListReportJourney([
                     { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
                 ]);
-                expect(journey).not.toContain('Check critical action confirmation dialog');
                 expect(journey).not.toContain('onMessageDialog');
             });
 
@@ -244,7 +245,7 @@ describe('ui5-test-writer', () => {
                 const journey = editor.read(outPath);
                 expect(journey).toContain('onMessageDialog().iCheckState()');
                 expect(journey).toContain('onMessageDialog().iCancel()');
-                expect(journey).toContain('onHeader().iPressAction({ service: "TestService", action: "setToBooked"');
+                expect(journey).toContain('onHeader().iExecuteAction({ service: "TestService", action: "setToBooked"');
             });
         });
 

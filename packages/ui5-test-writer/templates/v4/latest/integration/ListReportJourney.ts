@@ -77,7 +77,7 @@ function journey() {
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-    opaTest("Check table columns and actions", function (_Given: Given, _When: When, Then: Then) {
+    opaTest("Check table columns and actions", function (_Given: Given, <% if (toolBarActions && toolBarActions.some(function(item) { return item.visible && item.isCritical; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
         <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
         <%_ if (createButton.visible && !isALP) { _%>
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
@@ -89,32 +89,26 @@ function journey() {
         <%_ } _%>
         <%_ toolBarActions.forEach(function(item) { _%>
         <%_ if (item.visible) { _%>
-        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+        <%_ if (item.isCritical) { _%>
+        <%_ if (item.enabled !== true) { _%>
+        <%_ if (!hideFilterBar) { _%>
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+        <%_ } _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+        Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+        When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+        <%_ } else { _%>
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+        <%_ } _%>
         <%_ } _%>
         <%_ }); -%>
         <%_ } -%>
         <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
         Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
         <%_ } -%>
-    });
-<%_ } -%>
-
-<%_ if (toolBarActions && toolBarActions.some(function(item) { return item.visible && item.isCritical; })) { -%>
-    opaTest("Check critical action confirmation dialog", function (_Given: Given, When: When, Then: Then) {
-        <%_ if (!hideFilterBar) { -%>
-        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
-        <%_ } -%>
-        <%_ toolBarActions.forEach(function(item) { _%>
-        <%_ if (item.visible && item.isCritical) { _%>
-        <%_ if (item.enabled !== true) { _%>
-        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
-        <%_ } _%>
-        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
-        Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
-        When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
-        <%_ } _%>
-        <%_ }); -%>
     });
 <%_ } -%>
 <%_ if (contactCardColumns.length > 0) { -%>
