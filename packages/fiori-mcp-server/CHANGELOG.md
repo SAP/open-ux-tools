@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 1.11.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- Regenerate create CLI skill index to include the `generate opa5-tests` command [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.11.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Report accurate metadata fetch/parse errors instead of misleading "not a valid OData V4 service". A temporarily unavailable system (e.g. an HTML error page returned with a 2xx status) is now reported as a fetch/availability problem, and parse failures are described in an OData-version-neutral way rather than wrongly blaming an OData V2 service for not being V4. [[fae338f](https://github.com/SAP/open-ux-tools/commit/fae338fbbb3902105e41aaabf2651b9c2757b0a6)]
+
 ## 1.11.9
 
 ### Patch Changes
