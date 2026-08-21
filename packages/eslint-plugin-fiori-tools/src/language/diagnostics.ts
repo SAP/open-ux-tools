@@ -192,6 +192,23 @@ export interface CloudDevAdaptationStatus {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export const GROUPING_SUPPORTED_TABLE_TYPES_ONLY = 'sap-grouping-supported-table-types-only';
+
+export interface GroupingSupportedTableTypesOnly {
+    type: typeof GROUPING_SUPPORTED_TABLE_TYPES_ONLY;
+    /** The unsupported table type found in the manifest or linked from the annotation context. */
+    tableType: string;
+    pageName?: string; // for manifest property
+    pageNames?: [string]; // for referenced annotation
+    /** Set when grouping is enabled via manifest personalization settings. */
+    manifest?: ManifestPropertyDiagnosticData;
+    /** Set when grouping is configured via a UI.PresentationVariant GroupBy annotation. */
+    annotation?: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -209,4 +226,5 @@ export type Diagnostic =
     | TextArrangementHidden
     | StrictUomFiltering
     | NoLiveMode
-    | CloudDevAdaptationStatus;
+    | CloudDevAdaptationStatus
+    | GroupingSupportedTableTypesOnly;
