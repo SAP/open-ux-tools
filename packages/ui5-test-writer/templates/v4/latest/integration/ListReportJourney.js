@@ -115,6 +115,7 @@ sap.ui.define([
             <%_ } -%>
         });
 <%_ } -%>
+
 <%_ if (contactCardColumns.length > 0) { -%>
         opaTest("Check contact card links", function (Given, When, Then) {
             <%_ contactCardColumns.forEach(function(column) { _%>

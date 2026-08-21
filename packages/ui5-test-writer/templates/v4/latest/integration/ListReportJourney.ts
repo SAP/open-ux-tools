@@ -120,6 +120,7 @@ function journey() {
         <%_ } -%>
     });
 <%_ } -%>
+
 <%_ if (contactCardColumns.length > 0) { -%>
     opaTest("Check contact card links", function (_Given: Given, When: When, Then: Then) {
         <%_ contactCardColumns.forEach(function(column) { _%>
