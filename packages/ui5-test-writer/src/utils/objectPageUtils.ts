@@ -40,16 +40,27 @@ import {
 import { getListReportViews } from './listReportUtils.js';
 
 /**
+ * Optional context for {@link getObjectPageFeatures}.
+ */
+export interface ObjectPageFeaturesOptions {
+    /** Application manifest, used to resolve the parent List Report's default table tab. */
+    manifest?: Manifest;
+    /** Entity set of the parent List Report, used to resolve the originating view. */
+    listReportEntitySet?: string;
+    /** Resolver for i18n placeholder labels (`{i18n>key}` → translated text). */
+    resolveLabel?: I18nLabelResolver;
+    /** Annotation XML documents to merge with the metadata (for annotation-only terms). */
+    annotationXmls?: string[];
+}
+
+/**
  * Extracts feature data for object pages from the application model.
  *
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
- * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
- * @param listReportEntitySet - entity set of the parent List Report, used to resolve the originating view
- * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
- * @param annotationXmls - optional annotation XML documents to merge with the metadata (for annotation-only terms)
+ * @param options - optional context (manifest, parent List Report entity set, label resolver, annotation XMLs)
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
@@ -57,11 +68,10 @@ export async function getObjectPageFeatures(
     listReportPageKey?: string,
     log?: Logger,
     metadata?: string,
-    manifest?: Manifest,
-    listReportEntitySet?: string,
-    resolveLabel: I18nLabelResolver = passthroughLabelResolver,
-    annotationXmls?: string[]
+    options: ObjectPageFeaturesOptions = {}
 ): Promise<ObjectPageFeatures[]> {
+    const { manifest, listReportEntitySet, annotationXmls } = options;
+    const resolveLabel = options.resolveLabel ?? passthroughLabelResolver;
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
         log?.warn('Object Pages not found in application model. Dynamic tests will not be generated for Object Pages.');
