@@ -41,12 +41,12 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "axios": "1.18.1",
+        "axios": "1.19.0",
         "semver": "7.8.5"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
-        "@types/semver": "7.7.1",
+        "@types/semver": "7.8.0",
         "mock-spawn": "0.2.6",
         "nock": "14.0.16"
     },
