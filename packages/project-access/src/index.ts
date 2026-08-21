@@ -68,7 +68,8 @@ export {
     getMainService,
     getGlobalCdsHomePath,
     isUI5IdUnique,
-    getUsedEntitiesFromManifest
+    getUsedEntitiesFromManifest,
+    resolveApplicationTitle
 } from './project/index.js';
 export type { UsedEntity } from './project/index.js';
 export { execNpmCommand } from './command/npm-command.js';
