@@ -11,6 +11,7 @@ import type {
     FEV4ManifestTarget,
     JourneyParams,
     AppFeatures,
+    ActionButtonState,
     WriteContext,
     OPAGenerationOptions
 } from './types.js';
@@ -47,6 +48,38 @@ function getTemplateUi5Version(ui5Version?: string): string {
         }
     }
     return V4_TEMPLATE_1_84;
+}
+
+/**
+ * Removes action tests the target template bucket cannot render, so journeys omit them instead of
+ * emitting assertions that fail on older runtimes:
+ * - custom (manifest-declared) actions: rendered only by the `latest` bucket.
+ * - menu (drop-down) actions: rendered by `1.148` and `latest`; the `1.84` bucket has no menu template.
+ *
+ * @param appFeatures - the extracted app feature data (mutated in place)
+ * @param templateUi5Version - the selected template bucket ('1.84' / '1.148' / 'latest')
+ */
+export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Version: string): void {
+    const stripCustom = templateUi5Version !== V4_TEMPLATE_LATEST;
+    const stripMenu = templateUi5Version === V4_TEMPLATE_1_84;
+    if (!stripCustom && !stripMenu) {
+        return;
+    }
+    const keep = (action: ActionButtonState): boolean =>
+        !(stripCustom && action.custom) && !(stripMenu && action.menuType);
+    if (appFeatures.listReport?.toolBarActions) {
+        appFeatures.listReport.toolBarActions = appFeatures.listReport.toolBarActions.filter(keep);
+    }
+    appFeatures.objectPages?.forEach((objectPage) => {
+        if (objectPage.headerActions) {
+            objectPage.headerActions = objectPage.headerActions.filter(keep);
+        }
+        objectPage.bodySections?.forEach((section) => {
+            if (section.actions) {
+                section.actions = section.actions.filter(keep);
+            }
+        });
+    });
 }
 
 /**
@@ -87,6 +120,9 @@ export async function generateOPAFiles(
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
+    // Drop action tests the target template bucket cannot render (custom actions: latest only;
+    // menu actions: 1.148 and latest).
+    removeUnsupportedActions(appFeatures, templateUi5Version);
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
