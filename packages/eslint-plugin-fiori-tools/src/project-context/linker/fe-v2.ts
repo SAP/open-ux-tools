@@ -2,8 +2,21 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { LinkerContext, ConfigurationBase } from './types.js';
 import { getParsedServiceByName } from '../utils.js';
 import type { ParsedService } from '../parser/index.js';
-import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations.js';
-import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations.js';
+import type {
+    AnnotationNode,
+    ChartNode,
+    FieldGroupNode,
+    HeaderSectionNode,
+    TableNode,
+    TableSectionNode
+} from './annotations.js';
+import {
+    collectPageCharts,
+    collectHeaderSections,
+    collectSections,
+    collectTables,
+    getConfigurationKey
+} from './annotations.js';
 import type { FlexChange, MinUI5Version, ParsedApp, PropertyChangeConfig } from '../parser/types.js';
 import { isLowerThanMinimalUi5Version } from '../../utils/version.js';
 
@@ -44,8 +57,9 @@ export type FlexChangeProperty = 'enableExport' | 'showPasteButton' | 'useExport
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
 export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
+export type Chart = AnnotationBasedNode<ChartNode, {}>;
 
-export type Node = Section | Table | OrphanTable | FieldGroup;
+export type Node = Section | Table | OrphanTable | FieldGroup | Chart;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
@@ -60,7 +74,7 @@ export interface FeV2ListReport extends ConfigurationBase<'list-report-page', Pa
     entitySetName: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup | Chart>;
 }
 
 export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSetting> {
@@ -69,7 +83,7 @@ export interface FeV2ObjectPage extends ConfigurationBase<'object-page', PageSet
     entitySetName: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section | FieldGroup>;
+    lookup: NodeLookup<Table | Section | FieldGroup | Chart>;
 }
 
 export type FeV2PageType = FeV2ListReport | FeV2ObjectPage;
@@ -472,6 +486,7 @@ function linkListReportPage(
     };
 
     linkListReportTable(page, [...path, name], tables, target, context.app);
+    collectPageCharts(page, mainService);
     linkedApp.pages.push(page);
 }
 
@@ -533,6 +548,7 @@ function linkObjectPagePage(
     for (const section of sections.filter((section) => section.type === 'header-section')) {
         collectHeaderSections(section, page);
     }
+    collectPageCharts(page, mainService);
     linkedApp.pages.push(page);
 }
 

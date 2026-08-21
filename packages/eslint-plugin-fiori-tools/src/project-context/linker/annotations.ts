@@ -12,7 +12,7 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
-import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
+import { UI_FIELD_GROUP, UI_LINE_ITEM, UI_CHART, UI_DATA_FIELD_FOR_ANNOTATION } from '../../constants.js';
 
 /**
  * index - Index of annotation
@@ -58,7 +58,10 @@ export type HeaderSectionNode = AnnotationBasedNode<'header-section', FieldGroup
 export type TableNode = AnnotationBasedNode<'table'>;
 export type FieldGroupNode = AnnotationBasedNode<'field-group'>;
 
-export type AnnotationNode = TableSectionNode | TableNode | HeaderSectionNode | FieldGroupNode;
+// NOSONAR - ChartNode provides semantic meaning for code readability
+export type ChartNode = AnnotationBasedNode<'chart'>;
+
+export type AnnotationNode = TableSectionNode | TableNode | HeaderSectionNode | FieldGroupNode | ChartNode;
 export type NodeLookup = {
     [K in AnnotationNode['type']]?: Extract<AnnotationNode, { type: K }>[];
 };
@@ -174,6 +177,140 @@ export function collectSections(
         ...getOPHeaderSections(entityType, service)
     ];
     return sections;
+}
+
+/**
+ * Resolves an annotation path string to a `ChartNode` if it points to a `UI.Chart` annotation.
+ *
+ * @param entityType - The entity type from which the path is relative.
+ * @param annotationPath - The raw annotation path (e.g. `to_History/@UI.Chart#MicroChart`).
+ * @param aliasInfo - Alias information for resolving namespace prefixes.
+ * @param service - The parsed OData service.
+ * @returns A `ChartNode` if the path resolves to a `UI.Chart`, or `undefined` otherwise.
+ */
+function resolveChartAnnotation(
+    entityType: string,
+    annotationPath: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService
+): ChartNode | undefined {
+    const fullyQualifiedPath = toFullyQualifiedPath(
+        aliasInfo.aliasMap,
+        '',
+        parsePath(`/${entityType}/${annotationPath}`)
+    );
+    const atIdx = fullyQualifiedPath.indexOf('@');
+    if (atIdx === -1) {
+        return undefined;
+    }
+    const [term, qualifier] = fullyQualifiedPath.substring(atIdx + 1).split('#');
+    if (term !== UI_CHART) {
+        return undefined;
+    }
+    const referencedEntityType = getReferencedEntityType(aliasInfo, entityType, annotationPath, service);
+    if (!referencedEntityType) {
+        return undefined;
+    }
+    const indexKey = buildAnnotationIndexKey(referencedEntityType, UI_CHART);
+    const indexedAnnotation = service.index.annotations[indexKey]?.[qualifier ?? 'undefined'];
+    if (!indexedAnnotation) {
+        return undefined;
+    }
+    return {
+        type: 'chart',
+        annotation: indexedAnnotation,
+        annotationPath: toFullyQualifiedPath(
+            aliasInfo.aliasMap,
+            aliasInfo.currentFileNamespace,
+            parsePath(annotationPath)
+        ),
+        children: []
+    };
+}
+
+/**
+ * Inspects a single record from a `UI.LineItem` collection and, if it is a
+ * `DataFieldForAnnotation` whose `Target` resolves to `UI.Chart`, pushes a
+ * `ChartNode` onto `charts` (deduped by annotation identity).
+ *
+ * @param record - The `Edm.Record` element to inspect.
+ * @param entityType - The entity type from which the annotation path is relative.
+ * @param aliasInfo - Alias information for namespace resolution.
+ * @param service - The parsed OData service.
+ * @param charts - Accumulator for collected chart nodes.
+ */
+function collectChartFromLineItemRecord(
+    record: Element,
+    entityType: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService,
+    charts: ChartNode[]
+): void {
+    if (getRecordType(aliasInfo, record) !== UI_DATA_FIELD_FOR_ANNOTATION) {
+        return;
+    }
+    const path = getTargetAnnotationPath(record);
+    if (!path) {
+        return;
+    }
+    const chartNode = resolveChartAnnotation(entityType, path, aliasInfo, service);
+    if (chartNode && !charts.some((c) => c.annotation === chartNode.annotation)) {
+        charts.push(chartNode);
+    }
+}
+
+/**
+ * Collects chart nodes referenced from a `UI.LineItem` table annotation via
+ * `DataFieldForAnnotation.Target` → `UI.Chart`.
+ *
+ * @param tableNode - The table annotation node (from `page.lookup['table']`).
+ * @param service - The parsed OData service.
+ * @returns Array of chart nodes referenced from the table.
+ */
+export function collectChartsFromTableNode(tableNode: TableNode, service: ParsedService): ChartNode[] {
+    const charts: ChartNode[] = [];
+    const entityType = tableNode.annotation.target;
+    const [collection] = elementsWithName(Edm.Collection, tableNode.annotation.top.value);
+    if (!collection) {
+        return charts;
+    }
+    const aliasInfo = service.artifacts.aliasInfo[tableNode.annotation.top.uri];
+    for (const record of elementsWithName(Edm.Record, collection)) {
+        collectChartFromLineItemRecord(record, entityType, aliasInfo, service, charts);
+    }
+    return charts;
+}
+
+/**
+ * Collects chart nodes referenced from a `UI.FieldGroup` annotation via the `Data` collection's
+ * `DataFieldForAnnotation.Target` → `UI.Chart`.
+ *
+ * @param fieldGroupNode - The field group annotation node (from `page.lookup['field-group']`).
+ * @param service - The parsed OData service.
+ * @returns Array of chart nodes referenced from the field group.
+ */
+export function collectChartsFromFieldGroupNode(fieldGroupNode: FieldGroupNode, service: ParsedService): ChartNode[] {
+    const charts: ChartNode[] = [];
+    const entityType = fieldGroupNode.annotation.target;
+    const [record] = elementsWithName(Edm.Record, fieldGroupNode.annotation.top.value);
+    if (!record) {
+        return charts;
+    }
+    const dataPropertyValue = elementsWithName(Edm.PropertyValue, record).find(
+        (pv) => getElementAttributeValue(pv, Edm.Property) === 'Data'
+    );
+    if (!dataPropertyValue) {
+        return charts;
+    }
+    const [collection] = elementsWithName(Edm.Collection, dataPropertyValue);
+    if (!collection) {
+        return charts;
+    }
+    const aliasInfo = service.artifacts.aliasInfo[fieldGroupNode.annotation.top.uri];
+    for (const dataRecord of elementsWithName(Edm.Record, collection)) {
+        collectChartFromLineItemRecord(dataRecord, entityType, aliasInfo, service, charts);
+    }
+    return charts;
 }
 
 const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
@@ -522,12 +659,36 @@ export interface ObjectPageLike {
 }
 
 /**
- * Links an object page header section with its field group annotation.
- * Used by both FE v2 and v4 linkers.
+ * Collects chart nodes from a page's linked table and field-group lookup entries and adds them
+ * to `page.lookup['chart']`. Must be called after the table and field-group linker steps so
+ * that only charts actually displayed on the page are collected.
  *
- * @param section - Header section node to link
- * @param page - The object page being linked
+ * @param page - Object with a `lookup` map; satisfied by both LR and OP page types.
+ * @param page.lookup - Object holding page elements.
+ * @param service - The parsed OData service.
  */
+export function collectPageCharts(
+    page: { lookup: { [key: string]: any[] | undefined } },
+    service: ParsedService
+): void {
+    for (const tableEntry of (page.lookup['table'] ?? []) as Array<{ annotation?: TableNode }>) {
+        if (tableEntry.annotation) {
+            for (const chartNode of collectChartsFromTableNode(tableEntry.annotation, service)) {
+                page.lookup['chart'] ??= [];
+                page.lookup['chart']!.push({ type: 'chart', annotation: chartNode, configuration: {}, children: [] });
+            }
+        }
+    }
+    for (const fieldGroupEntry of (page.lookup['field-group'] ?? []) as Array<{ annotation?: FieldGroupNode }>) {
+        if (fieldGroupEntry.annotation) {
+            for (const chartNode of collectChartsFromFieldGroupNode(fieldGroupEntry.annotation, service)) {
+                page.lookup['chart'] ??= [];
+                page.lookup['chart']!.push({ type: 'chart', annotation: chartNode, configuration: {}, children: [] });
+            }
+        }
+    }
+}
+
 export function collectHeaderSections(section: HeaderSectionNode, page: ObjectPageLike): void {
     if (section.type !== 'header-section') {
         return;
