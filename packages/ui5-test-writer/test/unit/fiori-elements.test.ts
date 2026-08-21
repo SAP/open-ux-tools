@@ -1589,6 +1589,8 @@ export type Then = Opa5 & BaseArrangements & {
             // ES module imports (TS journey), not sap.ui.define
             expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
             expect(content).toContain('import runner from "./pages/JourneyRunner"');
+            // Module name is derived from the page name, not the hardcoded "FPM journey"
+            expect(content).toContain('QUnit.module("MyCustomPage Journey")');
             // The only page assertion is iSeeThisPage()
             expect(content).toContain('.iSeeThisPage()');
             // onFilterBar/onTable are NOT emitted for an FPM page — TemplatePage has neither.
