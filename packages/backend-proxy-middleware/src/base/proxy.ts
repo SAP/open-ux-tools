@@ -35,15 +35,22 @@ export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'original
 export const ProxyEventHandlers = {
     /**
      * Modifies the request to the proxy server if the `FioriLaunchpad.html` is requested to add a required header.
+     * Also strips comma-joined values from `x-forwarded-host` set by BAS ingress before forwarding to the destination.
      *
      * @param proxyReq request to the proxy server that can be modified
-     * @param _req (not used) original request
+     * @param req original incoming request
      * @param _res (not used)
      * @param _options (not used)
      */
-    proxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
+    proxyReq(proxyReq: ClientRequest, req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
+        }
+        const xfh = req?.headers['x-forwarded-host'];
+        if (req && typeof xfh === 'string' && xfh.includes(',')) {
+            const host = xfh.split(',')[0].trim();
+            req.headers['x-forwarded-host'] = host;
+            proxyReq.setHeader('x-forwarded-host', host);
         }
     },
 

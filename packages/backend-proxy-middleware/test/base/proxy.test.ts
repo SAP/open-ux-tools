@@ -239,7 +239,7 @@ describe('proxy', () => {
     describe('ProxyEventHandlers', () => {
         const { proxyReq, proxyRes } = ProxyEventHandlers;
 
-        test('proxyReq', () => {
+        test('proxyReq - FioriLaunchpad accept-encoding', () => {
             const mockSetHeader = jest.fn() as unknown;
 
             proxyReq({ setHeader: mockSetHeader } as ClientRequest);
@@ -257,6 +257,37 @@ describe('proxy', () => {
 
             proxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).toHaveBeenCalledWith('accept-encoding', '*');
+        });
+
+        test('proxyReq - strips comma from x-forwarded-host (BAS ingress multi-value)', () => {
+            const mockSetHeader = jest.fn();
+            const expectedHost = 'port8080-workspaces-ws-xxxxx.region.applicationstudio.cloud.sap';
+            const commaHost = `${expectedHost}, my_backend_dest.dest`;
+            const req = { headers: { 'x-forwarded-host': commaHost } } as unknown as IncomingMessage;
+
+            proxyReq({ setHeader: mockSetHeader } as unknown as ClientRequest, req);
+
+            expect(mockSetHeader).toHaveBeenCalledWith('x-forwarded-host', expectedHost);
+            expect(req.headers['x-forwarded-host']).toBe(expectedHost);
+        });
+
+        test('proxyReq - leaves x-forwarded-host unchanged when no comma', () => {
+            const mockSetHeader = jest.fn();
+            const singleHost = 'port8080-workspaces-ws-xxxxx.region.applicationstudio.cloud.sap';
+            const req = { headers: { 'x-forwarded-host': singleHost } } as unknown as IncomingMessage;
+
+            proxyReq({ setHeader: mockSetHeader } as unknown as ClientRequest, req);
+
+            expect(mockSetHeader).not.toHaveBeenCalledWith('x-forwarded-host', expect.anything());
+            expect(req.headers['x-forwarded-host']).toBe(singleHost);
+        });
+
+        test('proxyReq - no error when x-forwarded-host absent', () => {
+            const mockSetHeader = jest.fn();
+            const req = { headers: {} } as unknown as IncomingMessage;
+
+            expect(() => proxyReq({ setHeader: mockSetHeader } as unknown as ClientRequest, req)).not.toThrow();
+            expect(mockSetHeader).not.toHaveBeenCalledWith('x-forwarded-host', expect.anything());
         });
 
         test('proxyRes', () => {
