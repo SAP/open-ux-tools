@@ -23,7 +23,8 @@ import {
     getListReportViews,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
-    getFilterFieldItems
+    getFilterFieldItems,
+    extractCustomToolBarActions
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import { readFileSync } from 'node:fs';
@@ -2564,5 +2565,78 @@ describe('Test getListReportFeatures() semantic-key HiddenFilter exclusion', () 
         const result = getListReportFeatures(pageModel, mockLogger, metadataXml);
         // TravelID is missing and not hidden → kept; BookingID is hidden → dropped
         expect(result.semanticKey?.missingFromFilterBar).toEqual(['TravelID']);
+    });
+});
+
+describe('extractCustomToolBarActions()', () => {
+    const buildModel = (actions: TreeAggregations): TreeModel =>
+        ({
+            root: {
+                aggregations: {
+                    table: {
+                        aggregations: {
+                            toolBar: {
+                                aggregations: {
+                                    actions: { aggregations: actions } as unknown as TreeAggregation
+                                }
+                            } as unknown as TreeAggregation
+                        }
+                    } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation,
+            name: 'test',
+            schema: {}
+        }) as unknown as TreeModel;
+
+    test('extracts only entries tagged actionType "Custom", matched by resolved label', () => {
+        const model = buildModel({
+            MyCustomAction: {
+                description: '{i18n>customAction1}',
+                schema: { actionType: 'Custom' },
+                aggregations: {}
+            } as unknown as TreeAggregation,
+            'DataFieldForAction::svc.Foo::svc.Bar': {
+                description: 'Foo',
+                schema: { actionType: 'Annotation' },
+                aggregations: {}
+            } as unknown as TreeAggregation
+        });
+        const resolve = (label: string | undefined) =>
+            label === '{i18n>customAction1}'
+                ? { label: 'My Custom Action 1', unresolved: false }
+                : { label: label ?? '', unresolved: false };
+
+        const result = extractCustomToolBarActions(model, resolve);
+        expect(result).toEqual([
+            {
+                label: 'My Custom Action 1',
+                action: '',
+                visible: true,
+                enabled: true,
+                custom: true,
+                labelUnresolved: undefined
+            }
+        ]);
+    });
+
+    test('flags an unresolved custom label', () => {
+        const model = buildModel({
+            MyCustomAction: {
+                description: '{i18n>missing}',
+                schema: { actionType: 'Custom' },
+                aggregations: {}
+            } as unknown as TreeAggregation
+        });
+        const resolve = (label: string | undefined) => ({ label: label ?? '', unresolved: true });
+        expect(extractCustomToolBarActions(model, resolve)[0]).toMatchObject({
+            label: '{i18n>missing}',
+            custom: true,
+            labelUnresolved: true
+        });
+    });
+
+    test('returns an empty array when there are no custom actions', () => {
+        const model = buildModel({});
+        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
     });
 });
