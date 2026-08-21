@@ -411,12 +411,13 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
 }
 
 /**
- * Returns AnnotationPath property value.
+ * Returns AnnotationPath property value of the Target property in a record element.
+ * Handles both attribute form (`AnnotationPath="..."`) and child-element form (`<AnnotationPath>...</AnnotationPath>`).
  *
- * @param record -The record element
- * @returns - Annotation path string
+ * @param record - The record element
+ * @returns - Annotation path string, or undefined if not found
  */
-function getTargetAnnotationPath(record: Element): string | undefined {
+export function getTargetAnnotationPath(record: Element): string | undefined {
     const target = record.content.find((child) => {
         if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
             const name = getElementAttributeValue(child, Edm.Property);
