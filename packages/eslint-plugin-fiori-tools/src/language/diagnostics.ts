@@ -19,6 +19,7 @@ export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
+export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -191,6 +192,14 @@ export interface CloudDevAdaptationStatus {
     type: typeof CLOUD_DEV_ADAPTATION_STATUS;
     manifest: ManifestPropertyDiagnosticData;
 }
+export interface NoSingleFacetInCollection {
+    type: typeof NO_SINGLE_FACET_IN_COLLECTION;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
 
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
@@ -209,4 +218,5 @@ export type Diagnostic =
     | TextArrangementHidden
     | StrictUomFiltering
     | NoLiveMode
-    | CloudDevAdaptationStatus;
+    | CloudDevAdaptationStatus
+    | NoSingleFacetInCollection;
