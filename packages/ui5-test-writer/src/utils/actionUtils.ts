@@ -30,8 +30,12 @@ export function getCriticalActionNames(metadataXml?: string, annotationXmls: str
     try {
         const merged = getMergedConvertedMetadata(metadataXml, annotationXmls);
         for (const action of merged?.actions ?? []) {
-            if (action.name && isActionCritical(merged as ConvertedMetadata, action.name)) {
-                names.add(action.name);
+            if (action.name) {
+                // ponytail: IsActionCritical is present at runtime but missing from the vocabularies-types typings.
+                const common = action.annotations?.Common as { IsActionCritical?: boolean } | undefined;
+                if (common?.IsActionCritical?.valueOf() === true) {
+                    names.add(action.name);
+                }
             }
         }
     } catch {

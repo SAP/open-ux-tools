@@ -61,7 +61,7 @@ export function buildButtonState(buttonState?: ButtonState): {
  * @param entitySetName - The name of the entity set
  * @param actionNames - List of action names to check
  * @param log - Optional logger instance
- * @param criticalActions
+ * @param criticalActions - Optional set of action method names annotated Common.IsActionCritical
  * @returns Array of action button states or empty array if error occurs
  */
 export function safeCheckActionButtonStates(
@@ -595,7 +595,7 @@ export function checkActionButtonStates(
  * @param dataFieldForActions List of DataFieldForAction items from UI.LineItem
  * @param actionNames List of action names to find
  * @param metadata The converted metadata
- * @param criticalActions
+ * @param criticalActions - Optional set of action method names annotated Common.IsActionCritical
  * @returns List of action button states for the specified actions
  */
 function findActionStates(

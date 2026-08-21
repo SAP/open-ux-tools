@@ -96,10 +96,10 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
             <%_ if (item.isCritical) { _%>
-            <%_ if (item.enabled !== true) { _%>
             <%_ if (!hideFilterBar) { _%>
             When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
             <%_ } _%>
+            <%_ if (item.enabled !== true) { _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
             <%_ } _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
