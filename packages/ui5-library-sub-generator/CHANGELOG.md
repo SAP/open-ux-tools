@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.7 → 1.2.8
+- @sap-ux/ui5-library-inquirer 1.0.32 → 1.0.33
+
 ## 1.0.32
 
 ### Patch Changes
