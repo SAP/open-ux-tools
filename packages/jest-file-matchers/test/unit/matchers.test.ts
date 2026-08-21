@@ -124,7 +124,11 @@ describe('Test matchers', () => {
             const context = { isNot: false, snapshotState: { _updateSnapshot: 'all', updated: 0 } };
 
             // when
-            const result = toContainAllFilesIn.call(context as unknown as jest.MatcherContext, receivedFolder, snapshotFolder);
+            const result = toContainAllFilesIn.call(
+                context as unknown as jest.MatcherContext,
+                receivedFolder,
+                snapshotFolder
+            );
 
             // then: stale.txt is deleted, pass is true, updated incremented
             expect(result.pass).toBe(true);
@@ -147,7 +151,11 @@ describe('Test matchers', () => {
             const context = { isNot: false, snapshotState: { _updateSnapshot: 'all', updated: 0 } };
 
             // when
-            const result = toContainAllFilesIn.call(context as unknown as jest.MatcherContext, receivedFolder, snapshotFolder);
+            const result = toContainAllFilesIn.call(
+                context as unknown as jest.MatcherContext,
+                receivedFolder,
+                snapshotFolder
+            );
 
             // then: stale-dir and its contents are deleted, pass is true
             expect(result.pass).toBe(true);
