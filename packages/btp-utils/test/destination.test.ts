@@ -21,6 +21,9 @@ import destinations from './mockResponses/destinations.json';
 const destination: Destination = destinations.find((destination) => destination.Name === 'NO_ADDITIONAL_PROPERTIES')!;
 const S4HCDestination: Destination = destinations.find((destination) => destination.Name === 'S4HC')!;
 const btpDestination: Destination = destinations.find((destination) => destination.Name === 'ABAP_ON_BTP')!;
+const abapCloud: Destination = destinations.find(
+    (destination) => destination.Name === 'abap-cloud-my-abap-env-testorg-testspace'
+)!;
 
 describe('destination', () => {
     describe('isAbapSystem', () => {
@@ -194,6 +197,15 @@ describe('destination', () => {
                 })
             ).toBe(true);
         });
+        it('Authentication set to SamlAssertion, internet facing and contains the required hostname', () => {
+            expect(isS4HC({ ...S4HCDestination, Host: 'https://my41111-api.saps4hanacloud.cn' })).toBe(true);
+        });
+        it('Authentication set to SamlAssertion, internet facing and s4hana.cloud.sap host', () => {
+            expect(isS4HC({ ...S4HCDestination, Host: 'https://my41111-api.s4hana.cloud.sap' })).toBe(true);
+        });
+        it('Authentication set to SamlAssertion, internet facing and s4hana.sapcloud.cn host', () => {
+            expect(isS4HC({ ...S4HCDestination, Host: 'https://my41111-api.s4hana.sapcloud.cn' })).toBe(true);
+        });
         it('Authentication set to SamlAssertion and is OnPremise', () => {
             expect(
                 isS4HC({
@@ -201,6 +213,9 @@ describe('destination', () => {
                     ProxyType: ProxyType.ON_PREMISE
                 })
             ).toBe(false);
+        });
+        it('Authentication set to SamlAssertion and is Internet and using ABAP Cloud host', () => {
+            expect(isS4HC(abapCloud)).toBe(false);
         });
     });
 

@@ -66,9 +66,9 @@
         "Description": "S4HC for ABAP Cloud Deployment",
         "WebIDEEnabled": "true",
         "WebIDEUsage": "odata_abap,dev_abap",
-        "Host": "https://s4hc-example-api.sap.example",
+        "Host": "https://my41111-api.s4hana.ondemand.com",
         "HTML5.DynamicDestination": "true",
-        "audience": "https://s4hc-example.sap.example",
+        "audience": "https://s4hana-example.sap.example",
         "authnContextClassRef": "urn:oasis:names:tc:SAML:2.0:ac:classes:PreviousSession"
     },
     {
