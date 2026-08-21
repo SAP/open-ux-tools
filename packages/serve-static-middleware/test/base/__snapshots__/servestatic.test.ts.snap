@@ -19,6 +19,32 @@ Array [
 ]
 `;
 
+exports[`serve-static-middleware serveStaticMiddleware: call with custom library from /resources 1`] = `
+Array [
+  Array [
+    "/path/to/my/custom/lib",
+    Object {
+      "fallthrough": false,
+      "maxAge": 123,
+    },
+  ],
+  Array [
+    "/path/to/test-resources",
+    Object {
+      "fallthrough": true,
+      "maxAge": 456,
+    },
+  ],
+  Array [
+    "/path/to/my/custom/lib",
+    Object {
+      "fallthrough": false,
+      "maxAge": 123,
+    },
+  ],
+]
+`;
+
 exports[`serve-static-middleware serveStaticMiddleware: call with global options 1`] = `
 Array [
   Array [
