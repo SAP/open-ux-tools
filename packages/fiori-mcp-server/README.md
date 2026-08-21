@@ -134,6 +134,26 @@ Then use `fiori-mcp` as the command (no `args` needed):
 }
 ```
 
+You can create a global configuration [mcp.json](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) within Visual Studio Code:
+GitHub Copilot uses the `mcp.json` file as source for it's Agent mode.
+```json
+{
+	"servers": {
+		"fiori-mcp": {
+			"type": "stdio",
+			"timeout": 600,
+			"command": "npx",
+			"args": [
+				"--yes",
+				"@sap-ux/fiori-mcp-server@latest",
+				"fiori-mcp"
+			]
+		}
+	"inputs": []
+}
+```
+
+
 ## [Rules](#rules)
 
 The following rules help guide the AI model to use the server correctly. Add them to your system prompt or rules file:
