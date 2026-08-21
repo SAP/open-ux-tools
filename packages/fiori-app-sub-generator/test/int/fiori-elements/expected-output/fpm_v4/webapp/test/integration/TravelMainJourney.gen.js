@@ -22,7 +22,7 @@ sap.ui.define([
     "use strict";
 
     function journey() {
-        QUnit.module("FPM journey");
+        QUnit.module("TravelMain Journey");
 
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();

@@ -20,7 +20,7 @@ import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 import runner from "./pages/JourneyRunner";
 
 function journey() {
-    QUnit.module("FPM journey");
+    QUnit.module("<%- name %> Journey");
 
     opaTest("Start application", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
