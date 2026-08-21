@@ -164,6 +164,43 @@ describe('toolsSuiteTelemetrySettings', () => {
         expect(TelemetrySettings.azureInstrumentationKey).toBe('abc-123');
     });
 
+    it('Applies ingestionEndpoint/liveEndpoint overrides when provided', async () => {
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: true })
+        });
+
+        await initTelemetrySettings({
+            resourceId: '',
+            consumerModule: packageJson,
+            internalFeature: false,
+            watchTelemetrySettingStore: false,
+            ingestionEndpoint: 'https://custom-ingest.example.com/',
+            liveEndpoint: 'https://custom-live.example.com/'
+        });
+
+        expect(TelemetrySettings.azureIngestionEndpoint).toBe('https://custom-ingest.example.com/');
+        expect(TelemetrySettings.azureLiveEndpoint).toBe('https://custom-live.example.com/');
+    });
+
+    it('Keeps default ingestionEndpoint/liveEndpoint when overrides are not provided', async () => {
+        // reset to defaults in case a previous test mutated the shared runtime settings
+        TelemetrySettings.azureIngestionEndpoint = 'https://westus2-0.in.applicationinsights.azure.com/';
+        TelemetrySettings.azureLiveEndpoint = 'https://westus2.livediagnostics.monitor.azure.com/';
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: true })
+        });
+
+        await initTelemetrySettings({
+            resourceId: '',
+            consumerModule: packageJson,
+            internalFeature: false,
+            watchTelemetrySettingStore: false
+        });
+
+        expect(TelemetrySettings.azureIngestionEndpoint).toBe('https://westus2-0.in.applicationinsights.azure.com/');
+        expect(TelemetrySettings.azureLiveEndpoint).toBe('https://westus2.livediagnostics.monitor.azure.com/');
+    });
+
     /**
      * No central telemetry setting found. Read config from deprecated vscode extension settings.
      * Set enableTelemetry to true if all of the vscode extension setting are true.
