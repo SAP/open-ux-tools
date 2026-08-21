@@ -6,8 +6,11 @@ import {
     analyzeOperationAvailability,
     extractEnumMemberValue,
     buildActionButtonState,
-    buildActionStateFromSpecModelKey
+    buildActionStateFromSpecModelKey,
+    isActionCritical,
+    getCriticalActionNames
 } from '../../../src/utils/actionUtils.js';
+import { getMergedConvertedMetadata } from '../../../src/utils/metadataXmlUtils.js';
 
 describe('extractActionMethodName()', () => {
     test('extracts method name from fully qualified action with parentheses', () => {
@@ -308,7 +311,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -327,7 +331,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: true,
             visible: true,
             enabled: true,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -369,7 +374,141 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: 'dynamic',
-            dynamicPath: 'IsReady'
+            dynamicPath: 'IsReady',
+            isCritical: false
         });
+    });
+
+    test('sets isCritical when the action is in the criticalActions set', () => {
+        const metadata = {
+            entitySets: [],
+            actions: [
+                {
+                    name: 'Activate',
+                    fullyQualifiedName: 'TestService.Activate(TestService.Order)',
+                    isBound: true,
+                    parameters: [{ isCollection: false }]
+                }
+            ]
+        } as unknown as ConvertedMetadata;
+
+        const result = buildActionStateFromSpecModelKey(
+            'DataFieldForAction::TestService.Activate::TestService.OrderType',
+            'Activate',
+            metadata,
+            'TestService',
+            new Set(['Activate'])
+        );
+
+        expect(result?.isCritical).toBe(true);
+    });
+});
+
+describe('isActionCritical()', () => {
+    const metadata = {
+        actions: [
+            {
+                name: 'SetToBooked',
+                fullyQualifiedName: 'TestService.SetToBooked(TestService.Order)',
+                annotations: { Common: { IsActionCritical: Boolean(true) } }
+            },
+            {
+                name: 'NotCritical',
+                fullyQualifiedName: 'TestService.NotCritical(TestService.Order)',
+                annotations: { Common: { IsActionCritical: Boolean(false) } }
+            },
+            {
+                name: 'NoAnnotation',
+                fullyQualifiedName: 'TestService.NoAnnotation(TestService.Order)',
+                annotations: {}
+            }
+        ]
+    } as unknown as ConvertedMetadata;
+
+    test('returns true for an action annotated Common.IsActionCritical = true', () => {
+        expect(isActionCritical(metadata, 'SetToBooked')).toBe(true);
+    });
+
+    test('returns false when the annotation value is false', () => {
+        expect(isActionCritical(metadata, 'NotCritical')).toBe(false);
+    });
+
+    test('returns false when the annotation is absent', () => {
+        expect(isActionCritical(metadata, 'NoAnnotation')).toBe(false);
+    });
+
+    test('returns false for an unknown action', () => {
+        expect(isActionCritical(metadata, 'Unknown')).toBe(false);
+    });
+});
+
+describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from annotation files', () => {
+    // Inline fixtures (kept self-contained; the metadata has no IsActionCritical — it lives only in the annotation doc).
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityType Name="TravelType">
+        <Key><PropertyRef Name="TravelID"/></Key>
+        <Property Name="TravelID" Type="Edm.String"/>
+      </EntityType>
+      <Action Name="setToNew" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
+      <Action Name="setToBooked" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
+      <EntityContainer Name="Container">
+        <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
+    const annotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Annotations Target="TestService.TravelType">
+        <Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+          <Collection>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Set To New"/>
+              <PropertyValue Property="Action" String="TestService.setToNew(TestService.TravelType)"/>
+            </Record>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Set To Booked"/>
+              <PropertyValue Property="Action" String="TestService.setToBooked(TestService.TravelType)"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="TestService.setToNew(TestService.TravelType)">
+        <Annotation Term="com.sap.vocabularies.Common.v1.IsActionCritical" Bool="true"/>
+      </Annotations>
+      <Annotations Target="TestService.setToBooked(TestService.TravelType)">
+        <Annotation Term="com.sap.vocabularies.Common.v1.IsActionCritical" Bool="true"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns undefined when no metadata is provided', () => {
+        expect(getMergedConvertedMetadata(undefined)).toBeUndefined();
+    });
+
+    test('IsActionCritical is not visible from metadata.xml alone', () => {
+        const converted = getMergedConvertedMetadata(metadataXml);
+        expect(converted && isActionCritical(converted, 'setToBooked')).toBe(false);
+    });
+
+    test('IsActionCritical becomes visible once the annotation file is merged', () => {
+        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
+        expect(converted && isActionCritical(converted, 'setToBooked')).toBe(true);
+        expect(converted && isActionCritical(converted, 'setToNew')).toBe(true);
+    });
+
+    test('LR toolbar action states carry isCritical from the merged metadata', async () => {
+        const { checkActionButtonStatesFromMetadata } = await import('../../../src/utils/listReportUtils.js');
+        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
+        const criticalActions = getCriticalActionNames(metadataXml, [annotationXml]);
+        const { actions } = checkActionButtonStatesFromMetadata(converted!, 'Travel', undefined, criticalActions);
+        const critical = actions.filter((a) => a.isCritical).map((a) => a.action);
+        expect(critical).toEqual(expect.arrayContaining(['setToBooked', 'setToNew']));
     });
 });

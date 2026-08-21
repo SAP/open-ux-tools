@@ -263,6 +263,11 @@ export interface ActionButtonState {
      */
     unbound?: boolean;
     /**
+     * Whether the action is annotated with `Common.IsActionCritical`. Critical actions trigger a
+     * confirmation dialog at runtime, which the generated test asserts and then cancels.
+     */
+    isCritical?: boolean;
+    /**
      * Set when this entry is a menu (drop-down) button rather than a single action.
      * `menuActions` then holds the individual actions inside the menu.
      */

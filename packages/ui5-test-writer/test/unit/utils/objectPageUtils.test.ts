@@ -2652,7 +2652,8 @@ describe('Test getObjectPageFeatures()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -2721,7 +2722,8 @@ describe('Test getObjectPageFeatures()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -2897,7 +2899,8 @@ describe('Test getObjectPageFeatures()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
