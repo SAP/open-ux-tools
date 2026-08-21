@@ -42,7 +42,7 @@
         "yaml": "2.9.0"
     },
     "devDependencies": {
-        "@types/lodash": "4.17.24"
+        "@types/lodash": "4.17.25"
     },
     "engines": {
         "node": ">=22.x"

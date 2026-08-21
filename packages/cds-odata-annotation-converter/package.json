@@ -34,14 +34,14 @@
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
+        "@sap-ux/text-document-utils": "workspace:*",
         "@sap/ux-cds-compiler-facade": "1.23.0",
-        "i18next": "26.3.6",
-        "@sap-ux/text-document-utils": "workspace:*"
+        "i18next": "26.3.6"
     },
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "npm-run-all2": "9.0.2"
+        "npm-run-all2": "9.0.3"
     },
     "engines": {
         "node": ">=22.x"
