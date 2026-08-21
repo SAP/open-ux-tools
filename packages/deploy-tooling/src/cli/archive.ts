@@ -48,19 +48,29 @@ async function fetchArchiveFromUrl(logger: Logger, url: string, rejectUnauthoriz
 }
 
 /**
- * Create a zipped file containing all files in the given folder.
+ * Create a zipped file containing all files in the given folder, optionally excluding paths.
  *
  * @param logger - reference to the logger instance
  * @param path - path to the folder that is to be zipped
+ * @param exclude - array of patterns used to exclude entries from the archive
  * @returns Buffer containing the zip file
  */
-function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> {
+function createArchiveFromFolder(logger: Logger, path: string, exclude: string[] = []): Promise<Buffer> {
     try {
         logger.info(`Creating archive from ${path}.`);
         const zip = new ZipFile();
         zip.addLocalFolder(path);
         for (const entry of zip.getEntries()) {
-            logger.debug(`Adding ${entry.entryName}`);
+            if (
+                exclude.some((pattern) =>
+                    entry.entryName.startsWith(pattern.startsWith('/') ? pattern.slice(1) : pattern)
+                )
+            ) {
+                logger.debug(`Excluding ${entry.entryName}`);
+                zip.deleteFile(entry.entryName);
+            } else {
+                logger.debug(`Adding ${entry.entryName}`);
+            }
         }
         logger.info(`Archive created from ${path}.`);
         return zip.toBufferPromise();
@@ -74,14 +84,15 @@ function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> 
  *
  * @param logger - reference to the logger instance
  * @param options - options provided via CLI
+ * @param exclude - array of patterns used to exclude entries from the archive
  * @returns Buffer containing the zip file
  */
-export async function getArchive(logger: Logger, options: CliOptions): Promise<Buffer> {
+export async function getArchive(logger: Logger, options: CliOptions, exclude: string[] = []): Promise<Buffer> {
     if (options.archivePath) {
         return getArchiveFromPath(logger, options.archivePath);
     } else if (options.archiveUrl) {
         return fetchArchiveFromUrl(logger, options.archiveUrl, options.strictSsl);
     } else {
-        return createArchiveFromFolder(logger, options.archiveFolder ?? process.cwd());
+        return createArchiveFromFolder(logger, options.archiveFolder ?? process.cwd(), exclude);
     }
 }
