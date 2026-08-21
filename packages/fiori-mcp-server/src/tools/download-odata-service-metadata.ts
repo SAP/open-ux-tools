@@ -50,6 +50,13 @@ export async function downloadODataServiceMetadata(
     }
 
     try {
+        if (!fs.existsSync(params.appPath)) {
+            throw new Error(
+                `appPath does not exist: ${params.appPath}. Create the directory before calling this tool. ` +
+                    'This tool does not create directories.'
+            );
+        }
+
         const findResult = await findSystem(sapSystemQuery || servicePath);
         if (!findResult.system) {
             return {

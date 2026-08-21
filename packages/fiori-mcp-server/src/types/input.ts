@@ -88,7 +88,12 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
         ), */
     appPath: zod
         .string()
-        .describe('Absolute path to the folder where metadata.xml will be saved. Typically the project target folder.')
+        .describe(
+            'Absolute path to an existing folder where `metadata.xml` will be written. ' +
+                'The folder must exist before this tool is called; this tool does not create directories. ' +
+                'Create the target folder first when scaffolding a new Fiori project. ' +
+                'Typically this is the same folder later passed as the project target to `generate_fiori_app_odata`.'
+        )
 });
 
 export const DocSearchInputSchema = zod.object({
