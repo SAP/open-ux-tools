@@ -74,6 +74,8 @@ function journey() {
     //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
     //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
     //     Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+    //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField(undefined);
+    //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
@@ -89,8 +91,16 @@ function journey() {
         <%_ } _%>
         <%_ toolBarActions.forEach(function(item) { _%>
         <%_ if (item.visible) { _%>
+        <%_ if (item.custom) { _%>
+        <%_ if (item.labelUnresolved) { _%>
+        // TODO: label is an unresolved i18n key; replace with the rendered action text
+        <%_ } _%>
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { visible: true });
+        <%_ } else { _%>
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+        <%_ } _%>
         <%_ } _%>
         <%_ }); -%>
         <%_ } -%>

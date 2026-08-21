@@ -28,7 +28,6 @@ sap.ui.define([
             Given.iStartMyApp();
 
             Then.onTheTravelMainGenerated.iSeeThisPage();
-
         });
 
         opaTest("Teardown", function (Given, When, Then) { 

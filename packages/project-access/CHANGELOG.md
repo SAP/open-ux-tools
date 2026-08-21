@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 2.1.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
 ## 2.1.10
 
 ### Patch Changes
