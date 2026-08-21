@@ -219,7 +219,7 @@ describe('ui5-test-writer', () => {
                 expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
                 // The non-critical action's execute stays commented out.
                 expect(journey).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("Copy")'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Copy")'
                 );
             });
 

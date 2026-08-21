@@ -106,7 +106,7 @@ function journey() {
         Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
         When.onThe<%- name%>Generated.onMessageDialog().iCancel();
 <%         } else if (!action.custom && !action.menuActions) { -%>
-        // When.onThe<%- name%>Generated.onHeader().iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%         } -%>
 <%     } -%>
 <%     }); -%>
@@ -188,7 +188,7 @@ function journey() {
         Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
         When.onThe<%- name%>Generated.onMessageDialog().iCancel();
 <%              } else if (!action.custom && !action.menuActions) { -%>
-        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } -%>
 <%          } else { -%>
 <%              if (action.menuActions) { -%>
@@ -217,7 +217,7 @@ function journey() {
         Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
         When.onThe<%- name%>Generated.onMessageDialog().iCancel();
 <%              } else if (!action.custom && !action.menuActions) { -%>
-        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } -%>
 <%          } -%>
 <%      } -%>
