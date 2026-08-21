@@ -28,7 +28,7 @@ const LIBRARY_WITH_DESCR_FILTER: UI5AppFilter = {
     'fileType': 'appdescr'
 };
 
-const CONTEXT_DIR = path.join('webapp', '.context');
+const CONTEXT_DIR = path.join('.context');
 
 export const LIBRARIES_FILE = 'libraries.json';
 export const ODATA_SERVICES_FILE = 'odata-services.json';
