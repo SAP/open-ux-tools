@@ -2,7 +2,6 @@ import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { GeneratorConfigCAPWithAPI } from '../../../src/tools/schemas/index.js';
-import { existsSync, promises as fsPromises } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,6 +17,16 @@ const mockFindInstalledPackages = jest.fn<any>().mockResolvedValue([
 ]);
 jest.unstable_mockModule('@sap-ux/nodejs-utils', () => ({
     findInstalledPackages: mockFindInstalledPackages
+}));
+
+const mockExistsSync = jest.fn<any>();
+const actualFs = await import('node:fs');
+// Default: delegate to the real existsSync so existing filesystem assertions still work
+mockExistsSync.mockImplementation((...args: any[]) => (actualFs.existsSync as any)(...args));
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    default: { ...actualFs, existsSync: mockExistsSync },
+    existsSync: mockExistsSync
 }));
 
 // Mock child_process.exec
@@ -39,6 +48,7 @@ const packageJsonModule = await import('../../../package.json', { with: { type: 
 const packageJson = packageJsonModule.default;
 
 const testOutputDir = join(__dirname, '../../test-output/');
+const { existsSync, promises: fsPromises } = actualFs;
 
 const paramTest: GeneratorConfigCAPWithAPI = {
     floorplan: 'FE_LROP',
@@ -84,6 +94,19 @@ const mockFileWrite = (cb: (content: string) => void) => {
 };
 
 describe('executeFunctionality', () => {
+    beforeEach(() => {
+        mockExistsSync.mockImplementation((...args: any[]) => (actualFs.existsSync as any)(...args));
+    });
+
+    test('should return error when app subfolder already exists', async () => {
+        mockExistsSync.mockReset();
+        mockExistsSync.mockReturnValue(true);
+        const result = await generateFioriAppCap(paramTest);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('already exists');
+        expect(result.changes).toEqual([]);
+    });
+
     test('executeFunctionality - success', async () => {
         let generatedConfigContent: string;
         mockExec.mockImplementation((_cmd, _opts, callback) => {
