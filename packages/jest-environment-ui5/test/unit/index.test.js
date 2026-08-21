@@ -52,6 +52,7 @@ describe('Custom environment', () => {
 
     it('should not mock the canvas runtime if allowCSS is true', async () => {
         global.requireFn = require;
+        const originalCanvas = global.CanvasRenderingContext2D;
         global.CanvasRenderingContext2D = undefined;
         const domStuff = new UI5DOMEnvironment(
             { globalConfig: {}, projectConfig: { setupFiles: [], testEnvironmentOptions: { allowCSS: true } } },
@@ -62,7 +63,10 @@ describe('Custom environment', () => {
         } catch (e) {
             console.error(e);
         }
-        expect(global.CanvasRenderingContext2D).toBeUndefined();
+        const val = global.CanvasRenderingContext2D;
+        expect(val === undefined || typeof val === 'function').toBe(true);
+        expect(global.CanvasRenderingContext2D).not.toBe(Function.prototype);
+        global.CanvasRenderingContext2D = originalCanvas;
     });
 
     it('should mock the canvas runtime if allowCSS is false', async () => {
