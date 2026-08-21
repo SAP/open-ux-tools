@@ -110,8 +110,6 @@ function journey() {
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
         When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
-        <%_ } else { _%>
-        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
         <%_ } _%>
         <%_ } _%>
         <%_ } _%>

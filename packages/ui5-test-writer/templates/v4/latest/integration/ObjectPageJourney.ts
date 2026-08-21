@@ -98,7 +98,6 @@ function journey() {
         // When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%         } else if (action.enabled === 'dynamic') { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
-        // When.onThe<%- name%>Generated.onHeader().iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%         } else { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%         } -%>
@@ -179,7 +178,6 @@ function journey() {
         // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%              } else if (action.enabled === 'dynamic') { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
-        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
@@ -210,7 +208,6 @@ function journey() {
         // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%              } else if (action.enabled === 'dynamic') { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
-        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>

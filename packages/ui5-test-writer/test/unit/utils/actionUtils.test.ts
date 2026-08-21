@@ -1,10 +1,5 @@
 import type { Action, ActionParameter, ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 import {
     extractActionMethodName,
     findOperationAvailableAnnotation,
@@ -448,9 +443,50 @@ describe('isActionCritical()', () => {
 });
 
 describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from annotation files', () => {
-    const appPath = join(__dirname, '../../test-input/fin.test.rap.lr3/webapp');
-    const metadataXml = readFileSync(join(appPath, 'localService/mainService/metadata.xml')).toString();
-    const annotationXml = readFileSync(join(appPath, 'annotations/annotation.xml')).toString();
+    // Inline fixtures (kept self-contained; the metadata has no IsActionCritical — it lives only in the annotation doc).
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityType Name="TravelType">
+        <Key><PropertyRef Name="TravelID"/></Key>
+        <Property Name="TravelID" Type="Edm.String"/>
+      </EntityType>
+      <Action Name="setToNew" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
+      <Action Name="setToBooked" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
+      <EntityContainer Name="Container">
+        <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
+    const annotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Annotations Target="TestService.TravelType">
+        <Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+          <Collection>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Set To New"/>
+              <PropertyValue Property="Action" String="TestService.setToNew(TestService.TravelType)"/>
+            </Record>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Set To Booked"/>
+              <PropertyValue Property="Action" String="TestService.setToBooked(TestService.TravelType)"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="TestService.setToNew(TestService.TravelType)">
+        <Annotation Term="com.sap.vocabularies.Common.v1.IsActionCritical" Bool="true"/>
+      </Annotations>
+      <Annotations Target="TestService.setToBooked(TestService.TravelType)">
+        <Annotation Term="com.sap.vocabularies.Common.v1.IsActionCritical" Bool="true"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
 
     test('returns undefined when no metadata is provided', () => {
         expect(getMergedConvertedMetadata(undefined)).toBeUndefined();

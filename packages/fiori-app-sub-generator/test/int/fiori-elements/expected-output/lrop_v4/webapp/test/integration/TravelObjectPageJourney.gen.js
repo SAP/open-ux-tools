@@ -38,15 +38,15 @@ sap.ui.define([
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
             // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false } /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false });
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false });
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToBooked", unbound: false } /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToBooked", unbound: false });
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToBooked", unbound: false });
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToNew", unbound: false } /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToNew", unbound: false });
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToNew", unbound: false });
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "Check", unbound: false } /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "Check", unbound: false });
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "Check", unbound: false });
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */);
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "deductDiscount", unbound: false });
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "deductDiscount", unbound: false });
         });
 
 
