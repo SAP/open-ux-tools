@@ -1,5 +1,517 @@
 # @sap-ux/ui5-test-writer
 
+## 1.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Features
+
+- Generate OPA action tests for custom (manifest-declared) actions, matched by their (i18n-resolved) label via `iCheckAction("<label>")`. Custom-action tests are emitted only for the `latest` template bucket, where the required `sap.fe.test.api` support is available. Also fix bound actions with a collection binding parameter: they are now correctly treated as bound (`unbound: false`) and disabled-by-default (require a selection), matching the SAP FE runtime. [[09099e5](https://github.com/SAP/open-ux-tools/commit/09099e5aaed4cea169ebc18b8c9e52b1f53dda8e)]
+
+#### Features
+
+- Generate Object Page OPA tests for menu (drop-down) actions. Actions grouped in an annotation menu (`DataFieldForActionGroup`) or a manifest menu (`CustomMenu`) are now detected from the specification model and emitted with the menu-aware `iCheckMenuAction` / `iExecuteMenuAction` test API. [[7fe592d](https://github.com/SAP/open-ux-tools/commit/7fe592d42db7b3f5e48e88d8155e1fd399cf69fd)]
+
+## 1.8.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.7 → 1.2.8
+- @sap-ux/preview-middleware 1.2.2 → 1.2.3
+
+## 1.8.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Bug Fixes
+
+- Object Page OPA tests no longer emit `iCheckSubSection`/`iGoToSection(subSection)` for sections that render a single sub-section (e.g. a form-only CollectionFacet). Fiori elements renders such a section inline with no distinct sub-section, so the assertion had no matching control. Sub-section assertions are now only generated when a section has more than one sub-section. [[ecf9652](https://github.com/SAP/open-ux-tools/commit/ecf9652e47e17112195db18d1fb3ee83651785a9)]
+
+## 1.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Features
+
+- Generate TypeScript OPA5 tests for FPM pages and add WithAnd<T> fluent `.and` chaining support
+
+    - FPM (`sap.fe.core.fpm`) pages no longer force generated OPA5 tests to JavaScript; they now honour the configured/auto-detected TypeScript setting, emitting `FPMJourney.ts` and `pages/FPM.ts` symmetric with the List Report / Object Page templates. The FPM page is constructed via `sap/fe/test/TemplatePage` (cast to work around the missing `sap/fe/test/FPM` type in `@sapui5/types`).
+    - Generated `OpaJourneyTypes.gen.d.ts` now emits a `WithAnd<T>` utility type and wraps each page's `When`/`Then` intersection in it, enabling the OPA5 fluent `.and.iCheckX()` chaining pattern in TypeScript journeys. The standalone splicer backfills the `WithAnd<T>` definition into type files generated before this change. [[aec42e9](https://github.com/SAP/open-ux-tools/commit/aec42e9be5fa2c76aea51dbc56eb30f07aadec9a)]
+
+## 1.7.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/ui5-application-writer 2.1.3 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.2.6 → 1.2.7
+- @sap-ux/preview-middleware 1.2.1 → 1.2.2
+
+## 1.7.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Correct OPA5 test generation for multi-view (multi-tab) List Reports
+
+    - A plain multi-view List Report is no longer mis-detected as an Analytical List Page; detection now uses the single `isALPManifestTarget` predicate, so the start page variable resolves and the filter-bar / navigate-to-ObjectPage steps render with the correct page name.
+    - The "Check table columns and actions" test is generated again for multi-view List Reports: column, action and contact-card extraction now reads the first non-custom view's table node (`table.views[key]`) instead of only `table.columns`.
+    - The ObjectPage journey navigates from the tab that actually exposes the page: it emits `iGoToView({ key })` and targets `onTable("<viewKey>")` for a non-default view (matched by the view's entity set), and keeps the single-table behaviour for the default view and single-table List Reports.
+    - The commented global-search template now includes a search-field cleanup (`iChangeSearchField(undefined)` / `iCheckSearchField(undefined)`) at the end of the flow. [[06f4e10](https://github.com/SAP/open-ux-tools/commit/06f4e1010ec247ea87f60cd9d95760d4f10a1310)]
+
+## 1.7.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Remove debug warn log statements from modelUtils and drop unused log parameter from getFPMPage [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.7.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.0 → 1.2.1
+
+## 1.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-13
+
+#### Features
+
+- Align FE V4 OPA5 test template buckets to LTM versions (1.150 -> 1.148), add a "latest" bucket, and confine iCheckTitlePath / iGoToSection features to latest [[caf4bda](https://github.com/SAP/open-ux-tools/commit/caf4bdafcada373166752b48e1b982d42993539e)]
+
+## 1.6.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.3 → 1.2.0
+
+## 1.6.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Features
+
+- Generate Contact Card OPA5 tests across Object Page header field groups, body-section forms, body-section tables, and List Report tables. `DataFieldForAnnotation::<property>::Contact` entries are detected in the spec model and emitted as `iClickLink({ property: "<property>/Contact" })` followed by `iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })`. Drops the `iPressSectionIconTabFilterButton` page-object workaround in favor of the public `iGoToSection` API and unconditionally emits `iCheckNumberOfSections` (now valid for any section count). [[58e4ffb](https://github.com/SAP/open-ux-tools/commit/58e4ffb1a6e6c96383673c5c321ccdd3b5ffefeb)]
+
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Features
+
+- Skip UI.Hidden Object Page sections when generating OPA5 tests [[bb84331](https://github.com/SAP/open-ux-tools/commit/bb843314c9d6ca0f6762cb03c6f89e161b7ca42f)]
+
+## 1.4.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.2 → 1.1.3
+
+## 1.4.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.1.1 → 1.1.2
+
+## 1.4.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Generate a separate, named opaTest block for each Object Page section instead of one combined "Check body sections" block, so large object pages produce readable, independently-failing journey tests [[ee1fcaf](https://github.com/SAP/open-ux-tools/commit/ee1fcafb1a96bb963e9f5882d783d5a80d7eae1e)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Object Page OPA tests now use the correct sub-section id for CollectionFacets whose children are only FieldGroup/Identification facets. Fiori elements renders these as a single sub-section inheriting the CollectionFacet id (with one FormContainer per FieldGroup), so the generated `iCheckSubSection`/`onForm` calls no longer reference non-existent per-FieldGroup ids (e.g. `FieldGroup::Q1`). [[d53e168](https://github.com/SAP/open-ux-tools/commit/d53e1680c38ec87558007ea1527943fc5059ef40)]
+
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Features
+
+- Generate Object Page header title check using iCheckTitlePath (binding-path based) [[26f9d1a](https://github.com/SAP/open-ux-tools/commit/26f9d1a1aaf4cb71d8c8f7fa33a529d7fa654da6)]
+
+## 1.3.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Replace the deprecated `iPressEdit()`/`iPressSectionIconTabFilterButton()` calls in generated OPA tests with the current `iExecuteEdit()` and `iGoToSection({ section })` APIs, and drop the now-unneeded custom `iPressSectionIconTabFilterButton` helper from the page-object templates. [[a516ff1](https://github.com/SAP/open-ux-tools/commit/a516ff1d3481623e059501c2b56c66ac334ea224)]
+
+## 1.3.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/ui5-application-writer 2.1.2 → 2.1.3
+- @sap-ux/preview-middleware 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+
+## 1.3.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.49 → 1.1.0
+
+## 1.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support 2-bucket UI5 version template selection (1.84 / 1.150) for Fiori Elements OPA5 test generation [[8f7862f](https://github.com/SAP/open-ux-tools/commit/8f7862f37a8685a9cd9ece5910bd4c5dd94c1194)]
+
+## 1.2.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Only generate ux-specification-derived OPA journeys for List Report / Object Page (LROP) and Flexible Programming Model (FPM) apps. Object Page-only and Analytical List Page projects now receive the generic fallback FirstJourney instead. The fallback is also written (and wired into the existing `opaTests.qunit.js`) when regenerating an existing app whose test setup is compatible but produces no ux-spec journeys, without overwriting a user's existing fallback journey. [[dbde04c](https://github.com/SAP/open-ux-tools/commit/dbde04ce67b917a1fea61511fb045d15708778ca)]
+
+## 1.2.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-28
+
+#### Bug Fixes
+
+- Rename the generated OPA journey type-definition file to `OpaJourneyTypes.gen.d.ts` and update the generated journey imports to match [[6fdd7f9](https://github.com/SAP/open-ux-tools/commit/6fdd7f9a7d6f082135f25eff5a77252694648cfa)]
+
+## 1.2.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.4 → 1.2.5
+- @sap-ux/preview-middleware 1.0.48 → 1.0.49
+
+## 1.2.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.47 → 1.0.48
+- @sap-ux/fiori-generator-shared 1.2.3 → 1.2.4
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-application-writer 2.1.1 → 2.1.2
+
+## 1.2.31
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.2 → 1.2.3
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.1
+- @sap-ux/preview-middleware 1.0.46 → 1.0.47
+
+## 1.2.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.45 → 1.0.46
+
+## 1.2.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- correct List Report and Object Page OPA test generation for multi-tab, custom filter fields, and semantic-key adaptation
+
+    - Use stable OData property names (`iCheckFilterField({ property })`) for standard filter fields instead of translatable labels; custom filter fields fall back to their resolved label
+    - Exclude `@UI.HiddenFilter` and already-present properties from the semantic-key "add to filter bar" test, and add a value placeholder to `iChangeFilterField`
+    - Correct Given/When/Then subjects in the semantic-key adaptation block
+    - Target the correct table on multi-tab List Reports via `onTable("<key>")` and switch tabs with `iGoToView({ key })` before checking each tab's rows
+    - Object Page navigation from a multi-tab parent List Report now targets the parent's default tab [[32a32a5](https://github.com/SAP/open-ux-tools/commit/32a32a5b938b448fc31d43c974e0363c71a8ec39)]
+
+## 1.2.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.1 → 1.2.2
+- @sap-ux/preview-middleware 1.0.44 → 1.0.45
+
+## 1.2.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- Register generated journeys in `AllJourneys.gen.json` when adding OPA tests to existing projects [[e93607c](https://github.com/SAP/open-ux-tools/commit/e93607cfbf5736f120f58067293732d0897a28ad)]
+
+## 1.2.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.43 → 1.0.44
+
+## 1.2.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.0 → 1.2.1
+- @sap-ux/preview-middleware 1.0.42 → 1.0.43
+
+## 1.2.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/preview-middleware 1.0.41 → 1.0.42
+
+## 1.2.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-16
+
+#### Bug Fixes
+
+- Generate form field checks for Object Page standard form sections. The generator read the spec-model aggregation under the key `subSections`, but `@sap/ux-specification` emits it as `subsections`, so sections structured as CollectionFacet → ReferenceFacet (e.g. GeneralInformation) produced only a shallow `iCheckSection` with no `iCheckSubSection`/`iCheckField` checks. [[5b5c4c6](https://github.com/SAP/open-ux-tools/commit/5b5c4c6869234e4635ce1b0faf0730a024837122)]
+
+## 1.2.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/preview-middleware 1.0.40 → 1.0.41
+
+## 1.2.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.39 → 1.0.40
+
+## 1.2.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- Emit full ancestor cascade when navigating to deeply-nested Object Pages [[65b4b19](https://github.com/SAP/open-ux-tools/commit/65b4b1915767fafe5e8a9d197ac32be7dd9a0333)]
+
+## 1.2.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Handle `@UI.ConnectedFields` and `@UI.FieldGroup` wrappers in body sub-section form fields and emit one `iCheckField` per inner property with the `connectedFields` / `fieldGroup` qualifier on the `FieldIdentifier`. [[4fb839f](https://github.com/SAP/open-ux-tools/commit/4fb839f183299d93ca3ed2c601cff14ced8435d8)]
+
+## 1.2.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Incorrect types of arguments passed in TS test code [[8e1ad51](https://github.com/SAP/open-ux-tools/commit/8e1ad51c656e719607d801495d06f75130fe24d0)]
+
+## 1.2.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use const in JS templates instead of var [[824ed4d](https://github.com/SAP/open-ux-tools/commit/824ed4dbb03ac46752e5d2ba6dca5bfcb7675a09)]
+
+## 1.2.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.38 → 1.0.39
+
+## 1.2.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/preview-middleware 1.0.37 → 1.0.38
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+
+## 1.2.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.8 → 2.1.0
+
+## 1.2.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/preview-middleware 1.0.36 → 1.0.37
+
+## 1.2.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.7 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/preview-middleware 1.0.35 → 1.0.36
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.2.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/ui5-application-writer 2.0.6 → 2.0.7
+- @sap-ux/preview-middleware 1.0.34 → 1.0.35
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/logger 1.0.1 → 1.0.2
+
+## 1.2.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/preview-middleware 1.0.33 → 1.0.34
+
 ## 1.2.9
 
 ### Patch Changes

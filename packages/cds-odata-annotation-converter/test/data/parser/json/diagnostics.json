@@ -1,6 +1,6 @@
 [
     {
-        "message": "`$edmJS` is incorrect. Did you mean `$edmJson`?",
+        "message": "`$edmJS` is incorrect. Do you mean `$edmJson`?",
         "rule": "common-case-issue",
         "range": "[(14,8)..(14,16)]",
         "severity": 1,

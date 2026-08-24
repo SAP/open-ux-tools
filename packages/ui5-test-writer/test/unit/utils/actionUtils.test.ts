@@ -204,7 +204,7 @@ describe('buildActionButtonState()', () => {
 
         const result = buildActionButtonState(item, minimalMetadata);
         expect(result.label).toBe('Check Order');
-        expect(result.action).toBe('TestService.Check');
+        expect(result.action).toBe('Check');
         expect(result.visible).toBe(true);
         expect(result.enabled).toBe(true);
     });
@@ -223,7 +223,7 @@ describe('buildActionButtonState()', () => {
         expect(result.enabled).toBe(false);
     });
 
-    test('builds state for collection-bound action (enabled by default)', () => {
+    test('builds state for collection-bound action (bound, requires selection)', () => {
         const item = {
             Action: 'TestService.MassApprove(Collection(TestService.Order))',
             Label: 'Mass Approve',
@@ -234,7 +234,8 @@ describe('buildActionButtonState()', () => {
         } as unknown as DataFieldForAction;
 
         const result = buildActionButtonState(item, minimalMetadata);
-        expect(result.enabled).toBe(true);
+        expect(result.unbound).toBe(false);
+        expect(result.enabled).toBe(false);
     });
 
     test('includes invocationGrouping when present', () => {

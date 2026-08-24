@@ -1,5 +1,330 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f6d65ac](https://github.com/SAP/open-ux-tools/commit/f6d65acceb9c3477b471cd76b93a900c39f3cf2b)]
+
+## 1.11.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 1.11.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- Regenerate create CLI skill index to include the `generate opa5-tests` command [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.11.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Report accurate metadata fetch/parse errors instead of misleading "not a valid OData V4 service". A temporarily unavailable system (e.g. an HTML error page returned with a 2xx status) is now reported as a fetch/availability problem, and parse failures are described in an OData-version-neutral way rather than wrongly blaming an OData V2 service for not being V4. [[fae338f](https://github.com/SAP/open-ux-tools/commit/fae338fbbb3902105e41aaabf2651b9c2757b0a6)]
+
+## 1.11.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Fetch backend service annotations so generated v2 OData apps include the remote annotation dataSource. [[fdd1864](https://github.com/SAP/open-ux-tools/commit/fdd1864adf6cf67aa72888ab124f1a06c319584e)]
+
+## 1.11.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-docs-embeddings [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.11.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
+## 1.11.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Add timeout to resolveApplication() to prevent indefinite hangs on invalid or unreachable paths [[b63d35f](https://github.com/SAP/open-ux-tools/commit/b63d35f3897c64fb58a2696de6f226daffceeb9f)]
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.11.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
+## 1.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-31
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill with V4 pattern additions and API access guide [[246b33d](https://github.com/SAP/open-ux-tools/commit/246b33d5682dbe590e9a0c53914137aee14ed691)]
+
+## 1.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- add input validation and consistent error throwing to list_functionality and execute_functionality tools [[76e8011](https://github.com/SAP/open-ux-tools/commit/76e80113baa6ada117cf6efdc0698c82d559128c)]
+
+## 1.11.2
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+#### Release Date
+
+2026-07-27
+
+#### Bug Fixes
+
+- substantiate opa5 dev skill patterns [[de08dd1](https://github.com/SAP/open-ux-tools/commit/de08dd1ce292f7560a3d2693fe85f296d5d74b83)]
+
+## 1.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/nodejs-utils, @sap-ux/project-access, @sap-ux/telemetry, @sap-ux/ui5-config [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- Add external service metadata fetching (value help and code lists) to OData app generation [[d1f129b](https://github.com/SAP/open-ux-tools/commit/d1f129b98564bef9f42c51e0bad04381c025631b)]
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+## 1.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- adjust opa5 test development skill initial workflow [[eb0d618](https://github.com/SAP/open-ux-tools/commit/eb0d618bf0cc168efec98465964d6e01fc74f512)]
+
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- add support for odata v2 to opa test development skill [[b45d339](https://github.com/SAP/open-ux-tools/commit/b45d339815670265f2c6013d98f636924514a24a)]
+
+## 1.9.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
+## 1.9.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
+## 1.9.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 1.9.1
+
+### Patch Changes
+
+#### Features
+
+- Add sap.fe.test JSDoc API as a new embedded data source [[d54fc9a](https://github.com/SAP/open-ux-tools/commit/d54fc9a6937632e19e5b50dbf79ba50f279b3a39)]
+
+## 1.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- add skill for opa5 test development for fiori apps [[f189d25](https://github.com/SAP/open-ux-tools/commit/f189d253808541f2f58fa950e28b7e14679c80a5)]
+
+## 1.8.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 1.8.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
+## 1.8.7
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+## 1.8.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/odata-vocabularies, @sap-ux/ui5-config, @sap-ux/telemetry [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 1.8.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.8.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Bug Fixes
+
+- Adds service lookup. Improve MCP server instructions and schema descriptions to prevent AI clients from constructing invalid parameters. Enhanced tool descriptions with explicit DO/DON'T guidance, removed misleading examples that were being treated as templates, added catalog error reporting in service lookup failures, and strengthened server-level instructions with visual markers and consequence warnings. [[13f8400](https://github.com/SAP/open-ux-tools/commit/13f8400cea408fc68db50077a66aa52fc118c086)]
+
+## 1.8.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f25db35](https://github.com/SAP/open-ux-tools/commit/f25db35917824f4c91e6f688f6566ffd5298c4f1)]
+
 ## 1.8.2
 
 ### Patch Changes

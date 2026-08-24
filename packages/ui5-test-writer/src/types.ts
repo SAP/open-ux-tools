@@ -22,6 +22,8 @@ export type OPAGenerationOptions = {
     useVirtualPreviewEndpoints?: boolean;
     /** If true, generate TypeScript files instead of JavaScript. */
     enableTypeScript?: boolean;
+    /** Minimum UI5 version of the target app — selects template bucket ('1.84' / '1.148' / 'latest'). */
+    ui5Version?: string;
 };
 
 export const SupportedPageTypes: { [id: string]: string } = {
@@ -79,6 +81,9 @@ export type FEV4ManifestTarget = {
             };
             views?: {
                 paths?: Array<{
+                    key?: string;
+                    entitySet?: string;
+                    template?: string;
                     primary?: unknown[];
                     secondary?: unknown[];
                     defaultPath?: string;
@@ -117,14 +122,23 @@ export interface FFOPAConfig {
     useVirtualPreviewEndpoints?: boolean;
 }
 
+export type ObjectPageNavigationParent = {
+    name: string;
+    navigationProperty: string;
+};
+
 export type ObjectPageNavigationParents = {
     parentLRName?: string;
-    parentOPName?: string;
-    parentOPTableSection?: string;
+    parentLRViewKey?: string;
+    parentLRViewIsDefault?: boolean;
+    parentOPs: ObjectPageNavigationParent[];
 };
 
 export type SectionFormField = {
     property: string;
+    connectedFields?: string;
+    fieldGroup?: string;
+    targetAnnotation?: string;
 };
 
 export type TableColumn = {
@@ -133,6 +147,10 @@ export type TableColumn = {
 
 export type TableColumnFeatureData = Record<string, TableColumn>;
 
+export type ContactCardField = {
+    property: string;
+};
+
 export type BodySubSectionFeatureData = {
     id: string;
     navigationProperty?: string;
@@ -140,7 +158,9 @@ export type BodySubSectionFeatureData = {
     custom: boolean;
     order: number;
     fields: SectionFormField[];
+    contactCardFields: ContactCardField[];
     tableColumns: TableColumnFeatureData;
+    contactCardColumns: ContactCardField[];
 };
 
 export type BodySectionFeatureData = {
@@ -150,7 +170,9 @@ export type BodySectionFeatureData = {
     custom: boolean;
     order: number;
     fields: SectionFormField[];
+    contactCardFields: ContactCardField[];
     tableColumns: TableColumnFeatureData;
+    contactCardColumns: ContactCardField[];
     subSections: BodySubSectionFeatureData[];
     actions?: ActionButtonState[];
     createButton?: ButtonState;
@@ -168,6 +190,16 @@ export type ObjectPageFeatures = {
     editButton?: ButtonState;
 };
 
+/**
+ * Filter bar item consumed by the List Report journey template. Custom filter fields fall
+ * back to their (translatable) label, so `custom` selects the label vs. `{ property }` form.
+ */
+export type FilterBarItem = {
+    property: string;
+    description: string;
+    custom: boolean;
+};
+
 export type ListReportFeatures = {
     name?: string;
     createButton?: {
@@ -180,10 +212,16 @@ export type ListReportFeatures = {
         visible?: boolean;
         dynamicPath?: string;
     };
-    filterBarItems?: string[];
+    filterBarItems?: FilterBarItem[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
+    contactCardColumns: ContactCardField[];
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
+    /**
+     * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
+     * single-table LRs. Used to target a specific tab via `onTable("<key>")`.
+     */
+    tableIdentifiers?: string[];
     semanticKey?: {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
@@ -193,8 +231,8 @@ export type ListReportFeatures = {
 export interface ActionButtonState {
     label: string;
     /**
-     * For List Report actions: the full OData binding path (e.g. "namespace.ActionName(entityType=@odata.context)").
-     * For Object Page actions extracted from the spec model: the method name only (e.g. "Copy").
+     * Action method name only (e.g. `"SetToBooked"`). Used as the `action` field of
+     * `ActionIdentifier` in `iCheckAction({ service, action, unbound })`.
      */
     action: string;
     visible: boolean;
@@ -216,14 +254,47 @@ export interface ActionButtonState {
     invocationGrouping?: string;
     /**
      * OData schema namespace used as the `service` parameter in iCheckAction({ service, action, unbound }).
-     * Populated for Object Page actions extracted via the spec model + metadata.
+     * Populated for both List Report and Object Page actions extracted via metadata.
      */
     service?: string;
     /**
      * Whether the action is unbound (not bound to a specific entity instance).
-     * Populated for Object Page actions extracted via the spec model + metadata.
+     * Populated for both List Report and Object Page actions extracted via metadata.
      */
     unbound?: boolean;
+    /**
+     * Set when this entry is a menu (drop-down) button rather than a single action.
+     * `menuActions` then holds the individual actions inside the menu.
+     */
+    menuType?: 'Annotation' | 'CustomMenu';
+    /**
+     * The individual actions contained in a menu. Only set when `menuType` is present.
+     * Menu items are matched at runtime by label (the FE test API `iCheckMenuAction` /
+     * `iExecuteMenuAction` match menu entries by their rendered text, not by a stable id).
+     */
+    menuActions?: MenuActionState[];
+    /**
+     * Set for custom (manifest-declared) actions that have no OData `DataFieldForAction` counterpart.
+     * These are matched at runtime by their rendered label, so the writer emits the label-string form
+     * `iCheckAction("<label>")` instead of the `{ service, action, unbound }` object form.
+     */
+    custom?: boolean;
+    /**
+     * Set when `label` is still an unresolved i18n placeholder (the app i18n bundle had no matching key).
+     * The writer emits a follow-up marker comment so the developer can fix the assertion.
+     */
+    labelUnresolved?: boolean;
+}
+
+export interface MenuActionState {
+    label: string;
+    visible: boolean;
+    service?: string;
+    action?: string;
+    unbound?: boolean;
+    enabled?: boolean | 'dynamic';
+    dynamicPath?: string;
+    labelUnresolved?: boolean;
 }
 
 export type FPMFeatures = {
@@ -250,6 +321,14 @@ export type WriteContext = {
     hasPreexistingTests?: boolean;
     incompatibleTestSetup?: boolean;
     dotFileExtension: DotFileExtension;
+    /** Resolved template bucket folder name: '1.84', '1.148' or 'latest'. */
+    templateUi5Version: string;
+    /**
+     * When true, ux-specification-derived journeys (ListReport, ObjectPage, FPM) are generated.
+     * When false (e.g. ObjectPage-only or Analytical List Page projects), only the generic
+     * fallback `FirstJourney` is written.
+     */
+    generateUxSpecJourneys: boolean;
     modifiedFiles: string[];
 };
 
@@ -268,6 +347,7 @@ export type HeaderSectionFeatureData = {
     form?: boolean;
     stashed?: boolean | string;
     fields?: FormField[];
+    contactCardFields: ContactCardField[];
 };
 
 export interface ButtonState {

@@ -17,6 +17,8 @@ export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-b
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
+export const NO_LIVE_MODE = 'sap-no-live-mode';
+export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -91,9 +93,7 @@ export interface EnablePaste {
 }
 
 export type StatePreservationModeMessageId =
-    | 'invalidMode'
-    | 'recommendPersistenceForFCL'
-    | 'recommendDiscoveryForNonFCL';
+    'invalidMode' | 'recommendPersistenceForFCL' | 'recommendDiscoveryForNonFCL';
 
 export interface StatePreservationMode {
     type: typeof STATE_PRESERVATION_MODE;
@@ -179,6 +179,19 @@ export interface TextArrangementHidden {
     };
 }
 
+export interface NoLiveMode {
+    type: typeof NO_LIVE_MODE;
+    pageName: string;
+    property: string;
+    manifest?: ManifestPropertyDiagnosticData; // ODataV4 - manifest property
+    changeFileUri?: string; // ODataV2 - flex change property
+}
+
+export interface CloudDevAdaptationStatus {
+    type: typeof CLOUD_DEV_ADAPTATION_STATUS;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -194,4 +207,6 @@ export type Diagnostic =
     | CondensedTableLayout
     | TablePersonalization
     | TextArrangementHidden
-    | StrictUomFiltering;
+    | StrictUomFiltering
+    | NoLiveMode
+    | CloudDevAdaptationStatus;

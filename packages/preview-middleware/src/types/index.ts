@@ -70,6 +70,17 @@ export interface FlpConfig {
      * Optional: if set to true then the new FLP homepage will be enabled
      */
     enhancedHomePage?: boolean;
+    /**
+     * Optional: if set to true, opts in to the new FLP Sandbox when the UI5 version qualifies (>= 1.150).
+     * Defaults to false.
+     */
+    useNewSandbox?: boolean;
+    /**
+     * Optional: if set to true, the new FLP Sandbox will navigate directly to the app on startup
+     * instead of showing the FLP home screen first. Only applies when the new Sandbox is active.
+     * Defaults to false.
+     */
+    navigateToApp?: boolean;
 }
 
 /**
@@ -91,6 +102,12 @@ export interface TestConfig {
      * Pattern to match the test files
      */
     pattern?: string;
+
+    /**
+     * Optional: when true, each OPA5 journey runs in its own isolated test page.
+     * Only meaningful when framework is 'OPA5'.
+     */
+    isolateJourneys?: boolean;
 }
 
 /**
@@ -107,18 +124,21 @@ export type TestConfigDefaults = {
         init: '/test/unitTests.qunit.js';
         pattern: '/test/**/*Test.{js,ts}';
         framework: 'QUnit';
+        isolateJourneys: false;
     };
     opa5: {
         path: '/test/opaTests.qunit.html';
         init: '/test/opaTests.qunit.js';
         pattern: '/test/**/*Journey{,.gen}.{js,ts}';
         framework: 'OPA5';
+        isolateJourneys: false;
     };
     testsuite: {
         path: '/test/testsuite.qunit.html';
         init: '/test/testsuite.qunit.js';
         pattern: '';
         framework: 'Testsuite';
+        isolateJourneys: false;
     };
 };
 
@@ -267,6 +287,17 @@ export const FLPHomePageDefaults = {
     pageName: 'SAP_BASIS_PG_UI_MYHOME',
     catalogId: 'homeCatalog',
     sectionId: 'homeAppsSection'
+};
+
+export type Ui5Version = {
+    major: number;
+    minor: number;
+    patch: number;
+    label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn: boolean;
 };
 
 export interface MultiCardsPayload {

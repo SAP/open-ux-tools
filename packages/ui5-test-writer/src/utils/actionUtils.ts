@@ -1,4 +1,4 @@
-import type { Action, ActionParameter, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
+import type { Action, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import type { ActionButtonState, ButtonState, ButtonVisibilityResult } from '../types.js';
 import type {
     ActionAnnotations,
@@ -85,21 +85,22 @@ export function findOperationAvailableAnnotation(
 
 /**
  * Analyzes Core.OperationAvailable annotation to determine action availability.
- * Single-entity bound actions (requiring row selection) are disabled by default when no annotation is present.
+ * Bound actions require a row/context selection to be invoked, so they are disabled by default
+ * when no annotation is present.
  *
  * @param operationAvailable The OperationAvailable annotation value
- * @param isEntityBound Whether the action is bound to a single entity (requires row selection to enable)
+ * @param requiresSelection Whether the action needs a selected context to be enabled (true for any bound action)
  * @returns Object containing enabled state and optional dynamic path
  */
 export function analyzeOperationAvailability(
     operationAvailable: OperationAvailableWithPaths | undefined,
-    isEntityBound?: boolean
+    requiresSelection?: boolean
 ): {
     enabled: boolean | 'dynamic';
     dynamicPath?: string;
 } {
     if (operationAvailable === undefined) {
-        return { enabled: !isEntityBound };
+        return { enabled: !requiresSelection };
     }
 
     if (typeof operationAvailable === 'boolean') {
@@ -146,16 +147,16 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
     const actionString = (item.Action as string) || '';
     const actionMethod = extractActionMethodName(actionString);
     const operationAvailable = findOperationAvailableAnnotation(metadata, actionMethod);
-    // Bound actions whose binding parameter is a single entity (not a collection) require
-    // row selection to be invoked, so they are disabled by default (no row selected).
-    // Collection-bound actions operate on the entity set and are always enabled.
-    const actionTarget = item.ActionTarget;
-    const isEntityBound = actionTarget?.isBound === true && actionTarget?.parameters?.[0]?.isCollection !== true;
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isEntityBound);
+    // Any bound action (single- or collection-bound) requires a selected context to be invoked, so
+    // it is disabled by default (no row selected)
+    const isBound = item.ActionTarget?.isBound === true;
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isBound);
 
     return {
         label: (item.Label as string) || '',
-        action: actionString,
+        action: actionMethod,
+        service: metadata.namespace ?? '',
+        unbound: !isBound,
         visible: true,
         enabled,
         dynamicPath,
@@ -192,17 +193,16 @@ export function buildActionStateFromSpecModelKey(
     const actionDefinition: Action | undefined = convertedMetadata.actions?.find(
         (action) => action.name === actionMethod || action.fullyQualifiedName?.includes(`.${actionMethod}(`)
     );
-    const firstParameter: ActionParameter | undefined = actionDefinition?.parameters?.[0];
-    const isEntityBound = actionDefinition?.isBound === true && firstParameter?.isCollection !== true;
+    const isBound = actionDefinition?.isBound === true;
 
     const operationAvailable = findOperationAvailableAnnotation(convertedMetadata, actionMethod);
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isEntityBound);
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isBound);
 
     return {
         label: label ?? '',
         action: actionMethod,
         service: schemaNamespace,
-        unbound: !isEntityBound,
+        unbound: !isBound,
         visible: true,
         enabled,
         dynamicPath

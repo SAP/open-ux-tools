@@ -1,5 +1,192 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f6d65ac](https://github.com/SAP/open-ux-tools/commit/f6d65acceb9c3477b471cd76b93a900c39f3cf2b)]
+
+## 1.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 1.0.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-17
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[50c09b5](https://github.com/SAP/open-ux-tools/commit/50c09b507035c9876f4d098cfa4294864d73e0e8)]
+
+## 1.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[830573e](https://github.com/SAP/open-ux-tools/commit/830573e1da6ec7e3768f8b1c58f70513ef269d29)]
+
+## 1.0.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.0.16
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+## 1.0.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/nodejs-utils, @sap-ux/project-access, @sap-ux/telemetry, @sap-ux/ui-components, @sap-ux/ui5-config [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+## 1.0.14
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+## 1.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+## 1.0.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
+## 1.0.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 1.0.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[c8741b3](https://github.com/SAP/open-ux-tools/commit/c8741b3f8a925ad3a8be8a701920af9e0c8b6bbf)]
+
+## 1.0.9
+
+### Patch Changes
+
+#### Features
+
+- use new vscode variable '--vscode-button-secondaryBorder' for secondary buttons [[647b8d2](https://github.com/SAP/open-ux-tools/commit/647b8d2ad5560f78f85bb146b9cae7549536bb81)]
+
+## 1.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 1.0.7
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+## 1.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/ui5-config, @sap-ux/telemetry [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 1.0.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f25db35](https://github.com/SAP/open-ux-tools/commit/f25db35917824f4c91e6f688f6566ffd5298c4f1)]
+
 ## 1.0.3
 
 ### Patch Changes
@@ -14,7 +201,7 @@
 
 ## 1.0.2
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -22,7 +209,7 @@
 
 ## 1.0.1
 
-*Released: 2026-06-02T12:38:22Z*
+_Released: 2026-06-02T12:38:22Z_
 
 ### Patch Changes
 
@@ -30,7 +217,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -65,7 +252,7 @@
 
 ## 0.6.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -73,7 +260,7 @@
 
 ## 0.5.3
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -81,7 +268,7 @@
 
 ## 0.5.2
 
-*Released: 2026-05-12T12:59:14Z*
+_Released: 2026-05-12T12:59:14Z_
 
 ### Patch Changes
 
@@ -89,7 +276,7 @@
 
 ## 0.5.1
 
-*Released: 2026-05-11T10:59:15Z*
+_Released: 2026-05-11T10:59:15Z_
 
 ### Patch Changes
 
@@ -97,7 +284,7 @@
 
 ## 0.5.0
 
-*Released: 2026-04-30T12:29:22Z*
+_Released: 2026-04-30T12:29:22Z_
 
 ### Minor Changes
 
@@ -107,7 +294,7 @@
 
 ## 0.4.5
 
-*Released: 2026-04-09T14:24:08Z*
+_Released: 2026-04-09T14:24:08Z_
 
 ### Patch Changes
 
@@ -115,7 +302,7 @@
 
 ## 0.4.4
 
-*Released: 2026-03-31T14:52:03Z*
+_Released: 2026-03-31T14:52:03Z_
 
 ### Patch Changes
 
@@ -123,7 +310,7 @@
 
 ## 0.4.3
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -131,7 +318,7 @@
 
 ## 0.4.2
 
-*Released: 2026-03-30T12:11:57Z*
+_Released: 2026-03-30T12:11:57Z_
 
 ### Patch Changes
 
@@ -139,7 +326,7 @@
 
 ## 0.4.1
 
-*Released: 2026-03-30T09:06:01Z*
+_Released: 2026-03-30T09:06:01Z_
 
 ### Patch Changes
 
@@ -147,7 +334,7 @@
 
 ## 0.4.0
 
-*Released: 2026-03-28T09:24:50Z*
+_Released: 2026-03-28T09:24:50Z_
 
 ### Minor Changes
 

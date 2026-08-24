@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
@@ -25,8 +26,8 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 // ─── Mock functions (declared before jest.unstable_mockModule) ───
 
 const mockIsInternalFeaturesSettingEnabled = jest.fn<typeof realFeatureToggle.isInternalFeaturesSettingEnabled>();
-const mockIsFeatureEnabled = jest.fn<typeof realFeatureToggle.isFeatureEnabled>();
 const mockGetDefaultProjectName = jest.fn<typeof realDefaultValues.getDefaultProjectName>();
+const mockWriteResult = jest.fn<(id: string, result: string) => void>();
 const mockValidateExtensibilityGenerator = jest.fn().mockReturnValue(true);
 const mockResolveNodeModuleGenerator = jest.fn().mockReturnValue('my-generator-path');
 const mockShowApplicationQuestion = jest.fn().mockReturnValue(true);
@@ -86,8 +87,7 @@ const mockGetTemplatesOverwritePath = jest.fn<typeof realTemplates.getTemplatesO
 const realFeatureToggle = await import('@sap-ux/feature-toggle');
 jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     ...realFeatureToggle,
-    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled,
-    isFeatureEnabled: mockIsFeatureEnabled
+    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
 }));
 
 const realDefaultValues = await import('../src/app/questions/helper/default-values.js');
@@ -189,6 +189,12 @@ const realTemplates = await import('../src/utils/templates.js');
 jest.unstable_mockModule('../src/utils/templates', () => ({
     ...realTemplates,
     getTemplatesOverwritePath: mockGetTemplatesOverwritePath
+}));
+
+const realWriteResult = await import('../src/utils/write-result.js');
+jest.unstable_mockModule('../src/utils/write-result', () => ({
+    ...realWriteResult,
+    writeResult: mockWriteResult
 }));
 
 const realFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
@@ -417,7 +423,6 @@ describe('Adaptation Project Generator Integration Test', () => {
         beforeEach(() => {
             fs.mkdirSync(testOutputDir, { recursive: true });
             mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
-            mockIsFeatureEnabled.mockReturnValue(false);
             mockIsExtensionInstalled.mockReturnValueOnce(true);
             mockLoadApps.mockResolvedValue(apps);
             jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
@@ -745,12 +750,182 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(changeContent).toMatchSnapshot();
         });
 
+        it('should not call writeResult when json input has no id', async () => {
+            mockGetSupportedProject.mockRejectedValueOnce(new Error('no-id-error'));
+            const jsonInput: JsonInput = {
+                system: 'urlA',
+                username: 'user1',
+                password: 'pass1',
+                client: '010',
+                application: 'sap.ui.demoapps.f1',
+                projectName: 'noid.app',
+                namespace: 'customer.noid.app',
+                targetFolder: testOutputDir,
+                projectType: AdaptationProjectType.ON_PREMISE
+            };
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+                .withArguments([JSON.stringify(jsonInput)]);
+
+            await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+
+            expect(mockWriteResult).not.toHaveBeenCalled();
+        });
+
+        it('should write a failure result for the orchestrator when json generation fails', async () => {
+            mockGetSupportedProject.mockRejectedValueOnce(new Error('boom'));
+            const jsonInput: JsonInput = {
+                id: 'orchestrator-id',
+                system: 'urlA',
+                username: 'user1',
+                password: 'pass1',
+                client: '010',
+                application: 'sap.ui.demoapps.f1',
+                projectName: 'fail.app',
+                namespace: 'customer.fail.app',
+                targetFolder: testOutputDir,
+                projectType: AdaptationProjectType.ON_PREMISE
+            };
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+                .withArguments([JSON.stringify(jsonInput)]);
+
+            await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+
+            expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', 'Failure: boom');
+        });
+
+        describe('JSON input file', () => {
+            const jsonTmpOutputDir = join(__dirname, 'test-output-app-json-tmp');
+            const tempFileIds: string[] = [];
+
+            const jsonKeyUserChange = {
+                content: {
+                    fileName: 'id_1767885281745_1726_renameLabel',
+                    changeType: 'renameLabel',
+                    reference: apps[0].id,
+                    layer: 'CUSTOMER',
+                    namespace: `apps/${apps[0].id}/changes/`,
+                    projectId: apps[0].id,
+                    fileType: 'annotation_change',
+                    content: {
+                        annotationPath: '/category_ID@com.vocabularies.Common.v1.Label'
+                    },
+                    selector: {
+                        serviceUrl: '/odata/test/service'
+                    }
+                },
+                texts: {
+                    annotationText: {
+                        value: 'Category ID',
+                        type: 'XFLD'
+                    }
+                }
+            };
+
+            const baseJsonInput: JsonInput = {
+                system: 'urlA',
+                username: 'user1',
+                password: 'pass1',
+                client: '010',
+                application: 'sap.ui.demoapps.f1',
+                namespace: 'customer.my.app',
+                applicationTitle: 'My app title',
+                targetFolder: jsonTmpOutputDir,
+                projectType: AdaptationProjectType.ON_PREMISE
+            };
+
+            beforeEach(() => {
+                fs.mkdirSync(jsonTmpOutputDir, { recursive: true });
+                mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
+            });
+
+            afterEach(() => {
+                for (const id of tempFileIds.splice(0)) {
+                    const filePath = join(tmpdir(), `${id}.txt`);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            });
+
+            afterAll(() => {
+                rimraf.sync(jsonTmpOutputDir);
+            });
+
+            it('should generate key user changes from a matching JSON input file', async () => {
+                const id = `adp-app-test-changes-${process.pid}`;
+                tempFileIds.push(id);
+                fs.writeFileSync(join(tmpdir(), `${id}.txt`), JSON.stringify({ keyUserChanges: [jsonKeyUserChange] }));
+
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.changes.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).resolves.not.toThrow();
+
+                const projectFolder = join(jsonTmpOutputDir, jsonInput.projectName!);
+                const changesDir = join(projectFolder, 'webapp', 'changes');
+                expect(fs.existsSync(changesDir)).toBe(true);
+                const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.annotation_change'));
+                expect(changeFiles.length).toBeGreaterThan(0);
+            });
+
+            it('should generate a project without key user changes when the JSON input file is missing', async () => {
+                const id = `adp-app-test-missing-${process.pid}`;
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.missing.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).resolves.not.toThrow();
+
+                const projectFolder = join(jsonTmpOutputDir, jsonInput.projectName!);
+                expect(fs.existsSync(join(projectFolder, 'webapp', 'manifest.appdescr_variant'))).toBe(true);
+                expect(fs.existsSync(join(projectFolder, 'webapp', 'changes'))).toBe(false);
+                expect(mockWriteResult).toHaveBeenCalledWith(id, projectFolder);
+            });
+
+            it('should write a failure result when the JSON input file is corrupt', async () => {
+                const id = `adp-app-test-corrupt-${process.pid}`;
+                tempFileIds.push(id);
+                fs.writeFileSync(join(tmpdir(), `${id}.txt`), '{ not json');
+
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.corrupt.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+                expect(mockWriteResult).toHaveBeenCalledWith(id, 'Failure: Failed to parse JSON input file');
+            });
+        });
+
         it('should create adaptation project from json correctly', async () => {
             // NOTE: This test uses .withArguments() which bypasses the normal yeoman prompting lifecycle and goes directly to the writing phase.
             // This can cause race conditions with other tests that use the same output directory, as the generator doesn't go through the standard prompting -> writing flow.
             // This test must be the last test in the file. Other tests below it must use a different output directory.
             mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
             const jsonInput: JsonInput = {
+                id: 'orchestrator-id',
                 system: 'urlA',
                 username: 'user1',
                 password: 'pass1',
@@ -788,6 +963,8 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(manifestContent).toMatchSnapshot();
             expect(i18nContent).toMatchSnapshot();
             expect(ui5Content).toMatchSnapshot();
+
+            expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', projectFolder);
         });
     });
 
@@ -834,7 +1011,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             mockIsAppStudio.mockReturnValue(true);
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);
             mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
-            mockIsFeatureEnabled.mockReturnValue(true);
             mockIsCfInstalled.mockResolvedValue(true);
             mockIsLoggedInCf.mockResolvedValue(true);
             mockLoadApps.mockResolvedValue(apps);

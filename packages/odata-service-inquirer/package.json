@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/odata-service-inquirer",
     "description": "Prompts module that can prompt users for inputs required for odata service writing",
-    "version": "3.0.18",
+    "version": "3.2.10",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -32,7 +32,7 @@
     ],
     "dependencies": {
         "@sap/cf-tools": "3.3.1",
-        "@sap-ux/annotation-converter": "0.10.21",
+        "@sap-ux/annotation-converter": "0.10.22",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.10.0",
@@ -45,24 +45,25 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "axios": "1.16.0",
+        "axios": "1.18.1",
         "axios-logger": "2.8.1",
         "circular-reference-remover": "2.1.0",
-        "fast-xml-parser": "5.8.0",
-        "i18next": "25.10.10",
+        "fast-xml-parser": "5.10.1",
+        "i18next": "26.3.6",
         "inquirer-autocomplete-prompt": "2.0.1",
         "os-name": "4.0.1",
-        "@sap-devx/yeoman-ui-types": "1.25.0"
+        "@sap-devx/yeoman-ui-types": "1.25.1"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
+        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/fiori-elements-writer": "workspace:*",
         "@sap-ux/fiori-freestyle-writer": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.15.0",
+        "@sap-ux/vocabularies-types": "0.16.0",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",
         "jest-extended": "7.0.0"

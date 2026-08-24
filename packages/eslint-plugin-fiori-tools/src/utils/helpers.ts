@@ -774,6 +774,11 @@ export interface DeepestExistingPathResult {
     missingSegments: string[];
 }
 
+export const FLEX_CHANGE_NEW_VALUE_PATH_RESULT: DeepestExistingPathResult = {
+    validatedPath: ['content', 'newValue'],
+    missingSegments: []
+};
+
 /**
  * Validates that a path exists and returns the deepest existing level.
  *
@@ -849,4 +854,16 @@ export function checkAppTablesConfiguration<DiagnosticType>(
  */
 export function isV2Table(table: TableV2 | TableV4): table is TableV2 {
     return 'showPasteButton' in (table as TableV2).configuration;
+}
+
+/**
+ * Checks if given page is ODataV2 type.
+ * Create mode is a page configuration setting in ODataV2.
+ * But create mode can be set only on an application in ODataV4.
+ *
+ * @param page ODataV2 or ODataV4 page
+ * @returns true for ODataV2 page
+ */
+export function isV2Page(page: FeV4PageType | FeV2PageType): page is FeV2PageType {
+    return 'createMode' in (page as FeV2PageType).configuration;
 }

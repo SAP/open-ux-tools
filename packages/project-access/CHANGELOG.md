@@ -1,5 +1,78 @@
 # @sap-ux/project-access
 
+## 2.1.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 2.1.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+
+## 2.1.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+
+## 2.1.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Bug Fixes
+
+- findCapProjectRoot now correctly starts search at the given path instead of its parent, so passing a CAP root directly returns it as expected [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
+## 2.1.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- `getSpecification` and `getSpecificationPath` methods did not consider `memFs` for reading `minUI5Version` from `manifest.json` and dev dependency from `package.json`. This caused these files to be read from the physical file system instead of the in-memory file system, leading to incorrect version detection and loading wrong specification version. [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 2.1.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+
+## 2.1.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
 ## 2.1.4
 
 ### Patch Changes

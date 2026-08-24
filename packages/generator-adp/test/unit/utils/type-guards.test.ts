@@ -1,4 +1,4 @@
-import { isJsonInput, isString } from '../../../src/utils/type-guards.js';
+import { isJsonInput, isJsonInputFile, isString } from '../../../src/utils/type-guards.js';
 
 describe('isString', () => {
     it('should return true for string literals', () => {
@@ -38,6 +38,14 @@ describe('isJsonInput', () => {
                 namespace: 'namespace'
             })
         ).toBe(true);
+    });
+
+    it('should return true when the optional id is a string', () => {
+        expect(isJsonInput({ id: 'correlation-id', system: 'system', application: 'application' })).toBe(true);
+    });
+
+    it('should return false when id is present but not a string', () => {
+        expect(isJsonInput({ id: 123, system: 'system', application: 'application' })).toBe(false);
     });
 
     it('should return false if some of the required fields are missing', () => {
@@ -81,58 +89,61 @@ describe('isJsonInput', () => {
         expect(isJsonInput(new JsonInput())).toBe(false);
     });
 
-    describe('keyUserChanges validation', () => {
-        it('should return true when keyUserChanges is undefined', () => {
-            const input = { system: 'system', application: 'application' };
-            expect(isJsonInput(input)).toBe(true);
-        });
+    it('should return true when optional id is a string', () => {
+        expect(isJsonInput({ system: 'system', application: 'application', id: '123.5' })).toBe(true);
+    });
 
-        it('should return true when keyUserChanges is a valid array', () => {
-            const input = {
-                system: 'system',
-                application: 'application',
+    it('should return false when optional id is not a string', () => {
+        expect(isJsonInput({ system: 'system', application: 'application', id: 123 })).toBe(false);
+    });
+
+    it('should ignore extra keyUserChanges on CLI json', () => {
+        const input = {
+            system: 'system',
+            application: 'application',
+            keyUserChanges: 'not an array'
+        };
+        expect(isJsonInput(input)).toBe(true);
+    });
+});
+
+describe('isJsonInputFile', () => {
+    it('should return true for an empty object', () => {
+        expect(isJsonInputFile({})).toBe(true);
+    });
+
+    it('should return true when keyUserChanges is a valid array', () => {
+        expect(
+            isJsonInputFile({
                 keyUserChanges: [
                     { content: { fileName: 'change1' } },
                     { content: { fileName: 'change2' }, texts: { i18n: 'text' } }
                 ]
-            };
-            expect(isJsonInput(input)).toBe(true);
-        });
+            })
+        ).toBe(true);
+    });
 
-        it('should return true when keyUserChanges is an empty array', () => {
-            const input = {
-                system: 'system',
-                application: 'application',
-                keyUserChanges: []
-            };
-            expect(isJsonInput(input)).toBe(true);
-        });
+    it('should return true when keyUserChanges is an empty array', () => {
+        expect(isJsonInputFile({ keyUserChanges: [] })).toBe(true);
+    });
 
-        it('should return false when keyUserChanges is not an array', () => {
-            const input = {
-                system: 'system',
-                application: 'application',
-                keyUserChanges: 'not an array'
-            };
-            expect(isJsonInput(input)).toBe(false);
-        });
+    it('should return true when extra fields are present', () => {
+        expect(isJsonInputFile({ keyUserChanges: [], extraField: 'ok' })).toBe(true);
+    });
 
-        it('should return false when keyUserChanges item is missing content', () => {
-            const input = {
-                system: 'system',
-                application: 'application',
-                keyUserChanges: [{ texts: {} }]
-            };
-            expect(isJsonInput(input)).toBe(false);
-        });
+    it('should return false when keyUserChanges is not an array', () => {
+        expect(isJsonInputFile({ keyUserChanges: 'not an array' })).toBe(false);
+    });
 
-        it('should return false when keyUserChanges item content is not an object', () => {
-            const input = {
-                system: 'system',
-                application: 'application',
-                keyUserChanges: [{ content: 'not an object' }]
-            };
-            expect(isJsonInput(input)).toBe(false);
-        });
+    it('should return false when keyUserChanges item is missing content', () => {
+        expect(isJsonInputFile({ keyUserChanges: [{ texts: {} }] })).toBe(false);
+    });
+
+    it('should return false when keyUserChanges item content is not an object', () => {
+        expect(isJsonInputFile({ keyUserChanges: [{ content: 'not an object' }] })).toBe(false);
+    });
+
+    it('should return false for a raw array', () => {
+        expect(isJsonInputFile([{ content: { fileName: 'change' } }])).toBe(false);
     });
 });

@@ -41,7 +41,14 @@ jest.unstable_mockModule('../../src/utils/opaQUnitUtils.js', () => ({
     addPathsToQUnitJs: addPathsToQUnitJsMock
 }));
 
-const { generateOPAFiles } = await import('../../src/fiori-elements-opa-writer.js');
+const actualModelUtils = await import('../../src/utils/modelUtils.js');
+const getAppFeaturesMock = jest.fn<typeof actualModelUtils.getAppFeatures>();
+jest.unstable_mockModule('../../src/utils/modelUtils.js', () => ({
+    ...actualModelUtils,
+    getAppFeatures: getAppFeaturesMock
+}));
+
+const { generateOPAFiles, removeUnsupportedActions } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
@@ -54,6 +61,10 @@ describe('ui5-test-writer', () => {
 
         const realOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
         addPathsToQUnitJsMock.mockImplementation(realOpaQUnitUtils.addPathsToQUnitJs);
+
+        // getAppFeatures passes through to the real implementation by default; individual
+        // tests override it (e.g. to inject an FPM feature) and restore in afterEach.
+        getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
     });
 
     function prepareTestFiles(testConfigurationName: string): string {
@@ -290,7 +301,7 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                    'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
                 )
             );
         });
@@ -486,6 +497,42 @@ describe('ui5-test-writer', () => {
                     expect(firstJourneyCalls).toHaveLength(0);
                     copyTplSpy.mockRestore();
                 });
+
+                it('writes the fallback journey and splices it into qunit when none exists and no journeys are produced', async () => {
+                    const projectDir = prepareTestFiles('LropVirtualTests');
+                    // Remove the fixture's FirstJourney.js so the fallback is not already present
+                    fs!.delete(join(projectDir, 'webapp', 'test', 'integration', 'FirstJourney.js'));
+                    // Empty model → no LR/OP/FPM journeys
+                    readAppMock.mockResolvedValueOnce({});
+                    mockProjectExistsSync({
+                        hasIntegration: true,
+                        hasJourneyRunner: true
+                    });
+                    addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                    const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                    fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                    // Fallback FirstJourney template is rendered because no fallback file exists
+                    const firstJourneyCalls = copyTplSpy.mock.calls.filter(
+                        (call) => typeof call[0] === 'string' && call[0].endsWith('FirstJourney.js')
+                    );
+                    expect(firstJourneyCalls).toHaveLength(1);
+                    // The fallback module path (no .gen suffix) is spliced into the existing opaTests.qunit.js
+                    expect(addPathsToQUnitJsMock).toHaveBeenCalledWith(
+                        expect.arrayContaining([expect.stringContaining('/test/integration/FirstJourney')]),
+                        expect.any(String),
+                        expect.anything(),
+                        undefined
+                    );
+                    expect(addPathsToQUnitJsMock).not.toHaveBeenCalledWith(
+                        expect.arrayContaining([expect.stringContaining('Journey.gen')]),
+                        expect.any(String),
+                        expect.anything(),
+                        undefined
+                    );
+                    copyTplSpy.mockRestore();
+                });
             });
 
             describe('existing app with incompatible test setup (no own JourneyRunner.js)', () => {
@@ -526,6 +573,31 @@ describe('ui5-test-writer', () => {
 
                     copyTplSpy.mockRestore();
                 });
+
+                it('does not write the fallback journey when no journeys are produced', async () => {
+                    const projectDir = prepareTestFiles('LropVirtualTests');
+                    // Remove the fixture's FirstJourney.js so the guard cannot be satisfied by an existing file
+                    fs!.delete(join(projectDir, 'webapp', 'test', 'integration', 'FirstJourney.js'));
+                    // Empty model → no LR/OP/FPM journeys
+                    readAppMock.mockResolvedValueOnce({});
+                    mockProjectExistsSync({
+                        hasIntegration: true,
+                        hasJourneyRunner: false
+                    });
+                    addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                    const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                    fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                    // Fallback must not be written into an incompatible setup (the harness is left untouched)
+                    const firstJourneyCalls = copyTplSpy.mock.calls.filter(
+                        (call) => typeof call[0] === 'string' && call[0].endsWith('FirstJourney.js')
+                    );
+                    expect(firstJourneyCalls).toHaveLength(0);
+                    // Splice helper is not invoked
+                    expect(addPathsToQUnitJsMock).not.toHaveBeenCalled();
+                    copyTplSpy.mockRestore();
+                });
             });
 
             describe('existing TypeScript app', () => {
@@ -556,7 +628,7 @@ export default runner;
 `;
 
                 /**
-                 * Realistic post-rework OpaJourneyTypes.d.ts with one ListReport page wired in.
+                 * Realistic post-rework OpaJourneyTypes.gen.d.ts with one ListReport page wired in.
                  */
                 const EXISTING_OPA_JOURNEY_TYPES = `import type Opa5 from "sap/ui/test/Opa5";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from "sap/fe/test/ListReport";
@@ -601,7 +673,7 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(paths.some((p) => p.endsWith('TravelListJourney.gen.ts'))).toBe(true);
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('TravelList.gen.ts'))).toBe(true);
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('JourneyRunner.ts'))).toBe(true);
-                    expect(paths.some((p) => p.endsWith('OpaJourneyTypes.d.ts'))).toBe(true);
+                    expect(paths.some((p) => p.endsWith('OpaJourneyTypes.gen.d.ts'))).toBe(true);
                     // No .js Journey/Page/runner files are produced on the TS path
                     expect(paths.every((p) => !p.endsWith('TravelListJourney.gen.js'))).toBe(true);
                     expect(paths.every((p) => !(p.includes('pages') && p.endsWith('TravelList.gen.js')))).toBe(true);
@@ -621,7 +693,7 @@ export type Then = Opa5 & BaseArrangements & {
                     const paths = Object.keys(fs.dump(projectDir));
                     expect(paths.some((p) => p.endsWith('TravelListJourney.gen.js'))).toBe(true);
                     expect(paths.every((p) => !p.endsWith('TravelListJourney.gen.ts'))).toBe(true);
-                    expect(paths.every((p) => !p.endsWith('OpaJourneyTypes.d.ts'))).toBe(true);
+                    expect(paths.every((p) => !p.endsWith('OpaJourneyTypes.gen.d.ts'))).toBe(true);
                 });
 
                 it('splices new .gen.ts page entries into the existing JourneyRunner.ts', async () => {
@@ -641,7 +713,7 @@ export type Then = Opa5 & BaseArrangements & {
                         'test',
                         'integration',
                         'types',
-                        'OpaJourneyTypes.d.ts'
+                        'OpaJourneyTypes.gen.d.ts'
                     );
                     fs!.write(typesPath, EXISTING_OPA_JOURNEY_TYPES);
 
@@ -659,7 +731,7 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(updatedRunner).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
                 });
 
-                it('splices new journey type entries into the existing OpaJourneyTypes.d.ts', async () => {
+                it('splices new journey type entries into the existing OpaJourneyTypes.gen.d.ts', async () => {
                     const projectDir = prepareTestFiles('LropVirtualTests');
                     readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                     mockProjectExistsSync({
@@ -676,7 +748,7 @@ export type Then = Opa5 & BaseArrangements & {
                         'test',
                         'integration',
                         'types',
-                        'OpaJourneyTypes.d.ts'
+                        'OpaJourneyTypes.gen.d.ts'
                     );
                     fs!.write(typesPath, EXISTING_OPA_JOURNEY_TYPES);
 
@@ -688,11 +760,13 @@ export type Then = Opa5 & BaseArrangements & {
                     // New TravelObjectPage entries spliced into both unions and as imports
                     expect(updatedTypes).toContain('import type { actions as TravelObjectPageGeneratedCustomActions');
                     expect(updatedTypes).toContain(
-                        'onTheTravelObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions'
+                        'onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions'
                     );
                     expect(updatedTypes).toContain(
-                        'onTheTravelObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions'
+                        'onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions'
                     );
+                    // WithAnd<T> definition is present so the spliced references resolve
+                    expect(updatedTypes).toContain('type WithAnd<T> = {');
                 });
             });
 
@@ -744,6 +818,10 @@ export type Then = Opa5 & BaseArrangements & {
 
             const bookingObjPageJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.gen.js'].contents;
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckTitlePath("BookingID")');
+            const travelObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelObjectPageJourney.gen.js'].contents;
+            expect(travelObjPageJourneyContent).toContain('onHeader().iCheckTitlePath("TravelID")');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
@@ -753,22 +831,38 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iClickLink({ property: "carrier/Contact" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
-            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(bookingObjPageJourneyContent).toContain('opaTest("Check the number of sections of the Object Page"');
+            expect(bookingObjPageJourneyContent).not.toContain('Check body sections of the Object Page');
+            expect(bookingObjPageJourneyContent).toContain(
+                'opaTest("Check the BookingDetails section of the Object Page"'
+            );
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'iGoToSection({ section: "BookingDetails", subSection: "BookingData" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('opaTest("Check the FlightData section of the Object Page"');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain(
-                '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
+                '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
             );
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(bookingObjPageJourneyContent).toContain('opaTest("Check the PriceData section of the Object Page"');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: false }, { enabled: false })'
             );
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
@@ -776,9 +870,99 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
             );
+            // OP-7: body-section form Contact Card
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "BookingData" }).iClickLink({ property: "_Customer/Contact" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
+            // Contact-card column included in iCheckColumns map keyed by aggregation key (matches MDC propertyKey)
+            expect(bookingObjPageJourneyContent).toContain(
+                '"DataFieldForAnnotation::_Carrier::Contact":{"header":"Carrier"}'
+            );
+            // OP table Contact Card
+            expect(bookingObjPageJourneyContent).toContain(
+                'onTable({ property: "_Supplements" }).iClickLink(0, "DataFieldForAnnotation::_Carrier::Contact")'
+            );
+
+            // LR-10: list-report table Contact Card
+            const travelListJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            expect(travelListJourneyContent).toContain(
+                'onTable().iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+            );
+            expect(travelListJourneyContent).toContain(
+                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
+        });
+
+        it('generates navigation cascade for v4 application with deeply-nested sub object page', async () => {
+            // Extend V4_WITH_SUB_OBJECT_PAGE by hanging a third-level OP off BookingObjectPage.
+            const deepAppModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            deepAppModel.applicationModel.pages.BookingObjectPage.navigation = {
+                _BookSupplement: { route: 'BookingSupplementObjectPage' }
+            };
+            deepAppModel.applicationModel.pages.BookingSupplementObjectPage = {
+                pageType: 'ObjectPage',
+                entitySet: 'BookingSupplement',
+                contextPath: '/BookingSupplement',
+                template: 'sap.fe.templates.ObjectPage',
+                model: { root: { aggregations: {} } }
+            };
+            readAppMock.mockResolvedValueOnce(deepAppModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
+
+            const deepJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingSupplementObjectPageJourney.gen.js']
+                    .contents;
+            // Cascade must include both intermediate hops (Travel and Booking) in order
+            const travelSee = deepJourneyContent.indexOf('Then.onTheTravelObjectPageGenerated.iSeeThisPage();');
+            const travelCheckBooking = deepJourneyContent.indexOf(
+                'onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckRows()'
+            );
+            const travelPressBooking = deepJourneyContent.indexOf(
+                'onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iPressRow(0)'
+            );
+            const bookingSee = deepJourneyContent.indexOf('Then.onTheBookingObjectPageGenerated.iSeeThisPage();');
+            const bookingCheckSupplement = deepJourneyContent.indexOf(
+                'onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckRows()'
+            );
+            const bookingPressSupplement = deepJourneyContent.indexOf(
+                'onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iPressRow(0)'
+            );
+            const targetSee = deepJourneyContent.indexOf(
+                'Then.onTheBookingSupplementObjectPageGenerated.iSeeThisPage();'
+            );
+            expect(travelSee).toBeGreaterThan(-1);
+            expect(travelCheckBooking).toBeGreaterThan(travelSee);
+            expect(travelPressBooking).toBeGreaterThan(travelCheckBooking);
+            expect(bookingSee).toBeGreaterThan(travelPressBooking);
+            expect(bookingCheckSupplement).toBeGreaterThan(bookingSee);
+            expect(bookingPressSupplement).toBeGreaterThan(bookingCheckSupplement);
+            expect(targetSee).toBeGreaterThan(bookingPressSupplement);
+        });
+
+        it('skips object page sections marked with UI.Hidden', async () => {
+            const appModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            appModel.applicationModel.pages.BookingObjectPage.model.root.aggregations.sections.aggregations.FlightDataSection.properties =
+                { hidden: { value: true } };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
+
+            const bookingObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.gen.js'].contents;
+            expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(2)');
+            expect(bookingObjPageJourneyContent).not.toContain('iCheckSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).not.toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
+            expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
         });
     });
 
@@ -842,26 +1026,27 @@ export type Then = Opa5 & BaseArrangements & {
             expect(paths.some((p) => p.endsWith('.js') && p.includes('integration/pages/'))).toBe(false);
         });
 
-        it('generates OpaJourneyTypes.d.ts with correct page entries', async () => {
+        it('generates OpaJourneyTypes.gen.d.ts with correct page entries', async () => {
             const projectDir = prepareTestFiles('FullScreenLROP');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const typesPath = Object.keys(dumped).find((p) => p.includes('OpaJourneyTypes.d.ts'));
+            const typesPath = Object.keys(dumped).find((p) => p.includes('OpaJourneyTypes.gen.d.ts'));
             expect(typesPath).toBeDefined();
 
             const typesContent = dumped[typesPath!].contents as string;
             expect(typesContent).toContain('export type Given');
             expect(typesContent).toContain('export type When');
             expect(typesContent).toContain('export type Then');
+            expect(typesContent).toContain('type WithAnd<T> = {');
             expect(typesContent).toContain(
-                'onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions'
+                'onTheEmployeesListGenerated: WithAnd<Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions>'
             );
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions'
+                'onTheEmployeesObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions>'
             );
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions'
+                'onTheEmployeesObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions>'
             );
             expect(typesContent).toContain('onTheShell: Shell');
             expect(typesContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
@@ -913,13 +1098,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(opPagePath).toBeDefined();
 
             const opContent = dumped[opPagePath!].contents as string;
-            expect(opContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
-            expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
             expect(opContent).toContain('export const actions');
             expect(opContent).toContain('export const assertions');
             expect(opContent).toContain('export default class ObjectPage');
-            expect(opContent).toContain('iPressSectionIconTabFilterButton');
-            expect(opContent).toContain('this: Opa5');
             expect(opContent).not.toContain('sap/fe/test/ObjectPage');
         });
 
@@ -969,10 +1150,10 @@ export type Then = Opa5 & BaseArrangements & {
             expect(runnerPath).toBeDefined();
 
             const content = dumped[runnerPath!].contents as string;
-            // The page-definition object passed to `new ListReport(...)` should set contextPath
-            // and skip entitySet entirely (only emit the field that actually applies).
+            // The page-definition object passed to `new ListReport(...)` should set contextPath;
+            // entitySet is emitted as an empty string because the runtime type marks both as required.
             expect(content).toContain('contextPath: "/');
-            expect(content).not.toContain('entitySet: ""');
+            expect(content).toContain('entitySet: ""');
         });
 
         it('generates TypeScript filter tests for LROPv4 app', async () => {
@@ -985,14 +1166,14 @@ export type Then = Opa5 & BaseArrangements & {
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
 
-            // TS-shape filter assertions: plain string identifier (matches JS template) cast to
-            // FilterFieldIdentifier to satisfy `@sapui5/types` which mistypes the parameter.
-            expect(lrContent).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
-            expect(lrContent).toContain('iCheckFilterField("AgencyID" as unknown as FilterFieldIdentifier)');
-            expect(lrContent).toContain('iCheckFilterField("Kunden ID" as unknown as FilterFieldIdentifier)');
+            // Standard filter fields use the stable property object form (no cast needed).
+            expect(lrContent).toContain('iCheckFilterField({ property: "TravelID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "AgencyID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "CustomerID" })');
 
-            // TS adaptation: onTable("") instead of onTable()
-            expect(lrContent).toContain('onTable("")');
+            // TS adaptation: single default-table id via the defaultTableId const, no bare onTable()
+            expect(lrContent).toContain('const defaultTableId = "";');
+            expect(lrContent).toContain('onTable(defaultTableId)');
             expect(lrContent).not.toContain('onTable()');
 
             // The TS journey is typed, no AMD wrapper. Start application uses Given + Then (When prefixed with _ as unused).
@@ -1002,6 +1183,55 @@ export type Then = Opa5 & BaseArrangements & {
             // Sanity: FirstJourney is the rework's fallback and must NOT be emitted when LR/OP/FPM journeys are produced.
             const firstJourneyPath = Object.keys(dumped).find((p) => p.includes('FirstJourney.ts'));
             expect(firstJourneyPath).toBeUndefined();
+        });
+
+        describe('ux-specification journey gating (LROP / FPM only)', () => {
+            it('writes only the fallback FirstJourney for an ObjectPage-only app (no startup ListReport)', async () => {
+                // Model contains OP pages, but the FullScreenOPNoStart manifest has no startup ListReport,
+                // so the app is non-qualifying: no ux-spec journeys, fallback FirstJourney instead.
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+                const projectDir = prepareTestFiles('FullScreenOPNoStart');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const paths = Object.keys(fs.dump(projectDir));
+                // Fallback journey is written
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(true);
+                // No ux-spec-derived journeys
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(false);
+                // Full harness is still generated
+                expect(paths.some((p) => p.includes('integration/pages/JourneyRunner.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('integration/opaTests.qunit.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('integration/opaTests.qunit.html'))).toBe(true);
+                expect(paths.some((p) => p.includes('testsuite.qunit.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('testsuite.qunit.html'))).toBe(true);
+            });
+
+            it('writes only the fallback FirstJourney for an Analytical List Page app', async () => {
+                // The ALP ListReport target carries `views`, so it is not treated as an LROP startup page.
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('FullScreenALP');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const dumped = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                // Fallback journey is written, no ux-spec journeys
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(true);
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(false);
+                // The ALP page object is still rendered from the ListReport page-object template
+                const alpPagePath = paths.find((p) => p.includes('integration/pages/EmployeesList.gen.js'));
+                expect(alpPagePath).toBeDefined();
+                expect(dumped[alpPagePath!].contents as string).toContain('sap/fe/test/ListReport');
+            });
+
+            it('generates ux-spec journeys and no fallback for an LROP app', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const paths = Object.keys(fs.dump(projectDir));
+                expect(paths.some((p) => p.includes('Journey.gen.js'))).toBe(true);
+                expect(paths.some((p) => p.endsWith('integration/FirstJourney.js'))).toBe(false);
+            });
         });
 
         it('generates TypeScript filter tests for LROPv4 app (missing semantic filter)', async () => {
@@ -1014,12 +1244,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(lrJourneyPath).toBeDefined();
             const content = dumped[lrJourneyPath!].contents as string;
 
-            // The semantic-key adaptation block is emitted with TS-shape calls
+            // The semantic-key adaptation block is emitted with the stable property object form
             expect(content).toContain('Add semantic key properties to filter bar');
             expect(content).toContain('iOpenFilterAdaptation()');
-            expect(content).toContain('iAddAdaptationFilterField("TravelID")');
+            expect(content).toContain('iAddAdaptationFilterField({ property: "TravelID" })');
             expect(content).toContain('iConfirmFilterAdaptation()');
-            expect(content).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
+            expect(content).toContain('iCheckFilterField({ property: "TravelID" })');
             // Commented-out global search example uses the typed function signature
             expect(content).toContain('function (Given: Given, When: When, Then: Then)');
         });
@@ -1035,8 +1265,8 @@ export type Then = Opa5 & BaseArrangements & {
             const content = dumped[lrJourneyPath!].contents as string;
 
             expect(content).toContain('iCheckColumns');
-            // TS adaptation: onTable("") on the column-check call
-            expect(content).toMatch(/onTable\(""\)\.iCheckColumns/);
+            // TS adaptation: default-table column-check call uses the defaultTableId const
+            expect(content).toMatch(/onTable\(defaultTableId\)\.iCheckColumns/);
         });
 
         it('generates TypeScript tests for LROPv4 app that has no filters in filter bar', async () => {
@@ -1063,7 +1293,7 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                    'Unable to extract filter fields from the project model using specification. No filter field tests are generated.'
                 )
             );
         });
@@ -1132,23 +1362,39 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
 
             // ─── Header actions (from PR #4632) ───
-            expect(content).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
+            expect(content).toContain(
+                'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
+            );
 
             // ─── Section navigation ───
             expect(content).toContain('iCheckNumberOfSections(3)');
-            expect(content).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(content).toContain('opaTest("Check the number of sections of the Object Page"');
+            expect(content).not.toContain('Check body sections of the Object Page');
+            expect(content).toContain('opaTest("Check the BookingDetails section of the Object Page"');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
-            expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
-            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-            expect(content).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails", subSection: "BookingData" })');
+            expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
+            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
+            expect(content).toContain('opaTest("Check the FlightData section of the Object Page"');
+            expect(content).toContain('iGoToSection({ section: "FlightData" })');
             expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
-            expect(content).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(content).toContain('opaTest("Check the PriceData section of the Object Page"');
+            expect(content).toContain('iGoToSection({ section: "PriceData" })');
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
 
-            // ─── Section actions (table action with dynamic enabled) ───
-            expect(content).toContain('.iCheckAction("Deduct Discount" /* , { enabled: true } */)');
+            // ─── Header Contact Card (OP-8) ───
             expect(content).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+                'onHeader().iClickLink({ property: "carrier/Contact" } as unknown as FieldIdentifier)'
+            );
+            expect(content).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
+
+            // ─── Section actions (table action with dynamic enabled) ───
+            expect(content).toContain(
+                '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
+            );
+            expect(content).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: false }, { enabled: false })'
             );
 
             // ─── onForm with FormIdentifier cast (TS adaptation) ───
@@ -1158,15 +1404,80 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain(
                 'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "FlightDate" })'
             );
+            // OP-7: body-section form Contact Card
+            expect(content).toContain(
+                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iClickLink({ property: "_Customer/Contact" })'
+            );
 
             // ─── Sub-section table columns ───
             expect(content).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(content).toContain('"ConnectionId":{"header":"Connection"}');
             expect(content).toContain('"AirportCode":{"header":"Airport"}');
+            // Contact-card column included in iCheckColumns map keyed by aggregation key (matches MDC propertyKey)
+            expect(content).toContain('"DataFieldForAnnotation::_Carrier::Contact":{"header":"Carrier"}');
+            // OP table Contact Card
+            expect(content).toContain(
+                'onTable({ property: "_Supplements" }).iClickLink(0, "DataFieldForAnnotation::_Carrier::Contact")'
+            );
+
+            // ─── LR-10: list-report table Contact Card ───
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
+            expect(lrJourneyPath).toBeDefined();
+            const lrContent = dumped[lrJourneyPath!].contents as string;
+            expect(lrContent).toContain('onTable("").iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")');
+            expect(lrContent).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── No JS leakage ───
             expect(content).not.toContain('sap.ui.define');
             expect(content).not.toContain("'use strict'");
+        });
+
+        it('marks When as unused (_When) in the header-facets test when no header field is a Contact card', async () => {
+            // OP with a header facet (microchart) but no @Communication.Contact header field: When would be unused.
+            const appModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            appModel.applicationModel.pages.BookingObjectPage.navigation = {
+                _BookSupplement: { route: 'BookingSupplementObjectPage' }
+            };
+            appModel.applicationModel.pages.BookingSupplementObjectPage = {
+                pageType: 'ObjectPage',
+                entitySet: 'BookingSupplement',
+                contextPath: '/BookingSupplement',
+                template: 'sap.fe.templates.ObjectPage',
+                model: {
+                    root: {
+                        aggregations: {
+                            header: {
+                                aggregations: {
+                                    sections: {
+                                        aggregations: {
+                                            priceChart: {
+                                                title: 'Supplement Price',
+                                                schema: { dataType: 'ChartDefinition' }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, subOPMetadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const journeyPath = Object.keys(dumped).find((p) =>
+                p.includes('BookingSupplementObjectPageJourney.gen.ts')
+            );
+            expect(journeyPath).toBeDefined();
+            const content = dumped[journeyPath!].contents as string;
+            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+            expect(content).toContain(
+                'opaTest("Check header facets of the Object Page", function (_Given: Given, _When: When, Then: Then)'
+            );
         });
 
         it('does not modify tsconfig.json', async () => {
@@ -1181,12 +1492,31 @@ export type Then = Opa5 & BaseArrangements & {
         });
     });
 
-    describe('generateOPAFiles FPM forces JavaScript', () => {
+    describe('generateOPAFiles FPM TypeScript support', () => {
         const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
 
-        it('generates .js files when app has an FPM page and enableTypeScript is true', async () => {
+        it('generates .ts files when app has an FPM page and enableTypeScript is true', async () => {
             const projectDir = prepareTestFiles('CustomOP');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const paths = Object.keys(fs.dump(projectDir));
+            const integrationFiles = paths.filter(
+                (p) => p.includes('integration/') && !p.includes('opaTests.qunit') && !p.includes('OpaJourneyTypes')
+            );
+            for (const file of integrationFiles) {
+                expect(file).toMatch(/\.ts$/);
+            }
+            // No JS integration files remain (FPM no longer forces the whole app to JS)
+            expect(integrationFiles.some((p) => p.endsWith('.js'))).toBe(false);
+            // TypeScript type-defs file is emitted
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(true);
+            // The FPM page object is emitted as .ts
+            expect(paths.some((p) => p.includes('integration/pages/') && p.endsWith('.gen.ts'))).toBe(true);
+        });
+
+        it('generates .js files when app has an FPM page and enableTypeScript is false', async () => {
+            const projectDir = prepareTestFiles('CustomOP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: false }, metadata, fs);
 
             const paths = Object.keys(fs.dump(projectDir));
             const integrationFiles = paths.filter(
@@ -1196,10 +1526,10 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(file).toMatch(/\.js$/);
             }
             expect(paths.some((p) => p.endsWith('.ts') && p.includes('integration/'))).toBe(false);
-            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(false);
         });
 
-        it('generates .js files when app has an FPM page and tsconfig.json exists in standalone mode', async () => {
+        it('generates .ts files when app has an FPM page and tsconfig.json exists in standalone mode', async () => {
             const realExistsSync = actualFs.existsSync;
             const projectDir = prepareTestFiles('CustomOP');
             hasVirtualOPA5Mock.mockResolvedValue(false);
@@ -1227,17 +1557,207 @@ export type Then = Opa5 & BaseArrangements & {
                     !p.includes('integration_old')
             );
             for (const file of integrationFiles) {
-                expect(file).toMatch(/\.js$/);
+                expect(file).toMatch(/\.ts$/);
             }
-            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.gen.d.ts'))).toBe(true);
 
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);
         });
 
+        it('writes an FPM journey (.ts) with only iSeeThisPage, never onFilterBar/onTable (TemplatePage has neither)', async () => {
+            const projectDir = prepareTestFiles('CustomOP');
+            // Inject an FPM feature with populated filterBarItems / tableColumns to prove that even
+            // then the FPM journey does NOT emit onFilterBar()/onTable(): an FPM page is a bare
+            // TemplatePage, whose runtime API has no public onFilterBar/onTable (those are added by
+            // ListReport/ObjectPage). Emitting them fails at runtime and fails tsc.
+            getAppFeaturesMock.mockResolvedValueOnce({
+                fpm: {
+                    name: 'MyCustomPage',
+                    filterBarItems: ['CompanyCode', 'Customer'],
+                    tableColumns: { col0: { Value: 'Name' } }
+                }
+            });
+
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const fpmJourneyPath = Object.keys(dumped).find((p) => p.includes('MyCustomPageJourney.gen.ts'));
+            expect(fpmJourneyPath).toBeDefined();
+
+            const content = dumped[fpmJourneyPath!].contents as string;
+            // ES module imports (TS journey), not sap.ui.define
+            expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
+            expect(content).toContain('import runner from "./pages/JourneyRunner"');
+            // The only page assertion is iSeeThisPage()
+            expect(content).toContain('.iSeeThisPage()');
+            // onFilterBar/onTable are NOT emitted for an FPM page — TemplatePage has neither.
+            expect(content).not.toContain('onFilterBar');
+            expect(content).not.toContain('onTable');
+            expect(content).not.toContain('iCheckFilterField');
+            expect(content).not.toContain('iCheckColumns');
+            // no JS FPM journey emitted alongside
+            expect(Object.keys(dumped).some((p) => p.includes('MyCustomPageJourney.gen.js'))).toBe(false);
+        });
+
+        it('writes an FPM journey as .js when enableTypeScript is false', async () => {
+            const projectDir = prepareTestFiles('CustomOP');
+            // getFPMFeatures always populates filterBarItems/tableColumns (possibly empty),
+            // so mirror that shape rather than a bare { name }.
+            getAppFeaturesMock.mockResolvedValueOnce({
+                fpm: { name: 'MyCustomPage', filterBarItems: [], tableColumns: {} }
+            });
+
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: false }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            expect(Object.keys(dumped).some((p) => p.includes('MyCustomPageJourney.gen.js'))).toBe(true);
+            expect(Object.keys(dumped).some((p) => p.includes('MyCustomPageJourney.gen.ts'))).toBe(false);
+        });
+
         afterEach(() => {
             hasVirtualOPA5Mock.mockReset();
             existsSyncMock.mockImplementation(actualFs.existsSync);
+            getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
+        });
+    });
+
+    describe('generateOPAFiles UI5 version buckets', () => {
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+
+        describe('version selector', () => {
+            it.each([
+                { ui5Version: undefined, expectedBucket: 'latest' },
+                { ui5Version: '', expectedBucket: 'latest' },
+                { ui5Version: '1.100.0', expectedBucket: '1.84' },
+                { ui5Version: '1.120.0', expectedBucket: '1.84' },
+                { ui5Version: '1.147.9', expectedBucket: '1.84' },
+                { ui5Version: '1.148.0', expectedBucket: '1.148' },
+                { ui5Version: '1.148.9', expectedBucket: '1.148' },
+                { ui5Version: '1.149.0', expectedBucket: 'latest' },
+                { ui5Version: '1.160.0', expectedBucket: 'latest' }
+            ])('ui5Version $ui5Version → bucket $expectedBucket', async ({ ui5Version, expectedBucket }) => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
+
+                fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
+
+                const templatePaths = copyTplSpy.mock.calls.map((call) => String(call[0]));
+                expect(templatePaths.some((p) => p.includes(join('v4', expectedBucket)))).toBe(true);
+                copyTplSpy.mockRestore();
+            });
+        });
+
+        describe('snapshot per bucket — JS', () => {
+            it('bucket 1.84 generates correct output (JS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.120.0' }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket 1.148 generates correct output (JS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.148.0' }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket latest generates correct output (JS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROP');
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('snapshot per bucket — TS', () => {
+            it('bucket 1.84 generates correct output (TS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.120.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket 1.148 generates correct output (TS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.148.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('bucket latest generates correct output (TS)', async () => {
+                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('snapshot per bucket — FPM TS', () => {
+            it.each([
+                ['1.84', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', '1.149.0']
+            ])('bucket %s generates correct FPM output (TS)', async (_bucket, ui5Version) => {
+                const projectDir = prepareTestFiles('CustomOP');
+                fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+    });
+});
+
+describe('removeUnsupportedActions()', () => {
+    type Action = { label: string; custom?: boolean; menuType?: string };
+    const odata = (label: string): Action => ({ label });
+    const custom = (label: string): Action => ({ label, custom: true });
+    const menu = (label: string): Action => ({ label, menuType: 'CustomMenu' });
+
+    const makeFeatures = () =>
+        ({
+            listReport: { toolBarActions: [odata('KeepTB'), custom('CustomTB'), menu('MenuTB')] },
+            objectPages: [
+                {
+                    headerActions: [custom('CustomH'), menu('MenuH'), odata('KeepH')],
+                    bodySections: [{ actions: [odata('KeepS'), custom('CustomS'), menu('MenuS')] }]
+                }
+            ]
+        }) as unknown as Parameters<typeof removeUnsupportedActions>[0];
+
+    const labels = (features: Parameters<typeof removeUnsupportedActions>[0]) => ({
+        tb: features.listReport?.toolBarActions?.map((a) => a.label),
+        header: features.objectPages?.[0].headerActions?.map((a) => a.label),
+        section: features.objectPages?.[0].bodySections?.[0].actions?.map((a) => a.label)
+    });
+
+    it('1.84: strips both custom and menu actions (only OData renders)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.84');
+        expect(labels(features)).toEqual({ tb: ['KeepTB'], header: ['KeepH'], section: ['KeepS'] });
+    });
+
+    it('1.148: strips custom actions but keeps menu actions (menu template was downported)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.148');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'MenuTB'],
+            header: ['MenuH', 'KeepH'],
+            section: ['KeepS', 'MenuS']
+        });
+    });
+
+    it('latest: keeps all action types', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, 'latest');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'CustomTB', 'MenuTB'],
+            header: ['CustomH', 'MenuH', 'KeepH'],
+            section: ['KeepS', 'CustomS', 'MenuS']
         });
     });
 });
