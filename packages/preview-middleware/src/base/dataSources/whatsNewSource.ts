@@ -41,12 +41,6 @@ export interface WhatsNewSourceConfig {
      */
     groupBy: 'category' | 'title';
     /**
-     * Optional normaliser for the group key extracted via `groupBy`. Lets us shorten
-     * verbose API titles (e.g. "SAP Fiori elements for OData V4" → "OData V4") so the
-     * heading stays compact and reads as a sub-package within the product.
-     */
-    groupLabel?: (rawKey: string) => string;
-    /**
      * When true, the lead-in prose that precedes a result's inner `<ul>` is dropped
      * (e.g. "The following changes and new features are available for SAP Fiori
      * elements for OData V4:"). Useful when the lead-in is redundant with the group
@@ -152,11 +146,6 @@ export const FIORI_ELEMENTS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
     upgradeHint: 'To use all new features, ensure your SAPUI5 version is up to date.',
     imagePath: path.join(__dirname, '../images/whats-new-fe.jpg'),
     groupBy: 'title',
-    // Map "SAP Fiori Elements for OData V4" → "OData V4". Anything else falls through unchanged.
-    groupLabel: (raw: string) => {
-        const match = /OData\s*V\s*([0-9]+)/i.exec(raw);
-        return match ? `OData V${match[1]}` : raw;
-    },
     dropDescriptionLeadIn: true
 };
 
@@ -254,13 +243,27 @@ export class WhatsNewSource {
             return [];
         }
 
-        // Group results by the configured key (Category for Fiori Tools, Title for
-        // Fiori elements), then by type ("New" / "Changed") inside each group.
+        if (this.config.groupBy === 'title') {
+            const description = `<p>${this.getNewsIntroduction(latestVersion, true)}</p>${WhatsNewSource.renderTitleSections(
+                latestResults,
+                this.config.dropDescriptionLeadIn
+            )}`;
+
+            return [
+                {
+                    title: this.getNewsTitle(),
+                    subTitle: this.getNewsIntroduction(latestVersion, false),
+                    description,
+                    footerText: `${this.config.productLabel} ${latestVersion}`,
+                    image: this.config.imagePath
+                }
+            ];
+        }
+
+        // Group results by category, then by type ("New" / "Changed") inside each group.
         const byGroup = new Map<string, Map<string, WhatsNewResult[]>>();
         for (const result of latestResults) {
-            const rawKey = this.config.groupBy === 'title' ? result.Title : result.Category[0];
-            const normalised = rawKey ?? 'Other';
-            const groupKey = this.config.groupLabel ? this.config.groupLabel(normalised) : normalised;
+            const groupKey = result.Category[0] ?? 'Other';
             const type = WhatsNewSource.getTypeLabel(result.Type[0] ?? 'Other');
             const typeMap = byGroup.get(groupKey) ?? new Map<string, WhatsNewResult[]>();
             const existing = typeMap.get(type) ?? [];
@@ -276,7 +279,7 @@ export class WhatsNewSource {
         // the heading is the analogue of "Application Modeler"/"Adaptation Project".
         const suppressHeading = groupEntries.length === 1 && this.config.productLabel.includes(groupEntries[0][0]);
 
-        let groupSections = groupEntries
+        const groupSections = groupEntries
             .map(([groupName, typeMap]) => {
                 const heading = suppressHeading ? '' : `<h2>${groupName}</h2>`;
                 const typeSections = [...typeMap.entries()]
@@ -294,18 +297,11 @@ export class WhatsNewSource {
             })
             .join('<hr>');
 
-        if (this.config.groupBy === 'title') {
-            groupSections = WhatsNewSource.renderODataUpdateSection(groupEntries, this.config.dropDescriptionLeadIn);
-        }
-
         const description = `<p>${this.getNewsIntroduction(latestVersion, true)}</p>${groupSections}`;
-        const title = this.config.titleIcon
-            ? `${this.config.titleIcon} What's New for ${this.config.productLabel}`
-            : `What's New for ${this.config.productLabel}`;
 
         return [
             {
-                title,
+                title: this.getNewsTitle(),
                 subTitle: this.getNewsIntroduction(latestVersion, false),
                 description,
                 footerText: `${this.config.productLabel} ${latestVersion}`,
@@ -329,6 +325,17 @@ export class WhatsNewSource {
             `Learn about changes and new features that are available for ${embeddedLabel} ${latestVersion}. ` +
             this.config.upgradeHint
         );
+    }
+
+    /**
+     * Generates a news item title.
+     *
+     * @returns the news item title
+     */
+    private getNewsTitle(): string {
+        return this.config.titleIcon
+            ? `${this.config.titleIcon} What's New for ${this.config.productLabel}`
+            : `What's New for ${this.config.productLabel}`;
     }
 
     /**
@@ -383,34 +390,21 @@ export class WhatsNewSource {
     }
 
     /**
-     * Renders Fiori elements updates under one OData heading instead of separate
-     * OData group and type headings.
+     * Renders each API result as its own titled section.
      *
-     * @param groupEntries grouped news results keyed by OData label
+     * @param results the API result items to render
      * @param dropDescriptionLeadIn when true, omit prose that precedes the first inner list
-     * @returns HTML fragment containing a heading and list of update items
+     * @returns HTML fragment containing one section per API result
      */
-    private static renderODataUpdateSection(
-        groupEntries: [string, Map<string, WhatsNewResult[]>][],
-        dropDescriptionLeadIn = false
-    ): string {
-        const sortedGroupEntries = [...groupEntries].sort(([a], [b]) =>
-            a.localeCompare(b, undefined, { numeric: true })
-        );
-        const groupLabels = sortedGroupEntries.map(([groupName]) => groupName);
-        const heading = groupLabels.every((label) => /^OData\s+V/i.test(label))
-            ? `Updates for OData ${groupLabels.map((label) => label.replace(/^OData\s+/i, '')).join(' and ')}`
-            : `Updates for ${groupLabels.join(' and ')}`;
-
-        const listItems = sortedGroupEntries
-            .flatMap(([, typeMap]) =>
-                [...typeMap.entries()]
-                    .sort(([a], [b]) => WhatsNewSource.compareTypes(a, b))
-                    .flatMap(([, items]) => items)
-            )
-            .flatMap((item) => WhatsNewSource.descriptionToListItems(item, dropDescriptionLeadIn))
-            .join('');
-        return `<h2>${heading}</h2><ul>${listItems}</ul>`;
+    private static renderTitleSections(results: WhatsNewResult[], dropDescriptionLeadIn = false): string {
+        return results
+            .map((item) => {
+                const heading = WhatsNewSource.sanitizeDescription(item.Title) || 'Other';
+                const listItems = WhatsNewSource.descriptionToListItems(item, dropDescriptionLeadIn).join('');
+                const list = listItems ? `<ul>${listItems}</ul>` : '';
+                return `<h2>${heading}</h2>${list}`;
+            })
+            .join('<hr>');
     }
 
     /**
