@@ -147,10 +147,14 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
     const actionString = (item.Action as string) || '';
     const actionMethod = extractActionMethodName(actionString);
     const operationAvailable = findOperationAvailableAnnotation(metadata, actionMethod);
-    // Any bound action (single- or collection-bound) requires a selected context to be invoked, so
-    // it is disabled by default (no row selected)
-    const isBound = item.ActionTarget?.isBound === true;
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isBound);
+    // A single-instance-bound action operates on one selected row, so it is disabled by default
+    // until a row is selected. A collection-bound action operates on the whole collection and is
+    // enabled without a selection. Both are bound (`unbound: false`), but only the single-instance
+    // case requires a selection.
+    const actionTarget = item.ActionTarget;
+    const isBound = actionTarget?.isBound === true;
+    const requiresSelection = isBound && actionTarget?.parameters?.[0]?.isCollection !== true;
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, requiresSelection);
 
     return {
         label: (item.Label as string) || '',
@@ -193,10 +197,13 @@ export function buildActionStateFromSpecModelKey(
     const actionDefinition: Action | undefined = convertedMetadata.actions?.find(
         (action) => action.name === actionMethod || action.fullyQualifiedName?.includes(`.${actionMethod}(`)
     );
+    // Single-instance-bound actions require a row selection (disabled by default); collection-bound
+    // actions operate on the whole collection and are enabled without a selection. Both are bound.
     const isBound = actionDefinition?.isBound === true;
+    const requiresSelection = isBound && actionDefinition?.parameters?.[0]?.isCollection !== true;
 
     const operationAvailable = findOperationAvailableAnnotation(convertedMetadata, actionMethod);
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isBound);
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, requiresSelection);
 
     return {
         label: label ?? '',
