@@ -16,6 +16,7 @@ import {
     type AggregationItem,
     getAggregations
 } from './modelUtils.js';
+import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
 import { extractContactCardColumnsFromNode, resolvePrimaryTableNode } from './tableUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
@@ -138,13 +139,15 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to detect ALP configuration
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
     listReportPage: PageWithModelV4,
     log?: Logger,
     metadata?: string,
-    manifest?: Manifest
+    manifest?: Manifest,
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver
 ): ListReportFeatures {
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
     const filterFieldEntries = getFilterFieldItems(listReportPage.model, log);
@@ -166,6 +169,11 @@ export function getListReportFeatures(
             log?.debug(`Failed to parse metadata: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
+
+    // Custom (manifest-declared) toolbar actions have no OData counterpart and are matched by label.
+    // extractCustomToolBarActions filters strictly on actionType === 'Custom', so annotation-backed
+    // actions (already captured via safeCheckActionButtonStates) are never duplicated here.
+    toolBarActions = toolBarActions.concat(extractCustomToolBarActions(listReportPage.model, resolveLabel));
 
     // Custom filter fields are matched by rendered label, so resolve unresolved i18n
     // placeholders via the property's OData `@Common.Label`.
@@ -231,6 +239,39 @@ export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
     const actions = toolBarAggregations['actions'];
     const actionAggregations = getAggregations(actions);
     return actionAggregations;
+}
+
+/**
+ * Extracts custom (manifest-declared) toolbar actions from the List Report table toolbar.
+ *
+ * @param pageModel - the tree model containing the table toolbar definitions
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns array of custom toolbar action button states
+ */
+export function extractCustomToolBarActions(
+    pageModel: TreeModel,
+    resolveLabel: I18nLabelResolver
+): ActionButtonState[] {
+    const actionAggregations = getToolBarActions(pageModel);
+    const customActions: ActionButtonState[] = [];
+    for (const key of Object.keys(actionAggregations ?? {})) {
+        const item = actionAggregations[key as keyof TreeAggregations] as unknown as AggregationItem;
+        if (item?.schema?.actionType !== 'Custom') {
+            continue;
+        }
+        const { label, unresolved } = resolveLabel(item.description);
+        if (label) {
+            customActions.push({
+                label,
+                action: '',
+                visible: true,
+                enabled: true,
+                custom: true,
+                labelUnresolved: unresolved || undefined
+            });
+        }
+    }
+    return customActions;
 }
 
 /**

@@ -262,6 +262,39 @@ export interface ActionButtonState {
      * Populated for both List Report and Object Page actions extracted via metadata.
      */
     unbound?: boolean;
+    /**
+     * Set when this entry is a menu (drop-down) button rather than a single action.
+     * `menuActions` then holds the individual actions inside the menu.
+     */
+    menuType?: 'Annotation' | 'CustomMenu';
+    /**
+     * The individual actions contained in a menu. Only set when `menuType` is present.
+     * Menu items are matched at runtime by label (the FE test API `iCheckMenuAction` /
+     * `iExecuteMenuAction` match menu entries by their rendered text, not by a stable id).
+     */
+    menuActions?: MenuActionState[];
+    /**
+     * Set for custom (manifest-declared) actions that have no OData `DataFieldForAction` counterpart.
+     * These are matched at runtime by their rendered label, so the writer emits the label-string form
+     * `iCheckAction("<label>")` instead of the `{ service, action, unbound }` object form.
+     */
+    custom?: boolean;
+    /**
+     * Set when `label` is still an unresolved i18n placeholder (the app i18n bundle had no matching key).
+     * The writer emits a follow-up marker comment so the developer can fix the assertion.
+     */
+    labelUnresolved?: boolean;
+}
+
+export interface MenuActionState {
+    label: string;
+    visible: boolean;
+    service?: string;
+    action?: string;
+    unbound?: boolean;
+    enabled?: boolean | 'dynamic';
+    dynamicPath?: string;
+    labelUnresolved?: boolean;
 }
 
 export type FPMFeatures = {
