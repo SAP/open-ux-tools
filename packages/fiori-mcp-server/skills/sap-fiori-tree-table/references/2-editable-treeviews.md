@@ -93,12 +93,7 @@ Ask user to choose from the following options:
 
 1. **Create Fiori Elements App** - Before generating, verify system availability using fiori mcp to ensure the target ABAP system is accessible. Then download metadata and generate the app with TreeTable configuration for the hierarchy entity.
 2. **Generate Test Data**:  Create data population program
-3. **Implement Business Logic**: Add validation, determinations, and hierarchy-specific operations. Refer to [SAP Documentation: Treeview Features](https://help.sap.com/docs/abap-cloud/abap-rap/treeview-features) for implementing:
-   - Move up/down actions
-   - Drag-and-drop reordering (via `changeNextSibling`)
-   - Link/unlink parent operations
-   - Custom hierarchy validations
-   - Draft support (create, edit, discard)
+3. **⚠️ Implement Business Logic** - The generated backend provides scaffolding (structure + declarations). Hierarchy operations like `changeNextSibling`, `linkParentProduct`, `unlinkParentProduct` require manual implementation in the behavior class. See detailed status in implementation guide.
 4. **Add Authorization**: Replace `#NOT_REQUIRED` with proper auth
 
 ---
