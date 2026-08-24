@@ -55,10 +55,6 @@ const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
 };
 
 export const reportRuntimeError = (error: Error): void => {
-    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true') {
-        getReportingTelemetryClient();
-    }
-
     const properties: { [key: string]: string } = { message: error.message };
     if (error.stack) {
         const parsedStack = parseErrorStack(error.stack);
