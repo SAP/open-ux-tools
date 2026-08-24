@@ -1,5 +1,105 @@
 # @sap-ux/ui5-test-writer
 
+## 1.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Features
+
+- Generate OPA action tests for custom (manifest-declared) actions, matched by their (i18n-resolved) label via `iCheckAction("<label>")`. Custom-action tests are emitted only for the `latest` template bucket, where the required `sap.fe.test.api` support is available. Also fix bound actions with a collection binding parameter: they are now correctly treated as bound (`unbound: false`) and disabled-by-default (require a selection), matching the SAP FE runtime. [[09099e5](https://github.com/SAP/open-ux-tools/commit/09099e5aaed4cea169ebc18b8c9e52b1f53dda8e)]
+
+#### Features
+
+- Generate Object Page OPA tests for menu (drop-down) actions. Actions grouped in an annotation menu (`DataFieldForActionGroup`) or a manifest menu (`CustomMenu`) are now detected from the specification model and emitted with the menu-aware `iCheckMenuAction` / `iExecuteMenuAction` test API. [[7fe592d](https://github.com/SAP/open-ux-tools/commit/7fe592d42db7b3f5e48e88d8155e1fd399cf69fd)]
+
+## 1.8.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.7 → 1.2.8
+- @sap-ux/preview-middleware 1.2.2 → 1.2.3
+
+## 1.8.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Bug Fixes
+
+- Object Page OPA tests no longer emit `iCheckSubSection`/`iGoToSection(subSection)` for sections that render a single sub-section (e.g. a form-only CollectionFacet). Fiori elements renders such a section inline with no distinct sub-section, so the assertion had no matching control. Sub-section assertions are now only generated when a section has more than one sub-section. [[ecf9652](https://github.com/SAP/open-ux-tools/commit/ecf9652e47e17112195db18d1fb3ee83651785a9)]
+
+## 1.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Features
+
+- Generate TypeScript OPA5 tests for FPM pages and add WithAnd<T> fluent `.and` chaining support
+
+    - FPM (`sap.fe.core.fpm`) pages no longer force generated OPA5 tests to JavaScript; they now honour the configured/auto-detected TypeScript setting, emitting `FPMJourney.ts` and `pages/FPM.ts` symmetric with the List Report / Object Page templates. The FPM page is constructed via `sap/fe/test/TemplatePage` (cast to work around the missing `sap/fe/test/FPM` type in `@sapui5/types`).
+    - Generated `OpaJourneyTypes.gen.d.ts` now emits a `WithAnd<T>` utility type and wraps each page's `When`/`Then` intersection in it, enabling the OPA5 fluent `.and.iCheckX()` chaining pattern in TypeScript journeys. The standalone splicer backfills the `WithAnd<T>` definition into type files generated before this change. [[aec42e9](https://github.com/SAP/open-ux-tools/commit/aec42e9be5fa2c76aea51dbc56eb30f07aadec9a)]
+
+## 1.7.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/ui5-application-writer 2.1.3 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.2.6 → 1.2.7
+- @sap-ux/preview-middleware 1.2.1 → 1.2.2
+
+## 1.7.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Correct OPA5 test generation for multi-view (multi-tab) List Reports
+
+    - A plain multi-view List Report is no longer mis-detected as an Analytical List Page; detection now uses the single `isALPManifestTarget` predicate, so the start page variable resolves and the filter-bar / navigate-to-ObjectPage steps render with the correct page name.
+    - The "Check table columns and actions" test is generated again for multi-view List Reports: column, action and contact-card extraction now reads the first non-custom view's table node (`table.views[key]`) instead of only `table.columns`.
+    - The ObjectPage journey navigates from the tab that actually exposes the page: it emits `iGoToView({ key })` and targets `onTable("<viewKey>")` for a non-default view (matched by the view's entity set), and keeps the single-table behaviour for the default view and single-table List Reports.
+    - The commented global-search template now includes a search-field cleanup (`iChangeSearchField(undefined)` / `iCheckSearchField(undefined)`) at the end of the flow. [[06f4e10](https://github.com/SAP/open-ux-tools/commit/06f4e1010ec247ea87f60cd9d95760d4f10a1310)]
+
+## 1.7.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Remove debug warn log statements from modelUtils and drop unused log parameter from getFPMPage [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.7.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.0 → 1.2.1
+
 ## 1.7.0
 
 ### Minor Changes

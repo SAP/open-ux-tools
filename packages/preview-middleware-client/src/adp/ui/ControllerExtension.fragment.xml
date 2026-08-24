@@ -1,10 +1,10 @@
-<Dialog id="controllerExtensionDialog"  
+<Dialog id="controllerExtensionDialog"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:f="sap.ui.layout.form" 
-    title="Extend With Controller" 
-    contentWidth="450px" 
+    xmlns:f="sap.ui.layout.form"
+    title="Extend With Controller"
+    contentWidth="450px"
     class="sapUiRTABorder">
     <content>
         <f:SimpleForm
@@ -15,12 +15,28 @@
             visible="{/inputFormVisibility}">
             <f:content>
                 <Label text="Controller Name" />
-                <Input 
+                <Input
                     id="controllerName"
                     description="{/controllerExtension}"
                     value="{/newControllerName}"
                     liveChange="onControllerNameInputChange">
                 </Input>
+                <Label text="{i18n>ADP_CONTROLLER_TYPE_SELECTION_LABEL}"
+                       visible="{/instanceSpecificVisibility}" />
+                <RadioButtonGroup
+                    id="controllerTypeGroup"
+                    select="onControllerTypeSelectionChange"
+                    selectedIndex="{/controllerTypeSelectedIndex}"
+                    visible="{/instanceSpecificVisibility}">
+                    <buttons>
+                        <RadioButton id="baseControllerRadio"
+                                     text="{i18n>ADP_CONTROLLER_TYPE_BASE}"
+                                     enabled="{/baseControllerEnabled}" />
+                        <RadioButton id="instanceControllerRadio"
+                                     text="{i18n>ADP_CONTROLLER_TYPE_INSTANCE}"
+                                     enabled="{/instanceControllerEnabled}" />
+                    </buttons>
+                </RadioButtonGroup>
             </f:content>
         </f:SimpleForm>
         <f:SimpleForm
@@ -31,7 +47,18 @@
             singleContainerFullSize="false">
             <f:content>
                 <Label text="{i18n>ADP_CONTROLLER_EXTENSION_EXISTS}" />
-                <Text text="{/controllerPathFromRoot}" />
+
+                <Label text="{i18n>ADP_CONTROLLER_TYPE_BASE}" visible="{/baseControllerExists}" />
+                <Link text="{/baseControllerPathFromRoot}" press="onOpenBaseController"
+                      visible="{= ${/baseControllerExists} &amp;&amp; !${/isRunningInBAS} }" />
+                <Text text="{/baseControllerPathFromRoot}"
+                      visible="{= ${/baseControllerExists} &amp;&amp; ${/isRunningInBAS} }" />
+
+                <Label text="{i18n>ADP_CONTROLLER_TYPE_INSTANCE}" visible="{/instanceControllerExists}" />
+                <Link text="{/instanceControllerPathFromRoot}" press="onOpenInstanceController"
+                      visible="{= ${/instanceControllerExists} &amp;&amp; !${/isRunningInBAS} }" />
+                <Text text="{/instanceControllerPathFromRoot}"
+                      visible="{= ${/instanceControllerExists} &amp;&amp; ${/isRunningInBAS} }" />
             </f:content>
         </f:SimpleForm>
         <f:SimpleForm

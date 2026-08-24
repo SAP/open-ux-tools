@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f6d65ac](https://github.com/SAP/open-ux-tools/commit/f6d65acceb9c3477b471cd76b93a900c39f3cf2b)]
+
+## 1.11.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 1.11.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- Regenerate create CLI skill index to include the `generate opa5-tests` command [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
 ## 1.11.10
 
 ### Patch Changes
