@@ -132,11 +132,11 @@ interface CacheEntry {
  * Default configuration for the SAP Fiori tools What's New feed.
  */
 export const FIORI_TOOLS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
-    productLabel: 'SAP Fiori tools',
+    productLabel: 'SAP Fiori Tools',
     titleIcon: '',
     loio: 'd29596a7d7b040d88a20a73dee29a1ec',
     docsUrl: 'https://help.sap.com/docs/SAP_FIORI_tools',
-    upgradeHint: 'To use all new features, ensure your Fiori tools extensions and packages are up to date.',
+    upgradeHint: 'To use all new features, ensure your SAP Fiori tools extensions and packages are up to date.',
     imagePath: path.join(__dirname, '../images/whats-new.jpg'),
     groupBy: 'category'
 };
@@ -145,11 +145,11 @@ export const FIORI_TOOLS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
  * Default configuration for the SAP Fiori elements What's New feed.
  */
 export const FIORI_ELEMENTS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
-    productLabel: 'SAP Fiori elements',
+    productLabel: 'SAP Fiori Elements',
     loio: '40dc77b604f54b21a2faadc7860dc5d7',
     categoryFilter: ['SAP Fiori Elements'],
     docsUrl: 'https://help.sap.com/docs/SAP_FIORI_ELEMENTS',
-    upgradeHint: 'To use all new features, ensure that your UI5 version is up to date.',
+    upgradeHint: 'To use all new features, ensure your SAPUI5 version is up to date.',
     imagePath: path.join(__dirname, '../images/whats-new-fe.jpg'),
     groupBy: 'title',
     // Map "SAP Fiori Elements for OData V4" → "OData V4". Anything else falls through unchanged.

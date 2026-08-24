@@ -316,6 +316,7 @@ export async function addApp(
     templateConfig.ui5.resources[id] = app.target;
     templateConfig.apps[appName] = {
         title:
+            app.title ??
             (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, manifest['sap.app']?.id, logger)) ??
             id,
         description:

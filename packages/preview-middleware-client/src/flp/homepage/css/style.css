@@ -78,12 +78,14 @@
     display: none;
 }
 
+/* Title text renders with the normal '72' font; only the leading TNT icon glyph
+   falls through to SAP-icons-TNT, so the text is not stretched by icon-font metrics. */
 .sapCuxNewsAndPagesContainer .sapMTileCnt.News .sapMNwCCTxt .sapMFT {
-    font-family: 'SAP-icons-TNT', '72', '72full', Arial, Helvetica, sans-serif;
+    font-family: '72', '72full', 'SAP-icons-TNT', Arial, Helvetica, sans-serif;
 }
 
 .sapMDialog[id$='-custNewsFeedDetailsDialog'] .sapMDialogTitle {
-    font-family: 'SAP-icons-TNT', '72-Bold', '72-Boldfull', '72', '72full', Arial, Helvetica, sans-serif;
+    font-family: '72-Bold', '72-Boldfull', '72', '72full', 'SAP-icons-TNT', Arial, Helvetica, sans-serif;
 }
 
 .terminalWarningsPopover .sapMPopoverHeader {

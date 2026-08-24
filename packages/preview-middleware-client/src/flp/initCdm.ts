@@ -49,7 +49,7 @@ import type { Window } from 'types/global';
                                 editablePropterties: ['accessibility', 'contentDensity', 'theme']
                             },
                             defaults: {
-                                email: 'user.name@example.com',
+                                email: 'user.name@sap.com',
                                 firstName: 'User',
                                 lastName: 'Name',
                                 fullName: 'User Name',

@@ -22,6 +22,10 @@ export interface App {
      * Optional component id if it differs from the manifest (e.g. for adaptation projects)
      */
     componentId?: string;
+    /**
+     * Optional display title for the app tile. Overrides the title derived from the manifest or intent.
+     */
+    title?: string;
     intent?: Intent;
 }
 

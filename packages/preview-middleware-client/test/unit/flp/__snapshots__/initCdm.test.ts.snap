@@ -36,7 +36,7 @@ Object {
         "config": Object {
           "userProfile": Object {
             "defaults": Object {
-              "email": "user.name@example.com",
+              "email": "user.name@sap.com",
               "firstName": "User",
               "fullName": "User Name",
               "id": "USERNAME",
