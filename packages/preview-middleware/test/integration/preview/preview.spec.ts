@@ -26,12 +26,25 @@ const cwd = join(__dirname, '..', '..', 'fixtures', 'simple-app');
 const testCwd = getDestinationProjectRoot(cwd);
 
 /**
+ * Returns true if the given UI5 version qualifies for the new FLP sandbox (>= 1.150).
+ *
+ * @param ui5Version UI5 version string, e.g. "1.120.3"
+ */
+const isNewSandboxEligible = (ui5Version: string): boolean => {
+    const parts = ui5Version.split('.');
+    const major = parseInt(parts[0] ?? '1', 10);
+    const minor = parseInt(parts[1] ?? '0', 10);
+    return major > 1 || minor >= 150;
+};
+
+/**
  * This content will overwrite existing `ui5.yaml` file content.
  *
  * @param ui5Version UI5 version
+ * @param useNewSandbox whether to enable the new FLP sandbox
  * @returns YAML content
  */
-const getYamlContent = (ui5Version: string): string => {
+const getYamlContent = (ui5Version: string, useNewSandbox = false): string => {
     return `
 specVersion: '1.0'
 metadata:
@@ -45,8 +58,7 @@ server:
               flp:
                 path: /my/custom/path/preview.html
                 libs: true
-                rta:
-                  layer: CUSTOMER_BASE
+                useNewSandbox: ${useNewSandbox}
               debug: true
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware
@@ -84,16 +96,16 @@ const getYamlPath = (cwd: string): string => {
     return join(cwd, 'ui5.yaml');
 };
 
-const adaptUi5Yaml = async (ui5Version: string) => {
+const adaptUi5Yaml = async (ui5Version: string, useNewSandbox = false) => {
     const yamlPath = getYamlPath(testCwd);
-    await writeFile(yamlPath, getYamlContent(ui5Version));
+    await writeFile(yamlPath, getYamlContent(ui5Version, useNewSandbox));
 };
 
-const prepare = async (ui5Version: string) => {
+const prepare = async (ui5Version: string, useNewSandbox = false) => {
     await copyProject({
         projectRoot: cwd,
         cb: async () => {
-            await adaptUi5Yaml(ui5Version);
+            await adaptUi5Yaml(ui5Version, useNewSandbox);
         }
     });
     const port = await getPort();
@@ -134,4 +146,22 @@ for (const { version } of UI5Versions) {
             await check({ page });
         });
     });
+
+    if (isNewSandboxEligible(version)) {
+        test.describe(`UI5 version: ${version} (useNewSandbox)`, () => {
+            test.beforeAll(async () => {
+                test.setTimeout(TIMEOUT);
+                await prepare(version, true);
+            });
+
+            test.afterEach(async () => {
+                await teardownServer();
+            });
+
+            test('Click on Go button and check an element ', async ({ page }) => {
+                test.setTimeout(2 * 60000);
+                await check({ page });
+            });
+        });
+    }
 }

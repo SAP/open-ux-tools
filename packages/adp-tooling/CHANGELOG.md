@@ -1,5 +1,46 @@
 # @sap-ux/adp-tooling
 
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.32 → 1.0.33
+
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.18 → 1.0.19
+- @sap-ux/axios-extension 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.31 → 1.0.32
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/system-access 1.0.10 → 1.0.11
+- @sap-ux/project-input-validator 1.0.15 → 1.0.16
+
+## 1.0.44
+
+### Patch Changes
+
+#### Features
+
+- Ability to create entity specific controller extensions [[57cb8f9](https://github.com/SAP/open-ux-tools/commit/57cb8f93bb625ca20a4a0096a4f7369bb1e3ec75)]
+
+## 1.0.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Rewrite ui5:// manifest prefixes using the descriptor variant id instead of the base app name, so FLP Sandbox 2.0 resolves i18n enhanceWith bundles locally [[6fac8d4](https://github.com/SAP/open-ux-tools/commit/6fac8d45439a76e078fd6e6f6964b05d797e411e)]
+
 ## 1.0.42
 
 ### Patch Changes
