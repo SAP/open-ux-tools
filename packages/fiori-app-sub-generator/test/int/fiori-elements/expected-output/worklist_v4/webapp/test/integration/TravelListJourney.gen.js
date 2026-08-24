@@ -48,9 +48,9 @@ sap.ui.define([
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressDelete();
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Draft Template");
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Draft Template", { enabled: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Draft Template", { enabled: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Active Template");
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Active Template", { enabled: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Active Template", { enabled: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Deduct Discount");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Deduct Discount", { enabled: false });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Check Travel");
