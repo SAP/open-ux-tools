@@ -2766,8 +2766,8 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
       '@sap/ux-specification':
-        specifier: 1.144.5
-        version: 1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 1.144.10
+        version: 1.144.10
       '@types/json-schema':
         specifier: 7.0.15
         version: 7.0.15
@@ -2786,6 +2786,9 @@ importers:
       i18next:
         specifier: 26.3.6
         version: 26.3.6(typescript@5.9.3)
+      lz-string:
+        specifier: 1.5.0
+        version: 1.5.0
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -9576,6 +9579,10 @@ packages:
       '@sap-ux/odata-annotation-core': '>=0.2.17'
       '@sap-ux/odata-annotation-core-types': '>=0.5.7'
       '@sap-ux/project-access': '>=1.35.20'
+
+  '@sap/ux-specification@1.144.10':
+    resolution: {integrity: sha512-0nGMFQQxPKZKxF0R4KSWK1dFmSGkD1HMUTuUIQ/1j8VcEx8mSHb+SkcLU8ZkFa3Dn5qNky+ZS7xawIA3o2HezA==}
+    engines: {node: '>=22.13.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.22 < 2'}
 
   '@sap/ux-specification@1.144.5':
     resolution: {integrity: sha512-I7DM2w8k90L4+abU/cMThhpwXI/Iken3dYyeqC0TERw+m9LRb1l4XHOi74ai8gxfQfnynFd3pVeTNXlGyxxOnA==}
@@ -24726,6 +24733,10 @@ snapshots:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
       '@sap-ux/project-access': link:packages/project-access
+
+  '@sap/ux-specification@1.144.10':
+    dependencies:
+      lz-string: 1.5.0
 
   '@sap/ux-specification@1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
