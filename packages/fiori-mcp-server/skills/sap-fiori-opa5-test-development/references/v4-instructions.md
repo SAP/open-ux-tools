@@ -27,7 +27,7 @@ After running it, the structure looks like this (`.gen.*` files are tool-owned; 
 webapp/test/integration/                          (TypeScript - e.g. List Report / Object Page)
 ├── <EntityName>ListJourney.gen.ts                <- generated (tool-owned, do not edit)
 ├── <EntityName>ObjectPageJourney.gen.ts          <- generated (tool-owned, do not edit)
-├── MyCustomJourney.ts                            <- custom journey (place here, import in JourneyRunner.ts)
+├── MyCustomJourney.ts                            <- custom journey (place here, import in pages/JourneyRunner.ts)
 ├── pages/
 │   ├── JourneyRunner.ts                          <- generated and hand-maintained (shared JourneyRunner instance - add custom journeys here)
 │   ├── <EntityName>List.gen.ts                   <- generated page object (tool-owned, do not edit)
