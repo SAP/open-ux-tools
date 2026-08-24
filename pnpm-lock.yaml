@@ -301,9 +301,6 @@ importers:
       dotenv:
         specifier: 17.4.2
         version: 17.4.2
-      fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
 
   examples/simple-generator:
     dependencies:
