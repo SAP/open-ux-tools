@@ -3842,8 +3842,8 @@ importers:
         specifier: 4.0.57
         version: 4.0.57(supports-color@8.1.1)
       '@ui5/manifest':
-        specifier: 1.88.0
-        version: 1.88.0
+        specifier: 1.89.0
+        version: 1.89.0
       eslint-plugin-jsdoc:
         specifier: 62.8.1
         version: 62.8.1(eslint@10.7.0(supports-color@8.1.1))(supports-color@8.1.1)
@@ -3869,8 +3869,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.88.0
-        version: 1.88.0
+        specifier: 1.89.0
+        version: 1.89.0
       fast-xml-parser:
         specifier: 5.8.0
         version: 5.8.0
@@ -4813,8 +4813,8 @@ importers:
         specifier: '>=2.10.0'
         version: 2.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap/subaccount-destination-service-provider':
-        specifier: 2.16.0
-        version: 2.16.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 2.18.8
+        version: 2.18.8(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -4910,8 +4910,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.88.0
-        version: 1.88.0
+        specifier: 1.89.0
+        version: 1.89.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -9518,10 +9518,6 @@ packages:
     resolution: {integrity: sha512-vmx/gb7a+IBCzAJovWPJ2Oi1mtW+0iZFqGiq6j55IbW4SOVX87Vvnm0s/Jl9YKPdSYf1S0MTAZzn3TaQTIItSQ==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/logger@0.8.1':
-    resolution: {integrity: sha512-BPS8/ZODQ7s7r1K4+eo0ynXGk85nio2CBZlT3HdWUT75MwwNAwUeUEpC+SUq/IWVrwBpxHApkyYH+NZYqMRmMw==}
-    engines: {node: '>=20.x'}
-
   '@sap-ux/logger@0.8.5':
     resolution: {integrity: sha512-TU6HIsW2ydx+On+RBXXiWlgrs2CXRasBmZBcKHTM57IiORYIHBv27e7x5OUX++EAONQZVZbIWND4HcCSCBJNBA==}
     engines: {node: '>=20.x'}
@@ -9546,8 +9542,8 @@ packages:
     resolution: {integrity: sha512-VxaIKEG3lPshZTuWIrbq8WVaYxPAkNUhh5PVRkfqhf04mCVCXxcTgQrD3m/bLo9sViJcE4q/hz7tNpRvByPjxw==}
     engines: {node: '>=20.x'}
 
-  '@sap-ux/store@1.5.8':
-    resolution: {integrity: sha512-DtwX9AmBzg08cHAqoeh8kf+vsOWg08lk4HtYBi7en8rsDSMWh/nsp3gcV2clovR1wdG9GEgM8YvoQgHwzdao6g==}
+  '@sap-ux/store@1.5.13':
+    resolution: {integrity: sha512-x1cMf5h0iFRmOAjtHkXc+huHNv5IUQOmzQv9zzG996lQ1N3drve8J3Ug833Tvd+i0nN2AyxNUnBOT25PT1cX1g==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/text-document-utils@0.3.4':
@@ -9612,8 +9608,8 @@ packages:
   '@sap/service-provider-apis@2.10.0':
     resolution: {integrity: sha512-S03mBS/FNrMen8ysaXl/s8eTcgm0D+KDl0ylkdpVyJoo1uXTLYLx5rYjq0uD5OLJxzM3xm0qkqsqCH9gifOFzA==}
 
-  '@sap/subaccount-destination-service-provider@2.16.0':
-    resolution: {integrity: sha512-y0kcSoGH4FRot1bcdd1pH1aZFwb0SepXNK3opOkaaBCallnI7NGMFoasXBnmOqRasAGc8IPVcgwsi7DrOXJmIg==}
+  '@sap/subaccount-destination-service-provider@2.18.8':
+    resolution: {integrity: sha512-KoQP5J0EFSgt3wCLhNDPaQE/GWgx5AbrCm/mSiDBPntbYeqgWO5iypkFdJv+5i0NH8fljBYNcqKLP8WHrLaqbw==}
 
   '@sap/ux-cds-compiler-facade@1.21.0':
     resolution: {integrity: sha512-oo2QlVPV4ZAcWjqflLsqzp8fBL2Fy0TW9Hco1Gjr8yj2AlW+/x2/Qd2QDMw5CRSNFawVsB+GAaCqknqhPk8EXA==}
@@ -10872,8 +10868,8 @@ packages:
     resolution: {integrity: sha512-uscDCQyHFeenh4r2RbYuffTMn6IQdcNC1tXrQ4BF+apAFjmDGP11IHdAwVCKwxgyPrIC17HT2gub3ZugGM8kpQ==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
-  '@ui5/manifest@1.88.0':
-    resolution: {integrity: sha512-H1qFnigxsXLyLFeSej7gYosB14ksKhDYTEo40Ujm9550bWo5vePpvjKNZT/syqQ0hb+xTg+POOeifkNysdxNVg==}
+  '@ui5/manifest@1.89.0':
+    resolution: {integrity: sha512-+Zr48MkYn9VBvp+Yq3Fsc2MtShB2XbHuT/TGf+3XeeAAX4vRQyyXWrO0r+GF+wl09r76C7SfRIJpZTNBMRFFxg==}
 
   '@ui5/project@4.0.15':
     resolution: {integrity: sha512-Fo1g1t15NCLb9xKxVVJ4jD7BTGimk2CoE+4nMTg0NEA9DGv0UUWkfVygnNnmur1NJg4HV4sqK/mKO1yszFpCAQ==}
@@ -14252,14 +14248,6 @@ packages:
       typescript:
         optional: true
 
-  i18next@25.8.12:
-    resolution: {integrity: sha512-hw59RF5QaH9i3l47hTXjeLLtzgVO8OtznlTJZbulmaLbz+itA1hIKWHTEiajY9W2SNPzvL8U5nTBVt7SsOGNRA==}
-    peerDependencies:
-      typescript: ^5
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   i18next@26.3.6:
     resolution: {integrity: sha512-Bu5Z2nAXgfVyM8xvW3jk9EKRIuX37PudsrBViThNFx7CR7aaYTpP01cxNB/E4c4UUzTDiAZRstEhsRfPOL/8xA==}
     peerDependencies:
@@ -17241,9 +17229,6 @@ packages:
     resolution: {integrity: sha512-J8rn6v4DBb2nnFqkqwy6/NnTYMcgLA+sLr0iIO41qpv0n+ngb7ksag2tMRl0inb1bbO/esUwzW1vbJi7K0sI0g==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
-  reflect-metadata@0.1.13:
-    resolution: {integrity: sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==}
-
   reflect-metadata@0.2.2:
     resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
 
@@ -19218,10 +19203,6 @@ packages:
 
   winston-transport@4.6.0:
     resolution: {integrity: sha512-wbBA9PbPAHxKiygo7ub7BYRiKxms0tpfU2ljtWzb3SjRjv5yl6Ozuy/TkXf00HTAt+Uylo3gSkNwzc4ME0wiIg==}
-    engines: {node: '>= 12.0.0'}
-
-  winston-transport@4.7.0:
-    resolution: {integrity: sha512-ajBj65K5I7denzer2IYW6+2bNIVqLGDHqDw3Ow8Ohh+vdW+rv4MZ6eiDvHoKhfJFZ2auyN8byXieDDJ96ViONg==}
     engines: {node: '>= 12.0.0'}
 
   winston-transport@4.9.0:
@@ -25320,13 +25301,6 @@ snapshots:
       jsonc-parser: 3.3.1
       vscode-languageserver-textdocument: 1.0.12
 
-  '@sap-ux/logger@0.8.1':
-    dependencies:
-      chalk: 4.1.2
-      lodash: 4.18.1
-      winston: 3.11.0
-      winston-transport: 4.7.0
-
   '@sap-ux/logger@0.8.5':
     dependencies:
       chalk: 4.1.2
@@ -25363,12 +25337,12 @@ snapshots:
       - debug
       - supports-color
 
-  '@sap-ux/store@1.5.8(typescript@5.9.3)':
+  '@sap-ux/store@1.5.13(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/logger': 0.8.1
-      i18next: 25.8.12(typescript@5.9.3)
+      '@sap-ux/logger': 0.8.5
+      i18next: 25.10.10(typescript@5.9.3)
       pluralize: 8.0.0
-      reflect-metadata: 0.1.13
+      reflect-metadata: 0.2.2
     optionalDependencies:
       '@zowe/secrets-for-zowe-sdk': 8.29.4
     transitivePeerDependencies:
@@ -25531,20 +25505,17 @@ snapshots:
       - debug
       - supports-color
 
-  '@sap/subaccount-destination-service-provider@2.16.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
+  '@sap/subaccount-destination-service-provider@2.18.8(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
-      '@sap-ux/logger': 0.8.1
-      '@sap-ux/store': 1.5.8(typescript@5.9.3)
-      '@sap/bas-sdk': 3.13.7(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ux/logger': 0.8.5
+      '@sap-ux/store': 1.5.13(typescript@5.9.3)
       '@sap/service-provider-apis': 2.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       stream-json: 1.9.1
       vkbeautify: 0.99.3
     transitivePeerDependencies:
-      - bufferutil
       - debug
       - supports-color
       - typescript
-      - utf-8-validate
 
   '@sap/ux-cds-compiler-facade@1.21.0(@sap-ux/odata-annotation-core-types@0.5.8)(@sap-ux/odata-annotation-core@0.2.18)(@sap-ux/project-access@1.36.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))':
     dependencies:
@@ -27631,7 +27602,7 @@ snapshots:
       cli-progress: 3.12.0
       figures: 6.1.0
 
-  '@ui5/manifest@1.88.0': {}
+  '@ui5/manifest@1.89.0': {}
 
   '@ui5/project@4.0.15(@ui5/builder@4.2.0)(supports-color@8.1.1)':
     dependencies:
@@ -31923,12 +31894,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  i18next@25.8.12(typescript@5.9.3):
-    dependencies:
-      '@babel/runtime': 7.29.2
-    optionalDependencies:
-      typescript: 5.9.3
-
   i18next@26.3.6(typescript@5.9.3):
     optionalDependencies:
       typescript: 5.9.3
@@ -35923,8 +35888,6 @@ snapshots:
     dependencies:
       '@eslint-community/regexpp': 4.12.2
 
-  reflect-metadata@0.1.13: {}
-
   reflect-metadata@0.2.2: {}
 
   reflect.getprototypeof@1.0.10:
@@ -38445,12 +38408,6 @@ snapshots:
       execa: 4.1.0
 
   winston-transport@4.6.0:
-    dependencies:
-      logform: 2.7.0
-      readable-stream: 3.6.2
-      triple-beam: 1.4.1
-
-  winston-transport@4.7.0:
     dependencies:
       logform: 2.7.0
       readable-stream: 3.6.2
