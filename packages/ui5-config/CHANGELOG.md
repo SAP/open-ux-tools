@@ -1,5 +1,17 @@
 # @sap-ux/ui5-config
 
+## 1.0.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Upgrade ajv 8.18.0 → 8.20.0 [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
 ## 1.0.7
 
 ### Patch Changes

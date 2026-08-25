@@ -190,7 +190,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('System not found');
+        expect(result.message).toBe(`Could not fetch metadata for service '${mockServicePath}': System not found`);
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
@@ -205,7 +205,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Metadata fetch failed');
+        expect(result.message).toBe(`Could not fetch metadata for service '${mockServicePath}': Metadata fetch failed`);
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 

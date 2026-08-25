@@ -3,6 +3,8 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
+    MenuActionState,
+    ContactCardField,
     FormField,
     SectionFormField,
     BodySectionFeatureData,
@@ -23,13 +25,14 @@ import {
     getAggregations,
     parseDataFieldForAnnotationName
 } from './modelUtils.js';
-import { extractTableColumnsFromNode } from './tableUtils.js';
+import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
+import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
-import { getTableIdentifiers } from './listReportUtils.js';
+import { getListReportViews } from './listReportUtils.js';
 
 /**
  * Extracts feature data for object pages from the application model.
@@ -39,6 +42,8 @@ import { getTableIdentifiers } from './listReportUtils.js';
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
+ * @param listReportEntitySet - entity set of the parent List Report, used to resolve the originating view
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
@@ -46,7 +51,9 @@ export async function getObjectPageFeatures(
     listReportPageKey?: string,
     log?: Logger,
     metadata?: string,
-    manifest?: Manifest
+    manifest?: Manifest,
+    listReportEntitySet?: string,
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
@@ -57,9 +64,9 @@ export async function getObjectPageFeatures(
     // attempt to get individual feature data for each object page
     const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
     const schemaNamespace = convertedMetadata?.namespace ?? '';
-    // The parent List Report's default (first) table tab. Empty for single-table LRs;
-    // used so the OP's "navigate from parent LR" step targets a concrete tab on multi-tab LRs.
-    const parentLRTableIdentifier = getTableIdentifiers(manifest, listReportPageKey)[0];
+    // Non-custom tabs of the parent List Report with their optional entity set. Used to pick the
+    // tab a given Object Page is reached from on multi-view LRs; empty for single-table LRs.
+    const listReportViews = getListReportViews(manifest, listReportPageKey);
 
     for (const objectPage of objectPages) {
         const pageFeatureData: ObjectPageFeatures = {} as ObjectPageFeatures;
@@ -69,7 +76,7 @@ export async function getObjectPageFeatures(
             objectPage.name!,
             objectPages,
             listReportPageKey,
-            parentLRTableIdentifier
+            resolveOriginatingView(listReportViews, objectPage.entitySet, listReportEntitySet)
         );
         // extract header title binding path (for iCheckTitlePath)
         pageFeatureData.headerTitle = getHeaderTitlePath(objectPage);
@@ -81,11 +88,12 @@ export async function getObjectPageFeatures(
             convertedMetadata,
             schemaNamespace,
             metadata,
-            log
+            log,
+            resolveLabel
         );
         // extract header-level actions
         pageFeatureData.headerActions = convertedMetadata
-            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace)
+            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace, resolveLabel)
             : [];
         // determine edit button visibility from UpdateRestrictions on the OP entity set
         if (metadata && objectPage.entitySet) {
@@ -121,14 +129,14 @@ export function getObjectPages(applicationModel: ApplicationModel): PageWithMode
  * @param targetObjectPageKey - key of the target object page
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
- * @param parentLRTableIdentifier - the parent List Report's default table tab key (empty for single-table LRs)
+ * @param originatingView - the parent List Report view/tab this Object Page is reached from (undefined for single-table LRs)
  * @returns navigation data including the ordered ancestor Object Page chain
  */
 function getObjectPageNavigationParents(
     targetObjectPageKey: string,
     objectPages: PageWithModelV4[],
     listReportPageKey?: string,
-    parentLRTableIdentifier?: string
+    originatingView?: OriginatingView
 ): ObjectPageNavigationParents {
     const parentOPs: ObjectPageNavigationParent[] = [];
     const visited = new Set<string>([targetObjectPageKey]); // guard against infinite loop in case of invalid manifest entries
@@ -156,9 +164,37 @@ function getObjectPageNavigationParents(
 
     return {
         parentLRName: listReportPageKey ?? '', // app is possibly malformed if no LR found
-        parentLRTableIdentifier,
+        parentLRViewKey: originatingView?.key,
+        parentLRViewIsDefault: originatingView?.isDefault,
         parentOPs
     };
+}
+
+type OriginatingView = { key: string; isDefault: boolean };
+
+/**
+ * Resolves which List Report view/tab exposes a given Object Page. A view inherits the List Report's
+ * main entity set when it declares none of its own; the first non-custom view is the default tab.
+ *
+ * @param views - the parent List Report's non-custom views, in manifest order
+ * @param objectPageEntitySet - the Object Page's entity set
+ * @param listReportEntitySet - the List Report's main entity set
+ * @returns the originating view, or undefined for single-table List Reports
+ */
+export function resolveOriginatingView(
+    views: { key: string; entitySet?: string }[],
+    objectPageEntitySet?: string,
+    listReportEntitySet?: string
+): OriginatingView | undefined {
+    if (views.length === 0) {
+        return undefined;
+    }
+    // No match falls back to the first (default) view, which is where a main-entity OP belongs — this also covers an undefined listReportEntitySet.
+    const matchIndex = objectPageEntitySet
+        ? views.findIndex((view) => (view.entitySet ?? listReportEntitySet) === objectPageEntitySet)
+        : -1;
+    const index = matchIndex >= 0 ? matchIndex : 0;
+    return { key: views[index].key, isDefault: index === 0 };
 }
 
 /**
@@ -193,6 +229,9 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
         const sectionsAggregation = getAggregations(headerAggregation)['sections'];
         const sections = getAggregations(sectionsAggregation) as Record<string, HeaderSectionItem>;
         Object.values(sections).forEach((section) => {
+            if (isSectionHidden(section)) {
+                return;
+            }
             const facetId = getSectionIdentifier(section);
             if (!facetId) {
                 // if no identifier can be found for the section, it is not possible to reliably identify it in tests, so skip it
@@ -205,10 +244,12 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
                 microChart: isSectionMicroChart(section),
                 form: isFormSection(section),
                 // collection: false // TODO: find out how to identify collection facets
-                title: section.title
+                title: section.title,
+                contactCardFields: []
             };
             if (sectionData.form) {
                 sectionData.fields = getHeaderSectionFormFields(section);
+                sectionData.contactCardFields = pickContactCardFieldsFromHeader(sectionData.fields);
             }
             headerSections.push(sectionData);
         });
@@ -224,6 +265,7 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
  * @param schemaNamespace - optional OData schema namespace used as service identifier in action assertions
  * @param metadata - optional raw metadata XML for resolving standard button visibility (Create/Delete)
  * @param log - optional logger instance
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns body sections data including sub-sections
  */
 function extractObjectPageBodySectionsData(
@@ -231,32 +273,39 @@ function extractObjectPageBodySectionsData(
     convertedMetadata?: ConvertedMetadata,
     schemaNamespace?: string,
     metadata?: string,
-    log?: Logger
+    log?: Logger,
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver
 ): BodySectionFeatureData[] {
     const bodySections: BodySectionFeatureData[] = [];
     if (objectPage.model) {
         const sectionsAggregation = getAggregations(objectPage.model.root)['sections'];
         const sections = getAggregations(sectionsAggregation) as Record<string, BodySectionItem>;
         Object.entries(sections).forEach(([sectionKey, section]) => {
+            if (isSectionHidden(section)) {
+                return;
+            }
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
             const subSections = extractBodySubSectionsData(section, sectionId, convertedMetadata, objectPage.entitySet);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
             const isTable = isTableSection(section);
+            const fields =
+                section.custom || isTable ? [] : extractFormFields(section, convertedMetadata, objectPage.entitySet);
+            const tableColumns = section.custom || !isTable ? {} : extractTableColumnsFromNode(section);
+            const contactCardColumns = section.custom || !isTable ? [] : extractContactCardColumnsFromNode(section);
             const sectionData: BodySectionFeatureData = {
                 id: sectionId,
                 navigationProperty,
                 isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields:
-                    section.custom || isTable
-                        ? []
-                        : extractFormFields(section, convertedMetadata, objectPage.entitySet),
-                tableColumns: section.custom || !isTable ? {} : extractTableColumnsFromNode(section),
+                fields,
+                tableColumns,
+                contactCardFields: pickContactCardFields(fields),
+                contactCardColumns,
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
-                        ? extractSectionActions(section, convertedMetadata, schemaNamespace)
+                        ? extractSectionActions(section, convertedMetadata, schemaNamespace, resolveLabel)
                         : []
             };
             // For table sections, resolve Create/Delete visibility from target entity set
@@ -280,17 +329,157 @@ function extractObjectPageBodySectionsData(
 }
 
 /**
+ * Determines whether an action aggregation entry is a menu (drop-down) grouping several actions.
+ *
+ * @param item - action aggregation entry from the spec model
+ * @returns true if the entry represents an annotation menu or a manifest (custom) menu
+ */
+function isMenuActionItem(item: AggregationItem): boolean {
+    return item.menuType !== undefined || item.schema?.dataType === 'DataFieldForActionGroup';
+}
+
+/**
+ * Builds the individual menu item states contained in a menu action node.
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @returns array of menu item states
+ */
+function buildMenuItemStates(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): MenuActionState[] {
+    const innerContainer = getAggregations(menuItem)['actions'];
+    if (!innerContainer) {
+        return [];
+    }
+    const innerEntries = getAggregations(innerContainer) as Record<string, AggregationItem>;
+    return Object.entries(innerEntries).map(([childKey, child]) => {
+        const annotationState = buildActionStateFromSpecModelKey(
+            childKey,
+            child.description,
+            convertedMetadata,
+            schemaNamespace
+        );
+        if (annotationState) {
+            return {
+                label: annotationState.label,
+                visible: annotationState.visible,
+                service: annotationState.service,
+                action: annotationState.action,
+                unbound: annotationState.unbound,
+                enabled: annotationState.enabled,
+                dynamicPath: annotationState.dynamicPath
+            };
+        }
+        const { label, unresolved } = resolveLabel(child.description);
+        return { label, visible: true, labelUnresolved: unresolved || undefined };
+    });
+}
+
+/**
+ * Builds a menu action button state from a menu aggregation entry (annotation or custom menu).
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns the menu action button state
+ */
+function buildMenuActionState(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): ActionButtonState {
+    const menuType =
+        menuItem.menuType === 'Annotation' || menuItem.schema?.dataType === 'DataFieldForActionGroup'
+            ? 'Annotation'
+            : 'CustomMenu';
+    const { label, unresolved } = resolveLabel(menuItem.description);
+    return {
+        label,
+        action: '',
+        visible: true,
+        enabled: true,
+        menuType,
+        labelUnresolved: unresolved || undefined,
+        menuActions: buildMenuItemStates(menuItem, convertedMetadata, schemaNamespace, resolveLabel)
+    };
+}
+
+/**
+ * Builds an action button state for a custom (manifest-declared) action that has no OData
+ * `DataFieldForAction` counterpart. These are matched at runtime by their rendered label.
+ *
+ * @param item - the custom action aggregation entry
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns the custom action button state, or undefined if it has no usable label
+ */
+function buildCustomActionState(item: AggregationItem, resolveLabel: I18nLabelResolver): ActionButtonState | undefined {
+    const { label, unresolved } = resolveLabel(item.description);
+    if (!label) {
+        return undefined;
+    }
+    return {
+        label,
+        action: '',
+        visible: true,
+        enabled: true,
+        custom: true,
+        labelUnresolved: unresolved || undefined
+    };
+}
+
+/**
+ * Builds an action button state for a single action or a menu from a spec model aggregation entry.
+ *
+ * @param key - aggregation key
+ * @param item - aggregation entry
+ * @param convertedMetadata - converted OData metadata
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns the action or menu button state, or undefined if the entry is neither
+ */
+function buildActionOrMenuState(
+    key: string,
+    item: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): ActionButtonState | undefined {
+    if (isMenuActionItem(item)) {
+        return buildMenuActionState(item, convertedMetadata, schemaNamespace, resolveLabel);
+    }
+    const odataState = buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace);
+    if (odataState) {
+        return odataState;
+    }
+    // Custom (manifest-declared) actions have no OData action; the spec model tags them `actionType: 'Custom'`.
+    if (item.schema?.actionType === 'Custom') {
+        return buildCustomActionState(item, resolveLabel);
+    }
+    return undefined;
+}
+
+/**
  * Extracts header-level action button states from an object page model.
  *
  * @param objectPage - object page from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns array of action button states for the header toolbar
  */
 function extractHeaderActions(
     objectPage: PageWithModelV4,
     convertedMetadata: ConvertedMetadata,
-    schemaNamespace: string
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
 ): ActionButtonState[] {
     if (!objectPage.model) {
         return [];
@@ -299,9 +488,7 @@ function extractHeaderActions(
     const actionsAgg = getAggregations(headerAgg)['actions'];
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
-        .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
-        )
+        .map(([key, item]) => buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel))
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
 
@@ -312,12 +499,14 @@ function extractHeaderActions(
  * @param section - body section entry from the application model
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns array of action button states for the section toolbar
  */
 function extractSectionActions(
     section: BodySectionItem,
     convertedMetadata: ConvertedMetadata,
-    schemaNamespace: string
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
 ): ActionButtonState[] {
     let actionsAgg: AggregationItem | undefined;
 
@@ -335,9 +524,7 @@ function extractSectionActions(
     }
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
-        .map(([key, item]) =>
-            buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace)
-        )
+        .map(([key, item]) => buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel))
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
 
@@ -357,7 +544,7 @@ function extractBodySubSectionsData(
     entitySetName?: string
 ): BodySubSectionFeatureData[] {
     const subSectionItems = getAggregations(getAggregations(section)['subsections']) as Record<string, BodySectionItem>;
-    const childEntries = Object.entries(subSectionItems);
+    const childEntries = Object.entries(subSectionItems).filter(([, child]) => !isSectionHidden(child));
     // all-FieldGroup CollectionFacet is collapsed into one sub-section with inherited id from parent
     // Table or nested CollectionFacet sub-sections are kept as distinct sub-sections with their own ids
     return isFormOnlyCollectionFacet(childEntries)
@@ -408,6 +595,8 @@ function buildMergedFormSubSection(
         custom: false,
         order: sectionOrder ?? -1,
         fields,
+        contactCardFields: pickContactCardFields(fields),
+        contactCardColumns: [],
         tableColumns: {}
     };
 }
@@ -430,15 +619,48 @@ function buildSubSection(
     entitySetName?: string
 ): BodySubSectionFeatureData {
     const isTable = isTableSection(subSection);
+    const fields = subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName);
+    const contactCardColumns = subSection.custom || !isTable ? [] : extractContactCardColumnsFromNode(subSection);
     return {
         id: getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`,
         navigationProperty: getNavigationPropertyFromKey(subSectionKey),
         isTable,
         custom: !!subSection.custom,
         order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-        fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
+        fields,
+        // Contact-card fields are kept in `fields` too so the test also asserts `iCheckField` alongside `iClickLink` / `iCheckContactDialog` (dual diagnostic).
+        contactCardFields: pickContactCardFields(fields),
+        contactCardColumns,
         tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
     };
+}
+
+/**
+ * Filters form fields down to those rendered as Contact-card links (`@Communication.Contact`).
+ *
+ * @param fields - all form fields of a (sub-)section
+ * @returns Contact-card fields, addressed via the qualified `<property>/<targetAnnotation>` form
+ */
+function pickContactCardFields(fields: SectionFormField[]): ContactCardField[] {
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact')
+        .map((field) => ({ property: field.property }));
+}
+
+/**
+ * Filters header field-group fields down to Contact-card entries and projects them to
+ * the `<property>/Contact` form expected by `onHeader().iClickLink({ property })`.
+ *
+ * @param fields - header field-group fields with optional `field` and `targetAnnotation`
+ * @returns Contact-card descriptors usable as `iClickLink` / `iCheckLink` arguments
+ */
+function pickContactCardFieldsFromHeader(fields: FormField[] | undefined): ContactCardField[] {
+    if (!fields) {
+        return [];
+    }
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact' && field.field)
+        .map((field) => ({ property: `${field.field}/${field.targetAnnotation}` }));
 }
 
 /**
@@ -473,7 +695,12 @@ function extractFormFields(
 
         if (annotationParts) {
             const qualifier = annotationParts.targetAnnotation;
-            if (annotationParts.property === 'ConnectedFields' && entityType) {
+            if (qualifier === 'Contact') {
+                fields.push({
+                    property: `${baseProperty}/${qualifier}`,
+                    targetAnnotation: qualifier
+                });
+            } else if (annotationParts.property === 'ConnectedFields' && entityType) {
                 resolveConnectedFieldsInnerProperties(entityType, qualifier).forEach((property) => {
                     fields.push({ property, connectedFields: qualifier });
                 });
@@ -716,6 +943,20 @@ function isSectionMicroChart(section: SectionItem): boolean {
  */
 function isTableSection(section: BodySectionItem): boolean {
     return !!section.isTable || !!getAggregations(section).table;
+}
+
+/**
+ * Checks whether a section is hidden by a UI.Hidden annotation and should be skipped.
+ *
+ * @param section - section entry from ux specification
+ * @returns true if the section is marked hidden
+ */
+function isSectionHidden(section: SectionItem): boolean {
+    // hideByProperty holds a dynamic hide expression; skip unless it is a static `false` (always visible).
+    return (
+        section.properties?.hidden?.value === true ||
+        (section.properties?.hideByProperty !== undefined && section.properties.hideByProperty.value !== false)
+    );
 }
 
 /**

@@ -1,5 +1,73 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.41
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Upgrade odata-query 8.0.5 → 8.1.0 [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/mockserver-config-writer 1.0.16 → 1.0.17
+- @sap-ux/odata-service-writer 1.0.19 → 1.0.20
+- @sap-ux/telemetry 2.0.0 → 2.0.1
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+- @sap-ux/fiori-generator-shared 1.2.8 → 1.2.9
+- @sap-ux/inquirer-common 1.0.33 → 1.0.34
+- @sap-ux/odata-service-inquirer 3.2.10 → 3.2.11
+
+## 0.3.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.25 → 2.0.0
+- @sap-ux/fiori-generator-shared 1.2.7 → 1.2.8
+- @sap-ux/inquirer-common 1.0.32 → 1.0.33
+- @sap-ux/odata-service-inquirer 3.2.9 → 3.2.10
+
+## 0.3.39
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.8 → 3.2.9
+- @sap-ux/odata-service-writer 1.0.18 → 1.0.19
+- @sap-ux/axios-extension 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.31 → 1.0.32
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/fiori-generator-shared 1.2.6 → 1.2.7
+- @sap-ux/mockserver-config-writer 1.0.15 → 1.0.16
+- @sap-ux/telemetry 1.0.24 → 1.0.25
+
+## 0.3.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+- @sap-ux/odata-service-inquirer 3.2.7 → 3.2.8
+
 ## 0.3.37
 
 ### Patch Changes

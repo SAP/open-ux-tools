@@ -21,6 +21,12 @@
     minimumReleaseAge: '3 days',
 
     enabledManagers: ['npm', 'github-actions'],
+    // Cap Node heap to avoid kernel OOM on Mend-hosted runners (pnpm v11 + large monorepo).
+    // Without this Node uses default heap sizing which can spike high enough to trigger OOM killer.
+    // 1536 is the value most commonly cited in https://github.com/renovatebot/renovate/discussions/40942
+    toolSettings: {
+        nodeMaxMemory: 1536
+    },
     branchPrefix: 'chore/renovate/',
     platformCommit: 'enabled',
 

@@ -27,10 +27,14 @@ const mockMetadata = jest.fn<any>();
 const mockTlsIsPatchRequired = jest.fn<any>().mockReturnValue(false);
 const mockTlsApply = jest.fn<any>();
 
+const mockCreateForAbapOnCloud = jest.fn<any>().mockImplementation(() => new (mockAbapServiceProvider as any)());
+
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
+    AbapCloudEnvironment: { EmbeddedSteampunk: 'EmbeddedSteampunk' },
     ODataVersion: { v4: 'v4' },
-    TlsPatch: { isPatchRequired: mockTlsIsPatchRequired, apply: mockTlsApply }
+    TlsPatch: { isPatchRequired: mockTlsIsPatchRequired, apply: mockTlsApply },
+    createForAbapOnCloud: mockCreateForAbapOnCloud
 }));
 
 const mockParseEdmx = jest.fn<any>();
@@ -248,7 +252,48 @@ describe('getServiceMetadata — VSCode', () => {
 
     test('throws when metadata is not parseable EDMX', async () => {
         mockParseEdmx.mockReturnValue(undefined);
-        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(/Failed to parse service metadata/);
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /Failed to parse the service metadata as valid OData/
+        );
+    });
+
+    test('reports a version-neutral parse error and does not claim the service is not OData V4', async () => {
+        mockParseEdmx.mockReturnValue(undefined);
+        const error = await getServiceMetadata(SYSTEM_A, '/sap/svc/').catch((e: unknown) => e);
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toContain('Failed to parse the service metadata as valid OData');
+        expect((error as Error).message).not.toContain('OData V4');
+    });
+
+    test('throws a system-unavailable error when metadata is empty', async () => {
+        mockMetadata.mockResolvedValue('   ');
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /No metadata was returned by the service/
+        );
+        expect(mockParseEdmx).not.toHaveBeenCalled();
+    });
+
+    test('throws an error-page error when an HTML page is returned', async () => {
+        mockMetadata.mockResolvedValue('<!DOCTYPE html><html><body>503 Service Unavailable</body></html>');
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /did not return OData metadata — an HTML or error page was received/
+        );
+        expect(mockParseEdmx).not.toHaveBeenCalled();
+    });
+
+    test('accepts EDMX metadata without an XML declaration', async () => {
+        mockMetadata.mockResolvedValue(SAMPLE_METADATA);
+        const result = await getServiceMetadata(SYSTEM_A, '/sap/svc/');
+        expect(result).toBe(SAMPLE_METADATA);
+    });
+
+    test('accepts a self-closing Edmx root element', async () => {
+        const selfClosing = '<edmx:Edmx Version="4.0"/>';
+        mockMetadata.mockResolvedValue(selfClosing);
+        mockXmlFormat.mockReturnValue(selfClosing);
+        const result = await getServiceMetadata(SYSTEM_A, '/sap/svc/');
+        expect(result).toBe(selfClosing);
+        expect(mockParseEdmx).toHaveBeenCalledWith(selfClosing);
     });
 
     test('includes parse error reason in thrown message', async () => {
@@ -256,5 +301,28 @@ describe('getServiceMetadata — VSCode', () => {
             throw new Error('unexpected token');
         });
         await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(/unexpected token/);
+    });
+
+    test('reentranceTicket system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        const reentranceSystem = { ...SYSTEM_A, authenticationType: 'reentranceTicket' };
+        await getServiceMetadata(reentranceSystem as any, '/sap/svc/');
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: SYSTEM_A.url
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
+    });
+
+    test('serviceKeys system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        const serviceKeySystem = {
+            ...SYSTEM_A,
+            serviceKeys: { uaa: { clientid: 'c', clientsecret: 's', url: 'https://auth.example.com' } }
+        };
+        await getServiceMetadata(serviceKeySystem as any, '/sap/svc/');
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: SYSTEM_A.url
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
     });
 });

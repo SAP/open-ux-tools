@@ -74,6 +74,8 @@ function journey() {
     //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
     //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
     //     Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+    //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField(undefined);
+    //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
@@ -89,8 +91,16 @@ function journey() {
         <%_ } _%>
         <%_ toolBarActions.forEach(function(item) { _%>
         <%_ if (item.visible) { _%>
+        <%_ if (item.custom) { _%>
+        <%_ if (item.labelUnresolved) { _%>
+        // TODO: label is an unresolved i18n key; replace with the rendered action text
+        <%_ } _%>
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { visible: true });
+        <%_ } else { _%>
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+        <%_ } _%>
         <%_ } _%>
         <%_ }); -%>
         <%_ } -%>
@@ -100,6 +110,15 @@ function journey() {
     });
 <%_ } -%>
 
+<%_ if (contactCardColumns.length > 0) { -%>
+    opaTest("Check contact card links", function (_Given: Given, When: When, Then: Then) {
+        <%_ contactCardColumns.forEach(function(column) { _%>
+        // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
+        When.onThe<%- startLR %>Generated.onTable("").iClickLink(0, "<%- column.property %>");
+        Then.onThe<%- startLR %>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+        <%_ }); -%>
+    });
+<%_ } -%>
 <%_ if (startLR) { -%>
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
