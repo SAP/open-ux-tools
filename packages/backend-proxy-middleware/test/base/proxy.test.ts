@@ -298,7 +298,11 @@ describe('proxy', () => {
             mockIsAppStudio.mockReturnValue(true);
 
             proxyReq(
-                { setHeader: mockSetHeader, removeHeader: mockRemoveHeader, headersSent: true } as unknown as ClientRequest,
+                {
+                    setHeader: mockSetHeader,
+                    removeHeader: mockRemoveHeader,
+                    headersSent: true
+                } as unknown as ClientRequest,
                 req
             );
 
