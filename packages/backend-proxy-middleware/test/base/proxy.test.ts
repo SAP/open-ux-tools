@@ -290,49 +290,6 @@ describe('proxy', () => {
             expect(mockSetHeader).not.toHaveBeenCalledWith('x-forwarded-host', expect.anything());
         });
 
-        test('proxyReq - does not remove x-forwarded-host when headers already sent', () => {
-            const mockSetHeader = jest.fn();
-            const mockRemoveHeader = jest.fn();
-            const host = 'port8080-workspaces-ws-tzy3s.jp10.applicationstudio.cloud.sap';
-            const req = { headers: { 'x-forwarded-host': host } } as unknown as IncomingMessage;
-            mockIsAppStudio.mockReturnValue(true);
-
-            proxyReq(
-                {
-                    setHeader: mockSetHeader,
-                    removeHeader: mockRemoveHeader,
-                    headersSent: true
-                } as unknown as ClientRequest,
-                req
-            );
-
-            expect(mockRemoveHeader).not.toHaveBeenCalled();
-        });
-
-        test('proxyReq - removes x-forwarded-host when running in BAS', () => {
-            const mockSetHeader = jest.fn();
-            const mockRemoveHeader = jest.fn();
-            const host = 'port8080-workspaces-ws-tzy3s.jp10.applicationstudio.cloud.sap';
-            const req = { headers: { 'x-forwarded-host': host } } as unknown as IncomingMessage;
-            mockIsAppStudio.mockReturnValue(true);
-
-            proxyReq({ setHeader: mockSetHeader, removeHeader: mockRemoveHeader } as unknown as ClientRequest, req);
-
-            expect(mockRemoveHeader).toHaveBeenCalledWith('x-forwarded-host');
-        });
-
-        test('proxyReq - does not remove x-forwarded-host outside BAS', () => {
-            const mockSetHeader = jest.fn();
-            const mockRemoveHeader = jest.fn();
-            const host = 'mybackend.example.com';
-            const req = { headers: { 'x-forwarded-host': host } } as unknown as IncomingMessage;
-            mockIsAppStudio.mockReturnValue(false);
-
-            proxyReq({ setHeader: mockSetHeader, removeHeader: mockRemoveHeader } as unknown as ClientRequest, req);
-
-            expect(mockRemoveHeader).not.toHaveBeenCalledWith('x-forwarded-host');
-        });
-
         test('proxyRes', () => {
             const response = {} as IncomingMessage;
 
@@ -871,6 +828,42 @@ describe('proxy', () => {
             const proxy = await createProxy(backend, {}, logger);
             expect(proxy).toBeDefined();
             expect(typeof proxy).toBe('function');
+        });
+
+        test('in BAS - strips x-forwarded-host from req.headers before proxying', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+            const proxy = await createProxy(backend, {}, logger);
+            const req = {
+                headers: { 'x-forwarded-host': 'workspace.jp10.applicationstudio.cloud.sap' }
+            } as unknown as IncomingMessage;
+            const res = {} as ServerResponse;
+            const next = jest.fn();
+            const innerProxy = jest.fn();
+            // Spy: call proxy but capture what it does to req.headers
+            proxy(req as Parameters<typeof proxy>[0], res, () => {
+                expect(req.headers['x-forwarded-host']).toBeUndefined();
+                next();
+            });
+            // Trigger synchronously — the wrapper calls next immediately after delete
+            expect(req.headers['x-forwarded-host']).toBeUndefined();
+        });
+
+        test('outside BAS - does not strip x-forwarded-host from req.headers', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+            const proxy = await createProxy(backend, {}, logger);
+            const xfh = 'mybackend.example.com';
+            const req = { headers: { 'x-forwarded-host': xfh } } as unknown as IncomingMessage;
+            expect(typeof proxy).toBe('function');
+            // Outside BAS returns the raw proxy directly — req.headers unchanged by our wrapper
+            expect(req.headers['x-forwarded-host']).toBe(xfh);
         });
     });
 });

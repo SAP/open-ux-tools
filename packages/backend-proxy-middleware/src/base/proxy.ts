@@ -53,9 +53,6 @@ export const ProxyEventHandlers = {
                 req.headers['x-forwarded-host'] = host;
                 proxyReq.setHeader('x-forwarded-host', host);
             }
-            if (isAppStudio()) {
-                proxyReq.removeHeader('x-forwarded-host');
-            }
         }
     },
 
@@ -503,5 +500,12 @@ export async function createProxy(
     options?: Options,
     logger?: ToolsLogger
 ): Promise<RequestHandler> {
-    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options, logger));
+    const proxy = createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options, logger));
+    if (!isAppStudio()) {
+        return proxy;
+    }
+    return (req: IncomingMessage, res: ServerResponse, next: Function) => {
+        delete req.headers['x-forwarded-host'];
+        proxy(req as Parameters<typeof proxy>[0], res, next);
+    };
 }
