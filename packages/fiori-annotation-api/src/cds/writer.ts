@@ -18,6 +18,7 @@ import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
+import { compareByRange } from '@sap-ux/text-document-utils';
 const { createMetadataCollector } = cdsCompilerFacade;
 
 import type { Annotation, Collection, FlattenedExpression, Token } from '@sap-ux/cds-annotation-parser';
@@ -38,7 +39,7 @@ import {
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import { TARGET_TYPE, printPrimitiveValue, indent, print, printTarget } from '@sap-ux/cds-odata-annotation-converter';
 
-import { increaseIndent, compareByRange } from '../utils/index.js';
+import { increaseIndent } from '../utils/index.js';
 import { ApiError } from '../error.js';
 
 import type { Comment } from './comments.js';
@@ -458,7 +459,7 @@ export class CDSWriter implements ChangeHandler {
                     this.vocabularyAliases,
                     i,
                     this.tokens,
-                    annotation as Annotation,
+                    annotation,
                     edmxPath
                 );
             })

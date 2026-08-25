@@ -13,8 +13,9 @@ import type {
 import type { CdsCompilerFacade, MetadataCollector, PropagatedTargetMap } from '@sap/ux-cds-compiler-facade';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
+import { compareByRange } from '@sap-ux/text-document-utils';
 
-import { compareByRange, pathFromUri } from '../utils/index.js';
+import { pathFromUri } from '../utils/index.js';
 import type { TextFile } from '../types/index.js';
 
 import type { Comment } from './comments.js';

@@ -1,8 +1,8 @@
-import type { Annotation, AnnotationNode, Identifier } from '@sap-ux/cds-annotation-parser';
+import type { Annotation, AnnotationNode } from '@sap-ux/cds-annotation-parser';
 import { ANNOTATION_TYPE, nodeRange, EMPTY_VALUE_TYPE, ReservedProperties } from '@sap-ux/cds-annotation-parser';
 
-import type { Element } from '@sap-ux/odata-annotation-core-types';
-import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
+import type { Element, Range } from '@sap-ux/odata-annotation-core-types';
+import { createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
 
 import type { ConvertResult, NodeHandler } from '../handler.js';
 import { getTerm } from '../type-resolver.js';
@@ -36,7 +36,17 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
 
     const isEmbeddedAnnotation = state.elementStack.length > 0;
 
-    const parsedTermName = parseTermName(state.context.groupName, annotation, isEmbeddedAnnotation);
+    const namespace = isEmbeddedAnnotation ? undefined : state.context.groupName;
+    let qualifiedName = (namespace ? namespace + '.' : '') + annotation.term.value;
+    if (qualifiedName.startsWith('@')) {
+        qualifiedName = qualifiedName.slice(1);
+    }
+    const parsedTermName: ParsedTermName = {
+        qualifiedName,
+        termNameRange: annotation.term.range,
+        qualifier: annotation.qualifier?.value,
+        qualifierRange: annotation.qualifier?.range
+    };
 
     element.attributes[Edm.Term] = createTermAttribute(
         parsedTermName.qualifiedName,
@@ -85,12 +95,6 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
                 : Position.create(0, 0);
         }
     }
-    // const flattenedSubtree = handleFlattenedStructure(state, annotation, element);
-
-    // if (flattenedSubtree) {
-    //     return flattenedSubtree;
-    // }
-
     return element;
 }
 
@@ -99,64 +103,6 @@ interface ParsedTermName {
     termNameRange?: Range;
     qualifier?: string;
     qualifierRange?: Range;
-}
-
-/**
- * Parses term name.
- *
- * @param groupName - annotation group name (vocabulary)
- * @param annotation - annotation object
- * @param isEmbeddedAnnotation - flag that is set to true for embedded annotations
- * @returns parsed annotation term
- */
-function parseTermName(
-    groupName: string | undefined,
-    annotation: Annotation,
-    isEmbeddedAnnotation: boolean
-): ParsedTermName {
-    const termSegments = annotation.term.segments;
-    if (groupName && !isEmbeddedAnnotation) {
-        return parseTerm(groupName, termSegments[0]);
-    } else {
-        if (termSegments.length < 2) {
-            // if term segments are less than 2, we can't parse it as a term
-            return parseTerm('', termSegments[0]);
-        }
-        return parseTerm(termSegments[0].value, termSegments[1], termSegments[0].range?.start);
-    }
-}
-
-function parseTerm(namespace: string | undefined, identifier: Identifier, namespaceStart?: Position): ParsedTermName {
-    const [term, qualifier] = identifier.value.split('#');
-    const segmentRange = nodeRange(identifier, false);
-    const termNameRange =
-        namespaceStart && segmentRange ? Range.create(namespaceStart, segmentRange.end) : segmentRange;
-    if (namespace?.startsWith('@')) {
-        namespace = namespace.substring(1);
-        if (termNameRange) {
-            // termNameRange.start.character += 1; // remove @ from the start of the name
-        }
-    }
-    const nameSegments = [];
-    if (namespace) {
-        nameSegments.push(namespace);
-    }
-    nameSegments.push(term);
-    const qualifiedName = nameSegments.join('.');
-    const parsedTermName: ParsedTermName = {
-        qualifiedName,
-        termNameRange
-    };
-    if (qualifier) {
-        parsedTermName.qualifier = qualifier;
-        const qualifierRange = nodeRange(identifier, false);
-        if (qualifierRange) {
-            qualifierRange.start.character += term.length + 1; // +1 for the #
-            parsedTermName.qualifierRange = qualifierRange;
-        }
-    }
-
-    return parsedTermName;
 }
 
 /**

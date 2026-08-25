@@ -66,7 +66,7 @@ class PositionVisitor {
         this.createNodeHandler(CORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(INCORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(UNSUPPORTED_OPERATOR_EXPRESSION_TYPE, [], ['operators', 'operands']);
-        this.createNodeHandler(FLATTENED_EXPRESSION_TYPE, ['value'], ['value']);
+        this.createNodeHandler(FLATTENED_EXPRESSION_TYPE, ['value'], []);
     }
 
     /**
@@ -124,15 +124,12 @@ class PositionVisitor {
             }
             for (const propertyName of collectionProperties) {
                 let i = 0;
-                const property = (node as unknown as { [key: string]: AnnotationNode[] })[propertyName];
-                if (Array.isArray(property)) {
-                    for (const item of property || []) {
-                        const children = this.visit(item, options, i);
-                        if (children.length) {
-                            return [segment, propertyName, ...children];
-                        }
-                        i++;
+                for (const item of (node as unknown as { [key: string]: AnnotationNode[] })[propertyName] || []) {
+                    const children = this.visit(item, options, i);
+                    if (children.length) {
+                        return [segment, propertyName, ...children];
                     }
+                    i++;
                 }
             }
             return [segment];

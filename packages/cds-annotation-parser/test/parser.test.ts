@@ -48,7 +48,7 @@ describe('cds annotation parser', () => {
         // '/invalid/missing/value-with-flattened-syntax',
         // '/valid/qualifier/flat-syntax-qualifier-in-last-segment',
         // '/valid/struct/flattened',
-        // '/valid/term/boolean-value'
+        // '/valid/term/cds-term'
     ]; // to be used for debugging purposes only
     for (const t of allTests) {
         if (skip.includes(t)) {
@@ -63,12 +63,12 @@ describe('cds annotation parser', () => {
         }
 
         // // Sonar is complaining about test.only(). Use this code for debugging purposes only
-        if (only.includes(t)) {
-            // test.only(`${t}`, async () => {
-            //     await testParser(t, t.startsWith('valid'));
-            // });
-            continue;
-        }
+        // if (only.includes(t)) {
+        //     test.only(`${t}`, async () => {
+        //         await testParser(t, t.startsWith('valid'));
+        //     });
+        //     continue;
+        // }
 
         test(`${t}`, async () => {
             await testParser(t, t.startsWith('valid'));

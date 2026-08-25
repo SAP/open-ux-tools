@@ -23,7 +23,7 @@ entity Authors : managed {
   books  : Association to many Books on books.author = $self;
 }
 
-@cds.persistence.exists
+@cds.persistence.exists#test
 entity Orders : cuid, managed {
   OrderNo  : String @(title:'Order Number', assert.format: 'orderFormat'); 
   Items    : Composition of many OrderItems on Items.parent = $self;

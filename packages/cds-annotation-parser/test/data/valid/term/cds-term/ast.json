@@ -1,22 +1,54 @@
 {
-  "type": "annotation",
-  "range": "[(0,0)..(0,8)]",
-  "term": {
-    "type": "path",
+    "type": "annotation",
+    "originalTerm": {
+        "range": {
+            "end": {
+                "character": 8,
+                "line": 0
+            },
+            "start": {
+                "character": 0,
+                "line": 0
+            }
+        },
+        "segments": [
+            {
+                "quoted": false,
+                "range": {
+                    "end": {
+                        "character": 8,
+                        "line": 0
+                    },
+                    "start": {
+                        "character": 0,
+                        "line": 0
+                    }
+                },
+                "type": "identifier",
+                "value": "readonly"
+            }
+        ],
+        "separators": [],
+        "type": "path",
+        "value": "readonly"
+    },
     "range": "[(0,0)..(0,8)]",
-    "value": "CDS.Readonly",
-    "segments": [
-      {
-        "type": "identifier",
+    "term": {
+        "type": "path",
         "range": "[(0,0)..(0,8)]",
-        "value": "CDS",
-        "quoted": false
-      },
-      {
-        "type": "identifier",
-        "value": "Readonly"
-      }
-    ],
-    "separators": []
-  }
+        "value": "CDS.Readonly",
+        "segments": [
+            {
+                "type": "identifier",
+                "range": "[(0,0)..(0,8)]",
+                "value": "CDS",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "Readonly"
+            }
+        ],
+        "separators": []
+    }
 }

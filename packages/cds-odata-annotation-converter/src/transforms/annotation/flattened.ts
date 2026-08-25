@@ -15,7 +15,13 @@ import {
 } from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core';
-import { DiagnosticSeverity, Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core';
+import {
+    DiagnosticSeverity,
+    Edm,
+    Position,
+    createAttributeNode,
+    createElementNode
+} from '@sap-ux/odata-annotation-core';
 
 import type { Subtree } from './handler.js';
 
@@ -241,7 +247,7 @@ function convertToExpandedStructure(
         i++;
     }
     adjustFirstSegmentRange(expandedStructure, expression);
-    adjustLastSegmentRange(expandedStructure, valueRange);
+    adjustLastSegmentRange(expandedStructure, expression, valueRange);
 
     return expandedStructure;
 }
@@ -264,14 +270,26 @@ function adjustFirstSegmentRange(expandedStructure: ExpandedStructure[], express
  * Adjusts the last segment range of the expanded structure.
  *
  * @param expandedStructure expanded structure either annotation or property kind.
+ * @param expression flattened expression object
  * @param valueRange Value range
  */
-function adjustLastSegmentRange(expandedStructure: ExpandedStructure[], valueRange?: Range): void {
+function adjustLastSegmentRange(
+    expandedStructure: ExpandedStructure[],
+    expression: FlattenedExpression,
+    valueRange?: Range
+): void {
     // the leaf element should only include the values range in it's contentRange
     const last = expandedStructure[expandedStructure.length - 1];
     if (last) {
         if (valueRange && last.kind !== 'record-type') {
             last.element.contentRange = copyRange(valueRange);
+            if (expression.colon) {
+                const colonPosition = expression.colon.range?.end;
+                // position right after colon should be counted as part of the elements content
+                last.element.contentRange!.start = colonPosition
+                    ? Position.create(colonPosition.line, colonPosition.character)
+                    : Position.create(0, 0);
+            }
         } else {
             // content range should not be added in case value does not exist
             // e.g  { AxisScaling. }

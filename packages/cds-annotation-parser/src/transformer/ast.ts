@@ -1617,6 +1617,11 @@ function adaptSegments(segments: Identifier[], newName: string | undefined): voi
 function adjustCdsTermNames(assignment: Annotation, cdsVocabulary: CdsVocabulary, groupName?: string): void {
     if (cdsVocabulary.nameMap.has(assignment.term.value)) {
         const internalTermName = cdsVocabulary.nameMap.get(assignment.term.value);
+        assignment.originalTerm = {
+            ...assignment.term,
+            segments: assignment.term.segments.map((s) => ({ ...s })),
+            separators: assignment.term.separators.map((s) => ({ ...s }))
+        };
         assignment.term.value = internalTermName ?? '';
         adaptSegments(assignment.term.segments, internalTermName);
     } else if (
@@ -1633,6 +1638,11 @@ function adjustCdsTermNames(assignment: Annotation, cdsVocabulary: CdsVocabulary
             (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
         );
         const internalTermName = (groupName ? '' : cdsVocabulary.alias + '.') + adaptedSegments.join('');
+        assignment.originalTerm = {
+            ...assignment.term,
+            segments: assignment.term.segments.map((s) => ({ ...s })),
+            separators: assignment.term.separators.map((s) => ({ ...s }))
+        };
         assignment.term.value = internalTermName;
         adaptSegments(assignment.term.segments, internalTermName);
     }

@@ -279,7 +279,7 @@ Object {
         },
         "range": Object {
           "end": Object {
-            "character": 23,
+            "character": 28,
             "line": 25,
           },
           "start": Object {
@@ -290,6 +290,21 @@ Object {
         "terms": Array [
           Object {
             "attributes": Object {
+              "Qualifier": Object {
+                "name": "Qualifier",
+                "type": "attribute",
+                "value": "test",
+                "valueRange": Object {
+                  "end": Object {
+                    "character": 28,
+                    "line": 25,
+                  },
+                  "start": Object {
+                    "character": 24,
+                    "line": 25,
+                  },
+                },
+              },
               "Term": Object {
                 "name": "Term",
                 "type": "attribute",
@@ -310,7 +325,7 @@ Object {
             "name": "Annotation",
             "range": Object {
               "end": Object {
-                "character": 23,
+                "character": 28,
                 "line": 25,
               },
               "start": Object {
@@ -323,7 +338,7 @@ Object {
         ],
         "termsRange": Object {
           "end": Object {
-            "character": 23,
+            "character": 28,
             "line": 25,
           },
           "start": Object {
@@ -4715,7 +4730,7 @@ Object {
                         "line": 44,
                       },
                       "start": Object {
-                        "character": 38,
+                        "character": 37,
                         "line": 44,
                       },
                     },
