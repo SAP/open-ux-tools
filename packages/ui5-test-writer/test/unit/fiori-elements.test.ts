@@ -1668,6 +1668,64 @@ export type Then = Opa5 & BaseArrangements & {
             });
         });
 
+        describe('text annotation sort-order test — JS', () => {
+            // Inject a textAnnotationColumns entry on top of the real LR features so the generated
+            // journey exercises the new "Check text annotation for columns" opaTest and the
+            // conditional coreLibrary import, across all three JS buckets.
+            const withTextAnnotationColumn = () => {
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                    }
+                    return features;
+                });
+            };
+
+            const lrJourneyContents = (): string =>
+                fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js']
+                    .contents as string;
+
+            it.each([
+                ['1.84', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s emits the sort-order test and coreLibrary import (JS)', async (_bucket, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, ui5Version ? { ui5Version } : {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain('"sap/ui/core/library"');
+                expect(content).toContain('function (opaTest, runner, coreLibrary)');
+                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain(
+                    'iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending)'
+                );
+                expect(content).toContain(
+                    'iCheckSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending, true)'
+                );
+            });
+
+            it('omits the sort-order test and coreLibrary import when there is no text-annotated column', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('"sap/ui/core/library"');
+                expect(content).not.toContain('coreLibrary');
+                expect(content).not.toContain('Check text annotation for columns');
+            });
+
+            afterEach(() => {
+                getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
+            });
+        });
+
         describe('snapshot per bucket — TS', () => {
             it('bucket 1.84 generates correct output (TS)', async () => {
                 const projectDir = prepareTestFiles('FullScreenLROPContextPath');

@@ -6,7 +6,8 @@ import type {
     ButtonState,
     FEV4ManifestTarget,
     FilterBarItem,
-    ListReportFeatures
+    ListReportFeatures,
+    TextAnnotationColumn
 } from '../types.js';
 import {
     getFilterFields,
@@ -17,9 +18,13 @@ import {
     getAggregations
 } from './modelUtils.js';
 import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
-import { extractContactCardColumnsFromNode, resolvePrimaryTableNode } from './tableUtils.js';
+import {
+    extractContactCardColumnsFromNode,
+    extractTextAnnotationColumnsFromNode,
+    resolvePrimaryTableNode
+} from './tableUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
-import { parse } from '@sap-ux/edmx-parser';
+import { parse, merge } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import {
     extractActionMethodName,
@@ -140,6 +145,7 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to detect ALP configuration
  * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @param annotationFiles - optional local annotation XML files merged with the metadata
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
@@ -147,7 +153,8 @@ export function getListReportFeatures(
     log?: Logger,
     metadata?: string,
     manifest?: Manifest,
-    resolveLabel: I18nLabelResolver = passthroughLabelResolver
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver,
+    annotationFiles: string[] = []
 ): ListReportFeatures {
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
     const filterFieldEntries = getFilterFieldItems(listReportPage.model, log);
@@ -161,7 +168,15 @@ export function getListReportFeatures(
     if (metadata && listReportPage.entitySet) {
         const entitySetName = listReportPage.entitySet;
         try {
-            convertedMetadata = convert(parse(metadata));
+            // Merge local annotation files (e.g. UI.TextArrangement defined only in annotation.xml)
+            // with the service metadata before converting. Each source must be parsed with a distinct
+            // fileId; otherwise merge treats them as the same file and later `Annotations` blocks
+            // overwrite (rather than complement) the metadata's property-level annotations.
+            const parsedAnnotations = annotationFiles.map((xml, index) => parse(xml, `annotationFile${index}`));
+            const rawMetadata = parsedAnnotations.length
+                ? merge(parse(metadata, 'metadata'), ...parsedAnnotations)
+                : parse(metadata);
+            convertedMetadata = convert(rawMetadata);
             buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log);
             semanticKeyProperties = safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log);
             toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySetName, toolbarActions, log);
@@ -206,6 +221,16 @@ export function getListReportFeatures(
                   )
             : undefined;
 
+    // Columns with a text annotation only get a sort-order test when their bound property also
+    // carries a UI.TextArrangement annotation (checked against the merged metadata).
+    const textAnnotationColumns: TextAnnotationColumn[] = convertedMetadata
+        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root)
+              .filter((candidate) =>
+                  hasTextArrangement(convertedMetadata, listReportPage.entitySet, candidate.columnProperty)
+              )
+              .map((candidate) => ({ textProperty: candidate.textProperty }))
+        : [];
+
     return {
         name: listReportPage.name,
         createButton: buildButtonState(buttonVisibility?.create),
@@ -214,6 +239,7 @@ export function getListReportFeatures(
         tableColumns: getTableColumnData(listReportPage.model, log),
         contactCardColumns: extractContactCardColumnsFromNode(listReportPage.model.root),
         toolBarActions,
+        textAnnotationColumns,
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
         semanticKey: {
@@ -504,6 +530,29 @@ export function isHiddenFilter(
     // metadata), so it is always truthy — `Boolean(x)` / `!== undefined` would treat an explicit
     // `HiddenFilter: false` as hidden. Coerce via `valueOf()` to read the underlying boolean.
     return property?.annotations?.UI?.HiddenFilter?.valueOf() === true;
+}
+
+/**
+ * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.TextArrangement`
+ * annotation nested on its `@com.sap.vocabularies.Common.v1.Text` annotation.
+ *
+ * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
+ * @param entitySetName - name of the entity set that owns the property (undefined → false)
+ * @param propertyName - name of the property to inspect
+ * @returns true if the property has a text arrangement annotation
+ */
+export function hasTextArrangement(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string | undefined,
+    propertyName: string
+): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
+    // TextArrangement is a nested annotation on the Common.Text term (see vocabularies-types Common.Text).
+    return property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement !== undefined;
 }
 
 /**
