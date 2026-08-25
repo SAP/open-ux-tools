@@ -84,9 +84,9 @@ export function buildLegacyPaths(rootPath: string, legacyPath: string): LegacyPa
  * Uses relative paths from validated root directory to prevent command injection
  *
  * @param rootPath - Project root path
- * @param paths - Legacy paths object
+ * @param _paths - Legacy paths object (unused, paths rebuilt internally for security)
  */
-export async function tryGitMove(rootPath: string, paths: LegacyPaths): Promise<void> {
+export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise<void> {
     const runner = new CommandRunner();
 
     try {
