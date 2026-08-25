@@ -78,7 +78,7 @@ export async function findSystemByUrl(
 async function promptToSelectSystem(systems: BackendSystem[]): Promise<BackendSystem | undefined> {
     const logger = getLogger();
 
-    logger.info(text('systemLookup.multipleSystemsFound'));
+    logger.info(text('systemLookup.multipleSystemsFound', { count: systems.length }));
     systems.forEach((s, index) => {
         const clientInfo = s.client
             ? ` ${text('systemLookup.clientInfo', { client: s.client })}`
