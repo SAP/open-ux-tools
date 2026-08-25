@@ -46,15 +46,8 @@
         "skippingCheck": "Skipping connection check (--skip-check flag provided)",
         "verifying": "Verifying connection to the back-end system...",
         "connectionSuccessful": "✓ Connection achieved",
-        "connectionFailed": "Connection check failed. Error: {{error}}",
+        "connectionFailed": "Connection check failed. {{error}}",
         "unknownError": "Unknown error",
-        "saveAnywayPrompt": "Connection check failed. Save system anyway?",
-        "errors": {
-            "authFailed": "Authentication failed. Error: HTTP 401 Unauthorized",
-            "connectionRefused": "Connection refused. System may be unreachable",
-            "connectionTimeout": "Connection timeout after {{timeout}}ms",
-            "hostNotFound": "Host not found. DNS resolution failed",
-            "connectionReset": "Connection reset by server."
-        }
+        "saveAnywayPrompt": "Connection check failed. Save system anyway?"
     }
 }

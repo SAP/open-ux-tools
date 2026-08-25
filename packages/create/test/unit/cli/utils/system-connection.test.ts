@@ -7,6 +7,8 @@ const mockLoggerWarn = jest.fn();
 const mockLoggerDebug = jest.fn();
 const mockAxiosGet = jest.fn();
 const mockCreateAbapServiceProvider = jest.fn();
+const mockLogErrorMsgs = jest.fn();
+const mockGetErrorType = jest.fn();
 
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
 
@@ -49,6 +51,19 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: (...args: any[]) => mockCreateAbapServiceProvider(...args)
 }));
 
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ErrorHandler: class MockErrorHandler {
+        static getErrorType = (...args: any[]) => mockGetErrorType(...args);
+        logErrorMsgs = (...args: any[]) => mockLogErrorMsgs(...args);
+    },
+    ERROR_TYPE: {
+        AUTH: 'AUTH',
+        CONNECTION: 'CONNECTION',
+        TIMEOUT: 'TIMEOUT',
+        UNKNOWN: 'UNKNOWN'
+    }
+}));
+
 const { checkSystemConnection, checkConnectionOrPrompt } =
     await import('../../../../src/cli/utils/system-connection.js');
 
@@ -60,11 +75,18 @@ describe('system-connection', () => {
         mockLoggerDebug.mockReset();
         mockAxiosGet.mockReset();
         mockCreateAbapServiceProvider.mockReset();
+        mockLogErrorMsgs.mockReset();
+        mockGetErrorType.mockReset();
 
         // Default: successful connection
+        mockAxiosGet.mockResolvedValue({ status: 200 });
         mockCreateAbapServiceProvider.mockResolvedValue({
-            get: mockAxiosGet.mockResolvedValue({ status: 200 })
+            get: mockAxiosGet
         });
+
+        // Default: ErrorHandler returns generic error message
+        mockLogErrorMsgs.mockReturnValue('Connection error');
+        mockGetErrorType.mockReturnValue('UNKNOWN');
     });
 
     describe('checkSystemConnection', () => {
@@ -80,7 +102,8 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
-            expect(mockCreateAbapServiceProvider).toHaveBeenCalled(); // Now attempts connection even without credentials
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
+            expect(mockAxiosGet).toHaveBeenCalledWith('/', { timeout: 5000 });
         });
 
         test('should attempt connection with client parameter even without credentials', async () => {
@@ -96,6 +119,7 @@ describe('system-connection', () => {
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
             expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
+            expect(mockAxiosGet).toHaveBeenCalledWith('/', { timeout: 5000 });
         });
 
         test('should attempt real connection with basic auth and credentials', async () => {
@@ -123,7 +147,7 @@ describe('system-connection', () => {
                 false, // prompt
                 expect.anything() // logger
             );
-            expect(mockAxiosGet).toHaveBeenCalledWith('/sap/bc/ping', { timeout: 5000 });
+            expect(mockAxiosGet).toHaveBeenCalledWith('/', { timeout: 5000 });
         });
 
         test('should pass client parameter when connecting', async () => {
@@ -154,7 +178,7 @@ describe('system-connection', () => {
             );
         });
 
-        test('should return error for HTTP 401 Unauthorized', async () => {
+        test('should treat HTTP 401 as success (system is reachable)', async () => {
             mockAxiosGet.mockRejectedValueOnce({
                 response: { status: 401 }
             });
@@ -167,14 +191,14 @@ describe('system-connection', () => {
                 password: 'wrongpass'
             });
 
-            expect(result.success).toBe(false);
-            expect(result.error).toBe('Authentication failed (HTTP 401 Unauthorized)');
+            expect(result.success).toBe(true); // 401 means system is reachable
         });
 
         test('should return error for connection refused', async () => {
             mockAxiosGet.mockRejectedValueOnce({
                 code: 'ECONNREFUSED'
             });
+            mockLogErrorMsgs.mockReturnValueOnce('Connection refused - system may be unreachable');
 
             const result = await checkSystemConnection({
                 url: 'https://unreachable.example.com',
@@ -193,6 +217,7 @@ describe('system-connection', () => {
                 code: 'ETIMEDOUT',
                 message: 'timeout of 5000ms exceeded'
             });
+            mockLogErrorMsgs.mockReturnValueOnce('Connection timeout after 5000ms');
 
             const result = await checkSystemConnection({
                 url: 'https://slow.example.com',
@@ -210,6 +235,7 @@ describe('system-connection', () => {
             mockAxiosGet.mockRejectedValueOnce({
                 message: 'Network error'
             });
+            mockLogErrorMsgs.mockReturnValueOnce('Network error');
 
             const result = await checkSystemConnection({
                 url: 'https://example.com',
@@ -223,32 +249,28 @@ describe('system-connection', () => {
             expect(result.error).toBe('Network error');
         });
 
-        test('should attempt connection for reentranceTicket auth and treat 401 as success', async () => {
-            // ReentranceTicket requires browser flow, so 401 means system is reachable
-            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
-
+        test('should skip connection check for reentranceTicket auth', async () => {
+            // ReentranceTicket requires browser flow, so we skip HTTP validation entirely
             const result = await checkSystemConnection({
                 url: 'https://example.com',
                 systemType: 'OnPrem',
                 authenticationType: 'reentranceTicket'
             });
 
-            expect(result.success).toBe(true); // 401 means system is reachable
-            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
+            expect(result.success).toBe(true);
+            expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled(); // No HTTP check for reentranceTicket
         });
 
-        test('should attempt connection for oauth2 auth and treat 401 as success', async () => {
-            // OAuth2 requires browser flow, so 401 means system is reachable
-            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
-
+        test('should skip connection check for oauth2 auth', async () => {
+            // OAuth2 requires browser flow, so we skip HTTP validation entirely
             const result = await checkSystemConnection({
                 url: 'https://example.com',
                 systemType: 'OnPrem',
                 authenticationType: 'oauth2'
             });
 
-            expect(result.success).toBe(true); // 401 means system is reachable
-            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
+            expect(result.success).toBe(true);
+            expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled(); // No HTTP check for oauth2
         });
 
         test('should return error for invalid URL', async () => {

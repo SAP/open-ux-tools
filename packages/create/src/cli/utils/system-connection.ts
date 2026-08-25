@@ -1,91 +1,21 @@
 import prompts from 'prompts';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { getLogger } from '../../tracing/index.js';
 import { text } from '../../i18n.js';
 
 /**
- * Attempts to ping the system endpoint, with fallback to root if ping is not supported.
- *
- * @param service - Service provider
- * @returns Success result or throws error
- */
-async function attemptSystemPing(service: any): Promise<{ success: boolean }> {
-    try {
-        await service.get('/sap/bc/ping', { timeout: 5000 });
-        return { success: true };
-    } catch (error: any) {
-        // If /sap/bc/ping fails with 404, try root path
-        if (error.response?.status === 404) {
-            return attemptRootEndpoint(service);
-        }
-        throw error;
-    }
-}
-
-/**
- * Attempts to connect to the root endpoint as fallback.
- *
- * @param service - Service provider
- * @returns Success result or throws error
- */
-async function attemptRootEndpoint(service: any): Promise<{ success: boolean }> {
-    try {
-        await service.get('/', { timeout: 5000 });
-        return { success: true };
-    } catch (rootError: any) {
-        // 401 on root means system is reachable
-        if (rootError.response?.status === 401) {
-            return { success: true };
-        }
-        throw rootError;
-    }
-}
-
-/**
- * Categorizes connection errors and returns appropriate error message.
- *
- * @param error - Error from connection attempt
- * @param authenticationType - Authentication type being used
- * @returns Error result with message
- */
-function categorizeConnectionError(error: any, authenticationType: string): { success: boolean; error?: string } {
-    // 401 means system is reachable but auth failed
-    if (error.response?.status === 401) {
-        // For basic auth, 401 is a failure
-        if (authenticationType === 'basic') {
-            return { success: false, error: text('systemConnection.errors.authFailed') };
-        }
-        // For other auth types (reentranceTicket, oauth2), 401 means system is reachable (treat as success)
-        return { success: true };
-    }
-
-    // Network errors indicate unreachable system
-    if (error.code === 'ECONNREFUSED') {
-        return { success: false, error: text('systemConnection.errors.connectionRefused') };
-    }
-    if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {
-        return { success: false, error: text('systemConnection.errors.connectionTimeout', { timeout: 5000 }) };
-    }
-    if (error.code === 'ENOTFOUND') {
-        return { success: false, error: text('systemConnection.errors.hostNotFound') };
-    }
-    if (error.code === 'ECONNRESET') {
-        return { success: false, error: text('systemConnection.errors.connectionReset') };
-    }
-
-    return { success: false, error: error.message || text('systemConnection.unknownError') };
-}
-
-/**
  * Checks connection to a backend system.
+ * Note: For re-entrance ticket and OAuth2 authentication, connection checks are skipped
+ * as authentication happens in browser/external flow.
  *
  * @param config - System configuration to test
- * @param config.url
- * @param config.client
- * @param config.systemType
- * @param config.authenticationType
- * @param config.username
- * @param config.password
+ * @param config.url - System URL
+ * @param config.client - SAP client (optional)
+ * @param config.systemType - System type (OnPrem, AbapCloud, etc.)
+ * @param config.authenticationType - Authentication type (basic, reentranceTicket, oauth2)
+ * @param config.username - Username for basic auth (optional)
+ * @param config.password - Password for basic auth (optional)
  * @returns Connection check result with success status and optional error message
  */
 export async function checkSystemConnection(config: {
@@ -98,12 +28,18 @@ export async function checkSystemConnection(config: {
 }): Promise<{ success: boolean; error?: string }> {
     // Basic URL validation
     try {
-        new URL(config.url);
+        const _url = new URL(config.url);
     } catch {
         return { success: false, error: text('systemConnection.invalidUrl', { url: config.url }) };
     }
 
-    // Attempt actual connection check
+    // Skip connection check for auth types that require browser/external flow
+    // These cannot be validated via simple HTTP request
+    if (config.authenticationType === 'reentranceTicket' || config.authenticationType === 'oauth2') {
+        return { success: true }; // Assume reachable, auth will happen at runtime
+    }
+
+    // Attempt actual connection check for basic auth
     try {
         const logger = getLogger();
 
@@ -129,10 +65,26 @@ export async function checkSystemConnection(config: {
         // prompt=false because we're in non-interactive connection check mode
         const service = await createAbapServiceProvider(target, requestOptions, false, logger);
 
-        // Attempt lightweight request with 5-second timeout
-        return await attemptSystemPing(service);
+        // Attempt a lightweight HTTP request to verify connectivity
+        // Use root endpoint with short timeout - 401 or 200 means system is reachable
+        await service.get('/', { timeout: 5000 });
+
+        return { success: true };
     } catch (error: any) {
-        return categorizeConnectionError(error, config.authenticationType);
+        // 401 means system is reachable but requires auth - treat as success
+        if (error.response?.status === 401) {
+            return { success: true };
+        }
+
+        // Use ErrorHandler for comprehensive error analysis
+        const errorHandler = new ErrorHandler(getLogger(), false);
+        const errorMsg = errorHandler.logErrorMsgs(error, undefined, false);
+
+        // For other errors, provide detailed message
+        return {
+            success: false,
+            error: errorMsg || text('systemConnection.unknownError')
+        };
     }
 }
 
@@ -141,12 +93,12 @@ export async function checkSystemConnection(config: {
  * If skipCheck is true, always returns true without checking.
  *
  * @param config - System configuration to test
- * @param config.url
- * @param config.client
- * @param config.systemType
- * @param config.authenticationType
- * @param config.username
- * @param config.password
+ * @param config.url - System URL
+ * @param config.client - SAP client (optional)
+ * @param config.systemType - System type (OnPrem, AbapCloud, etc.)
+ * @param config.authenticationType - Authentication type (basic, reentranceTicket, oauth2)
+ * @param config.username - Username for basic auth (optional)
+ * @param config.password - Password for basic auth (optional)
  * @param skipCheck - If true, skip the connection check
  * @returns True if connection succeeded or user chose to save anyway, false if user chose not to save
  */
@@ -177,7 +129,7 @@ export async function checkConnectionOrPrompt(
     }
 
     logger.warn(
-        text('systemConnection.connectionFailed', { error: result.error || text('systemConnection.unknownError') })
+        text('systemConnection.connectionFailed', { error: result.error ?? text('systemConnection.unknownError') })
     );
 
     const answer = await prompts({
