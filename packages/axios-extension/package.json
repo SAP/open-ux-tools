@@ -30,7 +30,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "@xmldom/xmldom": "~0.9.11",
+        "@xmldom/xmldom": "0.9.11",
         "axios": "1.18.1",
         "detect-content-type": "1.2.0",
         "fast-xml-parser": "5.10.1",
