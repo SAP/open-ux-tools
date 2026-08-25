@@ -86,13 +86,15 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
                 'A catalog lookup will be performed to resolve the service path automatically. ' +
                 'DO NOT try to construct servicePath yourself - let the tool do the lookup.'
         ), */
-    appPath: zod.string().describe(`
-            Absolute path to an existing folder where metadata.xml will be written.
-            The folder MUST exist before this tool is invoked — this tool does not create directories.
-            If the caller is about to scaffold a new Fiori project, create the target folder first (e.g. mkdir -p <appPath>)
-            and only then call this tool. Typically this is the same folder that will later be passed as
-            the project target to generate_fiori_app_odata.
-        `)
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to an existing folder where metadata.xml will be written. ' +
+                'The folder MUST exist before this tool is invoked — this tool does not create directories. ' +
+                'If the caller is about to scaffold a new Fiori project, create the target folder first (e.g. mkdir -p <appPath>) ' +
+                'and only then call this tool. Typically this is the same folder that will later be passed as ' +
+                'the project target to generate_fiori_app_odata.'
+        )
 });
 
 export const DocSearchInputSchema = zod.object({
