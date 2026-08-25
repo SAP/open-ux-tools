@@ -12,6 +12,18 @@ metadata:
 ## Purpose
 Configure **hierarchical tree table** to display parent-child relationships in a recursive structure (organizational hierarchies, category trees, nested data).
 
+## Environment Requirements
+
+**CAP Projects:**
+- ✅ **VS Code or SAP Business Application Studio (BAS)** - Both environments supported
+- ✅ **Fiori MCP Server** - Required for Fiori app generation and modification (VS Code only)
+- ✅ **CDS MCP Server** - Required for CDS model queries
+
+**ABAP RAP Projects:**
+- ✅ **VS Code only** - ABAP Development Tools extension is VS Code-specific
+- ✅ **Fiori MCP Server** - Required for Fiori app generation and modification
+- ✅ **ABAP Development Tools for VS Code extension** - Required for backend development (includes ADT MCP server for RAP operations)
+
 ## MANDATORY: Gather Required Inputs First
 
 **STOP and ASK the user for ALL of these inputs if ANY are missing from the prompt:**
@@ -20,7 +32,6 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 1. **Package name** - Where to create or find backend hierarchy objects ($TMP for local, or specific package like Z_MAINT)
 2. **Transport Required**: Depends on package type (No for local packages like $TMP, Yes for transportable packages)
 3. **Entity name** - The entity to make hierarchical (e.g., "Equipment", "Category", "FunctionalLocation")
-4. ABAP system with RAP and OData V4 support
 
 ### For CAP Projects:
 1. **Entity name** - The entity to make hierarchical (e.g., "Travel", "Category", "ProductCategory")
@@ -32,11 +43,20 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 ## CAP Implementation (6 Steps)
 
 ### Prerequisites
+- ✅ VS Code or SAP Business Application Studio environment
+- ✅ Fiori MCP Server (VS Code) for app modifications
 - ✅ Existing CAP project with CDS entity
 - ✅ SAP Fiori Elements List Report application
 - ✅ CAP service must be exposed as OData V4 (recursive hierarchy is V4-only)
-- ✅ Entity uses `cuid` or has UUID primary key
+- ✅ Entity must have a **single key field** (UUID, String, or Integer)
 - ✅ CDS MCP server tools available
+- ✅ @sap/cds version 9.6.0 or higher (required for @hierarchy annotation support)
+
+**Key Types Supported:**
+- ✅ **UUID keys** (using `cuid`) - Traditional approach
+- ✅ **String keys** (e.g., `key categoryID : String(10)`) - Business keys like "CAT-001"
+- ✅ **Integer keys** (e.g., `key id : Integer`) - Numeric identifiers
+- ⚠️ **Composite keys are NOT supported** for hierarchies
 
 ### 1. Check Current Entity Structure
 Use the CDS MCP to search the model for the target entity structure before making changes
@@ -44,6 +64,7 @@ Use the CDS MCP to search the model for the target entity structure before makin
 ### 2. Add Hierarchy Association
 Add self-referencing managed association to `db/schema.cds`:
 
+**Option A: With UUID key (using cuid)**
 ```cds
 entity <EntityName> : cuid, managed {
   // ... existing fields ...
@@ -52,8 +73,19 @@ entity <EntityName> : cuid, managed {
 }
 ```
 
+**Option B: With Business Key (String/Integer)**
+```cds
+entity <EntityName> : managed {
+  key categoryID : String(10);  // Your business key
+  // ... existing fields ...
+  parent : Association to <EntityName>;  // ← Add this managed association
+  // ... rest of entity ...
+}
+```
+
 ✅ **Must be managed** (no `on` condition)  
-✅ **Name it `parent`** (creates `parent_ID` foreign key)
+✅ **Name it `parent`** (creates `parent_<keyname>` foreign key)
+✅ **Single key only** (composite keys not supported for hierarchies)
 
 ### 3. Add @hierarchy Annotation
 Add to service entity in `srv/<service>.cds`:
@@ -93,6 +125,7 @@ Update List Report target in `app/<app>/webapp/manifest.json`:
 ### 5. Create Sample Hierarchical Data
 Create CSV at `db/data/<namespace>-<EntityName>.csv`:
 
+**For UUID keys (using cuid):**
 ```csv
 ID;Name;Description;parent_ID
 11111111-1111-1111-1111-111111111111;Electronics;;
@@ -103,9 +136,21 @@ ID;Name;Description;parent_ID
 66666666-6666-6666-6666-666666666666;Furniture;;55555555-5555-5555-5555-555555555555
 ```
 
-✅ **Use `parent_ID`** (with underscore!)  
-✅ **Root items have empty parent_ID**  
-✅ **Valid UUID format** (use real UUIDs for production data)
+**For Business keys (String keys):**
+```csv
+categoryID;name;description;parent_categoryID
+CAT-001;Electronics;;
+CAT-002;Computers;;CAT-001
+CAT-003;Laptops;;CAT-002
+CAT-004;Desktops;;CAT-002
+CAT-008;Home & Garden;;
+CAT-009;Furniture;;CAT-008
+```
+
+✅ **Use `parent_<keyname>`** (with underscore!) - e.g., `parent_ID` or `parent_categoryID`  
+✅ **Root items have empty parent field**  
+✅ **For UUID: Valid UUID format** (use real UUIDs for production data)
+✅ **For String: Use your business key values** (e.g., CAT-001, PROD-123)
 
 ### 6. Test
 ```bash
@@ -114,6 +159,16 @@ npm run watch-<app-name>
 ---
 
 ## ABAP RAP Implementation (4 Steps)
+
+### Prerequisites
+- ✅ VS Code environment with SAP Fiori MCP Server and ABAP Development Tools for VS Code extension
+- ✅ ABAP system with RAP and OData V4 support
+- ✅ RAP backend such as SAP BTP ABAP Environment or SAP S/4HANA Public Cloud Edition, must run on version 2602 or higher
+
+### ⚠️ Important Restrictions
+
+- **Tree table cannot be displayed with a draft-enabled service in the flexible column layout**
+- **Search annotations must be removed:** Remove `@Search.searchable` and `@Search.defaultSearchElement` annotations from projection views with `@OData.hierarchy.recursiveHierarchy` annotation. The OData hierarchy specification conflicts with search capabilities - hierarchical nodes use special query parameters that are incompatible with standard search operations.
 
 ### 0. Decision: Read-Only vs. Editable Hierarchy
 
@@ -226,8 +281,9 @@ using { cuid, managed } from '@sap/cds/common';
 
 **"CDS compilation failed"**
 - `@hierarchy` on service entity (not db entity)
-- Entity must have UUID key
+- Entity must have a single key field (UUID, String, or Integer)
 - Parent association must be self-referencing
+- Composite keys are not supported
 
 **"hierarchyQualifier not found"**
 - Verify `@hierarchy` in `srv/<service>.cds`
@@ -248,7 +304,8 @@ using { cuid, managed } from '@sap/cds/common';
 **"Data not loading"**
 - CSV in `db/data/` with correct name
 - Semicolon (`;`) delimiter
-- Valid UUIDs
+- Correct foreign key column name: `parent_<keyname>` (e.g., `parent_ID` or `parent_categoryID`)
+- Valid key values matching the key field type (UUIDs for cuid, strings for String keys)
 - Run `cds watch` to load data
 
 ---
@@ -278,7 +335,9 @@ using { cuid, managed } from '@sap/cds/common';
 ## Best Practices
 
 - Always use managed associations in CAP (no `on` condition)
-- Name the parent field `parent` for auto `parent_ID` foreign key
+- Name the parent field `parent` for automatic `parent_<keyname>` foreign key generation
+- **Key flexibility**: Use UUID keys for maximum compatibility, or business keys (String/Integer) for better readability
+- When using business keys, ensure they are unique and meaningful (e.g., CAT-001, DEPT-HR)
 - Create 2-3 hierarchy levels at minimum for demo
 - Test with different data volumes
 - Clear browser cache after backend changes
@@ -287,6 +346,7 @@ using { cuid, managed } from '@sap/cds/common';
 - Use the CDS MCP to search the model before editing
 - Run `cds watch` to reload data
 - Check the metadata endpoint for hierarchy annotations
+- The foreign key column follows the pattern: `parent_<keyFieldName>` (e.g., `parent_ID`, `parent_categoryID`, `parent_code`)
 ---
 
 ## References

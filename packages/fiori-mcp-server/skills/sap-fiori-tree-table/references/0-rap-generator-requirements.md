@@ -35,6 +35,21 @@ When using the RAP generator for **ANY** hierarchy type (read-only or editable),
   "Object  of type DEVC does not exist."
   ```
 
+**Example Usage:**
+```typescript
+// Tool parameter
+packageName: "Z_MAINTENANCE"
+
+// Content JSON
+{
+  "metadata": {
+    "package": "Z_MAINTENANCE"  // ← Must match packageName parameter
+  },
+  "sessionId": "unique_session_id",
+  // ... rest of content
+}
+```
+
 ## What the Generator Creates
 
 The RAP generator creates these foundation objects:
