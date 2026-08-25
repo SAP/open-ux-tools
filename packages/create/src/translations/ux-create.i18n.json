@@ -1,7 +1,7 @@
 {
     "systemLookup": {
         "multipleSystemsFound": "{{count}} system found with this URL:",
-        "multipleSystemsFound_plural": "{{count}} systems found with this URL:",
+        "multipleSystemsFound_other": "{{count}} systems found with this URL:",
         "selectSystemPrompt": "Which system do you want to use?",
         "clientInfo": "(Client: {{client}})",
         "noClient": "(No Client)"
