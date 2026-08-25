@@ -52,6 +52,9 @@ export const ProxyEventHandlers = {
             req.headers['x-forwarded-host'] = host;
             proxyReq.setHeader('x-forwarded-host', host);
         }
+        if (isAppStudio()) {
+            proxyReq.removeHeader('x-forwarded-host');
+        }
     },
 
     /**
