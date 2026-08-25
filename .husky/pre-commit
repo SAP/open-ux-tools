@@ -1,3 +1,12 @@
 #!/bin/sh
 pnpm run:pretty-quick
 pnpm audit
+
+# Validate skills.sh.json when skill directories are touched
+if git diff --cached --name-only | grep -qE '^(packages/fiori-mcp-server/skills/|\.agents/skills/)'; then
+  pnpm validate:skills-config || {
+    echo ""
+    echo "Run 'pnpm generate:skills-config', stage skills.sh.json, then commit again."
+    exit 1
+  }
+fi

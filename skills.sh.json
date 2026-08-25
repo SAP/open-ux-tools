@@ -1,0 +1,25 @@
+{
+  "$schema": "https://www.skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "SAP Fiori Application Development",
+      "description": "Skills for creating, modifying, and testing SAP Fiori elements applications",
+      "skills": [
+        "sap-fiori-add-visual-filter",
+        "sap-fiori-analytical-chart",
+        "sap-fiori-app-development",
+        "sap-fiori-create-cli",
+        "sap-fiori-eslint-plugin",
+        "sap-fiori-opa5-test-development"
+      ]
+    },
+    {
+      "title": "open-ux-tools Development",
+      "description": "Skills for working on the open-ux-tools monorepo itself",
+      "skills": [
+        "odata-vocabularies-sync"
+      ]
+    }
+  ]
+}
