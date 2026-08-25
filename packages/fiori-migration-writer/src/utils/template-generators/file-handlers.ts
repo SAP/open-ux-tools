@@ -120,7 +120,7 @@ function removeLegacyDependencies(currentFileContent: any, templateContentJSON: 
     }
 
     // Delete legacy modules
-    const legacyModules = ['@ui5/logger', '@ui5/fs'];
+    const legacyModules = ['@ui5/logger', '@ui5/fs', '@sap-ux/specification', '@sap/ux-specification'];
     for (const module of legacyModules) {
         if (currentFileContent?.devDependencies?.[module]) {
             delete currentFileContent.devDependencies[module];
