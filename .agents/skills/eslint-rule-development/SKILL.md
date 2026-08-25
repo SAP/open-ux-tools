@@ -106,7 +106,7 @@ Use the test template from the reference file; run only the new test file (see e
 errors: [
     {
         message:
-            '"TreeTable" is not supported in Flexible Column Layout with a draft-enabled service.'
+            '"TreeTable" is not supported in the flexible column layout with a draft-enabled service.'
     }
 ]
 
@@ -123,7 +123,7 @@ Read `packages/eslint-plugin-fiori-tools/docs/rules/TEMPLATE.md` for structure. 
 
 - **H1 title** — one sentence describing the rule, with the rule ID in parentheses
 - **Intro paragraph** — 2–3 sentences: what it detects, **why it was introduced** (motivation belongs here, not in a separate H2), and what to do instead
-- **## Rule Details** — how the rule works; warning message; "The following patterns are considered warnings" + "The following patterns are not considered warnings" code examples
+- **## Rule Details** — how the rule works; warning message; "The following patterns are considered warnings:" + "The following patterns are not considered warnings" code examples
 - **### How to Fix** — steps to remediate (omit if obvious from the examples)
 - **## False Positives** — optional; include only if the rule can produce false positives
 - **## Bug Report** — link to GitHub issues
