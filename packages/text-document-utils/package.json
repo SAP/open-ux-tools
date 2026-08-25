@@ -42,6 +42,6 @@
         "node": ">=22.x"
     },
     "dependencies": {
-        "vscode-languageserver-types": "3.17.5"
+        "vscode-languageserver-types": "3.18.0"
     }
 }
