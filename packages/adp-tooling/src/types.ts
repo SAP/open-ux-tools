@@ -370,6 +370,7 @@ export interface CodeExtChange extends CommonChangeProperties {
     changeType: 'codeExt';
     content: {
         codeRef: string;
+        viewId?: string;
     };
     selector: {
         controllerName: string;

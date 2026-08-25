@@ -1,5 +1,25 @@
 # @sap-ux/odata-vocabularies
 
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-annotation-core-types 1.0.1 → 1.0.2
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Features
+
+- Correct README — add missing SAP vocabularies (Auditing, CDS, Support) and fix wrong package import path [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
 ## 1.0.5
 
 ### Patch Changes

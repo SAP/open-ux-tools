@@ -47,6 +47,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/flex', () => ({
 // Dynamic imports after mocks
 const { executeFunctionality } = await import('../../../src/tools/index.js');
 const addPageDependency = await import('../../../src/tools/functionalities/page/index.js');
+const { RESOLVE_APPLICATION_TIMEOUT_MS } = await import('../../../src/utils/schema-utils.js');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 const fsEditor = create(createStorage());
@@ -303,6 +304,22 @@ describe('executeFunctionality', () => {
                     parameters: {}
                 })
             ).rejects.toThrow('appPath parameter is required');
+        });
+
+        test('throws when resolveApplication times out', async () => {
+            jest.useFakeTimers();
+            try {
+                mockCreateApplicationAccess.mockImplementation(() => new Promise<never>(() => undefined));
+                const promise = executeFunctionality({
+                    appPath: '/some/path',
+                    functionalityId: 'add-page',
+                    parameters: {}
+                });
+                jest.advanceTimersByTime(RESOLVE_APPLICATION_TIMEOUT_MS);
+                await expect(promise).rejects.toThrow('resolveApplication timed out');
+            } finally {
+                jest.useRealTimers();
+            }
         });
     });
 

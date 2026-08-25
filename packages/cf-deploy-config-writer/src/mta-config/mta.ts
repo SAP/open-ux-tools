@@ -199,7 +199,7 @@ export class MtaConfig {
 
     private async addUaa(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-uaa`,
+            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-auth`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'xsuaa',
@@ -208,12 +208,15 @@ export class MtaConfig {
                 'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
                 config: {
                     xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
-                    'tenant-mode': 'dedicated'
+                    'tenant-mode': 'dedicated',
+                    'oauth2-configuration': {
+                        'credential-types': ['binding-secret', 'x509']
+                    }
                 }
             }
         };
         await this.mta?.addResource(resource);
-        this.resources.set('xsuaa', resource);
+        this.resources.set(ManagedXSUAA, resource);
         this.dirty = true;
     }
 
@@ -385,32 +388,6 @@ export class MtaConfig {
             this.modules.set(moduleType, serverModule);
             this.dirty = true;
         }
-    }
-
-    /**
-     * Add a managed XSUAA service to the MTA.
-     *
-     * @private
-     */
-    private async addManagedUAAWithSecurity(): Promise<void> {
-        this.log?.debug(t('debug.addXsuaaService'));
-        const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-uaa`,
-            type: 'org.cloudfoundry.managed-service',
-            parameters: {
-                path: './xs-security.json',
-                service: 'xsuaa',
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
-                'service-plan': 'application',
-                config: {
-                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
-                    'tenant-mode': 'dedicated'
-                }
-            }
-        };
-        await this.mta?.addResource(resource);
-        this.resources.set(ManagedXSUAA, resource);
-        this.dirty = true;
     }
 
     /**
@@ -799,7 +776,7 @@ export class MtaConfig {
      */
     public async addStandaloneRouter(fromServerGenerator: boolean = false): Promise<void> {
         this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Standard }));
-        if (!this.resources.has('xsuaa')) {
+        if (!this.resources.has(ManagedXSUAA)) {
             await this.addUaa();
         }
         if (!this.resources.has('html5-apps-repo:app-runtime')) {
@@ -810,7 +787,7 @@ export class MtaConfig {
         }
 
         const appRuntimeName = this.resources.get('html5-apps-repo:app-runtime')?.name;
-        const xsuaaName = this.resources.get('xsuaa')?.name;
+        const xsuaaName = this.resources.get(ManagedXSUAA)?.name;
         const destinationName = this.resources.get('destination')?.name;
         if (destinationName && xsuaaName && appRuntimeName) {
             const router: mta.Module = {
@@ -1051,7 +1028,7 @@ export class MtaConfig {
      */
     public async addAppFrontAppRouter(): Promise<void> {
         if (!this.resources.has(ManagedXSUAA)) {
-            await this.addManagedUAAWithSecurity();
+            await this.addUaa();
         }
         await this.updateServiceName('xsuaa', ManagedXSUAA);
         if (!this.resources.has(ManagedAppFront)) {
@@ -1104,7 +1081,7 @@ export class MtaConfig {
             await this.addDestinationResource(true);
         }
         if (!this.resources.has(ManagedXSUAA)) {
-            await this.addManagedUAAWithSecurity();
+            await this.addUaa();
         }
         if (!this.resources.has(HTML5RepoHost)) {
             await this.addHtml5Host();
@@ -1162,7 +1139,7 @@ export class MtaConfig {
                                     },
                                     {
                                         Authentication: 'OAuth2UserTokenExchange',
-                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_uaa`,
+                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_auth`,
                                         ServiceInstanceName: managedXSUAAServiceName,
                                         ServiceKeyName: `${managedXSUAAName}-key`,
                                         'sap.cloud.service': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}`

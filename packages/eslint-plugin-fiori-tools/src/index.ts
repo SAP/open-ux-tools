@@ -477,7 +477,7 @@ const typescriptConfig: Linter.Config[] = [
     }
 ];
 
-// Fiori language rules (for manifest.json, XML views, CDS files)
+// Fiori language rules (for manifest.json, XML views, CDS, .change files)
 const fioriLanguageConfig: Linter.Config[] = [
     {
         files: ['**/manifest.json', '**/*.xml', '**/*.cds', '**/*.change'],
@@ -499,7 +499,8 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn',
             '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn',
             '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
-            '@sap-ux/fiori-tools/sap-no-live-mode': 'warn'
+            '@sap-ux/fiori-tools/sap-no-live-mode': 'warn',
+            '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn'
         }
     }
 ];

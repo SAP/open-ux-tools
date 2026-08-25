@@ -18753,7 +18753,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -18805,6 +18804,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
 
@@ -18861,7 +18862,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 
@@ -22629,8 +22629,11 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
             Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
@@ -22641,10 +22644,13 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
+        });
+
+        opaTest(\\"Check the BookingSupplement section of the Object Page\\", function (_Given, When, Then) {
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
             Then.onTheBookingObjectPageGenerated.onTable({ property: \\"_BookSupplement\\" }).iCheckColumns(undefined, {\\"BookingSupplementID\\":{\\"header\\":\\"Book. Supp. Number\\"},\\"SupplementID\\":{\\"header\\":\\"Product ID\\"},\\"Price\\":{\\"header\\":\\"Product Price\\"}});
-       });
+        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -22702,6 +22708,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
         opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
@@ -22710,9 +22718,9 @@ sap.ui.define([
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressDelete();
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Draft Template\\");
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Draft Template\\", { enabled: true });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Draft Template\\", { enabled: false });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Active Template\\");
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Active Template\\", { enabled: true });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Active Template\\", { enabled: false });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Deduct Discount\\");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Deduct Discount\\", { enabled: false });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction(\\"Check Travel\\");
@@ -22797,8 +22805,11 @@ sap.ui.define([
         });
 
 
-        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest(\\"Check the Travel section of the Object Page\\", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Travel\\");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
@@ -22811,10 +22822,13 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
+        });
+
+        opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckColumns(undefined, {\\"BookingID\\":{\\"header\\":\\"Booking Number\\"},\\"BookingDate\\":{\\"header\\":\\"Booking Date\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"AirlineID\\":{\\"header\\":\\"Airline ID\\"},\\"ConnectionID\\":{\\"header\\":\\"Flight Number\\"},\\"FlightDate\\":{\\"header\\":\\"Flight Date\\"},\\"FlightPrice\\":{\\"header\\":\\"Flight Price\\"},\\"DestinationRisk\\":{\\"header\\":\\"Destination Risk\\"}});
-       });
+        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -24959,6 +24973,23 @@ import type { actions as TravelListGeneratedCustomActions, assertions as TravelL
 import type { actions as TravelObjectPageGeneratedCustomActions, assertions as TravelObjectPageGeneratedCustomAssertions } from \\"../pages/TravelObjectPage.gen\\";
 import type { actions as BookingObjectPageGeneratedCustomActions, assertions as BookingObjectPageGeneratedCustomAssertions } from \\"../pages/BookingObjectPage.gen\\";
 
+/**
+ * Enables OPA5 fluent \`.and\` chaining on page objects and their sub-objects.
+ *
+ * @example
+ * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
+ * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
+ */
+type WithAnd<T> = {
+    [K in keyof T | 'and']: K extends 'and'
+        ? WithAnd<T>
+        : K extends keyof T
+        ? T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+            : T[K]
+        : never;
+};
+
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
@@ -24966,16 +24997,16 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheTravelListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof TravelListGeneratedCustomActions;
-    onTheTravelObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof TravelObjectPageGeneratedCustomActions;
-    onTheBookingObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof BookingObjectPageGeneratedCustomActions;
+    onTheTravelListGenerated: WithAnd<Opa5 & ListReportActions & TemplatePageActions & typeof TravelListGeneratedCustomActions>;
+    onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof TravelObjectPageGeneratedCustomActions>;
+    onTheBookingObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof BookingObjectPageGeneratedCustomActions>;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheTravelListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof TravelListGeneratedCustomAssertions;
-    onTheTravelObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TravelObjectPageGeneratedCustomAssertions;
-    onTheBookingObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BookingObjectPageGeneratedCustomAssertions;
+    onTheTravelListGenerated: WithAnd<Opa5 & ListReportAssertions & TemplatePageAssertions & typeof TravelListGeneratedCustomAssertions>;
+    onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TravelObjectPageGeneratedCustomAssertions>;
+    onTheBookingObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BookingObjectPageGeneratedCustomAssertions>;
     onTheShell: Shell;
 };
 ",
@@ -26231,7 +26262,6 @@ sap.ui.define([
 
 
 
-
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
@@ -26283,6 +26313,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
 
@@ -26339,7 +26371,6 @@ sap.ui.define([
 
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
-
 
 
 

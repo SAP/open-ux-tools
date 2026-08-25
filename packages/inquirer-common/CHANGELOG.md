@@ -1,5 +1,67 @@
 # @sap-ux/inquirer-common
 
+## 1.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/odata-service-writer 1.0.19 → 1.0.20
+- @sap-ux/telemetry 2.0.0 → 2.0.1
+- @sap-ux/fiori-generator-shared 1.2.8 → 1.2.9
+
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.25 → 2.0.0
+- @sap-ux/fiori-generator-shared 1.2.7 → 1.2.8
+
+## 1.0.32
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.18 → 1.0.19
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/fiori-generator-shared 1.2.6 → 1.2.7
+- @sap-ux/telemetry 1.0.24 → 1.0.25
+
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+
+## 1.0.30
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Clear password field on system change to prevent stale credentials resubmission. [[27840a8](https://github.com/SAP/open-ux-tools/commit/27840a818dc9c2a06c03a0bc0a402bf4af1da960)]
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.16 → 1.0.17
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/telemetry 1.0.23 → 1.0.24
+- @sap-ux/fiori-generator-shared 1.2.5 → 1.2.6
+
 ## 1.0.28
 
 ### Patch Changes

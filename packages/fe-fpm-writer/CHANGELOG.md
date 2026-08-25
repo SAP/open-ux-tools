@@ -1,5 +1,65 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/fiori-annotation-api 1.0.24 → 1.0.25
+- @sap-ux/i18n 1.0.2 → 1.0.3
+
+## 1.3.14
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.23 → 1.0.24
+- @sap-ux/project-access 2.1.10 → 2.1.11
+
+## 1.3.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- default aggregation path page building block for items aggregations [[63e8a93](https://github.com/SAP/open-ux-tools/commit/63e8a938100394679b623fb382dbaee383b64efc)]
+
+## 1.3.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.22 → 1.0.23
+
+## 1.3.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/fiori-annotation-api 1.0.21 → 1.0.22
+
+## 1.3.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.20 → 1.0.21
+
 ## 1.3.9
 
 ### Patch Changes

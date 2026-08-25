@@ -93,23 +93,29 @@ export async function tryGitMove(rootPath: string, paths: LegacyPaths): Promise<
         // Validate root directory - this is the only absolute path passed to git (-C option)
         const safeRootPath = validateRootDirectory(rootPath);
 
+        // Rebuild paths from validated root + constants to avoid propagating external path input
+        const legacyWebappPath = join(safeRootPath, 'src', 'main', DirName.Webapp);
+        const legacyTestQunitPath = join(safeRootPath, 'src', TemplateFileName.Test, 'qunit');
+        const legacyTestuiveri5Path = join(safeRootPath, 'src', TemplateFileName.Test, 'uiveri5');
+        const newTestPath = join(safeRootPath, DirName.Webapp, TemplateFileName.Test);
+
         // Calculate and validate relative paths from root
-        const relLegacyWebapp = validateGitRelativePath(relative(safeRootPath, paths.ffLegacyWebappPath));
+        const relLegacyWebapp = validateGitRelativePath(relative(safeRootPath, legacyWebappPath));
         const relNewWebapp = validateGitRelativePath(DirName.Webapp);
-        const relLegacyTestQunit = validateGitRelativePath(relative(safeRootPath, paths.ffLegacyTestQunitPath));
-        const relLegacyTestuiveri5 = validateGitRelativePath(relative(safeRootPath, paths.ffLegacyTestuiveri5Path));
-        const relNewTest = validateGitRelativePath(relative(safeRootPath, paths.ffNewTestPath));
+        const relLegacyTestQunit = validateGitRelativePath(relative(safeRootPath, legacyTestQunitPath));
+        const relLegacyTestuiveri5 = validateGitRelativePath(relative(safeRootPath, legacyTestuiveri5Path));
+        const relNewTest = validateGitRelativePath(relative(safeRootPath, newTestPath));
 
         // Move main webapp folder (using validated relative paths prevents command injection)
         await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyWebapp, relNewWebapp]);
 
         // Move qunit folder if exists
-        if (existsSync(paths.ffLegacyTestQunitPath)) {
+        if (existsSync(legacyTestQunitPath)) {
             await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyTestQunit, relNewTest]);
         }
 
         // Move uiveri5 folder if exists
-        if (existsSync(paths.ffLegacyTestuiveri5Path)) {
+        if (existsSync(legacyTestuiveri5Path)) {
             await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyTestuiveri5, relNewTest]);
         }
     } catch {

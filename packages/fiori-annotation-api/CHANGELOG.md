@@ -1,5 +1,65 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/cds-odata-annotation-converter 1.0.9 → 1.0.10
+- @sap-ux/cds-annotation-parser 1.0.6 → 1.0.7
+- @sap-ux/odata-annotation-core 1.0.1 → 1.0.2
+- @sap-ux/odata-annotation-core-types 1.0.1 → 1.0.2
+- @sap-ux/xml-odata-annotation-converter 1.0.2 → 1.0.3
+- @sap-ux/odata-entity-model 1.0.1 → 1.0.1
+- @sap-ux/odata-vocabularies 1.1.0 → 1.1.1
+
+## 1.0.24
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/cds-odata-annotation-converter 1.0.9 → 1.0.9
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-vocabularies 1.0.5 → 1.1.0
+- @sap-ux/cds-annotation-parser 1.0.5 → 1.0.6
+- @sap-ux/cds-odata-annotation-converter 1.0.8 → 1.0.9
+- @sap-ux/xml-odata-annotation-converter 1.0.2 → 1.0.2
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/cds-odata-annotation-converter 1.0.8 → 1.0.8
+
+## 1.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-03
+
+#### Bug Fixes
+
+- Fixed a bug in the Fiori Annotations API where removing flattened annotation structures would cause files to update incorrectly. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
 ## 1.0.20
 
 ### Patch Changes
