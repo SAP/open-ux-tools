@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { create as createMemStore } from 'mem-fs';
 import { homedir } from 'node:os';
 
-export const appInfoFilePath = join(homedir(), '.sap', 'app_studio_preview_manager', 'appInfo.json');
+export const appInfoFilePath = join(homedir(), '.fioritools', 'appInfo.json');
 
 export interface AppInfoSettings {
     latestGeneratedFiles: string[];
@@ -137,7 +137,7 @@ export function loadApplicationInfoFromSettings(
  * @example
  * deleteAppInfoSettings(); // Deletes the appInfo.json file
  */
-function deleteAppInfoSettings(fs?: Editor): void {
+export function deleteAppInfoSettings(fs?: Editor): void {
     fs = getFsInstance(fs);
     fs.delete(appInfoFilePath);
     fs.commit((err: Error | null) => {
