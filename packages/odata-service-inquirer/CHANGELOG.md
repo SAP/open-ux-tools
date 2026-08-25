@@ -1,5 +1,18 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.2.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/telemetry 2.0.0 → 2.0.1
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+- @sap-ux/fiori-generator-shared 1.2.8 → 1.2.9
+- @sap-ux/inquirer-common 1.0.33 → 1.0.34
+- @sap-ux/project-input-validator 1.0.16 → 1.0.17
+
 ## 3.2.10
 
 ### Patch Changes
