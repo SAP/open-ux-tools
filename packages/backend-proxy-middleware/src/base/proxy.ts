@@ -46,14 +46,16 @@ export const ProxyEventHandlers = {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
         }
-        const xfh = req?.headers['x-forwarded-host'];
-        if (req && typeof xfh === 'string' && xfh.includes(',')) {
-            const host = xfh.split(',')[0].trim();
-            req.headers['x-forwarded-host'] = host;
-            proxyReq.setHeader('x-forwarded-host', host);
-        }
-        if (isAppStudio()) {
-            proxyReq.removeHeader('x-forwarded-host');
+        if (!proxyReq.headersSent) {
+            const xfh = req?.headers['x-forwarded-host'];
+            if (req && typeof xfh === 'string' && xfh.includes(',')) {
+                const host = xfh.split(',')[0].trim();
+                req.headers['x-forwarded-host'] = host;
+                proxyReq.setHeader('x-forwarded-host', host);
+            }
+            if (isAppStudio()) {
+                proxyReq.removeHeader('x-forwarded-host');
+            }
         }
     },
 
