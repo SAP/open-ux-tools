@@ -10,7 +10,6 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 import type { MetadataElementMap, CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
-import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
