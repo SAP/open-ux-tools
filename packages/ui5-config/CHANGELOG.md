@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 1.0.9
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Upgrade js-yaml 4.2.0 → 4.3.1 to address CVE (GHSA-pm4m-ph32-ghv5) [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
 ## 1.0.8
 
 ### Patch Changes
