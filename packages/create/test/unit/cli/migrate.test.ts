@@ -106,29 +106,29 @@ describe('migrate command', () => {
             messages: [{ type: 'ERROR', description: 'Failed' }]
         });
 
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
         await expect(
             command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--client', '100']))
-        ).rejects.toThrow('process.exit called');
+        ).rejects.toThrow('Migration failed');
 
         expect(loggerMock.error).toHaveBeenCalled();
-        expect(mockExit).toHaveBeenCalledWith(1);
     });
 
     test('should handle migration error exception', async () => {
         mockMigrate.mockRejectedValue(new Error('Unexpected error'));
 
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
         await expect(
             command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--client', '100']))
-        ).rejects.toThrow('process.exit called');
-
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Migration failed with error'));
-        expect(mockExit).toHaveBeenCalledWith(1);
+        ).rejects.toThrow('Unexpected error');
     });
 
     test('should log migration messages by type', async () => {

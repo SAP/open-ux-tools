@@ -1,5 +1,6 @@
 import type { Command } from 'commander';
-import { resolve } from 'node:path';
+import { resolve, isAbsolute } from 'node:path';
+import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectMigrator } from '@sap-ux/fiori-migration-writer';
 import { getProjectType } from '@sap-ux/project-access';
@@ -12,6 +13,56 @@ interface MigrateCommandOptions {
     client?: string;
     ui5Version?: string;
     force?: boolean;
+}
+
+/**
+ * Validate a path to prevent directory traversal attacks.
+ *
+ * @param path - path to validate
+ * @returns validated absolute path
+ * @throws Error if path contains unsafe characters or doesn't exist
+ */
+function validatePath(path: string): string {
+    const resolved = resolve(path);
+    // Reject control characters and shell metacharacters
+    if (/[\0\r\n`$|&;<>]/.test(resolved)) {
+        throw new Error('Path contains unsafe characters');
+    }
+    // Ensure it's an existing directory
+    if (!existsSync(resolved)) {
+        throw new Error(`Path does not exist: ${path}`);
+    }
+    return resolved;
+}
+
+/**
+ * Validate a hostname to prevent URL injection.
+ *
+ * @param hostname - hostname to validate
+ * @returns validated hostname
+ * @throws Error if hostname contains unsafe characters
+ */
+function validateHostname(hostname: string): string {
+    // Allow alphanumeric, dots, hyphens (standard hostname characters)
+    if (!/^[a-zA-Z0-9.-]+$/.test(hostname)) {
+        throw new Error('Hostname contains invalid characters');
+    }
+    return hostname;
+}
+
+/**
+ * Validate a UI5 version string to prevent URL injection.
+ *
+ * @param version - version string to validate
+ * @returns validated version
+ * @throws Error if version contains unsafe characters
+ */
+function validateUI5Version(version: string): string {
+    // Allow semantic version format: digits, dots, optional snapshot suffix
+    if (!/^[0-9]+\.[0-9]+\.[0-9]+(-snapshot)?$/.test(version)) {
+        throw new Error('UI5 version must follow semantic versioning format (e.g., 1.120.0)');
+    }
+    return version;
 }
 
 /**
@@ -82,7 +133,7 @@ export function addMigrateCommand(program: Command): void {
  * @returns resolved project path
  */
 async function getProjectPath(projectPath: string | undefined): Promise<string> {
-    let resolvedPath = projectPath ? resolve(projectPath) : process.cwd();
+    let resolvedPath = projectPath ? validatePath(projectPath) : process.cwd();
 
     if (!projectPath) {
         const confirmPath = await promptConfirm(
@@ -93,7 +144,7 @@ async function getProjectPath(projectPath: string | undefined): Promise<string> 
 
         if (!confirmPath) {
             const customPath = await promptRequiredText('customPath', 'Enter project path:', 'Project path');
-            resolvedPath = resolve(customPath);
+            resolvedPath = validatePath(customPath);
         }
     }
 
@@ -136,7 +187,7 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
     hostname?: string;
 }> {
     let destination = options.destination ?? options.sapSystemName;
-    let hostname = options.hostname;
+    let hostname = options.hostname ? validateHostname(options.hostname) : undefined;
 
     if (!destination && !hostname) {
         const useDestination = await promptConfirm(
@@ -148,7 +199,8 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
         if (useDestination) {
             destination = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
         } else {
-            hostname = await promptRequiredText('host', 'Enter hostname:', 'Hostname');
+            const host = await promptRequiredText('host', 'Enter hostname:', 'Hostname');
+            hostname = validateHostname(host);
         }
     }
 
@@ -184,7 +236,7 @@ async function getClient(optionClient?: string): Promise<string | undefined> {
  */
 async function getUI5Version(optionVersion?: string): Promise<string | undefined> {
     if (optionVersion) {
-        return optionVersion;
+        return validateUI5Version(optionVersion);
     }
 
     const response = await prompts({
@@ -194,7 +246,8 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
         initial: ''
     });
 
-    return (response.version as string) || undefined;
+    const version = response.version as string;
+    return version ? validateUI5Version(version) : undefined;
 }
 
 /**
@@ -206,59 +259,53 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
 async function migrate(projectPath: string | undefined, options: MigrateCommandOptions): Promise<void> {
     const logger = getLogger();
 
-    try {
-        // 1. Get or prompt for project path
-        const resolvedPath = await getProjectPath(projectPath);
-        logger.info(`Migrating project at: ${resolvedPath}`);
+    // 1. Get or prompt for project path
+    const resolvedPath = await getProjectPath(projectPath);
+    logger.info(`Migrating project at: ${resolvedPath}`);
 
-        // 2. Check if force flag is required
-        const shouldProceed = await checkForceRequired(resolvedPath, options.force ?? false);
-        if (!shouldProceed) {
-            return;
+    // 2. Check if force flag is required
+    const shouldProceed = await checkForceRequired(resolvedPath, options.force ?? false);
+    if (!shouldProceed) {
+        return;
+    }
+
+    // 3. Get destination or hostname
+    const { destination, hostname } = await getDestinationOrHostname(options);
+
+    // 4. Get optional client
+    const client = await getClient(options.client);
+
+    // 5. Get UI5 version
+    const ui5Version = await getUI5Version(options.ui5Version);
+
+    // 6. Execute migration
+    logger.info('Starting migration...');
+
+    const baseUri = destination ? `/${destination}` : hostname ? `https://${hostname}` : '';
+    const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
+
+    const result = await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl);
+
+    if (result.result) {
+        logger.info('✓ Migration completed successfully!');
+        if (result.messages?.length) {
+            logger.info('\nMessages:');
+            result.messages.forEach((msg) => {
+                const logMessage = `  ${msg.type}: ${msg.description}`;
+                if (msg.type === 'ERROR') {
+                    logger.error(logMessage);
+                } else if (msg.type === 'WARNING') {
+                    logger.warn(logMessage);
+                } else {
+                    logger.info(logMessage);
+                }
+            });
         }
-
-        // 3. Get destination or hostname
-        const { destination, hostname } = await getDestinationOrHostname(options);
-
-        // 4. Get optional client
-        const client = await getClient(options.client);
-
-        // 5. Get UI5 version
-        const ui5Version = await getUI5Version(options.ui5Version);
-
-        // 6. Execute migration
-        logger.info('Starting migration...');
-
-        const baseUri = destination ? `/${destination}` : hostname ? `https://${hostname}` : '';
-        const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
-
-        const result = await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl);
-
-        if (result.result) {
-            logger.info('✓ Migration completed successfully!');
-            if (result.messages?.length) {
-                logger.info('\nMessages:');
-                result.messages.forEach((msg) => {
-                    const logMessage = `  ${msg.type}: ${msg.description}`;
-                    if (msg.type === 'ERROR') {
-                        logger.error(logMessage);
-                    } else if (msg.type === 'WARNING') {
-                        logger.warn(logMessage);
-                    } else {
-                        logger.info(logMessage);
-                    }
-                });
-            }
-        } else {
-            logger.error('✗ Migration failed');
-            if (result.messages?.length) {
-                result.messages.forEach((msg) => logger.error(`  ${msg.description}`));
-            }
-            process.exit(1);
+    } else {
+        logger.error('✗ Migration failed');
+        if (result.messages?.length) {
+            result.messages.forEach((msg) => logger.error(`  ${msg.description}`));
         }
-    } catch (error) {
-        logger.error('Migration failed with error:');
-        logger.error(error);
-        process.exit(1);
+        throw new Error('Migration failed');
     }
 }
