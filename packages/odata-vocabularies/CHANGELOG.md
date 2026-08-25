@@ -1,5 +1,13 @@
 # @sap-ux/odata-vocabularies
 
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-annotation-core-types 1.0.1 → 1.0.2
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,7 +1,7 @@
 import type { ApplicationModel, TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Logger } from '@sap-ux/logger';
-import { getObjectPageFeatures } from '../../../src/utils/objectPageUtils.js';
+import { getObjectPageFeatures, resolveOriginatingView } from '../../../src/utils/objectPageUtils.js';
 import type { ObjectPageFeatures, HeaderSectionFeatureData } from '../../../src/types.js';
 
 describe('Test getObjectPageFeatures()', () => {
@@ -2718,10 +2718,121 @@ describe('Test getObjectPageFeatures()', () => {
             label: 'Mass Process',
             action: 'MassProcess',
             service: 'TestService',
-            unbound: true,
+            unbound: false,
+            visible: true,
+            enabled: false,
+            dynamicPath: undefined
+        });
+    });
+
+    test('drops a custom header action with no resolvable label and unknown action entries', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation,
+                                actions: {
+                                    aggregations: {
+                                        EmptyCustom: {
+                                            description: '',
+                                            schema: { actionType: 'Custom' },
+                                            path: [],
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation,
+                                        UnknownEntry: {
+                                            description: 'Ignored',
+                                            schema: { actionType: 'Standard' },
+                                            path: [],
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        expect(result[0].headerActions).toEqual([]);
+    });
+
+    test('should extract a custom (manifest) action from a table section', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                '_Items::@com.sap.vocabularies.UI.v1.LineItem': {
+                                    isTable: true,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'Items' }] },
+                                    aggregations: {
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
+                                        table: {
+                                            aggregations: {
+                                                columns: { aggregations: {} } as unknown as TreeAggregation,
+                                                toolBar: {
+                                                    aggregations: {
+                                                        actions: {
+                                                            aggregations: {
+                                                                MyCustomAction: {
+                                                                    description: 'My Custom Action',
+                                                                    schema: { actionType: 'Custom' },
+                                                                    path: [],
+                                                                    aggregations: {}
+                                                                } as unknown as TreeAggregation
+                                                            }
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        const section = result[0].bodySections?.[0];
+        expect(section?.actions).toHaveLength(1);
+        // Custom actions have no OData identifier, so they are matched by label (visible-only check).
+        expect(section?.actions?.[0]).toMatchObject({
+            label: 'My Custom Action',
+            action: '',
             visible: true,
             enabled: true,
-            dynamicPath: undefined
+            custom: true
         });
     });
 
@@ -2819,6 +2930,171 @@ describe('Test getObjectPageFeatures()', () => {
         };
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
         expect(result[0].headerActions).toEqual([]);
+    });
+
+    test('should extract a custom menu (with mixed custom and annotation items) from header actions', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation,
+                                actions: {
+                                    aggregations: {
+                                        CreateMenu: {
+                                            description: 'Create',
+                                            menuType: 'CustomMenu',
+                                            schema: { actionType: 'CustomMenu' },
+                                            path: [],
+                                            aggregations: {
+                                                actions: {
+                                                    aggregations: {
+                                                        CreateItemSet: {
+                                                            description: 'Create Item Set',
+                                                            path: [],
+                                                            aggregations: {}
+                                                        } as unknown as TreeAggregation,
+                                                        'DataFieldForAction::TestService.Approve::TestService.OrderType':
+                                                            {
+                                                                description: 'Approve',
+                                                                path: [],
+                                                                aggregations: {}
+                                                            } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        expect(result[0].headerActions).toHaveLength(1);
+        expect(result[0].headerActions?.[0]).toEqual({
+            label: 'Create',
+            action: '',
+            visible: true,
+            enabled: true,
+            menuType: 'CustomMenu',
+            menuActions: [
+                { label: 'Create Item Set', visible: true },
+                {
+                    label: 'Approve',
+                    visible: true,
+                    service: 'TestService',
+                    action: 'Approve',
+                    unbound: false,
+                    enabled: false,
+                    dynamicPath: undefined
+                }
+            ]
+        });
+    });
+
+    test('should extract an annotation menu (DataFieldForActionGroup) from a table section', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                '_Items::@com.sap.vocabularies.UI.v1.LineItem': {
+                                    isTable: true,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'Items' }] },
+                                    aggregations: {
+                                        subsections: { aggregations: {} } as unknown as TreeAggregation,
+                                        table: {
+                                            aggregations: {
+                                                columns: { aggregations: {} } as unknown as TreeAggregation,
+                                                toolBar: {
+                                                    aggregations: {
+                                                        actions: {
+                                                            aggregations: {
+                                                                'DataFieldForActionGroup::OrderActions': {
+                                                                    description: 'Order Actions',
+                                                                    menuType: 'Annotation',
+                                                                    schema: {
+                                                                        dataType: 'DataFieldForActionGroup'
+                                                                    },
+                                                                    path: [],
+                                                                    aggregations: {
+                                                                        actions: {
+                                                                            aggregations: {
+                                                                                'DataFieldForAction::TestService.MassProcess::TestService.OrderType':
+                                                                                    {
+                                                                                        description: 'Mass Process',
+                                                                                        path: [],
+                                                                                        aggregations: {}
+                                                                                    } as unknown as TreeAggregation
+                                                                            }
+                                                                        } as unknown as TreeAggregation
+                                                                    }
+                                                                } as unknown as TreeAggregation
+                                                            }
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        const section = result[0].bodySections?.[0];
+        expect(section?.actions).toHaveLength(1);
+        expect(section?.actions?.[0]).toEqual({
+            label: 'Order Actions',
+            action: '',
+            visible: true,
+            enabled: true,
+            menuType: 'Annotation',
+            menuActions: [
+                {
+                    label: 'Mass Process',
+                    visible: true,
+                    service: 'TestService',
+                    action: 'MassProcess',
+                    unbound: false,
+                    enabled: false,
+                    dynamicPath: undefined
+                }
+            ]
+        });
     });
 });
 
@@ -3139,5 +3415,49 @@ describe('Contact Card extraction', () => {
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
         const headerSection = result[0].headerSections?.[0];
         expect(headerSection?.contactCardFields).toEqual([{ property: 'carrier/Contact' }]);
+    });
+});
+
+describe('resolveOriginatingView()', () => {
+    // Mirrors fin.test.v4.lr2: views 1/2/3 show the main entity (Customer), view 6 shows CompanyCodeDetail.
+    const lr2Views = [
+        { key: '1', entitySet: undefined },
+        { key: '2', entitySet: undefined },
+        { key: '3', entitySet: undefined },
+        { key: '6', entitySet: 'CompanyCodeDetail' }
+    ];
+
+    test('returns undefined for a single-table List Report (no views)', () => {
+        expect(resolveOriginatingView([], 'Customer', 'Customer')).toBeUndefined();
+    });
+
+    test('maps a main-entity Object Page to the first (default) view', () => {
+        // CustomerObjectPage has entitySet Customer; the default views inherit the LR main entity set.
+        expect(resolveOriginatingView(lr2Views, 'Customer', 'Customer')).toEqual({ key: '1', isDefault: true });
+    });
+
+    test('maps an Object Page to the non-default view that declares its entity set', () => {
+        // CompanyCodeDetailObjectPage → view 6 (entitySet CompanyCodeDetail), a non-default tab.
+        expect(resolveOriginatingView(lr2Views, 'CompanyCodeDetail', 'Customer')).toEqual({
+            key: '6',
+            isDefault: false
+        });
+    });
+
+    test('falls back to the first view (default) when no view matches the Object Page entity set', () => {
+        expect(resolveOriginatingView(lr2Views, 'Unrelated', 'Customer')).toEqual({ key: '1', isDefault: true });
+    });
+
+    test('falls back to the first view when the Object Page has no entity set', () => {
+        expect(resolveOriginatingView(lr2Views, undefined, 'Customer')).toEqual({ key: '1', isDefault: true });
+    });
+
+    test('matches a view by its explicit entity set even when it is the first view', () => {
+        const views = [
+            { key: 'A', entitySet: 'Books' },
+            { key: 'B', entitySet: 'Authors' }
+        ];
+        expect(resolveOriginatingView(views, 'Books', 'Books')).toEqual({ key: 'A', isDefault: true });
+        expect(resolveOriginatingView(views, 'Authors', 'Books')).toEqual({ key: 'B', isDefault: false });
     });
 });
