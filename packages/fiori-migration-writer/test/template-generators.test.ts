@@ -46,7 +46,8 @@ describe('Template Generators - File Handlers', () => {
             });
 
             const result = await handlePackageJsonFile(testRoot, targetFile, templateContent, { project: {} });
-            const parsed = JSON.parse(result);
+            const parsed: { dependencies?: Record<string, string>; devDependencies?: Record<string, string> } =
+                JSON.parse(result);
 
             // Assert legacy modules are removed
             expect(parsed.dependencies?.['valid-dep']).toBe('2.0.0');
