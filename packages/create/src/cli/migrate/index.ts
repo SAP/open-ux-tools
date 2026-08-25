@@ -15,6 +15,47 @@ interface MigrateCommandOptions {
 }
 
 /**
+ * Helper to create a required text validation function.
+ *
+ * @param fieldName - name of the field for error message
+ * @returns validation function
+ */
+function createRequiredValidator(fieldName: string): (value: string) => boolean | string {
+    return (value: string) => (value ? true : `${fieldName} is required`);
+}
+
+/**
+ * Helper to prompt for a required text input.
+ *
+ * @param name - prompt name
+ * @param message - prompt message
+ * @param fieldName - field name for validation error
+ * @returns user input
+ */
+async function promptRequiredText(name: string, message: string, fieldName: string): Promise<string> {
+    const response = await prompts({
+        type: 'text',
+        name,
+        message,
+        validate: createRequiredValidator(fieldName)
+    });
+    return response[name] as string;
+}
+
+/**
+ * Helper to prompt for confirmation.
+ *
+ * @param name - prompt name
+ * @param message - prompt message
+ * @param initial - initial value
+ * @returns confirmation response
+ */
+async function promptConfirm(name: string, message: string, initial: boolean): Promise<boolean> {
+    const response = await prompts({ type: 'confirm', name, message, initial });
+    return response[name] as boolean;
+}
+
+/**
  * Add the 'migrate' command to the provided commander program.
  *
  * @param program - commander program to add the command to
@@ -44,21 +85,15 @@ async function getProjectPath(projectPath: string | undefined): Promise<string> 
     let resolvedPath = projectPath ? resolve(projectPath) : process.cwd();
 
     if (!projectPath) {
-        const response = await prompts({
-            type: 'confirm',
-            name: 'confirmPath',
-            message: `Migrate project at current directory: ${resolvedPath}?`,
-            initial: true
-        });
+        const confirmPath = await promptConfirm(
+            'confirmPath',
+            `Migrate project at current directory: ${resolvedPath}?`,
+            true
+        );
 
-        if (!response.confirmPath) {
-            const pathResponse = await prompts({
-                type: 'text',
-                name: 'customPath',
-                message: 'Enter project path:',
-                validate: (value: string) => (value ? true : 'Project path is required')
-            });
-            resolvedPath = resolve(pathResponse.customPath as string);
+        if (!confirmPath) {
+            const customPath = await promptRequiredText('customPath', 'Enter project path:', 'Project path');
+            resolvedPath = resolve(customPath);
         }
     }
 
@@ -79,14 +114,9 @@ async function checkForceRequired(resolvedPath: string, force: boolean): Promise
 
     if (isToolsProject && !force) {
         logger.warn('Project appears to be already migrated to Fiori tools.');
-        const response = await prompts({
-            type: 'confirm',
-            name: 'confirmForce',
-            message: 'Force migration anyway?',
-            initial: false
-        });
+        const confirmForce = await promptConfirm('confirmForce', 'Force migration anyway?', false);
 
-        if (!response.confirmForce) {
+        if (!confirmForce) {
             logger.info('Migration cancelled.');
             return false;
         }
@@ -109,29 +139,16 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
     let hostname = options.hostname;
 
     if (!destination && !hostname) {
-        const response = await prompts({
-            type: 'confirm',
-            name: 'useDestination',
-            message: 'Use SAP System destination?',
-            initial: true
-        });
+        const useDestination = await promptConfirm(
+            'useDestination',
+            'Use SAP System destination?',
+            true
+        );
 
-        if (response.useDestination) {
-            const destResponse = await prompts({
-                type: 'text',
-                name: 'dest',
-                message: 'Enter destination/SAP System name:',
-                validate: (value: string) => (value ? true : 'Destination is required')
-            });
-            destination = destResponse.dest as string;
+        if (useDestination) {
+            destination = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
         } else {
-            const hostResponse = await prompts({
-                type: 'text',
-                name: 'host',
-                message: 'Enter hostname:',
-                validate: (value: string) => (value ? true : 'Hostname is required')
-            });
-            hostname = hostResponse.host as string;
+            hostname = await promptRequiredText('host', 'Enter hostname:', 'Hostname');
         }
     }
 
