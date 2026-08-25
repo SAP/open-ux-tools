@@ -15,13 +15,17 @@ import type { AppFeatures, FPMFeatures } from '../types.js';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
+import { buildI18nLabelResolver, passthroughLabelResolver, type I18nLabelResolver } from './i18nUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
     schema: {
         keys: { name: string; value: string }[];
         dataType?: string;
+        actionType?: string;
     };
+    /** Present on action nodes that are menus (drop-downs): 'Annotation' or 'CustomMenu'. */
+    menuType?: string;
 }
 
 export interface FieldItem extends AggregationItem {
@@ -68,6 +72,30 @@ export interface PageWithModelV4WithProperties extends PageWithModelV4 {
 }
 
 /**
+ * Builds the i18n label resolver from the app bundles, falling back to a passthrough resolver when
+ * the bundle can't be read (labels are then emitted unresolved).
+ *
+ * @param appAccess - application access used to read the i18n bundles
+ * @param log - optional logger instance
+ * @returns a resolver for `{i18n>key}` placeholder labels
+ */
+async function buildLabelResolver(
+    appAccess: Awaited<ReturnType<typeof createApplicationAccess>>,
+    log?: Logger
+): Promise<I18nLabelResolver> {
+    try {
+        return buildI18nLabelResolver(await appAccess.getI18nBundles());
+    } catch (error) {
+        log?.debug?.(
+            `Unable to read the app i18n bundle; i18n action labels will be emitted unresolved. ${
+                error instanceof Error ? error.message : String(error)
+            }`
+        );
+        return passthroughLabelResolver;
+    }
+}
+
+/**
  * Gets app features from the application model using ux-specification.
  *
  * @param basePath - the absolute target path where the application will be generated
@@ -90,6 +118,7 @@ export async function getAppFeatures(
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
+    let resolveLabel: I18nLabelResolver;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
@@ -113,9 +142,11 @@ export async function getAppFeatures(
             }
         }
 
+        resolveLabel = await buildLabelResolver(appAccess, log);
+
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
-        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
+        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel) : fpmPage;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -132,18 +163,24 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
+            featureData.listReport = getListReportFeatures(
+                listReportPage,
+                log,
+                projectMetadata,
+                manifest,
+                resolveLabel
+            );
         }
         if (objectPages) {
-            log?.warn('Extracting Object Page features from application model');
             featureData.objectPages = await getObjectPageFeatures(
                 objectPages,
                 listReportPage?.name,
                 log,
                 projectMetadata,
-                manifest
+                manifest,
+                listReportPage?.entitySet,
+                resolveLabel
             );
-            log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {
             featureData.fpm = getFPMFeatures(fpmPage, log);
@@ -205,13 +242,11 @@ export function getListReportPage(applicationModel: ApplicationModel): PageWithM
  * Retrieves all FPM Custom Page definitions from the given application model.
  *
  * @param applicationModel - The application model containing page definitions.
- * @param log - optional logger instance
  * @returns An array of FPM Custom Page definitions.
  */
-export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): PageWithModelV4 | null {
+export function getFPMPage(applicationModel: ApplicationModel): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        log?.warn('pageType:' + page.pageType);
         if (page.pageType === PageTypeV4.FPMCustomPage) {
             page.name = pageKey; // store page key as name for later identification
             return page;
