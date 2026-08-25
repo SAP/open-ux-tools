@@ -290,6 +290,30 @@ describe('proxy', () => {
             expect(mockSetHeader).not.toHaveBeenCalledWith('x-forwarded-host', expect.anything());
         });
 
+        test('proxyReq - removes x-forwarded-host when running in BAS', () => {
+            const mockSetHeader = jest.fn();
+            const mockRemoveHeader = jest.fn();
+            const host = 'port8080-workspaces-ws-tzy3s.jp10.applicationstudio.cloud.sap';
+            const req = { headers: { 'x-forwarded-host': host } } as unknown as IncomingMessage;
+            mockIsAppStudio.mockReturnValue(true);
+
+            proxyReq({ setHeader: mockSetHeader, removeHeader: mockRemoveHeader } as unknown as ClientRequest, req);
+
+            expect(mockRemoveHeader).toHaveBeenCalledWith('x-forwarded-host');
+        });
+
+        test('proxyReq - does not remove x-forwarded-host outside BAS', () => {
+            const mockSetHeader = jest.fn();
+            const mockRemoveHeader = jest.fn();
+            const host = 'mybackend.example.com';
+            const req = { headers: { 'x-forwarded-host': host } } as unknown as IncomingMessage;
+            mockIsAppStudio.mockReturnValue(false);
+
+            proxyReq({ setHeader: mockSetHeader, removeHeader: mockRemoveHeader } as unknown as ClientRequest, req);
+
+            expect(mockRemoveHeader).not.toHaveBeenCalledWith('x-forwarded-host');
+        });
+
         test('proxyRes', () => {
             const response = {} as IncomingMessage;
 
