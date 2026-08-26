@@ -257,21 +257,28 @@ describe('<UIComboBox />', () => {
         });
 
         it('Test onInput value selection', () => {
-            const requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame');
+            const rafSpy = jest.spyOn(window, 'requestAnimationFrame').mockReturnValue(0);
             const input = container.querySelector('input') as HTMLInputElement;
 
-            // Set value and cursor in the middle so setCaretPosition detects cursor not at end
+            // Cursor at end — setCaretPosition must NOT schedule a rAF
             input.value = 'test';
+            input.selectionStart = input.selectionEnd = 4;
+            fireEvent.input(input);
+            expect(rafSpy).toHaveBeenCalledTimes(0);
+
+            // Cursor in the middle — setCaretPosition schedules rAF to restore cursor
+            input.value = 'test01';
             input.selectionStart = input.selectionEnd = 2;
             fireEvent.input(input);
-            // setCaretPosition calls requestAnimationFrame to restore cursor position
-            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(1);
+            expect(rafSpy).toHaveBeenCalledTimes(1);
+            // Simulate Fluent UI resetting the cursor to end after the event
+            input.selectionStart = input.selectionEnd = 6;
+            // Run the rAF callback — it should restore cursor to the saved position (2)
+            const rafCallback = rafSpy.mock.calls[0][0] as FrameRequestCallback;
+            rafCallback(0);
+            expect(input.selectionEnd).toBe(2);
 
-            input.value = 'test01';
-            input.selectionEnd = input.selectionStart = 2;
-            fireEvent.input(input);
-            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2);
-            requestAnimationFrameSpy.mockRestore();
+            rafSpy.mockRestore();
         });
 
         it('Test onClick value selection', () => {
@@ -279,15 +286,19 @@ describe('<UIComboBox />', () => {
                 <UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} selectedKey="AU" />
             ));
             const input = container.querySelector('input') as HTMLInputElement;
-            const requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame');
-            requestAnimationFrameSpy.mockClear();
+            const rafSpy = jest.spyOn(window, 'requestAnimationFrame').mockReturnValue(0);
 
             input.selectionEnd = input.selectionStart = 2;
             const event = { target: input } as unknown as React.FormEvent<IComboBox>;
             (comboboxRef.current as unknown as { onClick: (e: React.FormEvent<IComboBox>) => void }).onClick(event);
-            // Verify rAF was scheduled (at least once for cursor restore, possibly more from Fluent UI internals)
-            expect(requestAnimationFrameSpy).toHaveBeenCalled();
-            requestAnimationFrameSpy.mockRestore();
+            expect(rafSpy).toHaveBeenCalled();
+            // Simulate Fluent UI resetting the cursor to end after the click
+            input.selectionEnd = input.selectionStart = 5;
+            // setCaretPosition is the first call in onClick, so its rAF is always at index 0
+            (rafSpy.mock.calls[0][0] as FrameRequestCallback)(0);
+            expect(input.selectionEnd).toBe(2);
+
+            rafSpy.mockRestore();
         });
 
         it('Test "reserQuery"', () => {
