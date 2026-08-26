@@ -221,7 +221,7 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode', 'playwright-core', '@ui5/task-adaptation'],
+    external: ['vscode', 'playwright-core'],
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin]
 });
 
