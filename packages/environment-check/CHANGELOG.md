@@ -1,5 +1,64 @@
 # @sap-ux/environment-check
 
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+
+## 1.0.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Bug Fixes
+
+- `archiveProject` method throws error `Cannot read properties of undefined (reading 'test')` because of incompatible versions of `ignore` package between `@sap-ux/environment-check` and `glob-gitignore`(expected v5). [[26c8af3](https://github.com/SAP/open-ux-tools/commit/26c8af3ef1abd0c96e4924ca9a91ec04823dc1ce)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.8 → 2.0.9
+- @sap-ux/project-access 2.1.10 → 2.1.11
+
+## 1.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-18
+
+#### Dependency Updates
+
+- Upgrade ignore 5.2.4 → 7.0.6 [[b3ee302](https://github.com/SAP/open-ux-tools/commit/b3ee3025fc2018aa63546a5d7be8ab535857ab3c)]
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+
 ## 1.0.19
 
 ### Patch Changes

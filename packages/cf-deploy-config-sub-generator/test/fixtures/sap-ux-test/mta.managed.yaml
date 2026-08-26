@@ -16,10 +16,10 @@ modules:
             parameters:
                 service-key:
                     name: sap-ux-test-repo-host-key
-          - name: sap-ux-test-uaa
+          - name: sap-ux-test-auth
             parameters:
                 service-key:
-                    name: sap-ux-test-uaa-key
+                    name: sap-ux-test-auth-key
       parameters:
           content:
               instance:
@@ -29,9 +29,9 @@ modules:
                         ServiceKeyName: sap-ux-test-repo-host-key
                         sap.cloud.service: sap-ux-test
                       - Authentication: OAuth2UserTokenExchange
-                        Name: sap-ux-test_uaa
+                        Name: sap-ux-test_auth
                         ServiceInstanceName: sap-ux-test-xsuaa-service
-                        ServiceKeyName: sap-ux-test-uaa-key
+                        ServiceKeyName: sap-ux-test-auth-key
                         sap.cloud.service: sap-ux-test
                   existing_destinations_policy: update
       build-parameters:
@@ -55,12 +55,16 @@ resources:
                             URL: https://ui5.sap.com
                             ProxyType: Internet
                             Authentication: NoAuthentication
-    - name: sap-ux-test-uaa
+    - name: sap-ux-test-auth
       type: org.cloudfoundry.managed-service
       parameters:
           config:
               tenant-mode: dedicated
               xsappname: 'sap-ux-test-${org}-${space}'
+              oauth2-configuration:
+                  credential-types:
+                      - binding-secret
+                      - x509
           path: ./xs-security.json
           service: xsuaa
           service-name: sap-ux-test-xsuaa-service

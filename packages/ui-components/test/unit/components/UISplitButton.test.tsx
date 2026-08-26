@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, createEvent } from '@testing-library/react';
 
 import { UISplitButton } from '../../../src/components/UIButton/index';
 import type { UISplitButtonProps } from '../../../src/components/UIButton/index';
@@ -78,5 +78,30 @@ describe('<UISplitButton />', () => {
         );
 
         expect(instance!.state.menu.items).toHaveLength(3);
+    });
+
+    describe('propagateMenuOpenKeyDown', () => {
+        const defaultProps: UISplitButtonProps = {
+            id: 'test-propagate',
+            button: { key: 'option1', text: 'option 1' },
+            menuItems: [{ key: 'option2', text: 'option 2' }],
+            callback: jest.fn()
+        };
+
+        it('calls preventDefault on Alt+Down by default', () => {
+            const { container } = render(<UISplitButton {...defaultProps} />);
+            const button = container.querySelector('.ms-Button')!;
+            const event = createEvent.keyDown(button, { key: 'ArrowDown', altKey: true });
+            fireEvent(button, event);
+            expect(event.defaultPrevented).toBe(true);
+        });
+
+        it('does not call preventDefault on Alt+Down when propagateMenuOpenKeyDown is false', () => {
+            const { container } = render(<UISplitButton {...defaultProps} propagateMenuOpenKeyDown={false} />);
+            const button = container.querySelector('.ms-Button')!;
+            const event = createEvent.keyDown(button, { key: 'ArrowDown', altKey: true });
+            fireEvent(button, event);
+            expect(event.defaultPrevented).toBe(false);
+        });
     });
 });

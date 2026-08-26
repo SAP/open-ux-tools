@@ -29,6 +29,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
 
 // Dynamic imports after mocks
 const { listFunctionalities } = await import('../../../src/tools/index.js');
+const { RESOLVE_APPLICATION_TIMEOUT_MS } = await import('../../../src/utils/schema-utils.js');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 
@@ -153,6 +154,30 @@ describe('listFunctionalities', () => {
 
         test('throws when appPath is whitespace only', async () => {
             await expect(listFunctionalities({ appPath: '   ' })).rejects.toThrow('appPath parameter is required');
+        });
+
+        test('returns static functionalities for non-existent path', async () => {
+            mockCreateApplicationAccess.mockRejectedValue(new Error('Path does not exist'));
+            mockFindProjectRoot.mockRejectedValue(new Error('Path does not exist'));
+            const result = await listFunctionalities({ appPath: '/non/existent/path' });
+            expect(result.applicationPath).toEqual('/non/existent/path');
+            expect(result.functionalities.map((f) => f.functionalityId)).toEqual([
+                'add-page',
+                'delete-page',
+                'create-controller-extension'
+            ]);
+        });
+
+        test('throws when resolveApplication times out', async () => {
+            jest.useFakeTimers();
+            try {
+                mockCreateApplicationAccess.mockImplementation(() => new Promise<never>(() => undefined));
+                const promise = listFunctionalities({ appPath: '/some/path' });
+                jest.advanceTimersByTime(RESOLVE_APPLICATION_TIMEOUT_MS);
+                await expect(promise).rejects.toThrow('resolveApplication timed out');
+            } finally {
+                jest.useRealTimers();
+            }
         });
     });
 });

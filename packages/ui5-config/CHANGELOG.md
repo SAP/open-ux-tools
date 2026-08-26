@@ -1,5 +1,33 @@
 # @sap-ux/ui5-config
 
+## 1.0.9
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Upgrade js-yaml 4.2.0 → 4.3.1 to address CVE (GHSA-pm4m-ph32-ghv5) [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+## 1.0.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Upgrade ajv 8.18.0 → 8.20.0 [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
+## 1.0.7
+
+### Patch Changes
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
 ## 1.0.6
 
 ### Patch Changes

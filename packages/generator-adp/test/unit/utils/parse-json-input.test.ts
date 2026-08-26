@@ -52,23 +52,27 @@ describe('parseJsonInput', () => {
         expect(parseJsonInput(jsonString, logger)).toBeUndefined();
     });
 
-    it('should return the adp json input with keyUserChanges', () => {
+    it('should return the adp json input including optional id', () => {
         const jsonInput: JsonInput = {
             system: 'system',
             application: 'application',
-            keyUserChanges: [{ content: { fileName: 'id_123_propertyChange', changeType: 'propertyChange' } }]
+            id: '123.5'
         };
         const jsonString = JSON.stringify(jsonInput);
         expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
     });
 
-    it('should return undefined when keyUserChanges is invalid', () => {
-        const invalidJsonInput = {
+    it('should return valid input even when keyUserChanges is present in CLI json', () => {
+        const jsonString = JSON.stringify({
             system: 'system',
             application: 'application',
-            keyUserChanges: 'not an array'
-        };
-        const jsonString = JSON.stringify(invalidJsonInput);
-        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+            keyUserChanges: [{ content: { fileName: 'id_123_propertyChange' } }]
+        });
+        expect(parseJsonInput(jsonString, logger)).toEqual(
+            expect.objectContaining({
+                system: 'system',
+                application: 'application'
+            })
+        );
     });
 });

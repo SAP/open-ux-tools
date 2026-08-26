@@ -5,6 +5,7 @@ const mockGetExternalServiceReferences = jest.fn<any>();
 const mockCreateForDestination = jest.fn<any>();
 const mockCreateAbapServiceProvider = jest.fn<any>();
 const mockFindSystem = jest.fn<any>();
+const mockGetAnnotations = jest.fn<any>();
 const mockLogger = {
     info: jest.fn(),
     error: jest.fn(),
@@ -14,6 +15,7 @@ const mockLogger = {
 // Mock AbapServiceProvider class
 class MockAbapServiceProvider {
     fetchExternalServices = jest.fn<any>();
+    catalog = jest.fn<any>(() => ({ getAnnotations: mockGetAnnotations }));
 }
 
 jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
@@ -24,7 +26,8 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: MockAbapServiceProvider,
     createForDestination: mockCreateForDestination,
     ExternalService: class {},
-    ServiceProvider: class {}
+    ServiceProvider: class {},
+    ODataVersion: { v2: '2', v4: '4' }
 }));
 
 jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
@@ -76,6 +79,10 @@ describe('generateFioriAppOData - External Services', () => {
         jest.clearAllMocks();
         mockParse.mockReturnValue(validArgs);
         mockGetExternalServiceReferences.mockReturnValue([]);
+        // Safe defaults for the annotation fetch (runs whenever host/destination is set)
+        mockReadFile.mockResolvedValue('<edmx/>');
+        mockFindSystem.mockResolvedValue({ system: undefined });
+        mockGetAnnotations.mockResolvedValue([]);
     });
 
     describe('External service fetching - happy paths', () => {
@@ -219,16 +226,19 @@ describe('generateFioriAppOData - External Services', () => {
 
     describe('External service fetching - no references', () => {
         test('should handle case when no external service references are found', async () => {
-            // Given: No external service references
+            // Given: A reachable ABAP provider but no external service references in the metadata
+            const mockSystem = { url: 'https://example.com', client: '100' };
+            mockFindSystem.mockResolvedValue({ system: mockSystem });
+            mockCreateAbapServiceProvider.mockReturnValue(new MockAbapServiceProvider());
             mockGetExternalServiceReferences.mockReturnValue([]);
 
             // When: Generating the app
             const result = await generateFioriAppOData(validArgs);
 
-            // Then: Should not attempt to fetch
-            expect(mockFindSystem).not.toHaveBeenCalled();
-            expect(mockCreateForDestination).not.toHaveBeenCalled();
+            // Then: Should not attempt to fetch external services (annotations are fetched separately)
             expect(mockLogger.info).toHaveBeenCalledWith('No external service references found in metadata');
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
+            expect(configContent.service.externalServices).toBeUndefined();
             expect(result.status).toBe('Success');
         });
     });
@@ -300,16 +310,20 @@ describe('generateFioriAppOData - External Services', () => {
             await expect(generateFioriAppOData(validArgs)).resolves.toBeDefined();
         });
 
-        test('should log error with duration when fetch fails', async () => {
-            // Given: Fetch will fail
+        test('should generate gracefully when the service provider cannot be created', async () => {
+            // Given: Resolving the stored system throws
             mockGetExternalServiceReferences.mockReturnValue([{ type: 'value-list' }]);
             mockFindSystem.mockRejectedValue(new Error('Connection timeout'));
 
             // When: Generating the app
-            await generateFioriAppOData(validArgs);
+            const result = await generateFioriAppOData(validArgs);
 
-            // Then: Error log should include duration
-            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringMatching(/after \d+ms:/));
+            // Then: The error is logged and generation still succeeds (no metadata/annotations)
+            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Connection timeout'));
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                'App will be generated without backend service metadata and annotations'
+            );
+            expect(result.status).toBe('Success');
         });
     });
 
@@ -379,6 +393,103 @@ describe('generateFioriAppOData - External Services', () => {
 
             // Then: Should log performance info
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringMatching(/in \d+ms$/));
+        });
+    });
+
+    describe('Service annotation fetching', () => {
+        const anno = (name: string) => ({
+            TechnicalName: name,
+            Version: '0001',
+            Definitions: `<edmx:Edmx>${name}</edmx:Edmx>`,
+            Uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='${name}',Version='0001')/$value/`
+        });
+
+        test('should write the first backend annotation into the generator config (V2)', async () => {
+            // Given: A V2 service whose catalog returns two annotations
+            mockFindSystem.mockResolvedValue({ system: { url: 'https://example.com' } });
+            const mockProvider = new MockAbapServiceProvider();
+            mockCreateAbapServiceProvider.mockReturnValue(mockProvider);
+            const annoA = anno('MY_SERVICE_ANNO_MDL');
+            mockGetAnnotations.mockResolvedValue([annoA, anno('SECOND_ANNO')]);
+
+            // When: Generating the app
+            await generateFioriAppOData(validArgs);
+
+            // Then: The catalog is queried by service path and only the first annotation is written
+            expect(mockGetAnnotations).toHaveBeenCalledWith({ path: validArgs.service.servicePath });
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
+            expect(configContent.service.annotations).toEqual(annoA);
+        });
+
+        test('should leave annotations undefined when the catalog returns none (V2)', async () => {
+            // Given: A V2 service with no annotations
+            mockFindSystem.mockResolvedValue({ system: { url: 'https://example.com' } });
+            mockCreateAbapServiceProvider.mockReturnValue(new MockAbapServiceProvider());
+            mockGetAnnotations.mockResolvedValue([]);
+
+            // When: Generating the app
+            await generateFioriAppOData(validArgs);
+
+            // Then: No annotations are written
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
+            expect(configContent.service.annotations).toBeUndefined();
+        });
+
+        test('should not query the catalog for V4 metadata (annotations are inline)', async () => {
+            // Given: V4 metadata
+            mockReadFile.mockResolvedValue('<edmx:Edmx Version="4.0"></edmx:Edmx>');
+            mockFindSystem.mockResolvedValue({ system: { url: 'https://example.com' } });
+            mockCreateAbapServiceProvider.mockReturnValue(new MockAbapServiceProvider());
+
+            // When: Generating the app
+            const result = await generateFioriAppOData(validArgs);
+
+            // Then: The catalog annotations endpoint is not called and none are written
+            expect(mockGetAnnotations).not.toHaveBeenCalled();
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
+            expect(configContent.service.annotations).toBeUndefined();
+            expect(result.status).toBe('Success');
+        });
+
+        test('should generate successfully when annotation fetching fails (offline-graceful)', async () => {
+            // Given: A V2 service whose catalog request throws
+            mockFindSystem.mockResolvedValue({ system: { url: 'https://example.com' } });
+            mockCreateAbapServiceProvider.mockReturnValue(new MockAbapServiceProvider());
+            mockGetAnnotations.mockRejectedValue(new Error('Catalog unavailable'));
+
+            // When: Generating the app
+            const result = await generateFioriAppOData(validArgs);
+
+            // Then: Generation still succeeds without annotations
+            expect(mockLogger.warn).toHaveBeenCalledWith('App will be generated without backend service annotations');
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
+            expect(configContent.service.annotations).toBeUndefined();
+            expect(result.status).toBe('Success');
+        });
+
+        test('should create the ABAP service provider only once and reuse it for external services and annotations', async () => {
+            // Given: A V2 service with BOTH external service references and backend annotations
+            mockGetExternalServiceReferences.mockReturnValue([{ type: 'value-list' }]);
+            mockFindSystem.mockResolvedValue({ system: { url: 'https://example.com' } });
+            const mockProvider = new MockAbapServiceProvider();
+            mockProvider.fetchExternalServices.mockResolvedValue([{ name: 'Help1', metadata: '<edmx/>' }]);
+            mockCreateAbapServiceProvider.mockReturnValue(mockProvider);
+            const annoA = anno('MY_SERVICE_ANNO_MDL');
+            mockGetAnnotations.mockResolvedValue([annoA]);
+
+            // When: Generating the app
+            await generateFioriAppOData(validArgs);
+
+            // Then: The system lookup and provider creation happen exactly once (single connection,
+            // so a cloud backend only prompts for interactive auth once)
+            expect(mockFindSystem).toHaveBeenCalledTimes(1);
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalledTimes(1);
+            // And both consumers used that same provider instance
+            expect(mockProvider.fetchExternalServices).toHaveBeenCalledWith([{ type: 'value-list' }]);
+            expect(mockGetAnnotations).toHaveBeenCalledWith({ path: validArgs.service.servicePath });
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
+            expect(configContent.service.externalServices).toEqual([{ name: 'Help1', metadata: '<edmx/>' }]);
+            expect(configContent.service.annotations).toEqual(annoA);
         });
     });
 });
