@@ -170,7 +170,7 @@ describe('<UITable />', () => {
         expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field')).toHaveLength(1);
     });
 
-    it.skip('Cell navigation in edit mode', () => {
+    it('Cell navigation in edit mode', () => {
         const { container } = render(
             <UITable
                 {...defaultProps}
@@ -182,8 +182,12 @@ describe('<UITable />', () => {
             />
         );
 
+        // Click first cell to enter edit mode
         const firstSpan = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
         fireEvent.click(firstSpan);
+        expect(container.querySelector('input')).not.toBeNull();
+
+        // Fire keyboard navigation keys — verifies no errors thrown
         const input = container.querySelector('input') as HTMLElement;
         fireEvent.keyDown(input, { key: 'Tab' });
         jest.runOnlyPendingTimers();
@@ -197,7 +201,8 @@ describe('<UITable />', () => {
         fireEvent.keyDown(inputAfterShiftTab, { key: 'Enter', shiftKey: true });
         jest.runOnlyPendingTimers();
 
-        // test not running properly, must investigate
+        // Each navigation key triggers saveCell — 4 calls total (Tab, Enter, Shift+Tab, Shift+Enter)
+        expect(onSaveSpy).toHaveBeenCalledTimes(4);
     });
 
     it('Text input', () => {
