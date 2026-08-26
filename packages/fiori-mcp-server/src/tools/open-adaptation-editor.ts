@@ -72,7 +72,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
                     const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
 
                     rl.on('line', (line: string) => {
-                        const clean = line.replace(/\x1b\[[0-9;]*m/g, '');
+                        const clean = line.replace(/\u001b\[[0-9;]*m/g, '');
                         logger.debug(`Editor: ${clean}`);
 
                         if (!foundEditorPath) {
