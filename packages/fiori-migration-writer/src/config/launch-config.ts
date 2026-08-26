@@ -7,7 +7,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
-import { buildSapClientParam } from '../utils/common.js';
 import { ODataVersion } from '../types.js';
 import type { ImportProjectInfo, Message } from '../types.js';
 
@@ -36,7 +35,7 @@ export async function generateLaunchConfiguration(
     // Build debug options for launch config
     const debugOptions: DebugOptions = {
         vscode: vscode,
-        sapClientParam: buildSapClientParam(projectInfo.sapClient),
+        sapClientParam: projectInfo.sapClient ? `sap-client=${projectInfo.sapClient}` : '',
         flpAppId: appIntent?.replace('#', '') || '',
         flpSandboxAvailable,
         isFioriElement:

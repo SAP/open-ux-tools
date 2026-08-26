@@ -172,15 +172,6 @@ export function determineSapUxLayer(isInternal: boolean): SapUxLayer {
 }
 
 /**
- * Build SAP client parameter string
- *
- * @param sapClient
- */
-export function buildSapClientParam(sapClient: string): string {
-    return sapClient ? `sap-client=${sapClient}` : '';
-}
-
-/**
  * Format a string url parameter from the input arguments. Accepts empty string as input arguments.
  *
  * @example

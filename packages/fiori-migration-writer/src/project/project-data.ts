@@ -5,7 +5,7 @@
 import { SapUiLibs } from '../index.js';
 import { defaultMinUi5Version, minUi5VersionV4Template } from '@sap-ux/ui5-info';
 import { getManifestVersion } from '@sap-ux/ui5-application-writer';
-import { getUI5Version, stripSpaces, buildSapClientParam } from '../utils/index.js';
+import { getUI5Version, stripSpaces } from '../utils/index.js';
 import type { ImportProjectInfo, ProjectMigrate, Service } from '../types.js';
 import { DatasourceType, ODataVersion } from '../types.js';
 
@@ -215,7 +215,7 @@ export function prepareProjectAndServiceData(
     const projectUI5Version = getUI5Version(ui5Version || '');
 
     // Get SAP client param
-    const sapClientParam = buildSapClientParam(sapClient);
+    const sapClientParam = sapClient ? `sap-client=${sapClient}` : '';
 
     // Create project data structure
     const projectData = createProjectData({

@@ -69,6 +69,5 @@ export {
     getSourceTemplate,
     generateToolsId,
     determineSapUxLayer,
-    buildSapClientParam,
     buildUrlParam
 } from './migration-utils.js';
