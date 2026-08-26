@@ -503,9 +503,9 @@ export async function createProxy(
     if (!isAppStudio()) {
         return proxy;
     }
-    const wrapper = (req: IncomingMessage, res: ServerResponse, next: (err?: unknown) => void): void => {
+    const wrapper = async (req: IncomingMessage, res: ServerResponse, next: (err?: unknown) => void): Promise<void> => {
         delete req.headers['x-forwarded-host'];
-        void proxy(req as Parameters<typeof proxy>[0], res, next);
+        await proxy(req as Parameters<typeof proxy>[0], res, next);
     };
     // proxy.upgrade handles WebSocket proxying; carry it forward on the wrapper
     (wrapper as unknown as RequestHandler).upgrade = proxy.upgrade;
