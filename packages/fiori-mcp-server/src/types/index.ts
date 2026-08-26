@@ -7,7 +7,13 @@ import type {
     ListFioriAppsInputSchema,
     ListFunctionalitiesInputSchema,
     DocSearchInputSchema,
-    DownloadODataServiceMetadataInputSchema
+    DownloadODataServiceMetadataInputSchema,
+    GenerateAdaptationProjectInputSchema,
+    OpenAdaptationEditorInputSchema,
+    AdpControllerExtensionInputSchema,
+    RunRtaWorkflowStepInputSchema,
+    AdpMetadataInputSchema,
+    ODataServiceInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -38,6 +44,12 @@ export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOu
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
+export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
+export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
+export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
+export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
+export type AdpMetadataInput = zod.infer<typeof AdpMetadataInputSchema>;
+export type ODataServiceInput = zod.infer<typeof ODataServiceInputSchema>;
 export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
 export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
 export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;

@@ -1,5 +1,6 @@
 import * as zod from 'zod';
 import { FunctionalityIdSchema } from './basic.js';
+import { STEPS } from '../tools/run-rta-workflow-step/types.js';
 
 /**
  * Input interface for the 'list_fiori_apps' functionality
@@ -96,4 +97,114 @@ export const DocSearchInputSchema = zod.object({
         .string()
         .min(2)
         .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
+});
+
+export const GenerateAdaptationProjectInputSchema = zod.object({
+    system: zod.string().describe('The name of the SAP system (obtained from list_sap_systems)'),
+    application: zod.string().describe('The application ID to adapt (e.g., sap.ui.demoapps.rta.fe)'),
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the current working directory or target location. Used as fallback if targetFolder is not provided.'
+        ),
+    targetFolder: zod
+        .string()
+        .optional()
+        .describe(
+            'Optional absolute path to the target folder where the project will be generated. Defaults to appPath if not provided.'
+        ),
+    projectName: zod
+        .string()
+        .optional()
+        .describe('Optional name of the project. Defaults to app.variant if not provided.'),
+    namespace: zod.string().optional().describe('Optional namespace for the project'),
+    applicationTitle: zod.string().optional().describe('Optional title for the application'),
+    client: zod.string().optional().describe('Optional SAP client number'),
+    username: zod.string().optional().describe('Optional username for authentication'),
+    password: zod.string().optional().describe('Optional password for authentication'),
+    importKeyUserChanges: zod
+        .boolean()
+        .optional()
+        .describe(
+            "When true, fetches the DEFAULT adaptation's key user changes from LREP using the same system " +
+                'and credentials, and includes them in the generated project. Aborts generation if the fetch ' +
+                'fails or no DEFAULT adaptation exists. Defaults to false.'
+        )
+});
+
+export const OpenAdaptationEditorInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe('Absolute path to the adaptation project root directory (where package.json resides).')
+});
+
+export const AdpControllerExtensionInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    prompt: zod
+        .string()
+        .optional()
+        .describe('Natural language prompt describing what controller extension or fragment to create'),
+    aiResponse: zod
+        .string()
+        .optional()
+        .describe(
+            'AI-generated response containing code blocks with **Path:** markers preceding each code block. Omit to receive generation rules and project context.'
+        ),
+    controllerName: zod.string().optional().describe('Desired controller extension name (without .js/.ts extension)'),
+    viewId: zod.string().optional().describe('Optional target view identifier for the controller extension')
+});
+
+export const RunRtaWorkflowStepInputSchema = zod.object({
+    step: zod
+        .enum(STEPS)
+        .describe(
+            'Which RTA workflow step to run. The first six steps map to the existing Joule RTA frontend ' +
+                'actions. The last three (get_page_actions, call_page_action, press_interactive) drive ' +
+                'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan. ' +
+                'restart is a mid-workflow step that reloads the editor to pick up files written to disk.'
+        ),
+    sessionId: zod
+        .string()
+        .optional()
+        .describe('Session identifier returned by the "start" step. Required for every step except "start" itself.'),
+    payload: zod
+        .record(zod.string(), zod.unknown())
+        .optional()
+        .describe(
+            'Step-specific arguments. ' +
+                'start: { site: string, frameId?: string }. ' +
+                'restart: sessionId only (inherits site/frameId from the current session). ' +
+                'get_context: { controlId: string, actionId: string }. ' +
+                'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
+                'call_page_action: { id: string }. ' +
+                'press_interactive: { controlId: string }. ' +
+                'get_overlays / save / stop / get_page_actions: omit.'
+        )
+});
+
+export const AdpMetadataInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    saveLocal: zod
+        .boolean()
+        .optional()
+        .describe(
+            'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
+        )
+});
+
+export const ODataServiceInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    filter: zod.string().optional().describe('Filter string to match service names')
 });

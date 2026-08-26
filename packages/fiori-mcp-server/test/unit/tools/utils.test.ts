@@ -16,7 +16,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     DirName: { Webapp: 'webapp', Src: 'src' }
 }));
 
-const { convertToSchema, prepatePropertySchema, resolveApplication, resolveRefs, validateWithSchema } =
+const { convertToSchema, prepatePropertySchema, resolveApplication, resolveRefs, validateWithSchema, runCmdArgs } =
     await import('../../../src/utils/index.js');
 
 describe('resolveApplication', () => {
@@ -414,5 +414,34 @@ describe('prepatePropertySchema', () => {
                 }
             }
         });
+    });
+});
+
+describe('runCmdArgs', () => {
+    test('resolves with stdout for a successful command', async () => {
+        const { stdout } = await runCmdArgs(process.execPath, ['-e', "process.stdout.write('hello')"]);
+        expect(stdout).toContain('hello');
+    });
+
+    test('passes an argument containing quotes verbatim (no shell corruption)', async () => {
+        const payload = JSON.stringify({ title: 'O\'Brien\'s "App"', nested: { a: 1 } });
+        const { stdout } = await runCmdArgs(process.execPath, ['-e', 'process.stdout.write(process.argv[1])', payload]);
+        expect(JSON.parse(stdout)).toEqual({ title: 'O\'Brien\'s "App"', nested: { a: 1 } });
+    });
+
+    test('rejects when the command exits with a non-zero code', async () => {
+        await expect(
+            runCmdArgs(process.execPath, ['-e', "process.stderr.write('bad'); process.exit(3)"])
+        ).rejects.toThrow('exit code 3');
+    });
+
+    test('rejects and terminates the child when the timeout elapses', async () => {
+        await expect(
+            runCmdArgs(process.execPath, ['-e', 'setTimeout(() => {}, 10000)'], { timeout: 100 })
+        ).rejects.toThrow('timed out');
+    });
+
+    test('rejects when the executable cannot be spawned', async () => {
+        await expect(runCmdArgs('this-command-does-not-exist-xyz', [])).rejects.toBeDefined();
     });
 });

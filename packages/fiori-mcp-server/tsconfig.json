@@ -12,6 +12,9 @@
   },
   "references": [
     {
+      "path": "../adp-tooling"
+    },
+    {
       "path": "../axios-extension"
     },
     {
@@ -52,6 +55,9 @@
     },
     {
       "path": "../store"
+    },
+    {
+      "path": "../system-access"
     },
     {
       "path": "../telemetry"
