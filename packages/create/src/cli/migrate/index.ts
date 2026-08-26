@@ -36,6 +36,21 @@ function validatePath(path: string): string {
 }
 
 /**
+ * Validate a destination/system name to prevent injection attacks.
+ *
+ * @param destination - destination name to validate
+ * @returns validated destination
+ * @throws Error if destination contains invalid characters
+ */
+function validateDestination(destination: string): string {
+    // Allow alphanumeric, underscores, hyphens (typical SAP destination/system names)
+    if (!/^[a-zA-Z0-9_-]+$/.test(destination)) {
+        throw new Error('Destination name must contain only letters, numbers, hyphens, and underscores');
+    }
+    return destination;
+}
+
+/**
  * Validate a hostname to prevent URL injection.
  *
  * @param hostname - hostname to validate
@@ -43,11 +58,27 @@ function validatePath(path: string): string {
  * @throws Error if hostname contains unsafe characters
  */
 function validateHostname(hostname: string): string {
-    // Allow alphanumeric, dots, hyphens (standard hostname characters)
-    if (!/^[a-zA-Z0-9.-]+$/.test(hostname)) {
-        throw new Error('Hostname contains invalid characters');
+    // RFC-compliant hostname: alphanumeric and hyphens, segments separated by dots
+    // No leading/trailing hyphens in segments, no consecutive dots
+    if (!/^(?!-)(?!.*-$)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/.test(hostname)) {
+        throw new Error('Invalid hostname format');
     }
     return hostname;
+}
+
+/**
+ * Validate a SAP client number.
+ *
+ * @param client - client number to validate
+ * @returns validated client
+ * @throws Error if client is not a 3-digit number
+ */
+function validateClient(client: string): string {
+    // SAP clients are 3-digit numbers (000-999)
+    if (!/^\d{3}$/.test(client)) {
+        throw new Error('SAP client must be a 3-digit number (e.g., 100)');
+    }
+    return client;
 }
 
 /**
@@ -90,6 +121,9 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
         message,
         validate: createRequiredValidator(fieldName)
     });
+    if (response[name] === undefined) {
+        throw new Error('Operation cancelled by user');
+    }
     return response[name] as string;
 }
 
@@ -103,6 +137,9 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
  */
 async function promptConfirm(name: string, message: string, initial: boolean): Promise<boolean> {
     const response = await prompts({ type: 'confirm', name, message, initial });
+    if (response[name] === undefined) {
+        throw new Error('Operation cancelled by user');
+    }
     return response[name] as boolean;
 }
 
@@ -189,6 +226,11 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
     let destination = options.destination ?? options.sapSystemName;
     let hostname = options.hostname ? validateHostname(options.hostname) : undefined;
 
+    // Validate destination if provided via CLI
+    if (destination) {
+        destination = validateDestination(destination);
+    }
+
     if (!destination && !hostname) {
         const useDestination = await promptConfirm(
             'useDestination',
@@ -197,7 +239,8 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
         );
 
         if (useDestination) {
-            destination = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
+            const dest = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
+            destination = validateDestination(dest);
         } else {
             const host = await promptRequiredText('host', 'Enter hostname:', 'Hostname');
             hostname = validateHostname(host);
@@ -215,7 +258,7 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
  */
 async function getClient(optionClient?: string): Promise<string | undefined> {
     if (optionClient) {
-        return optionClient;
+        return validateClient(optionClient);
     }
 
     const response = await prompts({
@@ -225,7 +268,8 @@ async function getClient(optionClient?: string): Promise<string | undefined> {
         initial: ''
     });
 
-    return (response.clientValue as string) || undefined;
+    const client = response.clientValue as string;
+    return client ? validateClient(client) : undefined;
 }
 
 /**
@@ -284,7 +328,28 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     const baseUri = destination ? `/${destination}` : hostname ? `https://${hostname}` : '';
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
 
-    const result = await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl);
+    // Build ImportProjectInfo with client if provided
+    const importProjectInfo = client
+        ? {
+              sapClient: client,
+              rootPath: resolvedPath,
+              moduleName: '',
+              moduleDescription: '',
+              sapux: false,
+              scp: false,
+              destination: destination ?? '',
+              appTitle: '',
+              appVersion: '',
+              backends: [],
+              odataVersion: 2 as any,
+              webappPath: '',
+              hostname: hostname ?? '',
+              isFioriToolsProject: false,
+              sapLibs: ''
+          }
+        : undefined;
+
+    const result = await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, importProjectInfo);
 
     if (result.result) {
         logger.info('✓ Migration completed successfully!');
