@@ -1,4 +1,6 @@
-import type { TreeAggregation, TreeAggregations } from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type { Parser } from '@sap/ux-specification/dist/types/src';
+type TreeAggregation = Parser.TreeAggregation;
+type TreeAggregations = Parser.TreeAggregations;
 import { getAggregations, parseDataFieldForAnnotationName } from './modelUtils.js';
 import type { ContactCardField, TableColumn, TableColumnFeatureData } from '../types.js';
 
