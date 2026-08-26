@@ -8,6 +8,21 @@ import { normalizePath } from '@sap-ux/project-access';
 const DUMMY_PROJECT_CONTEXT: ProjectContext = {} as any;
 
 describe('FioriJSONSourceCode', () => {
+    it('should return error for .ts file', () => {
+        const tsText = 'test';
+        const fioriLanguage = new FioriLanguage();
+        const result = fioriLanguage.parse(
+            { path: 'dummy.ts', body: tsText, physicalPath: 'dummy.ts', bom: false },
+            { LangOptions: {} }
+        );
+
+        expect(result.ok).toBe(false);
+        expect(result.errors).toHaveLength(1);
+        expect(result.errors[0].message).toBe(
+            `File ${normalizePath('dummy.ts')} is not part of a Fiori project or could not be indexed.`
+        );
+    });
+
     it('should return parsing result for .json file', () => {
         const jsonText = '{"type": "Object", "firstNode": {}}';
         const fioriLanguage = new FioriLanguage();
