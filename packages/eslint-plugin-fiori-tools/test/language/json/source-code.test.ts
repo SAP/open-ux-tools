@@ -2,6 +2,7 @@ import { parse, type MemberNode, type StringNode } from '@humanwhocodes/momoa';
 import { FioriJSONSourceCode } from '../../../src/language/json/source-code.js';
 import type { ProjectContext } from '../../../src/project-context/project-context.js';
 import { FioriLanguage } from '../../../src/language/fiori-language.js';
+import { normalizePath } from '@sap-ux/project-access';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const DUMMY_PROJECT_CONTEXT: ProjectContext = {} as any;
@@ -46,7 +47,9 @@ describe('FioriJSONSourceCode', () => {
 
         expect(result.ok).toBe(false);
         expect(result.errors).toHaveLength(1);
-        expect(result.errors[0].message).toBe('Failed to parse file Dummy.json: Unexpected end of input found. (1:18)');
+        expect(result.errors[0].message).toBe(
+            `Failed to parse file ${normalizePath('dummy.json')}: Unexpected end of input found. (1:18)`
+        );
     });
 
     it('should get parent node if requested path array is empty', () => {
