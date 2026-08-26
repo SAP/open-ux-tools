@@ -42,11 +42,7 @@ export function createInsertTargetChange(
 }
 
 export type ElementInserts =
-    | InsertAnnotation
-    | InsertEmbeddedAnnotation
-    | InsertRecord
-    | InsertRecordProperty
-    | InsertPrimitiveValue;
+    InsertAnnotation | InsertEmbeddedAnnotation | InsertRecord | InsertRecordProperty | InsertPrimitiveValue;
 export type Inserts = ElementInserts | InsertCollection;
 
 type InsertByType<Union, Type> = Union extends { type: Type } ? Union : never;

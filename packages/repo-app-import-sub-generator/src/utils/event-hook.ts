@@ -2,6 +2,7 @@ import RepoAppDownloadLogger from './logger.js';
 import { t } from './i18n.js';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
+import type { EventName } from '../telemetryEvents/index.js';
 
 /**
  * Context object for the App generation process.
@@ -16,6 +17,8 @@ export interface RepoAppGenContext {
     vscodeInstance?: VSCodeInstance;
     // Optional deploy config to pass to the post-generation command
     deployConfig?: AbapDeployConfig;
+    // Optional telemetry event name for migration
+    migrationTelemetryEvent?: EventName;
 }
 
 /**
@@ -37,7 +40,8 @@ export async function runPostAppGenHook(context: RepoAppGenContext): Promise<voi
         // Execute the post-generation command
         await context.vscodeInstance?.commands?.executeCommand?.(context.postGenCommand, {
             fsPath: context.path,
-            deployConfig: context.deployConfig
+            deployConfig: context.deployConfig,
+            ...(context.migrationTelemetryEvent && { migrationTelemetryEvent: context.migrationTelemetryEvent })
         });
     } catch (e) {
         RepoAppDownloadLogger.logger?.error(

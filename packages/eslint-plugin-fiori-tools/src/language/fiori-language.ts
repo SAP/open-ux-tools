@@ -23,10 +23,7 @@ import { FioriChangeSourceCode } from './change/source-code.js';
 
 export type FioriLanguageOptions = {};
 export type FioriSourceCode =
-    | FioriJSONSourceCode
-    | FioriXMLSourceCode
-    | FioriAnnotationSourceCode
-    | FioriChangeSourceCode;
+    FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode | FioriChangeSourceCode;
 export type RootNode = DocumentNode | XMLDocument;
 export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
 

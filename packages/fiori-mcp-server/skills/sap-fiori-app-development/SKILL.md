@@ -62,7 +62,7 @@ The Fiori MCP can add the following page types to existing applications:
 
 1. For standalone Fiori projects based on external services, the application is created at the root level by Fiori MCP tools.
 2. **Destination or SAP System Name**: If the user doesn't provide a destination name or SAP system name, use the Fiori MCP Server to retrieve and present available destinations/systems for user selection.
-3. **Fetching OData Service Metadata**: Use the Fiori MCP Server to discover and select services from the configured destination or SAP system. If the service metadata cannot be retrieved, try the Service Center MCP Server as an alternative.
+3. **Fetching OData Service Metadata**: Refer to the tools instructions for downloading odata service metatdata. If Service Center MCP is available use that, otherwise use the Fiori MCP Server to download the metadata file.
 4. Annotations should primarily be maintained in the backend service, and only app-specific UI customizations or overrides should be placed in local (frontend) annotations.
 5. Use frontend annotations only for app-specific UI tweaks (e.g., `/webapp/annotations/annotation.xml`) referenced in `manifest.json` with matching `uri` and `localUri` values:
    ```json

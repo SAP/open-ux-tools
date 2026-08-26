@@ -153,6 +153,8 @@ export default class Component extends UIComponent {
         // Verify plugin has meta and rules
         const pluginDef = firstConfig.plugins?.['@sap-ux/fiori-tools'];
         expect(pluginDef?.meta).toBeDefined();
+        expect(pluginDef?.meta?.namespace).toBe('@sap-ux/fiori-tools');
+        expect(pluginDef?.meta?.version).toBe(plugin.meta.version);
         expect(pluginDef?.rules).toBeDefined();
     });
 
@@ -168,6 +170,8 @@ export default class Component extends UIComponent {
         // Verify plugin has meta, languages, and rules
         const pluginDef = firstConfig.plugins?.['@sap-ux/fiori-tools'];
         expect(pluginDef?.meta).toBeDefined();
+        expect(pluginDef?.meta?.namespace).toBe('@sap-ux/fiori-tools');
+        expect(pluginDef?.meta?.version).toBe(plugin.meta.version);
         expect(pluginDef?.languages).toBeDefined();
         expect(pluginDef?.rules).toBeDefined();
     });

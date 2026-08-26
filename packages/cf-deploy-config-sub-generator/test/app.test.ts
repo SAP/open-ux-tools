@@ -795,17 +795,19 @@ describe('Cloud foundry generator tests', () => {
                 .run()
         ).resolves.not.toThrow();
 
-        expect(getCFQuestionsSpy).toHaveBeenCalledWith({
-            addOverwrite: true,
-            apiHubConfig: {
-                apiHubKey: 'mockApiHubKey',
-                apiHubType: 'API_HUB_ENTERPRISE'
-            },
-            cfDestination: 'ABHE_sap_opu_odata_sap_ZUI_RAP_TRAVEL_M_U025',
-            isAbapDirectServiceBinding: false,
-            isCap: false,
-            projectRoot: expect.stringContaining(appDir)
-        });
+        expect(getCFQuestionsSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                addOverwrite: true,
+                apiHubConfig: {
+                    apiHubKey: 'mockApiHubKey',
+                    apiHubType: 'API_HUB_ENTERPRISE'
+                },
+                cfDestination: 'ABHE_sap_opu_odata_sap_ZUI_RAP_TRAVEL_M_U025',
+                isAbapDirectServiceBinding: false,
+                isCap: false,
+                projectRoot: expect.stringContaining(appDir)
+            })
+        );
     });
 
     it('Validate target path is updated if already exists', async () => {
@@ -1168,6 +1170,7 @@ describe('Cloud foundry generator tests', () => {
     it('Should throw error if config writing fails', async () => {
         mockHasbinSync.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockGetCFQuestions.mockResolvedValue([]);
         mockGenerateAppConfig.mockImplementation(() => {
             throw new Error('MTA Error');
         });
@@ -1205,6 +1208,7 @@ describe('Cloud foundry generator tests', () => {
 
     it('Should not throw error in end phase if telemetry fails', async () => {
         mockHasbinSync.mockReturnValue(true);
+        mockGetCFQuestions.mockResolvedValue([]);
         mockSendTelemetry.mockImplementation(() => {
             throw new Error('Telemetry Error');
         });

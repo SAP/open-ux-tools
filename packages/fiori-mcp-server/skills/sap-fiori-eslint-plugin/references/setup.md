@@ -168,7 +168,7 @@ For CAP apps where the config is in a subfolder, choose the approach that fits t
 Check first:
 
 ```bash
-node -e "const p=require('./package.json'); console.log(p.workspaces)"
+node --input-type=commonjs -e "const p=require('./package.json'); console.log(p.workspaces)"
 ```
 
 If this prints the app paths, the `--workspace` flag will work.

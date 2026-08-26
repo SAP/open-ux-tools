@@ -26,9 +26,7 @@ sap.ui.define([
 
         opaTest("Navigate to BookingObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
 
@@ -41,9 +39,12 @@ sap.ui.define([
 
 
 
-        opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+        opaTest("Check the number of sections of the Object Page", function (_Given, _When, Then) {
             Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
+        });
+
+        opaTest("Check the Booking section of the Object Page", function (_Given, When, Then) {
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: "Booking" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "Booking" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "BookingID" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "BookingDate" });
@@ -53,10 +54,13 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "FlightDate" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "FlightPrice" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "DestinationRisk" });
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton("BookingSupplement");
+        });
+
+        opaTest("Check the BookingSupplement section of the Object Page", function (_Given, When, Then) {
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: "BookingSupplement" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "BookingSupplement" });
-            Then.onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckColumns({"BookingSupplementID":{"header":"Book. Supp. Number"},"SupplementID":{"header":"Product ID"},"Price":{"header":"Product Price"}});
-       });
+            Then.onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckColumns(undefined, {"BookingSupplementID":{"header":"Book. Supp. Number"},"SupplementID":{"header":"Product ID"},"Price":{"header":"Product Price"}});
+        });
 
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup

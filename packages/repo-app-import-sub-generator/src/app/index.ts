@@ -17,10 +17,12 @@ import {
     getDefaultTargetFolder,
     generateAppGenInfo,
     type AppGenInfo,
+    type Floorplan,
     sendTelemetry,
     TelemetryHelper,
     isCli,
-    setYeomanEnvConflicterForce
+    setYeomanEnvConflicterForce,
+    getFloorplanLabel
 } from '@sap-ux/fiori-generator-shared';
 import type {
     RepoAppDownloadOptions,
@@ -47,7 +49,7 @@ import { PromptState } from '../prompts/prompt-state.js';
 import { getAppConfig, getAdtDeployConfig } from './app-config-quick-deploy.js';
 import { getAbapRepoAppConfig, getAbapRepoDeployConfig, writeServiceMetadata } from './app-config-abap-repo.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { makeValidJson, processDebugArtifacts, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
+import { makeValidJson, cleanupArtifacts, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
 import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates.js';
 import { getYUIDetails } from '../prompts/prompt-helpers.js';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators.js';
@@ -156,10 +158,30 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
-        if (this.downloadType === AppDownloadType.AbapRepository) {
-            await this._generateAbapRepositoryApp();
-        } else {
-            await this._generateAdtQuickDeployApp();
+        try {
+            if (this.downloadType === AppDownloadType.AbapRepository) {
+                await this._generateAbapRepositoryApp();
+            } else {
+                await this._generateAdtQuickDeployApp();
+            }
+        } catch (error) {
+            RepoAppDownloadLogger.logger?.error(
+                t('error.writingPhase', { error: error instanceof Error ? error.message : String(error) })
+            );
+            const failEvent =
+                this.downloadType === AppDownloadType.AbapRepository
+                    ? EventName.ABAP_REPO_DOWNLOAD_FAIL
+                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_FAIL;
+            await sendTelemetry(
+                failEvent,
+                TelemetryHelper.createTelemetryData({
+                    appType: generatorName,
+                    ...this.options.telemetryData
+                }) ?? {}
+            ).catch(() => {
+                // telemetry errors are non-fatal
+            });
+            throw error;
         }
     }
 
@@ -175,7 +197,7 @@ export default class extends Generator {
             await writeServiceMetadata(serviceProvider, webappPath, this.fs);
         }
 
-        processDebugArtifacts(webappPath, this.fs);
+        cleanupArtifacts(webappPath, this.fs);
         const appConfig = getAbapRepoAppConfig(webappPath, this.answers.selectedApp, this.fs);
 
         // If package.json does not exist in the extracted app, add a minimal one with the appId as the package name.
@@ -277,7 +299,9 @@ export default class extends Generator {
             generatorName: generatorName,
             generatorVersion: this.rootGeneratorVersion(),
             ui5Version: config.ui5?.version ?? '',
-            template: config.template.type,
+            template: config.template.type
+                ? getFloorplanLabel(config.template.type as Floorplan, config.service.version)
+                : 'unknown',
             serviceUrl: config.service.url,
             launchText: t('readMe.launchText')
         };
@@ -388,8 +412,11 @@ export default class extends Generator {
             await runPostAppGenHook({
                 path: this.projectPath,
                 vscodeInstance: this.vscode,
-                postGenCommand: this.options.data?.postGenCommand,
-                deployConfig: this.deployConfig
+                postGenCommand: this.options.data?.postGenCommand ?? '',
+                deployConfig: this.deployConfig,
+                ...(this.downloadType === AppDownloadType.AbapRepository && {
+                    migrationTelemetryEvent: EventName.ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED
+                })
             });
         }
     }
@@ -404,10 +431,14 @@ export default class extends Generator {
                 MessageType.notification
             );
             await this._handlePostAppGeneration();
+            const successEvent =
+                this.downloadType === AppDownloadType.AbapRepository
+                    ? EventName.ABAP_REPO_DOWNLOAD_SUCCESS
+                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS;
             await sendTelemetry(
-                EventName.GENERATION_SUCCESS,
+                successEvent,
                 TelemetryHelper.createTelemetryData({
-                    appType: 'repo-app-import-sub-generator',
+                    appType: generatorName,
                     ...this.options.telemetryData
                 }) ?? {}
             ).catch((error) => {

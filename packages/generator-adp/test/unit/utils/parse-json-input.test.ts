@@ -1,25 +1,25 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { JsonInput } from '../../../src/app/types.js';
-import { getFirstArgAsString, parseJsonInput } from '../../../src/utils/parse-json-input.js';
+import { getFirstArg, parseJsonInput } from '../../../src/utils/parse-json-input.js';
 
 const logger = {
     debug: jest.fn()
 } as unknown as ToolsLogger;
 
-describe('getFirstArgAsString', () => {
+describe('getFirstArg', () => {
     it('should return the argument itself when passed as a string', () => {
-        expect(getFirstArgAsString('arg')).toEqual('arg');
+        expect(getFirstArg('arg')).toEqual('arg');
     });
 
     it('should return the first element in case of an array with arguments', () => {
-        expect(getFirstArgAsString(['arg1', 'arg2'])).toEqual('arg1');
-        expect(getFirstArgAsString([1, 2] as unknown as string[])).toEqual(1);
+        expect(getFirstArg(['arg1', 'arg2'])).toEqual('arg1');
+        expect(getFirstArg([1, 2])).toEqual(1);
     });
 
     it('should return empty string if the arguments parameter is not in the expected format', () => {
-        expect(getFirstArgAsString(null as unknown as string)).toEqual('');
-        expect(getFirstArgAsString(undefined as unknown as string)).toEqual('');
-        expect(getFirstArgAsString({} as unknown as string)).toEqual('');
+        expect(getFirstArg(null as unknown as string)).toEqual('');
+        expect(getFirstArg(undefined as unknown as string)).toEqual('');
+        expect(getFirstArg({} as unknown as string)).toEqual('');
     });
 });
 
@@ -52,23 +52,27 @@ describe('parseJsonInput', () => {
         expect(parseJsonInput(jsonString, logger)).toBeUndefined();
     });
 
-    it('should return the adp json input with keyUserChanges', () => {
+    it('should return the adp json input including optional id', () => {
         const jsonInput: JsonInput = {
             system: 'system',
             application: 'application',
-            keyUserChanges: [{ content: { fileName: 'id_123_propertyChange', changeType: 'propertyChange' } }]
+            id: '123.5'
         };
         const jsonString = JSON.stringify(jsonInput);
         expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
     });
 
-    it('should return undefined when keyUserChanges is invalid', () => {
-        const invalidJsonInput = {
+    it('should return valid input even when keyUserChanges is present in CLI json', () => {
+        const jsonString = JSON.stringify({
             system: 'system',
             application: 'application',
-            keyUserChanges: 'not an array'
-        };
-        const jsonString = JSON.stringify(invalidJsonInput);
-        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+            keyUserChanges: [{ content: { fileName: 'id_123_propertyChange' } }]
+        });
+        expect(parseJsonInput(jsonString, logger)).toEqual(
+            expect.objectContaining({
+                system: 'system',
+                application: 'application'
+            })
+        );
     });
 });

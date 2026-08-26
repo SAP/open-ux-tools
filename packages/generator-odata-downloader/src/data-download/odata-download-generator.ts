@@ -15,8 +15,7 @@ import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 import { join } from 'node:path';
-// @ts-expect-error: No types available, breaks no implicit any rule
-import prettifyXml from 'prettify-xml';
+import xmlFormatter from 'xml-formatter';
 import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
 import { initI18nODataDownloadGenerator, t } from '../utils/i18n.js';
@@ -372,7 +371,12 @@ export class ODataDownloadGenerator extends Generator {
                 );
                 this.writeDestination(
                     mainServiceMetadataPath,
-                    prettifyXml(this.state.mainServiceMetadata, { indent: 4 })
+                    xmlFormatter(this.state.mainServiceMetadata, {
+                        indentation: '    ',
+                        lineSeparator: '\n',
+                        collapseContent: true,
+                        throwOnFailure: false
+                    })
                 );
             }
         }

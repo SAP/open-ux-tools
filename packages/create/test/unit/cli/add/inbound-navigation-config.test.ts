@@ -82,6 +82,7 @@ const mockLoadCfConfig = jest.fn().mockReturnValue({});
 const mockGetAppParamsFromUI5Yaml = jest
     .fn()
     .mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' });
+const mockGetSystemUI5Version = jest.fn().mockResolvedValue('1.143.0');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     flpConfigurationExists: mockFlpConfigurationExists,
     getAdpConfig: mockGetAdpConfig,
@@ -92,7 +93,8 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: mockIsCFEnvironment,
     getCfBaseAppInbounds: mockGetCfBaseAppInbounds,
     loadCfConfig: mockLoadCfConfig,
-    getAppParamsFromUI5Yaml: mockGetAppParamsFromUI5Yaml
+    getAppParamsFromUI5Yaml: mockGetAppParamsFromUI5Yaml,
+    getSystemUI5Version: mockGetSystemUI5Version
 }));
 
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
@@ -315,7 +317,9 @@ describe('Test command add navigation-config with ADP scenario', () => {
         expect(mockGenerateInboundConfig).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
             expect.arrayContaining([flpConfigAnswers]),
-            expect.any(Object)
+            expect.any(Object),
+            '1.143.0',
+            false
         );
         expect(mockGenerateInboundNavigationConfig).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
@@ -355,7 +359,9 @@ describe('Test command add navigation-config with ADP scenario', () => {
         expect(mockGenerateInboundConfig).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
             expect.arrayContaining([flpConfigAnswers]),
-            expect.any(Object)
+            expect.any(Object),
+            '1.143.0',
+            false
         );
         expect(mockGenerateInboundNavigationConfig).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();

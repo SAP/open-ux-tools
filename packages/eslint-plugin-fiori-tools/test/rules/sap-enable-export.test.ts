@@ -13,7 +13,8 @@ import {
     V4_ANNOTATIONS_PATH,
     V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
-    V4_MANIFEST_PATH
+    V4_MANIFEST_PATH,
+    V4_SECOND_TABLE_ANNOTATION
 } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
@@ -205,6 +206,98 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                 ])
             },
             [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - list report page - multiview: enableExport is false in 2 tables',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'enableExport'
+                        ],
+                        value: false
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                            'tableSettings',
+                            'enableExport'
+                        ],
+                        value: false
+                    }
+                ]),
+                errors: [
+                    {
+                        message: 'Export functionality in the table must be enabled',
+                        line: 127,
+                        column: 21
+                    },
+                    {
+                        message: 'Export functionality in the table must be enabled',
+                        line: 132,
+                        column: 21
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {
+                            type: 'ResponsiveTable',
+                            selectionMode: 'Auto'
+                            // enableExport property removed
+                        }
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                            'tableSettings'
+                        ],
+                        value: {
+                            // enableExport property removed
+                        }
+                    }
+                ])
+            },
+            [
+                {
+                    filename: V4_ANNOTATIONS_PATH,
+                    code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_SECOND_TABLE_ANNOTATION)
+                }
+            ]
         ),
         createInvalidTest(
             {

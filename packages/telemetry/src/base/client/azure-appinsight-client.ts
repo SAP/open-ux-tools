@@ -136,24 +136,14 @@ class ApplicationInsightClient extends Client {
         client: appInsights.TelemetryClient,
         event: appInsights.Contracts.EventTelemetry
     ): Promise<void> {
-        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
-            return;
+        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
+            client.trackEvent(event);
+            await client.flush();
         }
-
-        return new Promise((resolve, reject) => {
-            try {
-                client.trackEvent(event);
-                client.flush({
-                    callback: () => resolve()
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
     }
 
     /**
-     * Send teleemtry event in non-blocking fashion.
+     * Send telemetry event in non-blocking fashion.
      *
      * @param client Telemetry client instance
      * @param event Telemetry event
@@ -174,23 +164,23 @@ class ApplicationInsightClient extends Client {
      * @returns Telemetry client instance
      */
     private createTelemetryClient(sampleRate: SampleRate): appInsights.TelemetryClient {
-        let sampleRateNumer: number;
+        let sampleRateNumber: number;
 
         switch (sampleRate) {
             case SampleRate.OnePercent:
-                sampleRateNumer = 1;
+                sampleRateNumber = 1;
                 break;
             case SampleRate.TenPercent:
-                sampleRateNumer = 10;
+                sampleRateNumber = 10;
                 break;
             case SampleRate.NoSampling:
             default:
-                sampleRateNumer = 100;
+                sampleRateNumber = 100;
                 break;
         }
 
         const client: appInsights.TelemetryClient = new appInsights.TelemetryClient(this.applicationKey);
-        client.config.samplingPercentage = sampleRateNumer;
+        client.config.samplingPercentage = sampleRateNumber;
         configAzureTelemetryClient(client);
         return client;
     }

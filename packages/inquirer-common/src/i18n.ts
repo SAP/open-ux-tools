@@ -21,17 +21,9 @@ export async function initI18nInquirerCommon(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         missingInterpolationHandler: () => '',
-        interpolation: {
-            format: function (value, format?: string) {
-                // If we have a value add a colon before outputting
-                if (format === 'addMsgWithColonFormatter') {
-                    return value ? `: ${value}` : '';
-                }
-                return value;
-            }
-        },
-        showSupportNotice: false
+        interpolation: { escapeValue: false }
     });
+    i18n.services.formatter?.add('addMsgWithColonFormatter', (value) => (value ? `: ${value}` : ''));
     addi18nResourceBundle();
 }
 

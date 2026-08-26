@@ -20,6 +20,7 @@ import {
     loadCfConfig,
     isLoggedInCf,
     getAppParamsFromUI5Yaml,
+    getSystemUI5Version,
     type InternalInboundNavigation,
     type AdpPreviewConfigWithTarget,
     type DescriptorVariant,
@@ -88,6 +89,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private tileSettingsAnswers?: TileSettingsAnswers;
     private provider: AbapServiceProvider;
     private isCfProject: boolean = false;
+    private systemUI5Version: string | undefined;
 
     /**
      * Creates an instance of the generator.
@@ -184,7 +186,13 @@ export default class AdpFlpConfigGenerator extends Generator {
                 this.tileSettingsAnswers as TileSettingsAnswers,
                 this.inbounds
             );
-            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation[], this.fs);
+            await generateInboundConfig(
+                this.projectRootPath,
+                config as InternalInboundNavigation[],
+                this.fs,
+                this.systemUI5Version,
+                this.isCfProject
+            );
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
@@ -251,6 +259,19 @@ export default class AdpFlpConfigGenerator extends Generator {
             }
         ]);
         await this.prompt(prompts);
+        await this._fetchSystemUI5Version();
+    }
+
+    /**
+     * Fetches and stores the system UI5 version. Swallows errors at debug level so a
+     * flaky version endpoint does not abort an otherwise-valid flow.
+     */
+    private async _fetchSystemUI5Version(): Promise<void> {
+        try {
+            this.systemUI5Version = await getSystemUI5Version(this.provider, this.toolsLogger);
+        } catch (error) {
+            this.toolsLogger.debug(`Could not fetch system UI5 version: ${error}`);
+        }
     }
 
     /**
@@ -525,6 +546,8 @@ export default class AdpFlpConfigGenerator extends Generator {
             }
             this._handleFetchingError(error);
         }
+
+        await this._fetchSystemUI5Version();
     }
 
     /**

@@ -97,9 +97,7 @@ export interface Operator extends Node {
 }
 
 export type EXPRESSION_TYPE =
-    | typeof INCORRECT_EXPRESSION_TYPE
-    | typeof UNSUPPORTED_OPERATOR_EXPRESSION_TYPE
-    | typeof CORRECT_EXPRESSION_TYPE;
+    typeof INCORRECT_EXPRESSION_TYPE | typeof UNSUPPORTED_OPERATOR_EXPRESSION_TYPE | typeof CORRECT_EXPRESSION_TYPE;
 
 export interface ExpressionBase extends Node {
     type: EXPRESSION_TYPE;

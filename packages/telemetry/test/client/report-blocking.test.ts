@@ -6,8 +6,8 @@ const flushMock = jest.fn();
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
-        public addTelemetryProcessor: any;
+        public context: any;
+        public setUseDiskRetryCaching: any;
         public trackEvent: any;
         public flush: any;
 
@@ -15,12 +15,8 @@ jest.unstable_mockModule('applicationinsights', () => {
             this.config = {
                 samplingPercentage: 0
             };
-            this.channel = {
-                setUseDiskRetryCaching: jest.fn()
-            };
-            this.addTelemetryProcessor = (fn: any) => {
-                fn({ tags: {} });
-            };
+            this.context = { tags: {} };
+            this.setUseDiskRetryCaching = jest.fn();
             this.trackEvent = (event: any) => trackEventMock(event);
             this.flush = (options: any) => {
                 flushMock(options);
@@ -50,7 +46,7 @@ describe('ClientFactory Send Report Blocking Tests', () => {
         const telemetryClient = ClientFactory.getTelemetryClient();
 
         const telemetryClientWrapperTrackEventMock = jest
-            .spyOn<any, any>(telemetryClient, 'trackEvent')
+            .spyOn<any, any, any>(telemetryClient, 'trackEvent')
             .mockImplementation(() => {
                 return;
             });
@@ -71,7 +67,7 @@ describe('ClientFactory Send Report Blocking Tests', () => {
         const telemetryClient = ClientFactory.getTelemetryClient();
 
         const telemetryClientWrapperTrackEventMock = jest
-            .spyOn<any, any>(telemetryClient, 'trackEvent')
+            .spyOn<any, any, any>(telemetryClient, 'trackEvent')
             .mockImplementation(() => {
                 return;
             });

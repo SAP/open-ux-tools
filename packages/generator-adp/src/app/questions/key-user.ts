@@ -204,7 +204,8 @@ export class KeyUserImportPrompter {
             default: options?.default ?? '',
             guiOptions: {
                 mandatory: true,
-                type: 'login'
+                type: 'login',
+                applyDefaultWhenDirty: true
             },
             when: (answers: KeyUserImportAnswers) => !!answers.keyUserSystem && this.isAuthRequired,
             validate: async (value: string, answers: KeyUserImportAnswers) =>

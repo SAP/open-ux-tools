@@ -199,7 +199,7 @@ export class ChangeService extends EventTarget {
                                     controlId,
                                     changeType: type,
                                     subtitle
-                                } = await handler(change as unknown as GenericChange, {
+                                } = await handler(change, {
                                     textBundle,
                                     appComponent: this.options.rta.getRootControlInstance(),
                                     configPropertyControlIdMap: this.configPropertyControlIdMap

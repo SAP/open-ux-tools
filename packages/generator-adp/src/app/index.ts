@@ -40,15 +40,16 @@ import {
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
 import { getPackageInfo, installDependencies } from '../utils/deps.js';
 import { initI18n, t } from '../utils/i18n.js';
+import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
-import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input.js';
+import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
 import { TelemetryCollector, EventName } from '../telemetry/index.js';
 import {
     getDeployPage,
@@ -60,6 +61,7 @@ import {
 } from '../utils/steps.js';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers.js';
 import { getTemplatesOverwritePath } from '../utils/templates.js';
+import { writeResult } from '../utils/write-result.js';
 import { existsInWorkspace, handleWorkspaceFolderChoice, showWorkspaceFolderWarning } from '../utils/workspace.js';
 import { getFlexLayer } from './layer.js';
 import { getPrompts } from './questions/attributes.js';
@@ -73,6 +75,7 @@ import {
     type AdpGeneratorOptions,
     type AttributePromptOptions,
     type JsonInput,
+    type JsonInputFile,
     type OptionalPromptsConfig
 } from './types.js';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
@@ -140,6 +143,10 @@ export default class extends Generator {
      */
     private readonly jsonInput?: JsonInput;
     /**
+     * Parsed `{tmpdir}/{id}.txt` when JSON input includes `id`.
+     */
+    private jsonInputFile?: JsonInputFile;
+    /**
      * Instance of AbapServiceProvider.
      */
     private abapProvider: AbapServiceProvider;
@@ -168,6 +175,10 @@ export default class extends Generator {
      */
     private isCfEnv = false;
     /**
+     * Tracks whether the writing phase failed, to prevent end() from overwriting a failure result.
+     */
+    private writingFailed = false;
+    /**
      * Indicates if the user is logged in to CF.
      */
     private isCfLoggedIn = false;
@@ -187,10 +198,6 @@ export default class extends Generator {
      * Indicates if CF is installed.
      */
     private cfInstalled: boolean;
-    /**
-     * Indicates if the CF feature is enabled.
-     */
-    private readonly isCfFeatureEnabled: boolean;
     /**
      * Tools ID.
      */
@@ -221,10 +228,7 @@ export default class extends Generator {
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
 
-        this.isCfFeatureEnabled = isFeatureEnabled('sap.ux.appGenerator.testBetaFeatures.adpCfExperimental');
-        this.logger.debug(`isCfFeatureEnabled: ${this.isCfFeatureEnabled}`);
-
-        const jsonInputString = getFirstArgAsString(args);
+        const jsonInputString = getFirstArg(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
         if (!this.jsonInput) {
@@ -268,8 +272,7 @@ export default class extends Generator {
         });
         this.telemetryCollector = new TelemetryCollector();
         if (!this.jsonInput) {
-            const shouldShowTargetEnv = this.cfInstalled && this.isCfFeatureEnabled;
-            this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
+            this.prompts.splice(0, 0, getWizardPages(this.cfInstalled));
             this.prompter = this._getOrCreatePrompter();
             this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
         }
@@ -412,7 +415,7 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
-            const keyUserChanges = this.jsonInput ? this.jsonInput.keyUserChanges : this.keyUserPrompter?.changes;
+            const keyUserChanges = this.jsonInput ? this.jsonInputFile?.keyUserChanges : this.keyUserPrompter?.changes;
             const projectType = this._getProjectType();
 
             const packageJson = getPackageInfo();
@@ -437,7 +440,12 @@ export default class extends Generator {
 
             await generate(this._getProjectPath(), config, this.fs);
         } catch (e) {
-            this.logger.error(`Writing phase failed: ${e}`);
+            const message = e instanceof Error ? e.message : String(e);
+            this.logger.error(`Writing phase failed: ${message}`);
+            this.writingFailed = true;
+            if (this.jsonInput?.id) {
+                writeResult(this.jsonInput.id, `Failure: ${message}`);
+            }
             throw new Error(t('error.updatingApp'));
         } finally {
             cacheClear(this.appWizard, this.logger);
@@ -458,6 +466,12 @@ export default class extends Generator {
 
     async end(): Promise<void> {
         const projectPath = this._getProjectPath();
+
+        // Report the generated project path back to the BAS orchestrator once files are written to disk.
+        if (this.jsonInput?.id && !this.writingFailed) {
+            writeResult(this.jsonInput.id, projectPath);
+        }
+
         const data = TelemetryHelper.createTelemetryData({
             appType: 'generator-adp',
             ...this.options.telemetryData,
@@ -543,9 +557,7 @@ export default class extends Generator {
      * Sets the target environment and updates related state accordingly.
      */
     private async _determineTargetEnv(): Promise<void> {
-        const hasRequiredExtensions = this.isCfFeatureEnabled && this.cfInstalled;
-
-        if (hasRequiredExtensions) {
+        if (this.cfInstalled) {
             await this._promptForTargetEnvironment();
         } else {
             this.targetEnv = TargetEnv.ABAP;
@@ -755,6 +767,10 @@ export default class extends Generator {
     private async _initFromJson(): Promise<void> {
         if (!this.jsonInput) {
             return;
+        }
+
+        if (this.jsonInput.id) {
+            this.jsonInputFile = await readJsonInputFile(this.jsonInput.id);
         }
 
         const {

@@ -1,11 +1,16 @@
 import { jest } from '@jest/globals';
 
 const actualStore = await import('@sap-ux/store');
+const mockSystems = [{ name: 'system1' }, { name: 'system2' }, { name: 'system2 (1)' }];
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue([{ name: 'system1' }, { name: 'system2' }, { name: 'system2 (1)' }])
-    }))
+        getAll: jest.fn().mockResolvedValue(mockSystems)
+    })),
+    isSystemNameInUse: jest.fn().mockImplementation(async (name: string) => {
+        const trimmedName = name.trim().toLowerCase();
+        return mockSystems.some((system: any) => system.name.toLowerCase() === trimmedName);
+    })
 }));
 
 const { initI18nOdataServiceInquirer } = await import('../../../../src/i18n.js');

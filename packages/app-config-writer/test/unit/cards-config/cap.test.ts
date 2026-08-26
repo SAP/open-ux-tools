@@ -25,7 +25,8 @@ jest.unstable_mockModule('../../../src/common/utils.js', () => ({
 }));
 
 jest.unstable_mockModule('../../../src/cards-config/prerequisites.js', () => ({
-    ensureMinUI5Version: jest.fn<typeof realPrerequisites.ensureMinUI5Version>().mockResolvedValue(undefined)
+    ensureMinUI5Version: jest.fn<typeof realPrerequisites.ensureMinUI5Version>().mockResolvedValue(undefined),
+    ensureCdsPluginUi5: jest.fn<typeof realPrerequisites.ensureCdsPluginUi5>().mockResolvedValue(undefined)
 }));
 
 jest.unstable_mockModule('../../../src/common/ui5-yaml.js', () => ({

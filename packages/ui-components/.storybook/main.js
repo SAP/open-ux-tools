@@ -21,7 +21,7 @@ export default {
                 {
                     loader: 'ts-loader',
                     options: {
-                        configFile: 'tsconfig.json',
+                        configFile: path.resolve(__dirname, 'tsconfig.json'),
                         transpileOnly: true
                     }
                 }

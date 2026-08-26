@@ -121,7 +121,7 @@ describe('<UIToggle />', () => {
                   },
                   ":hover .ms-Toggle-thumb": Object {
                     "background": "var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))",
-                    "borderColor": "var(--vscode-button-border, transparent)",
+                    "borderColor": "var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))",
                   },
                   "background": "var(--vscode-editorWidget-background)",
                   "borderColor": "var(--vscode-editorWidget-border)",
@@ -146,7 +146,7 @@ describe('<UIToggle />', () => {
                   },
                   "backgroundColor": "var(--vscode-button-secondaryBackground)",
                   "backgroundPosition": "center",
-                  "borderColor": "var(--vscode-button-border, transparent)",
+                  "borderColor": "var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))",
                   "borderWidth": 1,
                   "height": 14,
                   "svg": Object {

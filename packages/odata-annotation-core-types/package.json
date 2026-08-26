@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-annotation-core-types",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Annotation Core types",
     "type": "module",
     "repository": {
@@ -42,7 +42,7 @@
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "npm-run-all2": "8.0.4"
+        "npm-run-all2": "9.0.2"
     },
     "engines": {
         "node": ">=22.x"

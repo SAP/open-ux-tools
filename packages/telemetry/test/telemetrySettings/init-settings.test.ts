@@ -4,12 +4,12 @@ import type { ProjectInfo } from '../../src/base/types/index.js';
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
+        public setUseDiskRetryCaching: any;
         public addTelemetryProcessor: any;
         public trackEvent: any;
         constructor() {
             this.config = { samplingPercentage: 0 };
-            this.channel = { setUseDiskRetryCaching: jest.fn() };
+            this.setUseDiskRetryCaching = jest.fn();
             this.addTelemetryProcessor = jest.fn();
             this.trackEvent = jest.fn();
         }
@@ -17,7 +17,8 @@ jest.unstable_mockModule('applicationinsights', () => {
     return { TelemetryClient };
 });
 
-const isAppStudioMock = jest.fn();
+// @ts-expect-error jest mocking
+const isAppStudioMock: jest.Mock<boolean, [void]> = jest.fn();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
@@ -161,6 +162,43 @@ describe('toolsSuiteTelemetrySettings', () => {
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
         expect(TelemetrySettings.azureInstrumentationKey).toBe('abc-123');
+    });
+
+    it('Applies ingestionEndpoint/liveEndpoint overrides when provided', async () => {
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: true })
+        });
+
+        await initTelemetrySettings({
+            resourceId: '',
+            consumerModule: packageJson,
+            internalFeature: false,
+            watchTelemetrySettingStore: false,
+            ingestionEndpoint: 'https://custom-ingest.example.com/',
+            liveEndpoint: 'https://custom-live.example.com/'
+        });
+
+        expect(TelemetrySettings.azureIngestionEndpoint).toBe('https://custom-ingest.example.com/');
+        expect(TelemetrySettings.azureLiveEndpoint).toBe('https://custom-live.example.com/');
+    });
+
+    it('Keeps default ingestionEndpoint/liveEndpoint when overrides are not provided', async () => {
+        // reset to defaults in case a previous test mutated the shared runtime settings
+        TelemetrySettings.azureIngestionEndpoint = 'https://westus2-0.in.applicationinsights.azure.com/';
+        TelemetrySettings.azureLiveEndpoint = 'https://westus2.livediagnostics.monitor.azure.com/';
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: true })
+        });
+
+        await initTelemetrySettings({
+            resourceId: '',
+            consumerModule: packageJson,
+            internalFeature: false,
+            watchTelemetrySettingStore: false
+        });
+
+        expect(TelemetrySettings.azureIngestionEndpoint).toBe('https://westus2-0.in.applicationinsights.azure.com/');
+        expect(TelemetrySettings.azureLiveEndpoint).toBe('https://westus2.livediagnostics.monitor.azure.com/');
     });
 
     /**

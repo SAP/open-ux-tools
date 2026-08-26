@@ -80,9 +80,9 @@ const COLORS = {
     thumb: {
         unchecked: {
             background: 'var(--vscode-button-secondaryBackground)',
-            borderColor: 'var(--vscode-button-border, transparent)',
+            borderColor: 'var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))',
             hover: {
-                borderColor: 'var(--vscode-button-border, transparent)',
+                borderColor: 'var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))',
                 background: 'var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))'
             }
         },

@@ -1,155 +1,135 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Module: cds-odata-annotation-parser
-/packages/cds-annotation-parser/ @SAP/ux-tools-annotations
-
-# Module: cds-odata-annotation-converter
-/packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations
-
-# Module: i18n
-/packages/i18n/ @SAP/ux-tools-i18n
-
-# Module: create
-/packages/create/ @SAP/ux-tools-create
-
-# Module: store
-/packages/store/ @SAP/ux-tools-store
-
-# Module: fe-fpm-writer
-/packages/fe-fpm-writer/ @SAP/ux-tools-fe-fpm-writer
-
-# Module: fiori-freestyle-writer
-/packages/fiori-freestyle-writer/ @SAP/ux-tools-fiori-freestyle-writer
-
-# Module: fiori-elements-writer
-/packages/fiori-elements-writer/ @SAP/ux-tools-elements-writer
-
-# Module: fiori-mcp-server (and related)
-/packages/fiori-mcp-server/ @SAP/ux-tools-fiori-mcp-server
-/packages/fiori-docs-embeddings/ @SAP/ux-tools-fiori-mcp-server
-
-# Module: eslint-plugin-fiori-tools
-/packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-eslint-plugin-fiori-tools
-/packages/eslint-plugin-fiori-tools/docs/rules/ @SAP/ux-tools-text-reviewers
-
-# Module: logger
-/packages/logger/ @SAP/ux-tools-logger
-
-# Module: mockserver-config-writer
-/packages/mockserver-config-writer/ @SAP/ux-tools-mockserver-config-writer
-
-# Module: project-access
-/packages/project-access/ @SAP/ux-tools-project-access
-
-# Module: odata-service-writer
-/packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
-
-# Module: odata-annotation-core
-/packages/odata-annotation-core/ @SAP/ux-tools-annotations
-
-# Module: odata-annotation-core-types
-/packages/odata-annotation-core-types/ @SAP/ux-tools-annotations
-
-# Module: ui-components
-/packages/ui-components/ @SAP/ux-tools-ui-components
-
-# Module: ui-prompting
-/packages/ui-prompting/ @SAP/ux-tools-ui-components
-
-# Module: ui5-application-writer
-/packages/ui5-application-writer/ @SAP/ux-tools-ui5-application-writer
-
-# Module: ui5-config
-/packages/ui5-config/ @SAP/ux-tools-ui5-config
-
-# Module: yaml
-/packages/yaml/ @SAP/ux-tools-yaml
-
-# Module: ui5-proxy-middleware
-/packages/ui5-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
-
-# Module: backend-proxy-middleware
-/packages/backend-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
-
-# Module: preview-middleware
-/packages/preview-middleware/ @SAP/ux-tools-middlewares-and-tasks
-
-# Module: preview-middleware-client
-/packages/preview-middleware-client/ @SAP/ux-tools-middlewares-and-tasks
-
-# Module: serve-static-middleware
-/packages/serve-static-middleware/ @SAP/ux-tools-middlewares-and-tasks
-
-# Module: reload-middleware
-/packages/reload-middleware/ @SAP/ux-tools-middlewares-and-tasks
-
-# Module: adp-tooling
-/packages/adp-tooling/ @SAP/ux-tools-adp
-
-# Module: deploy-tooling
-/packages/deploy-tooling/ @SAP/ux-tools-deploy
-
-# Module: control-property-editor
-/packages/control-property-editor/ @SAP/ux-tools-control-property-editor
-
-# Module: control-property-editor-common
-/packages/control-property-editor-common/ @SAP/ux-tools-control-property-editor
-
-# Module: odata-vocabularies
-/packages/odata-vocabularies @SAP/ux-tools-annotations
-
-# Module: xml-odata-annotation-converter
-/packages/xml-odata-annotation-converter/ @SAP/ux-tools-annotations
-
-# Module: odata-entity-model
-/packages/odata-entity-model/ @SAP/ux-tools-annotations
-
-# Module: fiori-annotation-api
-/packages/fiori-annotation-api/ @SAP/ux-tools-annotations
-
-# Module: fiori-annotation-api
-/packages/annotation-generator/ @SAP/ux-tools-annotations
-
-# Module: text-document-utils
-/packages/text-document-utils/ @SAP/ux-tools-annotations
-
-# Module: jest-environment-ui5
-/packages/jest-environment-ui5/ @SAP/ux-tools-ui5-jest
-
-# Module: ux-tools-control-property-editor
-/tests/integration/adaptation-editor/ @SAP/ux-tools-control-property-editor
-
-# Module: odata-service-inquirer
-/packages/odata-service-inquirer/ @SAP/ux-tools-fiori-app-sub-generator
-
-# Module: fiori-app-sub-generator
-/packages/fiori-app-sub-generator/ @SAP/ux-tools-fiori-app-sub-generator
-
 # Admin
-/.github/ @SAP/ux-tools-admin
-/.LICENSES/ @SAP/ux-tools-admin
-/.well-known/ @SAP/ux-tools-admin
-/.husky/ @SAP/ux-tools-admin
-/.reuse/ @SAP/ux-tools-admin
-/.eslintrc @SAP/ux-tools-admin
-/.gitignore @SAP/ux-tools-admin
-/.npmrc @SAP/ux-tools-admin
-/.prettierignore @SAP/ux-tools-admin
-/.prettierrc.js @SAP/ux-tools-admin
-/LICENSE @SAP/ux-tools-admin
-/package.json @SAP/ux-tools-admin
-/sonar-project.properties @SAP/ux-tools-admin
-/tsconfig.json @SAP/ux-tools-admin
+/.github/                    @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.LICENSES/                  @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.well-known/                @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.husky/                     @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.reuse/                     @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.eslintrc                   @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.gitignore                  @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.npmrc                      @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.prettierignore             @SAP/ux-tools-architects @SAP/ux-tools-admin
+/.prettierrc.js              @SAP/ux-tools-architects @SAP/ux-tools-admin
+/LICENSE                     @SAP/ux-tools-architects @SAP/ux-tools-admin
+/package.json                @SAP/ux-tools-architects @SAP/ux-tools-admin
+/sonar-project.properties    @SAP/ux-tools-architects @SAP/ux-tools-admin
+/tsconfig.json               @SAP/ux-tools-architects @SAP/ux-tools-admin
 
 # Docs
-/docs/ @SAP/ux-tools-team
+/docs/           @SAP/ux-tools-team
 /CONTRIBUTING.md @SAP/ux-tools-team
-/README.md @SAP/ux-tools-team
+/README.md       @SAP/ux-tools-team
 
+# A1 — Foundations
+/packages/logger/                   @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/i18n/                     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/store/                    @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/yaml/                     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/ui5-config/               @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/ui5-info/                 @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/project-access/           @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/project-integrity/        @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/project-input-validator/  @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/nodejs-utils/             @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/btp-utils/                @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/axios-extension/          @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/system-access/            @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/telemetry/                @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/feature-toggle/           @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/fiori-tools-settings/     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/guided-answers-helper/    @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/jest-environment-ui5/     @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/jest-file-matchers/       @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/jest-runner-puppeteer/    @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
+/packages/playwright/               @SAP/ux-tools-foundations2 @SAP/ux-tools-architects
 
-# localisation texts
-**/i18n.json @SAP/ux-tools-text-reviewers
-**/*.i18n.json @SAP/ux-tools-text-reviewers
-packages/preview-middleware-client/src/messagebundle.properties @SAP/ux-tools-text-reviewers
-**/translations/i18n.ts @SAP/ux-tools-text-reviewers
+# A2 — App Generators and Deploy
+/packages/fiori-elements-writer/               @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/fiori-freestyle-writer/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/fiori-app-sub-generator/             @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/fiori-generator-shared/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-application-writer/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-application-inquirer/            @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-library-writer/                  @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-library-inquirer/                @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-library-sub-generator/           @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-library-reference-writer/        @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-library-reference-inquirer/      @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-library-reference-sub-generator/ @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui5-test-writer/                     @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui-service-inquirer/                 @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/ui-service-sub-generator/            @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/repo-app-import-sub-generator/       @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/mockserver-config-writer/            @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/inquirer-common/                     @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/launch-config/                       @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/cap-config-writer/                   @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/app-config-writer/                   @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/generator-odata-downloader/          @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/deploy-tooling/                      @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/deploy-config-sub-generator/         @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/deploy-config-generator-shared/      @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/abap-deploy-config-inquirer/         @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/abap-deploy-config-sub-generator/    @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/abap-deploy-config-writer/           @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/cf-deploy-config-inquirer/           @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/cf-deploy-config-sub-generator/      @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/cf-deploy-config-writer/             @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/flp-config-inquirer/                 @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/flp-config-sub-generator/            @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/environment-check/                   @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/odata-service-writer/                @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/odata-service-inquirer/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/sap-systems-ext/                     @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/sap-systems-ext-types/               @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
+/packages/sap-systems-ext-webapp/              @SAP/ux-tools-app-generators-and-deploy @SAP/ux-tools-architects
 
+# A3 — Middlewares
+/packages/backend-proxy-middleware/    @SAP/ux-tools-middlewares @SAP/ux-tools-architects
+/packages/backend-proxy-middleware-cf/ @SAP/ux-tools-middlewares @SAP/ux-tools-architects
+/packages/ui5-proxy-middleware/        @SAP/ux-tools-middlewares @SAP/ux-tools-architects
+/packages/serve-static-middleware/     @SAP/ux-tools-middlewares @SAP/ux-tools-architects
+/packages/reload-middleware/           @SAP/ux-tools-middlewares @SAP/ux-tools-architects
+/packages/preview-middleware/          @SAP/ux-tools-middlewares @SAP/ux-tools-architects
+/packages/preview-middleware-client/   @SAP/ux-tools-middlewares @SAP/ux-tools-architects
+
+# A4 — Annotations and OData
+/packages/cds-annotation-parser/          @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/xml-odata-annotation-converter/ @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/odata-annotation-core/          @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/odata-annotation-core-types/    @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/odata-entity-model/             @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/odata-vocabularies/             @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/fiori-annotation-api/           @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/annotation-generator/           @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+/packages/text-document-utils/            @SAP/ux-tools-annotations-odata @SAP/ux-tools-architects
+
+# A5 — ADP and Editors
+/packages/adp-tooling/                    @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
+/packages/generator-adp/                  @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
+/packages/adp-flp-config-sub-generator/   @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
+/packages/control-property-editor/        @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
+/packages/control-property-editor-common/ @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
+
+# Integration tests
+/tests/integration/adaptation-editor/     @SAP/ux-tools-adp-and-editors @SAP/ux-tools-architects
+
+# A6 — FPM and UI
+/packages/fe-fpm-writer/  @SAP/ux-tools-fpm-and-ui @SAP/ux-tools-architects
+/packages/ui-components/  @SAP/ux-tools-fpm-and-ui @SAP/ux-tools-architects
+/packages/ui-prompting/   @SAP/ux-tools-fpm-and-ui @SAP/ux-tools-architects
+
+# A7 — MCP and Tooling
+/packages/fiori-mcp-server/          @SAP/ux-tools-mcp-and-tooling @SAP/ux-tools-architects
+/packages/fiori-docs-embeddings/     @SAP/ux-tools-mcp-and-tooling @SAP/ux-tools-architects
+/packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-mcp-and-tooling @SAP/ux-tools-architects
+/packages/create/                    @SAP/ux-tools-mcp-and-tooling @SAP/ux-tools-architects
+
+# Localisation texts — must remain last; globs overlay package-level rules
+**/i18n.json                                                     @SAP/ux-tools-text-reviewers
+**/*.i18n.json                                                   @SAP/ux-tools-text-reviewers
+/packages/preview-middleware-client/src/messagebundle.properties  @SAP/ux-tools-text-reviewers
+**/translations/i18n.ts                                          @SAP/ux-tools-text-reviewers
+/packages/eslint-plugin-fiori-tools/docs/rules/                  @SAP/ux-tools-text-reviewers

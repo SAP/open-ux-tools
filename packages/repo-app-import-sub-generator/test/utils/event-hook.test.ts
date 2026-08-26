@@ -73,6 +73,16 @@ describe('runPostAppGenHook', () => {
         });
     });
 
+    it('should pass migrationTelemetryEvent when provided', async () => {
+        mockContext.migrationTelemetryEvent = 'ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED';
+        await runPostAppGenHook(mockContext);
+        expect(mockContext.vscodeInstance?.commands?.executeCommand).toHaveBeenCalledWith('mockCommand', {
+            fsPath: '/mock/path',
+            deployConfig: undefined,
+            migrationTelemetryEvent: 'ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED'
+        });
+    });
+
     it('should log an error if executeCommand throws', async () => {
         const mockError = new Error('Command execution failed');
         if (mockContext.vscodeInstance) {

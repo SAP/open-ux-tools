@@ -67,6 +67,7 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.PersonalData.v1',
     'com.sap.vocabularies.Hierarchy.v1',
     'com.sap.vocabularies.Session.v1',
+    'com.sap.vocabularies.Support.v1',
     'com.sap.vocabularies.UI.v1',
     'com.sap.vocabularies.HTML5.v1',
     'com.sap.cds.vocabularies.ObjectModel',

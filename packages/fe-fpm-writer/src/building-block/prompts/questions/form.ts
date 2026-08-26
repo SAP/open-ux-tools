@@ -113,13 +113,17 @@ export async function getFormBuildingBlockPrompts(context: PromptContext): Promi
             [UIAnnotationTerms.FieldGroup]
         ),
 
-        getAggregationPathPrompt(context, {
-            message: t('aggregation') as string,
-            guiOptions: {
-                groupId: groupIds.commonFormBuildingBlockProperties,
-                mandatory: true
-            }
-        }),
+        getAggregationPathPrompt(
+            context,
+            {
+                message: t('aggregation') as string,
+                guiOptions: {
+                    groupId: groupIds.commonFormBuildingBlockProperties,
+                    mandatory: true
+                }
+            },
+            { defaultTarget: 'items' }
+        ),
 
         {
             type: 'input',

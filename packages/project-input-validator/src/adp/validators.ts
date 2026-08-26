@@ -100,7 +100,7 @@ export function validateProjectNameExternal(value: string): boolean | string {
  * Validates that project name is valid for VENDOR layer.
  *
  * @param {string} value - The project name.
- * @returns {string | boolean} If value is valid returns true otherwise error message.
+ * @returns {string |  boolean} If value is valid returns true otherwise error message.
  */
 export function validateProjectNameInternal(value: string): boolean | string {
     if (

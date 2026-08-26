@@ -4,11 +4,16 @@ import type { SapSystemType } from '../../../../../src/index.js';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
 
 const actualStore = await import('@sap-ux/store');
+const mockSystems = [{ name: 'http://abap.on.prem:1234' }];
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue([{ name: 'http://abap.on.prem:1234' }])
-    }))
+        getAll: jest.fn().mockResolvedValue(mockSystems)
+    })),
+    isSystemNameInUse: jest.fn().mockImplementation(async (name: string) => {
+        const trimmedName = name.trim().toLowerCase();
+        return mockSystems.some((system: any) => system.name.toLowerCase() === trimmedName);
+    })
 }));
 
 const actualSapSystemValidators = await import('../../../../../src/prompts/datasources/sap-system/validators.js');

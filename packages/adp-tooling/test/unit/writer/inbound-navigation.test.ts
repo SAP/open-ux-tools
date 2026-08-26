@@ -43,6 +43,7 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
 }));
 
 const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import('../../../src/writer/inbound-navigation.js');
+const { shouldUseLegacyInboundChangeTypes } = await import('../../../src/writer/options.js');
 import type { InternalInboundNavigation, DescriptorVariant, DescriptorVariantContent } from '../../../src/types.js';
 
 describe('FLP Configuration Functions', () => {
@@ -78,7 +79,7 @@ describe('FLP Configuration Functions', () => {
             const originalVariant = JSON.parse(JSON.stringify(variant)) as DescriptorVariant;
             mockGetVariant.mockReturnValue(variant);
 
-            await generateInboundConfig(basePath, config, mockFs as unknown as Editor);
+            await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.143.0', false);
 
             expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
 
@@ -141,7 +142,7 @@ describe('FLP Configuration Functions', () => {
                     action: 'AnotherAction'
                 }
             ] as InternalInboundNavigation[];
-            await generateInboundConfig(basePath, configs, mockFs as unknown as Editor);
+            await generateInboundConfig(basePath, configs, mockFs as unknown as Editor, '1.143.0', false);
 
             expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(writeJsonSpy).toHaveBeenCalledTimes(1);
@@ -310,5 +311,166 @@ describe('FLP Configuration Functions', () => {
                 mockFs as unknown as Editor
             );
         });
+    });
+});
+
+describe('shouldUseLegacyInboundChangeTypes', () => {
+    it('should return false for CF projects regardless of version', () => {
+        expect(shouldUseLegacyInboundChangeTypes('1.120.0', true)).toBe(false);
+        expect(shouldUseLegacyInboundChangeTypes('1.142.0', true)).toBe(false);
+        expect(shouldUseLegacyInboundChangeTypes(undefined, true)).toBe(false);
+    });
+
+    it('should return true when no version is provided (safe legacy default for ABAP)', () => {
+        expect(shouldUseLegacyInboundChangeTypes(undefined, false)).toBe(true);
+    });
+
+    it('should return true when minor version is 142 or lower', () => {
+        expect(shouldUseLegacyInboundChangeTypes('1.142.0', false)).toBe(true);
+        expect(shouldUseLegacyInboundChangeTypes('1.120.5', false)).toBe(true);
+        expect(shouldUseLegacyInboundChangeTypes('1.99.0', false)).toBe(true);
+    });
+
+    it('should return false when minor version is 143 or higher', () => {
+        expect(shouldUseLegacyInboundChangeTypes('1.143.0', false)).toBe(false);
+        expect(shouldUseLegacyInboundChangeTypes('1.200.0', false)).toBe(false);
+    });
+});
+
+describe('generateInboundConfig with legacy change types', () => {
+    const basePath = '/test/path';
+    const config = [
+        {
+            title: 'new_title',
+            subTitle: 'new_subTitle',
+            inboundId: 'displayBank',
+            additionalParameters: '{}',
+            semanticObject: 'SomeSemanticObject',
+            action: 'SomeAction'
+        }
+    ] as InternalInboundNavigation[];
+
+    const writeJsonSpy = jest.fn();
+    const mockFs = { writeJSON: writeJsonSpy };
+
+    const mockGetVariantLegacy = jest.fn() as jest.Mock;
+    const mockUpdateVariantLegacy = jest
+        .fn()
+        .mockImplementation(async (_basePath: string, variant: unknown, fs: { writeJSON: jest.Mock }) => {
+            fs.writeJSON('/test/path/webapp/manifest.appdescr_variant', variant);
+        });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should use legacy change types when version is 1.142 and not CF', async () => {
+        const { getVariant, updateVariant } = await import('../../../src/base/helper.js');
+        (getVariant as jest.Mock).mockReturnValue({
+            id: 'testVariant',
+            content: [],
+            layer: 'CUSTOMER_BASE',
+            reference: 'test.app',
+            namespace: 'apps/test.app/changes/'
+        });
+        (updateVariant as unknown as jest.Mock).mockImplementation(
+            async (_basePath: string, variant: unknown, fs: { writeJSON: jest.Mock }) => {
+                fs.writeJSON('/test/path/webapp/manifest.appdescr_variant', variant);
+            }
+        );
+
+        await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.142.0', false);
+
+        expect(writeJsonSpy).toHaveBeenCalledTimes(1);
+        const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
+        const changeTypes = writtenData.content.map((c) => c.changeType);
+        expect(changeTypes).toContain('appdescr_app_addNewInbound');
+        expect(changeTypes).toContain('appdescr_app_removeAllInboundsExceptOne');
+        expect(changeTypes).not.toContain('appdescr_app_setInbounds');
+    });
+
+    it('should use new change type when version is 1.143 and not CF', async () => {
+        const { getVariant, updateVariant } = await import('../../../src/base/helper.js');
+        (getVariant as jest.Mock).mockReturnValue({
+            id: 'testVariant',
+            content: [],
+            layer: 'CUSTOMER_BASE',
+            reference: 'test.app',
+            namespace: 'apps/test.app/changes/'
+        });
+        (updateVariant as unknown as jest.Mock).mockImplementation(
+            async (_basePath: string, variant: unknown, fs: { writeJSON: jest.Mock }) => {
+                fs.writeJSON('/test/path/webapp/manifest.appdescr_variant', variant);
+            }
+        );
+
+        await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.143.0', false);
+
+        expect(writeJsonSpy).toHaveBeenCalledTimes(1);
+        const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
+        const changeTypes = writtenData.content.map((c) => c.changeType);
+        expect(changeTypes).toContain('appdescr_app_setInbounds');
+        expect(changeTypes).not.toContain('appdescr_app_addNewInbound');
+    });
+
+    it('should always use new change type for CF projects', async () => {
+        const { getVariant, updateVariant } = await import('../../../src/base/helper.js');
+        (getVariant as jest.Mock).mockReturnValue({
+            id: 'testVariant',
+            content: [],
+            layer: 'CUSTOMER_BASE',
+            reference: 'test.app',
+            namespace: 'apps/test.app/changes/'
+        });
+        (updateVariant as unknown as jest.Mock).mockImplementation(
+            async (_basePath: string, variant: unknown, fs: { writeJSON: jest.Mock }) => {
+                fs.writeJSON('/test/path/webapp/manifest.appdescr_variant', variant);
+            }
+        );
+
+        await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.142.0', true);
+
+        expect(writeJsonSpy).toHaveBeenCalledTimes(1);
+        const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
+        const changeTypes = writtenData.content.map((c) => c.changeType);
+        expect(changeTypes).toContain('appdescr_app_setInbounds');
+        expect(changeTypes).not.toContain('appdescr_app_addNewInbound');
+    });
+
+    it('should emit addNewInbound for every inbound and removeAllInboundsExceptOne only once (first) on legacy systems', async () => {
+        const { getVariant, updateVariant } = await import('../../../src/base/helper.js');
+        (getVariant as jest.Mock).mockReturnValue({
+            id: 'testVariant',
+            content: [],
+            layer: 'CUSTOMER_BASE',
+            reference: 'test.app',
+            namespace: 'apps/test.app/changes/'
+        });
+        (updateVariant as unknown as jest.Mock).mockImplementation(
+            async (_basePath: string, variant: unknown, fs: { writeJSON: jest.Mock }) => {
+                fs.writeJSON('/test/path/webapp/manifest.appdescr_variant', variant);
+            }
+        );
+
+        const multi: InternalInboundNavigation[] = [
+            { ...config[0], inboundId: 'displayBank' },
+            { ...config[0], inboundId: 'displayVendor', semanticObject: 'Vendor', action: 'display' }
+        ] as InternalInboundNavigation[];
+
+        await generateInboundConfig(basePath, multi, mockFs as unknown as Editor, '1.142.0', false);
+
+        expect(writeJsonSpy).toHaveBeenCalledTimes(1);
+        const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
+        const changeTypes = writtenData.content.map((c) => c.changeType);
+        // Expected exact order: add #1, remove-all-except #1, add #2
+        expect(changeTypes).toEqual([
+            'appdescr_app_addNewInbound',
+            'appdescr_app_removeAllInboundsExceptOne',
+            'appdescr_app_addNewInbound'
+        ]);
+        const removeChange = writtenData.content.find(
+            (c) => c.changeType === 'appdescr_app_removeAllInboundsExceptOne'
+        );
+        expect((removeChange?.content as { inboundId: string }).inboundId).toBe('displayBank');
     });
 });

@@ -28,9 +28,9 @@ const { readFile } = await import('node:fs/promises');
 
 describe('Test readIntegrityData()', () => {
     test('Read integrity data, integrity file does not exist', async () => {
+        expect.assertions(1);
         try {
             await readIntegrityData('none-existing-file');
-            expect(false).toBe('readIntegrityData() should have thrown error but did not.');
         } catch (error) {
             expect((error as Error).message).toBe('Integrity file not found at none-existing-file');
         }

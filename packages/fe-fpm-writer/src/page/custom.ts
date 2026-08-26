@@ -20,7 +20,12 @@ import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils.js';
 import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
 import { generateBuildingBlock } from '../building-block/index.js';
-import { BuildingBlockType } from '../building-block/types.js';
+import {
+    BuildingBlockType,
+    PageTemplateType,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '../building-block/types.js';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n.js';
@@ -89,9 +94,10 @@ export function getTemplateRoot(ui5Version?: string): string {
  * Handles the creation of a page building block for a custom page.
  *
  * @param {string} basePath - The base path of the UI5 application.
- * @param {{ pageBuildingBlockTitle: string; minUI5Version?: string }} data - Object containing the building block title and optional minimum UI5 version.
- * @param data.pageBuildingBlockTitle
- * @param data.minUI5Version
+ * @param data - Object containing the building block configuration.
+ * @param {string} data.pageBuildingBlockTitle - The title for the page building block.
+ * @param {PageTemplateType} [data.pageBuildingBlockTemplateType] - The layout template type ('full' or 'basic'). Defaults to 'basic' if the UI5 version does not meet the full layout requirement.
+ * @param {string} [data.minUI5Version] - The minimum UI5 version of the application. Used to validate layout compatibility.
  * @param {string} viewPath - The path to the view XML file.
  * @param {Editor} fs - The memfs editor instance.
  * @param {(baseId: string) => Promise<string>} generateId - Function to generate unique IDs for the building block elements.
@@ -100,7 +106,7 @@ export function getTemplateRoot(ui5Version?: string): string {
  */
 async function handlePageBuildingBlock(
     basePath: string,
-    data: { pageBuildingBlockTitle: string; minUI5Version?: string },
+    data: { pageBuildingBlockTitle: string; pageBuildingBlockTemplateType?: PageTemplateType; minUI5Version?: string },
     viewPath: string,
     fs: Editor,
     generateId: IdGeneratorFunction,
@@ -108,9 +114,29 @@ async function handlePageBuildingBlock(
 ): Promise<void> {
     const minVersion = coerce(data.minUI5Version);
     const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
-    if (minVersion && lt(minVersion.version, '1.136.0')) {
-        log?.warn(t('minUi5VersionRequirement', { minUI5Version: data.minUI5Version }));
+    if (minVersion && lt(minVersion.version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK)) {
+        log?.warn(
+            t('minUi5VersionRequirement', {
+                minUI5Version: data.minUI5Version,
+                minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+            })
+        );
         return;
+    }
+
+    let templateType = data.pageBuildingBlockTemplateType;
+    if (
+        templateType === PageTemplateType.Full &&
+        minVersion &&
+        lt(minVersion.version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT)
+    ) {
+        log?.warn(
+            t('minUi5VersionRequirementFullLayout', {
+                minUI5Version: data.minUI5Version,
+                minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+            })
+        );
+        templateType = PageTemplateType.Basic;
     }
 
     const pageId = generateId('Page');
@@ -124,7 +150,8 @@ async function handlePageBuildingBlock(
                 id: pageId,
                 buildingBlockType: BuildingBlockType.Page,
                 generateId,
-                title: data.pageBuildingBlockTitle
+                title: data.pageBuildingBlockTitle,
+                templateType: templateType
             }
         },
         fs
@@ -177,11 +204,14 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
             copyTpl(fs, i18TemplatePath, i18nPath, config);
         }
     }
-
     if (data.pageBuildingBlockTitle) {
         await handlePageBuildingBlock(
             basePath,
-            { pageBuildingBlockTitle: data.pageBuildingBlockTitle, minUI5Version: data.minUI5Version },
+            {
+                pageBuildingBlockTitle: data.pageBuildingBlockTitle,
+                pageBuildingBlockTemplateType: data.pageBuildingBlockTemplateType,
+                minUI5Version: data.minUI5Version
+            },
             viewPath,
             fs,
             fnGenerateId,

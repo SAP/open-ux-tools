@@ -1,7 +1,16 @@
 import rule from '../../src/rules/sap-table-column-vertical-alignment.js';
 import { RuleTester } from 'eslint';
 import { meta, languages } from '../../src/index.js';
-import { getManifestAsCode, setup, V2_MANIFEST, V2_MANIFEST_PATH } from '../test-helper.js';
+import {
+    getManifestAsCode,
+    setup,
+    V2_ANNOTATIONS,
+    V2_ANNOTATIONS_PATH,
+    V2_MANIFEST,
+    V2_MANIFEST_PATH,
+    V4_MANIFEST,
+    V4_MANIFEST_PATH
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -75,6 +84,22 @@ ruleTester.run(TEST_NAME, rule, {
                 name: 'ui5 version lower than 1.75',
                 filename: V2_MANIFEST_PATH,
                 code: getManifest('Top', 'ALP', '1.60.5')
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'project type fe-v4',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [])
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'non json source code',
+                filename: V2_ANNOTATIONS_PATH,
+                code: V2_ANNOTATIONS
             },
             []
         ),

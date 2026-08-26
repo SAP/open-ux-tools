@@ -12,6 +12,11 @@ import { tabSizingTestCases } from '../../common/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../../../src/i18n.js';
 import { findFilesByExtensionMock } from '../../__mocks__/project-access-file.mjs';
+import {
+    PageTemplateType,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '../../../src/building-block/types.js';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -329,7 +334,10 @@ describe('CustomPage', () => {
             await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs, log);
 
             expect(log.warn).toHaveBeenCalledWith(
-                t('minUi5VersionRequirement', { minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version })
+                t('minUi5VersionRequirement', {
+                    minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version,
+                    minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                })
             );
 
             // page macros should not be added
@@ -339,6 +347,86 @@ describe('CustomPage', () => {
             expect(viewXml).not.toContain('macros:Page');
             expect(viewXml).not.toContain('Test Page Title');
             expect(viewXml).toContain('<Page');
+        });
+
+        test('should generate a custom page with full layout page building block', async () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithFullLayout = {
+                ...input,
+                minUI5Version: '1.145',
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            await generateCustomPage(target, inputWithFullLayout, fs);
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
+        });
+
+        test('should log a warning when min ui5 version is not met for full layout page building block', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+            const inputWithFullLayout = {
+                ...input,
+                minUI5Version: '1.136',
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+            await generateCustomPage(target, inputWithFullLayout, fs, log);
+
+            expect(log.warn).toHaveBeenCalledWith(
+                t('minUi5VersionRequirementFullLayout', {
+                    minUI5Version: inputWithFullLayout.minUI5Version,
+                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                })
+            );
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
+        });
+
+        test('should use full layout when no ui5 version is specified with full layout page building block', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithFullLayoutNoVersion = {
+                ...input,
+                minUI5Version: undefined,
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+            await generateCustomPage(target, inputWithFullLayoutNoVersion, fs, log);
+
+            expect(log.warn).not.toHaveBeenCalled();
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
+        });
+
+        test('should use full layout when latest ui5 version is specified with full layout page building block', async () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithFullLayoutLatest = {
+                ...input,
+                minUI5Version: 'latest',
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+            await generateCustomPage(target, inputWithFullLayoutLatest, fs, log);
+
+            expect(log.warn).not.toHaveBeenCalled();
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
         });
     });
 

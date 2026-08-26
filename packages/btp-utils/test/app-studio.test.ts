@@ -171,15 +171,15 @@ describe('App Studio', () => {
         });
 
         it('Invalid instance', async () => {
-            expect(getCredentialsForDestinationService('invalid')).rejects.toThrow();
+            await expect(getCredentialsForDestinationService('invalid')).rejects.toThrow();
         });
 
         it('Instance does not exist', async () => {
-            expect(getCredentialsForDestinationService('noinstance')).rejects.toThrow();
+            await expect(getCredentialsForDestinationService('noinstance')).rejects.toThrow();
         });
 
         it('Instance does not have credentials', async () => {
-            expect(getCredentialsForDestinationService('nocredentials')).rejects.toThrow();
+            await expect(getCredentialsForDestinationService('nocredentials')).rejects.toThrow();
         });
     });
 

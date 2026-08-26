@@ -386,9 +386,11 @@ export class ConfigPrompter {
             guiOptions: {
                 type: 'login',
                 mandatory: true,
-                hint: t('prompts.passwordTooltip')
+                hint: t('prompts.passwordTooltip'),
+                applyDefaultWhenDirty: true
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
+            default: '',
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
             additionalMessages: () => {
                 if (!this.systemAdditionalMessage) {

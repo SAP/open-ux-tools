@@ -23,11 +23,9 @@ const Funnel = (): ReactElement => {
         dispatch(action);
     };
     const focusChecked = filterQuery.find((item) => item.name === FilterName.focusEditable)?.value as
-        | boolean
-        | undefined;
+        boolean | undefined;
     const focusCommonlyUsedChecked = filterQuery.find((item) => item.name === FilterName.focusCommonlyUsed)?.value as
-        | boolean
-        | undefined;
+        boolean | undefined;
     const checked = focusChecked || focusCommonlyUsedChecked;
     return (
         <>

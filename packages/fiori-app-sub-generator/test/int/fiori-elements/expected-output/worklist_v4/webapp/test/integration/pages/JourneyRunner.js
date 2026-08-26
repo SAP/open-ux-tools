@@ -6,7 +6,7 @@ sap.ui.define([
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated, BookingObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('testNameSpace/worklistv4') + '/test/flpSandbox.html#testNameSpaceworklistv4-tile',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,

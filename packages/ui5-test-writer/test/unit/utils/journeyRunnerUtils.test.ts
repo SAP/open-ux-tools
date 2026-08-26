@@ -42,7 +42,7 @@ const JOURNEY_RUNNER_FILE = `sap.ui.define([
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('myApp') + '/test/flp.html#app-preview',
         pages: {
 \t\t\tonTheTravelListGenerated: TravelListGenerated,
@@ -62,7 +62,7 @@ const JOURNEY_RUNNER_FILE = `sap.ui.define([
  * @param template - the framework template
  * @returns a fully populated OpaPageWriteInfo
  */
-function makeTsPage(targetKey: string, template: 'ListReport' | 'ObjectPage'): OpaPageWriteInfo {
+function makeTsPage(targetKey: string, template: 'ListReport' | 'ObjectPage' | 'FPM'): OpaPageWriteInfo {
     return {
         targetKey,
         appPath: 'myApp',
@@ -335,6 +335,34 @@ describe('splicePageIntoJourneyRunnerTs()', () => {
         ]);
         expect(result).toContain('onTheTravelObjectPageGenerated: new ObjectPage(');
         expect(result).toContain('CustomTravelObjectPageGenerated');
+        // Both entitySet and contextPath must be emitted unconditionally so splicer output
+        // matches the fresh-write template shape (see JourneyRunner.ts template).
+        expect(result).toContain('entitySet: ""');
+        expect(result).toContain('contextPath: "/Travel"');
+    });
+
+    test('emits empty entitySet and contextPath when both are undefined on the page', () => {
+        const page = makeTsPage('TravelObjectPage', 'ObjectPage');
+        page.entitySet = undefined;
+        page.contextPath = undefined;
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [page]);
+        expect(result).toContain('entitySet: ""');
+        expect(result).toContain('contextPath: ""');
+    });
+
+    test('splices an FPM page as a TemplatePage cast, not new FPM / import FPM', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [makeTsPage('CustomPage', 'FPM')]);
+        // FPM has no dedicated sap/fe/test class; the runtime page is a TemplatePage, so the splicer
+        // must import TemplatePage and construct via the (id, defs) cast — matching the fresh template.
+        expect(result).toContain('import TemplatePage from "sap/fe/test/TemplatePage";');
+        expect(result).toContain(
+            'onTheCustomPageGenerated: new (TemplatePage as unknown as new (id: string, defs: object) => object)('
+        );
+        expect(result).toContain('"my.app::CustomPage"');
+        expect(result).toContain('CustomCustomPageGenerated');
+        // The broken forms must NOT appear.
+        expect(result).not.toContain('import FPM from "sap/fe/test/FPM"');
+        expect(result).not.toContain('new FPM(');
     });
 });
 

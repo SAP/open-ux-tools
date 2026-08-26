@@ -89,10 +89,13 @@ export async function enableTypescript(input: FeatureInput, keepOldComponent: bo
         ui5Config.addCustomTasks([ui5TSSupport.task]);
     });
     const compPath = join(input.basePath, 'webapp/Component.js');
-    if (keepOldComponent) {
-        input.fs.move(compPath, `${compPath}.old`);
-    } else {
-        input.fs.delete(compPath);
+    // Component.js may not exist if the project already uses TypeScript
+    if (input.fs.exists(compPath)) {
+        if (keepOldComponent) {
+            input.fs.move(compPath, `${compPath}.old`);
+        } else {
+            input.fs.delete(compPath);
+        }
     }
 }
 

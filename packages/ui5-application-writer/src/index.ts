@@ -197,6 +197,7 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
 
 export type { Package } from '@sap-ux/project-access';
 export { generate, enableTypescript, isTypescriptEnabled };
+export { ui5TSSupport } from './data/ui5Libs.js';
 export type { App, Ui5App, UI5, AppOptions } from './types.js';
 export { addEslintFeature } from './options.js';
 export {

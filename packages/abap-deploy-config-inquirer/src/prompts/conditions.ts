@@ -115,6 +115,11 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
     PromptState.transportAnswers.transportConfig = transportConfig;
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
 
+    // Track that credential fields should remain visible for the duration of the auth flow.
+    // This flag is NOT reset by validateCredentials, unlike transportConfigNeedsCreds which
+    // must become false after successful auth so downstream questions (package, transport) appear.
+    PromptState.transportAnswers.areCredentialFieldsVisible = transportConfigNeedsCreds ?? false;
+
     // Provide context to the CLI when username credentials are required
     if (transportConfigNeedsCreds) {
         LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
@@ -128,7 +133,7 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
  * @returns boolean
  */
 export function showPasswordQuestion(): boolean {
-    return Boolean(PromptState.transportAnswers.transportConfigNeedsCreds);
+    return !!PromptState.transportAnswers.areCredentialFieldsVisible;
 }
 
 /**

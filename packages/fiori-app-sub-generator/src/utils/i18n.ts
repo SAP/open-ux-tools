@@ -1,4 +1,3 @@
-import type { OdataVersion } from '@sap-ux/fiori-elements-writer';
 import i18next from 'i18next';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18ntranslations from '../translations/fioriAppSubGenerator.i18n.json' with { type: 'json' };
@@ -21,11 +20,8 @@ export async function initI18nFioriAppSubGenerator(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: fioriAppSubGeneratorNs,
         ns: [fioriAppSubGeneratorNs],
-        showSupportNotice: false,
         interpolation: {
-            format: function odataVersionFormatter(odataVersion: OdataVersion) {
-                return odataVersion ? ` V${odataVersion}` : '';
-            },
+            escapeValue: false,
             defaultVariables: {
                 defaultProjectNumber
             }

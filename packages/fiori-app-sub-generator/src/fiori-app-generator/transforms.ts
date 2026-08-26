@@ -18,6 +18,9 @@ import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
 import type { Floorplan, State, Service } from '../types/index.js';
+import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { PageTemplateType } from '@sap-ux/fe-fpm-writer';
+
 import {
     DEFAULT_HOST,
     DEFAULT_SERVICE_PATH,
@@ -38,7 +41,6 @@ import {
 } from '../utils/index.js';
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
@@ -102,9 +104,12 @@ export function transformTemplateType(
         }
     }
 
-    // Add page title if addPageBuildingBlock is true
+    // Add page building block config if addPageBuildingBlock is true
     const pageBuildingBlockConfig = entityRelatedConfig?.addPageBuildingBlock
-        ? { pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle }
+        ? {
+              pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle,
+              pageBuildingBlockTemplateType: entityRelatedConfig.pageBuildingBlockLayout ?? PageTemplateType.Basic
+          }
         : {};
 
     const templateSettingsMap = {

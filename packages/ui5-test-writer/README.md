@@ -69,7 +69,7 @@ const fs = await generateOPAFiles(myProjectPath, { enableTypeScript: true });
 What changes in the generated output:
 
 - Page objects, journeys, and `JourneyRunner` are emitted as `.ts` files.
-- A `webapp/test/integration/types/OpaJourneyTypes.d.ts` file is generated with `Given` / `When` / `Then` definitions tailored to the app's pages.
+- A `webapp/test/integration/types/OpaJourneyTypes.gen.d.ts` file is generated with `Given` / `When` / `Then` definitions tailored to the app's pages.
 - The QUnit bootstrap (`opaTests.qunit.js`) and the HTML harness stay as `.js` / `.html` (they are loaded directly by the browser).
 
 When run in standalone mode against an existing project, `enableTypeScript` is auto-detected from the presence of a `tsconfig.json`. An explicit value passed in the options always takes precedence.

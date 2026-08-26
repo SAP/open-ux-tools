@@ -9,12 +9,9 @@ import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/uti
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { getPageId } from './utils.js';
 
 const OP_PAGE_LAYOUT = ['sap.uxap.ObjectPageLayout'];
-
-interface ViewDataType {
-    stableId: string;
-}
 /**
  * Quick Action for adding a custom page action.
  */
@@ -32,7 +29,7 @@ export class AddCustomSectionQuickAction
         )[0] as ObjectPageLayout;
         const sections = objectPageLayout.getSections();
         let anchor: string | null = null;
-        const pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
+        const pageId = getPageId(this.context);
         if (sections.length > 0) {
             // Use the first section as the anchor if available
             anchor = (this.context.view.getLocalId(sections[sections.length - 1].getId()) ?? '')

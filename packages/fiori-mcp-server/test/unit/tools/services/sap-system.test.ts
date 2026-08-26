@@ -26,13 +26,15 @@ const mockServiceFn = jest.fn<any>();
 const mockMetadata = jest.fn<any>();
 const mockTlsIsPatchRequired = jest.fn<any>().mockReturnValue(false);
 const mockTlsApply = jest.fn<any>();
-const mockCreateForDestination = jest.fn<any>();
+
+const mockCreateForAbapOnCloud = jest.fn<any>().mockImplementation(() => new (mockAbapServiceProvider as any)());
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
+    AbapCloudEnvironment: { EmbeddedSteampunk: 'EmbeddedSteampunk' },
     ODataVersion: { v4: 'v4' },
     TlsPatch: { isPatchRequired: mockTlsIsPatchRequired, apply: mockTlsApply },
-    createForDestination: mockCreateForDestination
+    createForAbapOnCloud: mockCreateForAbapOnCloud
 }));
 
 const mockParseEdmx = jest.fn<any>();
@@ -144,9 +146,9 @@ describe('getSystemsOrDestinations', () => {
     });
 });
 
-// ── findSystem (VSCode path) ─────────────────────────────────────────────────
+// ── findSystem ───────────────────────────────────────────────────────────────
 
-describe('findSystem — VSCode', () => {
+describe('findSystem', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
@@ -195,50 +197,6 @@ describe('findSystem — VSCode', () => {
         const result = await findSystem(sharedOrigin);
         expect(result.system).toBeUndefined();
         expect(result.message).toMatch(/Multiple systems found/);
-    });
-});
-
-// ── findSystem (BAS path) ────────────────────────────────────────────────────
-
-describe('findSystem — BAS', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockIsAppStudio.mockReturnValue(true);
-        mockIsAbapODataDestination.mockReturnValue(true);
-        mockListDestinations.mockResolvedValue({ DEST_A, DEST_B });
-    });
-
-    test('finds destination by exact name', async () => {
-        const result = await findSystem('DEST_A');
-        expect(result.system).toEqual(DEST_A);
-    });
-
-    test('finds destination by case-insensitive name', async () => {
-        const result = await findSystem('dest_a');
-        expect(result.system).toEqual(DEST_A);
-    });
-
-    test('finds destination by name prefix', async () => {
-        const result = await findSystem('DEST');
-        // prefix matches both — should return one of them (first match wins)
-        expect(result.system).toBeDefined();
-    });
-
-    test('finds destination by host URL', async () => {
-        const result = await findSystem('https://dest-a.example.com');
-        expect(result.system).toEqual(DEST_A);
-    });
-
-    test('returns undefined when no destination matches', async () => {
-        const result = await findSystem('UNKNOWN_DEST');
-        expect(result.system).toBeUndefined();
-    });
-
-    test('returns error message when listDestinations throws', async () => {
-        mockListDestinations.mockRejectedValue(new Error('BTP unavailable'));
-        const result = await findSystem('DEST_A');
-        expect(result.system).toBeUndefined();
-        expect(result.message).toMatch(/Error retrieving destinations/);
     });
 });
 
@@ -294,7 +252,48 @@ describe('getServiceMetadata — VSCode', () => {
 
     test('throws when metadata is not parseable EDMX', async () => {
         mockParseEdmx.mockReturnValue(undefined);
-        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(/Failed to parse service metadata/);
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /Failed to parse the service metadata as valid OData/
+        );
+    });
+
+    test('reports a version-neutral parse error and does not claim the service is not OData V4', async () => {
+        mockParseEdmx.mockReturnValue(undefined);
+        const error = await getServiceMetadata(SYSTEM_A, '/sap/svc/').catch((e: unknown) => e);
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toContain('Failed to parse the service metadata as valid OData');
+        expect((error as Error).message).not.toContain('OData V4');
+    });
+
+    test('throws a system-unavailable error when metadata is empty', async () => {
+        mockMetadata.mockResolvedValue('   ');
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /No metadata was returned by the service/
+        );
+        expect(mockParseEdmx).not.toHaveBeenCalled();
+    });
+
+    test('throws an error-page error when an HTML page is returned', async () => {
+        mockMetadata.mockResolvedValue('<!DOCTYPE html><html><body>503 Service Unavailable</body></html>');
+        await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(
+            /did not return OData metadata — an HTML or error page was received/
+        );
+        expect(mockParseEdmx).not.toHaveBeenCalled();
+    });
+
+    test('accepts EDMX metadata without an XML declaration', async () => {
+        mockMetadata.mockResolvedValue(SAMPLE_METADATA);
+        const result = await getServiceMetadata(SYSTEM_A, '/sap/svc/');
+        expect(result).toBe(SAMPLE_METADATA);
+    });
+
+    test('accepts a self-closing Edmx root element', async () => {
+        const selfClosing = '<edmx:Edmx Version="4.0"/>';
+        mockMetadata.mockResolvedValue(selfClosing);
+        mockXmlFormat.mockReturnValue(selfClosing);
+        const result = await getServiceMetadata(SYSTEM_A, '/sap/svc/');
+        expect(result).toBe(selfClosing);
+        expect(mockParseEdmx).toHaveBeenCalledWith(selfClosing);
     });
 
     test('includes parse error reason in thrown message', async () => {
@@ -303,33 +302,27 @@ describe('getServiceMetadata — VSCode', () => {
         });
         await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(/unexpected token/);
     });
-});
 
-describe('getServiceMetadata — BAS', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockIsAppStudio.mockReturnValue(true);
-        mockParseEdmx.mockReturnValue({ schemas: [] });
-        mockXmlFormat.mockReturnValue(SAMPLE_METADATA);
-        mockMetadata.mockResolvedValue(SAMPLE_METADATA);
-        const destServiceProvider = { service: mockServiceFn };
-        mockCreateForDestination.mockReturnValue(destServiceProvider);
-        mockServiceFn.mockReturnValue({ metadata: mockMetadata });
+    test('reentranceTicket system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        const reentranceSystem = { ...SYSTEM_A, authenticationType: 'reentranceTicket' };
+        await getServiceMetadata(reentranceSystem as any, '/sap/svc/');
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: SYSTEM_A.url
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
     });
 
-    test('uses createForDestination instead of AbapServiceProvider', async () => {
-        await getServiceMetadata(DEST_A, '/sap/svc/');
-        expect(mockCreateForDestination).toHaveBeenCalledWith({}, DEST_A);
-        expect(mockAbapServiceProvider).not.toHaveBeenCalled();
-    });
-
-    test('strips $metadata suffix from service path', async () => {
-        await getServiceMetadata(DEST_A, '/sap/opu/odata4/svc/$metadata');
-        expect(mockServiceFn).toHaveBeenCalledWith('/sap/opu/odata4/svc/');
-    });
-
-    test('fetches and returns formatted metadata', async () => {
-        const result = await getServiceMetadata(DEST_A, '/sap/svc/');
-        expect(result).toBe(SAMPLE_METADATA);
+    test('serviceKeys system: uses createForAbapOnCloud with EmbeddedSteampunk', async () => {
+        const serviceKeySystem = {
+            ...SYSTEM_A,
+            serviceKeys: { uaa: { clientid: 'c', clientsecret: 's', url: 'https://auth.example.com' } }
+        };
+        await getServiceMetadata(serviceKeySystem as any, '/sap/svc/');
+        expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
+            environment: 'EmbeddedSteampunk',
+            url: SYSTEM_A.url
+        });
+        expect(mockMetadata).toHaveBeenCalledTimes(1);
     });
 });

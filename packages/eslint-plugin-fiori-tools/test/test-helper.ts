@@ -11,6 +11,7 @@ import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 import { ProjectContext } from '../src/project-context/project-context.js';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
+import type { FlexChange } from '../src/project-context/parser/types.js';
 
 export interface FileChange {
     filename: string;
@@ -63,6 +64,11 @@ export const V4_FACETS_ANNOTATIONS = `
                 </Annotation>
             </Annotations>
             `;
+export const V4_SECOND_TABLE_ANNOTATION = `<Annotations Target="IncidentService.Incidents">
+                            <Annotation Term="UI.LineItem" Qualifier="secondTable">
+                                <Collection/>
+                            </Annotation>
+                        </Annotations>`;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
 // CAP
@@ -97,6 +103,18 @@ annotate service.IncidentFlow with @(UI.LineItem #table_section: [
 ]);
 `;
 
+export const CAP_SECOND_TABLE_ANNOTATION = `annotate service.Incidents with @(UI.LineItem #secondTable   : [
+        {
+            $Type: 'UI.DataField',
+            Value: title,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: description,
+        },
+    ],
+);`;
+
 // XML V2
 export const V2_PROJECT_PATH = join(ROOT, 'test', 'data', 'v2-xml-start');
 export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
@@ -123,7 +141,9 @@ export const V2_FLEX_CHANGE_FILE_PATH = join(
     'changes',
     'id_1779179176282_0_propertyChange.change'
 );
-export const V2_FLEX_CHANGE_CONTENT = Object.freeze(JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8')));
+export const V2_FLEX_CHANGE_CONTENT = Object.freeze(
+    JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8'))
+) as FlexChange;
 
 const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');

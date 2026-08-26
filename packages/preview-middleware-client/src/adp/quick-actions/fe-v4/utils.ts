@@ -4,6 +4,29 @@ import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4.js';
 import UI5Element from 'sap/ui/core/Element';
+import type AppComponent from 'sap/fe/core/AppComponent';
+
+interface ViewDataType {
+    stableId: string;
+}
+
+export function getPageId(context: QuickActionContext): string | undefined {
+    return (context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
+}
+
+/**
+ * Returns the app component and page ID for use in appDescriptor, or undefined if either is missing.
+ */
+export function getAppDescriptorBase(
+    context: QuickActionContext
+): { appComponent: AppComponent; pageId: string } | undefined {
+    const appComponent = getV4AppComponent(context.view);
+    const pageId = getPageId(context);
+    if (!appComponent || !pageId) {
+        return undefined;
+    }
+    return { appComponent, pageId };
+}
 
 export async function executeToggleAction(
     context: QuickActionContext,

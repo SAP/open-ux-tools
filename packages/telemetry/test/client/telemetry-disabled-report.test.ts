@@ -5,19 +5,15 @@ const spyTrackEvent = jest.fn();
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
-        public addTelemetryProcessor: any;
+        public context: any;
+        public setUseDiskRetryCaching: any;
         public trackEvent: any;
         constructor() {
             this.config = {
                 samplingPercentage: 0
             };
-            this.channel = {
-                setUseDiskRetryCaching: jest.fn()
-            };
-            this.addTelemetryProcessor = (fn: any) => {
-                fn({ tags: {} });
-            };
+            this.context = { tags: {} };
+            this.setUseDiskRetryCaching = jest.fn();
             this.trackEvent = (event: any) => spyTrackEvent(event);
         }
     }
@@ -40,7 +36,7 @@ describe('ClientFactory Send Report Tests', () => {
     test('Test function getTelemetryClient()', async () => {
         const telemetryClient = ClientFactory.getTelemetryClient();
 
-        const spy = jest.spyOn<any, any>(telemetryClient, 'trackEvent').mockImplementation((): void => {
+        const spy = jest.spyOn<any, any, any>(telemetryClient, 'trackEvent').mockImplementation((): void => {
             return;
         });
         await telemetryClient.report(EventName.Test, {}, {}, SampleRate.NoSampling);

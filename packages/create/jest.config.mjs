@@ -2,11 +2,10 @@ import baseConfig from '../../jest.base.mjs';
 
 const config = {
     ...baseConfig,
-    // Map chalk to ESM shim since chalk 4.x is CJS and doesn't provide named ESM exports
-    moduleNameMapper: {
-        ...baseConfig.moduleNameMapper,
-        '^chalk$': '<rootDir>/test/__mocks__/chalk.ts'
-    }
+    // chalk 5.x is pure ESM; whitelist it so ts-jest transforms it to CJS for Jest
+    transformIgnorePatterns: [
+        'node_modules/(?!(?:.*?/)?(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|chalk|@sap-devx[+/]yeoman-ui-types)/)'
+    ]
 };
 
 export default config;

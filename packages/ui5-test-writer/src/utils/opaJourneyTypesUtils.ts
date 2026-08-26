@@ -5,17 +5,46 @@ import { t } from '../i18n.js';
 import type { OpaPageWriteInfo } from './journeyRunnerUtils.js';
 import { MAX_FILE_CONTENT_LENGTH, escapeRegex, findBracedBlock, insertAfterLastImport } from './fileWritingUtils.js';
 
-/** Relative path from the test output directory to OpaJourneyTypes.d.ts */
-const OPA_JOURNEY_TYPES_FILE = join('integration', 'types', 'OpaJourneyTypes.d.ts');
+/** Relative path from the test output directory to OpaJourneyTypes.gen.d.ts */
+const OPA_JOURNEY_TYPES_FILE = join('integration', 'types', 'OpaJourneyTypes.gen.d.ts');
 
 /** Frameworks the splicer knows how to render entries for. */
-const SUPPORTED_FRAMEWORKS = new Set(['ListReport', 'ObjectPage']);
+const SUPPORTED_FRAMEWORKS = new Set(['ListReport', 'ObjectPage', 'FPM']);
+
+/** Maps a page template to the `sap/fe/test` type module supplying its actions/assertions surface. */
+const TEMPLATE_TYPE_PREFIX: Record<string, string> = {
+    ListReport: 'ListReport',
+    ObjectPage: 'ObjectPage',
+    FPM: 'TemplatePage'
+};
+
+/**
+ * The `WithAnd<T>` utility type enabling OPA5 fluent `.and` chaining. Kept byte-identical to the
+ * definition emitted by the `OpaJourneyTypes.d.ts` template so that splicing into a file generated
+ * before `WithAnd` existed backfills the same definition the template would have produced.
+ */
+const WITH_AND_TYPE_DEFINITION = `/**
+ * Enables OPA5 fluent \`.and\` chaining on page objects and their sub-objects.
+ *
+ * @example
+ * Then.onTheObjectPageGenerated.iCheckSection({ section: "A" }).and.iCheckSection({ section: "B" });
+ * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
+ */
+type WithAnd<T> = {
+    [K in keyof T | 'and']: K extends 'and'
+        ? WithAnd<T>
+        : K extends keyof T
+        ? T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+            : T[K]
+        : never;
+};`;
 
 /**
  * Filter `pages` down to those whose generator-owned custom-actions/assertions import
  * is not yet present (matched against `../pages/<fileName>` with the `.gen` suffix).
  *
- * @param fileContent - the existing OpaJourneyTypes.d.ts content
+ * @param fileContent - the existing OpaJourneyTypes.gen.d.ts content
  * @param pages - candidate pages to splice in
  * @returns the subset of pages that need to be added
  */
@@ -30,7 +59,7 @@ function findPagesToAdd(fileContent: string, pages: OpaPageWriteInfo[]): OpaPage
  * Build the framework-import lines (ListReport / ObjectPage / TemplatePage) that need to be
  * added to the file, skipping any already imported.
  *
- * @param fileContent - the existing OpaJourneyTypes.d.ts content
+ * @param fileContent - the existing OpaJourneyTypes.gen.d.ts content
  * @param pages - the new pages being added
  * @returns the list of framework-import lines to insert
  */
@@ -50,7 +79,7 @@ function buildMissingFrameworkImports(fileContent: string, pages: OpaPageWriteIn
         );
     }
     if (
-        (templates.has('ListReport') || templates.has('ObjectPage')) &&
+        (templates.has('ListReport') || templates.has('ObjectPage') || templates.has('FPM')) &&
         !fileContent.includes('from "sap/fe/test/TemplatePage"')
     ) {
         lines.push(
@@ -91,9 +120,16 @@ function buildPageUnionEntry(
     }
     const frameworkSuffix = mode === 'actions' ? 'Actions' : 'Assertions';
     const customSuffix = mode === 'actions' ? 'CustomActions' : 'CustomAssertions';
+    const typePrefix = TEMPLATE_TYPE_PREFIX[page.template];
+    // FPM's whole typed surface is TemplatePage, so it needs a single TemplatePage term.
+    // LR/OP add their dedicated type on top of TemplatePage.
+    const frameworkTypes =
+        typePrefix === 'TemplatePage'
+            ? `TemplatePage${frameworkSuffix}`
+            : `${typePrefix}${frameworkSuffix} & TemplatePage${frameworkSuffix}`;
     return (
-        `${indent}onThe${page.targetKey}Generated: Opa5 & ${page.template}${frameworkSuffix} & TemplatePage${frameworkSuffix} & ` +
-        `typeof ${page.targetKey}Generated${customSuffix};`
+        `${indent}onThe${page.targetKey}Generated: WithAnd<Opa5 & ${frameworkTypes} & ` +
+        `typeof ${page.targetKey}Generated${customSuffix}>;`
     );
 }
 
@@ -127,11 +163,11 @@ function insertIntoTypeUnion(content: string, exportName: 'When' | 'Then', newEn
 }
 
 /**
- * Splice new journey entries into an existing `OpaJourneyTypes.d.ts`: framework imports,
+ * Splice new journey entries into an existing `OpaJourneyTypes.gen.d.ts`: framework imports,
  * per-page custom actions/assertions imports, and `onThe<targetKey>Generated` members in
  * the `When` and `Then` unions. Pages already imported are skipped; all other content is preserved.
  *
- * @param fileContent - the full content of the OpaJourneyTypes.d.ts file
+ * @param fileContent - the full content of the OpaJourneyTypes.gen.d.ts file
  * @param pages - pages to add
  * @returns the updated file content, or the original content unchanged if nothing was added
  */
@@ -159,17 +195,22 @@ export function spliceJourneysIntoOpaJourneyTypes(fileContent: string, pages: Op
         .filter((entry): entry is string => entry !== undefined);
 
     let result = insertAfterLastImport(fileContent, newImportLines);
+    // Backfill the WithAnd<T> definition for files generated before `.and` chaining support existed;
+    // spliced entries reference WithAnd<...> and would otherwise resolve to an undefined type.
+    if (!/\btype\s+WithAnd\s*</.test(result)) {
+        result = insertAfterLastImport(result, ['', WITH_AND_TYPE_DEFINITION]);
+    }
     result = insertIntoTypeUnion(result, 'When', whenEntries);
     result = insertIntoTypeUnion(result, 'Then', thenEntries);
     return result;
 }
 
 /**
- * Read `OpaJourneyTypes.d.ts` from the project, splice entries for new pages, and write
+ * Read `OpaJourneyTypes.gen.d.ts` from the project, splice entries for new pages, and write
  * the result back. Pages already present are skipped. If the file does not exist or
  * cannot be read, logs a warning and returns without writing.
  *
- * @param pages - pages whose journeys should be reflected in OpaJourneyTypes.d.ts
+ * @param pages - pages whose journeys should be reflected in OpaJourneyTypes.gen.d.ts
  * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @param fs - mem-fs-editor instance used to read and write the file
  * @param log - optional logger instance used to surface warnings when the file
