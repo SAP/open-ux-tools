@@ -1,5 +1,23 @@
 # @sap-ux/telemetry
 
+## 2.0.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+- @sap-ux/project-access 2.1.12 → 2.1.13
+
+## 2.0.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.1.11 → 2.1.12
+
 ## 2.0.0
 
 ### Major Changes
