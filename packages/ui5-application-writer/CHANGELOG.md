@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 2.1.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+
 ## 2.1.4
 
 ### Patch Changes

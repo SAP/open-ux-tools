@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Features
+
+- Add shared CSS variables for the UI spacing scale [[f044e50](https://github.com/SAP/open-ux-tools/commit/f044e50fb85f83baac12fcac96e5453bd6da6f7a)]
+
 ## 3.0.11
 
 ### Patch Changes
