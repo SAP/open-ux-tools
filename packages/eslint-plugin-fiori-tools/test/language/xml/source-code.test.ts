@@ -1,11 +1,12 @@
+import { jest } from '@jest/globals';
 import type { XMLAstNode, XMLDocument, XMLToken } from '@xml-tools/ast';
 import { buildAst } from '@xml-tools/ast';
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';
-
 import type { ProjectContext } from '../../../src/project-context/project-context.js';
 import { FioriXMLSourceCode } from '../../../src/language/xml/source-code.js';
 import { STEP_PHASE } from '../../../src/language/xml/traversal-step.js';
+import { normalizePath } from '@sap-ux/project-access';
 
 function getAst(text: string): XMLDocument {
     const { cst, tokenVector } = parse(text);
@@ -111,5 +112,26 @@ describe('FioriXMLSourceCode', () => {
             .map((step) => (isNode(step.target) ? step.target.type : step.target.image));
 
         expect(traversedNodeTypes).toEqual(expectedNodeTypes);
+    });
+
+    it('should return parsing error for .xml file', async () => {
+        await jest.isolateModulesAsync(async () => {
+            jest.unstable_mockModule('@xml-tools/parser', () => ({
+                parse: () => {
+                    throw new Error('Unexpected end of input found.');
+                }
+            }));
+            const { FioriLanguage } = await import('../../../src/language/fiori-language.js');
+            const fioriLanguage = new FioriLanguage();
+            const result = fioriLanguage.parse(
+                { path: 'dummy.xml', body: 'test', physicalPath: 'dummy.xml', bom: false },
+                { LangOptions: {} }
+            );
+            expect(result.ok).toBe(false);
+            expect(result.errors).toHaveLength(1);
+            expect(result.errors[0].message).toBe(
+                `Failed to parse XML file ${normalizePath('dummy.xml')}: Unexpected end of input found.`
+            );
+        });
     });
 });
