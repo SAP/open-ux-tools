@@ -312,7 +312,9 @@ export class ProjectMigrator {
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
             if (existsSync(yamlPath)) {
-                const yamlConfig = await UI5Config.newInstance(await readFile(yamlPath));
+                // Optimize: read file first, then parse (avoids nested await)
+                const yamlContent = await readFile(yamlPath);
+                const yamlConfig = await UI5Config.newInstance(yamlContent);
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);
                 await updateFile(yamlPath, yamlConfig.toString());
