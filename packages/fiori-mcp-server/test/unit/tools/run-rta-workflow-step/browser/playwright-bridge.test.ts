@@ -17,6 +17,7 @@ class FakeFrame {
         error: null
     }));
     public readonly frameElement = jest.fn(async () => new FakeFrameElement(this.id));
+    public readonly waitForFunction = jest.fn(async () => undefined);
     constructor(public readonly id: string | null) {}
 }
 
