@@ -101,7 +101,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getWebappPath: jest.fn(),
     getProjectType: jest.fn(),
     execNpmCommand: jest.fn(),
-    findProjectRoot: jest.fn()
+    findProjectRoot: jest.fn(),
+    createApplicationAccess: jest.fn()
 }));
 
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
@@ -134,7 +135,11 @@ jest.unstable_mockModule('@sap-ux/abap-deploy-config-writer', () => ({
 }));
 
 jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
-    getAnnotationNamespaces: jest.fn()
+    getAnnotationNamespaces: jest.fn(),
+    update: jest.fn(),
+    getExternalServiceReferences: jest.fn().mockReturnValue([]),
+    OdataVersion: { v2: '2.0', v4: '4.0' },
+    ServiceType: { EDMX: 'edmx' }
 }));
 
 jest.unstable_mockModule('@sap-ux/flp-config-inquirer', () => ({
@@ -159,6 +164,10 @@ jest.unstable_mockModule('@sap-ux/preview-middleware', () => ({
     generatePreviewFiles: jest.fn()
 }));
 
+jest.unstable_mockModule('@sap-ux/ui5-test-writer', () => ({
+    generateOPAFiles: jest.fn()
+}));
+
 jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
     UI5Config: {
         newInstance: jest.fn().mockResolvedValue({
@@ -169,7 +178,13 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
 }));
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
-    AdaptationProjectType: { ON_PREMISE: 'ON_PREMISE', CLOUD: 'CLOUD' }
+    AdaptationProjectType: { ON_PREMISE: 'ON_PREMISE', CLOUD: 'CLOUD' },
+    AbapCloudEnvironment: { Standalone: 'Standalone', EmbeddedSteampunk: 'EmbeddedSteampunk' },
+    AbapServiceProvider: class {},
+    ODataVersion: { v2: '2', v4: '4' },
+    TlsPatch: { isPatchRequired: jest.fn().mockReturnValue(false), apply: jest.fn() },
+    createForAbapOnCloud: jest.fn(),
+    createForDestination: jest.fn()
 }));
 
 jest.unstable_mockModule('prompts', () => ({
