@@ -235,8 +235,7 @@ async function main() {
       const parsed = parseUi5Yaml(text);
       configuredBase = parsed.url;
       version = parsed.version;
-    } catch (e) {
-      // non-fatal — fall through to public base
+    } catch {
     }
   }
 

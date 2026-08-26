@@ -61,14 +61,13 @@ export interface RunCmdArgsOptions {
  */
 export function runCmdArgs(cmd: string, args: string[], options: RunCmdArgsOptions = {}): Promise<RunCmdArgsResult> {
     const { cwd, timeout } = options;
-    const spawnOptions: SpawnOptions = {
-        cwd,
-        // npx resolves to npx.cmd on Windows, which requires a shell to launch.
-        shell: process.platform === 'win32'
-    };
+    // On Windows, resolve .cmd shims (e.g. npx → npx.cmd) so we can spawn
+    // without shell: true — shell: true corrupts args that contain quotes.
+    const resolvedCmd = process.platform === 'win32' && !cmd.includes('.') ? `${cmd}.cmd` : cmd;
+    const spawnOptions: SpawnOptions = { cwd };
 
     return new Promise<RunCmdArgsResult>((resolve, reject) => {
-        const child = spawn(cmd, args, spawnOptions);
+        const child = spawn(resolvedCmd, args, spawnOptions);
 
         let stdout = '';
         let stderr = '';
