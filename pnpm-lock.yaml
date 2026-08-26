@@ -1580,6 +1580,9 @@ importers:
       i18next:
         specifier: 26.3.6
         version: 26.3.6(typescript@5.9.3)
+      jest-environment-jsdom:
+        specifier: 30.4.1
+        version: 30.4.1(supports-color@8.1.1)
       jest-scss-transform:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))
@@ -4275,6 +4278,9 @@ importers:
       i18next:
         specifier: 26.3.6
         version: 26.3.6(typescript@5.9.3)
+      jest-environment-jsdom:
+        specifier: 30.4.1
+        version: 30.4.1(supports-color@8.1.1)
       jest-scss-transform:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))
@@ -4664,8 +4670,8 @@ importers:
         specifier: 0.6.15
         version: 0.6.15(eslint@9.39.1(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       jest-environment-jsdom:
-        specifier: ^29.7.0
-        version: 29.7.0(supports-color@8.1.1)
+        specifier: 30.4.1
+        version: 30.4.1(supports-color@8.1.1)
       jest-scss-transform:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))
