@@ -22,6 +22,7 @@ export type TestCaseName =
     | 'multi-line-string'
     | 'multi-line-string-strip-indent'
     | 'top-level-empty-value'
+    | 'top-level-quoted'
     | 'bracket-matching'
     | 'record'
     | 'record-annotation'

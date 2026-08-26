@@ -184,6 +184,9 @@ describe('ast to generic format', () => {
             });
         });
     });
+    describe('top level quoted', () => {
+        testConversion('top-level-quoted');
+    });
     describe('flatten annotation - HeaderInfo', () => {
         testConversion('flatten-headerInfo');
 

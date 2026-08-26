@@ -436,6 +436,16 @@ class CstToAstVisitor extends Visitor {
             if (qualifier) {
                 ast.qualifier = qualifier;
             }
+
+            // Flattened qualifier syntax handling
+            const qSegment = Math.min(
+                supportedVocabularyAliases.has(path.segments[0].value) ? ast.term.segments.length - 1 : 0,
+                1
+            );
+            if (!ast.qualifier && qSegment >= 0 && ast.term.segments[qSegment].value.includes('#')) {
+                ast.qualifier = createQualifier(ast.term);
+            }
+
             if (value) {
                 ast.value = value;
             }

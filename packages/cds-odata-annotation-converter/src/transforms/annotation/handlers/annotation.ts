@@ -37,7 +37,7 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
     const isEmbeddedAnnotation = state.elementStack.length > 0;
 
     const namespace = isEmbeddedAnnotation ? undefined : state.context.groupName;
-    let qualifiedName = (namespace ? namespace + '.' : '') + annotation.term.value;
+    let qualifiedName = ((namespace ? namespace + '.' : '') + annotation.term.value).split('#')[0];
     if (qualifiedName.startsWith('@')) {
         qualifiedName = qualifiedName.slice(1);
     }
