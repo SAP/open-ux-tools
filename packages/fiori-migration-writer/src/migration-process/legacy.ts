@@ -93,9 +93,11 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
     // Update context path assignment
     const context = 'ontextPath';
     const contextIdx = legacyRunnerContent.indexOf(context);
-    const contextEnd = legacyRunnerContent.indexOf(';', contextIdx);
-    const newContext = ' = location.pathname.substring(0, location.pathname.lastIndexOf("/"))';
-    legacyRunnerContent = `${legacyRunnerContent.substring(0, contextIdx + context.length)}${newContext}${legacyRunnerContent.substring(contextEnd)}`;
+    if (contextIdx !== -1) {
+        const contextEnd = legacyRunnerContent.indexOf(';', contextIdx);
+        const newContext = ' = location.pathname.substring(0, location.pathname.lastIndexOf("/"))';
+        legacyRunnerContent = `${legacyRunnerContent.substring(0, contextIdx + context.length)}${newContext}${legacyRunnerContent.substring(contextEnd)}`;
+    }
 
     // Remove all '/test-resources' references
     legacyRunnerContent = legacyRunnerContent.replace(/\/test-resources/g, '');
@@ -103,8 +105,11 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
     // Add qunit redirect script
     const bodyTag = '<body>';
     const bodyTagIdx = legacyRunnerContent.indexOf(bodyTag);
-    const qunitScript = '\n<script type="text/javascript" src="/resources/sap/ui/qunit/qunit-redirect.js"></script>';
-    legacyRunnerContent = `${legacyRunnerContent.slice(0, bodyTagIdx + bodyTag.length)}${qunitScript}${legacyRunnerContent.slice(bodyTagIdx + bodyTag.length)}`;
+    if (bodyTagIdx !== -1) {
+        const qunitScript =
+            '\n<script type="text/javascript" src="/resources/sap/ui/qunit/qunit-redirect.js"></script>';
+        legacyRunnerContent = `${legacyRunnerContent.slice(0, bodyTagIdx + bodyTag.length)}${qunitScript}${legacyRunnerContent.slice(bodyTagIdx + bodyTag.length)}`;
+    }
 
     // Add leading slash to context paths if missing
     const pathRegEx = 'contextpath + ';
@@ -154,16 +159,20 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
         }
 
         const pathToRootIdx = moduleFileContent.indexOf('getPathToRoot');
-        const funcBracket = '{';
-        const functionStart = moduleFileContent.indexOf(funcBracket, pathToRootIdx);
-        const posReturn = moduleFileContent.indexOf('return', pathToRootIdx);
-        const replaceContent =
-            "\r\n\t\tvar number = window.location.href.indexOf(\"/webapp/test/\") !== -1 ? 3 : 1;\r\n\t\tvar iGoUp = URI(window.location.href).segment().length - number;\r\n\t\tvar sRel = '';\r\n\t\tfor (var i = 0; i < iGoUp; i++) {\r\n\t\t\tsRel += '../';\r\n\t\t}\r\n\t\t";
-        moduleFileContent = `${moduleFileContent.slice(
-            0,
-            functionStart + funcBracket.length
-        )}${replaceContent}${moduleFileContent.slice(posReturn)}`;
-        await updateFile(join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
+        if (pathToRootIdx !== -1) {
+            const funcBracket = '{';
+            const functionStart = moduleFileContent.indexOf(funcBracket, pathToRootIdx);
+            const posReturn = moduleFileContent.indexOf('return', pathToRootIdx);
+            if (functionStart !== -1 && posReturn !== -1) {
+                const replaceContent =
+                    "\r\n\t\tvar number = window.location.href.indexOf(\"/webapp/test/\") !== -1 ? 3 : 1;\r\n\t\tvar iGoUp = URI(window.location.href).segment().length - number;\r\n\t\tvar sRel = '';\r\n\t\tfor (var i = 0; i < iGoUp; i++) {\r\n\t\t\tsRel += '../';\r\n\t\t}\r\n\t\t";
+                moduleFileContent = `${moduleFileContent.slice(
+                    0,
+                    functionStart + funcBracket.length
+                )}${replaceContent}${moduleFileContent.slice(posReturn)}`;
+                await updateFile(join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
+            }
+        }
     }
 }
 

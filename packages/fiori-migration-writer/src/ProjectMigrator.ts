@@ -70,7 +70,7 @@ export class ProjectMigrator {
 
             // Resolve UI5 versions for migration
             const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrl);
-            projectInfo.localUI5Version = ui5Versions?.[0].version;
+            projectInfo.localUI5Version = ui5Versions?.[0]?.version;
 
             // Validate project is suitable for migration (not a Fiori app in CAP project)
             await validateProjectForMigration(projectRoot);

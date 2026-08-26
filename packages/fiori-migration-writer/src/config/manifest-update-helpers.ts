@@ -5,10 +5,12 @@ import type { TemplateData } from '../types.js';
 /**
  * Data source types from manifest
  */
-enum DataSourceType {
-    OData = 'OData',
-    ODataAnnotation = 'ODataAnnotation'
-}
+const DataSourceType = {
+    OData: 'OData',
+    ODataAnnotation: 'ODataAnnotation'
+} as const;
+
+type DataSourceType = (typeof DataSourceType)[keyof typeof DataSourceType];
 
 /**
  * Check if a data source should be processed
