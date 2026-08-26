@@ -31,7 +31,7 @@ Ask user to choose from the following options:
 
 **Transport Required**: Depends on package type ($TMP: No, Others: Yes)
 
-**📖 Detailed Guide**: See `2.3-with-generator.md`
+**📖 Detailed Guide**: [With Generator Implementation](./2.3-with-generator.md)
 
 ---
 
@@ -43,7 +43,7 @@ Ask user to choose from the following options:
 
 **Documentation**: [Editable Treeviews: Development Process in Overview](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)
 
-**Background Reading**: For conceptual understanding, read `2.2-treeviews-introduction.md`:
+**Background Reading**: For conceptual understanding, read [Treeviews Introduction](./2.2-treeviews-introduction.md):
 - What treeviews are and business context
 - Available features (managed vs unmanaged)
 - Hierarchy directories explained
@@ -55,13 +55,13 @@ Ask user to choose from the following options:
 
 ## Supporting Documentation
 
-📋 **Prerequisites & Core Concepts**: `2.1-prerequisites-and-concepts.md`
+📋 **Prerequisites & Core Concepts**: [Prerequisites and Concepts](./2.1-prerequisites-and-concepts.md)
 - ABAP object creation workflow
 - Architecture patterns (3-layer for generator, 5-layer for manual)
 - Behavior definition workarounds
 - Communication guidelines
 
-🔧 **Troubleshooting & Validation**: `2.4-troubleshooting-checklist.md`
+🔧 **Troubleshooting & Validation**: [Troubleshooting Checklist](./2.4-troubleshooting-checklist.md)
 - Common errors and solutions
 - Draft table field naming rules
 - UUID vs ID confusion fixes
@@ -140,6 +140,6 @@ System:  <SYSTEM_ID> client <CLIENT>
 
 - **[SAP Documentation: Editable Treeviews Development Process](https://help.sap.com/docs/abap-cloud/abap-rap/editable-treeviews-development-process-in-overview)**
 - **[SAP Documentation: Treeview Features (Business Logic Implementation)](https://help.sap.com/docs/abap-cloud/abap-rap/treeview-features)**
-- **Prerequisites & Concepts**: `2.1-prerequisites-and-concepts.md`
-- **Option 1 Guide**: `2.3-with-generator.md`
-- **Troubleshooting**: `2.4-troubleshooting-checklist.md`
+- **Prerequisites & Concepts**: [Prerequisites and Concepts](./2.1-prerequisites-and-concepts.md)
+- **Option 1 Guide**: [With Generator Implementation](./2.3-with-generator.md)
+- **Troubleshooting**: [Troubleshooting Checklist](./2.4-troubleshooting-checklist.md)
