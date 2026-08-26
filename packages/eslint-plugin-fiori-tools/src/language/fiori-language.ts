@@ -93,25 +93,42 @@ export class FioriLanguage implements Language<{
         DiagnosticCache.clear(uri);
         const projectContext = ProjectContext.updateFile(uri, text);
         const document = projectContext.index.documents[uri];
-        if (path.endsWith('.change')) {
-            return {
-                ok: true,
-                ast: {
-                    uri,
-                    context: projectContext,
-                    document: {
-                        type: 'change',
-                        root: parseJson(text, {
-                            mode: 'json',
-                            ranges: true,
-                            tokens: true,
-                            allowTrailingCommas: false
-                        })
-                    }
-                }
-            };
-        }
+        // parse files for the first time
         if (!document) {
+            if (path.endsWith('.change') || path.endsWith('.json')) {
+                try {
+                    const type = path.endsWith('.change') ? 'change' : 'json';
+                    const content = parseJson(text, {
+                        mode: 'json',
+                        ranges: true,
+                        tokens: true,
+                        allowTrailingCommas: false
+                    });
+                    return {
+                        ok: true,
+                        type,
+                        ast: {
+                            uri,
+                            context: projectContext,
+                            document: {
+                                type,
+                                root: content
+                            }
+                        }
+                    };
+                } catch (e) {
+                    return {
+                        ok: false,
+                        errors: [
+                            {
+                                line: 0,
+                                column: 0,
+                                message: `Failed to parse file ${path}: ${(e as Error).message}`
+                            }
+                        ]
+                    };
+                }
+            }
             if (path.endsWith('.xml')) {
                 try {
                     const { cst, tokenVector } = parseXml(text);
@@ -139,24 +156,6 @@ export class FioriLanguage implements Language<{
                         ]
                     };
                 }
-            }
-            if (path.endsWith('.json')) {
-                return {
-                    ok: true,
-                    ast: {
-                        uri,
-                        context: projectContext,
-                        document: {
-                            type: 'json',
-                            root: parseJson(text, {
-                                mode: 'json',
-                                ranges: true,
-                                tokens: true,
-                                allowTrailingCommas: false
-                            })
-                        }
-                    }
-                };
             }
             if (path.endsWith('.cds')) {
                 // NOSONAR - TODO: add warning for orphaned cds files
@@ -190,6 +189,7 @@ export class FioriLanguage implements Language<{
                 ]
             };
         }
+        // parse files that already are in project context
         if (document.type === 'Document') {
             return {
                 ok: true,
@@ -197,7 +197,7 @@ export class FioriLanguage implements Language<{
                     uri,
                     context: projectContext,
                     document: {
-                        type: 'json',
+                        type: path.endsWith('.change') ? 'change' : 'json',
                         root: document
                     }
                 }
