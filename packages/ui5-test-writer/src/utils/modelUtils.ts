@@ -9,7 +9,7 @@ import {
     type Specification,
     type Parser
 } from '@sap/ux-specification/dist/types/src';
-type PageWithModelV4 = Parser.PageWithModelV4;
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 type TreeAggregation = Parser.TreeAggregation;
 type TreeAggregations = Parser.TreeAggregations;
 type TreeModel = Parser.TreeModel;

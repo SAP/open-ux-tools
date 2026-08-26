@@ -1,8 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { PageTypeV4, type Parser } from '@sap/ux-specification/dist/types/src';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 type ApplicationModel = Parser.ApplicationModel;
-type PageWithModelV4 = Parser.PageWithModelV4;
 import type {
     ActionButtonState,
     MenuActionState,

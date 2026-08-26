@@ -1,8 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Parser } from '@sap/ux-specification/dist/types/src';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 type TreeAggregations = Parser.TreeAggregations;
 type TreeModel = Parser.TreeModel;
-type PageWithModelV4 = Parser.PageWithModelV4;
 import type {
     ActionButtonsResult,
     ActionButtonState,
