@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Features
+
+- Add an internal AI agent skill for developing ESLint rules in the @sap-ux/eslint-plugin-fiori-tools package. [[6cfd8d0](https://github.com/SAP/open-ux-tools/commit/6cfd8d068955287fe9dc764d2acb5315235ec213)]
+
 ## 10.8.5
 
 ### Patch Changes
