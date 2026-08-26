@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Stack } from '@fluentui/react';
 import type { IStackTokens } from '@fluentui/react';
 import { UICallout } from '../src/components';
@@ -54,6 +54,34 @@ export const shadows = () => {
                 width: 300
             }}>
             {stacks}
+        </Stack>
+    );
+};
+
+export const spacing = () => {
+    const variables = [
+        '--ui-spacing-xs',
+        '--ui-spacing-small',
+        '--ui-spacing-medium',
+        '--ui-spacing-large',
+        '--ui-spacing-xl',
+        '--ui-spacing-xxl'
+    ];
+
+    return (
+        <Stack tokens={stackTokens}>
+            {variables.map((variable) => (
+                <Stack horizontal verticalAlign="center" tokens={stackTokens} key={variable}>
+                    <code style={{ width: 180 }}>{variable}</code>
+                    <div
+                        style={{
+                            background: 'var(--vscode-textLink-foreground)',
+                            height: 20,
+                            width: `var(${variable})`
+                        }}
+                    />
+                </Stack>
+            ))}
         </Stack>
     );
 };
