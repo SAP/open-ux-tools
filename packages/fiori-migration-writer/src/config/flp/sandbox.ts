@@ -20,7 +20,7 @@ export interface FlpSandboxProcessingResult {
 
 /**
  * Process FLP sandbox HTML files to extract libraries, intents, and root intent flags
- * Handles both flpSandbox.html and flpSandboxMockServer.html
+ * Handles both flpSandbox.html and flpSandboxMockServer.html in parallel
  *
  * @param projectRoot - Root path of the project
  * @param webappPath - Webapp path within the project
@@ -34,56 +34,106 @@ export async function processFlpSandboxFiles(
     getFlpIntentFromHtml: (path: string) => Promise<string | undefined>,
     existingFlpIntent?: string
 ): Promise<FlpSandboxProcessingResult> {
-    let flpSandboxLibs = '';
-    let flpSandboxFlpIntent = existingFlpIntent;
-    const hasRootIntent = { flpSandboxRootIntent: false, flpSandboxMockRootIntent: false };
-    let targetMockHtmlFile: string | undefined;
-
-    // Process flpSandbox.html
-    try {
-        const flpSandboxPath = join(projectRoot, webappPath, 'test', 'flpSandbox.html');
-        if (await fileExists(flpSandboxPath)) {
-            const flpSandboxContent: any = await readFile(flpSandboxPath);
-            const key = 'data-sap-ui-libs="';
-            if (flpSandboxContent?.indexOf(key) !== -1) {
-                const posOfkey = flpSandboxContent.indexOf(key);
-                const lenOfKey = key.length;
-                const posStartOfValue = posOfkey + lenOfKey;
-                const posEndOfValue = flpSandboxContent.indexOf('"', posStartOfValue);
-                flpSandboxLibs = flpSandboxContent.substring(posStartOfValue, posEndOfValue);
-            }
-
-            if (flpSandboxContent?.indexOf('rootIntent') !== -1) {
-                hasRootIntent.flpSandboxRootIntent = true;
-            }
-        }
-        const flpSandboxFlpIntentTmp = await getFlpIntentFromHtml(flpSandboxPath);
-        if (flpSandboxFlpIntentTmp && flpSandboxFlpIntentTmp?.length > 0) {
-            flpSandboxFlpIntent = flpSandboxFlpIntentTmp;
-        }
-    } catch {
-        // Expected: flpSandbox.html may not exist in all projects (optional FLP configuration).
-        // Safe to continue with default FLP intent values.
-    }
-
-    // Process flpSandboxMockServer.html
+    const flpSandboxPath = join(projectRoot, webappPath, 'test', 'flpSandbox.html');
     const flpSandboxMockPath = join(projectRoot, webappPath, 'test', 'flpSandboxMockServer.html');
 
-    const flpSandboxMockFlpIntent = await getFlpIntentFromHtml(flpSandboxMockPath);
-    if (await fileExists(flpSandboxMockPath)) {
-        targetMockHtmlFile = 'test/flpSandboxMockServer.html';
-        const flpSandboxMockContent: string = await readFile(flpSandboxMockPath);
-
-        if (flpSandboxMockContent && flpSandboxMockContent.indexOf('rootIntent') !== -1) {
-            hasRootIntent.flpSandboxMockRootIntent = true;
-        }
-    }
+    // Process both files in parallel for better performance
+    const [sandboxResult, mockResult] = await Promise.all([
+        processSandboxFile(flpSandboxPath, getFlpIntentFromHtml, existingFlpIntent),
+        processMockSandboxFile(flpSandboxMockPath, getFlpIntentFromHtml)
+    ]);
 
     return {
-        flpSandboxLibs,
-        flpSandboxFlpIntent,
-        flpSandboxMockFlpIntent,
-        hasRootIntent,
-        targetMockHtmlFile
+        flpSandboxLibs: sandboxResult.libs,
+        flpSandboxFlpIntent: sandboxResult.intent || existingFlpIntent,
+        flpSandboxMockFlpIntent: mockResult.intent,
+        hasRootIntent: {
+            flpSandboxRootIntent: sandboxResult.hasRootIntent,
+            flpSandboxMockRootIntent: mockResult.hasRootIntent
+        },
+        targetMockHtmlFile: mockResult.targetFile
     };
+}
+
+/**
+ * Process main FLP sandbox file
+ *
+ * @param filePath - Path to flpSandbox.html
+ * @param getFlpIntentFromHtml - Function to extract intent from HTML
+ * @param existingFlpIntent - Existing FLP intent
+ * @returns Sandbox processing result
+ */
+async function processSandboxFile(
+    filePath: string,
+    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>,
+    existingFlpIntent?: string
+): Promise<{ libs: string; intent?: string; hasRootIntent: boolean }> {
+    try {
+        if (!(await fileExists(filePath))) {
+            return { libs: '', hasRootIntent: false };
+        }
+
+        const content = await readFile(filePath);
+        const libs = extractDataSapUiLibs(content);
+        const hasRootIntent = content.indexOf('rootIntent') !== -1;
+        const intent = await getFlpIntentFromHtml(filePath);
+
+        return {
+            libs,
+            intent: intent && intent.length > 0 ? intent : existingFlpIntent,
+            hasRootIntent
+        };
+    } catch {
+        // Expected: flpSandbox.html may not exist in all projects (optional FLP configuration)
+        return { libs: '', hasRootIntent: false };
+    }
+}
+
+/**
+ * Process mock FLP sandbox file
+ *
+ * @param filePath - Path to flpSandboxMockServer.html
+ * @param getFlpIntentFromHtml - Function to extract intent from HTML
+ * @returns Mock sandbox processing result
+ */
+async function processMockSandboxFile(
+    filePath: string,
+    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>
+): Promise<{ intent?: string; hasRootIntent: boolean; targetFile?: string }> {
+    try {
+        const [intent, exists] = await Promise.all([getFlpIntentFromHtml(filePath), fileExists(filePath)]);
+
+        if (!exists) {
+            return { hasRootIntent: false };
+        }
+
+        const content = await readFile(filePath);
+        const hasRootIntent = content.indexOf('rootIntent') !== -1;
+
+        return {
+            intent,
+            hasRootIntent,
+            targetFile: 'test/flpSandboxMockServer.html'
+        };
+    } catch {
+        return { hasRootIntent: false };
+    }
+}
+
+/**
+ * Extract data-sap-ui-libs attribute value from HTML content
+ *
+ * @param htmlContent - HTML file content
+ * @returns Library string or empty string
+ */
+function extractDataSapUiLibs(htmlContent: string): string {
+    const key = 'data-sap-ui-libs="';
+    const keyPos = htmlContent.indexOf(key);
+    if (keyPos === -1) {
+        return '';
+    }
+
+    const startPos = keyPos + key.length;
+    const endPos = htmlContent.indexOf('"', startPos);
+    return htmlContent.substring(startPos, endPos);
 }

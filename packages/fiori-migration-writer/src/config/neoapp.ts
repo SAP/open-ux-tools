@@ -71,10 +71,12 @@ export async function processNeoAppAndODataVersion(
     }
 
     // Determine OData version
+    const odataVersionFromSettings =
+        typeof mainServiceDatasource?.settings === 'object' && mainServiceDatasource.settings !== null
+            ? (mainServiceDatasource.settings as Record<string, unknown>).odataVersion
+            : undefined;
     const odataVersionTmp =
-        parseInt((mainServiceDatasource?.settings as any)?.odataVersion || '', 10) === 4
-            ? ODataVersion.v4
-            : ODataVersion.v2; // Defaults to v2 if sapAppServiceVersion or projectInfo.FEVersion undefined or v2
+        parseInt(String(odataVersionFromSettings || ''), 10) === 4 ? ODataVersion.v4 : ODataVersion.v2;
 
     const odataVersion = feVersion === FioriElementsVersion.v4 ? ODataVersion.v4 : odataVersionTmp;
 

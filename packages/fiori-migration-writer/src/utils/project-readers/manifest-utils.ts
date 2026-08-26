@@ -55,14 +55,78 @@ export function getSemanticObjectAction(manifest: Manifest): string | undefined 
     let result;
 
     if (manifest?.['sap.app']?.crossNavigation?.inbounds) {
-        const firstInboundKey = Object.keys(manifest['sap.app'].crossNavigation.inbounds)?.[0] as any;
+        const inbounds = manifest['sap.app'].crossNavigation.inbounds;
+        const firstInboundKey = Object.keys(inbounds)[0];
 
-        if (manifest['sap.app'].crossNavigation.inbounds[firstInboundKey]) {
-            const firstInbound = manifest['sap.app'].crossNavigation.inbounds[firstInboundKey];
+        if (firstInboundKey && inbounds[firstInboundKey]) {
+            const firstInbound = inbounds[firstInboundKey];
             result = `${firstInbound?.semanticObject}-${firstInbound?.action}`;
         }
     }
     return result;
+}
+
+/**
+ * Process a single line to add quotes to property names for JSON parsing
+ *
+ * @param line - Line of configuration text
+ * @returns Processed line with quoted property names
+ */
+function processConfigLine(line: string): string {
+    const colonPos = line.indexOf(':');
+    if (colonPos === -1) {
+        return line;
+    }
+
+    const beforeColon = line.substring(0, colonPos).trim();
+    const propName = beforeColon.replace(/(?:^['"])|(?:['"]$)/g, '');
+
+    // Only process valid property names (word characters)
+    if (!/^\w+$/.test(propName)) {
+        return line;
+    }
+
+    // Reconstruct line with proper JSON quotes
+    const afterColon = line.substring(colonPos);
+    const indentMatch = /^\s*/.exec(line);
+    const indent = indentMatch?.[0] || '';
+    return `${indent}"${propName}"${afterColon}`;
+}
+
+/**
+ * Extract and parse FLP sandbox configuration from HTML content
+ *
+ * @param htmlContent - HTML file content
+ * @returns First application intent key or undefined
+ */
+function extractFlpIntentFromConfig(htmlContent: string): string | undefined {
+    const key = 'window["sap-ushell-config"] = {';
+    const keyPos = htmlContent.indexOf(key);
+    if (keyPos === -1) {
+        return undefined;
+    }
+
+    const startPos = keyPos + key.length;
+    const endPos = htmlContent.indexOf('};', startPos);
+    const configStr = htmlContent.substring(startPos - 1, endPos + 1);
+
+    // Process lines to add quotes to property names (ReDoS-safe approach)
+    const lines = configStr.split('\n');
+    const processedLines = lines.map(processConfigLine);
+    const cleanedConfig = processedLines.join('\n').replace('-"', '-');
+
+    // Parse JSON and extract first application intent
+    try {
+        const config: { applications?: Record<string, unknown> } = JSON.parse(cleanedConfig);
+        const applications = config?.applications;
+        if (applications && Object.keys(applications).length > 0) {
+            return Object.keys(applications)[0];
+        }
+    } catch {
+        // Invalid JSON, return undefined
+    }
+
+    return undefined;
 }
 
 /**
@@ -72,57 +136,16 @@ export function getSemanticObjectAction(manifest: Manifest): string | undefined 
  * @returns FLP intent string or undefined
  */
 export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string | undefined> {
-    let flpIntent;
-
     try {
-        if (await fileExists(htmlFilePath)) {
-            const flpSandboxContent: any = await readFile(htmlFilePath);
-            const key = 'window["sap-ushell-config"] = {';
-            if (flpSandboxContent?.indexOf(key) !== -1) {
-                const posOfkey = flpSandboxContent.indexOf(key);
-                const lenOfKey = key.length;
-                const posStartOfValue = posOfkey + lenOfKey;
-                const posEndOfValue = flpSandboxContent.indexOf('};', posStartOfValue);
-                const flpSandboxConfig = flpSandboxContent.substring(posStartOfValue - 1, posEndOfValue + 1);
-                // Add quotes to properties - ReDoS-safe approach using indexOf/substring instead of regex
-                // This completely avoids regex backtracking vulnerabilities
-                const lines = flpSandboxConfig.split('\n');
-                const processedLines = lines.map((line: string) => {
-                    const colonPos = line.indexOf(':');
-                    if (colonPos === -1) {
-                        return line;
-                    }
-                    // Extract property name part before colon
-                    const beforeColon = line.substring(0, colonPos).trim();
-                    // Remove any existing quotes - explicit grouping for clarity
-                    const propName = beforeColon.replace(/(?:^['"])|(?:['"]$)/g, '');
-                    // Only process if it looks like a valid property name (word characters)
-                    if (/^\w+$/.test(propName)) {
-                        // Reconstruct line with proper JSON quotes
-                        const afterColon = line.substring(colonPos);
-                        const indentRegex = /^\s*/;
-                        const indentMatch = indentRegex.exec(line);
-                        const indent = indentMatch?.[0] || '';
-                        return `${indent}"${propName}"${afterColon}`;
-                    }
-                    return line;
-                });
-                const flpSandboxConfigCleaned = processedLines.join('\n').replace('-"', '-');
-                let flpSandboxConfigJSON = {} as any;
-                try {
-                    flpSandboxConfigJSON = JSON.parse(flpSandboxConfigCleaned);
-                } catch {
-                    // ignore error
-                }
-                if (flpSandboxConfigJSON?.applications && Object.keys(flpSandboxConfigJSON?.applications)?.[0]) {
-                    flpIntent = Object.keys(flpSandboxConfigJSON?.applications)?.[0];
-                }
-            }
+        if (!(await fileExists(htmlFilePath))) {
+            return undefined;
         }
+
+        const htmlContent = await readFile(htmlFilePath);
+        return extractFlpIntentFromConfig(htmlContent);
     } catch {
-        // Do  nothing
+        return undefined;
     }
-    return flpIntent;
 }
 
 /**

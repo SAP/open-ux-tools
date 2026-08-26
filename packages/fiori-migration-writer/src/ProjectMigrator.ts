@@ -108,9 +108,11 @@ export class ProjectMigrator {
             }
         } catch (e) {
             const error = e instanceof Error ? e : new Error(String(e));
+            const useMessage =
+                typeof e === 'object' && e !== null && 'useMessage' in e ? Boolean(e.useMessage) : false;
             messages.push({
                 type: 'ERROR',
-                description: `Error during migration: ${determineMessage(error, undefined, (e as any)?.useMessage)}`
+                description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`
             });
         }
         return { result, messages };
