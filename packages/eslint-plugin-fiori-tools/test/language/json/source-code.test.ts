@@ -33,7 +33,6 @@ describe('FioriJSONSourceCode', () => {
 
         expect(result.ok).toBe(true);
         expect(result.errors).toBeUndefined();
-        expect(result.type).toBe('json');
         expect(result.ast.document.type).toBe('json');
         expect(result.ast.document.root.body.type).toBe('Object');
     });
@@ -48,7 +47,6 @@ describe('FioriJSONSourceCode', () => {
 
         expect(result.ok).toBe(true);
         expect(result.errors).toBeUndefined();
-        expect(result.type).toBe('change');
         expect(result.ast.document.type).toBe('change');
     });
 

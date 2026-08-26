@@ -171,7 +171,6 @@ export class FioriLanguage implements Language<{
     ): ParseResult<FioriParseResultAst> {
         if (path.endsWith('.change') || path.endsWith('.json')) {
             try {
-                const type = path.endsWith('.change') ? 'change' : 'json';
                 const content = parseJson(text, {
                     mode: 'json',
                     ranges: true,
@@ -180,12 +179,11 @@ export class FioriLanguage implements Language<{
                 });
                 return {
                     ok: true,
-                    type,
                     ast: {
                         uri,
                         context: projectContext,
                         document: {
-                            type,
+                            type: path.endsWith('.change') ? 'change' : 'json',
                             root: content
                         }
                     }
