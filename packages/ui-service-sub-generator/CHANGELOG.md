@@ -1,5 +1,18 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.44
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.1 → 2.0.2
+- @sap-ux/ui-service-inquirer 1.0.43 → 1.0.44
+- @sap-ux/inquirer-common 1.0.34 → 1.0.35
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+- @sap-ux/fiori-generator-shared 1.2.9 → 1.2.10
+- @sap-ux/system-access 1.0.11 → 1.0.11
+
 ## 1.0.43
 
 ### Patch Changes
