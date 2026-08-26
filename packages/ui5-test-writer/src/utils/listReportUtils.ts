@@ -1,5 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
-import type { TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type { Parser } from '@sap/ux-specification/dist/types/src';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
+type TreeAggregations = Parser.TreeAggregations;
+type TreeModel = Parser.TreeModel;
 import type {
     ActionButtonsResult,
     ActionButtonState,
@@ -27,7 +30,6 @@ import {
     safeCheckButtonVisibility,
     safeCheckButtonVisibilityFromMetadata
 } from './actionUtils.js';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type { Manifest } from '@sap-ux/project-access';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
 import { t } from '../i18n.js';

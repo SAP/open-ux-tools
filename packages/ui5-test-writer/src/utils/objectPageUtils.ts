@@ -1,6 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
+import { PageTypeV4, type Parser } from '@sap/ux-specification/dist/types/src';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
+type ApplicationModel = Parser.ApplicationModel;
 import type {
     ActionButtonState,
     MenuActionState,
@@ -14,7 +16,6 @@ import type {
     ObjectPageNavigationParent,
     ObjectPageNavigationParents
 } from '../types.js';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import {
     type AggregationItem,
     type BodySectionItem,
@@ -27,7 +28,6 @@ import {
 } from './modelUtils.js';
 import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
 import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';

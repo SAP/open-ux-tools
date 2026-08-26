@@ -191,7 +191,7 @@ importers:
         version: 64.2.1(eslint@10.7.0(supports-color@8.1.1))(supports-color@8.1.1)
       eslint-plugin-prettier:
         specifier: 5.5.6
-        version: 5.5.6(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.7.0(supports-color@8.1.1)))(eslint@10.7.0(supports-color@8.1.1))(prettier@3.9.5)
+        version: 5.5.6(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.7.0(supports-color@8.1.1)))(eslint@10.7.0(supports-color@8.1.1))(prettier@3.9.6)
       eslint-plugin-promise:
         specifier: 7.2.1
         version: 7.2.1(eslint@10.7.0(supports-color@8.1.1))
@@ -211,8 +211,8 @@ importers:
         specifier: 0.2.16
         version: 0.2.16
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       nx:
         specifier: 22.7.8
         version: 22.7.8(@swc/core@1.15.46(@swc/helpers@0.5.19))
@@ -223,11 +223,11 @@ importers:
         specifier: ^7.1.3
         version: 7.1.3
       prettier:
-        specifier: 3.9.5
-        version: 3.9.5
+        specifier: 3.9.6
+        version: 3.9.6
       pretty-quick:
         specifier: 4.2.2
-        version: 4.2.2(prettier@3.9.5)
+        version: 4.2.2(prettier@3.9.6)
       react-select:
         specifier: 5.10.2
         version: 5.10.2(@types/react@16.14.69)(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(supports-color@8.1.1)
@@ -388,11 +388,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/project-access
       '@storybook/react':
-        specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 10.5.9
+        version: 10.5.9(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
-        specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
+        specifier: 10.5.9
+        version: 10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -442,8 +442,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       react:
         specifier: 16.14.0
         version: 16.14.0
@@ -457,8 +457,8 @@ importers:
         specifier: 16.0.7
         version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
       storybook:
-        specifier: 10.5.1
-        version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 10.5.9
+        version: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
@@ -649,8 +649,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -870,8 +870,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -913,8 +913,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
 
   packages/app-config-writer:
     dependencies:
@@ -992,8 +992,8 @@ importers:
         specifier: '>=1.18.0'
         version: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
 
   packages/axios-extension:
     dependencies:
@@ -1050,14 +1050,14 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/proxy-from-env':
         specifier: 1.0.4
         version: 1.0.4
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
@@ -1126,8 +1126,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
@@ -1200,8 +1200,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
 
   packages/cap-config-writer:
     dependencies:
@@ -1265,8 +1265,8 @@ importers:
         version: 7.1.1
     devDependencies:
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
 
   packages/cds-odata-annotation-converter:
     dependencies:
@@ -1296,8 +1296,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
 
   packages/cf-deploy-config-inquirer:
     dependencies:
@@ -1512,8 +1512,8 @@ importers:
         specifier: 0.2.2
         version: 0.2.2(esbuild@0.28.2)
       '@fluentui/react':
-        specifier: 8.125.6
-        version: 8.125.6(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 8.125.7
+        version: 8.125.7(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       '@fluentui/react-hooks':
         specifier: 8.10.2
         version: 8.10.2(@types/react@16.14.69)(react@16.14.0)
@@ -1587,8 +1587,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       postcss-modules:
         specifier: 6.0.1
         version: 6.0.1(postcss@8.5.26)
@@ -1635,8 +1635,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -2055,7 +2055,7 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       '@humanwhocodes/momoa':
-        specifier: ^3.3.9
+        specifier: ^3.3.10
         version: 3.3.10
       '@jest/globals':
         specifier: 30.4.1
@@ -2115,8 +2115,8 @@ importers:
         specifier: 7.8.5
         version: 7.8.5
       synckit:
-        specifier: 0.11.12
-        version: 0.11.12
+        specifier: 0.11.13
+        version: 0.11.13
       yaml:
         specifier: 2.9.0
         version: 2.9.0
@@ -2273,8 +2273,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
 
   packages/fiori-app-sub-generator:
     dependencies:
@@ -2388,8 +2388,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2460,11 +2460,11 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       tsx:
-        specifier: 4.23.1
-        version: 4.23.1
+        specifier: 4.23.12
+        version: 4.23.12
 
   packages/fiori-elements-writer:
     dependencies:
@@ -2533,8 +2533,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2606,8 +2606,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2793,8 +2793,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -2867,8 +2867,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.20.1)
@@ -2925,8 +2925,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -3185,8 +3185,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)
@@ -3267,8 +3267,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -3484,8 +3484,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-entity-model
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
 
   packages/odata-annotation-core-types:
     dependencies:
@@ -3494,8 +3494,8 @@ importers:
         version: link:../text-document-utils
     devDependencies:
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
 
   packages/odata-entity-model:
     devDependencies:
@@ -3503,8 +3503,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-annotation-core-types
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
 
   packages/odata-service-inquirer:
     dependencies:
@@ -3692,14 +3692,14 @@ importers:
         specifier: '>=1.18.0'
         version: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       prettier:
-        specifier: 3.9.5
-        version: 3.9.5
+        specifier: 3.9.6
+        version: 3.9.6
       tsx:
-        specifier: 4.23.1
-        version: 4.23.1
+        specifier: 4.23.12
+        version: 4.23.12
 
   packages/playwright:
     dependencies:
@@ -3832,11 +3832,11 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
@@ -3869,8 +3869,8 @@ importers:
         specifier: 62.8.1
         version: 62.8.1(eslint@10.7.0(supports-color@8.1.1))(supports-color@8.1.1)
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       ui5-tooling-modules:
         specifier: 3.35.0
         version: 3.35.0(@ui5/project@4.0.17(@ui5/builder@4.3.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
@@ -4108,8 +4108,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -4213,8 +4213,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -4261,8 +4261,8 @@ importers:
         specifier: 12.1.5
         version: 12.1.5(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       '@testing-library/user-event':
-        specifier: 14.6.1
-        version: 14.6.1(@testing-library/dom@9.3.4)
+        specifier: 14.6.5
+        version: 14.6.5(@testing-library/dom@9.3.4)
       '@types/react':
         specifier: 16.14.69
         version: 16.14.69
@@ -4397,8 +4397,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -4461,8 +4461,8 @@ importers:
   packages/ui-components:
     dependencies:
       '@fluentui/react':
-        specifier: 8.125.6
-        version: 8.125.6(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 8.125.7
+        version: 8.125.7(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       react-movable:
         specifier: 2.5.4
         version: 2.5.4(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -4498,11 +4498,11 @@ importers:
         specifier: 30.4.1
         version: 30.4.1(supports-color@8.1.1)
       '@storybook/react':
-        specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 10.5.9
+        version: 10.5.9(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
-        specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
+        specifier: 10.5.9
+        version: 10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
@@ -4564,8 +4564,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       react:
         specifier: 16.14.0
         version: 16.14.0
@@ -4582,8 +4582,8 @@ importers:
         specifier: 16.0.7
         version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
       storybook:
-        specifier: 10.5.1
-        version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 10.5.9
+        version: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
@@ -4628,11 +4628,11 @@ importers:
         specifier: workspace:*
         version: link:../inquirer-common
       '@storybook/react':
-        specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 10.5.9
+        version: 10.5.9(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
-        specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
+        specifier: 10.5.9
+        version: 10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
@@ -4676,8 +4676,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       react:
         specifier: 16.14.0
         version: 16.14.0
@@ -4691,8 +4691,8 @@ importers:
         specifier: 16.0.7
         version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
       storybook:
-        specifier: 10.5.1
-        version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 10.5.9
+        version: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
@@ -4776,8 +4776,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -4919,8 +4919,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -4968,8 +4968,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -5011,8 +5011,8 @@ importers:
         specifier: 4.0.9
         version: 4.0.9
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -5039,8 +5039,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
 
   packages/ui5-library-inquirer:
     dependencies:
@@ -5300,8 +5300,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -5358,8 +5358,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 14.0.17
+        version: 14.0.17
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
@@ -5391,8 +5391,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-application-writer
       '@sap/ux-specification':
-        specifier: 1.144.5
-        version: 1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 1.144.10
+        version: 1.144.10
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -5456,11 +5456,11 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       prettier:
-        specifier: 3.9.5
-        version: 3.9.5
+        specifier: 3.9.6
+        version: 3.9.6
 
   packages/yaml:
     dependencies:
@@ -5472,8 +5472,8 @@ importers:
         version: 2.9.0
     devDependencies:
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
 
   tests/fixtures/projects/mock:
     devDependencies:
@@ -5496,8 +5496,8 @@ importers:
         specifier: workspace:*
         version: link:../../../../packages/ui5-proxy-middleware
       '@ui5/cli':
-        specifier: 4.0.57
-        version: 4.0.57(supports-color@8.1.1)
+        specifier: 4.0.62
+        version: 4.0.62(supports-color@8.1.1)
 
   tests/integration/adaptation-editor:
     dependencies:
@@ -5529,8 +5529,8 @@ importers:
         specifier: 11.0.0
         version: 11.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       npm-run-all2:
-        specifier: 9.0.2
-        version: 9.0.2
+        specifier: 9.0.3
+        version: 9.0.3
       portfinder:
         specifier: 1.0.38
         version: 1.0.38(supports-color@8.1.1)
@@ -7186,11 +7186,11 @@ packages:
   '@fluentui/dom-utilities@2.3.10':
     resolution: {integrity: sha512-6WDImiLqTOpkEtfUKSStcTDpzmJfL6ZammomcjawN9xH/8u8G3Hx72CIt2MNck9giw/oUlNLJFdWRAjeP3rmPQ==}
 
-  '@fluentui/font-icons-mdl2@8.5.73':
-    resolution: {integrity: sha512-pyR9OE8LJMEVDAUTaTu/rGXaMCsyRqpp5124DhBoFNf6q5kI660IgbzuQadCpyMBEQadYI5/GLkLN7b1Lgou9Q==}
+  '@fluentui/font-icons-mdl2@8.5.74':
+    resolution: {integrity: sha512-q3QiQ2CuFdMjtiP9U5+Qi8LMhxKqWEi7C8R+O6SuaGbGS+3YOO/1iuenhKtt961OHn5ev/0M4j4okUZ1112GSw==}
 
-  '@fluentui/foundation-legacy@8.6.6':
-    resolution: {integrity: sha512-PIcMLOymLvIunp9DrBHUT+dZqwyslKsIOPi+5g/fLU/ySzCg3fs6wQyWHxN3esI5FsSfWi+yCpp+6u5+N00kJQ==}
+  '@fluentui/foundation-legacy@8.6.7':
+    resolution: {integrity: sha512-mu1wHlkom+XT+mlaGe7GW4eIZeIT9OjgdXg2Az/P670N7JA1OKcjHd8F/9ktMb5FGrXJ287AjQDNCDfWnjnCYA==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
@@ -7201,8 +7201,8 @@ packages:
   '@fluentui/merge-styles@8.6.14':
     resolution: {integrity: sha512-vghuHFAfQgS9WLIIs4kgDOCh/DHd5vGIddP4/bzposhlAVLZR6wUBqldm9AuCdY88r5LyCRMavVJLV+Up3xdvA==}
 
-  '@fluentui/react-focus@8.10.6':
-    resolution: {integrity: sha512-hMQw7AETttfex3XEAB/XQalJSL8/RgzOdJrL1RPKcrxdkBal0C1MRQ43Bbmw/4WtI0vK0wI4+jHvCIlM0lkodA==}
+  '@fluentui/react-focus@8.10.7':
+    resolution: {integrity: sha512-Uf0wliddeVPEYylNvbBqYu2V2ofCQ/YhC5JHIFT4RwBkZil1Ta3X+9EFhJMO1LejyLXTKnMMimPxdPS1XzLTGQ==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
@@ -7225,8 +7225,8 @@ packages:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
 
-  '@fluentui/react@8.125.6':
-    resolution: {integrity: sha512-uvq0PdAL+Tznikek54zbS31JefTqcPaCkwjHjJz0t8NAC2ZFHozKnkApaQo2+sf0390K3k1ErGWr/+3Tvc6+JQ==}
+  '@fluentui/react@8.125.7':
+    resolution: {integrity: sha512-MsputVjgAZEcSzfr6nXBghfZnqu+GKT4NCBwLeSL8yyQEugUxyZJNp4TVZblGdMognyRDbobNn+/zIhEK4sxNQ==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       '@types/react-dom': '>=16.8.0 <20.0.0'
@@ -7236,8 +7236,8 @@ packages:
   '@fluentui/set-version@8.2.24':
     resolution: {integrity: sha512-8uNi2ThvNgF+6d3q2luFVVdk/wZV0AbRfJ85kkvf2+oSRY+f6QVK0w13vMorNhA5puumKcZniZoAfUF02w7NSg==}
 
-  '@fluentui/style-utilities@8.15.1':
-    resolution: {integrity: sha512-EwjJE7P7XWViNIN+Klm4rFCaADujsfwHB4nzkYeD0zjMokrznsiAvqERxaGZMCRH7tO+DLKITt7kaoQstNLCVQ==}
+  '@fluentui/style-utilities@8.15.2':
+    resolution: {integrity: sha512-rss7pkgiyNQuo1OpS7R2X6IJXIwDzQ0fxQxIeBB7Xp7lM+AwcKn5V7fzgIgCyE7BI6TWSy2TeQJ9Jtr/4fYEaw==}
 
   '@fluentui/theme@2.7.2':
     resolution: {integrity: sha512-UXGNfGa/1bLmYrOpmHXdvyc7CzlNSKUQAADweTncbNoMF1DvscWEjPj5kxFgCmOU8wVtvvn4GraNNUSWtNxeeA==}
@@ -9577,6 +9577,10 @@ packages:
       '@sap-ux/odata-annotation-core-types': '>=0.5.7'
       '@sap-ux/project-access': '>=1.35.20'
 
+  '@sap/ux-specification@1.144.10':
+    resolution: {integrity: sha512-0nGMFQQxPKZKxF0R4KSWK1dFmSGkD1HMUTuUIQ/1j8VcEx8mSHb+SkcLU8ZkFa3Dn5qNky+ZS7xawIA3o2HezA==}
+    engines: {node: '>=22.13.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.22 < 2'}
+
   '@sap/ux-specification@1.144.5':
     resolution: {integrity: sha512-I7DM2w8k90L4+abU/cMThhpwXI/Iken3dYyeqC0TERw+m9LRb1l4XHOi74ai8gxfQfnynFd3pVeTNXlGyxxOnA==}
     engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
@@ -9956,19 +9960,19 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@storybook/builder-webpack5@10.5.1':
-    resolution: {integrity: sha512-4AGW7uManl6+GKkxuEH1Wq7WpJtbR1K5CViREgc2x9zBDLqjx1KdkVbj9WjRKqyqc0V7BQYxs+YXJUy+SROSWg==}
+  '@storybook/builder-webpack5@10.5.9':
+    resolution: {integrity: sha512-XTLC95jP75V9NfhoUzDNKDCn9r0ZqXz4ZhrNzQXVDz4vNWkjU3/uDL6Ywh9WFu6Xrb+onQqSR9hlHjS/DOZj7Q==}
     peerDependencies:
-      storybook: ^10.5.1
+      storybook: ^10.5.9
       typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
 
-  '@storybook/core-webpack@10.5.1':
-    resolution: {integrity: sha512-Fkky9CnUfFVX9+o7E/i2yT5qQMKSPL2SMU2raKtZjJrdLAfjqfltV+DaMA0Vi20Cz0gh7XdB1PuwpfYSI75N4g==}
+  '@storybook/core-webpack@10.5.9':
+    resolution: {integrity: sha512-YmXR9RJdQpH8EtWEIjLTr5LMGiCXSmZp/A9UkATY5xHM4qG2QwJB++jU2wv4nGDyaPiUcbzT2PQSXN6RXhiUZA==}
     peerDependencies:
-      storybook: ^10.5.1
+      storybook: ^10.5.9
 
   '@storybook/csf@0.0.1':
     resolution: {integrity: sha512-USTLkZze5gkel8MYCujSRBVIrUQ3YPBrLOx7GNk/0wttvVtlzWXAq9eLbQ4p/NicGxP+3T7KPEMVV//g+yubpw==}
@@ -9982,12 +9986,12 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@storybook/preset-react-webpack@10.5.1':
-    resolution: {integrity: sha512-HJ0+MiRQiQX0Qpw8OFeT3OjNDTrbEmZQnUzFqmlEF5/A8UR2wSFsia82ltg0e8B2D1axwUxirHyxI1gNnyue7A==}
+  '@storybook/preset-react-webpack@10.5.9':
+    resolution: {integrity: sha512-LOr8SoM2CejVCHeLyxbdRMiKuQb2q95CE5D75oK3+513mMZ8LxVPVApxy8B6FvFYNe9CTqVK+95jETefOqabTw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.1
+      storybook: ^10.5.9
       typescript: '*'
     peerDependenciesMeta:
       typescript:
@@ -9999,39 +10003,39 @@ packages:
       typescript: '>= 4.x'
       webpack: '>= 4'
 
-  '@storybook/react-dom-shim@10.5.1':
-    resolution: {integrity: sha512-xAi6A3FdiU1Qe5uBRLaa4lSpIBn2ssKaoRZyBqn1WoESoOkuNlLeOwqX5V5mfAqRA+JpF6pmn2y/2jeqGQK/oA==}
+  '@storybook/react-dom-shim@10.5.9':
+    resolution: {integrity: sha512-7qZD6CSa64p1m/zX9tG4ALcEHlEk0Bx+5++4RL3MFlRCgCFfAomXsCHTzF0RyF8cI4vl+hS7Y0ryjQchVs6UQA==}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       '@types/react-dom': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.1
+      storybook: ^10.5.9
     peerDependenciesMeta:
       '@types/react':
         optional: true
       '@types/react-dom':
         optional: true
 
-  '@storybook/react-webpack5@10.5.1':
-    resolution: {integrity: sha512-EykrRYlI18BlFkfMIb/3mfd74pFuVrmqg6HCL6hD74j+ycaO/KEEtiJtHbP+gbfCpXAWTF3WYO3z03sb8i/C1Q==}
+  '@storybook/react-webpack5@10.5.9':
+    resolution: {integrity: sha512-mrCJub/WAt6RAU1P+bpBvcdTHMHePXLuNM+TuJl0Sl3r9Ta0YjDvtdODweud9sTEpVN3ao/fk0LpiaDMfLd84w==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.1
+      storybook: ^10.5.9
       typescript: '>= 4.9.x'
     peerDependenciesMeta:
       typescript:
         optional: true
 
-  '@storybook/react@10.5.1':
-    resolution: {integrity: sha512-eopdOYLbAmEYuvZlOeVCcopKKx7rQBkr+XUG582u6ykWzY/mj4mT+Qff79+z21qCIAMOO/NLRPShQfK5xAwEcA==}
+  '@storybook/react@10.5.9':
+    resolution: {integrity: sha512-kApGOuNT26NkpioTsr1iT/Q2c44tA7OIsNUSyFqtT7W8k3fRn/jQWfrDegYxty0WG0wxdNMZq2ndRfOOF8HaHw==}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       '@types/react-dom': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.1
+      storybook: ^10.5.9
       typescript: '>= 4.9.x'
     peerDependenciesMeta:
       '@types/react':
@@ -10162,6 +10166,12 @@ packages:
 
   '@testing-library/user-event@14.6.1':
     resolution: {integrity: sha512-vq7fv0rnt+QTXgPxr5Hjc210p6YKq2kmdziLgnsZGgLJ9e6VAShx1pACLuRjd/AS/sr7phAR58OIIpf0LlmQNw==}
+    engines: {node: '>=12', npm: '>=6'}
+    peerDependencies:
+      '@testing-library/dom': '>=7.21.4'
+
+  '@testing-library/user-event@14.6.5':
+    resolution: {integrity: sha512-FhqjldLTpteueBaKflhNFlMT3+PM0O5fiBUivht6b9CZ1eesJyy7+g3Jr7XwJzt/Hip3ZG5hWwK1MX1FuDiE4w==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
@@ -10394,6 +10404,9 @@ packages:
 
   '@types/lodash@4.17.24':
     resolution: {integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==}
+
+  '@types/lodash@4.17.25':
+    resolution: {integrity: sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ==}
 
   '@types/markdown-it@14.1.2':
     resolution: {integrity: sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==}
@@ -10781,11 +10794,6 @@ packages:
   '@ui5/builder@4.3.1':
     resolution: {integrity: sha512-0PSnp5GHr8QXyNaCwad1CuopGocsL0S3rYeoKt2W/FZJE3klye7rGK0WjlCpnj7AyfqUKDaCXX39F9M50PBwIA==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
-
-  '@ui5/cli@4.0.57':
-    resolution: {integrity: sha512-UJA+nI4IBG5p+08F28Htkj5o+a+0kh2RhE4IQ0t1TJQ2lMYaqCXBKYHoWeTWG6FOv/ahN4jCynhObVSttaElgw==}
-    engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
-    hasBin: true
 
   '@ui5/cli@4.0.62':
     resolution: {integrity: sha512-TinVVJBlk7Zkiz+qJ8sBVLGpUs8GIm4bmQWgqsK0HRahr1ueeky5p2CiOkU3p1OlkmCmTLh6NPYUzy9dpsaP2Q==}
@@ -11265,6 +11273,10 @@ packages:
   ansi-styles@6.2.3:
     resolution: {integrity: sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==}
     engines: {node: '>=12'}
+
+  ansi-styles@7.0.0:
+    resolution: {integrity: sha512-kKvt3m4uwzqL0wlkPd09CmljPJGOZZ4D0fP65sqFSvPkMRKhNi+74MgIJ5QxE6SxqB4t4KyUFGg8+n5zjo6hew==}
+    engines: {node: '>=22'}
 
   antlr4@4.9.3:
     resolution: {integrity: sha512-qNy2odgsa0skmNMCuxzXhM4M8J1YDaPv3TI+vCdnOAanu0N982wBrSqziDKRDctEZLZy9VffqIZXc0UGjjSP/g==}
@@ -15731,8 +15743,8 @@ packages:
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
 
-  nock@14.0.16:
-    resolution: {integrity: sha512-8r4KEc6nT1D/fdLD/R1BO1CPaVEL8o40u/guFRJlXabN7vr3RmMqyjsY5Krt0nMwhsOAwXQ/mtN5vy5Jh3aErg==}
+  nock@14.0.17:
+    resolution: {integrity: sha512-EjRr1weMa4ALQX35AgZTEnP+weJJjlW1KGDiNM2IQC2069YDHas4f4B4UUYR+TTLyKWxJvOz2wObDKQs/LNreA==}
     engines: {node: '>=18.20.0 <20 || >=20.12.1'}
 
   node-abi@3.87.0:
@@ -15925,8 +15937,8 @@ packages:
     resolution: {integrity: sha512-LeVMZBBVy+oQb5R6FDV9OlJCcWDU+al10oKpe+nsvcHnG24Z3uM3SvJYKfGJlfGjVU8v9liejCrUR/M5HO5NEQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  npm-run-all2@9.0.2:
-    resolution: {integrity: sha512-+dd4SO2jAlLE06OzmJKzIe6QvvjXezcbmobnh8usR0a8BzQCABTdqTXqVPji0ICOhSQpIIrkGd7IzNl5iDaRSA==}
+  npm-run-all2@9.0.3:
+    resolution: {integrity: sha512-BQAEdU1PtYc48qYRdghW2BVTQT3VqWCoFQmO87NlM1h1PYwMCKQpUWaNyB20V26caNzFsXQDfyOdznLlHCih6g==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0, npm: '>= 10'}
     hasBin: true
 
@@ -16079,10 +16091,6 @@ packages:
   open@10.2.0:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
-
-  open@11.0.0:
-    resolution: {integrity: sha512-smsWv2LzFjP03xmvFoJ331ss6h+jixfA4UUV/Bsiyuu4YJPfN+FIQGOIiv4w9/+MoHkfkJ22UIaQWRVFRfH6Vw==}
-    engines: {node: '>=20'}
 
   open@11.0.1:
     resolution: {integrity: sha512-NzwMUB6C1D0+Kd+9iMS/H4k+Ck3cTX6Ckyfr/gAGlmvSE1LUQZnEZvWBi4PYmMwH/S5SMeTXnE+9uAz8uF+pWw==}
@@ -16623,13 +16631,8 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  prettier@3.8.4:
-    resolution: {integrity: sha512-N2MylSdi48+5N/6S5j+maeHbUSIzzZ5uOcX5Hm4QpV8Dkb1HFjfAKTKX6yNPJQD9AhcT3ifHNB66tWTTJDi11Q==}
-    engines: {node: '>=14'}
-    hasBin: true
-
-  prettier@3.9.5:
-    resolution: {integrity: sha512-/FVl766LpUfB5vXgCYOYa0MeV/441Ia99AeICQIQFTY/Nw0roZwULcXpku5i1/m5kt/baz+s4Zogspd839HSMg==}
+  prettier@3.9.6:
+    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -17591,11 +17594,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.8.4:
-    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.8.5:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
@@ -17929,8 +17927,8 @@ packages:
   storybook-addon-turbo-build@2.0.1:
     resolution: {integrity: sha512-NP9e42fOmhkRe93okDlmIJ+2m+j4c9HZSa8EQJPJiJBQiAZ6MrjL6v0jzMukcwhIlu91RtHSkjlACm3xbi9jWQ==}
 
-  storybook@10.5.1:
-    resolution: {integrity: sha512-VZ2QpXYgvQ7z8wd3ME+qwU5ZY5Px4qh2LyB/lEjCcZsyzJ0QppWG4VfQznYxMS0QXj9mlt+HCgmeUix+2vK14w==}
+  storybook@10.5.9:
+    resolution: {integrity: sha512-UfdMKSjEhIKr8LbqYyIE5r7vT/drL/PxN75YaouJ+UG0FssEy6cf49OdTF3kstAqVMHskc+zEqyRoiQHZXHwgA==}
     hasBin: true
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -18145,10 +18143,6 @@ packages:
   sync-message-port@1.2.0:
     resolution: {integrity: sha512-gAQ9qrUN/UCypHtGFbbe7Rc/f9bzO88IwrG8TDo/aMKAApKyD6E3W4Cm0EfhfBb6Z6SKt59tTCTfD+n1xmAvMg==}
     engines: {node: '>=16.0.0'}
-
-  synckit@0.11.12:
-    resolution: {integrity: sha512-Bh7QjT8/SuKUIfObSXNHNSK6WHo6J1tHCqJsuaFDP7gP0fkzSfTxI8y85JrppZ0h8l0maIgc2tfuZQ6/t3GtnQ==}
-    engines: {node: ^14.18.0 || >=16.0.0}
 
   synckit@0.11.13:
     resolution: {integrity: sha512-eNRKgb3z66Yp3D2CixVujOUvXLFUTij/zVnV8KRyvFdQwpz7I5DS8UfRkTeLzb64u+dkzDSdelE24izu+zSSUg==}
@@ -18465,8 +18459,8 @@ packages:
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
 
-  tsx@4.23.1:
-    resolution: {integrity: sha512-GQHnkIfxyx1wYCOS/wonik5MVRZU9hi1TEZmzGZSCJB1y9YgoZ8H6itNE/u4suE+yLmOzuE4E5S4TZ/ZX2wcWQ==}
+  tsx@4.23.12:
+    resolution: {integrity: sha512-FDf4L4sYzKtzWYhU/Xm0AQFdTjdIxNo9ElTf2mxXM6k8YMHXzYUe4yODVaXP4V9uMFbVg8c0qyBccK2OOxb45Q==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -19148,10 +19142,6 @@ packages:
   wsl-utils@0.1.0:
     resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
     engines: {node: '>=18'}
-
-  wsl-utils@0.3.1:
-    resolution: {integrity: sha512-g/eziiSUNBSsdDJtCLB8bdYEUMj4jR7AGeUo96p/3dTafgjHhpF4RiCFPiRILwjQoDXx5MqkBr4fwWtR3Ky4Wg==}
-    engines: {node: '>=20'}
 
   wsl-utils@1.0.0:
     resolution: {integrity: sha512-Hl0ZOAs672vg+06kfujwRhoS6/jehvULrlFkuF2dRu6pHgA8U06h3xqNIqNNU1LTXPcedxByAR4GS6pwQK0mgA==}
@@ -20344,7 +20334,7 @@ snapshots:
   '@babel/generator@7.29.7':
     dependencies:
       '@babel/parser': 7.29.7
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
@@ -20433,8 +20423,8 @@ snapshots:
 
   '@babel/helper-member-expression-to-functions@7.29.7(supports-color@8.1.1)':
     dependencies:
-      '@babel/traverse': 7.29.7(supports-color@8.1.1)
-      '@babel/types': 7.29.7
+      '@babel/traverse': 7.29.8(supports-color@8.1.1)
+      '@babel/types': 7.29.8
     transitivePeerDependencies:
       - supports-color
 
@@ -20456,7 +20446,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.29.7':
     dependencies:
-      '@babel/types': 7.29.7
+      '@babel/types': 7.29.8
 
   '@babel/helper-plugin-utils@7.29.7': {}
 
@@ -20504,8 +20494,8 @@ snapshots:
   '@babel/helper-wrap-function@7.29.7(supports-color@8.1.1)':
     dependencies:
       '@babel/template': 7.29.7
-      '@babel/traverse': 7.29.7(supports-color@8.1.1)
-      '@babel/types': 7.29.7
+      '@babel/traverse': 7.29.8(supports-color@8.1.1)
+      '@babel/types': 7.29.8
     transitivePeerDependencies:
       - supports-color
 
@@ -21882,21 +21872,21 @@ snapshots:
       '@fluentui/set-version': 8.2.24
       tslib: 2.8.1
 
-  '@fluentui/font-icons-mdl2@8.5.73(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/font-icons-mdl2@8.5.74(@types/react@16.14.69)(react@16.14.0)':
     dependencies:
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.1(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/style-utilities': 8.15.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/utilities': 8.17.2(@types/react@16.14.69)(react@16.14.0)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/react'
       - react
 
-  '@fluentui/foundation-legacy@8.6.6(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/foundation-legacy@8.6.7(@types/react@16.14.69)(react@16.14.0)':
     dependencies:
       '@fluentui/merge-styles': 8.6.14
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.1(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/style-utilities': 8.15.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/utilities': 8.17.2(@types/react@16.14.69)(react@16.14.0)
       '@types/react': 16.14.69
       react: 16.14.0
@@ -21911,12 +21901,12 @@ snapshots:
       '@fluentui/set-version': 8.2.24
       tslib: 2.8.1
 
-  '@fluentui/react-focus@8.10.6(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/react-focus@8.10.7(@types/react@16.14.69)(react@16.14.0)':
     dependencies:
       '@fluentui/keyboard-key': 0.4.23
       '@fluentui/merge-styles': 8.6.14
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.1(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/style-utilities': 8.15.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/utilities': 8.17.2(@types/react@16.14.69)(react@16.14.0)
       '@types/react': 16.14.69
       react: 16.14.0
@@ -21944,18 +21934,18 @@ snapshots:
       react: 16.14.0
       tslib: 2.8.1
 
-  '@fluentui/react@8.125.6(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)':
+  '@fluentui/react@8.125.7(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)':
     dependencies:
       '@fluentui/date-time-utilities': 8.6.11
-      '@fluentui/font-icons-mdl2': 8.5.73(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/foundation-legacy': 8.6.6(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/font-icons-mdl2': 8.5.74(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/foundation-legacy': 8.6.7(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/merge-styles': 8.6.14
-      '@fluentui/react-focus': 8.10.6(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/react-focus': 8.10.7(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/react-hooks': 8.10.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/react-portal-compat-context': 9.0.15(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/react-window-provider': 2.3.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.1(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/style-utilities': 8.15.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/theme': 2.7.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/utilities': 8.17.2(@types/react@16.14.69)(react@16.14.0)
       '@microsoft/load-themed-styles': 1.10.295
@@ -21969,7 +21959,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@fluentui/style-utilities@8.15.1(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/style-utilities@8.15.2(@types/react@16.14.69)(react@16.14.0)':
     dependencies:
       '@fluentui/merge-styles': 8.6.14
       '@fluentui/set-version': 8.2.24
@@ -24071,10 +24061,10 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
 
-  '@prettier/sync@0.6.1(prettier@3.8.4)':
+  '@prettier/sync@0.6.1(prettier@3.9.6)':
     dependencies:
       make-synchronized: 0.8.0
-      prettier: 3.8.4
+      prettier: 3.9.6
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -24727,6 +24717,10 @@ snapshots:
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
       '@sap-ux/project-access': link:packages/project-access
 
+  '@sap/ux-specification@1.144.10':
+    dependencies:
+      lz-string: 1.5.0
+
   '@sap/ux-specification@1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@sap-ux/fe-fpm-writer': 0.43.28(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
@@ -25328,9 +25322,9 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)':
+  '@storybook/builder-webpack5@10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
+      '@storybook/core-webpack': 10.5.9(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
       case-sensitive-paths-webpack-plugin: 2.4.0
       cjs-module-lexer: 1.4.3
       css-loader: 7.1.4(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
@@ -25339,7 +25333,7 @@ snapshots:
       html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
       magic-string: 0.30.21
       semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
       terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
       ts-dedent: 2.2.0
@@ -25365,9 +25359,9 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@storybook/core-webpack@10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
+  '@storybook/core-webpack@10.5.9(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
     dependencies:
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       ts-dedent: 2.2.0
 
   '@storybook/csf@0.0.1':
@@ -25381,18 +25375,18 @@ snapshots:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
 
-  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
+  '@storybook/preset-react-webpack@10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
+      '@storybook/core-webpack': 10.5.9(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
       '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(supports-color@8.1.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3))
       '@types/semver': 7.7.1
       magic-string: 0.30.21
       react: 16.14.0
       react-docgen: 8.0.3(supports-color@8.1.1)
       react-dom: 16.14.0(react@16.14.0)
-      resolve: 1.22.11
+      resolve: 1.22.12
       semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       tsconfig-paths: 4.2.0
       webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(uglify-js@3.19.3)
     optionalDependencies:
@@ -25427,23 +25421,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/react-dom-shim@10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
+  '@storybook/react-dom-shim@10.5.9(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
     dependencies:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
     optionalDependencies:
       '@types/react': 16.14.69
       '@types/react-dom': 16.9.25(@types/react@16.14.69)
 
-  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
+  '@storybook/react-webpack5@10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
-      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)
-      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
-      '@storybook/react': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
+      '@storybook/builder-webpack5': 10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)
+      '@storybook/preset-react-webpack': 10.5.9(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
+      '@storybook/react': 10.5.9(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -25465,15 +25459,15 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@storybook/react@10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)':
+  '@storybook/react@10.5.9(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/react-dom-shim': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
+      '@storybook/react-dom-shim': 10.5.9(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
       react: 16.14.0
       react-docgen: 8.0.3(supports-color@8.1.1)
       react-docgen-typescript: 2.4.0(typescript@5.9.3)
       react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
     optionalDependencies:
       '@types/react': 16.14.69
       '@types/react-dom': 16.9.25(@types/react@16.14.69)
@@ -25605,7 +25599,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
-  '@testing-library/user-event@14.6.1(@testing-library/dom@9.3.4)':
+  '@testing-library/user-event@14.6.5(@testing-library/dom@9.3.4)':
     dependencies:
       '@testing-library/dom': 9.3.4
 
@@ -25889,6 +25883,8 @@ snapshots:
       '@types/ws': 8.18.1
 
   '@types/lodash@4.17.24': {}
+
+  '@types/lodash@4.17.25': {}
 
   '@types/markdown-it@14.1.2':
     dependencies:
@@ -26488,25 +26484,6 @@ snapshots:
       workerpool: 10.0.3
       xml2js: 0.6.2
 
-  '@ui5/cli@4.0.57(supports-color@8.1.1)':
-    dependencies:
-      '@ui5/builder': 4.2.0
-      '@ui5/fs': 4.0.6
-      '@ui5/logger': 4.0.2
-      '@ui5/project': 4.0.17(@ui5/builder@4.2.0)(supports-color@8.1.1)
-      '@ui5/server': 4.0.15(supports-color@8.1.1)
-      chalk: 5.6.2
-      data-with-position: 0.5.0
-      import-local: 3.2.0
-      js-yaml: 4.3.1
-      open: 11.0.0
-      pretty-hrtime: 1.0.3
-      semver: 7.8.5
-      update-notifier: 7.3.1
-      yargs: 17.7.3
-    transitivePeerDependencies:
-      - supports-color
-
   '@ui5/cli@4.0.62(supports-color@8.1.1)':
     dependencies:
       '@ui5/builder': 4.3.1
@@ -26565,34 +26542,6 @@ snapshots:
       read-package-up: 11.0.0
       read-pkg: 9.0.1
       resolve: 1.22.11
-      semver: 7.8.5
-      xml2js: 0.6.2
-      yesno: 0.4.0
-    optionalDependencies:
-      '@ui5/builder': 4.2.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@ui5/project@4.0.17(@ui5/builder@4.2.0)(supports-color@8.1.1)':
-    dependencies:
-      '@npmcli/config': 9.0.0
-      '@ui5/fs': 4.0.6
-      '@ui5/logger': 4.0.2
-      ajv: 8.20.0
-      ajv-errors: 3.0.0(ajv@8.20.0)
-      chalk: 5.6.2
-      escape-string-regexp: 5.0.0
-      globby: 14.1.0
-      graceful-fs: 4.2.11
-      js-yaml: 4.3.1
-      lockfile: 1.0.4
-      make-fetch-happen: 14.0.3(supports-color@8.1.1)
-      node-stream-zip: 1.15.0
-      pacote: 19.0.2(supports-color@8.1.1)
-      pretty-hrtime: 1.0.3
-      read-package-up: 11.0.0
-      read-pkg: 9.0.1
-      resolve: 1.22.12
       semver: 7.8.5
       xml2js: 0.6.2
       yesno: 0.4.0
@@ -27108,6 +27057,8 @@ snapshots:
   ansi-styles@5.2.0: {}
 
   ansi-styles@6.2.3: {}
+
+  ansi-styles@7.0.0: {}
 
   antlr4@4.9.3: {}
 
@@ -29173,10 +29124,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-prettier@5.5.6(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.7.0(supports-color@8.1.1)))(eslint@10.7.0(supports-color@8.1.1))(prettier@3.9.5):
+  eslint-plugin-prettier@5.5.6(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.7.0(supports-color@8.1.1)))(eslint@10.7.0(supports-color@8.1.1))(prettier@3.9.6):
     dependencies:
       eslint: 10.7.0(supports-color@8.1.1)
-      prettier: 3.9.5
+      prettier: 3.9.6
       prettier-linter-helpers: 1.0.1
       synckit: 0.11.13
     optionalDependencies:
@@ -31315,7 +31266,7 @@ snapshots:
       jest-util: 30.4.1
       pretty-format: 30.4.1
       semver: 7.8.5
-      synckit: 0.11.12
+      synckit: 0.11.13
     transitivePeerDependencies:
       - supports-color
 
@@ -32375,7 +32326,7 @@ snapshots:
       lower-case: 2.0.2
       tslib: 2.8.1
 
-  nock@14.0.16:
+  nock@14.0.17:
     dependencies:
       '@mswjs/interceptors': 0.41.3
       json-stringify-safe: 5.0.1
@@ -32639,9 +32590,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  npm-run-all2@9.0.2:
+  npm-run-all2@9.0.3:
     dependencies:
-      ansi-styles: 6.2.3
+      ansi-styles: 7.0.0
       cross-spawn: 7.0.6
       memorystream: 0.3.1
       picomatch: 4.0.4
@@ -32932,15 +32883,6 @@ snapshots:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
-
-  open@11.0.0:
-    dependencies:
-      default-browser: 5.5.0
-      define-lazy-prop: 3.0.0
-      is-in-ssh: 1.0.0
-      is-inside-container: 1.0.0
-      powershell-utils: 0.1.0
-      wsl-utils: 0.3.1
 
   open@11.0.1:
     dependencies:
@@ -33598,9 +33540,7 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  prettier@3.8.4: {}
-
-  prettier@3.9.5: {}
+  prettier@3.9.6: {}
 
   pretty-bytes@5.6.0: {}
 
@@ -33642,14 +33582,14 @@ snapshots:
     dependencies:
       parse-ms: 4.0.0
 
-  pretty-quick@4.2.2(prettier@3.9.5):
+  pretty-quick@4.2.2(prettier@3.9.6):
     dependencies:
       '@pkgr/core': 0.2.9
       ignore: 7.0.5
       mri: 1.2.0
       picocolors: 1.1.1
       picomatch: 4.0.4
-      prettier: 3.9.5
+      prettier: 3.9.6
       tinyexec: 0.3.2
       tslib: 2.8.1
 
@@ -33761,7 +33701,7 @@ snapshots:
       socket.io: 4.8.3(supports-color@8.1.1)
       socket.io-client: 4.8.3(supports-color@8.1.1)
       text-extensions: 3.1.0
-      tsx: 4.23.1
+      tsx: 4.23.12
       undici: 7.29.0
       winston: 3.19.0
       ws: 8.21.0
@@ -34041,14 +33981,14 @@ snapshots:
   react-docgen@8.0.3(supports-color@8.1.1):
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
-      '@babel/traverse': 7.29.7(supports-color@8.1.1)
-      '@babel/types': 7.29.7
+      '@babel/traverse': 7.29.8(supports-color@8.1.1)
+      '@babel/types': 7.29.8
       '@types/babel__core': 7.20.5
       '@types/babel__traverse': 7.28.0
       '@types/doctrine': 0.0.9
       '@types/resolve': 1.20.6
       doctrine: 3.0.0
-      resolve: 1.22.11
+      resolve: 1.22.12
       strip-indent: 4.1.1
     transitivePeerDependencies:
       - supports-color
@@ -34911,8 +34851,6 @@ snapshots:
 
   semver@7.7.4: {}
 
-  semver@7.8.4: {}
-
   semver@7.8.5: {}
 
   send@0.19.0(supports-color@8.1.1):
@@ -35391,7 +35329,7 @@ snapshots:
     transitivePeerDependencies:
       - webpack
 
-  storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
+  storybook@10.5.9(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.6)(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/icons': 2.0.2(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -35407,12 +35345,12 @@ snapshots:
       oxc-parser: 0.127.0
       oxc-resolver: 11.19.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)
       recast: 0.23.11
-      semver: 7.8.4
+      semver: 7.8.5
       use-sync-external-store: 1.6.0(react@16.14.0)
       ws: 8.21.0
     optionalDependencies:
       '@types/react': 16.14.69
-      prettier: 3.9.5
+      prettier: 3.9.6
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -35655,10 +35593,6 @@ snapshots:
       sync-message-port: 1.2.0
 
   sync-message-port@1.2.0: {}
-
-  synckit@0.11.12:
-    dependencies:
-      '@pkgr/core': 0.2.9
 
   synckit@0.11.13:
     dependencies:
@@ -35957,7 +35891,7 @@ snapshots:
       tslib: 1.14.1
       typescript: 5.9.3
 
-  tsx@4.23.1:
+  tsx@4.23.12:
     dependencies:
       esbuild: 0.28.2
     optionalDependencies:
@@ -36108,7 +36042,7 @@ snapshots:
   ui5-tooling-modules@3.35.0(@ui5/project@4.0.17(@ui5/builder@4.3.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3):
     dependencies:
       '@javascript-obfuscator/escodegen': 2.4.0
-      '@prettier/sync': 0.6.1(prettier@3.8.4)
+      '@prettier/sync': 0.6.1(prettier@3.9.6)
       '@rollup/plugin-commonjs': 29.0.2(rollup@4.59.0)
       '@rollup/plugin-inject': 5.0.5(rollup@4.59.0)
       '@rollup/plugin-json': 6.1.0(rollup@4.59.0)
@@ -36125,7 +36059,7 @@ snapshots:
       ignore-walk: 8.0.0
       js-yaml: 4.3.1
       minimatch: 7.4.9
-      prettier: 3.8.4
+      prettier: 3.9.6
       rollup: 4.59.0
       rollup-plugin-polyfill-node: 0.13.0(rollup@4.59.0)
       sanitize-filename: 1.6.4
@@ -36770,11 +36704,6 @@ snapshots:
   wsl-utils@0.1.0:
     dependencies:
       is-wsl: 3.1.0
-
-  wsl-utils@0.3.1:
-    dependencies:
-      is-wsl: 3.1.0
-      powershell-utils: 0.1.0
 
   wsl-utils@1.0.0:
     dependencies:

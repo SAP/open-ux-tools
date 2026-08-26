@@ -2,15 +2,18 @@ import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
-import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
+import {
+    PageTypeV4,
+    type ReadAppParams,
+    type ReadAppResult,
+    type Specification,
+    type Parser
+} from '@sap/ux-specification/dist/types/src';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
-import type {
-    TreeAggregation,
-    TreeAggregations,
-    TreeModel,
-    ApplicationModel
-} from '@sap/ux-specification/dist/types/src/parser/index.js';
+type TreeAggregation = Parser.TreeAggregation;
+type TreeAggregations = Parser.TreeAggregations;
+type TreeModel = Parser.TreeModel;
+type ApplicationModel = Parser.ApplicationModel;
 import type { AppFeatures, FPMFeatures } from '../types.js';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
