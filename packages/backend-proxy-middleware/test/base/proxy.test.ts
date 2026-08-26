@@ -268,7 +268,6 @@ describe('proxy', () => {
             proxyReq({ setHeader: mockSetHeader } as unknown as ClientRequest, req);
 
             expect(mockSetHeader).toHaveBeenCalledWith('x-forwarded-host', expectedHost);
-            expect(req.headers['x-forwarded-host']).toBe(expectedHost);
         });
 
         test('proxyReq - leaves x-forwarded-host unchanged when no comma', () => {

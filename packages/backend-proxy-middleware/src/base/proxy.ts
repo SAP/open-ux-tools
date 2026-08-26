@@ -50,7 +50,6 @@ export const ProxyEventHandlers = {
             const xfh = req?.headers['x-forwarded-host'];
             if (req && typeof xfh === 'string' && xfh.includes(',')) {
                 const host = xfh.split(',')[0].trim();
-                req.headers['x-forwarded-host'] = host;
                 proxyReq.setHeader('x-forwarded-host', host);
             }
         }
@@ -504,8 +503,11 @@ export async function createProxy(
     if (!isAppStudio()) {
         return proxy;
     }
-    return (req: IncomingMessage, res: ServerResponse, next: Function) => {
+    const wrapper = (req: IncomingMessage, res: ServerResponse, next: (err?: unknown) => void): void => {
         delete req.headers['x-forwarded-host'];
         proxy(req as Parameters<typeof proxy>[0], res, next);
     };
+    // proxy.upgrade handles WebSocket proxying; carry it forward on the wrapper
+    (wrapper as unknown as RequestHandler).upgrade = proxy.upgrade;
+    return wrapper as unknown as RequestHandler;
 }
