@@ -1,5 +1,17 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 1.0.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Bug Fixes
+
+- Upgrade puppeteer-core 24.40.0 → 25.8.0 to drop vulnerable extract-zip (GHSA-jmr9-qjv8-65gv) [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
 ## 1.0.1
 
 ### Patch Changes

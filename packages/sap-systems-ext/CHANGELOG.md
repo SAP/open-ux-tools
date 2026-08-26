@@ -1,5 +1,65 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[f044e50](https://github.com/SAP/open-ux-tools/commit/f044e50fb85f83baac12fcac96e5453bd6da6f7a)]
+
+## 1.0.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+## 1.0.22
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[ed4f7bc](https://github.com/SAP/open-ux-tools/commit/ed4f7bc7b4d118d43280295e50e4f0c077ef0afb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/text-document-utils and @sap-ux/ui5-config [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
+## 1.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f6d65ac](https://github.com/SAP/open-ux-tools/commit/f6d65acceb9c3477b471cd76b93a900c39f3cf2b)]
+
+## 1.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
 ## 1.0.19
 
 ### Patch Changes

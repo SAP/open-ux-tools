@@ -57,7 +57,7 @@ export function toContainAllFilesIn(
                 const missingFile = join(d.path2, d.name2);
                 if (updateSnapshot) {
                     pass = true;
-                    fs.unlinkSync(missingFile);
+                    fs.rmSync(missingFile, { recursive: true, force: true });
                     snapshotState.updated++; // We don't have a count of `deleted`
                 } else {
                     pass = false;

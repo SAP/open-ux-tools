@@ -2,7 +2,8 @@ import {
     getColumnIdentifier,
     transformTableColumns,
     extractTableColumnsFromNode,
-    extractContactCardColumnsFromNode
+    extractContactCardColumnsFromNode,
+    resolvePrimaryTableNode
 } from '../../../src/utils/tableUtils.js';
 import type { ColumnAggregations } from '../../../src/utils/tableUtils.js';
 import type { TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
@@ -317,5 +318,83 @@ describe('extractContactCardColumnsFromNode()', () => {
             }
         });
         expect(extractContactCardColumnsFromNode(node)).toEqual([]);
+    });
+});
+
+describe('resolvePrimaryTableNode()', () => {
+    const columnsAgg = { aggregations: { columns: { aggregations: {} } } };
+
+    test('returns undefined when the node has no table aggregation', () => {
+        const node = { aggregations: {} } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBeUndefined();
+    });
+
+    test('returns the table node directly for a single-table List Report / OP section', () => {
+        const tableNode = columnsAgg;
+        const node = { aggregations: { table: tableNode } } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBe(tableNode);
+    });
+
+    test('returns the first non-empty view node for a multi-view List Report', () => {
+        // Multi-view LR: root.table holds `views[key]` per-tab nodes instead of `columns` directly.
+        // View "5" is a custom tab (empty aggregations); the first view with columns ("1") is chosen.
+        const view1 = columnsAgg;
+        const node = {
+            aggregations: {
+                table: {
+                    aggregations: {
+                        views: {
+                            aggregations: {
+                                '5': { aggregations: {} },
+                                '1': view1,
+                                '2': columnsAgg
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBe(view1);
+    });
+
+    test('returns undefined when a views block has no view with columns', () => {
+        const node = {
+            aggregations: {
+                table: {
+                    aggregations: {
+                        views: { aggregations: { '5': { aggregations: {} } } }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBeUndefined();
+    });
+
+    test('extractTableColumnsFromNode reads the first view node columns for a multi-view LR', () => {
+        const node = {
+            aggregations: {
+                table: {
+                    aggregations: {
+                        views: {
+                            aggregations: {
+                                '1': {
+                                    aggregations: {
+                                        columns: {
+                                            aggregations: {
+                                                'DataField::Name': {
+                                                    description: 'Name',
+                                                    schema: { keys: [{ name: 'Value', value: 'Name' }] }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(extractTableColumnsFromNode(node)).toEqual({ Name: { header: 'Name' } });
     });
 });

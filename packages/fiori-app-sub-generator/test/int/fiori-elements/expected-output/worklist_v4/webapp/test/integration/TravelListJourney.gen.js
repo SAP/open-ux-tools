@@ -38,6 +38,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField("Search Term");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
         opaTest("Check table columns and actions", function (Given, When, Then) {

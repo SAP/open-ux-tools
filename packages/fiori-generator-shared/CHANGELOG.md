@@ -1,5 +1,43 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.2.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/telemetry 2.0.1 → 2.0.2
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+
+## 1.2.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/telemetry 2.0.0 → 2.0.1
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+
+## 1.2.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.25 → 2.0.0
+
+## 1.2.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.8 → 2.0.9
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/telemetry 1.0.24 → 1.0.25
+
 ## 1.2.6
 
 ### Patch Changes
