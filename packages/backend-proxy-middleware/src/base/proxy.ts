@@ -505,7 +505,7 @@ export async function createProxy(
     }
     const wrapper = (req: IncomingMessage, res: ServerResponse, next: (err?: unknown) => void): void => {
         delete req.headers['x-forwarded-host'];
-        proxy(req as Parameters<typeof proxy>[0], res, next);
+        void proxy(req as Parameters<typeof proxy>[0], res, next);
     };
     // proxy.upgrade handles WebSocket proxying; carry it forward on the wrapper
     (wrapper as unknown as RequestHandler).upgrade = proxy.upgrade;
