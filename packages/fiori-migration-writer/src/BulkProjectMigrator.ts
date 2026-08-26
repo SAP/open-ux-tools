@@ -27,14 +27,12 @@ export class BulkProjectMigrator {
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<MigrationUIProjectInfo[]> {
-        const migrationResults: MigrationUIProjectInfo[] = [];
+        // Migrate all projects in parallel for better performance
+        const migrationPromises = (projects ?? []).map((project, index) =>
+            this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle)
+        );
 
-        for (const [index, project] of (projects ?? []).entries()) {
-            const result = await this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle);
-            migrationResults.push(result);
-        }
-
-        return migrationResults;
+        return Promise.all(migrationPromises);
     }
 
     /**

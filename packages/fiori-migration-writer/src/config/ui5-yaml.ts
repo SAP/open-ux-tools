@@ -232,38 +232,36 @@ export async function generateAllUI5YamlFiles(config: UI5YamlAllFilesConfig): Pr
         hasDataSource
     } = config;
 
-    // Generate ui5.yaml
-    await generateAndWriteUI5Yaml({
-        templateData,
-        neoappDestinations,
-        messages,
-        destination,
-        firstNeoAppDestination,
-        webappPath,
-        setUI5version,
-        rootPath,
-        templateRoot
-    });
-
-    // Generate ui5-local.yaml
-    await generateAndWriteUI5LocalYaml({
-        templateData,
-        neoappDestinations,
-        messages,
-        destination,
-        firstNeoAppDestination,
-        webappPath,
-        rootPath,
-        templateRoot
-    });
-
-    // Generate ui5-mock.yaml
-    await generateAndWriteUI5MockYaml({
-        templateData,
-        webappPath,
-        setUI5version,
-        rootPath,
-        templateRoot,
-        hasDataSource
-    });
+    // Generate all YAML files in parallel for better performance
+    await Promise.all([
+        generateAndWriteUI5Yaml({
+            templateData,
+            neoappDestinations,
+            messages,
+            destination,
+            firstNeoAppDestination,
+            webappPath,
+            setUI5version,
+            rootPath,
+            templateRoot
+        }),
+        generateAndWriteUI5LocalYaml({
+            templateData,
+            neoappDestinations,
+            messages,
+            destination,
+            firstNeoAppDestination,
+            webappPath,
+            rootPath,
+            templateRoot
+        }),
+        generateAndWriteUI5MockYaml({
+            templateData,
+            webappPath,
+            setUI5version,
+            rootPath,
+            templateRoot,
+            hasDataSource
+        })
+    ]);
 }

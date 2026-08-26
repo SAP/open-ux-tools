@@ -42,35 +42,39 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
                 onlyFiles: true
             });
 
-            for (const pkgPath of packageJsonFiles) {
-                const dir = dirname(pkgPath);
+            // Read all package.json files in parallel for better performance
+            const checkResults = await Promise.all(
+                packageJsonFiles.map(async (pkgPath) => {
+                    const dir = dirname(pkgPath);
 
-                if (sapuxRequired) {
-                    try {
-                        const pkg = await readJSON<any>(pkgPath);
-                        // Check for SAP UX / Fiori Tools markers:
-                        // 1. "sapux": true property (Fiori Tools marker)
-                        // 2. Dependencies starting with @sap-ux/ or @sap/ux- (Fiori Tools packages)
-                        const hasSapux =
-                            pkg?.sapux === true ||
-                            Object.keys(pkg?.dependencies || {}).some(
-                                (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
-                            ) ||
-                            Object.keys(pkg?.devDependencies || {}).some(
-                                (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
-                            );
+                    if (sapuxRequired) {
+                        try {
+                            const pkg = await readJSON<any>(pkgPath);
+                            // Check for SAP UX / Fiori Tools markers:
+                            // 1. "sapux": true property (Fiori Tools marker)
+                            // 2. Dependencies starting with @sap-ux/ or @sap/ux- (Fiori Tools packages)
+                            const hasSapux =
+                                pkg?.sapux === true ||
+                                Object.keys(pkg?.dependencies || {}).some(
+                                    (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
+                                ) ||
+                                Object.keys(pkg?.devDependencies || {}).some(
+                                    (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
+                                );
 
-                        if (hasSapux) {
-                            roots.push(dir);
+                            return hasSapux ? dir : null;
+                        } catch {
+                            // Invalid package.json, skip
+                            return null;
                         }
-                    } catch {
-                        // Invalid package.json, skip
-                        continue;
+                    } else {
+                        return dir;
                     }
-                } else {
-                    roots.push(dir);
-                }
-            }
+                })
+            );
+
+            // Add non-null results to roots
+            roots.push(...checkResults.filter((r): r is string => r !== null));
         } catch {
             // Expected: path may not exist, may not be readable, or fast-glob may fail on invalid patterns.
             // Safe to skip this path and continue with remaining paths.
