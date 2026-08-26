@@ -1,5 +1,29 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+## 1.0.22
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[ed4f7bc](https://github.com/SAP/open-ux-tools/commit/ed4f7bc7b4d118d43280295e50e4f0c077ef0afb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/text-document-utils and @sap-ux/ui5-config [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
 ## 1.0.21
 
 ### Patch Changes
