@@ -33,8 +33,10 @@ export async function getCredentialsPrompts(
             message: t('prompts.password.message'),
             mask: '*',
             guiOptions: {
-                mandatory: true
+                mandatory: true,
+                applyDefaultWhenDirty: true
             },
+            default: '',
             store: false,
             validate: async (
                 value: string,

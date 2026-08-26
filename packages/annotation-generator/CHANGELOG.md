@@ -1,5 +1,38 @@
 # @sap-ux/annotation-generator
 
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/fiori-annotation-api 1.0.25 → 1.0.26
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/fiori-annotation-api 1.0.24 → 1.0.25
+- @sap-ux/odata-annotation-core-types 1.0.1 → 1.0.2
+- @sap-ux/odata-entity-model 1.0.1 → 1.0.1
+
+## 1.0.24
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.23 → 1.0.24
+- @sap-ux/project-access 2.1.10 → 2.1.11
+
 ## 1.0.23
 
 ### Patch Changes

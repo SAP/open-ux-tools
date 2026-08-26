@@ -1,4 +1,4 @@
-import type { JsonInput } from '../app/types.js';
+import type { JsonInput, JsonInputFile } from '../app/types.js';
 
 /**
  * Type guard for a string values.
@@ -31,8 +31,7 @@ export function isJsonInput(value: unknown): value is JsonInput {
         isOptionalString(value.password) &&
         isOptionalString(value.targetFolder) &&
         isOptionalString(value.projectName) &&
-        isOptionalString(value.namespace) &&
-        isOptionalKeyUserChanges(value.keyUserChanges)
+        isOptionalString(value.namespace)
     );
 }
 
@@ -40,7 +39,7 @@ export function isJsonInput(value: unknown): value is JsonInput {
  * Type guard for a plain javascript object.
  *
  * @param {unknown} value - The value being checked.
- * @returns {boolean} True if the value is a plain javascripot object.
+ * @returns {boolean} True if the value is a plain javascript object.
  */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && Object.getPrototypeOf(value) === Object.prototype;
@@ -75,4 +74,14 @@ function isOptionalKeyUserChanges(value: unknown): boolean {
             isPlainObject(item.content) &&
             (item.texts === undefined || isPlainObject(item.texts))
     );
+}
+
+/**
+ * Type guard for JsonInputFile.
+ *
+ * @param {unknown} value - The value being checked.
+ * @returns {boolean} True if the value is a valid JSON input file object.
+ */
+export function isJsonInputFile(value: unknown): value is JsonInputFile {
+    return isPlainObject(value) && isOptionalKeyUserChanges(value.keyUserChanges);
 }

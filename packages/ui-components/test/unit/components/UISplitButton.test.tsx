@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Enzym from 'enzyme';
+import { fireEvent, createEvent } from '@testing-library/react';
 
 import { UISplitButton } from '../../../src/components/UIButton/index';
 import type { UISplitButtonProps } from '../../../src/components/UIButton/index';
@@ -119,5 +120,34 @@ describe('<UISplitButton />', () => {
         });
         entries = getContextItems('test');
         expect(entries).toHaveLength(3);
+    });
+
+    describe('propagateMenuOpenKeyDown', () => {
+        const defaultProps: UISplitButtonProps = {
+            id: 'test-propagate',
+            button: { key: 'option1', text: 'option 1' },
+            menuItems: [{ key: 'option2', text: 'option 2' }],
+            callback: jest.fn()
+        };
+
+        it('calls preventDefault on Alt+Down by default', () => {
+            const Proxy = (p: UISplitButtonProps): JSX.Element => <UISplitButton {...p} />;
+            wrapper = Enzym.mount<UISplitButton>(<Proxy {...defaultProps} />, { attachTo: app });
+            const button = app.querySelector('.ms-Button')!;
+            const event = createEvent.keyDown(button, { key: 'ArrowDown', altKey: true });
+            fireEvent(button, event);
+            expect(event.defaultPrevented).toBe(true);
+        });
+
+        it('does not call preventDefault on Alt+Down when propagateMenuOpenKeyDown is false', () => {
+            const Proxy = (p: UISplitButtonProps): JSX.Element => <UISplitButton {...p} />;
+            wrapper = Enzym.mount<UISplitButton>(<Proxy {...defaultProps} propagateMenuOpenKeyDown={false} />, {
+                attachTo: app
+            });
+            const button = app.querySelector('.ms-Button')!;
+            const event = createEvent.keyDown(button, { key: 'ArrowDown', altKey: true });
+            fireEvent(button, event);
+            expect(event.defaultPrevented).toBe(false);
+        });
     });
 });

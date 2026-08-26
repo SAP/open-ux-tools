@@ -297,7 +297,7 @@ modules:
       - name: comfioritoolslrop-app-front
         parameters:
           content-target: true
-      - name: comfioritoolslrop-uaa
+      - name: comfioritoolslrop-auth
     parameters:
       config:
         destinations:
@@ -321,16 +321,20 @@ modules:
         - npm run build:cf
       supported-platforms: []
 resources:
-  - name: comfioritoolslrop-uaa
+  - name: comfioritoolslrop-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: comfioritoolslrop-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: comfioritoolslrop-xsuaa-service
       config:
         xsappname: comfioritoolslrop-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
   - name: comfioritoolslrop-app-front
     type: org.cloudfoundry.managed-service
     parameters:

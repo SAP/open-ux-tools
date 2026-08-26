@@ -11,6 +11,7 @@ import type {
     FEV4ManifestTarget,
     JourneyParams,
     AppFeatures,
+    ActionButtonState,
     WriteContext,
     OPAGenerationOptions
 } from './types.js';
@@ -25,19 +26,60 @@ import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+import { isALPManifestTarget } from './utils/listReportUtils.js';
 import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const UI5_VERSION_1_150 = '1.150.0';
+const V4_TEMPLATE_LATEST = 'latest';
 const V4_TEMPLATE_1_84 = '1.84';
-const V4_TEMPLATE_1_150 = '1.150';
+const V4_TEMPLATE_BUCKETS = [
+    { minVersion: '1.149.0', template: V4_TEMPLATE_LATEST },
+    { minVersion: '1.148.0', template: '1.148' }
+];
 
 function getTemplateUi5Version(ui5Version?: string): string {
-    if (!ui5Version || compareUI5VersionGte(ui5Version, UI5_VERSION_1_150)) {
-        return V4_TEMPLATE_1_150;
+    if (!ui5Version) {
+        return V4_TEMPLATE_LATEST;
+    }
+    for (const bucket of V4_TEMPLATE_BUCKETS) {
+        if (compareUI5VersionGte(ui5Version, bucket.minVersion)) {
+            return bucket.template;
+        }
     }
     return V4_TEMPLATE_1_84;
+}
+
+/**
+ * Removes action tests the target template bucket cannot render, so journeys omit them instead of
+ * emitting assertions that fail on older runtimes:
+ * - custom (manifest-declared) actions: rendered only by the `latest` bucket.
+ * - menu (drop-down) actions: rendered by `1.148` and `latest`; the `1.84` bucket has no menu template.
+ *
+ * @param appFeatures - the extracted app feature data (mutated in place)
+ * @param templateUi5Version - the selected template bucket ('1.84' / '1.148' / 'latest')
+ */
+export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Version: string): void {
+    const stripCustom = templateUi5Version !== V4_TEMPLATE_LATEST;
+    const stripMenu = templateUi5Version === V4_TEMPLATE_1_84;
+    if (!stripCustom && !stripMenu) {
+        return;
+    }
+    const keep = (action: ActionButtonState): boolean =>
+        !(stripCustom && action.custom) && !(stripMenu && action.menuType);
+    if (appFeatures.listReport?.toolBarActions) {
+        appFeatures.listReport.toolBarActions = appFeatures.listReport.toolBarActions.filter(keep);
+    }
+    appFeatures.objectPages?.forEach((objectPage) => {
+        if (objectPage.headerActions) {
+            objectPage.headerActions = objectPage.headerActions.filter(keep);
+        }
+        objectPage.bodySections?.forEach((section) => {
+            if (section.actions) {
+                section.actions = section.actions.filter(keep);
+            }
+        });
+    });
 }
 
 /**
@@ -67,13 +109,9 @@ export async function generateOPAFiles(
 
     const config = createConfig(manifest, options, hideFilterBar);
 
-    // When any page in the app uses the FPM template, all generated files must be JS.
-    // FPM has no TypeScript templates, so a mixed FPM + LR/OP app cannot use TS test files.
-    const hasFPMPage = config.pages.some((page) => page.template === 'FPM');
     // In standalone mode, auto-detect TS vs JS from the project (presence of `tsconfig.json`)
     // when the caller has not made an explicit choice. This enforces "TS app → TS tests, JS app → JS tests".
-    const enableTypeScript =
-        !hasFPMPage && (options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig))));
+    const enableTypeScript = options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig)));
     const dotFileExtension: DotFileExtension = enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const templateUi5Version = getTemplateUi5Version(options.ui5Version);
@@ -82,6 +120,9 @@ export async function generateOPAFiles(
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
+    // Drop action tests the target template bucket cannot render (custom actions: latest only;
+    // menu actions: 1.148 and latest).
+    removeUnsupportedActions(appFeatures, templateUi5Version);
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
@@ -448,7 +489,7 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
             fileName: targetKey + '.gen'
         };
 
-        if (target.options?.settings?.views) {
+        if (isALPManifestTarget(target)) {
             pageConfig.template = 'AnalyticalListPage';
         }
 
@@ -694,16 +735,9 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
     }
 
     if (writeContext.generateUxSpecJourneys && appFeatures.fpm?.name) {
-        // FPM TypeScript support is out of scope for the initial TS OPA5 work
-        // (LROP only). The FPM journey path below is hardcoded `.js` and there is
-        // no `FPM.ts` template, so we force `DotFileExtension.JS` for the FPM
-        // page-object regardless of the configured `dotFileExtension`. Otherwise
-        // an LR-OP-FPM mix with `enableTypeScript` would crash in `writePageObject`
-        // when trying to load the missing `FPM.ts` template.
-        // Future work: add FPM.ts/FPMJourney.ts templates and switch to `dotFileExtension`.
         editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
-            join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.gen.js`),
+            join(rootV4TemplateDirPath, 'integration', `FPMJourney${dotFileExtension}`),
+            join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.gen${dotFileExtension}`),
             {
                 ...journeyParams,
                 ...appFeatures.fpm
@@ -902,11 +936,9 @@ function writePageObject(
     fs: Editor,
     dotFileExtension: DotFileExtension
 ): OpaPageWriteInfo {
-    // FPM has no .ts template; force .js regardless of the configured extension
-    const ext = pageConfig.template === 'FPM' ? DotFileExtension.JS : dotFileExtension;
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${ext}`),
-        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen${ext}`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${dotFileExtension}`),
+        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen${dotFileExtension}`),
         pageConfig,
         undefined,
         {
@@ -917,7 +949,7 @@ function writePageObject(
         targetKey: pageConfig.targetKey,
         appPath: pageConfig.appPath,
         fileName: `${pageConfig.targetKey}.gen`,
-        dotFileExtension: ext,
+        dotFileExtension,
         template: pageConfig.template,
         appID: pageConfig.appID,
         componentID: pageConfig.componentID,
