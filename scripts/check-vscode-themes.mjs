@@ -158,10 +158,10 @@ function tokenGroup(key) {
 function normalizeHex(raw) {
     if (!raw) return null;
     if (/^#[0-9a-fA-F]{3,4}$/.test(raw)) {
-        return '#' + [...raw.slice(1)].map((c) => c + c).join('');
+        return '#' + [...raw.slice(1)].map((c) => c + c).join('').toLowerCase();
     }
     if (/^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(raw)) {
-        return raw;
+        return raw.toLowerCase();
     }
     return null;
 }
@@ -237,15 +237,32 @@ async function main() {
         }, 0) + 1;
 
     const added = [];
+    const validFigmaNames = new Set();
     for (const vscodeKey of allUpstreamKeys) {
-        if (!resolveFigmaName(vscodeKey, varByName)) {
+        const existing = resolveFigmaName(vscodeKey, varByName);
+        if (existing) {
+            validFigmaNames.add(existing);
+        } else {
             const newVar = createFigmaVariable(vscodeKey, allUpstreamColors, nextId++);
             tokens.variables.push(newVar);
             tokens.variableIds.push(newVar.id);
             varByName.set(newVar.name, newVar);
+            validFigmaNames.add(newVar.name);
             added.push(vscodeKey);
         }
     }
+
+    // Remove variables that no longer exist in any upstream theme.
+    const removed = [];
+    const removedIds = new Set();
+    tokens.variables = tokens.variables.filter((v) => {
+        if (validFigmaNames.has(v.name)) return true;
+        removed.push(v.name);
+        removedIds.add(v.id);
+        return false;
+    });
+    tokens.variableIds = tokens.variableIds.filter((id) => !removedIds.has(id));
+    for (const name of removed) varByName.delete(name);
 
     const changesByTheme = {};
 
@@ -263,6 +280,7 @@ async function main() {
             if (!figmaName) continue;
 
             const variable = varByName.get(figmaName);
+            if (!variable) continue;
             const currentRgba = variable.valuesByMode[modeId];
             if (!currentRgba) continue;
 
@@ -270,7 +288,7 @@ async function main() {
 
             if (!colorsEqual(currentRgba, newHex)) {
                 const oldHex = figmaRgbaToHex(currentRgba);
-                changed.push({ key: vscodeKey, oldHex, newHex: newHex.toLowerCase() });
+                changed.push({ key: vscodeKey, oldHex, newHex });
 
                 variable.valuesByMode[modeId] = newRgba;
                 if (variable.resolvedValuesByMode?.[modeId]) {
@@ -284,9 +302,8 @@ async function main() {
         }
     }
 
-    const anyChanges = Object.keys(changesByTheme).length > 0 || added.length > 0;
+    const anyChanges = Object.keys(changesByTheme).length > 0 || added.length > 0 || removed.length > 0;
     if (!anyChanges) {
-        process.stdout.write('NO_CHANGES\n');
         process.exit(0);
     }
 
@@ -298,6 +315,7 @@ async function main() {
         summaryParts.push(`${label}: ${changed.length} changed`);
     }
     if (added.length) summaryParts.push(`${added.length} added`);
+    if (removed.length) summaryParts.push(`${removed.length} removed`);
     const summary = summaryParts.join(' | ');
 
     const timestamp = new Date().toISOString().slice(0, 10);
@@ -335,6 +353,14 @@ async function main() {
             .map((key) => `| \`${key}\` |`)
             .join('\n');
         sections.push(`### Added (${added.length} new tokens)\n\n| Token |\n|-------|\n${rows}`);
+    }
+
+    if (removed.length) {
+        const rows = removed
+            .sort()
+            .map((name) => `| \`${name}\` |`)
+            .join('\n');
+        sections.push(`### Removed (${removed.length} tokens)\n\n| Token |\n|-------|\n${rows}`);
     }
 
     const body = sections.join('\n\n') + '\n';
