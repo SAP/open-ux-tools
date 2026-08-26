@@ -85,7 +85,7 @@ jobs:
                         C:\Users\runneradmin\AppData\Local\ms-playwright
                       ${{ runner.os != 'Windows' }}:
                         ~/.cache/ms-playwright
-                  key: playwright-browsers-chromium-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+                  key: playwright-browsers-chromium-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
             - name: Install playwright chromium browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chromium
