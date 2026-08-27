@@ -1,5 +1,13 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 1.0.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade jest-environment-jsdom to 30.4.1 — aligns with jest 30 runtime to fix "Jest environment has been torn down" test failures [[ef7c4b4](https://github.com/SAP/open-ux-tools/commit/ef7c4b4cce828fff70c10389bd58f6f02179d10d)]
+
 ## 1.0.3
 
 ### Patch Changes
