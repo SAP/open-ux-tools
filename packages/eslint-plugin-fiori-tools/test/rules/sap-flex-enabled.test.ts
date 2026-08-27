@@ -25,7 +25,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             {
                 name: ' Non-json files should be ignored',
                 filename: 'some-other-file.xml',
-                code: '<>'
+                code: '<test></test>'
             },
             []
         ),

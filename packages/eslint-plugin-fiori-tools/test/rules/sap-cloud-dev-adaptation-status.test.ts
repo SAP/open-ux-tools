@@ -39,7 +39,7 @@ ruleTester.run(TEST_NAME, cloudDevAdaptationStatusRule, {
             {
                 name: 'non-JSON file should be ignored',
                 filename: 'some-other-file.xml',
-                code: '<>'
+                code: '<test></test>'
             },
             []
         ),

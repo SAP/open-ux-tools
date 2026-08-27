@@ -103,7 +103,7 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
             {
                 name: 'non manifest file - xml',
                 filename: 'some-other-file.xml',
-                code: ''
+                code: '<test></test>'
             },
             []
         ),

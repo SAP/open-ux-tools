@@ -46,7 +46,7 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
             {
                 name: 'V4 - non-json file',
                 filename: 'file_name.xml',
-                code: '<>'
+                code: '<test></test>'
             },
             []
         ),
