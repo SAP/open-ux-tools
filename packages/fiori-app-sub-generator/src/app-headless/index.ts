@@ -31,8 +31,8 @@ export class FioriAppGeneratorHeadless extends FioriAppGenerator {
             }
             this.state = transformExtState(appConfig);
         } catch (error) {
-            this.log(t('logMessages.generatorExiting'));
-            this.env.error(error);
+            this.log(t('logMessages.generatorExiting', { error }));
+            throw error instanceof Error ? error : new Error(String(error));
         }
     }
 

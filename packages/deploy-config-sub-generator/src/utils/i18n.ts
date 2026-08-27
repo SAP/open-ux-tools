@@ -6,17 +6,19 @@ import type { i18n as i18nNext, TOptions } from 'i18next';
 const deployConfigSubGen = 'deploy-config-sub-generator';
 export const i18n: i18nNext = i18next.createInstance();
 
+// Initialize synchronously by passing resources inline — i18next resolves immediately when no async backend is used
+void i18n.init({
+    resources: { en: { [deployConfigSubGen]: translations } },
+    lng: 'en',
+    fallbackLng: 'en'
+});
+addInquirerCommonTexts();
+
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18n.init({
-        lng: 'en',
-        fallbackLng: 'en'
-    });
-    i18n.addResourceBundle('en', deployConfigSubGen, translations);
-
-    addInquirerCommonTexts();
+    // already initialized synchronously above; kept for API compatibility
 }
 
 /**
