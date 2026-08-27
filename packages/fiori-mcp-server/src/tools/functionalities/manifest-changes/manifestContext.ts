@@ -1,14 +1,13 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs';
-import ZipFile from 'adm-zip';
-import prettifyXml from 'prettify-xml';
 
 import { ToolsLogger } from '@sap-ux/logger';
-import { readUi5Config } from '@sap-ux/adp-tooling';
+import { readUi5Config, getVariant, ManifestService } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ODataVersion } from '@sap-ux/axios-extension';
-import type { ODataServiceInfo, AbapServiceProvider, MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type { ODataServiceInfo, AbapServiceProvider } from '@sap-ux/axios-extension';
+import prettifyXml from 'prettify-xml';
 
 export type systemPath = {
     url: string;
@@ -20,8 +19,6 @@ type UI5AppFilter = {
     readonly ['sap.ui/technology']?: 'UI5';
     readonly ['sap.app/type']: 'application' | 'library';
 } & Record<string, string>;
-
-type AppDescrVariant = { 'id': string } & Record<string, unknown>;
 
 type Ui5Model = { dataSource?: string } & Record<string, unknown>;
 
@@ -41,48 +38,23 @@ const LIBRARY_WITH_DESCR_FILTER: UI5AppFilter = {
 
 const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
 
-/**
- * Zips the webapp folder and merges it with the base app descriptor on the LREP backend.
- *
- * @param appPath - Adaptation project root.
- * @returns The merged descriptor for the variant's `id`.
- */
-export async function readMergedManifest(appPath: string): Promise<MergedAppDescriptor> {
-    const provider = await getProvider(appPath);
-    const lrepService = provider.getLayeredRepository();
-    await lrepService.getCsrfToken();
-
-    const manifest = await readManifest(appPath);
-
-    const zip = new ZipFile();
-    zip.addLocalFolder(path.join(appPath, 'webapp'));
-
-    const merged = await lrepService.mergeAppDescriptorVariant(zip.toBuffer(), '//');
-    return merged[manifest.id];
-}
-
-/**
- * Resolves OData data sources from the merged manifest and fetches their metadata.
- *
- * @param appPath - Adaptation project root.
- * @param saveLocal - Whether to save fetched metadata locally in the project for agent context.
- * @returns OData data source entries with id, url, metadata, and the bound model (if any).
- */
 export async function readAnnotationfromManifest(
     appPath: string,
     saveLocal: boolean = false
 ): Promise<ODataMetadataEntry[]> {
     const abapProvider = await getProvider(appPath);
-    const mergedManifest = await readMergedManifest(appPath);
+    const variant = await getVariant(appPath);
+    const manifestService = await ManifestService.initMergedManifest(abapProvider, appPath, variant, logger);
 
-    const ui5Models = (mergedManifest.manifest['sap.ui5']?.models ?? {}) as Record<string, Ui5Model>;
+    const manifest = manifestService.getManifest();
+    const ui5Models = (manifest['sap.ui5']?.models ?? {}) as Record<string, Ui5Model>;
     const modelsByDataSource = new Map(
         Object.values(ui5Models)
             .filter((model): model is Ui5Model & { dataSource: string } => Boolean(model.dataSource))
             .map((model) => [model.dataSource, model])
     );
 
-    const dataSources = mergedManifest.manifest['sap.app'].dataSources ?? {};
+    const dataSources = manifestService.getManifestDataSources();
     const entries: ODataMetadataEntry[] = [];
     for (const [name, dataSource] of Object.entries(dataSources)) {
         if (dataSource.type !== 'OData') {
@@ -169,18 +141,6 @@ async function getSystemUrl(appPath: string): Promise<systemPath> {
         url: target?.url ?? '',
         client: target?.client ?? ''
     };
-}
-
-/**
- * Reads and parses the adaptation project's app descriptor variant.
- *
- * @param appPath - Adaptation project root.
- * @returns Parsed `webapp/manifest.appdescr_variant`.
- */
-async function readManifest(appPath: string): Promise<AppDescrVariant> {
-    const manifestPath = path.join(appPath, 'webapp', 'manifest.appdescr_variant');
-    const fileContents = await fs.promises.readFile(manifestPath, 'utf-8');
-    return JSON.parse(fileContents) as AppDescrVariant;
 }
 
 /**
