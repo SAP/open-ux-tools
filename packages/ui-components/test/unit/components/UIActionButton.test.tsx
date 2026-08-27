@@ -23,7 +23,7 @@ describe('<UIActionButton />', () => {
         expect(style.height).toEqual('26px');
 
         const svgs = container.querySelectorAll('svg');
-        expect(svgs.length).toEqual(1);
+        expect(svgs).toHaveLength(1);
         // First child should be a 'path' element with proper CSS variable fill
         const pathElement = svgs[0]?.firstChild as Element;
         expect(pathElement.tagName.toLowerCase()).toBe('path');

@@ -116,14 +116,14 @@ describe('<UIDialog />', () => {
 
     it('On Accept', () => {
         const buttons = document.body.querySelectorAll('button');
-        expect(buttons.length).toEqual(2);
+        expect(buttons).toHaveLength(2);
         fireEvent.click(buttons[0]);
         expect(onAcceptSpy).toHaveBeenCalledTimes(1);
     });
 
     it('On Cancel', () => {
         const buttons = document.body.querySelectorAll('button');
-        expect(buttons.length).toEqual(2);
+        expect(buttons).toHaveLength(2);
         fireEvent.click(buttons[1]);
         expect(onRejectSpy).toHaveBeenCalledTimes(1);
     });
@@ -132,7 +132,7 @@ describe('<UIDialog />', () => {
         it('Accept and reject buttons', () => {
             const buttons = document.body.querySelectorAll('button');
             expect(capturedFooterProps).toBeDefined();
-            expect(buttons.length).toEqual(2);
+            expect(buttons).toHaveLength(2);
         });
 
         it('Accept button', () => {
@@ -140,7 +140,7 @@ describe('<UIDialog />', () => {
             rerenderWith({ onCancel: undefined });
             const buttons = document.body.querySelectorAll('button');
             expect(capturedFooterProps).toBeDefined();
-            expect(buttons.length).toEqual(1);
+            expect(buttons).toHaveLength(1);
         });
 
         it('Reject button', () => {
@@ -148,7 +148,7 @@ describe('<UIDialog />', () => {
             rerenderWith({ onAccept: undefined });
             const buttons = document.body.querySelectorAll('button');
             expect(capturedFooterProps).toBeDefined();
-            expect(buttons.length).toEqual(1);
+            expect(buttons).toHaveLength(1);
         });
 
         it('Empty footer', () => {
@@ -156,7 +156,7 @@ describe('<UIDialog />', () => {
             rerenderWith({ onAccept: undefined, onCancel: undefined });
             const buttons = document.body.querySelectorAll('button');
             expect(capturedFooterProps).toBeUndefined();
-            expect(buttons.length).toEqual(0);
+            expect(buttons).toHaveLength(0);
         });
 
         it('Custom footer', () => {
@@ -183,22 +183,22 @@ describe('<UIDialog />', () => {
     describe('onResize', () => {
         it('Resize attachment and detachment', () => {
             // Resize attached
-            expect(windowEventMock.domEventListeners['resize'].length).toEqual(4);
+            expect(windowEventMock.domEventListeners['resize']).toHaveLength(4);
             rerenderWith({ isOpen: false });
             // Resize detached - flush Fluent UI close animation timers
             jest.runOnlyPendingTimers();
-            expect(windowEventMock.domEventListeners['resize'].length).toEqual(2);
+            expect(windowEventMock.domEventListeners['resize']).toHaveLength(2);
         });
 
         it('No resize handling when scrollArea is Dialog', () => {
             // Resize attached
-            expect(windowEventMock.domEventListeners['resize'].length).toEqual(4);
+            expect(windowEventMock.domEventListeners['resize']).toHaveLength(4);
             // Set scrollArea to Dialog
             rerenderWith({ scrollArea: UIDialogScrollArea.Dialog });
-            expect(windowEventMock.domEventListeners['resize'].length).toEqual(3);
+            expect(windowEventMock.domEventListeners['resize']).toHaveLength(3);
             // Set scrollArea to Content
             rerenderWith({ scrollArea: UIDialogScrollArea.Content });
-            expect(windowEventMock.domEventListeners['resize'].length).toEqual(4);
+            expect(windowEventMock.domEventListeners['resize']).toHaveLength(4);
         });
 
         it('Handle resize - check state', () => {

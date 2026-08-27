@@ -115,11 +115,11 @@ describe('<UICreateSelect />', () => {
         const { container } = renderUICreateSelect(props);
 
         const dropElt = container.querySelectorAll('.ui-create-select__dropdown-indicator');
-        expect(dropElt.length).toEqual(1);
+        expect(dropElt).toHaveLength(1);
 
         clickDropdown(dropElt[0]);
 
         const menuOptions = container.querySelectorAll('.ts-Menu-option');
-        expect(menuOptions.length).toEqual(3);
+        expect(menuOptions).toHaveLength(3);
     });
 });

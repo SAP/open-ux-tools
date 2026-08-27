@@ -433,7 +433,7 @@ describe('<UIComboBox />', () => {
             `);
 
             const selectedOptions = document.querySelectorAll('.ms-Checkbox.is-checked.ms-ComboBox-option');
-            expect(selectedOptions.length).toBe(2);
+            expect(selectedOptions).toHaveLength(2);
         });
 
         it('With filter and changes in options', () => {
@@ -493,7 +493,7 @@ describe('<UIComboBox />', () => {
             `);
 
             const selectedOptions = document.querySelectorAll('.ms-Checkbox.is-checked.ms-ComboBox-option');
-            expect(selectedOptions.length).toBe(1);
+            expect(selectedOptions).toHaveLength(1);
         });
     });
 

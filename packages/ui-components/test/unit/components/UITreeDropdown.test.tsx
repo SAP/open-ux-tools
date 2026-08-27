@@ -492,7 +492,7 @@ describe('<UITreeDropdown />', () => {
             const { container } = renderResult;
             openDropdown(container);
             jest.runOnlyPendingTimers();
-            expect(windowEventMock.domEventListeners['keydown'].length).toEqual(3);
+            expect(windowEventMock.domEventListeners['keydown']).toHaveLength(3);
             const event = {
                 key: 'ArrowDown',
                 stopPropagation: jest.fn(),

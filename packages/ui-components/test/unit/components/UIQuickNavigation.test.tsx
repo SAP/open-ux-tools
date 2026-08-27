@@ -86,9 +86,9 @@ describe('UIQuickNavigation', () => {
         activateQuickNavigation();
         expect(findInlineContainers()).toHaveLength(0);
         const externalContainers = findExternalContainers();
-        expect(externalContainers.length).toEqual(1);
+        expect(externalContainers).toHaveLength(1);
         const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
-        expect(helpers.length).toEqual(4);
+        expect(helpers).toHaveLength(4);
         expect(helpers[0]?.textContent).toEqual('A');
         expect(helpers[1]?.textContent).toEqual('B');
         expect(helpers[2]?.textContent).toEqual('C');
@@ -179,9 +179,9 @@ describe('UIQuickNavigation', () => {
                 activateQuickNavigation();
                 expect(findInlineContainers()).toHaveLength(0);
                 const externalContainers = findExternalContainers();
-                expect(externalContainers.length).toEqual(1);
+                expect(externalContainers).toHaveLength(1);
                 const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
-                expect(helpers.length).toEqual(4);
+                expect(helpers).toHaveLength(4);
                 for (let i = 0; i < expectedTop.length; i++) {
                     expect(helpers[i]?.style.top).toEqual(expectedTop[i]);
                     expect(helpers[i]?.style.left).toEqual(expectedLeft[i]);
@@ -234,9 +234,9 @@ describe('UIQuickNavigation', () => {
             );
             activateQuickNavigation();
             const externalContainers = findExternalContainers();
-            expect(externalContainers.length).toEqual(1);
+            expect(externalContainers).toHaveLength(1);
             const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
-            expect(helpers.length).toEqual(5);
+            expect(helpers).toHaveLength(5);
             expect(helpers[0]?.style.top).toEqual('70px');
             expect(helpers[0]?.style.left).toEqual('60px');
             expect(helpers[1]?.style.top).toEqual('140px');

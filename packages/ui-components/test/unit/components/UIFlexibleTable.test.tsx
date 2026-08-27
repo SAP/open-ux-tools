@@ -110,7 +110,7 @@ describe('<UIFlexibleTable />', () => {
             expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
             expect(container.querySelectorAll(selectors.addButton)).toHaveLength(0);
             const rowObjects = container.querySelectorAll(selectors.row);
-            expect(rowObjects.length).toEqual(3);
+            expect(rowObjects).toHaveLength(3);
             expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
@@ -119,7 +119,7 @@ describe('<UIFlexibleTable />', () => {
                     const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
                     const dataCellsFound = row.querySelectorAll(selector);
 
-                    expect(dataCellsFound.length).toBe(col.hidden ? 0 : 1);
+                    expect(dataCellsFound).toHaveLength(col.hidden ? 0 : 1);
                     if (!col.hidden) {
                         expect(dataCellsFound[0].textContent).toBe(String(rows[rowIndex].cells[col.key]));
                     }
@@ -141,7 +141,7 @@ describe('<UIFlexibleTable />', () => {
         it('Render index column', () => {
             setProps({ showIndexColumn: true });
             const indexCells = container.querySelectorAll(selectors.indexColumn);
-            expect(indexCells.length).toEqual(3);
+            expect(indexCells).toHaveLength(3);
             indexCells.forEach((cell, idx) => {
                 const value = cell.querySelector(selectors.indexColumnValue);
                 expect(value?.textContent).toBe(rows[idx].key);
@@ -151,14 +151,14 @@ describe('<UIFlexibleTable />', () => {
         it('Render column default titles', () => {
             setProps({ showIndexColumn: true, showColumnTitles: true });
             const headersFound = container.querySelectorAll(selectors.titleRow);
-            expect(headersFound.length).toEqual(1);
+            expect(headersFound).toHaveLength(1);
 
             const indexTitleFound = container.querySelectorAll(selectors.indexColumnTitle);
-            expect(indexTitleFound.length).toBe(1);
+            expect(indexTitleFound).toHaveLength(1);
             expect(indexTitleFound[0].textContent).toBe('#');
 
             const titleCells = container.querySelectorAll(selectors.titleRowValue);
-            expect(titleCells.length).toBe(2);
+            expect(titleCells).toHaveLength(2);
 
             const filteredColumns = columns.filter((col) => !col.hidden);
             const expectedIds = filteredColumns.map((c) => `${tableId}-header-column-${c.key}`);
@@ -179,10 +179,10 @@ describe('<UIFlexibleTable />', () => {
                 })
             });
             const headersFound = container.querySelectorAll(selectors.titleRow);
-            expect(headersFound.length).toEqual(1);
+            expect(headersFound).toHaveLength(1);
 
             const titleCells = container.querySelectorAll(selectors.titleRowValue);
-            expect(titleCells.length).toBe(1);
+            expect(titleCells).toHaveLength(1);
 
             const col = columns[0];
             const expectedId = `${tableId}-header-column-${col.key}`;
@@ -193,10 +193,10 @@ describe('<UIFlexibleTable />', () => {
         it('Render column titles in cells', () => {
             setProps({ showIndexColumn: true, showColumnTitles: true, showColumnTitlesInCells: true });
             const headersFound = container.querySelectorAll(selectors.titleRow);
-            expect(headersFound.length).toEqual(0);
+            expect(headersFound).toHaveLength(0);
 
             const titleCells = container.querySelectorAll(selectors.cellTitle);
-            expect(titleCells.length).toBe(6);
+            expect(titleCells).toHaveLength(6);
 
             rows.forEach((row, rIdx) => {
                 columns
@@ -225,22 +225,22 @@ describe('<UIFlexibleTable />', () => {
                 }
             });
             const headersFound = container.querySelectorAll(selectors.titleRow);
-            expect(headersFound.length).toEqual(1);
+            expect(headersFound).toHaveLength(1);
 
             const indexTitleFound = container.querySelectorAll(selectors.indexColumnTitleCustom);
-            expect(indexTitleFound.length).toBe(1);
+            expect(indexTitleFound).toHaveLength(1);
             expect(indexTitleFound[0].textContent).toBe('id');
             expect(indexTitleFound[0].className).toBe('flexible-table-content-table-title-row-item-index custom-id');
 
             const actionsTitleFound = container.querySelectorAll(selectors.titleRowActions);
-            expect(actionsTitleFound.length).toBe(1);
+            expect(actionsTitleFound).toHaveLength(1);
             expect(actionsTitleFound[0].textContent).toBe('Actions');
             expect(actionsTitleFound[0].className).toBe(
                 'flexible-table-content-table-title-row-item-actions custom-actions'
             );
 
             const titleCells = container.querySelectorAll(selectors.titleRowValue);
-            expect(titleCells.length).toBe(2);
+            expect(titleCells).toHaveLength(2);
 
             columns
                 .filter((col) => !col.hidden)
@@ -257,10 +257,10 @@ describe('<UIFlexibleTable />', () => {
             });
 
             const rowDataObjects = container.querySelectorAll(selectors.rowDataCells);
-            expect(rowDataObjects.length).toEqual(3);
+            expect(rowDataObjects).toHaveLength(3);
 
             const rowObjects = container.querySelectorAll(selectors.row);
-            expect(rowObjects.length).toEqual(3);
+            expect(rowObjects).toHaveLength(3);
             expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
@@ -275,7 +275,7 @@ describe('<UIFlexibleTable />', () => {
                         const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
                         const dataCellsFound = row.querySelectorAll(selector);
 
-                        expect(dataCellsFound.length).toBe(col.hidden ? 0 : 1);
+                        expect(dataCellsFound).toHaveLength(col.hidden ? 0 : 1);
                         if (!col.hidden) {
                             expect(dataCellsFound[0].textContent).toBe(String(rows[rowIndex].cells[col.key]));
                         }
@@ -303,10 +303,10 @@ describe('<UIFlexibleTable />', () => {
             });
 
             const rowDataObjects = container.querySelectorAll(selectors.rowDataCells);
-            expect(rowDataObjects.length).toEqual(3);
+            expect(rowDataObjects).toHaveLength(3);
 
             const rowObjects = container.querySelectorAll(selectors.row);
-            expect(rowObjects.length).toEqual(3);
+            expect(rowObjects).toHaveLength(3);
 
             // check warning class added
             rowObjects.forEach((row, rowIndex) => {
@@ -330,7 +330,7 @@ describe('<UIFlexibleTable />', () => {
                 expect(container.querySelectorAll(selectors.addButton)).toHaveLength(1);
                 expect(container.querySelector(selectors.addButton)?.getAttribute('aria-label')).toBe('Add New Item');
                 fireEvent.click(container.querySelector(selectors.addButton)!);
-                expect(onAddClick.mock.calls.length).toEqual(1);
+                expect(onAddClick.mock.calls).toHaveLength(1);
                 setProps({ isContentLoading: true });
                 setProps({ isContentLoading: false });
                 expect(scrollSpy).toHaveBeenCalled();
@@ -344,7 +344,7 @@ describe('<UIFlexibleTable />', () => {
                     readonly: true
                 });
                 const foundButtons = container.querySelectorAll(selectors.addButton);
-                expect(foundButtons.length).toEqual(1);
+                expect(foundButtons).toHaveLength(1);
                 expect((foundButtons[0] as HTMLButtonElement).disabled).toBeTruthy();
                 expect(foundButtons[0].getAttribute('title')).toBe('Read only reason');
             });
@@ -354,13 +354,13 @@ describe('<UIFlexibleTable />', () => {
                     isAddItemDisabled: true
                 });
                 const foundButtons = container.querySelectorAll(selectors.addButton);
-                expect(foundButtons.length).toEqual(1);
+                expect(foundButtons).toHaveLength(1);
                 expect((foundButtons[0] as HTMLButtonElement).disabled).toBeTruthy();
             });
             it('omitted', () => {
                 setProps({ addRowButton: undefined });
                 const foundButtons = container.querySelectorAll(selectors.addButton);
-                expect(foundButtons.length).toEqual(0);
+                expect(foundButtons).toHaveLength(0);
             });
         });
 
@@ -378,7 +378,7 @@ describe('<UIFlexibleTable />', () => {
             it('primary actions', () => {
                 setProps({ onRenderPrimaryTableActions: renderSpy });
                 const actions = container.querySelectorAll(selectors.tableHeaderPrimaryAction);
-                expect(actions.length).toBe(2);
+                expect(actions).toHaveLength(2);
                 expect(actions[0].querySelector('#action1')?.textContent).toBe('write1');
                 expect(actions[1].querySelector('#action2')?.textContent).toBe('write2');
             });
@@ -386,7 +386,7 @@ describe('<UIFlexibleTable />', () => {
             it('secondary actions', () => {
                 setProps({ onRenderSecondaryTableActions: renderSpy });
                 const actions = container.querySelectorAll(selectors.tableHeaderSecondaryAction);
-                expect(actions.length).toBe(2);
+                expect(actions).toHaveLength(2);
                 expect(actions[0].querySelector('#action1')?.textContent).toBe('write1');
                 expect(actions[1].querySelector('#action2')?.textContent).toBe('write2');
             });
@@ -394,7 +394,7 @@ describe('<UIFlexibleTable />', () => {
             it('readonly actions', () => {
                 setProps({ onRenderPrimaryTableActions: renderSpy, readonly: true });
                 const actions = container.querySelectorAll(selectors.tableHeaderPrimaryAction);
-                expect(actions.length).toBe(2);
+                expect(actions).toHaveLength(2);
                 expect(actions[0].querySelector('#action1')?.textContent).toBe('read1');
                 expect(actions[1].querySelector('#action2')?.textContent).toBe('read2');
             });
@@ -411,7 +411,7 @@ describe('<UIFlexibleTable />', () => {
                 expect(container.querySelectorAll(selectors.deleteButton)).toHaveLength(3);
                 const deleteButtons = container.querySelectorAll(selectors.deleteButton);
                 fireEvent.click(deleteButtons[deleteButtons.length - 1]);
-                expect(onDeleteClick.mock.calls.length).toEqual(1);
+                expect(onDeleteClick.mock.calls).toHaveLength(1);
                 expect(onDeleteClick.mock.calls[0][0].rowIndex).toEqual(2);
             });
             it('tooltip', () => {
@@ -426,7 +426,7 @@ describe('<UIFlexibleTable />', () => {
                     }
                 });
                 const foundButtons = container.querySelectorAll(selectors.deleteButton);
-                expect(foundButtons.length).toEqual(3);
+                expect(foundButtons).toHaveLength(3);
                 foundButtons.forEach((button, idx) => {
                     expect(button.getAttribute('title')).toBe(idx > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled');
                 });
@@ -450,7 +450,7 @@ describe('<UIFlexibleTable />', () => {
                     }
                 });
                 const foundButtons = container.querySelectorAll(selectors.deleteButton);
-                expect(foundButtons.length).toEqual(3);
+                expect(foundButtons).toHaveLength(3);
                 foundButtons.forEach((button, idx) => {
                     expect((button as HTMLButtonElement).disabled).toBe(idx > 0 ? true : false);
                 });
@@ -466,8 +466,8 @@ describe('<UIFlexibleTable />', () => {
                 });
                 const upButtonsFound = container.querySelectorAll(selectors.upArrow);
                 const downButtonsFound = container.querySelectorAll(selectors.downArrow);
-                expect(upButtonsFound.length).toBe(3);
-                expect(downButtonsFound.length).toBe(3);
+                expect(upButtonsFound).toHaveLength(3);
+                expect(downButtonsFound).toHaveLength(3);
                 upButtonsFound.forEach((button, idx) => {
                     expect(button.className.includes('is-disabled') === (idx === 0)).toBeTruthy();
                 });
@@ -480,8 +480,8 @@ describe('<UIFlexibleTable />', () => {
                 setProps({ onTableReorder: undefined });
                 const upButtonsFound = container.querySelectorAll(selectors.upArrow);
                 const downButtonsFound = container.querySelectorAll(selectors.downArrow);
-                expect(upButtonsFound.length).toBe(0);
-                expect(downButtonsFound.length).toBe(0);
+                expect(upButtonsFound).toHaveLength(0);
+                expect(downButtonsFound).toHaveLength(0);
                 expect((container.querySelector(selectors.content) as HTMLElement).style.cursor).toBe('default');
             });
 
@@ -506,8 +506,8 @@ describe('<UIFlexibleTable />', () => {
                 });
                 const upButtonsFound = container.querySelectorAll(selectors.upArrow);
                 const downButtonsFound = container.querySelectorAll(selectors.downArrow);
-                expect(upButtonsFound.length).toBe(3);
-                expect(downButtonsFound.length).toBe(3);
+                expect(upButtonsFound).toHaveLength(3);
+                expect(downButtonsFound).toHaveLength(3);
                 upButtonsFound.forEach((button, idx) => {
                     expect(button.className.includes('is-disabled') === [0, 1].includes(idx)).toBeTruthy();
                     expect(button.getAttribute('title')).toBe(idx === 1 ? 'Testing move up disabled' : '');
@@ -526,15 +526,15 @@ describe('<UIFlexibleTable />', () => {
                 });
                 const upButtonsFound = container.querySelectorAll(selectors.upArrow);
                 const downButtonsFound = container.querySelectorAll(selectors.downArrow);
-                expect(upButtonsFound.length).toBe(0);
-                expect(downButtonsFound.length).toBe(0);
+                expect(upButtonsFound).toHaveLength(0);
+                expect(downButtonsFound).toHaveLength(0);
             });
             it('no handler - off', () => {
                 setProps({ onTableReorder: undefined });
                 const upButtonsFound = container.querySelectorAll(selectors.upArrow);
                 const downButtonsFound = container.querySelectorAll(selectors.downArrow);
-                expect(upButtonsFound.length).toBe(0);
-                expect(downButtonsFound.length).toBe(0);
+                expect(upButtonsFound).toHaveLength(0);
+                expect(downButtonsFound).toHaveLength(0);
             });
 
             it('click down button', async () => {
@@ -564,7 +564,7 @@ describe('<UIFlexibleTable />', () => {
                 setProps({ isContentLoading: false });
                 getByIdSpy.mockRestore();
 
-                expect(onReorder.mock.calls.length).toBe(1);
+                expect(onReorder.mock.calls).toHaveLength(1);
                 expect(onReorder.mock.calls[0][0]).toStrictEqual({ oldIndex: 0, newIndex: 1 });
                 expect(focusSpy).toHaveBeenCalledTimes(2);
                 expect(idMismatches).toBe(0);
@@ -617,7 +617,7 @@ describe('<UIFlexibleTable />', () => {
                 expect(getByIdSpy).toHaveBeenCalledTimes(4);
                 getByIdSpy.mockRestore();
 
-                expect(onReorder.mock.calls.length).toBe(1);
+                expect(onReorder.mock.calls).toHaveLength(1);
                 expect(onReorder.mock.calls[0][0]).toStrictEqual({ oldIndex: 0, newIndex: 1 });
                 expect(focusSpy).toHaveBeenCalled();
                 expect(idMismatches).toBe(0);
@@ -652,7 +652,7 @@ describe('<UIFlexibleTable />', () => {
                 setProps({ isContentLoading: false });
                 getByIdSpy.mockRestore();
 
-                expect(onReorder.mock.calls.length).toBe(1);
+                expect(onReorder.mock.calls).toHaveLength(1);
                 expect(onReorder.mock.calls[0][0]).toStrictEqual({ oldIndex: 2, newIndex: 1 });
                 expect(focusSpy).toHaveBeenCalled();
                 expect(idMismatches).toBe(0);
@@ -695,7 +695,7 @@ describe('<UIFlexibleTable />', () => {
                 expect(getByIdSpy).toHaveBeenCalledTimes(4);
                 getByIdSpy.mockRestore();
 
-                expect(onReorder.mock.calls.length).toBe(1);
+                expect(onReorder.mock.calls).toHaveLength(1);
                 expect(onReorder.mock.calls[0][0]).toStrictEqual({ oldIndex: 2, newIndex: 1 });
                 expect(focusSpy).toHaveBeenCalled();
                 expect(idMismatches).toBe(0);
@@ -740,9 +740,9 @@ describe('<UIFlexibleTable />', () => {
             expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
             expect(container.querySelectorAll(selectors.addButton)).toHaveLength(0);
             const rowObjects = container.querySelectorAll(selectors.row);
-            expect(rowObjects.length).toEqual(3);
+            expect(rowObjects).toHaveLength(3);
             const rowHeaderObjects = container.querySelectorAll(selectors.rowHeader);
-            expect(rowHeaderObjects.length).toEqual(3);
+            expect(rowHeaderObjects).toHaveLength(3);
             expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
@@ -764,7 +764,7 @@ describe('<UIFlexibleTable />', () => {
                     // check data cells
                     const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
                     const dataCellsFound = row.querySelectorAll(selector);
-                    expect(dataCellsFound.length).toBe(col.hidden ? 0 : 1);
+                    expect(dataCellsFound).toHaveLength(col.hidden ? 0 : 1);
                     if (!col.hidden) {
                         expect(dataCellsFound[0].textContent).toBe(String(rows[rowIndex].cells[col.key]));
                     }
@@ -812,7 +812,7 @@ describe('<UIFlexibleTable />', () => {
             expect(container.querySelectorAll(selectors.addButton)).toHaveLength(1);
             expect(container.querySelector(selectors.addButton)?.getAttribute('aria-label')).toBe('Add Button');
             fireEvent.click(container.querySelector(selectors.addButton)!);
-            expect(onAddClick.mock.calls.length).toEqual(1);
+            expect(onAddClick.mock.calls).toHaveLength(1);
             setProps({ isContentLoading: true });
             setProps({ isContentLoading: false });
             expect(scrollSpy).toHaveBeenCalled();
