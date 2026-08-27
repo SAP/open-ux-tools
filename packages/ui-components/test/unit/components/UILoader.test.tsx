@@ -8,7 +8,8 @@ describe('<UILoader />', () => {
 
     it('Should render a UILoader component', () => {
         const { container } = renderLoader();
-        expect(container.firstChild).toBeTruthy();
+        expect(container.querySelectorAll('.ms-Spinner-circle')).toHaveLength(1);
+        expect(document.querySelectorAll('.ms-Overlay')).toHaveLength(0);
     });
 
     it('Block DOM', () => {

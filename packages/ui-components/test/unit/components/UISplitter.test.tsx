@@ -28,7 +28,7 @@ describe('<UISplitter />', () => {
 
     it('Should render a UISplitter component', () => {
         const { container } = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
-        expect(container.querySelector('.splitter')).toBeTruthy();
+        expect(container.querySelectorAll('.splitter')).toHaveLength(1);
         expect(container.querySelectorAll('.splitter--horizontal')).toHaveLength(1);
         expect(container.querySelectorAll('.splitter--vertical')).toHaveLength(0);
     });

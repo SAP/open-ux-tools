@@ -34,7 +34,7 @@ describe('<UICallout />', () => {
                 <div className="dummy"></div>
             </UICallout>
         );
-        expect(document.querySelector('.ms-Callout')).toBeTruthy();
+        expect(document.querySelectorAll('.ms-Callout')).toHaveLength(1);
         const style = getCalloutStyle({}) as ICalloutContentStyles;
         expect(style.root?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');
         expect(style.beakCurtain?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');

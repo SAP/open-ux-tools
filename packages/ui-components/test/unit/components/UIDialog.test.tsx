@@ -474,25 +474,23 @@ describe('<UIDialog />', () => {
         it('Draggable - focus focuszone placeholder', async () => {
             const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
             rerenderWith({ modalProps });
-            const mainEl = document.body.querySelector(dialogSelectors.main);
-            expect(mainEl).toBeTruthy();
-            const titleElement = document.body.querySelector(dialogSelectors.title);
-            expect(titleElement).toBeTruthy();
+            expect(document.body.querySelectorAll(dialogSelectors.main)).toHaveLength(1);
+            const titleElements = document.body.querySelectorAll(dialogSelectors.title);
+            expect(titleElements).toHaveLength(1);
             expect(focusSpy).toHaveBeenCalledTimes(0);
-            fireEvent.mouseDown(titleElement!);
-            expect(document.body.querySelector(dialogSelectors.title)).toBeTruthy();
+            fireEvent.mouseDown(titleElements[0]);
+            expect(document.body.querySelectorAll(dialogSelectors.title)).toHaveLength(1);
             expect(focusSpy).toHaveBeenCalledTimes(1);
         });
 
         it('Undraggable', async () => {
             const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
-            const mainEl = document.body.querySelector(dialogSelectors.main);
-            expect(mainEl).toBeTruthy();
-            const titleElement = document.body.querySelector(dialogSelectors.title);
-            expect(titleElement).toBeTruthy();
+            expect(document.body.querySelectorAll(dialogSelectors.main)).toHaveLength(1);
+            const titleElements = document.body.querySelectorAll(dialogSelectors.title);
+            expect(titleElements).toHaveLength(1);
             expect(focusSpy).toHaveBeenCalledTimes(0);
-            fireEvent.mouseDown(titleElement!);
-            expect(document.body.querySelector(dialogSelectors.title)).toBeTruthy();
+            fireEvent.mouseDown(titleElements[0]);
+            expect(document.body.querySelectorAll(dialogSelectors.title)).toHaveLength(1);
             expect(focusSpy).toHaveBeenCalledTimes(0);
         });
     });

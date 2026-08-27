@@ -133,9 +133,9 @@ describe('<UIFlexibleTable />', () => {
             expect(container.querySelector(selectors.tableRoot)).toBeTruthy();
             expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
             expect(container.querySelectorAll(selectors.row)).toHaveLength(0);
-            const noData = container.querySelector(selectors.noData);
-            expect(noData).toBeTruthy();
-            expect((noData as HTMLElement).style.cursor).toBe('default');
+            const noDataElements = container.querySelectorAll(selectors.noData);
+            expect(noDataElements).toHaveLength(1);
+            expect((noDataElements[0] as HTMLElement).style.cursor).toBe('default');
         });
 
         it('Render index column', () => {
@@ -186,7 +186,6 @@ describe('<UIFlexibleTable />', () => {
 
             const col = columns[0];
             const expectedId = `${tableId}-header-column-${col.key}`;
-            // isSpan=true renders key="title-cell-unknown"
             expect(titleCells[0].getAttribute('id')).toBe(expectedId);
             expect(titleCells[0].textContent).toBe(col.title);
         });
@@ -288,7 +287,7 @@ describe('<UIFlexibleTable />', () => {
         it('Render with limited width', () => {
             setProps({ maxWidth: 1000 });
             const root = container.querySelector(selectors.tableRoot) as HTMLElement;
-            expect(root).toBeTruthy();
+            expect(container.querySelectorAll(selectors.tableRoot)).toHaveLength(1);
             expect(root.style.maxWidth).toBe('1000px');
 
             setProps({ maxWidth: undefined });
@@ -754,13 +753,13 @@ describe('<UIFlexibleTable />', () => {
                     expect(rowTitle?.textContent).toBe(rows[rowIndex].title);
 
                     // check row default actions
-                    const rowActions = row.querySelector(selectors.rowHeaderActionsContainer);
-                    expect(rowActions).toBeTruthy();
+                    const rowActionsElements = row.querySelectorAll(selectors.rowHeaderActionsContainer);
+                    expect(rowActionsElements).toHaveLength(1);
                     // up and down action buttons should be present
-                    const upBtn = rowActions?.querySelector(selectors.upArrow);
-                    const downBtn = rowActions?.querySelector(selectors.downArrow);
-                    expect(upBtn).toBeTruthy();
-                    expect(downBtn).toBeTruthy();
+                    const upBtn = rowActionsElements[0].querySelector(selectors.upArrow);
+                    const downBtn = rowActionsElements[0].querySelector(selectors.downArrow);
+                    expect(upBtn).not.toBeNull();
+                    expect(downBtn).not.toBeNull();
 
                     // check data cells
                     const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
@@ -780,11 +779,10 @@ describe('<UIFlexibleTable />', () => {
             });
             const rowObjects = container.querySelectorAll(selectors.row);
             rowObjects.forEach((row, rowIndex) => {
-                const action = row.querySelector(
-                    `${selectors.rowHeaderActionsContainer} ${selectors.rowActionWrapper} ${selectors.deleteButton}`
-                ) as HTMLButtonElement | null;
-                expect(action).toBeTruthy();
-                expect(!!action?.disabled).toEqual(rowIndex === 1);
+                const deleteSelector = `${selectors.rowHeaderActionsContainer} ${selectors.rowActionWrapper} ${selectors.deleteButton}`;
+                const deleteActions = row.querySelectorAll(deleteSelector) as NodeListOf<HTMLButtonElement>;
+                expect(deleteActions).toHaveLength(1);
+                expect(!!deleteActions[0].disabled).toEqual(rowIndex === 1);
             });
         });
 
@@ -798,11 +796,11 @@ describe('<UIFlexibleTable />', () => {
             });
             const rowObjects = container.querySelectorAll(selectors.row);
             rowObjects.forEach((row, rowIndex) => {
-                const action = row.querySelector(
+                const customActions = row.querySelectorAll(
                     `${selectors.rowHeaderActionsContainer} ${selectors.rowActionWrapper} .testAction`
                 );
-                expect(action).toBeTruthy();
-                expect(action?.textContent).toBe((rowIndex + 1).toString());
+                expect(customActions).toHaveLength(1);
+                expect(customActions[0].textContent).toBe((rowIndex + 1).toString());
             });
         });
 
@@ -940,8 +938,7 @@ describe('<UIFlexibleTable />', () => {
 
         it('"noDataText" as element', () => {
             setProps({ noDataText: <div className="customNoData"></div> });
-            const noData = container.querySelector('.customNoData');
-            expect(noData).toBeTruthy();
+            expect(container.querySelectorAll('.customNoData')).toHaveLength(1);
         });
 
         it('"noRowBackground"', () => {
