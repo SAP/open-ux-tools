@@ -50,19 +50,19 @@ export async function processAiResponse(
         } catch (error) {
             if (error instanceof PathTraversalError) {
                 logger.error(error.message);
-                return buildOutput('error', error.message, appPath, echo);
+                return buildOutput('Error', error.message, appPath, echo);
             }
             const message = `Failed to write file ${file.path}: ${
                 error instanceof Error ? error.message : String(error)
             }`;
             logger.error(message);
-            return buildOutput('error', message, appPath, echo, changes);
+            return buildOutput('Error', message, appPath, echo, changes);
         }
     }
 
     if (changes.length > 0) {
         return buildOutput(
-            'success',
+            'Success',
             `Successfully processed ${changes.length} file(s) for ADP controller extension`,
             appPath,
             echo,
@@ -70,7 +70,7 @@ export async function processAiResponse(
         );
     }
     return buildOutput(
-        'skipped',
+        'Skipped',
         'No files were processed. Provide aiResponse parameter with code blocks to generate files.',
         appPath,
         echo,

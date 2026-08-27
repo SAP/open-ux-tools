@@ -220,5 +220,5 @@ export function buildKnowledgeBaseResponse(
         }
     }
 
-    return buildOutput('info', message, appPath);
+    return buildOutput('Info', message, appPath);
 }

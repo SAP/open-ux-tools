@@ -29,6 +29,6 @@ export async function loadProjectContext(
             error instanceof Error ? error.message : String(error)
         }`;
         logger.error(message);
-        return { error: buildOutput('error', message, appPath) };
+        return { error: buildOutput('Error', message, appPath) };
     }
 }

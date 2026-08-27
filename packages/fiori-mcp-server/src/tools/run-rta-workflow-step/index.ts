@@ -18,6 +18,10 @@ import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } fr
 
 const sessions: Map<string, EditorPage> = new Map();
 
+export function clearSessions(): void {
+    sessions.clear();
+}
+
 /**
  * Looks up the session record for `sessionId` and throws if it is missing.
  *
@@ -112,8 +116,9 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { saved: ok };
             }
             case 'stop': {
-                const { id } = getSession(input.sessionId);
+                const { id, session } = getSession(input.sessionId);
                 sessions.delete(id);
+                await defaultTransport.disconnectSite(session.site);
                 if (sessions.size === 0) {
                     await defaultTransport.stopBrowser();
                 }

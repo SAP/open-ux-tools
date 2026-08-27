@@ -4,7 +4,7 @@ import { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../constant.js';
 /**
  * Statuses surfaced by the `adp_controller_extension` tool.
  */
-export type AdpControllerExtensionStatus = 'success' | 'error' | 'info' | 'skipped';
+export type AdpControllerExtensionStatus = 'Success' | 'Error' | 'Info' | 'Skipped';
 
 /**
  * Builds an {@link ExecuteFunctionalityOutput} envelope for the

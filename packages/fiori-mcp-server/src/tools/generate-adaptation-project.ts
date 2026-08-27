@@ -127,7 +127,7 @@ export async function generateAdaptationProject(
         // the generator silently fall back to interactive prompts and hang with no attached stdin.
         const jsonString = JSON.stringify(jsonInput);
         const { stdout, stderr } = await runCmdArgs('npx', ['-y', 'yo@4', '@sap-ux/adp', jsonString, '--force'], {
-            cwd: process.cwd(),
+            cwd: finalTargetFolder,
             timeout: GENERATION_TIMEOUT_MS
         });
 

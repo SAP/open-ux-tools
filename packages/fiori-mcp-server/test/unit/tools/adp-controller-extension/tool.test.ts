@@ -32,7 +32,7 @@ describe('adpControllerExtension', () => {
 
     test('returns info envelope when appPath is missing', async () => {
         const result = await adpControllerExtension({ appPath: '' } as never);
-        expect(result.status).toBe('info');
+        expect(result.status).toBe('Info');
         expect(result.functionalityId).toBe(ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID);
         expect(result.message).toContain('Missing required parameter: appPath');
     });
@@ -43,7 +43,7 @@ describe('adpControllerExtension', () => {
 
         try {
             const result = await adpControllerExtension({ appPath });
-            expect(result.status).toBe('error');
+            expect(result.status).toBe('Error');
             expect(result.message).toContain('Failed to read manifest.appdescr_variant');
             expect(result.message).toContain('boom');
         } finally {
@@ -55,7 +55,7 @@ describe('adpControllerExtension', () => {
         const appPath = createAdpProject('CUSTOMER_BASE');
         try {
             const result = await adpControllerExtension({ appPath, prompt: 'add a button' });
-            expect(result.status).toBe('info');
+            expect(result.status).toBe('Info');
             expect(result.message).toContain('Prompt received: "add a button"');
             expect(result.message).toContain('Layer: CUSTOMER_BASE');
             expect(result.message).toContain('Variant ID (namespace base — use verbatim): customer.adapt.demo');
@@ -80,7 +80,7 @@ describe('adpControllerExtension', () => {
 
         try {
             const result = await adpControllerExtension({ appPath, aiResponse });
-            expect(result.status).toBe('success');
+            expect(result.status).toBe('Success');
             expect(result.changes).toHaveLength(2);
             expect(existsSync(join(appPath, 'webapp', 'changes', 'coding', 'MyExt.js'))).toBe(true);
             expect(readFileSync(join(appPath, 'webapp', 'changes', 'coding', 'MyExt.js'), 'utf-8')).toBe(
@@ -107,7 +107,7 @@ describe('adpControllerExtension', () => {
 
         try {
             const result = await adpControllerExtension({ appPath, aiResponse });
-            expect(result.status).toBe('success');
+            expect(result.status).toBe('Success');
             expect(result.changes).toHaveLength(1);
             expect(existsSync(join(appPath, 'webapp', 'changes', 'foo.change'))).toBe(false);
         } finally {
@@ -119,7 +119,7 @@ describe('adpControllerExtension', () => {
         const appPath = createAdpProject();
         try {
             const result = await adpControllerExtension({ appPath, aiResponse: 'just prose, no fences' });
-            expect(result.status).toBe('skipped');
+            expect(result.status).toBe('Skipped');
             expect(result.changes).toEqual([]);
         } finally {
             rmSync(appPath, { recursive: true, force: true });
@@ -132,7 +132,7 @@ describe('adpControllerExtension', () => {
 
         try {
             const result = await adpControllerExtension({ appPath, aiResponse });
-            expect(result.status).toBe('error');
+            expect(result.status).toBe('Error');
             expect(result.message).toContain('outside the application path');
         } finally {
             rmSync(appPath, { recursive: true, force: true });
@@ -145,7 +145,7 @@ describe('adpControllerExtension', () => {
 
         try {
             const result = await adpControllerExtension({ appPath, aiResponse, prompt: 'p' });
-            expect(result.status).toBe('success');
+            expect(result.status).toBe('Success');
             expect(result.parameters).toEqual({ appPath, prompt: 'p' });
             expect(JSON.stringify(result.parameters)).not.toContain('Path:');
         } finally {
