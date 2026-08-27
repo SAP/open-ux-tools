@@ -20,12 +20,12 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 ## 🔴 Bugs — fix first, blocking correctness
 
-- [ ] **`get-adp-odata-metada.ts` — `Array.from(metadataMap.values())` crashes at runtime**  
+- [x] **`get-adp-odata-metada.ts` — `Array.from(metadataMap.values())` crashes at runtime**  
   `readAnnotationfromManifest` already returns `ODataMetadataEntry[]` (not a `Map`). Calling `.values()` on an array throws `TypeError: metadataMap.values is not a function`. Fix: remove `Array.from(…).values()` and return the array directly.  
   _File:_ `src/tools/get-adp-odata-metada.ts:11`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`get-adp-odata-metada.ts` — filename typo (missing trailing `a` in "metadata")**  
+- [x] **`get-adp-odata-metada.ts` — filename typo (missing trailing `a` in "metadata")**  
   File is `get-adp-odata-metada.ts`, export is `readODataMetadataAdp`, MCP tool is `read_odata_metadata_adp`. Rename the file to `get-adp-odata-metadata.ts` and update the import in `src/tools/index.ts`.  
   _Owner: tools_ | _Assignee: —_
 
@@ -165,22 +165,22 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 ## 🟡 Type safety
 
-- [ ] **`readODataMetadataAdp` return type is `Promise<Array<any>>`**  
+- [x] **`readODataMetadataAdp` return type is `Promise<Array<any>>`**  
   Export `ODataMetadataEntry` from `manifestContext.ts` and change the return type to `Promise<ODataMetadataEntry[]>`.  
   _Files:_ `src/tools/functionalities/manifest-changes/manifestContext.ts`, `src/tools/get-adp-odata-metadata.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`listLibrariesFromSystem` return type is `Promise<Array<object>>`**  
+- [x] **`listLibrariesFromSystem` return type is `Promise<Array<object>>`**  
   The library entries from `appIndex.search()` have a known shape. Define or import the correct type.  
   _File:_ `src/tools/get-libraries.ts:10`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`listODataServices` return type is `Promise<Array<object>>`**  
+- [x] **`listODataServices` return type is `Promise<Array<object>>`**  
   `getAvailableODataServices` already returns `Promise<Array<ODataServiceInfo>>`. Propagate the type to `get-odata-services.ts`.  
   _File:_ `src/tools/get-odata-services.ts:10`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`systemPath` type not exported from `manifestContext.ts`**  
+- [x] **`systemPath` type not exported from `manifestContext.ts`**  
   Export it (rename to `PascalCase`: `SystemPath`) so callers can reference the shape without reaching into internals.  
   _File:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:13`  
   _Owner: tools_ | _Assignee: —_
@@ -191,17 +191,17 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 Per `AGENTS.md`: always reuse existing functions from common libraries. `manifestContext.ts` reimplements patterns already in `@sap-ux/adp-tooling`.
 
-- [ ] **`getProvider(appPath)` — replace with `getConfiguredProvider` from `adp-tooling`**  
+- [x] **`getProvider(appPath)` — replace with `getConfiguredProvider` from `adp-tooling`**  
   `manifestContext.ts` manually reads `ui5.yaml`, extracts URL/client, and calls `createAbapServiceProvider`. `adp-tooling/src/abap/provider.ts` exposes `getConfiguredProvider()` (already used in `key-user-changes.ts`). Check whether `getConfiguredProvider` handles `ui5.yaml`-sourced targets or whether a small adapter is needed.  
   _Files:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:152`, `packages/adp-tooling/src/abap/provider.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`readMergedManifest(appPath)` — replace with `ManifestService.initMergedManifest` from `adp-tooling`**  
+- [x] **`readMergedManifest(appPath)` — replace with `ManifestService.initMergedManifest` from `adp-tooling`**  
   `readMergedManifest` zips `webapp/`, calls `lrep.getCsrfToken()` + `mergeAppDescriptorVariant()`. `adp-tooling/src/base/abap/manifest-service.ts` has `ManifestService.initMergedManifest()` doing exactly the same, plus `getManifestDataSources()`.  
   _Files:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:50`, `packages/adp-tooling/src/base/abap/manifest-service.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`readManifest(appPath)` — replace with `getVariant` from `adp-tooling`**  
+- [x] **`readManifest(appPath)` — replace with `getVariant` from `adp-tooling`**  
   `readManifest` manually reads and JSON-parses `webapp/manifest.appdescr_variant`. `getVariant(appPath)` from `@sap-ux/adp-tooling` (already used in `adp-controller-extension/project/context.ts`) does the same thing.  
   _File:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:180`  
   _Owner: tools_ | _Assignee: —_
@@ -217,7 +217,7 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
 
 - [ ] **Both SKILL.md files — `kill` command is Unix-only (`lsof` doesn't exist on Windows)**  
   Both files document `lsof -ti:<port> | xargs kill`. Mirror the platform split already in `buildKillInstructions()`: `taskkill /PID … /F` on Windows, `kill $(lsof -ti:<port>)` on Mac/Linux.  
-  _Files:_ `skills/adp-controller-extension-flow/SKILL.md`, `skills/adp-project-setup/SKILL.md`  
+  _File:_ `skills/adp-controller-extension-flow/SKILL.md`  
   _Owner: skill_ | _Assignee: —_
 
 - [ ] **Both SKILL.md files — frontmatter `author`/`version` must be nested under `metadata:`**  
@@ -226,24 +226,18 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
     author: sap-fiori-tools
     version: 0.0.1
   ```  
-  _Files:_ `skills/adp-controller-extension-flow/SKILL.md`, `skills/adp-project-setup/SKILL.md`  
+  _File:_ `skills/adp-controller-extension-flow/SKILL.md`  
   _Owner: skill_ | _Assignee: —_
 
-- [ ] **Both SKILL.md files — prerequisite `fiori-mcp-server` not documented**  
+- [ ] **SKILL.md — prerequisite `fiori-mcp-server` not documented**  
   Add a **Prerequisites** section naming `@sap-ux/fiori-mcp-server`, explaining it must be running as an MCP server, and linking to install instructions. Without this, users installing via `npx skills add <url>` get no useful error.  
-  _Files:_ `skills/adp-controller-extension-flow/SKILL.md`, `skills/adp-project-setup/SKILL.md`  
+  _File:_ `skills/adp-controller-extension-flow/SKILL.md`  
   _Owner: skill_ | _Assignee: —_
 
 - [ ] **`adp-controller-extension-flow/SKILL.md` — skill description doesn't match user trigger phrases**  
   Replace "Use when making RTA changes…" with:  
   > "Use when the user wants to make UI changes to a SAP Fiori adaptation project via the adaptation editor — adding buttons, fields, columns, or sections, changing labels or properties, hiding controls, or extending controllers with custom logic. Trigger on phrases like 'add a button', 'hide a field', 'add a column', 'customize the toolbar', or 'extend the controller' when working in an adaptation project context."  
   _File:_ `skills/adp-controller-extension-flow/SKILL.md`  
-  _Owner: skill_ | _Assignee: —_
-
-- [ ] **`adp-project-setup/SKILL.md` — skill description too narrow**  
-  Replace with:  
-  > "Use when the user wants to create, scaffold, or set up a SAP Fiori adaptation project (ADP), adapt or customize an existing Fiori app without changing its source, launch the adaptation editor, or connect to an SAP system to start making UI changes. Trigger even if the user just says 'adapt an app' or 'customize a Fiori app.'"  
-  _File:_ `skills/adp-project-setup/SKILL.md`  
   _Owner: skill_ | _Assignee: —_
 
 - [ ] **`adp-controller-extension-flow/SKILL.md` — actions table framing is misleading**  
@@ -269,24 +263,15 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
   Add a note near the top of the workflow: the `sessionId` returned by `start` **must be passed to every subsequent step**. If a step returns `Unknown sessionId`, the server restarted — call `start` again.  
   _Owner: skill_ | _Assignee: —_
 
-- [ ] **`adp-project-setup/SKILL.md` — credentials warning missing**  
-  Add a note that `password` is passed to the generator and advise using system-configured credentials via `@sap-ux/store` where possible.  
-  _File:_ `skills/adp-project-setup/SKILL.md`  
-  _Owner: skill_ | _Assignee: —_
-
-- [ ] **`adp-project-setup/SKILL.md` — verify tool schema accuracy**  
-  Cross-check every documented parameter against the Zod schema in `src/tools/index.ts`. Pay attention to `importKeyUserChanges` (boolean, optional) and `targetFolder` vs `appPath` distinction.  
-  _Owner: skill_ | _Assignee: —_
-
 - [ ] **SKILL.md — `importKeyUserChanges` empty-result behavior**  
-  After the code behavior is decided (see Architecture above), update `adp-project-setup/SKILL.md` accordingly.  
+  After the code behavior is decided (see Architecture above), update `adp-controller-extension-flow/SKILL.md` accordingly.  
   _Owner: skill_ | _Assignee: —_
 
 ---
 
 ## 🔵 Housekeeping
 
-- [ ] **Export `ODataMetadataEntry` from the `functionalities/` barrel (`functionalities/index.ts`)**  
+- [x] **Export `ODataMetadataEntry` from the `functionalities/` barrel (`functionalities/index.ts`)**  
   So tool-layer files can import it without reaching into internals.  
   _Owner: tools_ | _Assignee: —_
 
