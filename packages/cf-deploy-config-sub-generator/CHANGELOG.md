@@ -1,5 +1,33 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/deploy-config-generator-shared 1.0.32 → 1.0.33
+- @sap-ux/fiori-generator-shared 1.2.10 → 1.2.11
+- @sap-ux/inquirer-common 1.0.35 → 1.0.36
+- @sap-ux/cf-deploy-config-inquirer 1.0.38 → 1.0.39
+
+## 1.0.41
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Upgrade js-yaml 4.2.0 → 4.3.1 to address CVE (GHSA-pm4m-ph32-ghv5) [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-writer 1.1.2 → 1.1.3
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/inquirer-common 1.0.34 → 1.0.35
+- @sap-ux/fiori-generator-shared 1.2.9 → 1.2.10
+- @sap-ux/cf-deploy-config-inquirer 1.0.37 → 1.0.38
+- @sap-ux/deploy-config-generator-shared 1.0.31 → 1.0.32
+
 ## 1.0.40
 
 ### Patch Changes

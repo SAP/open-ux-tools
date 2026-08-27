@@ -1,5 +1,41 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Upgrade @langchain/core 1.1.49→1.2.8, @sap-ai-sdk/foundation-models and @sap-ai-sdk/langchain 2.9.0→2.14.0, @modelcontextprotocol/sdk 1.29.0→1.30.0, zod 4.3.6→4.4.3, promptfoo 0.121.19→0.122.0 [[ce2c618](https://github.com/SAP/open-ux-tools/commit/ce2c61870d487ca1757d1fe35d38386a6606c4bb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[3af3daf](https://github.com/SAP/open-ux-tools/commit/3af3dafef0833d88bc2cf77de1ad1a4d69f8fa36)]
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
+## 1.11.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
 ## 1.11.14
 
 ### Patch Changes

@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 3.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Bug Fixes
+
+- Update UIIcon import to use direct path instead of barrel to avoid circular resolution [[ef7c4b4](https://github.com/SAP/open-ux-tools/commit/ef7c4b4cce828fff70c10389bd58f6f02179d10d)]
+
+## 3.0.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Features
+
+- Add shared CSS variables for the UI spacing scale [[f044e50](https://github.com/SAP/open-ux-tools/commit/f044e50fb85f83baac12fcac96e5453bd6da6f7a)]
+
 ## 3.0.11
 
 ### Patch Changes

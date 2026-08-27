@@ -1,6 +1,5 @@
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
-import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
-const { createMetadataCollector } = cdsCompilerFacade;
+import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 
 import type { Range } from '@sap-ux/odata-annotation-core-types';
 import { GHOST_FILENAME_PREFIX } from '@sap-ux/odata-annotation-core-types';
