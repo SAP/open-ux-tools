@@ -25,8 +25,8 @@ import {
     adpControllerExtension,
     runRtaWorkflowStep,
     listLibrariesFromSystem,
-    readODataMetadataAdp,
     listODataServices,
+    readODataMetadataAdp,
     tools
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
@@ -43,7 +43,8 @@ import type {
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
-    AdpMetadataInput
+    AdpMetadataInput,
+    ODataServiceInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -62,6 +63,7 @@ type ToolArgs =
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
     | AdpMetadataInput
+    | ODataServiceInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -308,7 +310,7 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         result = await listLibrariesFromSystem(args as ListFunctionalitiesInput);
                         break;
                     case 'list_odata_services_from_system':
-                        result = await listODataServices(args as ListFunctionalitiesInput);
+                        result = await listODataServices(args as ODataServiceInput);
                         break;
                     case 'read_odata_metadata_adp':
                         result = await readODataMetadataAdp(args as AdpMetadataInput);

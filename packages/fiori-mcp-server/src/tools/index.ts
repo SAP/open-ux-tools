@@ -18,9 +18,9 @@ export { generateAdaptationProject } from './generate-adaptation-project.js';
 export { openAdaptationEditor } from './open-adaptation-editor.js';
 export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
-export { listLibrariesFromSystem } from './get-libraries.js';
-export { readODataMetadataAdp } from './get-adp-odata-metada.js';
-export { listODataServices } from './get-odata-services.js';
+export { listLibrariesFromSystem } from './list-libraries.js';
+export { listODataServices } from './list-odata-services.js';
+export { readODataMetadataAdp } from './read-odata-metadata.js';
 
 export const tools = [
     {
