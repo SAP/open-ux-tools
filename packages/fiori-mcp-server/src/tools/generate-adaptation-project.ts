@@ -1,5 +1,5 @@
 import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types/index.js';
-import { join } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 import { existsSync, promises as FSpromises } from 'node:fs';
 import { runCmdArgs, logger } from '../utils/index.js';
 import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
@@ -12,12 +12,16 @@ const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;
 const GENERATION_TIMEOUT_MS = 5 * 60_000;
 
 /**
+ * Returns a copy of `params` with sensitive credential fields removed so they
+ * are never echoed back in the tool response envelope.
+ */
+function safeParams(params: GenerateAdaptationProjectInput): Record<string, unknown> {
+    const { password: _password, username: _username, ...rest } = params;
+    return rest;
+}
+
+/**
  * Rejects with a descriptive error if the given promise does not settle within `timeoutMs`.
- *
- * @param promise - The promise to guard.
- * @param timeoutMs - Timeout in milliseconds.
- * @param onTimeoutMessage - Error message used when the timeout elapses.
- * @returns The resolved value of `promise` if it settles in time.
  */
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutMessage: string): Promise<T> {
     let timer: NodeJS.Timeout | undefined;
@@ -31,6 +35,18 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutM
             clearTimeout(timer);
         }
     }
+}
+
+function errorResponse(message: string, params: GenerateAdaptationProjectInput, appPath: string): ExecuteFunctionalityOutput {
+    return {
+        functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
+        status: 'Error',
+        message,
+        parameters: safeParams(params),
+        appPath,
+        changes: [],
+        timestamp: new Date().toISOString()
+    };
 }
 
 /**
@@ -57,18 +73,18 @@ export async function generateAdaptationProject(
     } = params;
 
     if (!system || !application) {
-        return {
-            functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
-            status: 'Error',
-            message: 'Missing required parameters: system and application are required.',
-            parameters: params,
-            appPath,
-            changes: [],
-            timestamp: new Date().toISOString()
-        };
+        return errorResponse('Missing required parameters: system and application are required.', params, appPath);
     }
 
     const finalTargetFolder = targetFolder ?? appPath;
+
+    if (!isAbsolute(finalTargetFolder)) {
+        return errorResponse(
+            `targetFolder must be an absolute path. Received: "${finalTargetFolder}"`,
+            params,
+            appPath
+        );
+    }
 
     try {
         const jsonInput: Record<string, unknown> & { projectName: string } = {
@@ -109,13 +125,14 @@ export async function generateAdaptationProject(
                     `${KEY_USER_CHANGES_TIMEOUT_MS}ms. The system may be unreachable or require credentials; ` +
                     'pass "username" and "password" or set importKeyUserChanges to false.'
             );
-            // Only attach a payload when we have content so we don't override
-            // the user's intent with an empty array.
             if (keyUserChanges.length > 0) {
                 jsonInput.keyUserChanges = keyUserChanges;
             } else {
-                logger.warn(
-                    `importKeyUserChanges was requested but no key user changes were returned for '${application}'.`
+                return errorResponse(
+                    `importKeyUserChanges was requested but no key user changes were returned for '${application}' on '${system}'. ` +
+                        'Set importKeyUserChanges to false to generate the project without importing changes.',
+                    params,
+                    appPath
                 );
             }
         }
@@ -131,9 +148,11 @@ export async function generateAdaptationProject(
             timeout: GENERATION_TIMEOUT_MS
         });
 
-        logger.info(stdout);
+        if (stdout) {
+            logger.info(stdout);
+        }
         if (stderr) {
-            logger.error(stderr);
+            logger.warn(stderr);
         }
 
         const projectPath = join(finalTargetFolder, jsonInput.projectName);
@@ -141,32 +160,25 @@ export async function generateAdaptationProject(
             functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
             status: 'Success',
             message: `Adaptation project generated successfully at ${projectPath}.`,
-            parameters: params,
+            parameters: safeParams(params),
             appPath: projectPath,
             changes: [],
             timestamp: new Date().toISOString()
         };
     } catch (error) {
-        logger.error(`Error generating adaptation project: ${error}`);
-        return {
-            functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
-            status: 'Error',
-            message: 'Error generating adaptation project: ' + (error instanceof Error ? error.message : String(error)),
-            parameters: params,
-            appPath,
-            changes: [],
-            timestamp: new Date().toISOString()
-        };
+        const message = error instanceof Error ? error.message : String(error);
+        logger.error(`Error generating adaptation project: ${message}`);
+        return errorResponse(`Error generating adaptation project: ${message}`, params, appPath);
     }
 }
 
 function getDefaultProjectName(basePath: string, dirName: string = 'app.variant'): string {
     let newDir = dirName;
-    let index = 1;
+    let index = 2;
 
     while (existsSync(join(basePath, newDir))) {
-        index++;
         newDir = `${dirName}${index}`;
+        index++;
     }
 
     return newDir;

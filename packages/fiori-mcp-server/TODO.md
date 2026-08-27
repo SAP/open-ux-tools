@@ -48,13 +48,13 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
   _File:_ `src/server.ts`, `src/tools/run-rta-workflow-step/index.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`open-adaptation-editor.ts` — `setInterval` polling instead of direct `resolve()` calls**  
-  `state.resolved` is set inside event handlers but the Promise resolves only via `setInterval` at 100 ms, adding unnecessary latency on every success path. Fix: call `resolve()` directly from each event handler.  
+- [x] **`open-adaptation-editor.ts` — `setInterval` polling instead of direct `resolve()` calls**  
+  Already fixed — current code calls `resolve()` directly from event handlers.  
   _File:_ `src/tools/open-adaptation-editor.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`open-adaptation-editor.ts` — hardcoded 1-second blind delay after successful URL detection**  
-  `await new Promise((resolve) => setTimeout(resolve, 1000))` runs unconditionally on every success path with no condition or retry. Identify why it was added and remove it or replace with an actual readiness check.  
+- [x] **`open-adaptation-editor.ts` — hardcoded 1-second blind delay after successful URL detection**  
+  Already fixed — no unconditional delay present in current code.  
   _File:_ `src/tools/open-adaptation-editor.ts`  
   _Owner: tools_ | _Assignee: —_
 
