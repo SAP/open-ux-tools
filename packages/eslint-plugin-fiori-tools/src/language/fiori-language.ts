@@ -203,7 +203,10 @@ export class FioriLanguage implements Language<{
         }
         if (path.endsWith('.xml')) {
             try {
-                const { cst, tokenVector } = parseXml(text);
+                const { cst, tokenVector, parseErrors } = parseXml(text);
+                if (parseErrors.length) {
+                    throw new Error(parseErrors[0].message);
+                }
                 const ast = buildAst(cst as DocumentCstNode, tokenVector);
                 return {
                     ok: true,
