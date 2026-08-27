@@ -1,5 +1,21 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.25
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[3af3daf](https://github.com/SAP/open-ux-tools/commit/3af3dafef0833d88bc2cf77de1ad1a4d69f8fa36)]
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/sap-systems-ext-webapp [[ef7c4b4](https://github.com/SAP/open-ux-tools/commit/ef7c4b4cce828fff70c10389bd58f6f02179d10d)]
+
 ## 1.0.24
 
 ### Patch Changes
