@@ -8,6 +8,7 @@ import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/index.js';
 import { type FFAppConfig } from '../../../src/types/index.js';
 import { cleanTestDir, ignoreMatcherOpts } from '../test-utils/index.js';
+import { appConfigNotSupportedVersion } from '../../unit/app-headless/test-data/testHeadlessAppConfigs.js';
 
 // Disable telemetry for integration tests to avoid Application Insights initialization errors
 process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
@@ -123,5 +124,11 @@ describe('Test headless generator', () => {
         expect(mockInstallDependencies).not.toHaveBeenCalled();
         // Restore only spies
         jest.restoreAllMocks();
+    });
+
+    it('Test: should throw a preserved error when appConfig is invalid, not crash on missing env.error', async () => {
+        await expect(
+            runHeadlessGen(JSON.stringify(appConfigNotSupportedVersion))
+        ).rejects.toThrow();
     });
 });

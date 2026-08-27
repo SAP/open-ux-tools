@@ -54,7 +54,7 @@ export default class extends DeploymentGenerator {
             this.deployTarget = this.appConfig.deployConfig?.deployTarget;
         } catch (error) {
             DeploymentGenerator.logger?.error(t('headless.error.generationExiting', { error }));
-            throw error instanceof Error ? error : new Error(String(error));
+            throw error;
         }
     }
 

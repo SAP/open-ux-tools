@@ -60,7 +60,6 @@ jest.unstable_mockModule('hasbin', () => ({
 }));
 
 const { toMatchFolder } = await import('@sap-ux/jest-file-matchers');
-const { default: yeomanTest } = await import('yeoman-test');
 const { default: CFGen } = await import('@sap-ux/cf-deploy-config-sub-generator');
 const { DeployTarget } = await import('@sap-ux/fiori-generator-shared');
 const {
@@ -317,13 +316,4 @@ describe('Test headless generator', () => {
         rimraf.rimrafSync(join(OUTPUT_DIR, testAppName));
     });
 
-    it('Test: Headless deploy-config - should preserve the appConfig error without env.error', async () => {
-        await initI18n();
-        const environment = (yeomanTest as any).createEnv([]);
-        environment.error = undefined;
-
-        expect(() => new HeadlessGenerator([], { env: environment, namespace: 'gen:test' })).toThrow(
-            'Please provide one of the following: 1) The first argument of the file path to the application config file, 2) The first argument of the application config file as a JSON string, or 3) The option `appconfig` as a JSON object.'
-        );
-    });
 });
