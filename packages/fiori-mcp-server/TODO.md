@@ -185,8 +185,13 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 Per `AGENTS.md`: always reuse existing functions from common libraries. `manifestContext.ts` reimplements patterns already in `@sap-ux/adp-tooling`.
 
-- [x] **`getProvider(appPath)` — kept in `services/abap-context.ts` (reads from `ui5.yaml`, not system store)**  
+- [x] **`getProvider(appPath)` — kept in `services/abap-context.ts`  
   `getConfiguredProvider` from `adp-tooling` resolves by system name via store/BAS — not compatible with `ui5.yaml`-sourced targets. `getProvider` kept as shared infrastructure in `src/tools/services/abap-context.ts`.  
+  _Owner: tools_ | _Assignee: —_
+
+- [ ] **`getDefaultProjectName` — consolidate with `generator-adp` canonical implementation**  
+  Both `fiori-mcp-server` and `generator-adp` have identical `getDefaultProjectName` implementations. The one in `generator-adp` is not exported from its public index. Either export it from `generator-adp` and import it here, or move to a shared package (e.g. `@sap-ux/adp-tooling`).  
+  _Files:_ `src/tools/generate-adaptation-project.ts`, `packages/generator-adp/src/app/questions/helper/default-values.ts`  
   _Owner: tools_ | _Assignee: —_
 
 - [x] **`readMergedManifest(appPath)` — replaced with `ManifestService.initMergedManifest` from `adp-tooling`**  
