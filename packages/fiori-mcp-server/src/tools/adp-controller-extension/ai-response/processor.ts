@@ -33,7 +33,11 @@ export async function processAiResponse(
 ): Promise<ExecuteFunctionalityOutput> {
     logger.info('Processing AI response to extract files');
     const extractedFiles = extractFilesFromResponse(aiResponse);
-    logger.info(`Extracted ${extractedFiles.length} files from AI response`);
+    if (extractedFiles.length === 0) {
+        logger.warn('No code blocks with **Path:** markers found in aiResponse — response may be malformed or contain no files');
+    } else {
+        logger.info(`Extracted ${extractedFiles.length} files from AI response`);
+    }
 
     const changes: string[] = [];
     const echo = echoableParams(params);

@@ -120,44 +120,42 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 ## 🟡 Code quality
 
-- [ ] **`open-adaptation-editor.ts` — 220-line function, split into helpers**  
+- [x] **`open-adaptation-editor.ts` — 220-line function, split into helpers**  
   The function does four things in sequence. Extract:
   - `resolveFioriBin(appPath, isWindows): { command, args }`
   - `waitForEditorUrl(childProcess, timeoutMs): Promise<{ serverUrl, editorPath }>`
   - `parsePort(url): number | undefined`
   - `buildKillInstructions(pid, port, isWindows): string`  
   _File:_ `src/tools/open-adaptation-editor.ts`  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: Nikita_
 
-- [ ] **`open-adaptation-editor.ts` — stderr piped to `'ignore'`**  
+- [x] **`open-adaptation-editor.ts` — stderr piped to `'ignore'`**  
   Change `stdio: ['ignore', 'pipe', 'ignore']` to capture stderr and include it in the timeout/error message.  
   _File:_ `src/tools/open-adaptation-editor.ts:46`  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: Nikita_
 
-- [ ] **`list-odata-services.ts` — `isS4Cloud` monkey-patch on catalog instances**  
-  `catalogV2.isS4Cloud = Promise.resolve(true)` mutates the object in place. Check if `listServices()` accepts an options object or if `isS4Cloud` is set by the provider already.  
+- [ ] **`list-odata-services.ts` — `isS4Cloud` setting needs investigation**  
+  `catalogV2.isS4Cloud = Promise.resolve(true)` sets a public property on the catalog base class (designed to be set). The question is whether forcing `true` is correct (adaptation projects are S4Cloud-only) or whether it should be detected dynamically via `provider.isAbapCloud()`. Investigate and align with how other tools in the codebase determine S4Cloud status.  
   _File:_ `src/tools/list-odata-services.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`build-dev` script bypasses `bundle.mjs` — plugins not applied in dev builds**  
-  `build-dev` was changed to `pnpm run build-esbuild-base --sourcemap=inline`, skipping `onnxNodeWasmPlugin`, `pkgJsonShimPlugin`, and `sharpStubPlugin`. Restore to use `scripts/bundle.mjs` with a `NODE_ENV=development` flag.  
+- [x] **`build-dev` script bypasses `bundle.mjs` — plugins not applied in dev builds**  
+  Restored to `NODE_ENV=development node scripts/bundle.mjs`. The `bundle.mjs` already handles `NODE_ENV=development` by enabling `sourcemap: 'linked'`.  
   _File:_ `package.json:34`  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: Nikita_
 
-- [ ] **`prettify-xml` and `adm-zip` are `devDependencies` but used in production `src/`**  
-  Both are runtime imports in `read-odata-metadata.ts`. Move to `dependencies`.  
-  _File:_ `package.json:61–63`  
-  _Owner: tools_ | _Assignee: —_
+- ~~**`prettify-xml` and `adm-zip` are `devDependencies` but used in production `src/`**  
+  Package is fully bundled via esbuild; devDependencies are inlined into the bundle at build time. Not applicable.~~
 
-- [ ] **`parser.ts` — path marker on same line as fence open is silently dropped**  
-  `PATH_MARKER` match `continue`s before the fence-open check. If an AI response emits `**Path:** foo.ts \`\`\`js` on one line, the block is never opened. After matching `PATH_MARKER`, also check the remainder of the same line for a fence-open pattern.  
+- [x] **`parser.ts` — path marker on same line as fence open is silently dropped**  
+  Fixed — after matching `PATH_MARKER`, the remainder of the line is now checked for a fence-open pattern.  
   _File:_ `src/tools/adp-controller-extension/ai-response/parser.ts:22`  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: Nikita_
 
-- [ ] **`parser.ts` — no log when `aiResponse` has zero code blocks**  
-  `extractFilesFromResponse` silently returns `[]` for malformed responses. Add a log line to distinguish "AI sent no code" from "AI sent code but markers were malformed."  
+- [x] **`parser.ts` — no log when `aiResponse` has zero code blocks**  
+  Fixed — `processor.ts` now logs a warning when `extractFilesFromResponse` returns an empty array.  
   _File:_ `src/tools/adp-controller-extension/ai-response/processor.ts:35`  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: Nikita_
 
 ---
 

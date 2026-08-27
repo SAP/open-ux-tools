@@ -23,6 +23,12 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
         const pathMatch = line.match(PATH_MARKER);
         if (pathMatch) {
             currentPath = pathMatch[1].trim();
+            // Handle the rare case where the fence open appears on the same line as the path marker.
+            const remainder = line.slice(line.indexOf(pathMatch[0]) + pathMatch[0].length);
+            if (FENCE_OPEN.test(remainder) && !inCodeBlock) {
+                inCodeBlock = true;
+                currentCode = '';
+            }
             continue;
         }
 
