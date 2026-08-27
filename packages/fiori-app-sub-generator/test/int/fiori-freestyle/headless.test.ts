@@ -127,8 +127,6 @@ describe('Test headless generator', () => {
     });
 
     it('Test: should throw a preserved error when appConfig is invalid, not crash on missing env.error', async () => {
-        await expect(
-            runHeadlessGen(JSON.stringify(appConfigNotSupportedVersion))
-        ).rejects.toThrow();
+        await expect(runHeadlessGen(JSON.stringify(appConfigNotSupportedVersion))).rejects.toThrow();
     });
 });

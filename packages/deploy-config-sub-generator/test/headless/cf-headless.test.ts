@@ -315,5 +315,4 @@ describe('Test headless generator', () => {
         );
         rimraf.rimrafSync(join(OUTPUT_DIR, testAppName));
     });
-
 });
