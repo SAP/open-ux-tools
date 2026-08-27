@@ -98,8 +98,7 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
   - **`targetFolder` not validated as absolute path** — if the AI passes a relative path, files are written relative to `process.cwd()`. Validate that `finalTargetFolder` is absolute before calling `mkdir`.  
     _File:_ `src/tools/generate-adaptation-project.ts:71`
 
-  - **`getDefaultProjectName` index skip** — first duplicate produces `app.variant2` not `app.variant1`. Fix: start `index = 2` or append before incrementing.  
-    _File:_ `src/tools/generate-adaptation-project.ts:163`
+  - ~~**`getDefaultProjectName` index skip** — `app.variant` → `app.variant2` is the canonical convention in `generator-adp` (`packages/generator-adp/src/app/questions/helper/default-values.ts`). No `app.variant1` by design. No change needed.~~
 
   - **`importKeyUserChanges` contract mismatch** — code warns and continues when `getKeyUserData` returns empty array; PR description says it should abort. Decide and align code + SKILL.md.  
     _File:_ `src/tools/generate-adaptation-project.ts:~108`

@@ -174,11 +174,11 @@ export async function generateAdaptationProject(
 
 function getDefaultProjectName(basePath: string, dirName: string = 'app.variant'): string {
     let newDir = dirName;
-    let index = 2;
+    let index = 1;
 
     while (existsSync(join(basePath, newDir))) {
-        newDir = `${dirName}${index}`;
         index++;
+        newDir = `${dirName}${index}`;
     }
 
     return newDir;
