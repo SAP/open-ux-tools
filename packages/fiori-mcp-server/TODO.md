@@ -21,12 +21,11 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 ## 🔴 Bugs — fix first, blocking correctness
 
 - [x] **`get-adp-odata-metada.ts` — `Array.from(metadataMap.values())` crashes at runtime**  
-  `readAnnotationfromManifest` already returns `ODataMetadataEntry[]` (not a `Map`). Calling `.values()` on an array throws `TypeError: metadataMap.values is not a function`. Fix: remove `Array.from(…).values()` and return the array directly.  
-  _File:_ `src/tools/get-adp-odata-metada.ts:11`  
+  Fixed — `read-odata-metadata.ts` now returns the array directly.  
   _Owner: tools_ | _Assignee: —_
 
 - [x] **`get-adp-odata-metada.ts` — filename typo (missing trailing `a` in "metadata")**  
-  File is `get-adp-odata-metada.ts`, export is `readODataMetadataAdp`, MCP tool is `read_odata_metadata_adp`. Rename the file to `get-adp-odata-metadata.ts` and update the import in `src/tools/index.ts`.  
+  Fixed — file is now `src/tools/read-odata-metadata.ts`.  
   _Owner: tools_ | _Assignee: —_
 
 - [ ] **`generate-adaptation-project.ts:130` — generator spawned with wrong `cwd`**  
@@ -64,7 +63,7 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
   _File:_ `src/tools/adp-controller-extension/output.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **Two test files deleted without explanation — restore or justify**  
+- [x] **Two test files deleted without explanation — restore or justify**  
   `test/unit/tools/generate-fiori-app-cap-impl.test.ts` and `test/unit/tools/generate-fiori-app-odata-impl.test.ts` were removed in this PR. Restore them if deleted by mistake, or document why they were removed and confirm coverage is maintained elsewhere.  
   _Owner: tools_ | _Assignee: —_
 
@@ -136,9 +135,9 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
   _File:_ `src/tools/open-adaptation-editor.ts:46`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`manifestContext.ts` — `isS4Cloud` monkey-patch on catalog instances**  
-  `serviceCatalogV2.isS4Cloud = Promise.resolve(true)` mutates the object in place. Check if `listServices()` accepts an options object or if `isS4Cloud` is set by the provider already.  
-  _File:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:134`  
+- [ ] **`list-odata-services.ts` — `isS4Cloud` monkey-patch on catalog instances**  
+  `catalogV2.isS4Cloud = Promise.resolve(true)` mutates the object in place. Check if `listServices()` accepts an options object or if `isS4Cloud` is set by the provider already.  
+  _File:_ `src/tools/list-odata-services.ts`  
   _Owner: tools_ | _Assignee: —_
 
 - [ ] **`build-dev` script bypasses `bundle.mjs` — plugins not applied in dev builds**  
@@ -147,7 +146,7 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
   _Owner: tools_ | _Assignee: —_
 
 - [ ] **`prettify-xml` and `adm-zip` are `devDependencies` but used in production `src/`**  
-  Both are runtime imports in `manifestContext.ts`. Move to `dependencies`.  
+  Both are runtime imports in `read-odata-metadata.ts`. Move to `dependencies`.  
   _File:_ `package.json:61–63`  
   _Owner: tools_ | _Assignee: —_
 
@@ -166,23 +165,19 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 ## 🟡 Type safety
 
 - [x] **`readODataMetadataAdp` return type is `Promise<Array<any>>`**  
-  Export `ODataMetadataEntry` from `manifestContext.ts` and change the return type to `Promise<ODataMetadataEntry[]>`.  
-  _Files:_ `src/tools/functionalities/manifest-changes/manifestContext.ts`, `src/tools/get-adp-odata-metadata.ts`  
+  Fixed — now `Promise<ODataMetadataEntry[]>` in `src/tools/read-odata-metadata.ts`.  
   _Owner: tools_ | _Assignee: —_
 
 - [x] **`listLibrariesFromSystem` return type is `Promise<Array<object>>`**  
-  The library entries from `appIndex.search()` have a known shape. Define or import the correct type.  
-  _File:_ `src/tools/get-libraries.ts:10`  
+  Fixed — now `Promise<Partial<App>[]>` in `src/tools/list-libraries.ts`.  
   _Owner: tools_ | _Assignee: —_
 
 - [x] **`listODataServices` return type is `Promise<Array<object>>`**  
-  `getAvailableODataServices` already returns `Promise<Array<ODataServiceInfo>>`. Propagate the type to `get-odata-services.ts`.  
-  _File:_ `src/tools/get-odata-services.ts:10`  
+  Fixed — now `Promise<ODataServiceInfo[]>` in `src/tools/list-odata-services.ts`.  
   _Owner: tools_ | _Assignee: —_
 
 - [x] **`systemPath` type not exported from `manifestContext.ts`**  
-  Export it (rename to `PascalCase`: `SystemPath`) so callers can reference the shape without reaching into internals.  
-  _File:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:13`  
+  Resolved by refactor — `SystemPath` is now private inside `src/tools/services/abap-context.ts`.  
   _Owner: tools_ | _Assignee: —_
 
 ---
@@ -191,19 +186,16 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 Per `AGENTS.md`: always reuse existing functions from common libraries. `manifestContext.ts` reimplements patterns already in `@sap-ux/adp-tooling`.
 
-- [x] **`getProvider(appPath)` — replace with `getConfiguredProvider` from `adp-tooling`**  
-  `manifestContext.ts` manually reads `ui5.yaml`, extracts URL/client, and calls `createAbapServiceProvider`. `adp-tooling/src/abap/provider.ts` exposes `getConfiguredProvider()` (already used in `key-user-changes.ts`). Check whether `getConfiguredProvider` handles `ui5.yaml`-sourced targets or whether a small adapter is needed.  
-  _Files:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:152`, `packages/adp-tooling/src/abap/provider.ts`  
+- [x] **`getProvider(appPath)` — kept in `services/abap-context.ts` (reads from `ui5.yaml`, not system store)**  
+  `getConfiguredProvider` from `adp-tooling` resolves by system name via store/BAS — not compatible with `ui5.yaml`-sourced targets. `getProvider` kept as shared infrastructure in `src/tools/services/abap-context.ts`.  
   _Owner: tools_ | _Assignee: —_
 
-- [x] **`readMergedManifest(appPath)` — replace with `ManifestService.initMergedManifest` from `adp-tooling`**  
-  `readMergedManifest` zips `webapp/`, calls `lrep.getCsrfToken()` + `mergeAppDescriptorVariant()`. `adp-tooling/src/base/abap/manifest-service.ts` has `ManifestService.initMergedManifest()` doing exactly the same, plus `getManifestDataSources()`.  
-  _Files:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:50`, `packages/adp-tooling/src/base/abap/manifest-service.ts`  
+- [x] **`readMergedManifest(appPath)` — replaced with `ManifestService.initMergedManifest` from `adp-tooling`**  
+  Done in `src/tools/read-odata-metadata.ts`.  
   _Owner: tools_ | _Assignee: —_
 
-- [x] **`readManifest(appPath)` — replace with `getVariant` from `adp-tooling`**  
-  `readManifest` manually reads and JSON-parses `webapp/manifest.appdescr_variant`. `getVariant(appPath)` from `@sap-ux/adp-tooling` (already used in `adp-controller-extension/project/context.ts`) does the same thing.  
-  _File:_ `src/tools/functionalities/manifest-changes/manifestContext.ts:180`  
+- [x] **`readManifest(appPath)` — replaced with `getVariant` from `adp-tooling`**  
+  Done in `src/tools/read-odata-metadata.ts`.  
   _Owner: tools_ | _Assignee: —_
 
 ---
@@ -271,8 +263,8 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
 
 ## 🔵 Housekeeping
 
-- [x] **Export `ODataMetadataEntry` from the `functionalities/` barrel (`functionalities/index.ts`)**  
-  So tool-layer files can import it without reaching into internals.  
+- [x] **Export `ODataMetadataEntry` from `read-odata-metadata.ts`**  
+  `ODataMetadataEntry` is now exported from `src/tools/read-odata-metadata.ts`.  
   _Owner: tools_ | _Assignee: —_
 
 - [ ] **Changeset message doesn't mention the new skills**  
