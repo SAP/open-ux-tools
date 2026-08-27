@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-27
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill - consolidate scaffold sections, update generated test structure tree and custom file placement guidance [[9274d74](https://github.com/SAP/open-ux-tools/commit/9274d74f93bf428c4a42fc3eff4631e03dc4f806)]
+
 ## 1.11.16
 
 ### Patch Changes
