@@ -110,6 +110,7 @@ export { validateMetadata } from './utils/service.js';
 export { checkIfReuseLib, getReuseLibModuleName } from './utils/project-readers/reuse-lib-utils.js';
 export { findAllProjectRoots, getReuseLibs, findAll, ReuseLibType } from './utils/file-discovery.js';
 export { loadOrFetchProjectInfo } from './project/project-info.js';
+export { getUi5ThemeBasedOnUi5Version, updateThemeAttribute } from './utils/UI5Theme.js';
 
 // Public API - Project utilities (used by application-modeler-extension)
 // Export directly from source to avoid circular dependency through utils/index.ts
