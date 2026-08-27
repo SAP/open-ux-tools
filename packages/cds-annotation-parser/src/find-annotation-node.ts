@@ -1,6 +1,6 @@
 import type { Position } from '@sap-ux/text-document-utils';
 
-import type { AnnotationNode, AnnotationNodeType } from './transformer/annotation-ast-nodes';
+import type { AnnotationNode, AnnotationNodeType } from './transformer/annotation-ast-nodes.js';
 import {
     ANNOTATION_GROUP_TYPE,
     COLLECTION_TYPE,
@@ -20,7 +20,7 @@ import {
     UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE,
     OPERATOR_TYPE
-} from './transformer';
+} from './transformer/index.js';
 import { positionContained } from '@sap-ux/odata-annotation-core';
 
 const LEAF_NODE_TYPES = new Set([

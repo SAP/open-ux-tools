@@ -1,10 +1,10 @@
 import * as appInsights from 'applicationinsights';
-import { configAzureTelemetryClient } from './azure-client-config';
-import { TelemetrySettings } from '../config-state';
-import { EventName } from '../types';
+import { configAzureTelemetryClient } from './azure-client-config.js';
+import { TelemetrySettings } from '../config-state.js';
+import { EventName } from '../types/index.js';
 
 const parseErrorStack = (errorStack: string): string[] => {
-    const regexps = [/sap-ux.+/gi, /[a-zA-Z-]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
+    const regexps = [/sap-ux.+/gi, /[-a-zA-Z]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
     const parsedStack: string[] = [];
 
     const filtered = errorStack.split('\n').filter((line: string) => !!/^\s*at .*(\S+:\d+|\(native\))/m.exec(line));

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { CellMeasurerProps } from 'react-virtualized';
 import { CellMeasurer } from 'react-virtualized';
-export { Index, OnScrollParams } from 'react-virtualized';
+export type { Index, OnScrollParams } from 'react-virtualized';
 /**
  * UIVirtualList component
  * based on https://github.com/bvaughn/react-virtualized/tree/master/source/List

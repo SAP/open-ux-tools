@@ -18,7 +18,6 @@ import { getValueForInputType, InputTypeToggle } from '../../../../src/panels/pr
 import type { InputTypeToggleOptionProps } from '../../../../src/panels/properties/types';
 import { InputType } from '../../../../src/panels/properties/types';
 import { render } from '../../utils';
-import * as slice from '../../../../src/slice';
 
 describe('InputTypeToggle', () => {
     const controlId = 'testControlId';
@@ -101,10 +100,8 @@ describe('InputTypeToggle', () => {
         };
         const testId = `${propertyName}--InputTypeToggle--${InputType.booleanTrue}`;
 
-        const spyGetChangePropertyAction = jest.spyOn(slice, 'changeProperty');
-
         // act
-        render(
+        const { dispatch } = render(
             <InputTypeToggle
                 inputTypeProps={inputTypeProps}
                 property={property}
@@ -118,12 +115,14 @@ describe('InputTypeToggle', () => {
         cleanup();
 
         // assert
-        expect(spyGetChangePropertyAction).toHaveBeenCalledTimes(1);
-        expect(spyGetChangePropertyAction).toHaveBeenCalledWith(
+        expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({
-                controlId,
-                propertyName,
-                value: true
+                type: 'app/change-property',
+                payload: expect.objectContaining({
+                    controlId,
+                    propertyName,
+                    value: true
+                })
             })
         );
     });

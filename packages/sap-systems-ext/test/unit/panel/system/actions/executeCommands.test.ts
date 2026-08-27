@@ -68,7 +68,7 @@ describe('Test the executeCommands actions', () => {
 
     it('should open the guided answers extension', async () => {
         const executeCommandSpy = jest.spyOn(vsCodeCommands, 'executeCommand');
-        const loggerErrorSpy = jest.spyOn(SystemsLogger.logger, 'error').mockImplementation();
+        const loggerErrorSpy = jest.spyOn(SystemsLogger.logger, 'error').mockImplementation(() => {});
 
         await openGuidedAnswers({} as any, {
             type: 'OPEN_GUIDED_ANSWERS',

@@ -1,6 +1,6 @@
-import { getIntegrationCard } from '../../../../src/base/utils/cards';
-import packageJson from '../../../../package.json';
-import type { MultiCardsPayload } from '../../../../src/types';
+import { getIntegrationCard } from '../../../../src/base/utils/cards.js';
+import packageJson from '../../../../package.json' with { type: 'json' };
+import type { MultiCardsPayload } from '../../../../src/types/index.js';
 import { create as createMemFsEditor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 

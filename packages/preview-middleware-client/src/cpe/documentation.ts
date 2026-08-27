@@ -1,10 +1,10 @@
-import { getLibrary } from './utils';
-import type { SchemaForApiJsonFiles, Ui5Metadata, Ui5Property } from './api-json';
-import type { Properties } from './utils';
+import { getLibrary } from './utils.js';
+import type { SchemaForApiJsonFiles, Ui5Metadata, Ui5Property } from './api-json.js';
+import type { Properties } from './utils.js';
 import Log from 'sap/base/Log';
 import { MessageBarType, PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
-import { FetchError } from '../utils/error';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
+import { FetchError } from '../utils/error.js';
 
 export interface ControlMetadata {
     baseType: string | undefined;

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Text } from '@fluentui/react';
 
-import { sectionHeaderFontSize } from '../properties/constants';
+import { sectionHeaderFontSize } from '../properties/constants.js';
 
 export interface ChangeStackHeaderProps {
     backgroundColor: string;

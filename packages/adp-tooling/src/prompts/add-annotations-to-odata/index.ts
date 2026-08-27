@@ -1,7 +1,7 @@
 import type { ListQuestion, FileBrowserQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
-import { t } from '../../i18n';
+import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types.js';
+import { t } from '../../i18n.js';
 import { filterDataSourcesByType, getWebappPath, DirName } from '@sap-ux/project-access';
 import { existsSync } from 'node:fs';
 import { validateEmptyString } from '@sap-ux/project-input-validator';

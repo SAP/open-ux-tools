@@ -1,6 +1,21 @@
-import fs from 'node:fs';
-import { getCapFolderPathsSync } from '../../src/';
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import * as actualFs from 'node:fs';
+import path, { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockReadFileSync = jest.fn<any>(actualFs.readFileSync);
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    readFileSync: mockReadFileSync
+}));
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const { getCapFolderPathsSync } = await import('../../src//index.js');
 
 describe('getCapFolderPaths', () => {
     const testCapProject = join(__dirname, '../fixtures/test-cap-project');
@@ -15,7 +30,7 @@ describe('getCapFolderPaths', () => {
     });
 
     test('should not throw error with invalid config', () => {
-        jest.spyOn(fs, 'readFileSync').mockImplementation(() => {
+        mockReadFileSync.mockImplementation(() => {
             throw new Error('Error reading config');
         });
 

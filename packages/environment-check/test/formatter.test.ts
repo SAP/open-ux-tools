@@ -1,5 +1,5 @@
 import type { ODataServiceInfo } from '@sap-ux/axios-extension';
-import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../src/formatter';
+import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../src/formatter.js';
 
 /**
  * Tests countNumberOfServices()

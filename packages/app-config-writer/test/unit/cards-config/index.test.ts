@@ -1,5 +1,7 @@
-import { enableCardGeneratorConfig } from '../../../src/cards-config';
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { enableCardGeneratorConfig } from '../../../src/cards-config/index.js';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -15,6 +17,8 @@ function createTestFs(basePath: string) {
     fs.write(join(basePath, 'ui5.yaml'), '');
     return fs;
 }
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('enableCardGenerator', () => {
     test('Valid LROP', async () => {
@@ -94,5 +98,16 @@ describe('enableCardGenerator', () => {
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml'))).toMatchSnapshot();
+    });
+
+    test('updatePackage=false skips package.json update but still updates ui5.yaml', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = createTestFs(basePath);
+        const initialPackageJson = fs.read(join(basePath, 'package.json'));
+
+        await enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), undefined, fs, false);
+
+        expect(fs.read(join(basePath, 'package.json'))).toEqual(initialPackageJson);
+        expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
     });
 });

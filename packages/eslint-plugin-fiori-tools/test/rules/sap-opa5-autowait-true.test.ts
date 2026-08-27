@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-opa5-autowait-true';
+import rule from '../../src/rules/sap-opa5-autowait-true.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -57,8 +57,7 @@ ruleTester.run('sap-opa5-autowait-true', rule, {
             });`,
             errors: [
                 {
-                    message: 'Autowait must be true.',
-                    type: 'CallExpression'
+                    message: 'Autowait must be true.'
                 }
             ]
         },
@@ -81,8 +80,7 @@ ruleTester.run('sap-opa5-autowait-true', rule, {
              });`,
             errors: [
                 {
-                    message: 'Autowait must be present and true in extendConfig.',
-                    type: 'CallExpression'
+                    message: 'Autowait must be present and true in extendConfig.'
                 }
             ]
         }

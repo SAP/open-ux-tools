@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { UIHighlightMenuOptionProps } from '../../../src/components/UIContextualMenu/UIHighlightMenuOption';
 import { UIHighlightMenuOption } from '../../../src/components/UIContextualMenu/UIHighlightMenuOption';
 

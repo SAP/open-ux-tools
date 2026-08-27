@@ -14,21 +14,21 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
-import CommandExecutor from '../command-executor';
-import BaseDialog from './BaseDialog.controller';
-import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { getResourceModel, getTextBundle, TextBundle } from '../../i18n.js';
+import CommandExecutor from '../command-executor.js';
+import BaseDialog from './BaseDialog.controller.js';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition.js';
 import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
-import { CommunicationService } from '../../cpe/communication-service';
+import { CommunicationService } from '../../cpe/communication-service.js';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
-import { getError } from '../../utils/error';
-import { PageDescriptorV4 } from './types';
+import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
+import { getError } from '../../utils/error.js';
+import { PageDescriptorV4 } from './types.js';
 import Input from 'sap/m/Input';
 import { ValueState } from 'sap/ui/core/library';
 import SimpleForm from 'sap/ui/layout/form';
 import Control from 'sap/ui/core/Control';
-import { getFragments } from '../api-handler';
+import { getFragments } from '../api-handler.js';
 
 export type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/title'): string;
@@ -145,11 +145,8 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
      */
     async buildDialogData(): Promise<void> {
         try {
-            let isCustomColumnFragment = false;
-            if (this.options.type === 'tableColumn') {
-                await this.addFragmentListToModel();
-                isCustomColumnFragment = true;
-            }
+            const isCustomColumnFragment = this.options.type === 'tableColumn';
+            await this.addFragmentListToModel();
             this.model.setProperty('/isCustomColumnFragment', isCustomColumnFragment);
         } catch (e) {
             const error = getError(e);

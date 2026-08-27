@@ -1,13 +1,14 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
-import type { ParsedService } from '../parser';
-import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
-import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections, collectHeaderSections } from './annotations';
+import type { ParsedService } from '../parser/index.js';
+import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types.js';
+import { getParsedServiceByName } from '../utils.js';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations.js';
+import { collectTables, collectSections, collectHeaderSections } from './annotations.js';
 
 export interface ApplicationSetting {
     createMode: string;
     disableStrictUomFiltering: boolean;
+    cloudDevAdaptationStatus: string;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -15,7 +16,11 @@ export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSet
     pages: FeV4PageType[];
 }
 
-export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
+export interface PageConfiguration {
+    liveMode?: boolean;
+}
+
+export interface FeV4ListReport extends ConfigurationBase<'list-report-page', PageConfiguration> {
     targetName: string;
     componentName: 'sap.fe.templates.ListReport';
     contextPath: string;
@@ -45,6 +50,7 @@ export interface AnnotationBasedNode<
     Children = never
 > extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
+    label?: string;
     children: Children[];
 }
 
@@ -264,11 +270,12 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     if (!routingTargets) {
         return linkedApp;
     }
-    for (const [name, target] of Object.entries(routingTargets)) {
+    for (const [name, target] of Object.entries(routingTargets as Record<string, Target>)) {
         const settings = target.options?.settings;
-        const contextPath =
-            target.options?.settings?.contextPath ??
-            (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
+        if (!settings) {
+            continue;
+        }
+        const contextPath = settings.contextPath ?? (settings.entitySet ? `/${settings.entitySet}` : undefined);
         if (!contextPath) {
             continue;
         }
@@ -316,11 +323,11 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
 }
 
 interface Target {
+    name?: string;
     options?: {
         settings?: {
             entitySet?: string;
             contextPath?: string;
-
             controlConfiguration?: { [key: string]: TableConfiguration };
             content?: {
                 header?: {
@@ -328,6 +335,7 @@ interface Target {
                     visible?: boolean;
                 };
             };
+            liveMode?: boolean;
         };
     };
 }
@@ -384,6 +392,9 @@ function linkListReport(
     if (!mainService) {
         return;
     }
+    const liveMode = target.options?.settings?.liveMode;
+    const liveModePath = ['sap.ui5', 'routing', 'targets', name, 'options', 'settings', 'liveMode'];
+
     const tables = collectTables('v4', entityType, mainService);
 
     const page: FeV4ListReport = {
@@ -392,7 +403,13 @@ function linkListReport(
         componentName: 'sap.fe.templates.ListReport',
         contextPath,
         entity: entity,
-        configuration: {},
+        configuration: {
+            liveMode: {
+                configurationPath: liveModePath,
+                values: [true, false],
+                valueInFile: liveMode
+            }
+        },
         tables: [],
         lookup: {}
     };
@@ -415,40 +432,46 @@ function linkListReportTable(
     configuration: Target
 ): void {
     const controls: Record<string, Table | OrphanTable> = {};
+    const configurations = configuration.options?.settings?.controlConfiguration ?? {};
 
     for (const table of tables) {
-        const configurationKey = table.annotationPath;
+        let configurationKey: string = table.annotationPath;
+        if (!configurations[configurationKey]) {
+            // CAP configurationKey example: /Incidents/@com.sap.vocabularies.UI.v1.LineItem#test
+            const key = `${page.contextPath}/${configurationKey}`;
+            if (configurations[key]) {
+                configurationKey = key;
+            }
+        }
         const linkedTable = createTable(configurationKey, pathToPage, table);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
-    const configurations = configuration.options?.settings?.controlConfiguration ?? {};
     for (const [controlKey, controlConfiguration] of Object.entries(configurations)) {
         const tableControl = controls[`table|${controlKey}`];
         if (tableControl) {
-            if (tableControl.type === 'table') {
-                const tableType = controlConfiguration.tableSettings?.type;
-                tableControl.configuration.tableType.valueInFile = tableType;
-                const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
-                tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
-                const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
-                const enableExportValue = controlConfiguration.tableSettings?.enableExport;
-                tableControl.configuration.enableExport.valueInFile = enableExportValue;
-                const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
-                tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
-                const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
-                tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
-                const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
-                tableControl.configuration.creationMode.valueInFile = creationModeValue;
-                tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
-                const personalization = controlConfiguration.tableSettings?.personalization;
-                tableControl.configuration.personalization.valueInFile = personalization;
-            }
+            // get properties valueInFile from manifest table config
+            const tableType = controlConfiguration.tableSettings?.type;
+            tableControl.configuration.tableType.valueInFile = tableType;
+            const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
+            tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
+            const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+            tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+            const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+            tableControl.configuration.enableExport.valueInFile = enableExportValue;
+            const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+            tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+            const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+            tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
+            const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
+            tableControl.configuration.creationMode.valueInFile = creationModeValue;
+            tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+            const personalization = controlConfiguration.tableSettings?.personalization;
+            tableControl.configuration.personalization.valueInFile = personalization;
         } else {
             // no annotation definition found for this table, but configuration exists
-            const orphanedSection = createTable(controlKey, pathToPage);
-            controls[`${orphanedSection.type}|${controlKey}`] = orphanedSection;
+            const orphanTable = createTable(controlKey, pathToPage);
+            controls[`${orphanTable.type}|${controlKey}`] = orphanTable;
         }
     }
     for (const control of Object.values(controls)) {
@@ -670,6 +693,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
     const disableStrictUomFiltering = config.app?.disableStrictUomFiltering;
+    const cloudDevAdaptationStatus = context.app.manifestObject['sap.fiori']?.cloudDevAdaptationStatus;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -683,6 +707,11 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
                 values: [true, false],
                 configurationPath: ['sap.fe', 'app', 'disableStrictUomFiltering'],
                 valueInFile: disableStrictUomFiltering
+            },
+            cloudDevAdaptationStatus: {
+                values: ['released', 'deprecated', 'obsolete'],
+                configurationPath: ['sap.fiori', 'cloudDevAdaptationStatus'],
+                valueInFile: cloudDevAdaptationStatus
             }
         }
     };

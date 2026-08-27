@@ -3,8 +3,8 @@
  */
 
 import type { Rule } from 'eslint';
-import type { ASTNode } from '../utils/helpers';
-import { isIdentifier, isMember, isCall, isLiteral, contains, isForbiddenObviousApi } from '../utils/helpers';
+import type { ASTNode } from '../utils/helpers.js';
+import { isIdentifier, isMember, isCall, isLiteral, contains, isForbiddenObviousApi } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Helpers
@@ -57,7 +57,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {
@@ -141,16 +140,14 @@ const rule: Rule.RuleModule = {
         function processDocumentMessage(node: ASTNode, methodName: string): void {
             const parent = node.parent;
             if (contains(FORBIDDEN_DOM_INSERTION, methodName)) {
-                if (
-                    !(
-                        methodName === 'createElement' &&
-                        isCall(parent) &&
-                        (parent as any).arguments &&
-                        (parent as any).arguments.length > 0 &&
-                        isLiteral((parent as any).arguments[0]) &&
-                        (parent as any).arguments[0].value === 'a'
-                    )
-                ) {
+                if (!(
+                    methodName === 'createElement' &&
+                    isCall(parent) &&
+                    (parent as any).arguments &&
+                    (parent as any).arguments.length > 0 &&
+                    isLiteral((parent as any).arguments[0]) &&
+                    (parent as any).arguments[0].value === 'a'
+                )) {
                     context.report({ node: node, messageId: 'domInsertion' });
                 }
             } else if (contains(FORBIDDEN_DOM_MANIPULATION, methodName)) {

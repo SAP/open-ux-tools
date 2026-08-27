@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import type { ConnectionType, SystemType } from '@sap-ux/store';
-import type { SystemState } from '../../../types';
+import type { SystemState } from '../../../types/index.js';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 

@@ -1,9 +1,9 @@
-import { checkPrerequisites } from './prerequisites';
+import { checkPrerequisites } from './prerequisites.js';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files';
-import { updatePreviewMiddlewareConfigs, updateDefaultTestConfig } from './ui5-yaml';
-import { updateVariantsCreationScript } from './package-json';
+import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files.js';
+import { updatePreviewMiddlewareConfigs, updateDefaultTestConfig } from './ui5-yaml.js';
+import { updateVariantsCreationScript } from './package-json.js';
 import { type ToolsLogger } from '@sap-ux/logger';
 
 /**

@@ -43,7 +43,7 @@
         data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %><% if (enableCardGenerator) { %>
         data-open-ux-preview-enable-card-generator="<%- enableCardGenerator %>"
         <% } %>
-        data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.init) { %>
+        data-sap-ui-oninit="module:open/ux/preview/client/flp/sandbox1Init"<% if (locals.init) { %>
         data-open-ux-preview-custom-init='<%- init %>'<% } if (locals.flexSettings) { %>
         data-open-ux-preview-features='<%- JSON.stringify(features) %>'
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flexSettings) %>'<% } if (locals.locateReuseLibsScript) { %>

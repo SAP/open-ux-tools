@@ -1,4 +1,4 @@
-import { DEFAULT_POST_APP_GEN_COMMAND, runHooks } from '../../../src/utils/eventHooks';
+import { DEFAULT_POST_APP_GEN_COMMAND, runHooks } from '../../../src/utils/eventHooks.js';
 
 describe('runHooks', () => {
     const mockExecuteCommand = jest.fn();

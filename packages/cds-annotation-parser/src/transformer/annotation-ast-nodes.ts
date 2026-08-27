@@ -1,5 +1,5 @@
 import { Range } from '@sap-ux/text-document-utils';
-import { copyRange } from './range';
+import { copyRange } from './range.js';
 
 export type QualifiedName = string;
 export type SimpleIdentifier = string;
@@ -97,9 +97,7 @@ export interface Operator extends Node {
 }
 
 export type EXPRESSION_TYPE =
-    | typeof INCORRECT_EXPRESSION_TYPE
-    | typeof UNSUPPORTED_OPERATOR_EXPRESSION_TYPE
-    | typeof CORRECT_EXPRESSION_TYPE;
+    typeof INCORRECT_EXPRESSION_TYPE | typeof UNSUPPORTED_OPERATOR_EXPRESSION_TYPE | typeof CORRECT_EXPRESSION_TYPE;
 
 export interface ExpressionBase extends Node {
     type: EXPRESSION_TYPE;

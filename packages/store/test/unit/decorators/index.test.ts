@@ -4,7 +4,7 @@ import {
     getSerializableProperties,
     sensitiveData,
     serializable
-} from '../../../src/decorators';
+} from '../../../src/decorators/index.js';
 
 class HasOnlyOrdinaryProps {
     public readonly ordinaryProperty1 = '1';

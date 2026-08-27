@@ -1,4 +1,4 @@
-import { updateProxyEnv } from '../../src/base/config';
+import { updateProxyEnv } from '../../src/base/config.js';
 
 describe('config', () => {
     const corporateProxy = 'https://myproxy.example:8443';

@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
-import { getLogger, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath, validateAdpAppType } from '../../validation';
+import { getLogger, setLogLevelVerbose } from '../../tracing/index.js';
+import { validateBasePath, validateAdpAppType } from '../../validation/index.js';
 import { isLoggedInCf, loadCfConfig, setupCfPreview, isCFEnvironment } from '@sap-ux/adp-tooling';
 import { FileName } from '@sap-ux/project-access';
 

@@ -25,9 +25,9 @@ import {
     isCapJavaProject
 } from '@sap-ux/project-access';
 import type { CustomTask } from '@sap-ux/ui5-config';
-import { ToolingTelemetrySettings } from './config-state';
-import type { CommonFioriProjectProperties, IdeType, InternalFeature, SourceTemplate } from './types';
-import { CommonProperties, DeployTarget, ODataSource, ToolsId } from './types';
+import { ToolingTelemetrySettings } from './config-state.js';
+import type { CommonFioriProjectProperties, IdeType, InternalFeature, SourceTemplate } from './types.js';
+import { CommonProperties, DeployTarget, ODataSource, ToolsId } from './types.js';
 
 /**
  * Collect commone properties that needs to be added to telemetry event.

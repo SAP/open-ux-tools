@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { bindActionCreators } from 'redux';
-import { reducer, getInitialState } from './reducers';
-import { postMessageMiddleware } from './middleware';
-import * as AllActions from './actions';
+import { reducer, getInitialState } from './reducers.js';
+import { postMessageMiddleware } from './middleware.js';
+import * as AllActions from './actions.js';
 
 export const store = configureStore({
     reducer,

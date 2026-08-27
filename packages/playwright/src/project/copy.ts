@@ -1,8 +1,8 @@
 import { copy } from 'fs-extra';
-import type { CopyOptions } from '../types';
-import { removeNodeModules, removeProjectContent, getDestinationProjectRoot } from './project';
+import type { CopyOptions } from '../types.js';
+import { removeNodeModules, removeProjectContent, getDestinationProjectRoot } from './project.js';
 import { ToolsLogger } from '@sap-ux/logger';
-import { install } from './npm';
+import { install } from './npm.js';
 const logger = new ToolsLogger();
 
 /**

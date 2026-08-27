@@ -1,4 +1,4 @@
-import { loadDefinitions } from '../../../../src/adp/quick-actions/load';
+import { loadDefinitions } from '../../../../src/adp/quick-actions/load.js';
 import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
 import FEV2QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v2/registry';
 

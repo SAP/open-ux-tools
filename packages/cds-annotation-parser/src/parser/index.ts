@@ -1,6 +1,6 @@
 import type { IToken, ILexingError, IRecognitionException } from 'chevrotain';
-import { lexer, parser } from './factory';
-import type { DeclarationCstNode } from './parser';
+import { lexer, parser } from './factory.js';
+import type { DeclarationCstNode } from './parser.js';
 interface ParseResult {
     cst: DeclarationCstNode;
     tokens: IToken[];

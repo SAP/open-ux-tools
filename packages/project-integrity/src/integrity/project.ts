@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
-import type { CheckIntegrityResult, Content, ProjectSettings } from '../types';
-import { getContentIntegrity, getFileIntegrity } from './hash';
-import { readIntegrityData, writeIntegrityData } from './persistence';
-import { checkIntegrity } from './check';
+import type { CheckIntegrityResult, Content, ProjectSettings } from '../types.js';
+import { getContentIntegrity, getFileIntegrity } from './hash.js';
+import { readIntegrityData, writeIntegrityData } from './persistence.js';
+import { checkIntegrity } from './check.js';
 
 /**
  * Function to ensure correct sorting of strings.

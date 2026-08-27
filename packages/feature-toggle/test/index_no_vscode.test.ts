@@ -1,4 +1,4 @@
-import { isFeatureEnabled, isInternalFeaturesSettingEnabled } from '../src';
+import { isFeatureEnabled, isInternalFeaturesSettingEnabled } from '../src/index.js';
 
 describe('Feature Toggle Tests - ENV', () => {
     const originalEnv = { ...process.env };
@@ -30,7 +30,7 @@ describe('Feature Toggle Tests - ENV', () => {
     });
     test('Feature Toggle Tests - getAllFeatureToggles', async () => {
         process.env.TOOLSUITE_FEATURES = 'dummy.testToggle,otherToggle';
-        const { FeatureToggleAccess } = await import('../src');
+        const { FeatureToggleAccess } = await import('../src/index.js');
         const featureToggles = FeatureToggleAccess.getAllFeatureToggles();
         expect(featureToggles).toStrictEqual([
             {

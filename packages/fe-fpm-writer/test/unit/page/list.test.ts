@@ -2,10 +2,10 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
-import type { ListReport } from '../../../src/page';
-import { generate } from '../../../src/page/list';
-import { detectTabSpacing } from '../../../src/common/file';
-import { tabSizingTestCases } from '../../common';
+import type { ListReport } from '../../../src/page/index.js';
+import { generate } from '../../../src/page/list.js';
+import { detectTabSpacing } from '../../../src/common/file.js';
+import { tabSizingTestCases } from '../../common/index.js';
 
 describe('ListReport', () => {
     const testDir = '' + Date.now();

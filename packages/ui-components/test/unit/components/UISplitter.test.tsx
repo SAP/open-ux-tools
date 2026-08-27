@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { UISplitterProps } from '../../../src/components/UISection/UISplitter';
 import { UISplitter, UISplitterType, UISplitterLayoutType } from '../../../src/components/UISection/UISplitter';
 import { initIcons, UiIcons } from '../../../src/components/Icons';
@@ -62,12 +62,19 @@ describe('<Splitter />', () => {
                     vertical={orientation}
                 />
             );
+            // Check if there no 'splitter--active' before resizing
+            expect(resizeWrapper.find('.splitter--active').length).toEqual(0);
             resizeWrapper
                 .find('.splitter')
                 .simulate('mousedown', { clientX: mouseStartCoordinate, button: 0, clientY: mouseStartCoordinate });
             simulateMouseEvent('mousemove', mouseMoveCoordinate1, mouseMoveCoordinate1);
             simulateMouseEvent('mousemove', mouseMoveCoordinate2, mouseMoveCoordinate2);
+            // Check if there is 'splitter--active' during resize
+            expect(resizeWrapper.find('.splitter--active').length).toEqual(1);
             simulateMouseEvent('mouseup', mouseMoveCoordinate2, mouseMoveCoordinate2);
+            // Check if there no 'splitter--active' after resizing
+            resizeWrapper.update();
+            expect(resizeWrapper.find('.splitter--active').length).toEqual(0);
             // Another 'simulateMouseEvent' with 'mousemove' to detect is removeEventListener called
             simulateMouseEvent('mousemove', 300, 300);
             expect(onResizeStart).toHaveBeenCalledTimes(1);
@@ -204,7 +211,7 @@ describe('<Splitter />', () => {
                 expect: {
                     standard: true,
                     horizontal: true,
-                    icon: UiIcons.VerticalGrip
+                    icon: undefined
                 }
             },
             {
@@ -214,7 +221,7 @@ describe('<Splitter />', () => {
                 expect: {
                     standard: true,
                     vertical: true,
-                    icon: UiIcons.VerticalGrip
+                    icon: undefined
                 }
             },
             {
@@ -224,7 +231,7 @@ describe('<Splitter />', () => {
                 expect: {
                     compact: true,
                     horizontal: true,
-                    icon: UiIcons.Grabber
+                    icon: undefined
                 }
             },
             {
@@ -234,7 +241,7 @@ describe('<Splitter />', () => {
                 expect: {
                     compact: true,
                     vertical: true,
-                    icon: UiIcons.Grabber
+                    icon: undefined
                 }
             }
         ];
@@ -252,9 +259,12 @@ describe('<Splitter />', () => {
                 expect(wrapper.find('.splitter--vertical').length).toEqual(testCase.expect.vertical ? 1 : 0);
                 expect(wrapper.find('.splitter--horizontal').length).toEqual(testCase.expect.horizontal ? 1 : 0);
 
-                const icon = wrapper.find('UIIcon');
                 expect(wrapper.find('.splitter__grip').length).toEqual(1);
-                expect(icon.prop('iconName')).toEqual(testCase.expect.icon);
+                const icon = wrapper.find('UIIcon');
+                expect(icon.length).toEqual(testCase.expect.icon ? 1 : 0);
+                if (testCase.expect.icon) {
+                    expect(icon.prop('iconName')).toEqual(testCase.expect.icon);
+                }
             });
         }
     });

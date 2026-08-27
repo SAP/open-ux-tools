@@ -1,4 +1,4 @@
-import type { AnnotationReference } from '../types';
+import type { AnnotationReference } from '../types/index.js';
 
 /**
  * Serializes annotation reference to a string identifier.

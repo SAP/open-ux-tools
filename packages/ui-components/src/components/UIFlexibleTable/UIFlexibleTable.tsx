@@ -1,17 +1,17 @@
 import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import { List } from 'react-movable';
-import { UIDefaultButton, UILoader } from '..';
-import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow';
-import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow';
-import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData';
-import { UIFlexibleTableLayout } from './types';
-import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
+import { UIDefaultButton, UILoader } from '../index.js';
+import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow.js';
+import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow.js';
+import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData.js';
+import { UIFlexibleTableLayout } from './types.js';
+import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types.js';
 
 import './UIFlexibleTable.scss';
-import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils';
-import { RowActions } from './RowActions';
-import { RowDataCells } from './RowData';
+import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils.js';
+import { RowActions } from './RowActions.js';
+import { RowDataCells } from './RowData.js';
 
 /**
  * @class {ResizeObserver}
@@ -367,29 +367,22 @@ function restoreFocus(
     currentFocusedRowIndex: number | undefined,
     tableId: string
 ): void {
-    if (currentFocusedRowAction) {
-        let actionElement = document.getElementById(
-            getRowActionButtonId(tableId, currentFocusedRowIndex, currentFocusedRowAction)
-        );
-        if (actionElement) {
-            if (!actionElement.hasAttribute('disabled')) {
-                actionElement.focus();
-            } else {
-                if (currentFocusedRowAction === 'up') {
-                    actionElement = document.getElementById(
-                        getRowActionButtonId(tableId, currentFocusedRowIndex, 'down')
-                    );
-                } else {
-                    actionElement = document.getElementById(
-                        getRowActionButtonId(tableId, currentFocusedRowIndex, 'up')
-                    );
-                }
-                if (actionElement) {
-                    actionElement.focus();
-                }
-            }
-        }
+    if (!currentFocusedRowAction) {
+        return;
     }
+    let actionElement = document.getElementById(
+        getRowActionButtonId(tableId, currentFocusedRowIndex, currentFocusedRowAction)
+    );
+    if (!actionElement) {
+        return;
+    }
+    if (!actionElement.hasAttribute('disabled')) {
+        actionElement.focus();
+        return;
+    }
+    const fallbackAction = currentFocusedRowAction === 'up' ? 'down' : 'up';
+    actionElement = document.getElementById(getRowActionButtonId(tableId, currentFocusedRowIndex, fallbackAction));
+    actionElement?.focus();
 }
 
 /**

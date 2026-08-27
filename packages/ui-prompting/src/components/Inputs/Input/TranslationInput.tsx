@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import { TranslationKeyGenerator, TranslationTextPattern, UITranslationInput } from '@sap-ux/ui-components';
 import type { TranslationEntry } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer } from '../../../utilities';
-import { useTranslation } from '../../../context/TranslationContext';
-import type { InputProps } from './Input';
-import { TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../types';
-import type { TranslationProperties } from '../../../types';
+import { useValue, getLabelRenderer } from '../../../utilities/index.js';
+import { useTranslation } from '../../../context/TranslationContext.js';
+import type { InputProps } from './Input.js';
+import { TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../types.js';
+import type { TranslationProperties } from '../../../types.js';
 
 export interface TranslationInputProps extends InputProps {
     properties: TranslationProperties;

@@ -3,6 +3,7 @@
  */
 export enum SystemCommands {
     Create = 'sap.ux.tools.sapSystems.create',
+    CreateNew = 'sap.ux.tools.sapSystems.createNew', // Internal command for UI button - always empty form
     Show = 'sap.ux.tools.sapSystems.show',
     Delete = 'sap.ux.tools.sapSystems.delete',
     Refresh = 'sap.ux.tools.sapSystems.refresh',
@@ -46,3 +47,4 @@ export const confirmationPromptMap = new Map<ConfirmationPromptType, string>([
 export const fioriToolsAppModAppGenLaunchCmd = 'sap.ux.appGenerator.launch';
 export const launchAppGenCmdType = 'SAP_SYSTEMS_DATA';
 export const NEW_SYSTEM_PANEL_KEY = '__NEW_SYSTEM_PANEL__';
+export const EXTERNAL_SYSTEM_PANEL_KEY = '__EXTERNAL_SYSTEM_PANEL__';

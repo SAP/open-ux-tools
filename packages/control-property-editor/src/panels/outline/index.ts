@@ -1,1 +1,1 @@
-export * from './OutlinePanel';
+export * from './OutlinePanel.js';

@@ -1,4 +1,4 @@
-import { tools } from '../../../src/tools/index';
+import { tools } from '../../../src/tools/index.js';
 
 const listFioriApps = tools.find((tool) => tool.name === 'list_fiori_apps');
 const listFunctionality = tools.find((tool) => tool.name === 'list_functionality');

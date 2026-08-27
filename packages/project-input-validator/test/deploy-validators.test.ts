@@ -1,10 +1,10 @@
-import { t } from '../src/i18n';
+import { t } from '../src/i18n.js';
 import {
     validateAppDescription,
     validateAppName,
     validatePackage,
     validateTransportRequestNumber
-} from '../src/deploy/validators';
+} from '../src/deploy/validators.js';
 
 describe('project input validators', () => {
     describe('validateAppName', () => {

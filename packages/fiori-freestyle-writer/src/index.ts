@@ -1,20 +1,24 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
-import cloneDeep from 'lodash/cloneDeep';
-import { FreestyleApp, TemplateType } from './types';
-import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaults';
+import cloneDeep from 'lodash/cloneDeep.js';
+import { TemplateType } from './types.js';
+import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaults.js';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { initI18n } from './i18n';
+import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { getTemplateVersionPath, processDestinationPath } from './utils';
+import { getTemplateVersionPath, processDestinationPath } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
-import { generateOPATests } from './generateOPATests';
+import { generateOPATests } from './generateOPATests.js';
 import type { Logger } from '@sap-ux/logger';
+import { addVirtualTestConfig } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Editor } from 'mem-fs-editor';
-import type { BasicAppSettings } from './types';
+import type { BasicAppSettings, FreestyleApp } from './types.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -201,8 +205,31 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }
 
+    if (isEdmxProjectType && addTests && ffApp.appOptions?.useVirtualPreviewEndpoints) {
+        // Explicit patterns are required because the freestyle template uses AllJourneys.js (JS) or *Journey.ts (TS)
+        // rather than the preview-middleware default pattern, and unit tests live under controller/ not the default path.
+        await addVirtualTestConfig(
+            basePath,
+            [
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    pattern: isTypeScriptEnabled ? '/test/**/*Journey.*' : '/test/**/AllJourneys.*'
+                },
+                { framework: 'Testsuite' },
+                {
+                    framework: 'QUnit',
+                    path: '/test/unit/unitTests.qunit.html',
+                    pattern: '/test/unit/controller/*.{js,ts}'
+                }
+            ],
+            fs
+        );
+    }
+
     return fs;
 }
 
-export { generate, FreestyleApp };
-export { WorklistSettings, ListDetailSettings, BasicAppSettings, TemplateType, Template, OdataVersion } from './types';
+export { generate };
+export type { WorklistSettings, ListDetailSettings, BasicAppSettings, Template, FreestyleApp } from './types.js';
+export { TemplateType, OdataVersion } from './types.js';

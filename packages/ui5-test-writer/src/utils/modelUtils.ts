@@ -2,25 +2,30 @@ import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
+import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type {
     TreeAggregation,
     TreeAggregations,
     TreeModel,
     ApplicationModel
-} from '@sap/ux-specification/dist/types/src/parser';
-import type { AppFeatures, FPMFeatures } from '../types';
-import { getObjectPageFeatures, getObjectPages } from './objectPageUtils';
-import { getFilterFieldNames, getListReportFeatures } from './listReportUtils';
+} from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type { AppFeatures, FPMFeatures } from '../types.js';
+import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
+import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
+import { extractTableColumnsFromNode } from './tableUtils.js';
+import { buildI18nLabelResolver, passthroughLabelResolver, type I18nLabelResolver } from './i18nUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
     schema: {
         keys: { name: string; value: string }[];
         dataType?: string;
+        actionType?: string;
     };
+    /** Present on action nodes that are menus (drop-downs): 'Annotation' or 'CustomMenu'. */
+    menuType?: string;
 }
 
 export interface FieldItem extends AggregationItem {
@@ -32,6 +37,11 @@ export interface SectionItem extends AggregationItem {
     custom?: boolean;
     name?: string;
     order?: number;
+    properties?: {
+        stashed?: { freeText: string | boolean };
+        hidden?: { value: boolean };
+        hideByProperty?: { value: string | boolean };
+    };
     schema: {
         keys: { name: string; value: string }[];
         dataType?: string;
@@ -50,8 +60,39 @@ export interface HeaderSectionItem extends SectionItem {
     };
 }
 
+export interface HeaderItem extends TreeAggregation {
+    properties?: {
+        title?: { value?: string };
+        description?: { value?: string };
+    };
+}
+
 export interface PageWithModelV4WithProperties extends PageWithModelV4 {
     routePattern?: string;
+}
+
+/**
+ * Builds the i18n label resolver from the app bundles, falling back to a passthrough resolver when
+ * the bundle can't be read (labels are then emitted unresolved).
+ *
+ * @param appAccess - application access used to read the i18n bundles
+ * @param log - optional logger instance
+ * @returns a resolver for `{i18n>key}` placeholder labels
+ */
+async function buildLabelResolver(
+    appAccess: Awaited<ReturnType<typeof createApplicationAccess>>,
+    log?: Logger
+): Promise<I18nLabelResolver> {
+    try {
+        return buildI18nLabelResolver(await appAccess.getI18nBundles());
+    } catch (error) {
+        log?.debug?.(
+            `Unable to read the app i18n bundle; i18n action labels will be emitted unresolved. ${
+                error instanceof Error ? error.message : String(error)
+            }`
+        );
+        return passthroughLabelResolver;
+    }
 }
 
 /**
@@ -77,13 +118,22 @@ export async function getAppFeatures(
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
+    let resolveLabel: I18nLabelResolver;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
         // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
         const appAccess = await createApplicationAccess(basePath, { fs: fs });
         const specification = await appAccess.getSpecification<Specification>();
-        const appModel: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
+        // `includeAnnotationProperties` only becomes available with ux-specification 1.144.8, but updating
+        // the dependency causes imports to break, due to a change in export mechanism
+        // TODO: Remove workaround when ux-specification is updated to 1.144.8 or later
+        const readAppOptions: ReadAppParams & { includeAnnotationProperties: boolean } = {
+            app: appAccess,
+            fs: fs,
+            includeAnnotationProperties: true
+        };
+        const appModel: ReadAppResult = await specification.readApp(readAppOptions);
 
         if (!projectMetadata) {
             const metadataPath = appAccess.project?.apps['']?.services?.mainService?.local;
@@ -92,9 +142,11 @@ export async function getAppFeatures(
             }
         }
 
+        resolveLabel = await buildLabelResolver(appAccess, log);
+
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
-        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
+        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel) : fpmPage;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -111,12 +163,24 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
+            featureData.listReport = getListReportFeatures(
+                listReportPage,
+                log,
+                projectMetadata,
+                manifest,
+                resolveLabel
+            );
         }
         if (objectPages) {
-            log?.warn('Extracting Object Page features from application model');
-            featureData.objectPages = await getObjectPageFeatures(objectPages, listReportPage?.name, log);
-            log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
+            featureData.objectPages = await getObjectPageFeatures(
+                objectPages,
+                listReportPage?.name,
+                log,
+                projectMetadata,
+                manifest,
+                listReportPage?.entitySet,
+                resolveLabel
+            );
         }
         if (fpmPage) {
             featureData.fpm = getFPMFeatures(fpmPage, log);
@@ -126,44 +190,6 @@ export async function getAppFeatures(
     }
 
     return featureData;
-}
-
-/**
- * Gets identifier of a column for OPA5 tests.
- * If the column is custom, the identifier is taken from the 'Key' entry in the schema keys.
- * If the column is not custom, the identifier is taken from the 'Value' entry in the schema keys.
- * If no such entry is found, undefined is returned.
- *
- * @param column - column module from ux specification
- * @param column.custom boolean indicating whether the column is custom
- * @param column.schema schema of the column
- * @param column.schema.keys keys of the column; expected to have an entry with the name 'Key' or 'Value'
- * @returns identifier of the column for OPA5 tests; can be the name or index
- */
-function getColumnIdentifier(column: {
-    custom: boolean;
-    schema: { keys: { name: string; value: string }[] };
-}): string | undefined {
-    const key = column.custom ? 'Key' : 'Value';
-    const keyEntry = column.schema.keys.find((entry: { name: string; value: string }) => entry.name === key);
-    return keyEntry?.value;
-}
-
-/**
- * Transforms column aggregations from the ux specification model into a map of columns for OPA5 tests.
- *
- * @param columnAggregations column aggregations from the ux specification model
- * @returns a map of columns for OPA5 tests
- */
-function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
-    const columns: Record<string, any> = {};
-    Object.values(columnAggregations).forEach((columnAggregation, index) => {
-        columns[getColumnIdentifier(columnAggregation) ?? index] = {
-            header: columnAggregation.description
-            // TODO possibly more reliable properties could be used?
-        };
-    });
-    return columns;
 }
 
 /**
@@ -180,8 +206,7 @@ export function getTableColumnData(
     let tableColumns: Record<string, Record<string, string | number | boolean>> = {};
 
     try {
-        const columnAggregations = getTableColumns(pageModel);
-        tableColumns = transformTableColumns(columnAggregations);
+        tableColumns = extractTableColumnsFromNode(pageModel.root);
     } catch (error) {
         log?.debug(error);
     }
@@ -217,13 +242,11 @@ export function getListReportPage(applicationModel: ApplicationModel): PageWithM
  * Retrieves all FPM Custom Page definitions from the given application model.
  *
  * @param applicationModel - The application model containing page definitions.
- * @param log - optional logger instance
  * @returns An array of FPM Custom Page definitions.
  */
-export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): PageWithModelV4 | null {
+export function getFPMPage(applicationModel: ApplicationModel): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        log?.warn('pageType:' + page.pageType);
         if (page.pageType === PageTypeV4.FPMCustomPage) {
             page.name = pageKey; // store page key as name for later identification
             return page;
@@ -261,18 +284,45 @@ export function getAggregations(node: TreeAggregation): TreeAggregations {
 }
 
 /**
- * Retrieves selection field items from the given selection fields aggregation.
+ * Retrieves the stable OData property names of the selection fields, so generated
+ * filter-field checks do not break under translation.
  *
  * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
- * @returns An array of selection field descriptions.
+ * @returns An array of selection field property names.
  */
 export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): string[] {
     if (selectionFieldsAgg && typeof selectionFieldsAgg === 'object') {
         const items: string[] = [];
         for (const itemKey in selectionFieldsAgg) {
-            items.push(
-                (selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem).description
-            );
+            const item = selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem;
+            const property = item.schema?.keys?.[0]?.value;
+            if (property) {
+                items.push(property);
+            }
+        }
+        return items;
+    }
+    return [];
+}
+
+/**
+ * Retrieves both the property name and translated label of each selection field, for the
+ * List Report path where custom filter fields must fall back to matching by label.
+ *
+ * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
+ * @returns Array of `{ property, description }` entries.
+ */
+export function getSelectionFieldItemsWithLabels(
+    selectionFieldsAgg: TreeAggregations
+): { property: string; description: string }[] {
+    if (selectionFieldsAgg && typeof selectionFieldsAgg === 'object') {
+        const items: { property: string; description: string }[] = [];
+        for (const itemKey in selectionFieldsAgg) {
+            const item = selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem;
+            const property = item.schema?.keys?.[0]?.value;
+            if (property) {
+                items.push({ property, description: item.description ?? property });
+            }
         }
         return items;
     }
@@ -294,15 +344,25 @@ export function getFilterFields(pageModel: TreeModel): TreeAggregations {
 }
 
 /**
- * Retrieves the table columns aggregation from the given tree model.
+ * Parses a `DataFieldForAnnotation::<property>::<targetAnnotation>` style identifier.
  *
- * @param pageModel - The tree model containing table column definitions.
- * @returns The table columns aggregation object.
+ * @param name - aggregation key or `field.name` from the spec model
+ * @returns the parsed property and target annotation, or undefined for non-annotation entries
  */
-export function getTableColumns(pageModel: TreeModel): TreeAggregations {
-    const table = getAggregations(pageModel.root)['table'];
-    const tableAggregations = getAggregations(table);
-    const columns = tableAggregations['columns'];
-    const columnAggregations = getAggregations(columns);
-    return columnAggregations;
+export function parseDataFieldForAnnotationName(
+    name: string | undefined
+): { property: string; targetAnnotation: string } | undefined {
+    if (!name) {
+        return undefined;
+    }
+    const segments = name.split('::');
+    if (segments.length < 3 || segments[0] !== 'DataFieldForAnnotation') {
+        return undefined;
+    }
+    const property = segments[1];
+    const targetAnnotation = segments[2];
+    if (!property || !targetAnnotation) {
+        return undefined;
+    }
+    return { property, targetAnnotation };
 }

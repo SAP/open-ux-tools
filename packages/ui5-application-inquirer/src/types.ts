@@ -142,12 +142,10 @@ type DefaultValueInputPrompts =
     | promptNames.description
     | promptNames.namespace
     | promptNames.ui5Version
-    | promptNames.targetFolder;
+    | promptNames.targetFolder
+    | promptNames.title;
 type DefaultValueConfirmPrompts =
-    | promptNames.enableTypeScript
-    | promptNames.enableEslint
-    | promptNames.skipAnnotations
-    | promptNames.addDeployConfig;
+    promptNames.enableTypeScript | promptNames.enableEslint | promptNames.skipAnnotations | promptNames.addDeployConfig;
 
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.

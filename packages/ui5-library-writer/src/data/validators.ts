@@ -1,6 +1,6 @@
 import semVer from 'semver';
-import { t } from '../i18n';
-import type { UI5LibConfig } from '../types';
+import { t } from '../i18n.js';
+import type { UI5LibConfig } from '../types.js';
 
 /**
  * Validates the specified lib name to ensure we do not create malformed documents.

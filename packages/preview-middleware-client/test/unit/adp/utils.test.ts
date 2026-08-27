@@ -1,19 +1,29 @@
+import { jest } from '@jest/globals';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import FlexUtils from 'mock/sap/ui/fl/Utils';
 import isReuseComponentApi from 'mock/sap/ui/rta/util/isReuseComponent';
-import * as Utils from '../../../src/utils/core';
 import Element from 'sap/ui/core/Element';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
-import {
+const _core = await import('open/ux/preview/client/utils/core');
+const getControlByIdMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
+    ..._core,
+    getControlById: getControlByIdMock
+}));
+
+const {
     createDeferred,
     getReuseComponentChecker,
     resetReuseComponentChecker,
     matchesChangeProperty,
-    checkForExistingChange
-} from '../../../src/adp/utils';
+    checkForExistingChange,
+    getPendingCodeExtViewIds,
+    getControllerInfoForControl,
+    getControllerInfo
+} = await import('open/ux/preview/client/adp/utils');
 
 describe('utils', () => {
     describe('createDeferred', () => {
@@ -57,7 +67,7 @@ describe('utils', () => {
     describe('matchesChangeProperty', () => {
         const createMockCommand = (fragmentPath: string | undefined) => ({
             getPreparedChange: () => ({
-                getDefinition: () => ({
+                convertToFileContent: () => ({
                     content: {
                         fragmentPath
                     }
@@ -99,10 +109,10 @@ describe('utils', () => {
             expect(matchesChangeProperty({} as FlexCommand, 'content.fragmentPath', fragmentPath)).toBe(false);
         });
 
-        it('returns false when command does not have change definition', () => {
+        it('throws error when command does not have change definition', () => {
             const fragmentPath = 'Share.fragment.xml';
 
-            expect(
+            expect(() =>
                 matchesChangeProperty(
                     {
                         getPreparedChange: () => ({})
@@ -110,7 +120,7 @@ describe('utils', () => {
                     'content.fragmentPath',
                     fragmentPath
                 )
-            ).toBe(false);
+            ).toThrow(new Error('Unsupported change object'));
         });
     });
 
@@ -124,7 +134,7 @@ describe('utils', () => {
         const mockCommand = {
             getProperty: jest.fn(() => 'addXML'),
             getPreparedChange: jest.fn(() => ({
-                getDefinition: jest.fn(() => ({
+                convertToFileContent: jest.fn(() => ({
                     content: {
                         fragmentPath: 'testFragment.fragment.xml'
                     }
@@ -169,6 +179,54 @@ describe('utils', () => {
         });
     });
 
+    describe('getPendingCodeExtViewIds', () => {
+        const mockRta = new RuntimeAuthoringMock({} as RTAOptions);
+        const codeExtCommand = (controllerName: string, viewId?: string) => ({
+            getProperty: jest.fn(() => 'codeExt'),
+            getPreparedChange: jest.fn(() => ({
+                convertToFileContent: jest.fn(() => ({
+                    changeType: 'codeExt',
+                    selector: { controllerName },
+                    content: viewId ? { codeRef: 'coding/x.js', viewId } : { codeRef: 'coding/x.js' }
+                }))
+            }))
+        });
+
+        it('collects undefined for a base change and the viewId for an instance-specific change', () => {
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [codeExtCommand('my.Controller'), codeExtCommand('my.Controller', 'view1')])
+            }));
+
+            const result = getPendingCodeExtViewIds(mockRta, 'my.Controller');
+            expect(result).toEqual([undefined, 'view1']);
+        });
+
+        it('descends into composite commands and ignores non-codeExt sub-commands', () => {
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [
+                    {
+                        getCommands: jest.fn(() => [
+                            { getProperty: jest.fn(() => 'addXML') },
+                            codeExtCommand('my.Controller', 'view2')
+                        ])
+                    }
+                ])
+            }));
+
+            const result = getPendingCodeExtViewIds(mockRta, 'my.Controller');
+            expect(result).toEqual(['view2']);
+        });
+
+        it('ignores codeExt changes for a different controller name', () => {
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [codeExtCommand('other.Controller', 'view1')])
+            }));
+
+            const result = getPendingCodeExtViewIds(mockRta, 'my.Controller');
+            expect(result).toEqual([]);
+        });
+    });
+
     describe('getReuseComponentChecker', () => {
         const ui5VersionInfo = { major: 1, minor: 120 };
         const ui5Control = {} as Element;
@@ -183,20 +241,20 @@ describe('utils', () => {
 
         it('should return false if ui5 control is not defined', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(undefined);
+            getControlByIdMock.mockReturnValue(undefined);
             expect(checker('controlId')).toBe(false);
         });
 
         it('should return false if control has no component - UI5 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue(undefined);
             expect(checker('controlId')).toBe(false);
         });
 
         it('should return false if there is no app component for control - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({});
             FlexUtils.getAppComponentForControl.mockReturnValue(undefined);
             expect(checker('controlId')).toBe(false);
@@ -204,7 +262,7 @@ describe('utils', () => {
 
         it('should return false if app manifest does not have any reuse components - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({
                 getManifest: () => ({
                     'sap.app': { id: 'componentName' }
@@ -220,7 +278,7 @@ describe('utils', () => {
 
         it('should return false if the control component does not match any reuse component in the app manifest - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({
                 getManifest: () => ({
                     'sap.app': { id: 'componentName' }
@@ -236,7 +294,7 @@ describe('utils', () => {
 
         it('should return true if the control component matches a reuse component in the app manifest - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({
                 getManifest: () => ({
                     'sap.app': { id: 'componentName' }
@@ -252,11 +310,114 @@ describe('utils', () => {
 
         it('should executed UI5 RTA API for higher UI5 versions - 1.134', async () => {
             const checker = await getReuseComponentChecker({ major: 1, minor: 134 });
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({});
             const isReuseComponentMock = isReuseComponentApi.mockReturnValue(true);
             expect(checker('controlId')).toBe(true);
             expect(isReuseComponentMock).toHaveBeenCalled();
+        });
+    });
+
+    describe('getControllerInfoForControl', () => {
+        const OP_VIEW_ID = 'app---ObjectPage.view.Details::SEPMRA_C_PD_Product';
+        const OP_CONTROLLER = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
+        const OP_MODULE = 'sap/suite/ui/generic/template/ObjectPage/view/Details.controller';
+        const SUB_VIEW_ID = `${OP_VIEW_ID}--supplierView`;
+
+        beforeEach(() => {
+            FlexUtils.getViewForControl.mockReset();
+        });
+
+        it('returns controller name and view id when already on a controller-bearing view (module name)', () => {
+            const control = {};
+            const view = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(OP_MODULE),
+                getController: jest.fn(),
+                getParent: jest.fn().mockReturnValue({})
+            };
+            FlexUtils.getViewForControl.mockReturnValue(view);
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: `module:${OP_MODULE}`, viewId: OP_VIEW_ID });
+            expect(FlexUtils.getViewForControl).toHaveBeenCalledTimes(1);
+        });
+
+        it('returns controller name via class-name fallback when no module name', () => {
+            const control = {};
+            const view = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({ getName: () => OP_CONTROLLER })
+                }),
+                getParent: jest.fn().mockReturnValue({})
+            };
+            FlexUtils.getViewForControl.mockReturnValue(view);
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: OP_CONTROLLER, viewId: OP_VIEW_ID });
+            expect(FlexUtils.getViewForControl).toHaveBeenCalledTimes(1);
+        });
+
+        it('climbs to parent controller-bearing view when nearest view has no controller', () => {
+            const parent = {};
+            const subView = {
+                getId: jest.fn().mockReturnValue(SUB_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue(undefined),
+                getParent: jest.fn().mockReturnValue(parent)
+            };
+            const opView = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({ getName: () => OP_CONTROLLER })
+                }),
+                getParent: jest.fn().mockReturnValue(null)
+            };
+            const control = {};
+            FlexUtils.getViewForControl.mockImplementation((arg) => {
+                return arg === control ? subView : opView;
+            });
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: OP_CONTROLLER, viewId: OP_VIEW_ID });
+        });
+
+        it('terminates without infinite loop when no controller is found anywhere', () => {
+            const subView = {
+                getId: jest.fn().mockReturnValue(SUB_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue(undefined),
+                getParent: jest.fn().mockReturnValue(null)
+            };
+            const control = {};
+            FlexUtils.getViewForControl.mockReturnValue(subView);
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: '', viewId: SUB_VIEW_ID });
+        });
+
+        it('getControllerInfo delegates to getControllerInfoForControl via overlay element', () => {
+            const element = {};
+            const overlay = { getElement: jest.fn().mockReturnValue(element) };
+            const view = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(OP_MODULE),
+                getController: jest.fn(),
+                getParent: jest.fn().mockReturnValue(null)
+            };
+            FlexUtils.getViewForControl.mockReturnValue(view);
+
+            const result = getControllerInfo(overlay as never);
+
+            expect(result).toEqual({ controllerName: `module:${OP_MODULE}`, viewId: OP_VIEW_ID });
+            expect(overlay.getElement).toHaveBeenCalled();
         });
     });
 });

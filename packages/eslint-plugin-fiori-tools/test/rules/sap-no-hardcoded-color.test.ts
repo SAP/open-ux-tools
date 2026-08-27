@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-hardcoded-color';
+import rule from '../../src/rules/sap-no-hardcoded-color.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -22,8 +22,7 @@ ruleTester.run('sap-no-hardcoded-color', rule, {
             code: "lassoHelper = $(\"<div id='lasso-selection-help' style='position:absolute;pointer-events:none;background:#cccccc;'></div>\");",
             errors: [
                 {
-                    message: 'Hardcoded colors are not allowed as they will break theming effort.',
-                    type: 'Literal'
+                    message: 'Hardcoded colors are not allowed as they will break theming effort.'
                 }
             ]
         }

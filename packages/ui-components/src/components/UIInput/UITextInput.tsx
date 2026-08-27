@@ -2,17 +2,17 @@ import React from 'react';
 
 import type { ITextFieldProps, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
-import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
-import { getMessageInfo } from '../../helper/ValidationMessage';
-import { labelGlobalStyle } from '../UILabel';
-import { REQUIRED_LABEL_INDICATOR } from '../types';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo } from '../../helper/ValidationMessage/index.js';
+import { labelGlobalStyle } from '../UILabel/index.js';
+import { REQUIRED_LABEL_INDICATOR } from '../types.js';
 
-export { ITextField, ITextFieldProps } from '@fluentui/react';
+export type { ITextField, ITextFieldProps } from '@fluentui/react';
 
 export type UITextInputProps = ITextFieldProps & UIMessagesExtendedProps;
 
 export const COMMON_INPUT_STYLES = {
-    borderRadius: 4
+    borderRadius: 'var(--vscode-cornerRadius-small, 4px)'
 };
 
 const COLOR_STYLES = {

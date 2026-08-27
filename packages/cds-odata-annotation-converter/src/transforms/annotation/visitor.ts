@@ -1,11 +1,11 @@
 import type { AnnotationNode } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
-import { nodeHandlerConfig } from './handlers';
+import { nodeHandlerConfig } from './handlers/index.js';
 
-import type { ConvertResult, NodeHandler } from './handler';
-import { isSubtree } from './handler';
+import type { ConvertResult, NodeHandler } from './handler.js';
+import { isSubtree } from './handler.js';
 
-import type { VisitorState } from './visitor-state';
+import type { VisitorState } from './visitor-state.js';
 
 /**
  *

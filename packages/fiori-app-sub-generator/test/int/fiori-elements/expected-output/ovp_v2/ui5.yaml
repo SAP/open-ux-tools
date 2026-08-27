@@ -33,3 +33,8 @@ server:
           intent:
             object: testNameSpaceovpv2
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

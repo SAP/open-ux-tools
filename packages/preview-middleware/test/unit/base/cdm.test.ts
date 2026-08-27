@@ -1,5 +1,5 @@
-import { generateCdm } from '../../../src/base/cdm';
-import type { TemplateConfig } from '../../../src/base/config';
+import { generateCdm } from '../../../src/base/cdm.js';
+import type { TemplateConfig } from '../../../src/base/config.js';
 
 describe('cdm', () => {
     test('generate cdm without any apps', () => {

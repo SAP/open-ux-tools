@@ -1,5 +1,5 @@
 import { ToolsLogger } from '@sap-ux/logger';
-import { nodeModulesUpToDate, storePackageJsonHash } from './project';
+import { nodeModulesUpToDate, storePackageJsonHash } from './project.js';
 import { spawn } from 'promisify-child-process';
 
 const logger = new ToolsLogger();

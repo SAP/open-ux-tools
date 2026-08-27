@@ -1,4 +1,5 @@
-import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types';
+import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types.js';
+import type { PageTemplateType } from '../building-block/types.js';
 
 /**
  * Incoming navigation configuration.
@@ -127,6 +128,11 @@ export interface CustomPage extends FpmPage, CustomElement {
      * If page building block title is defined then it will be used to automatically add a macro page to the generated custom page.
      */
     pageBuildingBlockTitle?: string;
+
+    /**
+     * The template type for the page building block. 'full' generates an enhanced layout with all aggregations; 'basic' is the default minimal tag.
+     */
+    pageBuildingBlockTemplateType?: PageTemplateType;
 }
 
 export interface FCL {

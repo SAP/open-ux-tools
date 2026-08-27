@@ -1,18 +1,18 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomFilter, InternalCustomFilter, PageOptions } from './types';
+import type { CustomFilter, InternalCustomFilter, PageOptions } from './types.js';
 import { join } from 'node:path';
 import { render } from 'ejs';
-import { validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
-import { setCommonDefaults } from '../common/defaults';
-import { getTemplatePath } from '../templates';
-import { copyTpl, getJsonSpace, createIdGenerator } from '../common/file';
-import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
-import type { FilterField } from '../building-block/types';
+import { validateBasePath } from '../common/validate.js';
+import type { Manifest } from '../common/types.js';
+import { setCommonDefaults } from '../common/defaults.js';
+import { getTemplatePath } from '../templates.js';
+import { copyTpl, getJsonSpace, createIdGenerator } from '../common/file.js';
+import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler.js';
+import type { FilterField } from '../building-block/types.js';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { getManifest } from '../common/utils';
+import { getManifest } from '../common/utils.js';
 
 /**
  * Enhances the provided custom filter configuration with default data.

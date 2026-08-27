@@ -1,7 +1,7 @@
-import { errorTemplate } from '../src/errors';
-import { YamlDocument } from '../src';
-import type { NodeComment, YAMLMap, YAMLSeq } from '../src';
-import { interpolate } from '../src/texts';
+import { errorTemplate } from '../src/errors/index.js';
+import { YamlDocument } from '../src/index.js';
+import type { NodeComment, YAMLMap, YAMLSeq } from '../src/index.js';
+import { interpolate } from '../src/texts/index.js';
 import type yaml from 'yaml';
 
 describe('YamlDocument', () => {

@@ -5,9 +5,10 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../../utils/i18n';
-import type { Credentials } from '../../types';
-import { configPromptNames } from '../../app/types';
+import { t } from '../../utils/i18n.js';
+import type { Credentials } from '../../types.js';
+import { configPromptNames } from '../../app/types.js';
+
 import type { LayeredRepositoryService } from '@sap-ux/axios-extension';
 
 interface ClientCredentials {
@@ -61,8 +62,10 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
         mask: '*',
         guiOptions: {
             mandatory: true,
-            type: 'login'
+            type: 'login',
+            applyDefaultWhenDirty: true
         },
+        default: '',
         validate: async (value: string, answers: Credentials): Promise<boolean | string> => {
             const validationResult = validateEmptyString(value);
             if (typeof validationResult === 'string') {

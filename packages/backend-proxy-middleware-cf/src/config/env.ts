@@ -5,8 +5,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AppRouterEnvOptions } from '@sap-ux/adp-tooling';
 import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
-import { UI5_SERVER_DESTINATION } from './constants';
-import type { ConnectivityProxyInfo, EffectiveOptions } from '../types';
+import { UI5_SERVER_DESTINATION } from './constants.js';
+import type { ConnectivityProxyInfo, EffectiveOptions } from '../types.js';
 
 /**
  * Destination entry as stored in process.env.destinations.

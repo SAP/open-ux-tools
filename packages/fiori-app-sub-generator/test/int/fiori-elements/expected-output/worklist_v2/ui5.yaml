@@ -34,3 +34,8 @@ server:
           intent:
             object: testNameSpaceworklistv2
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

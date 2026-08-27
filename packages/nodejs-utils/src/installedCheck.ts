@@ -1,11 +1,14 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { CommandRunner } from './commandRunner';
+import { CommandRunner } from './commandRunner.js';
 import fastGlob from 'fast-glob';
 import { join } from 'node:path';
 import readPkgUp from 'read-pkg-up';
 import type { SemVer } from 'semver';
-import { coerce, lt } from 'semver';
+import { coerce, lt, satisfies } from 'semver';
 import type { WorkspaceConfiguration } from 'vscode';
+import { t } from './i18n.js';
+
+const latestSupportedYoVer = '7.0.1'; // Latest supported version by fiori tools
 
 export type PackageInfo = {
     /** Path to the main entry point. Can be used by composeWith. */
@@ -127,4 +130,37 @@ async function getNpmInstallPaths(vscWorkspaceConfig?: WorkspaceConfiguration): 
     }
 
     return genSearchPaths;
+}
+
+/**
+ * Checks the installed version of `yo` and returns an error message if it is not installed or has an unsupported version.
+ *
+ * @returns An object containing an error message if `yo` is not installed or has an unsupported version.
+ */
+export async function ensureValidYoVersion(): Promise<{ error?: string }> {
+    let error: string | undefined;
+    if (!isAppStudio()) {
+        const yo = process.platform === 'win32' ? 'yo.cmd' : 'yo';
+        const args = ['--version'];
+        let installedVersion: string | undefined;
+        try {
+            const result = await new CommandRunner().run(yo, args);
+            installedVersion = typeof result === 'string' ? result.trim() : undefined;
+        } catch (yoError) {
+            // `yo --version` failed — yo is not installed or not on PATH
+            error = t('error.executingYoVersionCmd', {
+                error: yoError,
+                yoCmd: `${yo} ${args.join(' ')}`,
+                latestSupportedYoVer
+            });
+        }
+        // yo v6 is omitted as it has a bug that causes the generator to fail, see https://github.com/SBoudrias/Inquirer.js/issues/1968
+        if (!error && installedVersion && !satisfies(installedVersion, '4.x || 5.x || 7.x')) {
+            error = t('error.unsupportedYoVersion', {
+                installedYoVersion: installedVersion,
+                latestSupportedYoVer
+            });
+        }
+    }
+    return { error };
 }

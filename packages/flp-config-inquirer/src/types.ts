@@ -140,6 +140,7 @@ export interface ParameterStringPromptOptions {
  */
 export interface ConfirmReplacePromptOptions {
     hide?: boolean;
+    isCF?: boolean;
 }
 
 /**

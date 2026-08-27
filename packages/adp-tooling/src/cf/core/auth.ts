@@ -2,7 +2,7 @@ import { cfGetAuthToken } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CfConfig } from '../../types';
+import type { CfConfig } from '../../types.js';
 
 /**
  * Check if the external login is enabled.
@@ -29,8 +29,7 @@ export async function isLoggedInCf(cfConfig: CfConfig, logger: ToolsLogger): Pro
     }
 
     try {
-        const token = await cfGetAuthToken();
-        logger?.log(`Retrieved CF auth token: ${token}`);
+        await cfGetAuthToken();
         return true;
     } catch (e) {
         logger?.error(`Error occurred while trying to check if it is logged in: ${e?.message}`);

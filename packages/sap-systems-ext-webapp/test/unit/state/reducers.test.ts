@@ -1,7 +1,7 @@
-import type { SystemState } from '../../../src/types';
+import type { SystemState } from '../../../src/types/index.js';
 import type { BackendSystem } from '@sap-ux/store';
-import { LoadingState } from '../../../src/types';
-import { getInitialState, reducer } from '../../../src/state/reducers';
+import { LoadingState } from '../../../src/types/index.js';
+import { getInitialState, reducer } from '../../../src/state/reducers.js';
 import * as types from '@sap-ux/sap-systems-ext-types';
 
 const connectionStatus = {
@@ -114,6 +114,22 @@ describe('Test the reducer', () => {
     test('Action CREATE_NEW_SYSTEM', () => {
         const oAction: types.CreateNewSystem = {
             type: types.CREATE_NEW_SYSTEM
+        };
+        expect(reducer(systemState, oAction)).toMatchSnapshot();
+    });
+
+    test('Action CREATE_NEW_SYSTEM with pre-populated system info', () => {
+        const oAction: types.CreateNewSystem = {
+            type: types.CREATE_NEW_SYSTEM,
+            payload: {
+                systemInfo: {
+                    name: 'mock.url.sap',
+                    url: 'http://mock.url.sap:50000',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                } as BackendSystem
+            }
         };
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });

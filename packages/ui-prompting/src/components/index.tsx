@@ -1,3 +1,3 @@
-export * from './Inputs';
-export * from './Question';
-export * from './Questions';
+export * from './Inputs/index.js';
+export * from './Question/index.js';
+export * from './Questions/index.js';

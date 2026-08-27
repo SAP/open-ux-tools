@@ -10,7 +10,7 @@
     height: 18px;
     text-align: center;
     line-height: 18px;
-    border-radius: 2px;
+    border-radius: var(--vscode-cornerRadius-xSmall, 2px);
     box-shadow: var(--ui-box-shadow-small);
     pointer-events: none;
 }

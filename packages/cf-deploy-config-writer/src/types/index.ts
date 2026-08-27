@@ -7,7 +7,7 @@ import {
     type ManagedDestination,
     type ManagedXSUAA,
     type CDSXSUAAService
-} from '../constants';
+} from '../constants.js';
 
 export type ResourceType =
     | 'xsuaa'
@@ -129,9 +129,6 @@ export interface HTML5App {
 }
 
 export type SupportedResources =
-    | typeof ManagedAppFront
-    | typeof HTML5RepoHost
-    | typeof ManagedXSUAA
-    | typeof ManagedDestination;
+    typeof ManagedAppFront | typeof HTML5RepoHost | typeof ManagedXSUAA | typeof ManagedDestination;
 
 export type CDSServiceType = typeof CDSXSUAAService | typeof CDSDestinationService | typeof CDSHTML5RepoService;

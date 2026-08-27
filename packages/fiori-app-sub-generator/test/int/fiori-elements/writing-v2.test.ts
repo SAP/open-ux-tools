@@ -1,10 +1,12 @@
+import { jest } from '@jest/globals';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { readdirSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'node:path';
-import type { Project, Service, State } from '../../../src/types';
-import { ApiHubType, FloorplanFE } from '../../../src/types';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { Project, Service, State } from '../../../src/types/index.js';
+import { ApiHubType, FloorplanFE } from '../../../src/types/index.js';
 import {
     cleanTestDir,
     getTestData,
@@ -12,16 +14,16 @@ import {
     ignoreMatcherOpts,
     originalCwd,
     runWritingPhaseGen
-} from '../test-utils';
-import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
+} from '../test-utils/index.js';
+import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils.js';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...fioriGenShared,
-        sendTelemetry: jest.fn()
-    };
-});
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn()
+}));
 
 describe('Generate v2 apps', () => {
     let testProjectName: string;
@@ -55,7 +57,8 @@ describe('Generate v2 apps', () => {
 
         const testState: State = cloneDeep({
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableVirtualEndpoints: true
             }) as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: v2Service,
@@ -240,7 +243,8 @@ describe('Generate v2 apps', () => {
 
         const testState: State = cloneDeep({
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableVirtualEndpoints: true
             }) as Project,
             floorplan: FloorplanFE.FE_ALP,
             service: alpService,

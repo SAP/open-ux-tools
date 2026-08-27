@@ -1,4 +1,4 @@
-import { wrapInQuotes, printOptions } from '../src/text-formatting';
+import { wrapInQuotes, printOptions } from '../src/text-formatting.js';
 
 describe('wrapInQuotes', () => {
     it('should wrap text in single quotes', () => {

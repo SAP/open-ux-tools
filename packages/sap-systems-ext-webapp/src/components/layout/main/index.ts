@@ -1,1 +1,1 @@
-export { SystemMain } from './SystemMain';
+export { SystemMain } from './SystemMain.js';

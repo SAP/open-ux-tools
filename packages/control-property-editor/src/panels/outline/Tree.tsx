@@ -22,12 +22,12 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import type { ContextMenu, Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
-import type { RootState } from '../../store';
-import type { ControlChanges, FilterOptions } from '../../slice';
-import { FilterName } from '../../slice';
-import { NoControlFound } from './NoControlFound';
-import { adaptExpandCollapsed, getFilteredModel, isSame } from './utils';
-import { ChangeIndicator } from '../../components/ChangeIndicator';
+import type { RootState } from '../../store.js';
+import type { ControlChanges, FilterOptions } from '../../slice.js';
+import { FilterName } from '../../slice.js';
+import { NoControlFound } from './NoControlFound.js';
+import { adaptExpandCollapsed, getFilteredModel, isSame } from './utils.js';
+import { ChangeIndicator } from '../../components/ChangeIndicator.js';
 
 interface OutlineNodeItem extends OutlineNode {
     level: number;

@@ -29,10 +29,6 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: test/flpSandbox.html
-          intent:
-            object: testNameSpacealpv2
-            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -52,3 +48,8 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_ALP_SO_ANA_SRV.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_ALP_SO_ANA_SRV',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

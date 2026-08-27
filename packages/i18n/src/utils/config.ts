@@ -1,4 +1,4 @@
-import type { CdsEnvironment, CdsI18nConfiguration, CdsI18nEnv } from '../types';
+import type { CdsEnvironment, CdsI18nConfiguration, CdsI18nEnv } from '../types.js';
 
 /**
  * Get i18n configuration.

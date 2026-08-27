@@ -1,5 +1,5 @@
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import { t } from './i18n';
+import { t } from './i18n.js';
 import { spawn } from 'node:child_process';
 import type { SpawnOptionsWithoutStdio } from 'node:child_process';
 

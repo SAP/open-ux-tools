@@ -86,7 +86,7 @@ modules:
               ServiceKeyName: captestproject-html5-repo-host-key
               sap.cloud.service: captestproject
             - Authentication: OAuth2UserTokenExchange
-              Name: captestproject_uaa
+              Name: captestproject_auth
               ServiceInstanceName: captestproject-xsuaa-service
               ServiceKeyName: captestproject-auth-key
               sap.cloud.service: captestproject
@@ -164,7 +164,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations managed 2`]
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
@@ -255,7 +255,7 @@ modules:
       memory: 256M
     requires:
       - name: captestproject-html5-repo-runtime
-      - name: captestproject-uaa
+      - name: captestproject-auth
       - name: captestproject-destination
         group: destinations
         properties:
@@ -310,16 +310,6 @@ resources:
       config:
         xsappname: captestproject-\${org}-\${space}
         tenant-mode: dedicated
-  - name: captestproject-uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      service-name: captestproject-xsuaa-service
-      config:
-        xsappname: captestproject-\${space-guid}
-        tenant-mode: dedicated
   - name: captestproject-html5-repo-runtime
     type: org.cloudfoundry.managed-service
     parameters:
@@ -346,7 +336,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
@@ -374,7 +364,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^21.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     }
 }"
 `;

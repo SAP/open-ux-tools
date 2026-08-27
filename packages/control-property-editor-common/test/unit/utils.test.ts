@@ -1,4 +1,4 @@
-import { convertCamelCaseToPascalCase } from '../../src/utils';
+import { convertCamelCaseToPascalCase } from '../../src/utils.js';
 
 describe('utils', () => {
     describe('convertCamelCaseToPascalCase', () => {

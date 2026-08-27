@@ -1,5 +1,5 @@
-import type { EntityKey } from '.';
-import { sensitiveData } from '../decorators';
+import type { EntityKey } from './index.js';
+import { sensitiveData } from '../decorators/index.js';
 
 export class ApiHubSettings {
     @sensitiveData public readonly apiKey?: string;

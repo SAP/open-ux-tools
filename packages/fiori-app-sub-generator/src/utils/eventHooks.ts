@@ -1,4 +1,4 @@
-import { t } from './i18n';
+import { t } from './i18n.js';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 export interface HookParameters {
     fsPath: string;

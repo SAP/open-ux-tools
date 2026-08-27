@@ -3,7 +3,7 @@ import type { NextFunction, Request, Response } from 'express';
 import type { AbapServiceProvider, ODataServiceV2Info } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 
-import { HttpStatusCodes } from '../types';
+import { HttpStatusCodes } from '../types.js';
 
 interface GetMetaModelRequestBody {
     dataSource: {

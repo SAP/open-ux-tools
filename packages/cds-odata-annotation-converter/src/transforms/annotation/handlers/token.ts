@@ -3,8 +3,8 @@ import { TOKEN_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, Edm } from '@sap-ux/odata-annotation-core-types';
 
-import type { NodeHandler } from '../handler';
-import type { VisitorState } from '../visitor-state';
+import type { NodeHandler } from '../handler.js';
+import type { VisitorState } from '../visitor-state.js';
 
 export const tokenHandler: NodeHandler<Token> = {
     type: TOKEN_TYPE,

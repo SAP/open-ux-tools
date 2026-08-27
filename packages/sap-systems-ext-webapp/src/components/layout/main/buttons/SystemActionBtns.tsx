@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import type { ReactElement } from 'react';
 import type { ConnectionStatus } from '@sap-ux/sap-systems-ext-types';
 import type { BackendSystem } from '@sap-ux/store';
-import type { SystemInfo } from '../../../../types';
+import type { SystemInfo } from '../../../../types/index.js';
 import { UIDefaultButton, UIDialog } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
-import { actions } from '../../../../state';
+import { actions } from '../../../../state/index.js';
 
 import '../../../../styles/Buttons.scss';
 

@@ -20,7 +20,10 @@ export enum IconName {
     grabber = 'grabber',
     themePainter = 'themePainter',
     chevronLeft = 'chevronLeft',
-    saveAndReload = 'saveAndReload'
+    saveAndReload = 'saveAndReload',
+    unfilledCircle = 'unfilledCircle',
+    filledCircle = 'filledCircle',
+    partiallyFilledCircle = 'partiallyFilledCircle'
 }
 
 export function registerAppIcons(): void {
@@ -231,6 +234,22 @@ export function registerAppIcons(): void {
                             <path fill="var(--vscode-editor-background)" d="M0 0h16v16H0z" />
                         </clipPath>
                     </defs>
+                </svg>
+            ),
+            unfilledCircle: (
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="4" cy="4" r="3.5" stroke="var(--vscode-terminal-ansiGreen)" />
+                </svg>
+            ),
+            filledCircle: (
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="4" cy="4" r="4" fill="var(--vscode-terminal-ansiGreen)" />
+                </svg>
+            ),
+            partiallyFilledCircle: (
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="4" cy="4" r="3.5" stroke="var(--vscode-terminal-ansiGreen)" />
+                    <path d="M4 8a4 4 0 1 0 0-8v8Z" fill="var(--vscode-terminal-ansiGreen)" />
                 </svg>
             )
         }

@@ -16,7 +16,7 @@ export async function renderWebApp(context: PanelContext): Promise<void> {
 
     // open view for creating new system
     if (panelViewType === SystemPanelViewType.Create) {
-        await postMessage(createNewSystem());
+        await postMessage(createNewSystem(systemInfo ? { systemInfo } : undefined));
         return;
     }
 

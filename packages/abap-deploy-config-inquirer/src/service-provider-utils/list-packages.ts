@@ -1,9 +1,9 @@
 import { ListPackageService } from '@sap-ux/axios-extension';
-import { AbapServiceProviderManager } from './abap-service-provider';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
-import { t } from '../i18n';
-import LoggerHelper from '../logger-helper';
-import type { BackendTarget } from '../types';
+import { AbapServiceProviderManager } from './abap-service-provider.js';
+import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants.js';
+import { t } from '../i18n.js';
+import LoggerHelper from '../logger-helper.js';
+import type { BackendTarget } from '../types.js';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**

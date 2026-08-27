@@ -1,1 +1,1 @@
-export * from './UISeparator';
+export * from './UISeparator.js';

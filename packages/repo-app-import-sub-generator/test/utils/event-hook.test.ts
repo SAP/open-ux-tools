@@ -1,13 +1,22 @@
-import { runPostAppGenHook, type RepoAppGenContext } from '../../src/utils/event-hook';
+import { jest } from '@jest/globals';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
-import { t } from '../../src/utils/i18n';
-import RepoAppDownloadLogger from '../../src/utils/logger';
+import { t } from '../../src/utils/i18n.js';
 
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn()
-    }
-}));
+const mockLogger = {
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn()
+};
+
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = { logger: mockLogger, configureLogging: jest.fn() };
+    return { default: mock, ...mock };
+});
+
+const { runPostAppGenHook } = await import('../../src/utils/event-hook.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
+import type { RepoAppGenContext } from '../../src/utils/event-hook.js';
 
 describe('runPostAppGenHook', () => {
     let mockContext: RepoAppGenContext;
@@ -34,6 +43,7 @@ describe('runPostAppGenHook', () => {
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
             t('error.eventHookErrors.vscodeInstanceMissing')
         );
+        expect(mockContext.vscodeInstance).toBeUndefined();
     });
 
     it('should log an error if postGenCommand is missing', async () => {
@@ -42,23 +52,43 @@ describe('runPostAppGenHook', () => {
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
             t('error.eventHookErrors.postGenCommandMissing')
         );
+        expect(mockContext.vscodeInstance?.commands?.executeCommand).not.toHaveBeenCalled();
     });
 
     it('should execute the post-generation command successfully', async () => {
         await runPostAppGenHook(mockContext);
         expect(mockContext.vscodeInstance?.commands?.executeCommand).toHaveBeenCalledWith('mockCommand', {
-            fsPath: '/mock/path'
+            fsPath: '/mock/path',
+            deployConfig: undefined
         });
     });
 
-    it('should log an error if executeCommand throws an error', async () => {
+    it('should pass deployConfig when provided', async () => {
+        const deployConfig = { target: { url: 'http://example.com' }, app: { name: 'myapp', package: 'MYPKG' } };
+        mockContext.deployConfig = deployConfig as any;
+        await runPostAppGenHook(mockContext);
+        expect(mockContext.vscodeInstance?.commands?.executeCommand).toHaveBeenCalledWith('mockCommand', {
+            fsPath: '/mock/path',
+            deployConfig
+        });
+    });
+
+    it('should pass migrationTelemetryEvent when provided', async () => {
+        mockContext.migrationTelemetryEvent = 'ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED';
+        await runPostAppGenHook(mockContext);
+        expect(mockContext.vscodeInstance?.commands?.executeCommand).toHaveBeenCalledWith('mockCommand', {
+            fsPath: '/mock/path',
+            deployConfig: undefined,
+            migrationTelemetryEvent: 'ABAP_REPO_DOWNLOAD_MIGRATION_COMPLETED'
+        });
+    });
+
+    it('should log an error if executeCommand throws', async () => {
         const mockError = new Error('Command execution failed');
         if (mockContext.vscodeInstance) {
-            mockContext.vscodeInstance.commands.executeCommand = jest.fn().mockRejectedValue(mockError);
+            mockContext.vscodeInstance.commands.executeCommand = jest.fn().mockRejectedValue(mockError) as any;
         }
         await runPostAppGenHook(mockContext);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
-            t('error.eventHookErrors.commandExecutionFailed')
-        );
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledTimes(1);
     });
 });

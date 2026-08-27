@@ -1,3 +1,3 @@
-export * from './app';
-export * from './package';
-export * from './transport';
+export * from './app.js';
+export * from './package.js';
+export * from './transport.js';

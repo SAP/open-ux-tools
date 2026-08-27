@@ -84,7 +84,7 @@ Object {
 }
 `;
 
-exports[`FE V2 Linker linkTableSettings section level - object page orphan-node 1`] = `
+exports[`FE V2 Linker linkTableSettings section level - object page orphan-section 1`] = `
 Object {
   "configurationPath": Array [
     "sap.ui.generic.app",

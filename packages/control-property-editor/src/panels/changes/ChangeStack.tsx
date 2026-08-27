@@ -17,19 +17,19 @@ import {
     GENERIC_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 
-import { Separator } from '../../components';
-import type { UnknownChangeProps } from './UnknownChange';
-import { UnknownChange } from './UnknownChange';
+import { Separator } from '../../components/index.js';
+import type { UnknownChangeProps } from './UnknownChange.js';
+import { UnknownChange } from './UnknownChange.js';
 
 import styles from './ChangeStack.module.scss';
 import { useSelector } from 'react-redux';
-import type { FilterOptions } from '../../slice';
-import { FilterName } from '../../slice';
-import type { RootState } from '../../store';
-import { getFormattedDateAndTime } from './utils';
-import type { ControlItemProps } from './ControlChange';
-import { ControlChange } from './ControlChange';
-import { GenericGroup, type GenericGroupProps } from './GenericGroup';
+import type { FilterOptions } from '../../slice.js';
+import { FilterName } from '../../slice.js';
+import type { RootState } from '../../store.js';
+import { getFormattedDateAndTime } from './utils.js';
+import type { ControlItemProps } from './ControlChange.js';
+import { ControlChange } from './ControlChange.js';
+import { GenericGroup, type GenericGroupProps } from './GenericGroup.js';
 
 export interface ChangeStackProps {
     changes: Change[];

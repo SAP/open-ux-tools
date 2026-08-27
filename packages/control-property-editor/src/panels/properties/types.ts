@@ -7,7 +7,7 @@ import type {
     INPUT_EDITOR_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 
-import type { PropertyChangeStats } from '../../slice';
+import type { PropertyChangeStats } from '../../slice.js';
 
 export interface PropertyInputProps<T extends ControlProperty = ControlProperty> {
     controlId: string;

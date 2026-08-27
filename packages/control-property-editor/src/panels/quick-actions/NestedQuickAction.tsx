@@ -7,8 +7,8 @@ import { UIDirectionalHint, UIIcon, UILink, UIContextualMenu, UIContextualMenuLa
 
 import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
-import { IconName } from '../../icons';
-import type { RootState } from '../../store';
+import { IconName } from '../../icons.js';
+import type { RootState } from '../../store.js';
 
 export interface NestedQuickActionListItemProps {
     action: Readonly<NestedQuickAction>;

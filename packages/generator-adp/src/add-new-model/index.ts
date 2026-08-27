@@ -14,10 +14,10 @@ import {
 } from '@sap-ux/adp-tooling';
 import { setYeomanEnvConflicterForce } from '@sap-ux/fiori-generator-shared';
 
-import { GeneratorTypes } from '../types';
-import { initI18n, t } from '../utils/i18n';
-import type { GeneratorOpts } from '../utils/opts';
-import SubGeneratorBase from '../base/sub-gen-base';
+import { GeneratorTypes } from '../types.js';
+import { initI18n, t } from '../utils/i18n.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import SubGeneratorBase from '../base/sub-gen-base.js';
 
 /**
  * Generator for adding a new model to an OData service.
@@ -110,7 +110,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
         }
 
         this.answers = await this.prompt(
-            await getPromptsForNewModel(this.projectPath, this.variant.layer, this.logger)
+            await getPromptsForNewModel(this.projectPath, this.variant.layer, this.logger, this.appWizard)
         );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);
     }
@@ -130,4 +130,4 @@ class AddNewModelGenerator extends SubGeneratorBase {
     }
 }
 
-export = AddNewModelGenerator;
+export default AddNewModelGenerator;

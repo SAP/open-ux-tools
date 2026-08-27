@@ -1,12 +1,15 @@
 import React from 'react';
-import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
+import type { IButton, IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
-import { UIContextualMenu } from '../UIContextualMenu';
-import type { UIIContextualMenuProps } from '../UIContextualMenu';
-import { COMMON_INPUT_STYLES } from '../UIInput';
-import { UiIcons } from '../Icons';
+import { UIContextualMenu } from '../UIContextualMenu/index.js';
+import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
+import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
+import { UiIcons } from '../Icons.js';
+import { handleMenuKeyDown, mergeButtonRef } from './utils.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
+const VSCODE_SECONDARY_BORDER_COLOR = `var(--vscode-button-secondaryBorder, ${VSCODE_BORDER_COLOR})`;
 export const BASE_STYLES = {
     color: 'var(--vscode-button-foreground)',
     checkedBorderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
@@ -19,10 +22,10 @@ export const BASE_STYLES = {
     },
     secondary: {
         backgroundColor: 'var(--vscode-button-secondaryBackground)',
-        disabledBorderColor: VSCODE_BORDER_COLOR,
-        borderColor: VSCODE_BORDER_COLOR,
+        disabledBorderColor: VSCODE_SECONDARY_BORDER_COLOR,
+        borderColor: VSCODE_SECONDARY_BORDER_COLOR,
         hoverBackgroundColor: 'var(--vscode-button-secondaryHoverBackground)',
-        hoverBorderColor: VSCODE_BORDER_COLOR,
+        hoverBorderColor: VSCODE_SECONDARY_BORDER_COLOR,
         color: 'var(--vscode-button-secondaryForeground)'
     },
     alert: {
@@ -48,7 +51,7 @@ export const BASE_STYLES = {
 };
 const ICON_SELECTOR = 'svg > path, svg > rect';
 
-export interface UIDefaultButtonProps extends IButtonProps {
+export interface UIDefaultButtonProps extends IButtonProps, UIBaseButtonProps {
     /**
      * Changes the visual presentation of the button to be transparent.
      *
@@ -69,6 +72,8 @@ export interface UIDefaultButtonProps extends IButtonProps {
  * @extends {React.Component<UIDefaultButtonProps, {}>}
  */
 export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
+    private readonly _buttonRef: React.MutableRefObject<IButton | null> = { current: null };
+
     /**
      * Initializes component properties.
      *
@@ -156,6 +161,114 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
     }
 
     /**
+     * Returns rootDisabled style overrides based on button variant.
+     *
+     * @param primary - primary button variant
+     * @param alert - alert button variant
+     * @param transparent - transparent button variant
+     * @returns IStyle
+     */
+    private getRootDisabledStyles(primary?: boolean, alert?: boolean, transparent?: boolean): IStyle {
+        return {
+            opacity: '0.5 !important',
+            // Add to use hard coded value here as Theia doesn't support these values correctly
+            backgroundColor: BASE_STYLES.secondary.backgroundColor,
+            borderColor: BASE_STYLES.secondary.disabledBorderColor,
+            color: BASE_STYLES.secondary.color,
+            ...(primary && {
+                opacity: '0.5 !important',
+                color: BASE_STYLES.color,
+                backgroundColor: BASE_STYLES.primary.backgroundColor,
+                borderColor: BASE_STYLES.primary.disabledBorderColor
+            }),
+            ...(alert && {
+                opacity: '0.5 !important',
+                color: BASE_STYLES.color,
+                backgroundColor: BASE_STYLES.alert.backgroundColor,
+                borderColor: BASE_STYLES.alert.disabledBorderColor
+            }),
+            ...(transparent && {
+                color: BASE_STYLES.transparent.color,
+                backgroundColor: BASE_STYLES.transparent.backgroundColor,
+                borderColor: BASE_STYLES.transparent.disabledBorderColor
+            })
+        };
+    }
+
+    /**
+     * Returns icon style overrides based on button variant.
+     *
+     * @param primary - primary button variant
+     * @param alert - alert button variant
+     * @param transparent - transparent button variant
+     * @returns IStyle
+     */
+    private getIconStyleOverrides(primary?: boolean, alert?: boolean, transparent?: boolean): IStyle {
+        return {
+            height: 16,
+            lineHeight: 16,
+            marginLeft: -3,
+            color: BASE_STYLES.secondary.color,
+            selectors: {
+                [ICON_SELECTOR]: {
+                    fill: BASE_STYLES.secondary.color
+                }
+            },
+            ...(primary && {
+                color: BASE_STYLES.color,
+                selectors: {
+                    [ICON_SELECTOR]: {
+                        fill: BASE_STYLES.color
+                    }
+                }
+            }),
+            ...(alert && {
+                color: BASE_STYLES.color,
+                selectors: {
+                    [ICON_SELECTOR]: {
+                        fill: BASE_STYLES.color
+                    }
+                }
+            }),
+            ...(transparent && {
+                color: BASE_STYLES.transparent.color,
+                selectors: {
+                    [ICON_SELECTOR]: {
+                        fill: BASE_STYLES.transparent.color
+                    }
+                }
+            })
+        };
+    }
+
+    /**
+     * Returns menuIcon style overrides based on button variant.
+     *
+     * @param primary - primary button variant
+     * @param alert - alert button variant
+     * @returns IStyle
+     */
+    private getMenuIconStyleOverrides(primary?: boolean, alert?: boolean): IStyle {
+        return {
+            selectors: {
+                'svg > path': {
+                    fill: BASE_STYLES.secondary.color
+                },
+                ...(primary && {
+                    'svg > path': {
+                        fill: BASE_STYLES.color
+                    }
+                }),
+                ...(alert && {
+                    'svg > path': {
+                        fill: BASE_STYLES.color
+                    }
+                })
+            }
+        };
+    }
+
+    /**
      * Method returns styles of root button element.
      *
      * @param props Button props.
@@ -233,84 +346,11 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 lineHeight: 20,
                 whiteSpace: 'nowrap'
             },
-            rootDisabled: {
-                opacity: '0.5 !important',
-                // Add to use hard coded value here as Theia doesn't support these values correctly
-                backgroundColor: BASE_STYLES.secondary.backgroundColor,
-                borderColor: BASE_STYLES.secondary.disabledBorderColor,
-                color: BASE_STYLES.secondary.color,
-                ...(primary && {
-                    opacity: '0.5 !important',
-                    color: BASE_STYLES.color,
-                    backgroundColor: BASE_STYLES.primary.backgroundColor,
-                    borderColor: BASE_STYLES.primary.disabledBorderColor
-                }),
-                ...(alert && {
-                    opacity: '0.5 !important',
-                    color: BASE_STYLES.color,
-                    backgroundColor: BASE_STYLES.alert.backgroundColor,
-                    borderColor: BASE_STYLES.alert.disabledBorderColor
-                }),
-                ...(transparent && {
-                    color: BASE_STYLES.transparent.color,
-                    backgroundColor: BASE_STYLES.transparent.backgroundColor,
-                    borderColor: BASE_STYLES.transparent.disabledBorderColor
-                })
-            },
+            rootDisabled: this.getRootDisabledStyles(primary, alert, transparent),
             rootPressed: interactionStyles.root,
             rootHovered: interactionStyles.root,
-            icon: {
-                height: 16,
-                lineHeight: 16,
-                marginLeft: -3,
-                color: BASE_STYLES.secondary.color,
-                selectors: {
-                    [ICON_SELECTOR]: {
-                        fill: BASE_STYLES.secondary.color
-                    }
-                },
-                ...(primary && {
-                    color: BASE_STYLES.color,
-                    selectors: {
-                        [ICON_SELECTOR]: {
-                            fill: BASE_STYLES.color
-                        }
-                    }
-                }),
-                ...(alert && {
-                    color: BASE_STYLES.color,
-                    selectors: {
-                        [ICON_SELECTOR]: {
-                            fill: BASE_STYLES.color
-                        }
-                    }
-                }),
-                ...(transparent && {
-                    color: BASE_STYLES.transparent.color,
-                    selectors: {
-                        [ICON_SELECTOR]: {
-                            fill: BASE_STYLES.transparent.color
-                        }
-                    }
-                })
-            },
-            menuIcon: {
-                selectors: {
-                    'svg > path': {
-                        fill: BASE_STYLES.secondary.color
-                    },
-                    ...(primary && {
-                        'svg > path': {
-                            fill: BASE_STYLES.color
-                        }
-                    }),
-                    ...(alert && {
-                        'svg > path': {
-                            fill: BASE_STYLES.color
-                        }
-                    })
-                }
-            },
+            icon: this.getIconStyleOverrides(primary, alert, transparent),
+            menuIcon: this.getMenuIconStyleOverrides(primary, alert),
             rootChecked: {
                 backgroundColor: BASE_STYLES.secondary.backgroundColor,
                 color: BASE_STYLES.secondary.color,
@@ -336,7 +376,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 minHeight: BASE_STYLES.height,
                 height: BASE_STYLES.height,
                 boxSizing: 'border-box',
-                borderRadius: `0 ${COMMON_INPUT_STYLES.borderRadius}px ${COMMON_INPUT_STYLES.borderRadius}px 0 !important`,
+                borderRadius: `0 ${COMMON_INPUT_STYLES.borderRadius} ${COMMON_INPUT_STYLES.borderRadius} 0 !important`,
                 borderLeft: 'none',
                 outline: 'transparent',
                 userSelect: 'none',
@@ -428,16 +468,24 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const defaultMenuIconProps = this.props.menuProps?.items
+        const { propagateMenuOpenKeyDown = true, componentRef: externalRef, ...props } = this.props;
+        const defaultMenuIconProps = props.menuProps?.items
             ? {
                   // Overwrite build-in fluentui icon
                   iconName: UiIcons.ArrowDown
               }
             : undefined;
+        const mergedRef = mergeButtonRef(this._buttonRef, externalRef);
         return (
             <DefaultButton
                 menuIconProps={defaultMenuIconProps}
-                {...this.props}
+                {...props}
+                componentRef={mergedRef}
+                onKeyDown={
+                    propagateMenuOpenKeyDown
+                        ? (ev) => handleMenuKeyDown(ev, this._buttonRef, props.onKeyDown, props.menuProps)
+                        : props.onKeyDown
+                }
                 styles={this.setStyle(this.props)}
                 menuAs={UIContextualMenu}
             />

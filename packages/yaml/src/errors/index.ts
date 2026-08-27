@@ -1,4 +1,4 @@
-import { YAMLError } from './yaml-error';
+import { YAMLError } from './yaml-error.js';
 
 export const errorCode = Object.freeze({
     yamlParsing: 'yamlParsing',

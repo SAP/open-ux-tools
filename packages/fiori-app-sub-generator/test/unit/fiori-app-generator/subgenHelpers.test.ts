@@ -2,8 +2,8 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { DefaultLogger } from '@sap-ux/fiori-generator-shared';
-import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
-import { ApiHubType } from '../../../src/types';
+import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers.js';
+import { ApiHubType } from '../../../src/types/index.js';
 import { join } from 'node:path';
 
 describe('Subgen (flp/deploy) are correctly composedWith', () => {

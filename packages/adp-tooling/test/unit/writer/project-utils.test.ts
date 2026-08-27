@@ -1,38 +1,41 @@
-import path, { join } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
+import path, { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 
-import { getTypesPackage, getTypesVersion, getEsmTypesVersion, UI5_DEFAULT } from '@sap-ux/ui5-config';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import { type AdpWriterConfig, AppRouterType, FlexLayer } from '../../../src';
-import {
-    writeTemplateToFolder,
-    writeUI5Yaml,
-    writeUI5DeployYaml,
-    writeCfUI5Yaml,
-    getPackageJSONInfo,
-    getTypes
-} from '../../../src/writer/project-utils';
+const realFs = await import('node:fs');
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
 
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    read: jest.fn(),
-    copyTpl: jest.fn(),
-    write: jest.fn(),
-    readFileSync: jest.fn()
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    readFileSync: mockReadFileSync,
+    default: { ...realFs.default, readFileSync: mockReadFileSync }
 }));
 
-jest.mock('@sap-ux/ui5-config', () => ({
-    ...jest.requireActual('@sap-ux/ui5-config'),
-    getTypesPackage: jest.fn(),
-    getEsmTypesVersion: jest.fn(),
-    getTypesVersion: jest.fn()
+const mockGetTypesPackage = jest.fn<typeof realUi5Config.getTypesPackage>();
+const mockGetTypesVersion = jest.fn<typeof realUi5Config.getTypesVersion>();
+const mockGetEsmTypesVersion = jest.fn<typeof realUi5Config.getEsmTypesVersion>();
+
+const realUi5Config = await import('@sap-ux/ui5-config');
+
+jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
+    ...realUi5Config,
+    getTypesPackage: mockGetTypesPackage,
+    getEsmTypesVersion: mockGetEsmTypesVersion,
+    getTypesVersion: mockGetTypesVersion
 }));
 
-const readFileSyncMock = readFileSync as jest.Mock;
-const mockedGetTypesPackage = getTypesPackage as jest.Mock;
-const mockedGetTypesVersion = getTypesVersion as jest.Mock;
-const mockedGetEsmTypesVersion = getEsmTypesVersion as jest.Mock;
+const { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml, writeCfUI5Yaml, getPackageJSONInfo, getTypes } =
+    await import('../../../src/writer/project-utils.js');
+const { AppRouterType, FlexLayer } = await import('../../../src/types.js');
+import type { AdpWriterConfig } from '../../../src/index.js';
+
+const UI5_DEFAULT = {
+    TYPES_PACKAGE_NAME: '@sapui5/types',
+    TYPES_VERSION_BEST: '1.136.0'
+};
 
 const mockServiceKeys = [
     {
@@ -119,17 +122,19 @@ describe('Project Utils', () => {
 
         it('should return package.json content when file is read successfully', () => {
             const mockJSON = { name: 'test-package', version: '1.0.0' };
-            readFileSyncMock.mockReturnValue(JSON.stringify(mockJSON));
+            mockReadFileSync.mockReturnValue(JSON.stringify(mockJSON));
 
             const result = getPackageJSONInfo();
 
             expect(result).toEqual(mockJSON);
+            const packageJsonPath = mockReadFileSync.mock.calls[0][0];
+            expect(packageJsonPath).toEqual(join(__dirname, '../../../package.json'));
         });
 
         it('should return default package info on read failure', () => {
-            readFileSyncMock.mockImplementation(() => {
+            mockReadFileSync.mockImplementation((() => {
                 throw new Error('File not found');
-            });
+            }) as unknown as typeof realFs.readFileSync);
 
             const result = getPackageJSONInfo();
 
@@ -152,13 +157,13 @@ describe('Project Utils', () => {
         });
 
         it('should return classic types package and version when applicable', () => {
-            mockedGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
-            mockedGetTypesVersion.mockReturnValue('1.108.0');
+            mockGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
+            mockGetTypesVersion.mockReturnValue('1.108.0');
 
             const result = getTypes('1.108.0');
 
-            expect(mockedGetTypesPackage).toHaveBeenCalledWith('1.108.0');
-            expect(mockedGetTypesVersion).toHaveBeenCalledWith('1.108.0');
+            expect(mockGetTypesPackage).toHaveBeenCalledWith('1.108.0');
+            expect(mockGetTypesVersion).toHaveBeenCalledWith('1.108.0');
             expect(result).toEqual({
                 typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
                 typesVersion: '1.108.0'
@@ -166,13 +171,13 @@ describe('Project Utils', () => {
         });
 
         it('should return esm types package and version if not default', () => {
-            mockedGetTypesPackage.mockReturnValue('@sapui5/esm-types');
-            mockedGetEsmTypesVersion.mockReturnValue('1.112.1');
+            mockGetTypesPackage.mockReturnValue('@sapui5/esm-types');
+            mockGetEsmTypesVersion.mockReturnValue('1.112.1');
 
             const result = getTypes('1.112.1');
 
-            expect(mockedGetTypesPackage).toHaveBeenCalledWith('1.112.1');
-            expect(mockedGetEsmTypesVersion).toHaveBeenCalledWith('1.112.1');
+            expect(mockGetTypesPackage).toHaveBeenCalledWith('1.112.1');
+            expect(mockGetEsmTypesVersion).toHaveBeenCalledWith('1.112.1');
             expect(result).toEqual({
                 typesPackage: '@sapui5/esm-types',
                 typesVersion: '1.112.1'
@@ -180,8 +185,8 @@ describe('Project Utils', () => {
         });
 
         it('should handle undefined version gracefully', () => {
-            mockedGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
-            mockedGetTypesVersion.mockReturnValue('1.136.0');
+            mockGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
+            mockGetTypesVersion.mockReturnValue('1.136.0');
 
             const result = getTypes(undefined);
 
@@ -196,8 +201,8 @@ describe('Project Utils', () => {
         beforeEach(() => {
             jest.clearAllMocks();
 
-            mockedGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
-            mockedGetTypesVersion.mockReturnValue('~1.136.0');
+            mockGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
+            mockGetTypesVersion.mockReturnValue('~1.136.0');
         });
 
         const templatePath = '../../../templates';
@@ -267,10 +272,24 @@ describe('Project Utils', () => {
 
             try {
                 await writeUI5Yaml(projectPath, data, mockFs as unknown as Editor);
-                fail('Expected error to be thrown');
-            } catch (error) {
+                throw new Error('Expected error to be thrown');
+            } catch (error: any) {
                 expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
+        });
+
+        it('should include builder.resources.excludes in written ui5.yaml', async () => {
+            const captureFs = {
+                write: jest.fn(),
+                read: jest.fn().mockReturnValue(ui5Yaml)
+            };
+            await writeUI5Yaml(projectPath, data, captureFs as unknown as Editor);
+            const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
+            expect(writtenContent).toContain('resources:');
+            expect(writtenContent).toContain('excludes:');
+            expect(writtenContent).toContain('/test/**');
+            expect(writtenContent).toContain('/localService/**');
         });
     });
 
@@ -304,8 +323,8 @@ describe('Project Utils', () => {
 
             try {
                 await writeUI5DeployYaml(projectPath, config, mockFs as unknown as Editor);
-                fail('Expected error to be thrown');
-            } catch (error) {
+                throw new Error('Expected error to be thrown');
+            } catch (error: any) {
                 expect(error.message).toBe(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
             }
         });
@@ -352,10 +371,24 @@ metadata:
 
             try {
                 await writeCfUI5Yaml(projectPath, cfData, mockFs as unknown as Editor);
-                fail('Expected error to be thrown');
-            } catch (error) {
+                throw new Error('Expected error to be thrown');
+            } catch (error: any) {
                 expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
+        });
+
+        it('should include builder.resources.excludes in written ui5.yaml', async () => {
+            const captureFs = {
+                write: jest.fn(),
+                read: jest.fn().mockReturnValue(ui5YamlContent)
+            };
+            await writeCfUI5Yaml(projectPath, cfData, captureFs as unknown as Editor);
+            const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
+            expect(writtenContent).toContain('resources:');
+            expect(writtenContent).toContain('excludes:');
+            expect(writtenContent).toContain('/test/**');
+            expect(writtenContent).toContain('/localService/**');
         });
     });
 });

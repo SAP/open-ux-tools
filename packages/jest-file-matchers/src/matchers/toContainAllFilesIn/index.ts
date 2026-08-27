@@ -2,7 +2,7 @@ import { compareSync } from 'dir-compare';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import chalk from 'chalk';
-import type { MatcherOptions } from '../types';
+import type { MatcherOptions } from '../types.js';
 
 /**
  * Returns the messages(s), if any, related to the missing files in the directory.
@@ -57,7 +57,7 @@ export function toContainAllFilesIn(
                 const missingFile = join(d.path2, d.name2);
                 if (updateSnapshot) {
                     pass = true;
-                    fs.unlinkSync(missingFile);
+                    fs.rmSync(missingFile, { recursive: true, force: true });
                     snapshotState.updated++; // We don't have a count of `deleted`
                 } else {
                     pass = false;

@@ -9,7 +9,7 @@ import type {
     FioriPreviewConfig,
     DataSourceConfig,
     MockserverService
-} from './types';
+} from './types/index.js';
 import type { NodeComment } from '@sap-ux/yaml';
 
 /**

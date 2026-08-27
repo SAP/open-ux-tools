@@ -1,6 +1,6 @@
 import type { Target, Element, TextNode, ElementChild } from '@sap-ux/odata-annotation-core-types';
 
-import type { JsonPointer } from './change';
+import type { JsonPointer } from './change.js';
 
 // change objects describing edits in generic format
 

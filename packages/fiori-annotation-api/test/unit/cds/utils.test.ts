@@ -7,11 +7,11 @@ import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import { createCdsCompilerFacadeForRoot, createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 import type { AnnotationGroup } from '@sap-ux/cds-annotation-parser';
 
-import { getDocument } from '../../../src/cds/document';
-import type { Document } from '../../../src/cds/document';
-import { getAnnotationFromAssignment } from '../../../src/cds/utils';
+import { getDocument } from '../../../src/cds/document.js';
+import type { Document } from '../../../src/cds/document.js';
+import { getAnnotationFromAssignment } from '../../../src/cds/utils.js';
 
-import { PROJECTS } from '../projects';
+import { PROJECTS } from '../projects.js';
 
 const vocabularyService = new VocabularyService(true);
 

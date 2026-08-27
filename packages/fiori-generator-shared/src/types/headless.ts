@@ -1,7 +1,7 @@
 import { Authentication } from '@sap-ux/btp-utils';
 import type { Annotations, EntitySetData, ExternalService } from '@sap-ux/axios-extension';
-import type { FloorplanKey } from './app-gen';
-import type { CapRuntime } from './cap';
+import type { FloorplanKey } from './app-gen.js';
+import type { CapRuntime } from './cap.js';
 
 /**
  * Shared types used by headless generation from multiple modules
@@ -112,6 +112,11 @@ export interface AppConfig {
         readonly skipAnnotations?: boolean;
         readonly enableEslint?: boolean;
         readonly enableTypeScript?: boolean;
+        /**
+         * If true, virtual endpoints will be used for preview instead of generating flpSandbox.html and related files.
+         * Defaults to true if not specified.
+         */
+        readonly enableVirtualEndpoints?: boolean;
     };
     service?: {
         readonly host?: string;

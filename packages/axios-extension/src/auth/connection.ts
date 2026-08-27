@@ -1,6 +1,6 @@
 import { AxiosHeaders } from 'axios';
 import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
-import type { ServiceProvider } from '../base/service-provider';
+import type { ServiceProvider } from '../base/service-provider.js';
 import detectContentType from 'detect-content-type';
 
 export enum CSRF {
@@ -102,7 +102,11 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
  * @returns true if the contents are determined to be HTML
  */
 function isHtmlResponse(response: AxiosResponse): boolean {
-    return getContentType(response.headers['content-type'], response.data).startsWith('text/html');
+    const contentTypeHeader = response.headers['content-type'];
+    return getContentType(
+        typeof contentTypeHeader === 'string' ? contentTypeHeader : undefined,
+        response.data
+    ).startsWith('text/html');
 }
 
 /**

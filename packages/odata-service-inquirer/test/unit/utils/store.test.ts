@@ -1,14 +1,19 @@
-import { initI18nOdataServiceInquirer } from '../../../src/i18n';
-import LoggerHelper from '../../../src/prompts/logger-helper';
-import { getAllBackendSystems } from '../../../src/utils/store';
+import { jest } from '@jest/globals';
 
-const mockGetAll = jest.fn();
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+const mockGetAll = jest.fn<typeof actualStore.getAll>();
+
+const actualStore = await import('@sap-ux/store');
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
         getAll: mockGetAll
     }))
 }));
+
+const { initI18nOdataServiceInquirer } = await import('../../../src/i18n.js');
+const LoggerHelper = (await import('../../../src/prompts/logger-helper.js')).default;
+const { getAllBackendSystems } = await import('../../../src/utils/store.js');
 
 describe('Test utils related to the store', () => {
     beforeAll(async () => {
@@ -44,6 +49,26 @@ describe('Test utils related to the store', () => {
         expect(backendSystems).toEqual([]);
         expect(loggerErrorSpy).toHaveBeenCalledWith(
             expect.stringContaining('An error occurred when retrieving the backend systems from the store: Test error')
+        );
+    });
+
+    it('should call getAll with default backendSystemFilter when none provided', async () => {
+        mockGetAll.mockResolvedValueOnce([]);
+        await getAllBackendSystems();
+        expect(mockGetAll).toHaveBeenCalledWith(
+            expect.objectContaining({
+                backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+            })
+        );
+    });
+
+    it('should call getAll with provided backendSystemFilter', async () => {
+        mockGetAll.mockResolvedValueOnce([]);
+        await getAllBackendSystems(false, { connectionType: ['abap_catalog'] });
+        expect(mockGetAll).toHaveBeenCalledWith(
+            expect.objectContaining({
+                backendSystemFilter: { connectionType: ['abap_catalog'] }
+            })
         );
     });
 });

@@ -4,36 +4,31 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import type { Question } from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { initI18nOdataServiceInquirer } from './i18n';
-import { getQuestions } from './prompts';
-import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
+import { initI18nOdataServiceInquirer } from './i18n.js';
+import { getQuestions } from './prompts/index.js';
+import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection/index.js';
 import {
     type SystemSelectionAnswers,
     getSystemSelectionQuestions as getSystemSelectionQuestionsBase
-} from './prompts/datasources/sap-system/system-selection';
-import type {
-    CfAbapEnvServiceChoice,
-    NewSystemChoice,
-    SystemSelectionAnswerType
-} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
-
-import type { Annotations } from '@sap-ux/axios-extension';
-import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
-import type { TemplateType } from '@sap-ux/fiori-elements-writer';
-import { getEntitySelectionQuestions } from './prompts/edmx/questions';
-import LoggerHelper from './prompts/logger-helper';
+} from './prompts/datasources/sap-system/system-selection/index.js';
 import {
-    type EntityPromptOptions,
-    type OdataServiceAnswers,
-    type OdataServicePromptOptions,
-    type OdataServiceQuestion,
-    type SapSystemType,
-    type ConnectedSystem,
-    DatasourceType,
+    CfAbapEnvServiceChoice,
+    NewSystemChoice
+} from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+import type { Annotations } from '@sap-ux/axios-extension';
+import type { TemplateType } from '@sap-ux/fiori-elements-writer';
+import { getEntitySelectionQuestions } from './prompts/edmx/questions.js';
+import LoggerHelper from './prompts/logger-helper.js';
+import type {
     EntityRelatedAnswers,
-    promptNames
-} from './types';
-import { getPromptHostEnvironment, PromptState } from './utils';
+    EntityPromptOptions,
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
+    OdataServiceQuestion,
+    ConnectedSystem
+} from './types.js';
+import { DatasourceType } from './types.js';
+import { getPromptHostEnvironment, PromptState } from './utils/index.js';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -170,7 +165,6 @@ export {
     CfAbapEnvServiceChoice,
     // @deprecated - temp export to support to support open source migration
     DatasourceType,
-    EntityRelatedAnswers,
     // @deprecated - temp export to support to support open source migration
     ERROR_TYPE,
     // @deprecated - temp export to support to support open source migration
@@ -181,16 +175,18 @@ export {
     NewSystemChoice,
     // @deprecated - temp export to support to support open source migration
     OdataVersion,
-    prompt,
-    promptNames,
-    // @deprecated - temp export to support to support open source migration
-    SystemSelectionAnswerType,
-    type CapRuntime,
-    type CapService,
-    type InquirerAdapter,
-    type OdataServiceAnswers,
-    type OdataServicePromptOptions,
-    // @deprecated - temp export to support to support open source migration
-    type SapSystemType,
-    type ConnectedSystem
+    prompt
 };
+export { promptNames } from './types.js';
+// @deprecated - temp export to support to support open source migration
+export type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+export type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
+export type { InquirerAdapter } from '@sap-ux/inquirer-common';
+export type {
+    EntityRelatedAnswers,
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
+    // @deprecated - temp export to support to support open source migration
+    SapSystemType,
+    ConnectedSystem
+} from './types.js';

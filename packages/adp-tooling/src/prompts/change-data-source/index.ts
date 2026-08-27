@@ -1,7 +1,7 @@
 import type { NumberQuestion, ListQuestion, InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { ChangeDataSourceAnswers } from '../../types';
-import { t } from '../../i18n';
+import type { ChangeDataSourceAnswers } from '../../types.js';
+import { t } from '../../i18n.js';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
 import { validateEmptyString, isDataSourceURI } from '@sap-ux/project-input-validator';
 

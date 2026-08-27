@@ -1,2 +1,2 @@
-export * from './UIFocusTrapZone';
-export * from './UIFocusZone';
+export * from './UIFocusTrapZone.js';
+export * from './UIFocusZone.js';

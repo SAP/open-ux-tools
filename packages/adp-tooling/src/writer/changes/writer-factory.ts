@@ -1,8 +1,14 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType } from '../../types';
-import type { Writer, IWriterData } from '../../types';
-import { AnnotationsWriter, ComponentUsagesWriter, NewModelWriter, DataSourceWriter, InboundWriter } from './writers';
+import { ChangeType } from '../../types.js';
+import type { Writer, IWriterData } from '../../types.js';
+import {
+    AnnotationsWriter,
+    ComponentUsagesWriter,
+    NewModelWriter,
+    DataSourceWriter,
+    InboundWriter
+} from './writers/index.js';
 
 /**
  * Handles the creation of a writer instance based on the generator type.

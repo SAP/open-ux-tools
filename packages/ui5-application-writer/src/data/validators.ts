@@ -1,6 +1,6 @@
 import semVer from 'semver';
-import { t } from '../i18n';
-import type { Ui5App } from '../types';
+import { t } from '../i18n.js';
+import type { Ui5App } from '../types.js';
 
 /**
  * Validates the specified app id to ensure we do not create malformed documents.

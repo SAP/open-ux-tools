@@ -1,5 +1,5 @@
-import type { SystemInfo } from 'abap/types';
-import { AdtService } from './adt-service';
+import type { SystemInfo } from '../../types/index.js';
+import { AdtService } from './adt-service.js';
 
 /**
  * Retrieve system information using the ADT endpoint

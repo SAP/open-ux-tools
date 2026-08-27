@@ -1,2 +1,2 @@
-export { generateEslintConfig } from './add';
-export { convertEslintConfig } from './convert';
+export { generateEslintConfig } from './add.js';
+export { convertEslintConfig } from './convert.js';

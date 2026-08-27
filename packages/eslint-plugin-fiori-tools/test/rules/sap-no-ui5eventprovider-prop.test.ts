@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-ui5eventprovider-prop';
+import rule from '../../src/rules/sap-no-ui5eventprovider-prop.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -29,8 +29,7 @@ ruleTester.run('sap-no-ui5eventprovider-prop', rule, {
             code: 'oObject.mEventRegistry = 986;',
             errors: [
                 {
-                    message: 'Direct usage of a private property from sap.ui.base.EventProvider detected!',
-                    type: 'MemberExpression'
+                    message: 'Direct usage of a private property from sap.ui.base.EventProvider detected!'
                 }
             ]
         },
@@ -38,8 +37,7 @@ ruleTester.run('sap-no-ui5eventprovider-prop', rule, {
             code: 'oObject.oEventPool = 6598;',
             errors: [
                 {
-                    message: 'Direct usage of a private property from sap.ui.base.EventProvider detected!',
-                    type: 'MemberExpression'
+                    message: 'Direct usage of a private property from sap.ui.base.EventProvider detected!'
                 }
             ]
         }

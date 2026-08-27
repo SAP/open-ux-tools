@@ -7,7 +7,7 @@ import {
     serializeElement,
     serializeReference,
     serializeTarget
-} from '../../src';
+} from '../../src/index.js';
 declare const expect: jest.Expect;
 
 const vocabularyService = new VocabularyService();

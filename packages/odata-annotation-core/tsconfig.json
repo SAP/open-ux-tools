@@ -6,8 +6,7 @@
     "lib": [
       "ES2023",
       "ESNext.BigInt"
-    ],
-    "preserveConstEnums": false
+    ]
   },
   "include": [
     "src"

@@ -1,1 +1,1 @@
-export { SystemInfo } from './SystemInfo';
+export { SystemInfo } from './SystemInfo.js';

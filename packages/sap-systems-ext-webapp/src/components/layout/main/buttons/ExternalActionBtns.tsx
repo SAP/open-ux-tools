@@ -1,9 +1,9 @@
 import React from 'react';
-import type { SystemInfo } from '../../../../types';
+import type { SystemInfo } from '../../../../types/index.js';
 import type { ReactElement } from 'react';
 import { UIDefaultButton, UiIcons } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
-import { actions } from '../../../../state';
+import { actions } from '../../../../state/index.js';
 
 import '../../../../styles/Buttons.scss';
 

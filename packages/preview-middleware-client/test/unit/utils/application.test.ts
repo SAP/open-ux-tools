@@ -1,4 +1,4 @@
-import { getApplicationType } from '../../../src/utils/application';
+import { getApplicationType } from '../../../src/utils/application.js';
 
 describe('getApplicationType - fev2', () => {
     const manifestMockListreportApp = {

@@ -3,7 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'node:path';
 import { FileName, hasDependency, type Package } from '@sap-ux/project-access';
-import { isLowerThanMinimalVersion } from '../common/package-json';
+import { isLowerThanMinimalVersion } from '../common/package-json.js';
 import crossSpawn from 'cross-spawn';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -249,6 +249,29 @@ async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, 
 }
 
 /**
+ * Finds the index of the `[` that is matched by the `]` at the given closing index, walking
+ * backwards through the string while tracking bracket depth.
+ *
+ * @param content - the full file content string
+ * @param closingIndex - the index of the `]` whose matching `[` we want to find
+ * @returns the index of the matching `[`, or -1 if not found
+ */
+function findMatchingOpenBracket(content: string, closingIndex: number): number {
+    let depth = 0;
+    for (let i = closingIndex; i >= 0; i--) {
+        if (content.charAt(i) === ']') {
+            depth++;
+        } else if (content.charAt(i) === '[') {
+            depth--;
+            if (depth === 0) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+/**
  * Injects the SAP Fiori tools plugin import and config spread into the migrated flat-config file.
  *
  * After the migration tool produces `eslint.config.mjs`, this function:
@@ -281,10 +304,13 @@ async function injectFioriToolsIntoMigratedConfig(
             'Unexpected format of migrated eslint config. Could not inject the SAP Fiori tools plugin configuration.'
         );
     }
+    const beforeBracket = content.slice(0, lastBracketIndex);
+    const matchingOpenIndex = findMatchingOpenBracket(content, lastBracketIndex);
+    const betweenBrackets = matchingOpenIndex === -1 ? '' : content.slice(matchingOpenIndex + 1, lastBracketIndex);
+    const isEmptyArray = /^\s*$/.test(betweenBrackets);
+    const separator = isEmptyArray ? '' : ',';
     content =
-        content.slice(0, lastBracketIndex) +
-        `,\n    ...fioriTools.configs['${config}'],\n` +
-        content.slice(lastBracketIndex);
+        beforeBracket + `${separator}\n    ...fioriTools.configs['${config}'],\n` + content.slice(lastBracketIndex);
 
     fs.write(migratedConfigPath, content);
     logger?.debug(`Injected SAP Fiori tools plugin into ${migratedConfigPath}`);
@@ -369,8 +395,8 @@ async function updatePackageJson(basePath: string, fs: Editor, logger?: ToolsLog
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     packageJson.devDependencies ??= {};
-    packageJson.devDependencies[packageName.ESLINT] = '^9.0.0';
-    packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^9.0.0';
+    packageJson.devDependencies[packageName.ESLINT] = '^10.0.0';
+    packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^10.0.0';
     delete packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_CUSTOM];
     packageJson.scripts ??= {};
     if (packageJson.scripts['lint']) {

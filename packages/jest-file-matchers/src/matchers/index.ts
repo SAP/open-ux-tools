@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import type { Filter, MatcherIgnore } from './types';
-export { toContainAllFilesIn } from './toContainAllFilesIn';
-export { toMatchFilesIn } from './toMatchFilesIn';
-export { toMatchFolder } from './toMatchFolder';
+import type { Filter, MatcherIgnore } from './types.js';
+export { toContainAllFilesIn } from './toContainAllFilesIn/index.js';
+export { toMatchFilesIn } from './toMatchFilesIn/index.js';
+export { toMatchFolder } from './toMatchFolder/index.js';
 
 declare global {
     namespace jest {

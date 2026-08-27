@@ -9,9 +9,9 @@ import type {
 } from '@sap-ux/odata-annotation-core-types';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
-import type { AnnotationFileChange } from './internal-change';
-import type { Service, CompiledService } from './service';
-import type { TextFile } from './text-file';
+import type { AnnotationFileChange } from './internal-change.js';
+import type { Service, CompiledService } from './service.js';
+import type { TextFile } from './text-file.js';
 
 type ValidationResultType = Map<string, CompilerMessage> | void;
 export interface ValueListReference {

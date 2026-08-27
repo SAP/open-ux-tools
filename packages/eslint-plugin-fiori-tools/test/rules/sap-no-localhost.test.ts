@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-localhost';
+import rule from '../../src/rules/sap-no-localhost.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -30,8 +30,7 @@ ruleTester.run('sap-no-localhost', rule, {
             code: "location.hostname === 'localhost';",
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
                 }
             ]
         },
@@ -39,8 +38,7 @@ ruleTester.run('sap-no-localhost', rule, {
             code: "location.host.indexOf('localhost')",
             errors: [
                 {
-                    message: ERROR_MSG,
-                    type: 'Literal'
+                    message: ERROR_MSG
                 }
             ]
         }

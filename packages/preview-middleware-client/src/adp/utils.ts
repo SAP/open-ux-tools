@@ -1,13 +1,14 @@
-import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import FlexUtils from 'sap/ui/fl/Utils';
-import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
-import { getControlById } from '../utils/core';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
+import { getControlById } from '../utils/core';
 
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { getChangeDefinition, getFlexChangeList } from '../utils/changes.js';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 
 export interface Deferred<T> {
     promise: Promise<T>;
@@ -106,20 +107,78 @@ export function getNestedProperty(obj: object, path: string): unknown {
  * @returns {boolean} Returns true if the command's change contains the specified property with the matching value; otherwise, returns false.
  */
 export function matchesChangeProperty(command: FlexCommand, propertyPath: string, propertyValue: string): boolean {
-    if (typeof command.getPreparedChange !== 'function') {
-        return false;
-    }
-    const change = command.getPreparedChange()?.getDefinition?.();
-    if (!change) {
-        return false;
-    }
-
-    const nestedProperty = getNestedProperty(change, propertyPath);
-    return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
+    return getFlexChangeList(command).some((change) => {
+        const changeDefinition = getChangeDefinition(change);
+        const nestedProperty = getNestedProperty(changeDefinition, propertyPath);
+        return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
+    });
 }
+
+/**
+ * Collects the `content.viewId` values of all pending `codeExt` changes in the RTA command stack for a
+ * given controller. A base page controller extension has no `viewId` (yields `undefined`), while an
+ * instance-specific extension yields the ID of the view it is bound to.
+ *
+ * @param {RuntimeAuthoring} rta - The RuntimeAuthoring instance to inspect.
+ * @param {string} controllerName - The controller name to match against `selector.controllerName`.
+ * @returns {(string | undefined)[]} The `content.viewId` of each matching pending codeExt change.
+ */
+export function getPendingCodeExtViewIds(rta: RuntimeAuthoring, controllerName: string): (string | undefined)[] {
+    const allCommands = rta.getCommandStack().getCommands();
+    const viewIds: (string | undefined)[] = [];
+
+    const collectFromCommand = (command: FlexCommand): void => {
+        getFlexChangeList(command).forEach((change) => {
+            const changeDefinition = getChangeDefinition(change);
+            if (getNestedProperty(changeDefinition, 'changeType') !== 'codeExt') {
+                return;
+            }
+            if (getNestedProperty(changeDefinition, 'selector.controllerName') !== controllerName) {
+                return;
+            }
+            const viewId = getNestedProperty(changeDefinition, 'content.viewId');
+            viewIds.push(typeof viewId === 'string' ? viewId : undefined);
+        });
+    };
+
+    allCommands.forEach((command: FlexCommand) => {
+        if (typeof command.getCommands === 'function') {
+            command.getCommands().forEach((subCommand: FlexCommand) => {
+                if (subCommand?.getProperty('name') === 'codeExt') {
+                    collectFromCommand(subCommand);
+                }
+            });
+        } else {
+            collectFromCommand(command);
+        }
+    });
+
+    return viewIds;
+}
+
 interface ControllerInfo {
     controllerName: string;
     viewId: string;
+}
+
+interface ViewLike {
+    getId(): string;
+    getControllerModuleName?(): string | undefined;
+    getController?(): { getMetadata(): { getName(): string } } | undefined;
+    getParent?(): ManagedObject | null;
+}
+
+/**
+ * Resolves the controller name of a view, preferring the typed controller module name and falling
+ * back to the controller instance's metadata name. Returns an empty string when the view owns no
+ * controller.
+ *
+ * @param view The view for which to resolve the controller name.
+ * @returns The controller name (`module:...` or class name), or an empty string when none is resolvable.
+ */
+function resolveControllerName(view: ViewLike): string {
+    const moduleName = view?.getControllerModuleName?.();
+    return moduleName ? `module:${moduleName}` : view?.getController?.()?.getMetadata?.().getName() ?? '';
 }
 
 /**
@@ -129,11 +188,27 @@ interface ControllerInfo {
  * @returns The controller name and view ID.
  */
 export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
-    const view = FlexUtils.getViewForControl(control);
-    const moduleName = view?.getControllerModuleName?.();
-    const controllerName = moduleName ? `module:${moduleName}` : view.getController()?.getMetadata().getName();
-    const viewId = view.getId();
-    return { controllerName, viewId };
+    let view = FlexUtils.getViewForControl(control) as ViewLike;
+    let controllerName = resolveControllerName(view);
+
+    while (!controllerName) {
+        const parent = view?.getParent?.();
+        if (!parent) {
+            break;
+        }
+        const parentView = FlexUtils.getViewForControl(parent) as ViewLike;
+        if (!parentView || parentView === view) {
+            break;
+        }
+        view = parentView;
+        controllerName = resolveControllerName(view);
+    }
+
+    // viewId is intentionally the controller-bearing view's ID (which may be an ancestor of the
+    // original view). The change file binds controllerName and viewId as a pair — returning the
+    // innermost view's ID when it has no controller would create an inconsistent pair that the
+    // server could never match.
+    return { controllerName, viewId: view.getId() };
 }
 
 /**

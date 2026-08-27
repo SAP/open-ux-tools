@@ -1,6 +1,6 @@
 import { sapMock } from 'mock/window';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import initConnectors from '../../../src/flp/initConnectors';
+import initConnectors from '../../../src/flp/initConnectors.js';
 
 describe('flp/initConnectors', () => {
     afterEach(() => {

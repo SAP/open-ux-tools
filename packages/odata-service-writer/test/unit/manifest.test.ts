@@ -1,20 +1,20 @@
-import { deleteServiceData } from '../../src/delete';
+import { deleteServiceData } from '../../src/delete.js';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { OdataService } from '../../src';
-import { OdataVersion, ServiceType } from '../../src';
+import type { OdataService } from '../../src/index.js';
+import { OdataVersion, ServiceType } from '../../src/index.js';
 import type { Manifest } from '@sap-ux/project-access';
-import { updateManifest } from '../../src/data/manifest';
-import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
-import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
-import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services';
-import { expectedEdmxManifestOlderServices } from '../test-data/manifest-json/edmx-manifest-older-services';
-import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
-import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation'; // single local annotation
-import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations'; // multiple local annotations
-import { expectedEdmxManifestMissingAnnotations } from '../test-data/manifest-json/edmx-manifest-missing-annotation-datasources'; // missing annotation definitions
-import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations'; // no any annotations
+import { updateManifest } from '../../src/data/manifest.js';
+import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest.js';
+import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations.js';
+import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services.js';
+import { expectedEdmxManifestOlderServices } from '../test-data/manifest-json/edmx-manifest-older-services.js';
+import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest.js';
+import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation.js'; // single local annotation
+import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations.js'; // multiple local annotations
+import { expectedEdmxManifestMissingAnnotations } from '../test-data/manifest-json/edmx-manifest-missing-annotation-datasources.js'; // missing annotation definitions
+import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations.js'; // no any annotations
 
 describe('manifest', () => {
     let fs: Editor;
@@ -25,17 +25,17 @@ describe('manifest', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
-        test.each([
-            ['1.110.0', 'None'],
-            ['1.115.0', undefined],
-            ['', undefined],
-            ['1.105.0', 'None'],
-            [undefined, undefined],
-            [['1.120.10', '2.0.0'], undefined],
-            ['1.144.0', undefined, '4.01']
+        test.each<[string | string[] | undefined, string | undefined, string]>([
+            ['1.110.0', 'None', '4.0'],
+            ['1.115.0', undefined, '4.0'],
+            ['', undefined, '4.0'],
+            ['1.105.0', 'None', '4.0'],
+            [undefined, undefined, '4.0'],
+            [['1.120.10', '2.0.0'], undefined, '4.0'],
+            ['1.144.0', undefined, '4.0']
         ])(
             'Ensure synchronizationMode is correctly set for minUI5Version %s',
-            async (minUI5Version, syncMode, expectedOdataVersion = '4.0') => {
+            async (minUI5Version, syncMode, expectedOdataVersion) => {
                 const testManifest = {
                     'sap.app': {
                         id: 'test.update.manifest'
@@ -67,6 +67,62 @@ describe('manifest', () => {
                 );
             }
         );
+        describe('odataVersion written to manifest.json', () => {
+            const baseManifest = { 'sap.app': { id: 'test.odata.version' } };
+            const baseService = { client: '123', model: 'amodel', name: 'aname', path: '/a/path' };
+
+            test('v4 service with EDMX metadata declaring Version="4.01" writes 4.01', async () => {
+                const metadata =
+                    '<edmx:Edmx Version="4.01" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.01');
+            });
+
+            test('v4 service with EDMX metadata not declaring 4.01 writes 4.0', async () => {
+                const metadata =
+                    '<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.0');
+            });
+
+            test('v4 service with no metadata writes 4.0', async () => {
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4 }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.0');
+            });
+
+            test('v2 service with metadata writes 2.0 regardless of EDMX version', async () => {
+                const metadata =
+                    '<edmx:Edmx Version="4.01" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v2, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('2.0');
+            });
+
+            test('v4 service with Version attribute after namespace declaration writes 4.01', async () => {
+                const metadata =
+                    '<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.01"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.01');
+            });
+
+            test('v4 service with XML declaration preceding root element writes 4.01', async () => {
+                const metadata =
+                    '<?xml version="1.0" encoding="utf-8"?>\n<edmx:Edmx Version="4.01" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"></edmx:Edmx>';
+                fs.writeJSON('./webapp/manifest.json', baseManifest);
+                await updateManifest('./', { ...baseService, version: OdataVersion.v4, metadata }, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual('4.01');
+            });
+        });
         test('Ensure manifest are updated as expected as in edmx projects', async () => {
             const testManifest = {
                 'sap.app': {
@@ -419,6 +475,99 @@ describe('manifest', () => {
             await updateManifest('./', service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedCdsManifest);
+        });
+
+        describe('annotation preservation on update (forceServiceUpdate)', () => {
+            const buildManifestWithRemoteAnnotation = () => ({
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        mainService: {
+                            uri: '/a/path',
+                            type: 'OData',
+                            settings: {
+                                annotations: ['REMOTE_ANNO', 'localTest'],
+                                localUri: 'localService/mainService/metadata.xml'
+                            }
+                        },
+                        REMOTE_ANNO: {
+                            uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='REMOTE_ANNO',Version='0001')/$value/`,
+                            type: 'ODataAnnotation',
+                            settings: {
+                                localUri: 'localService/mainService/REMOTE_ANNO.xml'
+                            }
+                        },
+                        localTest: {
+                            uri: 'annotations/localTest.xml',
+                            type: 'ODataAnnotation',
+                            settings: {
+                                localUri: 'annotations/localTest.xml'
+                            }
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            });
+
+            test('preserves existing remote annotation entries, files and references when annotations are not provided', async () => {
+                // given - a service with an existing remote annotation dataSource and local annotation file
+                fs.writeJSON('./webapp/manifest.json', buildManifestWithRemoteAnnotation());
+                fs.write('./webapp/localService/mainService/REMOTE_ANNO.xml', '<remote/>');
+                fs.write('./webapp/annotations/localTest.xml', '<local/>');
+                const service: OdataService = {
+                    version: OdataVersion.v4,
+                    model: 'amodel',
+                    name: 'mainService',
+                    path: '/a/path',
+                    type: ServiceType.EDMX,
+                    metadata: '<edmx:Edmx Version="4.0"></edmx:Edmx>',
+                    // annotations intentionally not provided ("unknown") - must not be treated as "none"
+                    annotations: undefined
+                };
+                // when - the service is updated (forceServiceUpdate === true)
+                await updateManifest('./', service, fs, true);
+                // then - the remote annotation dataSource entry, its file and both references are all preserved
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                const dataSources = manifestJson['sap.app']?.dataSources;
+                expect(dataSources?.['mainService'].settings?.annotations).toStrictEqual(['REMOTE_ANNO', 'localTest']);
+                expect(dataSources?.['REMOTE_ANNO']).toBeDefined();
+                expect(dataSources?.['localTest']).toBeDefined();
+                expect(fs.exists('./webapp/localService/mainService/REMOTE_ANNO.xml')).toBe(true);
+                expect(fs.exists('./webapp/annotations/localTest.xml')).toBe(true);
+            });
+
+            test('prunes stale remote annotations when an explicit empty annotations array is provided', async () => {
+                // given - a service with an existing remote annotation dataSource and local annotation file
+                fs.writeJSON('./webapp/manifest.json', buildManifestWithRemoteAnnotation());
+                fs.write('./webapp/localService/mainService/REMOTE_ANNO.xml', '<remote/>');
+                fs.write('./webapp/annotations/localTest.xml', '<local/>');
+                const service: OdataService = {
+                    version: OdataVersion.v4,
+                    model: 'amodel',
+                    name: 'mainService',
+                    path: '/a/path',
+                    type: ServiceType.EDMX,
+                    metadata: '<edmx:Edmx Version="4.0"></edmx:Edmx>',
+                    // explicit "no annotations" - caller asserts there are none, so stale remote ones are pruned
+                    annotations: []
+                };
+                // when - the service is updated (forceServiceUpdate === true)
+                await updateManifest('./', service, fs, true);
+                // then - the stale remote annotation dataSource and file are removed, the local reference is kept
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                const dataSources = manifestJson['sap.app']?.dataSources;
+                expect(dataSources?.['mainService'].settings?.annotations).toStrictEqual(['localTest']);
+                expect(dataSources?.['REMOTE_ANNO']).toBeUndefined();
+                expect(dataSources?.['localTest']).toBeDefined();
+                expect(fs.exists('./webapp/localService/mainService/REMOTE_ANNO.xml')).toBe(false);
+                expect(fs.exists('./webapp/annotations/localTest.xml')).toBe(true);
+            });
         });
     });
 

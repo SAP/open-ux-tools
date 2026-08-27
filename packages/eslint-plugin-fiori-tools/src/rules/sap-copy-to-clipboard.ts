@@ -1,11 +1,14 @@
-import type { FioriRuleDefinition } from '../types';
-import { COPY_TO_CLIPBOARD, type CopyToClipboard } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { COPY_TO_CLIPBOARD, type CopyToClipboard } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import type { FeV2PageType } from '../project-context/linker/fe-v2';
-import type { ParsedApp } from '../project-context/parser';
-import type { FeV4PageType } from '../project-context/linker/fe-v4';
-import { createJsonFixer } from '../language/rule-fixer';
+import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: COPY_TO_CLIPBOARD,
@@ -18,12 +21,15 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [COPY_TO_CLIPBOARD]:
-                'Copy To Clipboard must be correctly configured. If not set, the "Copy" button is displayed'
+                'Copy To Clipboard in the {{sectionText}}table must be correctly configured. If not set, the "Copy" button is displayed'
         },
         fixable: 'code'
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: CopyToClipboard[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -32,14 +38,12 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!parsedService) {
                 continue;
             }
-            if (app.type === 'fe-v2') {
-                for (const page of app.pages) {
-                    problems.push(...handleCopyInTableV2(page, parsedApp));
-                }
-            } else if (app.type === 'fe-v4') {
-                for (const page of app.pages) {
-                    problems.push(...handleDisableCopyInTableV4(page, parsedApp));
-                }
+            for (const page of app.pages) {
+                problems.push(
+                    ...(<CopyToClipboard[]>(
+                        checkAppTablesConfiguration(page, parsedApp, context.sourceCode, checkConfiguration)
+                    ))
+                );
             }
         }
         return problems;
@@ -49,6 +53,9 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: COPY_TO_CLIPBOARD,
+                data: {
+                    sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : ''
+                },
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
@@ -60,53 +67,48 @@ const rule: FioriRuleDefinition = createFioriRule({
 });
 
 /**
- * Looks through V2 app page tables and returns problems if copy is set to false.
  *
- * @param page - V2 app page
- * @param parsedApp - parsed V2 app
- * @returns - CopyToClipoard issues
+ * @param page
+ * @param table
+ * @param parsedApp
+ * @param sourceCode
+ * @param problems
+ * @param pageSectionName
  */
-function handleCopyInTableV2(page: FeV2PageType, parsedApp: ParsedApp): CopyToClipboard[] {
-    const problems: CopyToClipboard[] = [];
-    for (const table of page.lookup['table'] ?? []) {
-        if (table.configuration.copy.valueInFile === false) {
-            problems.push({
-                type: COPY_TO_CLIPBOARD,
-                pageName: page.targetName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.copy.configurationPath
-                }
-            });
-        }
+function checkConfiguration(
+    page: FeV4PageType | FeV2PageType,
+    table: TableV4 | TableV2,
+    parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
+    problems: CopyToClipboard[],
+    pageSectionName?: string
+): void {
+    let config;
+    let wrongValue = false;
+    if (isV2Table(table)) {
+        config = table.configuration.copy;
+    } else {
+        config = table.configuration.disableCopyToClipboard;
+        wrongValue = true;
     }
-    return problems;
-}
-
-/**
- * Looks through V4 app page tables and returns problems if disableCopyToClipboard is set to true.
- *
- * @param page - V4 app page
- * @param parsedApp - parsed V4 app
- * @returns - CopyToClipoard issues
- */
-function handleDisableCopyInTableV4(page: FeV4PageType, parsedApp: ParsedApp): CopyToClipboard[] {
-    const problems: CopyToClipboard[] = [];
-    for (const table of page.lookup['table'] ?? []) {
-        if (table.configuration.disableCopyToClipboard.valueInFile === true) {
-            problems.push({
-                type: COPY_TO_CLIPBOARD,
-                pageName: page.targetName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.disableCopyToClipboard.configurationPath
-                }
-            });
+    if (config?.valueInFile === wrongValue) {
+        if (!(sourceCode instanceof FioriJSONSourceCode)) {
+            return;
         }
+        const node = sourceCode.getNode(sourceCode.ast.body, config.configurationPath);
+        const copyIssue: CopyToClipboard | undefined = {
+            type: COPY_TO_CLIPBOARD,
+            pageName: page.targetName,
+            pageSectionName,
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: config.configurationPath,
+                loc: node.loc
+            }
+        };
+        problems.push(copyIssue);
     }
-    return problems;
 }
 
 export default rule;

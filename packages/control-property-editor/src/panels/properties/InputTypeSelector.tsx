@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import React from 'react';
-import { InputTypeToggle } from './InputTypeToggle';
-import type { InputTypeWrapperProps } from './types';
+import { InputTypeToggle } from './InputTypeToggle.js';
+import type { InputTypeWrapperProps } from './types.js';
 
 /**
  * Input type selector.

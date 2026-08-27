@@ -1,3 +1,3 @@
-export * from './Separator';
-export * from './ThemeSelectorCallout';
-export * from './AppLogo';
+export * from './Separator.js';
+export * from './ThemeSelectorCallout.js';
+export * from './AppLogo.js';

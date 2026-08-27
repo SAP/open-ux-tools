@@ -12,9 +12,9 @@ import {
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
 
-import { promptYUIQuestions } from '../../common';
-import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpAppType } from '../../validation/validation';
+import { promptYUIQuestions } from '../../common/index.js';
+import { getLogger, traceChanges } from '../../tracing/index.js';
+import { validateAdpAppType } from '../../validation/index.js';
 import { FileName } from '@sap-ux/project-access';
 
 let loginAttempts = 3;

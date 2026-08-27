@@ -1,7 +1,7 @@
 import type ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type ResourceModel from 'sap/ui/model/resource/ResourceModel';
 import type UI5Element from 'sap/ui/core/Element';
-import { getTextBundle } from '../../i18n';
+import { getTextBundle } from '../../i18n.js';
 
 /**
  * Function to validate if a given value is a valid binding model.

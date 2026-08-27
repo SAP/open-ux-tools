@@ -10,9 +10,9 @@ import type {
     FioriToolsServeStaticPath,
     UI5Config
 } from '@sap-ux/ui5-config';
-import { t } from '../i18n';
-import type { TargetConfig } from '../types';
-import { DeployConfig } from '../types';
+import { t } from '../i18n.js';
+import type { TargetConfig } from '../types/index.js';
+import { DeployConfig } from '../types/index.js';
 
 /**
  * Reads and returns target information from ui5-deploy.yaml, if existing.

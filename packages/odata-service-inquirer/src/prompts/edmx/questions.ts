@@ -1,6 +1,11 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
+import {
+    PageTemplateType,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fe-fpm-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import {
     searchChoices,
@@ -9,7 +14,7 @@ import {
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions, Question } from 'inquirer';
-import { t } from '../../i18n';
+import { t } from '../../i18n.js';
 import type {
     AlpTableConfigAnswers,
     AnnotationGenerationAnswers,
@@ -17,11 +22,11 @@ import type {
     EntitySelectionAnswers,
     TableConfigAnswers,
     PageBuildingBlockAnswers
-} from '../../types';
-import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types';
-import { PromptState } from '../../utils';
-import LoggerHelper from '../logger-helper';
-import { getAnalyticListPageQuestions } from './alp-questions';
+} from '../../types.js';
+import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types.js';
+import { PromptState } from '../../utils/index.js';
+import LoggerHelper from '../logger-helper.js';
+import { getAnalyticListPageQuestions } from './alp-questions.js';
 import {
     type EntityAnswer,
     type EntityChoiceOptions,
@@ -30,7 +35,7 @@ import {
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
-} from './entity-helper';
+} from './entity-helper.js';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**
@@ -222,46 +227,67 @@ export function getEntitySelectionQuestions(
 }
 
 /**
- * Get the questions for page building block.
+ * Get the questions for the page building block prompts.
  *
  * @returns the page building block questions
  */
 function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
-    const pageBuildingBlockQuestions: Question<PageBuildingBlockAnswers>[] = [];
-
-    pageBuildingBlockQuestions.push({
-        type: 'confirm',
-        name: EntityPromptNames.addPageBuildingBlock,
-        message: t('prompts.pageBuildingBlock.message'),
-        default: false,
-        guiOptions: {
-            breadcrumb: true,
-            hint: t('prompts.pageBuildingBlock.tooltip')
-        },
-        additionalMessages: (addPageBuildingBlock: boolean) => {
-            if (addPageBuildingBlock) {
-                return {
-                    message: t('prompts.pageBuildingBlock.warning'),
-                    severity: Severity.warning
-                };
+    return [
+        {
+            type: 'confirm',
+            name: EntityPromptNames.addPageBuildingBlock,
+            message: t('prompts.pageBuildingBlock.message'),
+            default: false,
+            guiOptions: {
+                breadcrumb: true,
+                hint: t('prompts.pageBuildingBlock.tooltip', {
+                    minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                })
             }
-        }
-    } as ConfirmQuestion<PageBuildingBlockAnswers>);
-
-    // If the user wants to add a Page Building Block, ask for the title
-    pageBuildingBlockQuestions.push({
-        when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
-        type: 'input',
-        name: EntityPromptNames.pageBuildingBlockTitle,
-        message: t('prompts.pageBuildingBlock.titleMessage'),
-        guiOptions: {
-            breadcrumb: true,
-            mandatory: true
-        },
-        validate: (input: string) => !!input
-    } as InputQuestion<PageBuildingBlockAnswers>);
-
-    return pageBuildingBlockQuestions;
+        } as ConfirmQuestion<PageBuildingBlockAnswers>,
+        {
+            when: (answers: PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+            type: 'confirm',
+            name: EntityPromptNames.pageBuildingBlockLayout,
+            message: t('prompts.pageBuildingBlock.layoutMessage'),
+            default: true,
+            labelTrue: t('prompts.pageBuildingBlock.choiceBasic'),
+            labelFalse: t('prompts.pageBuildingBlock.choiceFull'),
+            filter: (val: boolean) => (val ? PageTemplateType.Basic : PageTemplateType.Full),
+            guiOptions: {
+                breadcrumb: t('prompts.pageBuildingBlock.layoutMessage')
+            },
+            additionalMessages: (input?: boolean) => {
+                if (input === true) {
+                    return {
+                        message: t('prompts.pageBuildingBlock.basicLayoutWarning', {
+                            minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                        }),
+                        severity: Severity.warning
+                    };
+                }
+                if (input === false) {
+                    return {
+                        message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
+                            minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                        }),
+                        severity: Severity.warning
+                    };
+                }
+            }
+        } as ConfirmQuestion<PageBuildingBlockAnswers>,
+        {
+            when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+            type: 'input',
+            name: EntityPromptNames.pageBuildingBlockTitle,
+            message: t('prompts.pageBuildingBlock.titleMessage'),
+            guiOptions: {
+                breadcrumb: true,
+                mandatory: true
+            },
+            validate: (input: string) => !!input
+        } as InputQuestion<PageBuildingBlockAnswers>
+    ];
 }
 
 /**
@@ -269,7 +295,7 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
  *
  * @param templateType used to determine if the tree table option should be included
  * @param odataVersion used to determine if the hierarchy qualifier is required when the selected table type is TreeTable
- * @param isCapService used to determine if the tree table option should be included
+ * @param isCapService used to determine analytical table requirements (CAP doesn't require all 8 transformations)
  * @param metadata the metadata (edmx) string of the service
  * @returns the table layout questions
  */
@@ -285,7 +311,9 @@ function getTableLayoutQuestions(
         { name: t('prompts.tableType.choiceResponsive'), value: 'ResponsiveTable' }
     ];
 
-    if (templateType !== 'alp' && !isCapService) {
+    // TreeTable is supported for LROP and Worklist templates (not ALP)
+    // CAP now supports tree tables via @hierarchy annotation (GA July 2025)
+    if (templateType !== 'alp') {
         tableTypeChoices.push({ name: t('prompts.tableType.choiceTree'), value: 'TreeTable' });
     }
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];

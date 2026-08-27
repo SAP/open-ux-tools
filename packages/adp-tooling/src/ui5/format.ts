@@ -1,7 +1,7 @@
 import { supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 
-import type { UI5Version, VersionDetail } from '../types';
-import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../base/constants';
+import type { UI5Version, VersionDetail } from '../types.js';
+import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../base/constants/index.js';
 
 /**
  * Type alias for a single version entry from the fallback list.

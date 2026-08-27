@@ -1,6 +1,6 @@
-import { i18nNamespaces, translate } from '../../../i18n';
-import { BuildingBlockType } from '../../types';
-import type { Answers, Prompts, PromptsGroup, PromptsType } from '../../../prompts/types';
+import { i18nNamespaces, translate } from '../../../i18n.js';
+import { BuildingBlockType } from '../../types.js';
+import type { Answers, Prompts, PromptsGroup, PromptsType } from '../../../prompts/types.js';
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: PromptsType;

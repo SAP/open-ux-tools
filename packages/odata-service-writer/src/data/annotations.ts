@@ -1,9 +1,17 @@
 import type { Editor } from 'mem-fs-editor';
 import { join, normalize, posix } from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
-import { t } from '../i18n';
-import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo, EdmxOdataService, CdsAnnotationsInfo } from '../types';
-import prettifyXml from 'prettify-xml';
+import { t } from '../i18n.js';
+import type {
+    NamespaceAlias,
+    OdataService,
+    EdmxAnnotationsInfo,
+    EdmxOdataService,
+    CdsAnnotationsInfo
+} from '../types.js';
+// xml-formatter types are not callable under NodeNext; cast to function type once so call sites are clean
+import _fmt from 'xml-formatter';
+const xmlFormatter = _fmt as unknown as (xml: string, options?: object) => string;
 import { getWebappPath, DirName } from '@sap-ux/project-access';
 
 /**
@@ -194,7 +202,12 @@ export async function writeMetadata(fs: Editor, webappPath: string, service: Edm
         // mainService should be used in case there is no name defined for service
         fs.write(
             join(webappPath, DirName.LocalService, service.name ?? 'mainService', 'metadata.xml'),
-            prettifyXml(service.metadata, { indent: 4 })
+            xmlFormatter(service.metadata, {
+                indentation: '    ',
+                lineSeparator: '\n',
+                collapseContent: true,
+                throwOnFailure: false
+            })
         );
     }
 }
@@ -263,14 +276,24 @@ export async function writeRemoteServiceAnnotationXmlFiles(
             if (annotation?.xml) {
                 fs.write(
                     join(webappPath, DirName.LocalService, serviceName, `${annotation.name}.xml`),
-                    prettifyXml(annotation.xml, { indent: 4 })
+                    xmlFormatter(annotation.xml, {
+                        indentation: '    ',
+                        lineSeparator: '\n',
+                        collapseContent: true,
+                        throwOnFailure: false
+                    })
                 );
             }
         }
     } else if (edmxAnnotations?.xml) {
         fs.write(
             join(webappPath, DirName.LocalService, serviceName, `${edmxAnnotations.name}.xml`),
-            prettifyXml(edmxAnnotations.xml, { indent: 4 })
+            xmlFormatter(edmxAnnotations.xml, {
+                indentation: '    ',
+                lineSeparator: '\n',
+                collapseContent: true,
+                throwOnFailure: false
+            })
         );
     }
 }

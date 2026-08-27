@@ -1,4 +1,4 @@
-import mockedStore from './@sap-ux/store';
+import mockedStore from './@sap-ux/store.js';
 
 type MockedStore = {
     mockedService: {

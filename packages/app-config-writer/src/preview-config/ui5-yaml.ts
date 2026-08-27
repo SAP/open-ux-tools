@@ -5,10 +5,10 @@ import {
     updateTestConfig,
     DEFAULT_FLP_PATH,
     TEST_CONFIG_DEFAULTS
-} from '../common/ui5-yaml';
-import { ensurePreviewMiddlewareDependency } from './package-json';
+} from '../common/ui5-yaml.js';
+import { ensurePreviewMiddlewareDependency } from './package-json.js';
 import { FileName, getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
-import { getPreviewMiddleware } from '../common/utils';
+import { getPreviewMiddleware } from '../common/utils.js';
 import {
     extractUrlDetails,
     isValidPreviewScript,
@@ -16,8 +16,8 @@ import {
     type Script,
     isTestPath,
     getScriptsFromPackageJson
-} from '../common/package-json';
-import { renameSandbox } from './preview-files';
+} from '../common/package-json.js';
+import { renameSandbox } from './preview-files.js';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';

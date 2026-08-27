@@ -1,29 +1,32 @@
-export {
+export type {
     ParsedName,
     ParsedActionFunctionSignature,
     ParsedCollectionIdentifier,
-    ParsedIdentifier,
+    ParsedIdentifier
+} from './names/index.js';
+export {
     parseIdentifier,
     toFullyQualifiedName,
     resolveName,
     getAliasInformation,
     getAllNamespacesAndReferences,
     toAliasQualifiedName
-} from './names';
+} from './names/index.js';
 
-export {
+export type {
     NavigationPropertyAnnotationSegment,
     ParsedPath,
     ParsedPathSegment,
-    TermCastSegment,
-    parsePath,
-    toFullyQualifiedPath
-} from './paths';
+    TermCastSegment
+} from './paths/index.js';
+export { parsePath, toFullyQualifiedPath } from './paths/index.js';
 
-export { findPathToPosition, FindPathResult, getPositionData } from './search';
+export type { FindPathResult } from './search/index.js';
+export { findPathToPosition, getPositionData } from './search/index.js';
 
 export {
-    indent,
+    indentWithTabs,
+    indentWithSpaces,
     getIndentLevel,
     positionAt,
     positionContained,
@@ -39,8 +42,8 @@ export {
     getElementAttributeValue,
     getSingleTextNode,
     isElementWithName
-} from './annotation-file';
+} from './annotation-file.js';
 
-export * from './utils';
+export * from './utils/index.js';
 
 export * from '@sap-ux/odata-annotation-core-types';

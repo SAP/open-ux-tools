@@ -9,7 +9,7 @@
     "undeploy": "cf undeploy <%- mtaId %> --delete-services --delete-service-keys --delete-service-brokers"
   },
   "devDependencies": {
-    "mbt": "^1.2.29",
+    "mbt": "^1.2.49",
     "rimraf": "^6.0.1"
   }
 }

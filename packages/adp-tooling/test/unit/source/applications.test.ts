@@ -1,8 +1,8 @@
 import { type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { isAppSupported, loadApps, SupportedProject } from '../../../src';
-import { initI18n, t } from '../../../src/i18n';
+import { isAppSupported, loadApps, SupportedProject } from '../../../src/index.js';
+import { initI18n, t } from '../../../src/i18n.js';
 
 describe('Target Applications', () => {
     const ONPREM_APP_FIELDS_STR =

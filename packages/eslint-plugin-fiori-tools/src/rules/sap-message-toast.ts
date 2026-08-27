@@ -11,7 +11,7 @@ import {
     isInteger,
     endsWith,
     type ASTNode
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 const INTERESTING_PATH = {
     'sap': {
@@ -48,7 +48,6 @@ const rule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'fiori tools (fiori custom) ESLint rule',
-            category: 'Best Practices',
             recommended: false
         },
         messages: {

@@ -1,5 +1,5 @@
-import { Severity } from '../src';
-import { getLogger } from '../src/logger';
+import { Severity } from '../src/index.js';
+import { getLogger } from '../src/logger.js';
 
 describe('Tests for logger', () => {
     test('Add all types of messages', () => {

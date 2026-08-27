@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { basename, join, dirname } from 'node:path';
 import type { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
-import { FOLDER_PATHS } from '../types';
+import { FOLDER_PATHS } from '../types/index.js';
 import assert from 'node:assert';
 
 interface SnapshotData {

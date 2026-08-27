@@ -1,5 +1,5 @@
-import type { IdGeneratorFunction } from './file';
-import type { CustomElement, FragmentContentData, InternalCustomElement, Manifest } from './types';
+import type { IdGeneratorFunction } from './file.js';
+import type { CustomElement, FragmentContentData, InternalCustomElement, Manifest } from './types.js';
 import { join, dirname } from 'node:path';
 
 export const FCL_ROUTER = 'sap.f.routing.Router';

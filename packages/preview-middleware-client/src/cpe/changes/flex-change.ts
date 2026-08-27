@@ -1,9 +1,8 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
-import type { UI5AdaptationOptions } from '../types';
-import { validateBindingModel } from './validator';
-import { createManifestPropertyChange } from '../../utils/fe-v4';
+import type { UI5AdaptationOptions } from '../types.js';
+import { validateBindingModel } from './validator.js';
+import { createManifestPropertyChange } from '../../utils/fe-v4.js';
 /**
  * Function to check a give value is a binding expression.
  *
@@ -45,6 +44,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
             [property]: change.value
         };
 
+        const CommandFactory = (await import('sap/ui/rta/command/CommandFactory')).default;
         const command = await CommandFactory.getCommandFor<FlexCommand>(
             modifiedControl,
             changeType,

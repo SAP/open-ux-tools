@@ -1,8 +1,8 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updateYaml } from './helpers';
-import type { ReuseLibConfig } from './types';
+import { updateManifest, updateYaml } from './helpers.js';
+import type { ReuseLibConfig } from './types.js';
 
 /**
  * Writes the file updates to the memfs editor instance.

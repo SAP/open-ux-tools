@@ -52,7 +52,25 @@ describe('Test the render webapp action', () => {
         await renderWebApp(panelContext);
 
         expect(postMessageSpy).toHaveBeenCalledWith({ type: 'SYSTEM_INFO_LOADING' });
+        expect(postMessageSpy).toHaveBeenCalledWith({
+            type: 'CREATE_NEW_SYSTEM',
+            payload: { systemInfo: backendSystem }
+        });
+        expect(postMessageSpy).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'SYSTEM_INFO' }));
+    });
+
+    it('should call post message for creating a new system without pre-populated data', async () => {
+        const panelContext = {
+            ...basePanelContext,
+            backendSystem: undefined,
+            panelViewType: SystemPanelViewType.Create
+        } as unknown as PanelContext;
+
+        await renderWebApp(panelContext);
+
+        expect(postMessageSpy).toHaveBeenCalledWith({ type: 'SYSTEM_INFO_LOADING' });
         expect(postMessageSpy).toHaveBeenCalledWith({ type: 'CREATE_NEW_SYSTEM' });
+        expect(postMessageSpy).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'SYSTEM_INFO' }));
     });
 
     it('should call cal the post message for viewing an existing saved system', async () => {

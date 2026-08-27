@@ -1,7 +1,7 @@
 import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
 
-import { t } from '../../../src/utils/i18n';
-import { getExtensionProjectData } from '../../../src/app/extension-project';
+import { t } from '../../../src/utils/i18n.js';
+import { getExtensionProjectData } from '../../../src/app/extension-project/index.js';
 
 const configAnswers = {
     system: 'SystemA',

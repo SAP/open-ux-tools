@@ -1,1 +1,1 @@
-export { PuppeteerEnvironment } from './jest-puppeteer-environment';
+export { PuppeteerEnvironment } from './jest-puppeteer-environment.js';

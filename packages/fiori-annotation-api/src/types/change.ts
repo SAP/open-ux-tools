@@ -221,9 +221,4 @@ export interface MoveReference {
  * Represents a change of an annotation value
  */
 export type Change =
-    | InsertChange
-    | UpdateChange
-    | DeleteChange
-    | InsertAnnotationChange
-    | InsertEmbeddedAnnotationChange
-    | MoveChange;
+    InsertChange | UpdateChange | DeleteChange | InsertAnnotationChange | InsertEmbeddedAnnotationChange | MoveChange;

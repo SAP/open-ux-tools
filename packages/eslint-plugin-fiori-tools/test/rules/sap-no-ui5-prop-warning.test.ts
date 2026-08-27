@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-ui5-prop-warning';
+import rule from '../../src/rules/sap-no-ui5-prop-warning.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -27,8 +27,7 @@ ruleTester.run('sap-no-ui5-prop-warning', rule, {
             code: 'oObject.oData = 6598;',
             errors: [
                 {
-                    message: 'Property oData is a private member of sap.ui.model.odata.v2.ODataModel',
-                    type: 'MemberExpression'
+                    message: 'Property oData is a private member of sap.ui.model.odata.v2.ODataModel'
                 }
             ]
         }

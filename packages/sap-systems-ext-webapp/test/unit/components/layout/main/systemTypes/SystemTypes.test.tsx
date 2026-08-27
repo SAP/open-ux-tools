@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { SystemTypes } from '../../../../../../src/components/layout/main/systemTypes/SystemTypes';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/ui-components', () => {
+jest.unstable_mockModule('@sap-ux/ui-components', () => {
     const UIDropdown = ({ onChange, options }: any) => (
         <select
             data-testid="system-type-dropdown"
-            onChange={(e) => {
+            onChange={(e: any) => {
                 const selectedOption = options.find((opt: any) => opt.key === e.target.value);
                 onChange(e, selectedOption);
             }}>
@@ -21,6 +21,8 @@ jest.mock('@sap-ux/ui-components', () => {
     UIDropdown.displayName = 'UIDropdown';
     return { UIDropdown };
 });
+
+const { SystemTypes } = await import('../../../../../../src/components/layout/main/systemTypes/SystemTypes');
 
 describe('<SystemTypes />', () => {
     it('Test selecting Cloud system type', () => {

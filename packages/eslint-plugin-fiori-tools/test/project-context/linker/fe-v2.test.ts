@@ -1,22 +1,55 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
 
-import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2';
-import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2';
-import type { LinkerContext } from '../../../src/project-context/linker/types';
-import { ApplicationParser } from '../../../src/project-context/parser';
-import type { ManifestChange } from '../../test-helper';
-import { applyManifestChange } from '../../test-helper';
+import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2.js';
+import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2.js';
+import type { LinkerContext } from '../../../src/project-context/linker/types.js';
+import { ApplicationParser } from '../../../src/project-context/parser/index.js';
+import type { ManifestChange } from '../../test-helper.js';
+import { applyManifestChange, applyXmlAnnotationsChange } from '../../test-helper.js';
+import { getParsedServiceByName } from '../../../src/project-context/utils.js';
+import { collectSections } from '../../../src/project-context/linker/annotations.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const parser = new ApplicationParser();
 
 interface TestOptions {
     manifestChanges?: ManifestChange[];
+    annotationsChange?: string;
 }
+
+const XML_FACET_NO_ID = `<Annotations Target="TECHED_ALP_SOA_SRV.SEPMRA_C_ALP_CurrencyVHType">
+                <Annotation Term="UI.Facets" >
+                <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Products"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations`;
+
+const XML_FACET_NO_ANNOTATION = `<Annotations Target="TECHED_ALP_SOA_SRV.SEPMRA_C_ALP_SupplierVHType">
+                <Annotation Term="UI.Facets" >
+                <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="Products"/>
+                            <PropertyValue Property="Label" String="Products"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations`;
+
+export const V2_SECOND_TABLE_ANNOTATION = `<Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                <Annotation Term="UI.LineItem" Qualifier="secondTable">
+                    <Collection/>
+                </Annotation>
+            </Annotations>`;
 
 describe('FE V2 Linker', () => {
     let artifacts: FoundFioriArtifacts;
@@ -48,6 +81,13 @@ describe('FE V2 Linker', () => {
             }
             testCache.set(uri, JSON.stringify(manifestObject, null, 4));
         }
+        if (options?.annotationsChange) {
+            const absolutePath = normalizePath(join(root, 'webapp', 'annotations', 'annotation.xml'));
+            const uri = pathToFileURL(absolutePath).toString();
+            const currentAnnotations = fileCache.get(uri)!;
+            const newAnnotations = applyXmlAnnotationsChange(currentAnnotations, options.annotationsChange);
+            testCache.set(uri, newAnnotations);
+        }
         const model = parser.parse('EDMXBackend', artifacts, testCache);
 
         const app = model.index.apps[Object.keys(model.index.apps)[0]];
@@ -56,6 +96,23 @@ describe('FE V2 Linker', () => {
             diagnostics: []
         };
     }
+
+    function findLRorALPPage(app: LinkedFeV2App, index = 0): FeV2ListReport {
+        let i = 0;
+        for (const page of app.pages) {
+            if (
+                page.componentName === 'sap.suite.ui.generic.template.ListReport' ||
+                page.componentName === 'sap.suite.ui.generic.template.AnalyticalListPage'
+            ) {
+                if (i === index) {
+                    return page;
+                }
+                i++;
+            }
+        }
+        throw new Error('No ListReport or AnalyticalList page found');
+    }
+
     function findObjectPage(app: LinkedFeV2App, index = 0): FeV2ObjectPage {
         let i = 0;
         for (const page of app.pages) {
@@ -70,6 +127,23 @@ describe('FE V2 Linker', () => {
     }
 
     describe('linkTableSettings', () => {
+        describe('page level - listReport page', () => {
+            test('table - only default table config collected', async () => {
+                const context = await setup({
+                    annotationsChange: V2_SECOND_TABLE_ANNOTATION
+                });
+                const result = runFeV2Linker(context);
+                const page = findLRorALPPage(result);
+                // Second table config not collected
+                const orphanTable = page.lookup['orphan-table'];
+                expect(orphanTable).toBeUndefined();
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(
+                    (table![0].annotation as { annotation: { qualifier?: string } }).annotation?.qualifier
+                ).toBeUndefined();
+            });
+        });
         describe('application level', () => {
             test('createMode', async () => {
                 const context = await setup({
@@ -162,7 +236,7 @@ describe('FE V2 Linker', () => {
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration.createMode).toMatchSnapshot();
             });
-            test('orphan-node', async () => {
+            test('orphan-section', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
@@ -244,6 +318,51 @@ describe('FE V2 Linker', () => {
                 expect(table![0].configuration.tableType).toMatchSnapshot();
             });
         });
+    });
+
+    test('collectSections', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['Z_SEPMRA_SO_SALESORDERANALYSIS'];
+        if (!entity?.structuredType) {
+            fail('Entity not found');
+        }
+        const sections = collectSections('v2', entity.structuredType, mainService);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].type).toBe('table-section');
+        expect(sections[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.Facets/0');
+        expect(sections[0].children[0].annotationPath).toBe('to_Product/@com.sap.vocabularies.UI.v1.LineItem');
+    });
+
+    test('collectSections - no ID', async () => {
+        const context = await setup({ annotationsChange: XML_FACET_NO_ID });
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['SEPMRA_C_ALP_CurrencyVH'];
+        if (!entity?.structuredType) {
+            fail('Entity not found');
+        }
+        const sections = collectSections('v2', entity.structuredType, mainService);
+        expect(sections).toHaveLength(0);
+    });
+
+    test('collectSections - no annotation path', async () => {
+        const context = await setup({ annotationsChange: XML_FACET_NO_ANNOTATION });
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['SEPMRA_C_ALP_SupplierVH'];
+        if (!entity?.structuredType) {
+            fail('Entity not found');
+        }
+        const sections = collectSections('v2', entity.structuredType, mainService);
+        expect(sections).toHaveLength(0);
     });
 });
 // Todo => table type on list report

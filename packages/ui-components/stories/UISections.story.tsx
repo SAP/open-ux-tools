@@ -54,7 +54,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         splitterTabIndex: 0,
         minSectionSize: props.threeSections ? [100, 100, 100] : [300, 300],
         animation: true,
-        splitterLayoutType: UISplitterLayoutType.Standard,
+        splitterLayoutType: UISplitterLayoutType.Compact,
         sizesAsPercents: false,
         sizes: props.threeSections ? [firstSectionSize, undefined, 200] : [firstSectionSize, undefined]
     });

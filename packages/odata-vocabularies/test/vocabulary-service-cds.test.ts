@@ -1,5 +1,5 @@
-import { VocabularyService } from '../src/vocabulary-service';
-import type { Term } from '../src/types/vocabulary-service';
+import { VocabularyService } from '../src/vocabulary-service.js';
+import type { Term } from '../src/types/vocabulary-service.js';
 declare const expect: jest.Expect;
 
 const vocabularyService = new VocabularyService(true);

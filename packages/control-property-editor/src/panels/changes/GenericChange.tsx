@@ -15,9 +15,9 @@ import {
     PENDING_CHANGE_TYPE,
     SAVED_CHANGE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
-import { getFormattedDateAndTime } from './utils';
-import GenericProperty from './GenericProperty';
-import { DisplayAsIcon } from './DisplayAsIcon';
+import { getFormattedDateAndTime } from './utils.js';
+import GenericProperty from './GenericProperty.js';
+import { DisplayAsIcon } from './DisplayAsIcon.js';
 
 export interface GenericChangeProps {
     /**

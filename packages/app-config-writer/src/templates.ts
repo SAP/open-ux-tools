@@ -1,4 +1,7 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 /**
  * Locates template files relative to the dist folder.
  * This helps to locate templates when this module is bundled and the dir structure is flattened, maintaining the relative paths.

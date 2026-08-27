@@ -1,16 +1,18 @@
 import { RuleTester } from 'eslint';
-import enablePasteRule from '../../src/rules/sap-enable-paste';
-import { meta, languages } from '../../src/index';
+import enablePasteRule from '../../src/rules/sap-enable-paste.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
     setup,
+    V2_FLEX_CHANGE_CONTENT,
+    V2_FLEX_CHANGE_FILE_PATH,
     V4_ANNOTATIONS,
     V4_ANNOTATIONS_PATH,
     V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -20,6 +22,20 @@ const ruleTester = new RuleTester({
 const FACETSV4 = {
     filename: V4_ANNOTATIONS_PATH,
     code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FACETS_ANNOTATIONS)
+};
+
+const v2FlexChangePasteEnabledOP = {
+    ...V2_FLEX_CHANGE_CONTENT,
+    content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'showPasteButton' },
+    selector: {
+        ...V2_FLEX_CHANGE_CONTENT.selector,
+        id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS--Products::Table'
+    }
+};
+
+const v2FlexChangePasteDisabledOP = {
+    ...v2FlexChangePasteEnabledOP,
+    content: { ...v2FlexChangePasteEnabledOP.content, newValue: false }
 };
 
 const TEST_NAME = 'sap-enable-paste';
@@ -83,6 +99,22 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                 ])
             },
             [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V2 - showPasteButton missing',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(V2_FLEX_CHANGE_CONTENT, undefined, 2)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2 - object page table - showPasteButton is true on an Object Page',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangePasteEnabledOP, undefined, 2)
+            },
+            []
         )
     ],
 
@@ -110,7 +142,7 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-enable-paste',
+                        message: 'Paste functionality in the Products table must be enabled',
                         line: 145,
                         column: 21
                     }
@@ -133,6 +165,23 @@ ruleTester.run(TEST_NAME, enablePasteRule, {
                 ])
             },
             [FACETSV4]
+        ),
+
+        createInvalidTest(
+            {
+                name: 'V2 - showPasteButton is false on an Object Page',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangePasteDisabledOP, undefined, 2),
+                errors: [
+                    {
+                        message: 'Paste functionality in the Products table must be enabled',
+                        line: 10,
+                        column: 5
+                    }
+                ],
+                output: JSON.stringify(v2FlexChangePasteEnabledOP, undefined, 2) // fix: { "newValue": true }
+            },
+            []
         )
     ]
 });

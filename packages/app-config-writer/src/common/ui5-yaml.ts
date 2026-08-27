@@ -1,11 +1,11 @@
 import { basename, join } from 'node:path';
-import { MiddlewareConfigs } from '../types';
+import { MiddlewareConfigs } from '../types/index.js';
 import { FileName, type Package, readUi5Yaml, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { PreviewConfigOptions } from '../types';
+import type { PreviewConfigOptions } from '../types/index.js';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
-import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig, deleteFiles } from './utils';
+import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig, deleteFiles } from './utils.js';
 import {
     type DefaultFlpPath,
     type DefaultIntent,
@@ -21,7 +21,7 @@ import {
     extractUrlDetails,
     isTestPath,
     isFlpPath
-} from './package-json';
+} from './package-json.js';
 
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 

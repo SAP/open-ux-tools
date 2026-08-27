@@ -1,10 +1,10 @@
 import { major, minor, valid, maxSatisfying } from 'semver';
-import type { UI5VersionFilterOptions, UI5VersionsResponse, UI5VersionSupport, UI5Version } from './types';
-import { executeNpmUI5VersionsCmd } from './commands';
+import type { UI5VersionFilterOptions, UI5VersionsResponse, UI5VersionSupport, UI5Version } from './types.js';
+import { executeNpmUI5VersionsCmd } from './commands.js';
 import axios from 'axios';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { defaultUi5Versions, supportedUi5VersionFallbacks } from './ui5-version-fallback';
+import { defaultUi5Versions, supportedUi5VersionFallbacks } from './ui5-version-fallback.js';
 import {
     defaultMinUi5Version,
     defaultVersion,
@@ -12,7 +12,7 @@ import {
     ui5VersionRequestInfo,
     ui5VersionsType,
     ui5VersionsCache
-} from './constants';
+} from './constants.js';
 
 // Semantic version equivalent of 'Latest'
 let latestUI5Version: string;

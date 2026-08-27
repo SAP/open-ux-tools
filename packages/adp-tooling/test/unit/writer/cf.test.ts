@@ -1,37 +1,60 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { generateCf, writeUi5AppInfo, setupCfPreview } from '../../../src/writer/cf';
-import { AppRouterType, FlexLayer, type CfAdpWriterConfig, type CfUi5AppInfo, type CfConfig } from '../../../src/types';
-import { getOrCreateServiceInstanceKeys, getCfUi5AppInfo, getProjectNameForXsSecurity } from '../../../src/cf';
-import { runBuild } from '../../../src/base/project-builder';
-import { readUi5Yaml } from '@sap-ux/project-access';
-import { getBaseAppId } from '../../../src/base/helper';
-import { getAppHostIds } from '../../../src/cf/app/discovery';
+const mockGetAppHostIds = jest.fn<typeof realCfAppDiscovery.getAppHostIds>();
+const mockGetOrCreateServiceInstanceKeys = jest.fn<typeof realCf.getOrCreateServiceInstanceKeys>();
+const mockGetCfUi5AppInfo = jest.fn<typeof realCf.getCfUi5AppInfo>();
+const mockGetProjectNameForXsSecurity = jest.fn<typeof realCf.getProjectNameForXsSecurity>();
+const mockGetBaseAppId = jest.fn<typeof realHelper.getBaseAppId>();
+const mockRunBuild = jest.fn() as jest.Mock;
+const mockReadUi5Yaml = jest.fn<typeof realProjectAccess.readUi5Yaml>();
+const mockAdjustMtaYaml = jest.fn().mockResolvedValue('');
 
-jest.mock('../../../src/cf');
-jest.mock('../../../src/base/project-builder');
-jest.mock('@sap-ux/project-access');
-jest.mock('../../../src/base/helper');
-jest.mock('../../../src/cf/app/discovery');
+const realProjectAccess = await import('@sap-ux/project-access');
+const realHelper = await import('../../../src/base/helper.js');
+const realCf = await import('../../../src/cf/index.js');
+const realCfAppDiscovery = await import('../../../src/cf/app/discovery.js');
 
-const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
-    typeof getOrCreateServiceInstanceKeys
->;
-const mockGetCfUi5AppInfo = getCfUi5AppInfo as jest.MockedFunction<typeof getCfUi5AppInfo>;
-const mockGetBaseAppId = getBaseAppId as jest.MockedFunction<typeof getBaseAppId>;
-const mockGetAppHostIds = getAppHostIds as jest.MockedFunction<typeof getAppHostIds>;
-const mockRunBuild = runBuild as jest.MockedFunction<typeof runBuild>;
-const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
-const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
-    typeof getProjectNameForXsSecurity
->;
+jest.unstable_mockModule('../../../src/cf', () => ({
+    ...realCf,
+    adjustMtaYaml: mockAdjustMtaYaml,
+    getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys,
+    getCfUi5AppInfo: mockGetCfUi5AppInfo,
+    getProjectNameForXsSecurity: mockGetProjectNameForXsSecurity
+}));
+
+jest.unstable_mockModule('../../../src/cf/app/discovery', () => ({
+    ...realCfAppDiscovery,
+    getAppHostIds: mockGetAppHostIds
+}));
+
+jest.unstable_mockModule('../../../src/base/helper', () => ({
+    ...realHelper,
+    getBaseAppId: mockGetBaseAppId
+}));
+
+jest.unstable_mockModule('../../../src/base/project-builder', () => ({
+    runBuild: mockRunBuild
+}));
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    readUi5Yaml: mockReadUi5Yaml
+}));
+
+const { generateCf, writeUi5AppInfo, setupCfPreview } = await import('../../../src/writer/cf.js');
+const { AppRouterType, FlexLayer } = await import('../../../src/types.js');
+import type { CfAdpWriterConfig, CfUi5AppInfo, CfConfig } from '../../../src/types.js';
 
 const mockServiceKeys = [
     {
@@ -213,7 +236,6 @@ describe('CF Writer', () => {
             await writeUi5AppInfo(projectDir, mockUi5AppInfo, mockLogger);
 
             const filePath = join(projectDir, 'ui5AppInfo.json');
-            const { existsSync, readFileSync } = await import('node:fs');
             expect(existsSync(filePath)).toBe(true);
 
             const content = JSON.parse(readFileSync(filePath, 'utf-8'));
@@ -232,7 +254,8 @@ describe('CF Writer', () => {
     describe('setupCfPreview', () => {
         const mockLogger = {
             info: jest.fn(),
-            error: jest.fn()
+            error: jest.fn(),
+            log: jest.fn()
         } as unknown as ToolsLogger;
 
         const mockCfConfig: CfConfig = {
@@ -287,6 +310,8 @@ describe('CF Writer', () => {
             expect(mockGetBaseAppId).toHaveBeenCalledWith(projectDir);
             expect(mockGetCfUi5AppInfo).toHaveBeenCalledWith('test-app-id', ['host-123'], mockCfConfig, mockLogger);
             expect(mockRunBuild).toHaveBeenCalledWith(projectDir, { ADP_BUILDER_MODE: 'preview' });
+            expect(mockLogger.log).toHaveBeenCalledWith('Starting build');
+            expect(mockLogger.log).toHaveBeenCalledWith('Build completed');
         });
 
         test('should throw error when serviceInstanceName not found', async () => {

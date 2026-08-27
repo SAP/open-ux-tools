@@ -1,4 +1,5 @@
-import { type AppWizard, MessageType, type Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {
@@ -6,8 +7,11 @@ import {
     generate as generateFioriElementsApp,
     type TemplateType as TemplateTypeFE
 } from '@sap-ux/fiori-elements-writer';
-import { type FreestyleApp, generate as generateFioriFreestyleApp } from '@sap-ux/fiori-freestyle-writer';
-import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
+import {
+    type FreestyleApp,
+    generate as generateFioriFreestyleApp,
+    type BasicAppSettings
+} from '@sap-ux/fiori-freestyle-writer';
 import {
     DefaultLogger,
     getHostEnvironment,
@@ -15,7 +19,9 @@ import {
     type ILogWrapper,
     sendTelemetry,
     TelemetryHelper,
-    getFlpId
+    getFlpId,
+    getFloorplanLabel,
+    initI18nFioriGeneratorShared
 } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -26,7 +32,7 @@ import { getUI5Versions, latestVersionString, type UI5VersionFilterOptions } fro
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import Generator from 'yeoman-generator';
-import type { FioriStep, Service, State, YeomanUiStepConfig } from '../types';
+import type { FioriStep, Service, State, YeomanUiStepConfig } from '../types/index.js';
 import {
     defaultNavActionDisplay,
     defaultNavActionTile,
@@ -38,7 +44,7 @@ import {
     STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES,
     FloorplanFE
-} from '../types';
+} from '../types/index.js';
 import {
     addToCache,
     deleteCache,
@@ -55,20 +61,20 @@ import {
     restoreServiceProviderLoggers,
     t,
     updateDependentStep
-} from '../utils';
-import { runPostGenerationTasks } from './end';
-import type { FioriAppGeneratorOptions } from './fioriAppGeneratorOptions';
-import { installDependencies } from './install';
+} from '../utils/index.js';
+import { runPostGenerationTasks } from './end.js';
+import type { FioriAppGeneratorOptions } from './fioriAppGeneratorOptions.js';
+import { installDependencies } from './install.js';
 import {
     getViewQuestion,
     type OdataServiceInquirerOptions,
     promptOdataServiceAnswers,
     promptUI5ApplicationAnswers,
     type ViewNameAnswer
-} from './prompting';
-import { addDeployGen, addFlpGen } from './subgenHelpers';
-import { getTemplateType, transformState } from './transforms';
-import { writeAppGenInfoFiles, writeAPIHubKeyFiles } from './writing';
+} from './prompting.js';
+import { addDeployGen, addFlpGen } from './subgenHelpers.js';
+import { getTemplateType, transformState } from './transforms.js';
+import { writeAppGenInfoFiles, writeAPIHubKeyFiles } from './writing.js';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -122,6 +128,7 @@ export class FioriAppGenerator extends Generator {
     async initializing(): Promise<void> {
         // Ensure i18n bundles are loaded, default loading is unreliable
         await initI18nFioriAppSubGenerator();
+        await initI18nFioriGeneratorShared();
         // When running in YUI context back navigation is supported and state may be cached.
         if (this.options.appWizard) {
             this.appWizard = this.options.appWizard;
@@ -377,14 +384,14 @@ export class FioriAppGenerator extends Generator {
                     this.state,
                     !!service.capService || this.options.generateIndexHtml
                 );
-                await generateFioriFreestyleApp(destRoot, ffApp, this.fs);
+                await generateFioriFreestyleApp(destRoot, ffApp, this.fs, FioriAppGenerator.logger);
                 appConfig = ffApp;
             } else {
                 const feApp = await transformState<FioriElementsApp<{}>>(
                     this.state,
                     !!service.capService || this.options.generateIndexHtml
                 );
-                await generateFioriElementsApp(destRoot, feApp, this.fs);
+                await generateFioriElementsApp(destRoot, feApp, this.fs, FioriAppGenerator.logger);
                 appConfig = feApp;
             }
 
@@ -394,9 +401,7 @@ export class FioriAppGenerator extends Generator {
             );
 
             TelemetryHelper.createTelemetryData({
-                Template: t(`floorplans.label.${floorplan}`, {
-                    odataVersion: service.version
-                }),
+                Template: getFloorplanLabel(floorplan, service.version),
                 DataSource: service.source,
                 UI5Version: project.ui5Version || latestVersionString,
                 Theme: project.ui5Theme,

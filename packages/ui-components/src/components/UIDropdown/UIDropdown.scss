@@ -16,12 +16,14 @@
 .ts-SelectBox {
     .ms-Dropdown {
         background: $dropdown-input-background;
+        border-radius: $dropdown-input-border-radius;
         .ms-Dropdown-title {
             background: transparent;
             height: $dropdown-input-height;
             line-height: $dropdown-line-height;
             border: $dropdown-input-border-width solid transparent;
             padding: $dropdown-input-text-padding;
+            border-radius: $dropdown-input-border-radius;
             @include base-font;
         }
         > .ms-Dropdown-caretDownWrapper {

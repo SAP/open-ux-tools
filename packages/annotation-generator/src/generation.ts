@@ -27,7 +27,7 @@ import type { Hidden } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTerms, UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { adaptFilePath } from './utils';
+import { adaptFilePath } from './utils.js';
 
 const draftSpecificFields = new Set(['IsActiveEntity', 'HasActiveEntity', 'HasDraftEntity']);
 
