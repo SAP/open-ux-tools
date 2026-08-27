@@ -200,7 +200,7 @@ describe('<UITreeDropdown />', () => {
         windowEventMock.simulateEvent('focus', focusEvent);
         // Check result - the component state should have value 'Title'
         const inputEl = container.querySelector('input') as HTMLInputElement;
-        expect(inputEl.value).toEqual('Title');
+        expect(inputEl).toHaveValue('Title');
         // Cleanup
         getElementsByClassNameSpy.mockClear();
     });
@@ -246,7 +246,7 @@ describe('<UITreeDropdown />', () => {
             const menuLinks = queryMenuLinks();
             fireEvent.click(menuLinks[0]);
             const inputEl = container.querySelector('input') as HTMLInputElement;
-            expect(inputEl.value).toEqual('Title2');
+            expect(inputEl).toHaveValue('Title2');
             expect(onChange).toHaveBeenCalledTimes(1);
             expect(onChange).toHaveBeenCalledWith('Title2');
             // Try another select
@@ -254,7 +254,7 @@ describe('<UITreeDropdown />', () => {
             openDropdown(container);
             const menuLinks2 = queryMenuLinks();
             fireEvent.click(menuLinks2[menuLinks2.length - 1]);
-            expect(inputEl.value).toEqual('Title3');
+            expect(inputEl).toHaveValue('Title3');
             expect(onChange).toHaveBeenCalledTimes(1);
             expect(onChange).toHaveBeenCalledWith('Title3');
         });
@@ -265,7 +265,7 @@ describe('<UITreeDropdown />', () => {
             const menuLinks = queryMenuLinks();
             fireEvent.click(menuLinks[0]);
             const inputEl = container.querySelector('input') as HTMLInputElement;
-            expect(inputEl.value).toEqual('Title2');
+            expect(inputEl).toHaveValue('Title2');
             expect(onChange).toHaveBeenCalledTimes(1);
             expect(onChange).toHaveBeenCalledWith('Title2');
             // Try escape to dismiss
@@ -274,7 +274,7 @@ describe('<UITreeDropdown />', () => {
             // UIContextualMenu dismisses on Escape - dispatch on document so Fluent UI's handler picks it up
             const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
             document.dispatchEvent(escapeEvent);
-            expect(inputEl.value).toEqual('Title2');
+            expect(inputEl).toHaveValue('Title2');
             expect(onChange).toHaveBeenCalledTimes(0);
         });
     });
@@ -296,7 +296,7 @@ describe('<UITreeDropdown />', () => {
             await triggerWindowKeydownWithFocus(container, 'Title');
             expect(queryAllContextMenus().length).toBeGreaterThan(0);
             const inputEl = container.querySelector('input') as HTMLInputElement;
-            expect(inputEl.value).toEqual('Title');
+            expect(inputEl).toHaveValue('Title');
         });
 
         it('Test "onInput"', () => {
@@ -315,7 +315,7 @@ describe('<UITreeDropdown />', () => {
             await triggerWindowKeydownWithFocus(container, 'Title.Draft', 'ArrowRight');
             await triggerWindowKeydownWithFocus(container, 'Title', 'ArrowLeft');
             const inputEl = container.querySelector('input') as HTMLInputElement;
-            expect(inputEl.value).toEqual('Title');
+            expect(inputEl).toHaveValue('Title');
         });
 
         it('Test input change with path and arrow right - value used from submenu', async () => {
@@ -323,7 +323,7 @@ describe('<UITreeDropdown />', () => {
             await triggerWindowKeydownWithFocus(container, 'Title');
             await triggerWindowKeydownWithFocus(container, 'Title.Draft', 'ArrowRight');
             const inputEl = container.querySelector('input') as HTMLInputElement;
-            expect(inputEl.value).toEqual('Title.Draft');
+            expect(inputEl).toHaveValue('Title.Draft');
         });
 
         it('Test input change with path when submenu opened', async () => {
@@ -331,10 +331,10 @@ describe('<UITreeDropdown />', () => {
             await triggerWindowKeydownWithFocus(container, 'Title');
             await triggerWindowKeydownWithFocus(container, 'Title.SAP__Messages', 'ArrowRight');
             const inputEl = container.querySelector('input') as HTMLInputElement;
-            expect(inputEl.value).toEqual('Title.SAP__Messages');
+            expect(inputEl).toHaveValue('Title.SAP__Messages');
             const menuList = queryMenuList() as HTMLElement;
             fireEvent.keyDown(menuList, { key: 'Enter' });
-            expect(inputEl.value).toEqual('Title.SAP__Messages');
+            expect(inputEl).toHaveValue('Title.SAP__Messages');
         });
 
         it('Test menu open on Enter', () => {
@@ -369,7 +369,7 @@ describe('<UITreeDropdown />', () => {
             fireEvent.click(splitMenuButton, document.createEvent('Events'));
             expect(document.querySelectorAll(`div.ui-treeDropDown-context-menu`)).toHaveLength(2);
             const inputEl = container.querySelector('input') as HTMLInputElement;
-            expect(inputEl.value).toEqual('Title');
+            expect(inputEl).toHaveValue('Title');
         });
     });
 
@@ -813,9 +813,9 @@ describe('<UITreeDropdown />', () => {
         renderResult.rerender(<UITreeDropdown {...defaultProps} items={[]} />);
         expect(container.querySelectorAll(selectors.wrapper.disabled)).toHaveLength(1);
         const input = container.querySelector('input.ms-TextField-field') as HTMLInputElement;
-        expect(input?.disabled).toEqual(false);
-        expect(input?.readOnly).toEqual(true);
-        expect(input?.getAttribute('aria-disabled')).toEqual('true');
+        expect(input).not.toBeDisabled();
+        expect(input.readOnly).toEqual(true);
+        expect(input.getAttribute('aria-disabled')).toEqual('true');
     });
 
     it('ReadOnly state', () => {
@@ -823,7 +823,7 @@ describe('<UITreeDropdown />', () => {
         expect(container.querySelectorAll(selectors.wrapper.readonly)).toHaveLength(0);
         renderResult.rerender(<UITreeDropdown {...defaultProps} readOnly={true} />);
         const input = container.querySelector('input') as HTMLInputElement;
-        expect(input?.readOnly).toEqual(true);
+        expect(input.readOnly).toEqual(true);
         // Dropdown menu should not be opened
         openDropdown(container);
         expect(queryAllContextMenus()).toHaveLength(0);

@@ -345,7 +345,7 @@ describe('<UIFlexibleTable />', () => {
                 });
                 const foundButtons = container.querySelectorAll(selectors.addButton);
                 expect(foundButtons).toHaveLength(1);
-                expect((foundButtons[0] as HTMLButtonElement).disabled).toBeTruthy();
+                expect(foundButtons[0]).toBeDisabled();
                 expect(foundButtons[0].getAttribute('title')).toBe('Read only reason');
             });
             it('disabled', () => {
@@ -355,7 +355,7 @@ describe('<UIFlexibleTable />', () => {
                 });
                 const foundButtons = container.querySelectorAll(selectors.addButton);
                 expect(foundButtons).toHaveLength(1);
-                expect((foundButtons[0] as HTMLButtonElement).disabled).toBeTruthy();
+                expect(foundButtons[0]).toBeDisabled();
             });
             it('omitted', () => {
                 setProps({ addRowButton: undefined });
