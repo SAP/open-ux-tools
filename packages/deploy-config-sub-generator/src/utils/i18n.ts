@@ -14,7 +14,8 @@ const i18nReady = i18n
     })
     .then(() => {
         addInquirerCommonTexts();
-    });
+    })
+    .catch(() => undefined);
 
 /**
  * Initialize i18next with the translations for this module.
