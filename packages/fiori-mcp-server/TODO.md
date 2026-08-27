@@ -22,28 +22,28 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 - [x] **`get-adp-odata-metada.ts` — `Array.from(metadataMap.values())` crashes at runtime**  
   Fixed — `read-odata-metadata.ts` now returns the array directly.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [x] **`get-adp-odata-metada.ts` — filename typo (missing trailing `a` in "metadata")**  
   Fixed — file is now `src/tools/read-odata-metadata.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
-- [ ] **`generate-adaptation-project.ts:130` — generator spawned with wrong `cwd`**  
+- [x] **`generate-adaptation-project.ts:130` — generator spawned with wrong `cwd`**  
   `runCmdArgs('npx', [...], { cwd: process.cwd() })` runs the Yeoman generator in the MCP server's process directory instead of `finalTargetFolder`. Fix: `cwd: finalTargetFolder`.  
   _File:_ `src/tools/generate-adaptation-project.ts:130`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`stop` step — registered page not closed before `stopBrowser()` on last session**  
+- [x] **`stop` step — registered page not closed before `stopBrowser()` on last session**  
   When stopping the last session, `sessions.delete(id)` is called then `defaultTransport.stopBrowser()`. The session's page may not be in `connectionRegistry` if `page.on('close')` already cleaned it up, causing a page handle leak. Fix: capture `session` in the `stop` case and call `defaultTransport.disconnectSite(session.site)` before `stopBrowser()`, mirroring the `restart` pattern.  
   _File:_ `src/tools/run-rta-workflow-step/index.ts:114`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`generate-adaptation-project.ts` — shell-injection vulnerability via template-string command (verify fix is complete)**  
+- [x] **`generate-adaptation-project.ts` — shell-injection vulnerability via template-string command (verify fix is complete)**  
   The original code used a shell-interpolated string. Confirm the final code passes all arguments as an array element to `spawn` with `shell: false`, never as an interpolated string. Verify no user-supplied value (`system`, `application`, `namespace`, etc.) can escape into shell.  
   _File:_ `src/tools/generate-adaptation-project.ts`  
   _Owner: tools_ | _Assignee: —_
 
-- [ ] **`server.ts` SIGINT handler — `sessions` map not cleared when browser is stopped**  
+- [x] **`server.ts` SIGINT handler — `sessions` map not cleared when browser is stopped**  
   `stopBrowser()` clears `connectionRegistry` but the `sessions` Map in `run-rta-workflow-step/index.ts` is never touched. Session IDs remain as dangling entries after a browser stop. Fix: export `clearSessions()` from `index.ts` and call it alongside `stopBrowser()` in the SIGINT handler in `server.ts`.  
   _File:_ `src/server.ts`, `src/tools/run-rta-workflow-step/index.ts`  
   _Owner: tools_ | _Assignee: —_
@@ -51,21 +51,21 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 - [x] **`open-adaptation-editor.ts` — `setInterval` polling instead of direct `resolve()` calls**  
   Already fixed — current code calls `resolve()` directly from event handlers.  
   _File:_ `src/tools/open-adaptation-editor.ts`  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [x] **`open-adaptation-editor.ts` — hardcoded 1-second blind delay after successful URL detection**  
   Already fixed — no unconditional delay present in current code.  
   _File:_ `src/tools/open-adaptation-editor.ts`  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
-- [ ] **`adp-controller-extension/output.ts` — status casing inconsistency**  
+- [x] **`adp-controller-extension/output.ts` — status casing inconsistency**  
   Every other tool uses `'Success'` / `'Error'` (title-case). `adp-controller-extension` uses lowercase `'success'` / `'error'` / `'info'` / `'skipped'`. Align to title-case: `'Success'` / `'Error'` / `'Info'` / `'Skipped'`.  
   _File:_ `src/tools/adp-controller-extension/output.ts`  
   _Owner: tools_ | _Assignee: —_
 
 - [x] **Two test files deleted without explanation — restore or justify**  
   `test/unit/tools/generate-fiori-app-cap-impl.test.ts` and `test/unit/tools/generate-fiori-app-odata-impl.test.ts` were removed in this PR. Restore them if deleted by mistake, or document why they were removed and confirm coverage is maintained elsewhere.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 ---
 
@@ -95,12 +95,12 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
   - **`SIGTERM` on timeout has no `SIGKILL` follow-up on Unix** — `SIGTERM` can be ignored. Add a `SIGKILL` after a 5-second grace period if the child hasn't exited.  
     _File:_ `src/utils/utils.ts:89–96`
 
-  - **`targetFolder` not validated as absolute path** — if the AI passes a relative path, files are written relative to `process.cwd()`. Validate that `finalTargetFolder` is absolute before calling `mkdir`.  
+  - ~~**`targetFolder` not validated as absolute path**~~ ✓ — if the AI passes a relative path, files are written relative to `process.cwd()`. Validate that `finalTargetFolder` is absolute before calling `mkdir`.  
     _File:_ `src/tools/generate-adaptation-project.ts:71`
 
   - ~~**`getDefaultProjectName` index skip** — `app.variant` → `app.variant2` is the canonical convention in `generator-adp` (`packages/generator-adp/src/app/questions/helper/default-values.ts`). No `app.variant1` by design. No change needed.~~
 
-  - **`importKeyUserChanges` contract mismatch** — code warns and continues when `getKeyUserData` returns empty array; PR description says it should abort. Decide and align code + SKILL.md.  
+  - ~~**`importKeyUserChanges` contract mismatch**~~ ✓ — code warns and continues when `getKeyUserData` returns empty array; PR description says it should abort. Decide and align code + SKILL.md.  
     _File:_ `src/tools/generate-adaptation-project.ts:~108`
 
   _Owner: tools (code) + skill (SKILL.md for importKeyUserChanges)_ | _Assignee: —_
@@ -165,19 +165,19 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 - [x] **`readODataMetadataAdp` return type is `Promise<Array<any>>`**  
   Fixed — now `Promise<ODataMetadataEntry[]>` in `src/tools/read-odata-metadata.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [x] **`listLibrariesFromSystem` return type is `Promise<Array<object>>`**  
   Fixed — now `Promise<Partial<App>[]>` in `src/tools/list-libraries.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [x] **`listODataServices` return type is `Promise<Array<object>>`**  
   Fixed — now `Promise<ODataServiceInfo[]>` in `src/tools/list-odata-services.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [x] **`systemPath` type not exported from `manifestContext.ts`**  
   Resolved by refactor — `SystemPath` is now private inside `src/tools/services/abap-context.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 ---
 
@@ -187,7 +187,7 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
 
 - [x] **`getProvider(appPath)` — kept in `services/abap-context.ts`  
   `getConfiguredProvider` from `adp-tooling` resolves by system name via store/BAS — not compatible with `ui5.yaml`-sourced targets. `getProvider` kept as shared infrastructure in `src/tools/services/abap-context.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [ ] **`getDefaultProjectName` — consolidate with `generator-adp` canonical implementation**  
   Both `fiori-mcp-server` and `generator-adp` have identical `getDefaultProjectName` implementations. The one in `generator-adp` is not exported from its public index. Either export it from `generator-adp` and import it here, or move to a shared package (e.g. `@sap-ux/adp-tooling`).  
@@ -196,11 +196,11 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
 
 - [x] **`readMergedManifest(appPath)` — replaced with `ManifestService.initMergedManifest` from `adp-tooling`**  
   Done in `src/tools/read-odata-metadata.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [x] **`readManifest(appPath)` — replaced with `getVariant` from `adp-tooling`**  
   Done in `src/tools/read-odata-metadata.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 ---
 
@@ -269,7 +269,7 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
 
 - [x] **Export `ODataMetadataEntry` from `read-odata-metadata.ts`**  
   `ODataMetadataEntry` is now exported from `src/tools/read-odata-metadata.ts`.  
-  _Owner: tools_ | _Assignee: —_
+  _Owner: tools_ | _Assignee: —_ Nikita
 
 - [ ] **Changeset message doesn't mention the new skills**  
   Update `.changeset/fiori-mcp-server-adp-tools.md` to mention the two new SKILL.md files and `lookup-aggregation.mjs`.  
