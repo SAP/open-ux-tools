@@ -17,9 +17,8 @@ import {
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
-import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
 import { compareByRange } from '@sap-ux/text-document-utils';
-const { createMetadataCollector } = cdsCompilerFacade;
+import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 
 import type { Annotation, Collection, FlattenedExpression, Token } from '@sap-ux/cds-annotation-parser';
 import {
