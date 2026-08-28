@@ -26,3 +26,16 @@ describe('Tools schemas', () => {
         expect(executeFunctionaliy?.outputSchema).toMatchSnapshot('Output schema for "execute_functionality"');
     });
 });
+
+describe('Tool routing guidance', () => {
+    const searchDocs = tools.find((tool) => tool.name === 'search_docs');
+    const downloadMetadata = tools.find((tool) => tool.name === 'download_odata_service_metadata');
+
+    test('search_docs description mentions update service metadata', () => {
+        expect(searchDocs?.description).toMatch(/update.*service.*metadata/i);
+    });
+
+    test('download_odata_service_metadata description excludes update/refresh use case', () => {
+        expect(downloadMetadata?.description).toMatch(/do not use.*update|updating.*existing/i);
+    });
+});
