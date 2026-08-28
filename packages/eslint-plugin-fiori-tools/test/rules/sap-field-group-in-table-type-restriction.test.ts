@@ -195,7 +195,12 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 name: 'V4: DataFieldForAnnotation targeting FieldGroup in GridTable',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_INCIDENTS_LINEITEM_WITH_FIELDGROUP),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in GridTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
             },
             [{ filename: V4_MANIFEST_PATH, code: V4_MANIFEST_WITH_GRID_TABLE }]
         ),
@@ -204,7 +209,16 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 name: 'V4: DataFieldForAnnotation targeting FieldGroup in AnalyticalTable',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_INCIDENTS_LINEITEM_WITH_TWO_FIELDGROUPS),
-                errors: [{ messageId: TEST_NAME }, { messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in AnalyticalTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    },
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in AnalyticalTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
             },
             [{ filename: V4_MANIFEST_PATH, code: V4_MANIFEST_WITH_ANALYTICAL_TABLE }]
         ),
@@ -213,7 +227,12 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 name: 'V2: DataFieldForAnnotation targeting FieldGroup in GridTable',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_LINEITEM_WITH_FIELDGROUP),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in GridTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
             },
             [{ filename: V2_MANIFEST_PATH, code: V2_MANIFEST_WITH_GRID_TABLE }]
         )

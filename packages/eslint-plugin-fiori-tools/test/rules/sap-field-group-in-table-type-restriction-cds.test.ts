@@ -146,7 +146,12 @@ ruleTester.run(`${TEST_NAME} - CDS`, fieldGroupInTableTypeRestrictionRule, {
                 name: 'DataFieldForAnnotation targeting FieldGroup in GridTable',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_LINEITEM_WITH_FIELDGROUP,
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in GridTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
             },
             [{ filename: CAP_MANIFEST_PATH, code: CAP_MANIFEST_WITH_GRID_TABLE }]
         ),
@@ -155,7 +160,16 @@ ruleTester.run(`${TEST_NAME} - CDS`, fieldGroupInTableTypeRestrictionRule, {
                 name: 'DataFieldForAnnotation targeting FieldGroup in AnalyticalTable',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_LINEITEM_WITH_TWO_FIELDGROUPS,
-                errors: [{ messageId: TEST_NAME }, { messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in AnalyticalTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    },
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in AnalyticalTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
             },
             [{ filename: CAP_MANIFEST_PATH, code: CAP_MANIFEST_WITH_ANALYTICAL_TABLE }]
         )
