@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.9.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-27
+
+#### Dependency Updates
+
+- Upgrade @babel/core, @babel/eslint-parser, @babel/parser from 8.0.0-rc.6 to stable 8.0.x [[5076c5f](https://github.com/SAP/open-ux-tools/commit/5076c5f5ab874570c236e48fb0dfcca1044196d4)]
+
 ## 10.9.1
 
 ### Patch Changes
