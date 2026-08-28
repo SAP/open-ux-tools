@@ -3,6 +3,7 @@ import { render, fireEvent, act } from '@testing-library/react';
 import type { ICalloutContentStyles } from '@fluentui/react';
 import { UITooltip } from '../../../src/components/UITooltip/UITooltip';
 import type { UITooltipProps } from '../../../src/components/UITooltip/UITooltip';
+import { UITooltipUtils } from '../../../src/components/UITooltip/UITooltipUtils';
 import { UIDefaultButton } from '../../../src/components/UIButton';
 
 // Extract the CalloutStyles function from a UITooltip render() call.
@@ -91,6 +92,57 @@ describe('<UITooltip />', () => {
                 jest.runAllTimers();
             });
             expect(onLayerMount).toHaveBeenCalledTimes(0);
+        });
+    });
+});
+
+describe('UITooltipUtils', () => {
+    describe('getStyles', () => {
+        it('returns styles with content background and color set', () => {
+            const styles = UITooltipUtils.getStyles();
+            expect(styles.content?.background).toBeDefined();
+            expect(styles.content?.color).toBeDefined();
+        });
+    });
+
+    describe('renderContent', () => {
+        it('renders string content in a span', () => {
+            const props = UITooltipUtils.renderContent('Hello');
+            const { container } = render(props.onRenderContent!() as React.ReactElement);
+            expect(container.querySelector('span')?.textContent).toBe('Hello');
+        });
+
+        it('renders null as empty string', () => {
+            const props = UITooltipUtils.renderContent(null);
+            const { container } = render(props.onRenderContent!() as React.ReactElement);
+            expect(container.querySelector('span')?.textContent).toBe('');
+        });
+
+        it('renders a React element', () => {
+            const props = UITooltipUtils.renderContent(<em>italic</em>);
+            const { container } = render(props.onRenderContent!() as React.ReactElement);
+            expect(container.querySelector('em')?.textContent).toBe('italic');
+        });
+    });
+
+    describe('renderHTMLContent', () => {
+        it('renders safe HTML content', () => {
+            const props = UITooltipUtils.renderHTMLContent('<b>Hello</b>');
+            const { container } = render(props.onRenderContent!() as React.ReactElement);
+            expect(container.querySelector('b')?.textContent).toBe('Hello');
+        });
+
+        it('strips script tags', () => {
+            const props = UITooltipUtils.renderHTMLContent('<script>alert("xss")</script><b>Safe</b>');
+            const { container } = render(props.onRenderContent!() as React.ReactElement);
+            expect(container.querySelectorAll('script')).toHaveLength(0);
+            expect(container.querySelector('b')?.textContent).toBe('Safe');
+        });
+
+        it('strips inline event handlers', () => {
+            const props = UITooltipUtils.renderHTMLContent('<p onclick="alert(1)">text</p>');
+            const { container } = render(props.onRenderContent!() as React.ReactElement);
+            expect(container.querySelector('p')?.getAttribute('onclick')).toBeNull();
         });
     });
 });
