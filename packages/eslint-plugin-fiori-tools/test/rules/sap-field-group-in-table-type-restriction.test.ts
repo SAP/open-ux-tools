@@ -103,6 +103,24 @@ const V4_MANIFEST_WITH_GRID_TABLE = getManifestAsCode(V4_MANIFEST, [
     }
 ]);
 
+const V4_MANIFEST_WITH_TREE_TABLE = getManifestAsCode(V4_MANIFEST, [
+    {
+        path: [
+            'sap.ui5',
+            'routing',
+            'targets',
+            'IncidentsList',
+            'options',
+            'settings',
+            'controlConfiguration',
+            '@com.sap.vocabularies.UI.v1.LineItem',
+            'tableSettings',
+            'type'
+        ],
+        value: 'TreeTable'
+    }
+]);
+
 // V4 manifest: switch IncidentsList to AnalyticalTable
 const V4_MANIFEST_WITH_ANALYTICAL_TABLE = getManifestAsCode(V4_MANIFEST, [
     {
@@ -166,11 +184,11 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
         ),
         createValidTest(
             {
-                name: 'V4: GridTable with DataFieldForAnnotation targeting non-FieldGroup annotation',
+                name: 'V4: TreeTable with DataFieldForAnnotation targeting non-FieldGroup annotation',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_INCIDENTS_LINEITEM_WITH_OTHER_ANNOTATION)
             },
-            [{ filename: V4_MANIFEST_PATH, code: V4_MANIFEST_WITH_GRID_TABLE }]
+            [{ filename: V4_MANIFEST_PATH, code: V4_MANIFEST_WITH_TREE_TABLE }]
         ),
         createValidTest(
             {
@@ -235,41 +253,6 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 ]
             },
             [{ filename: V2_MANIFEST_PATH, code: V2_MANIFEST_WITH_GRID_TABLE }]
-        ),
-        createInvalidTest(
-            {
-                name: 'V4: DataFieldForAnnotation targeting FieldGroup in TreeTable',
-                filename: V4_ANNOTATIONS_PATH,
-                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_INCIDENTS_LINEITEM_WITH_FIELDGROUP),
-                errors: [
-                    {
-                        message:
-                            'UI.FieldGroup is not supported in TreeTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
-                    }
-                ]
-            },
-            [
-                {
-                    filename: V4_MANIFEST_PATH,
-                    code: getManifestAsCode(V4_MANIFEST, [
-                        {
-                            path: [
-                                'sap.ui5',
-                                'routing',
-                                'targets',
-                                'IncidentsList',
-                                'options',
-                                'settings',
-                                'controlConfiguration',
-                                '@com.sap.vocabularies.UI.v1.LineItem',
-                                'tableSettings',
-                                'type'
-                            ],
-                            value: 'TreeTable'
-                        }
-                    ])
-                }
-            ]
         )
     ]
 });
