@@ -1,5 +1,16 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.43
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.11 → 1.2.12
+- @sap-ux/inquirer-common 1.0.36 → 1.0.37
+- @sap-ux/deploy-config-generator-shared 1.0.33 → 1.0.34
+- @sap-ux/cf-deploy-config-inquirer 1.0.39 → 1.0.40
+
 ## 1.0.42
 
 ### Patch Changes
