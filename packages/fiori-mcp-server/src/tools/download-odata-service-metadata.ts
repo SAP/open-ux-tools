@@ -56,7 +56,7 @@ export async function downloadODataServiceMetadata(
             message:
                 `A metadata.xml already exists at '${metadataFilePath}'. ` +
                 `This tool is only for downloading metadata when generating a new Fiori app. ` +
-                `To refresh service metadata for an existing app, use the search_docs tool with query "update service metadata" to find the correct CLI workflow.`,
+                `To refresh service metadata for an existing app, use the \`search_docs\` tool with query \`"update service metadata"\` to find the correct CLI workflow.`,
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
