@@ -12,7 +12,7 @@ Applies to SAP Fiori elements for OData V2 and OData V4 applications.
 
 ### Warning
 
-`UI.FieldGroup` is not supported in {{tableType}}. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.
+`UI.FieldGroup` is not supported in the selected table type. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.
 
 #### XML Annotations
 
