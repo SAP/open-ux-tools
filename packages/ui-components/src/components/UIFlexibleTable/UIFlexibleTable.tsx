@@ -13,6 +13,11 @@ import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from 
 import { RowActions } from './RowActions.js';
 import { RowDataCells } from './RowData.js';
 
+const ACTION_REORDER_BUTTONS_WIDTH = 44;
+const ACTION_BUTTON_WIDTH = 18;
+const ACTION_DIVIDER_WIDTH = 20;
+const ACTIONS_CONTAINER_PADDING = 10;
+
 /**
  * @class {ResizeObserver}
  */
@@ -407,11 +412,17 @@ function isRowFitsContainer(
     return result;
 }
 
-const ACTION_REORDER_BUTTONS_WIDTH = 44;
-const ACTION_BUTTON_WIDTH = 18;
-const ACTION_DIVIDER_WIDTH = 20;
-const ACTIONS_CONTAINER_PADDING = 10;
-
+/**
+ * Calculates the minimum width of the actions column based on which actions are visible.
+ * The result is used as a CSS custom property so title row and data rows stay in sync.
+ *
+ * @param props
+ * @param props.readonly
+ * @param props.onTableReorder
+ * @param props.onDeleteRow
+ * @param props.onRenderActions
+ * @returns {number} Minimum width in pixels, or 0 if no actions are rendered.
+ */
 function calcActionsMinWidth<T>(props: UIFlexibleTableProps<T>): number {
     const isReadonly = !!props.readonly;
     const hasReorder = !isReadonly && !!props.onTableReorder;
