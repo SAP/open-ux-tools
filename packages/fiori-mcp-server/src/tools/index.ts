@@ -90,7 +90,8 @@ export const tools = [
                     - Returns host, servicePath, client, and metadataFilePath inside the result's parameters object.
                     - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. Map the returned properties to the app config service property input to 'generate_fiori_app_odata'.
                     - **Note:** This tool is only supported in VSCode. For SAP Business Application Studio, use the Service Center MCP server tool to retrieve the service metadata instead.
-                    **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
+                    **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.
+                    **DO NOT use this tool to refresh or update service metadata in an existing Fiori application.** Use \`npx --yes @sap-ux/create@latest update service-metadata <appPath>\` for that.`,
         annotations: {
             title: 'Download OData Service Metadata',
             readOnlyHint: false,
