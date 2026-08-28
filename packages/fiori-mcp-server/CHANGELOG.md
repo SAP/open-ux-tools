@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.11.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[a984fe5](https://github.com/SAP/open-ux-tools/commit/a984fe55497ad691ead632b25fcd7fd937cf3f30)]
+
 ## 1.11.17
 
 ### Patch Changes
