@@ -65,53 +65,12 @@ jobs:
                   git push origin HEAD:main
                   echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-            # Future: Figma board update step goes here.
-            # It should set an output (e.g. figma_status=success|failed) that the comment step can report on.
-
-            - name: Post no-changes comment on tracking issue
-              if: steps.check.outputs.has_changes == 'false'
+            - name: Find or create tracking issue
+              id: tracking-issue
               uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
               with:
                   github-token: ${{ steps.app-token.outputs.token }}
                   script: |
-                      const TRACKING_LABEL = 'palettebot';
-
-                      const { data: issues } = await github.rest.issues.listForRepo({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        labels: TRACKING_LABEL,
-                        state: 'open',
-                        per_page: 1,
-                      });
-
-                      if (issues.length === 0) {
-                        core.notice('No open tracking issue found — skipping no-changes comment.');
-                        return;
-                      }
-
-                      const timestamp = new Date().toISOString().slice(0, 10);
-                      await github.rest.issues.createComment({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        issue_number: issues[0].number,
-                        body: `## 🎨 PaletteBot — ${timestamp}\n\n**No changes** — upstream VSCode theme files are unchanged.`,
-                      });
-
-                      core.notice(`Posted no-changes update to issue #${issues[0].number}`);
-
-            - name: Post comment on tracking issue
-              if: steps.check.outputs.has_changes == 'true'
-              uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
-              with:
-                  github-token: ${{ steps.app-token.outputs.token }}
-                  script: |
-                      const fs = require('fs');
-                      const diffPath = process.env.DIFF_FILE;
-                      const report = JSON.parse(fs.readFileSync(diffPath, 'utf8'));
-                      const sha = process.env.COMMIT_SHA;
-                      const shortSha = sha.slice(0, 7);
-                      const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${sha}`;
-
                       const TRACKING_LABEL = 'palettebot';
                       const TRACKING_TITLE = 'PaletteBot — VSCode Theme Changes';
                       const ASSIGNEES = ['ux-design-reviewers'];
@@ -124,44 +83,59 @@ jobs:
                         per_page: 1,
                       });
 
-                      let issueNumber;
-
                       if (issues.length > 0) {
-                        issueNumber = issues[0].number;
-                      } else {
-                        // Create the label if it doesn't exist — only swallow 422 (already exists)
-                        try {
-                          await github.rest.issues.createLabel({
-                            owner: context.repo.owner,
-                            repo: context.repo.repo,
-                            name: TRACKING_LABEL,
-                            color: '0075ca',
-                            description: 'PaletteBot — tracks upstream VSCode theme color changes',
-                          });
-                        } catch (e) {
-                          if (e.status !== 422) throw e;
-                        }
-
-                        const { data: newIssue } = await github.rest.issues.create({
-                          owner: context.repo.owner,
-                          repo: context.repo.repo,
-                          title: TRACKING_TITLE,
-                          labels: [TRACKING_LABEL],
-                          assignees: ASSIGNEES,
-                          body: [
-                            '## 🎨 PaletteBot',
-                            '',
-                            'This issue tracks upstream color changes from the',
-                            '[microsoft/vscode](https://github.com/microsoft/vscode/tree/main/extensions/theme-defaults/themes)',
-                            'theme files (2026 Light, 2026 Dark, Monokai, HC Black).',
-                            '',
-                            'Each comment below is an automated update from PaletteBot. The file',
-                            '`design-tokens/vscode_themes.json` in this repo is',
-                            'updated automatically when changes are detected.',
-                          ].join('\n'),
-                        });
-                        issueNumber = newIssue.number;
+                        core.setOutput('issue_number', issues[0].number);
+                        return;
                       }
+
+                      const { data: newIssue } = await github.rest.issues.create({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        title: TRACKING_TITLE,
+                        labels: [TRACKING_LABEL],
+                        assignees: ASSIGNEES,
+                        body: [
+                          '## 🎨 PaletteBot',
+                          '',
+                          'This issue tracks upstream color changes from the',
+                          '[microsoft/vscode](https://github.com/microsoft/vscode/tree/main/extensions/theme-defaults/themes)',
+                          'theme files (2026 Light, 2026 Dark, Monokai, HC Black).',
+                          '',
+                          'Each comment below is an automated update from PaletteBot. The file',
+                          '`design-tokens/vscode_themes.json` in this repo is',
+                          'updated automatically when changes are detected.',
+                        ].join('\n'),
+                      });
+                      core.setOutput('issue_number', newIssue.number);
+
+            - name: Post no-changes comment on tracking issue
+              if: steps.check.outputs.has_changes == 'false'
+              uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+              with:
+                  github-token: ${{ steps.app-token.outputs.token }}
+                  script: |
+                      const issueNumber = Number('${{ steps.tracking-issue.outputs.issue_number }}');
+                      const timestamp = new Date().toISOString().slice(0, 10);
+                      await github.rest.issues.createComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: issueNumber,
+                        body: `## 🎨 PaletteBot — ${timestamp}\n\n**No changes** — upstream VSCode theme files are unchanged.`,
+                      });
+                      core.notice(`Posted no-changes update to issue #${issueNumber}`);
+
+            - name: Post comment on tracking issue
+              if: steps.check.outputs.has_changes == 'true'
+              uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+              with:
+                  github-token: ${{ steps.app-token.outputs.token }}
+                  script: |
+                      const fs = require('fs');
+                      const report = JSON.parse(fs.readFileSync(process.env.DIFF_FILE, 'utf8'));
+                      const sha = process.env.COMMIT_SHA;
+                      const shortSha = sha ? sha.slice(0, 7) : '(unknown)';
+                      const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${sha}`;
+                      const issueNumber = Number('${{ steps.tracking-issue.outputs.issue_number }}');
 
                       await github.rest.issues.createComment({
                         owner: context.repo.owner,
@@ -169,7 +143,6 @@ jobs:
                         issue_number: issueNumber,
                         body: `${report.body}\n_Committed: [${context.repo.owner}/${context.repo.repo}@\`${shortSha}\`](${commitUrl})_`,
                       });
-
                       core.notice(`Posted theme diff to issue #${issueNumber}`);
               env:
                   DIFF_FILE: ${{ steps.check.outputs.diff_file }}

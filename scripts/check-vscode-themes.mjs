@@ -125,19 +125,16 @@ function figmaRgbaToHex({ r, g, b, a }) {
 
 /**
  * Compare colors via their hex representations to avoid float precision noise.
- *  Normalizes both to lowercase and strips a trailing 'ff' alpha (fully opaque)
- *  so that #f0f1f2 and #f0f1f2ff are treated as equal — both are fully visible,
- *  the difference is just Microsoft being explicit about the implicit default.
- *  A real transparency change (e.g. ff → 80) will still be detected correctly.
+ *  Strips a trailing 'ff' alpha (fully opaque) so that #f0f1f2 and #f0f1f2ff are
+ *  treated as equal — both are fully visible, the difference is just Microsoft being
+ *  explicit about the implicit default. A real transparency change (e.g. ff → 80)
+ *  will still be detected correctly.
  * @param figmaRgba
  * @param newHex
  */
 function colorsEqual(figmaRgba, newHex) {
-    const normalize = (h) => {
-        const lower = h.toLowerCase();
-        return lower.length === 9 && lower.endsWith('ff') ? lower.slice(0, 7) : lower;
-    };
-    return normalize(figmaRgbaToHex(figmaRgba)) === normalize(newHex);
+    const normalized = (h) => (h.length === 9 && h.endsWith('ff') ? h.slice(0, 7) : h);
+    return normalized(figmaRgbaToHex(figmaRgba)) === normalized(newHex);
 }
 
 /**
@@ -223,11 +220,8 @@ async function main() {
         upstream[modeId] = { label, colors: await fetchThemeColors(file, base, includes) };
     }
 
-    const allUpstreamColors = {};
-    for (const { modeId } of THEMES) {
-        allUpstreamColors[modeId] = upstream[modeId].colors;
-    }
-    const allUpstreamKeys = new Set(Object.values(allUpstreamColors).flatMap((c) => Object.keys(c)));
+    const allUpstreamKeys = new Set(Object.values(upstream).flatMap(({ colors }) => Object.keys(colors)));
+    const allUpstreamColors = Object.fromEntries(Object.entries(upstream).map(([k, v]) => [k, v.colors]));
 
     // Compute the next available VariableID index once — incremented per new token.
     let nextId =
@@ -237,6 +231,7 @@ async function main() {
         }, 0) + 1;
 
     const added = [];
+    const addedFigmaNames = new Set();
     const validFigmaNames = new Set();
     for (const vscodeKey of allUpstreamKeys) {
         const existing = resolveFigmaName(vscodeKey, varByName);
@@ -248,6 +243,7 @@ async function main() {
             tokens.variableIds.push(newVar.id);
             varByName.set(newVar.name, newVar);
             validFigmaNames.add(newVar.name);
+            addedFigmaNames.add(newVar.name);
             added.push(vscodeKey);
         }
     }
@@ -278,9 +274,9 @@ async function main() {
 
             const figmaName = resolveFigmaName(vscodeKey, varByName);
             if (!figmaName) continue;
+            if (addedFigmaNames.has(figmaName)) continue; // skip tokens added this run — their values are already correct
 
             const variable = varByName.get(figmaName);
-            if (!variable) continue;
             const currentRgba = variable.valuesByMode[modeId];
             if (!currentRgba) continue;
 
