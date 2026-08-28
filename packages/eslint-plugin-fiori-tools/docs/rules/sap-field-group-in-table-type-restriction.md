@@ -76,7 +76,7 @@ annotate service.Incidents with @(UI.LineItem: [
 ]);
 ```
 
-The following annotationpatterns are not considered warnings:
+The following annotation patterns are not considered warnings:
 
 ```cds
 // OK: DataFieldForAnnotation targeting a non-FieldGroup annotation
@@ -92,7 +92,7 @@ annotate service.Incidents with @(UI.LineItem: [
 
 Proceed with one of the following options:
 - Change the table type to `ResponsiveTable` in the `manifest.json` file under `tableSettings.type`.
-- Replace each `UI.DataFieldForAnnotation` with a `UI.FieldGroup` or individual `UI.DataField` entries.
+- Replace each `UI.DataFieldForAnnotation` targeting a `UI.FieldGroup` with individual `UI.DataField` entries.
 
 ## Bug Report
 
