@@ -1,5 +1,87 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.3 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.2.11 → 1.2.12
+- @sap-ux/inquirer-common 1.0.36 → 1.0.37
+- @sap-ux/ui-service-inquirer 1.0.45 → 1.0.46
+
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.10 → 1.2.11
+- @sap-ux/system-access 1.0.11 → 1.0.12
+- @sap-ux/telemetry 2.0.2 → 2.0.3
+- @sap-ux/ui-service-inquirer 1.0.44 → 1.0.45
+- @sap-ux/inquirer-common 1.0.35 → 1.0.36
+
+## 1.0.44
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.1 → 2.0.2
+- @sap-ux/ui-service-inquirer 1.0.43 → 1.0.44
+- @sap-ux/inquirer-common 1.0.34 → 1.0.35
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+- @sap-ux/fiori-generator-shared 1.2.9 → 1.2.10
+- @sap-ux/system-access 1.0.11 → 1.0.11
+
+## 1.0.43
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.0 → 2.0.1
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+- @sap-ux/fiori-generator-shared 1.2.8 → 1.2.9
+- @sap-ux/inquirer-common 1.0.33 → 1.0.34
+- @sap-ux/system-access 1.0.11 → 1.0.11
+- @sap-ux/ui-service-inquirer 1.0.42 → 1.0.43
+
+## 1.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.25 → 2.0.0
+- @sap-ux/fiori-generator-shared 1.2.7 → 1.2.8
+- @sap-ux/inquirer-common 1.0.32 → 1.0.33
+- @sap-ux/ui-service-inquirer 1.0.41 → 1.0.42
+
+## 1.0.41
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.31 → 1.0.32
+- @sap-ux/ui-service-inquirer 1.0.40 → 1.0.41
+- @sap-ux/fiori-generator-shared 1.2.6 → 1.2.7
+- @sap-ux/system-access 1.0.10 → 1.0.11
+- @sap-ux/telemetry 1.0.24 → 1.0.25
+
+## 1.0.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+- @sap-ux/ui-service-inquirer 1.0.39 → 1.0.40
+
 ## 1.0.39
 
 ### Patch Changes

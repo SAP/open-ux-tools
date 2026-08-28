@@ -95,7 +95,7 @@ jobs:
                   NX_CLOUD_ACCESS_TOKEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NX_CLOUD_ACCESS_TOKEN || '' }}
             - name: Upload playwright reports
               if: failure()
-              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
               with:
                   name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
                   path: |
@@ -121,7 +121,7 @@ jobs:
 
             - name: 'Upload sonar artifact'
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
-              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
               with:
                   name: sonar-artifact
                   path: |
@@ -253,11 +253,35 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: Detect extension publication
-              if: steps.changesetPublish.outputs.published == 'true'
               run: |
-                  PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
-                  # Extract the first package name matching sap-ux-*-ext
-                  EXT_PKG=$(echo "$PUBLISHED" | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+                  EXT_PKG=""
+
+                  # Primary path: extension was published in this run
+                  if [ "${{ steps.changesetPublish.outputs.published }}" == "true" ]; then
+                    PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
+                    EXT_PKG=$(echo "$PUBLISHED" | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+                  fi
+
+                  # Fallback: extension is on npm but GitHub Release is missing the vsix asset.
+                  # This covers the case where a previous run published to npm but crashed before
+                  # creating the GitHub Release (e.g. due to a concurrent versioning commit).
+                  if [ -z "$EXT_PKG" ]; then
+                    # Enumerate all extension packages in the workspace
+                    EXT_PKGS=$(find packages -maxdepth 2 -name "package.json" -exec sh -c 'jq -r "select(.name | test(\"^sap-ux-.*-ext$\")) | .name" "$1" 2>/dev/null' _ {} \;)
+                    for PKG in $EXT_PKGS; do
+                      NPM_VERSION=$(npm view "$PKG" version 2>/dev/null || true)
+                      if [ -z "$NPM_VERSION" ]; then
+                        continue
+                      fi
+                      TAG="${PKG}@${NPM_VERSION}"
+                      # Check whether a GitHub Release for this tag already has a vsix asset
+                      ASSET_COUNT=$(gh release view "$TAG" --repo ${{ github.repository }} --json assets --jq '[.assets[].name | select(endswith(".vsix"))] | length' 2>/dev/null || echo "0")
+                      if [ "$ASSET_COUNT" == "0" ]; then
+                        EXT_PKG="$PKG"
+                        break
+                      fi
+                    done
+                  fi
 
                   if [ -n "$EXT_PKG" ]; then
                     echo "EXTENSION_UPDATED=true" >> $GITHUB_ENV

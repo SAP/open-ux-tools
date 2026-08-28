@@ -90,9 +90,8 @@ export const defaultUsage = (): JSX.Element => {
             getMenuItem('option12', 'option 12')
         ];
     };
-    const [menuItemsWithSeparators, setMenuItemsWithSeparators] = useState<UIContextualMenuItem[]>(
-        getMenuItemsWithSeparators()
-    );
+    const [menuItemsWithSeparators, setMenuItemsWithSeparators] =
+        useState<UIContextualMenuItem[]>(getMenuItemsWithSeparators());
 
     return (
         <Stack tokens={stackTokens}>
@@ -168,12 +167,14 @@ export const defaultUsage = (): JSX.Element => {
                     <UISplitButton
                         id="test"
                         callback={onCallback.bind(this)}
+                        propagateMenuOpenKeyDown={false}
                         menuItems={menuItems}
                         button={buttonItem}
                     />
                     <UISplitButton
                         id="test2"
                         callback={onCallback.bind(this)}
+                        propagateMenuOpenKeyDown={false}
                         menuItems={menuItemsWithIcon}
                         button={buttonItem}
                     />
@@ -190,6 +191,7 @@ export const defaultUsage = (): JSX.Element => {
                             }
                             onCallback(key);
                         }}
+                        propagateMenuOpenKeyDown={false}
                         menuItems={menuItemsWithSeparators}
                         button={buttonItem}
                     />
@@ -284,6 +286,7 @@ export const defaultUsage = (): JSX.Element => {
                         iconProps={{
                             iconName: UiIcons.Bulb
                         }}
+                        propagateMenuOpenKeyDown={false}
                         menuProps={{
                             directionalHint: UIDirectionalHint.bottomRightEdge,
                             directionalHintFixed: false,
@@ -295,6 +298,7 @@ export const defaultUsage = (): JSX.Element => {
                         iconProps={{
                             iconName: UiIcons.Bulb
                         }}
+                        propagateMenuOpenKeyDown={false}
                         menuProps={{
                             directionalHint: UIDirectionalHint.bottomRightEdge,
                             directionalHintFixed: false,
@@ -321,6 +325,7 @@ export const defaultUsage = (): JSX.Element => {
                 <Stack horizontal tokens={stackTokens}>
                     <UIIconButton
                         iconProps={{ iconName: UiIcons.Add }}
+                        propagateMenuOpenKeyDown={false}
                         menuProps={{
                             directionalHint: UIDirectionalHint.bottomRightEdge,
                             directionalHintFixed: false,
@@ -330,6 +335,7 @@ export const defaultUsage = (): JSX.Element => {
 
                     <UIIconButton
                         iconProps={{ iconName: UiIcons.Add }}
+                        propagateMenuOpenKeyDown={false}
                         menuProps={{
                             directionalHint: UIDirectionalHint.bottomRightEdge,
                             directionalHintFixed: false,
