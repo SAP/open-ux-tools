@@ -150,7 +150,12 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 name: 'CollectionFacet with single ReferenceFacet',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_SINGLE_FACET_IN_COLLECTION,
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
             },
             []
         ),
@@ -159,7 +164,12 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 name: 'nested CollectionFacet with single ReferenceFacet',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_NESTED_SINGLE_FACET_IN_COLLECTION,
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
             },
             []
         ),
@@ -168,7 +178,12 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 name: 'qualified UI.Facets with single ReferenceFacet in CollectionFacet',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_SINGLE_FACET_IN_COLLECTION_QUALIFIED,
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
             },
             []
         )
