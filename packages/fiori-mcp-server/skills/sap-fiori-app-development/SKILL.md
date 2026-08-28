@@ -89,7 +89,5 @@ The Fiori MCP can add the following page types to existing applications:
      }
    }
    ```
-8. **Updating Service Metadata**: To refresh the local `metadata.xml` from the live backend for an existing Fiori app, use the CLI command — do **not** use `download_odata_service_metadata` (that tool is only for new app generation):
-   ```
-   npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app
-   ```
+8. **Updating Service Metadata**: To refresh the local `metadata.xml` from the live backend for an existing Fiori app, do **not** use `download_odata_service_metadata` (that tool is for initial metadata download during app or page creation, not for refreshing metadata already present in the project). Instead, use the `search_docs` tool with query `"update service metadata"` to find the correct CLI workflow.
+

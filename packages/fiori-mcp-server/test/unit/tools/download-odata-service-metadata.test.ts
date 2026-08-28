@@ -259,7 +259,7 @@ describe('downloadODataServiceMetadata', () => {
         const result = await downloadODataServiceMetadata(params);
 
         expect(result.status).toBe('Error');
-        expect(result.message).toMatch(/update service-metadata/i);
+        expect(result.message).toMatch(/search_docs.*update service metadata/i);
         expect(result.message).toContain(mockAppPath);
         expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
