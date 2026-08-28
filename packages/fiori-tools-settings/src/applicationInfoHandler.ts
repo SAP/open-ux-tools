@@ -89,18 +89,31 @@ export function deleteAppInfoSettings(fs?: Editor) {
  * The function will be called with the file path from the `latestGeneratedFiles` array.
  * If not provided, the command execution step will be skipped.
  * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
+ * @param {Function} [getConfiguration] - An optional function to get VS Code configuration.
+ * Should return an object with a `get` method to retrieve the 'ApplicationWizard.autoOpenApplicationInfoPage' setting.
+ * If not provided or if the setting is not configured, defaults to true (auto-open enabled).
  * @example
- * loadApplicationInfoFromSettings(filePath => {
- *     // Perform VS Code command with the file path
- *     vscode.commands.executeCommand('fake.extension.loadInfo', filePath);
- * });
+ * loadApplicationInfoFromSettings(
+ *     filePath => vscode.commands.executeCommand('fake.extension.loadInfo', filePath),
+ *     undefined,
+ *     () => vscode.workspace.getConfiguration()
+ * );
  */
-export function loadApplicationInfoFromSettings(executeCommand?: (filePath: string) => void, fs?: Editor): void {
+export function loadApplicationInfoFromSettings(
+    executeCommand?: (filePath: string) => void,
+    fs?: Editor,
+    getConfiguration?: () => { get: (key: string, defaultValue?: boolean) => boolean | undefined } | undefined
+): void {
     fs = getFsInstance(fs);
     const appInfoContents: AppInfoSettings = readJSONFile(appInfoFilePath, fs);
     if (appInfoContents.latestGeneratedFiles.length > 0) {
         const filePath = appInfoContents.latestGeneratedFiles.shift();
-        if (executeCommand && filePath) {
+
+        // Check if auto-open is enabled via VS Code setting (defaults to true)
+        const config = getConfiguration?.();
+        const autoOpen = config?.get('ApplicationWizard.autoOpenApplicationInfoPage', true) ?? true;
+
+        if (executeCommand && filePath && autoOpen) {
             executeCommand(filePath);
         }
         deleteAppInfoSettings(fs);

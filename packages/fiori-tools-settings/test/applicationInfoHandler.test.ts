@@ -68,4 +68,59 @@ describe('Application Info Settings', () => {
             'Error deleting appInfo.json file: Error: Mock delete error'
         );
     });
+
+    it('loadApplicationInfoFromSettings should respect VS Code setting when auto-open is disabled', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        const mockGetConfiguration = () => ({
+            get: (key: string, defaultValue?: boolean) => {
+                if (key === 'ApplicationWizard.autoOpenApplicationInfoPage') {
+                    return false; // Setting is disabled
+                }
+                return defaultValue;
+            }
+        });
+        loadApplicationInfoFromSettings(executeCommand, fs, mockGetConfiguration);
+        expect(executeCommand).not.toHaveBeenCalled(); // Command should NOT be executed
+        expect(fs.exists(appInfoFilePath)).toBe(false); // File should still be deleted
+    });
+
+    it('loadApplicationInfoFromSettings should execute command when VS Code setting is enabled', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        const mockGetConfiguration = () => ({
+            get: (key: string, defaultValue?: boolean) => {
+                if (key === 'ApplicationWizard.autoOpenApplicationInfoPage') {
+                    return true; // Setting is enabled
+                }
+                return defaultValue;
+            }
+        });
+        loadApplicationInfoFromSettings(executeCommand, fs, mockGetConfiguration);
+        expect(executeCommand).toHaveBeenCalledWith(testPath); // Command SHOULD be executed
+        expect(fs.exists(appInfoFilePath)).toBe(false);
+    });
+
+    it('loadApplicationInfoFromSettings should default to enabled when getConfiguration not provided', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        loadApplicationInfoFromSettings(executeCommand, fs); // No getConfiguration parameter
+        expect(executeCommand).toHaveBeenCalledWith(testPath); // Should execute (default: true)
+        expect(fs.exists(appInfoFilePath)).toBe(false);
+    });
+
+    it('loadApplicationInfoFromSettings should default to enabled when config.get returns undefined', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        const mockGetConfiguration = () => ({
+            get: () => undefined // Setting not configured
+        });
+        loadApplicationInfoFromSettings(executeCommand, fs, mockGetConfiguration);
+        expect(executeCommand).toHaveBeenCalledWith(testPath); // Should execute (default: true)
+        expect(fs.exists(appInfoFilePath)).toBe(false);
+    });
 });
