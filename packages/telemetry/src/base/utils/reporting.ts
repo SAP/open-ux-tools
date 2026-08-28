@@ -44,14 +44,17 @@ const parseErrorStack = (errorStack: string): string[] => {
     return parsedStack;
 };
 
-let reportingTelemetryClient: appInsights.TelemetryClient;
+let reportingTelemetryClient: appInsights.TelemetryClient | undefined;
 
-export const reportRuntimeError = (error: Error): void => {
-    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true') {
+const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
+    if (!reportingTelemetryClient) {
         reportingTelemetryClient = new appInsights.TelemetryClient(TelemetrySettings.azureInstrumentationKey);
         configAzureTelemetryClient(reportingTelemetryClient);
     }
+    return reportingTelemetryClient;
+};
 
+export const reportRuntimeError = (error: Error): void => {
     const properties: { [key: string]: string } = { message: error.message };
     if (error.stack) {
         const parsedStack = parseErrorStack(error.stack);
@@ -65,7 +68,7 @@ export const reportRuntimeError = (error: Error): void => {
         measurements: {}
     };
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
-        reportingTelemetryClient.trackEvent(telemetryEvent);
+        getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };
 
@@ -82,6 +85,6 @@ export const reportEnableTelemetryOnOff = (
         measurements: {}
     };
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
-        reportingTelemetryClient.trackEvent(telemetryEvent);
+        getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };
