@@ -235,6 +235,41 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 ]
             },
             [{ filename: V2_MANIFEST_PATH, code: V2_MANIFEST_WITH_GRID_TABLE }]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4: DataFieldForAnnotation targeting FieldGroup in TreeTable',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_INCIDENTS_LINEITEM_WITH_FIELDGROUP),
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in TreeTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
+            },
+            [
+                {
+                    filename: V4_MANIFEST_PATH,
+                    code: getManifestAsCode(V4_MANIFEST, [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'type'
+                            ],
+                            value: 'TreeTable'
+                        }
+                    ])
+                }
+            ]
         )
     ]
 });
