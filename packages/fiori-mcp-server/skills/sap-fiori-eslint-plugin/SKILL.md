@@ -1,6 +1,6 @@
 ---
 name: sap-fiori-eslint-plugin
-description: >
+description: >-
   Configure, migrate, or run ESLint with @sap-ux/eslint-plugin-fiori-tools in SAP Fiori projects
   (standalone or CAP). Use when ESLint is missing and the user wants to add it or add code quality
   checks; when an existing .eslintrc or eslint@8 config needs upgrading to ESLint 9 flat config;
@@ -12,7 +12,7 @@ description: >
 compatibility: Requires Node.js with npm, pnpm, or yarn. Designed for SAP Fiori freestyle and Fiori elements projects (standalone or inside a CAP project).
 metadata:
   author: sap-fiori-tools
-  version: "0.0.2"
+  version: "0.0.3"
 ---
 
 # SAP Fiori ESLint Plugin
