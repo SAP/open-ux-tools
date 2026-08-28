@@ -11,22 +11,27 @@ jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
 }));
 
 const mockWriteFileSync = jest.fn<any>();
+const mockExistsSync = jest.fn<() => boolean>().mockReturnValue(false);
 const actualFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
-        writeFileSync: mockWriteFileSync
+        writeFileSync: mockWriteFileSync,
+        existsSync: mockExistsSync
     },
-    writeFileSync: mockWriteFileSync
+    writeFileSync: mockWriteFileSync,
+    existsSync: mockExistsSync
 }));
 jest.unstable_mockModule('fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
-        writeFileSync: mockWriteFileSync
+        writeFileSync: mockWriteFileSync,
+        existsSync: mockExistsSync
     },
-    writeFileSync: mockWriteFileSync
+    writeFileSync: mockWriteFileSync,
+    existsSync: mockExistsSync
 }));
 
 const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
@@ -53,6 +58,7 @@ describe('downloadODataServiceMetadata', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
+        mockExistsSync.mockReturnValue(false);
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
@@ -239,6 +245,25 @@ describe('downloadODataServiceMetadata', () => {
 
         expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '/sap/opu/odata4/test/service');
+    });
+
+    test('should return error when metadata.xml already exists at appPath', async () => {
+        mockExistsSync.mockReturnValue(true);
+
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(result.status).toBe('Error');
+        expect(result.message).toMatch(/update service-metadata/i);
+        expect(result.message).toContain(mockAppPath);
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
     test('should write metadata file to correct path', async () => {

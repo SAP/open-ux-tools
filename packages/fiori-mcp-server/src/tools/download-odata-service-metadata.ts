@@ -49,6 +49,22 @@ export async function downloadODataServiceMetadata(
         };
     }
 
+    const metadataFilePath = path.join(params.appPath, 'metadata.xml');
+    if (fs.existsSync(metadataFilePath)) {
+        return {
+            status: 'Error',
+            message:
+                `A metadata.xml already exists at '${metadataFilePath}'. ` +
+                `This tool is only for downloading metadata when generating a new Fiori app. ` +
+                `To refresh service metadata for an existing app, run: ` +
+                `npx --yes @sap-ux/create@latest update service-metadata ${params.appPath}`,
+            parameters: EMPTY_PARAMS,
+            appPath: params.appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
     try {
         const findResult = await findSystem(sapSystemQuery || servicePath);
         if (!findResult.system) {
@@ -65,7 +81,6 @@ export async function downloadODataServiceMetadata(
 
         // At this point, foundSystem should be a BackendSystem (VSCode only)
         const metadata = await getServiceMetadata(foundSystem as BackendSystem, servicePath);
-        const metadataFilePath = path.join(params.appPath, 'metadata.xml');
         fs.writeFileSync(metadataFilePath, metadata, 'utf-8');
 
         const backend = foundSystem as BackendSystem;
