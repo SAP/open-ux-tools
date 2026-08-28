@@ -92,10 +92,9 @@ function findCollectionFacetsWithSingleChild(facetsCollection: Element, aliasInf
 
         if (hasSingleReferenceFacet(childCollection, aliasInfo)) {
             singleChildFacets.push(record);
-        } else {
-            // Check one level of nesting: CollectionFacets inside this CollectionFacet
-            collectNestedSingleChildFacets(childCollection, aliasInfo, singleChildFacets);
         }
+        // Check one level of nesting: CollectionFacets inside this CollectionFacet
+        collectNestedSingleChildFacets(childCollection, aliasInfo, singleChildFacets);
     }
 
     return singleChildFacets;
@@ -200,23 +199,27 @@ const rule: FioriRuleDefinition = createFioriRule({
         if (validationResult.length === 0) {
             return {};
         }
-        const lookup = new Set<Element>();
+        const lookup = new Map<Element, NoSingleFacetInCollection[]>();
         for (const diagnostic of validationResult) {
-            lookup.add(diagnostic.annotation.reportedParent);
+            const existing = lookup.get(diagnostic.annotation.reportedParent);
+            if (existing) {
+                existing.push(diagnostic);
+            } else {
+                lookup.set(diagnostic.annotation.reportedParent, [diagnostic]);
+            }
         }
         return {
             ['target>element[name="Annotation"]'](node: Element): void {
-                if (!lookup.has(node)) {
+                const diagnostics = lookup.get(node);
+                if (!diagnostics) {
                     return;
                 }
-                validationResult
-                    .filter((r) => r.annotation.reportedParent === node)
-                    .forEach((r) => {
-                        context.report({
-                            node: r.annotation.reference.value,
-                            messageId: NO_SINGLE_FACET_IN_COLLECTION
-                        });
+                for (const r of diagnostics) {
+                    context.report({
+                        node: r.annotation.reference.value,
+                        messageId: NO_SINGLE_FACET_IN_COLLECTION
                     });
+                }
             }
         };
     }
