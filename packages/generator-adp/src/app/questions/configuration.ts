@@ -808,7 +808,7 @@ export class ConfigPrompter {
             this.selectedSystemType = undefined;
             this.supportedProject = undefined;
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            this.isAuthRequired = !!(await this.getIsAuthRequired(system));
+            this.isAuthRequired = (await this.getIsAuthRequired(system)) ?? false;
 
             if (this.isAuthRequired) {
                 return true;

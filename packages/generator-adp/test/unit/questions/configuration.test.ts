@@ -455,7 +455,7 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter['isAuthRequired']).toBe(true);
         });
 
-        it('system prompt validate should rethrow when getCsrfToken fails with a non-401 error in BAS', async () => {
+        it('system prompt validate should return error message when getCsrfToken fails with a non-401 error in BAS', async () => {
             const axiosError = {
                 isAxiosError: true,
                 message: 'Internal Server Error',
