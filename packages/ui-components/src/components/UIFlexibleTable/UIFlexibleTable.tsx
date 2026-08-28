@@ -223,8 +223,10 @@ export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): Re
     ]);
 
     const showTitleRow = props.showColumnTitles && isInRowLayout && !props.showColumnTitlesInCells;
+    const actionsMinWidth = calcActionsMinWidth(props);
     const tableRootElementStyle: CSSProperties = {
-        maxWidth: props.maxWidth ? `${props.maxWidth}px` : '100%'
+        maxWidth: props.maxWidth ? `${props.maxWidth}px` : '100%',
+        ['--flexible-table-actions-min-width' as string]: actionsMinWidth ? `${actionsMinWidth}px` : '0px'
     };
 
     const getCustomTableActions = (
@@ -403,4 +405,34 @@ function isRowFitsContainer(
         result = containerWidth >= inRowMinWidth;
     }
     return result;
+}
+
+const ACTION_REORDER_BUTTONS_WIDTH = 44;
+const ACTION_BUTTON_WIDTH = 18;
+const ACTION_DIVIDER_WIDTH = 20;
+const ACTIONS_CONTAINER_PADDING = 10;
+
+function calcActionsMinWidth<T>(props: UIFlexibleTableProps<T>): number {
+    const isReadonly = !!props.readonly;
+    const hasReorder = !isReadonly && !!props.onTableReorder;
+    const hasDelete = !isReadonly && !!props.onDeleteRow;
+    const hasCustom = !!props.onRenderActions;
+
+    let width = 0;
+    if (hasCustom) {
+        width += ACTION_BUTTON_WIDTH;
+    }
+    if (hasReorder) {
+        if (width > 0) {
+            width += ACTION_DIVIDER_WIDTH;
+        }
+        width += ACTION_REORDER_BUTTONS_WIDTH;
+    }
+    if (hasDelete) {
+        if (width > 0) {
+            width += ACTION_DIVIDER_WIDTH;
+        }
+        width += ACTION_BUTTON_WIDTH;
+    }
+    return width > 0 ? width + ACTIONS_CONTAINER_PADDING : 0;
 }
