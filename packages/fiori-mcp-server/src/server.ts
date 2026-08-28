@@ -27,7 +27,9 @@ import {
     listLibrariesFromSystem,
     listODataServices,
     readODataMetadataAdp,
-    tools
+    tools,
+    validateManifest,
+    downloadBaseAppResources
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
 import { clearSessions } from './tools/run-rta-workflow-step/index.js';
@@ -45,7 +47,9 @@ import type {
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
     AdpMetadataInput,
-    ODataServiceInput
+    ODataServiceInput,
+    PreviewManifestInput,
+    DownloadAppResourcesInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -65,6 +69,7 @@ type ToolArgs =
     | RunRtaWorkflowStepInput
     | AdpMetadataInput
     | ODataServiceInput
+    | PreviewManifestInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -316,6 +321,12 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         break;
                     case 'read_odata_metadata_adp':
                         result = await readODataMetadataAdp(args as AdpMetadataInput);
+                        break;
+                    case 'preview_manifest':
+                        result = await validateManifest(args as PreviewManifestInput);
+                        break;
+                    case 'download_app_resources':
+                        result = await downloadBaseAppResources(args as DownloadAppResourcesInput);
                         break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);

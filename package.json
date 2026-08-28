@@ -77,5 +77,8 @@
         "pnpm": "11.22.0",
         "node": ">=22.22.2"
     },
-    "packageManager": "pnpm@11.22.0"
+    "packageManager": "pnpm@11.22.0",
+    "dependencies": {
+        "@ui5/task-adaptation": "link:../../developer/ui5-task-adaptation-internal"
+    }
 }
