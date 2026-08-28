@@ -25,7 +25,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 
     return new ObjectPage(
         {
-            appId: 'testNameSpace.lropv4versionnotspecified',
+            appId: 'testnamespace.lropv4versionnotspecified',
             componentId: 'BooksObjectPage',
             entitySet: 'Books'
         },

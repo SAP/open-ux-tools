@@ -165,7 +165,7 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                             oResult.changes = aProcessedChanges;
                                             const oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: "testNameSpace.lropv2typescript"
+                                                componentClassName: "testnamespace.lropv2typescript"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -176,7 +176,7 @@ if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78
                                         oResult.changes = aProcessedChanges;
                                         const oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: "testNameSpace.lropv2typescript"
+                                            componentClassName: "testnamespace.lropv2typescript"
                                         };
                                         resolve(oLrepChange);
                                     }
