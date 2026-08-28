@@ -11,6 +11,7 @@ describe('<UIPersona />', () => {
     it('Should forward size prop to Persona', () => {
         const { container: large } = render(<UIPersona text="John Doe" size={UIPersonaSize.size72} />);
         const { container: small } = render(<UIPersona text="John Doe" size={UIPersonaSize.size32} />);
-        expect(large.innerHTML).not.toEqual(small.innerHTML);
+        expect(large.querySelector('.ms-Persona--size72')).not.toBeNull();
+        expect(small.querySelector('.ms-Persona--size32')).not.toBeNull();
     });
 });
