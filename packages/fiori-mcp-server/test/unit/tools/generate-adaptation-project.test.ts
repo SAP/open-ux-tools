@@ -22,6 +22,13 @@ jest.unstable_mockModule('../../../src/tools/generate-adaptation-project/key-use
     fetchKeyUserChanges: mockFetchKeyUserChanges
 }));
 
+// Force isYoAvailable() to return false so tests always exercise the npx fallback path.
+const actualChildProcess = await import('node:child_process');
+jest.unstable_mockModule('node:child_process', () => ({
+    ...actualChildProcess,
+    execFileSync: jest.fn().mockImplementation(() => { throw new Error('not found'); })
+}));
+
 const actualFs = await import('node:fs');
 const mockMkdir = jest.fn<any>().mockResolvedValue(undefined);
 const mockExistsSync = jest.fn<any>().mockReturnValue(false);

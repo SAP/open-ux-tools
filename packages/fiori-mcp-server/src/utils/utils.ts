@@ -88,6 +88,16 @@ export function runCmdArgs(cmd: string, args: string[], options: RunCmdArgsOptio
         if (timeout && timeout > 0) {
             timer = setTimeout(() => {
                 child.kill('SIGTERM');
+                // Give the child 5 seconds to exit gracefully, then force-kill.
+                const forceKillTimer = setTimeout(() => {
+                    try {
+                        child.kill('SIGKILL');
+                    } catch {
+                        // Process may have already exited
+                    }
+                }, 5000);
+                // If the child exits before the force-kill timer fires, cancel it.
+                child.once('close', () => clearTimeout(forceKillTimer));
                 settle(() =>
                     reject(
                         new Error(`Command '${cmd} ${args.join(' ')}' timed out after ${timeout}ms and was terminated.`)
@@ -113,8 +123,9 @@ export function runCmdArgs(cmd: string, args: string[], options: RunCmdArgsOptio
             if (code === 0) {
                 settle(() => resolve({ stdout, stderr }));
             } else {
+                const detail = [stderr, stdout].filter(Boolean).join('\n').trim();
                 settle(() =>
-                    reject(new Error(`Command '${cmd} ${args.join(' ')}' failed with exit code ${code}. ${stderr}`))
+                    reject(new Error(`Command '${cmd} ${args.join(' ')}' failed with exit code ${code}.\n${detail}`))
                 );
             }
         });

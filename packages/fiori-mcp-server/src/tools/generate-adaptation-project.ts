@@ -1,6 +1,7 @@
 import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { isAbsolute, join } from 'node:path';
 import { existsSync, promises as FSpromises } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
 import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
 import { fetchKeyUserChanges } from './generate-adaptation-project/key-user-changes.js';
@@ -10,6 +11,32 @@ const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;
 
 /** Maximum time to allow the adaptation project generator to run before it is terminated. */
 const GENERATION_TIMEOUT_MS = 5 * 60_000;
+
+/**
+ * Returns true if `yo` is available on PATH. Used to avoid re-downloading
+ * Yeoman via `npx -y` on every invocation (slow on cold/corporate networks).
+ */
+function isYoAvailable(): boolean {
+    try {
+        const cmd = process.platform === 'win32' ? 'where' : 'which';
+        execFileSync(cmd, ['yo'], { stdio: 'ignore' });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Builds the command + args to invoke the @sap-ux/adp Yeoman generator.
+ * Uses the globally-installed `yo` when available to avoid network round-trips;
+ * falls back to `npx -y yo@4` for fresh environments.
+ */
+function buildGeneratorCommand(jsonString: string): { cmd: string; args: string[] } {
+    if (isYoAvailable()) {
+        return { cmd: 'yo', args: ['@sap-ux/adp', jsonString, '--force'] };
+    }
+    return { cmd: 'npx', args: ['-y', 'yo@4', '@sap-ux/adp', jsonString, '--force'] };
+}
 
 /**
  * Returns a copy of `params` with sensitive credential fields removed so they
@@ -143,7 +170,8 @@ export async function generateAdaptationProject(
         // quotes, spaces or apostrophes in values cannot corrupt it. A corrupted payload would make
         // the generator silently fall back to interactive prompts and hang with no attached stdin.
         const jsonString = JSON.stringify(jsonInput);
-        const { stdout, stderr } = await runCmdArgs('npx', ['-y', 'yo@4', '@sap-ux/adp', jsonString, '--force'], {
+        const { cmd, args } = buildGeneratorCommand(jsonString);
+        const { stdout, stderr } = await runCmdArgs(cmd, args, {
             cwd: finalTargetFolder,
             timeout: GENERATION_TIMEOUT_MS
         });

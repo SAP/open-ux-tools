@@ -80,27 +80,27 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
   _Owner: tools (server guard) + skill (SKILL.md update)_ | _Assignee: —_ Ivo (to find the POC PR)
 
-- [ ] **`generate_adaptation_project` — stability hardening (contact Stefan for more info)**  
+- [x] **`generate_adaptation_project` — stability hardening (contact Stefan for more info)**  
   Tool is reported as flaky for some users. Multiple independent failure modes:
 
-  - **Password leaked in tool response** — `parameters: params` echoes plaintext `password` and `username` back in both success and error envelopes. Strip sensitive fields before echoing.  
+  - ~~**Password leaked in tool response** — `parameters: params` echoes plaintext `password` and `username` back in both success and error envelopes. Strip sensitive fields before echoing.~~ ✓  
     _File:_ `src/tools/generate-adaptation-project.ts:143,157`
 
-  - **`npx -y yo@4` re-downloads Yeoman on cold/corporate networks** — fails on offline/air-gapped machines and corporate proxies. Check whether `yo` is already available globally before falling back to `npx -y`. Also pin `@sap-ux/adp` to a specific version to avoid version drift.  
+  - ~~**`npx -y yo@4` re-downloads Yeoman on cold/corporate networks** — fails on offline/air-gapped machines and corporate proxies. Check whether `yo` is already available globally before falling back to `npx -y`. Also pin `@sap-ux/adp` to a specific version to avoid version drift.   ✓~~
     _File:_ `src/tools/generate-adaptation-project.ts:129`
 
-  - **Generator failure gives no actionable output** — on non-zero exit, `stdout` is discarded. Yeoman prints useful failure info to `stdout`. Include both `stdout` and `stderr` in the error message.  
+  - ~~**Generator failure gives no actionable output** — on non-zero exit, `stdout` is discarded. Yeoman prints useful failure info to `stdout`. Include both `stdout` and `stderr` in the error message.~~ ✓  
     _File:_ `src/tools/generate-adaptation-project.ts:149–158`
 
-  - **`SIGTERM` on timeout has no `SIGKILL` follow-up on Unix** — `SIGTERM` can be ignored. Add a `SIGKILL` after a 5-second grace period if the child hasn't exited.  
+  - ~~**`SIGTERM` on timeout has no `SIGKILL` follow-up on Unix** — `SIGTERM` can be ignored. Add a `SIGKILL` after a 5-second grace period if the child hasn't exited.   ✓~~
     _File:_ `src/utils/utils.ts:89–96`
 
-  - ~~**`targetFolder` not validated as absolute path**~~ ✓ — if the AI passes a relative path, files are written relative to `process.cwd()`. Validate that `finalTargetFolder` is absolute before calling `mkdir`.  
+  - ~~**`targetFolder` not validated as absolute path** — if the AI passes a relative path, files are written relative to `process.cwd()`. Validate that `finalTargetFolder` is absolute before calling `mkdir`.~~ ✓  
     _File:_ `src/tools/generate-adaptation-project.ts:71`
 
   - ~~**`getDefaultProjectName` index skip** — `app.variant` → `app.variant2` is the canonical convention in `generator-adp` (`packages/generator-adp/src/app/questions/helper/default-values.ts`). No `app.variant1` by design. No change needed.~~
 
-  - ~~**`importKeyUserChanges` contract mismatch**~~ ✓ — code warns and continues when `getKeyUserData` returns empty array; PR description says it should abort. Decide and align code + SKILL.md.  
+  - ~~**`importKeyUserChanges` contract mismatch** — code warns and continues when `getKeyUserData` returns empty array; PR description says it should abort. Decide and align code + SKILL.md.~~ ✓  
     _File:_ `src/tools/generate-adaptation-project.ts:~108`
 
   _Owner: tools (code) + skill (SKILL.md for importKeyUserChanges)_ | _Assignee: —_
