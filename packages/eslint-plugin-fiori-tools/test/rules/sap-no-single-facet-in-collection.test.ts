@@ -1,14 +1,19 @@
+import { pathToFileURL } from 'node:url';
 import { RuleTester } from 'eslint';
 import noSingleFacetInCollectionRule from '../../src/rules/sap-no-single-facet-in-collection.js';
 import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
+    getManifestAsCode,
     setup,
     V2_ANNOTATIONS,
     V2_ANNOTATIONS_PATH,
     V4_ANNOTATIONS,
-    V4_ANNOTATIONS_PATH
+    V4_ANNOTATIONS_PATH,
+    V4_MANIFEST,
+    V4_MANIFEST_PATH
 } from '../test-helper.js';
+import { ProjectContext } from '../../src/project-context/project-context.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -230,6 +235,21 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_TWO_FACETS_IN_COLLECTION)
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'V4: violation pattern on entity with only a list report page is not flagged',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_SINGLE_FACET_IN_COLLECTION)
+            },
+            [
+                {
+                    filename: V4_MANIFEST_PATH,
+                    code: getManifestAsCode(V4_MANIFEST, [
+                        { path: ['sap.ui5', 'routing', 'targets', 'IncidentsObjectPage'], value: undefined }
+                    ])
+                }
+            ]
         )
     ],
     invalid: [
@@ -238,16 +258,31 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
                 name: 'V4: CollectionFacet with single ReferenceFacet',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_SINGLE_FACET_IN_COLLECTION),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
             },
-            []
+            [
+                {
+                    filename: V4_MANIFEST_PATH,
+                    code: getManifestAsCode(V4_MANIFEST, []) // reset manifest content
+                }
+            ]
         ),
         createInvalidTest(
             {
                 name: 'V4: nested CollectionFacet with single ReferenceFacet',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_NESTED_SINGLE_FACET_IN_COLLECTION),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
             },
             []
         ),
@@ -256,7 +291,12 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
                 name: 'V2: CollectionFacet with single ReferenceFacet',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_SINGLE_FACET_IN_COLLECTION),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
             },
             []
         ),
@@ -265,7 +305,12 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
                 name: 'V4: qualified UI.Facets with single ReferenceFacet in CollectionFacet',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_SINGLE_FACET_IN_COLLECTION_QUALIFIED),
-                errors: [{ messageId: TEST_NAME }]
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
             },
             []
         )

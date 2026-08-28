@@ -6,8 +6,8 @@ import type { NoSingleFacetInCollection } from '../language/diagnostics.js';
 import { NO_SINGLE_FACET_IN_COLLECTION } from '../language/diagnostics.js';
 import { getRecordType, getPropertyValueElement } from '../project-context/linker/annotations.js';
 import { buildAnnotationIndexKey, type ParsedService } from '../project-context/parser/index.js';
-import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
-import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
+import type { FeV4ObjectPage } from '../project-context/linker/fe-v4.js';
+import type { FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 
 const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
@@ -102,15 +102,15 @@ function findCollectionFacetsWithSingleChild(facetsCollection: Element, aliasInf
 }
 
 /**
- * Checks a single app page's UI.Facets annotations for CollectionFacets with a single ReferenceFacet child.
+ * Checks an object page's UI.Facets annotations for CollectionFacets with a single ReferenceFacet child.
  * Deduplicates: if the same CollectionFacet is shared across pages, merges pageNames.
  *
- * @param page - Application page (V4 or V2)
+ * @param page - Object page (V4 or V2)
  * @param parsedService - Parsed annotation service
  * @param problems - Array of found rule violations (mutated in place)
  */
 function checkPageFacetAnnotations(
-    page: FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage,
+    page: FeV4ObjectPage | FeV2ObjectPage,
     parsedService: ParsedService,
     problems: NoSingleFacetInCollection[]
 ): void {
@@ -186,6 +186,9 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             for (const page of app.pages) {
+                if (page.type !== 'object-page') {
+                    continue;
+                }
                 checkPageFacetAnnotations(page, parsedService, problems);
             }
         }
