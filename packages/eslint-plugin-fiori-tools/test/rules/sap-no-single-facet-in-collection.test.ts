@@ -80,6 +80,46 @@ const V4_DIRECT_REFERENCE_FACET = `
         </Annotation>
     </Annotations>`;
 
+// V4: two top-level CollectionFacets — first has one ReferenceFacet (first-level error),
+// second has a nested CollectionFacet with one ReferenceFacet (nested error)
+const V4_FIRST_LEVEL_AND_NESTED_SINGLE_FACET = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.Facets">
+            <Collection>
+                <Record Type="UI.CollectionFacet">
+                    <PropertyValue Property="ID" String="FirstLevel"/>
+                    <PropertyValue Property="Facets">
+                        <Collection>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#FirstLevel"/>
+                            </Record>
+                        </Collection>
+                    </PropertyValue>
+                </Record>
+                <Record Type="UI.CollectionFacet">
+                    <PropertyValue Property="ID" String="Outer"/>
+                    <PropertyValue Property="Facets">
+                        <Collection>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
+                            </Record>
+                            <Record Type="UI.CollectionFacet">
+                                <PropertyValue Property="ID" String="Inner"/>
+                                <PropertyValue Property="Facets">
+                                    <Collection>
+                                        <Record Type="UI.ReferenceFacet">
+                                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Address"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Collection>
+                    </PropertyValue>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>`;
+
 // V4: outer CollectionFacet with two children, inner CollectionFacet with one ReferenceFacet — VIOLATION on inner
 const V4_NESTED_SINGLE_FACET_IN_COLLECTION = `
     <Annotations Target="IncidentService.Incidents">
@@ -292,6 +332,24 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_SINGLE_FACET_IN_COLLECTION),
                 errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V4: first-level error and nested CollectionFacet error both reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FIRST_LEVEL_AND_NESTED_SINGLE_FACET),
+                errors: [
+                    {
+                        message:
+                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                    },
                     {
                         message:
                             'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
