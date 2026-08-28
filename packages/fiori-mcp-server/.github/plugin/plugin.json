@@ -20,7 +20,8 @@
                 "./skills/sap-fiori-app-development/",
                 "./skills/sap-fiori-create-cli/",
                 "./skills/sap-fiori-eslint-plugin/",
-                "./skills/sap-fiori-opa5-test-development/"
+                "./skills/sap-fiori-opa5-test-development/",
+                "./skills/sap-fiori-tree-table/"
             ]
         }
     }
