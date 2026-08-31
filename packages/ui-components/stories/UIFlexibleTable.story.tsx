@@ -103,8 +103,8 @@ function cellRenderer(
                 cellClassNames: isSpannedCell
                     ? 'spanned-cell'
                     : withSpan && params.rowIndex === 2 && !isSpannedCell
-                    ? 'not-spanned-cell'
-                    : undefined,
+                      ? 'not-spanned-cell'
+                      : undefined,
                 content: (
                     <UIDropdown
                         options={options}
@@ -124,8 +124,8 @@ function cellRenderer(
                     isSpannedCell
                         ? 'spanned-cell'
                         : withSpan && params.rowIndex === 2 && !isSpannedCell
-                        ? 'not-spanned-cell'
-                        : ''
+                          ? 'not-spanned-cell'
+                          : ''
                 ],
                 content: (
                     <TextInputWrapper
@@ -195,10 +195,6 @@ const css1 = `
 
 body .flexible-table-content-table-row.dragged {
     font-size: 13px;
-}
-
-.flexible-table-content-table-row-item-actions, .flexible-table-content-table-title-row-item-actions {
-    min-width: 130px !important;
 }
 
 .flexible-table-content-table-row.active-row {
@@ -518,10 +514,6 @@ const css2 = `
 
 body .flexible-table-content-table-row.dragged {
     font-size: 13px;
-}
-
-.flexible-table-content-table-row-item-actions, .flexible-table-content-table-title-row-item-actions {
-    min-width: 130px !important;
 }
 
 .flexible-table-content-table-row.preferred-row {
