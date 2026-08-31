@@ -200,6 +200,14 @@ export async function generateAdaptationProject(
     }
 }
 
+/**
+ * Returns a non-colliding project directory name under `basePath`.
+ * Follows the `generator-adp` convention: `app.variant` → `app.variant2` → `app.variant3` …
+ *
+ * @param basePath Base directory to check for existing project folders.
+ * @param dirName Base name prefix; defaults to `"app.variant"`.
+ * @returns The first name in the sequence that does not yet exist on disk.
+ */
 function getDefaultProjectName(basePath: string, dirName: string = 'app.variant'): string {
     let newDir = dirName;
     let index = 1;

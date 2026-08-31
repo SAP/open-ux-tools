@@ -4,6 +4,13 @@ import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import { getProvider } from './services/abap-context.js';
 import type { ODataServiceInput } from '../types/index.js';
 
+/**
+ * Lists OData V2 and V4 services available in the target system's catalog.
+ * Both catalogs are fetched in parallel and their results are merged.
+ *
+ * @param params Input parameters including `appPath` and an optional `filter` string.
+ * @returns Combined service catalog entries, filtered by name when `filter` is provided.
+ */
 export async function listODataServices(params: ODataServiceInput): Promise<ODataServiceInfo[]> {
     const provider = await getProvider(params.appPath);
 
