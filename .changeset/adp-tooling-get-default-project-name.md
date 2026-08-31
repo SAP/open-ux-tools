@@ -1,5 +1,6 @@
 ---
-"@sap-ux/adp-tooling": minor
+"@sap-ux/adp-tooling": patch
+"@sap-ux/generator-adp": patch
 ---
 
-FEAT: export getDefaultProjectName for reuse across ADP tooling packages
+FEAT: move getDefaultProjectName to @sap-ux/adp-tooling and reuse it in @sap-ux/generator-adp, eliminating the duplicate implementation
