@@ -66,54 +66,29 @@
                                         "Identifier": [
                                           {
                                             "tokenTypeName": "Identifier",
-                                            "image": "persistence",
+                                            "image": "assert",
                                             "startOffset": 12,
-                                            "endOffset": 22
+                                            "endOffset": 17
                                           }
                                         ]
                                       },
                                       "location": {
                                         "startOffset": 12,
-                                        "endOffset": 22
+                                        "endOffset": 17
                                       }
-                                    },
-                                    {
-                                      "name": "pathSegment",
-                                      "children": {
-                                        "Identifier": [
-                                          {
-                                            "tokenTypeName": "Identifier",
-                                            "image": "exists",
-                                            "startOffset": 24,
-                                            "endOffset": 29
-                                          }
-                                        ]
-                                      },
-                                      "location": {
-                                        "startOffset": 24,
-                                        "endOffset": 29
-                                      }
-                                    }
-                                  ],
-                                  "PathSegmentSeparator": [
-                                    {
-                                      "tokenTypeName": "PathSegmentSeparator",
-                                      "image": ".",
-                                      "startOffset": 23,
-                                      "endOffset": 23
                                     }
                                   ]
                                 },
                                 "location": {
                                   "startOffset": 12,
-                                  "endOffset": 29
+                                  "endOffset": 17
                                 }
                               }
                             ]
                           },
                           "location": {
                             "startOffset": 12,
-                            "endOffset": 29
+                            "endOffset": 17
                           }
                         }
                       ],
@@ -129,34 +104,34 @@
                         {
                           "tokenTypeName": "RCurly",
                           "image": "}",
-                          "startOffset": 32,
-                          "endOffset": 32
+                          "startOffset": 20,
+                          "endOffset": 20
                         }
                       ]
                     },
                     "location": {
                       "startOffset": 5,
-                      "endOffset": 32
+                      "endOffset": 20
                     }
                   }
                 ]
               },
               "location": {
                 "startOffset": 5,
-                "endOffset": 32
+                "endOffset": 20
               }
             }
           ]
         },
         "location": {
           "startOffset": 0,
-          "endOffset": 32
+          "endOffset": 20
         }
       }
     ]
   },
   "location": {
     "startOffset": 0,
-    "endOffset": 32
+    "endOffset": 20
   }
 }

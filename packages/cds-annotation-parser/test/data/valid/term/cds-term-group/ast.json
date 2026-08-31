@@ -28,45 +28,34 @@
     "items": [
       {
         "type": "annotation",
-        "range": "[(1,4)..(1,22)]",
+        "range": "[(1,4)..(1,10)]",
         "term": {
           "type": "path",
-          "range": "[(1,4)..(1,22)]",
-          "value": "CdsPersistenceExists",
+          "range": "[(1,4)..(1,10)]",
+          "value": "CdsAssert",
           "segments": [
             {
               "type": "identifier",
-              "value": "CdsPersistenceExists"
+              "range": "[(1,4)..(1,10)]",
+              "value": "CdsAssert",
+              "quoted": false
             }
           ],
           "separators": []
         },
         "originalTerm": {
           "type": "path",
-          "range": "[(1,4)..(1,22)]",
-          "value": "persistence.exists",
+          "range": "[(1,4)..(1,10)]",
+          "value": "assert",
           "segments": [
             {
               "type": "identifier",
-              "range": "[(1,4)..(1,15)]",
-              "value": "persistence",
-              "quoted": false
-            },
-            {
-              "type": "identifier",
-              "range": "[(1,16)..(1,22)]",
-              "value": "exists",
+              "range": "[(1,4)..(1,10)]",
+              "value": "assert",
               "quoted": false
             }
           ],
-          "separators": [
-            {
-              "type": "separator",
-              "range": "[(1,15)..(1,16)]",
-              "value": ".",
-              "escaped": false
-            }
-          ]
+          "separators": []
         }
       }
     ],
