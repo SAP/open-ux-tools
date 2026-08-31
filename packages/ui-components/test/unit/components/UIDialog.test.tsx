@@ -129,9 +129,12 @@ describe('<UIDialog />', () => {
     });
 
     describe('Footer', () => {
+        const footerElementCount = (props: IDialogFooterProps | undefined): number =>
+            React.Children.toArray(props?.children).filter(React.isValidElement).length;
+
         it('Accept and reject buttons', () => {
             const buttons = document.body.querySelectorAll('button');
-            expect(capturedFooterProps).toBeDefined();
+            expect(footerElementCount(capturedFooterProps)).toBe(2);
             expect(buttons).toHaveLength(2);
         });
 
@@ -139,7 +142,7 @@ describe('<UIDialog />', () => {
             capturedFooterProps = undefined;
             rerenderWith({ onCancel: undefined });
             const buttons = document.body.querySelectorAll('button');
-            expect(capturedFooterProps).toBeDefined();
+            expect(footerElementCount(capturedFooterProps)).toBe(1);
             expect(buttons).toHaveLength(1);
         });
 
@@ -147,7 +150,7 @@ describe('<UIDialog />', () => {
             capturedFooterProps = undefined;
             rerenderWith({ onAccept: undefined });
             const buttons = document.body.querySelectorAll('button');
-            expect(capturedFooterProps).toBeDefined();
+            expect(footerElementCount(capturedFooterProps)).toBe(1);
             expect(buttons).toHaveLength(1);
         });
 
@@ -162,7 +165,7 @@ describe('<UIDialog />', () => {
         it('Custom footer', () => {
             capturedFooterProps = undefined;
             rerenderWith({ footer: <div className="dummyFooter"></div> });
-            expect(capturedFooterProps).toBeDefined();
+            expect(footerElementCount(capturedFooterProps)).toBe(1);
             expect(document.body.querySelectorAll('.dummyFooter')).toHaveLength(1);
         });
 
@@ -175,7 +178,7 @@ describe('<UIDialog />', () => {
                     <UIDefaultButton key="cancel" className="dummyButton" />
                 ]
             });
-            expect(capturedFooterProps).toBeDefined();
+            expect(footerElementCount(capturedFooterProps)).toBe(3);
             expect(document.body.querySelectorAll('button.dummyButton')).toHaveLength(3);
         });
     });
