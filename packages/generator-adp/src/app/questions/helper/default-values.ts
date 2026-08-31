@@ -1,9 +1,6 @@
-import { join } from 'node:path';
-import { existsSync } from 'node:fs';
+import { validateUI5VersionExists, getDefaultProjectName } from '@sap-ux/adp-tooling';
 
-import { validateUI5VersionExists } from '@sap-ux/adp-tooling';
-
-const DEFAULT_PREFIX = 'app.variant';
+export { getDefaultProjectName } from '@sap-ux/adp-tooling';
 
 /**
  * Generates a namespace for a project based on its layer.
@@ -14,25 +11,6 @@ const DEFAULT_PREFIX = 'app.variant';
  */
 export function getDefaultNamespace(projectName: string, isCustomerBase: boolean): string {
     return isCustomerBase ? `customer.${projectName}` : projectName;
-}
-
-/**
- * Generates a default project name based on the existing projects in the specified directory.
- *
- * @param {string} basePath - Base path of the project.
- * @param {string} dirName - Directory name to search for.
- * @returns {string} A default project name with an incremented index if similar projects exist.
- */
-export function getDefaultProjectName(basePath: string, dirName: string = DEFAULT_PREFIX): string {
-    let newDir = dirName;
-    let index = 1;
-
-    while (existsSync(join(basePath, newDir))) {
-        index++;
-        newDir = `${dirName}${index}`;
-    }
-
-    return newDir;
 }
 
 /**

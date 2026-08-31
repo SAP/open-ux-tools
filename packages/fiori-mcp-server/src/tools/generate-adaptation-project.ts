@@ -1,10 +1,11 @@
 import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { isAbsolute, join } from 'node:path';
-import { existsSync, promises as FSpromises } from 'node:fs';
+import { promises as FSpromises } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
 import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
 import { fetchKeyUserChanges } from './generate-adaptation-project/key-user-changes.js';
+import { getDefaultProjectName } from '@sap-ux/adp-tooling';
 
 /** Maximum time to wait for the key user changes fetch before aborting generation. */
 const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;
@@ -198,24 +199,4 @@ export async function generateAdaptationProject(
         logger.error(`Error generating adaptation project: ${message}`);
         return errorResponse(`Error generating adaptation project: ${message}`, params, appPath);
     }
-}
-
-/**
- * Returns a non-colliding project directory name under `basePath`.
- * Follows the `generator-adp` convention: `app.variant` → `app.variant2` → `app.variant3` …
- *
- * @param basePath Base directory to check for existing project folders.
- * @param dirName Base name prefix; defaults to `"app.variant"`.
- * @returns The first name in the sequence that does not yet exist on disk.
- */
-function getDefaultProjectName(basePath: string, dirName: string = 'app.variant'): string {
-    let newDir = dirName;
-    let index = 1;
-
-    while (existsSync(join(basePath, newDir))) {
-        index++;
-        newDir = `${dirName}${index}`;
-    }
-
-    return newDir;
 }
