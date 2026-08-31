@@ -1,6 +1,6 @@
 /**
  * Where an RTA command runs: the editor URL and an optional iframe id.
- * Used both as a per-command target and as the per-session record kept by the tool dispatcher.
+ * Passed directly on every tool call — no server-side session state is maintained.
  */
 export interface EditorPage {
     /** Editor URL returned by `open_adaptation_editor`. */

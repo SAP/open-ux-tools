@@ -4,7 +4,8 @@ import * as fs from 'node:fs';
 import { getVariant, ManifestService } from '@sap-ux/adp-tooling';
 import prettifyXml from 'prettify-xml';
 
-import { getProvider, logger } from './services/abap-context.js';
+import { getProvider } from './services/abap-context.js';
+import { logger } from '../utils/index.js';
 import type { AdpMetadataInput } from '../types/index.js';
 
 type Ui5Model = { dataSource?: string } & Record<string, unknown>;

@@ -1,15 +1,13 @@
-import { ToolsLogger } from '@sap-ux/logger';
 import { readUi5Config } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { logger } from '../../utils/index.js';
 
 type SystemPath = {
     url: string;
     client: string;
 };
-
-export const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
 
 /**
  * Resolves the target system from `ui5.yaml` and returns an ABAP service provider for it.

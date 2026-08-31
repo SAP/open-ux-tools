@@ -184,6 +184,7 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
 
 - [ ] **`getDefaultProjectName` — consolidate with `generator-adp` canonical implementation**  
   Both `fiori-mcp-server` and `generator-adp` have identical `getDefaultProjectName` implementations. The one in `generator-adp` is not exported from its public index. Either export it from `generator-adp` and import it here, or move to a shared package (e.g. `@sap-ux/adp-tooling`).  
+  **Follow-up PR** — touches `generator-adp` and `adp-tooling` in addition to `fiori-mcp-server`; out of scope for this MCP-focused PR.  
   _Files:_ `src/tools/generate-adaptation-project.ts`, `packages/generator-adp/src/app/questions/helper/default-values.ts`  
   _Owner: tools_ | _Assignee: —_
 
