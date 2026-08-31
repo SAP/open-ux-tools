@@ -163,7 +163,7 @@ export class FioriLanguage implements Language<{
      * @param path - The file path of the document
      * @returns The parse result containing the FioriParseResultAst
      */
-    parseText(
+    private parseText(
         text: string,
         projectContext: ProjectContext,
         uri: string,
