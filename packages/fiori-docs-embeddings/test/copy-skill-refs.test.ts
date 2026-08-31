@@ -6,6 +6,8 @@ const mockReaddirSync = jest.fn();
 const mockReadFileSync = jest.fn();
 const mockWriteFileSync = jest.fn();
 const mockExistsSync = jest.fn();
+const mockStatSync = jest.fn();
+const mockRmSync = jest.fn();
 
 jest.unstable_mockModule('node:fs', () => ({
     default: {
@@ -13,13 +15,17 @@ jest.unstable_mockModule('node:fs', () => ({
         readdirSync: mockReaddirSync,
         readFileSync: mockReadFileSync,
         writeFileSync: mockWriteFileSync,
-        existsSync: mockExistsSync
+        existsSync: mockExistsSync,
+        statSync: mockStatSync,
+        rmSync: mockRmSync
     },
     mkdirSync: mockMkdirSync,
     readdirSync: mockReaddirSync,
     readFileSync: mockReadFileSync,
     writeFileSync: mockWriteFileSync,
-    existsSync: mockExistsSync
+    existsSync: mockExistsSync,
+    statSync: mockStatSync,
+    rmSync: mockRmSync
 }));
 
 jest.unstable_mockModule('node:path', () => ({
@@ -30,11 +36,12 @@ jest.unstable_mockModule('node:path', () => ({
 describe('copy-skill-refs', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        // skillsRoot: only sap-fiori-opa5-test-development is in SKILLS_TO_EMBED; others are skipped
         mockReaddirSync
             .mockReturnValueOnce(['sap-fiori-opa5-test-development', 'sap-fiori-app-development', 'some-file.json']) // skillsRoot
             .mockReturnValueOnce(['v4-instructions.md', 'README.txt']); // opa5 references/
+        mockStatSync.mockReturnValueOnce({ isDirectory: () => true }); // opa5 is a dir
         mockExistsSync
+            .mockReturnValueOnce(true) // destRoot exists — rmSync should be called
             .mockReturnValueOnce(true) // opa5 SKILL.md exists
             .mockReturnValueOnce(true); // opa5 references/ exists
         mockReadFileSync.mockReturnValue('# Section\n\nContent\n\n---\n\n# Next\n\nMore');
@@ -42,6 +49,14 @@ describe('copy-skill-refs', () => {
 
     it('copies SKILL.md and references/*.md only for sap-fiori-opa5-test-development, skipping other skills', async () => {
         await import('../src/scripts/copy-skill-refs.js');
+
+        // destRoot is cleaned before writing
+        expect(mockRmSync).toHaveBeenCalledTimes(1);
+        expect(mockRmSync).toHaveBeenCalledWith(expect.stringContaining('skills_copy'), { recursive: true, force: true });
+
+        // statSync called once — only for the allowlisted skill (non-allowlisted entries are filtered before stat)
+        expect(mockStatSync).toHaveBeenCalledTimes(1);
+        expect(mockStatSync).toHaveBeenCalledWith(expect.stringContaining('sap-fiori-opa5-test-development'));
 
         // Only opa5 gets a dest dir
         expect(mockMkdirSync).toHaveBeenCalledTimes(1);

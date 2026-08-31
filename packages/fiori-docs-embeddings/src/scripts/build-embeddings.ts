@@ -157,7 +157,7 @@ class EmbeddingBuilder {
                 this.logger.info(`Found ${mdFiles.length} markdown files in data_local/skills_copy/${entry.name}`);
 
                 for (const file of mdFiles) {
-                    await this.processLocalMarkdownFile(skillDir, file);
+                    await this.processLocalMarkdownFile(skillDir, file, entry.name);
                 }
             }
         } catch (error) {
@@ -172,8 +172,9 @@ class EmbeddingBuilder {
      *
      * @param dataLocalPath - Path to the data_local directory
      * @param file - Filename to process
+     * @param skillName - Optional skill directory name, used to namespace IDs and paths for skill files
      */
-    private async processLocalMarkdownFile(dataLocalPath: string, file: string): Promise<void> {
+    private async processLocalMarkdownFile(dataLocalPath: string, file: string, skillName?: string): Promise<void> {
         try {
             const filePath = path.join(dataLocalPath, file);
             const content = await fs.readFile(filePath, 'utf-8');
@@ -184,7 +185,7 @@ class EmbeddingBuilder {
             this.logger.info(`  ${file}: ${chunks.length} chunks`);
 
             for (const [index, chunkContent] of chunks.entries()) {
-                const doc = this.createDocumentFromChunk(file, index, chunkContent);
+                const doc = this.createDocumentFromChunk(file, index, chunkContent, skillName);
                 if (doc) {
                     this.documents.push(doc);
                 }
@@ -200,9 +201,10 @@ class EmbeddingBuilder {
      * @param file - Source filename
      * @param index - Chunk index
      * @param chunkContent - Content of the chunk
+     * @param skillName - Optional skill directory name, used to namespace IDs and paths for skill files
      * @returns Document or null if chunk is empty
      */
-    private createDocumentFromChunk(file: string, index: number, chunkContent: string): Document | null {
+    private createDocumentFromChunk(file: string, index: number, chunkContent: string, skillName?: string): Document | null {
         const trimmedContent = chunkContent.trim();
         if (!trimmedContent) {
             return null;
@@ -224,12 +226,15 @@ class EmbeddingBuilder {
                 .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ') ?? 'Fiori Elements';
 
+        const idPrefix = skillName ? `local-${skillName}-${file.replace('.md', '')}` : `local-${file.replace('.md', '')}`;
+        const docPath = skillName ? `data_local/skills_copy/${skillName}/${file}` : `data_local/${file}`;
+
         return {
-            id: `local-${file.replace('.md', '')}-${index}`,
+            id: `${idPrefix}-${index}`,
             title,
             content: trimmedContent,
             category,
-            path: `data_local/${file}`,
+            path: docPath,
             tags,
             headers: [],
             lastModified: new Date().toISOString(),

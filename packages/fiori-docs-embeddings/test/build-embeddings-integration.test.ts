@@ -21,7 +21,7 @@ jest.unstable_mockModule('@huggingface/transformers', () => ({
 
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dataLocalPath = join(packageRoot, 'data_local');
-const skillsPath = join(packageRoot, 'data_local', 'skills');
+const skillsPath = join(packageRoot, 'data_local', 'skills_copy');
 
 describe('build-embeddings data_local integration', () => {
     let EmbeddingBuilder: new () => {
@@ -66,7 +66,9 @@ describe('build-embeddings data_local integration', () => {
             const skillRefPath = join(skillsPath, skill);
             const mdFiles = readdirSync(skillRefPath).filter((f) => f.endsWith('.md'));
             for (const file of mdFiles) {
-                const loaded = builder.documents.filter((d) => d.path.endsWith(file));
+                const loaded = builder.documents.filter((d) =>
+                    d.path === `data_local/skills_copy/${skill}/${file}`
+                );
                 expect(loaded.length).toBeGreaterThan(0);
             }
         }

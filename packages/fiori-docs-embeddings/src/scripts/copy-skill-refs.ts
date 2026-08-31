@@ -10,8 +10,16 @@ const destRoot = path.join(packageRoot, 'data_local', 'skills_copy');
 
 const SKILLS_TO_EMBED = ['sap-fiori-opa5-test-development'];
 
+// Clean dest root so stale skill dirs from previous runs don't persist
+if (fs.existsSync(destRoot)) {
+    fs.rmSync(destRoot, { recursive: true, force: true });
+}
+
 for (const skill of fs.readdirSync(skillsRoot).filter((s) => SKILLS_TO_EMBED.includes(s))) {
     const skillDir = path.join(skillsRoot, skill);
+    if (!fs.statSync(skillDir).isDirectory()) {
+        continue;
+    }
     const dest = path.join(destRoot, skill);
     fs.mkdirSync(dest, { recursive: true });
 

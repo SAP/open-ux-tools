@@ -204,7 +204,7 @@ data_local/skills_copy/
 └── sap-fiori-opa5-test-development/SKILL.md, fiori-elements-v2-test-library.md, v2-instructions.md, ...
 ```
 
-To add a new skill to the embeddings, add its directory under `packages/fiori-mcp-server/skills/` — the copy script picks it up automatically on the next build.
+To add a new skill to the embeddings, add its name to the `SKILLS_TO_EMBED` array in `src/scripts/copy-skill-refs.ts`, then run the build — the copy script will pick it up on the next run.
 
 ---
 
