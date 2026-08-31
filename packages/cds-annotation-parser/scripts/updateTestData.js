@@ -68,7 +68,7 @@ const NODE_PROPERTIES = {
     ],
     [COLLECTION_TYPE]: [...nodeProperties, 'items', 'commas', ...delimiterTokens],
     [QUALIFIER_TYPE]: [...valueNodeProperties],
-    [ANNOTATION_TYPE]: [...nodeProperties, 'term', 'qualifier', 'colon', 'value'],
+    [ANNOTATION_TYPE]: [...nodeProperties, 'term', 'originalTerm', 'qualifier', 'colon', 'value'],
     [ANNOTATION_GROUP_TYPE]: [...nodeProperties, 'name', 'colon', 'items'],
     [ANNOTATION_GROUP_ITEMS_TYPE]: [...nodeProperties, ...delimiterTokens, 'items', 'commas'],
     [FLATTENED_EXPRESSION_TYPE]: [...nodeProperties, 'path', 'colon', 'value'],
