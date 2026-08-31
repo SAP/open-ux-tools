@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-28
+
+#### Features
+
+- add skill to configure tree table in list report application [[cc08f10](https://github.com/SAP/open-ux-tools/commit/cc08f10bb839e101da923600834fefdf6dea071f)]
+
+## 1.11.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[a984fe5](https://github.com/SAP/open-ux-tools/commit/a984fe55497ad691ead632b25fcd7fd937cf3f30)]
+
+## 1.11.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-27
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill - consolidate scaffold sections, update generated test structure tree and custom file placement guidance [[9274d74](https://github.com/SAP/open-ux-tools/commit/9274d74f93bf428c4a42fc3eff4631e03dc4f806)]
+
 ## 1.11.16
 
 ### Patch Changes
