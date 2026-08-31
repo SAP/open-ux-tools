@@ -51,7 +51,7 @@
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@storybook/react": "10.5.1",
-        "@storybook/react-webpack5": "10.5.1",
+        "@storybook/react-webpack5": "10.5.10",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "12.1.5",
         "@types/inquirer": "8.2.6",
