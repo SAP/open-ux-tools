@@ -259,16 +259,16 @@ export const tools = [
         Always go through the **adp-controller-extension-flow** skill in the SAP Fiori MCP server.
 
         Steps:
-        - **start** — payload: \`{ site: string, frameId?: string }\`. Launches the editor URL, starts RTA, returns a fresh \`sessionId\` and \`{ rtaStarted: true }\`.
-        - **get_overlays** — sessionId only. Returns \`{ overlays: Overlay[], actionsCatalog }\`. Each overlay carries the \`actionIds\` it supports; the rich per-action metadata (label, description, parameters) lives in \`actionsCatalog\` keyed by action id.
-        - **get_context** — sessionId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
-        - **call_action** — sessionId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
-        - **save** — sessionId only. Returns \`{ saved: boolean }\`.
-        - **stop** — sessionId only. Closes the session; if no sessions remain, the browser shuts down. Returns \`{ stopped: true }\`.
-        - **restart** — sessionId only. Closes the current session, reloads the editor (picks up files written since \`start\`), and returns a fresh \`sessionId\` and \`{ rtaStarted: true }\`. Use this instead of \`stop\`+\`start\` when you need the editor to reload mid-workflow (e.g. after writing fragment files for validation).
-        - **get_page_actions** — sessionId only. Returns \`{ registered: RegisteredPageAction[], interactive: InteractiveElement[] }\`. Use BEFORE \`get_overlays\` to drive page-level navigation (Filter Bar search, row press, section scroll, back). \`registered\` is filtered to currently-applicable high-level actions; \`interactive\` is a best-effort scan of press-able controls (root view + static area + open dialogs).
-        - **call_page_action** — sessionId, payload: \`{ id: string }\`. Invokes a registered action; returns \`{ result: PageActionRunResult }\`. Result is \`{ status: "ok" }\` on success or \`{ status: "needs_user_action", reason }\` if a precondition cannot be met.
-        - **press_interactive** — sessionId, payload: \`{ controlId: string }\`. Triggers a real user-gesture click on the named control and waits best-effort for the page to settle. Returns \`{ result: PageActionRunResult }\`.`,
+        - **start** — payload: \`{ site: string, frameId?: string }\`. Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step.
+        - **get_overlays** — site + optional frameId. Returns \`{ overlays: Overlay[], actionsCatalog }\`. Each overlay carries the \`actionIds\` it supports; the rich per-action metadata (label, description, parameters) lives in \`actionsCatalog\` keyed by action id.
+        - **get_context** — site + optional frameId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
+        - **call_action** — site + optional frameId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
+        - **save** — site + optional frameId. Returns \`{ saved: boolean }\`.
+        - **stop** — site + optional frameId. Closes the page for the given site; if no pages remain open, the browser shuts down. Returns \`{ stopped: true }\`.
+        - **restart** — site + optional frameId. Closes the current page, reloads the editor (picks up files written since \`start\`), and returns \`{ site, frameId?, rtaStarted: true }\`. Use this instead of \`stop\`+\`start\` when you need the editor to reload mid-workflow (e.g. after writing fragment files for validation).
+        - **get_page_actions** — site + optional frameId. Returns \`{ registered: RegisteredPageAction[], interactive: InteractiveElement[] }\`. Use BEFORE \`get_overlays\` to drive page-level navigation (Filter Bar search, row press, section scroll, back). \`registered\` is filtered to currently-applicable high-level actions; \`interactive\` is a best-effort scan of press-able controls (root view + static area + open dialogs).
+        - **call_page_action** — site + optional frameId, payload: \`{ id: string }\`. Invokes a registered action; returns \`{ result: PageActionRunResult }\`. Result is \`{ status: "ok" }\` on success or \`{ status: "needs_user_action", reason }\` if a precondition cannot be met.
+        - **press_interactive** — site + optional frameId, payload: \`{ controlId: string }\`. Triggers a real user-gesture click on the named control and waits best-effort for the page to settle. Returns \`{ result: PageActionRunResult }\`.`,
         annotations: {
             title: 'Run RTA Workflow Step (skill-internal)',
             readOnlyHint: false,
