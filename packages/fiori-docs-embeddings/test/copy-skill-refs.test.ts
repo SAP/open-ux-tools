@@ -6,7 +6,6 @@ const mockReaddirSync = jest.fn();
 const mockReadFileSync = jest.fn();
 const mockWriteFileSync = jest.fn();
 const mockExistsSync = jest.fn();
-const mockStatSync = jest.fn();
 
 jest.unstable_mockModule('node:fs', () => ({
     default: {
@@ -14,15 +13,13 @@ jest.unstable_mockModule('node:fs', () => ({
         readdirSync: mockReaddirSync,
         readFileSync: mockReadFileSync,
         writeFileSync: mockWriteFileSync,
-        existsSync: mockExistsSync,
-        statSync: mockStatSync
+        existsSync: mockExistsSync
     },
     mkdirSync: mockMkdirSync,
     readdirSync: mockReaddirSync,
     readFileSync: mockReadFileSync,
     writeFileSync: mockWriteFileSync,
-    existsSync: mockExistsSync,
-    statSync: mockStatSync
+    existsSync: mockExistsSync
 }));
 
 jest.unstable_mockModule('node:path', () => ({
@@ -33,37 +30,28 @@ jest.unstable_mockModule('node:path', () => ({
 describe('copy-skill-refs', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        // skillsRoot: one skill with SKILL.md + references/, one with SKILL.md only, one non-directory entry
+        // skillsRoot: only sap-fiori-opa5-test-development is in SKILLS_TO_EMBED; others are skipped
         mockReaddirSync
             .mockReturnValueOnce(['sap-fiori-opa5-test-development', 'sap-fiori-app-development', 'some-file.json']) // skillsRoot
             .mockReturnValueOnce(['v4-instructions.md', 'README.txt']); // opa5 references/
-        mockStatSync
-            .mockReturnValueOnce({ isDirectory: () => true }) // opa5 is a dir
-            .mockReturnValueOnce({ isDirectory: () => true }) // app-development is a dir
-            .mockReturnValueOnce({ isDirectory: () => false }); // some-file.json is not a dir
         mockExistsSync
             .mockReturnValueOnce(true) // opa5 SKILL.md exists
-            .mockReturnValueOnce(true) // opa5 references/ exists
-            .mockReturnValueOnce(true) // app-development SKILL.md exists
-            .mockReturnValueOnce(false); // app-development references/ does not exist
+            .mockReturnValueOnce(true); // opa5 references/ exists
         mockReadFileSync.mockReturnValue('# Section\n\nContent\n\n---\n\n# Next\n\nMore');
     });
 
-    it('copies SKILL.md for every skill and references/*.md where present, with delimiter conversion', async () => {
+    it('copies SKILL.md and references/*.md only for sap-fiori-opa5-test-development, skipping other skills', async () => {
         await import('../src/scripts/copy-skill-refs.js');
 
-        // Both skills get a dest dir
-        expect(mockMkdirSync).toHaveBeenCalledTimes(2);
+        // Only opa5 gets a dest dir
+        expect(mockMkdirSync).toHaveBeenCalledTimes(1);
         expect(mockMkdirSync).toHaveBeenCalledWith(expect.stringContaining('sap-fiori-opa5-test-development'), {
             recursive: true
         });
-        expect(mockMkdirSync).toHaveBeenCalledWith(expect.stringContaining('sap-fiori-app-development'), {
-            recursive: true
-        });
+        expect(mockMkdirSync).not.toHaveBeenCalledWith(expect.stringContaining('sap-fiori-app-development'), expect.anything());
 
         // opa5: SKILL.md + v4-instructions.md (README.txt skipped) = 2 writes
-        // app-development: SKILL.md only = 1 write
-        expect(mockWriteFileSync).toHaveBeenCalledTimes(3);
+        expect(mockWriteFileSync).toHaveBeenCalledTimes(2);
 
         // All written content has the converted delimiter
         for (const call of mockWriteFileSync.mock.calls) {
@@ -72,9 +60,8 @@ describe('copy-skill-refs', () => {
             expect(content).not.toMatch(/^---$/m);
         }
 
-        // app-development got no references/ dir written
+        // app-development was not written
         const writtenPaths = mockWriteFileSync.mock.calls.map((c) => (c as [string, string])[0]);
-        expect(writtenPaths.filter((p) => p.includes('sap-fiori-app-development'))).toHaveLength(1);
-        expect(writtenPaths.filter((p) => p.includes('sap-fiori-app-development'))[0]).toContain('SKILL.md');
+        expect(writtenPaths.filter((p) => p.includes('sap-fiori-app-development'))).toHaveLength(0);
     });
 });
