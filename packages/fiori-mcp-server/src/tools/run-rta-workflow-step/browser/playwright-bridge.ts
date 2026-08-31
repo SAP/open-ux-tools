@@ -289,6 +289,14 @@ export async function stopBrowser(): Promise<void> {
 }
 
 /**
+ * Returns `true` when no editor pages are currently open.
+ * Used by the `stop` step to decide whether to shut down the browser.
+ */
+export function isRegistryEmpty(): boolean {
+    return connectionRegistry.size === 0;
+}
+
+/**
  * Default transport — the Playwright-backed implementation bound from this
  * module's exports. The `rta/` layer consumes this when no transport is
  * injected explicitly.

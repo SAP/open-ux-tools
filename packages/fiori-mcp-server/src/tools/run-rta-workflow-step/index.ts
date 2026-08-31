@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto';
-
 import {
     callPageAction,
     executeAction,
@@ -9,35 +7,11 @@ import {
     getPageActions,
     pressInteractive,
     saveChanges,
-    startRta,
-    type EditorPage
+    startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
-import { defaultTransport } from './browser/index.js';
+import { defaultTransport, isRegistryEmpty } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
-
-const sessions: Map<string, EditorPage> = new Map();
-
-export function clearSessions(): void {
-    sessions.clear();
-}
-
-/**
- * Looks up the session record for `sessionId` and throws if it is missing.
- *
- * @param sessionId Session id from the input, typically returned by the `start` step.
- * @returns The id and the matching `EditorPage`.
- */
-function getSession(sessionId: string | undefined): { id: string; session: EditorPage } {
-    if (!sessionId) {
-        throw new Error('sessionId is required for this step');
-    }
-    const session = sessions.get(sessionId);
-    if (!session) {
-        throw new Error(`Unknown sessionId: ${sessionId}. Call the "start" step first.`);
-    }
-    return { id: sessionId, session };
-}
 
 /**
  * Reads `key` from `payload` and asserts it is a non-empty string. The Zod
@@ -72,12 +46,28 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
 }
 
 /**
- * Runs one step of the RTA workflow. Dispatches by `input.step`, looks up
- * or creates a session, and forwards to the corresponding `rta` command
- * wrapper. Each step's return shape matches the schema in `types/input.ts`.
+ * Asserts that `site` is a non-empty string. Used by every step except `start`
+ * to validate that the caller carried the site URL forward from the `start` result.
  *
- * @param input Step + sessionId + step-specific payload.
- * @returns Step-specific result. The `start` step returns the new session id.
+ * @param site Value of `input.site`.
+ * @returns The validated site URL.
+ */
+function requireSite(site: string | undefined): string {
+    if (typeof site !== 'string' || site.length === 0) {
+        throw new Error('site is required for this step. Pass the site URL returned by the "start" step.');
+    }
+    return site;
+}
+
+/**
+ * Runs one step of the RTA workflow. Dispatches by `input.step` and forwards
+ * to the corresponding `rta` command wrapper. `site` and `frameId` are passed
+ * directly on every call — the tool holds no server-side session state.
+ * `connectionRegistry` inside `playwright-bridge` caches the live Playwright
+ * page by URL and is the only long-lived state, scoped to the browser process.
+ *
+ * @param input Step + site + frameId + step-specific payload.
+ * @returns Step-specific result. The `start` step echoes `site` and `frameId` back.
  */
 export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkflowStepResult> {
     try {
@@ -85,59 +75,58 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'start': {
                 const site = requireString(input.payload, 'site');
                 const frameId = typeof input.payload?.frameId === 'string' ? input.payload.frameId : undefined;
+                // Always disconnect any existing page for this URL before starting fresh.
+                // This prevents a new project opened on the same port from reusing the
+                // previous project's stale Playwright page.
+                await defaultTransport.disconnectSite(site);
                 const result = await startRta(defaultTransport, { site, frameId });
-                const sessionId = randomUUID();
-                sessions.set(sessionId, { site, frameId });
-                return { sessionId, ...result };
+                return { site, frameId, ...result };
             }
             case 'get_overlays': {
-                const { session } = getSession(input.sessionId);
-                const { overlays, actionsCatalog } = await getOverlays(defaultTransport, session);
+                const site = requireSite(input.site);
+                const { overlays, actionsCatalog } = await getOverlays(defaultTransport, { site, frameId: input.frameId });
                 return { overlays, actionsCatalog };
             }
             case 'get_context': {
-                const { session } = getSession(input.sessionId);
+                const site = requireSite(input.site);
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
-                const context = await getElementContext(defaultTransport, session, controlId, actionId);
+                const context = await getElementContext(defaultTransport, { site, frameId: input.frameId }, controlId, actionId);
                 return { context };
             }
             case 'call_action': {
-                const { session } = getSession(input.sessionId);
+                const site = requireSite(input.site);
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
                 const actionPayload = requireObject(input.payload, 'actionPayload');
-                const ok = await executeAction(defaultTransport, session, controlId, actionId, actionPayload);
+                const ok = await executeAction(defaultTransport, { site, frameId: input.frameId }, controlId, actionId, actionPayload);
                 return { success: ok };
             }
             case 'save': {
-                const { session } = getSession(input.sessionId);
-                const ok = await saveChanges(defaultTransport, session);
+                const site = requireSite(input.site);
+                const ok = await saveChanges(defaultTransport, { site, frameId: input.frameId });
                 return { saved: ok };
             }
             case 'stop': {
-                const { id, session } = getSession(input.sessionId);
-                sessions.delete(id);
-                await defaultTransport.disconnectSite(session.site);
-                if (sessions.size === 0) {
+                const site = requireSite(input.site);
+                await defaultTransport.disconnectSite(site);
+                if (isRegistryEmpty()) {
                     await defaultTransport.stopBrowser();
                 }
                 return { stopped: true };
             }
             case 'restart': {
-                const { id, session } = getSession(input.sessionId);
-                sessions.delete(id);
-                await defaultTransport.disconnectSite(session.site);
-                const result = await startRta(defaultTransport, session);
-                const sessionId = randomUUID();
-                sessions.set(sessionId, session);
-                return { sessionId, ...result };
+                const site = requireSite(input.site);
+                const page = { site, frameId: input.frameId };
+                await defaultTransport.disconnectSite(site);
+                const result = await startRta(defaultTransport, page);
+                return { site, frameId: input.frameId, ...result };
             }
             case 'get_page_actions': {
-                const { session } = getSession(input.sessionId);
+                const site = requireSite(input.site);
                 const { registered, interactive, interactiveTruncated } = await getPageActions(
                     defaultTransport,
-                    session
+                    { site, frameId: input.frameId }
                 );
                 return {
                     registered,
@@ -146,15 +135,15 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 };
             }
             case 'call_page_action': {
-                const { session } = getSession(input.sessionId);
+                const site = requireSite(input.site);
                 const id = requireString(input.payload, 'id');
-                const result = await callPageAction(defaultTransport, session, id);
+                const result = await callPageAction(defaultTransport, { site, frameId: input.frameId }, id);
                 return { result };
             }
             case 'press_interactive': {
-                const { session } = getSession(input.sessionId);
+                const site = requireSite(input.site);
                 const controlId = requireString(input.payload, 'controlId');
-                const result = await pressInteractive(defaultTransport, session, controlId);
+                const result = await pressInteractive(defaultTransport, { site, frameId: input.frameId }, controlId);
                 return { result };
             }
             default:

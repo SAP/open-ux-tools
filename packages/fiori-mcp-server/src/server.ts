@@ -30,7 +30,6 @@ import {
     tools
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
-import { clearSessions } from './tools/run-rta-workflow-step/index.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
@@ -128,7 +127,6 @@ export class FioriFunctionalityServer {
     private setupErrorHandling(): void {
         this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
-            clearSessions();
             await stopBrowser();
             await this.server.close();
             process.exit(0);

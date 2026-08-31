@@ -167,22 +167,29 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan. ' +
                 'restart is a mid-workflow step that reloads the editor to pick up files written to disk.'
         ),
-    sessionId: zod
+    site: zod
+        .string()
+        .describe(
+            'Editor URL from the open_adaptation_editor result (e.g. "http://localhost:8081/test/adaptation-editor.html"). ' +
+                'Required for every step. Pass on every call so the server can locate the browser page.'
+        ),
+    frameId: zod
         .string()
         .optional()
-        .describe('Session identifier returned by the "start" step. Required for every step except "start" itself.'),
+        .describe(
+            'Optional iframe element id (e.g. "preview"). Pass on every step when the editor renders inside an iframe.'
+        ),
     payload: zod
         .record(zod.string(), zod.unknown())
         .optional()
         .describe(
             'Step-specific arguments. ' +
                 'start: { site: string, frameId?: string }. ' +
-                'restart: sessionId only (inherits site/frameId from the current session). ' +
                 'get_context: { controlId: string, actionId: string }. ' +
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'call_page_action: { id: string }. ' +
                 'press_interactive: { controlId: string }. ' +
-                'get_overlays / save / stop / get_page_actions: omit.'
+                'get_overlays / save / stop / restart / get_page_actions: omit.'
         )
 });
 

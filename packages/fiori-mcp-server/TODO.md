@@ -71,13 +71,8 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
 ## 🟠 Architecture
 
-- [ ] **`run_rta_workflow_step` — browser singleton is in-process memory; MCP protocol is stateless per-request**  
-  The `sessions` map and Playwright browser singleton live in Node module scope. If the server restarts between steps all session state is lost.  
-
-  **Agreed mitigation (no full rewrite):**
-  1. Add a server-side guard: when any non-`start` step is called with an unknown `sessionId`, return `{ error: "SESSION_LOST", hint: "Server was restarted. Call start again." }` instead of a generic thrown error.
-  2. Update the SKILL.md to instruct the AI to carry the `sessionId` forward through every step in a single conversation turn, and document `SESSION_LOST` recovery.  
-
+- [x] **`run_rta_workflow_step` — browser singleton is in-process memory; MCP protocol is stateless per-request**  
+  Resolved by redesign: `sessionId` (server-side state) replaced by `site` + `frameId` passed on every call. The browser page cache in `connectionRegistry` (keyed by URL) is the only long-lived state. No sessions map, no SESSION_LOST scenario.  
   _Owner: tools (server guard) + skill (SKILL.md update)_ | _Assignee: —_ Ivo (to find the POC PR)
 
 - [x] **`generate_adaptation_project` — stability hardening (contact Stefan for more info)**  
@@ -249,12 +244,12 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
   _File:_ `skills/adp-controller-extension-flow/SKILL.md`  
   _Owner: skill_ | _Assignee: —_
 
-- [ ] **SKILL.md — document `SESSION_LOST` error and recovery flow**  
-  After the server-side guard is added (see Architecture above), update the error-handling table: `SESSION_LOST` → call `start` again and obtain a new `sessionId`.  
+- ~~**SKILL.md — document `SESSION_LOST` error and recovery flow**  
+  No longer applicable — `sessionId` and the sessions map were removed. `site` + `frameId` are passed on every call instead.~~  
   _Owner: skill (after tools adds the guard)_ | _Assignee: —_
 
-- [ ] **SKILL.md — sessionId carry-forward guidance**  
-  Add a note near the top of the workflow: the `sessionId` returned by `start` **must be passed to every subsequent step**. If a step returns `Unknown sessionId`, the server restarted — call `start` again.  
+- ~~**SKILL.md — sessionId carry-forward guidance**  
+  No longer applicable — replaced by `site` + `frameId` carried on every call. SKILL.md updated as part of the redesign.~~  
   _Owner: skill_ | _Assignee: —_
 
 - [ ] **SKILL.md — `importKeyUserChanges` empty-result behavior**  

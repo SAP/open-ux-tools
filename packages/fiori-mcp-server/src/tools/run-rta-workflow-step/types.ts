@@ -36,12 +36,17 @@ export const STEPS = [
 export type Step = (typeof STEPS)[number];
 
 /**
- * Input shape accepted by `run_rta_workflow_step`. The `payload` object
- * carries step-specific data so the tool surface stays tidy.
+ * Input shape accepted by `run_rta_workflow_step`. `site` and `frameId` are
+ * returned by `start` and must be passed to every subsequent step so the
+ * dispatcher can locate the browser page without maintaining a server-side
+ * session map.
  */
 export interface RunRtaWorkflowStepInput {
     step: Step;
-    sessionId?: string;
+    /** Editor URL from the open_adaptation_editor result. Required for every step. */
+    site: string;
+    /** Optional iframe element id (e.g. `"preview"`). Required when the editor renders inside an iframe. */
+    frameId?: string;
     payload?: Record<string, unknown>;
 }
 
@@ -51,7 +56,10 @@ export interface RunRtaWorkflowStepInput {
  * each branch produces something assignable to its slot.
  */
 export interface StartStepResult {
-    sessionId: string;
+    /** Echo of the editor URL — carry this forward to every subsequent step. */
+    site: string;
+    /** Echo of the frameId — carry this forward when set. */
+    frameId?: string;
     rtaStarted: boolean;
 }
 
@@ -77,7 +85,8 @@ export interface StopStepResult {
 }
 
 export interface RestartStepResult {
-    sessionId: string;
+    site: string;
+    frameId?: string;
     rtaStarted: boolean;
 }
 

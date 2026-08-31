@@ -36,20 +36,20 @@ Detection sequence the skill should follow on a `start` failure that mentions a 
 
 ## Tool Contract
 
-A single tool, dispatched by the `step` argument. Pass `payload` for steps that need it. Subsequent steps reuse the `sessionId` returned by `start`.
+A single tool, dispatched by the `step` argument. `site` is the editor URL from `open_adaptation_editor` — pass it on every step. There is no server-side session; the tool locates the browser page by URL.
 
-| step | sessionId | payload | returns |
-|------|-----------|---------|---------|
-| `start` | — | `{ site: string, frameId?: string }` | `{ sessionId, rtaStarted: true }` |
-| `get_page_actions` | required | — | `{ registered: RegisteredPageAction[], interactive: InteractiveElement[], interactiveTruncated?: true }` |
-| `call_page_action` | required | `{ id }` | `{ result: PageActionRunResult }` |
-| `press_interactive` | required | `{ controlId }` | `{ result: PageActionRunResult }` |
-| `get_overlays` | required | — | `{ overlays: Overlay[], actionsCatalog: { [actionId]: Action } }` |
-| `get_context` | required | `{ controlId, actionId }` | `{ context }` |
-| `call_action` | required | `{ controlId, actionId, actionPayload }` | `{ success: boolean }` |
-| `save` | required | — | `{ saved: boolean }` |
-| `restart` | required | — | `{ sessionId, rtaStarted: true }` |
-| `stop` | required | — | `{ stopped: true }` |
+| step | site | frameId | payload | returns |
+|------|------|---------|---------|---------|
+| `start` | required | optional | `{ site: string, frameId?: string }` | `{ site, frameId?, rtaStarted: true }` |
+| `get_page_actions` | required | carry forward | — | `{ registered: RegisteredPageAction[], interactive: InteractiveElement[], interactiveTruncated?: true }` |
+| `call_page_action` | required | carry forward | `{ id }` | `{ result: PageActionRunResult }` |
+| `press_interactive` | required | carry forward | `{ controlId }` | `{ result: PageActionRunResult }` |
+| `get_overlays` | required | carry forward | — | `{ overlays: Overlay[], actionsCatalog: { [actionId]: Action } }` |
+| `get_context` | required | carry forward | `{ controlId, actionId }` | `{ context }` |
+| `call_action` | required | carry forward | `{ controlId, actionId, actionPayload }` | `{ success: boolean }` |
+| `save` | required | carry forward | — | `{ saved: boolean }` |
+| `restart` | required | carry forward | — | `{ site, frameId?, rtaStarted: true }` |
+| `stop` | required | carry forward | — | `{ stopped: true }` |
 
 `Overlay` = `{ overlayId, controlId, label, controlType, parentElementId, parentAggregationName, index?, actionIds: string[] }` — `index` is the 0-based position within `parentAggregationName` and is omitted when the parent/aggregation can't be resolved or the aggregation is single-cardinality. `actionIds` lists the RTA actions available on this overlay; rich metadata for each id is in the top-level `actionsCatalog`.
 `Action` = `{ id, label, description?, parameters: [{ name, type, required?, description? }] }` — keyed by `actionId` in `actionsCatalog`. The catalog is **deduplicated across all overlays** in a single `get_overlays` response, so an id appears once even when many overlays expose it.
@@ -185,7 +185,7 @@ The final summary (Step 14) must include, per change: chosen control, action, an
 
 ### Step 1 — Start RTA
 
-Call `run_rta_workflow_step` with `step: "start"`, payload `{ site, frameId: "preview" }`. Verify `rtaStarted: true`. Store the returned `sessionId`. On `false`, wait 3 s and retry once.
+Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `open_adaptation_editor`), and payload `{ site, frameId: "preview" }`. Verify `rtaStarted: true`. Pass `site` and `frameId` to every subsequent step. On `false`, wait 3 s and retry once.
 
 ### Step 2 — Navigate the app to the editing target
 
@@ -372,7 +372,7 @@ Call `step: "call_action"`, payload `{ controlId, actionId, actionPayload }`. On
 
 ### Step 10 — Loop for multiple changes
 
-If the user requested multiple changes, repeat **Steps 3–9 only** (never Steps 1–2, never a fresh `start`) once per change, all under the same `sessionId`. The UI may have changed, so re-run `get_overlays` between changes — and re-run `get_page_actions` if a fresh navigation is needed.
+If the user requested multiple changes, repeat **Steps 3–9 only** (never Steps 1–2, never a fresh `start`) once per change, all under the same `site`+`frameId`. The UI may have changed, so re-run `get_overlays` between changes — and re-run `get_page_actions` if a fresh navigation is needed.
 A single change request can still require multiple operations and changes to be created.
 If a single request implies multiple operations (e.g. "add a button that calls a function" = fragment + controller extension), execute each as a separate iteration.
 
@@ -427,11 +427,11 @@ Include XML comments inside fragments for context hints:
 After generating all files, call `restart` to reload the current editor browser with the newly written fragment and controller extension files.
 
 ```
-run_rta_workflow_step { step: "restart", sessionId }
-→ { sessionId: <newSessionId>, rtaStarted: true }
+run_rta_workflow_step { step: "restart", site, frameId }
+→ { site, frameId?, rtaStarted: true }
 ```
 
-Store the new `sessionId`. Navigate back to the editing target (repeat Step 2 as needed) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
+Store the returned `site` (and `frameId` if present). Navigate back to the editing target (repeat Step 2 as needed) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
 
 **Child overlay rule (hard rule).** For each control you added via `CTX_ADDXML`, you must find an overlay whose `controlId` matches that control's own id — not its parent's. The parent aggregation container appearing in `get_overlays` is **not** proof that the inserted child was accepted. If the parent is present but no overlay for the new control's id exists, the runtime silently rejected the fragment content (the change file was written and `call_action` returned `success: true`, but the control never rendered). This is a distinct failure state from "fragment not found."
 
@@ -441,7 +441,7 @@ Store the new `sessionId`. Navigate back to the editing target (repeat Step 2 as
 3. Replace the wrapper with the correct SAPUI5 type, write the corrected fragment file, call `restart`, re-navigate, and call `get_overlays` again.
 4. Repeat until the new control's own overlay entry is present.
 
-If an expected control is missing from the overlay list for other reasons (wrong `fragmentPath`, malformed XML, namespace mismatch): inspect the relevant change file and fragment XML, fix the file, call `restart` again with the new `sessionId`, re-navigate, and call `get_overlays` again. Repeat until all inserted controls are confirmed present.
+If an expected control is missing from the overlay list for other reasons (wrong `fragmentPath`, malformed XML, namespace mismatch): inspect the relevant change file and fragment XML, fix the file, call `restart` again with the same `site`+`frameId`, re-navigate, and call `get_overlays` again. Repeat until all inserted controls are confirmed present.
 
 ### Step 14 — Cleanup
 
@@ -467,7 +467,7 @@ Report to the user: summary of all changes made, files created, any issues encou
 | Expected action id is not in the chosen overlay's `actionIds` | **Stop.** This is the hard-stop case from *Confidence & HITL Gating*. Do not silently switch controls or actions. Tell the user what you expected, what came back, and ask how to proceed. |
 | Action execution fails | Report error, offer retry with different params. |
 | Save fails | Report error. Inform user changes may be lost. |
-| `Unknown sessionId` error | The server was restarted between steps. Start a fresh session from Step 1. |
+| `Unknown site` or missing `site` field | Pass the `site` URL from `open_adaptation_editor` to every step. |
 | `Frontend action ... not registered` | The editor hasn't finished loading, or wrong frame. Verify `frameId: "preview"` and retry. |
 | `Executable doesn't exist at .../chromium-...` or `browserType.launch: ...` referencing a missing browser | No system Chrome and no Playwright Chromium installed. Run `npx playwright install chromium` (one-time, ~120 MB) and retry `start`. |
 | `Chromium executable not found` (custom message from the server) | Same as above — Playwright Chromium isn't installed and no system Chrome was found. Install via `npx playwright install chromium`. |
@@ -476,7 +476,7 @@ Report to the user: summary of all changes made, files created, any issues encou
 
 When the user requests multiple changes:
 1. Parse all intended changes upfront.
-2. Execute Steps 3–9 once per change, all under the same `sessionId`.
+2. Execute Steps 3–9 once per change, all under the same `site`+`frameId`.
 3. Save once at the end (Step 11).
 4. If one change fails, save the successful ones and report which failed.
 5. Generate content for all fragments / extensions together in Step 12.
@@ -488,7 +488,7 @@ User: "Add a custom button to the object page toolbar that shows a dialog with o
 
 This intent maps to **two actions** (see *Disambiguation by intent*): `CTX_ADDXML` for the button, then `CTX_EXTEND_CONTROLLER` for the press handler. The app starts on a List Report, so the Object Page toolbar isn't on screen yet — the page-action loop drives the navigation first.
 
-1. `start` with `{ site, frameId: "preview" }` → `sessionId` + `rtaStarted: true`
+1. `start` with `{ site, frameId: "preview" }` → `{ site, frameId, rtaStarted: true }`
 2. `get_page_actions` → `registered: [{ id: "loadData", … }]`. The user's target is on the Object Page, so the table needs rows first.
 3. `call_page_action({ id: "loadData" })` → `result: { status: "ok" }`. Filter Bar search ran and rows arrived.
 4. `get_page_actions` → `registered` now includes `navigateToRow`.
@@ -507,5 +507,5 @@ This intent maps to **two actions** (see *Disambiguation by intent*): `CTX_ADDXM
 9. `save` → `saved: true`
 10. `adp_controller_extension` Phase 1 → knowledge base
 11. Generate fragment XML (`OrderDetailsButton.fragment.xml`) + controller extension (`OrderDetailsExt.js` with the press handler that opens the dialog), Phase 2 writes files
-12. `restart` → new `sessionId` + `rtaStarted: true`. Navigate to the Object Page toolbar again via `get_page_actions` / `call_page_action`, then `get_overlays` — confirm the inserted fragment overlay (`OrderDetailsButton`) appears.
+12. `restart` → `{ site, frameId, rtaStarted: true }`. Navigate to the Object Page toolbar again via `get_page_actions` / `call_page_action`, then `get_overlays` — confirm the inserted fragment overlay (`OrderDetailsButton`) appears.
 13. `stop`, then kill the editor server. Report done — including the confidence the model assigned to each AI decision.
