@@ -107,11 +107,11 @@ export function loadApplicationInfoFromSettings(
     fs = getFsInstance(fs);
     const appInfoContents: AppInfoSettings = readJSONFile(appInfoFilePath, fs);
     if (appInfoContents.latestGeneratedFiles.length > 0) {
-        const filePath = appInfoContents.latestGeneratedFiles.shift();
-
         // Check if auto-open is enabled via VS Code setting (defaults to true)
-        const config = getConfiguration?.();
+        const config = executeCommand ? getConfiguration?.() : undefined;
         const autoOpen = config?.get('ApplicationWizard.autoOpenApplicationInfoPage', true) ?? true;
+
+        const filePath = appInfoContents.latestGeneratedFiles.shift();
 
         if (executeCommand && filePath && autoOpen) {
             executeCommand(filePath);

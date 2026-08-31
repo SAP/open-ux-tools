@@ -123,4 +123,14 @@ describe('Application Info Settings', () => {
         expect(executeCommand).toHaveBeenCalledWith(testPath); // Should execute (default: true)
         expect(fs.exists(appInfoFilePath)).toBe(false);
     });
+
+    it('loadApplicationInfoFromSettings should default to enabled when getConfiguration returns undefined', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        const mockGetConfiguration = () => undefined; // Function provided but returns undefined
+        loadApplicationInfoFromSettings(executeCommand, fs, mockGetConfiguration);
+        expect(executeCommand).toHaveBeenCalledWith(testPath); // Should execute (default: true)
+        expect(fs.exists(appInfoFilePath)).toBe(false);
+    });
 });
