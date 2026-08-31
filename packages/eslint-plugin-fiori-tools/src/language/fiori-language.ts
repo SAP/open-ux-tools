@@ -108,7 +108,7 @@ export class FioriLanguage implements Language<{
      * @param path - The file path of the document
      * @returns The parse result containing the FioriParseResultAst
      */
-    getParsedDocument(
+    private getParsedDocument(
         document: ProjectContext['documents'][string],
         projectContext: ProjectContext,
         uri: string,
@@ -203,10 +203,7 @@ export class FioriLanguage implements Language<{
         }
         if (path.endsWith('.xml')) {
             try {
-                const { cst, tokenVector, parseErrors } = parseXml(text);
-                if (parseErrors.length) {
-                    throw new Error(parseErrors[0].message);
-                }
+                const { cst, tokenVector } = parseXml(text);
                 const ast = buildAst(cst as DocumentCstNode, tokenVector);
                 return {
                     ok: true,

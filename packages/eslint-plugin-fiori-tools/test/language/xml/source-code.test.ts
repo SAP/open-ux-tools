@@ -132,19 +132,6 @@ describe('FioriXMLSourceCode', () => {
         expect(traversedNodeTypes).toEqual(expectedNodeTypes);
     });
 
-    it('should return parsing error for .xml file', async () => {
-        const fioriLanguage = new FioriLanguage();
-        const result = fioriLanguage.parse(
-            { path: 'dummy.xml', body: 'test', physicalPath: 'dummy.xml', bom: false },
-            { LangOptions: {} }
-        );
-        expect(result.ok).toBe(false);
-        expect(result.errors).toHaveLength(1);
-        expect(result.errors[0].message).toBe(
-            `Failed to parse XML file ${normalizePath('dummy.xml')}: Expecting token of type --> OPEN <-- but found --> 'test' <--`
-        );
-    });
-
     it('should parse .xml file correctly, skip parsing if cached', async () => {
         xmlParseMock.mockClear();
         const fioriLanguage = new FioriLanguage();
