@@ -649,8 +649,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1050,8 +1050,8 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/proxy-from-env':
         specifier: 1.0.4
         version: 1.0.4
@@ -2388,8 +2388,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2533,8 +2533,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2606,8 +2606,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2867,8 +2867,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.20.1)
@@ -2925,8 +2925,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -3267,8 +3267,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -3394,8 +3394,8 @@ importers:
         specifier: 4.1.13
         version: 4.1.13
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/vscode':
         specifier: 1.110.0
         version: 1.110.0
@@ -4108,8 +4108,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -4919,8 +4919,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -4968,8 +4968,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -5011,8 +5011,8 @@ importers:
         specifier: 4.0.9
         version: 4.0.9
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -5300,8 +5300,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -5472,8 +5472,8 @@ importers:
         version: 2.9.0
     devDependencies:
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
 
   tests/fixtures/projects/mock:
     devDependencies:
@@ -10366,8 +10366,8 @@ packages:
   '@types/livereload@0.9.5':
     resolution: {integrity: sha512-2RXcRKdivPmn67pwjytvHoRv46AeXaLYVUWA0zkel1XSAOH5i71G0KfUdE5u3g80T155gR3Fo3ilVaqparLsVA==}
 
-  '@types/lodash@4.17.24':
-    resolution: {integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==}
+  '@types/lodash@4.17.25':
+    resolution: {integrity: sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ==}
 
   '@types/markdown-it@14.1.2':
     resolution: {integrity: sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==}
@@ -25841,7 +25841,7 @@ snapshots:
     dependencies:
       '@types/ws': 8.18.1
 
-  '@types/lodash@4.17.24': {}
+  '@types/lodash@4.17.25': {}
 
   '@types/markdown-it@14.1.2':
     dependencies:
