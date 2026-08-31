@@ -2,10 +2,4 @@
 "@sap-ux/fiori-tools-settings": minor
 ---
 
-FEAT: add VS Code setting check for Application Info Page auto-open
-
-Add optional `getConfiguration` parameter to `loadApplicationInfoFromSettings()` to support checking the `ApplicationWizard.autoOpenApplicationInfoPage` VS Code setting. When the setting is disabled, the Application Info Page will not automatically open after project generation.
-
-- Backwards compatible: defaults to enabled (true) when `getConfiguration` not provided
-- Setting key: `ApplicationWizard.autoOpenApplicationInfoPage`
-- New parameter: `getConfiguration?: () => { get: (key: string, defaultValue?: boolean) => boolean | undefined } | undefined`
+Add optional autoOpen parameter to loadApplicationInfoFromSettings function to control whether Application Info Page automatically opens after generation
