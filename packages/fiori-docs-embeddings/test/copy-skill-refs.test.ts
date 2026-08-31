@@ -48,7 +48,10 @@ describe('copy-skill-refs', () => {
         expect(mockMkdirSync).toHaveBeenCalledWith(expect.stringContaining('sap-fiori-opa5-test-development'), {
             recursive: true
         });
-        expect(mockMkdirSync).not.toHaveBeenCalledWith(expect.stringContaining('sap-fiori-app-development'), expect.anything());
+        expect(mockMkdirSync).not.toHaveBeenCalledWith(
+            expect.stringContaining('sap-fiori-app-development'),
+            expect.anything()
+        );
 
         // opa5: SKILL.md + v4-instructions.md (README.txt skipped) = 2 writes
         expect(mockWriteFileSync).toHaveBeenCalledTimes(2);
