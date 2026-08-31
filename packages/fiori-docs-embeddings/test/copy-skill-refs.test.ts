@@ -52,7 +52,10 @@ describe('copy-skill-refs', () => {
 
         // destRoot is cleaned before writing
         expect(mockRmSync).toHaveBeenCalledTimes(1);
-        expect(mockRmSync).toHaveBeenCalledWith(expect.stringContaining('skills_copy'), { recursive: true, force: true });
+        expect(mockRmSync).toHaveBeenCalledWith(expect.stringContaining('skills_copy'), {
+            recursive: true,
+            force: true
+        });
 
         // statSync called once — only for the allowlisted skill (non-allowlisted entries are filtered before stat)
         expect(mockStatSync).toHaveBeenCalledTimes(1);

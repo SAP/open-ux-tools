@@ -204,7 +204,12 @@ class EmbeddingBuilder {
      * @param skillName - Optional skill directory name, used to namespace IDs and paths for skill files
      * @returns Document or null if chunk is empty
      */
-    private createDocumentFromChunk(file: string, index: number, chunkContent: string, skillName?: string): Document | null {
+    private createDocumentFromChunk(
+        file: string,
+        index: number,
+        chunkContent: string,
+        skillName?: string
+    ): Document | null {
         const trimmedContent = chunkContent.trim();
         if (!trimmedContent) {
             return null;
@@ -226,7 +231,9 @@ class EmbeddingBuilder {
                 .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ') ?? 'Fiori Elements';
 
-        const idPrefix = skillName ? `local-${skillName}-${file.replace('.md', '')}` : `local-${file.replace('.md', '')}`;
+        const idPrefix = skillName
+            ? `local-${skillName}-${file.replace('.md', '')}`
+            : `local-${file.replace('.md', '')}`;
         const docPath = skillName ? `data_local/skills_copy/${skillName}/${file}` : `data_local/${file}`;
 
         return {

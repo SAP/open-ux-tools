@@ -66,9 +66,7 @@ describe('build-embeddings data_local integration', () => {
             const skillRefPath = join(skillsPath, skill);
             const mdFiles = readdirSync(skillRefPath).filter((f) => f.endsWith('.md'));
             for (const file of mdFiles) {
-                const loaded = builder.documents.filter((d) =>
-                    d.path === `data_local/skills_copy/${skill}/${file}`
-                );
+                const loaded = builder.documents.filter((d) => d.path === `data_local/skills_copy/${skill}/${file}`);
                 expect(loaded.length).toBeGreaterThan(0);
             }
         }
