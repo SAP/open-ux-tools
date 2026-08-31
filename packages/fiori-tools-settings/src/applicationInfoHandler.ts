@@ -89,7 +89,7 @@ export function deleteAppInfoSettings(fs?: Editor) {
  * The function will be called with the file path from the `latestGeneratedFiles` array.
  * If not provided, the command execution step will be skipped.
  * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
- * @param {boolean} [autoOpen=true] - Whether to automatically open the Application Info Page.
+ * @param {boolean} [autoOpen] - Whether to automatically open the Application Info Page.
  * Defaults to true if not provided.
  * @example
  * loadApplicationInfoFromSettings(
