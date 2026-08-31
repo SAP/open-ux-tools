@@ -73,7 +73,6 @@ jobs:
                   script: |
                       const TRACKING_LABEL = 'palettebot';
                       const TRACKING_TITLE = 'PaletteBot — VSCode Theme Changes';
-                      const ASSIGNEES = ['ux-design-reviewers'];
 
                       const { data: issues } = await github.rest.issues.listForRepo({
                         owner: context.repo.owner,
@@ -93,7 +92,6 @@ jobs:
                         repo: context.repo.repo,
                         title: TRACKING_TITLE,
                         labels: [TRACKING_LABEL],
-                        assignees: ASSIGNEES,
                         body: [
                           '## 🎨 PaletteBot',
                           '',
@@ -104,6 +102,8 @@ jobs:
                           'Each comment below is an automated update from PaletteBot. The file',
                           '`design-tokens/vscode_themes.json` in this repo is',
                           'updated automatically when changes are detected.',
+                          '',
+                          '@SAP/ux-design-reviewers',
                         ].join('\n'),
                       });
                       core.setOutput('issue_number', newIssue.number);
@@ -120,7 +120,7 @@ jobs:
                         owner: context.repo.owner,
                         repo: context.repo.repo,
                         issue_number: issueNumber,
-                        body: `## 🎨 PaletteBot — ${timestamp}\n\n**No changes** — upstream VSCode theme files are unchanged.`,
+                        body: `## 🎨 PaletteBot — ${timestamp}\n\n**No changes** — upstream VSCode theme files are unchanged.\n\n@SAP/ux-design-reviewers`,
                       });
                       core.notice(`Posted no-changes update to issue #${issueNumber}`);
 
@@ -141,7 +141,7 @@ jobs:
                         owner: context.repo.owner,
                         repo: context.repo.repo,
                         issue_number: issueNumber,
-                        body: `${report.body}\n_Committed: [${context.repo.owner}/${context.repo.repo}@\`${shortSha}\`](${commitUrl})_`,
+                        body: `${report.body}\n_Committed: [${context.repo.owner}/${context.repo.repo}@\`${shortSha}\`](${commitUrl}) · [Download vscode_themes.json](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/design-tokens/vscode_themes.json)_\n\n@SAP/ux-design-reviewers`,
                       });
                       core.notice(`Posted theme diff to issue #${issueNumber}`);
               env:
