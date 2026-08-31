@@ -1,5 +1,47 @@
 # @sap-ux/ui5-test-writer
 
+## 1.9.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.11 → 1.2.12
+- @sap-ux/preview-middleware 1.2.6 → 1.2.7
+
+## 1.9.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.5 → 1.2.6
+- @sap-ux/fiori-generator-shared 1.2.10 → 1.2.11
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+
+## 1.9.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Bug Fixes
+
+- Collection-bound table/section actions are now generated as enabled by default (`enabled: true`) again. A previous change treated every bound action as requiring a row selection, which incorrectly disabled collection-bound actions (e.g. mass/create-style actions) that the SAP FE runtime renders enabled without a selection. Single-instance-bound actions remain disabled by default. Bound actions of both kinds keep `unbound: false`. [[7b39240](https://github.com/SAP/open-ux-tools/commit/7b39240699b5b5a468f7dd2248571268cadb43b7)]
+
+#### Release Date
+
+2026-08-25
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.4 → 2.1.5
+- @sap-ux/preview-middleware 1.2.4 → 1.2.5
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/fiori-generator-shared 1.2.9 → 1.2.10
+
 ## 1.9.1
 
 ### Patch Changes

@@ -1,5 +1,49 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.9.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-27
+
+#### Dependency Updates
+
+- Upgrade @babel/core, @babel/eslint-parser, @babel/parser from 8.0.0-rc.6 to stable 8.0.x [[5076c5f](https://github.com/SAP/open-ux-tools/commit/5076c5f5ab874570c236e48fb0dfcca1044196d4)]
+
+## 10.9.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
+## 10.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Features
+
+- Add an internal AI agent skill for developing ESLint rules in the @sap-ux/eslint-plugin-fiori-tools package. [[6cfd8d0](https://github.com/SAP/open-ux-tools/commit/6cfd8d068955287fe9dc764d2acb5315235ec213)]
+
+## 10.8.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
 ## 10.8.4
 
 ### Patch Changes
