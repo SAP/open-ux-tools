@@ -4498,8 +4498,8 @@ importers:
         specifier: 30.4.1
         version: 30.4.1(supports-color@8.1.1)
       '@storybook/react':
-        specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 10.5.10
+        version: 10.5.10(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
         version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
@@ -4628,8 +4628,8 @@ importers:
         specifier: workspace:*
         version: link:../inquirer-common
       '@storybook/react':
-        specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 10.5.10
+        version: 10.5.10(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
         version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)
@@ -9987,6 +9987,20 @@ packages:
       '@types/react-dom':
         optional: true
 
+  '@storybook/react-dom-shim@10.5.10':
+    resolution: {integrity: sha512-rbu62ILo/VE3iXKmu+kWXFpD1H1Lwi0f19q/x7JnDsD2dxKS9w5znLEqPIq2qxpzi/wjjIb2iUP1cRG1d/9W5A==}
+    peerDependencies:
+      '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      '@types/react-dom': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      storybook: ^10.5.10
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+
   '@storybook/react-webpack5@10.5.1':
     resolution: {integrity: sha512-EykrRYlI18BlFkfMIb/3mfd74pFuVrmqg6HCL6hD74j+ycaO/KEEtiJtHbP+gbfCpXAWTF3WYO3z03sb8i/C1Q==}
     peerDependencies:
@@ -10006,6 +10020,23 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       storybook: ^10.5.1
+      typescript: '>= 4.9.x'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+      typescript:
+        optional: true
+
+  '@storybook/react@10.5.10':
+    resolution: {integrity: sha512-4MBV5e1SXIMfPynLHzr+Mp0dwGv/FW1bklWAsS4ynBOAbC98W9p/I9vqBnUctsvE3BJkhzHQQyPwMHL5tTcHVA==}
+    peerDependencies:
+      '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      '@types/react-dom': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      storybook: ^10.5.10
       typescript: '>= 4.9.x'
     peerDependenciesMeta:
       '@types/react':
@@ -25389,6 +25420,15 @@ snapshots:
       '@types/react': 16.14.69
       '@types/react-dom': 16.9.25(@types/react@16.14.69)
 
+  '@storybook/react-dom-shim@10.5.10(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
+    dependencies:
+      react: 16.14.0
+      react-dom: 16.14.0(react@16.14.0)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+    optionalDependencies:
+      '@types/react': 16.14.69
+      '@types/react-dom': 16.9.25(@types/react@16.14.69)
+
   '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)(uglify-js@3.19.3)':
     dependencies:
       '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.26)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)(uglify-js@3.19.3)
@@ -25422,6 +25462,22 @@ snapshots:
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/react-dom-shim': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
+      react: 16.14.0
+      react-docgen: 8.0.3(supports-color@8.1.1)
+      react-docgen-typescript: 2.4.0(typescript@5.9.3)
+      react-dom: 16.14.0(react@16.14.0)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+    optionalDependencies:
+      '@types/react': 16.14.69
+      '@types/react-dom': 16.9.25(@types/react@16.14.69)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@storybook/react@10.5.10(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@storybook/global': 5.0.0
+      '@storybook/react-dom-shim': 10.5.10(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.2)(@types/react@16.14.69)(prettier@3.9.5)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
       react: 16.14.0
       react-docgen: 8.0.3(supports-color@8.1.1)
       react-docgen-typescript: 2.4.0(typescript@5.9.3)

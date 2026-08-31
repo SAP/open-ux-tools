@@ -52,7 +52,7 @@
         "@babel/preset-env": "7.29.2",
         "@babel/preset-react": "7.28.5",
         "@babel/preset-typescript": "7.28.5",
-        "@storybook/react": "10.5.1",
+        "@storybook/react": "10.5.10",
         "@storybook/react-webpack5": "10.5.1",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "12.1.5",
