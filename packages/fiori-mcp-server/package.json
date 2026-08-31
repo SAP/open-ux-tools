@@ -56,7 +56,7 @@
         "@huggingface/transformers": "4.2.0",
         "@jest/globals": "30.4.1",
         "@langchain/core": "1.2.8",
-        "@langchain/mcp-adapters": "1.1.3",
+        "@langchain/mcp-adapters": "1.1.4",
         "@modelcontextprotocol/sdk": "1.30.0",
         "@sap-ai-sdk/foundation-models": "2.14.0",
         "@sap-ai-sdk/langchain": "2.14.0",
