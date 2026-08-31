@@ -17,8 +17,7 @@ import {
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
-import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
-const { createMetadataCollector } = cdsCompilerFacade;
+import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 
 import type { Annotation, Collection, Token } from '@sap-ux/cds-annotation-parser';
 import {

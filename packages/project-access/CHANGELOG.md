@@ -1,5 +1,26 @@
 # @sap-ux/project-access
 
+## 2.1.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+
+## 2.1.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @ui5/manifest 1.88.0 → 1.89.0 [[ed4f7bc](https://github.com/SAP/open-ux-tools/commit/ed4f7bc7b4d118d43280295e50e4f0c077ef0afb)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/i18n 1.0.2 → 1.0.3
+
 ## 2.1.11
 
 ### Patch Changes

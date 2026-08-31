@@ -1,5 +1,41 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Update @sap/ux-cds-compiler-facade to 1.25.0 and fix imports to use named exports [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
+#### Workspace Updates
+
+- @sap-ux/cds-odata-annotation-converter 1.0.10 → 1.0.11
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/cds-odata-annotation-converter 1.0.10 → 1.0.10
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/cds-odata-annotation-converter 1.0.9 → 1.0.10
+- @sap-ux/cds-annotation-parser 1.0.6 → 1.0.7
+- @sap-ux/odata-annotation-core 1.0.1 → 1.0.2
+- @sap-ux/odata-annotation-core-types 1.0.1 → 1.0.2
+- @sap-ux/xml-odata-annotation-converter 1.0.2 → 1.0.3
+- @sap-ux/odata-entity-model 1.0.1 → 1.0.1
+- @sap-ux/odata-vocabularies 1.1.0 → 1.1.1
+
 ## 1.0.24
 
 ### Patch Changes
