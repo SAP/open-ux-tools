@@ -755,11 +755,9 @@ describe('<UIFlexibleTable />', () => {
                     // check row default actions
                     const rowActionsElements = row.querySelectorAll(selectors.rowHeaderActionsContainer);
                     expect(rowActionsElements).toHaveLength(1);
-                    // up and down action buttons should be present
-                    const upBtn = rowActionsElements[0].querySelector(selectors.upArrow);
-                    const downBtn = rowActionsElements[0].querySelector(selectors.downArrow);
-                    expect(upBtn).not.toBeNull();
-                    expect(downBtn).not.toBeNull();
+                    // up and down action buttons should be present with correct identities
+                    expect(rowActionsElements[0].querySelectorAll(selectors.upArrow)).toHaveLength(1);
+                    expect(rowActionsElements[0].querySelectorAll(selectors.downArrow)).toHaveLength(1);
 
                     // check data cells
                     const selector = `.cell-value-${rows[rowIndex].key}-${col.key} ${selectors.cellValueMain}`;
