@@ -229,6 +229,12 @@ export interface TransportAnswers {
     transportConfig?: TransportConfig;
     transportConfigError?: string;
     transportConfigNeedsCreds?: boolean;
+    /**
+     * Tracks that credential fields should remain visible throughout the authentication flow.
+     * Not reset by validateCredentials (unlike transportConfigNeedsCreds, which becomes false
+     * after successful auth so downstream questions appear). Required for YUI re-evaluation.
+     */
+    areCredentialFieldsVisible?: boolean;
     transportList?: TransportListItem[];
     newTransportNumber?: string;
 }

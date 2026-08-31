@@ -263,10 +263,36 @@ describe('Test abap deploy config inquirer conditions', () => {
             await showUsernameQuestion(undefined);
             expect(await showPasswordQuestion()).toBe(true);
         });
+
+        it('should keep password visible after validateCredentials resets transportConfigNeedsCreds (YUI re-evaluation)', async () => {
+            PromptState.abapDeployConfig.destination = undefined;
+            PromptState.abapDeployConfig.destinationAuthType = undefined;
+            mockInitTransportConfig.mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: true
+            });
+            await showUsernameQuestion(undefined);
+            // Simulate validateCredentials success: resets transportConfigNeedsCreds so downstream prompts appear
+            PromptState.transportAnswers.transportConfigNeedsCreds = false;
+            // YUI re-evaluates showPasswordQuestion — field must remain visible
+            expect(await showPasswordQuestion()).toBe(true);
+        });
+
+        it('should delegate to showUsernameQuestion for URL-based target when transportConfigNeedsCreds is undefined', async () => {
+            PromptState.abapDeployConfig.destination = undefined;
+            PromptState.abapDeployConfig.destinationAuthType = undefined;
+            mockInitTransportConfig.mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: true
+            });
+            expect(await showPasswordQuestion(undefined)).toBe(true);
+            expect(mockInitTransportConfig).toHaveBeenCalledTimes(1);
+        });
     });
 
     test('should show password questions', async () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = true;
+        PromptState.transportAnswers.areCredentialFieldsVisible = true;
         expect(await showPasswordQuestion()).toBe(true);
     });
 

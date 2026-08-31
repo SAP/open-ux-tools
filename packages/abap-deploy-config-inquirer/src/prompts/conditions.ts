@@ -116,6 +116,7 @@ async function ensureTransportConfigInitialised(backendTarget?: BackendTarget): 
     const needsCreds = result.transportConfigNeedsCreds ?? false;
     PromptState.transportAnswers.transportConfig = result.transportConfig;
     PromptState.transportAnswers.transportConfigNeedsCreds = needsCreds;
+    PromptState.transportAnswers.areCredentialFieldsVisible = needsCreds;
 
     if (needsCreds) {
         LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
@@ -130,6 +131,8 @@ async function ensureTransportConfigInitialised(backendTarget?: BackendTarget): 
  */
 export async function showUsernameQuestion(backendTarget?: BackendTarget): Promise<boolean> {
     const { destination, destinationAuthType } = PromptState.abapDeployConfig;
+    // Guard requires both destination and destinationAuthType — if destinationAuthType is not yet
+    // stored (updateDestinationPromptState hasn't run), fall through to ensureTransportConfigInitialised.
     if (destination && destinationAuthType && destinationAuthType !== Authentication.NO_AUTHENTICATION) {
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
         return false;
@@ -149,7 +152,10 @@ export async function showPasswordQuestion(backendTarget?: BackendTarget): Promi
     if (PromptState.transportAnswers.transportConfigNeedsCreds === undefined) {
         return showUsernameQuestion(backendTarget);
     }
-    return Boolean(PromptState.transportAnswers.transportConfigNeedsCreds);
+    // Use areCredentialFieldsVisible rather than transportConfigNeedsCreds:
+    // validateCredentials resets transportConfigNeedsCreds to false on success so downstream
+    // questions (package, transport) appear, but the password field must stay visible in YUI.
+    return Boolean(PromptState.transportAnswers.areCredentialFieldsVisible);
 }
 
 /**
