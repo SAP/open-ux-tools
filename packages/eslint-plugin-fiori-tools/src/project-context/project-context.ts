@@ -237,6 +237,16 @@ export class ProjectContext {
         return context;
     }
     public static fileCache = new Map<string, string>(); // NOSONAR - Property must be mutable for test setup
+
+    /**
+     * Clears all static caches so tests run in isolation regardless of execution order.
+     */
+    public static resetForTesting(): void {
+        this.fileCache.clear();
+        this.instanceCache.clear();
+        this.updateCache.clear();
+        this.appRoots.clear();
+    }
     private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
             if (prop === 'get') {

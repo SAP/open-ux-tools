@@ -37,6 +37,8 @@ export const V4_ANNOTATIONS_PATH = join(
 );
 export const V4_METADATA_PATH = join(ROOT, 'test', 'data', 'v4-xml-start', 'webapp', 'localService', 'metadata.xml');
 export const V4_ANNOTATIONS = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
+export const V4_I18N_PATH = join(ROOT, 'test', 'data', 'v4-xml-start', 'webapp', 'i18n', 'i18n.properties');
+export const V4_I18N_CONTENT = readFileSync(V4_I18N_PATH, 'utf-8');
 export const V4_FACETS_ANNOTATIONS = `
             <Annotations Target="IncidentService.Incidents">
                  <Annotation Term="UI.Facets" >
@@ -212,7 +214,7 @@ export function setup(name: string, capAppPath?: string) {
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;
         jest.spyOn(process, 'cwd').mockReturnValue(cwd);
-        ProjectContext.fileCache = new Map<string, string>(); // to force file reindex
+        ProjectContext.resetForTesting();
         for (const change of changes) {
             const path = normalizePath(change.filename);
             const uri = pathToFileURL(path).toString();
