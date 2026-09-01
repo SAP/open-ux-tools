@@ -22,7 +22,7 @@ jest.unstable_mockModule('@ui5/fs/resourceFactory', () => ({
 // Mock @ui5/task-adaptation downloadAppResources
 const mockDownloadAppResources = jest.fn<any>();
 jest.unstable_mockModule('@ui5/task-adaptation', () => ({
-    previewManifest: mockDownloadAppResources
+    downloadAppResources: mockDownloadAppResources
 }));
 
 const { downloadBaseAppResources } = await import('../../../src/tools/download-app-resources.js');
