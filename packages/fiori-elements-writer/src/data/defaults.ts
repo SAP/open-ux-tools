@@ -1,6 +1,6 @@
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import { readPackageUpSync } from 'read-pkg-up';
+import { readPackageUpSync } from 'read-package-up';
 
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';

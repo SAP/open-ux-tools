@@ -2,7 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { CommandRunner } from './commandRunner.js';
 import fastGlob from 'fast-glob';
 import { join } from 'node:path';
-import { readPackageUp, type ReadResult, type Options, type PackageJson } from 'read-pkg-up';
+import { readPackageUp, type ReadResult, type Options, type PackageJson } from 'read-package-up';
 import type { SemVer } from 'semver';
 import { coerce, lt, satisfies } from 'semver';
 import type { WorkspaceConfiguration } from 'vscode';

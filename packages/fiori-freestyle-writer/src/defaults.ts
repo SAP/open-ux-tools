@@ -1,4 +1,4 @@
-import { readPackageUpSync } from 'read-pkg-up';
+import { readPackageUpSync } from 'read-package-up';
 import { TemplateType } from './types.js';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils.js';
 import { getFlpId } from '@sap-ux/fiori-generator-shared';
