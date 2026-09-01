@@ -1,5 +1,19 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.44
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.3 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.2.11 → 1.2.12
+- @sap-ux/odata-service-inquirer 3.2.13 → 3.2.14
+- @sap-ux/cap-config-writer 1.0.33 → 1.0.34
+- @sap-ux/fiori-elements-writer 3.1.43 → 3.1.44
+- @sap-ux/fiori-freestyle-writer 3.0.88 → 3.0.89
+- @sap-ux/ui5-application-inquirer 1.0.36 → 1.0.37
+
 ## 1.3.43
 
 ### Patch Changes
