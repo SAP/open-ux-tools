@@ -2665,13 +2665,12 @@ describe('extractCustomToolBarActions()', () => {
                 }
             } as unknown as TreeAggregation
         });
+        const childLabels: Record<string, string> = {
+            '{i18n>customAction1}': 'Custom Action 1',
+            '{i18n>customAction2}': 'Custom Action 2'
+        };
         const resolve = (label: string | undefined) => ({
-            label:
-                label === '{i18n>customAction1}'
-                    ? 'Custom Action 1'
-                    : label === '{i18n>customAction2}'
-                    ? 'Custom Action 2'
-                    : label ?? '',
+            label: (label && childLabels[label]) || label || '',
             unresolved: false
         });
         const convertedMetadata = { actions: [], namespace: 'svc' } as unknown as ConvertedMetadata;
