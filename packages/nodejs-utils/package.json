@@ -30,7 +30,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "fast-glob": "3.3.3",
         "i18next": "26.3.6",
-        "read-pkg-up": "7.0.1",
+        "read-pkg-up": "11.0.0",
         "semver": "7.8.5"
     },
     "devDependencies": {
