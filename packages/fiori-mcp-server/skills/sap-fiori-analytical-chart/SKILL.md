@@ -96,7 +96,7 @@ UI.PresentationVariant #TableView: {
 - [ ] `@OData.applySupportedForAggregation: #FULL` on **projection view** (ZC_*)
 - [ ] `@Aggregation.default: #AVG` (or #SUM, #MIN, #MAX) on **measure field**
 - [ ] `@UI.chart` annotation with correct **qualifier** in metadata extension
-- [ ] Manifest `views.paths` configuration
+- [ ] Manifest `targets.<ListReport>.options.settings.views.paths` configuration
 - [ ] All CDS objects **activated**
 
 ---
@@ -276,7 +276,7 @@ npm start          # No refresh needed - fetches metadata from live backend at r
    - Activate metadata extension
 
 3. **Update Fiori App Manifest**
-   - Add `views.paths` configuration
+   - Add `views.paths` under `targets.<ListReport>.options.settings` (NOT inside `controlConfiguration`)
    - Save manifest.json
 
 4. **Test**
