@@ -1,5 +1,7 @@
 import type { Action, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
-import type { ActionButtonState, ButtonState, ButtonVisibilityResult } from '../types.js';
+import type { ActionButtonState, ButtonState, ButtonVisibilityResult, MenuActionState } from '../types.js';
+import { getAggregations, type AggregationItem } from './modelUtils.js';
+import type { I18nLabelResolver } from './i18nUtils.js';
 import type {
     ActionAnnotations,
     EntityContainerAnnotations
@@ -409,4 +411,88 @@ export function safeCheckEditVisibility(
         log?.debug(`Failed to check edit visibility: ${error instanceof Error ? error.message : String(error)}`);
         return undefined;
     }
+}
+
+/**
+ * Determines whether an action aggregation entry is a menu (drop-down) grouping several actions.
+ *
+ * @param item - action aggregation entry from the spec model
+ * @returns true if the entry represents an annotation menu or a manifest (custom) menu
+ */
+export function isMenuActionItem(item: AggregationItem): boolean {
+    return item.menuType !== undefined || item.schema?.dataType === 'DataFieldForActionGroup';
+}
+
+/**
+ * Builds the individual menu item states contained in a menu action node.
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @returns array of menu item states
+ */
+export function buildMenuItemStates(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): MenuActionState[] {
+    const innerContainer = getAggregations(menuItem)['actions'];
+    if (!innerContainer) {
+        return [];
+    }
+    const innerEntries = getAggregations(innerContainer) as Record<string, AggregationItem>;
+    return Object.entries(innerEntries).map(([childKey, child]) => {
+        const annotationState = buildActionStateFromSpecModelKey(
+            childKey,
+            child.description,
+            convertedMetadata,
+            schemaNamespace
+        );
+        if (annotationState) {
+            return {
+                label: annotationState.label,
+                visible: annotationState.visible,
+                service: annotationState.service,
+                action: annotationState.action,
+                unbound: annotationState.unbound,
+                enabled: annotationState.enabled,
+                dynamicPath: annotationState.dynamicPath
+            };
+        }
+        const { label, unresolved } = resolveLabel(child.description);
+        return { label, visible: true, labelUnresolved: unresolved || undefined };
+    });
+}
+
+/**
+ * Builds a menu action button state from a menu aggregation entry (annotation or custom menu).
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns the menu action button state
+ */
+export function buildMenuActionState(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): ActionButtonState {
+    const menuType =
+        menuItem.menuType === 'Annotation' || menuItem.schema?.dataType === 'DataFieldForActionGroup'
+            ? 'Annotation'
+            : 'CustomMenu';
+    const { label, unresolved } = resolveLabel(menuItem.description);
+    return {
+        label,
+        action: '',
+        visible: true,
+        enabled: true,
+        menuType,
+        labelUnresolved: unresolved || undefined,
+        menuActions: buildMenuItemStates(menuItem, convertedMetadata, schemaNamespace, resolveLabel)
+    };
 }

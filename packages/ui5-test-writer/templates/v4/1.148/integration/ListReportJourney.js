@@ -86,8 +86,19 @@ sap.ui.define([
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
+            <%_ if (item.menuActions) { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ item.menuActions.forEach(function(menuAction) { _%>
+            <%_ if (menuAction.visible) { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckMenuAction("<%- menuAction.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteMenuAction("<%- menuAction.label %>");
+            <%_ } _%>
+            <%_ }); _%>
+            <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            <%_ } _%>
             <%_ } _%>
             <%_ }); -%>
             <%_ } -%>

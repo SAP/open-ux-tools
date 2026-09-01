@@ -27,6 +27,7 @@ import {
     extractCustomToolBarActions
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -2637,6 +2638,69 @@ describe('extractCustomToolBarActions()', () => {
 
     test('returns an empty array when there are no custom actions', () => {
         const model = buildModel({});
+        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
+    });
+
+    test('extracts a menu button with its child actions when metadata is available', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: '{i18n>customAction1}',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            },
+                            myAction2: {
+                                description: '{i18n>customAction2}',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        const resolve = (label: string | undefined) => ({
+            label:
+                label === '{i18n>customAction1}'
+                    ? 'Custom Action 1'
+                    : label === '{i18n>customAction2}'
+                    ? 'Custom Action 2'
+                    : label ?? '',
+            unresolved: false
+        });
+        const convertedMetadata = { actions: [], namespace: 'svc' } as unknown as ConvertedMetadata;
+
+        expect(extractCustomToolBarActions(model, resolve, convertedMetadata)).toEqual([
+            {
+                label: 'My Menu Button',
+                action: '',
+                visible: true,
+                enabled: true,
+                menuType: 'CustomMenu',
+                labelUnresolved: undefined,
+                menuActions: [
+                    { label: 'Custom Action 1', visible: true, labelUnresolved: undefined },
+                    { label: 'Custom Action 2', visible: true, labelUnresolved: undefined }
+                ]
+            }
+        ]);
+    });
+
+    test('skips a menu button when no metadata is available', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                aggregations: { actions: { aggregations: {} } }
+            } as unknown as TreeAggregation
+        });
         expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
     });
 });
