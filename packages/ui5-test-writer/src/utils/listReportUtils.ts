@@ -226,9 +226,7 @@ export function getListReportFeatures(
     const meta = convertedMetadata;
     const textAnnotationColumns: TextAnnotationColumn[] = meta
         ? extractTextAnnotationColumnsFromNode(listReportPage.model.root)
-              .filter((candidate) =>
-                  hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
-              )
+              .filter((candidate) => hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty))
               .map((candidate) => ({ textProperty: candidate.textProperty }))
         : [];
 
