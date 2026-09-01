@@ -20,12 +20,14 @@ import { ProjectContext } from '../project-context/project-context.js';
 import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code.js';
 import { DiagnosticCache } from './diagnostic-cache.js';
 import { FioriChangeSourceCode } from './change/source-code.js';
+import { FioriI18nSourceCode, parseI18nToAst, visitorKeys as i18nVisitorKeys } from './i18n/source-code.js';
+import type { I18nDocument, I18nNode } from './i18n/source-code.js';
 
 export type FioriLanguageOptions = {};
 export type FioriSourceCode =
-    FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode | FioriChangeSourceCode;
-export type RootNode = DocumentNode | XMLDocument;
-export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
+    FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode | FioriChangeSourceCode | FioriI18nSourceCode;
+export type RootNode = DocumentNode | XMLDocument | I18nDocument;
+export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode | I18nNode;
 
 export type FioriParseResultAst = {
     context: ProjectContext;
@@ -46,6 +48,10 @@ export type FioriParseResultAst = {
         | {
               type: 'change';
               root: DocumentNode;
+          }
+        | {
+              type: 'i18n';
+              root: I18nDocument;
           };
 };
 
@@ -73,7 +79,12 @@ export class FioriLanguage implements Language<{
      */
     validateLanguageOptions(_languageOptions: FioriLanguageOptions): void {} // NOSONAR - Empty method required by ESLint Language interface
 
-    visitorKeys = { ...xmlVisitorKeys, ...Object.fromEntries(jsonVisitorKeys), ...annotationVisitorKeys };
+    visitorKeys = {
+        ...xmlVisitorKeys,
+        ...Object.fromEntries(jsonVisitorKeys),
+        ...annotationVisitorKeys,
+        ...i18nVisitorKeys
+    };
 
     /**
      * Parses a Fiori file (manifest.json, XML annotations, or CDS annotations).
@@ -107,6 +118,19 @@ export class FioriLanguage implements Language<{
                             tokens: true,
                             allowTrailingCommas: false
                         })
+                    }
+                }
+            };
+        }
+        if (path.endsWith('.properties')) {
+            return {
+                ok: true,
+                ast: {
+                    uri,
+                    context: projectContext,
+                    document: {
+                        type: 'i18n',
+                        root: parseI18nToAst(text)
                     }
                 }
             };
@@ -262,6 +286,13 @@ export class FioriLanguage implements Language<{
             });
         } else if (document.type === 'change') {
             return new FioriChangeSourceCode({
+                text,
+                ast: document.root,
+                projectContext: parseResult.ast.context,
+                uri: parseResult.ast.uri
+            });
+        } else if (document.type === 'i18n') {
+            return new FioriI18nSourceCode({
                 text,
                 ast: document.root,
                 projectContext: parseResult.ast.context,
