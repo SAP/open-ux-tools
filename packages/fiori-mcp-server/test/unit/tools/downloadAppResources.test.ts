@@ -27,7 +27,7 @@ jest.unstable_mockModule('@ui5/task-adaptation', () => ({
 
 const { downloadBaseAppResources } = await import('../../../src/tools/download-app-resources.js');
 
-describe('validateManifest (preview_manifest)', () => {
+describe('downloadBaseAppResources (download_app_resources)', () => {
     const params: DownloadAppResourcesInput = { appPath: '/test/adp/project' };
     const configuration = { appName: 'REPO_NAME', appHostId: 'HOST_ID', moduleName: 'my.module' };
     const variant = { id: 'customer.com.sap.application.variant.id' };
