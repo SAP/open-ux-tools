@@ -323,30 +323,32 @@ describe('<UIFlexibleTable />', () => {
 
         describe('actions column min-width CSS variable', () => {
             const getActionsMinWidth = () =>
-                wrapper.find(selectors.tableRoot).getElement().props.style?.['--flexible-table-actions-min-width'];
+                (container.querySelector(selectors.tableRoot) as HTMLElement).style.getPropertyValue(
+                    '--flexible-table-actions-min-width'
+                );
 
             it('reorder + delete — max width', () => {
-                wrapper.setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn() });
+                setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn() });
                 const width = parseInt(getActionsMinWidth(), 10);
                 expect(width).toBeGreaterThan(0);
             });
 
             it('only delete — less than reorder + delete', () => {
-                wrapper.setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn() });
+                setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn() });
                 const withReorder = parseInt(getActionsMinWidth(), 10);
-                wrapper.setProps({ onTableReorder: undefined });
+                setProps({ onTableReorder: undefined });
                 const withoutReorder = parseInt(getActionsMinWidth(), 10);
                 expect(withoutReorder).toBeLessThan(withReorder);
                 expect(withoutReorder).toBeGreaterThan(0);
             });
 
             it('readonly — zero width', () => {
-                wrapper.setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn(), readonly: true });
+                setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn(), readonly: true });
                 expect(getActionsMinWidth()).toBe('0px');
             });
 
             it('no actions — zero width', () => {
-                wrapper.setProps({ onTableReorder: undefined, onDeleteRow: undefined, onRenderActions: undefined });
+                setProps({ onTableReorder: undefined, onDeleteRow: undefined, onRenderActions: undefined });
                 expect(getActionsMinWidth()).toBe('0px');
             });
         });
