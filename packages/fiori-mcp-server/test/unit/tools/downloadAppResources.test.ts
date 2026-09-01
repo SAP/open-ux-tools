@@ -45,9 +45,9 @@ describe('validateManifest (preview_manifest)', () => {
         mockDownloadAppResources.mockResolvedValue(mergedManifest);
     });
 
-    it('returns the merged manifest as a formatted JSON string', async () => {
+    it('returns a JSON string indicating files were written', async () => {
         const result = await downloadBaseAppResources(params);
-        expect(result).toBe(JSON.stringify(mergedManifest, null, 2));
+        expect(result).toBe(JSON.stringify({ filesWritten: true }));
     });
 
     it('builds the reader over webapp with a virBasePath derived from the variant id', async () => {
