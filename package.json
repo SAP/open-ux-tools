@@ -79,6 +79,6 @@
     },
     "packageManager": "pnpm@11.22.0",
     "dependencies": {
-        "@ui5/task-adaptation": "link:../../developer/ui5-task-adaptation-internal"
+        "@ui5/task-adaptation": "1.6.8"
     }
 }
