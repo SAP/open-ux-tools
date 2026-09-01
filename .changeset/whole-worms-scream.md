@@ -4,4 +4,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-CHORE: Correct UI label texts in the controller extension dialog
+FIX: Correct UI label texts in the controller extension dialog
