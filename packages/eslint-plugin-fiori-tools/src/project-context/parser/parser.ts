@@ -262,6 +262,7 @@ export class ApplicationParser {
             // Remove existing change object for unreadable or malformed change file
             if (existingChangeIndex >= 0) {
                 app.changes.splice(existingChangeIndex, 1);
+                delete index.documents[uri];
             }
         }
     }
