@@ -57,10 +57,12 @@ export class ApplicationParser {
     }
 
     /**
+     * Parses the discovered Fiori application artifacts.
      *
-     * @param projectType
-     * @param artifacts
-     * @param fileCache
+     * @param projectType - The type of project being parsed
+     * @param artifacts - The discovered Fiori artifacts to parse
+     * @param fileCache - Map of file URIs to their contents
+     * @returns The parsed project index and diagnostics
      */
     public parse(
         projectType: ProjectType,
@@ -102,15 +104,7 @@ export class ApplicationParser {
                     i18nBundles: collectI18nBundles(getI18nFilePaths(webappPath, manifest), this.context.fileCache)
                 };
                 this.index.apps[appRootUri] = parsedApp;
-
-                for (const service of services) {
-                    const result = this.parseService(app.projectRoot, service);
-                    if (result) {
-                        const [artifacts, v2Annotations] = result;
-                        const index = buildServiceIndex(artifacts, this.index.documents, v2Annotations);
-                        parsedApp.services[service.name] = { config: service, artifacts, index };
-                    }
-                }
+                this.parseServicesForApp(app.projectRoot, services, parsedApp);
             } catch {
                 // skip faulty apps for now
             }
@@ -119,6 +113,24 @@ export class ApplicationParser {
             index: this.index,
             diagnostics: this.diagnostics
         };
+    }
+
+    /**
+     * Parses each OData service and stores its artifacts and index in the app's services map.
+     *
+     * @param projectRoot - The absolute path to the project root
+     * @param services - The list of OData services to parse
+     * @param parsedApp - The app entry being populated
+     */
+    private parseServicesForApp(projectRoot: string, services: FoundODataService[], parsedApp: ParsedApp): void {
+        for (const service of services) {
+            const result = this.parseService(projectRoot, service);
+            if (result) {
+                const [artifacts, v2Annotations] = result;
+                const index = buildServiceIndex(artifacts, this.index.documents, v2Annotations);
+                parsedApp.services[service.name] = { config: service, artifacts, index };
+            }
+        }
     }
 
     /**
