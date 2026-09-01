@@ -1,14 +1,10 @@
 #!/usr/bin/env node
 
 import { FioriFunctionalityServer } from './server.js';
-//import { downloadBaseAppResources } from './tools/download-app-resources.js';
 import { logger } from './utils/logger.js';
 
 const server = new FioriFunctionalityServer();
 try {
-    /*await downloadBaseAppResources({
-        appPath: '/Users/I523040/Documents/developer/developer adaptation cf/mcp.abap.hierarchy.testing'
-    });*/
     await server.run();
     logger.info('Fiori MCP Server started successfully.');
 } catch (error) {
