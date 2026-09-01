@@ -26,7 +26,7 @@ Add a new ESLint rule to `@sap-ux/eslint-plugin-fiori-tools` following the estab
 
 | Type | Use when | Reference file |
 |---|---|---|
-| **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files | `references/annotation.md` |
+| **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files; also covers rules where text (label, title, description) can be an i18n binding | `references/annotation.md` |
 | **Manifest JSON rule** | Validates `manifest.json` properties | `references/manifest-json.md` |
 | **Flex change file rule** | Validates `webapp/changes/*.change` (Applicable only to OData V2 flex change properties) | `references/flex-change.md` |
 | **JavaScript / TypeScript rule** | Validates JS/TS application source code (UI5 patterns, global variables, deprecated APIs) | `references/js-ts-rule.md` |
@@ -210,7 +210,7 @@ Summarize what was done:
 
 | Rule type | Use in `check()` | Why |
 |---|---|---|
-| **Annotation** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `getIndexedServiceForMainService` | Only check annotations **referenced from pages** — never scan all entity annotations. `pageNames` must list only pages that reference the specific annotation. See `annotation.md` for access patterns and the page-annotation-map template. |
+| **Annotation** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `getIndexedServiceForMainService` | Only check annotations **referenced from pages** — never scan all entity annotations. `pageNames` must list only pages that reference the specific annotation. See `annotation.md` for access patterns and the page-annotation-map template. When text can be an i18n binding, use the two-pass design in `annotation.md#when-the-text-field-can-be-an-i18n-binding`. |
 | **Manifest JSON** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `parsedApp` (manifest URI, manifestObject) | Requires linked pages to find manifest config paths |
 | **Flex change** | `context.sourceCode.projectContext.linkedModel.apps` | Guard on `FioriChangeSourceCode` first; linked model provides change file config via `page.lookup['table']` |
 | **JavaScript / TypeScript** | Standard ESLint `context` — no `projectContext` | JS/TS rules don't use the Fiori project model; use `Rule.RuleModule`, not `createFioriRule` |

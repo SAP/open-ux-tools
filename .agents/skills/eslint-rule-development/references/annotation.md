@@ -13,6 +13,12 @@
 
 For rules with nested AST walks: also read `src/rules/sap-no-single-facet-in-collection.ts`.
 
+**If the text field can be an i18n binding** (label, title, description with `{@i18n>key}`), also read:
+- `packages/eslint-plugin-fiori-tools/src/rules/sap-no-comma-in-section-title.ts` — canonical two-pass example
+- `packages/eslint-plugin-fiori-tools/src/language/i18n/source-code.ts`
+- `packages/eslint-plugin-fiori-tools/src/language/rule-factory.ts`
+- `packages/eslint-plugin-fiori-tools/test/rules/sap-no-comma-in-section-title.test.ts`
+
 ## Pre-flight checklist:
 
 - ✅ **Only check page-referenced annotations** — annotations not referenced from any app page must produce no diagnostic
@@ -315,6 +321,75 @@ ruleTester.run(TEST_NAME, myRule, {
 ```typescript
 import { CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH, setup } from '../test-helper.js';
 ```
+
+---
+
+## When the text field can be an i18n binding
+
+Use when the text property (label, title, description) can be a direct string **or** a binding like `{@i18n>myKey}` / `{i18n>myKey}`.
+
+Canonical example (read it): `src/rules/sap-no-comma-in-section-title.ts`
+
+**Two-pass design:** annotation pass checks direct strings and skips bindings; i18n pass walks the same annotation index to find which keys are label keys, then checks their `.properties` values.
+
+### What changes vs. the standard annotation pattern
+
+**1. Diagnostic** — make `annotation` optional, add `i18n` (only one is set per problem):
+```typescript
+import type { I18nEntry } from '../language/i18n/source-code.js';
+annotation?: { reference: AnnotationReference; reportedParent: Element };
+i18n?: { uri: fileUri, entry: I18nEntry };
+```
+
+**2. Annotation pass** — skip i18n bindings before checking the value:
+```typescript
+const I18N_BINDING_REGEX = /^\{[@]?i18n>(.+)\}$/;
+const extractI18nKey = (s: string) => I18N_BINDING_REGEX.exec(s)?.[1];
+// inside your check:
+if (extractI18nKey(labelStr) !== undefined) return; // handled by i18n pass
+```
+
+**3. i18n key collection** — mirror the annotation traversal; populate `Map<key, pageNames[]>` instead of reporting:
+```typescript
+import type { ProjectContext } from '../project-context/project-context.js';
+function collectTextLabelI18nKeys(ctx: ProjectContext): Map<string, string[]> {
+    // same app/page/entity loop as annotation pass
+    // call extractI18nKey on each label string; add to map instead of addAnnotationProblem
+}
+```
+
+**4. i18n pass + updated `check()` and `createI18n`:**
+```typescript
+import { FioriI18nSourceCode } from '../language/i18n/source-code.js';
+
+function checkI18nSource(sourceCode: FioriI18nSourceCode): MyRuleDiagnostic[] {
+    const keys = collectTextLabelI18nKeys(sourceCode.projectContext);
+    if (!keys.size) return [];
+    return sourceCode.ast.entries
+        .filter((e) => keys.has(e.key) && /* violation on e.value */)
+        .map((e) => ({ type: MY_RULE, pageNames: keys.get(e.key)!, i18n: { uri: sourceCode.uri, entry: e } }));
+}
+
+// in createFioriRule:
+check(context) {
+    if (context.sourceCode instanceof FioriAnnotationSourceCode) return checkAnnotationSource(context.sourceCode);
+    if (context.sourceCode instanceof FioriI18nSourceCode) return checkI18nSource(context.sourceCode);
+    return [];
+},
+createI18n(context, validationResult) {
+    const diags = validationResult.filter((r) => r.i18n !== undefined);
+    if (!diags.length) return {};
+    return {
+        'i18n-entry'(node: I18nEntry): void {
+            if (diags.find((r) => r.i18n!.entry === node)) context.report({ node, messageId: MY_RULE });
+        }
+    };
+}
+```
+
+The i18n fixture must contain a key with a violating value. The annotation fixture must bind to that key (`String="{@i18n>myKey}"`). The valid case replaces the value with a clean string.
+
+---
 
 ## Debug checklist (0 errors when violations expected):
 
