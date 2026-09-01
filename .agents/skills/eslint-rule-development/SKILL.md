@@ -196,6 +196,7 @@ Summarize what was done:
 | Plugin config & exports | `packages/eslint-plugin-fiori-tools/src/index.ts` |
 | Diagnostic constants | `packages/eslint-plugin-fiori-tools/src/language/diagnostics.ts` |
 | Annotation helper utilities | `packages/eslint-plugin-fiori-tools/src/project-context/linker/annotations.ts` |
+| i18n helper utilities (`extractI18nKey`, `getAttrOrChildText`, `collectSectionLabelKeys`, etc.) | `packages/eslint-plugin-fiori-tools/src/project-context/linker/i18n.ts` |
 | Annotation index key format | `packages/eslint-plugin-fiori-tools/src/project-context/parser/service.ts` (lines 50-57) |
 | Linker types | `packages/eslint-plugin-fiori-tools/src/project-context/linker/types.ts` |
 | V2 linker | `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v2.ts` |

@@ -241,19 +241,10 @@ createAnnotations(context, validationResult) {
 
 ## CDS vs XML: reading annotation values
 
-XML stores values as **attributes**; CDS stores them as **child elements** with a text node. Always use this helper:
+XML stores values as **attributes**; CDS stores them as **child elements** with a text node. Always import and use `getAttrOrChildText` from `linker/i18n.ts`:
 
 ```typescript
-import { Edm, elementsWithName, getElementAttributeValue } from '@sap-ux/odata-annotation-core';
-import type { Element } from '@sap-ux/odata-annotation-core';
-
-function getAttrOrChildText(element: Element, valueName: string): string {
-    const fromAttr = getElementAttributeValue(element, valueName);
-    if (fromAttr) return fromAttr;
-    const [childEl] = elementsWithName(valueName, element);
-    const textNode = childEl?.content?.find((c) => c.type === 'text');
-    return textNode?.type === 'text' && textNode.text ? textNode.text : '';
-}
+import { getAttrOrChildText } from '../project-context/linker/i18n.js';
 
 // Usage:
 const pathValue = getAttrOrChildText(ann, Edm.Path);
@@ -341,16 +332,24 @@ annotation?: { reference: AnnotationReference; reportedParent: Element };
 i18n?: { uri: fileUri, entry: I18nEntry };
 ```
 
-**2. Annotation pass** — skip i18n bindings before checking the value:
+**2. Annotation pass** — import `extractI18nKey` from `linker/i18n.ts` and skip bindings before checking the value:
 ```typescript
-const I18N_BINDING_REGEX = /^\{[@]?i18n>(.+)\}$/;
-const extractI18nKey = (s: string) => I18N_BINDING_REGEX.exec(s)?.[1];
+import { extractI18nKey } from '../project-context/linker/i18n.js';
 // inside your check:
 if (extractI18nKey(labelStr) !== undefined) return; // handled by i18n pass
 ```
 
-**3. i18n key collection** — mirror the annotation traversal; populate `Map<key, pageNames[]>` instead of reporting:
+**3. i18n key collection** — mirror the annotation traversal; populate `Map<key, pageNames[]>` instead of reporting.
+
+For **UI.Facets Label** checks specifically, the building blocks in `linker/i18n.ts` cover the full traversal:
+- `extractRecordI18nKey(record, pageName, map)` — extracts one facet record's Label key into the map
+- `collectFacetI18nKeys(entityType, pageName, parsedService, map)` — walks all UI.Facets records for an entity
+- `collectSectionLabelKeys(projectContext)` — iterates all apps/pages, returns `Map<key, pageNames[]>` ready for the i18n check
+
+Import and call `collectSectionLabelKeys` directly if the rule targets Facet Labels; write a custom collector otherwise:
 ```typescript
+import { collectSectionLabelKeys } from '../project-context/linker/i18n.js';
+// OR write a custom collector for other annotation terms:
 import type { ProjectContext } from '../project-context/project-context.js';
 function collectTextLabelI18nKeys(ctx: ProjectContext): Map<string, string[]> {
     // same app/page/entity loop as annotation pass
