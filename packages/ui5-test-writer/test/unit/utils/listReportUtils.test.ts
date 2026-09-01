@@ -2597,7 +2597,7 @@ describe('Test hasTextArrangement()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-    test('returns false when TextArrangement exists only in $metadata without it', () => {
+    test('returns false when $metadata has no TextArrangement annotation', () => {
         const metadata = convert(parse(metadataXml));
         expect(hasTextArrangement(metadata, 'Travel', 'CustomerID')).toBe(false);
     });

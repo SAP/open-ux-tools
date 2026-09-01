@@ -223,10 +223,11 @@ export function getListReportFeatures(
 
     // Columns with a text annotation only get a sort-order test when their bound property also
     // carries a UI.TextArrangement annotation (checked against the merged metadata).
-    const textAnnotationColumns: TextAnnotationColumn[] = convertedMetadata
+    const meta = convertedMetadata;
+    const textAnnotationColumns: TextAnnotationColumn[] = meta
         ? extractTextAnnotationColumnsFromNode(listReportPage.model.root)
               .filter((candidate) =>
-                  hasTextArrangement(convertedMetadata, listReportPage.entitySet, candidate.columnProperty)
+                  hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
               )
               .map((candidate) => ({ textProperty: candidate.textProperty }))
         : [];
