@@ -1,5 +1,26 @@
 # @sap-ux/telemetry
 
+## 2.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-28
+
+#### Bug Fixes
+
+- Initialize reportingTelemetryClient lazily to avoid undefined on happy path [[a984fe5](https://github.com/SAP/open-ux-tools/commit/a984fe55497ad691ead632b25fcd7fd937cf3f30)]
+
+## 2.0.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.6 → 2.0.7
+- @sap-ux/ui5-config 1.0.9 → 1.0.9
+
 ## 2.0.2
 
 ### Patch Changes
