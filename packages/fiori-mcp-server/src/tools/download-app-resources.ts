@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { readUi5Config, getVariant, extractAdpConfig, extractCfBuildTask } from '@sap-ux/adp-tooling';
+import { readUi5Config, getVariant, extractCfBuildTask } from '@sap-ux/adp-tooling';
 import { createWorkspace, createReader } from '@ui5/fs/resourceFactory';
 import { downloadAppResources } from '@ui5/task-adaptation';
 import type { DownloadAppResourcesInput } from '../types/index.js';
@@ -11,7 +11,6 @@ import type { DownloadAppResourcesInput } from '../types/index.js';
 export async function downloadBaseAppResources(params: DownloadAppResourcesInput): Promise<string> {
     const ui5Config = await readUi5Config(params.appPath, 'ui5.yaml');
     const configuration = extractCfBuildTask(ui5Config);
-    extractAdpConfig(ui5Config);
 
     // The UI5 namespace is the app-variant id with dots replaced by slashes. It must be used for
     // both the reader's virBasePath and the projectNamespace passed to previewManifest, because
