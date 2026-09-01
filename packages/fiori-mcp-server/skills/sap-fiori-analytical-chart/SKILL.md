@@ -4,7 +4,7 @@ description: Add analytical chart (chart + table hybrid) to SAP Fiori Elements L
 argument-hint: Entity, dimension, measure, aggregation
 metadata:
   author: sap-fiori-tools
-  version: "0.0.2"
+  version: "0.0.3"
 ---
 
 # SAP Fiori Analytical Chart
@@ -186,18 +186,29 @@ annotate view ZC_ENTITY with
 
 **Manifest:**
 ```json
-"views": {
-  "paths": [
-    {
-      "primary": [
-        { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#AnalyticalChart" }
-      ],
-      "secondary": [
-        { "annotationPath": "com.sap.vocabularies.UI.v1.LineItem" }
-      ],
-      "defaultPath": "both"
+"targets": {
+  "MyListReport": {
+    "type": "Component",
+    "name": "sap.fe.templates.ListReport",
+    "options": {
+      "settings": {
+        "contextPath": "/MyEntity",
+        "views": {
+          "paths": [
+            {
+              "primary": [
+                { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#AnalyticalChart" }
+              ],
+              "secondary": [
+                { "annotationPath": "com.sap.vocabularies.UI.v1.LineItem" }
+              ],
+              "defaultPath": "both"
+            }
+          ]
+        }
+      }
     }
-  ]
+  }
 }
 ```
 
@@ -205,17 +216,28 @@ annotate view ZC_ENTITY with
 
 **Manifest:**
 ```json
-"views": {
-  "paths": [
-    {
-      "key": "ChartView",
-      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#ChartView"
-    },
-    {
-      "key": "TableView",
-      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#TableView"
+"targets": {
+  "MyListReport": {
+    "type": "Component",
+    "name": "sap.fe.templates.ListReport",
+    "options": {
+      "settings": {
+        "contextPath": "/MyEntity",
+        "views": {
+          "paths": [
+            {
+              "key": "ChartView",
+              "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#ChartView"
+            },
+            {
+              "key": "TableView",
+              "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#TableView"
+            }
+          ]
+        }
+      }
     }
-  ]
+  }
 }
 ```
 ---
