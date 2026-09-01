@@ -50,27 +50,27 @@ describe('downloadBaseAppResources (download_app_resources)', () => {
         expect(result).toBe(JSON.stringify({ filesWritten: true }));
     });
 
-    it('builds the reader over webapp with a virBasePath derived from the variant id', async () => {
+    it('builds the reader over webapp with virBasePath of "/"', async () => {
         await downloadBaseAppResources(params);
         expect(mockCreateReader).toHaveBeenCalledWith(
             expect.objectContaining({
                 fsBasePath: expect.stringContaining('webapp'),
-                virBasePath: '/resources/customer/com/sap/application/variant/id/'
+                virBasePath: '/'
             })
         );
         expect(mockCreateWorkspace).toHaveBeenCalledWith({ reader: readerHandle });
     });
 
-    it('passes the workspace and the same namespace to previewManifest', async () => {
+    it('passes the workspace and configuration to downloadAppResources without projectNamespace', async () => {
         await downloadBaseAppResources(params);
         expect(mockDownloadAppResources).toHaveBeenCalledWith(
             expect.objectContaining({
                 workspace: workspaceHandle,
                 options: {
-                    configuration,
-                    projectNamespace: 'customer/com/sap/application/variant/id'
+                    configuration
                 }
-            })
+            }),
+            expect.stringContaining('.contexts')
         );
     });
 
