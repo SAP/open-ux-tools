@@ -2,7 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { CommandRunner } from './commandRunner.js';
 import fastGlob from 'fast-glob';
 import { join } from 'node:path';
-import readPkgUp from 'read-pkg-up';
+import { readPackageUp, type ReadResult, type Options, type PackageJson } from 'read-pkg-up';
 import type { SemVer } from 'semver';
 import { coerce, lt, satisfies } from 'semver';
 import type { WorkspaceConfiguration } from 'vscode';
@@ -16,7 +16,7 @@ export type PackageInfo = {
     /** Path to the package.json */
     packageJsonPath: string;
     /** The parsed package info */
-    packageInfo: readPkgUp.PackageJson;
+    packageInfo: PackageJson;
 };
 
 /**
@@ -27,7 +27,7 @@ export type PackageInfo = {
  * @returns the package info or undefined if not found
  */
 const getPackageInfo = async (searchPath: string, minVersion?: string): Promise<PackageInfo | void> => {
-    const pkgInfo: readPkgUp.ReadResult | undefined = await readPkgUp({ cwd: searchPath } as readPkgUp.Options);
+    const pkgInfo: ReadResult | undefined = await readPackageUp({ cwd: searchPath } as Options);
     if (pkgInfo) {
         if (minVersion && lt(coerce(pkgInfo.packageJson.version) as SemVer | string, minVersion)) {
             return;

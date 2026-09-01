@@ -1,4 +1,4 @@
-import readPkgUp from 'read-pkg-up';
+import { readPackageUpSync } from 'read-pkg-up';
 import { TemplateType } from './types.js';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils.js';
 import { getFlpId } from '@sap-ux/fiori-generator-shared';
@@ -54,7 +54,7 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
 
     // Add template information
     if (!ffApp.app.sourceTemplate?.version || !ffApp.app.sourceTemplate?.id) {
-        const packageInfo = readPkgUp.sync({ cwd: __dirname });
+        const packageInfo = readPackageUpSync({ cwd: __dirname });
         ffApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${ffApp.template.type}`,
             version: packageInfo?.packageJson.version,
