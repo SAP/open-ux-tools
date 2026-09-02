@@ -1,5 +1,13 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.48
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-tools-settings 1.0.1 → 1.1.0
+
 ## 1.2.47
 
 ### Patch Changes
