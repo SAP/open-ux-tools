@@ -1,5 +1,17 @@
 # @sap-ux/generator-adp
 
+## 1.0.55
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Bug Fixes
+
+- [BAS] [ADP][Auth] After one successful login user is able to log in a system with invalid credentials. [[6d8bc09](https://github.com/SAP/open-ux-tools/commit/6d8bc09db9da11baa7343a7c8ed4547b090e0ae5)]
+
 ## 1.0.54
 
 ### Patch Changes
