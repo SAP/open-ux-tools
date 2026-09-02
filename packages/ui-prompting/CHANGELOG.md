@@ -1,5 +1,45 @@
 # @sap-ux/ui-prompting
 
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.13 → 3.0.14
+
+## 1.0.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Upgrade jest-environment-jsdom to 30.4.1 — aligns with jest 30 runtime to fix "Jest environment has been torn down" test failures [[ef7c4b4](https://github.com/SAP/open-ux-tools/commit/ef7c4b4cce828fff70c10389bd58f6f02179d10d)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.12 → 3.0.13
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.11 → 3.0.12
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.10 → 3.0.11
+
 ## 1.0.11
 
 ### Patch Changes

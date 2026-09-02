@@ -32,8 +32,13 @@ const usesFormIdentifier = (bodySections || []).some(function(section) {
     return subSectionsHaveForm || sectionHasFormFields || hasFormAction;
 });
 const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).some(function(section) {
-    return section.subSections && section.subSections.length > 0;
+    return (section.subSections && section.subSections.length > 1)
+        || (section.contactCardFields && section.contactCardFields.length > 0)
+        || (section.contactCardColumns && section.contactCardColumns.length > 0)
+        || (section.subSections || []).some(function(sub) { return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); })
+        || (section.actions || []).some(function(action) { return action.visible && action.menuActions; });
 });
+const headerHasMenu = (headerActions || []).some(function(action) { return action.visible && action.menuActions; });
 -%>
 <% if (usesFieldIdentifier) { -%>
 import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI";
@@ -49,11 +54,15 @@ function journey() {
     opaTest("Navigate to <%- name%>ObjectPage", function (Given: Given, When: When, Then: Then) {
         Given.iStartMyApp();
 <% if(navigationParents.parentLRName) { -%>
+<% const parentTableId = navigationParents.parentLRViewKey ? '"' + navigationParents.parentLRViewKey + '"' : '""'; -%>
 <% if (!hideFilterBar) { -%>
         When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
 <% } -%>
-        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iCheckRows();
-        When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iPressRow(0);
+<% if (navigationParents.parentLRViewKey && !navigationParents.parentLRViewIsDefault) { -%>
+        When.onThe<%- navigationParents.parentLRName%>Generated.iGoToView({ key: "<%- navigationParents.parentLRViewKey %>" });
+<% } -%>
+        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iCheckRows();
+        When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- parentTableId %>).iPressRow(0);
 <% } -%>
 <% navigationParents.parentOPs.forEach(function(parent) { %>
         Then.onThe<%- parent.name %>Generated.iSeeThisPage();
@@ -64,7 +73,7 @@ function journey() {
     });
 
 <% if (headerActions?.length > 0) { -%>
-    opaTest("Check header actions of the Object Page", function (_Given: Given, _When: When, Then: Then) {
+    opaTest("Check header actions of the Object Page", function (_Given: Given, <% if (headerHasMenu) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (editButton?.visible) { -%>
         // Ensure the opened entity is not in Draft state before uncommenting
         // Then.onThe<%- name%>Generated.onHeader().iCheckEdit({ visible: true });
@@ -72,12 +81,28 @@ function journey() {
 <% } -%>
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
-<%         if (action.enabled === 'dynamic') { -%>
+<%         if (action.menuActions) { -%>
+        Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>);
+        When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%             action.menuActions.forEach(function(menuAction) { -%>
+<%                 if (menuAction.visible) { -%>
+        Then.onThe<%- name%>Generated.onHeader().iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
+        // When.onThe<%- name%>Generated.onHeader().iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
+<%                 } -%>
+<%             }); -%>
+<%         } else if (action.custom) { -%>
+<%             if (action.labelUnresolved) { -%>
+        // TODO: label is an unresolved i18n key; replace with the rendered action text
+<%             } -%>
+        Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
+        // When.onThe<%- name%>Generated.onHeader().iPressAction(<%- JSON.stringify(action.label) %>);
+<%         } else if (action.enabled === 'dynamic') { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
+        // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%         } else { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
-<%         } -%>
         // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%         } -%>
 <%     } -%>
 <%     }); -%>
     });
@@ -131,19 +156,51 @@ function journey() {
 <%      section.actions.forEach(function(action) { -%>
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
-<%              if (action.enabled === 'dynamic') { -%>
+<%              if (action.menuActions) { -%>
+        Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+        When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  action.menuActions.forEach(function(menuAction) { -%>
+<%                      if (menuAction.visible) { -%>
+        Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
+        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
+<%                      } -%>
+<%                  }); -%>
+<%              } else if (action.custom) { -%>
+<%                  if (action.labelUnresolved) { -%>
+        // TODO: label is an unresolved i18n key; replace with the rendered action text
+<%                  } -%>
+        Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
+        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction(<%- JSON.stringify(action.label) %>);
+<%              } else if (action.enabled === 'dynamic') { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
+        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
-<%              } -%>
         // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%              } -%>
 <%          } else { -%>
-<%              if (action.enabled === 'dynamic') { -%>
+<%              if (action.menuActions) { -%>
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction(<%- JSON.stringify(action.label) %>);
+        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  action.menuActions.forEach(function(menuAction) { -%>
+<%                      if (menuAction.visible) { -%>
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
+<%                      } -%>
+<%                  }); -%>
+<%              } else if (action.custom) { -%>
+<%                  if (action.labelUnresolved) { -%>
+        // TODO: label is an unresolved i18n key; replace with the rendered action text
+<%                  } -%>
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iPressAction(<%- JSON.stringify(action.label) %>);
+<%              } else if (action.enabled === 'dynamic') { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
-<%              } -%>
         // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+<%              } -%>
 <%          } -%>
 <%      } -%>
 <%      }); -%>
@@ -164,8 +221,10 @@ function journey() {
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
+<% if (section.subSections.length > 1) { -%>
         When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
         Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" }, {});
+<% } -%>
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });

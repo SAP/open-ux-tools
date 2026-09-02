@@ -1,5 +1,53 @@
 # @sap-ux/ui-components
 
+## 3.0.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-31
+
+#### Bug Fixes
+
+- Remove empty space in UIFlexibleTable actions column when reorder or delete actions are not rendered [[8ee2690](https://github.com/SAP/open-ux-tools/commit/8ee2690f3d00e6d0ce5b3cbd2e880ebb2a012208)]
+
+## 3.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Bug Fixes
+
+- Update UIIcon import to use direct path instead of barrel to avoid circular resolution [[ef7c4b4](https://github.com/SAP/open-ux-tools/commit/ef7c4b4cce828fff70c10389bd58f6f02179d10d)]
+
+## 3.0.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Features
+
+- Add shared CSS variables for the UI spacing scale [[f044e50](https://github.com/SAP/open-ux-tools/commit/f044e50fb85f83baac12fcac96e5453bd6da6f7a)]
+
+## 3.0.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-17
+
+#### Bug Fixes
+
+- Align ValidationWarning icon circle with Info, Success and Warning icons by shifting circle and checkmark 1px right [[50c09b5](https://github.com/SAP/open-ux-tools/commit/50c09b507035c9876f4d098cfa4294864d73e0e8)]
+
 ## 3.0.10
 
 ### Patch Changes

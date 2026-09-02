@@ -1,5 +1,38 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+- @sap-ux/mockserver-config-writer 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.12 → 2.1.13
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/mockserver-config-writer 1.0.16 → 1.0.17
+
+## 1.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/mockserver-config-writer 1.0.15 → 1.0.16
+
 ## 1.0.18
 
 ### Patch Changes
