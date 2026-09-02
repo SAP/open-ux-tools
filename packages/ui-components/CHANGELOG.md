@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-31
+
+#### Bug Fixes
+
+- Remove empty space in UIFlexibleTable actions column when reorder or delete actions are not rendered [[8ee2690](https://github.com/SAP/open-ux-tools/commit/8ee2690f3d00e6d0ce5b3cbd2e880ebb2a012208)]
+
 ## 3.0.13
 
 ### Patch Changes

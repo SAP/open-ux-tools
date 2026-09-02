@@ -17,9 +17,9 @@ jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
     generateAnnotations: mockGenerateAnnotations
 }));
 
-jest.unstable_mockModule('read-pkg-up', () => ({
-    default: { sync: jest.fn().mockReturnValue({ packageJson: { name: 'mocked', version: '9.9.9-mocked' } }) },
-    sync: jest.fn().mockReturnValue({ packageJson: { name: 'mocked', version: '9.9.9-mocked' } })
+jest.unstable_mockModule('read-package-up', () => ({
+    readPackageUp: jest.fn().mockResolvedValue({ packageJson: { name: 'mocked', version: '9.9.9-mocked' } }),
+    readPackageUpSync: jest.fn().mockReturnValue({ packageJson: { name: 'mocked', version: '9.9.9-mocked' } })
 }));
 
 const { generate } = await import('../../src/index.js');

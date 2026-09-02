@@ -11,21 +11,31 @@ jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
 }));
 
 const mockWriteFileSync = jest.fn<any>();
+const mockExistsSync = jest.fn<any>().mockReturnValue(true);
+const mockStatSync = jest.fn<any>().mockReturnValue({ isDirectory: () => true });
 const actualFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
+        existsSync: mockExistsSync,
+        statSync: mockStatSync,
         writeFileSync: mockWriteFileSync
     },
+    existsSync: mockExistsSync,
+    statSync: mockStatSync,
     writeFileSync: mockWriteFileSync
 }));
 jest.unstable_mockModule('fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
+        existsSync: mockExistsSync,
+        statSync: mockStatSync,
         writeFileSync: mockWriteFileSync
     },
+    existsSync: mockExistsSync,
+    statSync: mockStatSync,
     writeFileSync: mockWriteFileSync
 }));
 
@@ -53,6 +63,8 @@ describe('downloadODataServiceMetadata', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
+        mockExistsSync.mockReturnValue(true);
+        mockStatSync.mockReturnValue({ isDirectory: () => true });
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
@@ -136,6 +148,38 @@ describe('downloadODataServiceMetadata', () => {
         expect(result.status).toBe('Error');
         expect(result.message).toBe('No matching system found for: Unknown');
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should return error when appPath does not exist', async () => {
+        mockExistsSync.mockReturnValue(false);
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: '/non/existent/path',
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('appPath does not exist or is not a directory: /non/existent/path');
+        expect(result.message).toContain('This tool does not create directories');
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should return error when appPath points to a file instead of a directory', async () => {
+        mockExistsSync.mockReturnValue(true);
+        mockStatSync.mockReturnValue({ isDirectory: () => false });
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: '/some/existing/file.txt',
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('appPath does not exist or is not a directory: /some/existing/file.txt');
+        expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
