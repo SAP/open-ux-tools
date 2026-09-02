@@ -20,6 +20,8 @@ For the best experience we recommend using this server alongside [@cap-js/mcp-se
 
 The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.
 
+> **Note:** The server binary resolves to `@sap-ux/fiori-mcp-server@latest` at launch time. This is intentional — the server floats to the newest npm release so you always get the latest tools, while skill content (when installed via the GitHub Copilot marketplace) is pinned to the commit referenced in the marketplace entry.
+
 ### Claude Code
 
 **Option A — CLI (recommended):**
