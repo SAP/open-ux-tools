@@ -4,11 +4,11 @@
 
 ### Why Was This Rule Introduced?
 
-In SAP Fiori Elements object pages, section and subsection titles must not contain commas. Commas are used as delimiters for backend message grouping, so a comma in a section title can cause messages to be routed incorrectly, leading to unexpected behavior in error and status message handling.
+Section and subsection titles must not contain commas in object pages for SAP Fiori elements applications. Commas are used as delimiters for back-end message grouping, so a comma in a section title can cause messages to be routed incorrectly, which leads to unexpected behavior in error and status message handling.
 
-This rule checks both:
-- Direct string labels in OData annotation XML files (e.g., `String="Products, Details"`)
-- i18n property values whose keys are bound as section labels (e.g., a key used as `{@i18n>sectionTitle}` where the value contains a comma)
+This rule checks the following scenarios:
+- Direct string labels in XML files for OData annotations, for example `String="Products, Details"`
+- i18n property values whose keys are bound as section labels, for example a key used as `{@i18n>sectionTitle}`, where the value contains a comma
 
 #### Incorrect OData Annotation File
 
