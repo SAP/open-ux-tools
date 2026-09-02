@@ -45,10 +45,21 @@ Add **analytical chart + table (hybrid view)** to visualize aggregated data.
 ### Aggregated Property
 ```cds
 Analytics.AggregatedProperty #Amount_avg: {
+  Name: 'Amount_avg',
   AggregatableProperty: Amount,
-  AggregationMethod: 'average'
+  AggregationMethod: 'average',  // Valid values: 'sum', 'min', 'max', 'average', 'countdistinct'
+  ![@Common.Label]: 'Average Amount'
 }
 ```
+
+**Valid `AggregationMethod` values (lowercase string):**
+- `sum` - Sum of the non-null values
+- `min` - Smallest of the non-null values
+- `max` - Largest of the non-null values
+- `average` - Sum of non-null values divided by count of non-null values
+- `countdistinct` - Count of distinct values, omitting null values
+
+⚠️ **CRITICAL:** Must be a **lowercase string** (e.g., `'sum'`), **NOT** an enum (e.g., `#SUM`). Using an enum will cause SQL generation errors.
 
 ### Chart
 ```cds
