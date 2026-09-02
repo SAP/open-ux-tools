@@ -87,7 +87,9 @@ export function extractRecordI18nKey(record: Element, pageName: string, keyToPag
         return;
     }
     const existing = keyToPageNames.get(i18nKey) ?? [];
-    keyToPageNames.set(i18nKey, [...existing, pageName]);
+    if (!existing.includes(pageName)) {
+        keyToPageNames.set(i18nKey, [...existing, pageName]);
+    }
 }
 
 /**
