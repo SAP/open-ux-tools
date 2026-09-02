@@ -59,22 +59,28 @@ const { downloadODataServiceMetadata } = await import('../../../src/tools/downlo
  * Paths not handled here fall through to the real fs implementation.
  *
  * @param appPath - the appPath value passed to the tool under test
- * @param appPathExists - whether appPath exists on the filesystem (default true)
- * @param isDirectory - whether appPath is a directory; only checked when appPathExists is true (default true)
- * @param metadataXmlExists - whether a metadata.xml already exists inside appPath (default false)
+ * @param options - override options for specific guard scenarios (all default to happy-path values)
+ * @param options.appPathExists - whether appPath exists on the filesystem (default true)
+ * @param options.isDirectory - whether appPath is a directory; only checked when appPathExists is true (default true)
+ * @param options.metadataXmlExists - whether a metadata.xml already exists inside appPath (default false)
  */
 function setupFsMocks(
     appPath: string,
-    { appPathExists = true, isDirectory = true, metadataXmlExists = false }: {
+    options: {
         appPathExists?: boolean;
         isDirectory?: boolean;
         metadataXmlExists?: boolean;
     } = {}
 ): void {
+    const { appPathExists = true, isDirectory = true, metadataXmlExists = false } = options;
     mockExistsSync.mockImplementation((p: unknown) => {
         const pathStr = String(p);
-        if (pathStr === appPath) return appPathExists;
-        if (pathStr === path.join(appPath, 'metadata.xml')) return metadataXmlExists;
+        if (pathStr === appPath) {
+            return appPathExists;
+        }
+        if (pathStr === path.join(appPath, 'metadata.xml')) {
+            return metadataXmlExists;
+        }
         return actualFs.existsSync(pathStr);
     });
     mockStatSync.mockImplementation((p: unknown) =>
