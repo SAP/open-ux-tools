@@ -260,7 +260,7 @@ describe('downloadODataServiceMetadata', () => {
 
         expect(result.status).toBe('Error');
         expect(result.message).toMatch(/search_docs.*update service metadata/i);
-        expect(result.message).toContain(mockAppPath);
+        expect(result.message).toContain(path.join(mockAppPath, 'metadata.xml'));
         expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
