@@ -140,12 +140,7 @@ ruleTester.run(TEST_NAME, noCommaInSectionTitle, {
             {
                 name: 'V4: i18n entry value has comma',
                 filename: V4_I18N_PATH,
-                code:
-                    V4_I18N_CONTENT +
-                    `
-#XFLD,50: Label for a section
-tableSection00=table, section, 00
-`,
+                code: withI18nEntry('tableSection00', 'table, section, 00'),
                 errors: [{ message: EXPECTED_MESSAGE }]
             },
             [{ filename: V4_ANNOTATIONS_PATH, code: withV4Label('{@i18n>tableSection00}') }]
