@@ -243,7 +243,8 @@ export async function promptForSystemConfig(partial: {
         credentialQuestions.push({
             type: 'text',
             name: 'username',
-            message: t('systemPrompts.prompts.username')
+            message: t('systemPrompts.prompts.username'),
+            validate: validateNonEmpty
         });
     }
 
@@ -251,7 +252,8 @@ export async function promptForSystemConfig(partial: {
         credentialQuestions.push({
             type: 'password',
             name: 'password',
-            message: t('systemPrompts.prompts.password')
+            message: t('systemPrompts.prompts.password'),
+            validate: validateNonEmpty
         });
     }
 

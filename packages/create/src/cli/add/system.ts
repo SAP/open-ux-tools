@@ -67,7 +67,7 @@ Example:
                 connectionType: options.connectionType,
                 username: options.username,
                 password: options.password,
-                skipValidation: options.validation === false,
+                skipValidation: !!options.skipValidation,
                 skipCheck: !!options.skipCheck
             });
         });

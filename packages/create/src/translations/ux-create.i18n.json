@@ -14,15 +14,15 @@
             "checkNameFailed": "Unable to check system name uniqueness. Please try again."
         },
         "prompts": {
-            "systemName": "System Name:",
-            "systemUrl": "System URL:",
-            "sapClient": "SAP Client (Optional: Press Enter to Skip):",
-            "systemType": "System Type:",
-            "authenticationType": "Authentication Type:",
-            "connectionType": "Connection Type:",
-            "username": "Username (Optional: Press Enter to Skip):",
-            "password": "Password (Optional: Press Enter to Skip):",
-            "reentranceTicketNote": "Note: Re-entrance ticket authentication will open a browser tab when the system is first used."
+            "systemName": "System Name: ",
+            "systemUrl": "System URL: ",
+            "sapClient": "SAP Client (Optional - Press Enter to Skip): ",
+            "systemType": "System Type: ",
+            "authenticationType": "Authentication Type: ",
+            "connectionType": "Connection Type: ",
+            "username": "Username: ",
+            "password": "Password: ",
+            "reentranceTicketNote": "\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n"
         },
         "updateFields": {
             "selectPrompt": "Select Fields to Update:",

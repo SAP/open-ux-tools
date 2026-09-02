@@ -2,11 +2,13 @@
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/mem-fs-editor.d.ts",
-    "src"
+    "src",
+    "src/translations/*.json"
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "resolveJsonModule": true
   },
   "references": [
     {
