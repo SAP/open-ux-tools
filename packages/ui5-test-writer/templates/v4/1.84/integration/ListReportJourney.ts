@@ -74,6 +74,8 @@ function journey() {
     //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
     //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
     //     Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+    //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField(undefined);
+    //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>

@@ -20,9 +20,11 @@ import {
     safeGetSemanticKeyProperties,
     getCustomFilterFieldProperties,
     getTableIdentifiers,
+    getListReportViews,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
-    getFilterFieldItems
+    getFilterFieldItems,
+    extractCustomToolBarActions
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import { readFileSync } from 'node:fs';
@@ -2289,6 +2291,56 @@ describe('Test getTableIdentifiers()', () => {
     });
 });
 
+describe('Test getListReportViews()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { views: { paths } } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('returns empty array when manifest or target key is undefined', () => {
+        expect(getListReportViews(undefined, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest([{ key: '1' }]), undefined)).toEqual([]);
+    });
+
+    test('returns empty array when views.paths is missing or not an array', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest('not-an-array'), 'MyLR')).toEqual([]);
+    });
+
+    test('returns each non-custom view with its optional entity set, in manifest order', () => {
+        // Mirrors the fin.test.v4.lr2 CustomerList views: default tabs (no entitySet) plus a
+        // CompanyCodeDetail tab; the custom (template) tab and keyless entries are skipped.
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '2' },
+            { key: '3' },
+            { key: '5', template: 'my.app.ext.CustomTab' },
+            { key: '' },
+            undefined,
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([
+            { key: '1', entitySet: undefined },
+            { key: '2', entitySet: undefined },
+            { key: '3', entitySet: undefined },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+    });
+
+    test('returns a single view (does not collapse to empty like getTableIdentifiers)', () => {
+        // Unlike getTableIdentifiers, a single non-custom view is still returned so the OP mapping
+        // can resolve its originating tab.
+        expect(getListReportViews(makeManifest([{ key: '1' }]), 'MyLR')).toEqual([{ key: '1', entitySet: undefined }]);
+    });
+});
+
 describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
     const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
@@ -2513,5 +2565,78 @@ describe('Test getListReportFeatures() semantic-key HiddenFilter exclusion', () 
         const result = getListReportFeatures(pageModel, mockLogger, metadataXml);
         // TravelID is missing and not hidden → kept; BookingID is hidden → dropped
         expect(result.semanticKey?.missingFromFilterBar).toEqual(['TravelID']);
+    });
+});
+
+describe('extractCustomToolBarActions()', () => {
+    const buildModel = (actions: TreeAggregations): TreeModel =>
+        ({
+            root: {
+                aggregations: {
+                    table: {
+                        aggregations: {
+                            toolBar: {
+                                aggregations: {
+                                    actions: { aggregations: actions } as unknown as TreeAggregation
+                                }
+                            } as unknown as TreeAggregation
+                        }
+                    } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation,
+            name: 'test',
+            schema: {}
+        }) as unknown as TreeModel;
+
+    test('extracts only entries tagged actionType "Custom", matched by resolved label', () => {
+        const model = buildModel({
+            MyCustomAction: {
+                description: '{i18n>customAction1}',
+                schema: { actionType: 'Custom' },
+                aggregations: {}
+            } as unknown as TreeAggregation,
+            'DataFieldForAction::svc.Foo::svc.Bar': {
+                description: 'Foo',
+                schema: { actionType: 'Annotation' },
+                aggregations: {}
+            } as unknown as TreeAggregation
+        });
+        const resolve = (label: string | undefined) =>
+            label === '{i18n>customAction1}'
+                ? { label: 'My Custom Action 1', unresolved: false }
+                : { label: label ?? '', unresolved: false };
+
+        const result = extractCustomToolBarActions(model, resolve);
+        expect(result).toEqual([
+            {
+                label: 'My Custom Action 1',
+                action: '',
+                visible: true,
+                enabled: true,
+                custom: true,
+                labelUnresolved: undefined
+            }
+        ]);
+    });
+
+    test('flags an unresolved custom label', () => {
+        const model = buildModel({
+            MyCustomAction: {
+                description: '{i18n>missing}',
+                schema: { actionType: 'Custom' },
+                aggregations: {}
+            } as unknown as TreeAggregation
+        });
+        const resolve = (label: string | undefined) => ({ label: label ?? '', unresolved: true });
+        expect(extractCustomToolBarActions(model, resolve)[0]).toMatchObject({
+            label: '{i18n>missing}',
+            custom: true,
+            labelUnresolved: true
+        });
+    });
+
+    test('returns an empty array when there are no custom actions', () => {
+        const model = buildModel({});
+        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
     });
 });

@@ -1,5 +1,133 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-28
+
+#### Features
+
+- add skill to configure tree table in list report application [[cc08f10](https://github.com/SAP/open-ux-tools/commit/cc08f10bb839e101da923600834fefdf6dea071f)]
+
+## 1.11.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[a984fe5](https://github.com/SAP/open-ux-tools/commit/a984fe55497ad691ead632b25fcd7fd937cf3f30)]
+
+## 1.11.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-27
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill - consolidate scaffold sections, update generated test structure tree and custom file placement guidance [[9274d74](https://github.com/SAP/open-ux-tools/commit/9274d74f93bf428c4a42fc3eff4631e03dc4f806)]
+
+## 1.11.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Upgrade @langchain/core 1.1.49→1.2.8, @sap-ai-sdk/foundation-models and @sap-ai-sdk/langchain 2.9.0→2.14.0, @modelcontextprotocol/sdk 1.29.0→1.30.0, zod 4.3.6→4.4.3, promptfoo 0.121.19→0.122.0 [[ce2c618](https://github.com/SAP/open-ux-tools/commit/ce2c61870d487ca1757d1fe35d38386a6606c4bb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[3af3daf](https://github.com/SAP/open-ux-tools/commit/3af3dafef0833d88bc2cf77de1ad1a4d69f8fa36)]
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
+## 1.11.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+## 1.11.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[ed4f7bc](https://github.com/SAP/open-ux-tools/commit/ed4f7bc7b4d118d43280295e50e4f0c077ef0afb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/text-document-utils and @sap-ux/ui5-config [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
+## 1.11.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f6d65ac](https://github.com/SAP/open-ux-tools/commit/f6d65acceb9c3477b471cd76b93a900c39f3cf2b)]
+
+## 1.11.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 1.11.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- Regenerate create CLI skill index to include the `generate opa5-tests` command [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.11.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Report accurate metadata fetch/parse errors instead of misleading "not a valid OData V4 service". A temporarily unavailable system (e.g. an HTML error page returned with a 2xx status) is now reported as a fetch/availability problem, and parse failures are described in an OData-version-neutral way rather than wrongly blaming an OData V2 service for not being V4. [[fae338f](https://github.com/SAP/open-ux-tools/commit/fae338fbbb3902105e41aaabf2651b9c2757b0a6)]
+
 ## 1.11.9
 
 ### Patch Changes
