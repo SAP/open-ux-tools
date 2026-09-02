@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { getLogger } from '../../tracing/index.js';
-import { text } from '../../i18n.js';
+import { t } from '../../i18n.js';
 
 /**
  * Checks connection to a backend system.
@@ -30,7 +30,7 @@ export async function checkSystemConnection(config: {
     try {
         const _url = new URL(config.url);
     } catch {
-        return { success: false, error: text('systemConnection.invalidUrl', { url: config.url }) };
+        return { success: false, error: t('systemConnection.invalidUrl', { url: config.url }) };
     }
 
     // Skip connection check for auth types that require browser/external flow
@@ -83,7 +83,7 @@ export async function checkSystemConnection(config: {
         // For other errors, provide detailed message
         return {
             success: false,
-            error: errorMsg || text('systemConnection.unknownError')
+            error: errorMsg || t('systemConnection.unknownError')
         };
     }
 }
@@ -116,26 +116,24 @@ export async function checkConnectionOrPrompt(
     const logger = getLogger();
 
     if (skipCheck) {
-        logger.info(text('systemConnection.skippingCheck'));
+        logger.info(t('systemConnection.skippingCheck'));
         return true;
     }
 
-    logger.info(text('systemConnection.verifying'));
+    logger.info(t('systemConnection.verifying'));
     const result = await checkSystemConnection(config);
 
     if (result.success) {
-        logger.info(text('systemConnection.connectionSuccessful'));
+        logger.info(t('systemConnection.connectionSuccessful'));
         return true;
     }
 
-    logger.warn(
-        text('systemConnection.connectionFailed', { error: result.error ?? text('systemConnection.unknownError') })
-    );
+    logger.warn(t('systemConnection.connectionFailed', { error: result.error ?? t('systemConnection.unknownError') }));
 
     const answer = await prompts({
         type: 'confirm',
         name: 'saveAnyway',
-        message: text('systemConnection.saveAnywayPrompt'),
+        message: t('systemConnection.saveAnywayPrompt'),
         initial: false
     });
 

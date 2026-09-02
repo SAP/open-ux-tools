@@ -12,7 +12,7 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 
 // Mock i18n
 jest.unstable_mockModule('../../../../src/i18n.js', () => ({
-    text: (key: string, options?: Record<string, unknown>) => {
+    t: (key: string, options?: Record<string, unknown>) => {
         const translations: Record<string, string> = {
             'systemPrompts.prompts.sapClient': 'SAP Client (Optional: Press Enter to Skip):',
             'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?"

@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import type { BackendSystem, BackendSystemKey, Service } from '@sap-ux/store';
 import { BackendSystemKey as BackendSystemKeyClass, ConnectionType } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
-import { text } from '../../i18n.js';
+import { t } from '../../i18n.js';
 
 /**
  * Finds a backend system by URL with smart matching when client is not specified or doesn't match.
@@ -78,22 +78,22 @@ export async function findSystemByUrl(
 async function promptToSelectSystem(systems: BackendSystem[]): Promise<BackendSystem | undefined> {
     const logger = getLogger();
 
-    logger.info(text('systemLookup.multipleSystemsFound', { count: systems.length }));
+    logger.info(t('systemLookup.multipleSystemsFound', { count: systems.length }));
     systems.forEach((s, index) => {
         const clientInfo = s.client
-            ? ` ${text('systemLookup.clientInfo', { client: s.client })}`
-            : ` ${text('systemLookup.noClient')}`;
+            ? ` ${t('systemLookup.clientInfo', { client: s.client })}`
+            : ` ${t('systemLookup.noClient')}`;
         logger.info(`${index + 1}. ${s.name}${clientInfo}`);
     });
 
     const answer = await prompts({
         type: 'select',
         name: 'index',
-        message: text('systemLookup.selectSystemPrompt'),
+        message: t('systemLookup.selectSystemPrompt'),
         choices: systems.map((s, index) => {
             const clientLabel = s.client
-                ? ` ${text('systemLookup.clientInfo', { client: s.client })}`
-                : ` ${text('systemLookup.noClient')}`;
+                ? ` ${t('systemLookup.clientInfo', { client: s.client })}`
+                : ` ${t('systemLookup.noClient')}`;
             return {
                 title: `${s.name}${clientLabel}`,
                 value: index

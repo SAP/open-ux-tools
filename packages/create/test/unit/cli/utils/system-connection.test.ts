@@ -14,7 +14,7 @@ jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
 
 // Mock i18n
 jest.unstable_mockModule('../../../../src/i18n.js', () => ({
-    text: (key: string, options?: Record<string, unknown>) => {
+    t: (key: string, options?: Record<string, unknown>) => {
         const translations: Record<string, string> = {
             'systemConnection.invalidUrl': 'Invalid URL: {{url}}',
             'systemConnection.skippingCheck': 'Skipping connection check (--skip-check flag provided)',

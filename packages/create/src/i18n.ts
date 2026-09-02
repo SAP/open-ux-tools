@@ -1,16 +1,15 @@
-import type { TOptions, TOptionsBase, i18n } from 'i18next';
+import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/ux-create.i18n.json' with { type: 'json' };
 
 const NS = 'ux-create';
-let i18nInstance: i18n = i18next.createInstance();
-let isInitialized = false;
+export const i18n: i18nNext = i18next.createInstance();
 
 /**
- * Initialize i18next for @sap-ux/create
+ * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    i18nInstance = i18next.createInstance({
+    await i18n.init({
         resources: {
             en: {
                 [NS]: translations
@@ -19,30 +18,21 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: NS,
-        fallbackNS: 'default',
         ns: [NS],
         interpolation: { escapeValue: false }
     });
-    await i18nInstance.init();
-    isInitialized = true;
 }
 
-type StringMap = { [key: string]: unknown };
-
 /**
- * Get translated text for a given key.
+ * Helper function facading the call to i18next. Unless a namespace option is provided the local namespace will be used.
  *
- * @param key - Translation key (e.g., 'systemLookup.multipleSystemsFound')
- * @param options - Interpolation options or default value
- * @returns Translated text
+ * @param key i18n key
+ * @param options additional options
+ * @returns {string} localized string stored for the given key
  */
-export function text(key: string, options?: string | TOptions<StringMap & TOptionsBase>): string {
-    if (!isInitialized) {
-        console.warn(`[i18n] text() called before initI18n() - returning key: ${key}`);
-        return key;
+export function t(key: string, options?: TOptions): string {
+    if (!options?.ns) {
+        options = Object.assign(options ?? {}, { ns: NS });
     }
-    return (i18nInstance.t as (key: string, opts?: TOptions<StringMap & TOptionsBase>) => string)(
-        key,
-        typeof options === 'string' ? { defaultValue: options } : options
-    );
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }

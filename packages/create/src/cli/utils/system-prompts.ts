@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import type { BackendSystem } from '@sap-ux/store';
 import { SystemType, AuthenticationType, ConnectionType, isSystemNameInUse } from '@sap-ux/store';
 import { validateClient } from '@sap-ux/project-input-validator';
-import { text } from '../../i18n.js';
+import { t } from '../../i18n.js';
 
 /**
  * Checks if a string is empty or contains only whitespace.
@@ -36,7 +36,7 @@ function isValidUrl(value: string): boolean {
  * @returns True if valid, error message otherwise
  */
 function validateNonEmpty(value: string): true | string {
-    return isEmptyString(value) ? text('systemPrompts.validation.fieldRequired') : true;
+    return isEmptyString(value) ? t('systemPrompts.validation.fieldRequired') : true;
 }
 
 /**
@@ -51,7 +51,7 @@ function validateUrlField(value: string): true | string {
         return nonEmptyCheck;
     }
 
-    return isValidUrl(value) ? true : text('systemPrompts.validation.invalidUrl');
+    return isValidUrl(value) ? true : t('systemPrompts.validation.invalidUrl');
 }
 
 /**
@@ -89,13 +89,13 @@ async function validateSystemNameUniqueness(value: string, excludeSystem?: Backe
             }
         }
         if (isTaken) {
-            return text('systemPrompts.validation.systemNameExists', { name: value });
+            return t('systemPrompts.validation.systemNameExists', { name: value });
         }
         return true;
     } catch (error) {
         // Catch and convert service errors to validation messages to prevent duplicate names
         console.error('Error checking system name uniqueness:', error);
-        return text('systemPrompts.validation.checkNameFailed');
+        return t('systemPrompts.validation.checkNameFailed');
     }
 }
 
@@ -120,13 +120,13 @@ async function validateSystemNameUniquenessForUpdate(
         // Allow keeping the same name (case-insensitive)
         const isSameName = currentSystem.name.trim().toLowerCase() === value.trim().toLowerCase();
         if (isTaken && !isSameName) {
-            return text('systemPrompts.validation.systemNameExists', { name: value });
+            return t('systemPrompts.validation.systemNameExists', { name: value });
         }
         return true;
     } catch (error) {
         // Catch and convert service errors to validation messages to prevent duplicate names
         console.error('Error checking system name uniqueness:', error);
-        return text('systemPrompts.validation.checkNameFailed');
+        return t('systemPrompts.validation.checkNameFailed');
     }
 }
 
@@ -142,7 +142,7 @@ async function validateSystemNameUniquenessForUpdate(
  * @param partial.connectionType
  * @param partial.username
  * @param partial.password
- * @param partial.noCredentials - skip credential prompts entirely
+ * @param partial.skipValidation - skip credential prompts entirely
  * @returns Complete system configuration with all required fields
  */
 export async function promptForSystemConfig(partial: {
@@ -154,7 +154,7 @@ export async function promptForSystemConfig(partial: {
     connectionType?: string;
     username?: string;
     password?: string;
-    noCredentials?: boolean;
+    skipValidation?: boolean;
 }): Promise<{
     name: string;
     url: string;
@@ -171,7 +171,7 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'text',
             name: 'name',
-            message: text('systemPrompts.prompts.systemName'),
+            message: t('systemPrompts.prompts.systemName'),
             validate: (value: string) => validateSystemNameUniqueness(value)
         });
     }
@@ -180,7 +180,7 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'text',
             name: 'url',
-            message: text('systemPrompts.prompts.systemUrl'),
+            message: t('systemPrompts.prompts.systemUrl'),
             validate: validateUrlField
         });
     }
@@ -189,7 +189,7 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'text',
             name: 'client',
-            message: text('systemPrompts.prompts.sapClient'),
+            message: t('systemPrompts.prompts.sapClient'),
             validate: validateClientField
         });
     }
@@ -198,7 +198,7 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'select',
             name: 'systemType',
-            message: text('systemPrompts.prompts.systemType'),
+            message: t('systemPrompts.prompts.systemType'),
             choices: Object.values(SystemType).map((type) => ({ title: type, value: type }))
         });
     }
@@ -207,7 +207,7 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'select',
             name: 'authenticationType',
-            message: text('systemPrompts.prompts.authenticationType'),
+            message: t('systemPrompts.prompts.authenticationType'),
             choices: Object.values(AuthenticationType).map((type) => ({ title: type, value: type }))
         });
     }
@@ -216,7 +216,7 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'select',
             name: 'connectionType',
-            message: text('systemPrompts.prompts.connectionType'),
+            message: t('systemPrompts.prompts.connectionType'),
             choices: Object.values(ConnectionType).map((type) => ({ title: type, value: type }))
         });
     }
@@ -228,13 +228,13 @@ export async function promptForSystemConfig(partial: {
     const finalAuthType = partial.authenticationType || answers.authenticationType;
 
     // Only prompt for credentials if:
-    // 1. noCredentials flag is NOT set, AND
+    // 1. skipValidation flag is NOT set, AND
     // 2. authenticationType is 'basic' (other types don't use username/password)
-    const shouldPromptCredentials = !partial.noCredentials && finalAuthType === 'basic';
+    const shouldPromptCredentials = !partial.skipValidation && finalAuthType === 'basic';
 
     // Display informational message for re-entrance ticket authentication
     if (finalAuthType === 'reentranceTicket') {
-        console.log(text('systemPrompts.prompts.reentranceTicketNote'));
+        console.log(t('systemPrompts.prompts.reentranceTicketNote'));
     }
 
     const credentialQuestions: prompts.PromptObject[] = [];
@@ -243,7 +243,7 @@ export async function promptForSystemConfig(partial: {
         credentialQuestions.push({
             type: 'text',
             name: 'username',
-            message: text('systemPrompts.prompts.username')
+            message: t('systemPrompts.prompts.username')
         });
     }
 
@@ -251,7 +251,7 @@ export async function promptForSystemConfig(partial: {
         credentialQuestions.push({
             type: 'password',
             name: 'password',
-            message: text('systemPrompts.prompts.password')
+            message: t('systemPrompts.prompts.password')
         });
     }
 
@@ -287,7 +287,7 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
         questions.push({
             type: 'text',
             name: 'url',
-            message: text('systemPrompts.prompts.systemUrl'),
+            message: t('systemPrompts.prompts.systemUrl'),
             validate: validateUrlField
         });
     }
@@ -298,7 +298,7 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
         questions.push({
             type: 'text',
             name: 'client',
-            message: text('systemPrompts.prompts.sapClient'),
+            message: t('systemPrompts.prompts.sapClient'),
             validate: validateClientField
         });
     }
@@ -321,26 +321,26 @@ export async function promptForUpdateFields(existing: BackendSystem): Promise<st
     const answer = await prompts({
         type: 'multiselect',
         name: 'fields',
-        message: text('systemPrompts.updateFields.selectPrompt'),
+        message: t('systemPrompts.updateFields.selectPrompt'),
         choices: [
             {
-                title: text('systemPrompts.updateFields.nameLabel', { name: existing.name }),
+                title: t('systemPrompts.updateFields.nameLabel', { name: existing.name }),
                 value: 'name'
             },
             {
-                title: text('systemPrompts.updateFields.usernameLabel', {
-                    username: existing.username || text('systemPrompts.updateFields.usernameNone')
+                title: t('systemPrompts.updateFields.usernameLabel', {
+                    username: existing.username || t('systemPrompts.updateFields.usernameNone')
                 }),
                 value: 'username'
             },
-            { title: text('systemPrompts.updateFields.passwordLabel'), value: 'password' },
-            { title: text('systemPrompts.updateFields.clearCredentialsLabel'), value: 'clearCredentials' }
+            { title: t('systemPrompts.updateFields.passwordLabel'), value: 'password' },
+            { title: t('systemPrompts.updateFields.clearCredentialsLabel'), value: 'clearCredentials' }
         ],
         min: 1
     });
 
     if (!answer.fields || answer.fields.length === 0) {
-        throw new Error(text('systemPrompts.updateFields.minOneRequired'));
+        throw new Error(t('systemPrompts.updateFields.minOneRequired'));
     }
 
     return answer.fields;
@@ -365,7 +365,7 @@ export async function promptForFieldUpdates(
         const answer = await prompts({
             type: 'confirm',
             name: 'confirmClear',
-            message: text('systemPrompts.updateFields.clearCredentialsConfirm'),
+            message: t('systemPrompts.updateFields.clearCredentialsConfirm'),
             initial: false
         });
 
@@ -387,7 +387,7 @@ export async function promptForFieldUpdates(
                     return {
                         type: 'text',
                         name: 'name',
-                        message: text('systemPrompts.updateFields.newNamePrompt'),
+                        message: t('systemPrompts.updateFields.newNamePrompt'),
                         initial: existing.name,
                         validate: (value: string) => validateSystemNameUniquenessForUpdate(value, existing)
                     };
@@ -395,7 +395,7 @@ export async function promptForFieldUpdates(
                     return {
                         type: 'text',
                         name: 'username',
-                        message: text('systemPrompts.updateFields.newUsernamePrompt'),
+                        message: t('systemPrompts.updateFields.newUsernamePrompt'),
                         initial: existing.username || '',
                         validate: validateNonEmpty
                     };
@@ -403,7 +403,7 @@ export async function promptForFieldUpdates(
                     return {
                         type: 'password',
                         name: 'password',
-                        message: text('systemPrompts.updateFields.newPasswordPrompt'),
+                        message: t('systemPrompts.updateFields.newPasswordPrompt'),
                         validate: validateNonEmpty
                     };
                 default:
@@ -432,7 +432,7 @@ export async function promptForRemoveConfirmation(systemName: string): Promise<b
     const answer = await prompts({
         type: 'confirm',
         name: 'confirm',
-        message: text('systemPrompts.removeConfirmation.prompt', { systemName }),
+        message: t('systemPrompts.removeConfirmation.prompt', { systemName }),
         initial: false
     });
 

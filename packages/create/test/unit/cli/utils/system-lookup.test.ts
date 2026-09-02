@@ -10,7 +10,7 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 
 // Mock i18n
 jest.unstable_mockModule('../../../../src/i18n.js', () => ({
-    text: (key: string, options?: Record<string, unknown>) => {
+    t: (key: string, options?: Record<string, unknown>) => {
         const translations: Record<string, string> = {
             'systemLookup.multipleSystemsFound': 'Multiple systems found with this URL:',
             'systemLookup.selectSystemPrompt': 'Which system do you want to use?',

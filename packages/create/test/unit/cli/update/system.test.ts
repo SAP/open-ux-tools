@@ -11,7 +11,7 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 
 // Mock i18n
 jest.unstable_mockModule('../../../../src/i18n.js', () => ({
-    text: (key: string, options?: Record<string, unknown>) => {
+    t: (key: string, options?: Record<string, unknown>) => {
         const translations: Record<string, string> = {
             'systemPrompts.updateFields.minOneRequired': 'At least one field must be selected.'
         };

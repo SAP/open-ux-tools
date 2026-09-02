@@ -26,7 +26,7 @@ jest.unstable_mockModule('node:fs', () => ({
 
 // Mock i18n to prevent initialization issues
 jest.unstable_mockModule('../../../src/i18n.js', () => ({
-    text: jest.fn((key: string) => key),
+    t: jest.fn((key: string) => key),
     initI18n: jest.fn().mockResolvedValue(undefined)
 }));
 
