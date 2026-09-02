@@ -123,6 +123,26 @@ const V4_LINE_ITEM_QUALIFIED_DYNAMIC_HIDDEN = `
         </Annotation>
     </Annotations>`;
 
+const V4_LINE_ITEM_DYNAMIC_HIDDEN_SHARED_ACROSS_PAGES = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.Facets">
+            <Collection>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="ID" String="IncidentsTable"/>
+                    <PropertyValue Property="Target" AnnotationPath="@UI.LineItem"/>
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="title"/>
+                    <Annotation Term="UI.Hidden" Path="isHidden"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>`;
+
 // ── V2 snippets ──────────────────────────────────────────────────────────────
 
 const V2_LINE_ITEM_DYNAMIC_HIDDEN_VIOLATION = `
@@ -240,6 +260,20 @@ ruleTester.run(TEST_NAME, noPathHiddenOnInteractiveColumnsRule, {
                 name: 'V4: qualified UI.LineItem with dynamic UI.Hidden on interactive column',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_LINE_ITEM_QUALIFIED_DYNAMIC_HIDDEN),
+                errors: [
+                    {
+                        message:
+                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V4: same dynamic UI.Hidden annotation shared across list report and object page',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_LINE_ITEM_DYNAMIC_HIDDEN_SHARED_ACROSS_PAGES),
                 errors: [
                     {
                         message:
