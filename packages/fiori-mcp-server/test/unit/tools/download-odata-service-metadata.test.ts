@@ -287,9 +287,9 @@ describe('downloadODataServiceMetadata', () => {
 
     test('should return error when metadata.xml already exists at appPath', async () => {
         const metadataXmlPath = path.join(mockAppPath, 'metadata.xml');
-        mockExistsSync.mockReset().mockImplementation((p: unknown) =>
-            String(p) === mockAppPath || String(p) === metadataXmlPath
-        );
+        mockExistsSync
+            .mockReset()
+            .mockImplementation((p: unknown) => String(p) === mockAppPath || String(p) === metadataXmlPath);
         mockStatSync.mockReturnValue({ isDirectory: () => true });
 
         const params: DownloadODataServiceMetadataInput = {
