@@ -123,7 +123,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addControllerToPage.click();
 
-            await dialog.fillField('Controller Name', 'TestController');
+            await dialog.fillField('Name', 'TestController');
             await dialog.clickCreateButton();
             if (lt(ui5Version, '1.136.0')) {
                 await expect(page.getByText('Changes detected!')).toBeVisible();
@@ -148,15 +148,22 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await editor.reloadCompleted();
             await editor.quickActions.showPageController.click();
 
-            await expect(
-                previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js'),
-                `Check file name \`adp.fiori.elements.v2/changes/coding/TestController.js\` is visible in dialog`
-            ).toBeVisible();
+            if (lt(ui5Version, '1.143.0')) {
+                await expect(
+                    previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js'),
+                    `Check file name \`adp.fiori.elements.v2/changes/coding/TestController.js\` is visible in dialog`
+                ).toBeVisible();
 
-            await expect(
-                previewFrame.getByRole('button', { name: 'Open in VS Code' }),
-                `Check \`Open in VS Code\` button visible in dialog.`
-            ).toBeVisible();
+                await expect(
+                    previewFrame.getByRole('button', { name: 'Open in VS Code' }),
+                    `Check \`Open in VS Code\` button visible in dialog.`
+                ).toBeVisible();
+            } else {
+                await expect(
+                    previewFrame.getByText('Entity-Specific Controller'),
+                    'Check instance-specific controller option is shown for >= 1.143'
+                ).toBeVisible();
+            }
         }
     );
     test(
