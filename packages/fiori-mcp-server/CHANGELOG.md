@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Bug Fixes
+
+- `download_odata_service_metadata` returns a structured error when `appPath` does not exist, and clarifies the pre-condition in the parameter description so LLMs know to create the directory first [[5dd1cfd](https://github.com/SAP/open-ux-tools/commit/5dd1cfd1a81eee693313445bf8ddf264b54a857c)]
+
 ## 1.12.0
 
 ### Minor Changes
