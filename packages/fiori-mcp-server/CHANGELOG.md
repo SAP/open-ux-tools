@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/nodejs-utils [[30c8bbf](https://github.com/SAP/open-ux-tools/commit/30c8bbf4a155d45d6b7440e76171c24bd8b3a778)]
+
 ## 1.12.1
 
 ### Patch Changes
