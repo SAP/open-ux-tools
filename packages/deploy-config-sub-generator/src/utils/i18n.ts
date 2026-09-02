@@ -6,23 +6,19 @@ import type { i18n as i18nNext, TOptions } from 'i18next';
 const deployConfigSubGen = 'deploy-config-sub-generator';
 export const i18n: i18nNext = i18next.createInstance();
 
-const i18nReady = i18n
-    .init({
-        resources: { en: { [deployConfigSubGen]: translations } },
-        lng: 'en',
-        fallbackLng: 'en'
-    })
-    .then(() => {
-        addInquirerCommonTexts();
-    })
-    .catch(() => undefined);
-
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18nReady;
+    await i18n.init({
+        resources: { en: { [deployConfigSubGen]: translations } },
+        lng: 'en',
+        fallbackLng: 'en'
+    });
+    addInquirerCommonTexts();
 }
+
+void initI18n().catch(() => undefined);
 
 /**
  * Helper function facading the call to i18next. Unless a namespace option is provided the local namespace will be used.
