@@ -247,6 +247,7 @@ export class ProjectContext {
         this.instanceCache.clear();
         this.updateCache.clear();
         this.appRoots.clear();
+        this.projectArtifactCache.clear();
     }
     private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
