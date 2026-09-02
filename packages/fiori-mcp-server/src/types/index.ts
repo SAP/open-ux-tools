@@ -13,8 +13,7 @@ import type {
     AdpControllerExtensionInputSchema,
     RunRtaWorkflowStepInputSchema,
     AdpMetadataInputSchema,
-    ODataServiceInputSchema,
-    UI5TaskAdaptationDelegationInputSchema
+    ODataServiceInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -45,8 +44,6 @@ export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOu
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
-export type DownloadAppResourcesInput = zod.infer<typeof UI5TaskAdaptationDelegationInputSchema>;
-export type PreviewManifestInput = zod.infer<typeof UI5TaskAdaptationDelegationInputSchema>;
 export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
 export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;

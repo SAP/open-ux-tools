@@ -1,28 +1,28 @@
 packages:
-  - 'packages/*'
-  - 'examples/*'
-  - 'tests/integration/*'
-  - 'tests/fixtures/projects/mock'
-  - 'types'
-  - '!**/test/**'
+    - 'packages/*'
+    - 'examples/*'
+    - 'tests/integration/*'
+    - 'tests/fixtures/projects/mock'
+    - 'types'
+    - '!**/test/**'
 
 allowBuilds:
-  '@parcel/watcher': true
-  '@playwright/browser-chromium': true
-  '@swc/core': true
-  '@vscode/vsce-sign': true
-  '@zowe/secrets-for-zowe-sdk': true
-  better-sqlite3: true
-  esbuild: true
-  keytar: true
-  mta: true
-  nx: true
-  onnxruntime-node: true
-  protobufjs: true
-  sharp: true
-  ui5-tooling-modules: true
-  ui5-tooling-transpile: true
-  unrs-resolver: true
+    '@parcel/watcher': true
+    '@playwright/browser-chromium': true
+    '@swc/core': true
+    '@vscode/vsce-sign': true
+    '@zowe/secrets-for-zowe-sdk': true
+    better-sqlite3: true
+    esbuild: true
+    keytar: true
+    mta: true
+    nx: true
+    onnxruntime-node: true
+    protobufjs: true
+    sharp: true
+    ui5-tooling-modules: true
+    ui5-tooling-transpile: true
+    unrs-resolver: true
 
 overrides:
     "@sap-ux/vocabularies-types": "0.16.0"
@@ -162,10 +162,9 @@ overrides:
     "@sigstore/core@>=1.0.0 <3.2.1": "3.2.1"
     "@opentelemetry/core@>=2.0.0 <2.8.0": ">=2.8.0"
     "@opentelemetry/propagator-jaeger@<2.9.0": ">=2.9.0"
-    '@ui5/task-adaptation': "1.6.8"
 
 pnpm:
-  saveExact: true
-  engineStrict: true
-  linkWorkspacePackages: true
-  provenance: true
+    saveExact: true
+    engineStrict: true
+    linkWorkspacePackages: true
+    provenance: true
