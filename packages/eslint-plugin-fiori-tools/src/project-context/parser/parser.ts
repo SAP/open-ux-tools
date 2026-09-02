@@ -605,10 +605,8 @@ function collectI18nBundles(paths: string[], fileCache: Map<string, string>): I1
     for (const filePath of paths) {
         const uri = pathToFileURL(filePath).toString();
         try {
-            const content = fileCache.get(uri);
-            if (content !== undefined) {
-                bundles.push({ uri, entries: parseI18nProperties(content) });
-            }
+            const content = fileCache.get(uri) ?? readFileSync(fileURLToPath(uri), { encoding: 'utf8', flag: 'r' });
+            bundles.push({ uri, entries: parseI18nProperties(content) });
         } catch {
             // skip unreadable i18n files
         }
