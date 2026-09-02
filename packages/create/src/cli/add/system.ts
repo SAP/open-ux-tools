@@ -54,8 +54,8 @@ Example:
             '--password <string>',
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
-        .option('--skip-validation', 'Skip credential prompts (for mock systems or non-basic authentication)')
-        .option('--skip-check', 'Skip connection verification before saving')
+        .option('--skip-credentials-prompt', 'Skip credential prompts (for mock systems or non-basic authentication)')
+        .option('--skip-connection-validation', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
             await addSystem({
@@ -67,8 +67,8 @@ Example:
                 connectionType: options.connectionType,
                 username: options.username,
                 password: options.password,
-                skipValidation: !!options.skipValidation,
-                skipCheck: !!options.skipCheck
+                skipCredentialsPrompt: !!options.skipCredentialsPrompt,
+                skipConnectionValidation: !!options.skipConnectionValidation
             });
         });
 }
@@ -189,8 +189,8 @@ async function checkForDuplicates(
  * @param params.connectionType - connection type
  * @param params.username - optional username for basic auth
  * @param params.password - optional password for basic auth
- * @param params.skipValidation - skip credential prompts entirely
- * @param params.skipCheck - skip connection verification
+ * @param params.skipCredentialsPrompt - skip credential prompts entirely
+ * @param params.skipConnectionValidation - skip connection verification
  */
 async function addSystem(params: {
     name?: string;
@@ -201,8 +201,8 @@ async function addSystem(params: {
     connectionType?: string;
     username?: string;
     password?: string;
-    skipValidation?: boolean;
-    skipCheck?: boolean;
+    skipCredentialsPrompt?: boolean;
+    skipConnectionValidation?: boolean;
 }): Promise<void> {
     const logger = getLogger();
     try {
@@ -222,7 +222,7 @@ async function addSystem(params: {
             connectionType: params.connectionType,
             username: params.username,
             password: params.password,
-            skipValidation: params.skipValidation
+            skipCredentialsPrompt: params.skipCredentialsPrompt
         });
 
         replaceEnvVariables(config);
@@ -248,7 +248,7 @@ async function addSystem(params: {
                 username: config.username,
                 password: config.password
             },
-            params.skipCheck || false
+            params.skipConnectionValidation || false
         );
 
         if (!shouldSave) {

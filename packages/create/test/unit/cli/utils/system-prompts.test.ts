@@ -1197,13 +1197,13 @@ describe('system-prompts', () => {
         });
     });
 
-    describe('promptForSystemConfig with --skip-validation flag', () => {
+    describe('promptForSystemConfig with --skip-credentials-prompt flag', () => {
         beforeEach(() => {
             mockPrompts.mockClear();
             mockSystemNameExists.mockResolvedValue(false);
         });
 
-        test('should skip credential prompts when skipValidation=true', async () => {
+        test('should skip credential prompts when skipCredentialsPrompt=true', async () => {
             mockPrompts.mockResolvedValueOnce({
                 name: 'Mock System',
                 url: 'https://mock.example.com',
@@ -1214,7 +1214,7 @@ describe('system-prompts', () => {
             });
 
             const result = await promptForSystemConfig({
-                skipValidation: true
+                skipCredentialsPrompt: true
             });
 
             expect(result.name).toBe('Mock System');
@@ -1233,7 +1233,7 @@ describe('system-prompts', () => {
             expect(hasPasswordPrompt).toBe(false);
         });
 
-        test('should skip credential prompts when skipValidation=true even with basic auth', async () => {
+        test('should skip credential prompts when skipCredentialsPrompt=true even with basic auth', async () => {
             mockPrompts.mockResolvedValueOnce({});
 
             await promptForSystemConfig({
@@ -1242,7 +1242,7 @@ describe('system-prompts', () => {
                 systemType: 'OnPrem',
                 authenticationType: 'basic',
                 connectionType: 'abap_catalog',
-                skipValidation: true
+                skipCredentialsPrompt: true
             });
 
             // Verify prompts was called with array that doesn't include username/password
@@ -1258,7 +1258,7 @@ describe('system-prompts', () => {
             }
         });
 
-        test('should still prompt for credentials when skipValidation=false and auth=basic', async () => {
+        test('should still prompt for credentials when skipCredentialsPrompt=false and auth=basic', async () => {
             mockPrompts
                 .mockResolvedValueOnce({}) // First call for basic questions (none needed since all provided)
                 .mockResolvedValueOnce({ username: 'testuser', password: 'testpass' }); // Second call for credentials
@@ -1269,7 +1269,7 @@ describe('system-prompts', () => {
                 systemType: 'OnPrem',
                 authenticationType: 'basic',
                 connectionType: 'abap_catalog',
-                skipValidation: false
+                skipCredentialsPrompt: false
             });
 
             const calls = mockPrompts.mock.calls;
@@ -1285,7 +1285,7 @@ describe('system-prompts', () => {
             }
         });
 
-        test('should skip credential prompts for reentranceTicket auth regardless of skipValidation flag', async () => {
+        test('should skip credential prompts for reentranceTicket auth regardless of skipCredentialsPrompt flag', async () => {
             mockPrompts.mockResolvedValueOnce({});
 
             await promptForSystemConfig({
@@ -1294,7 +1294,7 @@ describe('system-prompts', () => {
                 systemType: 'AbapCloud',
                 authenticationType: 'reentranceTicket',
                 connectionType: 'abap_catalog'
-                // skipValidation not set - should still skip credentials for reentranceTicket
+                // skipCredentialsPrompt not set - should still skip credentials for reentranceTicket
             });
 
             const calls = mockPrompts.mock.calls;

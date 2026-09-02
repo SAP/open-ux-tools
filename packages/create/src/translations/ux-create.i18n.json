@@ -43,7 +43,7 @@
     },
     "systemConnection": {
         "invalidUrl": "Invalid URL: {{url}}",
-        "skippingCheck": "Skipping connection check (--skip-check flag provided)",
+        "skippingCheck": "Skipping connection check (--skip-connection-validation flag provided)",
         "verifying": "Verifying connection to the back-end system...",
         "connectionSuccessful": "✓ Connection achieved",
         "connectionFailed": "Connection check failed. {{error}}",

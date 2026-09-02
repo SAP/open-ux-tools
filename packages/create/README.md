@@ -314,8 +314,8 @@ Options:
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
-- `--skip-validation` - Skip credential prompts (for mock systems or non-basic authentication)
-- `--skip-check` - Skip connection verification before saving
+- `--skip-credentials-prompt` - Skip credential prompts (for mock systems or non-basic authentication)
+- `--skip-connection-validation` - Skip connection verification before saving
 
 --------------------------------
 
@@ -457,7 +457,7 @@ Options:
 - `--username <string>` - New username
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
-- `--skip-check` - Skip connection verification before saving
+- `--skip-connection-validation` - Skip connection verification before saving
 
 --------------------------------
 

@@ -17,7 +17,7 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
     t: (key: string, options?: Record<string, unknown>) => {
         const translations: Record<string, string> = {
             'systemConnection.invalidUrl': 'Invalid URL: {{url}}',
-            'systemConnection.skippingCheck': 'Skipping connection check (--skip-check flag provided)',
+            'systemConnection.skippingCheck': 'Skipping connection check (--skip-connection-validation flag provided)',
             'systemConnection.verifying': 'Verifying connection to the back-end system...',
             'systemConnection.connectionSuccessful': '✓ Connection achieved',
             'systemConnection.connectionFailed': 'Connection check failed. Error: {{error}}',
@@ -329,7 +329,7 @@ describe('system-connection', () => {
     });
 
     describe('checkConnectionOrPrompt', () => {
-        test('should skip check and return true when skipCheck is true', async () => {
+        test('should skip check and return true when skipConnectionValidation is true', async () => {
             const result = await checkConnectionOrPrompt(
                 {
                     url: 'https://example.com',
@@ -340,7 +340,9 @@ describe('system-connection', () => {
             );
 
             expect(result).toBe(true);
-            expect(mockLoggerInfo).toHaveBeenCalledWith('Skipping connection check (--skip-check flag provided)');
+            expect(mockLoggerInfo).toHaveBeenCalledWith(
+                'Skipping connection check (--skip-connection-validation flag provided)'
+            );
             expect(mockPrompts).not.toHaveBeenCalled();
         });
 

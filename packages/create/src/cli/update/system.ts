@@ -35,7 +35,7 @@ Example:
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
-        .option('--skip-check', 'Skip connection verification before saving')
+        .option('--skip-connection-validation', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
             await updateSystem({
@@ -45,7 +45,7 @@ Example:
                 username: options.username,
                 password: options.password,
                 clearCredentials: !!options.clearCredentials,
-                skipCheck: !!options.skipCheck
+                skipConnectionValidation: !!options.skipConnectionValidation
             });
         });
 }
@@ -162,13 +162,13 @@ async function determinePatch(
  * @param existing - existing system
  * @param params - update parameters
  * @param params.clearCredentials - whether credentials are being cleared
- * @param params.skipCheck - whether to skip connection check
+ * @param params.skipConnectionValidation - whether to skip connection check
  * @returns true if should proceed, false otherwise
  */
 async function verifyCredentialsUpdate(
     patch: Partial<BackendSystem>,
     existing: BackendSystem,
-    params: { clearCredentials: boolean; skipCheck?: boolean }
+    params: { clearCredentials: boolean; skipConnectionValidation?: boolean }
 ): Promise<boolean> {
     // Check if credentials are being updated (set to new values or cleared)
     const hasUsernameChange = patch.username !== undefined;
@@ -199,7 +199,7 @@ async function verifyCredentialsUpdate(
             username: (patch.username as string) ?? existing.username,
             password: (patch.password as string) ?? existing.password
         },
-        params.skipCheck || false
+        params.skipConnectionValidation || false
     );
 }
 
@@ -213,7 +213,7 @@ async function verifyCredentialsUpdate(
  * @param params.username - optional new username
  * @param params.password - optional new password
  * @param params.clearCredentials - if true, clears stored credentials
- * @param params.skipCheck - skip connection verification
+ * @param params.skipConnectionValidation - skip connection verification
  */
 async function updateSystem(params: {
     url?: string;
@@ -222,7 +222,7 @@ async function updateSystem(params: {
     username?: string;
     password?: string;
     clearCredentials: boolean;
-    skipCheck?: boolean;
+    skipConnectionValidation?: boolean;
 }): Promise<void> {
     const logger = getLogger();
     try {

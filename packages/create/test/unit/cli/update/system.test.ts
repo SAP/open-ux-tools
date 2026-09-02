@@ -275,7 +275,7 @@ describe('system/update (update command group)', () => {
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 
-    test('should skip connection check when --skip-check flag is provided', async () => {
+    test('should skip connection check when --skip-connection-validation flag is provided', async () => {
         // Given
         const command = new Command('update');
         addSystemUpdateCommand(command);
@@ -290,7 +290,7 @@ describe('system/update (update command group)', () => {
                 'newuser',
                 '--password',
                 'newpass',
-                '--skip-check'
+                '--skip-connection-validation'
             ])
         );
 

@@ -90,7 +90,7 @@ export async function checkSystemConnection(config: {
 
 /**
  * Checks connection to a backend system, or prompts user whether to save anyway if check fails.
- * If skipCheck is true, always returns true without checking.
+ * If skipConnectionValidation is true, always returns true without checking.
  *
  * @param config - System configuration to test
  * @param config.url - System URL
@@ -99,7 +99,7 @@ export async function checkSystemConnection(config: {
  * @param config.authenticationType - Authentication type (basic, reentranceTicket, oauth2)
  * @param config.username - Username for basic auth (optional)
  * @param config.password - Password for basic auth (optional)
- * @param skipCheck - If true, skip the connection check
+ * @param skipConnectionValidation - If true, skip the connection check
  * @returns True if connection succeeded or user chose to save anyway, false if user chose not to save
  */
 export async function checkConnectionOrPrompt(
@@ -111,11 +111,11 @@ export async function checkConnectionOrPrompt(
         username?: string;
         password?: string;
     },
-    skipCheck: boolean
+    skipConnectionValidation: boolean
 ): Promise<boolean> {
     const logger = getLogger();
 
-    if (skipCheck) {
+    if (skipConnectionValidation) {
         logger.info(t('systemConnection.skippingCheck'));
         return true;
     }

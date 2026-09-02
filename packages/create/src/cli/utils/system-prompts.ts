@@ -142,7 +142,7 @@ async function validateSystemNameUniquenessForUpdate(
  * @param partial.connectionType
  * @param partial.username
  * @param partial.password
- * @param partial.skipValidation - skip credential prompts entirely
+ * @param partial.skipCredentialsPrompt - skip credential prompts entirely
  * @returns Complete system configuration with all required fields
  */
 export async function promptForSystemConfig(partial: {
@@ -154,7 +154,7 @@ export async function promptForSystemConfig(partial: {
     connectionType?: string;
     username?: string;
     password?: string;
-    skipValidation?: boolean;
+    skipCredentialsPrompt?: boolean;
 }): Promise<{
     name: string;
     url: string;
@@ -228,9 +228,9 @@ export async function promptForSystemConfig(partial: {
     const finalAuthType = partial.authenticationType || answers.authenticationType;
 
     // Only prompt for credentials if:
-    // 1. skipValidation flag is NOT set, AND
+    // 1. skipCredentialsPrompt flag is NOT set, AND
     // 2. authenticationType is 'basic' (other types don't use username/password)
-    const shouldPromptCredentials = !partial.skipValidation && finalAuthType === 'basic';
+    const shouldPromptCredentials = !partial.skipCredentialsPrompt && finalAuthType === 'basic';
 
     // Display informational message for re-entrance ticket authentication
     if (finalAuthType === 'reentranceTicket') {
