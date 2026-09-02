@@ -109,8 +109,8 @@ sap.ui.define([
         opaTest("Check contact card links", function (Given, When, Then) {
             <%_ contactCardColumns.forEach(function(column) { _%>
             // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
-            When.onThe<%- startLR %>Generated.onTable().iClickLink(0, "<%- column.property %>");
-            Then.onThe<%- startLR %>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+            When.onThe<%- startLR %>Generated.onTable(defaultTableId).iClickLink(0, "<%- column.property %>");
+            Then.onThe<%- startLR %>Generated.onDialog(defaultTableId).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
             <%_ }); -%>
         });
 <%_ } -%>
