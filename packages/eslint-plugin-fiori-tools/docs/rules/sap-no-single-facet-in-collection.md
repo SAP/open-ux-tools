@@ -2,14 +2,14 @@
 
 Detects a `UI.CollectionFacet` that wraps exactly a single `UI.ReferenceFacet`.
 
-When a collection facet contains only a single reference facet, the wrapper adds no structural value and can cause rendering issues on the object page. Use `UI.ReferenceFacet` directly under `UI.Facets` instead.
+When a collection facet contains only a single reference facet, the wrapper adds no structural value and can cause display issues on the object page. Use `UI.ReferenceFacet` directly under `UI.Facets` instead.
 
 ## Rule Details
 
-This rule scans `UI.Facets` annotations and reports any `UI.CollectionFacet` record whose `Facets` property contains exactly one child of type `UI.ReferenceFacet`. It applies to both OData V2 and V4 annotation files.
+This rule scans `UI.Facets` annotations and reports any `UI.CollectionFacet` record whose `Facets` property contains exactly one child of type `UI.ReferenceFacet`. This applies to both OData V2 and OData V4 annotation files.
 
 ### Warning
-`UI.CollectionFacet` must not contain only one `UI.ReferenceFacet`. Use `UI.ReferenceFacet` directly under `UI.Facets` instead.
+`UI.CollectionFacet` must not contain only a single `UI.ReferenceFacet`. Use `UI.ReferenceFacet` directly under `UI.Facets` instead.
 
 The following patterns are considered warnings:
 
