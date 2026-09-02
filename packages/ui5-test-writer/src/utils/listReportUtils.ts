@@ -266,7 +266,7 @@ export function extractCustomToolBarActions(
     const actions: ActionButtonState[] = [];
     for (const key of Object.keys(actionAggregations ?? {})) {
         const item = actionAggregations[key as keyof TreeAggregations] as unknown as AggregationItem;
-        if (convertedMetadata && isMenuActionItem(item)) {
+        if (isMenuActionItem(item)) {
             actions.push(buildMenuActionState(item, convertedMetadata, schemaNamespace, resolveLabel));
             continue;
         }

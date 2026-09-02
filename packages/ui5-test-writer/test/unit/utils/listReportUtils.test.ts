@@ -2691,15 +2691,35 @@ describe('extractCustomToolBarActions()', () => {
         ]);
     });
 
-    test('skips a menu button when no metadata is available', () => {
+    test('emits a label-only menu button (child labels, no annotation resolution) when no metadata is available', () => {
         const model = buildModel({
             MenuActions: {
                 description: 'My Menu Button',
                 menuType: 'CustomMenu',
                 schema: { actionType: 'CustomMenu' },
-                aggregations: { actions: { aggregations: {} } }
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: 'Custom Action 1',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
             } as unknown as TreeAggregation
         });
-        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
+        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([
+            {
+                label: 'My Menu Button',
+                action: '',
+                visible: true,
+                enabled: true,
+                menuType: 'CustomMenu',
+                labelUnresolved: undefined,
+                menuActions: [{ label: 'Custom Action 1', visible: true, labelUnresolved: undefined }]
+            }
+        ]);
     });
 });

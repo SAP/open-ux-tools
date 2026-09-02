@@ -424,17 +424,18 @@ export function isMenuActionItem(item: AggregationItem): boolean {
 }
 
 /**
- * Builds the individual menu item states contained in a menu action node.
+ * Builds the individual menu item states contained in a menu action node. Child actions are read
+ * from the nested `actions` aggregation of the menu node (`menuItem.aggregations.actions`).
  *
  * @param menuItem - the menu container aggregation entry
- * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param convertedMetadata - converted OData metadata for resolving annotation-backed children; when omitted children are matched by label only
  * @param schemaNamespace - OData schema namespace used as service identifier
  * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
  * @returns array of menu item states
  */
 export function buildMenuItemStates(
     menuItem: AggregationItem,
-    convertedMetadata: ConvertedMetadata,
+    convertedMetadata: ConvertedMetadata | undefined,
     schemaNamespace: string,
     resolveLabel: I18nLabelResolver
 ): MenuActionState[] {
@@ -444,12 +445,9 @@ export function buildMenuItemStates(
     }
     const innerEntries = getAggregations(innerContainer) as Record<string, AggregationItem>;
     return Object.entries(innerEntries).map(([childKey, child]) => {
-        const annotationState = buildActionStateFromSpecModelKey(
-            childKey,
-            child.description,
-            convertedMetadata,
-            schemaNamespace
-        );
+        const annotationState = convertedMetadata
+            ? buildActionStateFromSpecModelKey(childKey, child.description, convertedMetadata, schemaNamespace)
+            : undefined;
         if (annotationState) {
             return {
                 label: annotationState.label,
@@ -470,14 +468,14 @@ export function buildMenuItemStates(
  * Builds a menu action button state from a menu aggregation entry (annotation or custom menu).
  *
  * @param menuItem - the menu container aggregation entry
- * @param convertedMetadata - converted OData metadata for resolving annotation actions
+ * @param convertedMetadata - converted OData metadata for resolving annotation-backed children; when omitted children are matched by label only
  * @param schemaNamespace - OData schema namespace used as service identifier
  * @param resolveLabel - resolver for i18n placeholder labels
  * @returns the menu action button state
  */
 export function buildMenuActionState(
     menuItem: AggregationItem,
-    convertedMetadata: ConvertedMetadata,
+    convertedMetadata: ConvertedMetadata | undefined,
     schemaNamespace: string,
     resolveLabel: I18nLabelResolver
 ): ActionButtonState {
