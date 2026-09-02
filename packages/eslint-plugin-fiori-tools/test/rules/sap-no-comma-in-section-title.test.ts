@@ -39,8 +39,10 @@ const facetWithLabel = (label: string) => `<Annotations Target="IncidentService.
 const withV4Label = (label: string): string => getAnnotationsAsXmlCode(V4_ANNOTATIONS, facetWithLabel(label));
 
 // Replace an i18n entry value in the fixture content
-const withI18nEntry = (key: string, value: string): string =>
-    V4_I18N_CONTENT.replace(new RegExp(`^${key}=.*$`, 'm'), `${key}=${value}`);
+const withI18nEntry = (key: string, value: string): string => {
+    const replaced = V4_I18N_CONTENT.replace(new RegExp(`^${key}=.*$`, 'm'), `${key}=${value}`);
+    return replaced !== V4_I18N_CONTENT ? replaced : `${V4_I18N_CONTENT}\n${key}=${value}`;
+};
 
 // V4 annotation with a CollectionFacet containing a subsection with comma label
 const V4_COLLECTION_FACET_COMMA = getAnnotationsAsXmlCode(

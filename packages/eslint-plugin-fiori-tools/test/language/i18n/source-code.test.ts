@@ -39,7 +39,7 @@ describe('FioriI18nSourceCode', () => {
             key: {
                 range: {
                     end: {
-                        column: 9,
+                        column: 8,
                         line: 3
                     },
                     start: {
@@ -68,7 +68,7 @@ describe('FioriI18nSourceCode', () => {
             key: {
                 range: {
                     end: {
-                        column: 15,
+                        column: 14,
                         line: 5
                     },
                     start: {
