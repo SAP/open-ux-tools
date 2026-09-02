@@ -52,17 +52,18 @@ export function parseI18nToAst(text: string): I18nDocument {
         if (eqIdx > 0) {
             const lineIdx = i + 1; // 1-based line number for SourceLocation
             const valueStartIdx = eqIdx + 1;
+            const valueStr = trimmed.slice(valueStartIdx);
             entries.push({
                 type: 'i18n-entry',
                 key: {
                     value: trimmed.slice(0, eqIdx).trim(),
-                    range: { start: { line: lineIdx, column: 1 }, end: { line: lineIdx, column: valueStartIdx } }
+                    range: { start: { line: lineIdx, column: 1 }, end: { line: lineIdx, column: eqIdx } }
                 },
                 value: {
-                    value: trimmed.slice(valueStartIdx),
+                    value: valueStr,
                     range: {
                         start: { line: lineIdx, column: valueStartIdx + 1 },
-                        end: { line: lineIdx, column: line.length + 1 }
+                        end: { line: lineIdx, column: valueStartIdx + 1 + valueStr.length }
                     }
                 }
             });
