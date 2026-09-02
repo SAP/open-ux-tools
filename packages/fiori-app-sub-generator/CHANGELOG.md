@@ -1,5 +1,13 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-tools-settings 1.0.1 → 1.1.0
+
 ## 1.3.45
 
 ### Patch Changes
