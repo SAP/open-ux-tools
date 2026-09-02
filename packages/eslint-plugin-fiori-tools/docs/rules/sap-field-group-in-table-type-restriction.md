@@ -1,4 +1,4 @@
-# `UI.FieldGroup` Is Not Supported in Grid, Tree, and Analytical tables (`sap-field-group-in-table-type-restriction`)
+# `UI.FieldGroup` Is Not Supported in Grid, Tree, and Analytical Tables (`sap-field-group-in-table-type-restriction`)
 
 Detects `UI.FieldGroup` references inside `UI.LineItem` when the configured table type does not support them.
 
@@ -64,7 +64,7 @@ The following patterns are not considered warnings:
 
 #### CDS Annotations
 
-The following patterns are considered warnings if the table type is `GridTable`, `AnalyticalTable` or `TreeTable`:
+The following patterns are considered warnings if the table type is `GridTable`, `AnalyticalTable`, or `TreeTable`:
 
 ```cds
 annotate service.Incidents with @(UI.LineItem: [
@@ -92,7 +92,7 @@ annotate service.Incidents with @(UI.LineItem: [
 
 Proceed with one of the following options:
 - Change the table type to `ResponsiveTable` in the `manifest.json` file under `tableSettings.type`.
-- Replace each `UI.DataFieldForAnnotation` targeting a `UI.FieldGroup` with individual `UI.DataField` entries.
+- Replace each `UI.DataFieldForAnnotation`, which targets a `UI.FieldGroup` with individual `UI.DataField` entries.
 
 ## Bug Report
 
