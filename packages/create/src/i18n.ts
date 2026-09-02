@@ -21,10 +21,7 @@ export async function initI18n(): Promise<void> {
         defaultNS: NS,
         fallbackNS: 'default',
         ns: [NS],
-        interpolation: { escapeValue: false },
-        // Explicitly enable pluralization
-        pluralSeparator: '_',
-        contextSeparator: '_'
+        interpolation: { escapeValue: false }
     });
     await i18nInstance.init();
     isInitialized = true;
