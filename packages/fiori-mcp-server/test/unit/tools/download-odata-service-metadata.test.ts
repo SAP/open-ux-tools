@@ -11,56 +11,32 @@ jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
 }));
 
 const mockWriteFileSync = jest.fn<any>();
-<<<<<<< HEAD
-const mockExistsSync = jest.fn<() => boolean>().mockReturnValue(false);
-=======
-const mockExistsSync = jest.fn<any>().mockReturnValue(true);
-const mockStatSync = jest.fn<any>().mockReturnValue({ isDirectory: () => true });
->>>>>>> refs/remotes/origin/main
+const mockExistsSync = jest.fn<any>();
+const mockStatSync = jest.fn<any>();
 const actualFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
-<<<<<<< HEAD
-        writeFileSync: mockWriteFileSync,
-        existsSync: mockExistsSync
-=======
         existsSync: mockExistsSync,
         statSync: mockStatSync,
         writeFileSync: mockWriteFileSync
->>>>>>> refs/remotes/origin/main
     },
-<<<<<<< HEAD
-    writeFileSync: mockWriteFileSync,
-    existsSync: mockExistsSync
-=======
     existsSync: mockExistsSync,
     statSync: mockStatSync,
     writeFileSync: mockWriteFileSync
->>>>>>> refs/remotes/origin/main
 }));
 jest.unstable_mockModule('fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
-<<<<<<< HEAD
-        writeFileSync: mockWriteFileSync,
-        existsSync: mockExistsSync
-=======
         existsSync: mockExistsSync,
         statSync: mockStatSync,
         writeFileSync: mockWriteFileSync
->>>>>>> refs/remotes/origin/main
     },
-<<<<<<< HEAD
-    writeFileSync: mockWriteFileSync,
-    existsSync: mockExistsSync
-=======
     existsSync: mockExistsSync,
     statSync: mockStatSync,
     writeFileSync: mockWriteFileSync
->>>>>>> refs/remotes/origin/main
 }));
 
 const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
@@ -87,12 +63,8 @@ describe('downloadODataServiceMetadata', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
-<<<<<<< HEAD
-        mockExistsSync.mockReturnValue(false);
-=======
-        mockExistsSync.mockReturnValue(true);
+        mockExistsSync.mockReset().mockReturnValueOnce(true).mockReturnValue(false);
         mockStatSync.mockReturnValue({ isDirectory: () => true });
->>>>>>> refs/remotes/origin/main
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
@@ -180,7 +152,7 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should return error when appPath does not exist', async () => {
-        mockExistsSync.mockReturnValue(false);
+        mockExistsSync.mockReset().mockReturnValue(false);
         const params: DownloadODataServiceMetadataInput = {
             appPath: '/non/existent/path',
             sapSystemQuery: 'TestSystem',
@@ -314,7 +286,11 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should return error when metadata.xml already exists at appPath', async () => {
-        mockExistsSync.mockReturnValue(true);
+        const metadataXmlPath = path.join(mockAppPath, 'metadata.xml');
+        mockExistsSync.mockReset().mockImplementation((p: unknown) =>
+            String(p) === mockAppPath || String(p) === metadataXmlPath
+        );
+        mockStatSync.mockReturnValue({ isDirectory: () => true });
 
         const params: DownloadODataServiceMetadataInput = {
             appPath: mockAppPath,
@@ -326,7 +302,7 @@ describe('downloadODataServiceMetadata', () => {
 
         expect(result.status).toBe('Error');
         expect(result.message).toMatch(/search_docs.*update service metadata/i);
-        expect(result.message).toContain(path.join(mockAppPath, 'metadata.xml'));
+        expect(result.message).toContain(metadataXmlPath);
         expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
