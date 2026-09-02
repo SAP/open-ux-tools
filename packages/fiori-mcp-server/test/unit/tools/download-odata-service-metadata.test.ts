@@ -103,6 +103,8 @@ describe('downloadODataServiceMetadata', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
+        // Reset fs mocks to happy-path defaults (directory exists, no metadata.xml yet).
+        // Tests that exercise a specific fs guard call setupFsMocks() again with override options.
         setupFsMocks(mockAppPath);
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
