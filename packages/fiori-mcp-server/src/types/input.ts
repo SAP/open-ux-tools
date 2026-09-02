@@ -92,14 +92,6 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
         .describe('Absolute path to the folder where metadata.xml will be saved. Typically the project target folder.')
 });
 
-export const UI5TaskAdaptationDelegationInputSchema = zod.object({
-    appPath: zod
-        .string()
-        .describe(
-            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant lies)'
-        )
-});
-
 export const DocSearchInputSchema = zod.object({
     query: zod
         .string()

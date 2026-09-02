@@ -18,11 +18,9 @@ export { generateAdaptationProject } from './generate-adaptation-project.js';
 export { openAdaptationEditor } from './open-adaptation-editor.js';
 export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
-export { listLibrariesFromSystem } from './get-libraries.js';
-export { readODataMetadataAdp } from './get-adp-odata-metada.js';
-export { listODataServices } from './get-odata-services.js';
-export { validateManifest } from './preview-manifest.js';
-export { downloadBaseAppResources } from './download-app-resources.js';
+export { listLibrariesFromSystem } from './list-libraries.js';
+export { listODataServices } from './list-odata-services.js';
+export { readODataMetadataAdp } from './read-odata-metadata.js';
 
 export const tools = [
     {
@@ -228,45 +226,6 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema)
-    },
-    {
-        name: 'preview_manifest',
-        description: `Validates an SAP Fiori Adaptation Project's descriptor (manifest) changes by producing the merged manifest.json that a full build would generate — without running a full build.
-
-        This tool:
-        - Reads the project's ui5.yaml to extract the Cloud Foundry build task configuration
-        - Reads webapp/manifest.appdescr_variant to determine the app variant namespace
-        - Builds a virtual UI5 filesystem over the project's webapp source
-        - Delegates to previewManifest from @ui5/task-adaptation to produce the merged manifest
-        - Returns the resulting manifest.json as a formatted JSON string
-
-        Cloud Foundry only: this tool requires a CF ADP project (ui5.yaml must contain a cf-deploy build task). ABAP projects are not supported.
-        A full build must have run at least once so that the base application files are cached; otherwise the tool throws.`,
-        annotations: {
-            title: 'Preview Adaptation Project Manifest',
-            readOnlyHint: true,
-            idempotentHint: true,
-            openWorldHint: false
-        },
-        inputSchema: convertToSchema(Input.UI5TaskAdaptationDelegationInputSchema)
-    },
-    {
-        name: 'download_app_resources',
-        description: `Downloads the base application resources for an SAP Fiori Adaptation Project from the HTML5 Application Repository.
-
-        This tool:
-        - Reads the project's ui5.yaml to extract the Cloud Foundry build task configuration
-        - Downloads the base application's resources from the HTML5 Repository
-        - Stores them locally for use during local development and preview
-
-        Cloud Foundry only: this tool requires a CF ADP project (ui5.yaml must contain a cf-deploy build task).`,
-        annotations: {
-            title: 'Download Adaptation Project Base App Resources',
-            readOnlyHint: false,
-            idempotentHint: true,
-            openWorldHint: true
-        },
-        inputSchema: convertToSchema(Input.UI5TaskAdaptationDelegationInputSchema)
     },
     {
         name: 'adp_controller_extension',
