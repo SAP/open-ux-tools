@@ -67,28 +67,28 @@
                                           {
                                             "tokenTypeName": "Identifier",
                                             "image": "assert",
-                                            "startOffset": 12,
-                                            "endOffset": 17
+                                            "startOffset": 6,
+                                            "endOffset": 11
                                           }
                                         ]
                                       },
                                       "location": {
-                                        "startOffset": 12,
-                                        "endOffset": 17
+                                        "startOffset": 6,
+                                        "endOffset": 11
                                       }
                                     }
                                   ]
                                 },
                                 "location": {
-                                  "startOffset": 12,
-                                  "endOffset": 17
+                                  "startOffset": 6,
+                                  "endOffset": 11
                                 }
                               }
                             ]
                           },
                           "location": {
-                            "startOffset": 12,
-                            "endOffset": 17
+                            "startOffset": 6,
+                            "endOffset": 11
                           }
                         }
                       ],
@@ -104,34 +104,34 @@
                         {
                           "tokenTypeName": "RCurly",
                           "image": "}",
-                          "startOffset": 20,
-                          "endOffset": 20
+                          "startOffset": 12,
+                          "endOffset": 12
                         }
                       ]
                     },
                     "location": {
                       "startOffset": 5,
-                      "endOffset": 20
+                      "endOffset": 12
                     }
                   }
                 ]
               },
               "location": {
                 "startOffset": 5,
-                "endOffset": 20
+                "endOffset": 12
               }
             }
           ]
         },
         "location": {
           "startOffset": 0,
-          "endOffset": 20
+          "endOffset": 12
         }
       }
     ]
   },
   "location": {
     "startOffset": 0,
-    "endOffset": 20
+    "endOffset": 12
   }
 }
