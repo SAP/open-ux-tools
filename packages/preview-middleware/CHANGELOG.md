@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 1.2.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.50 → 1.0.51
+
+## 1.2.8
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Correct UI label texts in the controller extension dialog [[b19615c](https://github.com/SAP/open-ux-tools/commit/b19615cc5d3c846c9c38ade51a24c078a1c06060)]
+
+## 1.2.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.49 → 1.0.50
+
 ## 1.2.6
 
 ### Patch Changes
