@@ -315,7 +315,7 @@ export class ConfigPrompter {
                 hint: t('prompts.systemTooltip')
             },
             default: '',
-            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
+            validate: (value: string) => this.validateSystem(value),
             additionalMessages: () => {
                 this.systemAdditionalMessage = getSystemAdditionalMessages(
                     this.flexUICapability,
@@ -334,12 +334,12 @@ export class ConfigPrompter {
     private getSystemValidationPromptForCli() {
         return {
             name: configPromptNames.systemValidationCli,
-            when: async (answers: ConfigAnswers): Promise<boolean> => {
-                if (!answers.system) {
+            when: async ({ system }: ConfigAnswers): Promise<boolean> => {
+                if (!system) {
                     return false;
                 }
 
-                const result = await this.validateSystem(answers.system, answers);
+                const result = await this.validateSystem(system);
                 if (typeof result === 'string') {
                     throw new Error(result);
                 }
@@ -785,10 +785,9 @@ export class ConfigPrompter {
      * loading the available applications.
      *
      * @param {string} system - The selected system.
-     * @param {ConfigAnswers} answers - The configuration answers provided by the user.
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
-    private async validateSystem(system: string, answers: ConfigAnswers): Promise<string | boolean> {
+    private async validateSystem(system: string): Promise<string | boolean> {
         const validationResult = validateEmptyString(system);
         if (typeof validationResult === 'string') {
             return validationResult;
