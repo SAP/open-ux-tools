@@ -46,7 +46,7 @@ export async function updateManifestForMigration(
 
     // Update sap.app section
     if (manifestJson?.['sap.app']) {
-        saveFile = updateSapAppSection(manifestJson, templateData, floorplan, sourceTemplateTest) || saveFile;
+        saveFile = (await updateSapAppSection(manifestJson, templateData, floorplan, sourceTemplateTest)) || saveFile;
     }
 
     // Update sap.ui5 section
@@ -76,12 +76,12 @@ export async function updateManifestForMigration(
  * @param sourceTemplateTest - Test-only source template values
  * @returns true if changes were made
  */
-function updateSapAppSection(
+async function updateSapAppSection(
     manifestJson: Manifest,
     templateData: TemplateData,
     floorplan: string,
     sourceTemplateTest?: SapAppSourceTemplate
-): boolean {
+): Promise<boolean> {
     let modified = false;
 
     // Update application ID if it's a placeholder
@@ -96,7 +96,7 @@ function updateSapAppSection(
     }
 
     // Update source template info for tracking
-    manifestJson['sap.app'].sourceTemplate = getSourceTemplate(
+    manifestJson['sap.app'].sourceTemplate = await getSourceTemplate(
         floorplan,
         Object.assign(sourceTemplateTest || {}, manifestJson['sap.app'].sourceTemplate)
     );

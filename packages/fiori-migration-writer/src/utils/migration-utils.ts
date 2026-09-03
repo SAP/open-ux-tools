@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { promises as fsPromises } from 'node:fs';
 import type { Data } from 'ejs';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
-import readPkgUp from 'read-pkg-up';
+import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
 import type { TemplateProperties, SapUxLayer } from '../types.js';
 import { i18nText } from '../i18n.js';
@@ -133,13 +133,13 @@ export async function generateTemplate(
  * @param sourceTemplate Optional - value of the source template setting from manifest.json
  * @returns the source template object
  */
-export function getSourceTemplate(
+export async function getSourceTemplate(
     floorplan: string,
     sourceTemplate?: SapAppSourceTemplate
-): Manifest['sap.app']['sourceTemplate'] {
+): Promise<Manifest['sap.app']['sourceTemplate']> {
     // Determine the package version. When bundled this will be app-modeler since app-migrator is bundled and it's package.json removed.
     // This vesions are always aligned regardless.
-    const packageInfo = readPkgUp.sync({ cwd: __dirname, normalize: false });
+    const packageInfo = await readPackageUpAsync({ cwd: __dirname, normalize: false });
 
     // Only where manifest.json values are not provided will the test values be
     // used during tests to avoid changing values in snapshots
