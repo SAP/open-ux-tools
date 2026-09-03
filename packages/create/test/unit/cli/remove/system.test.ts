@@ -15,7 +15,8 @@ jest.unstable_mockModule('../../../../src/i18n.js', () => ({
     t: (key: string, options?: Record<string, unknown>) => {
         const translations: Record<string, string> = {
             'systemPrompts.prompts.sapClient': 'SAP Client (Optional: Press Enter to Skip):',
-            'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?"
+            'systemPrompts.removeConfirmation.prompt': "Are you sure you want to remove system '{{systemName}}'?",
+            'systemActions.systemRemoved': "System '{{name}}' removed."
         };
         let result = translations[key] || key;
         if (options) {

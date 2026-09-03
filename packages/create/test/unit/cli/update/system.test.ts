@@ -13,7 +13,8 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 jest.unstable_mockModule('../../../../src/i18n.js', () => ({
     t: (key: string, options?: Record<string, unknown>) => {
         const translations: Record<string, string> = {
-            'systemPrompts.updateFields.minOneRequired': 'At least one field must be selected.'
+            'systemPrompts.updateFields.minOneRequired': 'At least one field must be selected.',
+            'systemActions.systemUpdated': "System '{{name}}' updated."
         };
         let result = translations[key] || key;
         if (options) {

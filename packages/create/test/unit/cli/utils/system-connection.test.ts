@@ -249,8 +249,11 @@ describe('system-connection', () => {
             expect(result.error).toBe('Network error');
         });
 
-        test('should skip connection check for reentranceTicket auth', async () => {
-            // ReentranceTicket requires browser flow, so we skip HTTP validation entirely
+        test('should validate connection for reentranceTicket auth (reachability check)', async () => {
+            // ReentranceTicket requires browser flow for auth, but we still check if host is reachable
+            // Mock 401 response (proves system is reachable, auth will happen later)
+            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
+
             const result = await checkSystemConnection({
                 url: 'https://example.com',
                 systemType: 'OnPrem',
@@ -258,11 +261,14 @@ describe('system-connection', () => {
             });
 
             expect(result.success).toBe(true);
-            expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled(); // No HTTP check for reentranceTicket
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled(); // Connection check now runs for all auth types
         });
 
-        test('should skip connection check for oauth2 auth', async () => {
-            // OAuth2 requires browser flow, so we skip HTTP validation entirely
+        test('should validate connection for oauth2 auth (reachability check)', async () => {
+            // OAuth2 requires browser flow for auth, but we still check if host is reachable
+            // Mock 401 response (proves system is reachable, auth will happen later)
+            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
+
             const result = await checkSystemConnection({
                 url: 'https://example.com',
                 systemType: 'OnPrem',
@@ -270,7 +276,7 @@ describe('system-connection', () => {
             });
 
             expect(result.success).toBe(true);
-            expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled(); // No HTTP check for oauth2
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled(); // Connection check now runs for all auth types
         });
 
         test('should return error for invalid URL', async () => {

@@ -42,6 +42,18 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: jest.fn().mockResolvedValue(mockedService)
 }));
 
+// Mock i18n to return translated text
+jest.unstable_mockModule('../../../../src/i18n', () => ({
+    t: jest.fn((key: string, options?: any) => {
+        // Return actual text for testing
+        if (key === 'systemActions.systemAdded') return `System '${options?.name}' added.`;
+        if (key === 'systemActions.systemNotAdded') return 'System was not added.';
+        if (key === 'systemActions.systemNotSaved') return 'System was not saved.';
+        return key;
+    }),
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 const { addSystemAddCommand } = await import('../../../../src/cli/add/system.js');
 
 describe('system/add', () => {
