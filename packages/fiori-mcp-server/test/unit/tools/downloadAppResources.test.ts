@@ -46,7 +46,13 @@ describe('downloadBaseAppResources', () => {
 
     it('returns JSON string indicating files were written and the target path', async () => {
         const result = await downloadBaseAppResources(params);
-        expect(result).toBe(JSON.stringify({ filesWritten: true, path: `${params.appPath}/.contexts/` }));
+        expect(result).toMatchObject({
+            functionalityId: 'download-app-resources',
+            status: 'Success',
+            appPath: params.appPath,
+            changes: [`${params.appPath}/.contexts/`]
+        });
+        expect(typeof result.timestamp).toBe('string');
     });
 
     it('builds the reader over webapp with virBasePath of "/"', async () => {
@@ -79,5 +85,17 @@ describe('downloadBaseAppResources', () => {
         });
         await expect(downloadBaseAppResources(params)).rejects.toThrow('No CF or ABAP ADP project found');
         expect(mockDownloadAppResources).not.toHaveBeenCalled();
+    });
+
+    it('returns error status when downloadAppResources throws', async () => {
+        mockDownloadAppResources.mockRejectedValue(new Error('Download failed'));
+        const result = await downloadBaseAppResources(params);
+        expect(result).toMatchObject({
+            functionalityId: 'download-app-resources',
+            status: 'Error',
+            message: 'Download failed',
+            appPath: params.appPath,
+            changes: []
+        });
     });
 });

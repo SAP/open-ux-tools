@@ -1,33 +1,20 @@
 import { join } from 'node:path';
-import { readUi5Config, getVariant, extractCfBuildTask, extractAdpConfig } from '@sap-ux/adp-tooling';
-import type { UI5YamlCustomTaskConfiguration } from '@sap-ux/adp-tooling';
+import { readUi5Config, getVariant, resolveAdpConfiguration } from '@sap-ux/adp-tooling';
 import { createWorkspace, createReader } from '@ui5/fs/resourceFactory';
 import { downloadAppResources } from '@ui5/task-adaptation';
-import type { DownloadAppResourcesInput } from '../types/index.js';
+import type { DownloadAppResourcesInput, ExecuteFunctionalityOutput } from '../types/index.js';
+import { DOWNLOAD_APP_RESOURCES_ID } from '../constant.js';
 
 /**
- * Downloads the base app resources for an Adaptation Project (CF or ABAP) and writes them
+ * Downloads the base application resources for an Adaptation Project (CF or ABAP) and writes them
  * to the `.contexts/` directory under the project root.
  *
- * For CF projects, configuration is extracted from the `app-variant-bundler-build` custom task.
- * For ABAP projects, configuration is derived from the `adp` preview middleware config.
- *
  * @param params - Tool input carrying the adaptation project root path.
- * @returns A JSON string with `filesWritten: true` and the `path` where files were written.
+ * @returns Aligned tool output with the path written reported in `changes`.
  */
-export async function downloadBaseAppResources(params: DownloadAppResourcesInput): Promise<string> {
+export async function downloadBaseAppResources(params: DownloadAppResourcesInput): Promise<ExecuteFunctionalityOutput> {
     const ui5Config = await readUi5Config(params.appPath, 'ui5.yaml');
-
-    let configuration: UI5YamlCustomTaskConfiguration;
-    try {
-        configuration = extractCfBuildTask(ui5Config);
-    } catch {
-        const adpConfig = extractAdpConfig(ui5Config);
-        if (!adpConfig || !('target' in adpConfig)) {
-            throw new Error('No CF or ABAP ADP project found');
-        }
-        configuration = { target: adpConfig.target, type: 'abap' } as unknown as UI5YamlCustomTaskConfiguration;
-    }
+    const configuration = resolveAdpConfiguration(ui5Config);
 
     const variant = await getVariant(params.appPath);
     const workspace = createWorkspace({
@@ -39,9 +26,29 @@ export async function downloadBaseAppResources(params: DownloadAppResourcesInput
     });
 
     const targetWritePath = `${params.appPath}/.contexts/`;
-    await downloadAppResources(
-        { workspace, options: { configuration } } as unknown as Parameters<typeof downloadAppResources>[0],
-        targetWritePath
-    );
-    return JSON.stringify({ filesWritten: true, path: targetWritePath });
+    try {
+        await downloadAppResources(
+            { workspace, options: { configuration } } as unknown as Parameters<typeof downloadAppResources>[0],
+            targetWritePath
+        );
+        return {
+            functionalityId: DOWNLOAD_APP_RESOURCES_ID,
+            status: 'Success',
+            message: `Base app resources downloaded to ${targetWritePath}`,
+            parameters: params,
+            appPath: params.appPath,
+            changes: [targetWritePath],
+            timestamp: new Date().toISOString()
+        };
+    } catch (e) {
+        return {
+            functionalityId: DOWNLOAD_APP_RESOURCES_ID,
+            status: 'Error',
+            message: (e as Error).message,
+            parameters: params,
+            appPath: params.appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
 }

@@ -121,6 +121,26 @@ export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfigu
 }
 
 /**
+ * Resolves the task-adaptation configuration from a UI5 YAML config, preferring CF over ABAP.
+ * Tries the CF build task first; falls back to the ABAP preview middleware `adp.target`.
+ * Throws if neither is present.
+ *
+ * @param {UI5Config} ui5Conf - The parsed UI5 configuration.
+ * @returns {UI5YamlCustomTaskConfiguration} The resolved configuration.
+ */
+export function resolveAdpConfiguration(ui5Conf: UI5Config): UI5YamlCustomTaskConfiguration {
+    try {
+        return extractCfBuildTask(ui5Conf);
+    } catch {
+        const adpConfig = extractAdpConfig(ui5Conf);
+        if (!adpConfig || !('target' in adpConfig)) {
+            throw new Error('No CF or ABAP ADP project found');
+        }
+        return { target: adpConfig.target, type: 'abap' } as unknown as UI5YamlCustomTaskConfiguration;
+    }
+}
+
+/**
  * Read space GUID from ui5.yaml customTasks app-variant-bundler-build.space.
  *
  * @param {string} rootPath - Project root (where ui5.yaml lives).

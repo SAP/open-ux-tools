@@ -47,7 +47,14 @@ describe('validateManifest', () => {
 
     it('returns the merged manifest as a JSON string', async () => {
         const result = await validateManifest(params);
-        expect(result).toBe(JSON.stringify(mergedManifest, null, 2));
+        expect(result).toMatchObject({
+            functionalityId: 'preview-manifest',
+            status: 'Success',
+            message: JSON.stringify(mergedManifest, null, 2),
+            appPath: params.appPath,
+            changes: []
+        });
+        expect(typeof result.timestamp).toBe('string');
     });
 
     it('builds the reader over webapp with virBasePath of "/"', async () => {
@@ -80,5 +87,17 @@ describe('validateManifest', () => {
         });
         await expect(validateManifest(params)).rejects.toThrow('No CF or ABAP ADP project found');
         expect(mockPreviewManifest).not.toHaveBeenCalled();
+    });
+
+    it('returns error status when previewManifest throws', async () => {
+        mockPreviewManifest.mockRejectedValue(new Error('Base app not cached'));
+        const result = await validateManifest(params);
+        expect(result).toMatchObject({
+            functionalityId: 'preview-manifest',
+            status: 'Error',
+            message: 'Base app not cached',
+            appPath: params.appPath,
+            changes: []
+        });
     });
 });

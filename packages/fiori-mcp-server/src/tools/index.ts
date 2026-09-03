@@ -234,13 +234,12 @@ export const tools = [
         description: `Validates an SAP Fiori Adaptation Project's descriptor (manifest) changes by producing the merged manifest.json that a full build would generate — without running a full build.
 
         This tool:
-        - Reads the project's ui5.yaml to extract the Cloud Foundry build task configuration
+        - Reads the project's ui5.yaml to extract the CF or ABAP configuration
         - Reads webapp/manifest.appdescr_variant to determine the app variant namespace
         - Builds a virtual UI5 filesystem over the project's webapp source
         - Delegates to previewManifest from @ui5/task-adaptation to produce the merged manifest
-        - Returns the resulting manifest.json as a formatted JSON string
+        - Returns the resulting manifest.json as a formatted JSON string in the 'message' field
 
-        Cloud Foundry only: this tool requires a CF ADP project (ui5.yaml must contain a cf-deploy build task). ABAP projects are not supported.
         A full build must have run at least once so that the base application files are cached; otherwise the tool throws.`,
         annotations: {
             title: 'Preview Adaptation Project Manifest',
@@ -248,25 +247,25 @@ export const tools = [
             idempotentHint: true,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.UI5TaskAdaptationDelegationInputSchema)
+        inputSchema: convertToSchema(Input.UI5TaskAdaptationDelegationInputSchema),
+        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
     },
     {
         name: 'download_app_resources',
-        description: `Downloads the base application resources for an SAP Fiori Adaptation Project from the HTML5 Application Repository.
+        description: `Downloads the base application resources for an SAP Fiori Adaptation Project from the HTML5 Application Repository or ABAP Repository.
 
         This tool:
-        - Reads the project's ui5.yaml to extract the Cloud Foundry build task configuration
-        - Downloads the base application's resources from the HTML5 Repository
-        - Stores them locally for use during local development and preview
-
-        Cloud Foundry only: this tool requires a CF ADP project (ui5.yaml must contain a cf-deploy build task).`,
+        - Reads the project's ui5.yaml to extract the CF or ABAP configuration
+        - Downloads the base application's resources from the repository
+        - Stores them locally under .contexts/ for use during local development and preview`,
         annotations: {
             title: 'Download Adaptation Project Base App Resources',
             readOnlyHint: false,
             idempotentHint: true,
             openWorldHint: true
         },
-        inputSchema: convertToSchema(Input.UI5TaskAdaptationDelegationInputSchema)
+        inputSchema: convertToSchema(Input.UI5TaskAdaptationDelegationInputSchema),
+        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
     },
     {
         name: 'adp_controller_extension',
