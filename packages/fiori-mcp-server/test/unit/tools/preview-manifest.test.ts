@@ -4,10 +4,12 @@ import type { PreviewManifestInput } from '../../../src/types/index.js';
 // Mock @sap-ux/adp-tooling helpers used by validateManifest
 const mockReadUi5Config = jest.fn<any>();
 const mockExtractCfBuildTask = jest.fn<any>();
+const mockExtractAdpConfig = jest.fn<any>();
 const mockGetVariant = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     readUi5Config: mockReadUi5Config,
     extractCfBuildTask: mockExtractCfBuildTask,
+    extractAdpConfig: mockExtractAdpConfig,
     getVariant: mockGetVariant
 }));
 
@@ -29,8 +31,8 @@ const { validateManifest } = await import('../../../src/tools/preview-manifest.j
 
 describe('validateManifest (preview_manifest)', () => {
     const params: PreviewManifestInput = { appPath: '/test/adp/project' };
-    const configuration = { appName: 'REPO_NAME', appHostId: 'HOST_ID', moduleName: 'my.module' };
-    const variant = { id: 'customer.com.sap.application.variant.id' };
+    const configuration = { appName: 'appName', appHostId: 'appHostId', moduleName: 'moduleName' };
+    const variant = { id: 'customer.application.variant.id' };
     const mergedManifest = { 'sap.app': { id: variant.id } };
     const readerHandle = { reader: true };
     const workspaceHandle = { byGlob: jest.fn(), write: jest.fn() };
@@ -55,7 +57,7 @@ describe('validateManifest (preview_manifest)', () => {
         expect(mockCreateReader).toHaveBeenCalledWith(
             expect.objectContaining({
                 fsBasePath: expect.stringContaining('webapp'),
-                virBasePath: '/resources/customer/com/sap/application/variant/id/'
+                virBasePath: '/'
             })
         );
         expect(mockCreateWorkspace).toHaveBeenCalledWith({ reader: readerHandle });
@@ -68,17 +70,36 @@ describe('validateManifest (preview_manifest)', () => {
                 workspace: workspaceHandle,
                 options: {
                     configuration,
-                    projectNamespace: 'customer/com/sap/application/variant/id'
+                    projectNamespace: 'customer/application/variant/id'
                 }
             })
         );
     });
 
-    it('propagates the "No CF ADP project found" error for non-CF projects', async () => {
+    it('propagates the "No CF or ABAP ADP project found" error when neither config is found', async () => {
         mockExtractCfBuildTask.mockImplementation(() => {
             throw new Error('No CF ADP project found');
         });
-        await expect(validateManifest(params)).rejects.toThrow('No CF ADP project found');
+        mockExtractAdpConfig.mockReturnValue(undefined);
+        await expect(validateManifest(params)).rejects.toThrow('No CF or ABAP ADP project found');
         expect(mockPreviewManifest).not.toHaveBeenCalled();
+    });
+
+    it('falls back to ABAP config when CF task is not found', async () => {
+        const abapTarget = { url: 'https://xyz.abap-system.com', client: '200' };
+        mockExtractCfBuildTask.mockImplementation(() => {
+            throw new Error('No CF ADP project found');
+        });
+        mockExtractAdpConfig.mockReturnValue({ target: abapTarget });
+        await validateManifest(params);
+        expect(mockPreviewManifest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                workspace: workspaceHandle,
+                options: {
+                    configuration: { target: abapTarget, type: 'abap' },
+                    projectNamespace: 'customer/application/variant/id'
+                }
+            })
+        );
     });
 });

@@ -4,10 +4,12 @@ import type { DownloadAppResourcesInput } from '../../../src/types/index.js';
 // Mock @sap-ux/adp-tooling helpers used by validateManifest
 const mockReadUi5Config = jest.fn<any>();
 const mockExtractCfBuildTask = jest.fn<any>();
+const mockExtractAdpConfig = jest.fn<any>();
 const mockGetVariant = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     readUi5Config: mockReadUi5Config,
     extractCfBuildTask: mockExtractCfBuildTask,
+    extractAdpConfig: mockExtractAdpConfig,
     getVariant: mockGetVariant
 }));
 
@@ -29,9 +31,8 @@ const { downloadBaseAppResources } = await import('../../../src/tools/download-a
 
 describe('downloadBaseAppResources (download_app_resources)', () => {
     const params: DownloadAppResourcesInput = { appPath: '/test/adp/project' };
-    const configuration = { appName: 'REPO_NAME', appHostId: 'HOST_ID', moduleName: 'my.module' };
-    const variant = { id: 'customer.com.sap.application.variant.id' };
-    const mergedManifest = { 'sap.app': { id: variant.id } };
+    const configuration = { appName: 'appName', appHostId: 'appHostId', moduleName: 'moduleName' };
+    const variant = { id: 'customer.application.variant.id' };
     const readerHandle = { reader: true };
     const workspaceHandle = { byGlob: jest.fn(), write: jest.fn() };
 
@@ -39,10 +40,11 @@ describe('downloadBaseAppResources (download_app_resources)', () => {
         jest.clearAllMocks();
         mockReadUi5Config.mockResolvedValue({});
         mockExtractCfBuildTask.mockReturnValue(configuration);
+        mockExtractAdpConfig.mockReturnValue(undefined);
         mockGetVariant.mockResolvedValue(variant);
         mockCreateReader.mockReturnValue(readerHandle);
         mockCreateWorkspace.mockReturnValue(workspaceHandle);
-        mockDownloadAppResources.mockResolvedValue(mergedManifest);
+        mockDownloadAppResources.mockResolvedValue(undefined);
     });
 
     it('returns a JSON string indicating files were written and the target path', async () => {
@@ -78,7 +80,26 @@ describe('downloadBaseAppResources (download_app_resources)', () => {
         mockExtractCfBuildTask.mockImplementation(() => {
             throw new Error('No CF ADP project found');
         });
-        await expect(downloadBaseAppResources(params)).rejects.toThrow('No CF ADP project found');
+        mockExtractAdpConfig.mockReturnValue(undefined);
+        await expect(downloadBaseAppResources(params)).rejects.toThrow('No CF or ABAP ADP project found');
         expect(mockDownloadAppResources).not.toHaveBeenCalled();
+    });
+
+    it('falls back to ABAP config when CF task is not found', async () => {
+        const abapTarget = { url: 'https://xyz.abap-system.com', client: '200' };
+        mockExtractCfBuildTask.mockImplementation(() => {
+            throw new Error('No CF ADP project found');
+        });
+        mockExtractAdpConfig.mockReturnValue({ target: abapTarget });
+        await downloadBaseAppResources(params);
+        expect(mockDownloadAppResources).toHaveBeenCalledWith(
+            expect.objectContaining({
+                workspace: workspaceHandle,
+                options: {
+                    configuration: { target: abapTarget, type: 'abap' }
+                }
+            }),
+            expect.stringContaining('.contexts')
+        );
     });
 });
