@@ -46,9 +46,15 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 jest.unstable_mockModule('../../../../src/i18n', () => ({
     t: jest.fn((key: string, options?: any) => {
         // Return actual text for testing
-        if (key === 'systemActions.systemAdded') return `System '${options?.name}' added.`;
-        if (key === 'systemActions.systemNotAdded') return 'System was not added.';
-        if (key === 'systemActions.systemNotSaved') return 'System was not saved.';
+        if (key === 'systemActions.systemAdded') {
+            return `System '${options?.name}' added.`;
+        }
+        if (key === 'systemActions.systemNotAdded') {
+            return 'System was not added.';
+        }
+        if (key === 'systemActions.systemNotSaved') {
+            return 'System was not saved.';
+        }
         return key;
     }),
     initI18n: jest.fn().mockResolvedValue(undefined)
