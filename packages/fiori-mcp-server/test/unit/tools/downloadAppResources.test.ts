@@ -3,13 +3,11 @@ import type { DownloadAppResourcesInput } from '../../../src/types/index.js';
 
 // Mock @sap-ux/adp-tooling helpers used by validateManifest
 const mockReadUi5Config = jest.fn<any>();
-const mockExtractCfBuildTask = jest.fn<any>();
-const mockExtractAdpConfig = jest.fn<any>();
+const mockResolveAdpConfiguration = jest.fn<any>();
 const mockGetVariant = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     readUi5Config: mockReadUi5Config,
-    extractCfBuildTask: mockExtractCfBuildTask,
-    extractAdpConfig: mockExtractAdpConfig,
+    resolveAdpConfiguration: mockResolveAdpConfiguration,
     getVariant: mockGetVariant
 }));
 
@@ -29,7 +27,7 @@ jest.unstable_mockModule('@ui5/task-adaptation', () => ({
 
 const { downloadBaseAppResources } = await import('../../../src/tools/download-app-resources.js');
 
-describe('downloadBaseAppResources (download_app_resources)', () => {
+describe('downloadBaseAppResources', () => {
     const params: DownloadAppResourcesInput = { appPath: '/test/adp/project' };
     const configuration = { appName: 'appName', appHostId: 'appHostId', moduleName: 'moduleName' };
     const variant = { id: 'customer.application.variant.id' };
@@ -39,15 +37,14 @@ describe('downloadBaseAppResources (download_app_resources)', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockReadUi5Config.mockResolvedValue({});
-        mockExtractCfBuildTask.mockReturnValue(configuration);
-        mockExtractAdpConfig.mockReturnValue(undefined);
+        mockResolveAdpConfiguration.mockReturnValue(configuration);
         mockGetVariant.mockResolvedValue(variant);
         mockCreateReader.mockReturnValue(readerHandle);
         mockCreateWorkspace.mockReturnValue(workspaceHandle);
         mockDownloadAppResources.mockResolvedValue(undefined);
     });
 
-    it('returns a JSON string indicating files were written and the target path', async () => {
+    it('returns JSON string indicating files were written and the target path', async () => {
         const result = await downloadBaseAppResources(params);
         expect(result).toBe(JSON.stringify({ filesWritten: true, path: `${params.appPath}/.contexts/` }));
     });
@@ -63,7 +60,7 @@ describe('downloadBaseAppResources (download_app_resources)', () => {
         expect(mockCreateWorkspace).toHaveBeenCalledWith({ reader: readerHandle });
     });
 
-    it('passes the workspace and configuration to downloadAppResources without projectNamespace', async () => {
+    it('passes the workspace and configuration to downloadAppResources', async () => {
         await downloadBaseAppResources(params);
         expect(mockDownloadAppResources).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -76,30 +73,11 @@ describe('downloadBaseAppResources (download_app_resources)', () => {
         );
     });
 
-    it('propagates the "No CF ADP project found" error for non-CF projects', async () => {
-        mockExtractCfBuildTask.mockImplementation(() => {
-            throw new Error('No CF ADP project found');
+    it('propagates errors from resolveAdpConfiguration', async () => {
+        mockResolveAdpConfiguration.mockImplementation(() => {
+            throw new Error('No CF or ABAP ADP project found');
         });
-        mockExtractAdpConfig.mockReturnValue(undefined);
         await expect(downloadBaseAppResources(params)).rejects.toThrow('No CF or ABAP ADP project found');
         expect(mockDownloadAppResources).not.toHaveBeenCalled();
-    });
-
-    it('falls back to ABAP config when CF task is not found', async () => {
-        const abapTarget = { url: 'https://xyz.abap-system.com', client: '200' };
-        mockExtractCfBuildTask.mockImplementation(() => {
-            throw new Error('No CF ADP project found');
-        });
-        mockExtractAdpConfig.mockReturnValue({ target: abapTarget });
-        await downloadBaseAppResources(params);
-        expect(mockDownloadAppResources).toHaveBeenCalledWith(
-            expect.objectContaining({
-                workspace: workspaceHandle,
-                options: {
-                    configuration: { target: abapTarget, type: 'abap' }
-                }
-            }),
-            expect.stringContaining('.contexts')
-        );
     });
 });
