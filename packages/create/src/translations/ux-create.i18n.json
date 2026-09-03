@@ -49,5 +49,12 @@
         "connectionFailed": "Connection check failed. {{error}}",
         "unknownError": "Unknown error",
         "saveAnywayPrompt": "Connection check failed. Save system anyway?"
+    },
+    "systemActions": {
+        "systemNotAdded": "System was not added.",
+        "systemNotSaved": "System was not saved.",
+        "systemAdded": "System '{{name}}' added.",
+        "systemUpdated": "System '{{name}}' updated.",
+        "systemRemoved": "System '{{name}}' removed."
     }
 }

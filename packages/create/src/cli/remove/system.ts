@@ -5,6 +5,7 @@ import { getService, BackendSystemKey } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForRemoveConfirmation } from '../utils/system-prompts.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
+import { t } from '../../i18n.js';
 
 /**
  * Add the "remove system" subcommand to a passed command.
@@ -71,7 +72,7 @@ async function removeSystem(url: string | undefined, client: string | undefined,
 
         const deleted = await service.delete(system);
         if (deleted) {
-            logger.info(`System '${system.name}' removed.`);
+            logger.info(t('systemActions.systemRemoved', { name: system.name }));
         } else {
             const key = new BackendSystemKey({ url: system.url, client: system.client });
             logger.error(`Failed to remove system: ${key.getId()}`);

@@ -15,6 +15,7 @@ import { validateClient } from '@sap-ux/project-input-validator';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemConfig } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
+import { t } from '../../i18n.js';
 
 /**
  * Add the "add system" subcommand to a passed command.
@@ -54,7 +55,7 @@ Example:
             '--password <string>',
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
-        .option('--skip-credentials-prompt', 'Skip credential prompts (for mock systems or non-basic authentication)')
+        .option('--skip-credentials-prompt', 'Skip credential prompts. No credentials will be saved, but may be added later if required')
         .option('--skip-connection-validation', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
@@ -228,14 +229,14 @@ async function addSystem(params: {
         replaceEnvVariables(config);
 
         if (!validateSystemConfig(config, logger)) {
-            logger.info('System was not added.');
+            logger.info(t('systemActions.systemNotAdded'));
             return;
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
         if (!(await checkForDuplicates(config, service, logger))) {
-            logger.info('System was not added.');
+            logger.info(t('systemActions.systemNotAdded'));
             return;
         }
 
@@ -252,7 +253,7 @@ async function addSystem(params: {
         );
 
         if (!shouldSave) {
-            logger.info('System was not saved.');
+            logger.info(t('systemActions.systemNotSaved'));
             return;
         }
 
@@ -269,7 +270,7 @@ async function addSystem(params: {
         });
 
         await service.write(system);
-        logger.info(`System '${config.name}' added.`);
+        logger.info(t('systemActions.systemAdded', { name: config.name }));
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);

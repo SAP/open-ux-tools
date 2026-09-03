@@ -33,13 +33,7 @@ export async function checkSystemConnection(config: {
         return { success: false, error: t('systemConnection.invalidUrl', { url: config.url }) };
     }
 
-    // Skip connection check for auth types that require browser/external flow
-    // These cannot be validated via simple HTTP request
-    if (config.authenticationType === 'reentranceTicket' || config.authenticationType === 'oauth2') {
-        return { success: true }; // Assume reachable, auth will happen at runtime
-    }
-
-    // Attempt actual connection check for basic auth
+    // Attempt actual connection check
     try {
         const logger = getLogger();
 
@@ -51,6 +45,8 @@ export async function checkSystemConnection(config: {
         };
 
         // Build request options with auth if provided
+        // For basic auth with credentials, include them
+        // For reentranceTicket/oauth2, omit auth (will get 401 but proves reachability)
         const requestOptions =
             config.authenticationType === 'basic' && config.username && config.password
                 ? {

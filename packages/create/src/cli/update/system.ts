@@ -8,6 +8,7 @@ import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
+import { t } from '../../i18n.js';
 
 /**
  * Add the "update system" subcommand to a passed command.
@@ -275,7 +276,7 @@ async function updateSystem(params: {
 
         const key = new BackendSystemKey({ url: existing.url, client: existing.client });
         await service.partialUpdate(key, patch);
-        logger.info(`System '${existing.name}' updated.`);
+        logger.info(t('systemActions.systemUpdated', { name: existing.name }));
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);
