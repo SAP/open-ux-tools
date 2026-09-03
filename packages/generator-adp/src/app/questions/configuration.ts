@@ -794,19 +794,16 @@ export class ConfigPrompter {
             return validationResult;
         }
 
-        const options = {
-            system,
-            client: undefined,
-            username: answers.username,
-            password: answers.password
-        };
-
         try {
             this.targetApps = [];
             this.flexUICapability = undefined;
             this.selectedProjectType = undefined;
             this.selectedSystemType = undefined;
             this.supportedProject = undefined;
+            const options = {
+                system,
+                client: undefined
+            };
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = (await this.getIsAuthRequired(system)) ?? false;
 
