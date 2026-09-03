@@ -579,3 +579,17 @@ Options:
 - `--client <string>` - SAP client number (optional).
 - `--json` - Output as JSON, which is useful for automation and MCP integrations.
 
+--------------------------------
+
+## [`migrate`](#migrate)
+
+Migrate legacy WebIDE Fiori project to modern Fiori tools format
+
+Options:
+- `-d, --destination <name>` - SAP System destination name
+- `-s, --sap-system-name <name>` - SAP System name (alias for destination)
+- `-H, --hostname <host>` - Hostname (required if destination not provided)
+- `-c, --client <client>` - SAP Client (optional)
+- `-u, --ui5-version <version>` - UI5 version (defaults to source project version)
+- `-f, --force` - Force migration even if project is already a Fiori tools project
+
