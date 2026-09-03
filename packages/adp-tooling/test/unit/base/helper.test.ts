@@ -116,6 +116,7 @@ const {
     filterAndMapInboundsToManifest,
     readUi5Config,
     extractCfBuildTask,
+    resolveAdpConfiguration,
     getSpaceGuidFromUi5Yaml,
     readManifestFromBuildPath,
     loadAppVariant,
@@ -548,6 +549,41 @@ describe('helper', () => {
 
             expect(() => extractCfBuildTask(mockUi5Config)).toThrow('No CF ADP project found');
             expect(mockUi5Config.findCustomTask).toHaveBeenCalledWith('app-variant-bundler-build');
+        });
+    });
+
+    describe('resolveAdpConfiguration', () => {
+        test('returns CF build task when found', () => {
+            const cfTask = { target: { url: '/sample.cf' }, serviceInstance: 'serviceInstance' };
+            const mockUi5Config = {
+                findCustomTask: jest.fn().mockReturnValue({ configuration: cfTask }),
+                findCustomMiddleware: jest.fn().mockReturnValue(undefined)
+            } as unknown as UI5Config;
+
+            const result = resolveAdpConfiguration(mockUi5Config);
+
+            expect(result).toEqual(cfTask);
+        });
+
+        test('falls back to ABAP target when CF task is missing', () => {
+            const abapTarget = { url: 'https://xyz.abap-system.com', client: '200' };
+            const mockUi5Config = {
+                findCustomTask: jest.fn().mockReturnValue({ configuration: undefined }),
+                findCustomMiddleware: jest.fn().mockReturnValue({ configuration: { adp: { target: abapTarget } } })
+            } as unknown as UI5Config;
+
+            const result = resolveAdpConfiguration(mockUi5Config);
+
+            expect(result).toEqual({ target: abapTarget, type: 'abap' });
+        });
+
+        test('throws when neither CF task nor ABAP target is found', () => {
+            const mockUi5Config = {
+                findCustomTask: jest.fn().mockReturnValue({ configuration: undefined }),
+                findCustomMiddleware: jest.fn().mockReturnValue(undefined)
+            } as unknown as UI5Config;
+
+            expect(() => resolveAdpConfiguration(mockUi5Config)).toThrow('No CF or ABAP ADP project found');
         });
     });
 

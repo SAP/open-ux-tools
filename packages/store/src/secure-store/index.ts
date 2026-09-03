@@ -28,9 +28,17 @@ function getZoweSdkPaths(insiders: boolean): string[] {
         return [];
     }
 
+    /*
+     * The getZoweSdkPaths function only looks for sapse.sap-ux-application-modeler-extension as the VS Code extension containing the Zowe SDK. But in practice @zowe/secrets-for-zowe-sdk is only present in sapse.sap-ux-annotation-modeler-extension. So the fallback always finds no paths, and the SDK
+     * can't be loaded from the extension — causing DummyStore to be used instead.
+     */
     const appModelerExtensions = fs
         .readdirSync(vscodeExtensionsPath)
-        .filter((dir) => dir.startsWith('sapse.sap-ux-application-modeler-extension'));
+        .filter(
+            (dir) =>
+                dir.startsWith('sapse.sap-ux-application-modeler-extension') ||
+                dir.startsWith('sapse.sap-ux-annotation-modeler-extension')
+        );
 
     return appModelerExtensions
         .map((extensionDir) => {
@@ -61,10 +69,15 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
             log.debug(`Discovered fallback directories: ${JSON.stringify(fallbackPaths)}`);
             for (const path of fallbackPaths) {
                 try {
+                    /*
+                     * Missing .keyring on fallback returns (the more impactful one)
+                     * In loadZoweSecretSdk, the primary load correctly does require('@zowe/secrets-for-zowe-sdk').keyring, but the fallback returns the whole module object instead of .keyring. This means KeyStoreManager receives an object without getPassword/setPassword, and silently fails. This affects anyone
+                     * whose primary require fails and falls back to the VS Code extension path.
+                     */
                     log.debug(`Attempting to load Zowe secrets SDK from: ${path}`);
                     return typeof __non_webpack_require__ === 'function'
-                        ? __non_webpack_require__(path)
-                        : require(path);
+                        ? __non_webpack_require__(path).keyring
+                        : require(path).keyring;
                 } catch (fallbackError) {
                     log.warn(`Failed to load Zowe secrets SDK from ${path}: ${errorString(fallbackError)}`);
                 }
