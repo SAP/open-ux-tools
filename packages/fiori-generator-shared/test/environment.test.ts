@@ -35,6 +35,14 @@ describe('environment utils', () => {
         process.stdin.destroy();
     });
 
+    it('should return false when VSCODE_PID is set even if process.stdin.isTTY is true', () => {
+        process.env.VSCODE_PID = '12345';
+        process.stdin.isTTY = true;
+        process.argv[1] = 'path/to/mock';
+        expect(isCli()).toBe(false);
+        delete process.env.VSCODE_PID;
+    });
+
     it('should return true for cli', () => {
         mockCli(true);
         expect(isCli()).toBe(true);

@@ -734,6 +734,19 @@ describe('Test new system prompt', () => {
         expect(mockValidateService).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
     });
 
+    test('Should not throw when validate is called with null (YUI calls validate before selection is made)', async () => {
+        const connectValidator = new ConnectionValidatorClass();
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
+        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            useAutoComplete: true
+        });
+        const serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        // YUI calls validate with null before any service is selected — must not throw
+        await expect((serviceSelectionPrompt?.validate as Function)(null)).resolves.not.toThrow();
+    });
+
     test('Should apply `additionalMessages` prompt option', async () => {
         const connectValidator = new ConnectionValidatorClass();
         connectionValidatorMock.catalogs = {

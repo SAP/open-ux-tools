@@ -163,7 +163,7 @@ export function getSystemServiceQuestion(
         ): Promise<string | boolean | ValidationLink> => {
             let serviceAnswer = service as ServiceAnswer;
             // Autocomplete passes the entire choice object as the answer, so we need to extract the value
-            if (promptOptions?.useAutoComplete && (service as ListChoiceOptions).value) {
+            if (promptOptions?.useAutoComplete && service != null && (service as ListChoiceOptions).value) {
                 serviceAnswer = (service as ListChoiceOptions).value;
             }
 

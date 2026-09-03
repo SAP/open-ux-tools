@@ -7,6 +7,11 @@ import { hostEnvironment, type HostEnvironmentId } from './types/index.js';
  * @returns true if it is a cli environment, false otherwise
  */
 export function isCli(): boolean {
+    // VSCODE_PID is set by VS Code in its extension host; process.stdin.isTTY can be true
+    // on Windows with Node 24.x even inside VS Code, so exclude this case from CLI detection
+    if (process.env.VSCODE_PID) {
+        return false;
+    }
     if (process.argv[1]?.includes('yo') || process.stdin.isTTY) {
         return true;
     } else {
