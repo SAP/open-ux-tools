@@ -32,7 +32,7 @@ export class FioriAppGeneratorHeadless extends FioriAppGenerator {
             this.state = transformExtState(appConfig);
         } catch (error) {
             this.log(t('logMessages.generatorExiting'));
-            this.env.error(error);
+            throw error;
         }
     }
 
