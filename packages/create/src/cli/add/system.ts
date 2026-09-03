@@ -55,7 +55,10 @@ Example:
             '--password <string>',
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
-        .option('--skip-credentials-prompt', 'Skip credential prompts. No credentials will be saved, but may be added later if required')
+        .option(
+            '--skip-credentials-prompt',
+            'Skip credential prompts. No credentials will be saved, but may be added later if required'
+        )
         .option('--skip-connection-validation', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
