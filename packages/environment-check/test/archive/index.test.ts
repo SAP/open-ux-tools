@@ -69,10 +69,7 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.dot).toBe(false);
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toEqual(['**/node_modules/**']);
-        expect(globOptions.ignore.ignores('.git/config')).toBe(true);
-        expect(globOptions.ignore.ignores('.env')).toBe(true);
-        expect(globOptions.ignore.ignores('node_modules/pkg/index.js')).toBe(true);
-        expect(globOptions.ignore.ignores('FILE_ONE')).toBe(false);
+        expect(globOptions.ignore).toEqual(['**/.env', '**/.git', '**/node_modules']);
     });
 
     test('Archive sample project with default name and .gitignore (mocked, no real zip is created)', async () => {
@@ -116,11 +113,11 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.dot).toBe(true);
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toBe(undefined);
-        expect(globOptions.ignore.ignores('excludedir/file.txt')).toBe(true);
-        expect(globOptions.ignore.ignores('excludefile')).toBe(true);
-        expect(globOptions.ignore.ignores('some/nm/file')).toBe(true);
-        expect(globOptions.ignore.ignores('.git/config')).toBe(true);
-        expect(globOptions.ignore.ignores('FILE_ONE')).toBe(false);
+        expect(globOptions.ignore).toEqual(`#some comment
+excludedir/
+excludefile
+**/nm
+**/.git`);
     });
 
     test('Archive sample project TEST (mocked, no real zip is created), should write to TEST.zip', async () => {

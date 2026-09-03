@@ -1,5 +1,27 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.9
+
+## 1.2.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Bug Fixes
+
+- Correct UI label texts in the controller extension dialog [[b19615c](https://github.com/SAP/open-ux-tools/commit/b19615cc5d3c846c9c38ade51a24c078a1c06060)]
+
+## 1.2.7
+
+## 1.2.6
+
+## 1.2.5
+
+## 1.2.4
+
 ## 1.2.3
 
 ## 1.2.2

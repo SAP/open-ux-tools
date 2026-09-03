@@ -2721,7 +2721,7 @@ describe('Test getObjectPageFeatures()', () => {
             service: 'TestService',
             unbound: false,
             visible: true,
-            enabled: false,
+            enabled: true,
             dynamicPath: undefined,
             isCritical: false
         });
@@ -3093,7 +3093,7 @@ describe('Test getObjectPageFeatures()', () => {
                     service: 'TestService',
                     action: 'MassProcess',
                     unbound: false,
-                    enabled: false,
+                    enabled: true,
                     dynamicPath: undefined
                 }
             ]

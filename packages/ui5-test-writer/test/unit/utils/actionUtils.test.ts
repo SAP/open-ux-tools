@@ -226,7 +226,7 @@ describe('buildActionButtonState()', () => {
         expect(result.enabled).toBe(false);
     });
 
-    test('builds state for collection-bound action (bound, requires selection)', () => {
+    test('builds state for collection-bound action (bound, enabled without selection)', () => {
         const item = {
             Action: 'TestService.MassApprove(Collection(TestService.Order))',
             Label: 'Mass Approve',
@@ -238,7 +238,7 @@ describe('buildActionButtonState()', () => {
 
         const result = buildActionButtonState(item, minimalMetadata);
         expect(result.unbound).toBe(false);
-        expect(result.enabled).toBe(false);
+        expect(result.enabled).toBe(true);
     });
 
     test('includes invocationGrouping when present', () => {
@@ -313,6 +313,38 @@ describe('buildActionStateFromSpecModelKey()', () => {
             enabled: false,
             dynamicPath: undefined,
             isCritical: false
+        });
+    });
+
+    test('builds state for a collection-bound action (bound, enabled without selection)', () => {
+        const metadata = {
+            entitySets: [],
+            actions: [
+                {
+                    name: 'MassApprove',
+                    fullyQualifiedName: 'TestService.MassApprove(Collection(TestService.Order))',
+                    isBound: true,
+                    parameters: [{ isCollection: true }],
+                    annotations: { Core: {} }
+                }
+            ]
+        } as unknown as ConvertedMetadata;
+
+        const result = buildActionStateFromSpecModelKey(
+            'DataFieldForAction::TestService.MassApprove::TestService.OrderType',
+            'Mass Approve',
+            metadata,
+            'TestService'
+        );
+
+        expect(result).toEqual({
+            label: 'Mass Approve',
+            action: 'MassApprove',
+            service: 'TestService',
+            unbound: false,
+            visible: true,
+            enabled: true,
+            dynamicPath: undefined
         });
     });
 

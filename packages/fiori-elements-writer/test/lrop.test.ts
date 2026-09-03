@@ -12,17 +12,15 @@ import { create } from 'mem-fs-editor';
 const mockApplyCAPUpdates = jest.fn() as jest.Mock;
 const mockGenerateAnnotations = jest.fn() as jest.Mock;
 
-// Mock read-pkg-up
-jest.unstable_mockModule('read-pkg-up', () => ({
-    default: {
-        sync: jest.fn().mockReturnValue({
-            packageJson: {
-                name: 'mocked-package-name',
-                version: '9.9.9-mocked'
-            }
-        })
-    },
-    sync: jest.fn().mockReturnValue({
+// Mock read-package-up
+jest.unstable_mockModule('read-package-up', () => ({
+    readPackageUp: jest.fn().mockResolvedValue({
+        packageJson: {
+            name: 'mocked-package-name',
+            version: '9.9.9-mocked'
+        }
+    }),
+    readPackageUpSync: jest.fn().mockReturnValue({
         packageJson: {
             name: 'mocked-package-name',
             version: '9.9.9-mocked'

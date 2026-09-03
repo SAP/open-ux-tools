@@ -402,6 +402,86 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(true);
             expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
         });
+
+        it('system prompt validate should set isAuthRequired to false in BAS when getCsrfToken succeeds', async () => {
+            const mockGetCsrfToken = jest.fn().mockResolvedValue(undefined);
+            const providerWithLrep = {
+                ...provider,
+                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
+            } as unknown as AbapServiceProvider;
+            const systemLookup = {
+                ...sourceSystems,
+                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            mockIsAppStudio.mockReturnValue(true);
+            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter['isAuthRequired']).toBe(false);
+            expect(mockGetCsrfToken).toHaveBeenCalledTimes(1);
+        });
+
+        it('system prompt validate should set isAuthRequired to true in BAS when getCsrfToken returns 401', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                response: { status: 401 }
+            } as AxiosError;
+            const mockGetCsrfToken = jest.fn().mockRejectedValue(axiosError);
+            const providerWithLrep = {
+                ...provider,
+                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
+            } as unknown as AbapServiceProvider;
+            const systemLookup = {
+                ...sourceSystems,
+                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            mockIsAppStudio.mockReturnValue(true);
+            mockIsAxiosError.mockReturnValue(true);
+            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter['isAuthRequired']).toBe(true);
+        });
+
+        it('system prompt validate should return error message when getCsrfToken fails with a non-401 error in BAS', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                message: 'Internal Server Error',
+                response: { status: 500 }
+            } as AxiosError;
+            const mockGetCsrfToken = jest.fn().mockRejectedValue(axiosError);
+            const providerWithLrep = {
+                ...provider,
+                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
+            } as unknown as AbapServiceProvider;
+            const systemLookup = {
+                ...sourceSystems,
+                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            mockIsAppStudio.mockReturnValue(true);
+            mockIsAxiosError.mockReturnValue(true);
+            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(axiosError.message);
+        });
     });
 
     // Due to the massive size of this file, the remaining describe blocks need the same treatment.

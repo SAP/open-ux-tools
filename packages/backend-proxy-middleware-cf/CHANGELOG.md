@@ -1,5 +1,45 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.51
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.50 → 1.0.51
+
+## 0.3.50
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.49 → 1.0.50
+
+## 0.3.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.48 → 1.0.49
+
+## 0.3.48
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.47 → 1.0.48
+
+## 0.3.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.46 → 1.0.47
+
 ## 0.3.46
 
 ### Patch Changes
