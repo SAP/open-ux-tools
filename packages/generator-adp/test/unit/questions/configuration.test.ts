@@ -207,6 +207,19 @@ describe('ConfigPrompter Integration Tests', () => {
             });
         });
 
+        it('system prompt validate should call getConfiguredProvider without username and password', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+
+            await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(mockGetConfiguredProvider).toHaveBeenCalledWith(
+                { system: dummyAnswers.system, client: undefined },
+                expect.anything()
+            );
+        });
+
         it('system prompt validate should set ui5 properties when system ui5 version is NOT detected', async () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
