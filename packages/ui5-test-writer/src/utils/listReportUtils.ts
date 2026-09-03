@@ -222,11 +222,16 @@ export function getListReportFeatures(
             : undefined;
 
     // Columns with a text annotation only get a sort-order test when their bound property also
-    // carries a UI.TextArrangement annotation (checked against the merged metadata).
+    // carries a UI.TextArrangement annotation (checked against the merged metadata), and the text
+    // (sort target) property is not hidden — a hidden property is not a sortable column.
     const meta = convertedMetadata;
     const textAnnotationColumns: TextAnnotationColumn[] = meta
         ? extractTextAnnotationColumnsFromNode(listReportPage.model.root)
-              .filter((candidate) => hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty))
+              .filter(
+                  (candidate) =>
+                      hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty) &&
+                      !isHiddenProperty(meta, listReportPage.entitySet, candidate.textProperty)
+              )
               .map((candidate) => ({ textProperty: candidate.textProperty }))
         : [];
 
@@ -552,6 +557,32 @@ export function hasTextArrangement(
     const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
     // TextArrangement is a nested annotation on the Common.Text term (see vocabularies-types Common.Text).
     return property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement !== undefined;
+}
+
+/**
+ * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.Hidden` annotation.
+ * A hidden property is not exposed as a sortable column in the sort dialog, so it cannot be
+ * used as a sort target.
+ *
+ * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
+ * @param entitySetName - name of the entity set that owns the property (undefined → false)
+ * @param propertyName - name of the property to inspect
+ * @returns true if the property is hidden
+ */
+export function isHiddenProperty(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string | undefined,
+    propertyName: string
+): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
+    // The converted `@UI.Hidden` value is a Boolean wrapper object (it carries annotation metadata),
+    // so it is always truthy — coerce via `valueOf()` to read the underlying boolean and treat an
+    // explicit `Hidden: false` as not hidden.
+    return property?.annotations?.UI?.Hidden?.valueOf() === true;
 }
 
 /**
