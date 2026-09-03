@@ -14,48 +14,54 @@ import { NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS } from '../language/diagnostics.j
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4.js';
 import type { FeV2ListReport, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
-import { type ParsedService, buildAnnotationIndexKey } from '../project-context/parser/index.js';
+import {
+    type ParsedService,
+    buildAnnotationIndexKey,
+    type IndexedAnnotation
+} from '../project-context/parser/index.js';
 import type { TableNode } from '../project-context/linker/annotations.js';
 import { UI_HIDDEN, CAPABILITIES_SORT_RESTRICTIONS, CAPABILITIES_FILTER_RESTRICTIONS } from '../constants.js';
 
 /**
- * Returns the set of property names that are explicitly restricted (non-sortable or non-filterable)
- * for the given entity type by reading the Capabilities annotation from the service index.
+ * Returns the entity set path for a given entity type by scanning the service index.
+ * Capabilities terms (SortRestrictions, FilterRestrictions) must be annotated on the entity set,
+ * not the entity type, so callers must pass the entity set path when building index keys.
  *
- * @param entityType - Fully qualified entity type name
+ * @param entityType - Fully qualified entity type name (e.g. IncidentService.Incidents)
  * @param parsedService - Parsed OData service
- * @param capTerm - Fully qualified Capabilities term (SortRestrictions or FilterRestrictions)
- * @param restrictionProperty - Property name inside the Capabilities record (NonSortableProperties or NonFilterableProperties)
+ * @returns The entity set path (e.g. IncidentService.EntityContainer/Incidents), or entityType as fallback
  */
-function getRestrictedProperties(
-    entityType: string,
-    parsedService: ParsedService,
-    capTerm: string,
+function getEntitySetPath(entityType: string, parsedService: ParsedService): string {
+    for (const entitySet of Object.values(parsedService.index.entitySets)) {
+        if (entitySet.structuredType === entityType) {
+            return entitySet.path;
+        }
+    }
+    return entityType;
+}
+
+/**
+ * Extracts property names from a Capabilities restriction annotation element.
+ *
+ * @param annotation - The indexed annotation to extract from
+ * @param restrictionProperty - The record property name (e.g. NonSortableProperties)
+ * @returns Set of restricted property names, or undefined if the annotation structure is unexpected
+ */
+function extractRestrictedPropertyNames(
+    annotation: IndexedAnnotation,
     restrictionProperty: string
-): Set<string> {
-    const key = buildAnnotationIndexKey(entityType, capTerm);
-    const annotationMap = parsedService.index.annotations[key];
-    if (!annotationMap) {
-        return new Set();
-    }
-    const annotation = annotationMap['undefined'];
-    if (!annotation) {
-        return new Set();
-    }
+): Set<string> | undefined {
     const [record] = elementsWithName(Edm.Record, annotation.top.value);
     if (!record) {
-        return new Set();
+        return undefined;
     }
     const [propValueEl] = elements(
         (el) => el.name === Edm.PropertyValue && getElementAttributeValue(el, Edm.Property) === restrictionProperty,
         record
     );
-    if (!propValueEl) {
-        return new Set();
-    }
-    const [collection] = elementsWithName(Edm.Collection, propValueEl);
+    const [collection] = propValueEl ? elementsWithName(Edm.Collection, propValueEl) : [];
     if (!collection) {
-        return new Set();
+        return undefined;
     }
     const restricted = new Set<string>();
     for (const child of collection.content) {
@@ -67,6 +73,39 @@ function getRestrictedProperties(
         }
     }
     return restricted;
+}
+
+/**
+ * Returns the set of property names that are explicitly restricted (non-sortable or non-filterable)
+ * by reading the Capabilities annotation from the service index.
+ *
+ * Tries each candidate target in order and returns the first non-empty result. This handles both EDMX
+ * (where Capabilities targets the entity set path, e.g. IncidentService.EntityContainer/Incidents)
+ * and CDS (where Capabilities targets the entity name, e.g. IncidentService.Incidents).
+ *
+ * @param candidateTargets - Ordered list of annotation targets to try
+ * @param parsedService - Parsed OData service
+ * @param capTerm - Fully qualified Capabilities term (SortRestrictions or FilterRestrictions)
+ * @param restrictionProperty - Property name inside the Capabilities record (NonSortableProperties or NonFilterableProperties)
+ * @returns Set of restricted property names (empty if not found)
+ */
+function getRestrictedProperties(
+    candidateTargets: string[],
+    parsedService: ParsedService,
+    capTerm: string,
+    restrictionProperty: string
+): Set<string> {
+    for (const target of candidateTargets) {
+        const annotation = parsedService.index.annotations[buildAnnotationIndexKey(target, capTerm)]?.['undefined'];
+        if (!annotation) {
+            continue;
+        }
+        const restricted = extractRestrictedPropertyNames(annotation, restrictionProperty);
+        if (restricted && restricted.size > 0) {
+            return restricted;
+        }
+    }
+    return new Set();
 }
 
 /**
@@ -90,6 +129,7 @@ function getPathValue(element: Element): string {
  *
  * @param record - The DataField record element
  * @param aliasInfo - Alias information for resolving annotation terms
+ * @returns The `UI.Hidden` annotation element if found, or undefined if not found
  */
 function getDynamicHiddenAnnotation(record: Element, aliasInfo: AliasInformation): Element | undefined {
     return elementsWithName(Edm.Annotation, record).find((ann) => {
@@ -128,6 +168,9 @@ function processTableItem(
     const lineItemAnnotation = item.annotation.annotation;
     const aliasInfo = parsedService.artifacts.aliasInfo[lineItemAnnotation.top.uri];
     const entityType = lineItemAnnotation.target;
+    const entitySetPath = getEntitySetPath(entityType, parsedService);
+
+    const candidateTargets = [entitySetPath, entityType];
 
     const [collection] = elementsWithName(Edm.Collection, lineItemAnnotation.top.value);
     if (!collection) {
@@ -135,13 +178,13 @@ function processTableItem(
     }
 
     const nonSortable = getRestrictedProperties(
-        entityType,
+        candidateTargets,
         parsedService,
         CAPABILITIES_SORT_RESTRICTIONS,
         'NonSortableProperties'
     );
     const nonFilterable = getRestrictedProperties(
-        entityType,
+        candidateTargets,
         parsedService,
         CAPABILITIES_FILTER_RESTRICTIONS,
         'NonFilterableProperties'

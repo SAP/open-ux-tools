@@ -61,7 +61,7 @@ const V4_LINE_ITEM_DYNAMIC_HIDDEN_VIOLATION = `
     </Annotations>`;
 
 const V4_LINE_ITEM_DYNAMIC_HIDDEN_BOTH_RESTRICTED = `
-    <Annotations Target="IncidentService.Incidents">
+    <Annotations Target="IncidentService.EntityContainer/Incidents">
         <Annotation Term="Capabilities.SortRestrictions">
             <Record>
                 <PropertyValue Property="NonSortableProperties">
@@ -80,6 +80,8 @@ const V4_LINE_ITEM_DYNAMIC_HIDDEN_BOTH_RESTRICTED = `
                 </PropertyValue>
             </Record>
         </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents">
         <Annotation Term="UI.LineItem">
             <Collection>
                 <Record Type="UI.DataField">
@@ -91,7 +93,7 @@ const V4_LINE_ITEM_DYNAMIC_HIDDEN_BOTH_RESTRICTED = `
     </Annotations>`;
 
 const V4_LINE_ITEM_DYNAMIC_HIDDEN_SORT_ONLY_RESTRICTED = `
-    <Annotations Target="IncidentService.Incidents">
+    <Annotations Target="IncidentService.EntityContainer/Incidents">
         <Annotation Term="Capabilities.SortRestrictions">
             <Record>
                 <PropertyValue Property="NonSortableProperties">
@@ -101,6 +103,8 @@ const V4_LINE_ITEM_DYNAMIC_HIDDEN_SORT_ONLY_RESTRICTED = `
                 </PropertyValue>
             </Record>
         </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents">
         <Annotation Term="UI.LineItem">
             <Collection>
                 <Record Type="UI.DataField">

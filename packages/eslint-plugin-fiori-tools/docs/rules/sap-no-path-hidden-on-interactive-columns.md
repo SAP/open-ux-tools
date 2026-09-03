@@ -6,6 +6,8 @@ A `UI.Hidden` annotation that uses a path-based (dynamic) value on a `UI.LineIte
 
 The rule checks every `UI.DataField` record inside a `UI.LineItem` annotation. If the record carries a `UI.Hidden` annotation with a `Path` attribute (dynamic hiding), the rule reports a warning unless the column's property is explicitly listed in **both** `Capabilities.SortRestrictions/NonSortableProperties` and `Capabilities.FilterRestrictions/NonFilterableProperties`.
 
+> **XML note**: `Capabilities.SortRestrictions` and `Capabilities.FilterRestrictions` must target the **entity set**, not the entity type. Use the entity container path with a slash separator (e.g. `SalesService.EntityContainer/SalesOrders`), not the dot-separated entity type name (`SalesService.SalesOrders`).
+
 ##### Warning Message: `UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.`
 
 The following patterns are considered warnings:
@@ -28,7 +30,7 @@ The following patterns are considered warnings:
 
 ```xml
 <!-- Dynamic UI.Hidden on a column that is only sort-restricted (still filterable) -->
-<Annotations Target="SalesService.SalesOrders">
+<Annotations Target="SalesService.EntityContainer/SalesOrders">
     <Annotation Term="Capabilities.SortRestrictions">
         <Record>
             <PropertyValue Property="NonSortableProperties">
@@ -36,6 +38,8 @@ The following patterns are considered warnings:
             </PropertyValue>
         </Record>
     </Annotation>
+</Annotations>
+<Annotations Target="SalesService.SalesOrders">
     <Annotation Term="UI.LineItem">
         <Collection>
             <Record Type="UI.DataField">
@@ -94,7 +98,8 @@ The following patterns are not considered warnings:
 
 ```xml
 <!-- Dynamic UI.Hidden allowed: column is restricted for BOTH sort and filter -->
-<Annotations Target="SalesService.SalesOrders">
+<!-- Capabilities annotations target the entity set (slash notation) -->
+<Annotations Target="SalesService.EntityContainer/SalesOrders">
     <Annotation Term="Capabilities.SortRestrictions">
         <Record>
             <PropertyValue Property="NonSortableProperties">
@@ -109,6 +114,8 @@ The following patterns are not considered warnings:
             </PropertyValue>
         </Record>
     </Annotation>
+</Annotations>
+<Annotations Target="SalesService.SalesOrders">
     <Annotation Term="UI.LineItem">
         <Collection>
             <Record Type="UI.DataField">
