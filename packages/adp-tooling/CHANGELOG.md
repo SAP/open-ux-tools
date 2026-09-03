@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 1.0.51
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.9 → 1.0.10
+- @sap-ux/inquirer-common 1.0.37 → 1.0.38
+
 ## 1.0.50
 
 ### Patch Changes

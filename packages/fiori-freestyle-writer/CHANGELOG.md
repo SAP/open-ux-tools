@@ -1,5 +1,27 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 3.0.91
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade read-pkg-up 7.0.1 → read-package-up 11.0.0 [[30c8bbf](https://github.com/SAP/open-ux-tools/commit/30c8bbf4a155d45d6b7440e76171c24bd8b3a778)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.12 → 1.2.13
+- @sap-ux/ui5-test-writer 1.9.5 → 1.9.6
+- @sap-ux/cap-config-writer 1.0.34 → 1.0.35
+
+## 3.0.90
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.9.4 → 1.9.5
+
 ## 3.0.89
 
 ### Patch Changes
