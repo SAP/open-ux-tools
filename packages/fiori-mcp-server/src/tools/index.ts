@@ -19,8 +19,8 @@ export { openAdaptationEditor } from './open-adaptation-editor.js';
 export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 export { listLibrariesFromSystem } from './list-libraries.js';
-export { readODataMetadataAdp } from './read-odata-metadata.js';
 export { listODataServices } from './list-odata-services.js';
+export { readODataMetadataAdp } from './read-odata-metadata.js';
 export { validateManifest } from './preview-manifest.js';
 export { downloadBaseAppResources } from './download-app-resources.js';
 
