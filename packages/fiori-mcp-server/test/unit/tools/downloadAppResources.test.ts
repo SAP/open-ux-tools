@@ -45,9 +45,9 @@ describe('downloadBaseAppResources (download_app_resources)', () => {
         mockDownloadAppResources.mockResolvedValue(mergedManifest);
     });
 
-    it('returns a JSON string indicating files were written', async () => {
+    it('returns a JSON string indicating files were written and the target path', async () => {
         const result = await downloadBaseAppResources(params);
-        expect(result).toBe(JSON.stringify({ filesWritten: true }));
+        expect(result).toBe(JSON.stringify({ filesWritten: true, path: `${params.appPath}/.contexts/` }));
     });
 
     it('builds the reader over webapp with virBasePath of "/"', async () => {
