@@ -1,25 +1,154 @@
+import { jest } from '@jest/globals';
 import nock from 'nock';
-import * as fs from 'node:fs';
-import { join } from 'node:path';
+import * as realFs from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
-import { renderFile } from 'ejs';
 import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 
-import { type Logger, ToolsLogger } from '@sap-ux/logger';
-import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
-import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import * as helper from '../../../src/base/helper';
-import * as editors from '../../../src/writer/editors';
-import { AdpPreview } from '../../../src';
-import * as manifestService from '../../../src/base/abap/manifest-service';
-import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src';
-import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
-import { addCustomFragment } from '../../../src/preview/descriptor-change-handler';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
+
+// Named mocks for fs
+const mockExistsSyncFn = jest.fn<typeof realFs.existsSync>();
+const mockWriteFileSyncFn = jest.fn<typeof realFs.writeFileSync>();
+const mockMkdirSyncFn = jest.fn<typeof realFs.mkdirSync>();
+const mockCopyFileSyncFn = jest.fn<typeof realFs.copyFileSync>();
+
+// Named mocks for helper
+const mockGetExistingAdpProjectType = jest.fn<typeof realHelper.getExistingAdpProjectType>();
+const mockGetVariant = jest.fn<typeof realHelper.getVariant>();
+const mockGetAdpConfig = jest.fn<typeof realHelper.getAdpConfig>();
+const mockIsTypescriptSupported = jest.fn<typeof realHelper.isTypescriptSupported>();
+
+// Named mocks for other namespace modules
+const mockCreateAbapServiceProvider = jest.fn<typeof realSystemAccess.createAbapServiceProvider>();
+const mockGetAnnotationNamespaces = jest.fn<typeof realServiceWriter.getAnnotationNamespaces>();
+const mockGenerateChange = jest.fn<typeof realEditors.generateChange>();
+const mockInitMergedManifest = jest.fn() as jest.Mock;
+
+// Named mocks for change-handler
+const mockTryFixChange = jest.fn<typeof realChangeHandler.tryFixChange>();
+const mockAddXmlFragment = jest.fn<typeof realChangeHandler.addXmlFragment>();
+const mockAddControllerExtension = jest.fn<typeof realChangeHandler.addControllerExtension>();
+
+// Named mock for descriptor-change-handler
+const mockAddCustomFragment = jest.fn<typeof realDescriptorChangeHandler.addCustomFragment>();
+
+// Named mock for ejs
+const mockRenderFile = jest.fn<typeof realEjs.renderFile>();
+
+// Named mock for store
+const mockGetService = jest.fn<typeof realStore.getService>();
+
+// Pre-load real modules for spreading
+const realHelper = await import('../../../src/base/helper.js');
+const realSystemAccess = await import('@sap-ux/system-access/dist/base/connect');
+const realServiceWriter = await import('@sap-ux/odata-service-writer/dist/data/annotations');
+const realEditors = await import('../../../src/writer/editors.js');
+const realChangeHandler = await import('../../../src/preview/change-handler.js');
+const realDescriptorChangeHandler = await import('../../../src/preview/descriptor-change-handler.js');
+const realStore = await import('@sap-ux/store');
+const realEjs = await import('ejs');
+const realOs = await import('node:os');
+
+jest.unstable_mockModule('os', () => ({
+    ...realOs,
+    platform: jest.fn().mockImplementation(() => 'win32')
+}));
+
+jest.unstable_mockModule('../../../src/preview/change-handler', () => ({
+    ...realChangeHandler,
+    tryFixChange: mockTryFixChange,
+    addXmlFragment: mockAddXmlFragment,
+    addControllerExtension: mockAddControllerExtension
+}));
+
+jest.unstable_mockModule('../../../src/preview/descriptor-change-handler', () => ({
+    ...realDescriptorChangeHandler,
+    addCustomFragment: mockAddCustomFragment
+}));
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService.mockImplementation(() =>
+        Promise.resolve({
+            read: jest.fn().mockReturnValue({ username: '~user', password: '~pass' })
+        })
+    )
+}));
+
+jest.unstable_mockModule('ejs', () => ({
+    ...realEjs,
+    renderFile: mockRenderFile
+}));
+
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    default: {
+        ...realFs,
+        existsSync: mockExistsSyncFn,
+        writeFileSync: mockWriteFileSyncFn,
+        mkdirSync: mockMkdirSyncFn,
+        copyFileSync: mockCopyFileSyncFn
+    },
+    existsSync: mockExistsSyncFn,
+    writeFileSync: mockWriteFileSyncFn,
+    mkdirSync: mockMkdirSyncFn,
+    copyFileSync: mockCopyFileSyncFn
+}));
+
+jest.unstable_mockModule('fs', () => ({
+    ...realFs,
+    default: {
+        ...realFs,
+        existsSync: mockExistsSyncFn,
+        writeFileSync: mockWriteFileSyncFn,
+        mkdirSync: mockMkdirSyncFn,
+        copyFileSync: mockCopyFileSyncFn
+    },
+    existsSync: mockExistsSyncFn,
+    writeFileSync: mockWriteFileSyncFn,
+    mkdirSync: mockMkdirSyncFn,
+    copyFileSync: mockCopyFileSyncFn
+}));
+
+jest.unstable_mockModule('../../../src/base/helper', () => ({
+    ...realHelper,
+    getExistingAdpProjectType: mockGetExistingAdpProjectType,
+    getVariant: mockGetVariant,
+    getAdpConfig: mockGetAdpConfig,
+    isTypescriptSupported: mockIsTypescriptSupported
+}));
+
+jest.unstable_mockModule('@sap-ux/system-access/dist/base/connect', () => ({
+    ...realSystemAccess,
+    createAbapServiceProvider: mockCreateAbapServiceProvider
+}));
+
+jest.unstable_mockModule('@sap-ux/odata-service-writer/dist/data/annotations', () => ({
+    ...realServiceWriter,
+    getAnnotationNamespaces: mockGetAnnotationNamespaces
+}));
+
+jest.unstable_mockModule('../../../src/writer/editors', () => ({
+    ...realEditors,
+    generateChange: mockGenerateChange
+}));
+
+jest.unstable_mockModule('../../../src/base/abap/manifest-service', () => ({
+    ManifestService: { initMergedManifest: mockInitMergedManifest }
+}));
+
+const { AdpPreview } = await import('../../../src/index.js');
+import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src/index.js';
+const { addXmlFragment, tryFixChange, addControllerExtension } = await import('../../../src/preview/change-handler.js');
+const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler.js');
+const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -32,68 +161,21 @@ interface GetControllersResponse {
 }
 
 interface CodeExtResponse {
-    controllerExists: boolean;
-    controllerPath: string;
-    controllerPathFromRoot: string;
+    baseControllerExists: boolean;
+    baseControllerPath: string;
+    baseControllerPathFromRoot: string;
+    instanceControllerExists: boolean;
+    instanceControllerPath: string;
+    instanceControllerPathFromRoot: string;
 }
-
-jest.mock('os', () => ({
-    ...jest.requireActual('os'),
-    platform: jest.fn().mockImplementation(() => 'win32')
-}));
-
-jest.mock('../../../src/preview/change-handler', () => ({
-    ...jest.requireActual('../../../src/preview/change-handler'),
-    tryFixChange: jest.fn(),
-    addXmlFragment: jest.fn(),
-    addControllerExtension: jest.fn()
-}));
-
-jest.mock('../../../src/preview/descriptor-change-handler', () => ({
-    ...jest.requireActual('../../../src/preview/descriptor-change-handler'),
-    addCustomFragment: jest.fn()
-}));
-
-jest.mock('@sap-ux/store', () => {
-    return {
-        ...jest.requireActual('@sap-ux/store'),
-        getService: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-                read: jest.fn().mockReturnValue({ username: '~user', password: '~pass' })
-            })
-        )
-    };
-});
-
-jest.mock('ejs', () => ({
-    ...jest.requireActual('ejs'),
-    renderFile: jest.fn()
-}));
-
-const renderFileMock = renderFile as jest.Mock;
-const tryFixChangeMock = tryFixChange as jest.Mock;
-const addXmlFragmentMock = addXmlFragment as jest.Mock;
-const addControllerExtensionMock = addControllerExtension as jest.Mock;
-const addCustomFragmentMock = addCustomFragment as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
 };
 
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    existsSync: jest.fn(),
-    mkdirSync: jest.fn(),
-    writeFileSync: jest.fn(),
-    copyFileSync: jest.fn()
-}));
-
-const mockWriteFileSync = fs.writeFileSync as jest.Mock;
-const mockExistsSync = fs.existsSync as jest.Mock;
-
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
-    const descriptorVariant = fs.readFileSync(
+    const descriptorVariant = realFs.readFileSync(
         join(__dirname, '../../fixtures/adaptation-project/webapp', 'manifest.appdescr_variant'),
         'utf-8'
     );
@@ -164,7 +246,7 @@ describe('AdaptationProject', () => {
             nock.cleanAll();
         });
         test('default (no) config', async () => {
-            jest.spyOn(helper, 'getExistingAdpProjectType').mockResolvedValue(AdaptationProjectType.ON_PREMISE);
+            mockGetExistingAdpProjectType.mockResolvedValue(AdaptationProjectType.ON_PREMISE);
             const adp = new AdpPreview(
                 {
                     target: {
@@ -193,7 +275,7 @@ describe('AdaptationProject', () => {
         });
 
         test('cloud project', async () => {
-            jest.spyOn(helper, 'getExistingAdpProjectType').mockResolvedValue(AdaptationProjectType.CLOUD_READY);
+            mockGetExistingAdpProjectType.mockResolvedValue(AdaptationProjectType.CLOUD_READY);
             nock(backend)
                 .get('/sap/bc/adt/discovery')
                 .replyWithFile(200, join(__dirname, '..', '..', 'mockResponses/discovery.xml'));
@@ -262,6 +344,22 @@ describe('AdaptationProject', () => {
             expect(adp['descriptorVariantId']).toBe(parsedVariant.id);
             expect(adp['routesHandler']).toBeDefined();
             expect(adp['provider']).toBeUndefined();
+            expect(adp.isCloudFoundry).toBe(true);
+        });
+
+        test('isCloudFoundry returns false when cfBuildPath is not configured', () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            expect(adp.isCloudFoundry).toBe(false);
         });
     });
 
@@ -293,6 +391,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('should return early when cfBuildPath is set', async () => {
@@ -460,6 +559,9 @@ describe('AdaptationProject', () => {
             const app = express();
             app.use(adp.descriptor.url, adp.proxy.bind(adp));
             app.get(`${mockMergedDescriptor.url}/original.file`, next);
+            // Catch i18n .properties pass-throughs so tests can verify proxy() called next()
+            // without redirecting. Mirrors how fiori-tools-proxy would handle them in real runs.
+            app.get(new RegExp(`^${mockMergedDescriptor.url}/i18n/.*\\.properties$`), next);
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = supertest(app);
@@ -471,6 +573,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('/manifest.json with sync', async () => {
@@ -505,6 +608,66 @@ describe('AdaptationProject', () => {
         test('/original.file', async () => {
             await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
             expect(next).toHaveBeenCalled();
+        });
+
+        test('/i18n/i18n.properties is passed through (not redirected)', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n.properties`);
+
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('/i18n/i18n_de.properties (locale variant) is passed through', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n_de.properties`);
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('/i18n/ListReport/Foo/i18n.properties (per-page bundle) is passed through', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/ListReport/Foo/i18n.properties`);
+
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('rewrites ui5://<variant-id>/ prefixes in the manifest to local paths', async () => {
+            // The manifest built by the backend references bundleUrls via the ui5:// scheme
+            // using the descriptor variant id (my.adaptation), not the base app name
+            // (the.original.app). FLP Sandbox 2.0's CDM maps that namespace to the backend,
+            // so these must be rewritten to local absolute paths.
+            const rewriteDescriptor = {
+                ...mockMergedDescriptor,
+                manifest: {
+                    'sap.app': {
+                        id: 'my.adaptation',
+                        i18n: {
+                            bundleUrl: 'ui5://my/adaptation/i18n/i18n.properties',
+                            enhanceWith: [{ bundleUrl: 'ui5://my/adaptation/i18n/ListReport/i18n.properties' }]
+                        }
+                    }
+                }
+            };
+            const rewriteAdp = new AdpPreview(
+                { target: { url: backend } },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+            // Set the state that init()/sync() would normally populate, so the proxy can run
+            // without a backend round-trip. The rewrite uses descriptorVariantId, not name.
+            (rewriteAdp as any).mergedDescriptor = rewriteDescriptor;
+            (rewriteAdp as any).descriptorVariantId = 'my.adaptation';
+            (rewriteAdp as any).lrep = {};
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+
+            const rewriteApp = express();
+            rewriteApp.use(rewriteDescriptor.url, rewriteAdp.proxy.bind(rewriteAdp));
+            const response = await supertest(rewriteApp).get(`${rewriteDescriptor.url}/manifest.json`).expect(200);
+
+            const manifest = JSON.parse(response.text);
+            expect(manifest['sap.app'].i18n.bundleUrl).toBe('/i18n/i18n.properties');
+            expect(manifest['sap.app'].i18n.enhanceWith[0].bundleUrl).toBe('/i18n/ListReport/i18n.properties');
+            expect(response.text).not.toContain('ui5://');
         });
     });
 
@@ -542,13 +705,13 @@ describe('AdaptationProject', () => {
         it('should fix the change if type is "read" and conditions meet', async () => {
             await adp.onChangeRequest('read', addXMLChange, mockFs, mockLogger);
 
-            expect(tryFixChangeMock).toHaveBeenCalledWith(addXMLChange, mockLogger);
+            expect(mockTryFixChange).toHaveBeenCalledWith(addXMLChange, mockLogger);
         });
 
         it('should add an XML fragment if type is "write" and change is AddXMLChange', async () => {
             await adp.onChangeRequest('write', addXMLChange, mockFs, mockLogger);
 
-            expect(addXmlFragmentMock).toHaveBeenCalledWith(
+            expect(mockAddXmlFragment).toHaveBeenCalledWith(
                 '/adp.project/webapp',
                 addXMLChange,
                 mockFs,
@@ -568,7 +731,7 @@ describe('AdaptationProject', () => {
         it('should add an Controller Extension if type is "write" and change is addCodeExtChange', async () => {
             await adp.onChangeRequest('write', addCodeExtChange, mockFs, mockLogger);
 
-            expect(addControllerExtensionMock).toHaveBeenCalledWith(
+            expect(mockAddControllerExtension).toHaveBeenCalledWith(
                 '/projects/adp.project',
                 '/adp.project/webapp',
                 addCodeExtChange,
@@ -596,7 +759,7 @@ describe('AdaptationProject', () => {
                 mockLogger
             );
 
-            expect(addCustomFragmentMock).toHaveBeenCalledWith(
+            expect(mockAddCustomFragment).toHaveBeenCalledWith(
                 '/adp.project/webapp',
                 {
                     changeType: 'appdescr_fe_changePageConfiguration',
@@ -640,7 +803,7 @@ describe('AdaptationProject', () => {
                 logger
             );
             await adp.init(JSON.parse(descriptorVariant));
-            jest.spyOn(helper, 'getVariant').mockResolvedValue({
+            mockGetVariant.mockResolvedValue({
                 content: [],
                 id: 'adp/project',
                 layer: 'VENDOR',
@@ -648,16 +811,16 @@ describe('AdaptationProject', () => {
                 reference: 'adp/project'
             });
 
-            jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
+            mockGetAdpConfig.mockResolvedValue({
                 target: {
                     destination: 'testDestination'
                 },
                 ignoreCertErrors: false
             });
-            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+            mockIsTypescriptSupported.mockReturnValue(false);
 
-            jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
-            jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
+            mockCreateAbapServiceProvider.mockResolvedValue({} as any);
+            mockInitMergedManifest.mockResolvedValue({
                 getDataSourceMetadata: jest.fn().mockResolvedValue(`
                     <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -687,14 +850,14 @@ describe('AdaptationProject', () => {
                     }
                 })
             } as any);
-            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValue(false);
-            jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
+            mockExistsSyncFn.mockReturnValueOnce(true).mockReturnValue(false);
+            mockGetAnnotationNamespaces.mockReturnValue([
                 {
                     namespace: 'com.sap.gateway.srvd.c_salesordermanage_sd.v0001',
                     alias: 'test'
                 }
             ]);
-            jest.spyOn(editors, 'generateChange').mockResolvedValue({
+            mockGenerateChange.mockResolvedValue({
                 commit: jest.fn().mockResolvedValue('commited')
             } as any);
             const app = express();
@@ -704,8 +867,8 @@ describe('AdaptationProject', () => {
         });
 
         afterEach(() => {
-            mockExistsSync.mockRestore();
-            mockWriteFileSync.mockRestore();
+            mockExistsSyncFn.mockReset();
+            mockWriteFileSyncFn.mockReset();
         });
 
         test('GET /adp/api/fragment', async () => {
@@ -783,56 +946,71 @@ describe('AdaptationProject', () => {
         });
 
         test('POST /adp/api/controller - creates controller', async () => {
-            mockExistsSync.mockReturnValue(false);
-            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+            mockExistsSyncFn.mockReturnValue(false);
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(undefined, 'test-js-controller');
-            });
+            }) as unknown as typeof realEjs.renderFile);
             const controllerName = 'Share';
             const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.js');
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
 
             const message = response.text;
-            expect(mockWriteFileSync).toHaveBeenNthCalledWith(1, controllerPath, 'test-js-controller', {
+            expect(mockWriteFileSyncFn).toHaveBeenNthCalledWith(1, controllerPath, 'test-js-controller', {
                 encoding: 'utf8'
             });
             expect(message).toBe('Controller extension created!');
         });
 
         test('POST /adp/api/controller - creates TypeScript controller', async () => {
-            mockExistsSync.mockReturnValue(false);
-            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
-            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+            mockExistsSyncFn.mockReturnValue(false);
+            mockIsTypescriptSupported.mockReturnValue(true);
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(undefined, 'test-ts-controller');
-            });
+            }) as unknown as typeof realEjs.renderFile);
 
             const controllerName = 'Share';
             const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.ts');
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
 
             const message = response.text;
-            expect(mockWriteFileSync).toHaveBeenNthCalledWith(1, controllerPath, 'test-ts-controller', {
+            expect(mockWriteFileSyncFn).toHaveBeenNthCalledWith(1, controllerPath, 'test-ts-controller', {
                 encoding: 'utf8'
             });
             expect(message).toBe('Controller extension created!');
         });
 
         test('POST /adp/api/controller - throws error during rendering a ts template', async () => {
-            mockExistsSync.mockReturnValue(false);
-            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
-            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+            mockExistsSyncFn.mockReturnValue(false);
+            mockIsTypescriptSupported.mockReturnValue(true);
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(new Error('Failed to render template'), '');
-            });
+            }) as unknown as typeof realEjs.renderFile);
 
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(500);
 
             const message = response.text;
-            expect(mockWriteFileSync).not.toHaveBeenCalled();
+            expect(mockWriteFileSyncFn).not.toHaveBeenCalled();
             expect(message).toBe('Error rendering TypeScript template Failed to render template');
         });
 
         test('POST /adp/api/controller - controller already exists', async () => {
-            mockExistsSync.mockReturnValueOnce(false).mockResolvedValueOnce(true);
+            mockExistsSyncFn.mockReturnValueOnce(false).mockResolvedValueOnce(true);
 
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(409);
@@ -856,7 +1034,7 @@ describe('AdaptationProject', () => {
         });
 
         test('GET /adp/api/code_ext - returns existing controller data', async () => {
-            mockExistsSync.mockReturnValue(true);
+            mockExistsSyncFn.mockReturnValue(true);
             const changeFileStr =
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
             mockProject.byGlob.mockResolvedValueOnce([
@@ -869,11 +1047,12 @@ describe('AdaptationProject', () => {
                 .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport')
                 .expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
-            expect(data.controllerExists).toEqual(true);
+            expect(data.baseControllerExists).toEqual(true);
+            expect(data.instanceControllerExists).toEqual(false);
         });
 
         test('GET /adp/api/code_ext - returns existing controller data with new syntax', async () => {
-            mockExistsSync.mockReturnValue(true);
+            mockExistsSyncFn.mockReturnValue(true);
             const changeFileStr =
                 '{"selector":{"controllerName":"module:sap/suite/ui/generic/template/ListReport/view.ListReport.controller"},"content":{"codeRef":"coding/share.js"}}';
             mockProject.byGlob.mockResolvedValueOnce([
@@ -888,11 +1067,85 @@ describe('AdaptationProject', () => {
                 )
                 .expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
-            expect(data.controllerExists).toEqual(true);
+            expect(data.baseControllerExists).toEqual(true);
+        });
+
+        test('GET /adp/api/code_ext - returns instance-specific controller data when viewId matches', async () => {
+            mockExistsSyncFn.mockReturnValue(true);
+            const changeFileStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js","viewId":"view1"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr,
+                    getName: () => 'id_124_codeExt.change'
+                }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.instanceControllerExists).toEqual(true);
+            expect(data.baseControllerExists).toEqual(false);
+        });
+
+        test('GET /adp/api/code_ext - ignores instance-specific controller bound to a different view', async () => {
+            mockExistsSyncFn.mockReturnValue(true);
+            const changeFileStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js","viewId":"otherView"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr,
+                    getName: () => 'id_124_codeExt.change'
+                }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.baseControllerExists).toEqual(false);
+            expect(data.instanceControllerExists).toEqual(false);
+        });
+
+        test('GET /adp/api/code_ext - detects both base and instance-specific controllers', async () => {
+            mockExistsSyncFn.mockReturnValue(true);
+            const baseChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/base.js"}}';
+            const instanceChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/instance.js","viewId":"view1"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                { getString: () => baseChangeStr, getName: () => 'id_1_codeExt.change' },
+                { getString: () => instanceChangeStr, getName: () => 'id_2_codeExt.change' }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.baseControllerExists).toEqual(true);
+            expect(data.instanceControllerExists).toEqual(true);
+        });
+
+        test('GET /adp/api/code_ext - ignores a stale base controller and returns the valid instance-specific one', async () => {
+            // Base controller file is missing (stale change), instance-specific file exists.
+            mockExistsSyncFn.mockImplementation((p) => !String(p).includes('base'));
+            const baseChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/base.js"}}';
+            const instanceChangeStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/instance.js","viewId":"view1"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                { getString: () => baseChangeStr, getName: () => 'id_1_codeExt.change' },
+                { getString: () => instanceChangeStr, getName: () => 'id_2_codeExt.change' }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport&viewId=view1')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.baseControllerExists).toEqual(false);
+            expect(data.instanceControllerExists).toEqual(true);
+            expect(data).not.toHaveProperty('message'); // stale entry does not turn the 200 into an error payload
         });
 
         test('GET /adp/api/code_ext - returns empty existing controller data (no control found)', async () => {
-            mockExistsSync.mockReturnValue(true);
+            mockExistsSyncFn.mockReturnValue(true);
             const changeFileStr =
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
             mockProject.byGlob.mockResolvedValueOnce([
@@ -902,11 +1155,12 @@ describe('AdaptationProject', () => {
             ]);
             const response = await server.get('/adp/api/code_ext?name=sap.suite.ui.generic.template.Dummy').expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
-            expect(data.controllerExists).toEqual(false);
+            expect(data.baseControllerExists).toEqual(false);
+            expect(data.instanceControllerExists).toEqual(false);
         });
 
         test('GET /adp/api/code_ext - returns not found if no controller extension file was found locally', async () => {
-            mockExistsSync.mockReturnValue(false);
+            mockExistsSyncFn.mockReturnValue(false);
             const changeFileStr =
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
             mockProject.byGlob.mockResolvedValueOnce([
@@ -918,6 +1172,24 @@ describe('AdaptationProject', () => {
             await server
                 .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport')
                 .expect(404);
+        });
+
+        test('GET /adp/api/code_ext - lists all stale change file paths when multiple controllers are missing', async () => {
+            mockExistsSyncFn.mockReturnValue(false);
+            const makeChangeFile = (codeRef: string, name: string) => ({
+                getString: () =>
+                    `{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"${codeRef}"}}`,
+                getName: () => name
+            });
+            mockProject.byGlob.mockResolvedValueOnce([
+                makeChangeFile('coding/share.js', 'id_001_codeExt.change'),
+                makeChangeFile('coding/other.js', 'id_002_codeExt.change')
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport')
+                .expect(404);
+            expect(response.body.message).toContain('id_001_codeExt.change');
+            expect(response.body.message).toContain('id_002_codeExt.change');
         });
 
         test('GET /adp/api/code_ext - throws error', async () => {
@@ -947,7 +1219,7 @@ describe('AdaptationProject', () => {
         });
 
         test('GET /adp/api/annotation => Metadata fetch error', async () => {
-            jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
+            mockInitMergedManifest.mockResolvedValue({
                 getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('Metadata fetch error')),
                 getManifestDataSources: jest.fn().mockReturnValue({
                     mainService: {
@@ -994,7 +1266,7 @@ describe('AdaptationProject', () => {
                 logger
             );
             await adp.init(JSON.parse(descriptorVariant));
-            jest.spyOn(helper, 'getVariant').mockResolvedValue({
+            mockGetVariant.mockResolvedValue({
                 content: [],
                 id: 'adp/project',
                 layer: 'VENDOR',
@@ -1002,13 +1274,13 @@ describe('AdaptationProject', () => {
                 reference: 'adp/project'
             });
 
-            jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
+            mockGetAdpConfig.mockResolvedValue({
                 target: {
                     destination: 'testDestination'
                 },
                 ignoreCertErrors: false
             });
-            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+            mockIsTypescriptSupported.mockReturnValue(false);
 
             const app = express();
             app.use(express.json());

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
-import type { ServiceOptions } from './service';
-import { Service } from './service';
+import type { ServiceOptions } from './service.js';
+import { Service } from './service.js';
 
 const serviceStore: Map<string, Service> = new Map();
 
@@ -32,15 +32,4 @@ export async function getService(options: ServiceOptions): Promise<Service> {
         throw new Error(`No service: '${key}'`);
     }
     return service;
-}
-
-/**
- * Removes a service from the `serviceStore`.
- *
- * @param options - The configuration object containing details about the service.
- * @returns `true` if the service was removed successfully.
- */
-export function removeService(options: ServiceOptions): boolean {
-    const key = getServiceStorageKey(options);
-    return serviceStore.delete(key);
 }

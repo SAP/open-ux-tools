@@ -45,3 +45,52 @@ Another very important option to contribute is by reviewing open pull requests. 
 5. Reviewing tests, test snapshots and configuration changes are as important as reviewing code.
 
 Please note that common sense always wins over guidelines e.g. if a pull request just fixes a typo somewhere, it is ok to approve without an explanation of what you did and did not review.
+
+---
+
+## Review Process
+
+Open UX Tools uses a **+2 review model**: every PR requires approval from two reviewers before it can be merged.
+
+- **Reviewer 1 — Broaden Horizon:** Any member of `@SAP/ux-tools-team`. This reviewer provides a cross-domain perspective, checking for consistency with the wider codebase, documentation quality, and general code health.
+- **Reviewer 2 — Domain Expert:** A member of the CODEOWNERS team for the affected package(s), or any member of `@SAP/ux-tools-architects`. This reviewer provides deep technical review of the change within its domain.
+
+Either reviewer may be the PR author's direct teammate; what matters is that both perspectives are covered.
+
+## Hyperspace Bot
+
+All PRs are automatically reviewed by the Hyperspace static-analysis bot when opened or updated.
+
+- The bot posts findings as PR comments. Each finding must be **addressed before the PR is posted in the review channel**: either fix the underlying issue or reply to the comment with an explicit explanation of why the finding is dismissed.
+- If the bot re-triggers on a new push, re-check its output before requesting re-review.
+
+## Review Channel (SAP Internal)
+All review requests must be posted in the dedicated Slack channel **#up-open-ux-tools-pr-reviews**. Do not post review requests in individual team channels.
+
+**Posting protocol:**
+1. Ensure the Hyperspace bot has run and all findings are addressed.
+2. Post a single message containing the PR link and a one-line summary of the change.
+3. Do not repeatedly re-post the same PR; instead bump the existing thread if the PR has been updated significantly.
+
+**Reaction conventions used in the channel:**
+- `:approved_seal:` — reviewer has approved the PR
+- `:github-merged:` — PR has been merged
+
+## Review SLA
+
+| Reviewer role | Target response time |
+|---|---|
+| Reviewer 1 (Broaden Horizon) | 0.5 working day |
+| Reviewer 2 (Domain Expert) | 1 working day |
+
+SLAs are a team commitment, not a guarantee. If a PR is blocking work, flag it in the thread with an `@mention`.
+
+## PR Author Responsibilities
+
+Before posting a PR in the review channel, the author must:
+
+1. **Run the Hyperspace bot** — open (or update) the PR so the bot triggers, then address all findings.
+2. **Self-review** — read your own diff as if you were the reviewer; catch typos, debug code, and obvious issues before asking others.
+3. **Add a changeset** — run `pnpm cset` and commit the generated file, or apply the `no-changeset` label if the change has no consumer-facing impact (e.g., pure documentation, test-only, or CI config changes).
+4. **Respond to all comments** — do not leave reviewer comments unanswered; either fix the issue or explain why you disagree.
+5. **Post in the right place** — use `#up-open-ux-tools-pr-reviews`, not individual team channels.

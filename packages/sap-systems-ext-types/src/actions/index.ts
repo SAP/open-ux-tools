@@ -1,2 +1,2 @@
-export * from './webapp';
-export * from './extension';
+export * from './webapp.js';
+export * from './extension.js';

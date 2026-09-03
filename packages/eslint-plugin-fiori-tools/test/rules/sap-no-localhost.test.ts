@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-localhost';
+import rule from '../../src/rules/sap-no-localhost.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

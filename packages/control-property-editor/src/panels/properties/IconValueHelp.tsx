@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 import type { IconDetails, PropertyType } from '@sap-ux-private/control-property-editor-common';
 
 import './SapUiIcon.scss';
-import { changeProperty } from '../../slice';
-import { setCachedValue } from './propertyValuesCache';
-import { InputType } from './types';
+import { changeProperty } from '../../slice.js';
+import { setCachedValue } from './propertyValuesCache.js';
+import { InputType } from './types.js';
 import { useDispatch } from 'react-redux';
 
 export interface IconValueHelpProps {

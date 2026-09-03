@@ -7,7 +7,7 @@ import {
     loadApplicationInfoFromSettings,
     appInfoFilePath,
     defaultAppInfoContents
-} from '../src';
+} from '../src/index.js';
 import { promises as fsPromises } from 'node:fs';
 
 describe('Application Info Settings', () => {
@@ -67,5 +67,32 @@ describe('Application Info Settings', () => {
         expect(() => deleteAppInfoSettings(errorFs)).toThrow(
             'Error deleting appInfo.json file: Error: Mock delete error'
         );
+    });
+
+    it('loadApplicationInfoFromSettings should respect autoOpen parameter when disabled', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        loadApplicationInfoFromSettings(executeCommand, fs, false);
+        expect(executeCommand).not.toHaveBeenCalled(); // Command should NOT be executed
+        expect(fs.exists(appInfoFilePath)).toBe(false); // File should still be deleted
+    });
+
+    it('loadApplicationInfoFromSettings should execute command when autoOpen is enabled', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        loadApplicationInfoFromSettings(executeCommand, fs, true);
+        expect(executeCommand).toHaveBeenCalledWith(testPath); // Command SHOULD be executed
+        expect(fs.exists(appInfoFilePath)).toBe(false);
+    });
+
+    it('loadApplicationInfoFromSettings should default to enabled when autoOpen not provided', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        loadApplicationInfoFromSettings(executeCommand, fs); // No autoOpen parameter
+        expect(executeCommand).toHaveBeenCalledWith(testPath); // Should execute (default: true)
+        expect(fs.exists(appInfoFilePath)).toBe(false);
     });
 });

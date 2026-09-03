@@ -1,5 +1,5 @@
 import type { Manifest } from '@sap-ux/project-access';
-import type { AnnotationReference } from '../project-context/parser';
+import type { AnnotationReference } from '../project-context/parser/index.js';
 import type { Element } from '@sap-ux/odata-annotation-core';
 import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
@@ -16,10 +16,14 @@ export const TEXT_ARRANGEMENT_HIDDEN = 'sap-text-arrangement-hidden';
 export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
+export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
+export const NO_LIVE_MODE = 'sap-no-live-mode';
+export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest: Partial<ManifestPropertyDiagnosticData> &
+        Pick<ManifestPropertyDiagnosticData, 'uri' | 'object' | 'propertyPath'>;
     pageName: string;
     pageSectionName?: string;
     annotation: {
@@ -37,7 +41,7 @@ export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
     propertyPath: string[];
-    loc?: SourceLocation;
+    loc: SourceLocation;
 }
 
 export interface FlexEnabled {
@@ -72,22 +76,24 @@ export interface CopyToClipboard {
 
 export interface EnableExport {
     type: typeof ENABLE_EXPORT;
+    property: string;
     pageName: string;
     pageSectionName?: string;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
+    changeFileUri?: string;
 }
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
+    property: string;
     pageName: string;
     pageSectionName?: string;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
+    changeFileUri?: string;
 }
 
 export type StatePreservationModeMessageId =
-    | 'invalidMode'
-    | 'recommendPersistenceForFCL'
-    | 'recommendDiscoveryForNonFCL';
+    'invalidMode' | 'recommendPersistenceForFCL' | 'recommendDiscoveryForNonFCL';
 
 export interface StatePreservationMode {
     type: typeof STATE_PRESERVATION_MODE;
@@ -125,9 +131,7 @@ export interface NoDataFieldIntentBasedNavigation {
     type: typeof NO_DATA_FIELD_INTENT_BASED_NAVIGATION;
     pageNames: string[];
     annotation: {
-        file: string;
         recordType: string;
-        annotationPath: string;
         reference: AnnotationReference;
         reportedParent: Element;
     };
@@ -145,6 +149,24 @@ export interface StrictUomFiltering {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export type DescriptionColumnLabelMessageId =
+    | 'trivialLabel' // label is "Name" or "Description"
+    | 'duplicateLabel'; // label of text property matches label of ID property
+
+export interface DescriptionColumnLabel {
+    type: typeof DESCRIPTION_COLUMN_LABEL;
+    messageId: DescriptionColumnLabelMessageId;
+    pageNames: string[];
+    annotation: {
+        /** Reference to the Common.Label annotation of the text property (the reported node) */
+        reference: AnnotationReference;
+        idPropertyTarget: string;
+        textPropertyTarget: string;
+        textPropertyLabel: string;
+        idPropertyLabel?: string;
+    };
+}
+
 export interface TextArrangementHidden {
     type: typeof TEXT_ARRANGEMENT_HIDDEN;
     pageNames: string[];
@@ -155,12 +177,26 @@ export interface TextArrangementHidden {
     };
 }
 
+export interface NoLiveMode {
+    type: typeof NO_LIVE_MODE;
+    pageName: string;
+    property: string;
+    manifest?: ManifestPropertyDiagnosticData; // ODataV4 - manifest property
+    changeFileUri?: string; // ODataV2 - flex change property
+}
+
+export interface CloudDevAdaptationStatus {
+    type: typeof CLOUD_DEV_ADAPTATION_STATUS;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
     | FlexEnabled
     | CopyToClipboard
     | CreationModeForTable
+    | DescriptionColumnLabel
     | EnableExport
     | EnablePaste
     | StatePreservationMode
@@ -169,4 +205,6 @@ export type Diagnostic =
     | CondensedTableLayout
     | TablePersonalization
     | TextArrangementHidden
-    | StrictUomFiltering;
+    | StrictUomFiltering
+    | NoLiveMode
+    | CloudDevAdaptationStatus;

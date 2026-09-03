@@ -1,13 +1,25 @@
-import { includeTestRunnersPrompt, simulatePrompt } from '../../../src';
+import { jest } from '@jest/globals';
+import chalk from 'chalk';
+
+jest.unstable_mockModule('chalk', () => ({
+    default: chalk,
+    cyan: (s: string) => s,
+    yellow: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
+}));
 
 let promptReturnObject: object;
-jest.mock('prompts', () => {
-    return {
-        prompt: () => {
-            return promptReturnObject;
-        }
-    };
-});
+const mockPrompt = jest.fn().mockImplementation(() => promptReturnObject);
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPromptsModule
+}));
+
+const { includeTestRunnersPrompt, simulatePrompt } = await import('../../../src/index.js');
 
 describe('Test prompts for convert preview', () => {
     test('Test simulatePrompt - true', async () => {

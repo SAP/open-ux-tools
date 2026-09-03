@@ -1,6 +1,6 @@
 import { type Logger } from '@sap-ux/logger';
-import { errorString } from '../utils';
-import type { SecureStore } from './types';
+import { errorString } from '../utils/index.js';
+import type { SecureStore } from './types.js';
 import type { keyring } from '@zowe/secrets-for-zowe-sdk';
 
 type Entities<T> = { [key: string]: T };

@@ -1,5 +1,5 @@
 import type UI5Element from 'sap/ui/core/Element';
-import { validateBindingModel } from '../../../../src/cpe/changes/validator';
+import { validateBindingModel } from '../../../../src/cpe/changes/validator.js';
 
 describe('vaildateBindingModel', () => {
     const mockModifiedcontrol = {

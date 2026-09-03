@@ -1,6 +1,6 @@
-import { AdtService } from './adt-service';
-import type { AdtCategory } from '../../types';
-import type { GeneratorEntry } from '../generators/types';
+import { AdtService } from './adt-service.js';
+import type { AdtCategory } from '../../types/index.js';
+import type { GeneratorEntry } from '../generators/types.js';
 /**
  * RapGeneratorService implements ADT requests for generating an OData Service
  * from ABAP backend system.

@@ -6,7 +6,7 @@ import { parse } from '@xml-tools/parser';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 import { Range } from '@sap-ux/odata-annotation-core-types';
 
-import { convertDocument } from '../../src/parser';
+import { convertDocument } from '../../src/parser/index.js';
 
 function parseWithMarkup(text: string): AnnotationFile | undefined {
     const markup = `<?xml version="1.0" encoding="utf-8"?>

@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/helpers';
+import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Helper Functions

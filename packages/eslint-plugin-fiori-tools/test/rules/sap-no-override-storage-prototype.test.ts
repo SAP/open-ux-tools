@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-override-storage-prototype';
+import rule from '../../src/rules/sap-no-override-storage-prototype.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

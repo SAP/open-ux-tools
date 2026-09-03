@@ -1,4 +1,4 @@
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import type { ListChoiceOptions } from 'inquirer';
 import { checkDependencies } from '@sap-ux/project-access';
 import { extendWithOptions, type CheckBoxQuestion, type ListQuestion } from '@sap-ux/inquirer-common';
@@ -8,10 +8,11 @@ import {
     type ReuseLibChoice,
     type UI5LibraryReferenceAnswers,
     type UI5LibraryReferencePromptOptions
-} from '../types';
-import { hidePrompts } from './helpers';
-import { SourceType } from './constants';
-import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+} from '../types.js';
+import { hidePrompts } from './helpers.js';
+import { SourceType } from './constants.js';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Get the prompts for the UI5 library reference writing.

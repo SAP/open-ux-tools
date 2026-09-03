@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-import { addUi5Dependency } from '../../src/file';
+import { addUi5Dependency } from '../../src/file.js';
 
 describe('File utils', () => {
     test('should return when @ui5/cli version is greater or equal to 3.0.0', () => {

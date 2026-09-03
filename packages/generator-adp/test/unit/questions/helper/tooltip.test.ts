@@ -1,5 +1,5 @@
-import { initI18n, t } from '../../../../src/utils/i18n';
-import { getProjectNameTooltip } from '../../../../src/app/questions/helper/tooltip';
+import { initI18n, t } from '../../../../src/utils/i18n.js';
+import { getProjectNameTooltip } from '../../../../src/app/questions/helper/tooltip.js';
 
 describe('tooltip', () => {
     beforeAll(async () => {

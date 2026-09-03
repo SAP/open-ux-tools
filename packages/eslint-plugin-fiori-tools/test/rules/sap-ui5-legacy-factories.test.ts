@@ -2,7 +2,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-ui5-legacy-factories';
+import rule from '../../src/rules/sap-ui5-legacy-factories.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-import type { UI5Version } from './types';
+import type { UI5Version } from './types.js';
 
 export const enum ui5VersionsType {
     official = 'officialVersions',

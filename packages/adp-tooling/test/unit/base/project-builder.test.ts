@@ -1,6 +1,6 @@
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 
-import { runBuild } from '../../../src/base/project-builder';
+import { runBuild } from '../../../src/base/project-builder.js';
 
 const projectPath = '/mock/project/path';
 

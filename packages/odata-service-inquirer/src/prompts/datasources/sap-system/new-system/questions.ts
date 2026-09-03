@@ -3,11 +3,11 @@
  */
 import { withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
-import { t } from '../../../../i18n';
-import type { ConnectedSystem, OdataServicePromptOptions, SapSystemType } from '../../../../types';
-import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
-import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
-import { type NewSystemAnswers, newSystemPromptNames } from './types';
+import { t } from '../../../../i18n.js';
+import type { ConnectedSystem, OdataServicePromptOptions, SapSystemType } from '../../../../types.js';
+import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions.js';
+import { getAbapOnPremQuestions } from '../abap-on-prem/questions.js';
+import { type NewSystemAnswers, newSystemPromptNames } from './types.js';
 
 /**
  * Provides prompts that allow the creation of a new system connection.

@@ -5,9 +5,9 @@ import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import { getDefaultUI5Theme, supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 import { join } from 'node:path';
-import type { FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
-import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types';
-import { getODataVersion, t } from '../utils';
+import type { FEAppConfig, FFAppConfig, Project, Service, State } from '../types/index.js';
+import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types/index.js';
+import { getODataVersion, t } from '../utils/index.js';
 
 const APP_CONFIG_CURRENT_VERSION = '0.2';
 /**

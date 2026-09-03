@@ -1,13 +1,13 @@
-import { t } from '../../../src/utils/i18n';
-import { transformExtState } from '../../../src/app-headless/transforms';
-import type { FFAppConfig } from '../../../src/types';
+import { t } from '../../../src/utils/i18n.js';
+import { transformExtState } from '../../../src/app-headless/transforms.js';
+import type { FFAppConfig } from '../../../src/types/index.js';
 import {
     appConfigInvalidCapServiceName,
     appConfigInvalidEdmx,
     appConfigNotSupportedVersion,
     appConfigDest,
     appConfigWithValueListMetadata
-} from './test-data/testHeadlessAppConfigs';
+} from './test-data/testHeadlessAppConfigs.js';
 
 /**
  * Most coverage is achieved via the @sap/fiori-elements-generator integration tests currently.

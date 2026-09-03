@@ -1,9 +1,9 @@
-import type { ExportResults, Parser } from '@sap/ux-specification/dist/types/src';
-import { type TreeNode, type PropertyPath, getTree } from './tree';
-import { SapuxFtfsFileIO } from './sapuxFtfsFileIO';
-import type { AppData } from './sapuxFtfsFileIO';
+import type { ExportResults, Parser } from '@sap/ux-specification';
+import { type TreeNode, type PropertyPath, getTree } from './tree/index.js';
+import { SapuxFtfsFileIO } from './sapuxFtfsFileIO.js';
+import type { AppData } from './sapuxFtfsFileIO.js';
 import type { ApplicationAccess } from '@sap-ux/project-access';
-import { updateProperty } from './json-helper';
+import { updateProperty } from './json-helper.js';
 
 /**
  * Class representing the Page Editor API

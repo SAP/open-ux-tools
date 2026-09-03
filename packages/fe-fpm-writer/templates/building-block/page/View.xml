@@ -1,5 +1,6 @@
 <<%- macrosNamespace %>:Page
     id="<%- data.id %>"<% if (data.title) { %>
     title="<%- data.title %>"<% } %><% if (data.description) { %>
-    description="<%- data.description %>"<% } %>
+    description="<%- data.description %>"<% } %><% if (data.templateType === 'full') { %>
+    showFooter="true"<% } %>
 />

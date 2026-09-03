@@ -1,4 +1,4 @@
-import { parsePath, toFullyQualifiedPath } from '../../src';
+import { parsePath, toFullyQualifiedPath } from '../../src/index.js';
 
 describe('path normalization', () => {
     const aliasMap: { [aliasOrNamespace: string]: string } = {

@@ -1,6 +1,8 @@
+import { jest } from '@jest/globals';
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import reactDomTestUtils from 'react-dom/test-utils';
+const { act } = reactDomTestUtils;
 
 import { render, mockDomEventListener } from './utils';
 

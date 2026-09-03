@@ -1,6 +1,6 @@
-import { PerformanceMeasurementAPI } from '../../src/base/performance/api';
-import type { Measurement as IMeasurement, PerformanceMeasurement } from '../../src/base/performance/types';
-import { EntryType } from '../../src/base/performance/types';
+import { PerformanceMeasurementAPI } from '../../src/base/performance/api.js';
+import type { Measurement as IMeasurement, PerformanceMeasurement } from '../../src/base/performance/types.js';
+import { EntryType } from '../../src/base/performance/types.js';
 
 describe('Performance measurement API tests', () => {
     const performance = PerformanceMeasurementAPI;

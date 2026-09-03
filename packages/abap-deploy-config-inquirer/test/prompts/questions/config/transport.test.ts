@@ -1,10 +1,36 @@
-import { initI18n, t } from '../../../../src/i18n';
-import { getTransportRequestPrompts } from '../../../../src/prompts/questions';
-import * as conditions from '../../../../src/prompts/conditions';
-import * as validators from '../../../../src/prompts/validators';
-import { promptNames, TransportChoices } from '../../../../src/types';
+import { jest } from '@jest/globals';
+import { promptNames, TransportChoices } from '../../../../src/types.js';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { PromptState } from '../../../../src/prompts/prompt-state';
+
+const mockShowTransportInputChoice = jest.fn<typeof actualConditions.showTransportInputChoice>();
+const mockDefaultOrShowTransportCreatedQuestion =
+    jest.fn<typeof actualConditions.defaultOrShowTransportCreatedQuestion>();
+const mockDefaultOrShowTransportListQuestion = jest.fn<typeof actualConditions.defaultOrShowTransportListQuestion>();
+const mockDefaultOrShowManualTransportQuestion =
+    jest.fn<typeof actualConditions.defaultOrShowManualTransportQuestion>();
+const mockValidateTransportChoiceInput = jest.fn<typeof actualValidators.validateTransportChoiceInput>();
+const mockValidateTransportQuestion = jest.fn<typeof actualValidators.validateTransportQuestion>();
+
+const actualConditions = await import('../../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../../src/prompts/validators.js');
+
+jest.unstable_mockModule('../../../../src/prompts/conditions', () => ({
+    ...actualConditions,
+    showTransportInputChoice: mockShowTransportInputChoice,
+    defaultOrShowTransportCreatedQuestion: mockDefaultOrShowTransportCreatedQuestion,
+    defaultOrShowTransportListQuestion: mockDefaultOrShowTransportListQuestion,
+    defaultOrShowManualTransportQuestion: mockDefaultOrShowManualTransportQuestion
+}));
+
+jest.unstable_mockModule('../../../../src/prompts/validators', () => ({
+    ...actualValidators,
+    validateTransportChoiceInput: mockValidateTransportChoiceInput,
+    validateTransportQuestion: mockValidateTransportQuestion
+}));
+
+const { initI18n, t } = await import('../../../../src/i18n.js');
+const { getTransportRequestPrompts } = await import('../../../../src/prompts/questions/config/transport.js');
+const { PromptState } = await import('../../../../src/prompts/prompt-state.js');
 
 describe('getTransportRequestPrompts', () => {
     beforeAll(async () => {
@@ -74,8 +100,8 @@ describe('getTransportRequestPrompts', () => {
     });
 
     test('should return expected values from transportInputChoice prompt methods', async () => {
-        jest.spyOn(conditions, 'showTransportInputChoice').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateTransportChoiceInput').mockResolvedValueOnce(true);
+        mockShowTransportInputChoice.mockReturnValueOnce(true);
+        mockValidateTransportChoiceInput.mockResolvedValueOnce(true);
 
         const transportPrompts = getTransportRequestPrompts({});
         const transportInputChoicePrompt = transportPrompts.find(
@@ -112,8 +138,8 @@ describe('getTransportRequestPrompts', () => {
     });
 
     test('should return expected values from transportInputChoice prompt methods', async () => {
-        jest.spyOn(conditions, 'showTransportInputChoice').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateTransportChoiceInput').mockResolvedValueOnce(true);
+        mockShowTransportInputChoice.mockReturnValueOnce(true);
+        mockValidateTransportChoiceInput.mockResolvedValueOnce(true);
 
         const transportPrompts = getTransportRequestPrompts({
             transportInputChoice: { showCreateDuringDeploy: false }
@@ -141,7 +167,7 @@ describe('getTransportRequestPrompts', () => {
                   },
                 ]
             `);
-            const validateTransportChoiceInputSpy = jest.spyOn(validators, 'validateTransportChoiceInput');
+            mockValidateTransportChoiceInput.mockResolvedValue(true);
             expect((transportInputChoicePrompt.default as Function)({})).toBe(TransportChoices.EnterManualChoice);
             expect(
                 await (transportInputChoicePrompt.validate as Function)(TransportChoices.EnterManualChoice, {
@@ -159,13 +185,11 @@ describe('getTransportRequestPrompts', () => {
                     description: 'Test description 2'
                 })
             ).toBe(true);
-            expect(validateTransportChoiceInputSpy).toHaveBeenCalledTimes(1);
+            expect(mockValidateTransportChoiceInput).toHaveBeenCalledTimes(1);
         }
     });
 
     test('should return expected values from transportCliExecution prompt methods', async () => {
-        const validateTransportChoiceInputSpy = jest.spyOn(validators, 'validateTransportChoiceInput');
-
         PromptState.isYUI = false;
         const transportPrompts = getTransportRequestPrompts({});
         const transportCliExecutionPrompt = transportPrompts.find(
@@ -173,23 +197,23 @@ describe('getTransportRequestPrompts', () => {
         );
 
         if (transportCliExecutionPrompt) {
-            validateTransportChoiceInputSpy.mockResolvedValueOnce(true);
+            mockValidateTransportChoiceInput.mockResolvedValueOnce(true);
             expect(await (transportCliExecutionPrompt.when as Function)({})).toBe(false);
 
-            validateTransportChoiceInputSpy.mockResolvedValueOnce('Error with transports');
+            mockValidateTransportChoiceInput.mockResolvedValueOnce('Error with transports');
 
             try {
                 await (transportCliExecutionPrompt.when as Function)({});
-                fail('Expected error');
-            } catch (e) {
+                throw new Error('Expected error');
+            } catch (e: any) {
                 expect(e.message).toBe('Error with transports');
             }
         }
-        expect(validateTransportChoiceInputSpy).toHaveBeenCalledTimes(2);
+        expect(mockValidateTransportChoiceInput).toHaveBeenCalledTimes(2);
     });
 
     test('should return expected values from transportCreated prompt methods', async () => {
-        jest.spyOn(conditions, 'defaultOrShowTransportCreatedQuestion').mockReturnValueOnce(true);
+        mockDefaultOrShowTransportCreatedQuestion.mockReturnValueOnce(true);
 
         PromptState.transportAnswers.newTransportNumber = 'TR1234';
 
@@ -206,7 +230,7 @@ describe('getTransportRequestPrompts', () => {
     });
 
     test('should return expected values from transportFromList prompt methods', async () => {
-        jest.spyOn(conditions, 'defaultOrShowTransportListQuestion').mockReturnValueOnce(true);
+        mockDefaultOrShowTransportListQuestion.mockReturnValueOnce(true);
 
         PromptState.transportAnswers.transportList = [
             { transportReqNumber: 'TR1234', transportReqDescription: 'Transport 1' },
@@ -242,8 +266,8 @@ describe('getTransportRequestPrompts', () => {
     });
 
     test('should return expected values from transportManual prompt methods', async () => {
-        jest.spyOn(conditions, 'defaultOrShowManualTransportQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateTransportQuestion').mockReturnValueOnce(true);
+        mockDefaultOrShowManualTransportQuestion.mockReturnValueOnce(true);
+        mockValidateTransportQuestion.mockReturnValueOnce(true);
 
         const transportPrompts = getTransportRequestPrompts({});
         const transportManualPrompt = transportPrompts.find((prompt) => prompt.name === promptNames.transportManual);

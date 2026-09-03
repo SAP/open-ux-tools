@@ -1,5 +1,6 @@
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanTypes;
 import type { Answers } from 'inquirer';
 import type { CommonPromptOptions } from '../../../dist';
 import {
@@ -7,8 +8,8 @@ import {
     extendValidate,
     extendWithOptions,
     withCondition
-} from '../../../src/prompts/helpers';
-import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
+} from '../../../src/prompts/helpers.js';
+import type { PromptDefaultValue, YUIQuestion } from '../../../src/types.js';
 
 describe('prompt helpers', () => {
     describe('extendAdditionalMessages', () => {

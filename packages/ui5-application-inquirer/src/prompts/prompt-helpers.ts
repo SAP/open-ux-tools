@@ -2,14 +2,14 @@ import { latestVersionString } from '@sap-ux/ui5-info';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { coerce, gte } from 'semver';
-import { defaultProjectNumber, t } from '../i18n';
+import { defaultProjectNumber, t } from '../i18n.js';
 import {
     promptNames,
     type AddDeployPromptOptions,
     type UI5ApplicationCommonPromptOptions,
     type UI5ApplicationPromptOptions,
     type UI5ApplicationQuestion
-} from '../types';
+} from '../types.js';
 import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 
 /**
@@ -23,16 +23,21 @@ export function appPathExists(appName: string, targetPath?: string): boolean | s
     return existsSync(join(targetPath ?? process.cwd(), appName.trim()));
 }
 /**
- * Generate a default applicaiton name that does not exist at the specified path.
+ * Generate a default application name that does not exist at the specified path.
  *
  * @param targetPath the target path where the application directory would be created
+ * @param baseAppName optional base name to use instead of the default i18n name; when provided and the path already exists, an incrementing numeric suffix is appended starting at 1 (e.g. `myapp1`, `myapp2`, …)
  * @returns a suggested application name that can be created at the specified target path
  */
-export function defaultAppName(targetPath: string): string {
+export function defaultAppName(targetPath: string, baseAppName?: string): string {
     let defProjNum = defaultProjectNumber;
-    let defaultName = t('prompts.name.default');
-    while (exports.appPathExists(`${defaultName}`, targetPath)) {
-        defaultName = t('prompts.name.default', { defaultProjectNumber: ++defProjNum });
+    let defaultName = baseAppName || t('prompts.name.default');
+    while (appPathExists(`${defaultName}`, targetPath)) {
+        if (baseAppName) {
+            defaultName = `${baseAppName}${defProjNum++}`;
+        } else {
+            defaultName = t('prompts.name.default', { defaultProjectNumber: ++defProjNum });
+        }
         // Dont loop forever, user will need to provide input otherwise
         if (defProjNum > 999) {
             break;

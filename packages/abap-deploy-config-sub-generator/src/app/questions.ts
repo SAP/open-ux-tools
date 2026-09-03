@@ -2,14 +2,15 @@ import { getPrompts } from '@sap-ux/abap-deploy-config-inquirer';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { ABAP_DEPLOY_TASK } from '../utils/constants';
-import { DeployProjectType } from './types';
+import { ABAP_DEPLOY_TASK } from '../utils/constants.js';
+import { DeployProjectType } from './types.js';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type {
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
+import type { PromptModule } from 'inquirer';
 import type { AbapDeployConfig, AbapTarget, BspApp, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { Logger } from '@sap-ux/logger';
@@ -89,6 +90,7 @@ function getAbapTarget(
  * @param params.projectType - the project type
  * @param params.logger - the logger
  * @param params.promptOptions - A set of optional feature flags to prompts behavior.
+ * @param params.promptModule - optional inquirer prompt module instance used to register plugins
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -100,7 +102,8 @@ export async function getAbapQuestions({
     showOverwriteQuestion = false,
     projectType = DeployProjectType.Application,
     promptOptions = {},
-    logger
+    logger,
+    promptModule
 }: {
     appRootPath: string;
     connectedSystem?: ConnectedSystem;
@@ -111,6 +114,7 @@ export async function getAbapQuestions({
     projectType?: DeployProjectType;
     promptOptions?: AbapDeployConfigPromptOptions;
     logger?: ILogWrapper;
+    promptModule?: PromptModule;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
     let existingAbapDeployTask: AbapDeployConfig | undefined;
@@ -157,6 +161,7 @@ export async function getAbapQuestions({
             transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false }
         },
         logger as unknown as Logger,
-        getHostEnvironment() !== hostEnvironment.cli
+        getHostEnvironment() !== hostEnvironment.cli,
+        promptModule
     );
 }

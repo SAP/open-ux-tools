@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { redo, reloadApplication, save, undo } from '@sap-ux-private/control-property-editor-common';
 import { UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
-import type { ChangesSlice } from '../slice';
-import type { RootState } from '../store';
-import { Separator } from '../components';
-import { IconName } from '../icons';
+import type { ChangesSlice } from '../slice.js';
+import type { RootState } from '../store.js';
+import { Separator } from '../components/index.js';
+import { IconName } from '../icons.js';
 
 /**
  * React element for Undo, Redo and Save.

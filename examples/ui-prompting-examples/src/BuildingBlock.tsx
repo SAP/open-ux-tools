@@ -1,10 +1,10 @@
 import { UICheckbox, UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components';
 import React, { useEffect, useState } from 'react';
-import type { PromptsType } from './utils';
-import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
+import type { PromptsType } from './utils/index.js';
+import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication.js';
 import { Questions, PromptsLayoutType, setAnswer } from '@sap-ux/ui-prompting';
 import type { ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
-import { useChoices, useI18nBundle, useQuestions } from './utils/hooks';
+import { useChoices, useI18nBundle, useQuestions } from './utils/hooks.js';
 import type { Answers } from 'inquirer';
 
 initIcons();

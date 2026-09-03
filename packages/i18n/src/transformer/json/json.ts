@@ -1,6 +1,6 @@
 import { parseTree } from 'jsonc-parser';
 import type { Node } from 'jsonc-parser';
-import type { I18nBundle, I18nEntry, TextNode } from '../../types';
+import type { I18nBundle, I18nEntry, TextNode } from '../../types.js';
 import { Position, Range, getLineOffsets, positionAt } from '@sap-ux/text-document-utils';
 
 /**

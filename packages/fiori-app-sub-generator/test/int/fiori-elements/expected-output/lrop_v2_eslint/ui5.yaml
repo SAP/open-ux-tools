@@ -34,3 +34,8 @@ server:
           intent:
             object: testNameSpacelropv2eslint
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

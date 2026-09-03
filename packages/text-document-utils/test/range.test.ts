@@ -7,7 +7,7 @@ import {
     createRange,
     createRangeWithPosition,
     rangeAt
-} from '../src/range';
+} from '../src/range.js';
 
 describe('areRangesEqual', () => {
     it('should return true for ranges with the same start and end positions', () => {

@@ -1,16 +1,41 @@
+import { jest } from '@jest/globals';
 import type { ParseOptions } from 'commander';
-import { join } from 'node:path';
-import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
-import * as cliArchive from '../../../src/cli/archive';
-import { mockedUi5RepoService, mockedLrepService, mockedProvider } from '../../__mocks__';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
-import fs from 'node:fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import ProcessEnv = NodeJS.ProcessEnv;
 
+const __testdirname = dirname(fileURLToPath(import.meta.url));
+
+// Import mock setup (this sets up jest.unstable_mockModule for @sap-ux/axios-extension and @sap-ux/store)
+import { mockedUi5RepoService, mockedLrepService, mockedProvider } from '../../__mocks__/index.js';
+
+// Mock node:fs writeFileSync
+const mockWriteFileSync = jest.fn<typeof realFs.writeFileSync>();
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    writeFileSync: mockWriteFileSync,
+    default: { ...realFs, writeFileSync: mockWriteFileSync }
+}));
+
+// Mock the archive module to allow spying on getArchive
+const mockGetArchive = jest.fn<any>();
+
+// Get the real archive module to spread its exports
+const realArchive = await import('../../../src/cli/archive.js');
+jest.unstable_mockModule('../../../src/cli/archive', () => ({
+    ...realArchive,
+    getArchive: mockGetArchive
+}));
+
+// Dynamic imports AFTER mocks are set up
+const { createCommand, runDeploy, runUndeploy } = await import('../../../src/cli/index.js');
+
 describe('cli', () => {
-    const appFixture = join(__dirname, '../../fixtures/simple-app/');
-    const adpFixture = join(__dirname, '../../fixtures/adp/');
+    const appFixture = join(__testdirname, '../../fixtures/simple-app/');
+    const adpFixture = join(__testdirname, '../../fixtures/adp/');
     const target = 'https://target.example';
     let env: ProcessEnv;
 
@@ -22,6 +47,8 @@ describe('cli', () => {
         mockedLrepService.deploy.mockReset();
         mockedUi5RepoService.deploy.mockReset();
         jest.clearAllMocks();
+        // Restore getArchive default after clearAllMocks
+        mockGetArchive.mockImplementation(realArchive.getArchive);
     });
 
     afterAll(() => {
@@ -29,8 +56,6 @@ describe('cli', () => {
     });
 
     describe('runDeploy', () => {
-        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
-        const cliArchiveSpy = jest.spyOn(cliArchive, 'getArchive');
         // Command for deploying with a configuration file, assumes 'dist' is the target archive folder if no archive-folder or archive-path is specified;
         // npx deploy -c ui5-deploy.yaml --archive-folder webapp
         const minimumConfigCmd = [
@@ -137,12 +162,12 @@ describe('cli', () => {
                 if (provider) {
                     expect(mockedProvider.getUi5AbapRepository).toHaveBeenCalledWith(provider);
                 }
-                expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
+                expect(mockWriteFileSync).toHaveBeenCalledTimes(writeFileSyncCalled);
                 if (writeFileSyncCalled > 0) {
-                    expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
+                    expect(mockWriteFileSync.mock.calls[0][0]).toBe('archive.zip');
                 }
-                expect(cliArchiveSpy).toHaveBeenCalled();
-                expect(cliArchiveSpy).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
+                expect(mockGetArchive).toHaveBeenCalled();
+                expect(mockGetArchive).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
             }
         );
     });
@@ -209,7 +234,9 @@ describe('cli', () => {
                 const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
                     throw new Error('process.exit: ' + number);
                 });
-                const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
+                const errorMock = jest
+                    .spyOn(Command.prototype, 'error')
+                    .mockImplementation((() => {}) as unknown as () => never);
                 const helpMock = jest.spyOn(Command.prototype, 'help');
                 process.argv = ['node', 'test'];
                 await method();
@@ -235,7 +262,7 @@ describe('cli', () => {
                     writeErr: jest.fn(),
                     writeOut: jest.fn()
                 })
-                .action(actionMock);
+                .action(actionMock as (...args: unknown[]) => void);
 
             return { cmd, actionMock };
         }

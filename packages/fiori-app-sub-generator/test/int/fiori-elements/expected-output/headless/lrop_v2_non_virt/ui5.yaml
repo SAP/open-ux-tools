@@ -34,3 +34,8 @@ server:
           intent:
             object: testNameSpacelropv2nonvirt
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

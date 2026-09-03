@@ -19,6 +19,9 @@
       "path": "../cap-config-writer"
     },
     {
+      "path": "../fe-fpm-writer"
+    },
+    {
       "path": "../feature-toggle"
     },
     {

@@ -2,10 +2,10 @@ import {
     getCredentialsPrompts,
     type CredentialsAnswers,
     type AdditionalValidation
-} from '../../../src/prompts/credentials';
-import { t, addi18nResourceBundle } from '../../../src/i18n';
+} from '../../../src/prompts/credentials.js';
+import { t, addi18nResourceBundle } from '../../../src/i18n.js';
 
-import type { InputQuestion, PasswordQuestion } from '../../../src/types';
+import type { InputQuestion, PasswordQuestion } from '../../../src/types.js';
 
 describe('getCredentialsPrompts', () => {
     beforeAll(() => {
@@ -33,8 +33,10 @@ describe('getCredentialsPrompts', () => {
                 message: 'Password',
                 mask: '*',
                 guiOptions: {
-                    mandatory: true
+                    mandatory: true,
+                    applyDefaultWhenDirty: true
                 },
+                default: '',
                 store: false,
                 validate: expect.any(Function)
             } as PasswordQuestion
@@ -96,5 +98,12 @@ describe('getCredentialsPrompts', () => {
 
         const result = await validate?.('pass', answers);
         expect(result).toBe(t('errors.cannotBeEmpty', { field: t('prompts.username.message') }));
+    });
+
+    it('password prompt should have applyDefaultWhenDirty and empty default to prevent stale credentials on system change', async () => {
+        const prompts = await getCredentialsPrompts();
+        const passwordPrompt = prompts[1] as PasswordQuestion;
+        expect(passwordPrompt.guiOptions?.applyDefaultWhenDirty).toBe(true);
+        expect((passwordPrompt as any).default).toBe('');
     });
 });

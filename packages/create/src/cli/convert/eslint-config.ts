@@ -1,8 +1,8 @@
 import type { Command } from 'commander';
-import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 import { convertEslintConfig as migrateEslintConfig } from '@sap-ux/app-config-writer';
-import { runNpmInstallCommand } from '../../common';
+import { runNpmInstallCommand } from '../../common/index.js';
 import { execNpmCommand } from '@sap-ux/project-access';
 import { join } from 'node:path';
 

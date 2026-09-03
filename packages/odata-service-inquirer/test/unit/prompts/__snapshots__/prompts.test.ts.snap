@@ -361,6 +361,7 @@ exports[`getQuestions getQuestions 1`] = `
   },
   {
     "default": [Function],
+    "filter": [Function],
     "guiOptions": {
       "breadcrumb": "CAP Project",
       "mandatory": true,

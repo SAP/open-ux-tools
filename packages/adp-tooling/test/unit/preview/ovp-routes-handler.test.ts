@@ -3,7 +3,7 @@ import supertest from 'supertest';
 
 import { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import OvpRoutesHandler from '../../../src/preview/ovp-routes-handler';
+import OvpRoutesHandler from '../../../src/preview/ovp-routes-handler.js';
 
 const mockServices = [
     {

@@ -18,7 +18,7 @@ class RuntimeAuthoringMock {
     public stop = jest.fn();
     public attachUndoRedoStackModified = jest.fn();
     public attachModeChanged = jest.fn();
-    public attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+    public attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
         return newHandler;
     });
     public setPlugins = jest.fn();

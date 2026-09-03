@@ -5,7 +5,7 @@ import { buildAst } from '@xml-tools/ast';
 import { convertDocument } from '@sap-ux/xml-odata-annotation-converter';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 
-import { convertAnnotationFile } from '../../../src/avt/annotations';
+import { convertAnnotationFile } from '../../../src/avt/annotations.js';
 
 function prepareAnnotationFile(schemaContent: string, references = ''): AnnotationFile {
     const { cst, tokenVector } = parse(`<?xml version="1.0" encoding="utf-8"?>

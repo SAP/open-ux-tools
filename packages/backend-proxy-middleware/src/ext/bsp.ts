@@ -1,4 +1,4 @@
-import { yellow, cyan } from 'chalk';
+import chalk from 'chalk';
 import type { Options } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import prompts from 'prompts';
@@ -19,14 +19,14 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
             {
                 type: 'confirm',
                 name: 'authNeeded',
-                message: `${cyan(i18n.t('info.authNeeded'))}\n\n`
+                message: `${chalk.cyan(i18n.t('info.authNeeded'))}\n\n`
             }
         ])) as { authNeeded: boolean };
         if (!authNeeded) {
             return undefined;
         }
     } else {
-        log.info(yellow(i18n.t('info.credentialsRequiredForFLP')));
+        log.info(chalk.yellow(i18n.t('info.credentialsRequiredForFLP')));
     }
 
     const { username, password } = (await prompts(
@@ -34,7 +34,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
             {
                 type: 'text',
                 name: 'username',
-                message: `${cyan(i18n.t('info.username'))}\n\n`,
+                message: `${chalk.cyan(i18n.t('info.username'))}\n\n`,
                 validate: (value): boolean | string => {
                     if (!value?.trim()) {
                         return `${i18n.t('error.emptyUsername')}`;
@@ -46,7 +46,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
             {
                 type: 'password',
                 name: 'password',
-                message: `${cyan(i18n.t('info.password'))}\n\n`,
+                message: `${chalk.cyan(i18n.t('info.password'))}\n\n`,
                 validate: (value): boolean | string => {
                     if (!value?.trim()) {
                         return `${i18n.t('error.emptyPassword')}`;
@@ -58,7 +58,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
         ],
         {
             onCancel: () => {
-                log.info(yellow(i18n.t('info.operationAborted')));
+                log.info(chalk.yellow(i18n.t('info.operationAborted')));
                 return process.exit(1);
             }
         }

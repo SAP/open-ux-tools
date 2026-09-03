@@ -16,10 +16,10 @@ import type { AIMessageChunk, MessageFieldWithRole } from '@langchain/core/messa
 import type { DynamicStructuredTool } from '@langchain/core/tools';
 import type { Runnable } from '@langchain/core/runnables';
 import type { BaseLanguageModelInput } from '@langchain/core/language_models/base';
-import { getServiceKeyFromEnv } from './util/service-key';
-import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
-import { validate } from './util/validate';
-import { callTool, getTools } from './mcp-server';
+import { getServiceKeyFromEnv } from './util/service-key.js';
+import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt.js';
+import { validate } from './util/validate.js';
+import { callTool, getTools } from './mcp-server/index.js';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 

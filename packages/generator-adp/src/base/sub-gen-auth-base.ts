@@ -15,12 +15,12 @@ import {
     isCFEnvironment
 } from '@sap-ux/adp-tooling';
 
-import { initI18n } from '../utils/i18n';
-import SubGeneratorBase from './sub-gen-base';
-import type { GeneratorOpts } from '../utils/opts';
-import type { GeneratorTypes, Credentials } from '../types';
-import { getCredentialsPrompts } from './questions/credentials';
-import { getSubGenAuthPages } from '../utils/steps';
+import { initI18n } from '../utils/i18n.js';
+import SubGeneratorBase from './sub-gen-base.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import type { GeneratorTypes, Credentials } from '../types.js';
+import { getCredentialsPrompts } from './questions/credentials.js';
+import { getSubGenAuthPages } from '../utils/steps.js';
 
 /**
  * Base class for *sub* generators that need authentication handling.

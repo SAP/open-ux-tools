@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
-import { enhancePackageJson, removeFromPackageJson } from '../../../src/mockserver-config/package-json';
+import { enhancePackageJson, removeFromPackageJson } from '../../../src/mockserver-config/package-json.js';
 
 const basePath = join('/');
 const packageJsonPath = join(basePath, 'package.json');

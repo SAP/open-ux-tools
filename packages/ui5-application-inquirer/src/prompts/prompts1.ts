@@ -1,13 +1,14 @@
+import { isAbsolute, resolve } from 'node:path';
 import { searchChoices, ui5VersionsGrouped, getDefaultUI5VersionChoice } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
 import { validateModuleName, validateNamespace, validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
-import { t } from '../i18n';
-import { promptNames } from '../types';
-import { defaultAppName } from './prompt-helpers';
-import { validateAppName } from './validators';
+import { t } from '../i18n.js';
+import { promptNames } from '../types.js';
+import { defaultAppName } from './prompt-helpers.js';
+import { validateAppName } from './validators.js';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types.js';
 import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 /**
@@ -115,9 +116,14 @@ export function getDescriptionPrompt(): UI5ApplicationQuestion {
  *
  * @param targetDir provides a default value for the target folder path
  * @param validateFioriAppFolder validates the target folder path as a Fiori app project
+ * @param isYUI if true, input is returned unchanged (YUI folder browser already supplies absolute paths)
  * @returns the `targetFolder` prompt
  */
-export function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?: boolean): UI5ApplicationQuestion {
+export function getTargetFolderPrompt(
+    targetDir: string,
+    validateFioriAppFolder?: boolean,
+    isYUI?: boolean
+): UI5ApplicationQuestion {
     return {
         type: 'input',
         name: promptNames.targetFolder,
@@ -129,6 +135,12 @@ export function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?
             breadcrumb: t('prompts.targetFolder.breadcrumb')
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
+        filter: (input: string) => {
+            if (isYUI) {
+                return input;
+            }
+            return input && !isAbsolute(input) ? resolve(input) : input;
+        },
         validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
                 return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);

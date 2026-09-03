@@ -4,15 +4,15 @@ import { nodeRange, ReservedProperties, STRING_LITERAL_TYPE } from '@sap-ux/cds-
 import type { Element, Range } from '@sap-ux/odata-annotation-core';
 import { DiagnosticSeverity, Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core';
 
-import type { Subtree } from './handler';
+import type { Subtree } from './handler.js';
 
-import { createPropertyAttribute, createTermAttribute } from './creators';
-import { getPropertyType, getTerm } from './type-resolver';
+import { createPropertyAttribute, createTermAttribute } from './creators.js';
+import { getPropertyType, getTerm } from './type-resolver.js';
 
-import type { Context, VisitorState } from './visitor-state';
-import { copyRange, createRange } from './range';
+import type { Context, VisitorState } from './visitor-state.js';
+import { copyRange, createRange } from './range.js';
 import type { ComplexTypeProperty, Term } from '@sap-ux/odata-vocabularies';
-import { i18n } from '../../i18n';
+import { i18n } from '../../i18n.js';
 
 /**
  * Builds a tree from a flattened annotation structure and updates context with the final value type.

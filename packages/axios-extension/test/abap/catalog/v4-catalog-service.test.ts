@@ -1,6 +1,9 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import nock from 'nock';
-import { createForAbap, ODataVersion, V4CatalogService } from '../../../src';
+import { createForAbap, ODataVersion, V4CatalogService } from '../../../src/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockRespPath = join(__dirname, '../mockResponses');
 

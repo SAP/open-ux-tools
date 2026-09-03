@@ -19,7 +19,7 @@ import type { AnnotationRecord, Expression, RawMetadata } from '@sap-ux/vocabula
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
-import type { AVTNode } from './avt';
+import type { AVTNode } from './avt/index.js';
 import {
     convertAnnotationToInternal,
     convertPointerInAnnotationToInternal,
@@ -31,9 +31,9 @@ import {
     convertPropertyValueToInternal,
     convertRecordToInternal,
     findAnnotation
-} from './avt';
+} from './avt/index.js';
 
-import { addAllVocabulariesToAliasInformation } from './vocabularies';
+import { addAllVocabulariesToAliasInformation } from './vocabularies.js';
 
 import type {
     AnnotationFileChange,
@@ -62,7 +62,7 @@ import type {
     ExpressionModificationContent,
     PrimitiveModificationContent,
     UpdateContent
-} from './types';
+} from './types/index.js';
 import {
     ChangeType,
     DELETE_ATTRIBUTE,
@@ -77,9 +77,9 @@ import {
     REPLACE_ELEMENT,
     REPLACE_ELEMENT_CONTENT,
     REPLACE_TEXT
-} from './types';
-import { annotationReferenceToString, getGenericNodeFromPointer } from './utils';
-import { ApiError, ApiErrorCode } from './error';
+} from './types/index.js';
+import { annotationReferenceToString, getGenericNodeFromPointer } from './utils/index.js';
+import { ApiError, ApiErrorCode } from './error.js';
 
 export type SchemaProvider = () => RawMetadata;
 /**

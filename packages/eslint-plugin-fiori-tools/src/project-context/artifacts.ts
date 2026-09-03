@@ -1,6 +1,6 @@
 import { runAsWorker } from 'synckit';
 import { findFioriArtifacts, findProjectRoot, getProjectType } from '@sap-ux/project-access';
-import type { WorkerResult } from './types';
+import type { WorkerResult } from './types.js';
 
 /**
  * Get Fiori project artifacts for the given file path.

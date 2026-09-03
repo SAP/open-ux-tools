@@ -1,5 +1,5 @@
 import type { EntitySet } from '@sap-ux/vocabularies-types';
-import { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from '../../src/odata/metadata';
+import { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from '../../src/odata/metadata.js';
 
 const BASE_ENTITY_SET = {
     name: 'TestEntity',

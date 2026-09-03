@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getUIFirstFocusable, isHTMLElement, setUIFocusVisibility } from '../../utilities';
+import { getUIFirstFocusable, isHTMLElement, setUIFocusVisibility } from '../../utilities/index.js';
 
 import './UIQuickNavigation.scss';
 

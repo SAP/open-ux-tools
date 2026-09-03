@@ -1,6 +1,6 @@
-import { getAnswer, setAnswer, updateAnswers, isDeepEqual } from '../../../src/utilities/utils';
-import type { Answers, PromptQuestion } from '../../../src/types';
-import { formatDomId } from '../../../src/utilities';
+import { getAnswer, setAnswer, updateAnswers, isDeepEqual } from '../../../src/utilities/utils.js';
+import type { Answers, PromptQuestion } from '../../../src/types.js';
+import { formatDomId } from '../../../src/utilities/index.js';
 
 describe('utils', () => {
     describe('setAnswer', () => {

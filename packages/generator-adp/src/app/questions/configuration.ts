@@ -33,8 +33,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
-import { t } from '../../utils/i18n';
-import type { TelemetryCollector } from '../../telemetry';
+import { t } from '../../utils/i18n.js';
+import type { TelemetryCollector } from '../../telemetry/index.js';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -47,19 +47,19 @@ import type {
     StoreCredentialsPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
-} from '../types';
-import { configPromptNames, SystemType } from '../types';
-import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
-import { getApplicationChoices, getProjectTypeChoices } from './helper/choices';
+} from '../types.js';
+import { configPromptNames, SystemType } from '../types.js';
+import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages.js';
+import { getApplicationChoices, getProjectTypeChoices } from './helper/choices.js';
 import {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions,
     showStoreCredentialsQuestion
-} from './helper/conditions';
-import { getExtProjectMessage } from './helper/message';
-import { validateExtensibilityExtension } from './helper/validators';
+} from './helper/conditions.js';
+import { getExtProjectMessage } from './helper/message.js';
+import { validateExtensibilityExtension } from './helper/validators.js';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { Severity } from '@sap-devx/yeoman-ui-types';
@@ -386,9 +386,11 @@ export class ConfigPrompter {
             guiOptions: {
                 type: 'login',
                 mandatory: true,
-                hint: t('prompts.passwordTooltip')
+                hint: t('prompts.passwordTooltip'),
+                applyDefaultWhenDirty: true
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
+            default: '',
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
             additionalMessages: () => {
                 if (!this.systemAdditionalMessage) {
@@ -806,7 +808,7 @@ export class ConfigPrompter {
             this.selectedSystemType = undefined;
             this.supportedProject = undefined;
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
+            this.isAuthRequired = (await this.getIsAuthRequired(system)) ?? false;
 
             if (this.isAuthRequired) {
                 return true;
@@ -1066,5 +1068,39 @@ export class ConfigPrompter {
      */
     private shouldDisplayProjectTypeClassicLabel(application: SourceApplication | undefined): boolean {
         return !isInternalFeaturesSettingEnabled() && this.isClassicAppOnMixedSystem(application);
+    }
+
+    /**
+     * Determines whether the given system requires authentication.
+     *
+     * Returns `undefined` when no ABAP provider is configured. Otherwise, checks the system
+     * endpoint's authentication requirement. In SAP Business Application Studio, when the system
+     * reports that authentication is required, it verifies this by attempting to fetch a CSRF
+     * token from the layered repository: a `401` response confirms authentication is required,
+     * while a successful call indicates it is not.
+     *
+     * @param {string} system - The system to check.
+     * @returns {Promise<boolean | undefined>} `true` if authentication is required, `false` if not,
+     * or `undefined` if no provider is configured.
+     */
+    private async getIsAuthRequired(system: string): Promise<boolean | undefined> {
+        if (!this.abapProvider) {
+            return undefined;
+        }
+
+        const doesSystemRequireAuth = await this.systemLookup.getSystemRequiresAuth(system);
+        if (!isAppStudio() || !doesSystemRequireAuth) {
+            return doesSystemRequireAuth;
+        }
+
+        try {
+            await this.abapProvider.getLayeredRepository().getCsrfToken();
+            return false;
+        } catch (error) {
+            if (isAxiosError(error) && error.response?.status === 401) {
+                return true;
+            }
+            throw error;
+        }
     }
 }

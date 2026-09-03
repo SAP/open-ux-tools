@@ -7,7 +7,8 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "isolatedModules": false
   },
   "references": [
     {
@@ -35,10 +36,16 @@
       "path": "../nodejs-utils"
     },
     {
+      "path": "../odata-annotation-core"
+    },
+    {
       "path": "../odata-annotation-core-types"
     },
     {
       "path": "../odata-entity-model"
+    },
+    {
+      "path": "../odata-service-writer"
     },
     {
       "path": "../project-access"

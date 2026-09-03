@@ -1,6 +1,8 @@
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { plural } from 'pluralize';
+import pluralize from 'pluralize';
+
+const plural = pluralize.plural;
 
 /** Pick the properties listed and return a new object with a shallow-copy */
 export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undefined => {
@@ -98,5 +100,5 @@ export function isMatch(obj: any, filter: any): boolean {
     });
 }
 
-export * from './app-studio';
-export * from './backend';
+export * from './app-studio.js';
+export * from './backend.js';

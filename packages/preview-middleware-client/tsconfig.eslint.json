@@ -1,7 +1,0 @@
-{
-    "extends": "./tsconfig.json",
-    "include": ["eslint.config.js", "jest.config.js", "src", "test", "types"],
-    "compilerOptions": {
-        "types": ["@sapui5/types", "node", "jest"]
-    }
-}

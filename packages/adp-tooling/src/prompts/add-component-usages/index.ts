@@ -12,9 +12,9 @@ import {
     NamespacePrefix,
     type AddComponentUsageAnswers,
     type ManifestChangeProperties
-} from '../../types';
-import { getChangesByType } from '../../base/change-utils';
-import { t } from '../../i18n';
+} from '../../types.js';
+import { getChangesByType } from '../../base/change-utils.js';
+import { t } from '../../i18n.js';
 import {
     validateEmptyString,
     validateEmptySpaces,

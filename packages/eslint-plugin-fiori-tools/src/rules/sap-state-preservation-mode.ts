@@ -1,10 +1,11 @@
-import type { FioriRuleDefinition } from '../types';
-import { createFioriRule } from '../language/rule-factory';
-import { STATE_PRESERVATION_MODE, type StatePreservationMode } from '../language/diagnostics';
-import type { MemberNode } from '@humanwhocodes/momoa';
-import { createJsonFixer } from '../language/rule-fixer';
-import type { LinkedFeV2App } from '../project-context/linker/fe-v2';
-import type { ParsedApp } from '../project-context/parser';
+import type { FioriRuleDefinition } from '../types.js';
+import { createFioriRule } from '../language/rule-factory.js';
+import { STATE_PRESERVATION_MODE, type StatePreservationMode } from '../language/diagnostics.js';
+import type { AnyNode, MemberNode } from '@humanwhocodes/momoa';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import type { LinkedFeV2App } from '../project-context/linker/fe-v2.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 /**
  * Checks if state preservation mode value is invalid and returns problem if so.
@@ -14,6 +15,7 @@ import type { ParsedApp } from '../project-context/parser';
  * @param hasFCL - Whether the app uses Flexible Column Layout
  * @param linkedApp - The linked V2 app configuration
  * @param app - The parsed app information
+ * @param node - Found statePreservationMode node
  * @returns A problem object if invalid, undefined otherwise
  */
 function checkInvalidMode(
@@ -21,7 +23,8 @@ function checkInvalidMode(
     validValues: string[],
     hasFCL: boolean,
     linkedApp: LinkedFeV2App,
-    app: ParsedApp
+    app: ParsedApp,
+    node: AnyNode
 ): StatePreservationMode | undefined {
     if (!validValues.includes(statePreservationMode)) {
         return {
@@ -30,7 +33,8 @@ function checkInvalidMode(
             manifest: {
                 uri: app.manifest.manifestUri,
                 object: app.manifestObject,
-                propertyPath: linkedApp.configuration.statePreservationMode.configurationPath
+                propertyPath: linkedApp.configuration.statePreservationMode.configurationPath,
+                loc: node.loc
             },
             value: statePreservationMode,
             recommendedValue: hasFCL ? 'persistence' : 'discovery'
@@ -46,13 +50,15 @@ function checkInvalidMode(
  * @param hasFCL - Whether the app uses Flexible Column Layout
  * @param linkedApp - The linked V2 app configuration
  * @param app - The parsed app information
+ * @param node - Found statePreservationMode node
  * @returns A problem object if non-recommended configuration found, undefined otherwise
  */
 function checkModeRecommendation(
     statePreservationMode: string,
     hasFCL: boolean,
     linkedApp: LinkedFeV2App,
-    app: ParsedApp
+    app: ParsedApp,
+    node: AnyNode
 ): StatePreservationMode | undefined {
     // FCL apps should use persistence mode
     if (hasFCL && statePreservationMode === 'discovery') {
@@ -62,7 +68,8 @@ function checkModeRecommendation(
             manifest: {
                 uri: app.manifest.manifestUri,
                 object: app.manifestObject,
-                propertyPath: linkedApp.configuration.statePreservationMode.configurationPath
+                propertyPath: linkedApp.configuration.statePreservationMode.configurationPath,
+                loc: node.loc
             },
             recommendedValue: 'persistence'
         };
@@ -75,7 +82,8 @@ function checkModeRecommendation(
             manifest: {
                 uri: app.manifest.manifestUri,
                 object: app.manifestObject,
-                propertyPath: linkedApp.configuration.statePreservationMode.configurationPath
+                propertyPath: linkedApp.configuration.statePreservationMode.configurationPath,
+                loc: node.loc
             },
             recommendedValue: 'discovery'
         };
@@ -102,6 +110,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         fixable: 'code'
     },
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: StatePreservationMode[] = [];
 
         // Process V2 apps
@@ -119,15 +130,20 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
 
+            const node = context.sourceCode.getNode(
+                context.sourceCode.ast.body,
+                linkedApp.configuration.statePreservationMode.configurationPath
+            );
+
             // Check if the value is valid for V2
-            const invalidProblem = checkInvalidMode(statePreservationMode, validValues, hasFCL, linkedApp, app);
+            const invalidProblem = checkInvalidMode(statePreservationMode, validValues, hasFCL, linkedApp, app, node);
             if (invalidProblem) {
                 problems.push(invalidProblem);
                 continue;
             }
 
             // Provide recommendations based on FCL configuration
-            const recommendationProblem = checkModeRecommendation(statePreservationMode, hasFCL, linkedApp, app);
+            const recommendationProblem = checkModeRecommendation(statePreservationMode, hasFCL, linkedApp, app, node);
             if (recommendationProblem) {
                 problems.push(recommendationProblem);
             }

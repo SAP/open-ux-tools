@@ -1,8 +1,8 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
 import { printOptions } from '@sap-ux/odata-annotation-core';
 import type { XMLElement } from '@xml-tools/ast';
-import { insert } from '../../src/printer/document-modifier';
-import { parse } from './parser';
+import { insert } from '../../src/printer/document-modifier.js';
+import { parse } from './parser.js';
 
 declare const expect: jest.Expect;
 

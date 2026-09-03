@@ -8,7 +8,7 @@ import type {
     ITooltipProps
 } from '@fluentui/react';
 import { TooltipHost, TooltipDelay } from '@fluentui/react';
-import { getCalloutStyle, CALLOUT_STYLES } from '../UICallout';
+import { getCalloutStyle, CALLOUT_STYLES } from '../UICallout/index.js';
 
 export { TooltipDelay as UITooltipDelay, ITooltipProps as UIToolTipProps };
 

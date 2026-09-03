@@ -1,18 +1,22 @@
 import type { AnnotationNode } from '@sap-ux/cds-annotation-parser';
 
-import type { NodeHandler } from '../handler';
-import { annotationHandler } from './annotation';
-import { collectionHandler } from './collection';
-import { recordHandler } from './record';
-import { recordPropertyHandler } from './record-property';
-import { booleanHandler } from './boolean';
-import { enumHandler } from './enum';
-import { correctExpressionHandler, unknownOperatorExpressionHandler, incorrectExpressionHandler } from './expression';
-import { numberHandler } from './number';
-import { stringHandler, multiLineStringHandler } from './string';
-import { quotedLiteralHandler } from './quoted-literal';
-import { pathHandler } from './path';
-import { tokenHandler } from './token';
+import type { NodeHandler } from '../handler.js';
+import { annotationHandler } from './annotation.js';
+import { collectionHandler } from './collection.js';
+import { recordHandler } from './record.js';
+import { recordPropertyHandler } from './record-property.js';
+import { booleanHandler } from './boolean.js';
+import { enumHandler } from './enum.js';
+import {
+    correctExpressionHandler,
+    unknownOperatorExpressionHandler,
+    incorrectExpressionHandler
+} from './expression.js';
+import { numberHandler } from './number.js';
+import { stringHandler, multiLineStringHandler } from './string.js';
+import { quotedLiteralHandler } from './quoted-literal.js';
+import { pathHandler } from './path.js';
+import { tokenHandler } from './token.js';
 
 export type NodeHandlerConfig = {
     [Node in AnnotationNode as Node['type']]?: NodeHandler<Node>;

@@ -3,15 +3,15 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import Log from 'sap/base/Log';
 
-import { getControlById } from '../../utils/core';
-import { getError } from '../../utils/error';
+import { getControlById } from '../../utils/core.js';
+import { getError } from '../../utils/error.js';
 
-import type { ControlTreeIndex } from '../types';
-import { getOverlay } from '../utils';
+import type { ControlTreeIndex } from '../types.js';
+import { getOverlay } from '../utils.js';
 
-import { isEditable } from './editable';
-import type { ChangeService } from '../changes';
-import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
+import { isEditable } from './editable.js';
+import type { ChangeService } from '../changes/index.js';
+import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4.js';
 
 interface AdditionalData {
     text?: string;
@@ -101,10 +101,10 @@ function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
     }
 }
 
-function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string[]>): void {
+async function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string[]>): Promise<void> {
     const control = getControlById(node.controlId);
     if (control) {
-        const overlay = getOverlay(control);
+        const overlay = await getOverlay(control);
         const overlayData = overlay?.getDesignTimeMetadata().getData();
         if (!overlayData?.manifestPropertyPath) {
             return;
@@ -170,7 +170,7 @@ export async function transformNodes(
                 };
 
                 indexNode(controlIndex, node);
-                addToPropertyIdMap(node, propertyIdMap);
+                await addToPropertyIdMap(node, propertyIdMap);
 
                 items.push(node);
             }

@@ -1,22 +1,28 @@
+import { jest } from '@jest/globals';
 import type * as archiver from 'archiver';
 import { join } from 'node:path';
-import * as mockFs from 'node:fs';
-import * as mockGlobGitignore from 'glob-gitignore';
 
-import { archiveProject } from '../../src/archive';
+const mockCreateWriteStream = jest.fn() as jest.Mock;
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFile = jest.fn() as jest.Mock;
+jest.unstable_mockModule('node:fs', () => ({
+    createWriteStream: mockCreateWriteStream,
+    existsSync: mockExistsSync,
+    promises: { readFile: mockReadFile }
+}));
 
-jest.mock('glob-gitignore');
-jest.mock('fs', () => ({
-    __esModule: true,
-    promises: { readFile: jest.fn() },
-    createWriteStream: jest.fn(),
-    existsSync: jest.fn()
+const mockGlob = jest.fn() as jest.Mock;
+jest.unstable_mockModule('glob-gitignore', () => ({
+    glob: mockGlob
 }));
-let zipMock;
-jest.mock('archiver', () => ({
+
+let zipMock: any;
+jest.unstable_mockModule('archiver', () => ({
     __esModule: true,
-    'default': (): typeof zipMock => zipMock
+    default: (): typeof zipMock => zipMock
 }));
+
+const { archiveProject } = await import('../../src/archive/index.js');
 
 describe('Test for archive project, archiveProject()', () => {
     beforeEach(() => {
@@ -25,7 +31,7 @@ describe('Test for archive project, archiveProject()', () => {
 
     test('Archive sample project with default name and no .gitignore (mocked, no real zip is created)', async () => {
         // Mock setup
-        let writeStreamCloseCallback;
+        let writeStreamCloseCallback: any;
         zipMock = {
             pipe: jest.fn(),
             on: jest.fn(),
@@ -36,19 +42,15 @@ describe('Test for archive project, archiveProject()', () => {
             }
         } as unknown as archiver.Archiver;
         const writeStreamMock = {
-            on: (name, callback) => {
+            on: (name: string, callback: any) => {
                 if (name === 'close') {
                     writeStreamCloseCallback = callback;
                 }
             }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(() => writeStreamMock);
-        jest.spyOn(mockFs, 'existsSync')
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
-        const mockGlob = jest
-            .spyOn(mockGlobGitignore, 'glob')
-            .mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
+        };
+        mockCreateWriteStream.mockImplementation(() => writeStreamMock);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
+        mockGlob.mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
 
         // Test execution
         const result = await archiveProject({ projectRoot: 'PROJECT_ROOT' });
@@ -67,13 +69,12 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.dot).toBe(false);
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toEqual(['**/node_modules/**']);
-        expect(globOptions.ignore._rules.length).toBe(3);
-        expect(globOptions.ignore._rules[1].pattern).toBe('**/.git');
+        expect(globOptions.ignore).toEqual(['**/.env', '**/.git', '**/node_modules']);
     });
 
     test('Archive sample project with default name and .gitignore (mocked, no real zip is created)', async () => {
         // Mock setup
-        let writeStreamCloseCallback;
+        let writeStreamCloseCallback: any;
         zipMock = {
             pipe: jest.fn(),
             on: jest.fn(),
@@ -84,22 +85,16 @@ describe('Test for archive project, archiveProject()', () => {
             }
         } as unknown as archiver.Archiver;
         const writeStreamMock = {
-            on: (name, callback) => {
+            on: (name: string, callback: any) => {
                 if (name === 'close') {
                     writeStreamCloseCallback = callback;
                 }
             }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(() => writeStreamMock);
-        jest.spyOn(mockFs, 'existsSync')
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => true);
-        jest.spyOn(mockFs.promises, 'readFile').mockReturnValueOnce(
-            Promise.resolve('#some comment\nexcludedir/\nexcludefile\n**/nm')
-        );
-        const mockGlob = jest
-            .spyOn(mockGlobGitignore, 'glob')
-            .mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
+        };
+        mockCreateWriteStream.mockImplementation(() => writeStreamMock);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => true);
+        mockReadFile.mockReturnValueOnce(Promise.resolve('#some comment\nexcludedir/\nexcludefile\n**/nm'));
+        mockGlob.mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
 
         // Test execution
         const result = await archiveProject({ projectRoot: 'PRJ_GITIGNORE' });
@@ -118,15 +113,15 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.dot).toBe(true);
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toBe(undefined);
-        expect(globOptions.ignore._rules.length).toBe(4);
-        expect(globOptions.ignore._rules[0].pattern).toBe('excludedir/');
-        expect(globOptions.ignore._rules[1].pattern).toBe('excludefile');
-        expect(globOptions.ignore._rules[2].pattern).toBe('**/nm');
-        expect(globOptions.ignore._rules[3].pattern).toBe('**/.git');
+        expect(globOptions.ignore).toEqual(`#some comment
+excludedir/
+excludefile
+**/nm
+**/.git`);
     });
 
     test('Archive sample project TEST (mocked, no real zip is created), should write to TEST.zip', async () => {
-        let writeStreamCloseCallback;
+        let writeStreamCloseCallback: any;
         zipMock = {
             pipe: jest.fn(),
             on: jest.fn(),
@@ -137,16 +132,14 @@ describe('Test for archive project, archiveProject()', () => {
             }
         } as unknown as archiver.Archiver;
         const writeStreamMock = {
-            on: (name, callback) => {
+            on: (name: string, callback: any) => {
                 if (name === 'close') {
                     writeStreamCloseCallback = callback;
                 }
             }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(() => writeStreamMock);
-        jest.spyOn(mockFs, 'existsSync')
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        };
+        mockCreateWriteStream.mockImplementation(() => writeStreamMock);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
 
         // Test execution
         const result = await archiveProject({ projectRoot: 'PROJECT_ROOT', targetFileName: 'TEST' });
@@ -158,7 +151,7 @@ describe('Test for archive project, archiveProject()', () => {
 
     test('Archive sample project PROJECT.zip (mocked, no real zip is created), should write to PROJECT.zip', async () => {
         // Mock setup
-        let writeStreamCloseCallback;
+        let writeStreamCloseCallback: any;
         zipMock = {
             pipe: jest.fn(),
             on: jest.fn(),
@@ -169,16 +162,14 @@ describe('Test for archive project, archiveProject()', () => {
             }
         } as unknown as archiver.Archiver;
         const writeStreamMock = {
-            on: (name, callback) => {
+            on: (name: string, callback: any) => {
                 if (name === 'close') {
                     writeStreamCloseCallback = callback;
                 }
             }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(() => writeStreamMock);
-        jest.spyOn(mockFs, 'existsSync')
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        };
+        mockCreateWriteStream.mockImplementation(() => writeStreamMock);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
 
         // Test execution
         const result = await archiveProject({ projectRoot: 'PROJECT_ROOT', targetFileName: 'PROJECT.zip' });
@@ -190,7 +181,7 @@ describe('Test for archive project, archiveProject()', () => {
 
     test('Archive sample project PROJECT.zip (mocked, no real zip is created), should write to specified targetPath archiveFolder/PROJECT.zip', async () => {
         // Mock setup
-        let writeStreamCloseCallback;
+        let writeStreamCloseCallback: any;
         zipMock = {
             pipe: jest.fn(),
             on: jest.fn(),
@@ -201,16 +192,14 @@ describe('Test for archive project, archiveProject()', () => {
             }
         } as unknown as archiver.Archiver;
         const writeStreamMock = {
-            on: (name, callback) => {
+            on: (name: string, callback: any) => {
                 if (name === 'close') {
                     writeStreamCloseCallback = callback;
                 }
             }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(() => writeStreamMock);
-        jest.spyOn(mockFs, 'existsSync')
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
+        };
+        mockCreateWriteStream.mockImplementation(() => writeStreamMock);
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
 
         // Test execution
         const result = await archiveProject({
@@ -226,7 +215,7 @@ describe('Test for archive project, archiveProject()', () => {
 
     test('Call archive for non existing directory, should throw error', async () => {
         // Mock setup
-        jest.spyOn(mockFs, 'existsSync').mockImplementation(() => false);
+        mockExistsSync.mockImplementation(() => false);
 
         // Test execution
         try {
@@ -234,14 +223,14 @@ describe('Test for archive project, archiveProject()', () => {
             fail(`Call to archiveProject() with wrong root should have thrown error, but did not`);
         } catch (error) {
             // Result check
-            expect(error.message).toContain('WRONG_ROOT');
+            expect((error as Error).message).toContain('WRONG_ROOT');
         }
     });
 
     test('Call archive and error occurs during file list retrieval', async () => {
         // Mock setup
-        jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
-        jest.spyOn(mockFs.promises, 'readFile').mockRejectedValueOnce(new Error('ERROR'));
+        mockExistsSync.mockImplementation(() => true);
+        mockReadFile.mockRejectedValueOnce(new Error('ERROR'));
 
         // Test execution
         try {
@@ -249,16 +238,14 @@ describe('Test for archive project, archiveProject()', () => {
             fail(`Call to archiveProject() and error occurred, should have thrown error, but did not`);
         } catch (error) {
             // Result check
-            expect(error.message).toContain('ERROR');
+            expect((error as Error).message).toContain('ERROR');
         }
     });
 
     test('Call archive and error occurs during zip processing', async () => {
         // Mock setup
-        jest.spyOn(mockFs, 'existsSync')
-            .mockImplementationOnce(() => true)
-            .mockImplementationOnce(() => false);
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(() => {
+        mockExistsSync.mockImplementationOnce(() => true).mockImplementationOnce(() => false);
+        mockCreateWriteStream.mockImplementation(() => {
             throw Error('ERROR');
         });
 
@@ -268,7 +255,7 @@ describe('Test for archive project, archiveProject()', () => {
             fail(`Call to archiveProject() and error occurred, should have thrown error, but did not`);
         } catch (error) {
             // Result check
-            expect(error.message).toContain('ERROR');
+            expect((error as Error).message).toContain('ERROR');
         }
     });
 });

@@ -1,1 +1,1 @@
-export { WinstonLogger } from './logger';
+export { WinstonLogger } from './logger.js';

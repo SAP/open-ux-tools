@@ -1,6 +1,6 @@
 import type { Uri } from 'vscode';
 
-import { t } from './i18n';
+import { t } from './i18n.js';
 
 export const workspaceChoices = {
     OPEN_FOLDER: 'Open Folder',

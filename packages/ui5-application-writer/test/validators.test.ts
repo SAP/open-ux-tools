@@ -1,5 +1,5 @@
-import { validateUI5Version } from '../src/data/validators';
-import { t } from '../src/i18n';
+import { validateUI5Version } from '../src/data/validators.js';
+import { t } from '../src/i18n.js';
 
 describe('Validators', () => {
     // Tests validation of ui5 version strings

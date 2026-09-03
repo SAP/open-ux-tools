@@ -1,6 +1,6 @@
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 import fc from 'fast-check';
-import { DummyStore } from '../../../src/secure-store/dummy-store';
+import { DummyStore } from '../../../src/secure-store/dummy-store.js';
 
 describe('DummyStore', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

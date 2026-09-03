@@ -1,8 +1,18 @@
-import type { FioriElementsApp, FPMSettings } from '../src';
-import { generate, TemplateType, ValidationError } from '../src';
+import { jest } from '@jest/globals';
+import type { FioriElementsApp, FPMSettings } from '../src/index.js';
 import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import {
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
+
+// Mock annotation-generator to prevent ESM transitive import chain.
+// importActual cannot be used here as it would trigger the same chain.
+// The package only has one runtime export (generateAnnotations), so this mock covers its full API.
+jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
+    generateAnnotations: jest.fn()
+}));
+
+const { generate, TemplateType, ValidationError } = await import('../src/index.js');
+const {
     testOutputDir,
     debug,
     feBaseConfig,
@@ -10,7 +20,7 @@ import {
     v2Service,
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
-} from './common';
+} = await import('./common.js');
 
 const TEST_NAME = 'fpmTemplates';
 if (debug?.enabled) {
@@ -103,7 +113,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
         const viewXml = fs.read(viewXmlPath).toString();
 
         expect(viewXml).toContain('My Custom Page');
-        expect(viewXml).toContain('<macros:Page id="Page" title="My Custom Page"/>');
+        expect(viewXml).toContain('<macros:Page id="Page" title="My Custom Page"');
     });
 
     test('Should not generate view XML containing custom page building block title for FPM template when UI5 version is below 1.136.0', async () => {

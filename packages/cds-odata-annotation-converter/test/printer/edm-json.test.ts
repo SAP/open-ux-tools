@@ -1,4 +1,4 @@
-import { printEdmJson } from '../../src/printer/edm-json';
+import { printEdmJson } from '../../src/printer/edm-json.js';
 import type { Element } from '@sap-ux/odata-annotation-core';
 import { printOptions as defaultPrintOptions } from '@sap-ux/odata-annotation-core';
 

@@ -1,13 +1,13 @@
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
-import type { TestCaseName } from '../setup';
-import { getAst, getDiagnostics, getPaths, getTerm } from '../setup';
-import { deserialize } from '../deserialize-ast';
+import type { TestCaseName } from '../setup.js';
+import { getAst, getDiagnostics, getPaths, getTerm } from '../setup.js';
+import { deserialize } from '../deserialize-ast.js';
 import { Position, Range } from '@sap-ux/text-document-utils';
-import { initI18n } from '../../src/i18n';
+import { initI18n } from '../../src/i18n.js';
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
 import { parse } from '@sap-ux/cds-annotation-parser';
 import type { Element, TextNode } from '@sap-ux/odata-annotation-core';
-import { convertAnnotation as toTerms } from '../../src/transforms/annotation/convert';
+import { convertAnnotation as toTerms } from '../../src/transforms/annotation/convert.js';
 
 declare const expect: jest.Expect;
 

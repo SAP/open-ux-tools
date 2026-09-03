@@ -2,9 +2,9 @@ import { createWriteStream, existsSync, promises } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import * as archiver from 'archiver';
 import { glob } from 'glob-gitignore';
-import ignore from 'ignore';
-import { t } from '../i18n';
-import { byteNumberToSizeString } from '../formatter';
+
+import { t } from '../i18n.js';
+import { byteNumberToSizeString } from '../formatter.js';
 
 interface ArchiveProjectOptions {
     projectRoot: string;
@@ -80,7 +80,7 @@ async function getFileList(cwd: string): Promise<string[]> {
     const files = await glob(globPattern, {
         cwd,
         dot,
-        ignore: ignore().add(ignores),
+        ignore: ignores,
         mark: true,
         skip
     });

@@ -1,6 +1,6 @@
-import createTableRule from '../../src/rules/sap-creation-mode-for-table';
+import createTableRule from '../../src/rules/sap-creation-mode-for-table.js';
 import { RuleTester } from 'eslint';
-import { meta, languages } from '../../src/index';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
@@ -9,7 +9,7 @@ import {
     V4_ANNOTATIONS_PATH,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

@@ -1,8 +1,7 @@
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, TransportRequest } from '@sap-ux/axios-extension';
 import { TransportChecksService, ListPackageService, AtoService } from '@sap-ux/axios-extension';
-import type { TransportRequest } from '@sap-ux/axios-extension/src/abap/types';
 import type { Logger } from '@sap-ux/logger';
-import { green, red, yellow } from 'chalk';
+import chalk from 'chalk';
 import {
     validateAppName,
     validateAppDescription,
@@ -12,9 +11,15 @@ import {
     validateUrl
 } from '@sap-ux/project-input-validator';
 import { EOL } from 'node:os';
-import type { AbapDeployConfig } from '../types';
+import type { AbapDeployConfig } from '../types/index.js';
 import type { Destinations } from '@sap-ux/btp-utils';
-import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
+import {
+    isAppStudio,
+    isFullUrlDestination,
+    isOnPremiseDestination,
+    listDestinations,
+    Authentication
+} from '@sap-ux/btp-utils';
 
 export type ValidationInputs = {
     appName: string;
@@ -107,14 +112,14 @@ export function formatSummary(summary: SummaryRecord[]): string {
             let statusSymbol = '';
             switch (next.status) {
                 case SummaryStatus.Valid:
-                    statusSymbol = green('√');
+                    statusSymbol = chalk.green('√');
                     break;
                 case SummaryStatus.Invalid:
-                    statusSymbol = red('×');
+                    statusSymbol = chalk.red('×');
                     break;
                 case SummaryStatus.Unknown:
                 default:
-                    statusSymbol = yellow('?');
+                    statusSymbol = chalk.yellow('?');
                     break;
             }
             return `${' '.repeat(4)}${statusSymbol} ${next.message}`;
@@ -238,7 +243,10 @@ async function getSystemPrefix(
         }
 
         const atoSettings = await adtService.getAtoInfo();
-        return atoSettings?.developmentPrefix;
+        if (atoSettings?.operationsType === 'C') {
+            return atoSettings.developmentPrefix;
+        }
+        return undefined;
     } catch (e) {
         logger.error(e.message);
         logger.debug(e);
@@ -441,4 +449,21 @@ async function getDestinations(): Promise<Destinations> {
         cachedDestinationsList = await listDestinations();
     }
     return cachedDestinationsList;
+}
+
+/**
+ * Warns if the destination is configured as a full URL destination.
+ *
+ * @param destination Identifier for destination to be checked.
+ * @param logger Logger from the calling context.
+ */
+export async function warnOnFullUrlDestination(destination: string | undefined, logger: Logger): Promise<void> {
+    if (destination && isAppStudio()) {
+        const destinations = await listDestinations();
+        if (destinations[destination] && isFullUrlDestination(destinations[destination])) {
+            logger.warn(
+                'The destination is configured as a full URL destination. Deployment may not work as expected due to duplicated path segments when routing requests. For more information, see SAP Guided Answers: https://ga.support.sap.com/index.html#/tree/3046/actions/45995:52881:52892:68172'
+            );
+        }
+    }
 }

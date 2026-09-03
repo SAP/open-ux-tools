@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-location-reload';
+import rule from '../../src/rules/sap-no-location-reload.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

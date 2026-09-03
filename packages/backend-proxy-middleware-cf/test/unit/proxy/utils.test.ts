@@ -8,7 +8,7 @@ import {
     getRequestOrigin,
     isRequestFromApprouter,
     replaceUrl
-} from '../../../src/proxy/utils';
+} from '../../../src/proxy/utils.js';
 
 describe('proxy utils', () => {
     describe('escapeRegExp', () => {

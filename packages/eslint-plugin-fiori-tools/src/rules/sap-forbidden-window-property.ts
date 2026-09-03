@@ -3,8 +3,8 @@
  */
 
 import type { Rule } from 'eslint';
-import type { ASTNode } from '../utils/helpers';
-import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
+import type { ASTNode } from '../utils/helpers.js';
+import { isIdentifier, isMember, isLiteral } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Helper Functions

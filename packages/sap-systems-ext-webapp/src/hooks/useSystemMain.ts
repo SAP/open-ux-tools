@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { LoadingState } from '../types';
-import type { SystemState, SystemInfo } from '../types';
+import { LoadingState } from '../types/index.js';
+import type { SystemState, SystemInfo } from '../types/index.js';
 import type { AuthenticationType, ConnectionType, SystemType } from '@sap-ux/store';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 import type { ConnectionStatus } from '@sap-ux/sap-systems-ext-types';

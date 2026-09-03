@@ -151,10 +151,7 @@ export type PromptDefaultValue<T> = {
 };
 
 export type TelemPropertyDestinationType =
-    | 'AbapODataCatalogDest'
-    | 'GenericODataFullUrlDest'
-    | 'GenericODataPartialUrlDest'
-    | 'Unknown';
+    'AbapODataCatalogDest' | 'GenericODataFullUrlDest' | 'GenericODataPartialUrlDest' | 'Unknown';
 
 /**
  * Implementation of IValidationLink interface.

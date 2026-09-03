@@ -1,4 +1,4 @@
-import type { dimensions, measurements } from '../../src/base/utils/param-processing';
+import type { dimensions, measurements } from '../../src/base/utils/param-processing.js';
 import {
     getParamsData,
     ParamRecordConfigField,
@@ -6,7 +6,7 @@ import {
     getValue,
     paramsProcessing,
     wrongPathErr
-} from '../../src/base/utils/param-processing';
+} from '../../src/base/utils/param-processing.js';
 
 describe('Parameter processing Tests', () => {
     const mockParams = [

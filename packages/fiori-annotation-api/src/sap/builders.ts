@@ -1,7 +1,7 @@
 import type { ElementChild, Element, Range } from '@sap-ux/odata-annotation-core-types';
 import { Edm, createElementNode, createAttributeNode, Location } from '@sap-ux/odata-annotation-core-types';
 
-import type { ValueWithOrigin } from './types';
+import type { ValueWithOrigin } from './types.js';
 
 function createComplexElement(elementName: Edm, nameAttribute: Edm, name: string, content: ElementChild[]): Element {
     return createElementNode({

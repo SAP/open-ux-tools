@@ -1,8 +1,8 @@
 import React from 'react';
-import type { ButtonProps } from '../UIButton';
-import { UIIconButton } from '../UIButton';
-import { UILoader } from '../UILoader';
-import type { UILoadButtonBusyProps } from './UITranslationButton.types';
+import type { ButtonProps } from '../UIButton/index.js';
+import { UIIconButton } from '../UIButton/index.js';
+import { UILoader } from '../UILoader/index.js';
+import type { UILoadButtonBusyProps } from './UITranslationButton.types.js';
 
 import './UILoadButton.scss';
 

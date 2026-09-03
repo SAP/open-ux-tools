@@ -1,42 +1,54 @@
-import { existsSync } from 'node:fs';
-
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
-import { isExternalLoginEnabled, isMtaProject, getMtaServices } from '@sap-ux/adp-tooling';
-import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
-import {
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockValidateProjectName = jest.fn<typeof realProjectInputValidator.validateProjectName>();
+const mockValidateNamespaceAdp = jest.fn<typeof realProjectInputValidator.validateNamespaceAdp>();
+const mockIsExternalLoginEnabled = jest.fn<typeof realAdpTooling.isExternalLoginEnabled>();
+const mockIsMtaProject = jest.fn<typeof realAdpTooling.isMtaProject>();
+const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
+const mockExistsSync = jest.fn<typeof realFs.existsSync>();
+
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    default: {
+        ...realFs.default,
+        existsSync: mockExistsSync
+    },
+    existsSync: mockExistsSync
+}));
+
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateProjectName: mockValidateProjectName,
+    validateNamespaceAdp: mockValidateNamespaceAdp
+}));
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    isExternalLoginEnabled: mockIsExternalLoginEnabled,
+    isMtaProject: mockIsMtaProject,
+    getMtaServices: mockGetMtaServices
+}));
+
+const {
     validateJsonInput,
     validateExtensibilityExtension,
     validateEnvironment,
     validateProjectPath,
     validateBusinessSolutionName
-} from '../../../../src/app/questions/helper/validators';
-import { initI18n, t } from '../../../../src/utils/i18n';
-
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    validateProjectName: jest.fn(),
-    validateNamespaceAdp: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
-}));
-
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    isExternalLoginEnabled: jest.fn(),
-    isMtaProject: jest.fn(),
-    getMtaServices: jest.fn()
-}));
-
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    existsSync: jest.fn()
-}));
+} = await import('../../../../src/app/questions/helper/validators.js');
+const { initI18n, t } = await import('../../../../src/utils/i18n.js');
 
 const availableSystem = 'systemA';
 const nonExistingSystem = 'systemB';
@@ -47,14 +59,6 @@ const jsonInput = {
     namespace: 'namespace',
     system: availableSystem
 };
-
-const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
-const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
-const mockIsMtaProject = isMtaProject as jest.MockedFunction<typeof isMtaProject>;
-const mockGetMtaServices = getMtaServices as jest.MockedFunction<typeof getMtaServices>;
-const mockValidateProjectName = validateProjectName as jest.MockedFunction<typeof validateProjectName>;
-const mockValidateNamespaceAdp = validateNamespaceAdp as jest.MockedFunction<typeof validateNamespaceAdp>;
-const mockIsExternalLoginEnabled = isExternalLoginEnabled as jest.MockedFunction<typeof isExternalLoginEnabled>;
 
 describe('validateExtensibilityGenerator', () => {
     beforeAll(async () => {
@@ -318,7 +322,7 @@ describe('validateBusinessSolutionName', () => {
         jest.clearAllMocks();
     });
 
-    test('should return true for valid business solution name', () => {
+    test('should return true for valid name with dot separator', () => {
         const result = validateBusinessSolutionName('test.solution');
         expect(result).toBe(true);
     });
@@ -328,23 +332,55 @@ describe('validateBusinessSolutionName', () => {
         expect(result).toBe(true);
     });
 
+    test('should return true for single segment name', () => {
+        const result = validateBusinessSolutionName('test');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for name with underscores', () => {
+        const result = validateBusinessSolutionName('my_solution');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for name with hyphens', () => {
+        const result = validateBusinessSolutionName('my-solution');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for name with mixed valid characters', () => {
+        const result = validateBusinessSolutionName('my-app_v2.config');
+        expect(result).toBe(true);
+    });
+
     test('should return error for empty string', () => {
         const result = validateBusinessSolutionName('');
         expect(result).toBe('The input cannot be empty.');
     });
 
-    test('should return error for single part name', () => {
-        const result = validateBusinessSolutionName('test');
-        expect(result).toBe(t('error.businessSolutionNameInvalid'));
-    });
-
     test('should return error for name with spaces', () => {
-        const result = validateBusinessSolutionName('test. solution');
-        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+        const result = validateBusinessSolutionName('test solution');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
     });
 
     test('should return error for name with special characters', () => {
         const result = validateBusinessSolutionName('test.sol@tion');
-        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name with uppercase letters', () => {
+        const result = validateBusinessSolutionName('Test.Solution');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name with only dots and special chars', () => {
+        const result = validateBusinessSolutionName('..._');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name wich starts with special character', () => {
+        let result = validateBusinessSolutionName('_abc');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+        result = validateBusinessSolutionName('.abc');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
     });
 });

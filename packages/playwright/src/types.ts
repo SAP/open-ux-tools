@@ -1,4 +1,4 @@
-export { Config as ServerConfig } from 'jest-dev-server';
+export type { Config as ServerConfig } from 'jest-dev-server';
 
 export interface CopyOptions {
     /** Absolute path to root of a project. If provided, a copy of project is generated under `fixtures-copy` folder*/

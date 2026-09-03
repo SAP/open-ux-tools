@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import { generateSmartLinksConfig, getSmartLinksTargetFromPrompt } from '@sap-ux/app-config-writer';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 
 /**
  * Add the "add smartlinks config" command to a passed command.

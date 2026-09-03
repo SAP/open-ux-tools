@@ -9,7 +9,7 @@ import {
     createIsLocation,
     createIsLocationObject,
     createRememberLocation
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

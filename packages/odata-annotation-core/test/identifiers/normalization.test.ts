@@ -1,4 +1,4 @@
-import { toAliasQualifiedName, resolveName, toFullyQualifiedName } from '../../src';
+import { toAliasQualifiedName, resolveName, toFullyQualifiedName } from '../../src/index.js';
 
 describe('identifiers', () => {
     describe('toFullyQualifiedName', () => {

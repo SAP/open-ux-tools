@@ -5,14 +5,14 @@ import {
     UPDATE_PROJECT_PATH,
     UPDATE_PROJECT_PATH_RESULT,
     VALIDATE_ANSWERS
-} from '../addons/project/types';
+} from '../addons/project/types.js';
 import type {
     ApplicationInformation,
     GetProjectPath,
     UpdateProjectPath,
     UpdateProjectPathResultPayload,
     ValidateAnswers
-} from '../addons/project/types';
+} from '../addons/project/types.js';
 import type {
     DynamicChoices,
     PromptQuestion,
@@ -20,7 +20,7 @@ import type {
     PromptsGroup,
     TranslationProperties
 } from '@sap-ux/ui-prompting';
-import type { Actions, CreateI18n, GetChoices, GetQuestions, RequestI18n } from './types';
+import type { Actions, CreateI18n, GetChoices, GetQuestions, RequestI18n } from './types.js';
 import {
     APPLY_ANSWERS,
     GET_CHOICES,
@@ -39,8 +39,8 @@ import {
     REQUEST_I18N,
     RESPONSE_I18N,
     CREATE_I18N_ENTRY
-} from './types';
-import type { Subset } from '@sap-ux/fe-fpm-writer/src/prompts/types';
+} from './types.js';
+import type { Subset } from '@sap-ux/fe-fpm-writer/src/prompts/types.js';
 import type { I18nBundle } from '@sap-ux/ui-components';
 
 let ws: WebSocket | undefined;

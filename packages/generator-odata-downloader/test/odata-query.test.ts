@@ -4,10 +4,10 @@ import {
     createQueryFromEntities,
     fetchData,
     getExpands
-} from '../src/data-download/odata-query';
+} from '../src/data-download/odata-query.js';
 import type { ODataService } from '@sap-ux/axios-extension';
-import type { ReferencedEntities, HierarchyEntity } from '../src/data-download/types';
-import type { SelectedEntityAnswer } from '../src/data-download/prompts/prompts';
+import type { ReferencedEntities, HierarchyEntity } from '../src/data-download/types.js';
+import type { SelectedEntityAnswer } from '../src/data-download/prompts/prompts.js';
 
 describe('Test odata query builder', () => {
     const testEntities1 = [

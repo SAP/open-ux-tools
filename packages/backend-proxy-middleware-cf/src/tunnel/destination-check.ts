@@ -3,10 +3,10 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import { DestinationProxyType } from '@sap-ux/btp-utils';
-import type { ServiceKeyCredentialsWithTags, Uaa } from '@sap-ux/adp-tooling';
-import { getToken, getBtpDestinationConfig } from '@sap-ux/adp-tooling';
+import type { CfDestinationServiceCredentials, Uaa } from '@sap-ux/adp-tooling';
+import { getToken, getBtpDestinationConfig, getDestinationServiceUaa } from '@sap-ux/adp-tooling';
 
-import type { XsappConfig } from '../types';
+import type { XsappConfig } from '../types.js';
 
 /**
  * Auth info needed to call the BTP Destination Configuration API.
@@ -55,7 +55,7 @@ function getBtpDestinationServiceAuth(): BtpDestinationServiceAuth | undefined {
         return undefined;
     }
 
-    let vcapServices: Record<string, ServiceKeyCredentialsWithTags[]>;
+    let vcapServices: Record<string, { credentials?: CfDestinationServiceCredentials }[]>;
     try {
         vcapServices = JSON.parse(raw);
     } catch {
@@ -67,14 +67,14 @@ function getBtpDestinationServiceAuth(): BtpDestinationServiceAuth | undefined {
         return undefined;
     }
 
-    const credentials = entries[0].credentials;
-    if (!credentials?.clientid || !credentials?.clientsecret || !credentials?.url || !credentials?.uri) {
+    const uaa = getDestinationServiceUaa(entries[0].credentials);
+    if (!uaa) {
         return undefined;
     }
 
     return {
-        uaa: { clientid: credentials.clientid, clientsecret: credentials.clientsecret, url: credentials.url },
-        uri: String(credentials.uri)
+        uaa: { clientid: uaa.clientid, clientsecret: uaa.clientsecret, url: uaa.url },
+        uri: uaa.uri
     };
 }
 

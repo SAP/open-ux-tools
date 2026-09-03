@@ -19,12 +19,12 @@ import { DiagnosticSeverity } from '@sap-ux/odata-annotation-core-types';
 import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
-import type { AnnotationListWithOrigins } from './avt';
-import { convertMetadataToAvtSchema, convertAnnotationFile, convertTargetAnnotationsToInternal } from './avt';
+import type { AnnotationListWithOrigins } from './avt/index.js';
+import { convertMetadataToAvtSchema, convertAnnotationFile, convertTargetAnnotationsToInternal } from './avt/index.js';
 
-import { XMLAnnotationServiceAdapter, getLocalEDMXService, XML_VOCABULARY_SERVICE } from './xml';
-import { getCDSService, CDSAnnotationServiceAdapter, CDS_VOCABULARY_SERVICE } from './cds';
-import { addAllVocabulariesToAliasInformation } from './vocabularies';
+import { XMLAnnotationServiceAdapter, getLocalEDMXService, XML_VOCABULARY_SERVICE } from './xml/index.js';
+import { getCDSService, CDSAnnotationServiceAdapter, CDS_VOCABULARY_SERVICE } from './cds/index.js';
+import { addAllVocabulariesToAliasInformation } from './vocabularies.js';
 
 import type {
     AnnotationFileChange,
@@ -34,14 +34,14 @@ import type {
     Change,
     ProjectInfo,
     TextFile
-} from './types';
-import { ApiError, ApiErrorCode } from './error';
-import { pathFromUri } from './utils';
-import { ChangeConverter } from './change-converter';
+} from './types/index.js';
+import { ApiError, ApiErrorCode } from './error.js';
+import { pathFromUri } from './utils/index.js';
+import { ChangeConverter } from './change-converter.js';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { logger } from './logger';
-import { type ValueListReference } from './types/adapter';
+import { logger } from './logger.js';
+import { type ValueListReference } from './types/adapter.js';
 
 export interface FioriAnnotationServiceConstructor<T> {
     new (

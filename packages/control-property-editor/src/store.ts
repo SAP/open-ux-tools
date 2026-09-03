@@ -1,8 +1,8 @@
 import { configureStore, compose, applyMiddleware } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import { communicationMiddleware } from './middleware';
-import reducer from './slice';
-import { webSocketMiddleware } from './ws-middleware';
+import { communicationMiddleware } from './middleware.js';
+import reducer from './slice.js';
+import { webSocketMiddleware } from './ws-middleware.js';
 
 declare let window: Window & { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: <R>(data: R) => R };
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?? compose;

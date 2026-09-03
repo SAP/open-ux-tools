@@ -6,16 +6,18 @@ import type {
     AnnotationFileChange,
     CommonAdditionalChangeInfoProperties,
     AppDescriptorV4Change
-} from '../types';
-import { ChangeType, TemplateFileName } from '../types';
+} from '../types.js';
+import { ChangeType, TemplateFileName } from '../types.js';
 import { basename, join } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'node:crypto';
-import { ManifestService } from '../base/abap/manifest-service';
-import { getVariant, isTypescriptSupported } from '../base/helper';
+
+import { getTemplatePath } from '../templates.js';
+import { ManifestService } from '../base/abap/manifest-service.js';
+import { getVariant, isTypescriptSupported } from '../base/helper.js';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
-import { generateChange } from '../writer/editors';
+import { generateChange } from '../writer/editors.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { DirName } from '@sap-ux/project-access';
 
@@ -253,7 +255,7 @@ export function addXmlFragment(
     const templateConfig = fragmentTemplateDefinitions[additionalChangeInfo?.templateName ?? ''];
     try {
         if (templateConfig) {
-            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
+            const fragmentTemplatePath = getTemplatePath(`rta/${templateConfig.path}`);
             const text = fs.read(fragmentTemplatePath);
             const changeTemplate = {
                 ...templateConfig.getData(change),
@@ -266,7 +268,7 @@ export function addXmlFragment(
         } else {
             // use default fragment template
             const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
-            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
+            const fragmentTemplatePath = getTemplatePath(`rta/${templateName}`);
             const text = fs.read(fragmentTemplatePath);
             const template = render(text, {
                 viewName: additionalChangeInfo?.viewName,
@@ -302,7 +304,7 @@ export async function addControllerExtension(
     const fileName = basename(codeRef, '.js');
     const fullName = `${fileName}.${isTsSupported ? 'ts' : 'js'}`;
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
-    const tmplPath = join(__dirname, '../../templates/rta', tmplFileName);
+    const tmplPath = getTemplatePath(`rta/${tmplFileName}`);
     try {
         const text = fs.read(tmplPath);
         const id = (await getVariant(rootPath))?.id;

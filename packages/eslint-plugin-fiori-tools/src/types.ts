@@ -4,7 +4,7 @@ import type { AnyNode } from '@humanwhocodes/momoa';
 import type { JSONLanguageOptions, JSONSourceCode } from '@eslint/json';
 import type { XMLToken, XMLAstNode } from '@xml-tools/ast';
 import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
-import type { FioriLanguageOptions, FioriSourceCode } from './language/fiori-language';
+import type { FioriLanguageOptions, FioriSourceCode } from './language/fiori-language.js';
 
 /**
  * Type definition for manifest.json specific ESLint rules.

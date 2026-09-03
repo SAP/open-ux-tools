@@ -1,8 +1,8 @@
-import ControlUtils from '../../../../src/adp/control-utils';
+import ControlUtils from '../../../../src/adp/control-utils.js';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type Dialog from 'sap/m/Dialog';
-import FileExistsDialog from '../../../../src/adp/controllers/FileExistsDialog.controller';
+import FileExistsDialog from '../../../../src/adp/controllers/FileExistsDialog.controller.js';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 
 describe('FileExistsDialog', () => {

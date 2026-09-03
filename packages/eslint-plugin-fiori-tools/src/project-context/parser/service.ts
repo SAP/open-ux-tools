@@ -1,4 +1,4 @@
-import type { Element, MetadataElement } from '@sap-ux/odata-annotation-core';
+import type { Element, MetadataElement, Range } from '@sap-ux/odata-annotation-core';
 import {
     Edm,
     getAliasInformation,
@@ -6,11 +6,14 @@ import {
     getElementAttribute,
     getElementAttributeValue,
     parseIdentifier,
-    toFullyQualifiedName
+    toFullyQualifiedName,
+    createAttributeNode,
+    createElementNode
 } from '@sap-ux/odata-annotation-core';
-import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
+import type { ServiceArtifacts, V2Annotation } from '@sap-ux/fiori-annotation-api';
 
-import type { DocumentType } from '../types';
+import type { DocumentType } from '../types.js';
+import { COMMON_LABEL, COMMON_TEXT } from '../../constants.js';
 
 export interface ServiceIndex {
     entityContainer?: MetadataElement;
@@ -55,11 +58,16 @@ export function buildAnnotationIndexKey(target: string, term: string): string {
 
 /**
  * Indexes annotations by their annotation path (target and term).
+ * For OData V2 services, also indexes synthetic entries from inline sap:text/sap:label attributes.
  *
  * @param service - Service artifacts containing annotation files
+ * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
  * @returns Annotation index organized by path and qualifier
  */
-function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): AnnotationIndex {
+function indexAnnotationsByAnnotationPath(
+    service: ServiceArtifacts,
+    v2Annotations: V2Annotation[] = []
+): AnnotationIndex {
     const index: AnnotationIndex = {};
     for (const file of service.fileSequence) {
         const annotationFile = service.annotationFiles[file];
@@ -78,6 +86,7 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
             processTargetAnnotations(target, annotationFile, namespace, aliasInfo, targetName, index);
         }
     }
+    processTargetV2Annotations(v2Annotations, index);
     return index;
 }
 
@@ -132,23 +141,99 @@ function processTargetAnnotations(
 }
 
 /**
+ * Creates a minimal synthetic Element node carrying a single string attribute.
+ * Attaches an ESLint-compatible `loc` object when source range is available,
+ * enabling ESLint to report at the correct line/column in the metadata file.
+ *
+ * @param attrName - Attribute name on the Annotation element (e.g. "Path" or "String")
+ * @param attrValue - Attribute value
+ * @param sourceRange - Optional source range (0-indexed) used for ESLint reporting
+ * @returns A synthetic Element, optionally with position range
+ */
+function createSyntheticElement(attrName: string, attrValue: string, sourceRange?: Range): Element {
+    const element = createElementNode({
+        name: Edm.Annotation,
+        attributes: {
+            [attrName]: createAttributeNode(attrName, attrValue)
+        },
+        content: []
+    });
+    if (sourceRange) {
+        element.range = sourceRange;
+    }
+    return element;
+}
+
+/**
+ * Indexes synthetic Common.Text and Common.Label annotation entries derived from OData V2
+ * inline `sap:text` and `sap:label` attributes, using pre-parsed V2Annotation objects.
+ *
+ * Only adds entries when no explicit vocabulary annotation already exists for that key.
+ *
+ * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
+ * @param index - The annotation index to populate
+ */
+function processTargetV2Annotations(v2Annotations: V2Annotation[], index: AnnotationIndex): void {
+    for (const v2Ann of v2Annotations) {
+        if (v2Ann.target.kind !== Edm.Property) {
+            continue;
+        }
+        const uri = v2Ann.target.location?.uri ?? '';
+        const propertyTarget = v2Ann.target.path;
+
+        if (v2Ann.name === 'sap:text') {
+            const textKey = buildAnnotationIndexKey(propertyTarget, COMMON_TEXT);
+            if (!index[textKey]) {
+                const syntheticElement = createSyntheticElement(Edm.Path, v2Ann.value, v2Ann.valueRange);
+                index[textKey] = {
+                    undefined: {
+                        source: uri,
+                        target: propertyTarget,
+                        term: COMMON_TEXT,
+                        top: { uri, value: syntheticElement },
+                        layers: [{ uri, value: syntheticElement }]
+                    }
+                };
+            }
+        } else if (v2Ann.name === 'sap:label') {
+            const labelKey = buildAnnotationIndexKey(propertyTarget, COMMON_LABEL);
+            if (!index[labelKey]) {
+                const syntheticElement = createSyntheticElement(Edm.String, v2Ann.value, v2Ann.valueRange);
+                index[labelKey] = {
+                    undefined: {
+                        source: uri,
+                        target: propertyTarget,
+                        term: COMMON_LABEL,
+                        top: { uri, value: syntheticElement },
+                        layers: [{ uri, value: syntheticElement }]
+                    }
+                };
+            }
+        }
+    }
+}
+
+/**
  * Builds a service index from service artifacts.
  * Creates indexes for entity sets, entity containers, and annotations.
+ * For OData V2 services, also injects synthetic index entries from
+ * inline sap:text/sap:label attributes so that annotation rules can report on metadata.xml.
  *
  * @param artifacts - Service artifacts to index
  * @param documents - Document map to populate with annotation files
+ * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
  * @returns Complete service index with entity sets and annotations
  */
 export function buildServiceIndex(
     artifacts: ServiceArtifacts,
-    documents: { [key: string]: DocumentType }
+    documents: { [key: string]: DocumentType },
+    v2Annotations: V2Annotation[] = []
 ): ServiceIndex {
     const entitySets: Record<string, MetadataElement> = {};
     for (const document of Object.values(artifacts.annotationFiles)) {
         documents[document.uri] = document;
     }
 
-    const annotationIndex = indexAnnotationsByAnnotationPath(artifacts);
     let entityContainer: MetadataElement | undefined;
     artifacts.metadataService.visitMetadataElements((element) => {
         // NOSONAR - TODO: check if we can handle CDS differences better
@@ -158,6 +243,9 @@ export function buildServiceIndex(
             entitySets[element.name] = element;
         }
     });
+
+    const annotationIndex = indexAnnotationsByAnnotationPath(artifacts, v2Annotations);
+
     return {
         entitySets: entitySets,
         entityContainer,

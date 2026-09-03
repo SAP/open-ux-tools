@@ -22,19 +22,19 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 import type Selector from 'sap/ui/fl/Selector';
 
-import { getResourceModel } from '../../i18n';
+import { getResourceModel } from '../../i18n.js';
 
 import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
-import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info';
-import { CommunicationService } from '../../cpe/communication-service';
-import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { getError } from '../../utils/error';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
-import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
-import { getFragments } from '../api-handler';
-import CommandExecutor from '../command-executor';
-import ControlUtils from '../control-utils';
-import BaseDialog from './BaseDialog.controller';
+import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info.js';
+import { CommunicationService } from '../../cpe/communication-service.js';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition.js';
+import { getError } from '../../utils/error.js';
+import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
+import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment.js';
+import { getFragments } from '../api-handler.js';
+import CommandExecutor from '../command-executor.js';
+import ControlUtils from '../control-utils.js';
+import BaseDialog from './BaseDialog.controller.js';
 
 const radix = 10;
 

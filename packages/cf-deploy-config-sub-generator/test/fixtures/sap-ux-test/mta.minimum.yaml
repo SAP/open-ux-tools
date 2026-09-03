@@ -8,7 +8,7 @@ modules:
       path: router
       requires:
           - name: sap-ux-test-html5-repo-runtime
-          - name: sap-ux-test-uaa
+          - name: sap-ux-test-auth
           - name: sap-ux-test-destination-service
             group: destinations
             properties:
@@ -19,12 +19,16 @@ modules:
           disk-quota: 256M
           memory: 256M
 resources:
-    - name: sap-ux-test-uaa
+    - name: sap-ux-test-auth
       type: org.cloudfoundry.managed-service
       parameters:
           config:
               tenant-mode: dedicated
-              xsappname: sap-ux-test-${space-guid}
+              xsappname: 'sap-ux-test-${org}-${space}'
+              oauth2-configuration:
+                  credential-types:
+                      - binding-secret
+                      - x509
           path: ./xs-security.json
           service: xsuaa
           service-name: sap-ux-test-xsuaa-service

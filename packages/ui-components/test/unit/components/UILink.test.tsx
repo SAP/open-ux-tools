@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IStyleFunction, ILinkStyles } from '@fluentui/react';
 import { Link } from '@fluentui/react';
 import type { UILinkProps } from '../../../src/components/UILink';

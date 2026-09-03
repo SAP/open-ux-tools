@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-ui5odatamodel-prop';
+import rule from '../../src/rules/sap-no-ui5odatamodel-prop.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

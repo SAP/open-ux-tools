@@ -1,10 +1,10 @@
 import { promises } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { getAllNormalizeFolderPath, serialize, getBase, getFileContent } from '.';
-import { FileFormat } from '../../../src/parser/types';
-import { FileExtension } from './types';
-import { parseProperties } from '../../../src/parser/properties/parser';
-import { parseCsv } from '../../../src/parser/csv/parser';
+import { FileFormat } from '../../../src/parser/types.js';
+import { FileExtension } from './types.js';
+import { parseProperties } from '../../../src/parser/properties/parser/index.js';
+import { parseCsv } from '../../../src/parser/csv/parser/index.js';
 export const update = async (format: FileFormat): Promise<void | Error> => {
     let BASE = '';
     let ext: FileExtension = FileExtension.properties;

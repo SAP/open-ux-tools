@@ -3,16 +3,16 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import type FlexBox from 'sap/m/FlexBox';
 
-import { DialogFactory, DialogNames } from '../../dialog-factory';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { isA } from '../../../utils/core';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import type { EnablementValidatorResult } from '../enablement-validator';
-import { getTextBundle } from '../../../i18n';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { isA } from '../../../utils/core.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
+import type { EnablementValidatorResult } from '../enablement-validator.js';
+import { getTextBundle } from '../../../i18n.js';
 
 export const OP_ADD_HEADER_FIELD_TYPE = 'op-add-header-field';
 const CONTROL_TYPES = ['sap.uxap.ObjectPageLayout'];

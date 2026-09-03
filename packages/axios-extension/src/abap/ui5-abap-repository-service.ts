@@ -1,7 +1,7 @@
 import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
-import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message';
-import { ODataService } from '../base/odata-service';
-import { isAxiosError } from '../base/odata-request-error';
+import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message.js';
+import { ODataService } from '../base/odata-service.js';
+import { isAxiosError } from '../base/odata-request-error.js';
 /**
  * Required configuration a transportable object.
  */

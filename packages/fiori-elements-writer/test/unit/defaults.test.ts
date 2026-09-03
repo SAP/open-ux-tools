@@ -1,9 +1,16 @@
-import type { LROPSettings } from '../../src';
-import { OdataVersion, TemplateType } from '../../src';
-import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, Template } from '../../src/types';
-import { TableSelectionMode, TableType } from '../../src/types';
-import { setDefaultTemplateSettings } from '../../src/data/defaults';
+import { jest } from '@jest/globals';
+import type { LROPSettings } from '../../src/index.js';
+import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, Template } from '../../src/types.js';
+import { TableSelectionMode, TableType } from '../../src/types.js';
 import cloneDeep from 'lodash/cloneDeep';
+
+// Mock annotation-generator to prevent ESM transitive import chain
+jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
+    generateAnnotations: jest.fn()
+}));
+
+const { OdataVersion, TemplateType } = await import('../../src/index.js');
+const { setDefaultTemplateSettings } = await import('../../src/data/defaults.js');
 
 describe('Defaults', () => {
     test('Default all template settings', () => {

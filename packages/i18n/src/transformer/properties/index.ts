@@ -1,1 +1,1 @@
-export { propertiesToI18nEntry } from './properties';
+export { propertiesToI18nEntry } from './properties.js';

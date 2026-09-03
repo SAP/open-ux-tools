@@ -1,1 +1,1 @@
-export { QuickActionList } from './QuickActionList';
+export { QuickActionList } from './QuickActionList.js';

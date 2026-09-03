@@ -1,12 +1,20 @@
+import { jest } from '@jest/globals';
 import ObjectStorageConnector from 'mock/sap/ui/fl/write/api/connectors/ObjectStorageConnector';
-import connector from '../../../src/flp/WorkspaceConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import * as additionalChangeInfo from '../../../src/utils/additional-change-info';
-
 import { documentMock, fetchMock } from 'mock/window';
 
+const getAdditionalChangeInfoMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/additional-change-info', () => ({
+    getAdditionalChangeInfo: getAdditionalChangeInfoMock,
+    setAdditionalChangeInfo: jest.fn(),
+    clearAdditionalChangeInfo: jest.fn(),
+    setAdditionalChangeInfoForChangeFile: jest.fn()
+}));
+
+const { default: connector } = await import('open/ux/preview/client/flp/WorkspaceConnector');
+
 describe('flp/WorkspaceConnector', () => {
-    jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue(undefined);
+    getAdditionalChangeInfoMock.mockReturnValue(undefined);
     test('layers', () => {
         expect(connector.layers).toEqual(['VENDOR', 'CUSTOMER_BASE']);
     });
@@ -17,7 +25,7 @@ describe('flp/WorkspaceConnector', () => {
         });
 
         test('setItem', async () => {
-            jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValueOnce({
+            getAdditionalChangeInfoMock.mockReturnValueOnce({
                 templateName: 'templateName'
             });
             connector.storage.fileChangeRequestNotifier = jest.fn();
@@ -44,8 +52,7 @@ describe('flp/WorkspaceConnector', () => {
         test('setItem (fileChange) with baseUrl (from ui5-patched-router)', async () => {
             const mockBaseUrl = '/test.base.url';
 
-            // Mock BEFORE isolating modules
-            documentMock.getElementById.mockImplementation((id: string) => {
+            documentMock.getElementById.mockImplementation((id) => {
                 if (id === 'sap-ui-bootstrap') {
                     return {
                         dataset: {
@@ -56,35 +63,30 @@ describe('flp/WorkspaceConnector', () => {
                 return null;
             });
 
-            await jest.isolateModulesAsync(async () => {
-                // Dynamically import to get fresh baseUrl
-                const { default: testConnector } = await import('../../../src/flp/WorkspaceConnector');
+            connector.storage.fileChangeRequestNotifier = jest.fn();
+            const change = { data: '~Data', fileName: 'dummyFile', changeType: 'property' };
+            await connector.storage.setItem('~notUsed', change);
 
-                testConnector.storage.fileChangeRequestNotifier = jest.fn();
-                const change = { data: '~Data', fileName: 'dummyFile', changeType: 'property' };
-                await testConnector.storage.setItem('~notUsed', change);
-
-                expect(fetch).toHaveBeenCalledWith(
-                    expect.stringContaining(mockBaseUrl),
-                    expect.objectContaining({
-                        method: 'POST',
-                        body: JSON.stringify(
-                            {
-                                change: { ...change },
-                                additionalChangeInfo: undefined
-                            },
-                            null,
-                            2
-                        )
-                    })
-                );
-                expect(testConnector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(
-                    'dummyFile',
-                    'create',
-                    change,
-                    undefined
-                );
-            });
+            expect(fetch).toHaveBeenCalledWith(
+                expect.stringContaining(mockBaseUrl),
+                expect.objectContaining({
+                    method: 'POST',
+                    body: JSON.stringify(
+                        {
+                            change: { ...change },
+                            additionalChangeInfo: undefined
+                        },
+                        null,
+                        2
+                    )
+                })
+            );
+            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(
+                'dummyFile',
+                'create',
+                change,
+                undefined
+            );
 
             // Clean up
             documentMock.getElementById.mockReset();

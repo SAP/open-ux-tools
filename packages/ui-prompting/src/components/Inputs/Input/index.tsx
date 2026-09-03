@@ -1,2 +1,2 @@
-export * from './Input';
-export * from './TranslationInput';
+export * from './Input.js';
+export * from './TranslationInput.js';

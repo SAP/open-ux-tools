@@ -1,6 +1,6 @@
 import { fetchMock, documentMock } from 'mock/window';
 import ODataModelMock from 'mock/sap/ui/model/odata/v2/ODataModel';
-import { initOvpWindowFunctions } from '../../../src/adp/ovp-window-functions';
+import { initOvpWindowFunctions } from '../../../src/adp/ovp-window-functions.js';
 
 const mockEntityContainer = { namespace: 'NS', entitySet: [{ name: 'TestSet', entityType: 'NS.TestType' }] };
 const mockSchema = [{ namespace: 'NS', entityType: [{ name: 'TestType' }] }];
@@ -62,7 +62,7 @@ describe('OVP Bridge Functions', () => {
         });
 
         test('uses baseUrl from root element dataset', () => {
-            documentMock.getElementById.mockImplementation((id: string) => {
+            documentMock.getElementById.mockImplementation((id) => {
                 if (id === 'root') {
                     return { dataset: { openUxPreviewBaseUrl: '/my-base' } };
                 }

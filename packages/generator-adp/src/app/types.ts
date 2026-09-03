@@ -289,10 +289,15 @@ export interface ExtensionProjectData {
 }
 
 /**
- * An interface representing the json input used to store the complete adaptation project
- * generator configurations. The json is passed as an CLI argument.
+ * CLI JSON for the adaptation project generator.
+ *
+ * When `id` is set, `{tmpdir}/{id}.txt` may also be loaded (see `readJsonInputFile`).
  */
 export interface JsonInput {
+    /**
+     * Orchestrator correlation id. Keys the result file and `{tmpdir}/{id}.txt`.
+     */
+    id?: string;
     system: string;
     client?: string;
     username?: string;
@@ -303,6 +308,13 @@ export interface JsonInput {
     projectName?: string;
     namespace?: string;
     projectType?: AdaptationProjectType;
+}
+
+/**
+ * Extra JSON from `{tmpdir}/{id}.txt`. BAS writes a `.txt` file whose contents are JSON.
+ * Currently `keyUserChanges` only; extra fields are allowed.
+ */
+export interface JsonInputFile {
     keyUserChanges?: KeyUserChangeContent[];
 }
 

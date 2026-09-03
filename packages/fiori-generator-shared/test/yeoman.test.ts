@@ -1,7 +1,7 @@
 // generate a test for setYeomanEnvConflicterForce
 
 import type { GeneratorOptions } from 'yeoman-generator';
-import { setYeomanEnvConflicterForce } from '../src/yeoman';
+import { setYeomanEnvConflicterForce } from '../src/yeoman.js';
 
 describe('setYeomanEnvConflicterForce', () => {
     let env: GeneratorOptions['Environment'];

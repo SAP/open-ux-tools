@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "outDir": "dist-cjs",
+        "rootDir": "./src",
+        "lib": ["ES2023", "ESNext.BigInt"],
+        "preserveConstEnums": true
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../text-document-utils"
+        }
+    ]
+}

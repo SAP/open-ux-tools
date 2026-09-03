@@ -1,4 +1,4 @@
-import type { ui5ThemeIds } from './ui5-theme-info';
+import type { ui5ThemeIds } from './ui5-theme-info.js';
 
 export interface UI5VersionFilterOptions {
     /**

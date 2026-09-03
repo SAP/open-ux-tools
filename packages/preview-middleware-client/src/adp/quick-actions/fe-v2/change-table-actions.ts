@@ -1,11 +1,11 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getControlById } from '../../../utils/core';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getControlById } from '../../../utils/core.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
-import { SMART_TABLE_TYPE } from '../control-types';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { SMART_TABLE_TYPE } from '../control-types.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 
 export const CHANGE_TABLE_ACTIONS = 'change-table-actions';
 const CONTROL_TYPES = [SMART_TABLE_TYPE];

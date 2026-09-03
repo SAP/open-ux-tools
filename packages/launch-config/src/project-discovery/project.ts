@@ -3,7 +3,7 @@ import { basename, join } from 'node:path';
 import type { Manifest, ODataVersion, Package } from '@sap-ux/project-access';
 import { DirName, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { parse } from 'jsonc-parser';
-import { Arguments, type FioriOptions } from '../types';
+import { Arguments, type FioriOptions } from '../types/index.js';
 import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 import type { Logger } from '@sap-ux/logger';
 

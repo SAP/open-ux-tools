@@ -14,15 +14,16 @@ import type { XMLAstNode, XMLDocument, XMLToken } from '@xml-tools/ast';
 import type { AnnotationFile, AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { ANNOTATION_FILE_TYPE } from '@sap-ux/odata-annotation-core';
 import { normalizePath } from '@sap-ux/project-access';
-
-import { FioriJSONSourceCode } from './json/source-code';
-import { FioriXMLSourceCode, visitorKeys as xmlVisitorKeys } from './xml/source-code';
-import { ProjectContext } from '../project-context/project-context';
-import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code';
-import { DiagnosticCache } from './diagnostic-cache';
+import { FioriJSONSourceCode } from './json/source-code.js';
+import { FioriXMLSourceCode, visitorKeys as xmlVisitorKeys } from './xml/source-code.js';
+import { ProjectContext } from '../project-context/project-context.js';
+import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code.js';
+import { DiagnosticCache } from './diagnostic-cache.js';
+import { FioriChangeSourceCode } from './change/source-code.js';
 
 export type FioriLanguageOptions = {};
-export type FioriSourceCode = FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode;
+export type FioriSourceCode =
+    FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode | FioriChangeSourceCode;
 export type RootNode = DocumentNode | XMLDocument;
 export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
 
@@ -41,6 +42,10 @@ export type FioriParseResultAst = {
         | {
               type: 'annotation';
               root: AnnotationFile;
+          }
+        | {
+              type: 'change';
+              root: DocumentNode;
           };
 };
 
@@ -89,84 +94,26 @@ export class FioriLanguage implements Language<{
         const projectContext = ProjectContext.updateFile(uri, text);
         const document = projectContext.index.documents[uri];
         if (!document) {
-            if (path.endsWith('.xml')) {
-                try {
-                    const { cst, tokenVector } = parseXml(text);
-                    const ast = buildAst(cst as DocumentCstNode, tokenVector);
-                    return {
-                        ok: true,
-                        ast: {
-                            uri,
-                            context: projectContext,
-                            document: {
-                                type: 'xml',
-                                root: ast
-                            }
-                        }
-                    };
-                } catch (e) {
-                    return {
-                        ok: false,
-                        errors: [
-                            {
-                                line: 0,
-                                column: 0,
-                                message: `Failed to parse XML file ${path}: ${(e as Error).message}`
-                            }
-                        ]
-                    };
-                }
-            }
-            if (path.endsWith('.json')) {
-                return {
-                    ok: true,
-                    ast: {
-                        uri,
-                        context: projectContext,
-                        document: {
-                            type: 'json',
-                            root: parseJson(text, {
-                                mode: 'json',
-                                ranges: true,
-                                tokens: true,
-                                allowTrailingCommas: false
-                            })
-                        }
-                    }
-                };
-            }
-            if (path.endsWith('.cds')) {
-                // NOSONAR - TODO: add warning for orphaned cds files
-                // we're not checking files that are not part of a fiori app, but we don't want to throw either?
-                // other option is to let user add such files to ignore list in eslint config
-                return {
-                    ok: true,
-                    ast: {
-                        uri,
-                        context: projectContext,
-                        document: {
-                            type: 'annotation',
-                            root: {
-                                type: 'annotation-file',
-                                references: [],
-                                targets: [],
-                                uri
-                            }
-                        }
-                    }
-                };
-            }
-            return {
-                ok: false,
-                errors: [
-                    {
-                        line: 0,
-                        column: 0,
-                        message: `File ${path} is not part of a Fiori project or could not be indexed.`
-                    }
-                ]
-            };
+            return this.parseText(text, projectContext, uri, path);
         }
+        return this.getParsedDocument(document, projectContext, uri, path);
+    }
+
+    /**
+     * Gets the parsed representation of a Fiori document.
+     *
+     * @param document - The document to parse
+     * @param projectContext - The project context containing the document
+     * @param uri - The URI of the document
+     * @param path - The file path of the document
+     * @returns The parse result containing the FioriParseResultAst
+     */
+    private getParsedDocument(
+        document: ProjectContext['documents'][string],
+        projectContext: ProjectContext,
+        uri: string,
+        path: string
+    ): ParseResult<FioriParseResultAst> {
         if (document.type === 'Document') {
             return {
                 ok: true,
@@ -174,7 +121,7 @@ export class FioriLanguage implements Language<{
                     uri,
                     context: projectContext,
                     document: {
-                        type: 'json',
+                        type: path.endsWith('.change') ? 'change' : 'json',
                         root: document
                     }
                 }
@@ -208,6 +155,114 @@ export class FioriLanguage implements Language<{
     }
 
     /**
+     * Parses the given text as a Fiori document.
+     *
+     * @param text - The text content of the document
+     * @param projectContext - The project context containing the document
+     * @param uri - The URI of the document
+     * @param path - The file path of the document
+     * @returns The parse result containing the FioriParseResultAst
+     */
+    private parseText(
+        text: string,
+        projectContext: ProjectContext,
+        uri: string,
+        path: string
+    ): ParseResult<FioriParseResultAst> {
+        if (path.endsWith('.change') || path.endsWith('.json')) {
+            try {
+                const content = parseJson(text, {
+                    mode: 'json',
+                    ranges: true,
+                    tokens: true,
+                    allowTrailingCommas: false
+                });
+                return {
+                    ok: true,
+                    ast: {
+                        uri,
+                        context: projectContext,
+                        document: {
+                            type: path.endsWith('.change') ? 'change' : 'json',
+                            root: content
+                        }
+                    }
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    errors: [
+                        {
+                            line: 0,
+                            column: 0,
+                            message: `Failed to parse file ${path}: ${(e as Error).message}`
+                        }
+                    ]
+                };
+            }
+        }
+        if (path.endsWith('.xml')) {
+            try {
+                const { cst, tokenVector } = parseXml(text);
+                const ast = buildAst(cst as DocumentCstNode, tokenVector);
+                return {
+                    ok: true,
+                    ast: {
+                        uri,
+                        context: projectContext,
+                        document: {
+                            type: 'xml',
+                            root: ast
+                        }
+                    }
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    errors: [
+                        {
+                            line: 0,
+                            column: 0,
+                            message: `Failed to parse XML file ${path}: ${(e as Error).message}`
+                        }
+                    ]
+                };
+            }
+        }
+        if (path.endsWith('.cds')) {
+            // NOSONAR - TODO: add warning for orphaned cds files
+            // we're not checking files that are not part of a fiori app, but we don't want to throw either?
+            // other option is to let user add such files to ignore list in eslint config
+            return {
+                ok: true,
+                ast: {
+                    uri,
+                    context: projectContext,
+                    document: {
+                        type: 'annotation',
+                        root: {
+                            type: 'annotation-file',
+                            references: [],
+                            targets: [],
+                            uri
+                        }
+                    }
+                }
+            };
+        }
+        return {
+            ok: false,
+            errors: [
+                {
+                    line: 0,
+                    column: 0,
+                    message: `File ${path} is not part of a Fiori project or could not be indexed.`
+                }
+            ]
+        };
+    }
+
+    /**
      * Creates SourceCode object that ESLint uses to work with a file.
      *
      * @param file - The file to create SourceCode for.
@@ -236,6 +291,13 @@ export class FioriLanguage implements Language<{
                 text,
                 ast: document.root,
                 projectContext: parseResult.ast.context
+            });
+        } else if (document.type === 'change') {
+            return new FioriChangeSourceCode({
+                text,
+                ast: document.root,
+                projectContext: parseResult.ast.context,
+                uri: parseResult.ast.uri
             });
         }
         throw new Error('Unsupported parse result AST type');

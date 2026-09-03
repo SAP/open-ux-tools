@@ -1,12 +1,15 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 
 import { getProject } from '@sap-ux/project-access';
-import type { AnnotationServiceParameters, GenerateAnnotationsOptions } from '../../src';
-import { generateAnnotations } from '../../src';
-import { adaptFilePath } from '../../src/utils';
+import type { AnnotationServiceParameters, GenerateAnnotationsOptions } from '../../src/index.js';
+import { generateAnnotations } from '../../src/index.js';
+import { adaptFilePath } from '../../src/utils.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDataFolder = 'data';
 const edmxProjectFolder = 'xml-generation';

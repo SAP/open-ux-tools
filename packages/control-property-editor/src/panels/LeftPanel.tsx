@@ -3,8 +3,8 @@ import React from 'react';
 
 import { UISectionLayout, UISections, UISplitterLayoutType, UISplitterType } from '@sap-ux/ui-components';
 
-import { ChangesPanel } from './changes';
-import { OutlinePanel } from './outline';
+import { ChangesPanel } from './changes/index.js';
+import { OutlinePanel } from './outline/index.js';
 
 import './LeftPanel.scss';
 

@@ -1,6 +1,6 @@
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 import type { XMLDocument } from '@xml-tools/ast';
-import type { Comment } from './comments';
+import type { Comment } from './comments.js';
 
 export interface Document {
     uri: string;

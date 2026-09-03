@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-commons-usage';
+import rule from '../../src/rules/sap-no-commons-usage.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

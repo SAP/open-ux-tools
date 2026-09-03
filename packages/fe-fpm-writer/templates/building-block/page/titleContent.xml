@@ -1,0 +1,4 @@
+<<%- macrosPrefix %>titleContent>
+    <!-- Title content aggregation (content next to title) -->
+    <GenericTag id="<%- ids.GenericTag %>" text="Status <%- aggIndex %>" design="StatusIconHidden" status="Information" />
+</<%- macrosPrefix %>titleContent>

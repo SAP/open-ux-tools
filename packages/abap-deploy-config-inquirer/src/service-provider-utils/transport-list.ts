@@ -1,9 +1,9 @@
 import { TransportChecksService } from '@sap-ux/axios-extension';
-import { t } from '../i18n';
-import { AbapServiceProviderManager } from './abap-service-provider';
-import LoggerHelper from '../logger-helper';
-import { PromptState } from '../prompts/prompt-state';
-import type { BackendTarget, TransportListItem } from '../types';
+import { t } from '../i18n.js';
+import { AbapServiceProviderManager } from './abap-service-provider.js';
+import LoggerHelper from '../logger-helper.js';
+import { PromptState } from '../prompts/prompt-state.js';
+import type { BackendTarget, TransportListItem } from '../types.js';
 import type { ListChoiceOptions } from 'inquirer';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 

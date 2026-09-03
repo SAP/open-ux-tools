@@ -1,11 +1,12 @@
 {
     "name": "@sap-ux/sap-systems-ext-types",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/sap-systems-ext-types"
     },
+    "type": "module",
     "private": true,
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

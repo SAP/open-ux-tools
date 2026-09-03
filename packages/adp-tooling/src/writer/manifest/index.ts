@@ -1,1 +1,1 @@
-export * from './descriptor-content';
+export * from './descriptor-content.js';

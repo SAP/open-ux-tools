@@ -1,49 +1,78 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { jest } from '@jest/globals';
 import * as mcpTypes from '@modelcontextprotocol/sdk/types.js';
-import { FioriFunctionalityServer } from '../../src/server';
-import { TelemetryHelper, unknownTool } from '../../src/telemetry';
-import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from '../../src/constant';
-import * as tools from '../../src/tools';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from '../../src/constant.js';
 
 const setRequestHandlerMock = jest.fn();
 const connectMock = jest.fn();
 
 // Mock the Server class
-jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
-    return {
-        Server: jest.fn().mockImplementation(() => {
-            return {
-                setRequestHandler: setRequestHandlerMock,
-                connect: connectMock
-            };
-        })
-    };
-});
+jest.unstable_mockModule('@modelcontextprotocol/sdk/server/index.js', () => ({
+    Server: jest.fn().mockImplementation(() => ({
+        setRequestHandler: setRequestHandlerMock,
+        connect: connectMock
+    }))
+}));
 
 // Mock StdioServerTransport to prevent open handles
-jest.mock('@modelcontextprotocol/sdk/server/stdio.js', () => {
-    return {
-        StdioServerTransport: jest.fn().mockImplementation(() => {
-            return {
-                start: jest.fn()
-            };
-        })
-    };
-});
+jest.unstable_mockModule('@modelcontextprotocol/sdk/server/stdio.js', () => ({
+    StdioServerTransport: jest.fn().mockImplementation(() => ({
+        start: jest.fn()
+    }))
+}));
 
-jest.mock('../../src/telemetry', () => ({
+jest.unstable_mockModule('../../src/telemetry', () => ({
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
         initSessionId: jest.fn(),
         markToolStartTime: jest.fn(),
         sendTelemetry: jest.fn()
-    }
+    },
+    unknownTool: 'unknown-tool'
 }));
+
+// Mock tools module so we can spy on individual functions
+const mockListFioriApps = jest.fn<any>();
+const mockListFunctionalities = jest.fn<any>();
+const mockGetFunctionalityDetails = jest.fn<any>();
+const mockExecuteFunctionality = jest.fn<any>();
+const mockDocSearch = jest.fn<any>();
+const mockListSapSystems = jest.fn<any>();
+const mockDownloadODataServiceMetadata = jest.fn<any>();
+const mockGenerateFioriAppOData = jest.fn<any>();
+const mockGenerateFioriAppCap = jest.fn<any>();
+const actualTools = await import('../../src/tools/index.js');
+jest.unstable_mockModule('../../src/tools', () => ({
+    ...actualTools,
+    listFioriApps: mockListFioriApps,
+    listFunctionalities: mockListFunctionalities,
+    getFunctionalityDetails: mockGetFunctionalityDetails,
+    executeFunctionality: mockExecuteFunctionality,
+    docSearch: mockDocSearch,
+    listSapSystems: mockListSapSystems,
+    downloadODataServiceMetadata: mockDownloadODataServiceMetadata,
+    generateFioriAppOData: mockGenerateFioriAppOData,
+    generateFioriAppCap: mockGenerateFioriAppCap
+}));
+
+// Dynamic imports after mocks
+const { Server } = await import('@modelcontextprotocol/sdk/server/index.js');
+const { FioriFunctionalityServer } = await import('../../src/server.js');
+const { TelemetryHelper, unknownTool } = await import('../../src/telemetry/index.js');
+const tools = await import('../../src/tools/index.js');
 
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {
         jest.restoreAllMocks();
         setRequestHandlerMock.mockReset();
+        mockListFioriApps.mockReset();
+        mockListFunctionalities.mockReset();
+        mockGetFunctionalityDetails.mockReset();
+        mockExecuteFunctionality.mockReset();
+        mockDocSearch.mockReset();
+        mockListSapSystems.mockReset();
+        mockDownloadODataServiceMetadata.mockReset();
+        mockGenerateFioriAppOData.mockReset();
+        mockGenerateFioriAppCap.mockReset();
     });
 
     // version cannot be hard coded as it will update on each new patch update
@@ -67,6 +96,10 @@ describe('FioriFunctionalityServer', () => {
         expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual([
             'search_docs',
             'list_fiori_apps',
+            'list_sap_systems',
+            'download_odata_service_metadata',
+            'generate_fiori_app_odata',
+            'generate_fiori_app_cap',
             'list_functionality',
             'get_functionality_details',
             'execute_functionality'
@@ -96,9 +129,11 @@ describe('FioriFunctionalityServer', () => {
                 serverInfo: {
                     name: 'fiori-mcp',
                     version: expect.any(String)
-                }
+                },
+                instructions: expect.any(String)
             });
             expect(result.protocolVersion).toBeTruthy();
+            expect(result.instructions).toMatchSnapshot();
         });
 
         test('should use default values when clientInfo is not provided', async () => {
@@ -118,9 +153,11 @@ describe('FioriFunctionalityServer', () => {
                 serverInfo: {
                     name: 'fiori-mcp',
                     version: expect.any(String)
-                }
+                },
+                instructions: expect.any(String)
             });
             expect(result.protocolVersion).toBeTruthy();
+            expect(result.instructions).toMatchSnapshot();
         });
 
         test('should use default values when clientInfo.name is missing', async () => {
@@ -156,8 +193,8 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should track client info for telemetry in subsequent tool calls', async () => {
-            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
-            const listFioriAppsSpy = jest.spyOn(tools, 'listFioriApps').mockResolvedValue({
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn() as any);
+            mockListFioriApps.mockResolvedValue({
                 applications: []
             });
 
@@ -197,12 +234,12 @@ describe('FioriFunctionalityServer', () => {
                 undefined
             );
 
-            listFioriAppsSpy.mockRestore();
+            mockListFioriApps.mockReset();
             sendTelemetryMock.mockRestore();
         });
 
         test('should send telemetry when Initialize is called', async () => {
-            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn() as any);
 
             const server = new FioriFunctionalityServer();
 
@@ -226,7 +263,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should use default client info when Initialize is called without clientInfo', async () => {
-            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn() as any);
 
             const server = new FioriFunctionalityServer();
 
@@ -308,6 +345,10 @@ describe('FioriFunctionalityServer', () => {
             expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual([
                 'search_docs',
                 'list_fiori_apps',
+                'list_sap_systems',
+                'download_odata_service_metadata',
+                'generate_fiori_app_odata',
+                'generate_fiori_app_cap',
                 'list_functionality',
                 'get_functionality_details',
                 'execute_functionality'
@@ -315,7 +356,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should send telemetry when ListTools is called', async () => {
-            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn() as any);
 
             const server = new FioriFunctionalityServer();
 
@@ -345,7 +386,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should use default client info when ListTools is called before initialization', async () => {
-            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn() as any);
 
             const server = new FioriFunctionalityServer();
 
@@ -363,10 +404,10 @@ describe('FioriFunctionalityServer', () => {
     });
 
     describe('FioriFunctionalityServer', () => {
-        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn() as any);
 
         test('list_fiori_apps', async () => {
-            const listFioriAppsSpy = jest.spyOn(tools, 'listFioriApps').mockResolvedValue({
+            mockListFioriApps.mockResolvedValue({
                 applications: [
                     {
                         name: 'app1',
@@ -396,7 +437,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(listFioriAppsSpy).toHaveBeenCalledTimes(1);
+            expect(mockListFioriApps).toHaveBeenCalledTimes(1);
             const structuredContent = result.structuredContent;
             expect(structuredContent).toEqual({
                 applications: [
@@ -434,8 +475,130 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        test('list_sap_systems', async () => {
+            mockListSapSystems.mockResolvedValue({
+                systems: [{ name: 'SysA', url: 'https://sys-a.example.com', client: '100' }]
+            });
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({ params: { name: 'list_sap_systems', arguments: {} } });
+            expect(mockListSapSystems).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual({
+                systems: [{ name: 'SysA', url: 'https://sys-a.example.com', client: '100' }]
+            });
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list_sap_systems',
+                { tool: 'list_sap_systems', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                undefined
+            );
+        });
+
+        test('download_odata_service_metadata', async () => {
+            const mockResult = {
+                status: 'Success',
+                message: 'Service metadata downloaded successfully.',
+                changes: [],
+                parameters: {
+                    host: 'https://example.com',
+                    servicePath: '/sap/opu/',
+                    client: '100',
+                    metadataFilePath: '/project/metadata.xml'
+                },
+                appPath: '/project',
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockDownloadODataServiceMetadata.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'download_odata_service_metadata',
+                    arguments: { sapSystemQuery: 'SysA', servicePath: '/sap/opu/', appPath: '/project' }
+                }
+            });
+            expect(mockDownloadODataServiceMetadata).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'download_odata_service_metadata',
+                {
+                    tool: 'download_odata_service_metadata',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                '/project'
+            );
+        });
+
+        test('generate_fiori_app_odata', async () => {
+            const mockResult = {
+                status: 'Success',
+                message: 'Generation completed successfully.',
+                parameters: {},
+                appPath: '/project/myapp',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockGenerateFioriAppOData.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'generate_fiori_app_odata',
+                    arguments: {
+                        floorplan: 'FE_LROP',
+                        project: { name: 'myapp', description: 'Test', targetFolder: '/project' }
+                    }
+                }
+            });
+            expect(mockGenerateFioriAppOData).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'generate_fiori_app_odata',
+                {
+                    tool: 'generate_fiori_app_odata',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                undefined
+            );
+        });
+
+        test('generate_fiori_app_cap', async () => {
+            const mockResult = {
+                status: 'Success',
+                message: 'Generation completed successfully.',
+                parameters: {},
+                appPath: '/cap-project/app/myapp',
+                changes: [],
+                timestamp: '2024-01-01T00:00:00.000Z'
+            };
+            mockGenerateFioriAppCap.mockResolvedValue(mockResult);
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'generate_fiori_app_cap',
+                    arguments: {
+                        floorplan: 'FE_LROP',
+                        project: { name: 'myapp', description: 'Test', targetFolder: '/cap-project' }
+                    }
+                }
+            });
+            expect(mockGenerateFioriAppCap).toHaveBeenCalledTimes(1);
+            expect(result.structuredContent).toEqual(mockResult);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'generate_fiori_app_cap',
+                {
+                    tool: 'generate_fiori_app_cap',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                undefined
+            );
+        });
+
         test('list_functionality', async () => {
-            const listFunctionalitiesSpy = jest.spyOn(tools, 'listFunctionalities').mockResolvedValue({
+            mockListFunctionalities.mockResolvedValue({
                 applicationPath: 'app1',
                 functionalities: [
                     {
@@ -459,7 +622,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(listFunctionalitiesSpy).toHaveBeenCalledTimes(1);
+            expect(mockListFunctionalities).toHaveBeenCalledTimes(1);
             const structuredContent = result.structuredContent;
             expect(structuredContent).toEqual({
                 applicationPath: 'app1',
@@ -492,7 +655,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('get_functionality_details', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
+            mockGetFunctionalityDetails.mockResolvedValue({
                 functionalityId: 'add-page',
                 description: 'Add page...',
                 name: 'add-page',
@@ -511,7 +674,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
+            expect(mockGetFunctionalityDetails).toHaveBeenCalledTimes(1);
             const structuredContent = result.structuredContent;
             expect(structuredContent).toEqual({
                 description: 'Add page...',
@@ -538,7 +701,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('execute_functionality', async () => {
-            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+            mockExecuteFunctionality.mockResolvedValue({
                 functionalityId: 'add-page',
                 status: 'ok',
                 message: 'Page is added',
@@ -563,7 +726,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(mockExecuteFunctionality).toHaveBeenCalledTimes(1);
             const structuredContent = result.structuredContent;
             expect(structuredContent).toEqual({
                 appPath: 'app1',
@@ -607,7 +770,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -628,7 +791,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -650,7 +813,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -659,14 +822,14 @@ describe('FioriFunctionalityServer', () => {
     });
 
     describe('functionalityId telemetry', () => {
-        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn() as any);
 
         afterEach(() => {
             sendTelemetryMock.mockClear();
         });
 
         test('functionalityId as string - should use value as-is', async () => {
-            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+            mockExecuteFunctionality.mockResolvedValue({
                 functionalityId: 'add-page',
                 status: 'ok',
                 message: 'Page added',
@@ -691,7 +854,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(mockExecuteFunctionality).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'execute_functionality',
                 {
@@ -702,11 +865,11 @@ describe('FioriFunctionalityServer', () => {
                 },
                 'app1'
             );
-            executeFunctionalitySpy.mockRestore();
+            mockExecuteFunctionality.mockReset();
         });
 
         test('functionalityId as array with single element - should use property-change prefix', async () => {
-            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+            mockExecuteFunctionality.mockResolvedValue({
                 functionalityId: ['useIconTabBar'],
                 status: 'ok',
                 message: 'Property changed',
@@ -731,7 +894,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(mockExecuteFunctionality).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'execute_functionality',
                 {
@@ -742,11 +905,11 @@ describe('FioriFunctionalityServer', () => {
                 },
                 'app1'
             );
-            executeFunctionalitySpy.mockRestore();
+            mockExecuteFunctionality.mockReset();
         });
 
         test('functionalityId as array with multiple elements - should use last element with property-change prefix', async () => {
-            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+            mockExecuteFunctionality.mockResolvedValue({
                 functionalityId: [
                     'TravelObjectPage',
                     'sections',
@@ -783,7 +946,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(mockExecuteFunctionality).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'execute_functionality',
                 {
@@ -794,11 +957,11 @@ describe('FioriFunctionalityServer', () => {
                 },
                 'app1'
             );
-            executeFunctionalitySpy.mockRestore();
+            mockExecuteFunctionality.mockReset();
         });
 
         test('functionalityId as empty array - should not set functionalityId', async () => {
-            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+            mockExecuteFunctionality.mockResolvedValue({
                 functionalityId: [],
                 status: 'ok',
                 message: 'Done',
@@ -821,7 +984,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 }
             });
-            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(mockExecuteFunctionality).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'execute_functionality',
                 {
@@ -832,7 +995,7 @@ describe('FioriFunctionalityServer', () => {
                 },
                 'app1'
             );
-            executeFunctionalitySpy.mockRestore();
+            mockExecuteFunctionality.mockReset();
         });
     });
 
@@ -860,7 +1023,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should log error message when setupTelemetry rejects with an Error instance', async () => {
-            const loggerModule = await import('../../src/utils/logger');
+            const loggerModule = await import('../../src/utils/logger.js');
             const loggerErrorSpy = jest.spyOn(loggerModule.logger, 'error').mockImplementation(jest.fn());
             jest.spyOn(TelemetryHelper, 'initTelemetrySettings').mockRejectedValue(new Error('telemetry failed'));
 
@@ -873,7 +1036,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should log error message when setupTelemetry rejects with a non-Error value', async () => {
-            const loggerModule = await import('../../src/utils/logger');
+            const loggerModule = await import('../../src/utils/logger.js');
             const loggerErrorSpy = jest.spyOn(loggerModule.logger, 'error').mockImplementation(jest.fn());
             jest.spyOn(TelemetryHelper, 'initTelemetrySettings').mockRejectedValue('string error');
 

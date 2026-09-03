@@ -1,5 +1,5 @@
 import type { BackendSystem } from '@sap-ux/store';
-import * as actions from '../../../src/state/actions';
+import * as actions from '../../../src/state/actions.js';
 import * as types from '@sap-ux/sap-systems-ext-types';
 
 describe('Store redux actions', () => {

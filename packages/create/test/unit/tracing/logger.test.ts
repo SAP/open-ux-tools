@@ -1,4 +1,4 @@
-import { getLogger, setLogLevelVerbose } from '../../../src/tracing';
+import { getLogger, setLogLevelVerbose } from '../../../src/tracing/index.js';
 
 describe('Tests for logger', () => {
     test('Get logger and check log functions', () => {

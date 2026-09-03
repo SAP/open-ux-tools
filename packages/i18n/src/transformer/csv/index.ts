@@ -1,1 +1,1 @@
-export { csvToI18nBundle } from './csv';
+export { csvToI18nBundle } from './csv.js';

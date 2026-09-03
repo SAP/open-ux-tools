@@ -8,16 +8,16 @@ import {
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { type Logger } from '@sap-ux/logger';
 import type { Question } from 'inquirer';
-import { t } from '../../i18n';
-import { type ServiceConfigOptions, type ServiceConfigQuestion, type UiServiceAnswers } from '../../types';
+import { t } from '../../i18n.js';
+import { type ServiceConfigOptions, type ServiceConfigQuestion, type UiServiceAnswers } from '../../types.js';
 import {
     createAbapTarget,
     defaultOrShowAppGenLaunchQuestion,
     defaultOrShowDraftQuestion,
     getServiceNameChoices,
     getValidationErrorLink
-} from '../prompt-helper';
-import { PromptState } from '../prompt-state';
+} from '../prompt-helper.js';
+import { PromptState } from '../prompt-state.js';
 
 /**
  * Get the configuration questions.

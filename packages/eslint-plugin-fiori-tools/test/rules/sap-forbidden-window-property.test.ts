@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-forbidden-window-property';
+import rule from '../../src/rules/sap-forbidden-window-property.js';
 import { RuleTester } from 'eslint';
 const MSG = 'Usage of a forbidden window property.' as const;
 

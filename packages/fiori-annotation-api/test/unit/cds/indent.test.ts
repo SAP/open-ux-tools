@@ -1,7 +1,7 @@
-import { getIndentLevelFromPointer } from '../../../src/cds/indent';
+import { getIndentLevelFromPointer } from '../../../src/cds/indent.js';
 
-import { PROJECTS } from '../projects';
-import { getCDSDocument } from './utils';
+import { PROJECTS } from '../projects.js';
+import { getCDSDocument } from './utils.js';
 
 describe('getIndentLevelFromNode', () => {
     test('target', async () => {

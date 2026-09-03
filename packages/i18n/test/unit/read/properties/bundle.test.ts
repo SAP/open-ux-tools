@@ -1,9 +1,11 @@
 import { promises } from 'node:fs';
-import { join } from 'node:path';
-import { getPropertiesI18nBundle } from '../../../../src';
-import { replaceBundleWithUnifiedFileUri } from '../../helper';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getPropertiesI18nBundle } from '../../../../src/index.js';
+import { replaceBundleWithUnifiedFileUri } from '../../helper/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('bundle', () => {
     const DATA_ROOT = join(__dirname, '..', '..', 'data');

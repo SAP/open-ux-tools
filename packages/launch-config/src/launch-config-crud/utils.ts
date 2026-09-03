@@ -1,8 +1,8 @@
 import { basename, join } from 'node:path';
 import type { ODataVersion } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
-import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
-import { Arguments, FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
+import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types/index.js';
+import { Arguments, FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types/index.js';
 import yargsParser from 'yargs-parser';
 
 /**

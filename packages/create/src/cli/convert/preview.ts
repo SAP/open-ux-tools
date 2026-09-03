@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
 import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } from '@sap-ux/app-config-writer';
 
 /**

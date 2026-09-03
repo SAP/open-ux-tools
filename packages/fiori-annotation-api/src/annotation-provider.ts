@@ -11,10 +11,11 @@ import {
 } from '@sap/ux-cds-compiler-facade';
 import { MetadataService } from '@sap-ux/odata-entity-model';
 
-import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml';
-import type { ServiceArtifacts, TextFile } from './types';
+import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml/index.js';
+import type { ServiceArtifacts, TextFile } from './types/index.js';
+import type { V2Annotation } from '@sap-ux/xml-odata-annotation-converter';
 import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
-import { addAllVocabulariesToAliasInformation } from './vocabularies';
+import { addAllVocabulariesToAliasInformation } from './vocabularies.js';
 import { pathToFileURL } from 'node:url';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 
@@ -34,7 +35,7 @@ export function getXmlServiceArtifacts(
     metadataFile: TextFile,
     annotationFiles: TextFile[],
     fileCache: Map<string, string>
-): ServiceArtifacts {
+): [ServiceArtifacts, V2Annotation[]] {
     const adapter = new XMLAnnotationServiceAdapter(
         {
             type: 'local-edmx',
@@ -46,18 +47,22 @@ export function getXmlServiceArtifacts(
         { apps: {}, projectType: 'EDMXBackend', root: '' },
         ''
     );
+    adapter.collectV2Annotations = true;
     adapter.sync(fileCache);
 
     const documents = adapter.getDocuments();
     const aliasInformation = getAliasInfo(adapter.metadataService, XML_VOCABULARY_SERVICE, documents);
 
-    return {
-        path,
-        metadataService: adapter.metadataService,
-        annotationFiles: documents,
-        aliasInfo: aliasInformation,
-        fileSequence: adapter.getAllFiles().map((file) => file.uri)
-    };
+    return [
+        {
+            path,
+            metadataService: adapter.metadataService,
+            annotationFiles: documents,
+            aliasInfo: aliasInformation,
+            fileSequence: adapter.getAllFiles().map((file) => file.uri)
+        },
+        adapter.v2annotations
+    ];
 }
 
 /**

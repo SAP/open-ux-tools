@@ -26,12 +26,12 @@ import {
 } from '@sap-ux/btp-utils';
 import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import { t } from '../i18n';
-import type { ConnectedSystem } from '../types';
-import { SAP_CLIENT_KEY } from '../types';
-import LoggerHelper from './logger-helper';
-import { errorHandler } from './prompt-helpers';
-import type { ValidationResult } from './types';
+import { t } from '../i18n.js';
+import type { ConnectedSystem } from '../types.js';
+import { SAP_CLIENT_KEY } from '../types.js';
+import LoggerHelper from './logger-helper.js';
+import { errorHandler } from './prompt-helpers.js';
+import type { ValidationResult } from './types.js';
 
 /**
  * Structure to store validity information about url to be validated.

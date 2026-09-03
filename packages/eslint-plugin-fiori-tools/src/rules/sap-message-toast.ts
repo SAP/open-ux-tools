@@ -11,7 +11,7 @@ import {
     isInteger,
     endsWith,
     type ASTNode
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 const INTERESTING_PATH = {
     'sap': {

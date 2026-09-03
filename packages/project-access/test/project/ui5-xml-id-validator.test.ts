@@ -1,4 +1,4 @@
-import { isUI5IdUnique } from '../../src/project/ui5-xml-id-validator';
+import { isUI5IdUnique } from '../../src/project/ui5-xml-id-validator.js';
 
 describe('isUI5IdUnique', () => {
     const sampleView = `<mvc:View

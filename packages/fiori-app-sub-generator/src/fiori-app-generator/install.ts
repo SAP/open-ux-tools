@@ -1,6 +1,6 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import { CommandRunner, t } from '../utils';
+import { CommandRunner, t } from '../utils/index.js';
 
 /**
  * Defines the options used to install deps to a CAP project.

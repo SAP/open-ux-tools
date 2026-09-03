@@ -5,9 +5,9 @@ import { useId } from '@fluentui/react-hooks';
 import { useTranslation } from 'react-i18next';
 
 import './ThemeSelectorCallout.scss';
-import { IconName } from '../icons';
-import { useTheme } from '../use-theme';
-import type { ThemeName } from '../use-theme';
+import { IconName } from '../icons.js';
+import { useTheme } from '../use-theme.js';
+import type { ThemeName } from '../use-theme.js';
 
 /**
  * React element for theme selector.

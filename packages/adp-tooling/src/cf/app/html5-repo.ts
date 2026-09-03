@@ -4,10 +4,10 @@ import AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { t } from '../../i18n';
-import type { HTML5Content, ServiceInfo, CfAppParams } from '../../types';
-import { getToken } from '../../btp/api';
-import { getServiceNameByTags, getOrCreateServiceInstanceKeys, createServiceInstance } from '../services/api';
+import { t } from '../../i18n.js';
+import type { HTML5Content, ServiceInfo, CfAppParams } from '../../types.js';
+import { getToken } from '../../btp/api.js';
+import { getServiceNameByTags, getOrCreateServiceInstanceKeys, createServiceInstance } from '../services/api.js';
 
 const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
 

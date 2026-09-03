@@ -1,5 +1,5 @@
-import { isOfflineError } from '../../../src/ui5/network';
-import type { NetworkError } from '../../../src/types';
+import { isOfflineError } from '../../../src/ui5/network.js';
+import type { NetworkError } from '../../../src/types.js';
 
 describe('network utilities', () => {
     describe('isOfflineError', () => {

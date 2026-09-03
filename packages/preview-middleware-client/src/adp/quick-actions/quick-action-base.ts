@@ -1,7 +1,7 @@
-import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition.js';
 
-import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
-import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';
+import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator.js';
 
 /**
  * Base class for all  quick actions.

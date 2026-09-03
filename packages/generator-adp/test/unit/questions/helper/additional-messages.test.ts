@@ -8,8 +8,8 @@ import {
     getSystemAdditionalMessages,
     getVersionAdditionalMessages,
     getTargetEnvAdditionalMessages
-} from '../../../../src/app/questions/helper/additional-messages';
-import { initI18n, t } from '../../../../src/utils/i18n';
+} from '../../../../src/app/questions/helper/additional-messages.js';
+import { initI18n, t } from '../../../../src/utils/i18n.js';
 
 describe('additional-messages', () => {
     beforeAll(async () => {

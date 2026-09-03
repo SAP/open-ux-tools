@@ -9,7 +9,7 @@ import {
     reloadApplication,
     applicationModeChanged
 } from '@sap-ux-private/control-property-editor-common';
-import type { ActionSenderFunction, SubscribeFunction } from './types';
+import type { ActionSenderFunction, SubscribeFunction } from './types.js';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /**

@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { render } from 'ejs';
-import { getTemplatePath } from '../utils';
+import { getTemplatePath } from '../utils.js';
 
 /**
  * Render an EJS template directly to disk.

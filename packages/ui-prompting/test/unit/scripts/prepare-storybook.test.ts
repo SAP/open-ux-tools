@@ -1,6 +1,9 @@
+import { jest } from '@jest/globals';
 import fs from 'node:fs';
 import { sep } from 'node:path';
-import run from '../../../scripts/storybook';
+
+const storybookModule = await import('../../../scripts/storybook');
+const run = storybookModule.default ?? (storybookModule as any);
 
 describe('prepare-storybook.ts', () => {
     let mkdirSyncSpy: jest.SpyInstance;

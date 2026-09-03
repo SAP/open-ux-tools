@@ -1,6 +1,6 @@
 import { PerformanceMeasurementAPI } from '@sap-ux/telemetry';
 
-import type { AdpTelemetryData, AdpTelemetryTimerProperties } from '../types';
+import type { AdpTelemetryData, AdpTelemetryTimerProperties } from '../types.js';
 
 const DEFAULT_DATA: AdpTelemetryData = {
     wasExtProjectGenerated: false,

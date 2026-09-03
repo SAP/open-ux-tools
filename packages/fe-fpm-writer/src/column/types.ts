@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position, EventHandler, CustomFragment } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position, EventHandler, CustomFragment } from '../common/types.js';
 
 export enum Availability {
     'Default' = 'Default',

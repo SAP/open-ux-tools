@@ -6,7 +6,7 @@ import type {
     Reference
 } from '@sap-ux/odata-annotation-core-types';
 import { MetadataService } from '@sap-ux/odata-entity-model';
-import { getAliasInformation, getPathBaseMetadataElement, getSegmentWithoutAlias } from '../../src';
+import { getAliasInformation, getPathBaseMetadataElement, getSegmentWithoutAlias } from '../../src/index.js';
 
 const ODataVersion: ODataVersionType = '2.0';
 const metadataFileUri = 'testFileUri';

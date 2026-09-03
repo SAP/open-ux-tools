@@ -1,6 +1,6 @@
 import { validateModuleName } from '@sap-ux/project-input-validator';
-import { appPathExists } from './prompt-helpers';
-import { t } from '../i18n';
+import { appPathExists } from './prompt-helpers.js';
+import { t } from '../i18n.js';
 
 /**
  * Returns true (valid) if the specified projectName is a valid module name

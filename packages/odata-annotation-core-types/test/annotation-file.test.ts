@@ -8,7 +8,7 @@ import {
     MultilineType,
     createReference,
     createNamespace
-} from '../src/annotation-file';
+} from '../src/annotation-file.js';
 
 const edmNamespace = 'http://docs.oasis-open.org/odata/ns/edm';
 

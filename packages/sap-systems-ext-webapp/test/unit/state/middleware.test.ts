@@ -1,6 +1,6 @@
 import type { Action, Middleware } from 'redux';
-import { postMessageMiddleware } from '../../../src/state/middleware';
-import { store } from '../../../src/state/store';
+import { postMessageMiddleware } from '../../../src/state/middleware.js';
+import { store } from '../../../src/state/store.js';
 
 const vscode = {
     postMessage: jest.fn()

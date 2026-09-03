@@ -9,8 +9,8 @@ import type {
     CSDL
 } from '@sap-ux/vocabularies/CSDL';
 
-import type { VocabularyAlias, VocabularyNamespace } from './resources';
-import VOCABULARIES, { ALIAS_TO_NAMESPACE, NAMESPACE_TO_ALIAS } from './resources';
+import type { VocabularyAlias, VocabularyNamespace } from './resources/index.js';
+import VOCABULARIES, { ALIAS_TO_NAMESPACE, NAMESPACE_TO_ALIAS } from './resources/index.js';
 import type {
     BaseVocabularyObject,
     ComplexType,
@@ -24,8 +24,8 @@ import type {
     Vocabulary,
     AllowedValues,
     VocabulariesInformation
-} from './types';
-import { ENUM_VALUE_KIND, CDS_VOCABULARY_ALIAS, CDS_VOCABULARY_NAMESPACE } from './types';
+} from './types/index.js';
+import { ENUM_VALUE_KIND, CDS_VOCABULARY_ALIAS, CDS_VOCABULARY_NAMESPACE } from './types/index.js';
 import type {
     FullyQualifiedName,
     SimpleIdentifier,
@@ -67,6 +67,7 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.PersonalData.v1',
     'com.sap.vocabularies.Hierarchy.v1',
     'com.sap.vocabularies.Session.v1',
+    'com.sap.vocabularies.Support.v1',
     'com.sap.vocabularies.UI.v1',
     'com.sap.vocabularies.HTML5.v1',
     'com.sap.cds.vocabularies.ObjectModel',
