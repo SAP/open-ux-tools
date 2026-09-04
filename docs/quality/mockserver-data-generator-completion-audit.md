@@ -64,9 +64,9 @@ means a measured threshold was missed by the named candidate.
 | Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
 | Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, FE diagnostic/fallback, and CAP startup tests pass | Repeat against published FE and CAP packages on release platforms |
 | UI5 config and application writer | proven | one middleware, one `ui5-mock.yaml`, one existing `start-mock`; add/remove and writer tests pass | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | current 542,926-byte archive installs exact tarballs, verifies the classifier/SFT path through the standard Fiori mockserver, and restores the V2 fixture byte-for-byte | Run the recorded procedure in an actual BAS dev space |
+| Local/BAS development kit | proven locally / platform | current 544,369-byte archive installs exact tarballs, verifies deterministic V4 and classifier/SFT V2 paths through the standard Fiori mockserver, and restores both fixtures byte-for-byte | Run the recorded procedure in an actual BAS dev space |
 | Native CAP adapter | proven locally | 19 tests cover opt-in profiles, preservation of existing persistence data, FK ordering, learned fallback, metadata ceiling fallback, generated cache, in-memory SQLite, restart determinism, and package boundary | Cross-platform and published-package canary |
-| Package boundary | proven | current generator tarball is 75,608 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
+| Package boundary | proven | current exact-kit generator tarball is 75,878 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
 | Total installed/cache footprint | proven locally / distribution pending | exact evaluation- and integration-bound `darwin-arm64` footprint: 264,636,488 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
@@ -89,7 +89,7 @@ means a measured threshold was missed by the named candidate.
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 19 tests passed; 86.61% statement coverage; build passed; lint has zero errors |
 | exact deterministic archive canary | provider executed; metadata passed; one row returned; exact restore passed |
 | exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,437.508 ms runtime initialization; 2,635.900 ms generation; exact restore passed |
-| current package archive | 74,500 / 5,242,880 bytes, pass |
+| current package archive | 75,878 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
 | experimental platform-runtime total installed and cache | 264,636,488 / 314,572,800 bytes, pass |

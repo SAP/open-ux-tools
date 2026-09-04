@@ -316,6 +316,29 @@ parser-aligned archive for new local or BAS functional testing. The disposable
 canary fixture and copied model cache were removed after exact restore
 verification.
 
+## Current metadata-boundary archive canary
+
+After the fixed 32 MiB UTF-8 metadata ceiling landed, the kit was rebuilt from
+both clean worktrees. The exact archive completed separate deterministic OData
+V4 and retained-model OData V2 installs, HTTP canaries, and restores.
+
+- Dev-kit fingerprint: `e502705429c5c09c8714f677ca2d73d5e23448345362d86f89beb0fb7f807652`
+- Archive SHA-256: `d1b85404cb9e052a77a95eb1a1b10072fb4f9a1f635ff5f4b4cf3fa82881df37`
+- Archive size: 544,369 bytes; 10 entries
+- Generator tarball: 75,878 bytes, SHA-256 `7ef225f8e4443ea3804669e04181fb5642a716ecbb94679df312d05c23c0fb36`
+- Core tarball: 157,294 bytes, SHA-256 `d7b95b422d45905aeb5b71db112ad1cd28f4bf7936c2aa8209fc06ec75f6ba03`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `3d2e64c16ea14beb2fc180df2e63bdfa5de1df1f` and clean `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`; reproducible
+- Deterministic verification: a real 614-package install produced exactly one `sap-fe-mockserver`; the provider executed; OData V4 `$metadata` passed; `Products?$top=1` returned one row; generation took 28.227 ms and the host provider took 29.217 ms
+- Learned verification: the retained manifest SHA-256 was `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`; exact `onnxruntime-node@1.24.3`; both classifier and SFT ready; `providerExecuted: true`; `learnedRuntimeVerified: true`; OData V2 `$metadata` passed; and `Products?$top=1` returned one row
+- Learned timing: 1,506.964 ms runtime initialization; 2,745.367 ms whole-service generation; 2,746.204 ms host provider duration
+- Restore verification: both application fixtures matched their original source files byte for byte; generated YAML and recovery directories were absent; both disposable applications and the copied 192,167,584-byte model cache were removed
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-e502705429c5c09c.tgz`.
+Its SHA-256 must be verified before extraction. It supersedes the
+safe-diagnostics archive for new local or BAS functional testing.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
