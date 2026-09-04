@@ -1323,6 +1323,14 @@ the external realism gate.
 - [ ] Test clean install, add, first start, warm restart, upgrade, downgrade, provider removal, and cache migration.
 - [ ] Keep production-model downloads out of the six-way PR matrix; use tiny artifacts there and run full model qualification in the governed pipeline.
 
+**Local portability record (2026-09-04):** The exact fingerprinted development
+kit completed a real npm install, provider/HTTP canary, and byte-exact restore
+from a Fiori application path and a kit path containing spaces plus non-ASCII
+German/Japanese text. A focused integration regression also covers application,
+kit, model-manifest, and model-cache paths with those characters. Cross-platform
+path syntax, read-only filesystems, corporate proxy behavior, and the full
+Node/OS matrix remain release-platform gates.
+
 ### Task 12.2: Perform threat modeling and dependency review
 
 **Files:**

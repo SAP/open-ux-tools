@@ -501,6 +501,70 @@ describe('transactional local setup', () => {
         );
     });
 
+    test('installs and restores from application, kit, and model paths containing spaces and non-ASCII text', async () => {
+        const root = temporaryDirectory('mockgen-portable-paths-');
+        const app = join(root, 'Fiori Überprüfung app');
+        const kit = join(root, 'local kit Ä');
+        const model = join(root, 'model cache 日本語');
+        const manifestPath = join(model, 'model manifest.json');
+        const cacheDirectory = join(model, 'verified cache');
+        mkdirSync(app);
+        mkdirSync(kit);
+        mkdirSync(cacheDirectory, { recursive: true });
+        writeApplication(app, 'portable-fiori-app');
+        writeKit(kit);
+        writeFileSync(
+            manifestPath,
+            JSON.stringify({
+                components: [
+                    { runtime: { package: 'onnxruntime-node', version: '1.24.3' } },
+                    { runtime: { package: 'onnxruntime-node', version: '1.24.3' } }
+                ]
+            })
+        );
+        const originalPackageJson = readFileSync(join(app, 'package.json'), 'utf8');
+        const runner = jest.fn(async (_request: unknown) => undefined);
+        const configure = async ({ appRoot }: { appRoot: string }): Promise<void> => {
+            const packageJson = JSON.parse(readFileSync(join(appRoot, 'package.json'), 'utf8')) as {
+                scripts: Record<string, string>;
+            };
+            packageJson.scripts['start-mock'] = 'fiori run --config ./ui5-mock.yaml';
+            writeFileSync(join(appRoot, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`);
+            writeFileSync(join(appRoot, 'ui5-mock.yaml'), 'mockDataGenerator: configured\n');
+        };
+
+        const installed = await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: kit,
+            modelManifestPath: manifestPath,
+            modelCacheDirectory: cacheDirectory,
+            runner,
+            configure,
+            verifyInstalled: () => ({ installed: true })
+        });
+
+        expect(installed).toMatchObject({ status: 'installed', modelVerified: true });
+        expect(installed.appRoot).toBe(realpathSync(app));
+        expect(runner).toHaveBeenCalledWith(
+            expect.objectContaining({
+                command: process.execPath,
+                args: expect.arrayContaining([
+                    'verify',
+                    '--manifest',
+                    realpathSync(manifestPath),
+                    '--cache',
+                    realpathSync(cacheDirectory)
+                ])
+            })
+        );
+
+        const restored = await setupLocalFioriApp({ appRoot: app, kitRoot: kit, restore: true, runner });
+        expect(restored.status).toBe('restored');
+        expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(originalPackageJson);
+        expect(existsSync(join(app, 'ui5-mock.yaml'))).toBe(false);
+        expect(existsSync(join(app, '.mockserver-data-generator-dev'))).toBe(false);
+    });
+
     test('rolls back owned files when installation fails', async () => {
         const app = temporaryDirectory('mockgen-failure-app-');
         const kit = temporaryDirectory('mockgen-failure-kit-');

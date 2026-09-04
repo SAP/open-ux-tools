@@ -307,6 +307,7 @@ OData V2 fixture with the retained classifier and INT8 SFT cache.
 - HTTP verification: OData V2 `$metadata` passed and `Products?$top=1` returned one row
 - Observed timing: 1,437.508 ms model initialization; 2,635.900 ms whole-service generation; 2,636.680 ms host provider duration
 - Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
+- Portable-path verification: the exact archive also completed a real npm install, deterministic provider/HTTP canary, and byte-exact restore when both the kit and Fiori application paths contained spaces and non-ASCII German/Japanese text; generation took 25.763 ms and the host provider took 26.565 ms
 
 The current handoff archive is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f7820bacc74174b3.tgz`.
