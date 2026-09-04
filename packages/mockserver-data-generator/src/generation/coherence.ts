@@ -324,7 +324,12 @@ function reconcileProcessingStatus(rows: ReadonlyArray<MutableRow>, group: Proce
         const secondaryPosted = state > 1;
         setIfValid(row, group.primaryPosted, primaryPosted);
         setIfValid(row, group.secondaryPosted, secondaryPosted);
-        const interpreted = group.interpreted.primitiveType === 'bool' ? primaryPosted : primaryPosted ? 'X' : null;
+        let interpreted: unknown;
+        if (group.interpreted.primitiveType === 'bool') {
+            interpreted = primaryPosted;
+        } else {
+            interpreted = primaryPosted ? 'X' : null;
+        }
         if (propertyValueIsValid(group.interpreted, interpreted)) {
             row[group.interpreted.name] = interpreted;
         } else {
