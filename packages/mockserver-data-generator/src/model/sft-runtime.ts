@@ -107,9 +107,8 @@ function valueKind(field: SftFieldRequest): JsonValueKind {
     return 'string';
 }
 
-function rowSeed(seed: number, entityName: string, rowIndex: number, chunkIndex: number): number {
-    const suffix = chunkIndex === 0 ? '' : `:${chunkIndex}`;
-    return createHash('sha256').update(`${seed}:${entityName}:${rowIndex}${suffix}`).digest().readUInt32BE(0);
+function rowSeed(seed: number, entityName: string, rowIndex: number, chunkKey: string): number {
+    return createHash('sha256').update(`${seed}:${entityName}:${rowIndex}:${chunkKey}`).digest().readUInt32BE(0);
 }
 
 function chunkFields(
@@ -197,13 +196,24 @@ async function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise
     });
 }
 
+function canSplitIncompleteCompletion(error: unknown, signal: AbortSignal): boolean {
+    if (signal.aborted || !(error instanceof Error)) {
+        return false;
+    }
+    return (
+        error instanceof SyntaxError ||
+        error.message.startsWith('SFT completion ') ||
+        error.message === 'SFT generation ended before completing its JSON object'
+    );
+}
+
 /**
  * Adapt a grammar-constrained causal text backend to the package's SFT row interface.
  *
  * @param options
  */
 export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions): SftGenerator {
-    const budgetMs = options.budgetMs ?? 45_000;
+    const budgetMs = options.budgetMs ?? 60_000;
     const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? 4;
     if (!Number.isFinite(budgetMs) || budgetMs <= 0) {
         throw new TypeError('SFT budget must be positive');
@@ -217,39 +227,61 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
             const context = abortContext(signal, budgetMs);
             const fieldChunks = chunkFields(input.fields, maxFieldsPerPrompt);
             const rows: Array<Record<string, JsonValue>> = [];
+            let attempts = 0;
+            let parsedResponses = 0;
+            const generateFields = async (
+                fields: ReadonlyArray<SftFieldRequest>,
+                rowIndex: number,
+                chunkKey: string
+            ): Promise<Record<string, JsonValue>> => {
+                context.signal.throwIfAborted();
+                const prompt = renderPilotSftPrompt({ ...input, fields });
+                const grammar = Object.freeze(
+                    fields.map((field) =>
+                        Object.freeze({
+                            name: field.name,
+                            valueKind: valueKind(field),
+                            nullable: field.nullable
+                        })
+                    )
+                );
+                const expectedKeys = fields.map(({ name }) => name);
+                attempts += 1;
+                try {
+                    const completion = await abortable(
+                        options.textGenerator.generate(
+                            Object.freeze({
+                                prompt,
+                                grammar,
+                                seed: rowSeed(input.seed, input.entityName, rowIndex, chunkKey),
+                                ...options.sampling
+                            }),
+                            context.signal
+                        ),
+                        context.signal
+                    );
+                    const partial = firstJsonObject(completion);
+                    if (JSON.stringify(Object.keys(partial)) !== JSON.stringify(expectedKeys)) {
+                        throw new TypeError('SFT completion keys do not match the requested grammar');
+                    }
+                    parsedResponses += 1;
+                    return partial;
+                } catch (error) {
+                    if (fields.length > 1 && canSplitIncompleteCompletion(error, context.signal)) {
+                        const middle = Math.ceil(fields.length / 2);
+                        const left = await generateFields(fields.slice(0, middle), rowIndex, `${chunkKey}.0`);
+                        const right = await generateFields(fields.slice(middle), rowIndex, `${chunkKey}.1`);
+                        return Object.freeze({ ...left, ...right });
+                    }
+                    throw error;
+                }
+            };
             try {
                 for (let rowIndex = 0; rowIndex < input.rowCount; rowIndex += 1) {
                     const row: Record<string, JsonValue> = {};
                     for (const [chunkIndex, fields] of fieldChunks.entries()) {
                         try {
-                            context.signal.throwIfAborted();
-                            const prompt = renderPilotSftPrompt({ ...input, fields });
-                            const grammar = Object.freeze(
-                                fields.map((field) =>
-                                    Object.freeze({
-                                        name: field.name,
-                                        valueKind: valueKind(field),
-                                        nullable: field.nullable
-                                    })
-                                )
-                            );
-                            const expectedKeys = fields.map(({ name }) => name);
-                            const completion = await abortable(
-                                options.textGenerator.generate(
-                                    Object.freeze({
-                                        prompt,
-                                        grammar,
-                                        seed: rowSeed(input.seed, input.entityName, rowIndex, chunkIndex),
-                                        ...options.sampling
-                                    }),
-                                    context.signal
-                                ),
-                                context.signal
-                            );
-                            const partial = firstJsonObject(completion);
-                            if (JSON.stringify(Object.keys(partial)) !== JSON.stringify(expectedKeys)) {
-                                throw new TypeError('SFT completion keys do not match the requested grammar');
-                            }
+                            const partial = await generateFields(fields, rowIndex, String(chunkIndex));
                             Object.assign(row, partial);
                         } catch (error) {
                             const reason = error instanceof Error ? error.message : String(error);
@@ -270,7 +302,10 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                     }
                     rows.push(Object.freeze(row));
                 }
-                return Object.freeze({ rows: Object.freeze(rows) });
+                return Object.freeze({
+                    rows: Object.freeze(rows),
+                    statistics: Object.freeze({ attempts, parsedResponses })
+                });
             } finally {
                 context.dispose();
             }

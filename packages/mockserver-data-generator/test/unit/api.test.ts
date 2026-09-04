@@ -474,6 +474,41 @@ describe('mockserver data generator public API', () => {
         );
     });
 
+    it('reports raw SFT completion attempts supplied by the production runtime', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'sft-instrumented-candidate',
+            generate: jest.fn(async (input) => ({
+                rows: Array.from({ length: input.rowCount }, () => ({ OpaqueValue: 'learned value' })),
+                statistics: { attempts: 3, parsedResponses: 2 }
+            }))
+        };
+        const request: MockDataServiceRequest = {
+            metadata: {
+                format: 'edmx',
+                content: `<?xml version="1.0" encoding="utf-8"?>
+                    <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                        <edmx:DataServices>
+                            <Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                                <EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer>
+                                <EntityType Name="Record">
+                                    <Key><PropertyRef Name="ID" /></Key>
+                                    <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                                    <Property Name="OpaqueValue" Type="Edm.String" Nullable="false" />
+                                </EntityType>
+                            </Schema>
+                        </edmx:DataServices>
+                    </edmx:Edmx>`
+            },
+            service: { urlPath: '/records', odataVersion: '4.0' },
+            targets: [{ name: 'Records', kind: 'entity-set' }],
+            existingData: {}
+        };
+
+        const result = await generateService(request, { rowsPerEntity: 2 }, { sft });
+
+        expect(result.statistics.sft).toMatchObject({ attempts: 3, parsedResponses: 2 });
+    });
+
     it('bounds one SFT entity inference and returns deterministic fallback on timeout', async () => {
         const sft: SftGenerator = {
             fingerprint: 'sft-stalled-candidate',

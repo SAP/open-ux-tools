@@ -90,6 +90,10 @@ export interface SftGenerationInput {
 export interface SftGenerationOutput {
     rows: ReadonlyArray<MockDataRow>;
     diagnostics?: ReadonlyArray<MockDataGeneratorDiagnostic>;
+    statistics?: Readonly<{
+        attempts: number;
+        parsedResponses: number;
+    }>;
 }
 
 export interface SftGenerator {

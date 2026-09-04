@@ -37,6 +37,7 @@ describe('pilot-compatible SFT runtime', () => {
             { OpaqueTitle: 'Liquidity Handbook', Rating: 4.7 },
             { OpaqueTitle: 'Treasury Operations', Rating: 4.4 }
         ]);
+        expect(result.statistics).toEqual({ attempts: 2, parsedResponses: 2 });
         expect(generate).toHaveBeenCalledTimes(2);
         expect(generate).toHaveBeenNthCalledWith(
             1,
@@ -135,6 +136,43 @@ describe('pilot-compatible SFT runtime', () => {
         await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
         expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([4, 4, 4, 1]);
+    });
+
+    test('splits an incomplete chunk and reports every raw completion attempt', async () => {
+        const generate = jest
+            .fn<ReturnType<ConstrainedTextGenerator['generate']>, Parameters<ConstrainedTextGenerator['generate']>>()
+            .mockRejectedValueOnce(new Error('SFT generation ended before completing its JSON object'))
+            .mockResolvedValueOnce('{"FieldA":"A","FieldB":"B"}')
+            .mockResolvedValueOnce('{"FieldC":"C","FieldD":"D"}')
+            .mockResolvedValueOnce('{"FieldE":"E"}');
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate },
+            sampling: {
+                temperature: 0.6,
+                topP: 0.9,
+                repetitionPenalty: 1.15,
+                noRepeatNgramSize: 4,
+                maxNewTokens: 300
+            },
+            maxFieldsPerPrompt: 4
+        });
+        const fields = ['FieldA', 'FieldB', 'FieldC', 'FieldD', 'FieldE'].map((name) => ({
+            name,
+            primitiveType: 'string',
+            nullable: false
+        }));
+
+        const result = await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
+
+        expect(result.rows).toEqual([{ FieldA: 'A', FieldB: 'B', FieldC: 'C', FieldD: 'D', FieldE: 'E' }]);
+        expect(result.statistics).toEqual({ attempts: 4, parsedResponses: 3 });
+        expect(generate.mock.calls.map(([request]) => request.grammar.map(({ name }) => name))).toEqual([
+            ['FieldA', 'FieldB', 'FieldC', 'FieldD'],
+            ['FieldA', 'FieldB'],
+            ['FieldC', 'FieldD'],
+            ['FieldE']
+        ]);
     });
 
     test('identifies the failing row and field chunk without discarding the root cause', async () => {

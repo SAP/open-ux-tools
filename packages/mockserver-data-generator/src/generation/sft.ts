@@ -34,6 +34,26 @@ function validCandidate(property: SchemaProperty, value: unknown): value is Json
     return propertyValueIsValid(property, value);
 }
 
+function completionStatistics(output: Awaited<ReturnType<SftGenerator['generate']>>): {
+    attempts: number;
+    parsedResponses: number;
+} {
+    if (output.statistics === undefined) {
+        return { attempts: 1, parsedResponses: 1 };
+    }
+    const { attempts, parsedResponses } = output.statistics;
+    if (
+        !Number.isSafeInteger(attempts) ||
+        attempts <= 0 ||
+        !Number.isSafeInteger(parsedResponses) ||
+        parsedResponses < 0 ||
+        parsedResponses > attempts
+    ) {
+        throw new TypeError('Invalid SFT completion statistics');
+    }
+    return { attempts, parsedResponses };
+}
+
 function isResidual(classification: SemanticClassification | undefined): boolean {
     return (
         classification === undefined ||
@@ -172,7 +192,6 @@ export async function applySftGeneration(
             continue;
         }
 
-        attempts += 1;
         eligibleSlots += fallbackRows.length * fields.length;
         let output: Awaited<ReturnType<SftGenerator['generate']>>;
         try {
@@ -187,12 +206,16 @@ export async function applySftGeneration(
                     ...(options.locale ? { locale: options.locale } : {})
                 }),
                 signal,
-                options.sftTimeoutMs ?? 45_000
+                options.sftTimeoutMs ?? 60_000
             );
             if (!output || !Array.isArray(output.rows)) {
                 throw new TypeError('Invalid SFT generation result');
             }
+            const completion = completionStatistics(output);
+            attempts += completion.attempts;
+            parsedResponses += completion.parsedResponses;
         } catch (error) {
+            attempts += 1;
             assignments.push(
                 Object.freeze({
                     resource: resourceName,
@@ -225,7 +248,6 @@ export async function applySftGeneration(
             );
             continue;
         }
-        parsedResponses += 1;
         const fieldByName = new Map(
             entity.properties
                 .filter((property) => fields.some((field) => field.name === property.name))
