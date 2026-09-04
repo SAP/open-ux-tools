@@ -32,22 +32,22 @@ UI5 YAML, manifest, and metadata files matched byte for byte;
 installer-created lock/YAML files were absent afterward. V4 was verified with
 the same transactional workflow in the preceding local canary.
 
-## Post-review exact-archive canary
+## Post-review reproducible exact-archive canary
 
 After the production review fixes, the development kit was rebuilt and the
 exact resulting archive was installed into a fresh disposable OData V4 Fiori
 application:
 
-- Dev-kit fingerprint: `de649f41401b633a9e45bc70d8a8bbcf6cf4940bfae121ccfe4618391e70bd90`
-- Archive SHA-256: `f04205ab8ceb002e2298cf3c9ecc1245cc9aab773641cea3aad89ae419d18573`
-- Archive size: 510,555 bytes
+- Dev-kit fingerprint: `9c23b16c4affe20169a0a562236c46d768c02ebaf5a4734af633bb82dc03ad6b`
+- Archive SHA-256: `46d18e063c895609a0d8f3de3293cfa88e21a9e786cd90fb43e89cb0b64f7a84`
+- Archive size: 510,549 bytes
 - Generator tarball: 49,045 bytes, SHA-256 `47f1322ae06690c7079317d6df31d396f7a9d45961043fccf07104c2935b5f98`
-- Source state: dirty development worktrees, therefore non-reproducible
+- Source state: clean `SAP/open-ux-tools` commit `56cc290e4105875544bbe7742efef48a2791bfbf` and clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible
 - Installed verification: one standard middleware and the expected conditional provider export
 - HTTP verification: OData V4 `$metadata` passed, `Products?$top=1` returned one row, and the host's provider-specific log marker proved that MockGen supplied it rather than the standard fallback
 - Restore verification: source files matched the fixture byte for byte, the dependency state reconciled, and `.mockserver-data-generator-dev` was removed
 
-This rerun binds the final local canary to the remediated source and package
+This rerun binds the final local canary to committed source and exact package
 contents. The earlier three-format run remains the cross-format fixture
 evidence.
 
