@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +19,10 @@ import {
     parseArguments,
     resolveSftCandidates
 } from '../../../../../scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs';
+import {
+    buildVocabularyCandidate,
+    parseVocabularyArguments
+} from '../../../../../scripts/mockserver-data-generator-evaluation/build-vocabulary-candidate.mjs';
 
 const temporaryDirectories: string[] = [];
 const evaluationScript = fileURLToPath(
@@ -247,6 +251,206 @@ describe('evaluation CLI contract', () => {
                 candidateManifests: [join(root, 'a/candidate.json'), join(root, 'b/candidate.json')]
             })
         ).toThrow('SFT candidate ids must be unique: same-candidate');
+    });
+});
+
+describe('vocabulary candidate builder', () => {
+    /**
+     * Return a minimal byte-level BPE fixture with one removable merge.
+     *
+     * @returns tokenizer fixture
+     */
+    function tokenizerFixture(): Record<string, unknown> {
+        return {
+            version: '1.0',
+            ['added_tokens']: [{ id: 0, content: '<s>', special: true }],
+            model: {
+                type: 'BPE',
+                vocab: { '<s>': 0, a: 1, b: 2, c: 3, ab: 4, abc: 5, bc: 6 },
+                merges: [
+                    ['a', 'b'],
+                    ['ab', 'c'],
+                    ['b', 'c']
+                ]
+            }
+        };
+    }
+
+    test('builds a contiguous dependency closure that exactly preserves training tokenization', async () => {
+        const root = temporaryDirectory();
+        const tokenizer = join(root, 'tokenizer.json');
+        const training = join(root, 'train.jsonl');
+        const output = join(root, 'candidate');
+        writeFileSync(tokenizer, `${JSON.stringify(tokenizerFixture())}\n`);
+        writeFileSync(training, '{"text":"abc"}\n');
+
+        const report = await buildVocabularyCandidate({
+            tokenizer,
+            trainingJsonl: training,
+            output,
+            policy: 'training-closure'
+        });
+        const candidate = JSON.parse(readFileSync(join(output, 'tokenizer.json'), 'utf8')) as {
+            model: { vocab: Record<string, number>; merges: string[][] };
+        };
+        const mapping = JSON.parse(readFileSync(join(output, 'old-to-new-token-ids.json'), 'utf8')) as Record<
+            string,
+            number
+        >;
+        const repeat = await buildVocabularyCandidate({
+            tokenizer,
+            trainingJsonl: training,
+            output: join(root, 'repeat'),
+            policy: 'training-closure'
+        });
+
+        expect(candidate.model.vocab).toEqual({ '<s>': 0, a: 1, b: 2, c: 3, ab: 4, abc: 5 });
+        expect(candidate.model.merges).toEqual([
+            ['a', 'b'],
+            ['ab', 'c']
+        ]);
+        expect(mapping).toEqual({ '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 });
+        expect(report).toMatchObject({
+            selection: { policy: 'training-closure', sourceVocabSize: 7, candidateVocabSize: 6 },
+            verification: { exactRemapping: true, decodedTextExact: true, changedSequences: 0 }
+        });
+        expect(repeat.reportFingerprint).toBe(report.reportFingerprint);
+        expect(repeat.artifacts).toEqual(report.artifacts);
+        expect(JSON.stringify(report)).not.toContain(root);
+        expect(JSON.stringify(report)).not.toContain('"text"');
+    });
+
+    test('uses pretrained rank without observing training token ids and proves byte-safe decomposition', async () => {
+        const root = temporaryDirectory();
+        const tokenizer = join(root, 'tokenizer.json');
+        const training = join(root, 'train.jsonl');
+        const output = join(root, 'candidate');
+        writeFileSync(tokenizer, `${JSON.stringify(tokenizerFixture())}\n`);
+        writeFileSync(training, '{"text":"abc"}\n');
+
+        const report = await buildVocabularyCandidate({
+            tokenizer,
+            trainingJsonl: training,
+            output,
+            policy: 'pretrained-rank',
+            targetVocabSize: 5
+        });
+
+        expect(report).toMatchObject({
+            selection: {
+                policy: 'pretrained-rank',
+                observedTrainingTokenIds: 0,
+                candidateVocabSize: 5
+            },
+            verification: { exactRemapping: false, decodedTextExact: true, changedSequences: 1 }
+        });
+    });
+
+    test('supports an output below a symlinked temporary-directory parent', async () => {
+        const root = temporaryDirectory();
+        const actualParent = join(root, 'actual');
+        const linkedParent = join(root, 'linked');
+        mkdirSync(actualParent);
+        symlinkSync(actualParent, linkedParent, 'dir');
+        const tokenizer = join(root, 'tokenizer.json');
+        const training = join(root, 'train.jsonl');
+        writeFileSync(tokenizer, `${JSON.stringify(tokenizerFixture())}\n`);
+        writeFileSync(training, '{"text":"abc"}\n');
+
+        await expect(
+            buildVocabularyCandidate({
+                tokenizer,
+                trainingJsonl: training,
+                output: join(linkedParent, 'candidate'),
+                policy: 'training-closure'
+            })
+        ).resolves.toMatchObject({ verification: { exactRemapping: true } });
+        expect(readFileSync(join(actualParent, 'candidate', 'tokenizer.json'), 'utf8')).toContain('"vocab"');
+    });
+
+    test('rejects invalid programmatic policy and size-projection contracts', async () => {
+        const root = temporaryDirectory();
+        const tokenizer = join(root, 'tokenizer.json');
+        const training = join(root, 'train.jsonl');
+        writeFileSync(tokenizer, `${JSON.stringify(tokenizerFixture())}\n`);
+        writeFileSync(training, '{"text":"abc"}\n');
+
+        await expect(
+            buildVocabularyCandidate({
+                tokenizer,
+                trainingJsonl: training,
+                output: join(root, 'invalid-policy'),
+                policy: 'future-policy'
+            })
+        ).rejects.toThrow('policy must be training-closure or pretrained-rank');
+        await expect(
+            buildVocabularyCandidate({
+                tokenizer,
+                trainingJsonl: training,
+                output: join(root, 'invalid-size'),
+                policy: 'training-closure',
+                sizeProjection: { fixedModelBytes: 1 }
+            })
+        ).rejects.toThrow('sizeProjection must contain three positive safe integers');
+    });
+
+    test('rejects a target smaller than the mandatory dependency closure', async () => {
+        const root = temporaryDirectory();
+        const tokenizer = join(root, 'tokenizer.json');
+        const training = join(root, 'train.jsonl');
+        writeFileSync(tokenizer, `${JSON.stringify(tokenizerFixture())}\n`);
+        writeFileSync(training, '{"text":"abc"}\n');
+
+        await expect(
+            buildVocabularyCandidate({
+                tokenizer,
+                trainingJsonl: training,
+                output: join(root, 'candidate'),
+                policy: 'training-closure',
+                targetVocabSize: 5
+            })
+        ).rejects.toThrow('targetVocabSize 5 is smaller than mandatory closure 6');
+    });
+
+    test('parses a fully bound size projection without partial numeric values', () => {
+        expect(
+            parseVocabularyArguments([
+                '--',
+                '--tokenizer',
+                '/model/tokenizer.json',
+                '--training-jsonl',
+                '/data/train.jsonl',
+                '--output',
+                '/candidate',
+                '--policy',
+                'training-closure',
+                '--target-vocab-size',
+                '10000',
+                '--fixed-model-bytes',
+                '68944179',
+                '--bytes-per-vocabulary-row',
+                '738',
+                '--target-model-bytes',
+                '82462493'
+            ])
+        ).toMatchObject({
+            targetVocabSize: 10000,
+            sizeProjection: { fixedModelBytes: 68944179, bytesPerVocabularyRow: 738, targetModelBytes: 82462493 }
+        });
+        expect(() =>
+            parseVocabularyArguments([
+                '--tokenizer',
+                '/model/tokenizer.json',
+                '--training-jsonl',
+                '/data/train.jsonl',
+                '--output',
+                '/candidate',
+                '--policy',
+                'training-closure',
+                '--target-vocab-size',
+                '10junk'
+            ])
+        ).toThrow('--target-vocab-size must be a positive decimal integer');
     });
 });
 

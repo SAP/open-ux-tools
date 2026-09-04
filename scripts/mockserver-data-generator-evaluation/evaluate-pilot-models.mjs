@@ -59,6 +59,20 @@ function usage() {
 
 export function parseArguments(argv) {
     const argumentsWithoutSeparator = argv[0] === '--' ? argv.slice(1) : argv;
+    /**
+     * @type {{
+     *   candidateManifests: string[];
+     *   candidates?: string[];
+     *   seed: number;
+     *   skipClassifier: boolean;
+     *   skipSft: boolean;
+     *   isolatedWorker: boolean;
+     *   pilotRoot?: string;
+     *   output?: string;
+     *   evidenceDir?: string;
+     *   maxSftCases?: number;
+     * }}
+     */
     const options = {
         candidateManifests: [],
         seed: DEFAULT_SEED,

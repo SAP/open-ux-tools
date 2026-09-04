@@ -74,6 +74,7 @@
         "mockserver-data-generator:dev-install": "node scripts/mockserver-data-generator-dev-kit/dev-install.mjs",
         "mockserver-data-generator:prepare-pilot-model": "node scripts/mockserver-data-generator-dev-kit/prepare-pilot-model-cache.mjs",
         "mockserver-data-generator:evaluate-models": "node scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs",
+        "mockserver-data-generator:build-vocabulary-candidate": "node scripts/mockserver-data-generator-evaluation/build-vocabulary-candidate.mjs",
         "mockserver-data-generator:measure-footprint": "node packages/mockserver-data-generator/scripts/measure-footprint.mjs",
         "mockserver-data-generator:realism-campaign": "node scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs"
     },

@@ -50,6 +50,38 @@ but only its filename, byte count, and checksum enter the portable report.
 Supplying manifests without `--sft-candidates` evaluates only those manifests,
 so the fixed pilot candidates are never run implicitly.
 
+## Build a reduced-vocabulary training candidate
+
+Create a dependency-closed tokenizer and old-to-new token-id mapping without
+copying private training data into this repository:
+
+~~~sh
+pnpm mockserver-data-generator:build-vocabulary-candidate \
+  --tokenizer /absolute/path/to/tokenizer.json \
+  --training-jsonl /absolute/path/to/train.jsonl \
+  --output /tmp/mockgen-vocabulary-candidate \
+  --policy training-closure \
+  --fixed-model-bytes 68944179 \
+  --bytes-per-vocabulary-row 738 \
+  --target-model-bytes 82462493
+~~~
+
+`training-closure` retains every token emitted for the supplied training split,
+plus its complete merge dependency closure. It must reproduce the original
+training tokenization exactly. `pretrained-rank` requires
+`--target-vocab-size`; it selects only by the pretrained merge order and may
+change segmentation, but must decode every training record to the same text.
+Use the latter to prepare a fresh reduced-tokenizer training experiment, never
+to retrofit existing weights and claim equivalent quality.
+
+The optional size projection is accepted only as one complete set of three
+positive integers. The new output directory contains `tokenizer.json`,
+`old-to-new-token-ids.json`, and `vocabulary-evidence.json`. Evidence records
+only filenames, byte counts, hashes, and aggregate verification metrics—never
+raw training records or absolute paths. Model weights remain external and must
+be remapped, trained, exported, and evaluated through a candidate manifest in a
+separate governed model workspace.
+
 The report contains exact artifact bytes and SHA-256 hashes, governed classifier cohort counts, classifier accuracy/macro-F1/routed precision/coverage, SFT parse/exact-key/fill rates, load and generation latency, and observed process memory. Generated values are written only when an external evidence directory is supplied. A new realism judgment must use that evidence file and record its checksum; historical pilot judgments are comparison baselines, not promotion evidence.
 
 ## Package and learned-stack footprint

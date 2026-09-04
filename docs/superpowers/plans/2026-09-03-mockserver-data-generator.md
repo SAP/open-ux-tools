@@ -996,7 +996,7 @@ marked complete.
 - [x] Candidate 2: ONNX graph optimization and per-channel INT8; run static activation calibration only when the size/latency screen justifies it.
 - [x] Candidate 3: determine whether the chosen export/runtime supports an end-to-end calibrated GPTQ/AWQ-style four-bit path; reject partial calibration.
 - [ ] Candidate 4: quantization-aware fine-tuning when calibrated post-training quantization misses quality gates.
-- [ ] Candidate 5: vocabulary pruning or a domain tokenizer when embedding/output matrices dominate size.
+- [x] Candidate 5: vocabulary pruning or a domain tokenizer when embedding/output matrices dominate size.
 - [ ] Candidate 6: knowledge distillation or a smaller architecture when quantization alone cannot reach the target.
 - [x] Treat every uncalibrated low-precision result as ineligible; retain any historical negative report only in the governed private evidence store.
 
@@ -1022,6 +1022,20 @@ T2 p95. It is rejected, and no realism judging is warranted. Because it still
 exceeds the target by 22,755,862 bytes, QAT alone cannot solve the footprint;
 Candidate 4 should be coupled to a reduced vocabulary or smaller architecture
 rather than run against the unchanged 135M graph.
+
+Candidate 5 then tested the vocabulary branch through the production evaluator.
+An intentionally ineligible 10,813-token upper bound showed that a combined
+vocabulary and four-bit graph can meet the byte target, but GPTQ/RTN quality
+collapsed to 11/16 parsed cases and 83/261 filled fields. The valid training-only
+closure retained 10,073 tokens with exact remapping across all 2,877 training
+records; inherited INT8 reached 15/16 parsed cases and 238/261 filled fields,
+still below the gate. An 18,000-token rank-fill variant and two bounded recovery
+experiments regressed further. The repository now includes a portable,
+training-only vocabulary-candidate builder so the exact 10,073-token regime can
+be reproduced without storing training payloads or model weights. Candidate 5
+is complete and rejected as a checkpoint-retrofit strategy. Candidate 4 must be
+a fresh governed reduced-token SFT plus QAT or calibrated low-bit export; if it
+fails, advance to Candidate 6.
 
 For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS, throughput, cold/warm latency, parse success, fill ratio, requested-row completion, schema/type/nullability/length/precision-scale/key/enum/FK/containment/navigation validity, relationship/coherence assertions, determinism, and fresh realism score. Count every frozen T2 attempt, including timeouts, empty responses, and malformed responses, in the parse denominator. Freeze eligible requested scalar slots before execution for the fill denominator; exclude authored, computed, server-managed, and metadata-defaulted slots before observing output.
 

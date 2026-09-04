@@ -142,6 +142,12 @@ The reviewed npm package contains no weights and packs to 58,273 bytes in the cu
 | MatMul-only weight-only INT4               | 200,835,311 | Larger than INT8; prior fixed pilot gate recorded 33.33% symmetric or 66.67% asymmetric parse and substantially lower fill | Reject                            |
 | Full MatMul and Gather RTN INT4            | 105,726,471 | Exact runtime contract and 35.9% smaller than INT8, but uncalibrated and 23,263,978 bytes above target                      | Ineligible size screen            |
 | GPTQ MatMul plus RTN Gather INT4            | 105,218,355 | 68.75% parse, 32.57% fill; partial calibration and 22,755,862 bytes above target                                            | Reject                            |
+| All-cohort vocabulary-pruned INT8           | 120,758,455 | 16/16 parse and 257/261 fill, but token selection observed the held-out cohort                                               | Ineligible feasibility upper bound |
+| All-cohort vocabulary-pruned GPTQ/RTN INT4  |  76,924,162 | Meets the byte target, but only 11/16 parse and 83/261 fill; selection leaked and `Gather` remained uncalibrated             | Reject                            |
+| Training-closure vocabulary-pruned INT8     | 119,905,975 | Training-only selection; 15/16 parse and 238/261 fill                                                                        | Reject                            |
+| Training plus rank-fill 18,000 INT8         | 129,037,882 | Training-only closure plus pretrained merge rank; 12/16 parse and 128/261 fill                                               | Reject                            |
+| Training-closure bounded-recovery INT8      | 119,905,975 | One training-derived recovery epoch; 11/16 parse and 103/261 fill                                                            | Reject                            |
+| Pretrained-rank 10,000 bounded-recovery INT8 | 119,821,879 | Reduced-token training without held-out selection; 7/16 parse and 36/261 fill                                                | Reject                            |
 | FP32                                       | 652,552,120 | Exact runtime contract, but 3.96 times INT8 bytes                                                                          | Reference only; do not distribute |
 
 The historical INT4 graph is 21.77% larger than INT8 because its MatMul-only
@@ -172,6 +178,37 @@ remove the remaining 22.76 MB by itself. The next justified branch is a smaller
 vocabulary/domain tokenizer or a smaller distilled architecture, with any
 low-bit training performed on that reduced model. Every new candidate must
 rerun the same structural and realism gates.
+
+The vocabulary campaign confirmed that the embedding/output matrices provide
+enough removable capacity, but an existing checkpoint cannot be safely
+retrofitted. A deliberately ineligible 10,813-token upper bound selected from
+training, held-out evaluation, and production prompts. Its inherited INT8 graph
+nearly retained the baseline contract at 16/16 parsed cases and 257/261 filled
+fields. Applying GPTQ to `MatMul` and RTN to the only supported `Gather` path
+reached 76,924,162 bytes—5,538,331 bytes below target—but collapsed to 11/16
+parsed cases and 83/261 filled fields. Held-out selection and partial
+calibration independently disqualify that result.
+
+A valid training-only closure retained 10,073 of 49,152 tokens. It exactly
+remapped all 2,877 training records and 4,000,764 production-tokenizer ids, but
+its inherited INT8 graph reached only 15/16 parsed cases and 238/261 filled
+fields. Filling that closure to 18,000 tokens by pretrained merge rank made the
+result worse. A bounded one-epoch LoRA plus tied-embedding recovery also made
+the 10,073-token result worse, while a 10,000-token pretrained-rank tokenizer
+trained on the changed decomposition reached only 7/16 parsed cases and 36/261
+filled fields. Structural failures stop realism judging for all four.
+
+The reusable training-only builder is now part of the evaluation harness. Its
+independent replay produced the same vocabulary and merge list as the research
+prototype, a 660,439-byte tokenizer, and a projected 76,378,053-byte low-bit
+graph with 6,084,440 bytes of target headroom. The portable evidence fingerprint
+is `c1a3b1e111244662641eacac7e0b6a1b538102d13dcddcb10a47b74915897353`;
+the evidence file SHA-256 is
+`d90d5dd9107d6155cafefb725a61eaad3b1b36c1b405dfbd806da61e5f14371f`.
+The next viable experiment is therefore a fresh, fully governed SFT in the
+reduced-token regime, coupled to QAT or followed by a calibrated low-bit export.
+If that misses the quality gate, proceed to Candidate 6 rather than extending
+checkpoint-retrofit probes.
 
 ## Machine-readable footprint baseline
 
