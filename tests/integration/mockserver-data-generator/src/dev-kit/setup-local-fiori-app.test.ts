@@ -43,18 +43,18 @@ function sha256(filePath: string): string {
     return createHash('sha256').update(readFileSync(filePath)).digest('hex');
 }
 
-function writeKit(root: string): void {
+function writeKit(root: string, version = '0.0.0', buildLabel = version): void {
     mkdirSync(join(root, 'packages'), { recursive: true });
     const packages = [
-        ['@sap-ux/mockserver-data-generator', 'mockserver-data-generator.tgz'],
-        ['@sap-ux/fe-mockserver-core', 'fe-mockserver-core.tgz'],
-        ['@sap-ux/ui5-middleware-fe-mockserver', 'ui5-middleware-fe-mockserver.tgz']
+        ['@sap-ux/mockserver-data-generator', `mockserver-data-generator-${version}.tgz`],
+        ['@sap-ux/fe-mockserver-core', `fe-mockserver-core-${version}.tgz`],
+        ['@sap-ux/ui5-middleware-fe-mockserver', `ui5-middleware-fe-mockserver-${version}.tgz`]
     ].map(([packageName, filename]) => {
         const filePath = join(root, 'packages', filename);
-        writeFileSync(filePath, packageName);
+        writeFileSync(filePath, `${packageName}@${buildLabel}`);
         return {
             packageName,
-            version: '0.0.0',
+            version,
             filename,
             bytes: readFileSync(filePath).byteLength,
             sha256: sha256(filePath)
@@ -211,6 +211,194 @@ describe('transactional local setup', () => {
         expect(restored.status).toBe('restored');
         expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(originals.packageJson);
         expect(readFileSync(join(app, 'package-lock.json'), 'utf8')).toBe(originals.lockfile);
+        expect(existsSync(join(app, 'ui5-mock.yaml'))).toBe(false);
+        expect(existsSync(join(app, '.mockserver-data-generator-dev'))).toBe(false);
+    });
+
+    test('keeps the previous working installation when a development-kit upgrade fails', async () => {
+        const app = temporaryDirectory('mockgen-upgrade-app-');
+        const firstKit = temporaryDirectory('mockgen-upgrade-first-kit-');
+        const secondKit = temporaryDirectory('mockgen-upgrade-second-kit-');
+        writeApplication(app);
+        writeKit(firstKit, '0.0.0', 'first-build');
+        writeKit(secondKit, '0.0.0', 'second-build');
+        let configuredRelease = 'first';
+        const configure = async ({ appRoot }: { appRoot: string }): Promise<void> => {
+            const packageJson = JSON.parse(readFileSync(join(appRoot, 'package.json'), 'utf8')) as {
+                scripts: Record<string, string>;
+                mockgenRelease?: string;
+            };
+            packageJson.scripts['start-mock'] = 'fiori run --config ./ui5-mock.yaml';
+            packageJson.mockgenRelease = configuredRelease;
+            writeFileSync(join(appRoot, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`);
+            writeFileSync(join(appRoot, 'ui5-mock.yaml'), `mockgenRelease: ${configuredRelease}\n`);
+        };
+        await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: firstKit,
+            configure,
+            runner: async () => undefined,
+            verifyInstalled: () => ({ installed: true })
+        });
+        const workingPackageJson = readFileSync(join(app, 'package.json'), 'utf8');
+        const workingYaml = readFileSync(join(app, 'ui5-mock.yaml'), 'utf8');
+        const workingJournal = JSON.parse(
+            readFileSync(join(app, '.mockserver-data-generator-dev', 'recovery.json'), 'utf8')
+        ) as {
+            kit: { packages: Array<{ packageName: string; specification: string }> };
+        };
+        const workingGenerator = workingJournal.kit.packages.find(
+            ({ packageName }) => packageName === '@sap-ux/mockserver-data-generator'
+        );
+        expect(workingGenerator).toBeDefined();
+        const workingGeneratorPath = join(app, workingGenerator!.specification.slice('file:'.length));
+        configuredRelease = 'second';
+        const upgradeRunner = jest
+            .fn<() => Promise<void>>()
+            .mockRejectedValueOnce(new Error('upgrade failed'))
+            .mockResolvedValueOnce(undefined);
+
+        await expect(
+            setupLocalFioriApp({
+                appRoot: app,
+                kitRoot: secondKit,
+                configure,
+                runner: upgradeRunner,
+                verifyInstalled: () => ({ installed: true })
+            })
+        ).rejects.toThrow(/upgrade failed/i);
+
+        expect(upgradeRunner).toHaveBeenCalledTimes(2);
+        expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(workingPackageJson);
+        expect(readFileSync(join(app, 'ui5-mock.yaml'), 'utf8')).toBe(workingYaml);
+        expect(readFileSync(workingGeneratorPath, 'utf8')).toBe('@sap-ux/mockserver-data-generator@first-build');
+        expect(
+            JSON.parse(readFileSync(join(app, '.mockserver-data-generator-dev', 'recovery.json'), 'utf8')) as unknown
+        ).toEqual(workingJournal);
+    });
+
+    test('upgrades to newer local artifacts while preserving the original restore point', async () => {
+        const app = temporaryDirectory('mockgen-successful-upgrade-app-');
+        const firstKit = temporaryDirectory('mockgen-successful-upgrade-first-kit-');
+        const secondKit = temporaryDirectory('mockgen-successful-upgrade-second-kit-');
+        writeApplication(app);
+        writeKit(firstKit, '0.0.1');
+        writeKit(secondKit, '0.0.2');
+        const originalPackageJson = readFileSync(join(app, 'package.json'), 'utf8');
+        const configure = async ({
+            appRoot,
+            generatorSpec
+        }: {
+            appRoot: string;
+            generatorSpec: string;
+        }): Promise<void> => {
+            const packageJson = JSON.parse(readFileSync(join(appRoot, 'package.json'), 'utf8')) as {
+                scripts: Record<string, string>;
+                devDependencies?: Record<string, string>;
+            };
+            packageJson.scripts['start-mock'] = 'fiori run --config ./ui5-mock.yaml';
+            packageJson.devDependencies = { '@sap-ux/mockserver-data-generator': generatorSpec };
+            writeFileSync(join(appRoot, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`);
+            writeFileSync(join(appRoot, 'ui5-mock.yaml'), `generator: ${generatorSpec}\n`);
+        };
+        const runner = jest.fn(async () => undefined);
+        await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: firstKit,
+            configure,
+            runner,
+            verifyInstalled: () => ({ installed: true })
+        });
+
+        const upgraded = await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: secondKit,
+            configure,
+            runner,
+            verifyInstalled: () => ({ installed: true })
+        });
+
+        expect(upgraded.packages).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    packageName: '@sap-ux/mockserver-data-generator',
+                    version: '0.0.2',
+                    specification: expect.stringContaining('mockserver-data-generator-0.0.2.tgz')
+                })
+            ])
+        );
+        const journal = JSON.parse(
+            readFileSync(join(app, '.mockserver-data-generator-dev', 'recovery.json'), 'utf8')
+        ) as { files: Record<string, { content: string }> };
+        expect(journal.files['package.json'].content).toBe(originalPackageJson);
+
+        await setupLocalFioriApp({ appRoot: app, kitRoot: secondKit, restore: true, runner });
+        expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(originalPackageJson);
+        expect(existsSync(join(app, 'ui5-mock.yaml'))).toBe(false);
+        expect(existsSync(join(app, '.mockserver-data-generator-dev'))).toBe(false);
+    });
+
+    test('can restore the original application after dependency rollback for an upgrade fails', async () => {
+        const app = temporaryDirectory('mockgen-upgrade-recovery-app-');
+        const firstKit = temporaryDirectory('mockgen-upgrade-recovery-first-kit-');
+        const secondKit = temporaryDirectory('mockgen-upgrade-recovery-second-kit-');
+        writeApplication(app);
+        writeKit(firstKit, '0.0.1');
+        writeKit(secondKit, '0.0.2');
+        const originalPackageJson = readFileSync(join(app, 'package.json'), 'utf8');
+        let configuredRelease = 'first';
+        const configure = async ({ appRoot }: { appRoot: string }): Promise<void> => {
+            const packageJson = JSON.parse(readFileSync(join(appRoot, 'package.json'), 'utf8')) as {
+                scripts: Record<string, string>;
+                mockgenRelease?: string;
+            };
+            packageJson.scripts['start-mock'] = 'fiori run --config ./ui5-mock.yaml';
+            packageJson.mockgenRelease = configuredRelease;
+            writeFileSync(join(appRoot, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`);
+            writeFileSync(join(appRoot, 'ui5-mock.yaml'), `mockgenRelease: ${configuredRelease}\n`);
+        };
+        await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: firstKit,
+            configure,
+            runner: async () => undefined,
+            verifyInstalled: () => ({ installed: true })
+        });
+        const workingPackageJson = readFileSync(join(app, 'package.json'), 'utf8');
+        configuredRelease = 'second';
+        const failedUpgradeRunner = jest
+            .fn<() => Promise<void>>()
+            .mockRejectedValueOnce(new Error('upgrade failed'))
+            .mockRejectedValueOnce(new Error('upgrade dependency rollback failed'));
+
+        await expect(
+            setupLocalFioriApp({
+                appRoot: app,
+                kitRoot: secondKit,
+                configure,
+                runner: failedUpgradeRunner,
+                verifyInstalled: () => ({ installed: true })
+            })
+        ).rejects.toThrow(/upgrade failed/i);
+
+        expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(workingPackageJson);
+        expect(
+            JSON.parse(readFileSync(join(app, '.mockserver-data-generator-dev', 'recovery.json'), 'utf8')) as unknown
+        ).toEqual(
+            expect.objectContaining({
+                status: 'upgrade-rollback-failed',
+                dependencyRollbackError: 'upgrade dependency rollback failed'
+            })
+        );
+
+        const restored = await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: secondKit,
+            restore: true,
+            runner: async () => undefined
+        });
+        expect(restored.status).toBe('restored');
+        expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(originalPackageJson);
         expect(existsSync(join(app, 'ui5-mock.yaml'))).toBe(false);
         expect(existsSync(join(app, '.mockserver-data-generator-dev'))).toBe(false);
     });

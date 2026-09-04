@@ -186,7 +186,7 @@ function copyArtifacts(appRoot, stateRoot, packages) {
     assertSafeArtifactDirectory(appRoot, stateRoot, packageDirectory);
     return packages.map((artifact) => {
         assertSafeArtifactDirectory(appRoot, stateRoot, packageDirectory);
-        const destination = join(packageDirectory, artifact.filename);
+        const destination = join(packageDirectory, `${artifact.sha256}-${artifact.filename}`);
         const temporary = `${destination}.${randomUUID()}.tmp`;
         copyFileSync(artifact.sourcePath, temporary);
         assertSafeArtifactDirectory(appRoot, stateRoot, packageDirectory);
@@ -334,11 +334,16 @@ export async function setupLocalFioriApp({
     }
 
     let journal;
+    let previousInstallation;
     if (existsSync(journalPath)) {
         assertSafeExistingFile(canonicalAppRoot, journalPath);
         journal = JSON.parse(readFileSync(journalPath, 'utf8'));
         if (journal.status === 'installed') {
             assertPostHashes(canonicalAppRoot, journal.files);
+            previousInstallation = {
+                journal: structuredClone(journal),
+                files: captureFiles(canonicalAppRoot, Object.keys(journal.files))
+            };
         } else if (['restored', 'rolled-back'].includes(journal.status)) {
             journal = undefined;
         } else {
@@ -420,14 +425,19 @@ export async function setupLocalFioriApp({
             ...(canary ? { canary } : {})
         };
     } catch (error) {
-        restoreFiles(canonicalAppRoot, journal.files, { checkPostHashes: false });
+        restoreFiles(canonicalAppRoot, previousInstallation?.files ?? journal.files, { checkPostHashes: false });
         let dependencyRollbackError;
         try {
             await runner(createRestoreStep(journal.packageManager, canonicalAppRoot));
         } catch (rollbackError) {
             dependencyRollbackError = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
         }
-        journal.status = 'rolled-back';
+        if (previousInstallation && !dependencyRollbackError) {
+            journal = previousInstallation.journal;
+            writeJournal(canonicalAppRoot, stateRoot, journalPath, journal);
+            throw error;
+        }
+        journal.status = previousInstallation ? 'upgrade-rollback-failed' : 'rolled-back';
         journal.error = error instanceof Error ? error.message : String(error);
         if (dependencyRollbackError) {
             journal.dependencyRollbackError = dependencyRollbackError;
