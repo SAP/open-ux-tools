@@ -24,8 +24,12 @@ interface PluginDependencies {
         log: CapLogger,
         signal: AbortSignal
     ): Promise<{ runtime: MockDataGeneratorRuntime; dispose(): Promise<void> }>;
+    createSignal?(timeoutMs: number): AbortSignal;
     generate?: GenerateService;
 }
+
+const LEARNED_SETUP_TIMEOUT_MS = 30_000;
+const GENERATION_TIMEOUT_MS = 60_000;
 
 function logger(cds: CdsFacade): CapLogger {
     return (
@@ -73,10 +77,13 @@ async function seedFromCds(
         throw new Error('CAP model, database, and query language must be available after served');
     }
     const log = logger(cds);
-    const timeout = AbortSignal.timeout(60_000);
+    const createSignal =
+        dependencies.createSignal ?? ((timeoutMs: number): AbortSignal => AbortSignal.timeout(timeoutMs));
+    const learnedSignal = createSignal(LEARNED_SETUP_TIMEOUT_MS);
     const generate = dependencies.generate ?? (await import('@sap-ux/mockserver-data-generator')).generateService;
-    const learned = await (dependencies.createRuntime ?? runtime)(configuration, log, timeout);
+    const learned = await (dependencies.createRuntime ?? runtime)(configuration, log, learnedSignal);
     try {
+        const generationSignal = createSignal(GENERATION_TIMEOUT_MS);
         const result = await seedCapDatabase({
             csn: cds.model,
             database: cds.db,
@@ -84,7 +91,7 @@ async function seedFromCds(
             generate,
             options: configuration.generation,
             runtime: learned.runtime,
-            signal: timeout
+            signal: generationSignal
         });
         log.info(
             `Mock data generator seeded ${result.inserted.length} missing CAP entities and preserved ${result.preserved.length}.`

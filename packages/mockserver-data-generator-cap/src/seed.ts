@@ -241,7 +241,9 @@ export async function seedCapDatabase(input: SeedCapDatabaseOptions): Promise<Ca
         const request: MockDataServiceRequest = {
             metadata: { format: 'csn', content: metadata },
             service: { urlPath: '/$mockserver-data-generator', alias: 'CAP', odataVersion: '4.0' },
-            targets: entities.map(({ resourceName }) => ({ name: resourceName, kind: 'entity-set' as const })),
+            targets: entities
+                .filter(({ qualifiedName }) => !preserved.has(qualifiedName))
+                .map(({ resourceName }) => ({ name: resourceName, kind: 'entity-set' as const })),
             existingData: existing,
             signal
         };

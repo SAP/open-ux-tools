@@ -102,10 +102,7 @@ describe('native CAP database seeding', () => {
         expect(generate).toHaveBeenCalledWith(
             expect.objectContaining({
                 metadata: { format: 'csn', content: expect.any(String) },
-                targets: [
-                    { name: 'Author', kind: 'entity-set' },
-                    { name: 'Book', kind: 'entity-set' }
-                ],
+                targets: [{ name: 'Book', kind: 'entity-set' }],
                 existingData: expect.objectContaining({
                     Author: expect.objectContaining({
                         initialRows: { source: 'json', present: true, rows: [{ ID: 'author-1' }] }

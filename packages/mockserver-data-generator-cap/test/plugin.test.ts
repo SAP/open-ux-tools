@@ -43,8 +43,12 @@ describe('native CAP plugin lifecycle', () => {
         expect(seed).not.toHaveBeenCalled();
     });
 
-    test('passes the learned classifier and SFT runtime through shared CAP generation and disposes it', async () => {
+    test('passes the learned runtime through a fresh generation budget and disposes it', async () => {
         let served: (() => Promise<void>) | undefined;
+        const learnedSignal = new AbortController().signal;
+        const generationSignal = new AbortController().signal;
+        const signals = [learnedSignal, generationSignal];
+        const createSignal = jest.fn((_timeoutMs: number): AbortSignal => signals.shift() ?? generationSignal);
         const transaction = {
             run: jest.fn(async (query: { kind: string }) => (query.kind === 'select' ? [] : undefined))
         };
@@ -100,12 +104,16 @@ describe('native CAP plugin lifecycle', () => {
             })
         };
 
-        registerCapPlugin(cds, { createRuntime, generate });
+        registerCapPlugin(cds, { createRuntime, createSignal, generate });
         await served?.();
 
-        expect(createRuntime).toHaveBeenCalledTimes(1);
+        expect(createSignal.mock.calls).toEqual([[30_000], [60_000]]);
+        expect(createRuntime).toHaveBeenCalledWith(expect.any(Object), expect.any(Object), learnedSignal);
         expect(generate).toHaveBeenCalledWith(
-            expect.objectContaining({ targets: [{ name: 'Product', kind: 'entity-set' }] }),
+            expect.objectContaining({
+                targets: [{ name: 'Product', kind: 'entity-set' }],
+                signal: generationSignal
+            }),
             expect.objectContaining({ mode: 'learned' }),
             learnedRuntime
         );
