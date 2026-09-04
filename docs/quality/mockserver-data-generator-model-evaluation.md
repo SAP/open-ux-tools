@@ -155,6 +155,8 @@ The reviewed npm package contains no weights and packs to 58,273 bytes in the cu
 | Uniform depth-7 size screen INT8            |  81,913,038 | Exact 17-input/15-output contract; clears the target by 549,455 bytes; quality not yet evaluated                             | Maximum-depth distillation base   |
 | Uniform depth-6 recovered FP32              | 311,719,705 | Three-epoch full-parameter recovery; 4/16 parse and 15/261 fill                                                              | Reject source model               |
 | Uniform depth-6 recovered INT8              |  78,305,644 | Clears the byte target by 4,156,849 bytes; 5/16 parse and 30/261 fill                                                        | Reject                            |
+| Uniform depth-7 distilled FP32              | 325,919,941 | Top-k teacher-logit and structural-token distillation; 2/16 parse and 11/261 fill                                            | Reject source model               |
+| Uniform depth-7 distilled INT8              |  81,913,038 | Clears the byte target by 549,455 bytes; 4/16 parse and 28/261 fill                                                          | Reject                            |
 | FP32                                       | 652,552,120 | Exact runtime contract, but 3.96 times INT8 bytes                                                                          | Reference only; do not distribute |
 
 The historical INT4 graph is 21.77% larger than INT8 because its MatMul-only
@@ -279,6 +281,37 @@ The rejected campaign fingerprint is
 `e7509b2f15c0078706611cf5a20b2d406a421d9523bf2fbf6c662e62bb387380`;
 the campaign file SHA-256 is
 `7b0869231a632ee4e916cd598e87462482110e534500fcc32b695a4decf3575c`.
+
+The final Candidate 6 experiment used that seven-layer boundary and the
+retained 30-layer task-specific model as its teacher. A resumable top-32 logits
+cache covered all 1,149 training records and 492,934 completion tokens without
+storing raw text. Full-parameter training used temperature 2, hard/distillation
+weights 0.6/0.4, and a three-times weight for structural JSON tokens. The frozen
+production cohort remained excluded. All three epochs completed, improving the
+held-back loss from 11.581748 to 3.975526, 3.104364, and 2.903704.
+
+The improvement did not recover the production contract. The 325,919,941-byte
+FP32 candidate reached only 2/16 parsed exact-key cases and 11/261 filled
+fields. Its 81,913,038-byte dynamic-INT8 export cleared the target by 549,455
+bytes but reached only 4/16 cases and 28/261 fields; every failed case ended
+before completing its JSON object. FP32 failure proves that quantization is not
+the cause. Structural failure stops realism judging.
+
+The clean evaluation binds commit
+`fdc8dc8054f4fef5495d8a31188b06e1a4898b45`; its report fingerprint is
+`7bb267f0af047068c383f880322735563915d4c4d1fa0df6ede41fcd31a8c148`
+and file SHA-256 is
+`0d4e25d67f93e8d9563c9be1802fa3457b26aa1e51cc22def9b0266744241871`.
+The consolidated campaign fingerprint is
+`c66f98d8058c307046da5daa724f9991d7fa21e47af721806f017b4a276f54b7`;
+the campaign file SHA-256 is
+`35b2088d357e218170791fc037ea9f73db2ab1c2a8dac60d95de3c25b39a4288`.
+
+Candidate 6 is therefore complete and rejected for promotion. No tested
+size-passing learned generator satisfies the frozen structural gates. The
+164,924,986-byte pilot INT8 model remains the quality baseline while the
+footprint gate remains unresolved; repeating the same pruning, token-budget,
+ordinary-SFT, or structural-distillation recipes is not justified.
 
 ## Machine-readable footprint baseline
 

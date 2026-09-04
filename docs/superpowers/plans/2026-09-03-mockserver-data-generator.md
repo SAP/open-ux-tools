@@ -997,7 +997,7 @@ marked complete.
 - [x] Candidate 3: determine whether the chosen export/runtime supports an end-to-end calibrated GPTQ/AWQ-style four-bit path; reject partial calibration.
 - [x] Candidate 4: qualify whether quantization-aware fine-tuning is justified after post-training candidates miss; stop before QAT when the reduced-token FP32 source model itself misses quality gates.
 - [x] Candidate 5: vocabulary pruning or a domain tokenizer when embedding/output matrices dominate size.
-- [ ] Candidate 6: knowledge distillation or a smaller architecture when quantization alone cannot reach the target.
+- [x] Candidate 6: qualify a smaller architecture with ordinary recovery and teacher-guided structural distillation; reject it when the maximum size-passing student misses the frozen structural gates.
 - [x] Treat every uncalibrated low-precision result as ineligible; retain any historical negative report only in the governed private evidence store.
 
 **Compression record (2026-09-04):** The candidate-manifest evaluator added in
@@ -1047,7 +1047,7 @@ fingerprint
 `362191ba9ed9852cd043b718bdd37e11e67db42a5c744b0a183036ab4b50d2d4`.
 Because failure occurs before quantization, QAT and low-bit export cannot repair
 this source-model contract and realism judging is not warranted. Candidate 4 is
-therefore closed at its precondition, and Candidate 6 is next.
+therefore closed at its precondition.
 
 Candidate 6 established byte feasibility for a smaller architecture while
 preserving the proven 49,152-token tokenizer. A six-layer student initialized
@@ -1060,9 +1060,9 @@ recovered FP32 candidate reached only 4/16 parsed cases and 15/261 fields; INT8
 reached 5/16 and 30/261. The combined report fingerprint is
 `a694bcea288bffa1ad254133f17a7b8c12d6887bc75d85ec2f7d9fd18fefb4e4`.
 Uniform depth pruning plus ordinary SFT is rejected, and no realism judging is
-warranted. Candidate 6 remains open only for a bounded teacher-guided
-structural-token distillation experiment; repeating ordinary SFT or token-budget
-tuning is not justified.
+warranted. The remaining bounded Candidate 6 experiment therefore used
+teacher-guided structural-token distillation rather than repeating ordinary SFT
+or token-budget tuning.
 
 A subsequent exact boundary screen corrected the conservative depth estimate:
 a seven-layer, same-width, full-tokenizer INT8 graph is 81,913,038 bytes and
@@ -1070,6 +1070,26 @@ still clears the target by 549,455 bytes with its exact causal-cache contract.
 Seven layers is the maximum-capacity base for that distillation experiment; the
 size-evidence fingerprint is
 `ce04ce2ffc7f664b41c7a8d7feba32b29769a3eab4c8cb74b020ef3c842b4dd0`.
+
+The seven-layer experiment cached top-32 teacher logits for all 1,149 training
+records and 492,934 completion tokens without storing raw text. Its
+full-parameter three-epoch objective combined hard labels, temperature-2
+teacher distillation, and a three-times weight for structural JSON tokens while
+keeping the frozen production cohort out of training. Held-back loss improved
+from 11.581748 to 2.903704, but the FP32 source reached only 2/16 parsed cases
+and 11/261 fields. The 81,913,038-byte INT8 export remained 549,455 bytes under
+the target but reached only 4/16 and 28/261. The clean report binds commit
+`fdc8dc8054f4fef5495d8a31188b06e1a4898b45`, fingerprint
+`7bb267f0af047068c383f880322735563915d4c4d1fa0df6ede41fcd31a8c148`,
+and file SHA-256
+`0d4e25d67f93e8d9563c9be1802fa3457b26aa1e51cc22def9b0266744241871`.
+The consolidated rejected-campaign fingerprint is
+`c66f98d8058c307046da5daa724f9991d7fa21e47af721806f017b4a276f54b7`;
+its file SHA-256 is
+`35b2088d357e218170791fc037ea9f73db2ab1c2a8dac60d95de3c25b39a4288`.
+Candidate 6 is complete and rejected: it proves byte feasibility but not usable
+generation. No realism judging is warranted, and the retained pilot INT8 model
+remains the quality baseline while the footprint gate remains unresolved.
 
 For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS, throughput, cold/warm latency, parse success, fill ratio, requested-row completion, schema/type/nullability/length/precision-scale/key/enum/FK/containment/navigation validity, relationship/coherence assertions, determinism, and fresh realism score. Count every frozen T2 attempt, including timeouts, empty responses, and malformed responses, in the parse denominator. Freeze eligible requested scalar slots before execution for the fill denominator; exclude authored, computed, server-managed, and metadata-defaulted slots before observing output.
 
