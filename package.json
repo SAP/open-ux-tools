@@ -72,7 +72,8 @@
         "clean:nx:cache": "nx reset",
         "mockserver-data-generator:dev-kit": "node scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs",
         "mockserver-data-generator:dev-install": "node scripts/mockserver-data-generator-dev-kit/dev-install.mjs",
-        "mockserver-data-generator:evaluate-models": "node scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs"
+        "mockserver-data-generator:evaluate-models": "node scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs",
+        "mockserver-data-generator:realism-campaign": "node scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs"
     },
     "engines": {
         "npm": "please-use-pnpm",

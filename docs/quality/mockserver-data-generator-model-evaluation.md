@@ -33,6 +33,13 @@ The classifier ran through the package's MiniLM, pooling, calibrated linear-head
 
 The classifier is therefore retained as a calibrated high-precision router. It is not used unconditionally: low-confidence fields continue to the fine-tuned SFT tier or deterministic fallback.
 
+An unchanged-artifact rerun after the generated-service cache landed produced
+the same classifier metrics with a 116.91 ms model-session load and 0.921 ms
+per-field p95. The SFT rerun again parsed 16/16 cases with exact keys and filled
+259/261 fields; its p95 was 16.641 seconds and its output and judge-evidence
+fingerprints were unchanged. The cache therefore changed neither retained-model
+behavior nor the evaluation output.
+
 The first production SFT pass exposed two adapter defects rather than a need to discard or retrain the pilot model:
 
 1. 37–60-field finance entities exceeded the single 400-token decode budget.
@@ -101,7 +108,31 @@ the same compatibility and integrity tests.
 
 The existing two-provider pilot report remains useful historical evidence: 60 fields across six domains were reviewed, 16 were rated realistic (26.67%), 10 provider disagreements were recorded, no critical issues were found, and the report failed its gate. It is not silently promoted or discarded.
 
-The corrected production candidate still requires a fresh blinded judge run bound to output fingerprint `9b97cd178c9336617e6554bace5ea9fcf0e71d4301042b85180f6896c846c92c`. Until that run passes, structural/model-runtime readiness must not be described as proven realism.
+The production exporter generated a new blinded packet from commit
+`5fce6f7c1ac8eb4a26d2d233f2b5985c03f983cf`. It exercised the retained
+classifier and INT8 SFT artifacts through the production package and exposed two
+compatibility defects that are now covered by regressions: declared EDMX
+complex/collection properties no longer abort scalar generation, and semantic
+numeric candidates that exceed declared precision/scale now fall back to a
+schema-valid deterministic value.
+
+| Evidence property | Result |
+| --- | --- |
+| Reviewed fields prepared | 307 |
+| Domains | finance 60; sales 77; service 32; maintenance 18; master-data 60; non-SAP 60 |
+| Input formats | EDMX V2 120; EDMX V4 77; CSN 110 |
+| Coverage gaps | 0 |
+| Candidate fingerprint | `d6d568591d57d6571f4e1707efb99b6980326b6d6c410298e640ecfedd5313a1` |
+| Evidence fingerprint | `2b180f281a0a28e9dfcf07a3c5cd2e96767c8bb2863fcbff6c53da87836c9cf6` |
+| Evidence file SHA-256 | `3eabd573d20df366f157ed726d0bff43c60ac3feea14561f3eda1292af846ae6` |
+| Campaign manifest SHA-256 | `967b37bfe024596cb9cc052defb710aa8f5a813f89bcc06da81a0d1f3225d302` |
+| Runtime | Node 22.22.2, ONNX Runtime 1.24.3, darwin-arm64 |
+
+The packet passes its structural coverage gate but has not yet been reviewed by
+the two independent providers. Until that consensus passes, structural and
+model-runtime readiness must not be described as proven realism. Generated
+values, candidate bindings, and eventual provider artifacts remain outside the
+repository; only aggregate results and checksums are recorded here.
 
 ## Reproduce
 
