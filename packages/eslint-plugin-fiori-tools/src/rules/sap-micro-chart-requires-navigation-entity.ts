@@ -192,8 +192,16 @@ function buildChartPageMap(sourceCode: FioriAnnotationSourceCode): Map<IndexedAn
         for (const page of linkedApp.pages) {
             const pageTyped = page as { lookup?: Record<string, ChartLookupItem[]>; entity?: MetadataElement };
             const charts = pageTyped.lookup?.['chart'] ?? [];
+            const pageEntityTypePath = pageTyped.entity?.structuredType;
             for (const chart of charts) {
                 const chartEntityType = chart.annotation?.annotation?.target ?? '';
+                // Charts whose annotation target is a different entity type than the page entity are
+                // referenced via a navigation path (e.g. `_Booking/@UI.Chart`). The sub-entity is
+                // already a 1:n navigation target, so its direct properties are valid without an
+                // additional navigation prefix — skip the check for these charts.
+                if (pageEntityTypePath && chartEntityType !== pageEntityTypePath) {
+                    continue;
+                }
                 addChartToPageMap(chartPageMap, chart, chartEntityType, page.targetName, service);
             }
         }
