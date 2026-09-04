@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -446,5 +446,127 @@ describe('production-bound realism candidate', () => {
                 diagnostics: [{ code: 'SFT_RUNTIME_UNAVAILABLE' }]
             })
         ).toThrow('without degradation diagnostics');
+    });
+
+    test('rejects classifier failure and SFT failure or timeout after generation', () => {
+        const candidateApi = candidateHelpers as unknown as {
+            assertCompleteLearnedGeneration?: (
+                result: Record<string, unknown>,
+                binding: Record<string, unknown>
+            ) => void;
+        };
+        expect(candidateApi.assertCompleteLearnedGeneration).toEqual(expect.any(Function));
+        if (!candidateApi.assertCompleteLearnedGeneration) {
+            return;
+        }
+        const binding = {
+            components: {
+                classifier: { fingerprint: 'classifier-fingerprint' },
+                sft: { fingerprint: 'sft-fingerprint' }
+            }
+        };
+        const complete = {
+            capabilities: { mode: 'hybrid', classifier: 'ready', sft: 'ready' },
+            fingerprints: {
+                request: 'request-fingerprint',
+                classifier: 'classifier-fingerprint',
+                sft: 'sft-fingerprint'
+            },
+            diagnostics: [],
+            statistics: {
+                sft: { attempts: 1, parsedResponses: 1, eligibleSlots: 2, acceptedSlots: 2, assignments: [] }
+            }
+        };
+
+        expect(() => candidateApi.assertCompleteLearnedGeneration?.(complete, binding)).not.toThrow();
+        for (const code of ['CLASSIFIER_INFERENCE_FAILED', 'SFT_INFERENCE_FAILED', 'SFT_INFERENCE_TIMEOUT']) {
+            expect(() =>
+                candidateApi.assertCompleteLearnedGeneration?.(
+                    {
+                        ...complete,
+                        diagnostics: [{ code, severity: 'warning' }]
+                    },
+                    binding
+                )
+            ).toThrow('learned inference degraded');
+        }
+        expect(() =>
+            candidateApi.assertCompleteLearnedGeneration?.(
+                { ...complete, capabilities: { mode: 'hybrid', classifier: 'ready', sft: 'degraded' } },
+                binding
+            )
+        ).toThrow('hybrid-ready capabilities');
+        expect(() =>
+            candidateApi.assertCompleteLearnedGeneration?.(
+                { ...complete, fingerprints: { ...complete.fingerprints, sft: 'different-model' } },
+                binding
+            )
+        ).toThrow('model fingerprints');
+    });
+
+    test('binds every compiled file and detects stale internal modules or symlinks', async () => {
+        const candidateApi = candidateHelpers as unknown as {
+            createCompiledArtifactBinding?: (root: string) => Promise<{
+                files: Array<{ path: string; bytes: number; sha256: string }>;
+                fingerprint: string;
+            }>;
+        };
+        expect(candidateApi.createCompiledArtifactBinding).toEqual(expect.any(Function));
+        if (!candidateApi.createCompiledArtifactBinding) {
+            return;
+        }
+        const root = mkdtempSync(join(tmpdir(), 'mockserver-data-generator-dist-'));
+        try {
+            mkdirSync(join(root, 'generation'));
+            writeFileSync(join(root, 'index.js'), 'export const version = 1;\n');
+            writeFileSync(join(root, 'generation/internal.js'), 'export const value = 1;\n');
+
+            const first = await candidateApi.createCompiledArtifactBinding(root);
+            expect(first.files.map(({ path }) => path)).toEqual(['generation/internal.js', 'index.js']);
+            writeFileSync(join(root, 'generation/internal.js'), 'export const value = 2;\n');
+            const mutated = await candidateApi.createCompiledArtifactBinding(root);
+            expect(mutated.fingerprint).not.toBe(first.fingerprint);
+
+            symlinkSync(join(root, 'index.js'), join(root, 'linked.js'));
+            await expect(candidateApi.createCompiledArtifactBinding(root)).rejects.toThrow(
+                'regular files and directories'
+            );
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
+    });
+
+    test('writes evidence and campaign as an exclusive pair', async () => {
+        const candidateApi = candidateHelpers as unknown as {
+            writeExclusiveFilePair?: (
+                first: { path: string; content: string; label: string },
+                second: { path: string; content: string; label: string }
+            ) => Promise<void>;
+        };
+        expect(candidateApi.writeExclusiveFilePair).toEqual(expect.any(Function));
+        if (!candidateApi.writeExclusiveFilePair) {
+            return;
+        }
+        const root = mkdtempSync(join(tmpdir(), 'mockserver-data-generator-output-'));
+        const evidence = join(root, 'evidence.json');
+        const campaign = join(root, 'campaign.json');
+        try {
+            writeFileSync(campaign, 'occupied');
+            await expect(
+                candidateApi.writeExclusiveFilePair(
+                    { path: evidence, content: 'evidence', label: 'evidence output' },
+                    { path: campaign, content: 'campaign', label: 'campaign output' }
+                )
+            ).rejects.toThrow('campaign output already exists');
+            expect(existsSync(evidence)).toBe(false);
+            await expect(
+                candidateApi.writeExclusiveFilePair(
+                    { path: evidence, content: 'evidence', label: 'evidence output' },
+                    { path: evidence, content: 'campaign', label: 'campaign output' }
+                )
+            ).rejects.toThrow('must be distinct');
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
     });
 });

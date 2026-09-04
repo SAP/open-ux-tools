@@ -7,14 +7,27 @@ import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { artifactRecord } from './lib/evaluation.mjs';
-import { loadVerifiedProductionCandidate, parseRealismCampaignArguments } from './lib/realism-candidate.mjs';
-import { evaluateCohortTarget, resolveCohortSourcePath, validateRealismCohortManifest } from './lib/realism-cohort.mjs';
+import {
+    assertCompleteLearnedGeneration,
+    createCompiledArtifactBinding,
+    loadVerifiedProductionCandidate,
+    parseRealismCampaignArguments,
+    writeExclusiveFilePair
+} from './lib/realism-candidate.mjs';
+import {
+    evaluateCohortTarget,
+    validateRealismCohortManifest,
+    verifyCohortIsolation,
+    verifyCohortSourcePath,
+    verifyT2Expectations
+} from './lib/realism-cohort.mjs';
 import { compileRealismReviews, REALISM_DOMAINS, sealRealismEvidence } from './lib/realism.mjs';
 
 const SCRIPT_ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '../..');
 const PACKAGE_ROOT = join(REPOSITORY_ROOT, 'packages/mockserver-data-generator');
 const GENERATOR_ENTRY = join(PACKAGE_ROOT, 'dist/index.js');
+const PROVIDER_ENTRY = join(PACKAGE_ROOT, 'dist/fe-mockserver.cjs');
 const EDMX_ENTRY = join(PACKAGE_ROOT, 'dist/schema/edmx.js');
 const CSN_ENTRY = join(PACKAGE_ROOT, 'dist/schema/csn.js');
 const EVALUATION_HELPER = join(SCRIPT_ROOT, 'lib/evaluation.mjs');
@@ -214,6 +227,53 @@ function relationshipFields(graph, target, result, format) {
     });
 }
 
+function sftFieldEvidence(statistics, entityName, propertyName) {
+    for (const assignment of statistics.assignments) {
+        if (assignment.entity !== entityName) {
+            continue;
+        }
+        const field = assignment.fields.find(({ name }) => name === propertyName);
+        if (field) {
+            return {
+                plannerSource: 'production-sft-tier',
+                plannerEvidence: {
+                    eligibleSlots: field.eligibleSlots,
+                    acceptedSlots: field.acceptedSlots,
+                    fallbackSlots: field.eligibleSlots - field.acceptedSlots
+                }
+            };
+        }
+    }
+    return { plannerSource: 'production-deterministic-or-classifier-tier' };
+}
+
+function aggregateSftStatistics(targets) {
+    const totals = targets.reduce(
+        (aggregate, target) => ({
+            attempts: aggregate.attempts + target.statistics.attempts,
+            parsedResponses: aggregate.parsedResponses + target.statistics.parsedResponses,
+            eligibleSlots: aggregate.eligibleSlots + target.statistics.eligibleSlots,
+            acceptedSlots: aggregate.acceptedSlots + target.statistics.acceptedSlots
+        }),
+        { attempts: 0, parsedResponses: 0, eligibleSlots: 0, acceptedSlots: 0 }
+    );
+    const parseRate = totals.attempts === 0 ? 0 : totals.parsedResponses / totals.attempts;
+    const fillRate = totals.eligibleSlots === 0 ? 0 : totals.acceptedSlots / totals.eligibleSlots;
+    const contributingTargets = targets.filter(
+        ({ statistics }) => statistics.attempts > 0 && statistics.eligibleSlots > 0 && statistics.acceptedSlots > 0
+    ).length;
+    return {
+        ...totals,
+        parseRate,
+        fillRate,
+        contributingTargets,
+        targetCount: targets.length,
+        acceptancePolicy: 'schema-valid-learned-values-with-deterministic-fallback',
+        passed: totals.attempts > 0 && parseRate >= 0.99 && contributingTargets === targets.length,
+        targets
+    };
+}
+
 function pilotPaths(pilotRoot) {
     return {
         prompt: join(pilotRoot, 'training/review/generation-inspection-prompt.md'),
@@ -240,7 +300,19 @@ function packageBinding() {
     return { packageCommit, packageSourceClean: true };
 }
 
+function rebuildGeneratorPackage() {
+    for (const script of ['clean', 'build']) {
+        execFileSync('corepack', ['pnpm', '--filter', '@sap-ux/mockserver-data-generator', 'run', script], {
+            cwd: REPOSITORY_ROOT,
+            encoding: 'utf8'
+        });
+    }
+}
+
 async function exportCampaign(options) {
+    const packageSourceBinding = packageBinding();
+    rebuildGeneratorPackage();
+    const packageArtifact = await createCompiledArtifactBinding(join(PACKAGE_ROOT, 'dist'));
     const paths = pilotPaths(options.pilotRoot);
     const [selectionSource, promptSource, schemaSource] = await Promise.all([
         readRegularFile(options.selectionManifest, 'inspection selection manifest'),
@@ -248,11 +320,14 @@ async function exportCampaign(options) {
         readRegularFile(paths.schema, 'inspection output schema')
     ]);
     const selection = validateRealismCohortManifest(JSON.parse(selectionSource));
+    const isolation = await verifyCohortIsolation(selection, options.pilotRoot);
     const supportedTargets = selection.targets.filter((target) => ['edmx', 'csn'].includes(target.format));
     const skippedTargets = selection.targets
         .filter((target) => !['edmx', 'csn'].includes(target.format))
         .map((target) => ({ serviceId: target.serviceId, format: target.format, reason: 'first-release-non-goal' }));
     const generator = await import(pathToFileURL(GENERATOR_ENTRY).href);
+    const require = createRequire(pathToFileURL(GENERATOR_ENTRY));
+    const FeMockserverDataGenerator = require(PROVIDER_ENTRY);
     const [{ parseEdmx }, { parseCsn }] = await Promise.all([
         import(pathToFileURL(EDMX_ENTRY).href),
         import(pathToFileURL(CSN_ENTRY).href)
@@ -268,17 +343,35 @@ async function exportCampaign(options) {
         seed: options.seed,
         locale: 'en',
         mode: 'learned',
-        sftTimeoutMs: 20_000
+        sftTimeoutMs: 60_000
     });
     const targets = [];
     const fields = [];
     const structuralTargets = [];
+    const sftTargets = [];
+    let capturedProviderResult;
+    const provider = new FeMockserverDataGenerator(
+        {
+            ...generationOptions,
+            modelManifestPath: options.modelManifest,
+            modelCacheDirectory: options.modelCache,
+            modelOffline: true,
+            generatedDataCache: false
+        },
+        {
+            loadRuntime: async () => learned,
+            generateService: async (...args) => {
+                capturedProviderResult = await generator.generateService(...args);
+                return capturedProviderResult;
+            }
+        }
+    );
     try {
         for (const target of supportedTargets) {
             if (!REALISM_DOMAINS.includes(target.domain) || typeof target.serviceId !== 'string') {
                 throw new TypeError('Inspection target has an unsupported domain or service identity');
             }
-            const sourcePath = resolveCohortSourcePath(options.selectionManifest, target.path);
+            const sourcePath = await verifyCohortSourcePath(options.selectionManifest, target.path);
             const source = await readRegularFile(sourcePath, `inspection source ${target.serviceId}`);
             if (Buffer.byteLength(source) !== target.schemaBytes || sha256(source) !== target.schemaSha256) {
                 throw new TypeError(`Inspection schema checksum disagrees for ${target.serviceId}`);
@@ -299,8 +392,41 @@ async function exportCampaign(options) {
                 targets: generationTargets(graph, selected, target.relationships),
                 existingData: {}
             };
-            const result = await generator.generateService(request, generationOptions, learned.runtime);
+            let result;
+            let executionPath;
+            if (target.format === 'edmx') {
+                capturedProviderResult = undefined;
+                const hostResult = await provider.generate({
+                    contractVersion: 1,
+                    service: request.service,
+                    metadata: source,
+                    targets: request.targets,
+                    existingData: request.existingData,
+                    logger: { debug: () => undefined, info: () => undefined, warn: () => undefined },
+                    signal: new AbortController().signal
+                });
+                result = capturedProviderResult;
+                if (
+                    !result ||
+                    hostResult.fingerprints?.request !== result.fingerprints.request ||
+                    canonicalJson(hostResult.resources) !== canonicalJson(result.resources)
+                ) {
+                    throw new TypeError(`Provider output did not bind its production result for ${target.serviceId}`);
+                }
+                executionPath = 'fe-mockserver-provider';
+            } else {
+                result = await generator.generateService(request, generationOptions, learned.runtime);
+                executionPath = 'package-api-csn';
+            }
+            try {
+                assertCompleteLearnedGeneration(result, candidate.binding);
+            } catch (error) {
+                throw new TypeError(
+                    `Realism learned gate failed for ${target.serviceId}: ${error instanceof Error ? error.message : String(error)}`
+                );
+            }
             generator.validateGeneratedResult(request, result);
+            verifyT2Expectations(target, result.statistics.sft);
             const structuralTarget = evaluateCohortTarget(target, graph, request.targets, result.resources);
             if (!structuralTarget.passed) {
                 const failedAssertions = structuralTarget.assertions
@@ -314,11 +440,13 @@ async function exportCampaign(options) {
                 );
             }
             structuralTargets.push(structuralTarget);
+            sftTargets.push({ serviceId: target.serviceId, statistics: result.statistics.sft });
             targets.push({
                 domain: target.domain,
                 serviceId: target.serviceId,
                 format,
                 provenance: target.provenance,
+                executionPath,
                 schemaFingerprint: sha256(source),
                 resultFingerprint: fingerprint(result)
             });
@@ -333,29 +461,40 @@ async function exportCampaign(options) {
                     primitiveType: property.primitiveType,
                     label: property.label ?? null,
                     facets: propertyFacets(property),
-                    plannerSource: 'production-tiered-generator',
+                    ...sftFieldEvidence(result.statistics.sft, entity.name, property.name),
                     values: (result.resources[entity.entitySetName] ?? []).map((row) => row[property.name] ?? null)
                 });
             }
             fields.push(...relationshipFields(graph, target, result, format));
         }
     } finally {
-        await learned.dispose();
+        await provider.dispose();
     }
-    const require = createRequire(pathToFileURL(GENERATOR_ENTRY));
     const runtimeNames = [...new Set(candidate.manifest.components.map(({ runtime }) => runtime.package))];
     if (runtimeNames.length !== 1) {
         throw new TypeError('Realism export requires one shared learned-runtime package');
     }
     const runtimeName = runtimeNames[0];
+    const sftGate = aggregateSftStatistics(sftTargets);
+    if (!sftGate.passed) {
+        throw new TypeError(
+            `Realism SFT gate failed: ${sftGate.parsedResponses}/${sftGate.attempts} parsed, ` +
+                `${sftGate.acceptedSlots}/${sftGate.eligibleSlots} eligible slots filled`
+        );
+    }
     const onnxRuntimePackage = require.resolve(`${runtimeName}/package.json`);
     const onnxRuntime = JSON.parse(await readRegularFile(onnxRuntimePackage, 'ONNX Runtime package manifest'));
-    const packageArtifact = artifactRecord('mockserver-data-generator-dist', GENERATOR_ENTRY);
     const bindings = {
-        version: 2,
+        version: 3,
         kind: 'mockserver-data-generator-realism-candidate-bindings',
-        ...packageBinding(),
+        ...packageSourceBinding,
         packageArtifact,
+        providerContract: {
+            apiVersion: 1,
+            entry: 'dist/fe-mockserver.cjs',
+            edmxExecutionPath: 'fe-mockserver-provider',
+            csnExecutionPath: 'package-api-csn'
+        },
         runtime: {
             node: process.versions.node,
             package: runtimeName,
@@ -371,7 +510,7 @@ async function exportCampaign(options) {
             bytes: Buffer.byteLength(selectionSource),
             sha256: sha256(selectionSource),
             cohortId: selection.cohortId,
-            isolation: selection.isolation
+            isolation
         },
         prompt: {
             filename: basename(paths.prompt),
@@ -420,15 +559,18 @@ async function exportCampaign(options) {
         structuralGate: {
             passed: structuralTargets.every(({ passed }) => passed),
             targets: structuralTargets
-        }
+        },
+        sftGate
     };
     const sealedCampaign = { ...campaign, fingerprint: fingerprint(campaign) };
-    await Promise.all([
-        mkdir(dirname(options.output), { recursive: true }),
-        mkdir(dirname(options.manifest), { recursive: true })
-    ]);
-    await writeFile(options.output, evidenceSource, { flag: 'wx', mode: 0o600 });
-    await writeFile(options.manifest, `${JSON.stringify(sealedCampaign, null, 2)}\n`, { flag: 'wx', mode: 0o600 });
+    await writeExclusiveFilePair(
+        { path: options.output, content: evidenceSource, label: 'evidence output' },
+        {
+            path: options.manifest,
+            content: `${JSON.stringify(sealedCampaign, null, 2)}\n`,
+            label: 'campaign manifest output'
+        }
+    );
     return { evidence, campaign: sealedCampaign };
 }
 

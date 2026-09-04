@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import { lstat, readFile, realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, resolve, sep } from 'node:path';
 
 const DOMAINS = Object.freeze(['finance', 'sales', 'service', 'maintenance', 'master-data', 'non-sap']);
@@ -96,6 +98,7 @@ function validateIsolation(value, targetCount) {
     for (const [index, entry] of isolation.checkedAgainst.entries()) {
         const input = artifact(entry, `cohort isolation input ${index}`);
         const role = nonEmptyString(input.role, `cohort isolation input ${index} role`);
+        relativePath(input.path, `cohort isolation input ${index} path`);
         if (roles.has(role)) {
             throw new TypeError(`duplicate cohort isolation input role: ${role}`);
         }
@@ -114,6 +117,86 @@ function validateIsolation(value, targetCount) {
     ) {
         throw new TypeError('cohort isolation audit contains overlaps or an incomplete service count');
     }
+}
+
+function sha256(value) {
+    return createHash('sha256').update(value).digest('hex');
+}
+
+function collectIsolationIdentifiers(value, services, sourceFamilies) {
+    if (Array.isArray(value)) {
+        value.forEach((entry) => collectIsolationIdentifiers(entry, services, sourceFamilies));
+        return;
+    }
+    if (value === null || typeof value !== 'object') {
+        return;
+    }
+    for (const [key, entry] of Object.entries(value)) {
+        if (typeof entry === 'string') {
+            if (['serviceId', 'source_service'].includes(key)) {
+                services.add(normalized(entry));
+            }
+            if (['sourceFamily', 'source_kind', 'source'].includes(key)) {
+                sourceFamilies.add(normalized(entry));
+            }
+        }
+        if (!['text', 'values'].includes(key)) {
+            collectIsolationIdentifiers(entry, services, sourceFamilies);
+        }
+    }
+}
+
+function parseIsolationInput(source, path) {
+    if (path.endsWith('.jsonl')) {
+        return source
+            .split(/\r?\n/u)
+            .filter(Boolean)
+            .map((line) => JSON.parse(line));
+    }
+    return JSON.parse(source);
+}
+
+/** Verify every bound pilot input and recompute exact service/source-family isolation. */
+export async function verifyCohortIsolation(manifest, pilotRoot) {
+    const root = resolve(pilotRoot);
+    const realRoot = await realpath(root);
+    const services = new Set();
+    const sourceFamilies = new Set();
+    const inputs = [];
+    for (const entry of manifest.isolation.checkedAgainst) {
+        const path = resolve(root, relativePath(entry.path, `cohort isolation ${entry.role} path`));
+        const [realSource, details] = await Promise.all([realpath(path), lstat(path)]);
+        if (
+            (realSource !== realRoot && !realSource.startsWith(`${realRoot}${sep}`)) ||
+            !details.isFile() ||
+            details.isSymbolicLink()
+        ) {
+            throw new TypeError(`cohort isolation input escapes pilot root: ${entry.role}`);
+        }
+        const source = await readFile(path, 'utf8');
+        if (Buffer.byteLength(source) !== entry.bytes || sha256(source) !== entry.sha256) {
+            throw new TypeError(`cohort isolation input checksum disagrees: ${entry.role}`);
+        }
+        collectIsolationIdentifiers(parseIsolationInput(source, entry.path), services, sourceFamilies);
+        inputs.push(Object.freeze({ role: entry.role, path: entry.path, bytes: entry.bytes, sha256: entry.sha256 }));
+    }
+    const serviceOverlaps = manifest.targets
+        .map(({ serviceId }) => serviceId)
+        .filter((serviceId) => services.has(normalized(serviceId)));
+    const familyOverlaps = manifest.targets
+        .map(({ source }) => source.sourceFamily)
+        .filter((sourceFamily) => sourceFamilies.has(normalized(sourceFamily)));
+    if (serviceOverlaps.length > 0 || familyOverlaps.length > 0) {
+        throw new TypeError('cohort isolation recomputation found service or source-family overlap');
+    }
+    return Object.freeze({
+        policy: manifest.isolation.policy,
+        status: 'verified',
+        inputs: Object.freeze(inputs),
+        candidateServiceCount: manifest.targets.length,
+        serviceOverlapCount: serviceOverlaps.length,
+        sourceFamilyOverlapCount: familyOverlaps.length
+    });
 }
 
 function validateSource(value, targetIndex) {
@@ -303,7 +386,14 @@ function assertionIsCoherent(assertion, row) {
 /** Evaluate non-empty-resource and predeclared coherence gates for one generated cohort target. */
 export function evaluateCohortTarget(target, graph, requestedTargets, resources) {
     const resourceCounts = requestedTargets.map(({ name }) => ({ name, rows: resources[name]?.length ?? 0 }));
-    const nonEmptyResources = target.expectedEmpty || resourceCounts.every(({ rows }) => rows > 0);
+    const requestedNames = new Set(resourceCounts.map(({ name }) => name));
+    const expectedEmptyResources = new Set(target.expectedEmptyResources);
+    for (const resourceName of expectedEmptyResources) {
+        if (!requestedNames.has(resourceName)) {
+            throw new TypeError(`Expected-empty resource was not requested: ${resourceName}`);
+        }
+    }
+    const nonEmptyResources = resourceCounts.every(({ name, rows }) => rows > 0 || expectedEmptyResources.has(name));
     const entities = new Map(graph.entities.map((entity) => [entity.name, entity]));
     const assertions = target.relationships.map((assertion) => {
         const entity = entities.get(assertion.entity);
@@ -324,10 +414,47 @@ export function evaluateCohortTarget(target, graph, requestedTargets, resources)
     };
 }
 
+function t2Statistics(value, label) {
+    const statistics = record(value, label);
+    for (const name of ['attempts', 'parsedResponses', 'eligibleSlots', 'acceptedSlots']) {
+        if (!Number.isSafeInteger(statistics[name]) || statistics[name] < 0) {
+            throw new TypeError(`${label} ${name} must be a non-negative integer`);
+        }
+    }
+    if (
+        statistics.attempts === 0 ||
+        statistics.eligibleSlots === 0 ||
+        statistics.parsedResponses > statistics.attempts ||
+        statistics.acceptedSlots > statistics.eligibleSlots
+    ) {
+        throw new TypeError(`${label} contains inconsistent denominators`);
+    }
+    return statistics;
+}
+
+/** Require the exact frozen T2 denominators and contribution for one service. */
+export function verifyT2Expectations(target, statistics) {
+    const expected = t2Statistics(target.t2Expectations, `cohort target ${target.serviceId} T2 expectations`);
+    const actual = t2Statistics(statistics, `generated target ${target.serviceId} T2 statistics`);
+    for (const name of ['attempts', 'parsedResponses', 'eligibleSlots', 'acceptedSlots']) {
+        if (actual[name] !== expected[name]) {
+            throw new TypeError(
+                `T2 statistics disagree for ${target.serviceId}: ${name} expected ${expected[name]}, received ${actual[name]}`
+            );
+        }
+    }
+    return Object.freeze({
+        attempts: actual.attempts,
+        parsedResponses: actual.parsedResponses,
+        eligibleSlots: actual.eligibleSlots,
+        acceptedSlots: actual.acceptedSlots
+    });
+}
+
 /** Validate a frozen final-cohort manifest before loading models or running inference. */
 export function validateRealismCohortManifest(value) {
     const manifest = record(value, 'realism cohort manifest');
-    if (manifest.version !== 2 || manifest.kind !== 'mockserver-data-generator-realism-cohort') {
+    if (manifest.version !== 4 || manifest.kind !== 'mockserver-data-generator-realism-cohort') {
         throw new TypeError('Unsupported realism cohort manifest contract');
     }
     if (!IDENTIFIER.test(manifest.cohortId)) {
@@ -365,9 +492,16 @@ export function validateRealismCohortManifest(value) {
         }
         nonEmptyString(target.serviceName, `cohort target ${index} serviceName`);
         nonEmptyString(target.provenance, `cohort target ${index} provenance`);
-        if (typeof target.expectedEmpty !== 'boolean') {
-            throw new TypeError(`cohort target ${index} must freeze expectedEmpty`);
+        if (!Array.isArray(target.expectedEmptyResources)) {
+            throw new TypeError(`cohort target ${index} must freeze expectedEmptyResources`);
         }
+        const expectedEmptyResources = target.expectedEmptyResources.map((resource, resourceIndex) =>
+            nonEmptyString(resource, `cohort target ${index} expected-empty resource ${resourceIndex}`)
+        );
+        if (new Set(expectedEmptyResources).size !== expectedEmptyResources.length) {
+            throw new TypeError(`cohort target ${index} contains duplicate expected-empty resources`);
+        }
+        t2Statistics(target.t2Expectations, `cohort target ${index} T2 expectations`);
         if (!Array.isArray(target.relationships) || target.relationships.length === 0) {
             throw new TypeError(`cohort target ${index} must freeze at least one coherence assertion`);
         }
@@ -467,6 +601,21 @@ export function resolveCohortSourcePath(selectionManifestPath, sourcePath) {
     const path = resolve(root, relative);
     if (!path.startsWith(`${root}${sep}`)) {
         throw new TypeError('cohort source path resolves outside the cohort directory');
+    }
+    return path;
+}
+
+/** Resolve a cohort source and reject real-path escape through a symbolic-link parent. */
+export async function verifyCohortSourcePath(selectionManifestPath, sourcePath) {
+    const path = resolveCohortSourcePath(selectionManifestPath, sourcePath);
+    const root = resolve(dirname(selectionManifestPath));
+    const [realRoot, realSource, details] = await Promise.all([realpath(root), realpath(path), lstat(path)]);
+    if (
+        (realSource !== realRoot && !realSource.startsWith(`${realRoot}${sep}`)) ||
+        !details.isFile() ||
+        details.isSymbolicLink()
+    ) {
+        throw new TypeError('cohort source real path resolves outside the cohort directory or is not a regular file');
     }
     return path;
 }

@@ -1,8 +1,15 @@
+import { createHash } from 'node:crypto';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, test } from '@jest/globals';
 import {
     evaluateCohortTarget,
     resolveCohortSourcePath,
-    validateRealismCohortManifest
+    validateRealismCohortManifest,
+    verifyCohortIsolation,
+    verifyCohortSourcePath,
+    verifyT2Expectations
 } from '../../../../../scripts/mockserver-data-generator-evaluation/lib/realism-cohort.mjs';
 
 const sha256 = 'a'.repeat(64);
@@ -14,7 +21,7 @@ const assertionTypes = ['code-text', 'amount-currency', 'quantity-unit', 'date-r
 /** Build the smallest complete service-disjoint cohort contract. */
 function cohortManifest(): Record<string, unknown> {
     return {
-        version: 2,
+        version: 4,
         kind: 'mockserver-data-generator-realism-cohort',
         cohortId: 'final-cohort-v1',
         minimumReviewedFields: 300,
@@ -29,7 +36,7 @@ function cohortManifest(): Record<string, unknown> {
                 'sft-train',
                 'sft-eval',
                 'pilot-model-selection'
-            ].map((role) => ({ role, bytes: 1, sha256 })),
+            ].map((role) => ({ role, path: `${role}.json`, bytes: 1, sha256 })),
             audit: {
                 candidateServiceCount: 6,
                 serviceOverlapCount: 0,
@@ -45,7 +52,8 @@ function cohortManifest(): Record<string, unknown> {
             serviceName: `Unseen${index}`,
             provenance: 'Public metadata frozen after candidate selection.',
             fieldBudget: 50,
-            expectedEmpty: false,
+            expectedEmptyResources: [],
+            t2Expectations: { attempts: 2, parsedResponses: 2, eligibleSlots: 4, acceptedSlots: 3 },
             relationships: [
                 {
                     id: `coherence-${index}`,
@@ -130,6 +138,31 @@ describe('production realism cohort', () => {
         expect(() => validateRealismCohortManifest(duplicate)).toThrow('duplicate cohort service identity');
     });
 
+    test('requires exact frozen T2 denominators and contribution', () => {
+        const manifest = cohortManifest() as {
+            targets: Array<{
+                serviceId: string;
+                t2Expectations: {
+                    attempts: number;
+                    parsedResponses: number;
+                    eligibleSlots: number;
+                    acceptedSlots: number;
+                };
+            }>;
+        };
+        expect(verifyT2Expectations(manifest.targets[0], manifest.targets[0].t2Expectations)).toEqual(
+            manifest.targets[0].t2Expectations
+        );
+        expect(() =>
+            verifyT2Expectations(manifest.targets[0], {
+                ...manifest.targets[0].t2Expectations,
+                acceptedSlots: 2
+            })
+        ).toThrow('T2 statistics disagree');
+        delete (manifest.targets[1] as { t2Expectations?: unknown }).t2Expectations;
+        expect(() => validateRealismCohortManifest(manifest)).toThrow('T2 expectations');
+    });
+
     test('keeps every source inside the frozen cohort directory', () => {
         expect(resolveCohortSourcePath('/tmp/cohort/selection.json', 'schemas/service.csn.json')).toBe(
             '/tmp/cohort/schemas/service.csn.json'
@@ -139,10 +172,63 @@ describe('production realism cohort', () => {
         );
     });
 
+    test('rejects a schema that escapes through a symbolic-link parent', async () => {
+        const root = mkdtempSync(join(tmpdir(), 'mockserver-data-generator-cohort-'));
+        const cohort = join(root, 'cohort');
+        const outside = join(root, 'outside');
+        mkdirSync(cohort);
+        mkdirSync(outside);
+        writeFileSync(join(cohort, 'selection.json'), '{}');
+        writeFileSync(join(outside, 'metadata.xml'), '<Schema />');
+        symlinkSync(outside, join(cohort, 'schemas'));
+        try {
+            await expect(
+                verifyCohortSourcePath(join(cohort, 'selection.json'), 'schemas/metadata.xml')
+            ).rejects.toThrow('real path resolves outside');
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
+    });
+
+    test('verifies bound pilot inputs and recomputes cohort isolation', async () => {
+        const root = mkdtempSync(join(tmpdir(), 'mockserver-data-generator-isolation-'));
+        const manifest = cohortManifest() as {
+            isolation: { checkedAgainst: Array<{ role: string; path: string; bytes: number; sha256: string }> };
+            targets: Array<{ serviceId: string }>;
+        };
+        try {
+            for (const entry of manifest.isolation.checkedAgainst) {
+                const source = `${JSON.stringify({ serviceId: `pilot-${entry.role}`, sourceFamily: `pilot-${entry.role}` })}\n`;
+                writeFileSync(join(root, entry.path), source);
+                entry.bytes = Buffer.byteLength(source);
+                entry.sha256 = createHash('sha256').update(source).digest('hex');
+            }
+            const verified = await verifyCohortIsolation(validateRealismCohortManifest(manifest), root);
+            expect(verified).toMatchObject({
+                status: 'verified',
+                candidateServiceCount: 6,
+                serviceOverlapCount: 0,
+                sourceFamilyOverlapCount: 0,
+                inputs: expect.arrayContaining([expect.objectContaining({ role: 'classifier-train' })])
+            });
+
+            const overlapping = manifest.isolation.checkedAgainst[0];
+            const source = `${JSON.stringify({ serviceId: manifest.targets[0].serviceId })}\n`;
+            writeFileSync(join(root, overlapping.path), source);
+            overlapping.bytes = Buffer.byteLength(source);
+            overlapping.sha256 = createHash('sha256').update(source).digest('hex');
+            await expect(verifyCohortIsolation(validateRealismCohortManifest(manifest), root)).rejects.toThrow(
+                'recomputation found service or source-family overlap'
+            );
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
+    });
+
     test('passes only non-empty resources whose frozen assertions are machine coherent', () => {
         const target = {
             serviceId: 'finance',
-            expectedEmpty: false,
+            expectedEmptyResources: [],
             relationships: [
                 {
                     id: 'balance',
@@ -201,7 +287,7 @@ describe('production realism cohort', () => {
     test('fails closed for empty resources and unsupported status shapes', () => {
         const target = {
             serviceId: 'maintenance',
-            expectedEmpty: false,
+            expectedEmptyResources: [],
             relationships: [
                 {
                     id: 'unknown-status',
@@ -220,6 +306,31 @@ describe('production realism cohort', () => {
         });
     });
 
+    test('exempts only explicitly declared empty resources in a mixed service', () => {
+        const target = {
+            serviceId: 'mixed',
+            expectedEmptyResources: ['OptionalItems'],
+            relationships: []
+        };
+        const graph = { entities: [] };
+
+        expect(
+            evaluateCohortTarget(target, graph, [{ name: 'RequiredItems' }, { name: 'OptionalItems' }], {
+                RequiredItems: [{}],
+                OptionalItems: []
+            })
+        ).toMatchObject({ passed: true, nonEmptyResources: true });
+        expect(
+            evaluateCohortTarget(target, graph, [{ name: 'RequiredItems' }, { name: 'OptionalItems' }], {
+                RequiredItems: [],
+                OptionalItems: []
+            })
+        ).toMatchObject({ passed: false, nonEmptyResources: false });
+        expect(() => evaluateCohortTarget(target, graph, [{ name: 'RequiredItems' }], { RequiredItems: [{}] })).toThrow(
+            'Expected-empty resource was not requested'
+        );
+    });
+
     test('evaluates every frozen coherence criterion without provider judgment', () => {
         const assertion = (id: string, criterionType: string, properties: string[]) => ({
             id,
@@ -229,7 +340,7 @@ describe('production realism cohort', () => {
         });
         const target = {
             serviceId: 'all-criteria',
-            expectedEmpty: false,
+            expectedEmptyResources: [],
             relationships: [
                 assertion('code-text', 'code-text', ['Status', 'Status_Text']),
                 assertion('amount', 'amount-currency', ['Amount', 'Currency']),
