@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import type {
     MockDataGeneratorCapabilities,
+    MockDataGeneratorFingerprints,
     MockDataGeneratorOptions,
     MockDataGeneratorResult,
     MockDataGeneratorRuntime,
@@ -8,6 +9,7 @@ import type {
     MockDataServiceRequest
 } from './types.js';
 import { assertRelationshipIntegrity, generateDeterministicResources } from './generation/deterministic.js';
+import { propertyValueIsValid } from './generation/constraints.js';
 import { applySftGeneration } from './generation/sft.js';
 import { parseEdmx } from './schema/edmx.js';
 import { parseCsn } from './schema/csn.js';
@@ -28,6 +30,12 @@ export { createCausalTextGenerator } from './model/causal-text-runtime.js';
 export { createSmolLm2Tokenizer } from './model/smollm-tokenizer.js';
 export { createCausalOnnxSession, loadCausalOnnxBackend } from './model/causal-onnx-session.js';
 export { createLearnedRuntime } from './model/learned-runtime.js';
+export {
+    DEFAULT_GENERATED_DATA_CACHE_BYTES,
+    defaultGeneratedDataCacheRoot,
+    readGeneratedDataCache,
+    writeGeneratedDataCache
+} from './cache/generated-data.js';
 
 function canonicalJson(value: unknown): string {
     if (Array.isArray(value)) {
@@ -45,6 +53,91 @@ function canonicalJson(value: unknown): string {
 
 function fingerprint(value: unknown): string {
     return createHash('sha256').update(canonicalJson(value)).digest('hex');
+}
+
+const GENERATOR_LOGIC_VERSION = 1;
+
+/**
+ * Fingerprint every material generation input while excluding live process objects.
+ *
+ * @param request
+ * @param options
+ * @param learnedComponents
+ */
+export function createGenerationFingerprint(
+    request: MockDataServiceRequest,
+    options: MockDataGeneratorOptions = {},
+    learnedComponents: Pick<MockDataGeneratorFingerprints, 'classifier' | 'sft'> = {}
+): string {
+    return fingerprint({
+        generatorLogicVersion: GENERATOR_LOGIC_VERSION,
+        request: {
+            metadata: request.metadata,
+            service: request.service,
+            targets: request.targets,
+            existingData: request.existingData
+        },
+        options,
+        learnedComponents
+    });
+}
+
+/**
+ * Validate a generated snapshot against the current request before it is served from a persistent cache.
+ *
+ * @param request
+ * @param result
+ */
+export function validateGeneratedResult(request: MockDataServiceRequest, result: MockDataGeneratorResult): void {
+    const graph =
+        request.metadata.format === 'edmx' ? parseEdmx(request.metadata.content) : parseCsn(request.metadata.content);
+    const entities = new Map(graph.entities.map((entity) => [entity.entitySetName, entity]));
+    const targets = new Map(request.targets.map((target) => [target.name, target]));
+
+    for (const resourceName of Object.keys(result.resources)) {
+        if (!targets.has(resourceName)) {
+            throw new TypeError(`Generated resource ${resourceName} was not requested`);
+        }
+    }
+    for (const [targetName, target] of targets) {
+        const entity = entities.get(targetName);
+        if (!entity) {
+            throw new TypeError(`Generated target ${targetName} is not declared by the service schema`);
+        }
+        const rows = result.resources[targetName];
+        if (!rows) {
+            throw new TypeError(`Generated resource ${targetName} is missing`);
+        }
+        if (rows.length > 1_000 || (target.kind === 'singleton' && rows.length > 1)) {
+            throw new TypeError(`Generated resource ${targetName} has an invalid row count`);
+        }
+        const properties = new Map(entity.properties.map((property) => [property.name, property]));
+        const keyProperties = entity.properties.filter((property) => property.isKey);
+        const keys = new Set<string>();
+        for (const row of rows) {
+            for (const propertyName of Object.keys(row)) {
+                if (!properties.has(propertyName)) {
+                    throw new TypeError(`Generated resource ${targetName} contains unknown property ${propertyName}`);
+                }
+            }
+            for (const property of entity.properties) {
+                if (!Object.prototype.hasOwnProperty.call(row, property.name)) {
+                    throw new TypeError(`Generated resource ${targetName} is missing property ${property.name}`);
+                }
+                if (!propertyValueIsValid(property, row[property.name])) {
+                    throw new TypeError(`Generated resource ${targetName} has an invalid value for ${property.name}`);
+                }
+            }
+            if (keyProperties.length > 0) {
+                const key = canonicalJson(keyProperties.map((property) => row[property.name]));
+                if (keys.has(key)) {
+                    throw new TypeError(`Generated resource ${targetName} contains a duplicate key`);
+                }
+                keys.add(key);
+            }
+        }
+    }
+    assertRelationshipIntegrity(graph, result.resources, request.existingData);
 }
 
 function validateOptions(options: MockDataGeneratorOptions): void {
@@ -149,7 +242,10 @@ export async function generateService(
         diagnostics: Object.freeze(diagnostics),
         capabilities: Object.freeze(capabilities(runtime, classifierDegraded, sftDegraded)),
         fingerprints: Object.freeze({
-            request: fingerprint({ request, options }),
+            request: createGenerationFingerprint(request, options, {
+                ...(runtime.classifier ? { classifier: runtime.classifier.fingerprint } : {}),
+                ...(runtime.sft ? { sft: runtime.sft.fingerprint } : {})
+            }),
             ...(runtime.classifier ? { classifier: runtime.classifier.fingerprint } : {}),
             ...(runtime.sft ? { sft: runtime.sft.fingerprint } : {})
         })
@@ -235,3 +331,4 @@ export type {
     LearnedRuntimeHandle,
     LoadedLearnedComponent
 } from './model/learned-runtime.js';
+export type { GeneratedDataCacheReadOptions, GeneratedDataCacheWriteOptions } from './cache/generated-data.js';

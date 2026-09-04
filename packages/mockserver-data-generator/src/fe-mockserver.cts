@@ -1,6 +1,7 @@
 import type {
     ExistingMockData,
     JsonValue,
+    MockDataGeneratorFingerprints,
     MockDataGeneratorOptions,
     MockDataGeneratorResult,
     MockDataGeneratorRuntime,
@@ -36,10 +37,22 @@ interface ProviderModelOptions {
 interface ProviderConfiguration {
     generation: MockDataGeneratorOptions;
     model?: ProviderModelOptions;
+    generatedDataCache?: Readonly<{ directory?: string }>;
 }
 
 interface ProviderDependencies {
     loadRuntime(options: ProviderModelOptions, signal: AbortSignal): Promise<LearnedRuntimeHandle>;
+    modelFingerprints(
+        options: ProviderModelOptions,
+        signal: AbortSignal
+    ): Promise<Pick<MockDataGeneratorFingerprints, 'classifier' | 'sft'>>;
+    defaultGeneratedDataCacheRoot(): string | Promise<string>;
+    readGeneratedDataCache(
+        directory: string,
+        key: string,
+        options?: Readonly<{ validate?(result: MockDataGeneratorResult): void }>
+    ): Promise<MockDataGeneratorResult | undefined>;
+    writeGeneratedDataCache(directory: string, key: string, result: MockDataGeneratorResult): Promise<void>;
 }
 
 type HostMockDataGenerationResult = Pick<MockDataGeneratorResult, 'resources' | 'diagnostics' | 'fingerprints'>;
@@ -110,9 +123,19 @@ function parseOptions(options: ProviderOptions = {}): ProviderConfiguration {
     }
     const modelManifestPath = optionalString(options, 'modelManifestPath');
     const modelCacheDirectory = optionalString(options, 'modelCacheDirectory');
+    const generatedDataCacheDirectory = optionalString(options, 'generatedDataCacheDirectory');
     const modelOffline = options.modelOffline;
+    const generatedDataCache = options.generatedDataCache;
     if (modelOffline !== undefined && typeof modelOffline !== 'boolean') {
         throw new TypeError('Mock data generator option modelOffline must be a boolean');
+    }
+    if (generatedDataCache !== undefined && typeof generatedDataCache !== 'boolean') {
+        throw new TypeError('Mock data generator option generatedDataCache must be a boolean');
+    }
+    if (generatedDataCache === false && generatedDataCacheDirectory) {
+        throw new TypeError(
+            'Mock data generator cache directory cannot be set when generated-data caching is disabled'
+        );
     }
     return Object.freeze({
         generation: Object.freeze({
@@ -130,7 +153,14 @@ function parseOptions(options: ProviderOptions = {}): ProviderConfiguration {
                       offline: modelOffline === true
                   })
               }
-            : {})
+            : {}),
+        ...(generatedDataCache === false
+            ? {}
+            : {
+                  generatedDataCache: Object.freeze({
+                      ...(generatedDataCacheDirectory ? { directory: generatedDataCacheDirectory } : {})
+                  })
+              })
     });
 }
 
@@ -146,7 +176,22 @@ const defaultDependencies: ProviderDependencies = {
             ? await verifyModelCache(cacheDirectory, manifest)
             : await prepareModelCache(cacheDirectory, manifest, { signal });
         return createLearnedRuntime(manifest, cache);
-    }
+    },
+    modelFingerprints: async (options, signal) => {
+        const { readFile } = await import('node:fs/promises');
+        const { parseModelManifest } = await import('./index.js');
+        signal.throwIfAborted();
+        const manifest = parseModelManifest(JSON.parse(await readFile(options.manifestPath, 'utf8')));
+        return Object.freeze(
+            Object.fromEntries(manifest.components.map((component) => [component.kind, component.fingerprint]))
+        );
+    },
+    defaultGeneratedDataCacheRoot: async () =>
+        (await import('./cache/generated-data.js')).defaultGeneratedDataCacheRoot(),
+    readGeneratedDataCache: async (directory, key, options) =>
+        (await import('./cache/generated-data.js')).readGeneratedDataCache(directory, key, options),
+    writeGeneratedDataCache: async (directory, key, result) =>
+        (await import('./cache/generated-data.js')).writeGeneratedDataCache(directory, key, result)
 };
 
 /**
@@ -176,12 +221,11 @@ class FeMockserverDataGenerator {
     private sftFailed = false;
     private sftQueue: Promise<void> = Promise.resolve();
     private disposed = false;
+    private readonly dependencies: ProviderDependencies;
 
-    constructor(
-        options?: ProviderOptions,
-        private readonly dependencies: ProviderDependencies = defaultDependencies
-    ) {
+    constructor(options?: ProviderOptions, dependencies: Partial<ProviderDependencies> = {}) {
         this.configuration = parseOptions(options);
+        this.dependencies = { ...defaultDependencies, ...dependencies };
     }
 
     private runtime(signal: AbortSignal): Promise<LearnedRuntimeHandle | undefined> {
@@ -266,24 +310,87 @@ class FeMockserverDataGenerator {
 
     async generate(context: HostGenerationContext): Promise<HostMockDataGenerationResult> {
         if (this.disposed) throw new Error('Mock data generator provider has been disposed');
-        const { generateService } = await import('./index.js');
+        const { createGenerationFingerprint, generateService, validateGeneratedResult } = await import('./index.js');
+        const request = {
+            metadata: { format: 'edmx' as const, content: context.metadata },
+            service: context.service,
+            targets: context.targets,
+            existingData: context.existingData,
+            signal: context.signal
+        };
+        const cacheDiagnostics: MockDataGeneratorResult['diagnostics'][number][] = [];
+        let generatedDataCache:
+            | Readonly<{
+                  directory: string;
+                  key: string;
+              }>
+            | undefined;
+        if (this.configuration.generatedDataCache) {
+            try {
+                const learnedFingerprints =
+                    this.configuration.model && this.configuration.generation.mode !== 'deterministic'
+                        ? await this.dependencies.modelFingerprints(this.configuration.model, context.signal)
+                        : {};
+                const directory =
+                    this.configuration.generatedDataCache.directory ??
+                    (await this.dependencies.defaultGeneratedDataCacheRoot());
+                const key = createGenerationFingerprint(request, this.configuration.generation, learnedFingerprints);
+                const cached = await this.dependencies.readGeneratedDataCache(directory, key, {
+                    validate: (result) => validateGeneratedResult(request, result)
+                });
+                if (cached) {
+                    const cacheDiagnostic = Object.freeze({
+                        code: 'GENERATED_DATA_CACHE_HIT',
+                        severity: 'info' as const,
+                        message: 'A verified whole-service generated-data cache entry was reused.'
+                    });
+                    context.logger.debug(`${cacheDiagnostic.code}: ${cacheDiagnostic.message}`);
+                    return Object.freeze({
+                        resources: cached.resources,
+                        diagnostics: hostDiagnostics([...cached.diagnostics, cacheDiagnostic]),
+                        fingerprints: cached.fingerprints
+                    });
+                }
+                context.logger.debug('GENERATED_DATA_CACHE_MISS: no verified whole-service cache entry was found.');
+                generatedDataCache = Object.freeze({ directory, key });
+            } catch {
+                const diagnostic = Object.freeze({
+                    code: 'GENERATED_DATA_CACHE_UNAVAILABLE',
+                    severity: 'warning' as const,
+                    message: 'Generated-data caching is unavailable; generation continues.'
+                });
+                cacheDiagnostics.push(diagnostic);
+                context.logger.warn(`${diagnostic.code}: ${diagnostic.message}`);
+            }
+        }
         const learned = await this.runtime(context.signal);
         const result = await generateService(
-            {
-                metadata: { format: 'edmx', content: context.metadata },
-                service: context.service,
-                targets: context.targets,
-                existingData: context.existingData,
-                signal: context.signal
-            },
+            request,
             this.configuration.generation,
             learned ? this.guardRuntime(learned.runtime) : undefined
         );
+        if (generatedDataCache && result.fingerprints.request === generatedDataCache.key) {
+            try {
+                await this.dependencies.writeGeneratedDataCache(
+                    generatedDataCache.directory,
+                    generatedDataCache.key,
+                    result
+                );
+            } catch {
+                const diagnostic = Object.freeze({
+                    code: 'GENERATED_DATA_CACHE_WRITE_FAILED',
+                    severity: 'warning' as const,
+                    message: 'The generated snapshot was not cached; serving continues.'
+                });
+                cacheDiagnostics.push(diagnostic);
+                context.logger.warn(`${diagnostic.code}: ${diagnostic.message}`);
+            }
+        }
         const runtimeDiagnostics = learned ? modelDiagnostics(learned.diagnostics) : [];
         runtimeDiagnostics.forEach((diagnostic) => context.logger.warn(`${diagnostic.code}: ${diagnostic.message}`));
         return Object.freeze({
             resources: result.resources,
-            diagnostics: hostDiagnostics([...runtimeDiagnostics, ...result.diagnostics]),
+            diagnostics: hostDiagnostics([...cacheDiagnostics, ...runtimeDiagnostics, ...result.diagnostics]),
             fingerprints: result.fingerprints
         });
     }

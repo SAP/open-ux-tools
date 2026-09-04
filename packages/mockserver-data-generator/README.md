@@ -32,11 +32,23 @@ server:
             seed: 42
             rowsPerEntity: 10
             sftTimeoutMs: 30000
+            generatedDataCache: true
 ```
 
 Per-service settings can override the global setting, and `mockDataGenerator: false` opts one service out. Developer-authored JavaScript, TypeScript, or JSON mock data always wins.
 
 `sftTimeoutMs` bounds each entity-level fine-tuned inference (default: 30 seconds, maximum: 60 seconds). After the first SFT runtime failure in a service generation, remaining entities use deterministic fallback without retrying that failed tier.
+
+Whole-service results are cached by default beneath
+`~/.saptools/mockserver-data-generator/generated-data`, with a hard 32 MiB LRU
+quota. The cache key binds the metadata, service, requested targets, existing
+data, generation options, generator-logic version, classifier, and SFT
+fingerprints. Entries are checksum- and schema-validated before reuse, corrupt
+or stale entries are quarantined, and a warm hit does not initialize model
+sessions. Set `generatedDataCache: false` to disable this cache, or set
+`generatedDataCacheDirectory` to use an explicit writable location such as a
+BAS workspace cache. Cache failures only add a diagnostic; generation and the
+standard mockserver remain available.
 
 ## Programmatic API
 

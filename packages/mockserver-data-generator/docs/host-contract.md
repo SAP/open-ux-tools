@@ -181,6 +181,15 @@ names such as `latest` are not accepted in application configuration. A
 missing, corrupt, slow, or offline model degrades through deterministic tiers
 without weakening structural validity.
 
+Generated whole-service snapshots use a separate 32 MiB user-data cache. Its
+key includes all material generation inputs and learned-component
+fingerprints. A cache entry is parsed into bounded immutable values, checksum
+verified, and revalidated against the current schema, requested resources,
+property constraints, key uniqueness, and relationship integrity before it is
+served. Invalid entries are quarantined. Publication uses a unique temporary
+file, file synchronization, and atomic rename; a cache read or write failure
+never prevents normal generation.
+
 ## Diagnostics boundary
 
 Returned diagnostics can include stable error codes, component versions,

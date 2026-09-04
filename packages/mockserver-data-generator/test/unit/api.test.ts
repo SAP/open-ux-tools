@@ -1,5 +1,7 @@
 import {
+    createGenerationFingerprint,
     generateService,
+    validateGeneratedResult,
     type MockDataGeneratorRuntime,
     type MockDataServiceRequest,
     type SemanticClassifier,
@@ -7,6 +9,92 @@ import {
 } from '../../src/index.js';
 
 describe('mockserver data generator public API', () => {
+    it('rejects cached snapshots that no longer conform to the requested service schema', () => {
+        const request: MockDataServiceRequest = {
+            metadata: {
+                format: 'edmx',
+                content: `<?xml version="1.0" encoding="utf-8"?>
+                    <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                        <edmx:DataServices>
+                            <Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                                <EntityContainer Name="Container">
+                                    <EntitySet Name="Records" EntityType="Demo.Record" />
+                                </EntityContainer>
+                                <EntityType Name="Record">
+                                    <Key><PropertyRef Name="ID" /></Key>
+                                    <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                                    <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="40" />
+                                </EntityType>
+                            </Schema>
+                        </edmx:DataServices>
+                    </edmx:Edmx>`
+            },
+            service: { urlPath: '/records', odataVersion: '4.0' },
+            targets: [{ name: 'Records', kind: 'entity-set' }],
+            existingData: {}
+        };
+        const base = {
+            resources: { Records: [{ ID: 1, Description: 'First record' }] },
+            diagnostics: [],
+            capabilities: { mode: 'deterministic', classifier: 'unavailable', sft: 'unavailable' },
+            fingerprints: { request: 'request-fingerprint' }
+        } as const;
+
+        expect(() => validateGeneratedResult(request, base)).not.toThrow();
+        expect(() =>
+            validateGeneratedResult(request, {
+                ...base,
+                resources: { Records: [{ ID: 1, Description: 'First record', Rogue: 'stale field' }] }
+            })
+        ).toThrow(/unknown property/i);
+        expect(() =>
+            validateGeneratedResult(request, {
+                ...base,
+                resources: {
+                    Records: [
+                        { ID: 1, Description: 'First record' },
+                        { ID: 1, Description: 'Duplicate key' }
+                    ]
+                }
+            })
+        ).toThrow(/duplicate key/i);
+    });
+
+    it('fingerprints material inputs and learned components but not abort-signal identity', () => {
+        const request: MockDataServiceRequest = {
+            metadata: { format: 'edmx', content: '<metadata />' },
+            service: { urlPath: '/fingerprint', odataVersion: '4.0' },
+            targets: [{ name: 'Rows', kind: 'entity-set' }],
+            existingData: {},
+            signal: new AbortController().signal
+        };
+        const first = createGenerationFingerprint(
+            request,
+            { seed: 7 },
+            {
+                classifier: 'classifier-a',
+                sft: 'sft-a'
+            }
+        );
+        const second = createGenerationFingerprint(
+            { ...request, signal: new AbortController().signal },
+            { seed: 7 },
+            { classifier: 'classifier-a', sft: 'sft-a' }
+        );
+        const changed = createGenerationFingerprint(
+            request,
+            { seed: 7 },
+            {
+                classifier: 'classifier-a',
+                sft: 'sft-b'
+            }
+        );
+
+        expect(first).toBe(second);
+        expect(first).toMatch(/^[a-f0-9]{64}$/);
+        expect(changed).not.toBe(first);
+    });
+
     it('exposes deterministic generation with explicit classifier and SFT runtime contracts', async () => {
         const classifier: SemanticClassifier = {
             fingerprint: 'classifier-test-v1',
