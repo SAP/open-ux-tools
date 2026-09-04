@@ -460,6 +460,7 @@ class CstToAstVisitor extends Visitor {
 
     /**
      * Converts CDS term path
+     *
      * @param assignmentChildren AssignmentChildren CST node
      * @param location  CstNodeLocation
      * @param path Path node to convert
