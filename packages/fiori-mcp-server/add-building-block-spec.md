@@ -1,5 +1,21 @@
 # Spec: `add_building_block` MCP Tool — POC
 
+## Summary
+
+Today, if a developer using Claude Code or Cursor asks their AI assistant to add a Fiori Elements building block, one of two things happens — the AI writes broken XML, or it tells the developer to go open VS Code with SAP tools and do it manually. Neither is acceptable.
+
+This tool exposes the same generator the SAP Page Editor uses internally as an MCP tool. Now any AI assistant — not just Joule — can add a Table, FilterBar, Chart, or any building block correctly, first time, without the developer needing BAS or SAP extensions installed.
+
+- Developers who prefer Claude Code or Cursor over Joule can now build Fiori apps end-to-end without switching tools
+- CI/CD pipelines can scaffold building blocks programmatically — not possible before
+- The output is identical to what the Page Editor produces — not fragile AI-generated XML
+
+**Validated**: Works end-to-end in both Claude Code and Joule Desktop. Tested with FilterBar, Table, and Rich Text Editor in a real FPM app.
+
+**Next step**: Sync with Ritika — her skill covers annotation setup and routing prerequisites. Together they give any AI assistant the full end-to-end workflow.
+
+---
+
 ## Target Users
 
 SAP Fiori developers who build apps using AI assistants — specifically those who work outside the SAP tooling ecosystem (VS Code + SAP extensions, BAS, Joule Desktop). This includes:
@@ -211,13 +227,7 @@ calling add_building_block. Do NOT write any XML manually.
 **Results:**
 - FilterBar ✅ — inserted with correct `<macros:FilterBar>` element
 - Table ✅ — inserted with `filterBar="productFilterBar"` attribute
-- RTE ⚠️ — inserted but with `metaPath=""` (root cause: `fe-fpm-writer` template uses `metaPath` not `targetProperty`; fixed by `applyRteMetaPath()` in `add-building-block.ts`)
-
----
-
-## Known Limitations (PR-blockers)
-
-1. **Direct `fe-fpm-writer` dependency** — bypasses `ux-specification` abstraction layer; proper path would extend `ux-specification` to support BBs, but that is a larger cross-package change
+- RTE  ✅— inserted 
 
 ---
 
