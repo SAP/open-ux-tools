@@ -29,6 +29,7 @@
     },
     "scripts": {
         "build": "tsc --build",
+        "check:package": "node scripts/check-package.mjs",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,md,ts}' --ignore-path ../../.prettierignore",
         "lint": "eslint",

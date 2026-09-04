@@ -126,3 +126,12 @@ paths, fingerprints every input, compares quantization candidates in isolated
 processes, and emits no generated values into this repository. Current
 development measurements and the INT4/WASM decisions are recorded in the
 [model evaluation report](../../docs/quality/mockserver-data-generator-model-evaluation.md).
+
+## Verify the npm boundary
+
+Repository contributors can run `pnpm check:package` from this package after
+building. The check inspects the actual packed archive, enforces the five-MiB
+compressed-size ceiling, rejects model/checkpoint files, datasets, caches,
+judge outputs, source maps, links, and developer-local paths, validates packed
+`model-manifest*.json` files, and guards public API/provider construction
+against standard Node.js network entry points.
