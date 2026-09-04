@@ -9,17 +9,18 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `22000e2049bbcedb983c5c63d369f062b365e1a394df8781990517ef115d9fbd`
-- archive SHA-256: `a74ee1e7acb50b8208b1064a5660f6adc8fa20a416a35b9a7922afea8f4761c6`
-- archive size: 524,898 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `40ceed8049b48bb4e46a9c80c2ed9e893efb96f8`; `SAP/open-ux-odata` `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
+- dev-kit fingerprint: `62cb961976060a2b0a31cb35003519150fcd6873a976720e971bf4fb8d6117dc`
+- archive SHA-256: `401913cc38854ecffbf5de82995e784aec12e983719fb6bf97ec6313cb3e527b`
+- archive size: 525,054 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `041d8ecfdca0666135bbaca6147ed76d8b57bea1`; `SAP/open-ux-odata` `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
 
 This candidate includes the current classifier/SFT provider, generated-data
-cache, reload-cancellation recovery, and transactional installer recovery. Its
-exact deterministic and retained-pilot learned OData V2 HTTP and restore
-canaries are recorded in the local canary report. The earlier clean archive
-remains the cross-format learned V2/V4/CDS evidence; run the procedure below
-with the current archive to qualify the same learned path in BAS.
+cache, reload-cancellation recovery, transactional installer recovery, and
+repeat-install upgrade safety. Its exact deterministic upgrade and
+retained-pilot learned OData V2 HTTP and restore canaries are recorded in the
+local canary report. The earlier clean archive remains the cross-format learned
+V2/V4/CDS evidence; run the procedure below with the current archive to qualify
+the same learned path in BAS.
 
 ## Inputs to record
 

@@ -112,7 +112,7 @@ The archive contains the package code and model-free bridge, but no model
 weights, manifest, native runtime, training data, or judge output. The retained
 pilot was supplied explicitly as a local development input.
 
-## Current reload and installer-recovery archive canary
+## Reload and installer-recovery archive canary
 
 The portable kit was rebuilt after reload-cancellation hardening and a
 transactional installer recovery fix, then installed from the exact archive
@@ -136,6 +136,32 @@ installation and restored the application files, but exposed that a later
 `--restore` could not retry dependency reconciliation from a `rolled-back`
 journal. Commit `40ceed804` makes that state dependency-only recovery; the
 development-kit integration suite now covers the failure and retry path.
+
+## Current repeat-install and upgrade archive canary
+
+The installer was hardened so that installing a newer local kit preserves both
+the application's last working MockGen configuration and its exact staged
+package bytes if the upgrade fails. A fresh kit was built from clean feature
+worktrees and exercised by installing the preceding archive, upgrading in
+place, testing the retained classifier/SFT path, and finally restoring the
+original application:
+
+- Dev-kit fingerprint: `62cb961976060a2b0a31cb35003519150fcd6873a976720e971bf4fb8d6117dc`
+- Archive SHA-256: `401913cc38854ecffbf5de82995e784aec12e983719fb6bf97ec6313cb3e527b`
+- Archive size: 525,054 bytes; 10 entries
+- Generator tarball: 57,460 bytes, SHA-256 `34257b290d90a235fd7c24cea10e0c397c5bed38f773c939d3ff4efdac57a76b`
+- Core tarball: 157,191 bytes, SHA-256 `e7b12e990905fe5afbbbb5817bbf4eac94a9d3278d505c7692ef7f2c9eb546e9`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `041d8ecfdca0666135bbaca6147ed76d8b57bea1`; clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible source state
+- Upgrade verification: the exact `22000e2049bbcedb` archive was installed first; the current archive then upgraded the same generated-style OData V2 application, adding one package and changing one package
+- Installed configuration: the upgrade retained one `sap-fe-mockserver`, one `ui5-mock.yaml`, the existing `start-mock` flow, and provider `@sap-ux/mockserver-data-generator/fe-mockserver`
+- HTTP verification: provider-specific host evidence was present before and after the upgrade; OData V2 `$metadata` passed and `Products?$top=1` returned one row after both installations
+- Learned verification: the retained manifest SHA-256 remained `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`; exact `onnxruntime-node@1.24.3` installation added 21 packages; classifier and SFT were ready; the canary reported `providerExecuted: true` and `learnedRuntimeVerified: true`
+- Restore verification: after both the deterministic upgrade and the learned installation, application files matched the pristine fixture byte for byte outside disposable `node_modules`, and `.mockserver-data-generator-dev` was absent
+- Failure verification: the integration suite covers a failed upgrade, failed automatic dependency rollback, explicit recovery, content-addressed package preservation, and restoration to the original pre-MockGen state; all 48 tests pass
+
+The handoff copy of this exact archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-62cb961976060a2b.tgz`.
 
 ## Scope boundary
 
