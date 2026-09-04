@@ -1,5 +1,17 @@
 # @sap-ux/generator-adp
 
+## 1.0.57
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-04
+
+#### Bug Fixes
+
+- When we select system we must not pass credentials from the answers to the abap provider. [[9f0e853](https://github.com/SAP/open-ux-tools/commit/9f0e853c1962cbdf779580540501641b5237cd27)]
+
 ## 1.0.56
 
 ### Patch Changes
