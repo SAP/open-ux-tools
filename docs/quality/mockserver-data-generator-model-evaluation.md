@@ -32,15 +32,15 @@ disposition:
 | SFT held-out evaluation cohort | 16 cases in `training/sft/eval/held-out-prompts.json`; SHA-256 `83dd7d4e1613a17715d9c5bce8e1aea43b505f0d6d6afb7d09993d8049c0c5d4` | Reuse unchanged for adapter correctness, parse, fill, latency, and deterministic-replay gates. |
 | FP32 and INT8 export contract | `training/sft/onnx-export-report.json` SHA-256 `1e79460315eca0d292eb1e5ad5034b8f85e2c07427d305223a356e5813614540` | Reuse the INT8 graph as the current learned candidate and FP32 only as the reference export. |
 | INT4 quality gate | `training/sft/onnx-export-int4-quality-gate.json` SHA-256 `d048bca6340f8960e5d955709fbe70b74d42f6cdfe7d0afde69908d24b5caac1` | Retain the rejection. Do not rerun the same uncalibrated weight-only INT4 technique; test only materially different quantization candidates. |
-| Realism prompt, schema, and selection | `training/review/generation-inspection-prompt.md` SHA-256 `6ecf69aad17021343ca225b21003c9e0a858daae424c25d2a8b31445b5d2b20a`; `training/review/generation-inspection-output.schema.json` SHA-256 `c6192e28bdbe1aec04a9c7e67da69f751dc0ba132fb2d23d04a53f998b2b6e0d`; `benchmark/ml-native/llm-inspection-manifest.json` SHA-256 `202ca3ef76cd1b741bcc4792b22880231f0de3edcbbd58b82bb596fa5288f12f` | Reuse the frozen review contract and multidomain selection. Do not design or recollect a new judging corpus. |
+| Realism prompt, schema, and selection | `training/review/generation-inspection-prompt.md` SHA-256 `6ecf69aad17021343ca225b21003c9e0a858daae424c25d2a8b31445b5d2b20a`; `training/review/generation-inspection-output.schema.json` SHA-256 `c6192e28bdbe1aec04a9c7e67da69f751dc0ba132fb2d23d04a53f998b2b6e0d`; `benchmark/ml-native/llm-inspection-manifest.json` SHA-256 `202ca3ef76cd1b741bcc4792b22880231f0de3edcbbd58b82bb596fa5288f12f` | Reuse the frozen review contract and selection tooling. Replace the pilot services because the original cohort was used during development and did not provide 50 fields in every domain. The replacement cohort is source-family/service-disjoint from classifier training, SFT training/evaluation, and pilot model selection. |
 | Independent OpenAI and Anthropic pilot realism judgment | The tracked aggregate status records evidence fingerprint `518c7efd66dfc24cb63bd3259f4c2596ff901a2a38a6b19b290618575f408e33` and report fingerprint `4baca51dcceee8a95f4693a5fb26f0aac3bb0f62e509aa74f8bdb26f0efb9f3a`; the full provider artifacts are not tracked | Preserve as a failed historical baseline: 16/60 realistic consensus, 37 major defects, no critical defects, and 10 disagreements. It must not be rerun merely to reproduce the old result, but the aggregate cannot be recompiled as current evidence. |
 | Later pilot multidomain generation replay | 343 fields; evidence fingerprint `00832a6ec51d3c676c486cbf21ca813a25ed7e79dc52906f0d4c2d5c75bd3032`; file SHA-256 `fce4e56600e5edbbbe16f596d9064907fc52b62962bde35ab6bdfd99fc2e42d0` for both original and repeat | Preserve as deterministic historical evidence. It is not a realism verdict and is not bound to the production candidate. |
 
-Only one new realism-evaluation activity remains: two independent providers
-must review the exact 307-field production packet described below. Its candidate
+Only one external realism-evaluation activity remains: two independent providers
+must review the exact 311-record production packet described below. Its candidate
 and evidence fingerprints differ from the retained pilot packets audited above,
 so reusing an old verdict would break evidence lineage. This is a new judgment
-over reused inputs and the new production adapter, not new data collection,
+over the frozen replacement inspection cohort and the new production adapter, not classifier or SFT data collection,
 classifier training, SFT training, or a repeat of the pilot's historical
 judging.
 
@@ -519,31 +519,54 @@ the same compatibility and integrity tests.
 
 The existing two-provider pilot report remains useful historical evidence: 60 fields across six domains were reviewed, 16 were rated realistic (26.67%), 10 provider disagreements were recorded, no critical issues were found, and the report failed its gate. It is not silently promoted or discarded.
 
-The production exporter generated a new blinded packet from commit
-`5fce6f7c1ac8eb4a26d2d233f2b5985c03f983cf`. It exercised the retained
-classifier and INT8 SFT artifacts through the production package and exposed two
-compatibility defects that are now covered by regressions: declared EDMX
-complex/collection properties no longer abort scalar generation, and semantic
-numeric candidates that exceed declared precision/scale now fall back to a
-schema-valid deterministic value.
+The production exporter generated the final blinded packet from clean package
+commit `b0066d03bc524b96dadf194e9d113159c9eb070f`. It used model manifest
+SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`
+and revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`.
+The retained classifier fingerprint is
+`1c3ec07345352237fe0a9c5abfea1c74455cea4105c452cb7e4dd61acbb45561`;
+the retained INT8 SFT fingerprint is
+`a1502adfda71285d06e0a6efdce0c7b1219395f12476b8da8778d18e06f0fa36`.
 
-| Evidence property         | Result                                                                       |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| Reviewed fields prepared  | 307                                                                          |
-| Domains                   | finance 60; sales 77; service 32; maintenance 18; master-data 60; non-SAP 60 |
-| Input formats             | EDMX V2 120; EDMX V4 77; CSN 110                                             |
-| Coverage gaps             | 0                                                                            |
-| Candidate fingerprint     | `d6d568591d57d6571f4e1707efb99b6980326b6d6c410298e640ecfedd5313a1`           |
-| Evidence fingerprint      | `2b180f281a0a28e9dfcf07a3c5cd2e96767c8bb2863fcbff6c53da87836c9cf6`           |
-| Evidence file SHA-256     | `3eabd573d20df366f157ed726d0bff43c60ac3feea14561f3eda1292af846ae6`           |
-| Campaign manifest SHA-256 | `967b37bfe024596cb9cc052defb710aa8f5a813f89bcc06da81a0d1f3225d302`           |
-| Runtime                   | Node 22.22.2, ONNX Runtime 1.24.3, darwin-arm64                              |
+The service-disjoint cohort manifest is outside the repository at
+`/Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/final-cohort-v1.json`.
+It has SHA-256
+`9380c00559107b67e2522c8e96b1141d20c1a3eca71502ac6ddb5b53c4d15363`.
+The final outputs in that directory are `realism-evidence-v8.json` and
+`realism-campaign-v8.json`.
+The cohort freezes 300 scalar fields: 50 in each of finance, sales, service,
+maintenance, master-data, and non-SAP; EDMX V2 contributes 150, EDMX V4 100,
+and CSN 50. Eleven additional blinded assertion records make the provider
+packet contain 311 records.
 
-The packet passes its structural coverage gate but has not yet been reviewed by
-the two independent providers. Until that consensus passes, structural and
-model-runtime readiness must not be described as proven realism. Generated
-values, candidate bindings, and eventual provider artifacts remain outside the
-repository; only aggregate results and checksums are recorded here.
+| Evidence property             | Result                                                             |
+| ----------------------------- | ------------------------------------------------------------------ |
+| Scalar fields / assertions    | 300 / 11                                                           |
+| Generated resources           | 16/16 non-empty                                                    |
+| Structural validation         | pass                                                               |
+| Frozen coherence assertions   | 11/11 pass                                                         |
+| Deterministic replay           | byte-identical evidence file                                       |
+| Coverage gaps                 | 0                                                                  |
+| Candidate fingerprint         | `6d78a64d717b150f0910fd7fed789d8b84816def7ecd3ab110c3e4e1cc83b7e1` |
+| Evidence fingerprint          | `5ea7893e788a18953302646037f10c781daf591ff81800eedf790987764c4e1b` |
+| Evidence file SHA-256         | `ce0e06625173e53f0631b127a74affaebcaf29e68f68c824155294f81858d830` |
+| Campaign fingerprint          | `cb06e8f6852372ee1f725eb1db02d967d3e05ef6dd51bd9c65632cfba3558351` |
+| Campaign manifest SHA-256     | `ba25141ed7071f897c73ed76b08416c2174ff3b86933136ffe2ad3c73a46896c` |
+| Runtime                       | Node 22.22.2, ONNX Runtime 1.24.3, darwin-arm64                    |
+
+The exporter independently rejects incomplete model caches, partial learned
+runtimes, empty resources, and failed frozen assertions before it writes a
+packet. Independent verification re-sealed both fingerprints, recomputed every
+bound harness hash, found no local path or URL in the evidence/campaign files,
+and confirmed the repeated evidence files are byte-identical.
+
+This proves the local structural, relationship, coherence, runtime-binding, and
+determinism gates for the macOS development candidate. It does not prove
+realism: the packet has not yet been reviewed by two independent providers.
+Until that consensus passes, the candidate must not be described as delivering
+the required realism level. Generated values, candidate bindings, and eventual
+provider artifacts remain outside the repository; only aggregate results and
+checksums are recorded here.
 
 ## Reproduce
 

@@ -1179,11 +1179,20 @@ SBOM, signing, and rollback evidence.
 - Create: `evaluation/final-cohort-v1-manifest.json`
 - Test: `tests/test_final_cohort.py`
 
-- [ ] Reuse the existing inspection-cohort structure and selection tooling.
-- [ ] Replace every service/application family that appears in classifier or SFT training, calibration, development, or model selection.
-- [ ] Cover at least six application domains and the V2 EDMX, V4 EDMX, and CSN input paths.
-- [ ] Include at least 300 fields, at least 50 per application family, and at least 50 per schema format.
-- [ ] Freeze metadata, T2 assignment denominators, `expectedEmpty` declarations, metadata-derived relationship assertions, domain-coherence assertions, selection algorithm, and hashes before running the candidate.
+- [x] Reuse the existing inspection-cohort structure and selection tooling.
+- [x] Replace every service/application family that appears in classifier or SFT training, calibration, development, or model selection.
+- [x] Cover at least six application domains and the V2 EDMX, V4 EDMX, and CSN input paths.
+- [x] Include at least 300 fields, at least 50 per application family, and at least 50 per schema format.
+- [x] Freeze metadata, T2 assignment denominators, `expectedEmpty` declarations, metadata-derived relationship assertions, domain-coherence assertions, selection algorithm, and hashes before running the candidate.
+
+**Implementation record (2026-09-04):** The external `final-cohort-v1`
+manifest freezes six service/source-family-disjoint applications, 300 scalar
+fields (50 per domain), 150/100/50 fields across EDMX V2/EDMX V4/CSN, and 11
+coherence assertions. Its isolation audit is bound to the exact classifier and
+SFT train/evaluation inputs plus the pilot model-selection manifest, with zero
+service or source-family overlaps. The pilot review prompt/schema and selection
+method were reused; the contaminated and under-stratified pilot services were
+not reused as the final cohort.
 
 ### Task 10.2: Run absolute structural and application-behavior gates
 
@@ -1192,12 +1201,25 @@ SBOM, signing, and rollback evidence.
 - Create in model repository: `evaluation/structural-report-v1.json`
 - Create in `open-ux-tools`: `packages/mockserver-data-generator/test/integration/production-candidate.test.ts`
 
-- [ ] Generate the cohort with the exact selected package, provider, model, runtime, configuration, and seed.
-- [ ] Require 100% known-property, type, nullability, maximum-length, precision/scale, key presence/uniqueness, enum, foreign-key, containment cardinality/shape, and navigation-target validity over every emitted applicable value, row, and edge.
-- [ ] Require every fixture entity set and exercised child navigation to contain usable data unless its fingerprinted fixture declared `expectedEmpty: true` before candidate execution.
-- [ ] Require 100% of the predeclared code/text, amount/currency, quantity/unit, date-range, person/address, status, draft, value-help, and metadata-derived relationship assertions to pass.
-- [ ] Verify existing mock files retain precedence and bytes.
-- [ ] Replay identical inputs and compare output fingerprints.
+- [x] Generate the cohort with the exact selected package, provider, model, runtime, configuration, and seed.
+- [x] Require 100% known-property, type, nullability, maximum-length, precision/scale, key presence/uniqueness, enum, foreign-key, containment cardinality/shape, and navigation-target validity over every emitted applicable value, row, and edge.
+- [x] Require every fixture entity set and exercised child navigation to contain usable data unless its fingerprinted fixture declared `expectedEmpty: true` before candidate execution.
+- [x] Require 100% of the predeclared code/text, amount/currency, quantity/unit, date-range, person/address, status, draft, value-help, and metadata-derived relationship assertions to pass.
+- [x] Verify existing mock files retain precedence and bytes.
+- [x] Replay identical inputs and compare output fingerprints.
+
+**Implementation record (2026-09-04):** Clean package commit
+`b0066d03bc524b96dadf194e9d113159c9eb070f` generated 16/16 non-empty
+resources with the checksum-verified classifier and INT8 SFT runtime. Package
+validation passed every schema and relationship invariant, and the campaign's
+executable evaluator passed all 11 frozen coherence assertions. The repeated
+311-record evidence file was byte-identical. The final evidence fingerprint is
+`5ea7893e788a18953302646037f10c781daf591ff81800eedf790987764c4e1b`;
+the candidate fingerprint is
+`6d78a64d717b150f0910fd7fed789d8b84816def7ecd3ab110c3e4e1cc83b7e1`.
+Existing-data precedence and non-mutation remain covered by the package and
+standard-host integration tests. This completes the local structural gate, not
+the external realism gate.
 
 ### Task 10.3: Reuse the LLM-as-judge harness on the exact candidate
 

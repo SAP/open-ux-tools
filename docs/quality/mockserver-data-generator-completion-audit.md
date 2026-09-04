@@ -4,7 +4,8 @@ Date: 2026-09-04
 
 Candidate source:
 
-- `SAP/open-ux-tools`: `d9d813261b5a8a79761657a9505014c67fc50648`
+- generator package: `b0066d03bc524b96dadf194e9d113159c9eb070f`
+- realism harness: `e04de9bc0b7a879ebd9cfc053fdd322141a767ba`
 - `SAP/open-ux-odata`: `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
 - portable development-kit fingerprint:
   `374c1611f8eb76ded0647ecfceb84e10edb29902bee178465955f5626e939afc`
@@ -32,8 +33,9 @@ repository:
 3. Dataset/model provenance, privacy, license, derivative-use, and
    redistribution clearance are not complete.
 4. No approved immutable public model bundle or channel manifest exists.
-5. The exact candidate's blinded 307-field packet has not received the two
-   independent provider reviews, so there is no fresh realism pass.
+5. The exact candidate's 311-record blinded packet passes its local structural,
+   coherence, and determinism gates, but has not received the two independent
+   provider reviews, so there is no fresh realism pass.
 6. The full Node/OS matrix, release publication, public-artifact verification,
    and channel rollback remain outstanding.
 
@@ -49,7 +51,7 @@ means a measured threshold was missed by the named candidate.
 | Generic host SPI | proven | `open-ux-odata` host contract, lifecycle, precedence, reload, containment, timeout, host timing, and middleware tests at `64e37ac4` | Publish the compatible host before the provider packages |
 | Standard FE mockserver integration | proven | one `sap-fe-mockserver`, provider `@sap-ux/mockserver-data-generator/fe-mockserver`, conditional CommonJS export, packed integration tests, and exact-archive HTTP canary | Cross-platform and published-package canaries |
 | Authored-data preservation | proven | TS/JS/JSON/empty-data/provider/built-in precedence tests; tenant and authored-parent behavior remain host-owned | Repeat against published canary artifacts |
-| Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests | Full final application cohort |
+| Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests; the final cohort has 16/16 non-empty resources and 11/11 passing frozen assertions | Release-platform cohort reruns |
 | Classifier and SFT reuse | proven locally | retained MiniLM classifier and SmolLM2 INT8 SFT cache verify and execute through the production package; 16/16 parse/exact-key and 259/261 fill in the frozen model cohort | Governance, managed immutable distribution, and fresh release-candidate qualification |
 | Failure degradation | proven | missing/rejected learned components, timeout, cancellation, malformed output, cache failure, and circuit-breaker tests retain deterministic output | Cross-platform process and first-download faults |
 | Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, symlink rejection, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, and warm network-free cache | Approved remote bundle and proxy/BAS acquisition canary |
@@ -63,7 +65,7 @@ means a measured threshold was missed by the named candidate.
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
 | Total installed/cache footprint | proven locally / distribution pending | exact evaluation- and integration-bound `darwin-arm64` footprint: 264,636,488 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
 | Integrated performance | proven locally / platform | five-sample p95: 3,437.153 ms cold service, 25.306 ms warm cache, 1,308.731 ms first acquisition, and 3,438.173 ms host; peak RSS 1,187,676,160 bytes | Process-tree RSS and the supported Node/OS/BAS platform matrix |
-| Realism | external | a blinded, randomized 307-field packet covers six domains and EDMX V2/V4/CSN; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
+| Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and deterministic replay; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | package boundaries, immutable hashes, archive-bound model evaluation, installed runtime identity, download limits, traversal/symlink/lock/cache defenses, bounded generation, and redacted diagnostics are tested | Formal threat-model review, dependency disposition, SBOM/provenance, and release signing policy |
 | Platform compatibility | platform | local macOS arm64 and packed fixtures pass | Node 22/24 on Ubuntu, Windows, and macOS; actual BAS; proxy/offline/read-only/path edge cases |
@@ -75,8 +77,9 @@ means a measured threshold was missed by the named candidate.
 | --- | ---: |
 | `@sap-ux/fe-mockserver-core` | 27 suites, 358 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 22 suites, 153 tests passed; build passed |
-| development kit and evaluation harness | 7 suites, 72 tests passed; build passed |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 155 tests passed; build passed |
+| development kit and evaluation harness | 9 suites, 86 tests passed; build passed |
+| final realism cohort | 311 records; 16/16 resources non-empty; 11/11 frozen assertions passed; byte-identical replay |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
 | exact deterministic V4 archive canary | provider executed; metadata passed; one row returned; exact restore passed |
 | exact learned V4 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; exact restore passed |
@@ -130,13 +133,12 @@ WASM or ship a structurally broken model.
    supported Node/OS matrix.
 4. Publish an approved immutable preview model bundle and verify acquisition
    through the production manifest/cache path.
-5. Run the frozen structural application cohort on the exact candidate.
-6. Send the already prepared blinded packet to two independent providers and
+5. Send the already prepared blinded packet to two independent providers and
    compile their lineage-bound results; adjudicate disagreements only.
-7. Run release dependency/SBOM/threat-model review, publish compatible
+6. Run release dependency/SBOM/threat-model review, publish compatible
    prereleases in dependency order, and verify the public tarballs and model
    hashes.
-8. Exercise the model-channel N-1 rollback and T2 kill switch before stable
+7. Exercise the model-channel N-1 rollback and T2 kill switch before stable
    promotion. Keep the pilot read-only until stable parity and rollback are
    proven.
 

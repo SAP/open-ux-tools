@@ -4,7 +4,7 @@
 
 **Goal:** Make the realism exporter execute and fingerprint the exact checksum-verified production model manifest/cache instead of reconstructing a stale pilot runtime.
 
-**Architecture:** The pilot repository remains a read-only source for the frozen cohort, metadata fixtures, judge prompt, and output schema. A focused evaluation helper validates command inputs and creates a portable candidate binding from the parsed production manifest plus the verified cache; the CLI then creates inference exclusively through the package's public `createLearnedRuntime` API and rejects partial/degraded learned runtimes before generating evidence.
+**Architecture:** The pilot repository remains a read-only source for the judge prompt and output schema. A separate frozen, service/source-family-disjoint cohort supplies the metadata fixtures and selections. Focused evaluation helpers validate command inputs, create a portable candidate binding from the parsed production manifest plus the verified cache, and fail closed on empty resources or incoherent assertions; the CLI creates inference exclusively through the package's public `createLearnedRuntime` API and rejects partial/degraded learned runtimes before generating evidence.
 
 **Tech Stack:** Node.js 22 ESM, JavaScript evaluation scripts, TypeScript/Jest integration tests, SHA-256 evidence bindings, `@sap-ux/mockserver-data-generator` public model APIs, pnpm 11.
 
@@ -245,33 +245,34 @@ git commit -s -m "fix(mockserver-data-generator): bind realism to production mod
 - Create outside the repository: `/Users/I335123/Downloads/mockserver-data-generator-realism-2026-09-04/realism-evidence.json`
 - Create outside the repository: `/Users/I335123/Downloads/mockserver-data-generator-realism-2026-09-04/realism-campaign.json`
 
-- [ ] **Step 1: Run the corrected exporter**
+- [x] **Step 1: Run the corrected exporter**
 
 ```bash
 export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH
 pnpm mockserver-data-generator:realism-campaign --export \
   --pilot-root /Users/I335123/SAPDevelop/Projects/sap-ai-mockserver \
+  --selection-manifest /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/final-cohort-v1.json \
   --model-manifest /private/tmp/mockgen-current-model-22000e20/model-manifest.json \
   --model-cache /private/tmp/mockgen-current-model-22000e20/cache \
-  --out /Users/I335123/Downloads/mockserver-data-generator-realism-2026-09-04/realism-evidence.json \
-  --campaign-manifest-out /Users/I335123/Downloads/mockserver-data-generator-realism-2026-09-04/realism-campaign.json
+  --out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/realism-evidence-v8.json \
+  --campaign-manifest-out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/realism-campaign-v8.json
 ```
 
 Expected: at least 300 blinded fields, a new evidence fingerprint, a new candidate fingerprint, and a campaign binding whose generation config contains `maxNewTokens: 300`.
 
-- [ ] **Step 2: Verify the sealed outputs independently**
+- [x] **Step 2: Verify the sealed outputs independently**
 
 Recompute both file hashes and the campaign fingerprint, confirm the evidence fingerprint validates through `sealRealismEvidence`, confirm no absolute local path or model URL occurs in either artifact, and confirm the package commit/model manifest revision/component fingerprints match the executed candidate.
 
-- [ ] **Step 3: Reconcile historical judgments without overstating them**
+- [x] **Step 3: Reconcile historical judgments without overstating them**
 
 Compare the new candidate/evidence fingerprints with retained pilot reports. Preserve those reports as historical baselines; do not reuse their verdicts when fingerprints differ and do not initiate paid provider calls without explicit authorization.
 
-- [ ] **Step 4: Document the command, evidence, and remaining gate**
+- [x] **Step 4: Document the command, evidence, and remaining gate**
 
 Update the evaluation README with both required model options. Record the exact external artifact directory, hashes, model revision, field coverage, and configuration in the quality document and parent implementation plan. State explicitly whether only packet generation is complete or fresh dual-provider consensus has also passed.
 
-- [ ] **Step 5: Re-run focused gates and commit documentation**
+- [x] **Step 5: Re-run focused gates and commit documentation**
 
 ```bash
 export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH

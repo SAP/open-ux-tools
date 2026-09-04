@@ -173,24 +173,33 @@ The generator optimization target uses the versioned, fingerprinted dynamic-INT8
 
 ## Blinded whole-service realism campaign
 
-Build the production package, then export a fresh judge packet from the retained
-pilot selection manifest, prompt, output schema, classifier, and INT8 SFT model:
+Build the production package, then export a fresh judge packet from an explicit
+service-disjoint cohort plus the retained pilot prompt/output schema and the
+checksum-verified classifier and INT8 SFT model:
 
 ~~~sh
 pnpm --filter @sap-ux/mockserver-data-generator build
 pnpm mockserver-data-generator:realism-campaign --export \
   --pilot-root /absolute/path/to/sap-ai-mockserver \
+  --selection-manifest /absolute/path/to/final-cohort-v1.json \
+  --model-manifest /absolute/path/to/model-manifest.json \
+  --model-cache /absolute/path/to/verified-model-cache \
   --out /tmp/mockserver-data-generator-realism-evidence.json \
   --campaign-manifest-out /tmp/mockserver-data-generator-realism-campaign.json
 ~~~
 
-The exporter requires the generator package directory to be clean and binds the
-packet to its Git commit, compiled entry point, model artifacts, runtime,
-selection manifest, prompt, and output schema. It randomizes the presentation
-order deterministically and enforces at least 300 reviewed fields, all six
-domains, and at least 50 fields from each of EDMX V2, EDMX V4, and CSN. OpenAPI
-is excluded because it is not a first-release input for this OData mockserver
-package. Generated values stay only in the explicitly selected external file.
+The exporter requires the generator package directory to be clean. It verifies
+every model file against the immutable manifest and binds the packet to the Git
+commit, compiled entry point, model artifacts, runtime, selection manifest,
+prompt, and output schema. Before writing the packet it also requires every
+requested resource to be non-empty, validates the complete generated result,
+and evaluates every frozen code/text, amount/currency, quantity/unit,
+date-range, person/address, status, draft, and value-help assertion. It
+randomizes presentation order deterministically and enforces at least 300
+reviewed fields, all six domains, and at least 50 fields from each of EDMX V2,
+EDMX V4, and CSN. OpenAPI is excluded because it is not a first-release input
+for this OData mockserver package. Generated values stay only in the explicitly
+selected external file.
 
 After two independent providers have reviewed every blinded field with the
 retained pilot prompt and JSON schema, compile their lineage-bound artifacts:
