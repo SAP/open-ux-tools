@@ -134,7 +134,7 @@ describe('pilot-compatible SFT runtime', () => {
 
         await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
-        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([12, 1]);
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([8, 5]);
     });
 
     test('bounds a non-cooperative backend and disposes it', async () => {
