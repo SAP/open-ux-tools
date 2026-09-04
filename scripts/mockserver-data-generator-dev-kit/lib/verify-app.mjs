@@ -90,15 +90,64 @@ export function verifyInstalledApplication(appRoot, expectedPackages) {
     return { installed: true, middlewareCount, providerName };
 }
 
+function blockEnd(lines, startIndex, parentIndent, limit = lines.length) {
+    const end = lines.findIndex(
+        (line, index) =>
+            index > startIndex &&
+            index < limit &&
+            line.trim().length > 0 &&
+            (line.match(/^\s*/u)?.[0].length ?? 0) <= parentIndent
+    );
+    return end < 0 ? limit : end;
+}
+
+function disableGeneratedDataCache(lines, middlewareIndex) {
+    const middlewareIndent = lines[middlewareIndex].match(/^\s*/u)?.[0].length ?? 0;
+    const middlewareEnd = blockEnd(lines, middlewareIndex, middlewareIndent);
+    const generatorIndex = lines.findIndex(
+        (line, index) =>
+            index > middlewareIndex && index < middlewareEnd && /^\s+mockDataGenerator:\s*(?:#.*)?$/u.test(line)
+    );
+    if (generatorIndex < 0) {
+        throw new Error('MockGen provider configuration is unavailable for learned verification');
+    }
+    const generatorIndent = lines[generatorIndex].match(/^\s*/u)?.[0] ?? '';
+    const generatorEnd = blockEnd(lines, generatorIndex, generatorIndent.length, middlewareEnd);
+    const optionsIndex = lines.findIndex(
+        (line, index) => index > generatorIndex && index < generatorEnd && /^\s+options:\s*(?:#.*)?$/u.test(line)
+    );
+    if (optionsIndex < 0) {
+        lines.splice(
+            generatorIndex + 1,
+            0,
+            `${generatorIndent}  options:`,
+            `${generatorIndent}    generatedDataCache: false`
+        );
+        return;
+    }
+    const optionsIndent = lines[optionsIndex].match(/^\s*/u)?.[0] ?? '';
+    const optionsEnd = blockEnd(lines, optionsIndex, optionsIndent.length, generatorEnd);
+    const cacheIndex = lines.findIndex(
+        (line, index) =>
+            index > optionsIndex && index < optionsEnd && /^\s+generatedDataCache:\s*(?:[^#]*)(?:#.*)?$/u.test(line)
+    );
+    if (cacheIndex >= 0) {
+        lines[cacheIndex] = `${optionsIndent}  generatedDataCache: false`;
+    } else {
+        lines.splice(optionsIndex + 1, 0, `${optionsIndent}  generatedDataCache: false`);
+    }
+}
+
 /**
  * Create an application-local copy of the UI5 configuration with mockserver
  * debug logging enabled. The canary needs this to observe host-side evidence
  * that the provider, rather than the standard fallback, supplied the rows.
  *
  * @param {string} appRoot application root
+ * @param {{expectedLearned?: boolean}} [options] canary configuration options
  * @returns {{path: string, cleanup: () => void}} temporary configuration
  */
-export function createCanaryConfiguration(appRoot) {
+export function createCanaryConfiguration(appRoot, options = {}) {
     const sourcePath = join(appRoot, 'ui5-mock.yaml');
     const lines = readFileSync(sourcePath, 'utf8').split(/\r?\n/u);
     const middlewareIndex = lines.findIndex((line) => /^\s*-\s+name:\s*['"]?sap-fe-mockserver['"]?\s*$/u.test(line));
@@ -137,6 +186,9 @@ export function createCanaryConfiguration(appRoot) {
         lines[debugIndex] = `${childIndent}debug: true`;
     } else {
         lines.splice(configurationIndex + 1, 0, `${childIndent}debug: true`);
+    }
+    if (options.expectedLearned) {
+        disableGeneratedDataCache(lines, middlewareIndex);
     }
     const path = join(appRoot, `.mockserver-data-generator-canary-${randomUUID()}.yaml`);
     writeFileSync(path, `${lines.join('\n').replace(/\n+$/u, '')}\n`, {
@@ -268,7 +320,7 @@ export async function runFioriCanary(appRoot, options = {}) {
     if (!executable) {
         throw new Error('Application-local fiori or ui5 executable is not installed');
     }
-    const canaryConfiguration = createCanaryConfiguration(appRoot);
+    const canaryConfiguration = createCanaryConfiguration(appRoot, options);
     const port = await freePort();
     const args = executable === fiori ? ['run'] : ['serve'];
     args.push('--config', canaryConfiguration.path, '--port', String(port));

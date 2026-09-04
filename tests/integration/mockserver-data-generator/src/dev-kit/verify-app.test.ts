@@ -171,6 +171,37 @@ describe('installed application verification', () => {
         canary.cleanup();
         expect(() => readFileSync(canary.path, 'utf8')).toThrow();
     });
+
+    test('forces the learned canary to execute instead of reusing generated rows', () => {
+        const fixture = writeVerifiedApp();
+        const sourcePath = join(fixture.appRoot, 'ui5-mock.yaml');
+        const source = readFileSync(sourcePath, 'utf8');
+        const canary = createCanaryConfiguration(fixture.appRoot, { expectedLearned: true });
+        const configuration = readFileSync(canary.path, 'utf8');
+
+        expect(readFileSync(sourcePath, 'utf8')).toBe(source);
+        expect(configuration).toMatch(/mockDataGenerator:\s+[\s\S]*options:\s+[\s\S]*generatedDataCache: false/mu);
+
+        canary.cleanup();
+    });
+
+    test('overrides an enabled generated-row cache only in the temporary learned configuration', () => {
+        const fixture = writeVerifiedApp();
+        const sourcePath = join(fixture.appRoot, 'ui5-mock.yaml');
+        const source = readFileSync(sourcePath, 'utf8').replace(
+            "          name: '@sap-ux/mockserver-data-generator/fe-mockserver'",
+            "          name: '@sap-ux/mockserver-data-generator/fe-mockserver'\n          options:\n            generatedDataCache: true"
+        );
+        writeFileSync(sourcePath, source);
+        const canary = createCanaryConfiguration(fixture.appRoot, { expectedLearned: true });
+        const configuration = readFileSync(canary.path, 'utf8');
+
+        expect(readFileSync(sourcePath, 'utf8')).toBe(source);
+        expect(configuration).toContain('generatedDataCache: false');
+        expect(configuration).not.toContain('generatedDataCache: true');
+
+        canary.cleanup();
+    });
 });
 
 describe('canary process evidence', () => {
