@@ -163,6 +163,29 @@ original application:
 The handoff copy of this exact archive is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-62cb961976060a2b.tgz`.
 
+## Current production-config and decoder archive canary
+
+The kit was rebuilt after the constrained-decoder optimization, full compiled
+build/evaluation binding, frozen-cohort enforcement, and production generation
+config unification. Its bundled retained-pilot bridge now has a regression that
+executes the independently bundled file and creates a verified model cache.
+
+- Dev-kit fingerprint: `22606ad3af28117e355e679fc4d97eeee69e27ccdf8d38f01b2e6faaad1e84ef`
+- Archive SHA-256: `266465e4fc25367e9846b8359f8ae2ec550dcc73a52e5bf3520e82da5a29f916`
+- Archive size: 526,031 bytes; 10 entries
+- Generator tarball: 58,273 bytes, SHA-256 `a71d2534476e739d0da991362a5b9d2c7940a6518308915ba813b37539201e71`
+- Source state: clean `SAP/open-ux-tools` commit `900f54a1bd230f578109a414d4c3f202a6d25171`; clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible source state
+- Extracted bridge: real retained classifier/SFT assets produced revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`, manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`, and 192,167,584 verified cache bytes
+- Installed configuration: unchanged `start-mock`, exactly one `sap-fe-mockserver`, and provider `@sap-ux/mockserver-data-generator/fe-mockserver`
+- Learned verification: both model components were ready; the OData V2 HTTP canary reported `providerExecuted: true` and `learnedRuntimeVerified: true`; `$metadata` passed and `Products?$top=1` returned one row
+- Restore verification: application files matched the pristine fixture byte for byte outside disposable `node_modules`, and `.mockserver-data-generator-dev` was removed
+
+The handoff copy of this exact current archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-22606ad3af28117e.tgz`.
+Its checksum must be verified before extraction. The prior archive remains the
+upgrade-source fixture; this current archive supersedes it for new local or BAS
+testing.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
