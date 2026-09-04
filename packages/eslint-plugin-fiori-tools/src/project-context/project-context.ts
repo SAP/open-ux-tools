@@ -222,7 +222,8 @@ export class ProjectContext {
      * @returns The ProjectContext instance for the file
      */
     public static updateFile(uri: string, content: string): ProjectContext {
-        this.forceReindexOnFirstUpdate = !this.fileCache.get(uri);
+        const existingContent = this.fileCache.get(uri);
+        this.forceReindexOnFirstUpdate = !existingContent || existingContent !== content;
         this.fileCache.set(uri, content);
         const numberOfUpdates = this.updateCache.get(uri) ?? 0;
         this.updateCache.set(uri, numberOfUpdates + 1);
@@ -237,6 +238,17 @@ export class ProjectContext {
         return context;
     }
     public static fileCache = new Map<string, string>(); // NOSONAR - Property must be mutable for test setup
+
+    /**
+     * Clears all static caches so tests run in isolation regardless of execution order.
+     */
+    public static resetForTesting(): void {
+        this.fileCache.clear();
+        this.instanceCache.clear();
+        this.updateCache.clear();
+        this.appRoots.clear();
+        this.projectArtifactCache.clear();
+    }
     private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
             if (prop === 'get') {
