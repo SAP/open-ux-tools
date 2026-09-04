@@ -105,13 +105,13 @@ export const GenerateAdaptationProjectInputSchema = zod.object({
     appPath: zod
         .string()
         .describe(
-            'Absolute path to the current working directory or target location. Used as fallback if targetFolder is not provided.'
+            'Absolute path to the folder where the adaptation project will be generated (i.e. the current working directory). The project subdirectory will be created inside this folder.'
         ),
     targetFolder: zod
         .string()
         .optional()
         .describe(
-            'Optional absolute path to the target folder where the project will be generated. Defaults to appPath if not provided.'
+            'Optional override: absolute path to a different folder where the project will be generated. Defaults to appPath if not provided.'
         ),
     projectName: zod
         .string()
@@ -205,13 +205,4 @@ export const AdpMetadataInputSchema = zod.object({
         .describe(
             'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
         )
-});
-
-export const ODataServiceInputSchema = zod.object({
-    appPath: zod
-        .string()
-        .describe(
-            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
-        ),
-    filter: zod.string().optional().describe('Filter string to match service names')
 });
