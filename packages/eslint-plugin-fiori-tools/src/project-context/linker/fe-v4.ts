@@ -10,7 +10,13 @@ import type {
     TableNode,
     TableSectionNode
 } from './annotations.js';
-import { collectPageCharts, collectTables, collectSections, collectHeaderSections } from './annotations.js';
+import {
+    collectPageCharts,
+    collectTables,
+    collectSections,
+    collectHeaderSections,
+    getEntityForContextPath
+} from './annotations.js';
 
 export interface ApplicationSetting {
     createMode: string;
@@ -653,69 +659,6 @@ function getEntity(settings: PageSettings, service: ParsedService): MetadataElem
         return service.index.entitySets[settings.entitySet];
     }
     return undefined;
-}
-
-/**
- * Resolves a metadata element from a context path string.
- *
- * @param contextPath - The context path (e.g., '/EntitySet/NavigationProperty')
- * @param service - The parsed OData service
- */
-function getEntityForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
-    if (!contextPath.startsWith('/')) {
-        return;
-    }
-    const path = contextPath.substring(1);
-    const [entityName, ...segments] = path.split('/');
-    if (!entityName) {
-        return;
-    }
-    const entity = service.index.entitySets[entityName];
-    if (!entity) {
-        return undefined;
-    }
-    const entityType = resolveNavigationProperties(entity, segments);
-
-    if (!entityType) {
-        const entityStructureType = service.index.entitySets[entityName]?.structuredType;
-        if (!entityStructureType) {
-            return;
-        }
-        const pageEntityType = service.artifacts.metadataService.getMetadataElement(entityStructureType);
-        if (!pageEntityType) {
-            return;
-        }
-        return resolveNavigationProperties(pageEntityType, segments);
-    }
-
-    return entityType;
-}
-
-/**
- * Resolves navigation properties along a path to find the target entity.
- *
- * @param root - The starting metadata element
- * @param segments - Array of navigation property names to traverse
- */
-function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
-    if (segments.length === 0) {
-        return root;
-    }
-    let current = root;
-    for (const segment of segments) {
-        let found = false;
-        for (const child of current.content) {
-            if (child.name === segment) {
-                current = child;
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            return undefined;
-        }
-    }
-    return current;
 }
 
 /**

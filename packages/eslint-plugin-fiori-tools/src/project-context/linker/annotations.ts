@@ -622,8 +622,18 @@ export function getEntityForContextPath(contextPath: string, service: ParsedServ
     if (!entity) {
         return undefined;
     }
-
-    return resolveNavigationProperties(entity, segments);
+    const resolved = resolveNavigationProperties(entity, segments);
+    if (resolved) {
+        return resolved;
+    }
+    // Fallback: when entity set content doesn't carry nav properties directly (e.g. V4 metadata
+    // where nav props live on the entity type), resolve through the structured type instead.
+    const structuredType = entity.structuredType;
+    if (!structuredType) {
+        return;
+    }
+    const entityType = service.artifacts.metadataService.getMetadataElement(structuredType);
+    return entityType ? resolveNavigationProperties(entityType, segments) : undefined;
 }
 
 export function getEntityTypeForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
@@ -648,7 +658,7 @@ export function getEntityTypeForContextPath(contextPath: string, service: Parsed
  * @param root - The starting metadata element
  * @param segments - Array of navigation property names to traverse
  */
-function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
+export function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
     if (segments.length === 0) {
         return root;
     }
