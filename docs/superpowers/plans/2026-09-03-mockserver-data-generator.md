@@ -961,23 +961,29 @@ pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test:i
 - Create in `open-ux-tools`: `packages/mockserver-data-generator/scripts/measure-footprint.mjs`
 - Create: `packages/mockserver-data-generator/test/contract/footprint-report.test.ts`
 
-- [ ] Measure packed and unpacked npm bytes without models.
+- [x] Measure packed and unpacked npm bytes without models.
 - [ ] Measure clean-install dependency bytes for each OS/architecture.
-- [ ] Measure classifier, tokenizer, generator, and manifest bytes separately.
+- [x] Measure classifier, tokenizer, generator, and manifest bytes separately.
 - [ ] Measure first download, warm cache, session load, peak RSS, tokens/second, cold generation, and generated-data-cache startup.
-- [ ] Bind every row of the report to package, runtime, model, code, fixture, and machine fingerprints.
+- [x] Bind every row of the report to package, runtime, model, code, fixture, and machine fingerprints.
 
-**Implementation record (2026-09-04):** Commit `4112b622e` adds the portable,
-machine-readable harness and a clean `darwin-arm64` baseline bound to the
-package archive, code, model manifest, runtime, model-evaluation report, and
+**Implementation record (2026-09-04):** Commits `4112b622e` through
+`568aaf8b0` add the portable machine-readable harness, close its evidence
+binding gaps, and accelerate grammar-constrained decoding without changing the
+fixed output. The clean `darwin-arm64` baseline binds the package archive,
+complete compiled tree, code commit, model manifest, production generation
+config, runtime, full frozen classifier/SFT cohorts, evaluation report, and
 machine details. Package, dependency closure, runtime increment, component,
 model-cache, cache-quota, module-load, session-load, T2, and process RSS values
-are now measured separately. The current native candidate is not
-footprint-ready: 449,500,780 total bytes exceed the 300 MiB ceiling, and the
-164,924,986-byte generator misses the 82,462,493-byte optimization target.
-First-download, cold whole-service, warm generated-data-cache, end-to-end host,
-tokens-per-second, process-tree memory, and release-platform rows remain open,
-so the Task 9.1 exit conditions are not marked complete.
+are measured separately. Two complete 16-case production-config runs reproduced
+100% parse/exact-key success, 259/261 filled fields, and the same output
+fingerprint; their T2 p95 values were 18.73 and 18.55 seconds. The current native
+candidate is not footprint-ready: 449,503,668 total bytes exceed the 300 MiB
+ceiling, and the 164,924,986-byte generator misses the 82,462,493-byte
+optimization target. First-download, cold whole-service, warm
+generated-data-cache, end-to-end host, tokens-per-second, process-tree memory,
+and release-platform rows remain open, so the Task 9.1 exit conditions are not
+marked complete.
 
 ### Task 9.2: Run the generator compression campaign
 
@@ -986,7 +992,7 @@ so the Task 9.1 exit conditions are not marked complete.
 - Create: `experiments/generator-footprint-frontier-v1.yaml`
 - Create: `reports/generator-footprint-frontier-v1.json`
 
-- [ ] Candidate 1: dynamic int8 baseline.
+- [x] Candidate 1: dynamic int8 baseline.
 - [ ] Candidate 2: ONNX graph optimization and static/per-channel int8 with representative calibration.
 - [ ] Candidate 3: calibrated 4-bit GPTQ/AWQ-style or equivalent only when the chosen export/runtime path supports it.
 - [ ] Candidate 4: quantization-aware fine-tuning when calibrated post-training quantization misses quality gates.
@@ -1013,6 +1019,15 @@ For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS,
 - [ ] Measure installed bytes, startup, peak RSS, decoder throughput, p50/p95 generation, stability, and worker/thread behavior.
 
 **WASM gate:** On the fixed primary platform, advance only if `1 - wasmBackendBytes / nativeBackendBytes >= 25%` for the package plus backend-specific production dependency closure while identical model/cache bytes are held constant. Every proposed WASM platform must pass independently; samples are never pooled. It must pass all functional tests and memory limits and have p95 no worse than 1.5 times native while remaining inside the 20-second T2 budget. Report product-total impact separately. Otherwise record a no-go and keep the best supported native strategy.
+
+**Implementation record (2026-09-04):** The bounded identical-classifier screen
+measured Web/WASM p95 at 2.90 times native and about twice the native process
+maximum RSS. It fails the frozen 1.5-times latency gate, while the total product
+footprint reduction would be only 20.74% with identical model bytes. Per the
+predeclared stop rule, WASM is a no-go and the autoregressive WASM, packaging,
+and multi-platform work above is intentionally not implemented. The native
+candidate remains the baseline while model compression and supported
+platform-specific runtime packaging are evaluated.
 
 ### Task 9.4: Select the Pareto winner
 

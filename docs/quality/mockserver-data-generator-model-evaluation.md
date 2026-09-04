@@ -13,6 +13,7 @@ This record captures the 2026-09-04 development campaign that exercised the prod
 | SFT INT8 generator         | 164,924,986 | `8241c95937623d6b5e61e6057f85e3ab5ede22a2bc0e57f221092db9bc8011da` |
 | SFT INT4 generator         | 200,835,311 | `b77024628431064253c512fd3d76518f6216513658808a4a472480c689cb343a` |
 | SFT tokenizer              |   3,522,755 | `a98e682ef5e06816223674214ebc23ea06a80e31ef8e7f45d1468c04ddd17905` |
+| SFT production config      |         252 | `e85eaf5fc93ac454809ee7b04956e484a44f034ef28cb03c11328844a8f97e39` |
 | SFT held-out prompt cohort |      42,307 | `83dd7d4e1613a17715d9c5bce8e1aea43b505f0d6d6afb7d09993d8049c0c5d4` |
 
 The classifier cohort contains 300 records. The harness evaluated the 233 direct LLM agreements or verifiable human adjudications and quarantined 67 records whose `human_adjudicated` label describes automated adjudication in its own rationale.
@@ -81,12 +82,26 @@ The runtime now partitions wide residual field sets into deterministic groups of
 | Exact-key success       |                                                               100% |
 | Filled requested fields |                                                 259 / 261 (99.23%) |
 | Failed cases            |                                                                  0 |
-| Generation p50 / p95    |                                                     1.59 / 16.69 s |
-| Session load            |                                                             0.79 s |
+| Generation p50 / p95    |                                                     2.06 / 18.73 s |
+| Session load            |                                                             0.88 s |
 | Output fingerprint      | `9b97cd178c9336617e6554bace5ea9fcf0e71d4301042b85180f6896c846c92c` |
-| Judge-evidence SHA-256  | `2c74596bffa8390ba48d1c568f86fcdfc35f791b5cd7d2367b0339bdb737865c` |
+| Judge-evidence SHA-256  | `ba6e0d2566e937f1b4fc19a1fa061be13d0e5fbc33ed6b5363173cd784c53bb1` |
 
-An independent identical-seed replay produced the same output fingerprint and evidence SHA-256. Its p95 was 16.77 seconds. This clears the fixed development gates of at least 99% parse, at least 95% fill, deterministic replay, and a 20-second SFT budget on `darwin-arm64` with Node 22.22.3. The larger final cross-platform and integrated structural campaign remains required before promotion.
+These final values come from the clean, evidence-bound `568aaf8b0` candidate
+using the production 300-token configuration, not the earlier evaluator-only
+400-token allowance. The decoder now caches grammar-equivalent allowed-token
+sets per request and selects the exact top-p nucleus without sorting the full
+vocabulary. Regression tests prove equivalence to the previous full-sort
+algorithm, and the output fingerprint did not change.
+
+An independent identical-seed replay produced the same output fingerprint and
+evidence SHA-256. Its p50/p95 was 2.05/18.55 seconds. This clears the fixed
+development gates of at least 99% parse, at least 95% fill, deterministic
+replay, and a 20-second SFT budget on `darwin-arm64` with Node 22.22.2. Peak
+process RSS varied from 1,550,630,912 to 1,827,061,760 bytes across the two
+isolated runs, so memory remains a visible measurement rather than an implied
+pass. The larger final cross-platform and integrated structural campaign
+remains required before promotion.
 
 ## Retained-pilot production cache bridge
 
@@ -118,7 +133,7 @@ component fingerprints.
 
 ## Size and quantization decision
 
-The reviewed npm package contains no weights and packs below 57 kB in current development canaries, far below the 5 MiB ceiling. Model and runtime footprints are reported separately:
+The reviewed npm package contains no weights and packs to 58,273 bytes in the current development canary, far below the 5 MiB ceiling. Model and runtime footprints are reported separately:
 
 | Candidate        | Model bytes | Development result                                                                                                         | Decision                          |
 | ---------------- | ----------: | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
@@ -131,39 +146,50 @@ The INT4 graph is 21.77% larger than INT8 because its MatMul-only quantizer did 
 ## Machine-readable footprint baseline
 
 The production footprint harness measured clean commit
-`4112b622e270791eb36fdb61062fc61e8e01a118` on `darwin-arm64` with Node
+`568aaf8b03a4bdf510d3203997171c308ab40ecd` on `darwin-arm64` with Node
 22.22.2, npm 10.9.7, an Apple M3 Pro, and `onnxruntime-node@1.24.3`. The
 package archive SHA-256 is
-`34257b290d90a235fd7c24cea10e0c397c5bed38f773c939d3ff4efdac57a76b`.
+`a71d2534476e739d0da991362a5b9d2c7940a6518308915ba813b37539201e71`.
+The complete compiled `dist` tree fingerprint is
+`2a75575b6845dfe244e6c42aca14b2961c19f490b919315605cda6df5fdc7e61`,
+so an unchanged entry point cannot hide stale transitive build output.
 The report fingerprint is
-`a8dc18defd4ef23edda89fff8ce6cd8baa157f91a944bc69ecef41e276286064`
+`19b8e4cbc409d2dba812e2d335aa949748c907f7bf7c60f878ba0751f5f2c716`
 and its file SHA-256 is
-`c854408681a417b37ca478f1a7cdc28992faf848cc7fa7363c29beb80c81180a`.
+`afb7167ae458feab431cc356329a1e979e8f5e1892352fd2e689920b5790e958`.
 
 The report is also bound to the exact model-evaluation artifact with fingerprint
-`00fb211c1fed99e202cb7dc76a5ea0d69c7ea2d6834a600b733e4d0b82989e58`
+`d6aadb7a0d05934f2b35970abdf9c594768546603a44b4a1a7083aeb47945bfe`
 and file SHA-256
-`e737fd29a00f239ccd60c7dc99d3d5a7665dd8b17d9a9afa8b64caceed2b6a4a`.
+`e96695913ef0d4296ebe2151b4f567fa035bcfa3fe49d934019227b122d1d9b8`.
+It additionally binds the 300-token generation configuration fingerprint
+`fe6f3cc1aee19a16ed3205c7e5fca4926c4386243175f14453051ec248e91016`
+and rejects subset, duplicate-INT8, changed-seed, changed-locale, or changed
+cohort reports.
 That rerun preserved the classifier metrics and the SFT output fingerprint. It
 parsed all 16 held-out cases, emitted exact keys for all 16, and filled 259 of
-261 requested fields.
+261 requested fields. A second full clean run had report fingerprint
+`a35f4604e138d38ddcae4c947894a91381c3b4c22914b13b1d1cc2701ed21ce1`
+and file SHA-256
+`557462c7c895035e97fbb16429090d697af2882e3426593ffcf59430c48426bc`;
+it reproduced both classifier and SFT output fingerprints.
 
 | Measurement                         |          Actual |       Threshold | Status       |
 | ----------------------------------- | --------------: | --------------: | ------------ |
-| npm archive                         |          57,460 |       5,242,880 | pass         |
-| npm unpacked                        |         232,410 |               — | measured     |
-| Deterministic dependency closure    |       2,116,646 |               — | measured     |
-| Learned dependency closure          |     223,778,764 |               — | measured     |
+| npm archive                         |          58,273 |       5,242,880 | pass         |
+| npm unpacked                        |         235,298 |               — | measured     |
+| Deterministic dependency closure    |       2,119,534 |               — | measured     |
+| Learned dependency closure          |     223,781,652 |               — | measured     |
 | Native runtime increment            |     221,662,118 |               — | measured     |
 | Model transfer                      |     192,167,584 |     209,715,200 | pass         |
 | Verified model cache                |     192,167,584 |     209,715,200 | pass         |
 | Generated-data-cache quota          |      33,554,432 |      33,554,432 | pass         |
-| Total installed and cache footprint |     449,500,780 |     314,572,800 | **fail**     |
+| Total installed and cache footprint |     449,503,668 |     314,572,800 | **fail**     |
 | INT8 generator weights              |     164,924,986 |      82,462,493 | **fail**     |
-| Provider module-load p95             |         1.64 ms |          250 ms | pass         |
-| Model session-load p95               |       807.17 ms |        5,000 ms | pass         |
-| T2 generation p95                    |    18,541.78 ms |       20,000 ms | pass         |
-| Peak process RSS                     |   1,814,396,928 |               — | measured     |
+| Provider module-load p95             |         1.78 ms |          250 ms | pass         |
+| Model session-load p95               |       877.85 ms |        5,000 ms | pass         |
+| T2 generation p95                    |    18,725.48 ms |       20,000 ms | pass         |
+| Peak process RSS                     |   1,550,630,912 |               — | measured     |
 | Cold whole-service generation        |               — |       25,000 ms | not measured |
 | Warm generated-data-cache startup    |               — |          200 ms | not measured |
 | First-use acquisition                |               — |       30,000 ms | not measured |
@@ -172,7 +198,7 @@ parsed all 16 held-out cases, emitted exact keys for all 16, and filled 259 of
 The total is the learned dependency closure plus the verified model cache plus
 the configured 32 MiB generated-data-cache quota. Passing the npm and model
 transfer ceilings therefore does not make this candidate footprint-ready. The
-current native stack exceeds the total ceiling by 134,927,980 bytes, and the
+current native stack exceeds the total ceiling by 134,930,868 bytes, and the
 generator is 82,462,493 bytes above its optimization target. The next footprint
 work is the calibrated compression frontier and supported platform-specific
 runtime packaging, followed by the still-unmeasured integrated timings and

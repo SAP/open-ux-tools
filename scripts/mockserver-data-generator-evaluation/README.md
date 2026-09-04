@@ -37,7 +37,7 @@ pnpm mockserver-data-generator:measure-footprint \
   --evaluation-report /tmp/mockserver-data-generator-evaluation.json
 ~~~
 
-Use a new output filename for every run; the harness refuses to overwrite evidence. It packs the current package, installs it in an isolated npm consumer, verifies the model cache, and reports package, dependency, runtime, model, generated-data-cache, latency, and memory measurements separately. Missing integrated measurements remain `not-measured` and keep `footprintReady` false. Reports contain fingerprints and aggregate values but no local paths or generated rows.
+Use a new output filename for every run; the harness refuses to overwrite evidence. It packs the current package, installs it in an isolated npm consumer, verifies the model cache, and reports package, dependency, runtime, model, generated-data-cache, latency, and memory measurements separately. It binds imported evaluation latency to the complete compiled generator tree, exact generation config, full frozen cohorts and seed, model artifacts, runtime, machine, and clean commit; smoke subsets cannot satisfy the footprint gate. Missing integrated measurements remain `not-measured` and keep `footprintReady` false. Reports contain fingerprints and aggregate values but no local paths or generated rows.
 
 The generator optimization gate uses the versioned, fingerprinted dynamic-INT8 baseline in `baselines/generator-int8-v1.json`; callers cannot replace it with an arbitrary byte count. Add `--enforce` in release automation when a failed or unmeasured gate must produce a nonzero exit. Omit it during exploratory campaigns so the report is still written for failed candidates.
 
