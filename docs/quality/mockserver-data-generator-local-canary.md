@@ -186,6 +186,29 @@ Its checksum must be verified before extraction. The prior archive remains the
 upgrade-source fixture; this current archive supersedes it for new local or BAS
 testing.
 
+## Current cache-hardening archive canary
+
+The kit was rebuilt after cross-process model-cache fencing, late-cancellation
+publication protection, and the 200 MiB preview/stable manifest ceiling landed.
+The exact extracted archive was installed into a fresh OData V4 fixture first
+without a model and then with an independently staged retained-pilot cache.
+
+- Dev-kit fingerprint: `fabc0de4a8579c742acc80c4f5e9629775af9818ad3b051fb750bca8d5e775ee`
+- Archive SHA-256: `ed78cfd292d7fd5057324ef56406628b794b226f2935eca8fcb00c38f5e2b520`
+- Archive size: 527,420 bytes; 10 entries
+- Generator tarball: 59,810 bytes, SHA-256 `a248f697af41a0504cfe12c9a734c9d4653d38d457dd0604d75839334dc6ff59`
+- Source state: clean `SAP/open-ux-tools` commit `4c3b6bd9a19f84dfc9fda86f6e2e7eaca84ab10d` and clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible
+- Deterministic verification: exactly one `sap-fe-mockserver`, provider `@sap-ux/mockserver-data-generator/fe-mockserver`, provider-specific execution evidence, successful OData V4 `$metadata`, and one `Products?$top=1` row
+- Model bridge: development lifecycle, revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`, manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`, and 192,167,584 verified cache bytes
+- Learned verification: exact `onnxruntime-node@1.24.3`; both classifier and SFT components ready; `modelVerified: true`; `learnedRuntimeVerified: true`; successful OData V4 `$metadata`; and one `Products?$top=1` row
+- Restore verification: the fixture matched its original files byte for byte outside disposable `node_modules`, and the installer recovery directory was removed
+
+The handoff copy of this exact current archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-fabc0de4a8579c74.tgz`.
+Its checksum must be verified before extraction. This canary supersedes the
+preceding archive for new local or BAS testing; the earlier records remain
+historical cross-format and upgrade evidence.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,

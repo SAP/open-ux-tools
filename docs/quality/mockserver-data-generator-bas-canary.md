@@ -9,20 +9,22 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `22606ad3af28117e355e679fc4d97eeee69e27ccdf8d38f01b2e6faaad1e84ef`
-- archive SHA-256: `266465e4fc25367e9846b8359f8ae2ec550dcc73a52e5bf3520e82da5a29f916`
-- archive size: 526,031 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `900f54a1bd230f578109a414d4c3f202a6d25171`; `SAP/open-ux-odata` `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-22606ad3af28117e.tgz`
+- dev-kit fingerprint: `fabc0de4a8579c742acc80c4f5e9629775af9818ad3b051fb750bca8d5e775ee`
+- archive SHA-256: `ed78cfd292d7fd5057324ef56406628b794b226f2935eca8fcb00c38f5e2b520`
+- archive size: 527,420 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `4c3b6bd9a19f84dfc9fda86f6e2e7eaca84ab10d`; `SAP/open-ux-odata` `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-fabc0de4a8579c74.tgz`
 
 This candidate includes the current classifier/SFT provider, optimized
 constrained decoder, production 300-token config, generated-data cache,
 reload-cancellation recovery, transactional installer recovery, and
-repeat-install upgrade safety. Its independently bundled retained-pilot bridge,
-learned OData V2 HTTP canary, and exact restore are recorded in the local canary
-report. The earlier clean archive remains the cross-format learned V2/V4/CDS
-evidence; run the procedure below with the current archive to qualify the same
-learned path in BAS.
+repeat-install upgrade safety. It also includes fenced cross-process model-cache
+acquisition, late-cancellation publication protection, and the 200 MiB
+preview/stable manifest ceiling. Its independently bundled retained-pilot
+bridge, learned OData V4 HTTP canary, and exact restore are recorded in the
+local canary report. Earlier clean archives remain the cross-format learned
+V2/V4/CDS evidence; run the procedure below with the current archive to qualify
+the same learned path in BAS.
 
 ## Inputs to record
 
