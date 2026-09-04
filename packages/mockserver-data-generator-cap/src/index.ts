@@ -192,8 +192,21 @@ export function registerCapPlugin(cds: CdsFacade, dependencies: PluginDependenci
             const seed =
                 dependencies.seed ?? ((facade, config): Promise<void> => seedFromCds(facade, config, dependencies));
             await seed(cds, configuration);
-        } catch {
-            logger(cds).warn('CAP seeding failed; deterministic generation remains available through normal CAP data.');
+        } catch (error) {
+            if (
+                error !== null &&
+                typeof error === 'object' &&
+                'code' in error &&
+                error.code === 'METADATA_INPUT_TOO_LARGE'
+            ) {
+                logger(cds).warn(
+                    'METADATA_INPUT_TOO_LARGE: CAP metadata exceeds the 32 MiB input ceiling; normal CAP data remains active.'
+                );
+            } else {
+                logger(cds).warn(
+                    'CAP seeding failed; deterministic generation remains available through normal CAP data.'
+                );
+            }
         }
     });
 }

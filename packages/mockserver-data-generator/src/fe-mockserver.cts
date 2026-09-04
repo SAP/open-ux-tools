@@ -423,7 +423,12 @@ class FeMockserverDataGenerator {
     async generate(context: HostGenerationContext): Promise<HostMockDataGenerationResult> {
         if (this.disposed) throw new Error('Mock data generator provider has been disposed');
         const startedAt = performance.now();
-        const { createGenerationFingerprint, validateGeneratedResult } = await import('./index.js');
+        const {
+            assertMetadataInputWithinLimit,
+            createGenerationFingerprint,
+            isMetadataInputTooLargeError,
+            validateGeneratedResult
+        } = await import('./index.js');
         const request = {
             metadata: { format: 'edmx' as const, content: context.metadata },
             service: context.service,
@@ -431,6 +436,14 @@ class FeMockserverDataGenerator {
             existingData: context.existingData,
             signal: context.signal
         };
+        try {
+            assertMetadataInputWithinLimit(request.metadata);
+        } catch (error) {
+            if (isMetadataInputTooLargeError(error)) {
+                context.logger.warn(`${error.code}: ${error.message}`);
+            }
+            throw error;
+        }
         const cacheDiagnostics: MockDataGeneratorResult['diagnostics'][number][] = [];
         let generatedDataCache:
             | Readonly<{

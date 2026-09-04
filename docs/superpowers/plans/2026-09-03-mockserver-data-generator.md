@@ -1348,6 +1348,7 @@ matrix.
 
 - [x] Threat-model metadata parsing, path traversal, arbitrary module loading, model download, archive extraction, cache poisoning, lock attacks, prompt leakage, model provenance, and resource exhaustion.
 - [x] Allow only the configured provider module and validated model-manifest files; never execute downloaded model-side code.
+- [x] Reject EDMX/CSN above a fixed 32 MiB UTF-8 ceiling before hashing or parsing, with stable FE/CAP fallback diagnostics.
 - [ ] Enforce download size, generation time, row count, memory-aware concurrency, and output-size limits.
 - [x] Run production dependency audit and record inherited upstream findings separately.
 - [ ] Produce or consume SBOM/provenance for npm and model artifacts according to SAP release policy.

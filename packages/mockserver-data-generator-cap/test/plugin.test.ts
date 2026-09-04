@@ -45,6 +45,28 @@ function emptyProductDatabase(
 }
 
 describe('native CAP plugin lifecycle', () => {
+    test('reports the stable metadata ceiling code and leaves normal CAP startup available', async () => {
+        let served: (() => Promise<void>) | undefined;
+        const warn = jest.fn();
+        const cds = {
+            env: { profiles: ['development'], mockserverDataGenerator: { enabled: true } },
+            log: () => ({ info: jest.fn(), warn }),
+            on: jest.fn((_event: string, handler: () => Promise<void>) => {
+                served = handler;
+            })
+        };
+        const error = Object.assign(new RangeError('metadata is too large'), {
+            code: 'METADATA_INPUT_TOO_LARGE'
+        });
+
+        registerCapPlugin(cds, { seed: jest.fn(async () => Promise.reject(error)) });
+        await expect(served?.()).resolves.toBeUndefined();
+
+        expect(warn).toHaveBeenCalledWith(
+            'METADATA_INPUT_TOO_LARGE: CAP metadata exceeds the 32 MiB input ceiling; normal CAP data remains active.'
+        );
+    });
+
     test('awaits seeding on served and degrades without blocking CAP startup', async () => {
         let served: (() => Promise<void>) | undefined;
         const warn = jest.fn();

@@ -1,4 +1,6 @@
 import {
+    MAX_METADATA_INPUT_BYTES,
+    assertMetadataInputWithinLimit,
     createGenerationFingerprint,
     generateService,
     validateGeneratedResult,
@@ -9,6 +11,49 @@ import {
 } from '../../src/index.js';
 
 describe('mockserver data generator public API', () => {
+    it('rejects UTF-8 metadata above the fixed 32 MiB ceiling before parsing or fingerprinting', async () => {
+        const metadata = {
+            format: 'edmx' as const,
+            content: '€'.repeat(Math.floor(MAX_METADATA_INPUT_BYTES / 3) + 1)
+        };
+        const request: MockDataServiceRequest = {
+            metadata,
+            service: { urlPath: '/oversized', odataVersion: '4.0' },
+            targets: [],
+            existingData: {}
+        };
+        const exactLimitMetadata = {
+            format: 'edmx' as const,
+            content: `${metadata.content.slice(0, -1)}aa`
+        };
+        const cachedResult = {
+            resources: {},
+            diagnostics: [],
+            capabilities: { mode: 'deterministic', classifier: 'unavailable', sft: 'unavailable' },
+            fingerprints: { request: 'request-fingerprint' }
+        } as const;
+
+        expect(MAX_METADATA_INPUT_BYTES).toBe(32 * 1024 * 1024);
+        expect(Buffer.byteLength(metadata.content, 'utf8')).toBe(MAX_METADATA_INPUT_BYTES + 1);
+        expect(Buffer.byteLength(exactLimitMetadata.content, 'utf8')).toBe(MAX_METADATA_INPUT_BYTES);
+        expect(() => assertMetadataInputWithinLimit(exactLimitMetadata)).not.toThrow();
+        expect(() => assertMetadataInputWithinLimit(metadata)).toThrow(
+            expect.objectContaining({
+                name: 'MetadataInputTooLargeError',
+                code: 'METADATA_INPUT_TOO_LARGE',
+                maxBytes: MAX_METADATA_INPUT_BYTES,
+                actualBytes: MAX_METADATA_INPUT_BYTES + 1
+            })
+        );
+        expect(() => createGenerationFingerprint(request)).toThrow(
+            expect.objectContaining({ code: 'METADATA_INPUT_TOO_LARGE' })
+        );
+        expect(() => validateGeneratedResult(request, cachedResult)).toThrow(
+            expect.objectContaining({ code: 'METADATA_INPUT_TOO_LARGE' })
+        );
+        await expect(generateService(request)).rejects.toMatchObject({ code: 'METADATA_INPUT_TOO_LARGE' });
+    });
+
     it('rejects cached snapshots that no longer conform to the requested service schema', () => {
         const request: MockDataServiceRequest = {
             metadata: {

@@ -91,6 +91,12 @@ sessions. Set `generatedDataCache: false` to disable this cache, or set
 BAS workspace cache. Cache failures only add a diagnostic; generation and the
 standard mockserver remain available.
 
+EDMX and CSN inputs have a fixed 32 MiB UTF-8 byte ceiling. The public API
+checks the limit before fingerprinting, cache validation, or schema parsing and
+throws `MetadataInputTooLargeError` with code
+`METADATA_INPUT_TOO_LARGE`. The FE provider logs only that stable code and byte
+counts; the standard mockserver then uses its normal built-in/empty fallback.
+
 ## Programmatic API
 
 ```ts

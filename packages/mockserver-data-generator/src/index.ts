@@ -15,6 +15,7 @@ import { parseEdmx } from './schema/edmx.js';
 import { parseCsn } from './schema/csn.js';
 import { classifySchema } from './semantics/classifier.js';
 import { resolveSemanticClassifications } from './semantics/lexical-fallback.js';
+import { assertMetadataInputWithinLimit } from './metadata-limit.js';
 
 export {
     buildEmbeddingFieldText,
@@ -36,6 +37,12 @@ export {
     readGeneratedDataCache,
     writeGeneratedDataCache
 } from './cache/generated-data.js';
+export {
+    MAX_METADATA_INPUT_BYTES,
+    MetadataInputTooLargeError,
+    assertMetadataInputWithinLimit,
+    isMetadataInputTooLargeError
+} from './metadata-limit.js';
 
 function canonicalJson(value: unknown): string {
     if (Array.isArray(value)) {
@@ -69,6 +76,7 @@ export function createGenerationFingerprint(
     options: MockDataGeneratorOptions = {},
     learnedComponents: Pick<MockDataGeneratorFingerprints, 'classifier' | 'sft'> = {}
 ): string {
+    assertMetadataInputWithinLimit(request.metadata);
     return fingerprint({
         generatorLogicVersion: GENERATOR_LOGIC_VERSION,
         request: {
@@ -89,6 +97,7 @@ export function createGenerationFingerprint(
  * @param result
  */
 export function validateGeneratedResult(request: MockDataServiceRequest, result: MockDataGeneratorResult): void {
+    assertMetadataInputWithinLimit(request.metadata);
     const graph =
         request.metadata.format === 'edmx' ? parseEdmx(request.metadata.content) : parseCsn(request.metadata.content);
     const entities = new Map(graph.entities.map((entity) => [entity.entitySetName, entity]));
@@ -194,6 +203,7 @@ export async function generateService(
     runtime: MockDataGeneratorRuntime = {}
 ): Promise<MockDataGeneratorResult> {
     validateOptions(options);
+    assertMetadataInputWithinLimit(request.metadata);
     let resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>> = Object.freeze({});
     const diagnostics: MockDataGeneratorResult['diagnostics'][number][] = [];
     let classifierDegraded = false;

@@ -1,11 +1,35 @@
 import FeMockserverDataGenerator from '../../src/fe-mockserver.cjs';
 import type { LearnedRuntimeHandle } from '../../src/model/learned-runtime.js';
-import { createGenerationFingerprint, writeGeneratedDataCache } from '../../src/index.js';
+import { MAX_METADATA_INPUT_BYTES, createGenerationFingerprint, writeGeneratedDataCache } from '../../src/index.js';
 import { mkdtemp, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 describe('standard FE mockserver provider', () => {
+    it('rejects oversized metadata with a stable privacy-safe diagnostic before generation', async () => {
+        const provider = new FeMockserverDataGenerator({ generatedDataCache: false });
+        const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn() };
+
+        await expect(
+            provider.generate({
+                contractVersion: 1,
+                service: { urlPath: '/oversized', odataVersion: '4.0' },
+                metadata: '€'.repeat(Math.floor(MAX_METADATA_INPUT_BYTES / 3) + 1),
+                targets: [{ name: 'Rows', kind: 'entity-set' }],
+                existingData: {},
+                logger,
+                signal: new AbortController().signal
+            })
+        ).rejects.toMatchObject({ code: 'METADATA_INPUT_TOO_LARGE' });
+
+        expect(logger.warn).toHaveBeenCalledWith(
+            `METADATA_INPUT_TOO_LARGE: Metadata input exceeds the ${MAX_METADATA_INPUT_BYTES}-byte limit ` +
+                `(received ${MAX_METADATA_INPUT_BYTES + 1} bytes).`
+        );
+        expect(logger.debug).not.toHaveBeenCalled();
+        expect(logger.info).not.toHaveBeenCalled();
+    });
+
     it('implements host API v1 and maps the host context to whole-service generation', async () => {
         const provider = new FeMockserverDataGenerator({ seed: 31, rowsPerEntity: 1, generatedDataCache: false });
         const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn() };

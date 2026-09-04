@@ -191,6 +191,12 @@ served. Invalid entries are quarantined. Publication uses a unique temporary
 file, file synchronization, and atomic rename; a cache read or write failure
 never prevents normal generation.
 
+Raw EDMX and serialized CSN inputs are measured as UTF-8 and rejected above a
+fixed 32 MiB ceiling before fingerprinting, cache validation, or parsing. The
+provider emits the privacy-safe code `METADATA_INPUT_TOO_LARGE` with byte counts
+and rejects its whole result, allowing the host to continue through its normal
+built-in/empty fallback without publishing partial generated data.
+
 ## Diagnostics boundary
 
 Returned diagnostics can include stable error codes, component versions,

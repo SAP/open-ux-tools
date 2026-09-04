@@ -36,6 +36,11 @@ For the optional learned tier, also provide `modelManifestPath`, optionally `mod
 
 Generated-data caching is enabled by default and uses the shared SAP tools user cache with its enforced 32 MiB quota. Set `generatedDataCacheDirectory` to use an explicit cache directory, or set `generatedDataCache` to `false` to disable it. A verified cache hit is validated against the current persistence schema and existing rows before use, and it does not initialize the classifier or SFT sessions. When every persistence entity already contains data, the plugin skips generation, cache access, and learned-runtime initialization entirely.
 
+The serialized persistence CSN is also subject to the generator's fixed 32 MiB
+UTF-8 metadata ceiling. Oversized input is rejected before hashing or parsing,
+reported as `METADATA_INPUT_TOO_LARGE`, and leaves the normal CAP data and
+startup path active.
+
 ## Verify the npm boundary
 
 Repository contributors can build the package and run `pnpm check:package`
