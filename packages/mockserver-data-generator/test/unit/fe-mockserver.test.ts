@@ -124,6 +124,43 @@ describe('standard FE mockserver provider', () => {
         expect(dispose).toHaveBeenCalledTimes(1);
     });
 
+    it('keeps host output narrow while delegating through the instrumentable production generator', async () => {
+        const generateService = jest.fn(async () => ({
+            resources: { Records: [{ ID: 1 }] },
+            diagnostics: [],
+            capabilities: {
+                mode: 'deterministic' as const,
+                classifier: 'unavailable' as const,
+                sft: 'unavailable' as const
+            },
+            fingerprints: { request: 'a'.repeat(64) },
+            statistics: {
+                sft: { attempts: 0, parsedResponses: 0, eligibleSlots: 0, acceptedSlots: 0, assignments: [] }
+            }
+        }));
+        const provider = new FeMockserverDataGenerator({ generatedDataCache: false }, { generateService });
+
+        const result = await provider.generate({
+            contractVersion: 1,
+            service: { urlPath: '/records', odataVersion: '4.0' },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer><EntityType Name="Record"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Records', kind: 'entity-set' }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() },
+            signal: new AbortController().signal
+        });
+
+        expect(generateService).toHaveBeenCalledTimes(1);
+        expect(result).toEqual({
+            resources: { Records: [{ ID: 1 }] },
+            diagnostics: [],
+            fingerprints: { request: 'a'.repeat(64) }
+        });
+        expect(result).not.toHaveProperty('capabilities');
+        expect(result).not.toHaveProperty('statistics');
+        await provider.dispose();
+    });
+
     it('keeps failed learned-component circuits open across provider generations', async () => {
         const classify = jest.fn(async () => Promise.reject(new Error('classifier failed')));
         const generate = jest.fn(async () => Promise.reject(new Error('sft failed')));
@@ -357,7 +394,7 @@ describe('standard FE mockserver provider', () => {
 
         expect(first.resources.Records?.[0]?.Opaque).toBe('Opaque 1');
         expect(second.resources.Records?.[0]?.Opaque).toBe('Opaque 1');
-        expect(first.diagnostics).toContainEqual(expect.objectContaining({ code: 'SFT_INFERENCE_FAILED' }));
+        expect(first.diagnostics).toContainEqual(expect.objectContaining({ code: 'SFT_INFERENCE_TIMEOUT' }));
         expect(second.diagnostics).toContainEqual(expect.objectContaining({ code: 'SFT_INFERENCE_FAILED' }));
         expect(generate).toHaveBeenCalledTimes(1);
         await provider.dispose();

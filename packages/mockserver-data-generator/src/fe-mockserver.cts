@@ -6,6 +6,7 @@ import type {
     MockDataGeneratorResult,
     MockDataGeneratorRuntime,
     MockDataServiceIdentity,
+    MockDataServiceRequest,
     MockDataTarget,
     SemanticClassifier,
     SftGenerator
@@ -41,6 +42,11 @@ interface ProviderConfiguration {
 }
 
 interface ProviderDependencies {
+    generateService(
+        request: MockDataServiceRequest,
+        options: MockDataGeneratorOptions,
+        runtime?: MockDataGeneratorRuntime
+    ): Promise<MockDataGeneratorResult>;
     loadRuntime(options: ProviderModelOptions, signal: AbortSignal): Promise<LearnedRuntimeHandle>;
     modelFingerprints(
         options: ProviderModelOptions,
@@ -179,6 +185,8 @@ function parseOptions(options: ProviderOptions = {}): ProviderConfiguration {
 }
 
 const defaultDependencies: ProviderDependencies = {
+    generateService: async (request, options, runtime) =>
+        (await import('./index.js')).generateService(request, options, runtime),
     loadRuntime: async (options, signal) => {
         const { readFile } = await import('node:fs/promises');
         const { createLearnedRuntime, defaultModelCacheRoot, parseModelManifest, prepareModelCache, verifyModelCache } =
@@ -382,7 +390,7 @@ class FeMockserverDataGenerator {
     async generate(context: HostGenerationContext): Promise<HostMockDataGenerationResult> {
         if (this.disposed) throw new Error('Mock data generator provider has been disposed');
         const startedAt = performance.now();
-        const { createGenerationFingerprint, generateService, validateGeneratedResult } = await import('./index.js');
+        const { createGenerationFingerprint, validateGeneratedResult } = await import('./index.js');
         const request = {
             metadata: { format: 'edmx' as const, content: context.metadata },
             service: context.service,
@@ -437,7 +445,7 @@ class FeMockserverDataGenerator {
             }
         }
         const learned = await this.runtime(context.signal, context.logger);
-        const result = await generateService(
+        const result = await this.dependencies.generateService(
             request,
             this.configuration.generation,
             learned ? this.guardRuntime(learned.runtime) : undefined
