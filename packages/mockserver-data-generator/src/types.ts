@@ -122,9 +122,36 @@ export interface MockDataGeneratorFingerprints {
     sft?: string;
 }
 
+export interface SftFieldStatistics {
+    name: string;
+    eligibleSlots: number;
+    acceptedSlots: number;
+}
+
+export interface SftAssignmentStatistics {
+    resource: string;
+    entity: string;
+    rowCount: number;
+    parsed: boolean;
+    fields: ReadonlyArray<SftFieldStatistics>;
+}
+
+export interface SftGenerationStatistics {
+    attempts: number;
+    parsedResponses: number;
+    eligibleSlots: number;
+    acceptedSlots: number;
+    assignments: ReadonlyArray<SftAssignmentStatistics>;
+}
+
+export interface MockDataGeneratorStatistics {
+    sft: SftGenerationStatistics;
+}
+
 export interface MockDataGeneratorResult {
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
     diagnostics: ReadonlyArray<MockDataGeneratorDiagnostic>;
     capabilities: MockDataGeneratorCapabilities;
     fingerprints: MockDataGeneratorFingerprints;
+    statistics: MockDataGeneratorStatistics;
 }

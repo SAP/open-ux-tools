@@ -572,7 +572,16 @@ describe('standard FE mockserver provider', () => {
             resources: { Rows: [{ ID: 1, Rogue: 'obsolete schema field' }] },
             diagnostics: [],
             capabilities: { mode: 'deterministic', classifier: 'unavailable', sft: 'unavailable' },
-            fingerprints: { request: key }
+            fingerprints: { request: key },
+            statistics: {
+                sft: {
+                    attempts: 0,
+                    parsedResponses: 0,
+                    eligibleSlots: 0,
+                    acceptedSlots: 0,
+                    assignments: []
+                }
+            }
         });
         const provider = new FeMockserverDataGenerator({
             ...generation,

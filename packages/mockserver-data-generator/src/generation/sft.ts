@@ -7,7 +7,9 @@ import type {
     MockDataRow,
     MockDataServiceIdentity,
     SemanticClassification,
+    SftAssignmentStatistics,
     SftFieldRequest,
+    SftGenerationStatistics,
     SftGenerator
 } from '../types.js';
 import { coherencePropertyNames } from './coherence.js';
@@ -17,6 +19,7 @@ export interface SftRunResult {
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
     diagnostics: ReadonlyArray<MockDataGeneratorDiagnostic>;
     degraded: boolean;
+    statistics: SftGenerationStatistics;
 }
 
 function isPlainRecord(value: unknown): value is Record<string, unknown> {
@@ -134,6 +137,11 @@ export async function applySftGeneration(
     }
     const generated: Record<string, ReadonlyArray<MockDataRow>> = {};
     const diagnostics: MockDataGeneratorDiagnostic[] = [];
+    const assignments: SftAssignmentStatistics[] = [];
+    let attempts = 0;
+    let parsedResponses = 0;
+    let eligibleSlots = 0;
+    let acceptedSlots = 0;
     let circuitOpen = false;
     let circuitDiagnosticEmitted = false;
 
@@ -164,6 +172,8 @@ export async function applySftGeneration(
             continue;
         }
 
+        attempts += 1;
+        eligibleSlots += fallbackRows.length * fields.length;
         let output: Awaited<ReturnType<SftGenerator['generate']>>;
         try {
             output = await generateWithinBudget(
@@ -183,6 +193,19 @@ export async function applySftGeneration(
                 throw new TypeError('Invalid SFT generation result');
             }
         } catch {
+            assignments.push(
+                Object.freeze({
+                    resource: resourceName,
+                    entity: entity.name,
+                    rowCount: fallbackRows.length,
+                    parsed: false,
+                    fields: Object.freeze(
+                        fields.map(({ name }) =>
+                            Object.freeze({ name, eligibleSlots: fallbackRows.length, acceptedSlots: 0 })
+                        )
+                    )
+                })
+            );
             circuitOpen = true;
             generated[resourceName] = fallbackRows;
             diagnostics.push(
@@ -195,25 +218,47 @@ export async function applySftGeneration(
             );
             continue;
         }
+        parsedResponses += 1;
         const fieldByName = new Map(
             entity.properties
                 .filter((property) => fields.some((field) => field.name === property.name))
                 .map((property) => [property.name, property])
         );
-        generated[resourceName] = Object.freeze(
-            fallbackRows.map((fallbackRow, rowIndex) => {
-                const candidateRow: unknown = output.rows[rowIndex];
-                if (!isPlainRecord(candidateRow)) {
-                    return fallbackRow;
+        const acceptedByField = new Map(fields.map(({ name }) => [name, 0]));
+        const generatedRows: MockDataRow[] = [];
+        for (const [rowIndex, fallbackRow] of fallbackRows.entries()) {
+            const candidateRow: unknown = output.rows[rowIndex];
+            if (!isPlainRecord(candidateRow)) {
+                generatedRows.push(fallbackRow);
+                continue;
+            }
+            const row: Record<string, JsonValue> = { ...fallbackRow };
+            for (const [propertyName, property] of fieldByName) {
+                const candidate = candidateRow[propertyName];
+                if (validCandidate(property, candidate)) {
+                    row[propertyName] = candidate;
+                    acceptedByField.set(propertyName, (acceptedByField.get(propertyName) ?? 0) + 1);
+                    acceptedSlots += 1;
                 }
-                const row: Record<string, JsonValue> = { ...fallbackRow };
-                for (const [propertyName, property] of fieldByName) {
-                    const candidate = candidateRow[propertyName];
-                    if (validCandidate(property, candidate)) {
-                        row[propertyName] = candidate;
-                    }
-                }
-                return Object.freeze(row);
+            }
+            generatedRows.push(Object.freeze(row));
+        }
+        generated[resourceName] = Object.freeze(generatedRows);
+        assignments.push(
+            Object.freeze({
+                resource: resourceName,
+                entity: entity.name,
+                rowCount: fallbackRows.length,
+                parsed: true,
+                fields: Object.freeze(
+                    fields.map(({ name }) =>
+                        Object.freeze({
+                            name,
+                            eligibleSlots: fallbackRows.length,
+                            acceptedSlots: acceptedByField.get(name) ?? 0
+                        })
+                    )
+                )
             })
         );
     }
@@ -221,6 +266,13 @@ export async function applySftGeneration(
     return Object.freeze({
         resources: Object.freeze(generated),
         diagnostics: Object.freeze(diagnostics),
-        degraded: diagnostics.length > 0
+        degraded: diagnostics.length > 0,
+        statistics: Object.freeze({
+            attempts,
+            parsedResponses,
+            eligibleSlots,
+            acceptedSlots,
+            assignments: Object.freeze(assignments)
+        })
     });
 }

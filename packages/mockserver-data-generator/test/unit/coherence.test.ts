@@ -147,4 +147,144 @@ describe('cross-field semantic coherence', () => {
             ])
         );
     });
+
+    it('keeps custom enum statuses coherent instead of reserving unchanged generic values', async () => {
+        const enumRequest: MockDataServiceRequest = {
+            metadata: {
+                format: 'csn',
+                content: JSON.stringify({
+                    definitions: {
+                        'Coherence.Statuses': {
+                            kind: 'entity',
+                            elements: {
+                                ID: { key: true, type: 'cds.Integer', notNull: true },
+                                ProcessingStatus: {
+                                    type: 'cds.String',
+                                    length: 4,
+                                    enum: { NEW: { val: 'NEW' }, DONE: { val: 'DONE' } }
+                                },
+                                ProcessingStatus_Text: { type: 'cds.String', length: 20 }
+                            }
+                        }
+                    }
+                })
+            },
+            service: { urlPath: '/coherence', odataVersion: '4.0' },
+            targets: [{ name: 'Statuses', kind: 'entity-set' }],
+            existingData: {}
+        };
+
+        const result = await generateService(enumRequest, { seed: 113, rowsPerEntity: 4 });
+
+        expect(result.resources.Statuses).toHaveLength(4);
+        result.resources.Statuses.forEach((row) => {
+            expect(['NEW', 'DONE']).toContain(row.ProcessingStatus);
+            expect(row.ProcessingStatus_Text).toBe(row.ProcessingStatus === 'NEW' ? 'New' : 'Done');
+        });
+    });
+
+    it('reconciles key-backed status and unit value helps beyond the built-in vocabulary size', async () => {
+        const result = await generateService(request, { seed: 113, rowsPerEntity: { Documents: 1, Units: 12 } });
+
+        expect(result.resources.Units).toHaveLength(12);
+        expect(new Set(result.resources.Units.map((row) => row.UnitOfMeasure)).size).toBe(12);
+        result.resources.Units.forEach((row) => {
+            expect(row.UnitOfMeasureISOCode).toBe(row.UnitOfMeasure);
+            expect(String(row.UnitOfMeasure_Text).length).toBeGreaterThan(0);
+        });
+    });
+
+    it('updates a status companion after relationship planning without changing the foreign key', async () => {
+        const relationshipRequest: MockDataServiceRequest = {
+            metadata: {
+                format: 'edmx',
+                content: `<?xml version="1.0" encoding="utf-8"?>
+                    <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+                        <edmx:DataServices>
+                            <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Coherence">
+                                <EntityType Name="Status">
+                                    <Key><PropertyRef Name="Code" /></Key>
+                                    <Property Name="Code" Type="Edm.String" MaxLength="1" Nullable="false" />
+                                    <Property Name="Text" Type="Edm.String" MaxLength="20" />
+                                </EntityType>
+                                <EntityType Name="Order">
+                                    <Key><PropertyRef Name="ID" /></Key>
+                                    <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                                    <Property Name="OrderStatus" Type="Edm.String" MaxLength="1" Nullable="false" />
+                                    <Property Name="OrderStatus_Text" Type="Edm.String" MaxLength="20" />
+                                    <NavigationProperty Name="status" Type="Coherence.Status" Nullable="false">
+                                        <ReferentialConstraint Property="OrderStatus" ReferencedProperty="Code" />
+                                    </NavigationProperty>
+                                </EntityType>
+                                <EntityContainer Name="Container">
+                                    <EntitySet Name="Statuses" EntityType="Coherence.Status" />
+                                    <EntitySet Name="Orders" EntityType="Coherence.Order">
+                                        <NavigationPropertyBinding Path="status" Target="Statuses" />
+                                    </EntitySet>
+                                </EntityContainer>
+                            </Schema>
+                        </edmx:DataServices>
+                    </edmx:Edmx>`
+            },
+            service: { urlPath: '/coherence', odataVersion: '4.0' },
+            targets: [{ name: 'Orders', kind: 'entity-set' }],
+            existingData: {
+                Statuses: {
+                    contributor: { present: false },
+                    initialRows: { source: 'json', present: true, rows: [{ Code: '0', Text: 'Created' }] }
+                }
+            }
+        };
+
+        const result = await generateService(relationshipRequest, { seed: 113, rowsPerEntity: 2 });
+
+        expect(result.resources.Orders).toHaveLength(2);
+        result.resources.Orders.forEach((row) => {
+            expect(row.OrderStatus).toBe('0');
+            expect(row.OrderStatus_Text).toBe('Status 0');
+        });
+    });
+
+    it('assigns balances atomically when the initially derived tuple exceeds a narrow precision', async () => {
+        const narrowBalanceRequest: MockDataServiceRequest = {
+            metadata: {
+                format: 'edmx',
+                content: `<?xml version="1.0" encoding="utf-8"?>
+                    <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+                        <edmx:DataServices>
+                            <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Coherence">
+                                <EntityType Name="Balance">
+                                    <Key><PropertyRef Name="ID" /></Key>
+                                    <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                                    <Property Name="OpeningBalance" Type="Edm.Decimal" Precision="1" Scale="0" />
+                                    <Property Name="TotalDebitAmount" Type="Edm.Decimal" Precision="1" Scale="0" />
+                                    <Property Name="TotalCreditAmount" Type="Edm.Decimal" Precision="1" Scale="0" />
+                                    <Property Name="ClosingBalance" Type="Edm.Decimal" Precision="1" Scale="0" />
+                                </EntityType>
+                                <EntityContainer Name="Container">
+                                    <EntitySet Name="Balances" EntityType="Coherence.Balance" />
+                                </EntityContainer>
+                            </Schema>
+                        </edmx:DataServices>
+                    </edmx:Edmx>`
+            },
+            service: { urlPath: '/coherence', odataVersion: '4.0' },
+            targets: [{ name: 'Balances', kind: 'entity-set' }],
+            existingData: {}
+        };
+
+        const result = await generateService(narrowBalanceRequest, { seed: 113, rowsPerEntity: 4 });
+
+        result.resources.Balances.forEach((row) => {
+            const opening = Number(row.OpeningBalance);
+            const debit = Number(row.TotalDebitAmount);
+            const credit = Number(row.TotalCreditAmount);
+            const closing = Number(row.ClosingBalance);
+            expect(Math.abs(opening)).toBeLessThan(10);
+            expect(Math.abs(debit)).toBeLessThan(10);
+            expect(Math.abs(credit)).toBeLessThan(10);
+            expect(Math.abs(closing)).toBeLessThan(10);
+            expect(opening + credit - debit).toBe(closing);
+        });
+    });
 });

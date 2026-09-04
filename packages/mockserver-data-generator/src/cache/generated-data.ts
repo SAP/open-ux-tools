@@ -9,6 +9,7 @@ import type {
     MockDataGeneratorDiagnostic,
     MockDataGeneratorFingerprints,
     MockDataGeneratorResult,
+    MockDataGeneratorStatistics,
     MockDataRow
 } from '../types.js';
 
@@ -169,6 +170,83 @@ function fingerprints(value: unknown, expectedKey: string): MockDataGeneratorFin
     });
 }
 
+function nonNegativeInteger(value: unknown, label: string): number {
+    if (!Number.isSafeInteger(value) || Number(value) < 0) {
+        throw new TypeError(`${label} must be a non-negative safe integer`);
+    }
+    return Number(value);
+}
+
+function statistics(value: unknown): MockDataGeneratorStatistics {
+    const input = record(value, 'generated-data cache statistics');
+    const sft = record(input.sft, 'generated-data cache SFT statistics');
+    if (!Array.isArray(sft.assignments) || sft.assignments.length > 1_000) {
+        throw new TypeError('generated-data cache SFT assignments must be a bounded array');
+    }
+    const assignments = Object.freeze(
+        sft.assignments.map((entry) => {
+            const assignment = record(entry, 'generated-data cache SFT assignment');
+            if (typeof assignment.parsed !== 'boolean' || !Array.isArray(assignment.fields)) {
+                throw new TypeError('generated-data cache SFT assignment is invalid');
+            }
+            if (assignment.fields.length > 1_000) {
+                throw new TypeError('generated-data cache SFT fields must be a bounded array');
+            }
+            return Object.freeze({
+                resource: string(assignment.resource, 'generated-data cache SFT resource'),
+                entity: string(assignment.entity, 'generated-data cache SFT entity'),
+                rowCount: nonNegativeInteger(assignment.rowCount, 'generated-data cache SFT row count'),
+                parsed: assignment.parsed,
+                fields: Object.freeze(
+                    assignment.fields.map((entry) => {
+                        const field = record(entry, 'generated-data cache SFT field');
+                        const eligibleSlots = nonNegativeInteger(
+                            field.eligibleSlots,
+                            'generated-data cache SFT eligible slots'
+                        );
+                        const acceptedSlots = nonNegativeInteger(
+                            field.acceptedSlots,
+                            'generated-data cache SFT accepted slots'
+                        );
+                        if (acceptedSlots > eligibleSlots) {
+                            throw new TypeError('generated-data cache SFT accepted slots exceed eligible slots');
+                        }
+                        return Object.freeze({
+                            name: string(field.name, 'generated-data cache SFT field name'),
+                            eligibleSlots,
+                            acceptedSlots
+                        });
+                    })
+                )
+            });
+        })
+    );
+    const attempts = nonNegativeInteger(sft.attempts, 'generated-data cache SFT attempts');
+    const parsedResponses = nonNegativeInteger(sft.parsedResponses, 'generated-data cache SFT parsed responses');
+    const eligibleSlots = nonNegativeInteger(sft.eligibleSlots, 'generated-data cache SFT eligible slots');
+    const acceptedSlots = nonNegativeInteger(sft.acceptedSlots, 'generated-data cache SFT accepted slots');
+    const assignmentEligibleSlots = assignments.reduce(
+        (total, assignment) => total + assignment.fields.reduce((sum, field) => sum + field.eligibleSlots, 0),
+        0
+    );
+    const assignmentAcceptedSlots = assignments.reduce(
+        (total, assignment) => total + assignment.fields.reduce((sum, field) => sum + field.acceptedSlots, 0),
+        0
+    );
+    if (
+        attempts !== assignments.length ||
+        parsedResponses !== assignments.filter(({ parsed }) => parsed).length ||
+        eligibleSlots !== assignmentEligibleSlots ||
+        acceptedSlots !== assignmentAcceptedSlots ||
+        acceptedSlots > eligibleSlots
+    ) {
+        throw new TypeError('generated-data cache SFT statistics totals are inconsistent');
+    }
+    return Object.freeze({
+        sft: Object.freeze({ attempts, parsedResponses, eligibleSlots, acceptedSlots, assignments })
+    });
+}
+
 function result(value: unknown, expectedKey: string): MockDataGeneratorResult {
     const input = record(value, 'generated-data cache result');
     const resourceInput = record(input.resources, 'generated-data cache resources');
@@ -187,7 +265,8 @@ function result(value: unknown, expectedKey: string): MockDataGeneratorResult {
         resources,
         diagnostics: diagnostics(input.diagnostics),
         capabilities: capabilities(input.capabilities),
-        fingerprints: fingerprints(input.fingerprints, expectedKey)
+        fingerprints: fingerprints(input.fingerprints, expectedKey),
+        statistics: statistics(input.statistics)
     });
 }
 

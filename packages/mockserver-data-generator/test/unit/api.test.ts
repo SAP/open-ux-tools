@@ -345,6 +345,21 @@ describe('mockserver data generator public API', () => {
             { ID: 1, OpaqueText: 'Quarterly liquidity forecast' },
             { ID: 2, OpaqueText: 'Bank account reconciliation' }
         ]);
+        expect(result.statistics.sft).toEqual({
+            attempts: 1,
+            parsedResponses: 1,
+            eligibleSlots: 2,
+            acceptedSlots: 2,
+            assignments: [
+                {
+                    resource: 'Records',
+                    entity: 'Record',
+                    rowCount: 2,
+                    parsed: true,
+                    fields: [{ name: 'OpaqueText', eligibleSlots: 2, acceptedSlots: 2 }]
+                }
+            ]
+        });
     });
 
     it('degrades both learned tiers independently and still returns usable fallback rows', async () => {
@@ -397,6 +412,13 @@ describe('mockserver data generator public API', () => {
                 expect.objectContaining({ code: 'SFT_INFERENCE_FAILED', target: 'Records' })
             ])
         );
+        expect(result.statistics.sft).toMatchObject({
+            attempts: 1,
+            parsedResponses: 0,
+            eligibleSlots: 1,
+            acceptedSlots: 0,
+            assignments: [expect.objectContaining({ resource: 'Records', parsed: false })]
+        });
     });
 
     it('opens the SFT circuit after one entity failure instead of retrying every entity', async () => {

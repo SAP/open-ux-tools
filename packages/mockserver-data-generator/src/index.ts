@@ -198,6 +198,13 @@ export async function generateService(
     const diagnostics: MockDataGeneratorResult['diagnostics'][number][] = [];
     let classifierDegraded = false;
     let sftDegraded = false;
+    let sftStatistics: MockDataGeneratorResult['statistics']['sft'] = Object.freeze({
+        attempts: 0,
+        parsedResponses: 0,
+        eligibleSlots: 0,
+        acceptedSlots: 0,
+        assignments: Object.freeze([])
+    });
     if (request.targets.length > 0) {
         const graph =
             request.metadata.format === 'edmx'
@@ -234,6 +241,7 @@ export async function generateService(
             resources = sftRun.resources;
             diagnostics.push(...sftRun.diagnostics);
             sftDegraded = sftRun.degraded;
+            sftStatistics = sftRun.statistics;
         }
         assertRelationshipIntegrity(graph, resources, request.existingData);
     }
@@ -248,7 +256,8 @@ export async function generateService(
             }),
             ...(runtime.classifier ? { classifier: runtime.classifier.fingerprint } : {}),
             ...(runtime.sft ? { sft: runtime.sft.fingerprint } : {})
-        })
+        }),
+        statistics: Object.freeze({ sft: sftStatistics })
     });
 }
 
@@ -263,6 +272,7 @@ export type {
     MockDataGeneratorOptions,
     MockDataGeneratorResult,
     MockDataGeneratorRuntime,
+    MockDataGeneratorStatistics,
     MockDataMetadata,
     MockDataRow,
     MockDataServiceIdentity,
@@ -271,7 +281,10 @@ export type {
     SemanticClassification,
     SemanticClassifier,
     SemanticClassifierInput,
+    SftAssignmentStatistics,
     SftFieldRequest,
+    SftFieldStatistics,
+    SftGenerationStatistics,
     SftGenerationInput,
     SftGenerationOutput,
     SftGenerator

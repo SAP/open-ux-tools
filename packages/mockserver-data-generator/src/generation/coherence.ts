@@ -210,7 +210,27 @@ function setIfValid(row: MutableRow, property: SchemaProperty, value: JsonValue)
     }
 }
 
-function reconcileDates(row: MutableRow, start: SchemaProperty, end: SchemaProperty, rowIndex: number): void {
+function propertyIsProtected(property: SchemaProperty, protectedProperties: ReadonlySet<string>): boolean {
+    return protectedProperties.has(property.name);
+}
+
+function groupIsProtected(
+    properties: ReadonlyArray<SchemaProperty>,
+    protectedProperties: ReadonlySet<string>
+): boolean {
+    return properties.some((property) => propertyIsProtected(property, protectedProperties));
+}
+
+function reconcileDates(
+    row: MutableRow,
+    start: SchemaProperty,
+    end: SchemaProperty,
+    rowIndex: number,
+    protectedProperties: ReadonlySet<string>
+): void {
+    if (groupIsProtected([start, end], protectedProperties)) {
+        return;
+    }
     const startValue = row[start.name];
     const endValue = row[end.name];
     if (typeof startValue !== 'string' || typeof endValue !== 'string' || startValue <= endValue) {
@@ -222,36 +242,100 @@ function reconcileDates(row: MutableRow, start: SchemaProperty, end: SchemaPrope
     setIfValid(row, end, replacement);
 }
 
+function displayText(code: string, prefix: string): string {
+    const parts = tokens(code);
+    if (parts.length > 0 && parts.some((part) => /[a-z]/iu.test(part))) {
+        return parts.map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`).join(' ');
+    }
+    return `${prefix} ${code}`;
+}
+
+function statusText(code: string, property: SchemaProperty): string | undefined {
+    const known = STATUS_VALUES.find((value) => value.code === code)?.text;
+    const candidates = [known, displayText(code, 'Status'), code].filter(
+        (candidate): candidate is string => candidate !== undefined
+    );
+    return candidates.find((candidate) => propertyValueIsValid(property, candidate));
+}
+
+function statusDomain(code: SchemaProperty, text: SchemaProperty): ReadonlyArray<readonly [string, string]> {
+    const declared = code.enumValues?.filter((value): value is string => typeof value === 'string');
+    const codes = declared && declared.length > 0 ? declared : STATUS_VALUES.map((value) => value.code);
+    return [...new Set(codes)].flatMap((candidate) => {
+        const label = statusText(candidate, text);
+        return propertyValueIsValid(code, candidate) && label ? [[candidate, label] as const] : [];
+    });
+}
+
 function reconcileStatus(
     rows: ReadonlyArray<MutableRow>,
     code: SchemaProperty,
     text: SchemaProperty,
-    seed: number
+    seed: number,
+    protectedProperties: ReadonlySet<string>
 ): void {
-    const values = STATUS_VALUES.filter(
-        (value) => propertyValueIsValid(code, value.code) && propertyValueIsValid(text, value.text)
-    );
-    if (values.length === 0 || (code.isKey && rows.length > values.length)) {
+    const values = statusDomain(code, text);
+    if (values.length === 0) {
         return;
     }
+    const preserveCodes = propertyIsProtected(code, protectedProperties) || (code.isKey && rows.length > values.length);
     rows.forEach((row, rowIndex) => {
-        const value = values[(Math.abs(seed) + rowIndex) % values.length];
-        row[code.name] = value.code;
-        row[text.name] = value.text;
+        if (preserveCodes) {
+            const currentCode = row[code.name];
+            const label = typeof currentCode === 'string' ? statusText(currentCode, text) : undefined;
+            if (label && propertyValueIsValid(code, currentCode)) {
+                row[text.name] = label;
+            }
+            return;
+        }
+        const [candidateCode, label] = values[(Math.abs(seed) + rowIndex) % values.length];
+        row[code.name] = candidateCode;
+        row[text.name] = label;
     });
 }
 
-function reconcileUnits(rows: ReadonlyArray<MutableRow>, group: UnitGroup, seed: number): void {
-    const values = UNIT_VALUES.filter(
-        (value) =>
-            propertyValueIsValid(group.code, value.code) &&
-            propertyValueIsValid(group.text, value.text) &&
-            propertyValueIsValid(group.iso, value.iso)
+function unitValue(code: string, group: UnitGroup): Readonly<{ code: string; iso: string; text: string }> | undefined {
+    const known = UNIT_VALUES.find((value) => value.code === code);
+    const textCandidates = [known?.text, displayText(code, 'Unit'), code].filter(
+        (candidate): candidate is string => candidate !== undefined
     );
-    if (values.length === 0 || (group.code.isKey && rows.length > values.length)) {
+    const isoCandidates = [known?.iso, code].filter((candidate): candidate is string => candidate !== undefined);
+    const text = textCandidates.find((candidate) => propertyValueIsValid(group.text, candidate));
+    const iso = isoCandidates.find((candidate) => propertyValueIsValid(group.iso, candidate));
+    return propertyValueIsValid(group.code, code) && text && iso ? { code, text, iso } : undefined;
+}
+
+function unitDomain(group: UnitGroup): ReadonlyArray<Readonly<{ code: string; iso: string; text: string }>> {
+    const declared = group.code.enumValues?.filter((value): value is string => typeof value === 'string');
+    const codes = declared && declared.length > 0 ? declared : UNIT_VALUES.map((value) => value.code);
+    return [...new Set(codes)].flatMap((code) => {
+        const value = unitValue(code, group);
+        return value ? [value] : [];
+    });
+}
+
+function reconcileUnits(
+    rows: ReadonlyArray<MutableRow>,
+    group: UnitGroup,
+    seed: number,
+    protectedProperties: ReadonlySet<string>
+): void {
+    const values = unitDomain(group);
+    if (values.length === 0) {
         return;
     }
+    const preserveCodes =
+        propertyIsProtected(group.code, protectedProperties) || (group.code.isKey && rows.length > values.length);
     rows.forEach((row, rowIndex) => {
+        if (preserveCodes) {
+            const currentCode = row[group.code.name];
+            const value = typeof currentCode === 'string' ? unitValue(currentCode, group) : undefined;
+            if (value) {
+                row[group.text.name] = value.text;
+                row[group.iso.name] = value.iso;
+            }
+            return;
+        }
         const value = values[(Math.abs(seed) + rowIndex) % values.length];
         row[group.code.name] = value.code;
         row[group.text.name] = value.text;
@@ -263,21 +347,110 @@ function rounded(value: number, property: SchemaProperty): number {
     return Number(value.toFixed(property.primitiveType === 'int' ? 0 : (property.scale ?? 2)));
 }
 
-function reconcileBalance(row: MutableRow, group: BalanceGroup): void {
+interface BalanceTuple {
+    opening: number;
+    debit: number;
+    credit: number;
+    closing: number;
+}
+
+function balanceTupleIsValid(group: BalanceGroup, tuple: BalanceTuple): boolean {
+    return (
+        Math.abs(tuple.opening + tuple.credit - tuple.debit - tuple.closing) < 0.000_001 &&
+        propertyValueIsValid(group.opening, tuple.opening) &&
+        propertyValueIsValid(group.debit, tuple.debit) &&
+        propertyValueIsValid(group.credit, tuple.credit) &&
+        propertyValueIsValid(group.closing, tuple.closing)
+    );
+}
+
+function numericCandidates(property: SchemaProperty, preferred: unknown, locked: boolean): ReadonlyArray<number> {
+    if (locked) {
+        return typeof preferred === 'number' && propertyValueIsValid(property, preferred) ? [preferred] : [];
+    }
+    const declared = property.enumValues?.filter((value): value is number => typeof value === 'number') ?? [];
+    const candidates = [
+        typeof preferred === 'number' ? Math.abs(rounded(preferred, property)) : undefined,
+        ...declared
+    ];
+    for (let value = 0; value <= 9; value += 1) {
+        candidates.push(value);
+    }
+    return [...new Set(candidates)].filter(
+        (candidate): candidate is number => candidate !== undefined && propertyValueIsValid(property, candidate)
+    );
+}
+
+function compatibleBalanceTuple(
+    row: MutableRow,
+    group: BalanceGroup,
+    protectedProperties: ReadonlySet<string>
+): BalanceTuple | undefined {
     const opening = row[group.opening.name];
     const debit = row[group.debit.name];
     const credit = row[group.credit.name];
     if (typeof opening !== 'number' || typeof debit !== 'number' || typeof credit !== 'number') {
-        return;
+        return undefined;
     }
     const safeOpening = Math.abs(opening);
     const safeCredit = Math.abs(credit);
     const safeDebit = Math.min(Math.abs(debit), safeOpening + safeCredit);
-    const closing = rounded(safeOpening + safeCredit - safeDebit, group.closing);
-    setIfValid(row, group.opening, rounded(safeOpening, group.opening));
-    setIfValid(row, group.credit, rounded(safeCredit, group.credit));
-    setIfValid(row, group.debit, rounded(safeDebit, group.debit));
-    setIfValid(row, group.closing, closing);
+    const preferred = {
+        opening: rounded(safeOpening, group.opening),
+        credit: rounded(safeCredit, group.credit),
+        debit: rounded(safeDebit, group.debit),
+        closing: rounded(safeOpening + safeCredit - safeDebit, group.closing)
+    };
+    if (balanceTupleIsValid(group, preferred)) {
+        return preferred;
+    }
+    const openings = numericCandidates(
+        group.opening,
+        row[group.opening.name],
+        propertyIsProtected(group.opening, protectedProperties)
+    );
+    const debits = numericCandidates(
+        group.debit,
+        row[group.debit.name],
+        propertyIsProtected(group.debit, protectedProperties)
+    );
+    const credits = numericCandidates(
+        group.credit,
+        row[group.credit.name],
+        propertyIsProtected(group.credit, protectedProperties)
+    );
+    for (const candidateOpening of openings) {
+        for (const candidateCredit of credits) {
+            for (const candidateDebit of debits) {
+                const candidateClosing = candidateOpening + candidateCredit - candidateDebit;
+                const tuple = {
+                    opening: candidateOpening,
+                    debit: candidateDebit,
+                    credit: candidateCredit,
+                    closing: candidateClosing
+                };
+                if (
+                    (!propertyIsProtected(group.closing, protectedProperties) ||
+                        candidateClosing === row[group.closing.name]) &&
+                    balanceTupleIsValid(group, tuple)
+                ) {
+                    return tuple;
+                }
+            }
+        }
+    }
+    return undefined;
+}
+
+function reconcileBalance(row: MutableRow, group: BalanceGroup, protectedProperties: ReadonlySet<string>): void {
+    const tuple = compatibleBalanceTuple(row, group, protectedProperties);
+    if (!tuple) {
+        return;
+    }
+    row[group.opening.name] = tuple.opening;
+    row[group.debit.name] = tuple.debit;
+    row[group.credit.name] = tuple.credit;
+    row[group.closing.name] = tuple.closing;
 }
 
 const LIFECYCLE_STATES: ReadonlyArray<Readonly<Record<LifecycleRole, boolean>>> = [
@@ -290,8 +463,12 @@ const LIFECYCLE_STATES: ReadonlyArray<Readonly<Record<LifecycleRole, boolean>>> 
 function reconcileLifecycle(
     rows: ReadonlyArray<MutableRow>,
     group: Readonly<Partial<Record<LifecycleRole, SchemaProperty>>>,
-    seed: number
+    seed: number,
+    protectedProperties: ReadonlySet<string>
 ): void {
+    if (groupIsProtected(Object.values(group), protectedProperties)) {
+        return;
+    }
     rows.forEach((row, rowIndex) => {
         const state = LIFECYCLE_STATES[(Math.abs(seed) + rowIndex) % LIFECYCLE_STATES.length];
         for (const [role, property] of Object.entries(group) as Array<[LifecycleRole, SchemaProperty]>) {
@@ -300,7 +477,15 @@ function reconcileLifecycle(
     });
 }
 
-function reconcileDraft(rows: ReadonlyArray<MutableRow>, group: DraftGroup, seed: number): void {
+function reconcileDraft(
+    rows: ReadonlyArray<MutableRow>,
+    group: DraftGroup,
+    seed: number,
+    protectedProperties: ReadonlySet<string>
+): void {
+    if (groupIsProtected(Object.values(group), protectedProperties)) {
+        return;
+    }
     rows.forEach((row, rowIndex) => {
         const active = (Math.abs(seed) + rowIndex) % 2 === 0;
         setIfValid(row, group.isActive, active);
@@ -317,7 +502,15 @@ function reconcileDraft(rows: ReadonlyArray<MutableRow>, group: DraftGroup, seed
     });
 }
 
-function reconcileProcessingStatus(rows: ReadonlyArray<MutableRow>, group: ProcessingStatusGroup, seed: number): void {
+function reconcileProcessingStatus(
+    rows: ReadonlyArray<MutableRow>,
+    group: ProcessingStatusGroup,
+    seed: number,
+    protectedProperties: ReadonlySet<string>
+): void {
+    if (groupIsProtected(Object.values(group), protectedProperties)) {
+        return;
+    }
     rows.forEach((row, rowIndex) => {
         const state = (Math.abs(seed) + rowIndex) % 3;
         const primaryPosted = state > 0;
@@ -344,11 +537,13 @@ export function coherencePropertyNames(entity: SchemaEntity): ReadonlySet<string
     datePairs(entity)
         .flat()
         .forEach((property) => names.add(property.name));
-    statusPairs(entity)
-        .flat()
-        .forEach((property) => names.add(property.name));
+    statusPairs(entity).forEach(([code, text]) => {
+        if (statusDomain(code, text).length > 0) {
+            [code, text].forEach((property) => names.add(property.name));
+        }
+    });
     const units = unitGroup(entity);
-    if (units) {
+    if (units && unitDomain(units).length > 0) {
         Object.values(units).forEach((property) => names.add(property.name));
     }
     const balance = balanceGroup(entity);
@@ -371,33 +566,34 @@ export function coherencePropertyNames(entity: SchemaEntity): ReadonlySet<string
 export function applySemanticCoherence(
     entity: SchemaEntity,
     inputRows: ReadonlyArray<MockDataRow>,
-    seed: number
+    seed: number,
+    protectedProperties: ReadonlySet<string> = new Set()
 ): ReadonlyArray<MockDataRow> {
     const rows = inputRows.map((row) => ({ ...row }));
     for (const [start, end] of datePairs(entity)) {
-        rows.forEach((row, rowIndex) => reconcileDates(row, start, end, rowIndex));
+        rows.forEach((row, rowIndex) => reconcileDates(row, start, end, rowIndex, protectedProperties));
     }
     for (const [code, text] of statusPairs(entity)) {
-        reconcileStatus(rows, code, text, seed);
+        reconcileStatus(rows, code, text, seed, protectedProperties);
     }
     const units = unitGroup(entity);
     if (units) {
-        reconcileUnits(rows, units, seed);
+        reconcileUnits(rows, units, seed, protectedProperties);
     }
     const balance = balanceGroup(entity);
     if (balance) {
-        rows.forEach((row) => reconcileBalance(row, balance));
+        rows.forEach((row) => reconcileBalance(row, balance, protectedProperties));
     }
     for (const group of lifecycleGroups(entity)) {
-        reconcileLifecycle(rows, group, seed);
+        reconcileLifecycle(rows, group, seed, protectedProperties);
     }
     const draft = draftGroup(entity);
     if (draft) {
-        reconcileDraft(rows, draft, seed);
+        reconcileDraft(rows, draft, seed, protectedProperties);
     }
     const processingStatus = processingStatusGroup(entity);
     if (processingStatus) {
-        reconcileProcessingStatus(rows, processingStatus, seed);
+        reconcileProcessingStatus(rows, processingStatus, seed, protectedProperties);
     }
     return rows;
 }

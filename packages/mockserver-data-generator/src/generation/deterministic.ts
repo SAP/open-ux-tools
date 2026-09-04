@@ -615,6 +615,20 @@ export function generateDeterministicResources(
             break;
         }
     }
+    for (const [resourceName, rows] of Object.entries(resources)) {
+        const entity = entities.get(resourceName);
+        if (!entity) {
+            continue;
+        }
+        const relationshipProperties = new Set(
+            (relationshipsBySource.get(resourceName) ?? []).flatMap((relationship) =>
+                relationship.mappings.map(({ sourceProperty }) => sourceProperty)
+            )
+        );
+        resources[resourceName] = applySemanticCoherence(entity, rows, options.seed ?? 1, relationshipProperties).map(
+            (row) => ({ ...row })
+        );
+    }
     const frozenResources = Object.freeze(
         Object.fromEntries(
             Object.entries(resources).map(([name, rows]) => {

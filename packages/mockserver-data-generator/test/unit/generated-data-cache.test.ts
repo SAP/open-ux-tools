@@ -27,6 +27,23 @@ function result(): MockDataGeneratorResult {
             request: cacheKey,
             classifier: 'classifier-v1',
             sft: 'sft-v1'
+        },
+        statistics: {
+            sft: {
+                attempts: 1,
+                parsedResponses: 1,
+                eligibleSlots: 1,
+                acceptedSlots: 1,
+                assignments: [
+                    {
+                        resource: 'Products',
+                        entity: 'Product',
+                        rowCount: 1,
+                        parsed: true,
+                        fields: [{ name: 'Name', eligibleSlots: 1, acceptedSlots: 1 }]
+                    }
+                ]
+            }
         }
     };
 }
