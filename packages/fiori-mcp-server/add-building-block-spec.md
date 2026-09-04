@@ -105,17 +105,18 @@ The agent handles **judgment** — which annotation, which path, which type. The
 ## How It Works
 
 ```mermaid
-flowchart LR
-    A["👤 Developer\n'Add a Table to my app'"] --> B["🤖 AI Agent\n(Joule / Claude / Cursor)"]
+flowchart TD
+    A["👤 Developer<br/>'Add a Table to my app'"]
+    A --> B["🤖 AI Agent<br/>(Joule / Claude / Cursor)"]
 
-    B --> C{"Before: No tool"}
-    C --> D["❌ Writes XML manually\nWrong namespaces\nMissing manifest updates\nBreaks at runtime"]
-    C --> E["❌ Gives up\nTells user to open\nVS Code or BAS manually"]
+    B --> C{"Before"}
+    C --> D["❌ Writes XML manually<br/>Wrong namespaces<br/>Breaks at runtime"]
+    C --> E["❌ Gives up<br/>Tells user to open VS Code"]
 
-    B --> F{"Now: add_building_block tool"}
-    F --> G["🔧 MCP Tool\nadd_building_block"]
-    G --> H["⚙️ fe-fpm-writer\nSame engine as\nSAP Page Editor"]
-    H --> I["✅ Correct XML written\nmanifest.json updated\nWorks first time"]
+    B --> F{"Now"}
+    F --> G["🔧 add_building_block tool"]
+    G --> H["⚙️ fe-fpm-writer<br/>Same engine as Page Editor"]
+    H --> I["✅ Correct XML written<br/>manifest.json updated<br/>Works first time"]
 
     style D fill:#ffcccc
     style E fill:#ffcccc
@@ -222,14 +223,18 @@ Used in Joule Desktop to validate all three BB types in a single agent run:
 ```
 I am working on a Fiori FPM app at /path/to/your/fiori-app
 
-Add the following building blocks to the main custom page view. Read
-webapp/manifest.json first to find the correct view/fragment files, then
-read those files to determine the correct aggregationPath before calling
-add_building_block. Do NOT write any XML manually.
+Add the following building blocks to the main custom page view.
+Read webapp/manifest.json first to find the correct view/fragment files,
+then read those files to determine the correct aggregationPath before
+calling add_building_block. Do NOT write any XML manually.
 
-1. A FilterBar with id productFilterBar, contextPath /CampaignsToProductsRelations
-2. A Table with id productTable, contextPath /CampaignsToProductsRelations,
+1. A FilterBar with id productFilterBar,
+   contextPath /CampaignsToProductsRelations
+
+2. A Table with id productTable,
+   contextPath /CampaignsToProductsRelations,
    linked to productFilterBar
+
 3. A Rich Text Editor with id productNotesRte,
    targetProperty /CampaignsToProductsRelations/description
 ```
