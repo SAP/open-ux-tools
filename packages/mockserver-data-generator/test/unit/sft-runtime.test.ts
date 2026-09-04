@@ -111,6 +111,32 @@ describe('pilot-compatible SFT runtime', () => {
         expect(new Set(generate.mock.calls.map(([request]) => request.seed)).size).toBe(3);
     });
 
+    test('keeps the default chunk below the production model output budget', async () => {
+        const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
+            JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
+        );
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate },
+            sampling: {
+                temperature: 0.6,
+                topP: 0.9,
+                repetitionPenalty: 1.15,
+                noRepeatNgramSize: 4,
+                maxNewTokens: 300
+            }
+        });
+        const fields = Array.from({ length: 13 }, (_unused, index) => ({
+            name: `LongBusinessProperty${index + 1}`,
+            primitiveType: 'string',
+            nullable: false
+        }));
+
+        await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
+
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([12, 1]);
+    });
+
     test('bounds a non-cooperative backend and disposes it', async () => {
         const dispose = jest.fn(async () => undefined);
         const generator = createPilotSftGenerator({
