@@ -612,25 +612,22 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 - [ ] Make add/remove/re-add idempotent and remove the provider dependency/config when explicitly removing generator support.
 - [ ] Add a minor changeset.
 
-### Task 6.3: Add the existing CLI's opt-in flag and prompt
+### Task 6.3: Keep the general create CLI and MCP skill out of the MockGen change
 
 **Files:**
 
-- Modify: `packages/create/src/cli/add/mockserver-config.ts`
-- Modify: `packages/create/src/cli/add/index.ts` if option registration is centralized there.
-- Modify: `packages/create/test/unit/cli/add/mockserver-config.test.ts`
-- Modify: `packages/create/README.md`
-- Modify: `packages/fiori-mcp-server/skills/sap-fiori-create-cli/SKILL.md` through the existing generated CLI documentation flow.
-- Create: `.changeset/create-mockserver-data-generator.md`
-- Create: `.changeset/fiori-mcp-server-mockserver-data-generator.md`
+- Do not modify `packages/create`.
+- Do not modify `packages/fiori-mcp-server`.
 
-- [ ] Add `--data-generator` and a matching interactive choice to the existing mockserver-config command.
-- [ ] Test default invocation, opt-in, `--skip-install`, `--simulate`, interactive yes/no, repeat invocation, and install failure.
-- [ ] Make installation completion and failure observable to this command. Do not rely on the current void helper that swallows rejected installs; use an awaited command-local path or change the shared helper only with focused compatibility tests for all callers.
-- [ ] Keep the default standard mockserver path unchanged.
-- [ ] Print actionable compatibility guidance when the installed host is too old.
-- [ ] Regenerate and review both CLI documentation outputs, and add the required patch changeset for the bundled `@sap-ux/fiori-mcp-server` consumer.
-- [ ] Add a minor changeset.
+- [x] Keep the existing CLI and its generated MCP skill byte-for-byte unchanged.
+- [x] Use the focused local/BAS development-kit installer as the explicit unpublished-package workflow.
+- [x] Keep programmatic production configuration in `mockserver-config-writer`, the configuration tool owned by this feature.
+
+**Scope correction (2026-09-04):** The optional `@sap-ux/create`
+`--data-generator` flag and generated Fiori MCP documentation were removed. They
+are not required by the standard mockserver provider contract or by the
+requested local/BAS installer, and would broaden the initial MockGen delivery
+beyond its approved package and configuration-tooling scope.
 
 ### Task 6.4: Verify unchanged consumers
 
@@ -647,7 +644,6 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 ```bash
 pnpm --filter @sap-ux/ui5-config test
 pnpm --filter @sap-ux/mockserver-config-writer test
-pnpm --filter @sap-ux/create test
 pnpm lint:dependency-versions
 pnpm validate:changesets
 ```
@@ -1104,7 +1100,7 @@ For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS,
 - Create: `packages/mockserver-data-generator/bench/runtime-wasm.mjs`
 - Create in model repository: `reports/runtime-backend-decision-v1.md`
 
-- [ ] Reuse the proven `fiori-mcp-server` bundling pattern as a starting point, not as proof that autoregressive generation performs adequately.
+- [ ] Reuse the feature's verified package-bundling harness as a starting point, not as proof that autoregressive generation performs adequately.
 - [ ] Compare `onnxruntime-node`, platform-specific native packaging where maintainable, and ONNX Runtime Web/WASM under Node/BAS.
 - [ ] Run identical classifier and autoregressive generator artifacts through each viable backend.
 - [ ] Test macOS arm64/x64, Linux x64/BAS, and Windows x64 under the supported Node matrix.
@@ -1379,7 +1375,6 @@ pnpm --filter @sap-ux/mockserver-data-generator-cap lint
 pnpm --filter @sap-ux/mockserver-data-generator-cap test
 pnpm --filter @sap-ux/ui5-config test
 pnpm --filter @sap-ux/mockserver-config-writer test
-pnpm --filter @sap-ux/create test
 pnpm lint:dependency-versions
 pnpm validate:changesets
 ```
@@ -1458,7 +1453,6 @@ pnpm changeset status
 - Modify: `packages/mockserver-data-generator/docs/security.md`
 - Modify: `packages/mockserver-data-generator/docs/troubleshooting.md`
 - Modify: `packages/mockserver-config-writer/README.md`
-- Modify: `packages/create/README.md`
 - Modify: `packages/mockserver-data-generator-cap/README.md`
 
 - [ ] Document opt-in setup, one-middleware configuration, model acquisition, offline preparation, deterministic seed, existing-data precedence, cache behavior, diagnostics, and rollback.

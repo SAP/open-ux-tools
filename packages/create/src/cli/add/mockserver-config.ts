@@ -1,14 +1,12 @@
 import { relative } from 'node:path';
 import type { Command } from 'commander';
 import prompts from 'prompts';
-import { execNpmCommand, getWebappPath } from '@sap-ux/project-access';
+import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig, getMockserverConfigQuestions } from '@sap-ux/mockserver-config-writer';
 import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
 import { validateBasePath } from '../../validation/index.js';
-
-const MOCKSERVER_PACKAGE = '@sap-ux/ui5-middleware-fe-mockserver';
-const MOCK_DATA_GENERATOR_PACKAGE = '@sap-ux/mockserver-data-generator';
+import { runNpmInstallCommand } from '../../common/index.js';
 
 const { prompt } = prompts;
 
@@ -25,7 +23,6 @@ Example:
     \`npx --yes @sap-ux/create@latest add mockserver-config\``
         )
         .option('-i, --interactive', 'Ask for config options or otherwise, use the default options.')
-        .option('--data-generator', 'Generate context-aware mock data with MockGen through the standard mockserver.')
         .option('-n, --skip-install', 'Skip the `npm install` step.')
         .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
@@ -37,8 +34,7 @@ Example:
                 path || process.cwd(),
                 !!options.simulate,
                 !!options.skipInstall,
-                !!options.interactive,
-                !!options.dataGenerator
+                !!options.interactive
             );
         });
 }
@@ -50,14 +46,12 @@ Example:
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param skipInstall - if true, skip execution of npm install
  * @param interactive - if true, prompt user for config options, otherwise use defaults
- * @param dataGenerator - if true, enable the standard mockserver data generator provider
  */
 async function addMockserverConfig(
     basePath: string,
     simulate: boolean,
     skipInstall: boolean,
-    interactive: boolean,
-    dataGenerator: boolean
+    interactive: boolean
 ): Promise<void> {
     const logger = getLogger();
     try {
@@ -67,24 +61,10 @@ async function addMockserverConfig(
         await validateBasePath(basePath);
         const webappPath = await getWebappPath(basePath);
         const config: MockserverConfig = { webappPath };
-        let enableDataGenerator = dataGenerator;
         if (interactive) {
-            const questions = getMockserverConfigQuestions({
-                webappPath,
-                askForOverwrite: true,
-                askForMockDataGenerator: true
-            });
+            const questions = getMockserverConfigQuestions({ webappPath, askForOverwrite: true });
             // User responses for webappPath and whether to overwrite existing services in mockserver config
-            const answers = await prompt(questions);
-            if (answers) {
-                const { mockDataGenerator, ...ui5MockYamlConfig } = answers;
-                config.ui5MockYamlConfig = ui5MockYamlConfig;
-                enableDataGenerator ||= mockDataGenerator === true;
-            }
-        }
-        if (enableDataGenerator) {
-            config.ui5MockYamlConfig ??= {};
-            config.ui5MockYamlConfig.mockDataGenerator = {};
+            config.ui5MockYamlConfig = await prompt(questions);
         }
         const fs = await generateMockserverConfig(basePath, config);
         await traceChanges(fs);
@@ -97,13 +77,10 @@ async function addMockserverConfig(
                 if (relPath) {
                     logger.info(`cd ${relPath}`);
                 }
-                const packages = [MOCKSERVER_PACKAGE, ...(enableDataGenerator ? [MOCK_DATA_GENERATOR_PACKAGE] : [])];
-                logger.info(`npm install -D ${packages.join(' ')}`);
+                logger.info('npm install -D @sap-ux/ui5-middleware-fe-mockserver');
             } else {
                 logger.debug('Running npm install command');
-                const packages = [MOCKSERVER_PACKAGE, ...(enableDataGenerator ? [MOCK_DATA_GENERATOR_PACKAGE] : [])];
-                await execNpmCommand(['install', '--save-dev', ...packages], { cwd: basePath, logger });
-                logger.info('npm install completed successfully.');
+                runNpmInstallCommand(basePath, ['--save-dev', '@sap-ux/ui5-middleware-fe-mockserver']);
             }
         }
     } catch (error) {
