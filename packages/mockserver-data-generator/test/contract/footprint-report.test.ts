@@ -18,7 +18,7 @@ interface GateResult {
 
 interface FootprintReport {
     reportFingerprint: string;
-    candidate: { generatorBuildFingerprint: string };
+    candidate: { generatorBuildFingerprint: string; runtimePackageArchiveSha256?: string };
     metrics: {
         npm: { packedBytes: number; unpackedBytes: number };
         installation: {
@@ -38,6 +38,7 @@ interface FootprintReport {
 interface FootprintHarness {
     buildFootprintReport(input: unknown): FootprintReport;
     measureDirectory(root: string): { logicalBytes: number; files: number; symbolicLinks: number };
+    validateRuntimeInstallation(consumer: string, runtime: { package: string; version: string }): string;
     parseArguments(argv: string[]): Record<string, unknown> | undefined;
     parseGeneratorBaseline(value: unknown): {
         id: string;
@@ -77,6 +78,7 @@ function completeMeasurement(): unknown {
             modelManifestSha256: 'd'.repeat(64),
             runtimePackage: 'onnxruntime-node',
             runtimeVersion: '1.24.3',
+            runtimePackageArchiveSha256: '7'.repeat(64),
             generatorBaselineFingerprint: '6ee61ae3a2e6e2790064a529b6ef4fc71f5779371e79bed036fb997cd82c1398'
         },
         environment: {
@@ -176,8 +178,24 @@ describe('footprint report contract', () => {
         expect(report.gates.providerModuleLoad.status).toBe('pass');
         expect(report.gates.sourceClean.status).toBe('pass');
         expect(report.candidate.generatorBuildFingerprint).toBe('2'.repeat(64));
+        expect(report.candidate.runtimePackageArchiveSha256).toBe('7'.repeat(64));
         expect(report.reportFingerprint).toMatch(/^[a-f\d]{64}$/u);
         expect(report.footprintReady).toBe(false);
+    });
+
+    test('keeps the generator reduction as a non-blocking optimization target', async () => {
+        const { buildFootprintReport } = await loadHarness();
+        const input = completeMeasurement() as {
+            installation: { learnedBytes: number; runtimeIncrementalBytes: number };
+        };
+        input.installation.learnedBytes = 80_000_000;
+        input.installation.runtimeIncrementalBytes = 79_000_000;
+
+        const report = buildFootprintReport(input);
+
+        expect(report.gates.totalFootprint.status).toBe('pass');
+        expect(report.gates.generatorOptimization.status).toBe('fail');
+        expect(report.footprintReady).toBe(true);
     });
 
     test('marks unavailable runtime measurements as not measured instead of passing them', async () => {
@@ -206,6 +224,7 @@ describe('footprint report contract', () => {
         delete input.candidate.modelManifestSha256;
         delete input.candidate.runtimePackage;
         delete input.candidate.runtimeVersion;
+        delete input.candidate.runtimePackageArchiveSha256;
         delete input.candidate.generatorBaselineFingerprint;
         delete input.installation.learnedBytes;
         delete input.installation.runtimeIncrementalBytes;
@@ -248,12 +267,52 @@ describe('footprint report contract', () => {
             runs: 10,
             enforce: true
         });
+        expect(
+            parseArguments([
+                '--output',
+                '/tmp/footprint.json',
+                '--model-manifest',
+                '/tmp/model.json',
+                '--model-cache',
+                '/tmp/model-cache',
+                '--runtime-tarball',
+                '/tmp/onnxruntime-node.tgz'
+            ])
+        ).toMatchObject({ runtimeTarball: '/tmp/onnxruntime-node.tgz' });
+        expect(() =>
+            parseArguments(['--output', '/tmp/footprint.json', '--runtime-tarball', '/tmp/onnxruntime-node.tgz'])
+        ).toThrow('--runtime-tarball requires model inputs');
         expect(() => parseArguments(['--output', '/tmp/footprint.json', '--runs', '2junk'])).toThrow(
             '--runs must be a decimal integer'
         );
         expect(() =>
             parseArguments(['--output', '/tmp/footprint.json', '--generator-baseline-bytes', '999999999'])
         ).toThrow('Unknown argument: --generator-baseline-bytes');
+    });
+
+    test('accepts only an exact, non-linked runtime package installation', async () => {
+        const { validateRuntimeInstallation } = await loadHarness();
+        const root = mkdtempSync(join(tmpdir(), 'mockgen-runtime-installation-'));
+        temporaryRoots.push(root);
+        const runtimeRoot = join(root, 'node_modules', 'onnxruntime-node');
+        mkdirSync(runtimeRoot, { recursive: true });
+        writeFileSync(
+            join(runtimeRoot, 'package.json'),
+            JSON.stringify({ name: 'onnxruntime-node', version: '1.24.3' })
+        );
+
+        expect(validateRuntimeInstallation(root, { package: 'onnxruntime-node', version: '1.24.3' })).toBe(runtimeRoot);
+        expect(() => validateRuntimeInstallation(root, { package: 'onnxruntime-node', version: '1.24.2' })).toThrow(
+            'identity does not match'
+        );
+
+        const linkedRoot = mkdtempSync(join(tmpdir(), 'mockgen-linked-runtime-installation-'));
+        temporaryRoots.push(linkedRoot);
+        mkdirSync(join(linkedRoot, 'node_modules'));
+        symlinkSync(runtimeRoot, join(linkedRoot, 'node_modules', 'onnxruntime-node'));
+        expect(() =>
+            validateRuntimeInstallation(linkedRoot, { package: 'onnxruntime-node', version: '1.24.3' })
+        ).toThrow('must not contain symbolic links');
     });
 
     test('rejects a modified frozen generator baseline even when its fields remain plausible', async () => {

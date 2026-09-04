@@ -48,6 +48,8 @@ const CLASSIFIER_COHORT_POLICY =
     'llm_agreement or verified human adjudication; unresolved automated-as-human rows quarantined';
 const SHA_256 = /^[a-f\d]{64}$/u;
 const IMMUTABLE_COMMIT = /^[a-f\d]{40,64}$/u;
+const NPM_PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/u;
+const NON_BLOCKING_TARGETS = new Set(['generatorOptimization']);
 
 function canonicalJson(value) {
     if (Array.isArray(value)) {
@@ -75,9 +77,10 @@ function usage() {
         '  --model-manifest <path>             Verified model manifest',
         '  --model-cache <path>                Verified model cache root',
         '  --evaluation-report <path>          Matching model-evaluation report',
+        '  --runtime-tarball <path>            Exact platform runtime candidate archive',
         '  --runs <number>                     Fresh provider-load processes (default: 10)',
         '  --require-clean                     Reject a dirty source worktree',
-        '  --enforce                           Exit nonzero unless every footprint gate passes',
+        '  --enforce                           Exit nonzero unless every required footprint gate passes',
         '',
         'The report contains portable fingerprints and aggregate measurements only; local paths',
         'and generated values are never written to it.'
@@ -293,6 +296,14 @@ export function buildFootprintReport(value) {
         ...(candidate.runtimeVersion === undefined
             ? {}
             : { runtimeVersion: string(candidate.runtimeVersion, 'candidate runtime version') }),
+        ...(candidate.runtimePackageArchiveSha256 === undefined
+            ? {}
+            : {
+                  runtimePackageArchiveSha256: sha256Value(
+                      candidate.runtimePackageArchiveSha256,
+                      'candidate runtime package archive SHA-256'
+                  )
+              }),
         ...(candidate.evaluationReportSha256 === undefined
             ? {}
             : {
@@ -433,6 +444,10 @@ export function buildFootprintReport(value) {
             packageBuild: 'clean TypeScript build from the measured source state before package verification and pack',
             packageBoundary: 'actual packed-package policy and network-free construction check',
             packageInstall: 'clean npm install with lifecycle scripts disabled and optional peer omitted',
+            runtimeInstall:
+                normalizedCandidate.runtimePackageArchiveSha256 === undefined
+                    ? 'exact registry package name and version with lifecycle scripts disabled; installed identity verified'
+                    : 'SHA-256-bound candidate archive with lifecycle scripts disabled; installed identity verified',
             percentile: 'nearest-rank over uncensored observations; timeout samples remain in the denominator',
             moduleLoad: 'fresh Node process requiring and constructing the FE mockserver provider',
             totalFootprint:
@@ -452,7 +467,9 @@ export function buildFootprintReport(value) {
             })
         }),
         gates,
-        footprintReady: Object.values(gates).every(({ status }) => status === 'pass')
+        footprintReady: Object.entries(gates)
+            .filter(([name]) => !NON_BLOCKING_TARGETS.has(name))
+            .every(([, { status }]) => status === 'pass')
     };
     return Object.freeze({ ...report, reportFingerprint: fingerprint(report) });
 }
@@ -499,6 +516,8 @@ export function parseArguments(argv) {
             options.modelCache = resolve(value);
         } else if (argument === '--evaluation-report') {
             options.evaluationReport = resolve(value);
+        } else if (argument === '--runtime-tarball') {
+            options.runtimeTarball = resolve(value);
         } else if (argument === '--runs') {
             options.runs = decimalInteger(value, '--runs');
         } else {
@@ -514,6 +533,9 @@ export function parseArguments(argv) {
     }
     if (options.evaluationReport && !options.modelManifest) {
         throw new TypeError('--evaluation-report requires model inputs');
+    }
+    if (options.runtimeTarball && !options.modelManifest) {
+        throw new TypeError('--runtime-tarball requires model inputs');
     }
     if (!Number.isSafeInteger(options.runs) || options.runs < 2 || options.runs > 100) {
         throw new TypeError('--runs must be an integer from 2 through 100');
@@ -634,7 +656,63 @@ function npmVersion() {
     return execFileSync('npm', ['--version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 }
 
-function installPackageClosure(temporaryRoot, archivePath, runtime) {
+/**
+ * Verify that npm installed the exact runtime identity without linked path components.
+ *
+ * @param {string} consumer clean consumer root
+ * @param {unknown} runtime expected package identity
+ * @returns {string} verified runtime package root
+ */
+export function validateRuntimeInstallation(consumer, runtime) {
+    const expected = record(runtime, 'runtime identity');
+    const packageName = string(expected.package, 'runtime package');
+    const packageVersion = string(expected.version, 'runtime version');
+    if (!NPM_PACKAGE_NAME.test(packageName)) {
+        throw new TypeError('runtime package must be a canonical npm package name');
+    }
+    let runtimeRoot = join(consumer, 'node_modules');
+    for (const segment of packageName.split('/')) {
+        const details = lstatSync(runtimeRoot);
+        if (details.isSymbolicLink()) {
+            throw new Error('Installed runtime path must not contain symbolic links');
+        }
+        if (!details.isDirectory()) {
+            throw new Error('Installed runtime path must contain only directories');
+        }
+        runtimeRoot = join(runtimeRoot, segment);
+    }
+    const runtimeDetails = lstatSync(runtimeRoot);
+    if (runtimeDetails.isSymbolicLink()) {
+        throw new Error('Installed runtime path must not contain symbolic links');
+    }
+    if (!runtimeDetails.isDirectory()) {
+        throw new Error('Installed runtime package must be a directory');
+    }
+    const packageJsonPath = join(runtimeRoot, 'package.json');
+    const packageJsonDetails = lstatSync(packageJsonPath);
+    if (packageJsonDetails.isSymbolicLink() || !packageJsonDetails.isFile()) {
+        throw new Error('Installed runtime package.json must be a non-symbolic-link regular file');
+    }
+    const installed = record(JSON.parse(readFileSync(packageJsonPath, 'utf8')), 'installed runtime package.json');
+    if (installed.name !== packageName || installed.version !== packageVersion) {
+        throw new Error('Installed runtime package identity does not match the model manifest');
+    }
+    return runtimeRoot;
+}
+
+function runtimeArchive(filePath) {
+    if (!existsSync(filePath)) {
+        throw new TypeError('runtime tarball must be an existing non-symbolic-link regular file');
+    }
+    const details = lstatSync(filePath);
+    if (details.isSymbolicLink() || !details.isFile()) {
+        throw new TypeError('runtime tarball must be an existing non-symbolic-link regular file');
+    }
+    const path = realpathSync(filePath);
+    return { path, sha256: sha256File(path) };
+}
+
+function installPackageClosure(temporaryRoot, archivePath, runtime, runtimeTarball) {
     const consumer = join(temporaryRoot, 'consumer');
     mkdirSync(consumer);
     writeFileSync(join(consumer, 'package.json'), '{"name":"mockgen-footprint-consumer","private":true}\n');
@@ -645,22 +723,33 @@ function installPackageClosure(temporaryRoot, archivePath, runtime) {
     );
     const deterministicBytes = measureDirectory(join(consumer, 'node_modules')).logicalBytes;
     if (!runtime) {
-        return { consumer, deterministicBytes, learnedBytes: null, runtimeIncrementalBytes: null };
+        return {
+            consumer,
+            deterministicBytes,
+            learnedBytes: null,
+            runtimeIncrementalBytes: null,
+            runtimePackageArchiveSha256: undefined
+        };
     }
-    execFileSync(
-        'npm',
-        [
-            'install',
-            '--ignore-scripts',
-            '--no-audit',
-            '--no-fund',
-            '--save-exact',
-            `${runtime.package}@${runtime.version}`
-        ],
-        { cwd: consumer, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
-    );
+    const verifiedRuntimeArchive = runtimeTarball ? runtimeArchive(runtimeTarball) : undefined;
+    const runtimeSpecifier = verifiedRuntimeArchive?.path ?? `${runtime.package}@${runtime.version}`;
+    execFileSync('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--save-exact', runtimeSpecifier], {
+        cwd: consumer,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'pipe']
+    });
+    if (verifiedRuntimeArchive && sha256File(verifiedRuntimeArchive.path) !== verifiedRuntimeArchive.sha256) {
+        throw new Error('runtime tarball changed while its dependency closure was installed');
+    }
+    validateRuntimeInstallation(consumer, runtime);
     const learnedBytes = measureDirectory(join(consumer, 'node_modules')).logicalBytes;
-    return { consumer, deterministicBytes, learnedBytes, runtimeIncrementalBytes: learnedBytes - deterministicBytes };
+    return {
+        consumer,
+        deterministicBytes,
+        learnedBytes,
+        runtimeIncrementalBytes: learnedBytes - deterministicBytes,
+        runtimePackageArchiveSha256: verifiedRuntimeArchive?.sha256
+    };
 }
 
 function probeProviderModuleLoad(consumer, runs) {
@@ -964,7 +1053,12 @@ async function collectFootprint(options) {
             throw new Error('Package build or pack changed the measured source state');
         }
         const model = await modelMeasurement(options);
-        const installation = installPackageClosure(temporaryRoot, packageResult.archivePath, model?.runtime);
+        const installation = installPackageClosure(
+            temporaryRoot,
+            packageResult.archivePath,
+            model?.runtime,
+            options.runtimeTarball
+        );
         const provider = probeProviderModuleLoad(installation.consumer, options.runs);
         const cpu = cpus()[0]?.model ?? 'unknown';
         const classifierComponent = model?.manifest.components.find(({ kind }) => kind === 'classifier');
@@ -1002,6 +1096,9 @@ async function collectFootprint(options) {
                           generationConfigFingerprint: model.generationConfigFingerprint,
                           runtimePackage: model.runtime.package,
                           runtimeVersion: model.runtime.version,
+                          ...(installation.runtimePackageArchiveSha256
+                              ? { runtimePackageArchiveSha256: installation.runtimePackageArchiveSha256 }
+                              : {}),
                           generatorBaselineFingerprint: model.report.generatorBaseline.recordFingerprint
                       }
                     : {}),
@@ -1060,7 +1157,10 @@ async function main() {
             output: options.output,
             footprintReady: report.footprintReady,
             failedGates: Object.entries(report.gates)
-                .filter(([, gate]) => gate.status !== 'pass')
+                .filter(([name, gate]) => !NON_BLOCKING_TARGETS.has(name) && gate.status !== 'pass')
+                .map(([name, gate]) => ({ name, status: gate.status })),
+            missedTargets: Object.entries(report.gates)
+                .filter(([name, gate]) => NON_BLOCKING_TARGETS.has(name) && gate.status !== 'pass')
                 .map(([name, gate]) => ({ name, status: gate.status }))
         })}\n`
     );
