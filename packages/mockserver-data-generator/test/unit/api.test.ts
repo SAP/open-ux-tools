@@ -510,7 +510,7 @@ describe('mockserver data generator public API', () => {
 
         expect(result.resources.Records).toEqual([{ ID: 1, OpaqueValue: 'Opaque Value 1' }]);
         expect(result.diagnostics).toContainEqual(
-            expect.objectContaining({ code: 'SFT_INFERENCE_FAILED', target: 'Records' })
+            expect.objectContaining({ code: 'SFT_INFERENCE_TIMEOUT', target: 'Records' })
         );
     });
 });

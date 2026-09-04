@@ -192,7 +192,7 @@ export async function applySftGeneration(
             if (!output || !Array.isArray(output.rows)) {
                 throw new TypeError('Invalid SFT generation result');
             }
-        } catch {
+        } catch (error) {
             assignments.push(
                 Object.freeze({
                     resource: resourceName,
@@ -208,11 +208,18 @@ export async function applySftGeneration(
             );
             circuitOpen = true;
             generated[resourceName] = fallbackRows;
+            const timedOut =
+                typeof error === 'object' &&
+                error !== null &&
+                'code' in error &&
+                error.code === 'SFT_INFERENCE_TIMEOUT';
             diagnostics.push(
                 Object.freeze({
-                    code: 'SFT_INFERENCE_FAILED',
+                    code: timedOut ? 'SFT_INFERENCE_TIMEOUT' : 'SFT_INFERENCE_FAILED',
                     severity: 'warning',
-                    message: 'Fine-tuned generation failed; deterministic fallback remains active.',
+                    message: timedOut
+                        ? 'Fine-tuned generation timed out; deterministic fallback remains active.'
+                        : 'Fine-tuned generation failed; deterministic fallback remains active.',
                     target: resourceName
                 })
             );
