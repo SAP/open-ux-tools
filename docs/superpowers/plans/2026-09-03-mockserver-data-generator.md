@@ -993,12 +993,35 @@ marked complete.
 - Create: `reports/generator-footprint-frontier-v1.json`
 
 - [x] Candidate 1: dynamic int8 baseline.
-- [ ] Candidate 2: ONNX graph optimization and static/per-channel int8 with representative calibration.
-- [ ] Candidate 3: calibrated 4-bit GPTQ/AWQ-style or equivalent only when the chosen export/runtime path supports it.
+- [x] Candidate 2: ONNX graph optimization and per-channel INT8; run static activation calibration only when the size/latency screen justifies it.
+- [x] Candidate 3: determine whether the chosen export/runtime supports an end-to-end calibrated GPTQ/AWQ-style four-bit path; reject partial calibration.
 - [ ] Candidate 4: quantization-aware fine-tuning when calibrated post-training quantization misses quality gates.
 - [ ] Candidate 5: vocabulary pruning or a domain tokenizer when embedding/output matrices dominate size.
 - [ ] Candidate 6: knowledge distillation or a smaller architecture when quantization alone cannot reach the target.
-- [ ] Treat every uncalibrated low-precision result as ineligible; retain any historical negative report only in the governed private evidence store.
+- [x] Treat every uncalibrated low-precision result as ineligible; retain any historical negative report only in the governed private evidence store.
+
+**Compression record (2026-09-04):** The candidate-manifest evaluator added in
+`b00b1e0d8` runs arbitrary external graphs through the exact production decoder
+and frozen SFT cohort without copying weights into either Open UX repository.
+It binds model, tokenizer, generation configuration, manifest, and quantization
+evidence; suppresses implicit pilot candidates; rejects duplicate IDs; and
+cannot label partially calibrated or uncalibrated artifacts promotion-eligible.
+
+The optimized dynamic per-channel `QUInt8` screen produced a 165,323,027-byte
+graph, 398,041 bytes larger than the retained INT8 baseline, so static
+activation calibration was stopped: it cannot reduce already-eight-bit stored
+weights and is not the recommended transformer path. Full `MatMul` plus
+embedding-`Gather` RTN INT4 reached 105,726,471 bytes but remained uncalibrated
+and missed the target. A second probe applied representative GPTQ calibration
+to all 211 constant-weight `MatMul` nodes using fixed production prompts from
+bookshop, finance, and northwind, then used the only supported four-bit
+`Gather` path, RTN, for the embedding. That 105,218,355-byte partially
+calibrated graph preserved the ONNX contract but failed the clean full cohort:
+11/16 parse and exact-key success, 85/261 filled fields, despite a 10.29-second
+T2 p95. It is rejected, and no realism judging is warranted. Because it still
+exceeds the target by 22,755,862 bytes, QAT alone cannot solve the footprint;
+Candidate 4 should be coupled to a reduced vocabulary or smaller architecture
+rather than run against the unchanged 135M graph.
 
 For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS, throughput, cold/warm latency, parse success, fill ratio, requested-row completion, schema/type/nullability/length/precision-scale/key/enum/FK/containment/navigation validity, relationship/coherence assertions, determinism, and fresh realism score. Count every frozen T2 attempt, including timeouts, empty responses, and malformed responses, in the parse denominator. Freeze eligible requested scalar slots before execution for the fill denominator; exclude authored, computed, server-managed, and metadata-defaulted slots before observing output.
 

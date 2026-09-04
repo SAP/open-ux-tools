@@ -135,13 +135,43 @@ component fingerprints.
 
 The reviewed npm package contains no weights and packs to 58,273 bytes in the current development canary, far below the 5 MiB ceiling. Model and runtime footprints are reported separately:
 
-| Candidate        | Model bytes | Development result                                                                                                         | Decision                          |
-| ---------------- | ----------: | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| Dynamic INT8     | 164,924,986 | 100% parse, 99.23% fill after adapter corrections                                                                          | Retain as current candidate       |
-| Weight-only INT4 | 200,835,311 | Larger than INT8; prior fixed pilot gate recorded 33.33% symmetric or 66.67% asymmetric parse and substantially lower fill | Reject                            |
-| FP32             | 652,552,120 | Exact runtime contract, but 3.96 times INT8 bytes                                                                          | Reference only; do not distribute |
+| Candidate                                  | Model bytes | Development result                                                                                                         | Decision                          |
+| ------------------------------------------ | ----------: | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Dynamic INT8                               | 164,924,986 | 100% parse, 99.23% fill after adapter corrections                                                                          | Retain as current candidate       |
+| Optimized dynamic per-channel INT8         | 165,323,027 | Exact runtime contract, but 398,041 bytes larger than the retained INT8 graph                                               | Reject before full quality run    |
+| MatMul-only weight-only INT4               | 200,835,311 | Larger than INT8; prior fixed pilot gate recorded 33.33% symmetric or 66.67% asymmetric parse and substantially lower fill | Reject                            |
+| Full MatMul and Gather RTN INT4            | 105,726,471 | Exact runtime contract and 35.9% smaller than INT8, but uncalibrated and 23,263,978 bytes above target                      | Ineligible size screen            |
+| GPTQ MatMul plus RTN Gather INT4            | 105,218,355 | 68.75% parse, 32.57% fill; partial calibration and 22,755,862 bytes above target                                            | Reject                            |
+| FP32                                       | 652,552,120 | Exact runtime contract, but 3.96 times INT8 bytes                                                                          | Reference only; do not distribute |
 
-The INT4 graph is 21.77% larger than INT8 because its MatMul-only quantizer did not cover the 113.25 MB embedding matrix. It cannot be a Pareto winner even before its historical quality regression is considered. Future size work should prioritize a calibrated export that covers embedding/output matrices, quantization-aware training, vocabulary pruning, distillation, or a smaller fine-tuned architecture. Every new candidate must rerun the same structural and realism gates.
+The historical INT4 graph is 21.77% larger than INT8 because its MatMul-only
+quantizer did not cover the 113.25 MB embedding matrix. A newer supported ONNX
+Runtime path can quantize the embedding `Gather`, but full RTN remains
+uncalibrated and therefore ineligible. A bounded GPTQ probe calibrated all 211
+constant-weight `MatMul` nodes with three production-rendered prompts spanning
+bookshop, finance, and northwind; ONNX Runtime supports only RTN for the one
+constant-weight `Gather`, so the resulting candidate is explicitly only
+partially calibrated.
+
+The clean `b00b1e0d8ad9dc92f17c50daf2229509b40f2866` production-evaluator
+run rejected that candidate independently of its calibration status. Only 11
+of 16 frozen cases parsed with exact keys, and only 85 of 261 eligible requested
+fields were filled. Its p50/p95 T2 latency was 1.60/10.29 seconds and load time
+was 651.04 ms, but latency cannot compensate for missing the 99% parse and 95%
+fill gates. Report fingerprint
+`69f53c0aaa964e66a33f478bc281dbd499d0b23e063498ce931894a5201fc734`
+has file SHA-256
+`2e1c14e1b511c46c0b9fee683f419e47597673021995109753470a94b42c1388`;
+the candidate model SHA-256 is
+`f140fb0f9cd9375617c32528f605197c8af72777f4501462412476c3415f99ed`.
+The report contains no local paths or generated values.
+
+Quantization alone therefore has no passing path to the 82,462,493-byte target
+on this export. Quantization-aware training could recover quality but cannot
+remove the remaining 22.76 MB by itself. The next justified branch is a smaller
+vocabulary/domain tokenizer or a smaller distilled architecture, with any
+low-bit training performed on that reduced model. Every new candidate must
+rerun the same structural and realism gates.
 
 ## Machine-readable footprint baseline
 
