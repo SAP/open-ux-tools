@@ -1049,6 +1049,21 @@ Because failure occurs before quantization, QAT and low-bit export cannot repair
 this source-model contract and realism judging is not warranted. Candidate 4 is
 therefore closed at its precondition, and Candidate 6 is next.
 
+Candidate 6 established byte feasibility for a smaller architecture while
+preserving the proven 49,152-token tokenizer. A six-layer student initialized
+bit-exactly from uniformly spaced task-specific teacher layers produced a
+78,305,643-byte dynamic-INT8 graph, 52.52% below the retained generator and
+4,156,850 bytes under target. Direct pruning completed 0/16 frozen JSON cases.
+A full-parameter, three-epoch recovery SFT completed all 3,447 scheduled examples
+and improved held-back evaluation loss from 15.983883 to 2.926326, but the
+recovered FP32 candidate reached only 4/16 parsed cases and 15/261 fields; INT8
+reached 5/16 and 30/261. The combined report fingerprint is
+`a694bcea288bffa1ad254133f17a7b8c12d6887bc75d85ec2f7d9fd18fefb4e4`.
+Uniform depth pruning plus ordinary SFT is rejected, and no realism judging is
+warranted. Candidate 6 remains open only for a bounded teacher-guided
+structural-token distillation experiment; repeating ordinary SFT or token-budget
+tuning is not justified.
+
 For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS, throughput, cold/warm latency, parse success, fill ratio, requested-row completion, schema/type/nullability/length/precision-scale/key/enum/FK/containment/navigation validity, relationship/coherence assertions, determinism, and fresh realism score. Count every frozen T2 attempt, including timeouts, empty responses, and malformed responses, in the parse denominator. Freeze eligible requested scalar slots before execution for the fill denominator; exclude authored, computed, server-managed, and metadata-defaulted slots before observing output.
 
 **Candidate gate:** At least 99% raw-response parse/decode success, at least 95% eligible requested-field fill before deterministic fallback, no zero-row entity unless its fixture was predeclared `expectedEmpty`, 100% integrated structural and frozen relationship/coherence assertions, deterministic replay, no material throughput regression, and all realism gates. Size alone cannot win.

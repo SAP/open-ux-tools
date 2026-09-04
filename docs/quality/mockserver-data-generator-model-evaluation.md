@@ -151,6 +151,9 @@ The reviewed npm package contains no weights and packs to 58,273 bytes in the cu
 | Pretrained-rank 10,000 fresh SFT FP32       | 472,139,701 | Fresh three-epoch SFT from the original base; 11/16 parse and 116/261 fill                                                    | Reject source model               |
 | Pretrained-rank 10,000 fresh SFT INT8       | 119,821,880 | Dynamic INT8 export of the fresh SFT; 12/16 parse and 118/261 fill                                                            | Reject                            |
 | Fresh SFT INT8, 600-token diagnostic        | 119,821,880 | Model-specific completion budget; 13/16 parse and 166/261 fill                                                               | Reject; stop budget tuning        |
+| Uniform depth-6 screen INT8                 |  78,305,643 | Full tokenizer and task-specific weights; 0/16 parse and 0/261 fill                                                          | Reject direct pruning             |
+| Uniform depth-6 recovered FP32              | 311,719,705 | Three-epoch full-parameter recovery; 4/16 parse and 15/261 fill                                                              | Reject source model               |
+| Uniform depth-6 recovered INT8              |  78,305,644 | Clears the byte target by 4,156,849 bytes; 5/16 parse and 30/261 fill                                                        | Reject                            |
 | FP32                                       | 652,552,120 | Exact runtime contract, but 3.96 times INT8 bytes                                                                          | Reference only; do not distribute |
 
 The historical INT4 graph is 21.77% larger than INT8 because its MatMul-only
@@ -237,8 +240,38 @@ the campaign file SHA-256 is
 `e2717f69628102c80ee86a06b3737971475105f319342647ab83bfba4a719058`.
 Because the FP32 source model fails before quantization, QAT and a calibrated
 low-bit export are not justified for this candidate, and realism judging is
-correctly skipped. Candidate 6, knowledge distillation or a smaller
-architecture, is the next viable branch.
+correctly skipped.
+
+Candidate 6 first tested whether a smaller architecture can retain the proven
+full tokenizer and task-specific embeddings. The only same-width depth that can
+clear the target under dynamic INT8 is six layers: a uniformly initialized
+student retained teacher layers 0, 6, 12, 17, 23, and 29. All 57 mapped state
+tensors were bit-exact. Its 78,305,643-byte INT8 export reduced generator bytes
+by 52.52% and cleared the target by 4,156,850 bytes, but direct pruning completed
+none of the 16 frozen JSON cases.
+
+A bounded full-parameter recovery then used the original governed SFT sample:
+1,149 training examples and 194 held-back training-evaluation examples, with no
+frozen production cohort used during training. All three epochs and 216
+optimizer updates completed in 28.1 minutes. Evaluation loss improved from
+15.983883 to 3.938276, 3.118114, and 2.926326. The recovered FP32 model still
+reached only 4/16 parsed cases and 15/261 filled fields; dynamic INT8 reached
+5/16 and 30/261. This rejects uniform depth pruning plus ordinary recovery SFT,
+not the byte feasibility of a smaller model. The next bounded Candidate 6 path
+must add teacher-guided structural-token distillation rather than repeat SFT.
+
+The preparation and recovery-training report SHA-256 values are
+`52ad7a8b077b5515b8271bd4d2ab5f1b93fedc3f383f7dd329dbe09b787efd7b`
+and `31cc29bf38b681fda0935e9fa1517db492e53d34ff7903081a7396836041a694`.
+The clean combined evaluation binds commit
+`d709e6d4ad98108edcf33db74c4d5917eed65963`; its report fingerprint is
+`a694bcea288bffa1ad254133f17a7b8c12d6887bc75d85ec2f7d9fd18fefb4e4`
+and file SHA-256 is
+`857d865f940ca01a8821c1ffe6cdac4d6edca8ed44feded21c2383c4b35333bf`.
+The rejected campaign fingerprint is
+`e7509b2f15c0078706611cf5a20b2d406a421d9523bf2fbf6c662e62bb387380`;
+the campaign file SHA-256 is
+`7b0869231a632ee4e916cd598e87462482110e534500fcc32b695a4decf3575c`.
 
 ## Machine-readable footprint baseline
 
