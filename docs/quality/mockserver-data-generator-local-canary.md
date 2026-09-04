@@ -112,6 +112,31 @@ The archive contains the package code and model-free bridge, but no model
 weights, manifest, native runtime, training data, or judge output. The retained
 pilot was supplied explicitly as a local development input.
 
+## Current reload and installer-recovery archive canary
+
+The portable kit was rebuilt after reload-cancellation hardening and a
+transactional installer recovery fix, then installed from the exact archive
+into a disposable generated-style OData V2 application:
+
+- Dev-kit fingerprint: `22000e2049bbcedb983c5c63d369f062b365e1a394df8781990517ef115d9fbd`
+- Archive SHA-256: `a74ee1e7acb50b8208b1064a5660f6adc8fa20a416a35b9a7922afea8f4761c6`
+- Archive size: 524,898 bytes; 10 entries
+- Generator tarball: 57,460 bytes, SHA-256 `34257b290d90a235fd7c24cea10e0c397c5bed38f773c939d3ff4efdac57a76b`
+- Source state: clean `SAP/open-ux-tools` commit `40ceed8049b48bb4e46a9c80c2ed9e893efb96f8`; clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible source state
+- Installed dependencies: the first installation added 93 packages, including the exact local kit packages and the fixture's public UI5 CLI dependency
+- Installed configuration: unchanged `start-mock`, exactly one `sap-fe-mockserver`, and provider `@sap-ux/mockserver-data-generator/fe-mockserver`
+- HTTP verification: provider-specific host evidence was present; OData V2 `$metadata` passed; `Products?$top=1` returned one row
+- Model bridge: revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`, manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`, and 192,167,584 verified cache bytes
+- Learned runtime: exact `onnxruntime-node@1.24.3`; the second installation added 21 packages
+- Learned verification: the packaged CLI reported both components ready; the HTTP canary reported `providerExecuted: true` and `learnedRuntimeVerified: true`; `Products?$top=1` returned one row with generated-data cache disabled for the canary
+- Restore verification: both the deterministic and learned runs restored application files byte for byte outside disposable `node_modules`, and `.mockserver-data-generator-dev` was absent
+
+An initial run against an obsolete sample dependency correctly failed package
+installation and restored the application files, but exposed that a later
+`--restore` could not retry dependency reconciliation from a `rolled-back`
+journal. Commit `40ceed804` makes that state dependency-only recovery; the
+development-kit integration suite now covers the failure and retry path.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
