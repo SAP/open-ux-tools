@@ -234,6 +234,33 @@ The current handoff archive is
 Its checksum must be verified before extraction. This archive supersedes the
 preceding cache-hardening archive for new local or BAS testing.
 
+## Current coherence-enabled archive canary
+
+The kit was rebuilt from clean worktrees after the production semantic
+coherence layer and executable final-cohort gate landed. Its exact extracted
+archive installed into a fresh OData V4 fixture with the retained classifier
+and INT8 SFT cache, completed the learned HTTP canary, and restored the fixture
+byte-for-byte outside disposable `node_modules`.
+
+- Dev-kit fingerprint: `87e3f13ff4dbf47779c0991d6d710437c49c9fb37be4482be217f307b44abf90`
+- Archive SHA-256: `8843c89710f7e2dcadddb1a11041ecdd54d11533a39d31ff70e48dc4ff0abf68`
+- Archive size: 531,504 bytes; 10 entries
+- Generator tarball: 63,024 bytes, SHA-256 `8b617b06e2f1b94d99e4646055aafff277dd77d4f242e51fcfa03d5118b15c26`
+- Core tarball: 157,298 bytes, SHA-256 `94ecda7806d18d7b73e2e24f28418bc05440ddc4e8567d712c17d4a16e0a05bc`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `976a6e3b82046134aaa3f3d9ed55bd62a00eff82` and clean `SAP/open-ux-odata` commit `64e37ac4a6d24607c28a06242075b95afbbc1ff2`; reproducible
+- Learned verification: retained manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`; exact `onnxruntime-node@1.24.3`; classifier and SFT ready; `providerExecuted: true`; `learnedRuntimeVerified: true`
+- HTTP verification: OData V4 `$metadata` passed and `Products?$top=1` returned one row through exactly one `sap-fe-mockserver`
+- Observed one-run timing: 3,416.661 ms model initialization; 7,610.522 ms whole-service generation; 7,611.491 ms host provider duration. These are canary observations, not the five-sample performance report.
+- Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-87e3f13ff4dbf477.tgz`.
+Its checksum must be verified before extraction. This archive supersedes the
+integrated-performance archive for new local or BAS functional testing; the
+older archive and bound five-sample reports remain the current performance
+evidence until that campaign is rerun on a supported release platform.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,

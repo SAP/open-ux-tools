@@ -6,9 +6,10 @@ Candidate source:
 
 - generator package: `b0066d03bc524b96dadf194e9d113159c9eb070f`
 - realism harness: `e04de9bc0b7a879ebd9cfc053fdd322141a767ba`
+- development kit source: `976a6e3b82046134aaa3f3d9ed55bd62a00eff82`
 - `SAP/open-ux-odata`: `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
 - portable development-kit fingerprint:
-  `374c1611f8eb76ded0647ecfceb84e10edb29902bee178465955f5626e939afc`
+  `87e3f13ff4dbf47779c0991d6d710437c49c9fb37be4482be217f307b44abf90`
 
 ## Verdict
 
@@ -58,7 +59,7 @@ means a measured threshold was missed by the named candidate.
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
 | UI5 config and application writer | proven | one middleware, one `ui5-mock.yaml`, one existing `start-mock`; add/remove and writer tests pass | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | current 528,436-byte archive installs exact tarballs, verifies deterministic and learned paths, measures the standard Fiori path, and restores the V4 fixture byte-for-byte | Run the recorded procedure in an actual BAS dev space |
+| Local/BAS development kit | proven locally / platform | current 531,504-byte archive installs exact tarballs, verifies the coherence-enabled classifier/SFT path through the standard Fiori mockserver, and restores the V4 fixture byte-for-byte | Run the recorded procedure in an actual BAS dev space |
 | Native CAP adapter | proven locally | 18 tests cover opt-in profiles, preservation of existing persistence data, FK ordering, learned fallback, generated cache, in-memory SQLite, restart determinism, and package boundary | Cross-platform and published-package canary |
 | Package boundary | proven | generator tarball is 59,993 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
@@ -83,7 +84,7 @@ means a measured threshold was missed by the named candidate.
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
 | exact deterministic V4 archive canary | provider executed; metadata passed; one row returned; exact restore passed |
 | exact learned V4 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; exact restore passed |
-| package archive | 59,993 / 5,242,880 bytes, pass |
+| current package archive | 63,024 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
 | experimental platform-runtime total installed and cache | 264,636,488 / 314,572,800 bytes, pass |
