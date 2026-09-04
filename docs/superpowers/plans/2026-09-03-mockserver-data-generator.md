@@ -1333,7 +1333,10 @@ Node/OS matrix remain release-platform gates. A separate true child-process
 regression launches two production package consumers against the same empty
 cache and proves one download, two ready results, one verified artifact, and no
 remaining lock or partial file. Networked/BAS filesystem semantics remain a
-platform gate.
+platform gate. Both FE and CAP provider tests also prove that a read-only
+generated-data cache emits a stable warning while retaining complete generated
+rows; a genuinely read-only project/BAS filesystem still requires the platform
+matrix.
 
 ### Task 12.2: Perform threat modeling and dependency review
 

@@ -649,6 +649,34 @@ describe('standard FE mockserver provider', () => {
         await provider.dispose();
     });
 
+    it('keeps generated rows when generated-data cache publication fails', async () => {
+        const readGeneratedDataCache = jest.fn(async () => undefined);
+        const writeGeneratedDataCache = jest.fn(async () => Promise.reject(new Error('cache is read-only')));
+        const provider = new FeMockserverDataGenerator(
+            { rowsPerEntity: 1, generatedDataCacheDirectory: '/read-only/generated-cache' },
+            { readGeneratedDataCache, writeGeneratedDataCache }
+        );
+        const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn() };
+
+        const result = await provider.generate({
+            contractVersion: 1,
+            service: { urlPath: '/cache-write-failure', odataVersion: '4.0' },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Rows" EntityType="Demo.Row" /></EntityContainer><EntityType Name="Row"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Rows', kind: 'entity-set' }],
+            existingData: {},
+            logger,
+            signal: new AbortController().signal
+        });
+
+        expect(result.resources.Rows).toEqual([{ ID: 1 }]);
+        expect(result.diagnostics).toContainEqual(
+            expect.objectContaining({ code: 'GENERATED_DATA_CACHE_WRITE_FAILED', severity: 'warning' })
+        );
+        expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('GENERATED_DATA_CACHE_WRITE_FAILED'));
+        expect(writeGeneratedDataCache).toHaveBeenCalledTimes(1);
+        await provider.dispose();
+    });
+
     it('quarantines a structurally stale cache entry before serving data', async () => {
         const cacheRoot = await mkdtemp(join(tmpdir(), 'mockgen-provider-stale-cache-'));
         const metadata = `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Rows" EntityType="Demo.Row" /></EntityContainer><EntityType Name="Row"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /><Property Name="Title" Type="Edm.String" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`;

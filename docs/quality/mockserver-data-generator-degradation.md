@@ -20,6 +20,7 @@ the successful pilot repository is not used as a writable evidence store.
 | Inference timeout | `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts`; `packages/mockserver-data-generator/test/unit/api.test.ts` | The timed-out tier opens its process-local circuit and deterministic fallback remains active |
 | Malformed model output | `packages/mockserver-data-generator/test/unit/sft-runtime.test.ts`; `packages/mockserver-data-generator/test/unit/api.test.ts` | Off-contract output is rejected before publication and fallback values remain valid |
 | Generated-data cache corruption | `packages/mockserver-data-generator/test/unit/generated-data-cache.test.ts`; `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts` | The entry is quarantined and the service is regenerated |
+| Read-only generated-data cache | `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts`; `packages/mockserver-data-generator-cap/test/plugin.test.ts` | FE and CAP retain complete generated rows, emit a stable warning, and continue without caching |
 | Cancellation | `packages/mockserver-data-generator/test/unit/model-downloader.test.ts`; `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts` | No late artifact is published; host cancellation does not permanently poison a learned tier |
 | Provider package load failure | `packages/fe-mockserver-core/test/unit/mockDataGenerator.test.ts` in `open-ux-odata` | The standard mockserver starts and retains built-in generation |
 | Retry policy | `tests/integration/mockserver-data-generator/src/degradation/provider-degradation.test.ts` | A non-cancellation initialization failure is attempted once per provider lifecycle and becomes eligible again for a fresh lifecycle |
@@ -37,7 +38,7 @@ Current local snapshot:
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 176 tests passed |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 177 tests passed |
 | MockGen integration workspace | 11 suites, 98 tests passed |
 | Affected builds | Passed |
 | Affected lint | Zero errors |

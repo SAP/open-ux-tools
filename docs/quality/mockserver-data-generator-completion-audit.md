@@ -58,7 +58,7 @@ means a measured threshold was missed by the named candidate.
 | Authored-data preservation | proven | TS/JS/JSON/empty-data/provider/built-in precedence tests; tenant and authored-parent behavior remain host-owned | Repeat against published canary artifacts |
 | Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests; the final cohort has 16/16 non-empty resources and 11/11 passing frozen assertions | Release-platform cohort reruns |
 | Classifier and SFT reuse | proven locally | retained MiniLM classifier and SmolLM2 INT8 SFT cache verify and execute through the production package; the exact final cohort records 178/178 parsed responses and 821/846 accepted eligible fields across all six targets | Governance, managed immutable distribution, and fresh release-candidate qualification |
-| Failure degradation | proven locally | the [degradation evidence](./mockserver-data-generator-degradation.md) covers offline first use, missing model/runtime, corrupt acquisition, checksum rejection, timeout, malformed output, cache corruption, cancellation, provider load failure, retry policy, complete fallback rows, and diagnostic privacy | Repeat the matrix on release platforms and published artifacts |
+| Failure degradation | proven locally | the [degradation evidence](./mockserver-data-generator-degradation.md) covers offline first use, missing model/runtime, corrupt acquisition, checksum rejection, timeout, malformed output, cache corruption/read-only operation, cancellation, provider load failure, retry policy, complete fallback rows, and diagnostic privacy | Repeat the matrix on release platforms and published artifacts |
 | Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, symlink rejection, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, and warm network-free cache | Approved remote bundle and proxy/BAS acquisition canary |
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
@@ -82,7 +82,7 @@ means a measured threshold was missed by the named candidate.
 | --- | ---: |
 | `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 176 tests passed; build passed; lint has zero errors |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 177 tests passed; build passed; lint has zero errors |
 | development kit, degradation, and evaluation harness | 11 suites, 98 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
