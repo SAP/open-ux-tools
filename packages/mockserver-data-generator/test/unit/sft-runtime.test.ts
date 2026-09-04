@@ -44,7 +44,7 @@ describe('pilot-compatible SFT runtime', () => {
             expect.objectContaining({
                 prompt: expect.stringContaining('<|im_start|>system\nYou generate realistic'),
                 grammar: [
-                    { name: 'OpaqueTitle', valueKind: 'string', nullable: false },
+                    { name: 'OpaqueTitle', valueKind: 'string', nullable: false, maxLength: 80 },
                     { name: 'Rating', valueKind: 'number', nullable: true }
                 ],
                 seed: expect.any(Number),

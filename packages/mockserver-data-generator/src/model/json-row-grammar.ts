@@ -19,9 +19,11 @@ export interface JsonRowGrammarState {
     escaped: boolean;
     unicodeEscapeRemaining: number;
     stringHasContent: boolean;
+    stringLength: number;
     literalText: string;
     valueKind?: SftGrammarField['valueKind'];
     nullable: boolean;
+    maximumStringLength?: number;
 }
 
 const WHITESPACE = new Set([' ', '\t', '\n', '\r']);
@@ -39,6 +41,7 @@ export function createJsonRowGrammar(fields: ReadonlyArray<SftGrammarField>): Js
         escaped: false,
         unicodeEscapeRemaining: 0,
         stringHasContent: false,
+        stringLength: 0,
         literalText: '',
         nullable: true
     };
@@ -100,15 +103,27 @@ function characterAllowed(state: JsonRowGrammarState, character: string): boolea
             return WHITESPACE.has(character) || startAllowed(state, character);
         case 'in-string-value':
             if (state.unicodeEscapeRemaining > 0) {
-                return HEX_DIGIT.test(character);
+                return (
+                    HEX_DIGIT.test(character) &&
+                    (state.maximumStringLength === undefined || state.stringLength < state.maximumStringLength)
+                );
             }
             if (state.escaped) {
-                return JSON_ESCAPE.has(character);
+                return (
+                    JSON_ESCAPE.has(character) &&
+                    (state.maximumStringLength === undefined || state.stringLength < state.maximumStringLength)
+                );
             }
             if (character === '"' && !state.stringHasContent) {
                 return false;
             }
-            return (character.codePointAt(0) ?? 0) >= 0x20;
+            if (character === '"') {
+                return true;
+            }
+            return (
+                (character.codePointAt(0) ?? 0) >= 0x20 &&
+                (state.maximumStringLength === undefined || state.stringLength < state.maximumStringLength)
+            );
         case 'in-nonstring-value':
             return (
                 literalPrefixAllowed(state, `${state.literalText}${character}`) ||
@@ -147,7 +162,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                 keyTarget: `${next.name}"`,
                 keyMatched: 0,
                 valueKind: next.valueKind,
-                nullable: next.nullable
+                nullable: next.nullable,
+                maximumStringLength: next.maxLength
             };
         }
         case 'in-key': {
@@ -165,7 +181,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                     phase: 'in-string-value',
                     escaped: false,
                     unicodeEscapeRemaining: 0,
-                    stringHasContent: false
+                    stringHasContent: false,
+                    stringLength: 0
                 };
             }
             return startAllowed(state, character)
@@ -176,7 +193,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                 return {
                     ...state,
                     unicodeEscapeRemaining: state.unicodeEscapeRemaining - 1,
-                    stringHasContent: true
+                    stringHasContent: true,
+                    stringLength: state.unicodeEscapeRemaining === 1 ? state.stringLength + 1 : state.stringLength
                 };
             }
             if (state.escaped) {
@@ -184,7 +202,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                     ...state,
                     escaped: false,
                     unicodeEscapeRemaining: character === 'u' ? 4 : 0,
-                    stringHasContent: true
+                    stringHasContent: true,
+                    stringLength: character === 'u' ? state.stringLength : state.stringLength + 1
                 };
             }
             if (character === '\\') {
@@ -193,7 +212,11 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
             if (character === '"') {
                 return { ...state, phase: 'after-value' };
             }
-            return state.stringHasContent ? state : { ...state, stringHasContent: true };
+            return {
+                ...state,
+                stringHasContent: true,
+                stringLength: state.stringLength + 1
+            };
         case 'in-nonstring-value':
             return literalPrefixAllowed(state, `${state.literalText}${character}`)
                 ? { ...state, literalText: `${state.literalText}${character}` }

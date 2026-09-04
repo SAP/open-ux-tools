@@ -46,4 +46,14 @@ describe('JSON row grammar literal validation', () => {
         expect(textAllowed(unicode, '00FCnchen"}')).toBe(true);
         expect(grammarComplete(advanceText(unicode, '00FCnchen"}'))).toBe(true);
     });
+
+    test('forces a string to close at its metadata maximum length', () => {
+        const initial = createJsonRowGrammar([{ name: 'Code', valueKind: 'string', nullable: false, maxLength: 2 }]);
+        const completeValue = advanceText(initial, '{"Code":"AB');
+
+        expect(textAllowed(completeValue, 'C')).toBe(false);
+        expect(textAllowed(completeValue, '\\n')).toBe(false);
+        expect(textAllowed(completeValue, '"}')).toBe(true);
+        expect(grammarComplete(advanceText(completeValue, '"}'))).toBe(true);
+    });
 });

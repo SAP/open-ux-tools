@@ -7,6 +7,7 @@ export interface SftGrammarField {
     name: string;
     valueKind: JsonValueKind;
     nullable: boolean;
+    maxLength?: number;
 }
 
 export interface ConstrainedTextGenerationInput {
@@ -241,7 +242,8 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                         Object.freeze({
                             name: field.name,
                             valueKind: valueKind(field),
-                            nullable: field.nullable
+                            nullable: field.nullable,
+                            ...(field.maxLength === undefined ? {} : { maxLength: field.maxLength })
                         })
                     )
                 );

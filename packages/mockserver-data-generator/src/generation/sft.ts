@@ -72,6 +72,7 @@ function residualFields(
             .filter(
                 (property) =>
                     !property.isKey &&
+                    !(property.primitiveType === 'string' && property.maxLength === 0) &&
                     !structuralProperties.has(property.name) &&
                     isResidual(classifications.get(semanticPropertyKey(entity.entitySetName, property.name)))
             )
