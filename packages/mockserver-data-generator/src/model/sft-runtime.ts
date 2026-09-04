@@ -215,17 +215,20 @@ function canSplitIncompleteCompletion(error: unknown, signal: AbortSignal): bool
  */
 export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions): SftGenerator {
     const budgetMs = options.budgetMs ?? 90_000;
-    const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? 8;
     if (!Number.isFinite(budgetMs) || budgetMs <= 0) {
         throw new TypeError('SFT budget must be positive');
     }
-    if (!Number.isSafeInteger(maxFieldsPerPrompt) || maxFieldsPerPrompt <= 0) {
+    if (
+        options.maxFieldsPerPrompt !== undefined &&
+        (!Number.isSafeInteger(options.maxFieldsPerPrompt) || options.maxFieldsPerPrompt <= 0)
+    ) {
         throw new TypeError('SFT maximum fields per prompt must be a positive integer');
     }
     return Object.freeze({
         fingerprint: options.fingerprint,
         generate: async (input: SftGenerationInput, signal: AbortSignal) => {
             const context = abortContext(signal, budgetMs);
+            const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? (input.fields.length >= 100 ? 8 : 4);
             const fieldChunks = chunkFields(input.fields, maxFieldsPerPrompt);
             const rows: Array<Record<string, JsonValue>> = Array.from({ length: input.rowCount }, () => ({}));
             let attempts = 0;

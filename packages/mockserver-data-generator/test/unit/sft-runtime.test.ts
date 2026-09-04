@@ -144,7 +144,7 @@ describe('pilot-compatible SFT runtime', () => {
         ]);
     });
 
-    test('uses eight-field default chunks with adaptive overflow splitting', async () => {
+    test('uses conservative default chunks for ordinary entities', async () => {
         const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
             JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
         );
@@ -167,7 +167,35 @@ describe('pilot-compatible SFT runtime', () => {
 
         await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
-        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([8, 5]);
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([4, 4, 4, 1]);
+    });
+
+    test('uses eight-field chunks for entities with at least one hundred residual fields', async () => {
+        const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
+            JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
+        );
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate },
+            sampling: {
+                temperature: 0.6,
+                topP: 0.9,
+                repetitionPenalty: 1.15,
+                noRepeatNgramSize: 4,
+                maxNewTokens: 300
+            }
+        });
+        const fields = Array.from({ length: 101 }, (_unused, index) => ({
+            name: `Field${index + 1}`,
+            primitiveType: 'bool',
+            nullable: false
+        }));
+
+        await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
+
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 5
+        ]);
     });
 
     test('splits an incomplete chunk and reports every raw completion attempt', async () => {
@@ -185,7 +213,8 @@ describe('pilot-compatible SFT runtime', () => {
                 repetitionPenalty: 1.15,
                 noRepeatNgramSize: 4,
                 maxNewTokens: 300
-            }
+            },
+            maxFieldsPerPrompt: 8
         });
         const fields = ['FieldA', 'FieldB', 'FieldC', 'FieldD', 'FieldE', 'FieldF', 'FieldG', 'FieldH'].map((name) => ({
             name,
