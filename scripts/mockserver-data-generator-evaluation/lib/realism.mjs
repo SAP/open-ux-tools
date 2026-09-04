@@ -6,6 +6,7 @@ export const REALISM_FORMATS = Object.freeze(['edmx-v2', 'edmx-v4', 'csn']);
 const SHA256 = /^[a-f0-9]{64}$/;
 const SEVERITIES = Object.freeze(['none', 'minor', 'major', 'critical']);
 const MINIMUM_FIELDS = 300;
+const MINIMUM_FIELDS_PER_APPLICATION_FAMILY = 50;
 const MINIMUM_FIELDS_PER_FORMAT = 50;
 
 function canonicalJson(value) {
@@ -141,8 +142,8 @@ export function validateRealismEvidence(value) {
         if (count === 0 && declaredGaps.has(domain)) {
             continue;
         }
-        if (count === 0 || declaredGaps.has(domain)) {
-            throw new TypeError(`realism domain ${domain} does not meet the frozen coverage minimum`);
+        if (count < MINIMUM_FIELDS_PER_APPLICATION_FAMILY || declaredGaps.has(domain)) {
+            throw new TypeError(`realism application family ${domain} does not meet the frozen coverage minimum`);
         }
     }
     for (const format of REALISM_FORMATS) {
@@ -271,7 +272,10 @@ export function compileRealismReviews(evidenceSource, promptSource, schemaSource
         )
     );
     const domainsPass = Object.values(domainMetrics).every(
-        (metrics) => metrics.reviewedFields > 0 && metrics.realisticRate >= 0.8 && metrics.criticalIssues === 0
+        (metrics) =>
+            metrics.reviewedFields >= MINIMUM_FIELDS_PER_APPLICATION_FAMILY &&
+            metrics.realisticRate >= 0.8 &&
+            metrics.criticalIssues === 0
     );
     const formatsPass = Object.values(formatMetrics).every(
         (metrics) =>

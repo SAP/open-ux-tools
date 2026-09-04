@@ -6,20 +6,20 @@ import {
 } from '../../../../../scripts/mockserver-data-generator-evaluation/lib/realism.mjs';
 
 const domainCoverage = [
-    { domain: 'finance', fields: 60, format: 'edmx-v4' },
-    { domain: 'sales', fields: 70, format: 'edmx-v4' },
-    { domain: 'service', fields: 32, format: 'csn' },
-    { domain: 'maintenance', fields: 18, format: 'csn' },
-    { domain: 'master-data', fields: 60, format: 'edmx-v2' },
-    { domain: 'non-sap', fields: 60, format: 'edmx-v2' }
+    { domain: 'finance', fields: 50, format: 'edmx-v4' },
+    { domain: 'sales', fields: 50, format: 'edmx-v4' },
+    { domain: 'service', fields: 50, format: 'csn' },
+    { domain: 'maintenance', fields: 50, format: 'csn' },
+    { domain: 'master-data', fields: 50, format: 'edmx-v2' },
+    { domain: 'non-sap', fields: 50, format: 'edmx-v2' }
 ];
 
 function sha256(value: string): string {
     return createHash('sha256').update(value).digest('hex');
 }
 
-function evidencePayload() {
-    const fields = domainCoverage.flatMap(({ domain, fields: fieldCount, format }, domainIndex) =>
+function evidencePayload(coverage = domainCoverage) {
+    const fields = coverage.flatMap(({ domain, fields: fieldCount, format }, domainIndex) =>
         Array.from({ length: fieldCount }, (_unused, fieldIndex) => ({
             fieldKey: `${domain}:service-${domainIndex}:Entity:Field${fieldIndex}`,
             domain,
@@ -42,7 +42,7 @@ function evidencePayload() {
         outputSchemaFingerprint: sha256('schema'),
         selectionManifestFingerprint: sha256('manifest'),
         randomizationSeed: 113,
-        targets: domainCoverage.map(({ domain, format }, domainIndex) => ({
+        targets: coverage.map(({ domain, format }, domainIndex) => ({
             domain,
             serviceId: `service-${domainIndex}`,
             format,
@@ -81,6 +81,22 @@ function providerArtifact(provider: string, evidenceSource: string, evidenceFing
 }
 
 describe('production realism evidence', () => {
+    test('requires at least 50 reviewed fields in every application family', () => {
+        const incomplete = domainCoverage.map((entry) => {
+            if (entry.domain === 'maintenance') {
+                return { ...entry, fields: 49 };
+            }
+            if (entry.domain === 'finance') {
+                return { ...entry, fields: 51 };
+            }
+            return entry;
+        });
+
+        expect(() => sealRealismEvidence(evidencePayload(incomplete))).toThrow(
+            'realism application family maintenance does not meet the frozen coverage minimum'
+        );
+    });
+
     test('freezes deterministic blinded ordering and enforces six-domain V2/V4/CSN coverage', () => {
         const first = sealRealismEvidence(evidencePayload());
         const second = sealRealismEvidence(evidencePayload());
@@ -113,15 +129,15 @@ describe('production realism evidence', () => {
             passed: true
         });
         expect(report.domainMetrics).toMatchObject({
-            finance: { reviewedFields: 60, realisticRate: 1 },
-            sales: { reviewedFields: 70, realisticRate: 1 },
-            service: { reviewedFields: 32, realisticRate: 1 },
-            maintenance: { reviewedFields: 18, realisticRate: 1 }
+            finance: { reviewedFields: 50, realisticRate: 1 },
+            sales: { reviewedFields: 50, realisticRate: 1 },
+            service: { reviewedFields: 50, realisticRate: 1 },
+            maintenance: { reviewedFields: 50, realisticRate: 1 }
         });
         expect(report.formatMetrics).toMatchObject({
-            'edmx-v2': { reviewedFields: 120, realisticRate: 1 },
-            'edmx-v4': { reviewedFields: 130, realisticRate: 1 },
-            csn: { reviewedFields: 50, realisticRate: 1 }
+            'edmx-v2': { reviewedFields: 100, realisticRate: 1 },
+            'edmx-v4': { reviewedFields: 100, realisticRate: 1 },
+            csn: { reviewedFields: 100, realisticRate: 1 }
         });
         expect(report).not.toHaveProperty('fields.0.values');
     });
