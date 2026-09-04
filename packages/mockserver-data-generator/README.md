@@ -100,8 +100,8 @@ counts; the standard mockserver then uses its normal built-in/empty fallback.
 Complete generated results have a separate fixed 64 MiB UTF-8 ceiling matching
 the standard FE host contract. The public API checks both newly generated and
 cached results before publication and throws `GeneratedResultTooLargeError`
-with code `GENERATED_RESULT_TOO_LARGE`. This also protects direct native CAP
-use, where the plugin keeps normal CAP data and startup active after rejection.
+with code `GENERATED_RESULT_TOO_LARGE`, preventing oversized results from being
+published by the standard FE host.
 
 ## Programmatic API
 

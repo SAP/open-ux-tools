@@ -20,7 +20,7 @@ export class MetadataInputTooLargeError extends RangeError {
 /**
  * Reject metadata whose UTF-8 representation exceeds the fixed production ceiling.
  *
- * @param metadata Metadata supplied by an FE or CAP host.
+ * @param metadata EDMX or CSN metadata supplied by a caller.
  */
 export function assertMetadataInputWithinLimit(metadata: Pick<MockDataMetadata, 'content'>): void {
     const actualBytes = Buffer.byteLength(metadata.content, 'utf8');

@@ -1,6 +1,6 @@
 import type { MockDataGeneratorResult } from './types.js';
 
-/** Keep direct CAP generation inside the standard FE host's aggregate result ceiling. */
+/** Keep complete generation inside the standard FE host's aggregate result ceiling. */
 export const MAX_GENERATED_RESULT_BYTES = 64 * 1024 * 1024;
 
 /** Stable, privacy-safe failure raised before an oversized snapshot can be cached or published. */
@@ -24,7 +24,7 @@ export class GeneratedResultTooLargeError extends RangeError {
 }
 
 /**
- * Measure the complete JSON result as UTF-8 before it crosses a host or CAP publication boundary.
+ * Measure the complete JSON result as UTF-8 before it crosses a host publication boundary.
  *
  * @param result Complete generated service result.
  */

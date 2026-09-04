@@ -1,4 +1,4 @@
-import { getMockServerMiddlewareConfig, getPreviewMiddlewareConfig } from '../src/middlewares.js';
+import { getPreviewMiddlewareConfig } from '../src/middlewares.js';
 
 describe('getPreviewMiddlewareConfig', () => {
     it('should return a valid preview middleware config', () => {
@@ -25,20 +25,5 @@ describe('getPreviewMiddlewareConfig', () => {
         expect(result.name).toBe('fiori-tools-preview');
         expect(result.configuration.flp.theme).toBeUndefined();
         expect(result.configuration.flp.path).toBeUndefined();
-    });
-});
-
-describe('getMockServerMiddlewareConfig', () => {
-    it('adds a mock data generator only when explicitly configured', () => {
-        const generator = {
-            name: '@sap-ux/mockserver-data-generator/fe-mockserver',
-            timeoutMs: 30_000,
-            options: { seed: 42, rowsPerEntity: 8 }
-        };
-
-        const middleware = getMockServerMiddlewareConfig('/', '/webapp', [], [], generator);
-
-        expect(middleware.configuration.mockDataGenerator).toEqual(generator);
-        expect(getMockServerMiddlewareConfig('/', '/webapp', [], []).configuration.mockDataGenerator).toBeUndefined();
     });
 });

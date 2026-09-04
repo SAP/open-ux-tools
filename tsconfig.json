@@ -168,9 +168,6 @@
       "path": "packages/mockserver-config-writer"
     },
     {
-      "path": "packages/mockserver-data-generator-cap"
-    },
-    {
       "path": "packages/mockserver-data-generator"
     },
     {

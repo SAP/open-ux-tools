@@ -28,8 +28,8 @@ all model-management code remain owned by `SAP/open-ux-tools`.
 
 - Generate realistic, structurally valid mock data for SAP Fiori applications
   from metadata alone.
-- Support OData V2 EDMX, OData V4 EDMX, CAP used through the FE mockserver CDS
-  metadata processor, and an opt-in native CAP adapter.
+- Support OData V2 EDMX, OData V4 EDMX, and CAP metadata used through the FE
+  mockserver CDS metadata processor.
 - Preserve existing hand-authored JS, TS, and JSON mock data.
 - Generate a service as one unit so keys, foreign keys, code/text pairs,
   amount/currency pairs, and temporal relationships remain coherent.
@@ -64,7 +64,7 @@ all model-management code remain owned by `SAP/open-ux-tools`.
 
 | Repository | Ownership |
 | --- | --- |
-| `SAP/open-ux-tools` | `@sap-ux/mockserver-data-generator`, typed YAML support, mockserver config writer integration, CLI opt-in, native CAP adapter, package tests, and consumer documentation |
+| `SAP/open-ux-tools` | `@sap-ux/mockserver-data-generator`, package tests, evaluation and local/BAS development tooling, and consumer documentation |
 | `SAP/open-ux-odata` | Generic `mockDataGenerator` SPI, provider loading, precedence and degradation behavior, host lifecycle, and host contract tests |
 | Internal model repository | Governed datasets, training and export code, immutable candidates, evaluation reports, and promotion attestations |
 | SAP model distribution namespace | Cleared immutable model bundles, manifests, model cards, licenses, and hashes |
@@ -272,11 +272,13 @@ The direct local command builds and packs the current generator. Until the host
 SPI is published, it also requires a compatible `open-ux-odata` checkout or
 explicit core and middleware tarballs. The portable command produces one dev-kit
 archive containing the generator, host core and middleware tarballs, a bundled
-configuration installer built from `@sap-ux/mockserver-config-writer`'s public
-API, an integrity manifest, and BAS instructions. The bundled installer is
-fingerprinted and has no imports back into either source worktree. It does not
-duplicate config-writer logic, include model weights, or carry platform-specific
-`node_modules`.
+development-only configuration installer, an integrity manifest, and BAS
+instructions. The installer uses the unchanged public
+`@sap-ux/mockserver-config-writer` API for the standard mockserver setup, then
+adds only the local MockGen dependency and provider block. It is fingerprinted
+and has no imports back into either source worktree. It does not require changes
+to shared configuration packages, include model weights, or carry
+platform-specific `node_modules`.
 
 The installer requires an explicit existing Fiori application path and validates
 `package.json`, `webapp/manifest.json`, UI5 configuration, Node version, package
@@ -407,19 +409,12 @@ zero critical issues, and no coverage gaps. Expert review is targeted to
 legacy records that fail provenance checks and new provider disagreements
 rather than repeating a blanket human study.
 
-## Native CAP
+## CAP scope
 
-CAP consumed through the FE mockserver needs no separate generator integration:
-the CDS metadata processor and data generator are configured together. Native
-CAP projects use a separate opt-in package,
-`@sap-ux/mockserver-data-generator-cap`, so CAP auto-discovery does not affect
-applications that only use the FE mockserver.
-
-The CAP adapter runs only in explicitly enabled development/test profiles,
-waits for the CAP `served` lifecycle, inspects the resolved model, preserves
-non-empty persistence entities, and inserts missing rows through public CQL in
-foreign-key order. It is disabled in production and never deletes application
-data.
+CAP metadata consumed through the FE mockserver needs no separate generator
+integration: the existing CDS metadata processor and the MockGen provider are
+configured together. A native CAP persistence adapter is not part of this
+project scope and would require a separate request and design.
 
 ## Release strategy
 
@@ -427,10 +422,8 @@ Release order is:
 
 1. Generic host SPI prerelease from `SAP/open-ux-odata`.
 2. Generator package preview from `SAP/open-ux-tools`.
-3. Typed UI5 configuration and writer/CLI opt-in.
-4. Native CAP adapter preview.
-5. Cross-platform, size, security, real-application, and realism qualification.
-6. Stable package and model-channel promotion.
+3. Cross-platform, size, security, real-application, and realism qualification.
+4. Stable package and model-channel promotion.
 
 Every model promotion is a reversible manifest change. The previous promoted
 model remains available, a kill switch can disable T2, and rollback to the
@@ -443,10 +436,13 @@ storage.
 
 ## Design acceptance
 
-The approved implementation scope is the complete production version of the
-pilot: generic host SPI, deterministic generation, classifier, SFT inference,
-local/BAS tooling, and CAP integration. Implementation and local evaluation may
-use the existing pilot workspace immediately.
+The approved implementation scope is the production version of the pilot:
+generic host SPI, deterministic generation, classifier, SFT inference, and
+local/BAS tooling. CAP metadata is supported only through the standard FE
+mockserver CDS metadata processor. Shared UI5 configuration packages, general
+creation tooling, MCP content, and a native CAP adapter remain unchanged.
+Implementation and local evaluation may use the existing pilot workspace
+immediately.
 
 Two normal engineering checkpoints protect repository and release boundaries:
 

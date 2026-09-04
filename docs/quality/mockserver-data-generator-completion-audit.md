@@ -20,9 +20,9 @@ The production implementation is locally functional and substantially covers
 the agreed MockGen product scope: the standard FE mockserver owns serving,
 MockGen is an opt-in whole-service provider, authored data remains
 authoritative, the retained classifier and SFT model load through production
-contracts, deterministic degradation remains usable, native CAP is opt-in, and
-the packed local/BAS development kit installs and restores an existing Fiori
-application.
+contracts, deterministic degradation remains usable, and the packed local/BAS
+development kit installs and restores an existing Fiori application without
+requiring MockGen changes in shared configuration packages.
 
 The candidate is not release-ready. The local platform-specific runtime proof
 now passes the total-footprint ceiling without changing classifier or SFT
@@ -62,11 +62,10 @@ means a measured threshold was missed by the named candidate.
 | Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, symlink rejection, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, and warm network-free cache | Approved remote bundle and proxy/BAS acquisition canary |
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
-| Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, FE diagnostic/fallback, and CAP startup tests pass | Repeat against published FE and CAP packages on release platforms |
-| Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or CAP publication; CAP startup remains available with stable reporting | Repeat against published FE and CAP packages on release platforms |
-| UI5 config and application writer | proven | one middleware, one `ui5-mock.yaml`, one existing `start-mock`; add/remove and writer tests pass | Published-version compatibility run |
+| Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, and FE diagnostic/fallback tests pass | Repeat against the published FE package on release platforms |
+| Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or host publication | Repeat against the published FE package on release platforms |
+| Development-kit application setup | proven | one middleware, one `ui5-mock.yaml`, and the existing `start-mock`; the unpublished installer owns the local provider mutation while shared configuration packages remain unchanged | Published-version compatibility run |
 | Local/BAS development kit | proven locally / platform | current 545,383-byte archive installs exact tarballs, verifies deterministic V4 and classifier/SFT V2 paths through the standard Fiori mockserver, and restores both fixtures byte-for-byte | Run the recorded procedure in an actual BAS dev space |
-| Native CAP adapter | proven locally | 20 tests cover opt-in profiles, preservation of existing persistence data, FK ordering, learned fallback, metadata/result ceiling fallback, generated cache, in-memory SQLite, restart determinism, and package boundary | Cross-platform and published-package canary |
 | Package boundary | proven | current exact-kit generator tarball is 76,855 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
@@ -85,9 +84,8 @@ means a measured threshold was missed by the named candidate.
 | `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
 | `@sap-ux/mockserver-data-generator` | 23 suites, 180 tests passed; 85.51% statement coverage; build and package check passed; lint has zero errors |
-| development kit, degradation, and evaluation harness | 11 suites, 98 tests passed; build passed; lint has zero errors |
+| development kit, degradation, and evaluation harness | 11 suites, 99 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
-| `@sap-ux/mockserver-data-generator-cap` | 5 suites, 20 tests passed; 86.72% statement coverage; build passed; lint has zero errors |
 | exact deterministic archive canary | provider executed; metadata passed; one row returned; 18.502 ms verified generated-data cache path; 19.352 ms host; exact restore passed |
 | exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,412.620 ms runtime initialization; 2,623.729 ms generation; 2,624.564 ms host; exact restore passed |
 | current package archive | 76,855 / 5,242,880 bytes, pass |

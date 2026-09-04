@@ -199,8 +199,7 @@ built-in/empty fallback without publishing partial generated data.
 
 The generator also measures the complete serialized result and rejects it
 above 64 MiB with `GENERATED_RESULT_TOO_LARGE`. This mirrors the standard host
-ceiling and applies the same defense to direct native CAP generation before a
-result can be cached or inserted.
+ceiling before a result can be cached or published.
 
 ## Diagnostics boundary
 

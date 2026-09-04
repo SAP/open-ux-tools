@@ -341,8 +341,8 @@ boundary archive below.
 
 ## Current generated-result-boundary archive canary
 
-After the generator and native CAP adapter gained the same fixed 64 MiB UTF-8
-aggregate result ceiling as the standard FE host, the development kit was
+After the generator gained the same fixed 64 MiB UTF-8 aggregate result ceiling
+as the standard FE host, the development kit was
 rebuilt from clean worktrees. The exact archive completed separate deterministic
 OData V4 and retained-model OData V2 installs, HTTP canaries, and restores.
 

@@ -18,7 +18,7 @@ export async function generateMockserverConfig(basePath: string, data: Mockserve
         fs = create(createStorage());
     }
     if (!data.packageJsonConfig?.skip) {
-        enhancePackageJson(fs, basePath, data.packageJsonConfig, data.ui5MockYamlConfig?.mockDataGenerator);
+        enhancePackageJson(fs, basePath, data.packageJsonConfig);
     }
     await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig);
     return fs;

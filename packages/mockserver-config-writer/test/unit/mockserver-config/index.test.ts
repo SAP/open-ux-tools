@@ -39,37 +39,6 @@ describe('Test generateMockserverConfig()', () => {
         });
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
     });
-
-    test('explicitly opts an application into the standard MockGen provider', async () => {
-        const basePath = join(__dirname, '../../fixtures/bare-minimum');
-        const webappPath = join(basePath, 'webapp');
-
-        const fs = await generateMockserverConfig(basePath, {
-            webappPath,
-            ui5MockYamlConfig: {
-                mockDataGenerator: {
-                    version: '0.1.0',
-                    options: { seed: 42, rowsPerEntity: 8, mode: 'auto' }
-                }
-            }
-        });
-
-        expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({
-            name: 'bare-minimum',
-            devDependencies: {
-                '@sap-ux/ui5-middleware-fe-mockserver': '^2.5.0',
-                '@sap-ux/mockserver-data-generator': '0.1.0'
-            },
-            ui5: { dependencies: ['@sap-ux/ui5-middleware-fe-mockserver'] },
-            scripts: { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
-        });
-        expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain(`mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            seed: 42
-            rowsPerEntity: 8
-            mode: auto`);
-    });
 });
 
 describe('Test removeMockserverConfig()', () => {

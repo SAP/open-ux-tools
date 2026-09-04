@@ -3424,9 +3424,6 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
-      semver:
-        specifier: 7.8.5
-        version: 7.8.5
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -3437,9 +3434,6 @@ importers:
       '@types/prompts':
         specifier: 2.4.9
         version: 2.4.9
-      '@types/semver':
-        specifier: 7.7.1
-        version: 7.7.1
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -3453,19 +3447,6 @@ importers:
       onnxruntime-node:
         specifier: 1.24.3
         version: 1.24.3
-
-  packages/mockserver-data-generator-cap:
-    dependencies:
-      '@sap-ux/mockserver-data-generator':
-        specifier: workspace:*
-        version: link:../mockserver-data-generator
-    devDependencies:
-      '@cap-js/sqlite':
-        specifier: 3.0.2
-        version: 3.0.2(@sap/cds@10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22))(better-sqlite3@12.11.1)(generic-pool@3.9.0)
-      '@sap/cds':
-        specifier: 10.0.6
-        version: 10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22)
 
   packages/nodejs-utils:
     dependencies:
@@ -6745,27 +6726,6 @@ packages:
   '@cacheable/utils@2.3.4':
     resolution: {integrity: sha512-knwKUJEYgIfwShABS1BX6JyJJTglAFcEU7EXqzTdiGCXur4voqkiJkdgZIQtWNFhynzDWERcTYv/sETMu3uJWA==}
 
-  '@cap-js/db-service@3.0.1':
-    resolution: {integrity: sha512-sWy+EYyfY7YzJspKcGqln4gWNVffcRwd/vm47T+tMa85+LWtOsmJgdfH8i1KVCR3o8zaywmPwSflnnSOKoZJkg==}
-    peerDependencies:
-      '@sap/cds': ^10
-      generic-pool: ^3.9.0
-    peerDependenciesMeta:
-      generic-pool:
-        optional: true
-
-  '@cap-js/sqlite@3.0.2':
-    resolution: {integrity: sha512-C+wiMzRxgmNF919ZcIjXPlAGlgunXUzPAldp5WMZ4fmb+komfADMmdUzYqS1LklnBXBkdxrKlP30giNTutPwpg==}
-    peerDependencies:
-      '@sap/cds': ^10
-      better-sqlite3: ^12.0.0
-      sql.js: ^1.13.0
-    peerDependenciesMeta:
-      better-sqlite3:
-        optional: true
-      sql.js:
-        optional: true
-
   '@cfworker/json-schema@4.1.1':
     resolution: {integrity: sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og==}
 
@@ -9569,27 +9529,6 @@ packages:
     engines: {node: '>=16'}
     deprecated: This version is no longer supported. Use the latest version instead.
     hasBin: true
-
-  '@sap/cds-compiler@7.0.3':
-    resolution: {integrity: sha512-scgBPK0TcobT0tXIQOEBTeVuGaxWthKeIQjhBoeLWcQXwVC3s61U3GFdbW56h01pXFwwUUSsxjzZN7all5lRyg==}
-    engines: {node: '>=22'}
-    hasBin: true
-
-  '@sap/cds-fiori@2.3.0':
-    resolution: {integrity: sha512-6oWov+DSpFrSTgxXR0dZhak6aZ/IVRZvaHERMi0EgSTzIJdlvZlpw3Kf18ePMcTrRrtEXwD4RIjKt8pbs0g2Hg==}
-    peerDependencies:
-      '@sap/cds': '>=8'
-
-  '@sap/cds@10.0.6':
-    resolution: {integrity: sha512-7BFJoR2y59leiim6PhH7un6AVgr8lr3usSamxznVeAZp6mFHnhMQ5IU674/3Hna//1KGox03rL5OZOMpP01n+Q==}
-    engines: {node: '>=22'}
-    hasBin: true
-    peerDependencies:
-      '@eslint/js': ^9 || ^10
-      tar: '>=7.5.19'
-    peerDependenciesMeta:
-      tar:
-        optional: true
 
   '@sap/cf-tools@3.3.1':
     resolution: {integrity: sha512-hGrpVEoTxUC3IdfwCE30Pm4JV+hNXrJDfYzu7VspZglEZSPnut+MzCnzodRacFzRJ8qAP0MPvrr5PCFMmuBckA==}
@@ -13792,10 +13731,6 @@ packages:
 
   generic-names@4.0.0:
     resolution: {integrity: sha512-ySFolZQfw9FoDb3ed9d80Cm9f0+r7qj+HJkWjeD9RBfpxEVTlVhol+gvaQB/78WbwYfbnNh8nWHHBSlg072y6A==}
-
-  generic-pool@3.9.0:
-    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
-    engines: {node: '>= 4'}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -21404,21 +21339,6 @@ snapshots:
       hashery: 1.4.0
       keyv: 5.6.0
 
-  '@cap-js/db-service@3.0.1(@sap/cds@10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22))(generic-pool@3.9.0)':
-    dependencies:
-      '@sap/cds': 10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22)
-    optionalDependencies:
-      generic-pool: 3.9.0
-
-  '@cap-js/sqlite@3.0.2(@sap/cds@10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22))(better-sqlite3@12.11.1)(generic-pool@3.9.0)':
-    dependencies:
-      '@cap-js/db-service': 3.0.1(@sap/cds@10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22))(generic-pool@3.9.0)
-      '@sap/cds': 10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22)
-    optionalDependencies:
-      better-sqlite3: 12.11.1
-    transitivePeerDependencies:
-      - generic-pool
-
   '@cfworker/json-schema@4.1.1': {}
 
   '@changesets/apply-release-plan@7.1.1':
@@ -24747,24 +24667,6 @@ snapshots:
   '@sap/cds-compiler@4.8.0':
     dependencies:
       antlr4: 4.9.3
-
-  '@sap/cds-compiler@7.0.3': {}
-
-  '@sap/cds-fiori@2.3.0(@sap/cds@10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22))':
-    dependencies:
-      '@sap/cds': 10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22)
-
-  '@sap/cds@10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22)':
-    dependencies:
-      '@eslint/js': 10.0.1(eslint@10.7.0(supports-color@8.1.1))
-      '@sap/cds-compiler': 7.0.3
-      '@sap/cds-fiori': 2.3.0(@sap/cds@10.0.6(@eslint/js@10.0.1(eslint@10.7.0(supports-color@8.1.1)))(supports-color@8.1.1)(tar@7.5.22))
-      express: 4.22.1(supports-color@8.1.1)
-      yaml: 2.8.3
-    optionalDependencies:
-      tar: 7.5.22
-    transitivePeerDependencies:
-      - supports-color
 
   '@sap/cf-tools@3.3.1':
     dependencies:
@@ -30098,9 +30000,6 @@ snapshots:
   generic-names@4.0.0:
     dependencies:
       loader-utils: 3.3.1
-
-  generic-pool@3.9.0:
-    optional: true
 
   gensync@1.0.0-beta.2: {}
 

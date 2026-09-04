@@ -15,8 +15,7 @@ import type {
     ServeStaticPath,
     DataSourceConfig,
     AbapDeployConfig,
-    MockserverService,
-    MockDataGeneratorSetting
+    MockserverService
 } from './types/index.js';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -625,70 +624,6 @@ export class UI5Config {
             this.updateCustomMiddleware(mockserverMiddleware);
         }
         return this;
-    }
-
-    /**
-     * Add or replace the mock data generator setting on the mockserver or on one configured service.
-     * Only the provider subtree is replaced so unrelated mockserver configuration and comments are preserved.
-     *
-     * @param setting - provider configuration, or `false` to disable an inherited provider for one service
-     * @param servicePath - optional service URL path; omit it to configure the provider globally
-     * @returns the UI5Config instance
-     */
-    public setMockDataGenerator(setting: MockDataGeneratorSetting, servicePath?: string): this {
-        const configuration = this.getMockserverMiddlewareConfiguration();
-        const target = servicePath ? this.getMockserverServiceConfiguration(configuration, servicePath) : configuration;
-        target.set('mockDataGenerator', setting);
-        return this;
-    }
-
-    /**
-     * Remove the mock data generator setting from the mockserver or from one configured service.
-     *
-     * @param servicePath - optional service URL path; omit it to remove the global provider
-     * @returns the UI5Config instance
-     */
-    public removeMockDataGenerator(servicePath?: string): this {
-        const configuration = this.getMockserverMiddlewareConfiguration();
-        const target = servicePath ? this.getMockserverServiceConfiguration(configuration, servicePath) : configuration;
-        target.delete('mockDataGenerator');
-        return this;
-    }
-
-    /**
-     * Return the standard mockserver middleware configuration YAML node.
-     *
-     * @returns middleware configuration node
-     */
-    private getMockserverMiddlewareConfiguration(): YAMLMap {
-        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-        const middleware = this.document.findItem(
-            middlewareList,
-            (item: CustomMiddleware<unknown>) => item.name === 'sap-fe-mockserver'
-        );
-        if (!middleware) {
-            throw new Error('Could not find sap-fe-mockserver');
-        }
-        return this.document.getMap({ start: middleware as YAMLMap, path: 'configuration' });
-    }
-
-    /**
-     * Return a configured mockserver service YAML node.
-     *
-     * @param configuration - mockserver middleware configuration node
-     * @param servicePath - URL path identifying the service
-     * @returns service configuration node
-     */
-    private getMockserverServiceConfiguration(configuration: YAMLMap, servicePath: string): YAMLMap {
-        const services = this.document.getSequence({ start: configuration, path: 'services' });
-        const service = this.document.findItem(
-            services,
-            (item: MockserverService) => item.urlPath === servicePath.replace(/\/$/, '')
-        );
-        if (!service) {
-            throw new Error(`Could not find mockserver service '${servicePath}'`);
-        }
-        return service as YAMLMap;
     }
 
     /**

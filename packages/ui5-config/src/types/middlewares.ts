@@ -47,28 +47,12 @@ export interface FioriToolsProxyConfig {
     ignoreCertErrors?: boolean;
 }
 
-export type MockDataGeneratorJsonPrimitive = string | number | boolean | null;
-
-export type MockDataGeneratorJsonValue =
-    | MockDataGeneratorJsonPrimitive
-    | ReadonlyArray<MockDataGeneratorJsonValue>
-    | { readonly [key: string]: MockDataGeneratorJsonValue };
-
-export interface MockDataGeneratorConfig {
-    name: string;
-    timeoutMs?: number;
-    options?: Readonly<Record<string, MockDataGeneratorJsonValue>>;
-}
-
-export type MockDataGeneratorSetting = MockDataGeneratorConfig | false;
-
 export interface MockserverService {
     urlPath: string;
     metadataPath: string;
     mockdataPath?: string;
     generateMockData?: boolean;
     resolveExternalServiceReferences?: boolean;
-    mockDataGenerator?: MockDataGeneratorSetting;
 }
 
 export interface MockserverConfig {
@@ -78,7 +62,6 @@ export interface MockserverConfig {
         urlPath: string;
     }[];
     services?: MockserverService[];
-    mockDataGenerator?: MockDataGeneratorSetting;
 }
 
 export interface FioriToolsServeStaticPath {

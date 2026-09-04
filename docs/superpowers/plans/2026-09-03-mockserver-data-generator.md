@@ -16,7 +16,7 @@
 - Applications keep one `sap-fe-mockserver` middleware, one `ui5-mock.yaml`, and one `start-mock` script.
 - Existing JS/TS contributor-owned rows and JSON mock data win over generated data. Hook-only contributors remain active around later row sources. No user mock file is overwritten.
 - Generation is one asynchronous whole-service operation during service initialization, never an LLM call on an HTTP request path.
-- OData V2, OData V4, and CAP-through-the-CDS-metadata-processor are in the first FE integration. Native CAP is an additional opt-in package. OpenAPI is deferred.
+- OData V2, OData V4, and CAP-through-the-CDS-metadata-processor are in the first FE integration. Native CAP and OpenAPI are deferred.
 - The default language is English for the first preview; locale remains part of the public contract and cache key.
 - The npm package contains no model weights, checkpoints, training data, provider outputs, or Python environment.
 - The pilot's classifier corpus, SFT corpus, model artifacts, and judge harnesses are inputs to this work. They are not discarded or recollected wholesale.
@@ -32,7 +32,7 @@
 
 | Workstream | Repository and branch | Primary outputs |
 | --- | --- | --- |
-| Generator and tooling | `SAP/open-ux-tools`, `feat/mockserver-data-generator`, based on `origin/main` `6879d47df9097421fd98edf0800eb13c2c513aa9` | New package, UI5 types, config writer, CLI, native CAP adapter |
+| Generator and tooling | `SAP/open-ux-tools`, `feat/mockserver-data-generator`, based on `origin/main` `6879d47df9097421fd98edf0800eb13c2c513aa9` | New package, evaluation, and local/BAS development kit |
 | Mockserver host SPI | `SAP/open-ux-odata`, `feat/mock-data-generator-spi`, based on `origin/main` `d94d8d3c31bb770e267784e0011aee5fb7e361a6` | Generic SPI and lifecycle integration |
 | Model/data lifecycle | Existing pilot workspace for local implementation; approved managed storage before redistribution | Governed datasets, training, exports, evaluation, immutable candidates |
 | Pilot comparison | Local `sap-ai-mockserver` pilot repository | Read-only parity and evidence source; local locator remains outside public documentation |
@@ -49,14 +49,14 @@ Every implementation commit is conventional, signed off for DCO, scoped to one c
 | 3. Production package scaffold | Phase 0 contract draft | Phases 1 and 2 |
 | 4. Deterministic engine | Phase 3 | Phases 1 and 2 |
 | 5. FE mockserver provider integration | Phases 2 and 4 | Phase 8 |
-| 6. UI5 config writer and CLI | Phase 2 API and Phase 5 provider | Phases 7–9 |
-| 6A. Local and BAS developer test kit | Phases 2, 3, 5, and 6 | Phases 7–9 |
-| 7. Model acquisition and runtime | Phase 3 model contract; redistribution clearance before publishing a model | Phases 6, 8, and 11 |
-| 8. Dataset repair and model training | Phase 1 inventory; source clearance before moving data to a public or shared repository | Phases 5–7 and 11 |
-| 9. Footprint and quantization campaign | Phases 7 and 8 baseline reproduction | Phase 11 |
+| 6. Shared-package scope guard | Phase 5 provider | Phases 7–9 |
+| 6A. Local and BAS developer test kit | Phases 2, 3, and 5 | Phases 7–9 |
+| 7. Model acquisition and runtime | Phase 3 model contract; redistribution clearance before publishing a model | Phases 6 and 8 |
+| 8. Dataset repair and model training | Phase 1 inventory; source clearance before moving data to a public or shared repository | Phases 5–7 |
+| 9. Footprint and quantization campaign | Phases 7 and 8 baseline reproduction | Phase 10 |
 | 10. Production evaluation | Phases 5, 8, and 9 | Phase 12 where possible |
-| 11. Native CAP adapter | Phase 4 for deterministic behavior and Phase 7 for learned-tier behavior | Phases 7–9 |
-| 12. Product hardening | Phases 5–7 and 11 | Phase 10 where possible |
+| 11. Native CAP boundary | Explicitly deferred | None |
+| 12. Product hardening | Phases 5–7 | Phase 10 where possible |
 | 13. Preview, promotion, and pilot retirement | Phases 10 and 12 | None |
 
 ## Phase 0 — Establish clean execution and freeze the contracts
@@ -565,90 +565,26 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 
 **Phase exit gate:** Clean packed V2, V4, and CDS applications start with `npm run start-mock`, preserve user data, and fall back safely without a model.
 
-## Phase 6 — Add typed UI5 configuration, writer support, and CLI opt-in
+## Phase 6 — Guard the shared-package boundary
 
-**Outcome:** Users enable the generator through existing SAP Fiori tooling without manually inventing a middleware name or a second start flow.
+**Outcome:** MockGen remains isolated from unrelated UI5 configuration, creation, and MCP packages.
 
-### Task 6.1: Add typed `mockDataGenerator` YAML support
+### Task 6.1: Keep shared packages unchanged
 
-**Files:**
-
-- Modify: `packages/ui5-config/src/types/middlewares.ts`
-- Modify: `packages/ui5-config/src/middlewares.ts`
-- Modify: `packages/ui5-config/src/ui5config.ts`
-- Modify: `packages/ui5-config/test/middlewares.test.ts`
-- Modify: `packages/ui5-config/test/index.test.ts`
-- Modify: `packages/ui5-config/test/__snapshots__/index.test.ts.snap`
-- Create: `.changeset/ui5-config-mock-data-generator.md`
-
-- [ ] Write failing tests that add, update, remove, and round-trip global/service provider configuration.
-- [ ] Preserve existing services, annotations, metadata processors, comments, and unrelated middleware configuration.
-- [ ] Use a narrow YAML-node mutation for the provider subtree, or prove with focused tests that the existing whole-middleware update helper preserves every sibling and comment before reusing it.
-- [ ] Make repeated writes idempotent.
-- [ ] Add a minor changeset for the new public type/API.
-
-### Task 6.2: Extend `mockserver-config-writer` as an explicit opt-in
-
-**Files:**
-
-- Modify: `packages/mockserver-config-writer/src/types/index.ts`
-- Modify: `packages/mockserver-config-writer/src/mockserver-config/package-json.ts`
-- Modify: `packages/mockserver-config-writer/src/mockserver-config/ui5-mock-yaml.ts`
-- Modify: `packages/mockserver-config-writer/src/mockserver-config/index.ts`
-- Modify: `packages/mockserver-config-writer/src/prompt/index.ts`
-- Modify: `packages/mockserver-config-writer/src/translations/mockserver-config-writer.i18n.json`
-- Modify: `packages/mockserver-config-writer/test/unit/mockserver-config/package-json.test.ts`
-- Modify: `packages/mockserver-config-writer/test/unit/mockserver-config/ui5-mock-yaml.test.ts`
-- Modify: `packages/mockserver-config-writer/test/unit/mockserver-config/index.test.ts`
-- Modify: relevant snapshots and fixtures under `packages/mockserver-config-writer/test/`
-- Modify: `packages/mockserver-config-writer/README.md`
-- Create: `.changeset/mockserver-config-writer-data-generator.md`
-
-- [ ] Capture current default snapshots before implementation.
-- [ ] Write failing opt-in tests for dependency and YAML changes.
-- [ ] Add `@sap-ux/mockserver-data-generator` only to application `devDependencies`; never add it to `ui5.dependencies`.
-- [ ] Keep `start-mock` and `ui5-mock.yaml`; do not create `start-mockgen` or `ui5-mockgen.yaml`.
-- [ ] Leave all existing `generateMockserverConfig()` calls byte-for-byte unchanged unless they pass the new option.
-- [ ] Make add/remove/re-add idempotent and remove the provider dependency/config when explicitly removing generator support.
-- [ ] Add a minor changeset.
-
-### Task 6.3: Keep the general create CLI and MCP skill out of the MockGen change
-
-**Files:**
-
-- Do not modify `packages/create`.
-- Do not modify `packages/fiori-mcp-server`.
-
-- [x] Keep the existing CLI and its generated MCP skill byte-for-byte unchanged.
-- [x] Use the focused local/BAS development-kit installer as the explicit unpublished-package workflow.
-- [x] Keep programmatic production configuration in `mockserver-config-writer`, the configuration tool owned by this feature.
-
-**Scope correction (2026-09-04):** The optional `@sap-ux/create`
-`--data-generator` flag and generated Fiori MCP documentation were removed. They
-are not required by the standard mockserver provider contract or by the
-requested local/BAS installer, and would broaden the initial MockGen delivery
-beyond its approved package and configuration-tooling scope.
-
-### Task 6.4: Verify unchanged consumers
-
-**Files:**
-
-- Test existing consumers found by `rg "generateMockserverConfig" packages`.
-
-- [ ] Run current `odata-service-writer`, `generator-odata-downloader`, and other direct consumer tests.
-- [ ] Confirm no caller receives generator configuration without opting in.
-- [ ] Confirm `preview-middleware` needs no source change; use it only in an E2E fixture if valuable.
+- [x] Keep `packages/ui5-config` byte-identical to `origin/main`.
+- [x] Keep `packages/mockserver-config-writer` byte-identical to `origin/main`.
+- [x] Keep `packages/create` byte-identical to `origin/main`.
+- [x] Keep `packages/fiori-mcp-server` byte-identical to `origin/main`.
+- [x] Do not add MockGen changesets for those packages.
+- [x] Put unpublished local/BAS opt-in behavior in the MockGen development-kit script.
 
 **Verification:**
 
 ```bash
-pnpm --filter @sap-ux/ui5-config test
-pnpm --filter @sap-ux/mockserver-config-writer test
-pnpm lint:dependency-versions
-pnpm validate:changesets
+git diff --exit-code origin/main -- packages/ui5-config packages/mockserver-config-writer packages/create packages/fiori-mcp-server
 ```
 
-**Phase exit gate:** Old snapshots remain unchanged; new snapshots show exactly one standard middleware with an opt-in `mockDataGenerator`; `npm run start-mock` is the only start flow.
+**Phase exit gate:** The four shared package trees have no MockGen diff, while the development kit still installs and verifies the provider in an existing Fiori application.
 
 ## Phase 6A — Build the local and BAS developer test kit
 
@@ -675,8 +611,8 @@ pnpm validate:changesets
 - [ ] Always run each package's clean build before `pnpm pack --json`; never trust ambient `dist`.
 - [ ] Pack `@sap-ux/mockserver-data-generator` plus the matching unpublished host core and middleware that contain the SPI.
 - [ ] Accept either `--host-root <open-ux-odata-worktree>` or explicit `--host-core-tgz` and `--host-middleware-tgz` inputs; reject an incomplete or incompatible set.
-- [ ] Bundle the test-only installer from `@sap-ux/mockserver-config-writer`'s public API. Do not copy writer logic into the generator or make the public generator package own consumer configuration.
-- [ ] Prove the bundled installer has no imports back into either workspace and record its source package version, inventory, byte size, and hash.
+- [x] Use the unchanged `@sap-ux/mockserver-config-writer` public API for standard mockserver setup, then add only the development-kit generator dependency and provider block locally.
+- [x] Prove the bundled installer has no imports back into either workspace and record its source package version, inventory, byte size, and hash.
 - [ ] Record package name, version, source repository, source commit, dirty-state flag, packed-file inventory, byte size, and SHA-256 in `dev-kit-manifest.json`.
 - [ ] Allow intentional dirty development trees but label the kit non-reproducible; add `--require-clean` for a shareable BAS canary or review artifact.
 - [ ] Inspect every tarball and fail if expected exports or `dist` are absent, if a model/checkpoint/training artifact is present, or if an absolute developer path is embedded.
@@ -1253,53 +1189,15 @@ the external realism gate.
 
 **Phase exit gate:** The exact candidate passes absolute structural gates, fresh dual-provider realism gates, determinism, and all degradation fixtures. A failed gate returns the artifact to candidate status.
 
-## Phase 11 — Add the opt-in native CAP adapter
+## Phase 11 — Keep native CAP outside the approved scope
 
-**Outcome:** Native CAP test/development projects can seed missing persistence rows without changing FE-mockserver behavior or production databases.
+**Outcome:** CAP metadata remains supported through the existing FE mockserver CDS metadata processor; no native CAP package or persistence integration is added.
 
-### Task 11.1: Scaffold `@sap-ux/mockserver-data-generator-cap`
+- [x] Remove `@sap-ux/mockserver-data-generator-cap` from this branch.
+- [x] Remove its workspace, coverage, ownership, lockfile, and changeset entries.
+- [x] Require a separate product request and design before any native CAP integration.
 
-**Files:**
-
-- Create: `packages/mockserver-data-generator-cap/package.json`
-- Create: `packages/mockserver-data-generator-cap/tsconfig.json`
-- Create: `packages/mockserver-data-generator-cap/eslint.config.mjs`
-- Create: `packages/mockserver-data-generator-cap/jest.config.mjs`
-- Create: `packages/mockserver-data-generator-cap/LICENSE`
-- Create: `packages/mockserver-data-generator-cap/README.md`
-- Create: `packages/mockserver-data-generator-cap/cds-plugin.js`
-- Create: `packages/mockserver-data-generator-cap/src/index.ts`
-- Create: `packages/mockserver-data-generator-cap/src/config.ts`
-- Create: `packages/mockserver-data-generator-cap/src/seed.ts`
-- Create: `packages/mockserver-data-generator-cap/test/`
-- Modify: `tsconfig.json`
-- Modify: `sonar-project.properties`
-- Modify: `.github/CODEOWNERS`
-- Create: `.changeset/mockserver-data-generator-cap-initial.md`
-
-- [ ] Depend on `@sap-ux/mockserver-data-generator` with `workspace:*` and peer-depend on a documented open `@sap/cds` range.
-- [ ] Keep CAP auto-discovery isolated in this package so installing the FE provider alone has no CAP side effect.
-- [ ] Default to disabled and require an explicit development/test profile.
-- [ ] Add package boundary and 5 MiB packed-size checks.
-
-### Task 11.2: Seed missing native CAP data safely
-
-**Files:**
-
-- Modify: `packages/mockserver-data-generator-cap/src/seed.ts`
-- Create: `packages/mockserver-data-generator-cap/test/integration/cap-sqlite.test.ts`
-- Create: `packages/mockserver-data-generator-cap/test/fixtures/cap-node/`
-
-- [ ] Write failing tests around the awaited CAP `served` lifecycle.
-- [ ] Inspect the resolved `cds.model` and map it to the shared SchemaGraph.
-- [ ] Detect non-empty persistence entities and preserve them.
-- [ ] Generate only missing entities and insert via public CQL in foreign-key order.
-- [ ] Never delete, truncate, or overwrite application data.
-- [ ] Prove restart determinism, in-memory SQLite behavior, composition/FK correctness, and production-profile no-op.
-- [ ] Apply the same deterministic generation, generated-data-cache, and fallback behavior as the FE provider.
-- [ ] After Phase 7, add the same learned-model acquisition, inference, and degradation behavior as the FE provider.
-
-**Phase exit gate:** A clean CAP Node fixture gets coherent missing development data, existing `test/data` remains unchanged, and production profile performs no generation or mutation.
+**Phase exit gate:** No native CAP adapter files or package references remain.
 
 ## Phase 12 — Harden security, compatibility, CI, and operations
 
@@ -1329,8 +1227,8 @@ Node/OS matrix remain release-platform gates. A separate true child-process
 regression launches two production package consumers against the same empty
 cache and proves one download, two ready results, one verified artifact, and no
 remaining lock or partial file. Networked/BAS filesystem semantics remain a
-platform gate. Both FE and CAP provider tests also prove that a read-only
-generated-data cache emits a stable warning while retaining complete generated
+platform gate. FE provider tests also prove that a read-only generated-data
+cache emits a stable warning while retaining complete generated
 rows; a genuinely read-only project/BAS filesystem still requires the platform
 matrix.
 
@@ -1344,7 +1242,7 @@ matrix.
 
 - [x] Threat-model metadata parsing, path traversal, arbitrary module loading, model download, archive extraction, cache poisoning, lock attacks, prompt leakage, model provenance, and resource exhaustion.
 - [x] Allow only the configured provider module and validated model-manifest files; never execute downloaded model-side code.
-- [x] Reject EDMX/CSN above a fixed 32 MiB UTF-8 ceiling before hashing or parsing, with stable FE/CAP fallback diagnostics.
+- [x] Reject EDMX/CSN above a fixed 32 MiB UTF-8 ceiling before hashing or parsing, with stable FE fallback diagnostics.
 - [x] Enforce download size, generation time, row count, memory-aware concurrency, and output-size limits.
 - [x] Run production dependency audit and record inherited upstream findings separately.
 - [ ] Produce or consume SBOM/provenance for npm and model artifacts according to SAP release policy.
@@ -1370,11 +1268,9 @@ matrix.
 pnpm --filter @sap-ux/mockserver-data-generator build
 pnpm --filter @sap-ux/mockserver-data-generator lint
 pnpm --filter @sap-ux/mockserver-data-generator test
-pnpm --filter @sap-ux/mockserver-data-generator-cap build
-pnpm --filter @sap-ux/mockserver-data-generator-cap lint
-pnpm --filter @sap-ux/mockserver-data-generator-cap test
-pnpm --filter @sap-ux/ui5-config test
-pnpm --filter @sap-ux/mockserver-config-writer test
+pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests build
+pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests lint
+pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test
 pnpm lint:dependency-versions
 pnpm validate:changesets
 ```
@@ -1412,8 +1308,6 @@ pnpm changeset status
 
 - [ ] Publish the `open-ux-odata` SPI prerelease first.
 - [ ] Publish `@sap-ux/mockserver-data-generator@0.1.0` preview from the packed, tested artifact.
-- [ ] Publish typed config/writer/create preview versions after the compatible host exists.
-- [ ] Publish the native CAP adapter preview after its separate gate.
 - [ ] Bind dataset/split, training code, base model, exported artifact, runtime, structural report, performance report, judge report, and legal/privacy approvals in one attestation.
 - [ ] Verify public npm tarballs and model artifacts after publication, not only local build outputs.
 
@@ -1424,7 +1318,7 @@ pnpm changeset status
 - Create in model repository: `release/canary-plan-v1.md`
 - Create: `release/canary-results-v1.json`
 
-- [ ] Install published artifacts into clean V2, V4, CDS, and native CAP fixtures.
+- [ ] Install published artifacts into clean V2, V4, and CDS-through-FE fixtures.
 - [ ] Run online first use, offline second use, corrupt-model fallback, previous-model pin, and provider disablement.
 - [ ] Run a representative real-app canary without using the deferred finance bug as a blocker.
 - [ ] Capture package/model/runtime fingerprints and diagnostics for every result.
@@ -1452,8 +1346,6 @@ pnpm changeset status
 - Modify: `packages/mockserver-data-generator/docs/host-contract.md`
 - Modify: `packages/mockserver-data-generator/docs/security.md`
 - Modify: `packages/mockserver-data-generator/docs/troubleshooting.md`
-- Modify: `packages/mockserver-config-writer/README.md`
-- Modify: `packages/mockserver-data-generator-cap/README.md`
 
 - [ ] Document opt-in setup, one-middleware configuration, model acquisition, offline preparation, deterministic seed, existing-data precedence, cache behavior, diagnostics, and rollback.
 - [ ] State preview limitations and English-first scope.
@@ -1476,7 +1368,7 @@ pnpm changeset status
 - [ ] No production package or documentation uses `@mockgen/*`, `start-mockgen`, or `ui5-mockgen.yaml`.
 - [ ] Only `sap-fe-mockserver` serves FE mock data.
 - [ ] `@sap-ux/mockserver-data-generator` and the host SPI have published compatibility tests.
-- [ ] OData V2, OData V4, CDS-through-FE, and native CAP fixtures pass.
+- [ ] OData V2, OData V4, and CDS-through-FE fixtures pass.
 - [ ] Existing mock files always win and remain unchanged.
 - [ ] No model/runtime/network/cache failure blanks the application.
 - [ ] npm is at most 5 MiB packed and contains no learned artifacts.

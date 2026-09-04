@@ -1,17 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { subset, validRange } from 'semver';
 import type { Package } from '@sap-ux/project-access';
-import type { MockDataGeneratorWriterConfig, PackageJsonMockConfig } from '../types/index.js';
-
-const DEFAULT_MOCK_DATA_GENERATOR_PACKAGE = '@sap-ux/mockserver-data-generator';
-const DEFAULT_MOCK_DATA_GENERATOR_VERSION = '^0.1.0';
-const STANDARD_MOCKSERVER_PACKAGE = '@sap-ux/ui5-middleware-fe-mockserver';
-const MOCK_DATA_GENERATOR_HOST_VERSION = '^2.5.0';
-
-function compatibleGeneratorHostVersion(version: string): boolean {
-    return validRange(version) !== null && subset(version, '>=2.5.0 <3.0.0');
-}
+import type { PackageJsonMockConfig } from '../types/index.js';
 
 /**
  * Enhance the package.json with dependency for mockserver.
@@ -19,32 +9,11 @@ function compatibleGeneratorHostVersion(version: string): boolean {
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
  * @param config - optional config for mockserver
- * @param mockDataGenerator - optional mock data generator package configuration
  */
-export function enhancePackageJson(
-    fs: Editor,
-    basePath: string,
-    config?: PackageJsonMockConfig,
-    mockDataGenerator?: MockDataGeneratorWriterConfig
-): void {
+export function enhancePackageJson(fs: Editor, basePath: string, config?: PackageJsonMockConfig): void {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
-    const mockserverModule = config?.mockserverModule ?? STANDARD_MOCKSERVER_PACKAGE;
-    const mockserverVersion = config?.mockserverVersion ?? (mockDataGenerator ? MOCK_DATA_GENERATOR_HOST_VERSION : '2');
-    if (mockDataGenerator) {
-        if (mockserverModule !== STANDARD_MOCKSERVER_PACKAGE) {
-            throw new TypeError('Mock data generation requires the standard SAP Fiori mockserver middleware');
-        }
-        if (!compatibleGeneratorHostVersion(mockserverVersion)) {
-            throw new TypeError('Mock data generation requires @sap-ux/ui5-middleware-fe-mockserver ^2.5.0');
-        }
-    }
-    enhanceDependencies(packageJson, mockserverModule, mockserverVersion);
-    if (mockDataGenerator) {
-        packageJson.devDependencies ??= {};
-        packageJson.devDependencies[mockDataGenerator.packageName ?? DEFAULT_MOCK_DATA_GENERATOR_PACKAGE] =
-            mockDataGenerator.version ?? DEFAULT_MOCK_DATA_GENERATOR_VERSION;
-    }
+    enhanceDependencies(packageJson, config?.mockserverModule, config?.mockserverVersion);
     enhanceScripts(fs, packageJson);
     fs.writeJSON(packageJsonPath, packageJson);
 }
@@ -59,7 +28,7 @@ export function enhancePackageJson(
  */
 function enhanceDependencies(
     packageJson: Package,
-    mockserverModule = STANDARD_MOCKSERVER_PACKAGE,
+    mockserverModule = '@sap-ux/ui5-middleware-fe-mockserver',
     version = '2'
 ): void {
     packageJson.devDependencies = packageJson.devDependencies ?? {};
@@ -194,7 +163,6 @@ export function removeFromPackageJson(fs: Editor, basePath: string): void {
     }
     delete packageJson.devDependencies?.['@sap/ux-ui5-fe-mockserver-middleware'];
     delete packageJson.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver'];
-    delete packageJson.devDependencies?.[DEFAULT_MOCK_DATA_GENERATOR_PACKAGE];
     if (packageJson.devDependencies && Object.keys(packageJson.devDependencies).length === 0) {
         delete packageJson.devDependencies;
     }

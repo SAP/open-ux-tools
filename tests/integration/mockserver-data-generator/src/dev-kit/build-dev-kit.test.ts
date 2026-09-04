@@ -1,11 +1,12 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { bundleEntry } from '../../../../../scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs';
+import { configureFioriApplication } from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/bundle-installer.mjs';
 import {
     assertSafeArchiveEntry,
     inspectPackedArtifact,
@@ -20,6 +21,7 @@ const temporaryDirectories: string[] = [];
 const pilotBridgeEntry = fileURLToPath(
     new URL('../../../../../scripts/mockserver-data-generator-dev-kit/prepare-pilot-model-cache.mjs', import.meta.url)
 );
+const fioriFixture = fileURLToPath(new URL('../../test/fixtures/fiori-v4', import.meta.url));
 
 function temporaryDirectory(): string {
     const directory = mkdtempSync(join(tmpdir(), 'mockgen-dev-kit-test-'));
@@ -59,6 +61,28 @@ afterEach(() => {
 });
 
 describe('development kit artifact validation', () => {
+    test('configures MockGen without requiring changes to shared configuration packages', async () => {
+        const appRoot = temporaryDirectory();
+        cpSync(fioriFixture, appRoot, { recursive: true });
+
+        await configureFioriApplication({
+            appRoot,
+            webappPath: join(appRoot, 'webapp'),
+            generatorSpec: 'file:.mockserver-data-generator-dev/packages/generator.tgz'
+        });
+
+        const packageJson = JSON.parse(readFileSync(join(appRoot, 'package.json'), 'utf8')) as {
+            devDependencies?: Record<string, string>;
+        };
+        const ui5MockYaml = readFileSync(join(appRoot, 'ui5-mock.yaml'), 'utf8');
+        expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBe(
+            'file:.mockserver-data-generator-dev/packages/generator.tgz'
+        );
+        expect(ui5MockYaml.match(/name: sap-fe-mockserver/gu)).toHaveLength(1);
+        expect(ui5MockYaml).toMatch(/name: ['"]@sap-ux\/mockserver-data-generator\/fe-mockserver['"]/u);
+        expect(ui5MockYaml).toContain('mode: auto');
+    });
+
     test.each(['../escape', '/absolute/path', 'package/../../escape'])('rejects unsafe archive entry %s', (entry) => {
         expect(() => assertSafeArchiveEntry(entry)).toThrow(/unsafe archive entry/i);
     });
