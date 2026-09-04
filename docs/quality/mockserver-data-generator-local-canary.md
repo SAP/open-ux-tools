@@ -69,6 +69,27 @@ This exact archive contains code and matching host packages but no model
 weights. It verifies the transport and deterministic fallback used before a
 developer explicitly prepares the classifier/SFT model cache.
 
+## Model-cache CLI archive canary
+
+After adding explicit classifier/SFT artifact preparation and offline
+verification, the kit was rebuilt from both clean feature worktrees and
+installed into a fresh disposable OData V4 application:
+
+- Dev-kit fingerprint: `98c741313f6d7dd39641317f6961c106c828d04ac24df768dbcf3cbd5192dff0`
+- Archive SHA-256: `d3c8d2ebf471dc44da48475b897059d87f9100de99d2b3c9a65ebcb321b8ea52`
+- Archive size: 518,745 bytes
+- Generator tarball: 56,679 bytes, SHA-256 `779b98c5aca36c3379d80ce8be489508087c0606a92af47cf3e203af2d97a512`
+- Source state: clean `SAP/open-ux-tools` commit `1cb3266b15b2258cd95dc15dd4b40fb74e2fe7dd` and clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible
+- Installed verification: exactly one standard middleware and provider `@sap-ux/mockserver-data-generator/fe-mockserver`
+- HTTP verification: the provider executed, OData V4 `$metadata` passed, and `Products?$top=1` returned one row
+- CLI verification: the installed `node_modules/.bin/mockserver-data-generator` executable resolved from the packed tarball and printed the `prepare` and network-free `verify` commands
+- Restore verification: installer-owned files matched the original fixture byte for byte and the recovery directory was removed
+
+The archive still contains no model manifest, ONNX runtime, or model weights.
+The default HTTP canary therefore remains a deterministic package-wiring check;
+learned-path readiness requires an explicitly prepared production-format
+manifest plus the exact runtime it pins.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
