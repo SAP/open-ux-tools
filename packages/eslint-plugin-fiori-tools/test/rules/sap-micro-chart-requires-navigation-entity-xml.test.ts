@@ -97,6 +97,29 @@ const V4_MICRO_CHART_QUALIFIED_VALID = `
         </Annotation>
     </Annotations>`;
 
+// DataPoint-based chart (e.g. Bullet): Dimensions absent by design, Measures acts as a logical
+// reference key — navigation paths are not required when Dimensions is omitted.
+const V4_MICRO_CHART_DATAPOINT_ONLY_MEASURES = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.Chart#BulletChart"/>
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="BulletChart">
+            <Record>
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bullet"/>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>status</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
 const V4_MICRO_CHART_MEASURES_INVALID = `
     <Annotations Target="IncidentService.Incidents">
         <Annotation Term="UI.LineItem">
@@ -310,6 +333,24 @@ ruleTester.run(TEST_NAME, microChartRule, {
         ),
         createValidTest(
             {
+                // Comparison chart with only Measures (no Dimensions, no nav paths): DataPoint pattern.
+                // The rule only fires when BOTH Measures and Dimensions are present.
+                name: 'V4: chart with only Measures and no Dimensions is not checked even without navigation',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_QUALIFIED_INVALID)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V4: DataPoint-based chart with only Measures and no Dimensions is not checked',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_DATAPOINT_ONLY_MEASURES)
+            },
+            []
+        ),
+        createValidTest(
+            {
                 name: 'V2: micro chart with all navigation paths',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_MICRO_CHART_VALID)
@@ -350,15 +391,6 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V4: micro chart with both Measures and Dimensions without navigation',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_BOTH_INVALID),
-                errors: [{ message: EXPECTED_MESSAGE }]
-            },
-            []
-        ),
-        createInvalidTest(
-            {
-                name: 'V4: qualified micro chart with Measures without navigation',
-                filename: V4_ANNOTATIONS_PATH,
-                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_QUALIFIED_INVALID),
                 errors: [{ message: EXPECTED_MESSAGE }]
             },
             []

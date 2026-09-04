@@ -1,13 +1,14 @@
-import type { Element } from '@sap-ux/odata-annotation-core';
+import type { Element, MetadataElement } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { MicroChartRequiresNavigationEntity } from '../language/diagnostics.js';
 import { MICRO_CHART_REQUIRES_NAVIGATION_ENTITY } from '../language/diagnostics.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
-import type { IndexedAnnotation } from '../project-context/parser/index.js';
+import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
+import { getEntityTypeForContextPath } from '../project-context/linker/annotations.js';
 
-/** Annotation record properties whose `PropertyPath` values must use a navigation path. */
+/** Annotation record properties whose `PropertyPath` values must use a 1:n navigation path. */
 const MICRO_CHART_CHECKED_PROPS = ['Measures', 'Dimensions'] as const;
 
 /**
@@ -23,20 +24,68 @@ function getPropertyPathText(element: Element): string {
 }
 
 /**
- * Inspects a single `UI.Chart` annotation and appends one diagnostic (reported on the
- * annotation node itself) when any `Measures` or `Dimensions` `PropertyPath` lacks a
- * navigation separator (`/`).
+ * Returns `true` when `pathValue` violates the 1:n navigation requirement.
  *
- * @param annotation - The indexed annotation entry containing the top-level element and its URI.
- * @param annotation.top - The top-level annotation node.
- * @param annotation.top.uri - Source URI of the annotation document.
- * @param annotation.top.value - The parsed annotation `Element`.
+ * Uses the linker pattern from `getEntityForContextPath`: navigates
+ * `/${pageEntityName}/${firstSegment}` to obtain the navigation property element from
+ * the metadata service (handling entity-set → entity-type fallback for V2 and CDS).
+ * The element's `isCollectionValued` flag is the authoritative answer.
+ *
+ * When the metadata service cannot resolve the segment (incomplete fixtures, unknown
+ * entity, CDS kinds not exposed as NavigationProperty), the function falls back to
+ * requiring a `/` separator as a best-effort heuristic.
+ *
+ * @param pathValue - The property path string to validate.
+ * @param chartEntityType - The entity type name of the chart's context.
+ * @param service - The parsed OData service.
+ * @returns `true` when the path violates the 1:n navigation requirement, `false` when valid or undetermined.
+ */
+function violatesNavigationRule(
+    pathValue: string,
+    chartEntityType: string,
+    service: ParsedService | undefined
+): boolean {
+    if (!pathValue) {
+        return false;
+    }
+    if (service) {
+        let navSegments = pathValue.split('/');
+        // Navigate /<entitySetName>/<segment> — mirrors the linker's getEntityForContextPath pattern.
+        // getEntityForContextPath handles entity-set lookup (V4), structuredType fallback (V2),
+        // and returns the metadata element for the first path segment.
+        let navElement = getEntityTypeForContextPath(`/${chartEntityType}/${navSegments[0]}`, service);
+        while (navElement?.isEntityType) {
+            // If the navElement is an entity type, we need to check if it has a structured type and get that instead.
+            navSegments = navSegments.slice(1);
+            navElement = getEntityTypeForContextPath(`/${navElement.structuredType}/${navSegments[0]}`, service);
+        }
+        if (navElement) {
+            // Metadata resolved the segment — isCollectionValued is the authoritative answer.
+            return !navElement.isCollectionValued;
+        }
+    }
+    return false; // Undetermined: service not available or segment not resolved.  Do not report.
+}
+
+/**
+ * Inspects a single `UI.Chart` annotation and appends one diagnostic when any `Measures`
+ * or `Dimensions` `PropertyPath` does not traverse a 1:n navigation property.
+ *
+ * The check only runs when **both** `Measures` and `Dimensions` are present.  Charts that
+ * use a `DataPoint` pattern (e.g. Bullet, Harvey Ball, Radial) omit `Dimensions` by design;
+ * skipping those avoids false positives for the DataPoint-based measure reference in `Measures`.
+ *
+ * @param annotation - The full indexed annotation, used for both the element and its target entity type.
  * @param pageNames - Names of pages that reference this chart annotation.
+ * @param chartEntityType - The entity type name of the chart's context.
+ * @param service - The parsed OData service providing the metadata for multiplicity checks.
  * @param problems - Accumulator array to which new diagnostics are pushed.
  */
 function checkChartAnnotation(
-    annotation: { top: { uri: string; value: Element } },
+    annotation: IndexedAnnotation,
     pageNames: string[],
+    chartEntityType: string,
+    service: ParsedService | undefined,
     problems: MicroChartRequiresNavigationEntity[]
 ): void {
     const annotationElement = annotation.top.value;
@@ -45,15 +94,20 @@ function checkChartAnnotation(
         return;
     }
 
-    for (const propName of MICRO_CHART_CHECKED_PROPS) {
-        const propValueEl = elements(
-            (el) => el.name === Edm.PropertyValue && el.attributes[Edm.Property]?.value === propName,
-            record
-        )[0];
-        if (!propValueEl) {
-            continue;
-        }
+    const propValueEls = MICRO_CHART_CHECKED_PROPS.map(
+        (propName) =>
+            elements(
+                (el) => el.name === Edm.PropertyValue && el.attributes[Edm.Property]?.value === propName,
+                record
+            )[0]
+    );
 
+    // Skip charts that do not declare both Measures and Dimensions (e.g. DataPoint-based charts).
+    if (propValueEls.some((el) => !el)) {
+        return;
+    }
+
+    for (const propValueEl of propValueEls) {
         const [collection] = elementsWithName(Edm.Collection, propValueEl);
         if (!collection) {
             continue;
@@ -61,7 +115,7 @@ function checkChartAnnotation(
 
         for (const propPath of elementsWithName(Edm.PropertyPath, collection)) {
             const pathValue = getPropertyPathText(propPath);
-            if (pathValue && !pathValue.includes('/')) {
+            if (violatesNavigationRule(pathValue, chartEntityType, service)) {
                 problems.push({
                     type: MICRO_CHART_REQUIRES_NAVIGATION_ENTITY,
                     pageNames,
@@ -77,6 +131,11 @@ function checkChartAnnotation(
 }
 
 type ChartLookupItem = { annotation?: { annotation?: IndexedAnnotation } };
+type ChartPageEntry = {
+    pageNames: string[];
+    chartEntityType: MetadataElement;
+    service: ParsedService;
+};
 
 /**
  * Registers a single chart lookup item into the page map, keyed by its `IndexedAnnotation`.
@@ -84,34 +143,53 @@ type ChartLookupItem = { annotation?: { annotation?: IndexedAnnotation } };
  * @param map - The map being built.
  * @param chart - A single chart lookup entry from `page.lookup['chart']`.
  * @param targetName - The page target name that references this chart.
+ * @param pageTargetName - The target name of the page that references this chart.
+ * @param service - The OData service associated with the app that owns this chart.
  */
-function addChartToPageMap(map: Map<IndexedAnnotation, string[]>, chart: ChartLookupItem, targetName: string): void {
+function addChartToPageMap(
+    map: Map<IndexedAnnotation, ChartPageEntry>,
+    chart: ChartLookupItem,
+    targetName: string,
+    pageTargetName: string,
+    service: ParsedService
+): void {
     const indexedAnnotation = chart.annotation?.annotation;
     if (!indexedAnnotation) {
         return;
     }
-    const names = map.get(indexedAnnotation) ?? [];
-    if (!names.includes(targetName)) {
-        names.push(targetName);
+    const chartEntityType = service.artifacts.metadataService.getMetadataElement(targetName);
+    if (!chartEntityType) {
+        return;
     }
-    map.set(indexedAnnotation, names);
+    const entry = map.get(indexedAnnotation) ?? { pageNames: [] as string[], chartEntityType, service };
+    if (!entry.pageNames.includes(pageTargetName)) {
+        entry.pageNames.push(pageTargetName);
+    }
+    map.set(indexedAnnotation, entry);
 }
 
 /**
- * Builds a map from each `IndexedAnnotation` to the list of page target-names that
- * reference it via `lookup['chart']` entries across all apps in the project.
+ * Builds a map from each `IndexedAnnotation` to its page target-names, the page entity, and
+ * the owning OData service, collected from `lookup['chart']` entries across all apps in the project.
  *
  * @param sourceCode - The Fiori annotation source code providing the project context.
- * @returns A `Map` keyed by `IndexedAnnotation`, valued by an array of page target-names.
+ * @returns A `Map` keyed by `IndexedAnnotation`, valued by page names, the page entity, and the OData service.
  */
-function buildChartPageMap(sourceCode: FioriAnnotationSourceCode): Map<IndexedAnnotation, string[]> {
-    const chartPageMap = new Map<IndexedAnnotation, string[]>();
+function buildChartPageMap(sourceCode: FioriAnnotationSourceCode): Map<IndexedAnnotation, ChartPageEntry> {
+    const chartPageMap = new Map<IndexedAnnotation, ChartPageEntry>();
     for (const appKey of Object.keys(sourceCode.projectContext.linkedModel.apps)) {
         const linkedApp = sourceCode.projectContext.linkedModel.apps[appKey];
+        const appIndex = sourceCode.projectContext.index.apps[appKey];
+        const service = appIndex ? sourceCode.projectContext.getIndexedServiceForMainService(appIndex) : undefined;
+        if (!service) {
+            continue;
+        }
         for (const page of linkedApp.pages) {
-            const charts = (page as { lookup?: Record<string, ChartLookupItem[]> }).lookup?.['chart'] ?? [];
+            const pageTyped = page as { lookup?: Record<string, ChartLookupItem[]>; entity?: MetadataElement };
+            const charts = pageTyped.lookup?.['chart'] ?? [];
             for (const chart of charts) {
-                addChartToPageMap(chartPageMap, chart, page.targetName);
+                const chartEntityType = chart.annotation?.annotation?.target ?? '';
+                addChartToPageMap(chartPageMap, chart, chartEntityType, page.targetName, service);
             }
         }
     }
@@ -138,8 +216,8 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         const problems: MicroChartRequiresNavigationEntity[] = [];
         const chartPageMap = buildChartPageMap(context.sourceCode);
-        for (const [annotation, pageNames] of chartPageMap) {
-            checkChartAnnotation(annotation, pageNames, problems);
+        for (const [annotation, { pageNames, service }] of chartPageMap) {
+            checkChartAnnotation(annotation, pageNames, annotation.target, service, problems);
         }
         return problems;
     },

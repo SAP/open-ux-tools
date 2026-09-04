@@ -626,6 +626,22 @@ export function getEntityForContextPath(contextPath: string, service: ParsedServ
     return resolveNavigationProperties(entity, segments);
 }
 
+export function getEntityTypeForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
+    if (!contextPath.startsWith('/')) {
+        return;
+    }
+    const path = contextPath.substring(1);
+    const [entityTypeName, ...segments] = path.split('/');
+    if (!entityTypeName) {
+        return;
+    }
+    const entityType = service.index.entityTypes[entityTypeName];
+    if (!entityType) {
+        return undefined;
+    }
+    return resolveNavigationProperties(entityType, segments);
+}
+
 /**
  * Resolves navigation properties along a path to find the target entity.
  *
