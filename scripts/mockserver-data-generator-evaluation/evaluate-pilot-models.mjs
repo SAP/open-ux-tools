@@ -326,6 +326,14 @@ export function loadSftCandidateManifest(manifestPath) {
     const model = resolveManifestArtifact(root, artifacts.model, 'SFT candidate model');
     const tokenizer = resolveManifestArtifact(root, artifacts.tokenizer, 'SFT candidate tokenizer');
     const configuration = resolveManifestArtifact(root, artifacts.configuration, 'SFT candidate configuration');
+    const generationConfiguration =
+        artifacts.generationConfiguration === undefined
+            ? undefined
+            : resolveManifestArtifact(
+                  root,
+                  artifacts.generationConfiguration,
+                  'SFT candidate generation configuration'
+              );
     const quantizationEvidence = resolveManifestArtifact(
         root,
         artifacts.quantizationEvidence,
@@ -337,10 +345,23 @@ export function loadSftCandidateManifest(manifestPath) {
         calibration: manifest.calibration,
         promotionEligible: manifest.promotionEligible,
         ...(ineligibilityReason ? { ineligibilityReason } : {}),
-        paths: Object.freeze({ model, tokenizer, configuration }),
+        paths: Object.freeze({
+            model,
+            tokenizer,
+            configuration,
+            ...(generationConfiguration ? { generationConfiguration } : {})
+        }),
         binding: Object.freeze({
             manifest: artifactRecord(`sft-${id}-candidate-manifest`, normalizedManifestPath),
-            quantizationEvidence: artifactRecord(`sft-${id}-quantization-evidence`, quantizationEvidence)
+            quantizationEvidence: artifactRecord(`sft-${id}-quantization-evidence`, quantizationEvidence),
+            ...(generationConfiguration
+                ? {
+                      generationConfiguration: artifactRecord(
+                          `sft-${id}-generation-configuration-source`,
+                          generationConfiguration
+                      )
+                  }
+                : {})
         }),
         manifestPath: normalizedManifestPath
     });
@@ -460,8 +481,8 @@ async function writeCandidateEvidence(evidenceDirectory, candidate, evidence) {
 async function runSftCandidate(generator, options, candidate) {
     const paths = candidate.paths;
     const generationConfiguration = productionGenerationConfiguration(
-        await readFile(paths.configuration, 'utf8'),
-        true
+        await readFile(paths.generationConfiguration ?? paths.configuration, 'utf8'),
+        paths.generationConfiguration === undefined
     );
     const generationConfigurationSource = `${JSON.stringify(generationConfiguration, null, 2)}\n`;
     const artifacts = [

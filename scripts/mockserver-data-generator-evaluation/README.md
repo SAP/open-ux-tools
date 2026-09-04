@@ -35,6 +35,7 @@ The manifest schema is:
     "model": "model.onnx",
     "tokenizer": "tokenizer.json",
     "configuration": "config.json",
+    "generationConfiguration": "generation-config.json",
     "quantizationEvidence": "quantization-evidence.json"
   },
   "calibration": "representative",
@@ -47,6 +48,11 @@ lowercase kebab-case. `calibration` is one of `not-required`, `representative`,
 `partial`, or `none`; a partially calibrated or uncalibrated candidate cannot
 be marked promotion-eligible. The quantization-evidence artifact is mandatory,
 but only its filename, byte count, and checksum enter the portable report.
+`generationConfiguration` is optional. Supply a production-format configuration
+when a candidate has model-specific sampling parameters, such as a completion
+budget paired with a reduced tokenizer. The evaluator validates and binds both
+the exact source artifact and its normalized configuration; omitting it retains
+the frozen pilot sampling configuration derived from `configuration`.
 Supplying manifests without `--sft-candidates` evaluates only those manifests,
 so the fixed pilot candidates are never run implicitly.
 

@@ -101,6 +101,7 @@ describe('evaluation CLI contract', () => {
         writeFileSync(join(artifacts, 'model.onnx'), 'model');
         writeFileSync(join(artifacts, 'tokenizer.json'), '{}');
         writeFileSync(join(artifacts, 'config.json'), '{}');
+        writeFileSync(join(artifacts, 'generation-config.json'), '{"samplingOptions":{"maxNewTokens":400}}\n');
         writeFileSync(join(artifacts, 'quantization.json'), '{"algorithm":"gptq"}\n');
         const manifestPath = join(root, 'candidate.json');
         writeFileSync(
@@ -112,6 +113,7 @@ describe('evaluation CLI contract', () => {
                     model: 'artifacts/model.onnx',
                     tokenizer: 'artifacts/tokenizer.json',
                     configuration: 'artifacts/config.json',
+                    generationConfiguration: 'artifacts/generation-config.json',
                     quantizationEvidence: 'artifacts/quantization.json'
                 },
                 calibration: 'representative',
@@ -129,13 +131,18 @@ describe('evaluation CLI contract', () => {
             paths: {
                 model: join(artifacts, 'model.onnx'),
                 tokenizer: join(artifacts, 'tokenizer.json'),
-                configuration: join(artifacts, 'config.json')
+                configuration: join(artifacts, 'config.json'),
+                generationConfiguration: join(artifacts, 'generation-config.json')
             }
         });
         expect(candidate.binding.manifest).toMatchObject({ filename: 'candidate.json', bytes: expect.any(Number) });
         expect(candidate.binding.quantizationEvidence).toMatchObject({
             filename: 'quantization.json',
             bytes: 21
+        });
+        expect(candidate.binding.generationConfiguration).toMatchObject({
+            filename: 'generation-config.json',
+            bytes: 41
         });
     });
 
