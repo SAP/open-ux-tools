@@ -47,6 +47,8 @@ describe('production-bound realism candidate', () => {
                 '--export',
                 '--pilot-root',
                 join(root, 'pilot'),
+                '--selection-manifest',
+                join(root, 'cohort', 'selection.json'),
                 '--model-manifest',
                 join(root, 'model-manifest.json'),
                 '--model-cache',
@@ -61,6 +63,7 @@ describe('production-bound realism candidate', () => {
         ).toEqual({
             mode: 'export',
             pilotRoot: join(root, 'pilot'),
+            selectionManifest: join(root, 'cohort', 'selection.json'),
             modelManifest: join(root, 'model-manifest.json'),
             modelCache: join(root, 'cache'),
             output: join(root, 'evidence.json'),
@@ -93,6 +96,8 @@ describe('production-bound realism candidate', () => {
                 '--export',
                 '--pilot-root',
                 join(root, 'pilot'),
+                '--selection-manifest',
+                join(root, 'cohort', 'selection.json'),
                 '--model-manifest',
                 'relative-manifest.json',
                 '--model-cache',
@@ -108,6 +113,8 @@ describe('production-bound realism candidate', () => {
                 '--export',
                 '--pilot-root',
                 join(root, 'pilot'),
+                '--selection-manifest',
+                join(root, 'cohort', 'selection.json'),
                 '--model-manifest',
                 join(root, 'model-manifest.json'),
                 '--model-cache',
@@ -120,6 +127,21 @@ describe('production-bound realism candidate', () => {
                 '7junk'
             ])
         ).toThrow('--seed must be a safe integer');
+        expect(() =>
+            candidateApi.parseRealismCampaignArguments?.([
+                '--export',
+                '--pilot-root',
+                join(root, 'pilot'),
+                '--model-manifest',
+                join(root, 'model-manifest.json'),
+                '--model-cache',
+                join(root, 'cache'),
+                '--out',
+                join(root, 'evidence.json'),
+                '--campaign-manifest-out',
+                join(root, 'campaign.json')
+            ])
+        ).toThrow('--selection-manifest must be an absolute path');
         expect(() =>
             candidateApi.parseRealismCampaignArguments?.([
                 '--compile',
@@ -165,6 +187,8 @@ describe('production-bound realism candidate', () => {
                 '--export',
                 '--pilot-root',
                 join(root, 'pilot'),
+                '--selection-manifest',
+                join(root, 'cohort', 'selection.json'),
                 '--model-cache',
                 join(root, 'cache'),
                 '--out',

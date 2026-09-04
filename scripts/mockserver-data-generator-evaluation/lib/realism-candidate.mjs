@@ -6,6 +6,7 @@ const DEFAULT_SEED = 113;
 const MODE_ARGUMENTS = new Set(['--export', '--compile']);
 const VALUE_ARGUMENTS = new Set([
     '--pilot-root',
+    '--selection-manifest',
     '--model-manifest',
     '--model-cache',
     '--out',
@@ -127,6 +128,7 @@ export function parseRealismCampaignArguments(argv) {
         return Object.freeze({
             mode: 'export',
             pilotRoot,
+            selectionManifest: absoluteArgument(args, '--selection-manifest'),
             ...model,
             output,
             manifest: absoluteArgument(args, '--campaign-manifest-out'),

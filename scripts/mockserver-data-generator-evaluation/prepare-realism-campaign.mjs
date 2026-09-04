@@ -4,10 +4,11 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
-import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { artifactRecord } from './lib/evaluation.mjs';
 import { loadVerifiedProductionCandidate, parseRealismCampaignArguments } from './lib/realism-candidate.mjs';
+import { evaluateCohortTarget, resolveCohortSourcePath, validateRealismCohortManifest } from './lib/realism-cohort.mjs';
 import { compileRealismReviews, REALISM_DOMAINS, sealRealismEvidence } from './lib/realism.mjs';
 
 const SCRIPT_ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
@@ -16,12 +17,17 @@ const PACKAGE_ROOT = join(REPOSITORY_ROOT, 'packages/mockserver-data-generator')
 const GENERATOR_ENTRY = join(PACKAGE_ROOT, 'dist/index.js');
 const EDMX_ENTRY = join(PACKAGE_ROOT, 'dist/schema/edmx.js');
 const CSN_ENTRY = join(PACKAGE_ROOT, 'dist/schema/csn.js');
+const EVALUATION_HELPER = join(SCRIPT_ROOT, 'lib/evaluation.mjs');
+const REALISM_CANDIDATE_HELPER = join(SCRIPT_ROOT, 'lib/realism-candidate.mjs');
+const REALISM_COHORT_HELPER = join(SCRIPT_ROOT, 'lib/realism-cohort.mjs');
+const REALISM_HELPER = join(SCRIPT_ROOT, 'lib/realism.mjs');
 
 function usage() {
     return [
         'Export a blinded production-candidate realism packet:',
         '  node scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs --export \\',
-        '    --pilot-root <path> --model-manifest <manifest.json> --model-cache <cache> \\',
+        '    --pilot-root <path> --selection-manifest <final-cohort.json> \\',
+        '    --model-manifest <manifest.json> --model-cache <cache> \\',
         '    --out <evidence.json> --campaign-manifest-out <manifest.json>',
         '',
         'Compile two independent provider artifacts:',
@@ -29,8 +35,9 @@ function usage() {
         '    --evidence <evidence.json> --provider-artifact <a.json> --provider-artifact <b.json> \\',
         '    --pilot-root <path> --out <consensus.json>',
         '',
-        'The pilot root supplies only the retained selection manifest, metadata fixtures, review',
-        'prompt, and output schema. Export uses the checksum-verified production manifest/cache.',
+        'The pilot root supplies only the retained review prompt and output schema. The explicit',
+        'cohort manifest supplies frozen service-disjoint metadata. Export uses the checksum-verified',
+        'production manifest/cache.',
         'Generated values and provider outputs must remain outside open-ux-tools.'
     ].join('\n');
 }
@@ -54,18 +61,6 @@ function sha256(value) {
 
 function fingerprint(value) {
     return sha256(canonicalJson(value));
-}
-
-function assertRelativeSourcePath(pilotRoot, sourcePath) {
-    if (typeof sourcePath !== 'string' || sourcePath.length === 0 || isAbsolute(sourcePath)) {
-        throw new TypeError('Inspection source paths must be non-empty and relative to the pilot root');
-    }
-    const root = resolve(pilotRoot);
-    const path = resolve(root, sourcePath);
-    if (!path.startsWith(`${root}${sep}`)) {
-        throw new TypeError('Inspection source path resolves outside the pilot root');
-    }
-    return path;
 }
 
 async function readRegularFile(path, label) {
@@ -207,7 +202,10 @@ function relationshipFields(graph, target, result, format) {
             property: relationship.id,
             primitiveType: 'relationship',
             label: relationship.criterion,
-            facets: { memberProperties: [...relationship.properties] },
+            facets: {
+                criterionType: relationship.criterionType,
+                memberProperties: [...relationship.properties]
+            },
             plannerSource: 'evaluation-contract',
             values: (result.resources[entity.entitySetName] ?? []).map((row) =>
                 Object.fromEntries(relationship.properties.map((propertyName) => [propertyName, row[propertyName]]))
@@ -218,17 +216,20 @@ function relationshipFields(graph, target, result, format) {
 
 function pilotPaths(pilotRoot) {
     return {
-        selectionManifest: join(pilotRoot, 'benchmark/ml-native/llm-inspection-manifest.json'),
         prompt: join(pilotRoot, 'training/review/generation-inspection-prompt.md'),
         schema: join(pilotRoot, 'training/review/generation-inspection-output.schema.json')
     };
 }
 
 function packageBinding() {
-    const packageCommit = execFileSync('git', ['rev-parse', 'HEAD'], {
-        cwd: REPOSITORY_ROOT,
-        encoding: 'utf8'
-    }).trim();
+    const packageCommit = execFileSync(
+        'git',
+        ['log', '-1', '--format=%H', '--', 'packages/mockserver-data-generator'],
+        {
+            cwd: REPOSITORY_ROOT,
+            encoding: 'utf8'
+        }
+    ).trim();
     const packageDiff = execFileSync('git', ['status', '--porcelain', '--', 'packages/mockserver-data-generator'], {
         cwd: REPOSITORY_ROOT,
         encoding: 'utf8'
@@ -242,14 +243,11 @@ function packageBinding() {
 async function exportCampaign(options) {
     const paths = pilotPaths(options.pilotRoot);
     const [selectionSource, promptSource, schemaSource] = await Promise.all([
-        readRegularFile(paths.selectionManifest, 'inspection selection manifest'),
+        readRegularFile(options.selectionManifest, 'inspection selection manifest'),
         readRegularFile(paths.prompt, 'inspection prompt'),
         readRegularFile(paths.schema, 'inspection output schema')
     ]);
-    const selection = JSON.parse(selectionSource);
-    if (selection.version !== 1 || !Array.isArray(selection.targets) || selection.minimumReviewedFields < 300) {
-        throw new TypeError('Pilot inspection manifest is not compatible with the production realism campaign');
-    }
+    const selection = validateRealismCohortManifest(JSON.parse(selectionSource));
     const supportedTargets = selection.targets.filter((target) => ['edmx', 'csn'].includes(target.format));
     const skippedTargets = selection.targets
         .filter((target) => !['edmx', 'csn'].includes(target.format))
@@ -274,14 +272,21 @@ async function exportCampaign(options) {
     });
     const targets = [];
     const fields = [];
+    const structuralTargets = [];
     try {
         for (const target of supportedTargets) {
             if (!REALISM_DOMAINS.includes(target.domain) || typeof target.serviceId !== 'string') {
                 throw new TypeError('Inspection target has an unsupported domain or service identity');
             }
-            const sourcePath = assertRelativeSourcePath(options.pilotRoot, target.path);
+            const sourcePath = resolveCohortSourcePath(options.selectionManifest, target.path);
             const source = await readRegularFile(sourcePath, `inspection source ${target.serviceId}`);
+            if (Buffer.byteLength(source) !== target.schemaBytes || sha256(source) !== target.schemaSha256) {
+                throw new TypeError(`Inspection schema checksum disagrees for ${target.serviceId}`);
+            }
             const format = inputFormat(target, source);
+            if (format !== target.schemaFormat) {
+                throw new TypeError(`Inspection schema format disagrees for ${target.serviceId}`);
+            }
             const graph = target.format === 'edmx' ? parseEdmx(source) : parseCsn(source);
             const selected = selectProperties(graph, target);
             const request = {
@@ -296,6 +301,19 @@ async function exportCampaign(options) {
             };
             const result = await generator.generateService(request, generationOptions, learned.runtime);
             generator.validateGeneratedResult(request, result);
+            const structuralTarget = evaluateCohortTarget(target, graph, request.targets, result.resources);
+            if (!structuralTarget.passed) {
+                const failedAssertions = structuralTarget.assertions
+                    .filter(({ passed }) => !passed)
+                    .map(({ id }) => id);
+                throw new TypeError(
+                    `Realism structural gate failed for ${target.serviceId}: ${[
+                        ...(structuralTarget.nonEmptyResources ? [] : ['non-empty-resources']),
+                        ...failedAssertions
+                    ].join(', ')}`
+                );
+            }
+            structuralTargets.push(structuralTarget);
             targets.push({
                 domain: target.domain,
                 serviceId: target.serviceId,
@@ -349,9 +367,11 @@ async function exportCampaign(options) {
         model: candidate.binding,
         generationOptions,
         selectionManifest: {
-            filename: basename(paths.selectionManifest),
+            filename: basename(options.selectionManifest),
             bytes: Buffer.byteLength(selectionSource),
-            sha256: sha256(selectionSource)
+            sha256: sha256(selectionSource),
+            cohortId: selection.cohortId,
+            isolation: selection.isolation
         },
         prompt: {
             filename: basename(paths.prompt),
@@ -381,6 +401,13 @@ async function exportCampaign(options) {
     const evidenceSource = `${JSON.stringify(evidence, null, 2)}\n`;
     const campaign = {
         ...bindings,
+        evaluationHarness: [
+            artifactRecord('realism-campaign-entrypoint', fileURLToPath(import.meta.url)),
+            artifactRecord('evaluation-contract-helper', EVALUATION_HELPER),
+            artifactRecord('production-candidate-helper', REALISM_CANDIDATE_HELPER),
+            artifactRecord('realism-cohort-helper', REALISM_COHORT_HELPER),
+            artifactRecord('realism-evidence-helper', REALISM_HELPER)
+        ],
         candidateFingerprint,
         skippedTargets,
         evidence: {
@@ -389,6 +416,10 @@ async function exportCampaign(options) {
             sha256: sha256(evidenceSource),
             fingerprint: evidence.fingerprint,
             fields: evidence.fields.length
+        },
+        structuralGate: {
+            passed: structuralTargets.every(({ passed }) => passed),
+            targets: structuralTargets
         }
     };
     const sealedCampaign = { ...campaign, fingerprint: fingerprint(campaign) };
