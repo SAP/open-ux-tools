@@ -23,7 +23,7 @@ Currently available in **SAP Business Application Studio** and **VS Code** only.
 
 Without `add_building_block`, an agent faced with "add a Table building block" has two real options:
 
-- **Direct XML authoring** — the agent writes `<macros:Table ...>` into the view file directly. This is fragile: hallucinated attributes, wrong namespaces, and missing `manifest.json` updates produce apps that break silently at runtime. The output cannot be trusted the way Page Editor output can.
+- **Direct XML authoring** — the agent writes `<macros:Table ...>` into the view file directly. This is fragile: hallucinated attributes, wrong namespaces, and forgetting to declare `sap.fe.macros` in `manifest.json` all produce apps that break silently at runtime. The output cannot be trusted the way Page Editor output can.
 - **Fail gracefully** — the agent tells the user to open VS Code or BAS and use the Page Editor GUI manually.
 
 The existing `execute_functionality` 3-step workflow does not cover building blocks. The Page Editor GUI works but is locked to the SAP tooling ecosystem and is not automatable.
@@ -69,45 +69,12 @@ Today this is not possible without either running the Page Editor GUI manually (
 
 ---
 
-
-
-Before this tool existed, adding a Building Block to a Fiori app required either:
-- The **SAP Page Editor GUI** in VS Code or SAP Business Application Studio (BAS) — works, but locked to the SAP tooling ecosystem
-- **Manual XML authoring** — requires deep knowledge of `sap.fe.macros` namespaces and annotation paths
-
-An AI assistant could attempt to write the XML directly, but this is unreliable:
-- Hallucinated attributes or incorrect namespace declarations produce markup that breaks at runtime
-- `manifest.json` also needs updating to declare `sap.fe.macros` as a dependency — easy to miss
-- Output cannot be trusted the same way Page Editor output can
-
-`add_building_block` closes that gap:
-
-- **Correct by construction** — uses the same `fe-fpm-writer` generator as the Page Editor, so the output is identical to what a developer would get from the GUI
-- **Handles file routing automatically** — `generateBuildingBlock()` knows which file to update based on where the BB is inserted: `view.xml` for custom pages, `fragment.xml` for custom sections. It also adds `sap.fe.macros` to `manifest.json` dependencies if not already declared. The agent does not need to reason about any of this.
-- **Any MCP-compatible client** (Joule Desktop, Cursor, Claude Code) can now add a Building Block reliably via natural language — no VS Code, no BAS, no GUI navigation required
-- **Protocol-level reach** — works wherever MCP is supported, today and in future clients
-
----
-
-
-
-When a developer says *"add a Table building block to my main view"*, the agent:
-
-1. Calls `list_fiori_apps` to find the app path
-2. Reads the view XML to find a valid `aggregationPath`
-3. Optionally calls `search_docs` to determine which `metaPath` annotation a Table needs (e.g. `@com.sap.vocabularies.UI.v1.LineItem`)
-4. Calls `add_building_block` with all params filled in
-
-The agent handles **judgment** — which annotation, which path, which type. The tool handles **execution** — calling the generator, writing files, returning results. This division is why the tool description and parameter names matter: they are what the agent reads to reason correctly.
-
----
-
 ## How It Works
 
 ```mermaid
 flowchart TD
     A["👤 Developer<br/>'Add a Table to my app'"]
-    A --> B["🤖 AI Agent<br/>(Joule / Claude / Cursor)"]
+    A --> B["🤖 AI Assistant<br/>(Joule / Claude / Cursor)"]
 
     B --> C{"Before"}
     C --> D["❌ Writes XML manually<br/>Wrong namespaces<br/>Breaks at runtime"]
@@ -116,13 +83,8 @@ flowchart TD
     B --> F{"Now"}
     F --> G["🔧 add_building_block tool"]
     G --> H["⚙️ fe-fpm-writer<br/>Same engine as Page Editor"]
-    H --> I["✅ Correct XML written<br/>manifest.json updated<br/>Works first time"]
+    H --> I["✅ View/fragment XML updated<br/>Same output as Page Editor<br/>Works first time"]
 
-    style D fill:#ffcccc
-    style E fill:#ffcccc
-    style I fill:#ccffcc
-    style G fill:#fff3cd
-    style H fill:#fff3cd
 ```
 
 ---
@@ -172,7 +134,6 @@ Adds a SAP Fiori Elements Building Block (Table, Chart, FilterBar, Field, Form, 
 | `appPath` | ✅ | Absolute path to the Fiori app root (where `manifest.json` lives) |
 | `viewOrFragmentPath` | ✅ | Relative path to the target view or fragment XML file |
 | `aggregationPath` | ✅ | XPath to the aggregation element where the BB will be inserted |
-```
 
 ### Output Schema
 
@@ -248,8 +209,7 @@ calling add_building_block. Do NOT write any XML manually.
 
 ## Known Limitations (PR-blockers)
 
-1. **No changeset entry** — required by open-ux-tools contribution process
-2. **Direct `fe-fpm-writer` dependency** — bypasses `ux-specification` abstraction layer; proper path would extend `ux-specification` to support BBs, but that is a larger cross-package change
+1. **Direct `fe-fpm-writer` dependency** — bypasses `ux-specification` abstraction layer; proper path would extend `ux-specification` to support BBs, but that is a larger cross-package change
 
 ---
 
