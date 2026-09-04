@@ -72,7 +72,7 @@ means a measured threshold was missed by the named candidate.
 | Integrated performance | proven locally / platform | five-sample p95: 3,437.153 ms cold service, 25.306 ms warm cache, 1,308.731 ms first acquisition, and 3,438.173 ms host; peak RSS 1,187,676,160 bytes | Process-tree RSS and the supported Node/OS/BAS platform matrix |
 | Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and deterministic replay; its SFT gate is 100% parse and 97.04% accepted-slot fill; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
-| Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Close metadata-size and cross-process/platform tests; complete upstream dependency disposition, SBOM/provenance, and release signing policy |
+| Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Close the metadata-size limit and remaining platform tests; complete upstream dependency disposition, SBOM/provenance, and release signing policy |
 | Platform compatibility | platform | local macOS arm64, packed fixtures, and an exact-archive npm install/restore under spaces and non-ASCII paths pass | Node 22/24 on Ubuntu, Windows, and macOS; actual BAS; proxy/read-only and cross-platform path edge cases |
 | Release and rollback | external | local installer upgrade failure and byte-exact restore pass | Prereleases, public artifact verification, model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
@@ -83,7 +83,7 @@ means a measured threshold was missed by the named candidate.
 | `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
 | `@sap-ux/mockserver-data-generator` | 23 suites, 176 tests passed; build passed; lint has zero errors |
-| development kit, degradation, and evaluation harness | 10 suites, 97 tests passed; build passed; lint has zero errors |
+| development kit, degradation, and evaluation harness | 11 suites, 98 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
 | exact deterministic archive canary | provider executed; metadata passed; one row returned; exact restore passed |

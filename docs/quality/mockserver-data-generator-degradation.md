@@ -15,6 +15,7 @@ the successful pilot repository is not used as a writable evidence store.
 | Missing model on offline first use | `tests/integration/mockserver-data-generator/src/degradation/provider-degradation.test.ts` | No network request; one complete deterministic row; stable `MODEL_CACHE_UNAVAILABLE` diagnostic |
 | Missing optional learned runtime | `tests/integration/mockserver-data-generator/src/degradation/provider-degradation.test.ts`; `packages/mockserver-data-generator/test/unit/learned-runtime.test.ts` | The affected learned tier is unavailable and lower tiers fill every required field |
 | Corrupt or truncated download | `packages/mockserver-data-generator/test/unit/model-downloader.test.ts` | No partial artifact is published; provider-level runtime failure degrades to deterministic output |
+| Concurrent process acquisition | `tests/integration/mockserver-data-generator/src/degradation/model-cache-process-concurrency.test.ts` | Two independent Node processes share one immutable download and observe one verified publication without stale lock/partial artifacts |
 | Size or checksum mismatch | `packages/mockserver-data-generator/test/unit/model-downloader.test.ts`; `packages/mockserver-data-generator/test/unit/model-cache.test.ts` | Invalid bytes never become a verified cache entry |
 | Inference timeout | `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts`; `packages/mockserver-data-generator/test/unit/api.test.ts` | The timed-out tier opens its process-local circuit and deterministic fallback remains active |
 | Malformed model output | `packages/mockserver-data-generator/test/unit/sft-runtime.test.ts`; `packages/mockserver-data-generator/test/unit/api.test.ts` | Off-contract output is rejected before publication and fallback values remain valid |
@@ -32,12 +33,12 @@ boundary with a test-only implementation.
 
 ## Verification snapshot
 
-At production-test commit `158cbc671`:
+Current local snapshot:
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 174 tests passed |
-| MockGen integration workspace | 10 suites, 96 tests passed |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 176 tests passed |
+| MockGen integration workspace | 11 suites, 98 tests passed |
 | Affected builds | Passed |
 | Affected lint | Zero errors |
 | Frozen workspace install | Passed |

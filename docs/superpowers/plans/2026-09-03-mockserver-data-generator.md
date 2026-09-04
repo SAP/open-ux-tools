@@ -1329,7 +1329,11 @@ from a Fiori application path and a kit path containing spaces plus non-ASCII
 German/Japanese text. A focused integration regression also covers application,
 kit, model-manifest, and model-cache paths with those characters. Cross-platform
 path syntax, read-only filesystems, corporate proxy behavior, and the full
-Node/OS matrix remain release-platform gates.
+Node/OS matrix remain release-platform gates. A separate true child-process
+regression launches two production package consumers against the same empty
+cache and proves one download, two ready results, one verified artifact, and no
+remaining lock or partial file. Networked/BAS filesystem semantics remain a
+platform gate.
 
 ### Task 12.2: Perform threat modeling and dependency review
 
