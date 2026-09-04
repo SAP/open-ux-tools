@@ -14,6 +14,7 @@ export { listSapSystems } from './list-sap-systems.js';
 export { downloadODataServiceMetadata } from './download-odata-service-metadata.js';
 export { generateFioriAppOData } from './generate-fiori-app-odata.js';
 export { generateFioriAppCap } from './generate-fiori-app-cap.js';
+export { addBuildingBlock } from './add-building-block.js';
 
 export const tools = [
     {
@@ -227,5 +228,60 @@ export const tools = [
         },
         inputSchema: convertToSchema(Input.ExecuteFunctionalityInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+    },
+    {
+        name: 'add_building_block',
+        description: `PREFERRED TOOL for adding SAP Fiori Elements Building Blocks. ALWAYS use this tool when adding a Table, Chart, FilterBar, Field, Form, or any other Building Block to a Fiori app view or fragment — do NOT edit XML files directly.
+Calls \`@sap-ux/fe-fpm-writer\` \`generateBuildingBlock()\` and writes the result to disk, using the same generator as the SAP Page Editor. This guarantees correct XML output and automatically handles manifest dependencies.
+
+For end-to-end guidance (annotation setup, routing, prerequisites), use the \`sap-fiori-building-blocks\` skill if available.
+
+## Natural language → buildingBlockType mapping
+"table" / "list" / "line items"          → table
+"chart" / "graph" / "analytics"          → chart
+"filter bar" / "search bar" / "filters"  → filter-bar
+"field" / "property" / "single value"    → field
+"form" / "details section"               → form
+"page" / "custom page layout"            → page
+"notes" / "rich text" / "text editor"    → rich-text-editor
+"custom column" / "extra column"         → custom-column
+"custom filter" / "custom search field"  → custom-filter-field
+"custom form field" / "custom detail"    → custom-form-field
+"button" / "action" / "toolbar button"   → action
+
+## metaPath — when to set it and when NOT to
+Standard BBs (table, chart, filter-bar, field, form) REQUIRE a metaPath annotation path.
+  - table / custom-column  → @com.sap.vocabularies.UI.v1.LineItem
+  - chart                  → @com.sap.vocabularies.UI.v1.Chart
+  - filter-bar             → @com.sap.vocabularies.UI.v1.SelectionFields
+  - field / form           → annotation path for the specific property or FieldGroup
+rich-text-editor uses targetProperty (e.g. /Products/description), NOT metaPath. Do NOT set metaPath for rich-text-editor.
+Custom BBs (custom-column, custom-filter-field, custom-form-field, action) do NOT use metaPath.
+Call search_docs if unsure which annotation path to use.
+
+## Finding viewOrFragmentPath and aggregationPath
+These are NOT returned by list_fiori_apps — you must read the app file tree first:
+1. Read webapp/manifest.json → find the target page under sap.ui5.routing.targets
+2. Read the view or fragment file referenced by that target (typically webapp/ext/<page>/<Page>.view.xml)
+3. Inspect the XML to find the correct aggregation element and its XPath (e.g. "/mvc:View/content")
+Common aggregationPath values:
+  - FPM custom page view    → /mvc:View/content
+  - Custom section fragment → /core:FragmentDefinition/HBox/items
+  - Custom column fragment  → /core:FragmentDefinition/HBox/items
+Do NOT guess the aggregationPath — read the file first.
+
+Call list_fiori_apps first if the app path is not known.
+
+IMPORTANT: When adding multiple building blocks, call this tool once per building block in sequence — do NOT call it in parallel. Each call reads the view file from disk; parallel calls will not see each other's writes and may produce duplicate element IDs.
+
+CAP projects: this tool writes XML only. It does NOT write CDS annotations. For a BB to render data at runtime, the required UI annotation (e.g. @UI.LineItem, @UI.SelectionFields) must already exist in a .cds file before calling this tool. If unsure, check the annotations file first.`,
+        annotations: {
+            title: 'Add Building Block',
+            readOnlyHint: false,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.AddBuildingBlockInputSchema),
+        outputSchema: convertToSchema(Output.AddBuildingBlockOutputSchema)
     }
 ] as Tool[];

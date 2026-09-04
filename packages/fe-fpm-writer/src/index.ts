@@ -39,6 +39,7 @@ export {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from './building-block/types.js';
 export type {
+    BuildingBlock,
     FilterBar,
     Form,
     Chart,

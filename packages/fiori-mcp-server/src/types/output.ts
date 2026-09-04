@@ -118,3 +118,15 @@ export const ExecuteFunctionalityOutputSchema = zod.object({
     /** Timestamp of the execution */
     timestamp: zod.string()
 });
+
+/**
+ * Output schema for the 'add_building_block' tool
+ */
+export const AddBuildingBlockOutputSchema = zod.object({
+    /** Whether the operation succeeded */
+    status: zod.enum(['success', 'error']).describe('Outcome of the operation.'),
+    /** Relative paths of files written to disk */
+    modifiedFiles: zod.array(zod.string()).describe('Relative paths of files modified by the operation.'),
+    /** Human-readable result or error description */
+    message: zod.string().describe('Human-readable description of the result or error.')
+});

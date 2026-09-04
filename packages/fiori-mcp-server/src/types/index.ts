@@ -7,7 +7,8 @@ import type {
     ListFioriAppsInputSchema,
     ListFunctionalitiesInputSchema,
     DocSearchInputSchema,
-    DownloadODataServiceMetadataInputSchema
+    DownloadODataServiceMetadataInputSchema,
+    AddBuildingBlockInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -16,7 +17,8 @@ import type {
     ListFunctionalitiesOutputSchema,
     FetchServiceMetadataOutputSchema,
     GenerateAppOutputSchema,
-    ListSapSystemsOutputSchema
+    ListSapSystemsOutputSchema,
+    AddBuildingBlockOutputSchema
 } from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
@@ -41,6 +43,8 @@ export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataSe
 export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
 export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
 export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;
+export type AddBuildingBlockInput = zod.infer<typeof AddBuildingBlockInputSchema>;
+export type AddBuildingBlockOutput = zod.infer<typeof AddBuildingBlockOutputSchema>;
 
 /**
  * Interface for functionality handlers

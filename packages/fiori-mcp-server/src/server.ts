@@ -20,17 +20,20 @@ import {
     downloadODataServiceMetadata,
     generateFioriAppOData,
     generateFioriAppCap,
+    addBuildingBlock,
     tools
 } from './tools/index.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
+import { AddBuildingBlockInputSchema } from './types/input.js';
 import type {
     ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
     DocSearchInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput,
-    DownloadODataServiceMetadataInput
+    DownloadODataServiceMetadataInput,
+    AddBuildingBlockInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -44,6 +47,7 @@ type ToolArgs =
     | DownloadODataServiceMetadataInput
     | GeneratorConfigOData
     | GeneratorConfigCAP
+    | AddBuildingBlockInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -213,6 +217,30 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
 - \`list_fiori_apps\` — discover existing Fiori apps in a directory
 - \`search_docs\` — search Fiori Elements, SAPUI5, and annotation documentation
 
+## Adding a Building Block to a Fiori app
+
+When the user asks to add a Table, Chart, FilterBar, Field, Form, notes editor, custom column, custom filter, or any other Building Block:
+
+DO NOT read view XML files and write XML manually — this produces incorrect output.
+DO NOT use write_file or edit_file to modify view or fragment XML for building blocks.
+ALWAYS use \`add_building_block\` — it calls the same generator as the SAP Page Editor.
+
+Workflow:
+1. If app path is unknown → call \`list_fiori_apps\`
+2. Read webapp/manifest.json to find the target page and its view/fragment file path
+3. Read the target view or fragment XML file to find the correct aggregationPath XPath — do NOT guess it
+4. If unsure which metaPath annotation to use → call \`search_docs\`
+5. Call \`add_building_block\` with appPath, viewOrFragmentPath, aggregationPath, and buildingBlockData
+
+Natural language → buildingBlockType:
+  table/list/line items → table | chart/graph/analytics → chart | filter bar/search → filter-bar
+  notes/rich text → rich-text-editor | custom column → custom-column | button/action → action
+  field/property → field | form/details → form | custom filter → custom-filter-field
+
+metaPath is required for table, chart, filter-bar, field, form — NOT needed for custom-* types and action. rich-text-editor uses targetProperty (e.g. /Products/description), not metaPath.
+
+Manual XML authoring will produce broken output — wrong namespaces, missing manifest.json entries, hallucinated attributes. \`add_building_block\` is the only correct path.
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `
             };
@@ -251,6 +279,9 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         telemetryProperties.functionalityId = functionalityId as string;
                     }
                 }
+                if (args && 'buildingBlockData' in args && args.buildingBlockData && typeof args.buildingBlockData === 'object' && 'buildingBlockType' in args.buildingBlockData) {
+                    telemetryProperties.buildingBlockType = args.buildingBlockData.buildingBlockType as string;
+                }
 
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
@@ -282,11 +313,22 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     case 'execute_functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
+                    case 'add_building_block': {
+                        const parsed = AddBuildingBlockInputSchema.safeParse(args);
+                        if (!parsed.success) {
+                            const issues = parsed.error.issues
+                                .map((i) => `${i.path.join('.')}: ${i.message}`)
+                                .join('; ');
+                            throw new Error(`Invalid add_building_block input — ${issues}`);
+                        }
+                        result = await addBuildingBlock(parsed.data);
+                        break;
+                    }
                     default:
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality, add_building_block.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);

@@ -18,6 +18,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../fe-fpm-writer"
+    },
+    {
       "path": "../feature-toggle"
     },
     {

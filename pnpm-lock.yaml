@@ -2686,6 +2686,10 @@ importers:
         version: 5.2.14
 
   packages/fiori-mcp-server:
+    dependencies:
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../fe-fpm-writer
     devDependencies:
       '@huggingface/transformers':
         specifier: 4.2.0

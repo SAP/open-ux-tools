@@ -1,5 +1,876 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`Tools schemas add_building_block: Input schema for "add_building_block" 1`] = `
+Object {
+  "additionalProperties": false,
+  "properties": Object {
+    "aggregationPath": Object {
+      "description": "XPath expression pointing to the aggregation element in the view/fragment where the building block is inserted, e.g. \\"/mvc:View/content\\".",
+      "minLength": 1,
+      "type": "string",
+    },
+    "appPath": Object {
+      "description": "Absolute path to the Fiori app root directory (where manifest.json lives).",
+      "minLength": 1,
+      "type": "string",
+    },
+    "buildingBlockData": Object {
+      "description": "Configuration for the building block. Required: buildingBlockType, id. Optional: metaPath, contextPath, and type-specific properties.",
+      "oneOf": Array [
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "table",
+              "type": "string",
+            },
+            "busy": Object {
+              "description": "Expression to control the busy state of the table.",
+              "type": "boolean",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "enableAutoColumnWidth": Object {
+              "description": "Automatically adjust column widths.",
+              "type": "boolean",
+            },
+            "enableExport": Object {
+              "description": "Enable spreadsheet export. Defaults to true.",
+              "type": "boolean",
+            },
+            "enableFullScreen": Object {
+              "description": "Enable full-screen mode toggle.",
+              "type": "boolean",
+            },
+            "enablePaste": Object {
+              "description": "Enable paste from clipboard.",
+              "type": "boolean",
+            },
+            "filterBar": Object {
+              "description": "ID of the FilterBar building block to associate with this table.",
+              "type": "string",
+            },
+            "header": Object {
+              "description": "Header text shown above the table.",
+              "type": "string",
+            },
+            "headerVisible": Object {
+              "description": "Whether the header text is visible.",
+              "type": "boolean",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "isSearchable": Object {
+              "description": "Show the search action in the toolbar.",
+              "type": "boolean",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "personalization": Object {
+              "anyOf": Array [
+                Object {
+                  "type": "boolean",
+                },
+                Object {
+                  "enum": Array [
+                    "Sort",
+                    "Column",
+                    "Filter",
+                  ],
+                  "type": "string",
+                },
+              ],
+              "description": "Personalization options: true (all), false (none), or \\"Sort\\", \\"Column\\", \\"Filter\\".",
+            },
+            "readOnly": Object {
+              "description": "Set the table to read-only mode.",
+              "type": "boolean",
+            },
+            "selectionMode": Object {
+              "description": "Row selection mode for the table.",
+              "enum": Array [
+                "None",
+                "Single",
+                "Multi",
+                "Auto",
+              ],
+              "type": "string",
+            },
+            "type": Object {
+              "description": "Table rendering type. Defaults to ResponsiveTable.",
+              "enum": Array [
+                "GridTable",
+                "ResponsiveTable",
+              ],
+              "type": "string",
+            },
+            "variantManagement": Object {
+              "description": "Variant management mode: \\"Page\\", \\"Control\\", or \\"None\\".",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "chart",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "filterBar": Object {
+              "description": "ID of the FilterBar building block to associate with this chart.",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "personalization": Object {
+              "anyOf": Array [
+                Object {
+                  "type": "boolean",
+                },
+                Object {
+                  "type": "string",
+                },
+              ],
+              "description": "Enable chart personalization options.",
+            },
+            "selectionChange": Object {
+              "description": "Event handler for selection changes.",
+              "type": "string",
+            },
+            "selectionMode": Object {
+              "description": "Selection mode for the chart.",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "filter-bar",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "filterChanged": Object {
+              "description": "Event handler fired when a filter value or visibility changes.",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "liveMode": Object {
+              "description": "Trigger search automatically when a filter value changes. Defaults to false.",
+              "type": "boolean",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "search": Object {
+              "description": "Event handler fired when Go is pressed or a condition changes.",
+              "type": "string",
+            },
+            "showClearButton": Object {
+              "description": "Show the Clear button on the FilterBar. Defaults to false.",
+              "type": "boolean",
+            },
+            "showMessages": Object {
+              "description": "Display search errors in a message box. Defaults to true.",
+              "type": "boolean",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "field",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "formatOptions": Object {
+              "additionalProperties": false,
+              "description": "Format options controlling how the field value is rendered.",
+              "properties": Object {
+                "displayMode": Object {
+                  "description": "How the field value and associated text are displayed together.",
+                  "enum": Array [
+                    "Value",
+                    "Description",
+                    "ValueDescription",
+                    "DescriptionValue",
+                  ],
+                  "type": "string",
+                },
+                "measureDisplayMode": Object {
+                  "description": "Whether the field measure is hidden or read-only.",
+                  "enum": Array [
+                    "Hidden",
+                    "ReadOnly",
+                  ],
+                  "type": "string",
+                },
+                "textExpandBehaviorDisplay": Object {
+                  "description": "How the full text is displayed: inline or in a popover.",
+                  "enum": Array [
+                    "InPlace",
+                    "Popover",
+                  ],
+                  "type": "string",
+                },
+                "textLinesEdit": Object {
+                  "description": "Maximum number of lines for multiline texts in edit mode.",
+                  "type": "number",
+                },
+                "textMaxCharactersDisplay": Object {
+                  "description": "Maximum number of characters shown initially in display mode.",
+                  "type": "number",
+                },
+                "textMaxLines": Object {
+                  "description": "Maximum lines that multiline texts in edit mode can grow to.",
+                  "type": "number",
+                },
+              },
+              "type": "object",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "readOnly": Object {
+              "description": "Set the field to read-only mode.",
+              "type": "boolean",
+            },
+            "semanticObject": Object {
+              "description": "Semantic object(s) for navigation.",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "form",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "title": Object {
+              "description": "Title shown above the form.",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+            "title",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "page",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "description": Object {
+              "description": "Page description.",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "templateType": Object {
+              "description": "\\"full\\" generates all aggregations; \\"basic\\" generates a minimal self-closing element.",
+              "enum": Array [
+                "full",
+                "basic",
+              ],
+              "type": "string",
+            },
+            "title": Object {
+              "description": "Page title.",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "rich-text-editor",
+              "type": "string",
+            },
+            "buttonGroups": Object {
+              "description": "Button groups to include in the editor toolbar.",
+              "items": Object {
+                "additionalProperties": false,
+                "properties": Object {
+                  "buttons": Object {
+                    "description": "Comma-separated list of buttons, e.g. \\"bold,italic,underline\\".",
+                    "type": "string",
+                  },
+                  "name": Object {
+                    "description": "Unique identifier for the button group, e.g. \\"font-style\\", \\"clipboard\\".",
+                    "type": "string",
+                  },
+                  "priority": Object {
+                    "description": "Display priority for ordering button groups. Defaults to 10.",
+                    "type": "number",
+                  },
+                },
+                "required": Array [
+                  "name",
+                  "buttons",
+                ],
+                "type": "object",
+              },
+              "type": "array",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "targetProperty": Object {
+              "description": "Property path for the Rich Text Editor, e.g. \\"/EntitySet/targetProperty\\".",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "rich-text-editor-button-groups",
+              "type": "string",
+            },
+            "buttonGroups": Object {
+              "description": "Button groups to configure in the rich text editor toolbar.",
+              "items": Object {
+                "additionalProperties": false,
+                "properties": Object {
+                  "buttons": Object {
+                    "description": "Comma-separated list of buttons, e.g. \\"bold,italic,underline\\".",
+                    "type": "string",
+                  },
+                  "customToolbarPriority": Object {
+                    "description": "Custom toolbar priority to override default positioning.",
+                    "type": "number",
+                  },
+                  "id": Object {
+                    "description": "Optional ID for the button group.",
+                    "type": "string",
+                  },
+                  "name": Object {
+                    "description": "Unique identifier for the button group, e.g. \\"font-style\\", \\"clipboard\\".",
+                    "type": "string",
+                  },
+                  "priority": Object {
+                    "description": "Display priority for ordering button groups. Defaults to 10.",
+                    "type": "number",
+                  },
+                  "row": Object {
+                    "description": "Row number in the toolbar where this button group appears.",
+                    "type": "number",
+                  },
+                  "visible": Object {
+                    "description": "Whether this button group is visible. Defaults to true.",
+                    "type": "boolean",
+                  },
+                },
+                "required": Array [
+                  "name",
+                  "buttons",
+                ],
+                "type": "object",
+              },
+              "type": "array",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "anchor": Object {
+              "description": "Key of another filter to position this one relative to.",
+              "type": "string",
+            },
+            "buildingBlockType": Object {
+              "const": "custom-filter-field",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "embededFragment": Object {
+              "additionalProperties": false,
+              "description": "Required for the companion .fragment.xml file to be generated. Inspect webapp/ (list_fiori_apps + read directory) to find existing fragments or choose a name. The app namespace is derived from manifest.json automatically.",
+              "properties": Object {
+                "folder": Object {
+                  "description": "Target folder relative to the app root, e.g. \\"ext/fragment\\". Defaults to \\"ext/<id>\\" when omitted.",
+                  "type": "string",
+                },
+                "name": Object {
+                  "description": "Fragment file name without extension, e.g. \\"CustomColumn\\". Used to generate <appNs>.<folder>.<name>.fragment.xml.",
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "name",
+              ],
+              "type": "object",
+            },
+            "filterFieldKey": Object {
+              "description": "Property name of the FilterField.",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "label": Object {
+              "description": "Display text for this filter field.",
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "position": Object {
+              "additionalProperties": false,
+              "description": "Position of this filter field relative to an existing one.",
+              "properties": Object {
+                "anchor": Object {
+                  "description": "Key of an existing filter to position relative to.",
+                  "type": "string",
+                },
+                "placement": Object {
+                  "description": "Whether to place before or after the anchor.",
+                  "enum": Array [
+                    "Before",
+                    "After",
+                  ],
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+            "property": Object {
+              "description": "The property to filter by.",
+              "type": "string",
+            },
+            "required": Object {
+              "description": "Whether the filter field is required.",
+              "type": "boolean",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+            "anchor",
+            "label",
+            "property",
+            "required",
+            "embededFragment",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "custom-form-field",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "embededFragment": Object {
+              "additionalProperties": false,
+              "description": "Required for the companion .fragment.xml file to be generated. Inspect webapp/ (list_fiori_apps + read directory) to find existing fragments or choose a name. The app namespace is derived from manifest.json automatically.",
+              "properties": Object {
+                "folder": Object {
+                  "description": "Target folder relative to the app root, e.g. \\"ext/fragment\\". Defaults to \\"ext/<id>\\" when omitted.",
+                  "type": "string",
+                },
+                "name": Object {
+                  "description": "Fragment file name without extension, e.g. \\"CustomColumn\\". Used to generate <appNs>.<folder>.<name>.fragment.xml.",
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "name",
+              ],
+              "type": "object",
+            },
+            "formElementKey": Object {
+              "description": "Optional key for the FormElement.",
+              "type": "string",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "label": Object {
+              "description": "Label text for this form field.",
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "position": Object {
+              "additionalProperties": false,
+              "description": "Position of the custom form field relative to an anchor element.",
+              "properties": Object {
+                "anchor": Object {
+                  "description": "Key of another field to position this one relative to.",
+                  "type": "string",
+                },
+                "placement": Object {
+                  "description": "Position relative to the anchor.",
+                  "enum": Array [
+                    "Before",
+                    "After",
+                  ],
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+            "targetProperty": Object {
+              "description": "Property path for the custom form field.",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+            "label",
+            "embededFragment",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "buildingBlockType": Object {
+              "const": "custom-column",
+              "type": "string",
+            },
+            "columnKey": Object {
+              "description": "Unique key for the column.",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "embededFragment": Object {
+              "additionalProperties": false,
+              "description": "Required for the companion .fragment.xml file to be generated. Inspect webapp/ (list_fiori_apps + read directory) to find existing fragments or choose a name. The app namespace is derived from manifest.json automatically.",
+              "properties": Object {
+                "folder": Object {
+                  "description": "Target folder relative to the app root, e.g. \\"ext/fragment\\". Defaults to \\"ext/<id>\\" when omitted.",
+                  "type": "string",
+                },
+                "name": Object {
+                  "description": "Fragment file name without extension, e.g. \\"CustomColumn\\". Used to generate <appNs>.<folder>.<name>.fragment.xml.",
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "name",
+              ],
+              "type": "object",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "position": Object {
+              "additionalProperties": false,
+              "description": "Position of this column relative to an existing one.",
+              "properties": Object {
+                "anchor": Object {
+                  "description": "Key of an existing column to position relative to.",
+                  "type": "string",
+                },
+                "placement": Object {
+                  "description": "Whether to place before or after the anchor.",
+                  "enum": Array [
+                    "Before",
+                    "After",
+                  ],
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+            "title": Object {
+              "description": "Column header text.",
+              "type": "string",
+            },
+            "width": Object {
+              "description": "Column width, e.g. \\"10rem\\".",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+            "title",
+            "embededFragment",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "actionKey": Object {
+              "description": "Unique identifier for the action.",
+              "type": "string",
+            },
+            "anchor": Object {
+              "description": "Key of another action to position this one relative to.",
+              "type": "string",
+            },
+            "buildingBlockType": Object {
+              "const": "action",
+              "type": "string",
+            },
+            "contextPath": Object {
+              "description": "Absolute entity set path providing the binding context, e.g. \\"/SalesOrder\\".",
+              "type": "string",
+            },
+            "embeddedAction": Object {
+              "additionalProperties": false,
+              "description": "Embedded action configuration for linking a press handler to the action button.",
+              "properties": Object {
+                "eventHandler": Object {
+                  "additionalProperties": false,
+                  "description": "Event handler wired to the action press event.",
+                  "properties": Object {
+                    "fileName": Object {
+                      "description": "Controller file name to require, e.g. \\"project1.ext.controller.Main\\".",
+                      "type": "string",
+                    },
+                    "fnName": Object {
+                      "description": "Handler function name, e.g. \\".onApprove\\". Defaults to \\"onPress\\".",
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+              "type": "object",
+            },
+            "id": Object {
+              "description": "ID for the inserted building block XML element.",
+              "minLength": 1,
+              "type": "string",
+            },
+            "metaPath": Object {
+              "description": "Relative annotation path for data binding, e.g. \\"@com.sap.vocabularies.UI.v1.LineItem\\". Use search_docs if unsure which annotation to use.",
+              "type": "string",
+            },
+            "placement": Object {
+              "description": "Position relative to the anchor action.",
+              "enum": Array [
+                "Before",
+                "After",
+              ],
+              "type": "string",
+            },
+            "requiresSelection": Object {
+              "description": "Whether a row selection is required. Defaults to false.",
+              "type": "boolean",
+            },
+            "text": Object {
+              "description": "Display text for the action button.",
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+            "buildingBlockType",
+            "actionKey",
+            "text",
+          ],
+          "type": "object",
+        },
+      ],
+    },
+    "viewOrFragmentPath": Object {
+      "description": "Relative path from appPath to the view or fragment XML file where the building block will be inserted, e.g. \\"webapp/ext/main/Main.view.xml\\".",
+      "minLength": 1,
+      "type": "string",
+    },
+  },
+  "required": Array [
+    "appPath",
+    "viewOrFragmentPath",
+    "aggregationPath",
+    "buildingBlockData",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas add_building_block: Output schema for "add_building_block" 1`] = `
+Object {
+  "additionalProperties": false,
+  "properties": Object {
+    "message": Object {
+      "description": "Human-readable description of the result or error.",
+      "type": "string",
+    },
+    "modifiedFiles": Object {
+      "description": "Relative paths of files modified by the operation.",
+      "items": Object {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "status": Object {
+      "description": "Outcome of the operation.",
+      "enum": Array [
+        "success",
+        "error",
+      ],
+      "type": "string",
+    },
+  },
+  "required": Array [
+    "status",
+    "modifiedFiles",
+    "message",
+  ],
+  "type": "object",
+}
+`;
+
 exports[`Tools schemas execute_functionality: Input schema for "execute_functionality" 1`] = `
 Object {
   "additionalProperties": false,
