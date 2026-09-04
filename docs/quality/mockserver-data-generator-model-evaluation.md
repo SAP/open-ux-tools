@@ -17,6 +17,32 @@ This record captures the 2026-09-04 development campaign that exercised the prod
 
 The classifier cohort contains 300 records. The harness evaluated the 233 direct LLM agreements or verifiable human adjudications and quarantined 67 records whose `human_adjudicated` label describes automated adjudication in its own rationale.
 
+## Pilot evidence reuse audit
+
+The production work does not start a new data or model program. The retained
+pilot was audited at the artifact boundary, and each input has an explicit
+disposition:
+
+| Pilot evidence | Verified identity | Production disposition |
+| -------------- | ----------------- | ---------------------- |
+| Classifier judge campaign | 300 labels in `data/pilots/benchmark-gold-judge-full-2026-05-26/final-gold-labels.jsonl`; SHA-256 `0d1d0a5c305083fb17e7bbe3149c828037616898e5464a8d6993818fd94fb6b3` | Reuse the fixed cohort and the 233 direct two-LLM agreements. Keep the other 67 records quarantined because their claimed human adjudication was automated. |
+| Classifier encoder, vocabulary, and calibrated head | Exact bytes and hashes listed under fixed inputs | Reuse as the production high-precision routing candidate and preserve abstention. |
+| SFT data lineage and training report | `training/sft/data-manifest.json` SHA-256 `df1359ff5f7a6a8e5a1b9ec358c95851cd72d3ee593ac91f34e21f4ce05a718b`; `training/sft/training-report.json` SHA-256 `de2604e6e5f2709482a34063fbb34efa8b2f2f9bfd072e9ee2f3757998e6b52f` | Reuse as private training provenance. Do not copy dataset payloads or local paths into Open UX repositories. No retraining is required for the initial production candidate. |
+| SFT held-out evaluation cohort | 16 cases in `training/sft/eval/held-out-prompts.json`; SHA-256 `83dd7d4e1613a17715d9c5bce8e1aea43b505f0d6d6afb7d09993d8049c0c5d4` | Reuse unchanged for adapter correctness, parse, fill, latency, and deterministic-replay gates. |
+| FP32 and INT8 export contract | `training/sft/onnx-export-report.json` SHA-256 `1e79460315eca0d292eb1e5ad5034b8f85e2c07427d305223a356e5813614540` | Reuse the INT8 graph as the current learned candidate and FP32 only as the reference export. |
+| INT4 quality gate | `training/sft/onnx-export-int4-quality-gate.json` SHA-256 `d048bca6340f8960e5d955709fbe70b74d42f6cdfe7d0afde69908d24b5caac1` | Retain the rejection. Do not rerun the same uncalibrated weight-only INT4 technique; test only materially different quantization candidates. |
+| Realism prompt, schema, and selection | `training/review/generation-inspection-prompt.md` SHA-256 `6ecf69aad17021343ca225b21003c9e0a858daae424c25d2a8b31445b5d2b20a`; `training/review/generation-inspection-output.schema.json` SHA-256 `c6192e28bdbe1aec04a9c7e67da69f751dc0ba132fb2d23d04a53f998b2b6e0d`; `benchmark/ml-native/llm-inspection-manifest.json` SHA-256 `202ca3ef76cd1b741bcc4792b22880231f0de3edcbbd58b82bb596fa5288f12f` | Reuse the frozen review contract and multidomain selection. Do not design or recollect a new judging corpus. |
+| Independent OpenAI and Anthropic pilot realism judgment | The tracked aggregate status records evidence fingerprint `518c7efd66dfc24cb63bd3259f4c2596ff901a2a38a6b19b290618575f408e33` and report fingerprint `4baca51dcceee8a95f4693a5fb26f0aac3bb0f62e509aa74f8bdb26f0efb9f3a`; the full provider artifacts are not tracked | Preserve as a failed historical baseline: 16/60 realistic consensus, 37 major defects, no critical defects, and 10 disagreements. It must not be rerun merely to reproduce the old result, but the aggregate cannot be recompiled as current evidence. |
+| Later pilot multidomain generation replay | 343 fields; evidence fingerprint `00832a6ec51d3c676c486cbf21ca813a25ed7e79dc52906f0d4c2d5c75bd3032`; file SHA-256 `fce4e56600e5edbbbe16f596d9064907fc52b62962bde35ab6bdfd99fc2e42d0` for both original and repeat | Preserve as deterministic historical evidence. It is not a realism verdict and is not bound to the production candidate. |
+
+Only one new realism-evaluation activity remains: two independent providers
+must review the exact 307-field production packet described below. Its candidate
+and evidence fingerprints differ from the retained pilot packets audited above,
+so reusing an old verdict would break evidence lineage. This is a new judgment
+over reused inputs and the new production adapter, not new data collection,
+classifier training, SFT training, or a repeat of the pilot's historical
+judging.
+
 ## Production runtime results
 
 The classifier ran through the package's MiniLM, pooling, calibrated linear-head, and abstention implementation:
