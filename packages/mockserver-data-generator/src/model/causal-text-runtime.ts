@@ -67,6 +67,86 @@ function allowedTokenIds(
     return result;
 }
 
+/**
+ * Cache the tokenizer-wide grammar scan for equivalent decoder states.
+ *
+ * @param texts decoded tokenizer vocabulary
+ * @param specialIds token IDs that cannot be emitted
+ * @returns resolver for allowed token IDs
+ */
+export function createAllowedTokenResolver(
+    texts: ReadonlyArray<string | undefined>,
+    specialIds: ReadonlySet<number>
+): (state: JsonRowGrammarState) => ReadonlyArray<number> {
+    const cache = new Map<string, ReadonlyArray<number>>();
+    return (state) => {
+        const key = JSON.stringify(state);
+        const cached = cache.get(key);
+        if (cached) {
+            return cached;
+        }
+        const allowed = Object.freeze(allowedTokenIds(state, texts, specialIds));
+        cache.set(key, allowed);
+        return allowed;
+    };
+}
+
+interface TokenProbability {
+    id: number;
+    probability: number;
+}
+
+function probabilityIsHigher(left: TokenProbability, right: TokenProbability): boolean {
+    return left.probability > right.probability || (left.probability === right.probability && left.id < right.id);
+}
+
+function siftDown(heap: TokenProbability[], start: number): void {
+    let parent = start;
+    while (true) {
+        const left = parent * 2 + 1;
+        if (left >= heap.length) {
+            return;
+        }
+        const right = left + 1;
+        const child = right < heap.length && probabilityIsHigher(heap[right]!, heap[left]!) ? right : left;
+        if (!probabilityIsHigher(heap[child]!, heap[parent]!)) {
+            return;
+        }
+        [heap[parent], heap[child]] = [heap[child]!, heap[parent]!];
+        parent = child;
+    }
+}
+
+/**
+ * Select the ordered top-p nucleus with a max heap instead of sorting every candidate.
+ *
+ * @param probabilities normalized token probabilities
+ * @param topP cumulative probability threshold
+ * @returns highest-probability candidates needed to reach the threshold
+ */
+export function selectNucleus(
+    probabilities: ReadonlyArray<TokenProbability>,
+    topP: number
+): ReadonlyArray<TokenProbability> {
+    const heap = [...probabilities];
+    for (let index = Math.floor(heap.length / 2) - 1; index >= 0; index -= 1) {
+        siftDown(heap, index);
+    }
+    const nucleus: TokenProbability[] = [];
+    let cumulative = 0;
+    while (heap.length > 0 && cumulative < topP) {
+        const highest = heap[0]!;
+        const last = heap.pop()!;
+        if (heap.length > 0) {
+            heap[0] = last;
+            siftDown(heap, 0);
+        }
+        nucleus.push(highest);
+        cumulative += highest.probability;
+    }
+    return nucleus;
+}
+
 function sample(
     logits: Float32Array,
     candidates: ReadonlyArray<number>,
@@ -94,18 +174,11 @@ function sample(
     const probabilities = scores.map(({ id, score }) => ({ id, probability: Math.exp(score - maximum) }));
     const total = probabilities.reduce((sum, { probability }) => sum + probability, 0);
     probabilities.forEach((entry) => (entry.probability /= total));
-    probabilities.sort((left, right) => right.probability - left.probability || left.id - right.id);
     const topP = Math.min(1, Math.max(Number.EPSILON, input.topP));
-    let cumulative = 0;
-    let count = 0;
-    while (count < probabilities.length && cumulative < topP) {
-        cumulative += probabilities[count]?.probability ?? 0;
-        count += 1;
-    }
-    const nucleus = probabilities.slice(0, Math.max(1, count));
+    const nucleus = selectNucleus(probabilities, topP);
     const nucleusTotal = nucleus.reduce((sum, { probability }) => sum + probability, 0);
     const draw = random() * nucleusTotal;
-    cumulative = 0;
+    let cumulative = 0;
     for (const candidate of nucleus) {
         cumulative += candidate.probability;
         if (draw < cumulative) {
@@ -165,6 +238,7 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
             let pastKeyValues: ReadonlyMap<number, CausalLmKeyValue> = new Map();
             const generated: number[] = [];
             const random = seededRandom(input.seed);
+            const resolveAllowedTokens = createAllowedTokenResolver(tokenTexts, specialIds);
 
             while (generated.length < input.maxNewTokens && !grammarComplete(state)) {
                 signal.throwIfAborted();
@@ -186,13 +260,7 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
                 if (output.lastLogits.length !== options.tokenizer.vocabSize) {
                     throw new TypeError('SFT logits do not match tokenizer vocabulary size');
                 }
-                const token = sample(
-                    output.lastLogits,
-                    allowedTokenIds(state, tokenTexts, specialIds),
-                    generated,
-                    input,
-                    random
-                );
+                const token = sample(output.lastLogits, resolveAllowedTokens(state), generated, input, random);
                 const text = tokenTexts[token];
                 if (text === undefined) {
                     throw new TypeError('SFT selected an undecodable token');

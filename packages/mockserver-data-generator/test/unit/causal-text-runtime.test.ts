@@ -1,10 +1,65 @@
 import {
+    createAllowedTokenResolver,
     createCausalTextGenerator,
+    selectNucleus,
     type CausalLmSession,
     type CausalTokenizer
 } from '../../src/model/causal-text-runtime.js';
+import { createJsonRowGrammar } from '../../src/model/json-row-grammar.js';
 
 describe('grammar-constrained causal text runtime', () => {
+    test('reuses allowed-token candidates for equivalent grammar states', () => {
+        const resolveAllowed = createAllowedTokenResolver(['{', ' ', 'x'], new Set());
+        const state = createJsonRowGrammar([{ name: 'Name', valueKind: 'string', nullable: false }]);
+
+        const first = resolveAllowed(state);
+        const second = resolveAllowed({ ...state });
+
+        expect(second).toBe(first);
+        expect(first).toEqual([0, 1]);
+    });
+
+    test('selects an exact top-p nucleus without sorting the full vocabulary', () => {
+        const probabilities = [
+            { id: 2, probability: 0.4 },
+            { id: 3, probability: 0.2 },
+            { id: 1, probability: 0.4 }
+        ];
+
+        expect(selectNucleus(probabilities, 0.7)).toEqual([
+            { id: 1, probability: 0.4 },
+            { id: 2, probability: 0.4 }
+        ]);
+        expect(probabilities).toEqual([
+            { id: 2, probability: 0.4 },
+            { id: 3, probability: 0.2 },
+            { id: 1, probability: 0.4 }
+        ]);
+    });
+
+    test('matches the full-sort nucleus for varied probabilities and thresholds', () => {
+        const probabilities = Array.from({ length: 127 }, (_unused, id) => ({
+            id,
+            probability: ((id * 37) % 23) + 1
+        }));
+        const total = probabilities.reduce((sum, { probability }) => sum + probability, 0);
+        probabilities.forEach((entry) => (entry.probability /= total));
+
+        for (const topP of [Number.EPSILON, 0.1, 0.5, 0.9, 1]) {
+            const sorted = [...probabilities].sort(
+                (left, right) => right.probability - left.probability || left.id - right.id
+            );
+            let cumulative = 0;
+            let count = 0;
+            while (count < sorted.length && cumulative < topP) {
+                cumulative += sorted[count]!.probability;
+                count += 1;
+            }
+
+            expect(selectNucleus(probabilities, topP)).toEqual(sorted.slice(0, Math.max(1, count)));
+        }
+    });
+
     test('threads the KV cache and prevents higher-logit off-grammar structure', async () => {
         const tokens = ['{', '}', '"', 'N', 'a', 'm', 'e', ':', 'A', 'c', 'Z', '<prompt>'];
         const desired = [0, 2, 3, 4, 5, 6, 2, 7, 2, 8, 9, 5, 6, 2, 1];
