@@ -28,4 +28,22 @@ describe('JSON row grammar literal validation', () => {
         const nullValue = advanceText(nullableInitial, '{"Limit":null');
         expect(textAllowed(nullValue, '}')).toBe(true);
     });
+
+    test('rejects invalid JSON string escapes', () => {
+        const initial = createJsonRowGrammar([{ name: 'Name', valueKind: 'string', nullable: false }]);
+        const escaped = advanceText(initial, '{"Name":"North\\');
+
+        expect(textAllowed(escaped, 'q')).toBe(false);
+        expect(textAllowed(escaped, 'nGate"}')).toBe(true);
+    });
+
+    test('requires exactly four hexadecimal digits after a unicode escape', () => {
+        const initial = createJsonRowGrammar([{ name: 'Name', valueKind: 'string', nullable: false }]);
+        const unicode = advanceText(initial, '{"Name":"M\\u');
+
+        expect(textAllowed(unicode, '12G4')).toBe(false);
+        expect(textAllowed(unicode, '12"}')).toBe(false);
+        expect(textAllowed(unicode, '00FCnchen"}')).toBe(true);
+        expect(grammarComplete(advanceText(unicode, '00FCnchen"}'))).toBe(true);
+    });
 });

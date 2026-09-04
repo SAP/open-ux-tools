@@ -17,6 +17,7 @@ export interface JsonRowGrammarState {
     keyTarget: string;
     keyMatched: number;
     escaped: boolean;
+    unicodeEscapeRemaining: number;
     stringHasContent: boolean;
     literalText: string;
     valueKind?: SftGrammarField['valueKind'];
@@ -25,6 +26,8 @@ export interface JsonRowGrammarState {
 
 const WHITESPACE = new Set([' ', '\t', '\n', '\r']);
 const NUMBER_START = new Set(['-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+const JSON_ESCAPE = new Set(['"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u']);
+const HEX_DIGIT = /^[0-9A-Fa-f]$/u;
 const COMPLETE_NUMBER = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/u;
 
 export function createJsonRowGrammar(fields: ReadonlyArray<SftGrammarField>): JsonRowGrammarState {
@@ -34,6 +37,7 @@ export function createJsonRowGrammar(fields: ReadonlyArray<SftGrammarField>): Js
         keyTarget: '',
         keyMatched: 0,
         escaped: false,
+        unicodeEscapeRemaining: 0,
         stringHasContent: false,
         literalText: '',
         nullable: true
@@ -95,8 +99,11 @@ function characterAllowed(state: JsonRowGrammarState, character: string): boolea
         case 'before-value':
             return WHITESPACE.has(character) || startAllowed(state, character);
         case 'in-string-value':
+            if (state.unicodeEscapeRemaining > 0) {
+                return HEX_DIGIT.test(character);
+            }
             if (state.escaped) {
-                return true;
+                return JSON_ESCAPE.has(character);
             }
             if (character === '"' && !state.stringHasContent) {
                 return false;
@@ -153,14 +160,32 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
             return character === ':' ? { ...state, phase: 'before-value' } : state;
         case 'before-value':
             if (character === '"') {
-                return { ...state, phase: 'in-string-value', escaped: false, stringHasContent: false };
+                return {
+                    ...state,
+                    phase: 'in-string-value',
+                    escaped: false,
+                    unicodeEscapeRemaining: 0,
+                    stringHasContent: false
+                };
             }
             return startAllowed(state, character)
                 ? { ...state, phase: 'in-nonstring-value', literalText: character }
                 : state;
         case 'in-string-value':
+            if (state.unicodeEscapeRemaining > 0) {
+                return {
+                    ...state,
+                    unicodeEscapeRemaining: state.unicodeEscapeRemaining - 1,
+                    stringHasContent: true
+                };
+            }
             if (state.escaped) {
-                return { ...state, escaped: false, stringHasContent: true };
+                return {
+                    ...state,
+                    escaped: false,
+                    unicodeEscapeRemaining: character === 'u' ? 4 : 0,
+                    stringHasContent: true
+                };
             }
             if (character === '\\') {
                 return { ...state, escaped: true };
