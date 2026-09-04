@@ -134,7 +134,7 @@ describe('pilot-compatible SFT runtime', () => {
 
         await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
-        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([8, 5]);
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([4, 4, 4, 1]);
     });
 
     test('identifies the failing row and field chunk without discarding the root cause', async () => {

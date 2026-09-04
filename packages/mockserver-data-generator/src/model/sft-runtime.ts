@@ -204,7 +204,7 @@ async function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise
  */
 export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions): SftGenerator {
     const budgetMs = options.budgetMs ?? 20_000;
-    const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? 8;
+    const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? 4;
     if (!Number.isFinite(budgetMs) || budgetMs <= 0) {
         throw new TypeError('SFT budget must be positive');
     }
