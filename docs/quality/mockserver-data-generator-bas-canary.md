@@ -9,9 +9,9 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `f5efd7eda59426d6b7a1c060de861984d2c120c1e561f8d46f6ad3d65cd31181`
-- archive SHA-256: `9391bc9fddd0ef7f163cd32f3a7017a94f2aaa6910d5cb51f0c042c884c2138a`
-- source commits: `SAP/open-ux-tools` `fd142d5b5675159a251e72253aaeb1905ca302dc`; `SAP/open-ux-odata` `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
+- dev-kit fingerprint: `86ab039f80a08e97d94dae2688a5522033d65029945256b8d8f7280ece876d0f`
+- archive SHA-256: `0d2fbde7d2bf1e856fcc0b4245440b82623f58373c71db793b07c64d68c6b806`
+- source commits: `SAP/open-ux-tools` `b7ecf97ea7cc5a494ddd7ded09f2404771cfb373`; `SAP/open-ux-odata` `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
 
 ## Inputs to record
 
@@ -29,7 +29,7 @@ data, prompts, or model outputs.
 
 ## Procedure
 
-~~~bash
+```bash
 KIT_ARCHIVE="/absolute/path/to/mockserver-data-generator-dev-kit-<fingerprint>.tgz"
 KIT_SHA256="<exact-sha256-from-build-report>"
 KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-<fingerprint>"
@@ -45,14 +45,40 @@ tar --extract --gzip --file "$KIT_ARCHIVE" \
 node "$KIT_ROOT/setup-local-fiori-app.mjs" \
   --app "$PWD" --verify
 npm run start-mock
-~~~
+```
+
+To exercise the proven classifier/SFT path, separately transfer an authorized
+copy of the retained pilot bundle, then stage and verify it without putting
+weights in the development kit:
+
+```bash
+PILOT_ROOT="/absolute/path/to/extracted-retained-pilot"
+MODEL_ROOT="$HOME/tools/mockserver-data-generator-model-2bf437ed75f992b6"
+
+node "$KIT_ROOT/prepare-pilot-model-cache.mjs" \
+  --pilot-root "$PILOT_ROOT" \
+  --cache "$MODEL_ROOT/cache" \
+  --manifest-out "$MODEL_ROOT/model-manifest.json"
+
+node "$KIT_ROOT/setup-local-fiori-app.mjs" \
+  --app "$PWD" \
+  --kit-root "$KIT_ROOT" \
+  --model-manifest "$MODEL_ROOT/model-manifest.json" \
+  --model-cache "$MODEL_ROOT/cache" \
+  --verify
+npm run start-mock
+```
+
+The learned `--verify` result must contain both `modelVerified: true` and
+`learnedRuntimeVerified: true`. A provider/HTTP pass without those fields is not
+a classifier/SFT BAS pass.
 
 After manual preview testing, stop the server and restore:
 
-~~~bash
+```bash
 node "$KIT_ROOT/setup-local-fiori-app.mjs" \
   --app "$PWD" --restore
-~~~
+```
 
 ## Results to record
 
@@ -64,6 +90,7 @@ node "$KIT_ROOT/setup-local-fiori-app.mjs" \
 - entity URL and status:
 - non-empty row count:
 - manual Fiori preview:
+- exact `onnxruntime-node` dependency and classifier/SFT readiness, when exercised:
 - restore result:
 - remaining installer-created files:
 - logs or failure classification:

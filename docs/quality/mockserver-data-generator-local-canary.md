@@ -15,11 +15,11 @@ Status: passed on local macOS for OData V2, OData V4, and CDS-through-FE.
 
 ## Results
 
-| Fixture | Metadata endpoint | Entity endpoint | Rows | Restore |
-| --- | --- | --- | ---: | --- |
-| OData V2 EDMX | passed | Products?$top=1 passed | 1 | exact |
-| OData V4 EDMX | passed | Products?$top=1 passed | 1 | exact |
-| CDS metadata processor | passed | Products?$top=1 passed | 1 | exact |
+| Fixture                | Metadata endpoint | Entity endpoint        | Rows | Restore |
+| ---------------------- | ----------------- | ---------------------- | ---: | ------- |
+| OData V2 EDMX          | passed            | Products?$top=1 passed |    1 | exact   |
+| OData V4 EDMX          | passed            | Products?$top=1 passed |    1 | exact   |
+| CDS metadata processor | passed            | Products?$top=1 passed |    1 | exact   |
 
 Each application resolved the current local tarballs for
 @sap-ux/mockserver-data-generator, @sap-ux/fe-mockserver-core, and
@@ -90,9 +90,32 @@ The default HTTP canary therefore remains a deterministic package-wiring check;
 learned-path readiness requires an explicitly prepared production-format
 manifest plus the exact runtime it pins.
 
+## Retained-pilot classifier/SFT clean-archive canary
+
+The retained pilot bridge and learned installer were then built from clean
+feature worktrees and exercised from the exact extracted archive against a
+fresh OData V4 fixture:
+
+- Dev-kit fingerprint: `86ab039f80a08e97d94dae2688a5522033d65029945256b8d8f7280ece876d0f`
+- Archive SHA-256: `0d2fbde7d2bf1e856fcc0b4245440b82623f58373c71db793b07c64d68c6b806`
+- Archive size: 524,239 bytes; 10 entries
+- Generator tarball: 56,755 bytes, SHA-256 `493afda0eb26b8784603abbca8b34be195e0a00f4e497b98d6e07fc3bc8dba49`
+- Source state: clean `SAP/open-ux-tools` commit `b7ecf97ea7cc5a494ddd7ded09f2404771cfb373` and clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible
+- Model bridge: revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`, manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`, and 192,167,584 verified cache bytes
+- Runtime installation: exact saved dependency `onnxruntime-node@1.24.3`
+- Installed configuration: unchanged `start-mock`, exactly one `sap-fe-mockserver`, provider `@sap-ux/mockserver-data-generator/fe-mockserver`, and explicit offline manifest/cache paths
+- Learned verification: packaged CLI reported classifier and SFT ready; the HTTP canary reported `providerExecuted: true` and `learnedRuntimeVerified: true`; `Products?$top=1` returned one row
+- Cache safety: the temporary learned-canary YAML disabled generated-row reuse so an existing global cache could not be mistaken for live classifier/SFT readiness; the application YAML was not changed by this verification step
+- Restore verification: all fixture files outside disposable `node_modules` matched byte for byte and `.mockserver-data-generator-dev` was removed
+
+The archive contains the package code and model-free bridge, but no model
+weights, manifest, native runtime, training data, or judge output. The retained
+pilot was supplied explicitly as a local development input.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
-deterministic fallback behavior, HTTP serving, and restore behavior. It does not prove BAS environment compatibility
-or learned-model realism. Those require the BAS record and the fingerprinted
-model/evaluation campaign.
+deterministic fallback behavior, retained-pilot classifier/SFT loading, HTTP
+serving, and restore behavior. It does not prove BAS environment compatibility
+or promote the model's realism. Those require the BAS record and completion of
+the fingerprinted external review campaign.
