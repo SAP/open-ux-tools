@@ -148,6 +148,9 @@ The reviewed npm package contains no weights and packs to 58,273 bytes in the cu
 | Training plus rank-fill 18,000 INT8         | 129,037,882 | Training-only closure plus pretrained merge rank; 12/16 parse and 128/261 fill                                               | Reject                            |
 | Training-closure bounded-recovery INT8      | 119,905,975 | One training-derived recovery epoch; 11/16 parse and 103/261 fill                                                            | Reject                            |
 | Pretrained-rank 10,000 bounded-recovery INT8 | 119,821,879 | Reduced-token training without held-out selection; 7/16 parse and 36/261 fill                                                | Reject                            |
+| Pretrained-rank 10,000 fresh SFT FP32       | 472,139,701 | Fresh three-epoch SFT from the original base; 11/16 parse and 116/261 fill                                                    | Reject source model               |
+| Pretrained-rank 10,000 fresh SFT INT8       | 119,821,880 | Dynamic INT8 export of the fresh SFT; 12/16 parse and 118/261 fill                                                            | Reject                            |
+| Fresh SFT INT8, 600-token diagnostic        | 119,821,880 | Model-specific completion budget; 13/16 parse and 166/261 fill                                                               | Reject; stop budget tuning        |
 | FP32                                       | 652,552,120 | Exact runtime contract, but 3.96 times INT8 bytes                                                                          | Reference only; do not distribute |
 
 The historical INT4 graph is 21.77% larger than INT8 because its MatMul-only
@@ -205,10 +208,37 @@ graph with 6,084,440 bytes of target headroom. The portable evidence fingerprint
 is `c1a3b1e111244662641eacac7e0b6a1b538102d13dcddcb10a47b74915897353`;
 the evidence file SHA-256 is
 `d90d5dd9107d6155cafefb725a61eaad3b1b36c1b405dfbd806da61e5f14371f`.
-The next viable experiment is therefore a fresh, fully governed SFT in the
-reduced-token regime, coupled to QAT or followed by a calibrated low-bit export.
-If that misses the quality gate, proceed to Candidate 6 rather than extending
-checkpoint-retrofit probes.
+A fresh reduced-token SFT has now closed that branch. The 10,000-token
+pretrained-rank selection used no training, evaluation, or held-out token ids;
+all 2,877 training records decoded exactly after remapping. Training started
+from the original base model, not the pilot checkpoint, and completed all three
+epochs. Evaluation loss moved from 1.105903 before training to 0.672898,
+0.575135, and 0.555240 after each epoch. The merged FP32 model nevertheless
+reached only 11/16 parsed cases and 116/261 filled fields. Its dynamic INT8
+export reached 12/16 and 118/261. Raising only the completion budget from 300
+to 400 tokens changed no result; a bounded 600-token diagnostic recovered one
+case but still reached only 13/16 and 166/261. The remaining failures ended
+before completing their JSON objects, so further token-budget tuning is not
+justified.
+
+The training report SHA-256 is
+`8a5e1779017b8fb5e4fe8326718d30e9ce689490611969d49ff006d8e3e9ec9a`.
+The FP32 and default-INT8 evaluation files have SHA-256
+`652384d8dbb50f2b3724cea0a9f51a6703dc0b062d208f6957e3bed862442718`
+and `715ec0157957a1fd5539c1d212d3ed738075c72ae353d29155b5eded9b49034a`.
+The clean 600-token replay binds commit
+`0c7532c0941d382478f9508fa292d5a499af0b8d`; its report fingerprint is
+`362191ba9ed9852cd043b718bdd37e11e67db42a5c744b0a183036ab4b50d2d4`
+and its file SHA-256 is
+`d49c5421492e540ca7e981d8b001ae8cf666c4d6b920f7f36119e8815bf895e7`.
+The consolidated rejected-campaign fingerprint is
+`6f3eb6b18ec56304c0cabf9fc18c09e8a4c9f10490b8f31d2ce6a5a7c2af8913`;
+the campaign file SHA-256 is
+`e2717f69628102c80ee86a06b3737971475105f319342647ab83bfba4a719058`.
+Because the FP32 source model fails before quantization, QAT and a calibrated
+low-bit export are not justified for this candidate, and realism judging is
+correctly skipped. Candidate 6, knowledge distillation or a smaller
+architecture, is the next viable branch.
 
 ## Machine-readable footprint baseline
 

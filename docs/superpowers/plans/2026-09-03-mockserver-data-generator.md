@@ -995,7 +995,7 @@ marked complete.
 - [x] Candidate 1: dynamic int8 baseline.
 - [x] Candidate 2: ONNX graph optimization and per-channel INT8; run static activation calibration only when the size/latency screen justifies it.
 - [x] Candidate 3: determine whether the chosen export/runtime supports an end-to-end calibrated GPTQ/AWQ-style four-bit path; reject partial calibration.
-- [ ] Candidate 4: quantization-aware fine-tuning when calibrated post-training quantization misses quality gates.
+- [x] Candidate 4: qualify whether quantization-aware fine-tuning is justified after post-training candidates miss; stop before QAT when the reduced-token FP32 source model itself misses quality gates.
 - [x] Candidate 5: vocabulary pruning or a domain tokenizer when embedding/output matrices dominate size.
 - [ ] Candidate 6: knowledge distillation or a smaller architecture when quantization alone cannot reach the target.
 - [x] Treat every uncalibrated low-precision result as ineligible; retain any historical negative report only in the governed private evidence store.
@@ -1033,9 +1033,21 @@ still below the gate. An 18,000-token rank-fill variant and two bounded recovery
 experiments regressed further. The repository now includes a portable,
 training-only vocabulary-candidate builder so the exact 10,073-token regime can
 be reproduced without storing training payloads or model weights. Candidate 5
-is complete and rejected as a checkpoint-retrofit strategy. Candidate 4 must be
-a fresh governed reduced-token SFT plus QAT or calibrated low-bit export; if it
-fails, advance to Candidate 6.
+is complete and rejected as a checkpoint-retrofit strategy.
+
+Candidate 4 then trained a fresh 10,000-token model from the original base using
+a data-independent pretrained-rank vocabulary, with no evaluation or held-out
+token ids used for selection. The full three-epoch SFT improved evaluation loss
+from 1.105903 to 0.555240, but the source FP32 model reached only 11/16 parsed
+cases and 116/261 filled fields. Dynamic INT8 reached 12/16 and 118/261. A
+400-token diagnostic was identical; a bounded 600-token diagnostic reached
+13/16 and 166/261 and still failed the frozen structural gates. The clean replay
+binds evaluator commit `0c7532c0941d382478f9508fa292d5a499af0b8d` and report
+fingerprint
+`362191ba9ed9852cd043b718bdd37e11e67db42a5c744b0a183036ab4b50d2d4`.
+Because failure occurs before quantization, QAT and low-bit export cannot repair
+this source-model contract and realism judging is not warranted. Candidate 4 is
+therefore closed at its precondition, and Candidate 6 is next.
 
 For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS, throughput, cold/warm latency, parse success, fill ratio, requested-row completion, schema/type/nullability/length/precision-scale/key/enum/FK/containment/navigation validity, relationship/coherence assertions, determinism, and fresh realism score. Count every frozen T2 attempt, including timeouts, empty responses, and malformed responses, in the parse denominator. Freeze eligible requested scalar slots before execution for the fill denominator; exclude authored, computed, server-managed, and metadata-defaulted slots before observing output.
 
