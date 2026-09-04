@@ -206,3 +206,44 @@ export const AdpMetadataInputSchema = zod.object({
             'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
         )
 });
+
+/**
+ * Supported UI5 documentation lookup types.
+ */
+export const UI5_LOOKUP_TYPES = ['aggregation', 'property', 'event'] as const;
+
+export const LookupUi5DocumentationInputSchema = zod.object({
+    lookupType: zod
+        .enum(UI5_LOOKUP_TYPES)
+        .describe(
+            'Which kind of UI5 control member to look up: "aggregation" (type, cardinality, visibility, ' +
+                'since, description), "property" (type, defaultValue, group, bindable, visibility, since, ' +
+                'description), or "event" (parameters, visibility, since, description). Inherited members are ' +
+                "resolved by walking the control's inheritance chain across libraries."
+        ),
+    library: zod.string().describe('The UI5 library the control belongs to (e.g. "sap.ui.comp").'),
+    control: zod.string().describe('Fully-qualified control name (e.g. "sap.ui.comp.smarttable.SmartTable").'),
+    member: zod
+        .string()
+        .optional()
+        .describe(
+            'Name of the aggregation, property or event to look up (e.g. "customToolbar", "busy", "press"). ' +
+                'Required for the aggregation, property, and event lookupTypes (validated server-side).'
+        ),
+    appPath: zod
+        .string()
+        .optional()
+        .describe(
+            'Absolute path to the project (or any folder within it) used to discover ui5.yaml and resolve the ' +
+                'configured UI5 base URL and version. Falls back to the public https://ui5.sap.com when omitted or not found.'
+        )
+});
+
+export const ODataServiceInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    filter: zod.string().optional().describe('Filter string to match service names')
+});
