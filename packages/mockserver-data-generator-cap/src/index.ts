@@ -1,5 +1,9 @@
 import { readFile } from 'node:fs/promises';
-import type { MockDataGeneratorRuntime } from '@sap-ux/mockserver-data-generator';
+import type {
+    MockDataGeneratorFingerprints,
+    MockDataGeneratorResult,
+    MockDataGeneratorRuntime
+} from '@sap-ux/mockserver-data-generator';
 import { resolveCapConfiguration, type CapGeneratorConfiguration } from './config.js';
 import { seedCapDatabase, type CapDatabase, type CapQueryLanguage, type GenerateService } from './seed.js';
 
@@ -26,6 +30,16 @@ interface PluginDependencies {
     ): Promise<{ runtime: MockDataGeneratorRuntime; dispose(): Promise<void> }>;
     createSignal?(timeoutMs: number): AbortSignal;
     generate?: GenerateService;
+    modelFingerprints?(
+        configuration: Extract<CapGeneratorConfiguration, { enabled: true }>,
+        signal: AbortSignal
+    ): Promise<Pick<MockDataGeneratorFingerprints, 'classifier' | 'sft'>>;
+    readGeneratedDataCache?(
+        directory: string,
+        key: string,
+        options: Readonly<{ validate(result: MockDataGeneratorResult): void }>
+    ): Promise<MockDataGeneratorResult | undefined>;
+    writeGeneratedDataCache?(directory: string, key: string, result: MockDataGeneratorResult): Promise<void>;
 }
 
 const LEARNED_SETUP_TIMEOUT_MS = 30_000;
@@ -68,6 +82,21 @@ async function runtime(
     }
 }
 
+async function modelFingerprints(
+    configuration: Extract<CapGeneratorConfiguration, { enabled: true }>,
+    signal: AbortSignal
+): Promise<Pick<MockDataGeneratorFingerprints, 'classifier' | 'sft'>> {
+    if (!configuration.model || configuration.generation.mode === 'deterministic') {
+        return Object.freeze({});
+    }
+    const generator = await import('@sap-ux/mockserver-data-generator');
+    signal.throwIfAborted();
+    const manifest = generator.parseModelManifest(JSON.parse(await readFile(configuration.model.manifestPath, 'utf8')));
+    return Object.freeze(
+        Object.fromEntries(manifest.components.map((component) => [component.kind, component.fingerprint]))
+    );
+}
+
 async function seedFromCds(
     cds: CdsFacade,
     configuration: Extract<CapGeneratorConfiguration, { enabled: true }>,
@@ -79,25 +108,71 @@ async function seedFromCds(
     const log = logger(cds);
     const createSignal =
         dependencies.createSignal ?? ((timeoutMs: number): AbortSignal => AbortSignal.timeout(timeoutMs));
-    const learnedSignal = createSignal(LEARNED_SETUP_TIMEOUT_MS);
-    const generate = dependencies.generate ?? (await import('@sap-ux/mockserver-data-generator')).generateService;
-    const learned = await (dependencies.createRuntime ?? runtime)(configuration, log, learnedSignal);
-    try {
+    const generator = await import('@sap-ux/mockserver-data-generator');
+    const generate = dependencies.generate ?? generator.generateService;
+    let learned: Awaited<ReturnType<typeof runtime>> | undefined;
+    const generateForCap: GenerateService = async (request, options) => {
+        let cacheTarget: Readonly<{ directory: string; key: string }> | undefined;
+        if (configuration.generatedDataCache) {
+            try {
+                const fingerprints = await (dependencies.modelFingerprints ?? modelFingerprints)(
+                    configuration,
+                    request.signal ?? new AbortController().signal
+                );
+                const directory =
+                    configuration.generatedDataCache.directory ?? generator.defaultGeneratedDataCacheRoot();
+                const key = generator.createGenerationFingerprint(request, options, fingerprints);
+                const cached = await (dependencies.readGeneratedDataCache ?? generator.readGeneratedDataCache)(
+                    directory,
+                    key,
+                    { validate: (result) => generator.validateGeneratedResult(request, result) }
+                );
+                if (cached) {
+                    log.info('GENERATED_DATA_CACHE_HIT: reused a verified native CAP generated snapshot.');
+                    return cached;
+                }
+                log.info('GENERATED_DATA_CACHE_MISS: no verified native CAP generated snapshot was found.');
+                cacheTarget = Object.freeze({ directory, key });
+            } catch {
+                log.warn('GENERATED_DATA_CACHE_UNAVAILABLE: native CAP generation continues without caching.');
+            }
+        }
+
+        if (!learned) {
+            const learnedSignal = createSignal(LEARNED_SETUP_TIMEOUT_MS);
+            learned = await (dependencies.createRuntime ?? runtime)(configuration, log, learnedSignal);
+        }
         const generationSignal = createSignal(GENERATION_TIMEOUT_MS);
+        const result = await generate({ ...request, signal: generationSignal }, options, learned.runtime);
+        if (result.fingerprints.request === cacheTarget?.key) {
+            try {
+                await (dependencies.writeGeneratedDataCache ?? generator.writeGeneratedDataCache)(
+                    cacheTarget.directory,
+                    cacheTarget.key,
+                    result
+                );
+            } catch {
+                log.warn('GENERATED_DATA_CACHE_WRITE_FAILED: native CAP generation continues without publication.');
+            }
+        }
+        return result;
+    };
+    try {
+        const scanSignal = createSignal(GENERATION_TIMEOUT_MS);
         const result = await seedCapDatabase({
             csn: cds.model,
             database: cds.db,
             queryLanguage: cds.ql,
-            generate,
+            generate: generateForCap,
             options: configuration.generation,
-            runtime: learned.runtime,
-            signal: generationSignal
+            runtime: Object.freeze({}),
+            signal: scanSignal
         });
         log.info(
             `Mock data generator seeded ${result.inserted.length} missing CAP entities and preserved ${result.preserved.length}.`
         );
     } finally {
-        await learned.dispose();
+        await learned?.dispose();
     }
 }
 
@@ -124,7 +199,7 @@ export function registerCapPlugin(cds: CdsFacade, dependencies: PluginDependenci
 }
 
 export { resolveCapConfiguration, seedCapDatabase };
-export type { CapGeneratorConfiguration, CapModelConfiguration } from './config.js';
+export type { CapGeneratedDataCacheConfiguration, CapGeneratorConfiguration, CapModelConfiguration } from './config.js';
 export type {
     CapDatabase,
     CapQueryLanguage,

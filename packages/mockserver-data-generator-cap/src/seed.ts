@@ -238,6 +238,12 @@ export async function seedCapDatabase(input: SeedCapDatabaseOptions): Promise<Ca
                 preserved.add(entity.qualifiedName);
             }
         }
+        if (preserved.size === entities.length) {
+            return Object.freeze({
+                inserted: Object.freeze([]),
+                preserved: Object.freeze([...preserved].sort())
+            });
+        }
         const request: MockDataServiceRequest = {
             metadata: { format: 'csn', content: metadata },
             service: { urlPath: '/$mockserver-data-generator', alias: 'CAP', odataVersion: '4.0' },

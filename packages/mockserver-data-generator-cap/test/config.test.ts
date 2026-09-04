@@ -30,7 +30,8 @@ describe('native CAP generator configuration', () => {
                     mode: 'learned',
                     modelManifestPath: '/models/manifest.json',
                     modelCacheDirectory: '/models/cache',
-                    modelOffline: true
+                    modelOffline: true,
+                    generatedDataCacheDirectory: '/models/generated-data'
                 }
             })
         ).toEqual({
@@ -40,8 +41,36 @@ describe('native CAP generator configuration', () => {
                 manifestPath: '/models/manifest.json',
                 cacheDirectory: '/models/cache',
                 offline: true
+            },
+            generatedDataCache: {
+                directory: '/models/generated-data'
             }
         });
+    });
+
+    test('enables generated-data caching by default and supports an explicit opt-out', () => {
+        expect(
+            resolveCapConfiguration({
+                profiles: ['test'],
+                mockserverDataGenerator: { enabled: true }
+            })
+        ).toEqual({ enabled: true, generation: {}, generatedDataCache: {} });
+        expect(
+            resolveCapConfiguration({
+                profiles: ['test'],
+                mockserverDataGenerator: { enabled: true, generatedDataCache: false }
+            })
+        ).toEqual({ enabled: true, generation: {} });
+        expect(() =>
+            resolveCapConfiguration({
+                profiles: ['test'],
+                mockserverDataGenerator: {
+                    enabled: true,
+                    generatedDataCache: false,
+                    generatedDataCacheDirectory: '/cache'
+                }
+            })
+        ).toThrow(/generated-data cache directory/i);
     });
 
     test('rejects unsafe row counts and unknown modes', () => {

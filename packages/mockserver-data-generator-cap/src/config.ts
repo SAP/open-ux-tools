@@ -8,8 +8,18 @@ export interface CapModelConfiguration {
     offline: boolean;
 }
 
+export interface CapGeneratedDataCacheConfiguration {
+    directory?: string;
+}
+
 export type CapGeneratorConfiguration =
-    { enabled: false } | { enabled: true; generation: MockDataGeneratorOptions; model?: CapModelConfiguration };
+    | { enabled: false }
+    | {
+          enabled: true;
+          generation: MockDataGeneratorOptions;
+          model?: CapModelConfiguration;
+          generatedDataCache?: CapGeneratedDataCacheConfiguration;
+      };
 
 function isRecord(value: unknown): value is UnknownRecord {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -48,6 +58,56 @@ function optionalInteger(value: unknown, name: string): number | undefined {
     return value as number;
 }
 
+function generationOptions(raw: UnknownRecord): MockDataGeneratorOptions {
+    const rowsPerEntity = optionalInteger(raw.rowsPerEntity, 'rowsPerEntity');
+    if (rowsPerEntity !== undefined && (rowsPerEntity < 0 || rowsPerEntity > 1_000)) {
+        throw new TypeError('rowsPerEntity must be between 0 and 1000');
+    }
+    const seed = optionalInteger(raw.seed, 'seed');
+    const sftTimeoutMs = optionalInteger(raw.sftTimeoutMs, 'sftTimeoutMs');
+    if (sftTimeoutMs !== undefined && (sftTimeoutMs <= 0 || sftTimeoutMs > 60_000)) {
+        throw new TypeError('sftTimeoutMs must be between 1 and 60000');
+    }
+    const locale = optionalString(raw.locale, 'locale');
+    const mode = raw.mode;
+    if (mode !== undefined && !['auto', 'deterministic', 'learned'].includes(String(mode))) {
+        throw new TypeError('mode must be auto, deterministic, or learned');
+    }
+    return Object.freeze({
+        ...(rowsPerEntity === undefined ? {} : { rowsPerEntity }),
+        ...(seed === undefined ? {} : { seed }),
+        ...(sftTimeoutMs === undefined ? {} : { sftTimeoutMs }),
+        ...(locale === undefined ? {} : { locale }),
+        ...(mode === undefined ? {} : { mode: mode as MockDataGeneratorOptions['mode'] })
+    });
+}
+
+function modelConfiguration(raw: UnknownRecord): CapModelConfiguration | undefined {
+    const manifestPath = optionalString(raw.modelManifestPath, 'modelManifestPath');
+    const cacheDirectory = optionalString(raw.modelCacheDirectory, 'modelCacheDirectory');
+    if (raw.modelOffline !== undefined && typeof raw.modelOffline !== 'boolean') {
+        throw new TypeError('modelOffline must be a boolean');
+    }
+    return manifestPath
+        ? Object.freeze({
+              manifestPath,
+              ...(cacheDirectory ? { cacheDirectory } : {}),
+              offline: raw.modelOffline === true
+          })
+        : undefined;
+}
+
+function generatedDataCacheConfiguration(raw: UnknownRecord): CapGeneratedDataCacheConfiguration | undefined {
+    const directory = optionalString(raw.generatedDataCacheDirectory, 'generatedDataCacheDirectory');
+    if (raw.generatedDataCache !== undefined && typeof raw.generatedDataCache !== 'boolean') {
+        throw new TypeError('generatedDataCache must be a boolean');
+    }
+    if (raw.generatedDataCache === false && directory) {
+        throw new TypeError('Generated-data cache directory cannot be set when caching is disabled');
+    }
+    return raw.generatedDataCache === false ? undefined : Object.freeze({ ...(directory ? { directory } : {}) });
+}
+
 /**
  * Resolve the defense-in-depth native CAP opt-in.
  *
@@ -66,42 +126,13 @@ export function resolveCapConfiguration(environment: unknown): CapGeneratorConfi
         return Object.freeze({ enabled: false });
     }
 
-    const rowsPerEntity = optionalInteger(raw.rowsPerEntity, 'rowsPerEntity');
-    if (rowsPerEntity !== undefined && (rowsPerEntity < 0 || rowsPerEntity > 1_000)) {
-        throw new TypeError('rowsPerEntity must be between 0 and 1000');
-    }
-    const seed = optionalInteger(raw.seed, 'seed');
-    const sftTimeoutMs = optionalInteger(raw.sftTimeoutMs, 'sftTimeoutMs');
-    if (sftTimeoutMs !== undefined && (sftTimeoutMs <= 0 || sftTimeoutMs > 60_000)) {
-        throw new TypeError('sftTimeoutMs must be between 1 and 60000');
-    }
-    const locale = optionalString(raw.locale, 'locale');
-    const mode = raw.mode;
-    if (mode !== undefined && !['auto', 'deterministic', 'learned'].includes(String(mode))) {
-        throw new TypeError('mode must be auto, deterministic, or learned');
-    }
-    const manifestPath = optionalString(raw.modelManifestPath, 'modelManifestPath');
-    const cacheDirectory = optionalString(raw.modelCacheDirectory, 'modelCacheDirectory');
-    if (raw.modelOffline !== undefined && typeof raw.modelOffline !== 'boolean') {
-        throw new TypeError('modelOffline must be a boolean');
-    }
+    const generation = generationOptions(raw);
+    const model = modelConfiguration(raw);
+    const generatedDataCache = generatedDataCacheConfiguration(raw);
     return Object.freeze({
         enabled: true,
-        generation: Object.freeze({
-            ...(rowsPerEntity === undefined ? {} : { rowsPerEntity }),
-            ...(seed === undefined ? {} : { seed }),
-            ...(sftTimeoutMs === undefined ? {} : { sftTimeoutMs }),
-            ...(locale === undefined ? {} : { locale }),
-            ...(mode === undefined ? {} : { mode: mode as MockDataGeneratorOptions['mode'] })
-        }),
-        ...(manifestPath
-            ? {
-                  model: Object.freeze({
-                      manifestPath,
-                      ...(cacheDirectory ? { cacheDirectory } : {}),
-                      offline: raw.modelOffline === true
-                  })
-              }
-            : {})
+        generation,
+        ...(model ? { model } : {}),
+        ...(generatedDataCache ? { generatedDataCache } : {})
     });
 }

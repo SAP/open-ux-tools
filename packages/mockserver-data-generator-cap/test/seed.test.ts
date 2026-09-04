@@ -155,6 +155,34 @@ describe('native CAP database seeding', () => {
         expect(inserted).toEqual(['demo.Author', 'demo.Book']);
     });
 
+    test('does not invoke generation when every persistence entity already contains data', async () => {
+        const transaction = {
+            run: jest.fn(async (query: Record<string, unknown>) => {
+                if (query.kind === 'select') {
+                    return [{ ID: `${String(query.entity)}-1` }];
+                }
+                return undefined;
+            })
+        };
+        const database = {
+            tx: jest.fn(async (handler: (tx: typeof transaction) => Promise<void>) => handler(transaction))
+        };
+        const generate = jest.fn();
+
+        const result = await seedCapDatabase({
+            csn,
+            database,
+            queryLanguage: queryLanguage(),
+            generate,
+            options: {},
+            runtime: {}
+        });
+
+        expect(result).toEqual({ inserted: [], preserved: ['demo.Author', 'demo.Book'] });
+        expect(generate).not.toHaveBeenCalled();
+        expect(transaction.run).not.toHaveBeenCalledWith(expect.objectContaining({ kind: 'insert' }));
+    });
+
     test('seeds a persistence entity when a service projection has the same local name', async () => {
         const { generateService } = await import('@sap-ux/mockserver-data-generator');
         const collisionCsn = {
