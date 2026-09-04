@@ -136,7 +136,7 @@ function valueFor(
         return property.enumValues[rowIndex % property.enumValues.length];
     }
     const governedValue = semanticValue(role, property, rowContext, hash);
-    if (governedValue !== undefined) {
+    if (governedValue !== undefined && propertyValueIsValid(property, governedValue)) {
         return governedValue;
     }
     switch (property.primitiveType) {

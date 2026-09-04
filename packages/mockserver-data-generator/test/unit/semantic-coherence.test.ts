@@ -18,6 +18,7 @@ const request: MockDataServiceRequest = {
                             <Property Name="FullName" Type="Edm.String" MaxLength="90" />
                             <Property Name="EmailAddress" Type="Edm.String" MaxLength="120" />
                             <Property Name="Amount" Type="Edm.Decimal" Precision="12" Scale="2" />
+                            <Property Name="NetValue" Type="Edm.Decimal" Precision="6" Scale="3" />
                             <Property Name="CurrencyCode" Type="Edm.String" MaxLength="3" />
                             <Property Name="Quantity" Type="Edm.Decimal" Precision="10" Scale="2" />
                             <Property Name="UnitOfMeasure" Type="Edm.String" MaxLength="3" />
@@ -44,6 +45,8 @@ describe('deterministic semantic tier', () => {
                 `${String(row.FirstName).toLowerCase()}.${String(row.LastName).toLowerCase()}@example.com`
             );
             expect(row.Amount).toEqual(expect.any(Number));
+            expect(row.NetValue).toEqual(expect.any(Number));
+            expect(Math.round(Math.abs(Number(row.NetValue)) * 1_000).toString().length).toBeLessThanOrEqual(6);
             expect(row.CurrencyCode).toMatch(/^(EUR|USD|GBP|JPY|CHF)$/);
             expect(row.Quantity).toEqual(expect.any(Number));
             expect(row.UnitOfMeasure).toMatch(/^(EA|KG|L|H|PC)$/);
