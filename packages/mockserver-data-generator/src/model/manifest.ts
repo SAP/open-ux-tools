@@ -39,6 +39,7 @@ export interface ModelManifest {
 }
 
 type UnknownRecord = Record<string, unknown>;
+const MAX_DISTRIBUTED_MODEL_BUNDLE_BYTES = 200 * 1024 * 1024;
 
 function record(value: unknown, label: string): UnknownRecord {
     if (value === null || typeof value !== 'object' || Array.isArray(value)) {
@@ -214,11 +215,23 @@ export function parseModelManifest(value: unknown): ModelManifest {
     if (new Set(filePaths).size !== filePaths.length) {
         throw new TypeError('model manifest contains a duplicate file path');
     }
+    const lifecycle = oneOf(input.lifecycle, ['development', 'preview', 'stable'] as const, 'model lifecycle');
+    if (lifecycle !== 'development') {
+        let bundleBytes = 0;
+        for (const { files } of components) {
+            for (const { bytes } of files) {
+                bundleBytes += bytes;
+                if (bundleBytes > MAX_DISTRIBUTED_MODEL_BUNDLE_BYTES) {
+                    throw new TypeError('preview and stable model bundles must not exceed 200 MiB');
+                }
+            }
+        }
+    }
     return Object.freeze({
         formatVersion: 1,
         bundleId: identifier(input.bundleId, 'model manifest bundleId'),
         revision: immutableRevision(input.revision),
-        lifecycle: oneOf(input.lifecycle, ['development', 'preview', 'stable'] as const, 'model lifecycle'),
+        lifecycle,
         components: Object.freeze(components)
     });
 }

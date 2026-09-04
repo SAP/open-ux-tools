@@ -99,4 +99,21 @@ describe('model manifest', () => {
         duplicatePath.components[1].files[0].path = duplicatePath.components[0].files[0].path;
         expect(() => parseModelManifest(duplicatePath)).toThrow(/duplicate file path/i);
     });
+
+    test('caps preview and stable bundle bytes while leaving development experiments explicit', () => {
+        const maximumDistributedBytes = 200 * 1024 * 1024;
+        const atLimit: any = validManifest();
+        atLimit.components[0].files[0].bytes = maximumDistributedBytes - 456;
+        expect(() => parseModelManifest(atLimit)).not.toThrow();
+
+        const aboveLimit: any = validManifest();
+        aboveLimit.components[0].files[0].bytes = maximumDistributedBytes - 455;
+        expect(() => parseModelManifest(aboveLimit)).toThrow(/200 MiB/);
+
+        aboveLimit.lifecycle = 'stable';
+        expect(() => parseModelManifest(aboveLimit)).toThrow(/200 MiB/);
+
+        aboveLimit.lifecycle = 'development';
+        expect(() => parseModelManifest(aboveLimit)).not.toThrow();
+    });
 });
