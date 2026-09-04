@@ -363,6 +363,33 @@ The current handoff archive is
 Its SHA-256 must be verified before extraction. It supersedes the
 metadata-boundary archive for new local or BAS functional testing.
 
+## Current reproducible archive canary
+
+After package-manifest ordering, staging timestamps, and the gzip header were
+made deterministic, two complete sequential builds from the same clean source
+commits produced byte-identical development-kit archives. The exact handoff
+archive then completed separate deterministic OData V4 and retained-model OData
+V2 installs, HTTP canaries, and restores.
+
+- Dev-kit fingerprint: `8b62350555c8503c3961afe0d50701fdfb49f58de1be0a8630e20fcf63f8a083`
+- Archive SHA-256: `9ccf05dce06a920358966ac82992533b2f0ec6e2d2fa506d3be99bbbf82027a0`
+- Archive size: 544,698 bytes; 10 entries
+- Reproducibility verification: two clean-source builds in separate output directories had identical fingerprints, package hashes, archive sizes, archive SHA-256 values, and binary contents
+- Generator tarball: 76,790 bytes, SHA-256 `5f3717ce7dcd006fabcb95b8add9ffe9b60cef7ec4b4127faa95d1dc135fea55`
+- Core tarball: 157,296 bytes, SHA-256 `24877137509f13f4792931444b210313be4bbf273ef1c8fa5655a1e1cebc3251`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `06612eda2a266779a4510ce211c0610d88e71b69` and clean `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`; reproducible
+- Deterministic verification: a real 614-package install produced exactly one `sap-fe-mockserver`; the provider executed; OData V4 `$metadata` passed; `Products?$top=1` returned one row; the verified generated-data cache path took 16.990 ms and the host provider took 17.777 ms
+- Learned verification: a real 635-package install used exact `onnxruntime-node@1.24.3`; retained manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`; both classifier and SFT were ready; `modelVerified: true`; `providerExecuted: true`; `learnedRuntimeVerified: true`; OData V2 `$metadata` passed; and `Products?$top=1` returned one row
+- Learned timing: 1,378.088 ms runtime initialization; 2,547.669 ms whole-service generation; 2,548.433 ms host provider duration
+- Restore verification: both application fixtures matched their original source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-8b62350555c8503c.tgz`.
+Its SHA-256 must be verified before extraction. It supersedes the
+generated-result-boundary archive for new local or BAS functional testing; the
+earlier archives remain historical evidence.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
