@@ -757,6 +757,63 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('mockDataGenerator configuration', () => {
+        const provider = {
+            name: '@sap-ux/mockserver-data-generator/fe-mockserver',
+            timeoutMs: 30_000,
+            options: { seed: 42, mode: 'auto' }
+        };
+
+        test('adds and updates the global provider without changing sibling configuration', async () => {
+            ui5Config = await UI5Config.newInstance(`server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        # preserve this service comment
+        services: []
+        annotations: []
+`);
+
+            ui5Config.setMockDataGenerator(provider);
+            ui5Config.setMockDataGenerator({ ...provider, options: { seed: 7 } });
+
+            const middleware = ui5Config.findCustomMiddleware('sap-fe-mockserver');
+            expect(middleware?.configuration).toEqual({
+                mountPath: '/',
+                services: [],
+                annotations: [],
+                mockDataGenerator: { ...provider, options: { seed: 7 } }
+            });
+            expect(ui5Config.toString()).toContain('# preserve this service comment');
+        });
+
+        test('sets and removes a service override independently from the global provider', () => {
+            ui5Config.addMockServerMiddleware(
+                '/',
+                '/webapp',
+                [{ serviceName: 'main', servicePath: '/sap/opu/odata/main' }],
+                []
+            );
+            ui5Config.setMockDataGenerator(provider);
+            ui5Config.setMockDataGenerator(false, '/sap/opu/odata/main');
+
+            let configuration = ui5Config.findCustomMiddleware('sap-fe-mockserver')?.configuration as any;
+            expect(configuration.mockDataGenerator).toEqual(provider);
+            expect(configuration.services[0].mockDataGenerator).toBe(false);
+
+            ui5Config.removeMockDataGenerator('/sap/opu/odata/main');
+            configuration = ui5Config.findCustomMiddleware('sap-fe-mockserver')?.configuration as any;
+            expect(configuration.mockDataGenerator).toEqual(provider);
+            expect(configuration.services[0].mockDataGenerator).toBeUndefined();
+
+            ui5Config.removeMockDataGenerator();
+            configuration = ui5Config.findCustomMiddleware('sap-fe-mockserver')?.configuration as any;
+            expect(configuration.mockDataGenerator).toBeUndefined();
+        });
+    });
+
     test('getAppReloadMiddlewareConfig', () => {
         ui5Config.addFioriToolsAppReloadMiddleware();
         expect(ui5Config.toString()).toMatchSnapshot();

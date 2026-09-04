@@ -1,0 +1,4 @@
+specVersion: '4.0'
+metadata:
+    name: mockgen.dev.kit.fiori.v2
+type: application

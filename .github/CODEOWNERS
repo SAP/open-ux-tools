@@ -62,6 +62,8 @@
 /packages/ui-service-sub-generator/            @SAP/ux-tools-app-generators-and-deploy
 /packages/repo-app-import-sub-generator/       @SAP/ux-tools-app-generators-and-deploy
 /packages/mockserver-config-writer/            @SAP/ux-tools-app-generators-and-deploy
+/packages/mockserver-data-generator/           @SAP/ux-tools-app-generators-and-deploy
+/packages/mockserver-data-generator-cap/       @SAP/ux-tools-app-generators-and-deploy
 /packages/inquirer-common/                     @SAP/ux-tools-app-generators-and-deploy
 /packages/launch-config/                       @SAP/ux-tools-app-generators-and-deploy
 /packages/cap-config-writer/                   @SAP/ux-tools-app-generators-and-deploy

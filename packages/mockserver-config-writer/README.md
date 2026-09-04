@@ -29,6 +29,30 @@ const fs = await generateMockserverConfig(
 fs.commit();
 ```
 
+To opt an application into context-aware data generation through the same standard
+mockserver and `start-mock` command, pass `mockDataGenerator`:
+
+```typescript
+const fs = await generateMockserverConfig(basePath, {
+    webappPath: join(basePath, 'webapp'),
+    ui5MockYamlConfig: {
+        mockDataGenerator: {
+            version: '1',
+            options: {
+                seed: 42,
+                rowsPerEntity: 10,
+                mode: 'auto'
+            }
+        }
+    }
+});
+```
+
+This installs `@sap-ux/mockserver-data-generator` as a development dependency
+and configures its `/fe-mockserver` export under the existing
+`sap-fe-mockserver` middleware. It does not add another middleware, YAML file,
+or start command.
+
 See more complex example in [`/test/unit`](./test/unit)
 
 ## Keywords

@@ -71,6 +71,26 @@ describe('Test enhanceYaml()', () => {
         ]);
     });
 
+    test('Configure the mock data generator on the existing standard middleware', async () => {
+        const fs = getFs({ [manifestJsonPath]: mockManifestJson });
+        await enhanceYaml(fs, basePath, webappPath, {
+            mockDataGenerator: {
+                providerName: '@example/generator/fe-mockserver',
+                timeoutMs: 20_000,
+                options: { seed: 42 }
+            }
+        });
+
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const middleware = ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        expect(middleware?.configuration.mockDataGenerator).toEqual({
+            name: '@example/generator/fe-mockserver',
+            timeoutMs: 20_000,
+            options: { seed: 42 }
+        });
+        expect(fs.read(ui5MockYamlPath).match(/name: sap-fe-mockserver/g)).toHaveLength(1);
+    });
+
     test('Create new ui5-mock.yaml with services and annotations from mock manifest.json in custom webapp', async () => {
         const customWebappPath = join(basePath, 'custom_webapp');
         const customManifestJsonPath = join(customWebappPath, 'manifest.json');

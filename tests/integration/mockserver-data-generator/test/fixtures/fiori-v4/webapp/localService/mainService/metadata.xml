@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="MockGen.Sample" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Product">
+                <Key>
+                    <PropertyRef Name="ID" />
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="80" />
+                <Property Name="SupplierEmail" Type="Edm.String" MaxLength="120" />
+                <Property Name="Price" Type="Edm.Decimal" Precision="12" Scale="2" Nullable="false" />
+                <Property Name="IsActive" Type="Edm.Boolean" Nullable="false" />
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Products" EntityType="MockGen.Sample.Product" />
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -13,12 +13,14 @@ import { t } from '../index.js';
  * @param params - optional parameters used to fill default values
  * @param params.webappPath - optional path to webapp folder, where manifest is
  * @param params.askForOverwrite - optional, whether to overwrite services in mockserver config
+ * @param params.askForMockDataGenerator - optional, whether to ask for realistic mock data generation
  * @param params.fs - optional memfs editor instance
  * @returns - array of questions that serves as input for prompt module
  */
 export function getMockserverConfigQuestions(params?: {
     webappPath?: string;
     askForOverwrite?: boolean;
+    askForMockDataGenerator?: boolean;
     fs?: Editor;
 }): PromptObject[] {
     const prompts: PromptObject[] = [];
@@ -54,6 +56,14 @@ export function getMockserverConfigQuestions(params?: {
             message: t('questions.overwrite')
         };
         prompts.push(questionOverwrite as PromptObject);
+    }
+    if (params?.askForMockDataGenerator) {
+        prompts.push({
+            type: 'confirm',
+            name: 'mockDataGenerator',
+            message: t('questions.mockDataGenerator'),
+            initial: false
+        });
     }
     return prompts;
 }

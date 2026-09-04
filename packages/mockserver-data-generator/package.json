@@ -1,0 +1,59 @@
+{
+    "name": "@sap-ux/mockserver-data-generator",
+    "description": "Generate context-aware, structurally valid mock data for SAP services",
+    "version": "0.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/mockserver-data-generator"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues"
+    },
+    "type": "module",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./fe-mockserver": {
+            "types": "./dist/fe-mockserver.d.cts",
+            "require": "./dist/fe-mockserver.cjs"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,md,ts}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "README.md",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "fast-xml-parser": "5.10.1"
+    },
+    "peerDependencies": {
+        "onnxruntime-node": ">=1.24.3 <1.25.0"
+    },
+    "peerDependenciesMeta": {
+        "onnxruntime-node": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "onnxruntime-node": "1.24.3"
+    },
+    "engines": {
+        "node": ">=22.x"
+    }
+}

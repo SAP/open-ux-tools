@@ -69,7 +69,10 @@
         "run:pretty-quick": "pretty-quick --ignore-path .prettierignore",
         "run:pretty": "prettier --write .",
         "graph-deps": "nx graph",
-        "clean:nx:cache": "nx reset"
+        "clean:nx:cache": "nx reset",
+        "mockserver-data-generator:dev-kit": "node scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs",
+        "mockserver-data-generator:dev-install": "node scripts/mockserver-data-generator-dev-kit/dev-install.mjs",
+        "mockserver-data-generator:evaluate-models": "node scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs"
     },
     "engines": {
         "npm": "please-use-pnpm",

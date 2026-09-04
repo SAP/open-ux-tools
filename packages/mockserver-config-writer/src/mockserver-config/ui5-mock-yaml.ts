@@ -4,7 +4,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig, MockserverConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
 import { DirName, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
-import type { Ui5MockYamlConfig } from '../types/index.js';
+import type { MockDataGeneratorWriterConfig, Ui5MockYamlConfig } from '../types/index.js';
 import { getODataSources } from '../app-info.js';
 
 /**
@@ -91,8 +91,26 @@ export async function enhanceYaml(
                   annotationsConfig
               );
     }
+    if (config?.mockDataGenerator) {
+        mockConfig.setMockDataGenerator(toMockDataGeneratorSetting(config.mockDataGenerator));
+    }
     const yaml = mockConfig.toString();
     fs.write(ui5MockYamlPath, yaml);
+}
+
+/**
+ * Convert writer options to the public standard mockserver provider setting.
+ *
+ * @param config - writer configuration
+ * @returns provider setting for ui5-mock.yaml
+ */
+function toMockDataGeneratorSetting(config: MockDataGeneratorWriterConfig) {
+    const packageName = config.packageName ?? '@sap-ux/mockserver-data-generator';
+    return {
+        name: config.providerName ?? `${packageName}/fe-mockserver`,
+        ...(config.timeoutMs !== undefined && { timeoutMs: config.timeoutMs }),
+        ...(config.options !== undefined && { options: config.options })
+    };
 }
 
 /**

@@ -144,4 +144,16 @@ describe('Test function getMockserverConfigQuestions()', () => {
             }
         ]);
     });
+
+    test('Optionally asks whether to enable the mock data generator', () => {
+        expect(getMockserverConfigQuestions({ askForMockDataGenerator: true })).toEqual([
+            { name: 'path', type: 'text', message: t('questions.pathToMock') },
+            {
+                type: 'confirm',
+                name: 'mockDataGenerator',
+                message: t('questions.mockDataGenerator'),
+                initial: false
+            }
+        ]);
+    });
 });

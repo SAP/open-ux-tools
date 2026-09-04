@@ -1,6 +1,7 @@
 {
     "questions": {
         "pathToMock": "Path to mocked service",
-        "overwrite": "Overwrite services"
+        "overwrite": "Overwrite services",
+        "mockDataGenerator": "Generate context-aware mock data with MockGen"
     }
 }

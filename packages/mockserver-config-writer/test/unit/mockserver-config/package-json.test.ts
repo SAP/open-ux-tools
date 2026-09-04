@@ -88,6 +88,47 @@ describe('Test for mockserver dependencies in package.json', () => {
         expect(packageJson.ui5?.dependencies).toEqual(['dummy-mockserver']);
     });
 
+    test('Add a custom mock data generator only to devDependencies', () => {
+        const fs = getMockFsPackageJson();
+        enhancePackageJson(fs, basePath, undefined, {
+            packageName: '@example/mock-data-generator',
+            version: '1.2.3'
+        });
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        expect(packageJson.devDependencies).toEqual({
+            '@sap-ux/ui5-middleware-fe-mockserver': '^2.5.0',
+            '@example/mock-data-generator': '1.2.3'
+        });
+        expect(packageJson.ui5?.dependencies).toEqual(['@sap-ux/ui5-middleware-fe-mockserver']);
+    });
+
+    test('Add the first releasable mock data generator version by default', () => {
+        const fs = getMockFsPackageJson();
+        enhancePackageJson(fs, basePath, undefined, {});
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBe('^0.1.0');
+        expect(packageJson.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver']).toBe('^2.5.0');
+    });
+
+    test.each(['2', '^2.4.0', '2.4.16', '^3.0.0'])(
+        'Reject incompatible mockserver version %s when enabling data generation',
+        (mockserverVersion) => {
+            const fs = getMockFsPackageJson();
+            expect(() =>
+                enhancePackageJson(fs, basePath, { mockserverVersion }, { packageName: '@example/generator' })
+            ).toThrow(/requires @sap-ux\/ui5-middleware-fe-mockserver \^2\.5\.0/);
+        }
+    );
+
+    test('Accept an explicit compatible mockserver version when enabling data generation', () => {
+        const fs = getMockFsPackageJson();
+        enhancePackageJson(fs, basePath, { mockserverVersion: '~2.6.0' }, { packageName: '@example/generator' });
+        expect((fs.readJSON(packageJsonPath) as Package).devDependencies).toEqual({
+            '@sap-ux/ui5-middleware-fe-mockserver': '~2.6.0',
+            '@example/generator': '^0.1.0'
+        });
+    });
+
     test('Add mockserver dependencies while removing legacy dependencies in package.json', () => {
         const fs = getMockFsPackageJson(
             {
@@ -160,6 +201,7 @@ describe('Remove mockserver from package.json', () => {
             devDependencies: {
                 '@sap/ux-ui5-fe-mockserver-middleware': '3.2.1',
                 '@sap-ux/ui5-middleware-fe-mockserver': '1.2.3',
+                '@sap-ux/mockserver-data-generator': '0.1.0',
                 'other-dep': '1.1.1'
             },
             ui5: {

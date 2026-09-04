@@ -1,0 +1,51 @@
+{
+    "name": "@sap-ux/mockserver-data-generator-cap",
+    "description": "Seed missing CAP development data with the SAP UX mockserver data generator",
+    "version": "0.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/mockserver-data-generator-cap"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,md,ts}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "README.md",
+        "cds-plugin.js",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/mockserver-data-generator": "workspace:*"
+    },
+    "peerDependencies": {
+        "@sap/cds": ">=9.8 <11"
+    },
+    "engines": {
+        "node": ">=22.x"
+    },
+    "devDependencies": {
+        "@cap-js/sqlite": "3.0.2",
+        "@sap/cds": "10.0.6"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "name": "@sap-ux-private/mockserver-data-generator-integration-tests",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo test-output",
+        "format": "prettier --write '**/*.{js,json,md,mjs,ts}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test:integration": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --runInBand"
+    },
+    "devDependencies": {
+        "@jest/globals": "30.4.1"
+    },
+    "engines": {
+        "node": ">=22.22.2"
+    }
+}

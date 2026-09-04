@@ -1,0 +1,14 @@
+specVersion: '4.0'
+metadata:
+    name: mockgen.dev.kit.fiori.cds
+type: application
+server:
+    customMiddleware:
+        - name: sap-fe-mockserver
+          beforeMiddleware: compression
+          configuration:
+              metadataProcessor:
+                  name: '@sap-ux/fe-mockserver-plugin-cds'
+              services:
+                  - urlPath: /sap/opu/odata4/mockgen
+                    metadataPath: ./webapp/localService/mainService/metadata.cds

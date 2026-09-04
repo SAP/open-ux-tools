@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx
+    Version="1.0"
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            Namespace="MockGen.Sample"
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm"
+            xmlns:sap="http://www.sap.com/Protocols/SAPData"
+        >
+            <EntityType Name="Product">
+                <Key>
+                    <PropertyRef Name="ID" />
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="80" sap:label="Product Name" />
+                <Property Name="SupplierEmail" Type="Edm.String" MaxLength="120" sap:semantics="email" />
+                <Property Name="Price" Type="Edm.Decimal" Precision="12" Scale="2" Nullable="false" />
+                <Property Name="CurrencyCode" Type="Edm.String" MaxLength="3" sap:semantics="currency-code" />
+                <Property Name="IsActive" Type="Edm.Boolean" Nullable="false" />
+            </EntityType>
+            <EntityContainer Name="Container" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="Products" EntityType="MockGen.Sample.Product" />
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

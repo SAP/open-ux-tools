@@ -98,6 +98,7 @@ Example:
 
 Options:
 - `-i, --interactive` - Ask for config options or otherwise, use the default options.
+- `--data-generator` - Generate context-aware mock data with MockGen through the standard mockserver.
 - `-n, --skip-install` - Skip the `npm install` step.
 - `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.

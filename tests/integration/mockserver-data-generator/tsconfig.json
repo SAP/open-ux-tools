@@ -1,0 +1,14 @@
+{
+    "extends": "../../../tsconfig.json",
+    "include": [
+        "src/**/*.ts",
+        "../../../scripts/mockserver-data-generator-dev-kit/**/*.mjs",
+        "../../../scripts/mockserver-data-generator-evaluation/**/*.mjs"
+    ],
+    "compilerOptions": {
+        "rootDir": "../../..",
+        "outDir": "dist",
+        "allowJs": true,
+        "noEmit": true
+    }
+}

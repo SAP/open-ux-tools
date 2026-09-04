@@ -99,8 +99,23 @@ describe('Test command add mockserver-config', () => {
             ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'],
             {
                 cwd: appRoot,
-                logger: undefined
+                logger: loggerMock
             }
+        );
+    });
+
+    test('Test create-fiori add mockserver-config <appRoot> --data-generator', async () => {
+        const command = new Command('add');
+        addAddMockserverConfigCommand(command);
+        await command.parseAsync(getArgv(['mockserver-config', appRoot, '--data-generator']));
+
+        expect(mockGenerateMockserverConfig).toHaveBeenCalledWith(appRoot, {
+            webappPath: join(appRoot, 'webapp'),
+            ui5MockYamlConfig: { mockDataGenerator: {} }
+        });
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(
+            ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver', '@sap-ux/mockserver-data-generator'],
+            { cwd: appRoot, logger: loggerMock }
         );
     });
 
@@ -144,9 +159,39 @@ describe('Test command add mockserver-config', () => {
         expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(mockPrompt).toHaveBeenCalledWith([{ webappPath: join(appRoot, 'webapp'), askForOverwrite: true }]);
+        expect(mockGetMockserverConfigQuestions).toHaveBeenCalledWith({
+            webappPath: join(appRoot, 'webapp'),
+            askForOverwrite: true,
+            askForMockDataGenerator: true
+        });
         expect(fsMock.commit).toHaveBeenCalled();
         expect(mockExecNpmCommand).toHaveBeenCalled();
+    });
+
+    test('Test interactive data-generator opt-in', async () => {
+        mockGetMockserverConfigQuestions.mockReturnValue([{ name: 'mockDataGenerator', type: 'confirm' }]);
+        mockPrompt.mockResolvedValue({ mockDataGenerator: true });
+
+        const command = new Command('add');
+        addAddMockserverConfigCommand(command);
+        await command.parseAsync(getArgv(['mockserver-config', appRoot, '--interactive']));
+
+        expect(mockGenerateMockserverConfig).toHaveBeenCalledWith(appRoot, {
+            webappPath: join(appRoot, 'webapp'),
+            ui5MockYamlConfig: { mockDataGenerator: {} }
+        });
+    });
+
+    test('Reports an awaited install failure', async () => {
+        mockExecNpmCommand.mockRejectedValueOnce(new Error('registry unavailable'));
+
+        const command = new Command('add');
+        addAddMockserverConfigCommand(command);
+        await command.parseAsync(getArgv(['mockserver-config', appRoot, '--data-generator']));
+
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            "Error while executing add mockserver-config 'registry unavailable'"
+        );
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --interactive with overwrite option', async () => {

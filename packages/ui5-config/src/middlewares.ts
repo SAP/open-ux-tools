@@ -8,7 +8,8 @@ import type {
     FioriToolsProxyConfigUI5,
     FioriPreviewConfig,
     DataSourceConfig,
-    MockserverService
+    MockserverService,
+    MockDataGeneratorSetting
 } from './types/index.js';
 import type { NodeComment } from '@sap-ux/yaml';
 
@@ -161,7 +162,8 @@ export const getMockServerMiddlewareConfig = (
     basePath: string,
     webappPath: string,
     dataSourcesConfig: DataSourceConfig[],
-    annotationsConfig: MockserverConfig['annotations']
+    annotationsConfig: MockserverConfig['annotations'],
+    mockDataGenerator?: MockDataGeneratorSetting
 ): CustomMiddleware<MockserverConfig> => {
     const services: MockserverService[] = [];
 
@@ -188,7 +190,8 @@ export const getMockServerMiddlewareConfig = (
         configuration: {
             mountPath: '/',
             services,
-            annotations: annotationsConfig
+            annotations: annotationsConfig,
+            ...(mockDataGenerator !== undefined && { mockDataGenerator })
         }
     };
 };

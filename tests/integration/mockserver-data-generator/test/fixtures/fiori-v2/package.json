@@ -1,0 +1,12 @@
+{
+    "name": "mockgen-dev-kit-fiori-v2",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "fiori run"
+    },
+    "devDependencies": {
+        "@sap/ux-ui5-tooling": "1",
+        "@ui5/cli": "4.0.57"
+    }
+}
