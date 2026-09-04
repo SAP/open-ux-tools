@@ -7,6 +7,7 @@ import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { artifactRecord } from './lib/evaluation.mjs';
+import { loadVerifiedProductionCandidate, parseRealismCampaignArguments } from './lib/realism-candidate.mjs';
 import { compileRealismReviews, REALISM_DOMAINS, sealRealismEvidence } from './lib/realism.mjs';
 
 const SCRIPT_ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
@@ -15,32 +16,23 @@ const PACKAGE_ROOT = join(REPOSITORY_ROOT, 'packages/mockserver-data-generator')
 const GENERATOR_ENTRY = join(PACKAGE_ROOT, 'dist/index.js');
 const EDMX_ENTRY = join(PACKAGE_ROOT, 'dist/schema/edmx.js');
 const CSN_ENTRY = join(PACKAGE_ROOT, 'dist/schema/csn.js');
-const DEFAULT_SEED = 113;
 
 function usage() {
     return [
         'Export a blinded production-candidate realism packet:',
         '  node scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs --export \\',
-        '    --pilot-root <path> --out <evidence.json> --campaign-manifest-out <manifest.json>',
+        '    --pilot-root <path> --model-manifest <manifest.json> --model-cache <cache> \\',
+        '    --out <evidence.json> --campaign-manifest-out <manifest.json>',
         '',
         'Compile two independent provider artifacts:',
         '  node scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs --compile \\',
         '    --evidence <evidence.json> --provider-artifact <a.json> --provider-artifact <b.json> \\',
         '    --pilot-root <path> --out <consensus.json>',
         '',
-        'The pilot root supplies the retained selection manifest, review prompt, output schema,',
-        'classifier, and INT8 SFT artifacts. Generated values and provider outputs must remain',
-        'outside open-ux-tools.'
+        'The pilot root supplies only the retained selection manifest, metadata fixtures, review',
+        'prompt, and output schema. Export uses the checksum-verified production manifest/cache.',
+        'Generated values and provider outputs must remain outside open-ux-tools.'
     ].join('\n');
-}
-
-function argument(args, name) {
-    const index = args.indexOf(name);
-    return index < 0 ? undefined : args[index + 1];
-}
-
-function repeatedArguments(args, name) {
-    return args.flatMap((value, index) => (value === name && args[index + 1] ? [args[index + 1]] : []));
 }
 
 function canonicalJson(value) {
@@ -228,69 +220,7 @@ function pilotPaths(pilotRoot) {
     return {
         selectionManifest: join(pilotRoot, 'benchmark/ml-native/llm-inspection-manifest.json'),
         prompt: join(pilotRoot, 'training/review/generation-inspection-prompt.md'),
-        schema: join(pilotRoot, 'training/review/generation-inspection-output.schema.json'),
-        classifierModel: join(pilotRoot, 'packages/mockgen-models/retrieval-model/model_int8.onnx'),
-        classifierVocabulary: join(pilotRoot, 'packages/mockgen-models/retrieval-model/vocab.txt'),
-        classifierHead: join(pilotRoot, 'packages/mockgen-core/models/embedding-classifier-head.json'),
-        sftModel: join(pilotRoot, 'var/sft/onnx-export/model_int8.onnx'),
-        sftTokenizer: join(pilotRoot, 'var/sft/onnx-export/tokenizer.json')
-    };
-}
-
-async function createPilotRuntime(generator, paths) {
-    const classifierArtifacts = [
-        artifactRecord('classifier-encoder-int8', paths.classifierModel),
-        artifactRecord('classifier-head', paths.classifierHead),
-        artifactRecord('classifier-vocabulary', paths.classifierVocabulary)
-    ];
-    const sftArtifacts = [
-        artifactRecord('sft-generator-int8', paths.sftModel),
-        artifactRecord('sft-tokenizer', paths.sftTokenizer)
-    ];
-    const classifierFingerprint = fingerprint(classifierArtifacts);
-    const sftFingerprint = fingerprint(sftArtifacts);
-    const head = JSON.parse(await readRegularFile(paths.classifierHead, 'classifier head'));
-    const classifierBackend = await generator.loadOnnxBackend();
-    const embedder = await generator.createMiniLmTextEmbedder({
-        modelPath: paths.classifierModel,
-        vocabularyPath: paths.classifierVocabulary,
-        hiddenSize: head.dim,
-        backend: classifierBackend
-    });
-    const classifier = generator.createEmbeddingSemanticClassifier({
-        fingerprint: classifierFingerprint,
-        head,
-        embedder
-    });
-    const tokenizer = JSON.parse(await readRegularFile(paths.sftTokenizer, 'SFT tokenizer'));
-    const causalBackend = await generator.loadCausalOnnxBackend();
-    const session = await generator.createCausalOnnxSession({
-        modelPath: paths.sftModel,
-        config: { numLayers: 30, numKeyValueHeads: 3, headDimension: 64 },
-        backend: causalBackend
-    });
-    const sft = generator.createPilotSftGenerator({
-        fingerprint: sftFingerprint,
-        textGenerator: generator.createCausalTextGenerator({
-            tokenizer: generator.createSmolLm2Tokenizer(tokenizer),
-            session
-        }),
-        sampling: {
-            temperature: 0.6,
-            topP: 0.9,
-            repetitionPenalty: 1.15,
-            noRepeatNgramSize: 4,
-            maxNewTokens: 400
-        }
-    });
-    return {
-        runtime: Object.freeze({ classifier, sft }),
-        classifierFingerprint,
-        sftFingerprint,
-        artifacts: [...classifierArtifacts, ...sftArtifacts],
-        dispose: async () => {
-            await Promise.allSettled([embedder.dispose(), sft.dispose?.()]);
-        }
+        schema: join(pilotRoot, 'training/review/generation-inspection-output.schema.json')
     };
 }
 
@@ -329,7 +259,12 @@ async function exportCampaign(options) {
         import(pathToFileURL(EDMX_ENTRY).href),
         import(pathToFileURL(CSN_ENTRY).href)
     ]);
-    const learned = await createPilotRuntime(generator, paths);
+    const candidate = await loadVerifiedProductionCandidate({
+        generator,
+        manifestPath: options.modelManifest,
+        cacheRoot: options.modelCache
+    });
+    const { learned } = candidate;
     const generationOptions = Object.freeze({
         rowsPerEntity: 2,
         seed: options.seed,
@@ -390,25 +325,28 @@ async function exportCampaign(options) {
         await learned.dispose();
     }
     const require = createRequire(pathToFileURL(GENERATOR_ENTRY));
-    const onnxRuntimePackage = require.resolve('onnxruntime-node/package.json');
+    const runtimeNames = [...new Set(candidate.manifest.components.map(({ runtime }) => runtime.package))];
+    if (runtimeNames.length !== 1) {
+        throw new TypeError('Realism export requires one shared learned-runtime package');
+    }
+    const runtimeName = runtimeNames[0];
+    const onnxRuntimePackage = require.resolve(`${runtimeName}/package.json`);
     const onnxRuntime = JSON.parse(await readRegularFile(onnxRuntimePackage, 'ONNX Runtime package manifest'));
     const packageArtifact = artifactRecord('mockserver-data-generator-dist', GENERATOR_ENTRY);
     const bindings = {
-        version: 1,
+        version: 2,
         kind: 'mockserver-data-generator-realism-candidate-bindings',
         ...packageBinding(),
         packageArtifact,
         runtime: {
             node: process.versions.node,
-            onnxRuntime: onnxRuntime.version,
+            package: runtimeName,
+            version: onnxRuntime.version,
+            packageManifest: artifactRecord('learned-runtime-package-manifest', onnxRuntimePackage),
             platform: process.platform,
             architecture: process.arch
         },
-        modelComponents: {
-            classifier: learned.classifierFingerprint,
-            sft: learned.sftFingerprint
-        },
-        modelArtifacts: learned.artifacts,
+        model: candidate.binding,
         generationOptions,
         selectionManifest: {
             filename: basename(paths.selectionManifest),
@@ -483,29 +421,12 @@ async function main() {
         process.stdout.write(`${usage()}\n`);
         return;
     }
-    const pilotRoot = argument(args, '--pilot-root');
-    const output = argument(args, '--out');
-    if (!pilotRoot || !output) {
-        throw new TypeError('--pilot-root and --out are required');
-    }
-    if (args.includes('--export') === args.includes('--compile')) {
-        throw new TypeError('Choose exactly one of --export or --compile');
-    }
-    if (args.includes('--export')) {
-        const manifest = argument(args, '--campaign-manifest-out');
-        const seed = Number.parseInt(argument(args, '--seed') ?? String(DEFAULT_SEED), 10);
-        if (!manifest || !Number.isSafeInteger(seed)) {
-            throw new TypeError('--campaign-manifest-out and a safe integer --seed are required for export');
-        }
-        const result = await exportCampaign({
-            pilotRoot: resolve(pilotRoot),
-            output: resolve(output),
-            manifest: resolve(manifest),
-            seed
-        });
+    const options = parseRealismCampaignArguments(args);
+    if (options.mode === 'export') {
+        const result = await exportCampaign(options);
         process.stdout.write(
             `${JSON.stringify({
-                output: resolve(output),
+                output: options.output,
                 fields: result.evidence.fields.length,
                 evidenceFingerprint: result.evidence.fingerprint,
                 candidateFingerprint: result.campaign.candidateFingerprint
@@ -513,23 +434,15 @@ async function main() {
         );
         return;
     }
-    const evidence = argument(args, '--evidence');
-    const providers = repeatedArguments(args, '--provider-artifact');
-    if (!evidence || providers.length !== 2) {
-        throw new TypeError('--evidence and exactly two --provider-artifact values are required for compile');
-    }
-    const report = await compileCampaign({
-        pilotRoot: resolve(pilotRoot),
-        evidence: resolve(evidence),
-        providers: providers.map((path) => resolve(path)),
-        output: resolve(output)
-    });
+    const report = await compileCampaign(options);
     process.stdout.write(
-        `${JSON.stringify({ output: resolve(output), passed: report.passed, realisticRate: report.realisticRate })}\n`
+        `${JSON.stringify({ output: options.output, passed: report.passed, realisticRate: report.realisticRate })}\n`
     );
 }
 
-main().catch((error) => {
-    process.stderr.write(`${error instanceof Error ? (error.stack ?? error.message) : String(error)}\n`);
-    process.exitCode = 1;
-});
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    main().catch((error) => {
+        process.stderr.write(`${error instanceof Error ? (error.stack ?? error.message) : String(error)}\n`);
+        process.exitCode = 1;
+    });
+}
