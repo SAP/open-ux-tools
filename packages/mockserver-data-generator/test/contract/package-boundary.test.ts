@@ -104,6 +104,15 @@ describe('published package boundary', () => {
         expect(packageJson.scripts['check:package']).toBe('node scripts/check-package.mjs');
     });
 
+    it('publishes the operational documentation linked from the package README', () => {
+        const packageJson: unknown = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+        if (!isRecord(packageJson) || !Array.isArray(packageJson.files)) {
+            throw new Error('Package file allow-list is missing');
+        }
+
+        expect(packageJson.files).toContain('docs');
+    });
+
     it('packs the current package below the size ceiling without forbidden artifacts', () => {
         const result = runChecker(packageRoot);
 

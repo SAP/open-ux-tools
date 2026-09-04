@@ -161,6 +161,60 @@ describe('standard FE mockserver provider', () => {
         await provider.dispose();
     });
 
+    it('logs a privacy-safe support summary without metadata, values, or arbitrary fingerprints', async () => {
+        const metadataCanary = 'TOP_SECRET_METADATA_SUMMARY_CANARY';
+        const valueCanary = 'TOP_SECRET_GENERATED_VALUE_CANARY';
+        const fingerprintCanary = 'TOP_SECRET_FINGERPRINT_CANARY';
+        const generateService = jest.fn(async () => ({
+            resources: { Records: [{ ID: 1, Opaque: valueCanary }] },
+            diagnostics: [],
+            capabilities: {
+                mode: 'hybrid' as const,
+                classifier: 'ready' as const,
+                sft: 'ready' as const
+            },
+            fingerprints: {
+                request: 'a'.repeat(64),
+                classifier: fingerprintCanary,
+                sft: 'b'.repeat(64)
+            },
+            statistics: {
+                sft: {
+                    attempts: 2,
+                    parsedResponses: 1,
+                    eligibleSlots: 4,
+                    acceptedSlots: 3,
+                    assignments: []
+                }
+            }
+        }));
+        const provider = new FeMockserverDataGenerator({ generatedDataCache: false }, { generateService });
+        const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn() };
+
+        await provider.generate({
+            contractVersion: 1,
+            service: { urlPath: '/records', odataVersion: '4.0' },
+            metadata: `<?xml version="1.0"?><metadata canary="${metadataCanary}" />`,
+            targets: [{ name: 'Records', kind: 'entity-set' }],
+            existingData: {},
+            logger,
+            signal: new AbortController().signal
+        });
+
+        expect(logger.debug).toHaveBeenCalledWith(
+            `MOCK_DATA_GENERATOR_SUMMARY: requestFingerprint=${'a'.repeat(
+                64
+            )} classifierFingerprint=invalid sftFingerprint=${'b'.repeat(
+                64
+            )} resources=1 rows=1 sftAttempts=2 sftParsedResponses=1 sftAcceptedSlots=3 sftEligibleSlots=4 sftShare=0.7500`
+        );
+        const supportLog = JSON.stringify(logger.debug.mock.calls);
+        expect(supportLog).not.toContain(metadataCanary);
+        expect(supportLog).not.toContain(valueCanary);
+        expect(supportLog).not.toContain(fingerprintCanary);
+        await provider.dispose();
+    });
+
     it('keeps failed learned-component circuits open across provider generations', async () => {
         const classify = jest.fn(async () => Promise.reject(new Error('classifier failed')));
         const generate = jest.fn(async () => Promise.reject(new Error('sft failed')));
@@ -556,6 +610,7 @@ describe('standard FE mockserver provider', () => {
                 String(message).startsWith('MOCK_DATA_GENERATOR_CAPABILITIES:')
             );
             expect(capabilityLogs).toEqual([
+                ['MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready'],
                 ['MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready']
             ]);
             expect(context.logger.debug).toHaveBeenCalledWith(

@@ -108,6 +108,9 @@ const result = await generateService(
 ```
 
 See [the architecture design](../../docs/superpowers/specs/2026-09-03-mockserver-data-generator-design.md) and [host contract](./docs/host-contract.md) for the complete lifecycle, precedence, model, and degradation rules.
+Operational diagnosis, offline verification, forced regeneration, explicit
+model pinning, and provider rollback are covered in the
+[troubleshooting guide](./docs/troubleshooting.md).
 
 ## Test current source in a Fiori application
 

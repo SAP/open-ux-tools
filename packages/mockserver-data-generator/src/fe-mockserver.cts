@@ -90,6 +90,39 @@ function logCapabilities(
     );
 }
 
+/**
+ * Keep support fingerprints useful without echoing arbitrary runtime-provided strings.
+ * @param {string | undefined} fingerprint Candidate component or request fingerprint.
+ * @returns {string} A verified SHA-256, `unavailable`, or `invalid`.
+ */
+function supportFingerprint(fingerprint: string | undefined): string {
+    if (fingerprint === undefined) {
+        return 'unavailable';
+    }
+    return /^[a-f0-9]{64}$/.test(fingerprint) ? fingerprint : 'invalid';
+}
+
+/**
+ * Emit counts and tier share without logging resource names, metadata, prompts, or row values.
+ * @param {object} logger Host-provided local logger.
+ * @param {object} result Completed whole-service result.
+ */
+function logSupportSummary(logger: HostGenerationContext['logger'], result: MockDataGeneratorResult): void {
+    const resources = Object.values(result.resources);
+    const rowCount = resources.reduce((total, rows) => total + rows.length, 0);
+    const sft = result.statistics.sft;
+    const share = sft.eligibleSlots === 0 ? 0 : sft.acceptedSlots / sft.eligibleSlots;
+    logger.debug(
+        `MOCK_DATA_GENERATOR_SUMMARY: requestFingerprint=${supportFingerprint(
+            result.fingerprints.request
+        )} classifierFingerprint=${supportFingerprint(
+            result.fingerprints.classifier
+        )} sftFingerprint=${supportFingerprint(result.fingerprints.sft)} resources=${resources.length} rows=${rowCount} ` +
+            `sftAttempts=${sft.attempts} sftParsedResponses=${sft.parsedResponses} sftAcceptedSlots=${sft.acceptedSlots} ` +
+            `sftEligibleSlots=${sft.eligibleSlots} sftShare=${share.toFixed(4)}`
+    );
+}
+
 function logTiming(logger: HostGenerationContext['logger'], phase: string, startedAt: number): void {
     const durationMs = Math.max(0, performance.now() - startedAt);
     logger.debug(`MOCK_DATA_GENERATOR_TIMING: phase=${phase} durationMs=${durationMs.toFixed(3)}`);
@@ -425,6 +458,8 @@ class FeMockserverDataGenerator {
                         message: 'A verified whole-service generated-data cache entry was reused.'
                     });
                     context.logger.debug(`${cacheDiagnostic.code}: ${cacheDiagnostic.message}`);
+                    logCapabilities(context.logger, cached.capabilities);
+                    logSupportSummary(context.logger, cached);
                     logTiming(context.logger, 'generated-data-cache-hit', startedAt);
                     return Object.freeze({
                         resources: cached.resources,
@@ -470,6 +505,7 @@ class FeMockserverDataGenerator {
         const runtimeDiagnostics = learned ? modelDiagnostics(learned.diagnostics) : [];
         runtimeDiagnostics.forEach((diagnostic) => context.logger.warn(`${diagnostic.code}: ${diagnostic.message}`));
         logCapabilities(context.logger, result.capabilities);
+        logSupportSummary(context.logger, result);
         logTiming(context.logger, 'whole-service', startedAt);
         return Object.freeze({
             resources: result.resources,

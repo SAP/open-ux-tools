@@ -1345,10 +1345,10 @@ the external realism gate.
 - Create: `packages/mockserver-data-generator/docs/troubleshooting.md`
 - Create: `packages/mockserver-data-generator/test/unit/diagnostics-redaction.test.ts`
 
-- [ ] Emit local component state, fingerprints, timing, counts, tier share, cache state, and stable error codes.
-- [ ] Redact absolute paths where unnecessary and prohibit raw metadata, prompts, source rows, and generated values.
-- [ ] Keep external telemetry disabled; any future telemetry requires a separate privacy-reviewed design.
-- [ ] Document cache inspection, forced regeneration, offline preparation, model pin/rollback, and provider disablement.
+- [x] Emit local component state, fingerprints, timing, counts, tier share, cache state, and stable error codes.
+- [x] Redact absolute paths where unnecessary and prohibit raw metadata, prompts, source rows, and generated values.
+- [x] Keep external telemetry disabled; any future telemetry requires a separate privacy-reviewed design.
+- [x] Document cache inspection, forced regeneration, offline preparation, model pin/rollback, and provider disablement.
 
 ### Task 12.4: Run focused and full repository gates
 

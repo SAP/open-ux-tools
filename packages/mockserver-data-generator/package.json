@@ -39,6 +39,7 @@
     "files": [
         "LICENSE",
         "README.md",
+        "docs",
         "dist",
         "!dist/*.map",
         "!dist/**/*.map"
