@@ -967,6 +967,18 @@ pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test:i
 - [ ] Measure first download, warm cache, session load, peak RSS, tokens/second, cold generation, and generated-data-cache startup.
 - [ ] Bind every row of the report to package, runtime, model, code, fixture, and machine fingerprints.
 
+**Implementation record (2026-09-04):** Commit `4112b622e` adds the portable,
+machine-readable harness and a clean `darwin-arm64` baseline bound to the
+package archive, code, model manifest, runtime, model-evaluation report, and
+machine details. Package, dependency closure, runtime increment, component,
+model-cache, cache-quota, module-load, session-load, T2, and process RSS values
+are now measured separately. The current native candidate is not
+footprint-ready: 449,500,780 total bytes exceed the 300 MiB ceiling, and the
+164,924,986-byte generator misses the 82,462,493-byte optimization target.
+First-download, cold whole-service, warm generated-data-cache, end-to-end host,
+tokens-per-second, process-tree memory, and release-platform rows remain open,
+so the Task 9.1 exit conditions are not marked complete.
+
 ### Task 9.2: Run the generator compression campaign
 
 **Files in model repository:**

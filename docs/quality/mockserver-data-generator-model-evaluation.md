@@ -128,6 +128,56 @@ The reviewed npm package contains no weights and packs below 57 kB in current de
 
 The INT4 graph is 21.77% larger than INT8 because its MatMul-only quantizer did not cover the 113.25 MB embedding matrix. It cannot be a Pareto winner even before its historical quality regression is considered. Future size work should prioritize a calibrated export that covers embedding/output matrices, quantization-aware training, vocabulary pruning, distillation, or a smaller fine-tuned architecture. Every new candidate must rerun the same structural and realism gates.
 
+## Machine-readable footprint baseline
+
+The production footprint harness measured clean commit
+`4112b622e270791eb36fdb61062fc61e8e01a118` on `darwin-arm64` with Node
+22.22.2, npm 10.9.7, an Apple M3 Pro, and `onnxruntime-node@1.24.3`. The
+package archive SHA-256 is
+`34257b290d90a235fd7c24cea10e0c397c5bed38f773c939d3ff4efdac57a76b`.
+The report fingerprint is
+`a8dc18defd4ef23edda89fff8ce6cd8baa157f91a944bc69ecef41e276286064`
+and its file SHA-256 is
+`c854408681a417b37ca478f1a7cdc28992faf848cc7fa7363c29beb80c81180a`.
+
+The report is also bound to the exact model-evaluation artifact with fingerprint
+`00fb211c1fed99e202cb7dc76a5ea0d69c7ea2d6834a600b733e4d0b82989e58`
+and file SHA-256
+`e737fd29a00f239ccd60c7dc99d3d5a7665dd8b17d9a9afa8b64caceed2b6a4a`.
+That rerun preserved the classifier metrics and the SFT output fingerprint. It
+parsed all 16 held-out cases, emitted exact keys for all 16, and filled 259 of
+261 requested fields.
+
+| Measurement                         |          Actual |       Threshold | Status       |
+| ----------------------------------- | --------------: | --------------: | ------------ |
+| npm archive                         |          57,460 |       5,242,880 | pass         |
+| npm unpacked                        |         232,410 |               — | measured     |
+| Deterministic dependency closure    |       2,116,646 |               — | measured     |
+| Learned dependency closure          |     223,778,764 |               — | measured     |
+| Native runtime increment            |     221,662,118 |               — | measured     |
+| Model transfer                      |     192,167,584 |     209,715,200 | pass         |
+| Verified model cache                |     192,167,584 |     209,715,200 | pass         |
+| Generated-data-cache quota          |      33,554,432 |      33,554,432 | pass         |
+| Total installed and cache footprint |     449,500,780 |     314,572,800 | **fail**     |
+| INT8 generator weights              |     164,924,986 |      82,462,493 | **fail**     |
+| Provider module-load p95             |         1.64 ms |          250 ms | pass         |
+| Model session-load p95               |       807.17 ms |        5,000 ms | pass         |
+| T2 generation p95                    |    18,541.78 ms |       20,000 ms | pass         |
+| Peak process RSS                     |   1,814,396,928 |               — | measured     |
+| Cold whole-service generation        |               — |       25,000 ms | not measured |
+| Warm generated-data-cache startup    |               — |          200 ms | not measured |
+| First-use acquisition                |               — |       30,000 ms | not measured |
+| End-to-end host provider             |               — |       60,000 ms | not measured |
+
+The total is the learned dependency closure plus the verified model cache plus
+the configured 32 MiB generated-data-cache quota. Passing the npm and model
+transfer ceilings therefore does not make this candidate footprint-ready. The
+current native stack exceeds the total ceiling by 134,927,980 bytes, and the
+generator is 82,462,493 bytes above its optimization target. The next footprint
+work is the calibrated compression frontier and supported platform-specific
+runtime packaging, followed by the still-unmeasured integrated timings and
+release-platform reruns. The existing WASM no-go remains unchanged.
+
 ## WASM decision
 
 The installed ONNX backend allocation in this development checkout was about 220,454,912 bytes for `onnxruntime-node` and 134,881,280 bytes for `onnxruntime-web`. Holding the 192,167,332 model/tokenizer/classifier bytes constant gives a product-total reduction from 412,622,244 to 327,048,612 bytes (20.74%). The backend-only reduction clears the preliminary 25% screen, so identical classifier artifacts were benchmarked before attempting the much longer autoregressive campaign.

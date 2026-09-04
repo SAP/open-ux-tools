@@ -2,8 +2,10 @@
 
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { cpus, tmpdir } from 'node:os';
+import { createRequire } from 'node:module';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
@@ -18,7 +20,9 @@ import {
 
 const SCRIPT_ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '../..');
-const GENERATOR_ENTRY = join(REPOSITORY_ROOT, 'packages/mockserver-data-generator/dist/index.js');
+const GENERATOR_ROOT = join(REPOSITORY_ROOT, 'packages/mockserver-data-generator');
+const GENERATOR_ENTRY = join(GENERATOR_ROOT, 'dist/index.js');
+const GENERATOR_REQUIRE = createRequire(GENERATOR_ENTRY);
 const DEFAULT_SEED = 2_026_090_4;
 
 function usage() {
@@ -41,6 +45,7 @@ function usage() {
 }
 
 function parseArguments(argv) {
+    const argumentsWithoutSeparator = argv[0] === '--' ? argv.slice(1) : argv;
     const options = {
         candidates: ['int8', 'int4'],
         seed: DEFAULT_SEED,
@@ -48,9 +53,9 @@ function parseArguments(argv) {
         skipSft: false,
         isolatedWorker: false
     };
-    for (let index = 0; index < argv.length; index += 1) {
-        const argument = argv[index];
-        const value = argv[index + 1];
+    for (let index = 0; index < argumentsWithoutSeparator.length; index += 1) {
+        const argument = argumentsWithoutSeparator[index];
+        const value = argumentsWithoutSeparator[index + 1];
         if (argument === '--help' || argument === '-h') {
             process.stdout.write(`${usage()}\n`);
             process.exit(0);
@@ -113,6 +118,28 @@ function canonicalJson(value) {
 
 function fingerprint(value) {
     return createHash('sha256').update(canonicalJson(value)).digest('hex');
+}
+
+function sha256File(path) {
+    return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+function sourceState() {
+    return {
+        codeCommit: execFileSync('git', ['-C', REPOSITORY_ROOT, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+        sourceClean:
+            execFileSync('git', ['-C', REPOSITORY_ROOT, 'status', '--porcelain=v1'], { encoding: 'utf8' }).trim()
+                .length === 0
+    };
+}
+
+function runtimeBinding() {
+    const runtime = GENERATOR_REQUIRE('onnxruntime-node');
+    const version = runtime?.env?.versions?.node;
+    if (typeof version !== 'string' || version.length === 0) {
+        throw new Error('Could not resolve the ONNX Runtime version used by the evaluation');
+    }
+    return { package: 'onnxruntime-node', version };
 }
 
 function parseJsonLines(content) {
@@ -357,15 +384,23 @@ async function runSftCandidate(generator, options, candidate) {
 }
 
 function baseReport() {
+    const packageJson = JSON.parse(readFileSync(join(GENERATOR_ROOT, 'package.json'), 'utf8'));
+    const source = sourceState();
     return {
         schemaVersion: 1,
         createdAt: new Date().toISOString(),
         harness: {
             repository: 'SAP/open-ux-tools',
-            package: '@sap-ux/mockserver-data-generator',
+            package: packageJson.name,
+            packageVersion: packageJson.version,
             generatorEntry: basename(GENERATOR_ENTRY),
+            generatorEntrySha256: sha256File(GENERATOR_ENTRY),
+            codeCommit: source.codeCommit,
+            sourceClean: source.sourceClean,
             node: process.version,
-            platform: `${process.platform}-${process.arch}`
+            platform: `${process.platform}-${process.arch}`,
+            cpu: cpus()[0]?.model ?? 'unknown',
+            runtime: runtimeBinding()
         },
         policy: {
             generatedValuesInReport: false,

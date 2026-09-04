@@ -6,7 +6,7 @@ Build the package and run the native candidates from Node 22:
 
 ~~~sh
 pnpm --filter @sap-ux/mockserver-data-generator build
-pnpm mockserver-data-generator:evaluate-models -- \
+pnpm mockserver-data-generator:evaluate-models \
   --pilot-root /absolute/path/to/sap-ai-mockserver \
   --output /tmp/mockserver-data-generator-evaluation.json \
   --evidence-dir /tmp/mockserver-data-generator-judge-evidence
@@ -15,6 +15,31 @@ pnpm mockserver-data-generator:evaluate-models -- \
 The default campaign executes the pilot classifier plus the INT8 and INT4 SFT exports. Add `--sft-candidates fp32,int8,int4` when the larger FP32 graph is available and the host has sufficient memory. `--max-sft-cases` creates a deterministic smoke subset; omit it for the full fixed held-out cohort.
 
 The report contains exact artifact bytes and SHA-256 hashes, governed classifier cohort counts, classifier accuracy/macro-F1/routed precision/coverage, SFT parse/exact-key/fill rates, load and generation latency, and observed process memory. Generated values are written only when an external evidence directory is supplied. A new realism judgment must use that evidence file and record its checksum; historical pilot judgments are comparison baselines, not promotion evidence.
+
+## Package and learned-stack footprint
+
+Create a package-only baseline from a clean checkout:
+
+~~~sh
+pnpm mockserver-data-generator:measure-footprint \
+  --output /tmp/mockserver-data-generator-package-footprint.json \
+  --require-clean
+~~~
+
+Bind the full footprint to a verified model cache and an INT8 evaluation report:
+
+~~~sh
+pnpm mockserver-data-generator:measure-footprint \
+  --output /tmp/mockserver-data-generator-footprint.json \
+  --require-clean \
+  --model-manifest /absolute/path/to/model-manifest.json \
+  --model-cache /absolute/path/to/verified-model-cache \
+  --evaluation-report /tmp/mockserver-data-generator-evaluation.json
+~~~
+
+Use a new output filename for every run; the harness refuses to overwrite evidence. It packs the current package, installs it in an isolated npm consumer, verifies the model cache, and reports package, dependency, runtime, model, generated-data-cache, latency, and memory measurements separately. Missing integrated measurements remain `not-measured` and keep `footprintReady` false. Reports contain fingerprints and aggregate values but no local paths or generated rows.
+
+The generator optimization gate uses the versioned, fingerprinted dynamic-INT8 baseline in `baselines/generator-int8-v1.json`; callers cannot replace it with an arbitrary byte count. Add `--enforce` in release automation when a failed or unmeasured gate must produce a nonzero exit. Omit it during exploratory campaigns so the report is still written for failed candidates.
 
 ## Blinded whole-service realism campaign
 

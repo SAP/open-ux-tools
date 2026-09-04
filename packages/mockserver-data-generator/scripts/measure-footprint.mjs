@@ -19,6 +19,16 @@ import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const REPOSITORY_ROOT = resolve(PACKAGE_ROOT, '../..');
+const PACKAGE_NAME = '@sap-ux/mockserver-data-generator';
+const GENERATOR_ENTRY = join(PACKAGE_ROOT, 'dist', 'index.js');
+const GENERATOR_BASELINE = join(
+    REPOSITORY_ROOT,
+    'scripts',
+    'mockserver-data-generator-evaluation',
+    'baselines',
+    'generator-int8-v1.json'
+);
 const MAXIMUM_PACKED_BYTES = 5 * 1024 * 1024;
 const MAXIMUM_MODEL_TRANSFER_BYTES = 200 * 1024 * 1024;
 const MAXIMUM_MODEL_CACHE_BYTES = 200 * 1024 * 1024;
@@ -60,9 +70,9 @@ function usage() {
         '  --model-manifest <path>             Verified model manifest',
         '  --model-cache <path>                Verified model cache root',
         '  --evaluation-report <path>          Matching model-evaluation report',
-        '  --generator-baseline-bytes <bytes>  Approved generator-weight baseline',
         '  --runs <number>                     Fresh provider-load processes (default: 10)',
         '  --require-clean                     Reject a dirty source worktree',
+        '  --enforce                           Exit nonzero unless every footprint gate passes',
         '',
         'The report contains portable fingerprints and aggregate measurements only; local paths',
         'and generated values are never written to it.'
@@ -107,6 +117,13 @@ function sha256Value(value, label) {
         throw new TypeError(`${label} must be a lowercase SHA-256`);
     }
     return result;
+}
+
+function boolean(value, label) {
+    if (typeof value !== 'boolean') {
+        throw new TypeError(`${label} must be a boolean`);
+    }
+    return value;
 }
 
 function immutableCommit(value, label) {
@@ -166,6 +183,62 @@ function componentMeasurement(value, index) {
     });
 }
 
+function artifactMeasurement(value, index) {
+    const artifact = record(value, `model artifact ${index}`);
+    return Object.freeze({
+        componentId: string(artifact.componentId, `model artifact ${index} component ID`),
+        role: string(artifact.role, `model artifact ${index} role`),
+        fingerprint: sha256Value(artifact.fingerprint, `model artifact ${index} fingerprint`),
+        bytes: positiveBytes(artifact.bytes, `model artifact ${index} bytes`)
+    });
+}
+
+/**
+ * Validate the Git-reviewed dynamic-INT8 generator baseline.
+ *
+ * @param {unknown} value baseline record
+ * @returns {object} normalized baseline
+ */
+export function parseGeneratorBaseline(value) {
+    const input = record(value, 'generator baseline');
+    const artifact = record(input.artifact, 'generator baseline artifact');
+    const source = record(input.source, 'generator baseline source');
+    const normalized = {
+        schemaVersion: input.schemaVersion,
+        id: string(input.id, 'generator baseline ID'),
+        lifecycle: string(input.lifecycle, 'generator baseline lifecycle'),
+        artifact: {
+            bytes: positiveBytes(artifact.bytes, 'generator baseline artifact bytes'),
+            sha256: sha256Value(artifact.sha256, 'generator baseline artifact SHA-256')
+        },
+        targetFormula: string(input.targetFormula, 'generator baseline target formula'),
+        source: {
+            modelManifestSha256: sha256Value(source.modelManifestSha256, 'generator baseline model manifest SHA-256'),
+            pilotExportReportSha256: sha256Value(
+                source.pilotExportReportSha256,
+                'generator baseline pilot export report SHA-256'
+            )
+        }
+    };
+    if (
+        normalized.schemaVersion !== 1 ||
+        normalized.lifecycle !== 'frozen-development-baseline' ||
+        normalized.targetFormula !== 'floor(artifact.bytes / 2)'
+    ) {
+        throw new TypeError('generator baseline has an unsupported contract');
+    }
+    const recordFingerprint = sha256Value(input.recordFingerprint, 'generator baseline fingerprint');
+    if (recordFingerprint !== fingerprint(normalized)) {
+        throw new Error('generator baseline fingerprint does not match');
+    }
+    return Object.freeze({
+        ...normalized,
+        artifact: Object.freeze(normalized.artifact),
+        source: Object.freeze(normalized.source),
+        recordFingerprint
+    });
+}
+
 /**
  * Normalize measurements and apply the fixed footprint budgets.
  *
@@ -186,8 +259,9 @@ export function buildFootprintReport(value) {
         packageName: string(candidate.packageName, 'candidate package name'),
         packageVersion: string(candidate.packageVersion, 'candidate package version'),
         packageArchiveSha256: sha256Value(candidate.packageArchiveSha256, 'candidate package archive SHA-256'),
+        generatorEntrySha256: sha256Value(candidate.generatorEntrySha256, 'candidate generator entry SHA-256'),
         codeCommit: immutableCommit(candidate.codeCommit, 'candidate code commit'),
-        sourceClean: candidate.sourceClean === true,
+        sourceClean: boolean(candidate.sourceClean, 'candidate source-clean result'),
         ...(candidate.modelRevision === undefined
             ? {}
             : { modelRevision: immutableCommit(candidate.modelRevision, 'candidate model revision') }),
@@ -209,6 +283,27 @@ export function buildFootprintReport(value) {
                       candidate.evaluationReportSha256,
                       'candidate evaluation report SHA-256'
                   )
+              }),
+        ...(candidate.evaluationReportFingerprint === undefined
+            ? {}
+            : {
+                  evaluationReportFingerprint: sha256Value(
+                      candidate.evaluationReportFingerprint,
+                      'candidate evaluation report fingerprint'
+                  ),
+                  classifierCohortSha256: sha256Value(
+                      candidate.classifierCohortSha256,
+                      'candidate classifier cohort SHA-256'
+                  ),
+                  sftCohortSha256: sha256Value(candidate.sftCohortSha256, 'candidate SFT cohort SHA-256')
+              }),
+        ...(candidate.generatorBaselineFingerprint === undefined
+            ? {}
+            : {
+                  generatorBaselineFingerprint: sha256Value(
+                      candidate.generatorBaselineFingerprint,
+                      'candidate generator baseline fingerprint'
+                  )
               })
     });
     const normalizedEnvironment = Object.freeze({
@@ -220,7 +315,8 @@ export function buildFootprintReport(value) {
     });
     const npm = Object.freeze({
         packedBytes: positiveBytes(packageMeasurement.packedBytes, 'npm packed bytes'),
-        unpackedBytes: positiveBytes(packageMeasurement.unpackedBytes, 'npm unpacked bytes')
+        unpackedBytes: positiveBytes(packageMeasurement.unpackedBytes, 'npm unpacked bytes'),
+        boundaryClean: boolean(packageMeasurement.boundaryClean, 'package boundary result')
     });
     const normalizedInstallation = Object.freeze({
         deterministicBytes: positiveBytes(installation.deterministicBytes, 'deterministic installed bytes'),
@@ -236,17 +332,30 @@ export function buildFootprintReport(value) {
               verifiedCacheBytes: positiveBytes(model.verifiedCacheBytes, 'verified model cache bytes'),
               generatorBytes: positiveBytes(model.generatorBytes, 'generator model bytes'),
               approvedGeneratorBaselineBytes: positiveBytes(
-                  model.approvedGeneratorBaselineBytes,
-                  'approved generator baseline bytes',
-                  { optional: true }
+                  parseGeneratorBaseline(model.generatorBaseline).artifact.bytes,
+                  'approved generator baseline bytes'
               ),
+              generatorBaseline: parseGeneratorBaseline(model.generatorBaseline),
               components: Object.freeze(
                   (Array.isArray(model.components) ? model.components : []).map(componentMeasurement)
-              )
+              ),
+              artifacts: Object.freeze((Array.isArray(model.artifacts) ? model.artifacts : []).map(artifactMeasurement))
           })
         : undefined;
-    if (normalizedModel && normalizedModel.components.length === 0) {
-        throw new TypeError('model measurement must contain components');
+    if (normalizedModel && (normalizedModel.components.length === 0 || normalizedModel.artifacts.length === 0)) {
+        throw new TypeError('model measurement must contain components and artifacts');
+    }
+    if (
+        normalizedModel &&
+        normalizedCandidate.generatorBaselineFingerprint !== normalizedModel.generatorBaseline.recordFingerprint
+    ) {
+        throw new Error('candidate does not bind the frozen generator baseline');
+    }
+    if (
+        normalizedCandidate.evaluationReportSha256 !== undefined &&
+        normalizedCandidate.evaluationReportFingerprint === undefined
+    ) {
+        throw new Error('candidate evaluation report has no verified provenance binding');
     }
     const generatedDataQuotaBytes = positiveBytes(
         input.generatedDataCacheQuotaBytes,
@@ -278,6 +387,11 @@ export function buildFootprintReport(value) {
             expected: true,
             status: normalizedCandidate.sourceClean ? 'pass' : 'fail'
         }),
+        packageBoundary: Object.freeze({
+            actual: npm.boundaryClean,
+            expected: true,
+            status: npm.boundaryClean ? 'pass' : 'fail'
+        }),
         npmPacked: maximumGate(npm.packedBytes, MAXIMUM_PACKED_BYTES),
         modelDownload: maximumGate(normalizedModel?.downloadBytes ?? null, MAXIMUM_MODEL_TRANSFER_BYTES),
         modelCache: maximumGate(normalizedModel?.verifiedCacheBytes ?? null, MAXIMUM_MODEL_CACHE_BYTES),
@@ -299,6 +413,8 @@ export function buildFootprintReport(value) {
         environment: normalizedEnvironment,
         protocols: Object.freeze({
             byteAccounting: 'sum of logical bytes for regular files; symbolic links are not followed',
+            packageBuild: 'clean TypeScript build from the measured source state before package verification and pack',
+            packageBoundary: 'actual packed-package policy and network-free construction check',
             packageInstall: 'clean npm install with lifecycle scripts disabled and optional peer omitted',
             percentile: 'nearest-rank over uncensored observations; timeout samples remain in the denominator',
             moduleLoad: 'fresh Node process requiring and constructing the FE mockserver provider',
@@ -324,11 +440,25 @@ export function buildFootprintReport(value) {
     return Object.freeze({ ...report, reportFingerprint: fingerprint(report) });
 }
 
-function parseArguments(argv) {
-    const options = { runs: 10, requireClean: false };
-    for (let index = 0; index < argv.length; index += 1) {
-        const argument = argv[index];
-        const value = argv[index + 1];
+function decimalInteger(value, label) {
+    if (typeof value !== 'string' || !/^(?:0|[1-9]\d*)$/u.test(value)) {
+        throw new TypeError(`${label} must be a decimal integer`);
+    }
+    return Number(value);
+}
+
+/**
+ * Parse footprint harness arguments.
+ *
+ * @param {string[]} argv command-line arguments
+ * @returns {object | undefined} parsed options or undefined for help
+ */
+export function parseArguments(argv) {
+    const argumentsWithoutSeparator = argv[0] === '--' ? argv.slice(1) : argv;
+    const options = { runs: 10, requireClean: false, enforce: false };
+    for (let index = 0; index < argumentsWithoutSeparator.length; index += 1) {
+        const argument = argumentsWithoutSeparator[index];
+        const value = argumentsWithoutSeparator[index + 1];
         if (argument === '--help' || argument === '-h') {
             process.stdout.write(`${usage()}\n`);
             return undefined;
@@ -337,7 +467,11 @@ function parseArguments(argv) {
             options.requireClean = true;
             continue;
         }
-        if (!value) {
+        if (argument === '--enforce') {
+            options.enforce = true;
+            continue;
+        }
+        if (!value || value.startsWith('--')) {
             throw new TypeError(`Missing value for ${argument}`);
         }
         if (argument === '--output') {
@@ -348,10 +482,8 @@ function parseArguments(argv) {
             options.modelCache = resolve(value);
         } else if (argument === '--evaluation-report') {
             options.evaluationReport = resolve(value);
-        } else if (argument === '--generator-baseline-bytes') {
-            options.generatorBaselineBytes = Number.parseInt(value, 10);
         } else if (argument === '--runs') {
-            options.runs = Number.parseInt(value, 10);
+            options.runs = decimalInteger(value, '--runs');
         } else {
             throw new TypeError(`Unknown argument: ${argument}`);
         }
@@ -368,12 +500,6 @@ function parseArguments(argv) {
     }
     if (!Number.isSafeInteger(options.runs) || options.runs < 2 || options.runs > 100) {
         throw new TypeError('--runs must be an integer from 2 through 100');
-    }
-    if (
-        options.generatorBaselineBytes !== undefined &&
-        (!Number.isSafeInteger(options.generatorBaselineBytes) || options.generatorBaselineBytes <= 0)
-    ) {
-        throw new TypeError('--generator-baseline-bytes must be a positive integer');
     }
     return options;
 }
@@ -440,8 +566,16 @@ function packCurrentPackage(temporaryRoot) {
         packageVersion: string(report.version, 'packed package version'),
         archiveSha256: sha256File(archivePath),
         packedBytes: statSync(archivePath).size,
-        unpackedBytes: unpacked.logicalBytes
+        unpackedBytes: unpacked.logicalBytes,
+        boundaryClean: true
     };
+}
+
+function buildAndVerifyPackage() {
+    for (const script of ['clean', 'build', 'check:package']) {
+        runPackageManager(['--filter', PACKAGE_NAME, 'run', script], { cwd: REPOSITORY_ROOT });
+    }
+    return sha256File(GENERATOR_ENTRY);
 }
 
 function npmVersion() {
@@ -513,7 +647,7 @@ function sourceState(requireClean) {
     if (requireClean && status.length > 0) {
         throw new Error('Footprint measurement requires a clean source worktree');
     }
-    return { commit, clean: status.length === 0 };
+    return { commit, clean: status.length === 0, repositoryRoot };
 }
 
 async function modelMeasurement(options) {
@@ -548,6 +682,7 @@ async function modelMeasurement(options) {
         throw new Error('Footprint measurement requires one shared model runtime');
     }
     const [runtime] = runtimes.values();
+    const generatorBaseline = parseGeneratorBaseline(JSON.parse(readFileSync(GENERATOR_BASELINE, 'utf8')));
     const components = manifest.components.map((component) => ({
         id: component.id,
         kind: component.kind,
@@ -555,6 +690,14 @@ async function modelMeasurement(options) {
         bytes: component.files.reduce((sum, file) => sum + file.bytes, 0)
     }));
     const allFiles = manifest.components.flatMap((component) => component.files);
+    const artifacts = manifest.components.flatMap((component) =>
+        component.files.map((file) => ({
+            componentId: component.id,
+            role: file.role,
+            fingerprint: file.sha256,
+            bytes: file.bytes
+        }))
+    );
     const generatorBytes = manifest.components
         .filter(({ kind }) => kind === 'sft')
         .flatMap(({ files }) => files)
@@ -575,46 +718,148 @@ async function modelMeasurement(options) {
             downloadBytes,
             verifiedCacheBytes,
             generatorBytes,
-            approvedGeneratorBaselineBytes: options.generatorBaselineBytes,
-            components
+            generatorBaseline,
+            components,
+            artifacts
         },
         manifestSha256: sha256File(options.modelManifest)
     };
 }
 
-function evaluationMeasurement(filePath, model) {
-    if (!filePath) {
-        return { timings: {}, peakRssBytes: null, sha256: undefined };
+function evaluationArtifact(value, label) {
+    const artifact = record(value, label);
+    return {
+        id: string(artifact.id, `${label} ID`),
+        filename: string(artifact.filename, `${label} filename`),
+        bytes: positiveBytes(artifact.bytes, `${label} bytes`),
+        sha256: sha256Value(artifact.sha256, `${label} SHA-256`)
+    };
+}
+
+function assertMatchingArtifactSet(actual, expected, label) {
+    const identity = ({ bytes: size, sha256 }) => `${sha256}:${size}`;
+    const actualIdentities = actual.map(identity).sort();
+    const expectedIdentities = expected.map(identity).sort();
+    if (JSON.stringify(actualIdentities) !== JSON.stringify(expectedIdentities)) {
+        throw new Error(`evaluation report ${label} artifacts do not match the verified model manifest`);
     }
-    const report = record(JSON.parse(readFileSync(filePath, 'utf8')), 'model evaluation report');
+}
+
+function assertEqual(actual, expected, label) {
+    if (actual !== expected) {
+        throw new Error(`evaluation report ${label} does not match the current measurement`);
+    }
+}
+
+/**
+ * Verify an imported evaluation report before using its platform metrics.
+ *
+ * @param {unknown} value evaluation report
+ * @param {unknown} expected current package, runtime, model, and machine bindings
+ * @returns {object} verified metric and cohort records
+ */
+export function validateEvaluationReport(value, expected) {
+    const report = record(value, 'model evaluation report');
+    const bindings = record(expected, 'evaluation bindings');
+    const reportFingerprint = sha256Value(report.reportFingerprint, 'model evaluation report fingerprint');
+    const unsignedReport = { ...report };
+    delete unsignedReport.reportFingerprint;
+    if (fingerprint(unsignedReport) !== reportFingerprint) {
+        throw new Error('evaluation report fingerprint does not match');
+    }
+    if (report.schemaVersion !== 1) {
+        throw new Error('evaluation report schema version is unsupported');
+    }
+    const harness = record(report.harness, 'model evaluation harness');
+    const runtime = record(harness.runtime, 'model evaluation runtime');
+    const policy = record(report.policy, 'model evaluation policy');
+    if (policy.processIsolation !== true || harness.sourceClean !== true) {
+        throw new Error('evaluation report is not clean process-isolated evidence');
+    }
+    for (const [actual, expectedValue, label] of [
+        [harness.repository, 'SAP/open-ux-tools', 'repository'],
+        [harness.package, bindings.packageName, 'package'],
+        [harness.packageVersion, bindings.packageVersion, 'package version'],
+        [harness.generatorEntry, 'index.js', 'generator entry'],
+        [harness.generatorEntrySha256, bindings.generatorEntrySha256, 'generator entry SHA-256'],
+        [harness.codeCommit, bindings.codeCommit, 'code commit'],
+        [harness.node, bindings.node, 'Node version'],
+        [harness.platform, bindings.platform, 'platform'],
+        [harness.cpu, bindings.cpu, 'CPU'],
+        [runtime.package, bindings.runtimePackage, 'runtime package'],
+        [runtime.version, bindings.runtimeVersion, 'runtime version']
+    ]) {
+        assertEqual(actual, expectedValue, label);
+    }
+    const classifier = record(report.classifier, 'classifier evaluation');
+    const classifierArtifacts = (Array.isArray(classifier.artifacts) ? classifier.artifacts : []).map(
+        (artifact, index) => evaluationArtifact(artifact, `classifier evaluation artifact ${index}`)
+    );
+    const classifierCohort = classifierArtifacts.find(({ id }) => id === 'classifier-gold-cohort');
+    const classifierComponentArtifacts = classifierArtifacts.filter(({ id }) => id !== 'classifier-gold-cohort');
+    if (!classifierCohort || classifierArtifacts.length !== classifierComponentArtifacts.length + 1) {
+        throw new Error('evaluation report has no unique classifier cohort artifact');
+    }
+    assertMatchingArtifactSet(
+        classifierComponentArtifacts,
+        Array.isArray(bindings.classifierArtifacts) ? bindings.classifierArtifacts : [],
+        'classifier'
+    );
+    assertEqual(
+        classifier.componentFingerprint,
+        fingerprint(classifierComponentArtifacts),
+        'classifier component fingerprint'
+    );
     const sftReports = Array.isArray(report.sft) ? report.sft : [];
-    const sft = sftReports.find((candidate) => candidate?.candidate === 'int8');
-    if (!sft) {
-        throw new Error('Model evaluation report has no INT8 SFT candidate');
-    }
-    const artifactHashes = new Set(
-        [
-            ...(Array.isArray(report.classifier?.artifacts) ? report.classifier.artifacts : []),
-            ...(Array.isArray(sft.artifacts) ? sft.artifacts : [])
-        ].map(({ sha256 }) => sha256)
+    const sft = record(
+        sftReports.find((candidate) => candidate?.candidate === 'int8'),
+        'INT8 SFT evaluation'
     );
-    const evaluatedArtifacts = model.manifest.components
-        .flatMap(({ files }) => files)
-        .filter(({ role }) => role !== 'generation-config');
-    if (evaluatedArtifacts.some(({ sha256 }) => !artifactHashes.has(sha256))) {
-        throw new Error('Model evaluation report does not match the verified model manifest');
-    }
-    const loadSamples = [report.classifier?.metrics?.loadMs, sft.metrics?.loadMs].filter(Number.isFinite);
-    const rssSamples = [report.classifier?.metrics?.processMaxRssBytes, sft.metrics?.processMaxRssBytes].filter(
-        Number.isSafeInteger
+    const sftArtifacts = (Array.isArray(sft.artifacts) ? sft.artifacts : []).map((artifact, index) =>
+        evaluationArtifact(artifact, `SFT evaluation artifact ${index}`)
     );
+    const sftCohort = sftArtifacts.find(({ id }) => id === 'sft-held-out-cohort');
+    const sftComponentArtifacts = sftArtifacts.filter(({ id }) => id !== 'sft-held-out-cohort');
+    if (!sftCohort || sftArtifacts.length !== sftComponentArtifacts.length + 1) {
+        throw new Error('evaluation report has no unique SFT cohort artifact');
+    }
+    assertMatchingArtifactSet(
+        sftComponentArtifacts,
+        Array.isArray(bindings.sftArtifacts) ? bindings.sftArtifacts : [],
+        'SFT'
+    );
+    assertEqual(sft.componentFingerprint, fingerprint(sftComponentArtifacts), 'SFT component fingerprint');
+    return {
+        reportFingerprint,
+        classifier,
+        sft,
+        classifierCohortSha256: classifierCohort.sha256,
+        sftCohortSha256: sftCohort.sha256
+    };
+}
+
+function evaluationMeasurement(filePath, bindings) {
+    if (!filePath) {
+        return { timings: {}, peakRssBytes: null, sha256: undefined, provenance: undefined };
+    }
+    const verified = validateEvaluationReport(JSON.parse(readFileSync(filePath, 'utf8')), bindings);
+    const loadSamples = [verified.classifier.metrics?.loadMs, verified.sft.metrics?.loadMs].filter(Number.isFinite);
+    const rssSamples = [
+        verified.classifier.metrics?.processMaxRssBytes,
+        verified.sft.metrics?.processMaxRssBytes
+    ].filter(Number.isSafeInteger);
     return {
         timings: {
             modelSessionLoadMs: loadSamples,
-            ...(sft.metrics?.latencyMs ? { t2GenerationMs: sft.metrics.latencyMs } : {})
+            ...(verified.sft.metrics?.latencyMs ? { t2GenerationMs: verified.sft.metrics.latencyMs } : {})
         },
         peakRssBytes: rssSamples.length > 0 ? Math.max(...rssSamples) : null,
-        sha256: sha256File(filePath)
+        sha256: sha256File(filePath),
+        provenance: {
+            reportFingerprint: verified.reportFingerprint,
+            classifierCohortSha256: verified.classifierCohortSha256,
+            sftCohortSha256: verified.sftCohortSha256
+        }
     };
 }
 
@@ -622,16 +867,40 @@ async function collectFootprint(options) {
     const temporaryRoot = mkdtempSync(join(tmpdir(), 'mockgen-footprint-'));
     try {
         const source = sourceState(options.requireClean);
+        if (realpathSync(source.repositoryRoot) !== realpathSync(REPOSITORY_ROOT)) {
+            throw new Error('Footprint harness package root does not match the Git worktree root');
+        }
+        const generatorEntrySha256 = buildAndVerifyPackage();
         const packageResult = packCurrentPackage(temporaryRoot);
+        const sourceAfterPack = sourceState(options.requireClean);
+        if (sourceAfterPack.commit !== source.commit || sourceAfterPack.clean !== source.clean) {
+            throw new Error('Package build or pack changed the measured source state');
+        }
         const model = await modelMeasurement(options);
         const installation = installPackageClosure(temporaryRoot, packageResult.archivePath, model?.runtime);
         const provider = probeProviderModuleLoad(installation.consumer, options.runs);
-        const evaluation = evaluationMeasurement(options.evaluationReport, model);
+        const cpu = cpus()[0]?.model ?? 'unknown';
+        const classifierComponent = model?.manifest.components.find(({ kind }) => kind === 'classifier');
+        const sftComponent = model?.manifest.components.find(({ kind }) => kind === 'sft');
+        const evaluation = evaluationMeasurement(options.evaluationReport, {
+            packageName: packageResult.packageName,
+            packageVersion: packageResult.packageVersion,
+            generatorEntrySha256,
+            codeCommit: source.commit,
+            node: process.version,
+            platform: `${process.platform}-${process.arch}`,
+            cpu,
+            runtimePackage: model?.runtime.package,
+            runtimeVersion: model?.runtime.version,
+            classifierArtifacts: classifierComponent?.files ?? [],
+            sftArtifacts: sftComponent?.files.filter(({ role }) => role !== 'generation-config') ?? []
+        });
         return buildFootprintReport({
             candidate: {
                 packageName: packageResult.packageName,
                 packageVersion: packageResult.packageVersion,
                 packageArchiveSha256: packageResult.archiveSha256,
+                generatorEntrySha256,
                 codeCommit: source.commit,
                 sourceClean: source.clean,
                 ...(model
@@ -639,21 +908,30 @@ async function collectFootprint(options) {
                           modelRevision: model.manifest.revision,
                           modelManifestSha256: model.manifestSha256,
                           runtimePackage: model.runtime.package,
-                          runtimeVersion: model.runtime.version
+                          runtimeVersion: model.runtime.version,
+                          generatorBaselineFingerprint: model.report.generatorBaseline.recordFingerprint
                       }
                     : {}),
-                ...(evaluation.sha256 ? { evaluationReportSha256: evaluation.sha256 } : {})
+                ...(evaluation.sha256
+                    ? {
+                          evaluationReportSha256: evaluation.sha256,
+                          evaluationReportFingerprint: evaluation.provenance.reportFingerprint,
+                          classifierCohortSha256: evaluation.provenance.classifierCohortSha256,
+                          sftCohortSha256: evaluation.provenance.sftCohortSha256
+                      }
+                    : {})
             },
             environment: {
                 node: process.version,
                 platform: process.platform,
                 architecture: process.arch,
                 packageManager: `npm@${npmVersion()}`,
-                cpu: cpus()[0]?.model ?? 'unknown'
+                cpu
             },
             package: {
                 packedBytes: packageResult.packedBytes,
-                unpackedBytes: packageResult.unpackedBytes
+                unpackedBytes: packageResult.unpackedBytes,
+                boundaryClean: packageResult.boundaryClean
             },
             installation: {
                 deterministicBytes: installation.deterministicBytes,
@@ -693,6 +971,9 @@ async function main() {
                 .map(([name, gate]) => ({ name, status: gate.status }))
         })}\n`
     );
+    if (options.enforce && !report.footprintReady) {
+        process.exitCode = 2;
+    }
 }
 
 if (process.argv[1] && realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])) {

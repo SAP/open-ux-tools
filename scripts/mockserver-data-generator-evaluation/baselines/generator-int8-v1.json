@@ -1,0 +1,15 @@
+{
+    "schemaVersion": 1,
+    "id": "mockgen-pilot-int8-generator-v1",
+    "lifecycle": "frozen-development-baseline",
+    "artifact": {
+        "bytes": 164924986,
+        "sha256": "8241c95937623d6b5e61e6057f85e3ab5ede22a2bc0e57f221092db9bc8011da"
+    },
+    "targetFormula": "floor(artifact.bytes / 2)",
+    "source": {
+        "modelManifestSha256": "9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961",
+        "pilotExportReportSha256": "1e79460315eca0d292eb1e5ad5034b8f85e2c07427d305223a356e5813614540"
+    },
+    "recordFingerprint": "6ee61ae3a2e6e2790064a529b6ef4fc71f5779371e79bed036fb997cd82c1398"
+}
