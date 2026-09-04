@@ -1,0 +1,242 @@
+{
+  "type": "annotation-group",
+  "range": "[(0,0)..(6,1)]",
+  "name": {
+    "type": "identifier",
+    "range": "[(0,0)..(0,2)]",
+    "value": "UI",
+    "quoted": false
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,3)..(0,4)]",
+    "value": ":"
+  },
+  "items": {
+    "type": "annotation-group-items",
+    "range": "[(0,5)..(6,1)]",
+    "openToken": {
+      "type": "token",
+      "range": "[(0,5)..(0,6)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(6,0)..(6,1)]",
+      "value": "}"
+    },
+    "items": [
+      {
+        "type": "flattened-expression",
+        "range": "[(1,4)..(1,26)]",
+        "path": {
+          "type": "flattened-path",
+          "range": "[(1,4)..(1,23)]",
+          "value": "Chart#test.$Type",
+          "segments": [
+            {
+              "type": "flattened-annotation-segment",
+              "range": "[(1,6)..(1,16)]",
+              "prefix": false,
+              "term": {
+                "type": "identifier",
+                "range": "[(1,6)..(1,11)]",
+                "value": "Chart",
+                "quoted": true
+              },
+              "qualifier": {
+                "type": "qualifier",
+                "range": "[(1,12)..(1,16)]",
+                "value": "test"
+              }
+            },
+            {
+              "type": "flattened-property-segment",
+              "range": "[(1,18)..(1,23)]",
+              "name": {
+                "type": "identifier",
+                "range": "[(1,18)..(1,23)]",
+                "value": "$Type",
+                "quoted": false
+              }
+            }
+          ],
+          "separators": [
+            {
+              "type": "separator",
+              "range": "[(1,17)..(1,18)]",
+              "value": ".",
+              "escaped": false
+            }
+          ]
+        },
+        "colon": {
+          "type": "token",
+          "range": "[(1,24)..(1,25)]",
+          "value": ":"
+        },
+        "value": {
+          "type": "empty-value",
+          "range": "[(1,25)..(1,26)]"
+        }
+      },
+      {
+        "type": "flattened-expression",
+        "range": "[(2,4)..(2,34)]",
+        "path": {
+          "type": "flattened-path",
+          "range": "[(2,4)..(2,29)]",
+          "value": "Chart#qualifier2.$Type",
+          "segments": [
+            {
+              "type": "flattened-annotation-segment",
+              "range": "[(2,6)..(2,22)]",
+              "prefix": false,
+              "term": {
+                "type": "identifier",
+                "range": "[(2,6)..(2,11)]",
+                "value": "Chart",
+                "quoted": true
+              },
+              "qualifier": {
+                "type": "qualifier",
+                "range": "[(2,12)..(2,22)]",
+                "value": "qualifier2"
+              }
+            },
+            {
+              "type": "flattened-property-segment",
+              "range": "[(2,24)..(2,29)]",
+              "name": {
+                "type": "identifier",
+                "range": "[(2,24)..(2,29)]",
+                "value": "$Type",
+                "quoted": false
+              }
+            }
+          ],
+          "separators": [
+            {
+              "type": "separator",
+              "range": "[(2,23)..(2,24)]",
+              "value": ".",
+              "escaped": false
+            }
+          ]
+        },
+        "colon": {
+          "type": "token",
+          "range": "[(2,30)..(2,31)]",
+          "value": ":"
+        },
+        "value": {
+          "type": "string",
+          "range": "[(2,32)..(2,34)]",
+          "value": "",
+          "openToken": {
+            "type": "token",
+            "range": "[(2,32)..(2,33)]",
+            "value": "'"
+          },
+          "closeToken": {
+            "type": "token",
+            "range": "[(2,33)..(2,34)]",
+            "value": "'"
+          }
+        }
+      },
+      {
+        "type": "annotation",
+        "range": "[(3,4)..(5,5)]",
+        "term": {
+          "type": "path",
+          "range": "[(3,4)..(3,9)]",
+          "value": "Chart",
+          "segments": [
+            {
+              "type": "identifier",
+              "range": "[(3,4)..(3,9)]",
+              "value": "Chart",
+              "quoted": false
+            }
+          ],
+          "separators": []
+        },
+        "colon": {
+          "type": "token",
+          "range": "[(3,10)..(3,11)]",
+          "value": ":"
+        },
+        "value": {
+          "type": "record",
+          "range": "[(3,12)..(5,5)]",
+          "properties": [],
+          "flattenedExpressions": [
+            {
+              "type": "flattened-expression",
+              "range": "[(4,8)..(4,20)]",
+              "path": {
+                "type": "flattened-path",
+                "range": "[(4,8)..(4,20)]",
+                "value": "AxisScaling.",
+                "segments": [
+                  {
+                    "type": "flattened-property-segment",
+                    "range": "[(4,8)..(4,19)]",
+                    "name": {
+                      "type": "identifier",
+                      "range": "[(4,8)..(4,19)]",
+                      "value": "AxisScaling",
+                      "quoted": false
+                    }
+                  },
+                  {
+                    "type": "flattened-property-segment",
+                    "range": "[(4,20)..(4,20)]",
+                    "name": {
+                      "type": "identifier",
+                      "range": "[(4,20)..(4,20)]",
+                      "value": "",
+                      "quoted": false
+                    }
+                  }
+                ],
+                "separators": [
+                  {
+                    "type": "separator",
+                    "range": "[(4,19)..(4,20)]",
+                    "value": ".",
+                    "escaped": false
+                  }
+                ]
+              }
+            }
+          ],
+          "commas": [],
+          "openToken": {
+            "type": "token",
+            "range": "[(3,12)..(3,13)]",
+            "value": "{"
+          },
+          "closeToken": {
+            "type": "token",
+            "range": "[(5,4)..(5,5)]",
+            "value": "}"
+          }
+        }
+      }
+    ],
+    "commas": [
+      {
+        "type": "token",
+        "range": "[(1,26)..(1,27)]",
+        "value": ","
+      },
+      {
+        "type": "token",
+        "range": "[(2,34)..(2,35)]",
+        "value": ","
+      }
+    ]
+  }
+}

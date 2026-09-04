@@ -32,7 +32,7 @@
                                 "valueRange": "[(0,19)..(0,35)]"
                             }
                         },
-                        "contentRange": "[(0,37)..(0,80)]",
+                        "contentRange": "[(0,36)..(0,80)]",
                         "content": [
                             {
                                 "type": "element",

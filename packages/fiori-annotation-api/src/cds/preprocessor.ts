@@ -8,6 +8,7 @@ import {
     ANNOTATION_GROUP_TYPE,
     ANNOTATION_TYPE,
     COLLECTION_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
     RECORD_PROPERTY_TYPE,
     RECORD_TYPE
 } from '@sap-ux/cds-annotation-parser';
@@ -288,7 +289,8 @@ class ChangePreprocessor {
     ): void {
         const childPointers = new Set([
             ...parent.properties.map((_, i) => `${parentPointer}/properties/${i}`),
-            ...(parent.annotations ?? []).map((_, i) => `${parentPointer}/annotations/${i}`)
+            ...(parent.annotations ?? []).map((_, i) => `${parentPointer}/annotations/${i}`),
+            ...(parent.flattenedExpressions ?? []).map((_, i) => `${parentPointer}/flattenedExpressions/${i}`)
         ]);
         for (const indexedValue of deletionMap[parentPointer]) {
             childPointers.delete(indexedValue.change.pointer);
@@ -409,7 +411,7 @@ class ChangePreprocessor {
         greatGrandParent: AstNode | undefined
     ): Deletes | undefined {
         const grandParentPointer = parentPointer.split('/').slice(0, -1).join('/');
-        if (grandParent.type === ANNOTATION_TYPE) {
+        if (grandParent.type === ANNOTATION_TYPE || grandParent.type === FLATTENED_EXPRESSION_TYPE) {
             if (greatGrandParent?.type === TARGET_TYPE || greatGrandParent?.type === ANNOTATION_GROUP_ITEMS_TYPE) {
                 return createDeleteAnnotationChange(grandParentPointer);
             } else {

@@ -2705,7 +2705,7 @@ rating : Rating;
                     expect(text).toMatchSnapshot();
                 });
 
-                test('partial annotation deletion', async () => {
+                test('partial annotation deletion, flattened expression value', async () => {
                     // deletion logic doesn't work correctly with ![]
                     const project = PROJECTS.V4_CDS_START;
                     const root = project.root;
@@ -2734,6 +2734,131 @@ rating : Rating;
                                 uri: project.files.annotations,
                                 pointer:
                                     '/record/propertyValues/0/value/Record/propertyValues/1/value/Record/propertyValues/0/value'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion, nested record', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion, nested record property', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.Test: true,
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion, nested record property value', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.Test: true,
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0/value'
                             }
                         ],
                         'IncidentService',
@@ -4391,6 +4516,94 @@ rating : Rating;
             expect(text).toMatchSnapshot();
         });
 
+        test('update record property', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            using from '../../srv/common';
+            annotate IncidentService.Incidents with @(
+                UI.HeaderInfo.TypeNamePlural : 'TypeNamePlural was here on app',
+                UI.HeaderInfo.Title : {
+                    Value : title,
+                },
+            );`;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.HeaderInfo`
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value',
+                        content: {
+                            type: 'primitive',
+                            expressionType: 'String',
+                            value: 'New text'
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('update nested record property', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            using from '../../srv/common';
+            annotate IncidentService.Incidents with @(
+                UI.HeaderInfo.TypeNamePlural : 'TypeNamePlural was here on app',
+                UI.HeaderInfo.Title : {
+                    Value.Property : title,
+                },
+            );`;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.HeaderInfo`
+                        },
+                        uri: project.files.annotations,
+                        pointer:
+                            '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'String',
+                                String: 'New text'
+                            },
+                            previousType: 'Path'
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
         test('delete record property value', async () => {
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
@@ -4405,6 +4618,11 @@ rating : Rating;
                 },
                 UI.HeaderInfo : {
                     Title.Value: title
+                },
+                UI.HeaderInfo#abc : {
+                    Title: {
+                        Value: title,
+                    }
                 }
             );`;
             fsEditor.write(path, testData);
@@ -4437,7 +4655,17 @@ rating : Rating;
                             term: `${UI}.HeaderInfo`
                         },
                         uri: project.files.annotations,
-                        pointer: '/record/propertyValues/2/record/propertyValues/0/value'
+                        pointer: '/record/propertyValues/2/value/Record/propertyValues/0/value'
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.HeaderInfo`,
+                            qualifier: 'abc'
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value/Record/propertyValues/0/value'
                     }
                 ],
                 'IncidentService',

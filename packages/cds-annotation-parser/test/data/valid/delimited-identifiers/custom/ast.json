@@ -1,34 +1,51 @@
 {
-  "type": "annotation",
+  "type": "flattened-expression",
   "range": "[(0,0)..(0,20)]",
-  "term": {
-    "type": "path",
+  "path": {
+    "type": "flattened-path",
     "range": "[(0,0)..(0,20)]",
     "value": "xyz.abc.fgh.thing",
     "segments": [
       {
-        "type": "identifier",
+        "type": "flattened-annotation-segment",
         "range": "[(0,0)..(0,3)]",
-        "value": "xyz",
-        "quoted": false
+        "prefix": false,
+        "term": {
+          "type": "identifier",
+          "range": "[(0,0)..(0,3)]",
+          "value": "xyz",
+          "quoted": false
+        }
       },
       {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,6)..(0,9)]",
-        "value": "abc",
-        "quoted": true
+        "name": {
+          "type": "identifier",
+          "range": "[(0,6)..(0,9)]",
+          "value": "abc",
+          "quoted": true
+        }
       },
       {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,10)..(0,13)]",
-        "value": "fgh",
-        "quoted": true
+        "name": {
+          "type": "identifier",
+          "range": "[(0,10)..(0,13)]",
+          "value": "fgh",
+          "quoted": true
+        }
       },
       {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,15)..(0,20)]",
-        "value": "thing",
-        "quoted": false
+        "name": {
+          "type": "identifier",
+          "range": "[(0,15)..(0,20)]",
+          "value": "thing",
+          "quoted": false
+        }
       }
     ],
     "separators": [
