@@ -17,6 +17,47 @@ Learned mode also requires the optional `onnxruntime-node` peer. Each model
 manifest pins an exact runtime version, which must match the installed runtime;
 the initial preview supports the `1.24.x` line.
 
+## Prepare the classifier and SFT model
+
+The npm package contains the classifier and SFT runtimes, but not their model
+weights. Given an approved immutable manifest, prepare its checksum-bound files
+once and then verify the same cache without network access:
+
+```bash
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js prepare \
+  --manifest /absolute/path/to/model-manifest.json \
+  --cache /absolute/path/to/mockgen-model-cache
+
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify \
+  --manifest /absolute/path/to/model-manifest.json \
+  --cache /absolute/path/to/mockgen-model-cache
+```
+
+`prepare` accepts an optional `--mirror <https-base-url>` and a bounded
+`--timeout-ms <milliseconds>`. It downloads only the exact bytes named by the
+manifest and rejects size or SHA-256 mismatches. `verify` performs no network
+access. Command output contains bundle and component fingerprints, but not
+artifact URLs or local cache paths.
+
+After verification, configure the standard mockserver provider to use the same
+manifest and cache:
+
+```yaml
+mockDataGenerator:
+  name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+  options:
+    mode: auto
+    modelManifestPath: /absolute/path/to/model-manifest.json
+    modelCacheDirectory: /absolute/path/to/mockgen-model-cache
+    modelOffline: true
+```
+
+The application also needs the exact `onnxruntime-node` version pinned by the
+manifest when exercising learned mode. An approved public model manifest is not
+yet shipped by this package; development can use a production-format manifest
+that references approved internal or pilot-local artifacts without copying its
+weights into this repository.
+
 ## FE mockserver integration
 
 The standard mockserver loads the CommonJS provider export:

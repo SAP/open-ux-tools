@@ -77,6 +77,39 @@ The archive is portable, but it is not inherently air-gapped: transitive
 dependencies must be available from a registry or the target package-manager
 cache.
 
+## Exercise the classifier and SFT model
+
+The default installer canary intentionally proves the package and standard
+mockserver integration without downloading model weights. To test the learned
+path after installation, prepare a production-format manifest that references
+approved internal or pilot-local artifacts with the installed generator CLI:
+
+~~~bash
+APP_ROOT=/absolute/path/to/fiori-app
+MODEL_MANIFEST=/absolute/path/to/model-manifest.json
+MODEL_CACHE="$APP_ROOT/.mockserver-data-generator-dev/model-cache"
+
+cd "$APP_ROOT"
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js prepare \
+  --manifest "$MODEL_MANIFEST" \
+  --cache "$MODEL_CACHE"
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify \
+  --manifest "$MODEL_MANIFEST" \
+  --cache "$MODEL_CACHE"
+~~~
+
+Install the exact `onnxruntime-node` version pinned by that manifest, then add
+`modelManifestPath`, `modelCacheDirectory`, and `modelOffline: true` to the
+existing `mockDataGenerator.options` in `ui5-mock.yaml`. Keep the existing
+`sap-fe-mockserver` entry and `npm run start-mock` command. This is an explicit
+development workflow: the kit does not contain a model manifest, native runtime,
+or model weights, and it never silently downloads them during installation.
+
+Run the default deterministic canary separately from the learned-path check so
+a package-wiring pass is not mistaken for classifier/SFT readiness. An actual
+BAS run remains necessary to qualify BAS proxy, certificate, filesystem, and
+native-runtime behavior.
+
 ## Install an extracted archive
 
 ~~~bash

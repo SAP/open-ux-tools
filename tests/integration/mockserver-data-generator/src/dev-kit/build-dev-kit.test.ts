@@ -22,7 +22,7 @@ function temporaryDirectory(): string {
     return directory;
 }
 
-function makePackageTarball(options?: { includeDist?: boolean; packageName?: string }): string {
+function makePackageTarball(options?: { includeBin?: boolean; includeDist?: boolean; packageName?: string }): string {
     const root = temporaryDirectory();
     const packageRoot = join(root, 'package');
     mkdirSync(join(packageRoot, 'dist'), { recursive: true });
@@ -32,11 +32,15 @@ function makePackageTarball(options?: { includeDist?: boolean; packageName?: str
             name: options?.packageName ?? '@sap-ux/mockserver-data-generator',
             version: '0.1.0',
             main: 'dist/index.js',
+            bin: { 'mockserver-data-generator': 'dist/cli.js' },
             exports: { '.': './dist/index.js' }
         })
     );
     if (options?.includeDist !== false) {
         writeFileSync(join(packageRoot, 'dist', 'index.js'), 'export const ok = true;\n');
+    }
+    if (options?.includeBin !== false) {
+        writeFileSync(join(packageRoot, 'dist', 'cli.js'), '#!/usr/bin/env node\n');
     }
     const archive = join(root, 'package.tgz');
     execFileSync('tar', ['-czf', archive, '-C', root, 'package']);
@@ -68,6 +72,7 @@ describe('development kit artifact validation', () => {
         expect(artifact.packageName).toBe('@sap-ux/mockserver-data-generator');
         expect(artifact.version).toBe('0.1.0');
         expect(artifact.entries).toContain('package/dist/index.js');
+        expect(artifact.entries).toContain('package/dist/cli.js');
         expect(artifact.bytes).toBeGreaterThan(0);
         expect(artifact.sha256).toMatch(/^[a-f\d]{64}$/);
     });
@@ -76,6 +81,9 @@ describe('development kit artifact validation', () => {
         expect(() => inspectPackedArtifact(makePackageTarball(), '@example/wrong')).toThrow(/package name/i);
         expect(() =>
             inspectPackedArtifact(makePackageTarball({ includeDist: false }), '@sap-ux/mockserver-data-generator')
+        ).toThrow(/build output/i);
+        expect(() =>
+            inspectPackedArtifact(makePackageTarball({ includeBin: false }), '@sap-ux/mockserver-data-generator')
         ).toThrow(/build output/i);
     });
 

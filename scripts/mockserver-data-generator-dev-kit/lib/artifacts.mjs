@@ -112,6 +112,7 @@ export function inspectPackedArtifact(archivePath, expectedName, expectedVersion
         packageJson.main,
         packageJson.types,
         packageJson.typings,
+        ...collectExportTargets(packageJson.bin),
         ...collectExportTargets(packageJson.exports)
     ]
         .filter((target) => typeof target === 'string' && /^(?:\.\/)?dist\//u.test(target))

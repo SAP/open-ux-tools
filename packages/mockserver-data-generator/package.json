@@ -14,6 +14,9 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "bin": {
+        "mockserver-data-generator": "./dist/cli.js"
+    },
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",

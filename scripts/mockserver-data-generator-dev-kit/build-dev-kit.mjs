@@ -139,6 +139,26 @@ package-manager cache, \`--verify\` to run bounded metadata and entity HTTP
 canaries, and \`--restore\` to restore the journaled application files. The
 setup keeps one \`sap-fe-mockserver\`, one \`ui5-mock.yaml\`, and the existing
 \`start-mock\` flow. Model weights are not included.
+
+## Optional classifier and SFT test
+
+After setup, a production-format immutable manifest that references approved
+internal or pilot-local artifacts can be prepared explicitly with the installed
+package:
+
+\`\`\`bash
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js prepare \\
+  --manifest /absolute/path/to/model-manifest.json \\
+  --cache "$PWD/.mockserver-data-generator-dev/model-cache"
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify \\
+  --manifest /absolute/path/to/model-manifest.json \\
+  --cache "$PWD/.mockserver-data-generator-dev/model-cache"
+\`\`\`
+
+Install the exact \`onnxruntime-node\` version pinned by the manifest and point
+\`mockDataGenerator.options\` at that manifest and cache with
+\`modelOffline: true\`. The default canary remains a separate deterministic
+package-wiring check; this kit contains no model manifest, runtime, or weights.
 `;
 }
 
