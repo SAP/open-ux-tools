@@ -220,6 +220,28 @@ function modelDiagnostics(
     );
 }
 
+/**
+ * Distinguish a host-cancelled generation from a learned-component failure.
+ * @param {unknown} error Rejection observed from the learned component.
+ * @param {object} signal Signal passed to that component.
+ * @returns {boolean} Whether cancellation, rather than component failure, caused the rejection.
+ */
+function isGenerationCancellation(error: unknown, signal: AbortSignal): boolean {
+    if (!signal.aborted || error !== signal.reason) {
+        return false;
+    }
+    if (error !== null && typeof error === 'object') {
+        try {
+            if (Object.getOwnPropertyDescriptor(error, 'code')?.value === 'SFT_INFERENCE_TIMEOUT') {
+                return false;
+            }
+        } catch {
+            return false;
+        }
+    }
+    return true;
+}
+
 /** CommonJS provider constructor loaded by @sap-ux/fe-mockserver-core. */
 class FeMockserverDataGenerator {
     public readonly apiVersion = 1 as const;
@@ -241,19 +263,28 @@ class FeMockserverDataGenerator {
         if (this.configuration.generation.mode === 'deterministic' || !this.configuration.model) {
             return Promise.resolve(undefined);
         }
-        this.runtimePromise ??= this.dependencies.loadRuntime(this.configuration.model, signal).catch(() =>
-            Object.freeze({
-                runtime: Object.freeze({}),
-                diagnostics: Object.freeze([
-                    Object.freeze({
-                        code: 'MODEL_CACHE_UNAVAILABLE' as const,
-                        message:
-                            'The learned runtime could not be initialized; deterministic generation remains active.'
-                    })
-                ]),
-                dispose: async () => undefined
-            })
-        );
+        if (!this.runtimePromise) {
+            const attempt = this.dependencies.loadRuntime(this.configuration.model, signal).catch((error) => {
+                if (isGenerationCancellation(error, signal)) {
+                    if (this.runtimePromise === attempt) {
+                        this.runtimePromise = undefined;
+                    }
+                    throw error;
+                }
+                return Object.freeze({
+                    runtime: Object.freeze({}),
+                    diagnostics: Object.freeze([
+                        Object.freeze({
+                            code: 'MODEL_CACHE_UNAVAILABLE' as const,
+                            message:
+                                'The learned runtime could not be initialized; deterministic generation remains active.'
+                        })
+                    ]),
+                    dispose: async () => undefined
+                });
+            });
+            this.runtimePromise = attempt;
+        }
         return this.runtimePromise;
     }
 
@@ -273,7 +304,9 @@ class FeMockserverDataGenerator {
                     try {
                         return await delegate.classify(...args);
                     } catch (error) {
-                        this.classifierFailed = true;
+                        if (!isGenerationCancellation(error, args[1])) {
+                            this.classifierFailed = true;
+                        }
                         throw error;
                     }
                 }
@@ -288,10 +321,20 @@ class FeMockserverDataGenerator {
                     if (this.sftFailed) {
                         throw new Error('SFT circuit is open');
                     }
+                    const signal = args[1];
+                    const openCircuitForRuntimeAbort = (): void => {
+                        if (!isGenerationCancellation(signal.reason, signal)) {
+                            this.sftFailed = true;
+                        }
+                    };
+                    signal.addEventListener('abort', openCircuitForRuntimeAbort, { once: true });
+                    if (signal.aborted) {
+                        openCircuitForRuntimeAbort();
+                    }
                     const operation = this.sftQueue
                         .catch(() => undefined)
                         .then(() => {
-                            args[1].throwIfAborted();
+                            signal.throwIfAborted();
                             if (this.sftFailed) {
                                 throw new Error('SFT circuit is open');
                             }
@@ -304,8 +347,12 @@ class FeMockserverDataGenerator {
                     try {
                         return await operation;
                     } catch (error) {
-                        this.sftFailed = true;
+                        if (!isGenerationCancellation(error, args[1])) {
+                            this.sftFailed = true;
+                        }
                         throw error;
+                    } finally {
+                        signal.removeEventListener('abort', openCircuitForRuntimeAbort);
                     }
                 }
             });
@@ -408,7 +455,7 @@ class FeMockserverDataGenerator {
     async dispose(): Promise<void> {
         if (this.disposed) return;
         this.disposed = true;
-        const runtime = await this.runtimePromise;
+        const runtime = await this.runtimePromise?.catch(() => undefined);
         await runtime?.dispose();
     }
 }

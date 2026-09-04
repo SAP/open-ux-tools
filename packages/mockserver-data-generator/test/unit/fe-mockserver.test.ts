@@ -160,6 +160,248 @@ describe('standard FE mockserver provider', () => {
         await provider.dispose();
     });
 
+    it('does not permanently open learned-component circuits when a generation is cancelled', async () => {
+        const classify = jest.fn(async (_input, signal: AbortSignal) => {
+            signal.throwIfAborted();
+            return { role: 'unknown', confidence: 0, source: 'classifier' as const };
+        });
+        const generate = jest.fn(async ({ rowCount }: { rowCount: number }, signal: AbortSignal) => {
+            signal.throwIfAborted();
+            return {
+                rows: Array.from({ length: rowCount }, () => ({ Opaque: 'Recovered learned value' }))
+            };
+        });
+        const provider = new FeMockserverDataGenerator(
+            {
+                rowsPerEntity: 1,
+                mode: 'learned',
+                modelManifestPath: '/verified/manifest.json',
+                modelOffline: true,
+                generatedDataCache: false
+            },
+            {
+                loadRuntime: async () => ({
+                    runtime: {
+                        classifier: { fingerprint: 'classifier', classify },
+                        sft: { fingerprint: 'sft', generate }
+                    },
+                    diagnostics: [],
+                    dispose: async () => undefined
+                })
+            }
+        );
+        const context = {
+            contractVersion: 1 as const,
+            service: { urlPath: '/cancelled-records', odataVersion: '4.0' as const },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer><EntityType Name="Record"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /><Property Name="Opaque" Type="Edm.String" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Records', kind: 'entity-set' as const }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() }
+        };
+        const warm = await provider.generate({ ...context, signal: new AbortController().signal });
+        expect(warm.resources.Records?.[0]?.Opaque).toBe('Recovered learned value');
+        classify.mockClear();
+        generate.mockClear();
+        const cancelled = new AbortController();
+        cancelled.abort(new Error('Reload superseded'));
+
+        const first = await provider.generate({ ...context, signal: cancelled.signal });
+        const second = await provider.generate({ ...context, signal: new AbortController().signal });
+
+        expect(first.resources.Records?.[0]?.Opaque).toBe('Opaque 1');
+        expect(second.resources.Records?.[0]?.Opaque).toBe('Recovered learned value');
+        expect(second.diagnostics.filter(({ code }) => code.endsWith('_INFERENCE_FAILED'))).toHaveLength(0);
+        expect(classify).toHaveBeenCalledTimes(3);
+        expect(generate).toHaveBeenCalledTimes(1);
+        await provider.dispose();
+    });
+
+    it('opens the classifier circuit when a runtime failure races with host cancellation', async () => {
+        const cancelled = new AbortController();
+        const classify = jest.fn(async () => {
+            cancelled.abort(new Error('Reload superseded'));
+            throw Object.assign(new Error('classifier failed independently'), { name: 'AbortError' });
+        });
+        const provider = new FeMockserverDataGenerator(
+            {
+                rowsPerEntity: 1,
+                mode: 'learned',
+                modelManifestPath: '/verified/manifest.json',
+                modelOffline: true,
+                generatedDataCache: false
+            },
+            {
+                loadRuntime: async () => ({
+                    runtime: { classifier: { fingerprint: 'classifier', classify } },
+                    diagnostics: [],
+                    dispose: async () => undefined
+                })
+            }
+        );
+        const context = {
+            contractVersion: 1 as const,
+            service: { urlPath: '/raced-cancellation', odataVersion: '4.0' as const },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edm"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer><EntityType Name="Record"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /><Property Name="Opaque" Type="Edm.String" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Records', kind: 'entity-set' as const }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() }
+        };
+
+        await provider.generate({ ...context, signal: cancelled.signal });
+        await provider.generate({ ...context, signal: new AbortController().signal });
+
+        expect(classify).toHaveBeenCalledTimes(1);
+        await provider.dispose();
+    });
+
+    it('retries first-use learned-runtime initialization after host cancellation', async () => {
+        let firstAttemptStarted!: () => void;
+        const firstAttempt = new Promise<void>((resolve) => {
+            firstAttemptStarted = resolve;
+        });
+        let attempt = 0;
+        const loadRuntime = jest.fn(async (_options: unknown, signal: AbortSignal): Promise<LearnedRuntimeHandle> => {
+            attempt += 1;
+            if (attempt === 1) {
+                firstAttemptStarted();
+                return new Promise<LearnedRuntimeHandle>((_resolve, reject) => {
+                    signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+                });
+            }
+            return {
+                runtime: {
+                    sft: {
+                        fingerprint: 'sft',
+                        generate: async ({ rowCount }) => ({
+                            rows: Array.from({ length: rowCount }, () => ({ Opaque: 'Recovered after reload' }))
+                        })
+                    }
+                },
+                diagnostics: [],
+                dispose: async () => undefined
+            };
+        });
+        const provider = new FeMockserverDataGenerator(
+            {
+                rowsPerEntity: 1,
+                mode: 'learned',
+                modelManifestPath: '/verified/manifest.json',
+                modelOffline: true,
+                generatedDataCache: false
+            },
+            { loadRuntime }
+        );
+        const context = {
+            contractVersion: 1 as const,
+            service: { urlPath: '/initialization-cancelled', odataVersion: '4.0' as const },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer><EntityType Name="Record"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /><Property Name="Opaque" Type="Edm.String" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Records', kind: 'entity-set' as const }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() }
+        };
+        const cancelled = new AbortController();
+        const staleGeneration = provider.generate({ ...context, signal: cancelled.signal });
+        await firstAttempt;
+        cancelled.abort(new Error('Reload superseded'));
+
+        await expect(staleGeneration).rejects.toThrow('Reload superseded');
+        const recovered = await provider.generate({ ...context, signal: new AbortController().signal });
+
+        expect(recovered.resources.Records?.[0]?.Opaque).toBe('Recovered after reload');
+        expect(loadRuntime).toHaveBeenCalledTimes(2);
+        await provider.dispose();
+    });
+
+    it('keeps the SFT circuit open after an inference timeout', async () => {
+        const generate = jest.fn(
+            async (_input: unknown, signal: AbortSignal) =>
+                new Promise<never>((_resolve, reject) => {
+                    signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+                })
+        );
+        const provider = new FeMockserverDataGenerator(
+            {
+                rowsPerEntity: 1,
+                sftTimeoutMs: 5,
+                mode: 'learned',
+                modelManifestPath: '/verified/manifest.json',
+                modelOffline: true,
+                generatedDataCache: false
+            },
+            {
+                loadRuntime: async () => ({
+                    runtime: { sft: { fingerprint: 'sft', generate } },
+                    diagnostics: [],
+                    dispose: async () => undefined
+                })
+            }
+        );
+        const context = {
+            contractVersion: 1 as const,
+            service: { urlPath: '/timed-out-records', odataVersion: '4.0' as const },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer><EntityType Name="Record"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /><Property Name="Opaque" Type="Edm.String" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Records', kind: 'entity-set' as const }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() }
+        };
+
+        const first = await provider.generate({ ...context, signal: new AbortController().signal });
+        const second = await provider.generate({ ...context, signal: new AbortController().signal });
+
+        expect(first.resources.Records?.[0]?.Opaque).toBe('Opaque 1');
+        expect(second.resources.Records?.[0]?.Opaque).toBe('Opaque 1');
+        expect(first.diagnostics).toContainEqual(expect.objectContaining({ code: 'SFT_INFERENCE_FAILED' }));
+        expect(second.diagnostics).toContainEqual(expect.objectContaining({ code: 'SFT_INFERENCE_FAILED' }));
+        expect(generate).toHaveBeenCalledTimes(1);
+        await provider.dispose();
+    });
+
+    it('opens the SFT circuit when a non-cooperative delegate outlives its inference timeout', async () => {
+        let resolveDelegate!: (value: { rows: Array<{ Opaque: string }> }) => void;
+        const generate = jest.fn(
+            async () =>
+                new Promise<{ rows: Array<{ Opaque: string }> }>((resolve) => {
+                    resolveDelegate = resolve;
+                })
+        );
+        const provider = new FeMockserverDataGenerator(
+            {
+                rowsPerEntity: 1,
+                sftTimeoutMs: 5,
+                mode: 'learned',
+                modelManifestPath: '/verified/manifest.json',
+                modelOffline: true,
+                generatedDataCache: false
+            },
+            {
+                loadRuntime: async () => ({
+                    runtime: { sft: { fingerprint: 'sft', generate } },
+                    diagnostics: [],
+                    dispose: async () => undefined
+                })
+            }
+        );
+        const context = {
+            contractVersion: 1 as const,
+            service: { urlPath: '/non-cooperative-sft', odataVersion: '4.0' as const },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer><EntityType Name="Record"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /><Property Name="Opaque" Type="Edm.String" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Records', kind: 'entity-set' as const }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() },
+            signal: new AbortController().signal
+        };
+
+        const first = await provider.generate(context);
+        resolveDelegate({ rows: [{ Opaque: 'Too late' }] });
+        await new Promise<void>((resolve) => setImmediate(resolve));
+        const second = await provider.generate(context);
+
+        expect(first.resources.Records?.[0]?.Opaque).toBe('Opaque 1');
+        expect(second.resources.Records?.[0]?.Opaque).toBe('Opaque 1');
+        expect(generate).toHaveBeenCalledTimes(1);
+        await provider.dispose();
+    });
+
     it('caps internal diagnostics at the host contract boundary', async () => {
         const entities = Array.from(
             { length: 101 },

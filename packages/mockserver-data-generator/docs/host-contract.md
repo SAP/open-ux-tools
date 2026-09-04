@@ -101,8 +101,9 @@ generation, or filesystem mutation. For each `generate` call, the adapter:
 4. Returns immutable per-resource rows, safe diagnostics, and component
    fingerprints.
 5. Observes the host `AbortSignal`; each entity-level SFT call also has a
-   bounded timeout and the SFT circuit opens after the first runtime failure in
-   that generation.
+   bounded timeout. Host cancellation stops the stale learned work without
+   poisoning later reloads. A genuine inference failure opens the affected
+   component circuit for the remainder of the process.
 
 `dispose()` may be synchronous or asynchronous. At service-registry shutdown it
 releases model sessions owned by that service adapter and tolerates repeated or

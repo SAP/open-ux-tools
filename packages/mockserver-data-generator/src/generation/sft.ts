@@ -84,10 +84,12 @@ async function generateWithinBudget(
     if (parentSignal.aborted) {
         abortFromParent();
     }
-    const timeout = setTimeout(
-        () => controller.abort(new Error(`SFT inference timed out after ${timeoutMs} ms`)),
-        timeoutMs
-    );
+    const timeout = setTimeout(() => {
+        const error = Object.assign(new Error(`SFT inference timed out after ${timeoutMs} ms`), {
+            code: 'SFT_INFERENCE_TIMEOUT' as const
+        });
+        controller.abort(error);
+    }, timeoutMs);
     try {
         return await Promise.race([Promise.resolve().then(() => sft.generate(input, controller.signal)), aborted]);
     } finally {
