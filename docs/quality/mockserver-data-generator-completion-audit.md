@@ -5,14 +5,14 @@ Date: 2026-09-04
 Candidate source:
 
 - exact realism runtime package: `817382b88f2cd88a84eb093410ad2a3a367b5505`
-- post-evidence production gate: `3d2e64c16ea14beb2fc180df2e63bdfa5de1df1f`
-- development kit source: `3d2e64c16ea14beb2fc180df2e63bdfa5de1df1f`
+- post-evidence production gate: `88e0f6b878e02cbd7e92c6de96ab23c57c5de9f0`
+- development kit source: `88e0f6b878e02cbd7e92c6de96ab23c57c5de9f0`
 - current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - development-kit `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - portable development-kit fingerprint:
-  `e502705429c5c09c8714f677ca2d73d5e23448345362d86f89beb0fb7f807652`
+  `87c95ffaea3fee278cdacccfaf42cd6060459727a1f24fbd5b011a5088817706`
 - portable development-kit SHA-256:
-  `d1b85404cb9e052a77a95eb1a1b10072fb4f9a1f635ff5f4b4cf3fa82881df37`
+  `038dce4c144c8c154306fb93cd288dc9af1da93092c800ed0db1f86826761740`
 
 ## Verdict
 
@@ -65,9 +65,9 @@ means a measured threshold was missed by the named candidate.
 | Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, FE diagnostic/fallback, and CAP startup tests pass | Repeat against published FE and CAP packages on release platforms |
 | Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or CAP publication; CAP startup remains available with stable reporting | Repeat against published FE and CAP packages on release platforms |
 | UI5 config and application writer | proven | one middleware, one `ui5-mock.yaml`, one existing `start-mock`; add/remove and writer tests pass | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | current 544,369-byte archive installs exact tarballs, verifies deterministic V4 and classifier/SFT V2 paths through the standard Fiori mockserver, and restores both fixtures byte-for-byte | Run the recorded procedure in an actual BAS dev space |
+| Local/BAS development kit | proven locally / platform | current 545,383-byte archive installs exact tarballs, verifies deterministic V4 and classifier/SFT V2 paths through the standard Fiori mockserver, and restores both fixtures byte-for-byte | Run the recorded procedure in an actual BAS dev space |
 | Native CAP adapter | proven locally | 20 tests cover opt-in profiles, preservation of existing persistence data, FK ordering, learned fallback, metadata/result ceiling fallback, generated cache, in-memory SQLite, restart determinism, and package boundary | Cross-platform and published-package canary |
-| Package boundary | proven | current exact-kit generator tarball is 75,878 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
+| Package boundary | proven | current exact-kit generator tarball is 76,855 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
 | Total installed/cache footprint | proven locally / distribution pending | exact evaluation- and integration-bound `darwin-arm64` footprint: 264,636,488 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
@@ -88,9 +88,9 @@ means a measured threshold was missed by the named candidate.
 | development kit, degradation, and evaluation harness | 11 suites, 98 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 20 tests passed; 86.72% statement coverage; build passed; lint has zero errors |
-| exact deterministic archive canary | provider executed; metadata passed; one row returned; 28.227 ms generation; 29.217 ms host; exact restore passed |
-| exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,506.964 ms runtime initialization; 2,745.367 ms generation; 2,746.204 ms host; exact restore passed |
-| current package archive | 75,878 / 5,242,880 bytes, pass |
+| exact deterministic archive canary | provider executed; metadata passed; one row returned; 18.502 ms verified generated-data cache path; 19.352 ms host; exact restore passed |
+| exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,412.620 ms runtime initialization; 2,623.729 ms generation; 2,624.564 ms host; exact restore passed |
+| current package archive | 76,855 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
 | experimental platform-runtime total installed and cache | 264,636,488 / 314,572,800 bytes, pass |

@@ -334,10 +334,34 @@ V4 and retained-model OData V2 installs, HTTP canaries, and restores.
 - Learned timing: 1,506.964 ms runtime initialization; 2,745.367 ms whole-service generation; 2,746.204 ms host provider duration
 - Restore verification: both application fixtures matched their original source files byte for byte; generated YAML and recovery directories were absent; both disposable applications and the copied 192,167,584-byte model cache were removed
 
-The current handoff archive is
+The metadata-boundary handoff archive was
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-e502705429c5c09c.tgz`.
+It is retained as historical evidence and is superseded by the generated-result
+boundary archive below.
+
+## Current generated-result-boundary archive canary
+
+After the generator and native CAP adapter gained the same fixed 64 MiB UTF-8
+aggregate result ceiling as the standard FE host, the development kit was
+rebuilt from clean worktrees. The exact archive completed separate deterministic
+OData V4 and retained-model OData V2 installs, HTTP canaries, and restores.
+
+- Dev-kit fingerprint: `87c95ffaea3fee278cdacccfaf42cd6060459727a1f24fbd5b011a5088817706`
+- Archive SHA-256: `038dce4c144c8c154306fb93cd288dc9af1da93092c800ed0db1f86826761740`
+- Archive size: 545,383 bytes; 10 entries
+- Generator tarball: 76,855 bytes, SHA-256 `ef649a53e91411c8ce235131a600c921325f8c79ecbc4b0987d8519c72af0519`
+- Core tarball: 157,298 bytes, SHA-256 `bac3b001f277d090e807f7864bffb2fb392a0f65cc85ab158be36ef912727509`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `88e0f6b878e02cbd7e92c6de96ab23c57c5de9f0` and clean `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`; reproducible
+- Deterministic verification: a real 614-package install produced exactly one `sap-fe-mockserver`; the provider executed; OData V4 `$metadata` passed; `Products?$top=1` returned one row; the verified generated-data cache path took 18.502 ms and the host provider took 19.352 ms
+- Learned verification: a real 635-package install used exact `onnxruntime-node@1.24.3`; retained manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`; both classifier and SFT were ready; `providerExecuted: true`; `learnedRuntimeVerified: true`; OData V2 `$metadata` passed; and `Products?$top=1` returned one row
+- Learned timing: 1,412.620 ms runtime initialization; 2,623.729 ms whole-service generation; 2,624.564 ms host provider duration
+- Restore verification: both application fixtures matched their original source files byte for byte; generated YAML and recovery directories were absent; both disposable applications and the copied 192,167,584-byte model cache were removed
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-87c95ffaea3fee27.tgz`.
 Its SHA-256 must be verified before extraction. It supersedes the
-safe-diagnostics archive for new local or BAS functional testing.
+metadata-boundary archive for new local or BAS functional testing.
 
 ## Scope boundary
 
