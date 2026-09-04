@@ -292,7 +292,9 @@ export async function setupLocalFioriApp({
         assertSafeStateRoot(canonicalAppRoot, stateRoot);
         assertSafeExistingFile(canonicalAppRoot, journalPath);
         const journal = JSON.parse(readFileSync(journalPath, 'utf8'));
-        const dependenciesOnly = ['restoring-dependencies', 'restore-reconciliation-failed'].includes(journal.status);
+        const dependenciesOnly = ['rolled-back', 'restoring-dependencies', 'restore-reconciliation-failed'].includes(
+            journal.status
+        );
         if (!dependenciesOnly) {
             assertPostHashes(canonicalAppRoot, journal.files);
             restoreFiles(canonicalAppRoot, journal.files);

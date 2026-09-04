@@ -313,6 +313,53 @@ describe('transactional local setup', () => {
         expect(existsSync(join(app, 'ui5-mock.yaml'))).toBe(false);
     });
 
+    test('retries dependency reconciliation after installation and automatic rollback both fail', async () => {
+        const app = temporaryDirectory('mockgen-rollback-retry-app-');
+        const kit = temporaryDirectory('mockgen-rollback-retry-kit-');
+        writeApplication(app);
+        writeKit(kit);
+        const original = readFileSync(join(app, 'package.json'), 'utf8');
+        const configure = async ({ appRoot }: { appRoot: string }): Promise<void> => {
+            writeFileSync(join(appRoot, 'package.json'), '{"changed":true}\n');
+            writeFileSync(join(appRoot, 'ui5-mock.yaml'), 'changed: true\n');
+        };
+        const failedRunner = jest
+            .fn<() => Promise<void>>()
+            .mockRejectedValueOnce(new Error('install failed'))
+            .mockRejectedValueOnce(new Error('automatic dependency rollback failed'));
+
+        await expect(
+            setupLocalFioriApp({
+                appRoot: app,
+                kitRoot: kit,
+                configure,
+                verifyInstalled: () => ({ installed: true }),
+                runner: failedRunner
+            })
+        ).rejects.toThrow(/install failed/i);
+        expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(original);
+        expect(existsSync(join(app, 'ui5-mock.yaml'))).toBe(false);
+        expect(
+            JSON.parse(readFileSync(join(app, '.mockserver-data-generator-dev', 'recovery.json'), 'utf8'))
+        ).toMatchObject({
+            status: 'rolled-back',
+            dependencyRollbackError: 'automatic dependency rollback failed'
+        });
+
+        const retryRunner = jest.fn(async () => undefined);
+        const restored = await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: kit,
+            restore: true,
+            runner: retryRunner
+        });
+
+        expect(restored.status).toBe('restored');
+        expect(retryRunner).toHaveBeenCalledTimes(1);
+        expect(readFileSync(join(app, 'package.json'), 'utf8')).toBe(original);
+        expect(existsSync(join(app, '.mockserver-data-generator-dev'))).toBe(false);
+    });
+
     test('refuses restore after a developer edits an installer-owned file', async () => {
         const app = temporaryDirectory('mockgen-conflict-app-');
         const kit = temporaryDirectory('mockgen-conflict-kit-');
