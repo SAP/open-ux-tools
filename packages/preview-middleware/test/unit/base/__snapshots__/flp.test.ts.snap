@@ -2182,6 +2182,15 @@ exports[`FlpSandbox router rta with adp instance - preview 2`] = `
                     }
                 }
             },
+            services: {
+                Personalization: {
+                    config: {
+                        appVariantStorage: {
+                            enabled: false
+                        }
+                    }
+                }
+            },
             applications:  {\\"app-preview\\":{\\"title\\":\\"my.id\\",\\"description\\":\\"\\",\\"additionalInformation\\":\\"SAPUI5.Component=myComponent\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":{},\\"name\\":\\"descriptorName\\",\\"url\\":\\"http://sap.example\\",\\"asyncHints\\":{\\"requests\\":[]}}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
@@ -2302,6 +2311,15 @@ exports[`FlpSandbox router rta with adp instance 2`] = `
                         config: {
                             search: \\"hidden\\",
                             enableSearch: false
+                        }
+                    }
+                }
+            },
+            services: {
+                Personalization: {
+                    config: {
+                        appVariantStorage: {
+                            enabled: false
                         }
                     }
                 }
@@ -2770,6 +2788,15 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
                         config: {
                             search: \\"hidden\\",
                             enableSearch: false
+                        }
+                    }
+                }
+            },
+            services: {
+                Personalization: {
+                    config: {
+                        appVariantStorage: {
+                            enabled: false
                         }
                     }
                 }
