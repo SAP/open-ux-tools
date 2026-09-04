@@ -4,7 +4,7 @@ Date: 2026-09-04
 
 Candidate source:
 
-- `SAP/open-ux-tools`: `4c3b6bd9a19f84dfc9fda86f6e2e7eaca84ab10d`
+- `SAP/open-ux-tools`: `0eb470fa97035547589a2b2bae4a86668042d6c2`
 - `SAP/open-ux-odata`: `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
 - portable development-kit fingerprint:
   `fabc0de4a8579c742acc80c4f5e9629775af9818ad3b051fb750bca8d5e775ee`
@@ -19,12 +19,15 @@ contracts, deterministic degradation remains usable, native CAP is opt-in, and
 the packed local/BAS development kit installs and restores an existing Fiori
 application.
 
-The candidate is not release-ready. One measured engineering gate fails and
-several release gates require environments, approvals, or external review that
-are not available in this repository:
+The candidate is not release-ready. The local platform-specific runtime proof
+now passes the total-footprint ceiling without changing classifier or SFT
+quality, but several release gates require a maintainable distribution,
+environments, approvals, or external review that are not available in this
+repository:
 
-1. The retained quality model plus the current native runtime and cache quota
-   uses 449,503,668 bytes, above the 314,572,800-byte total-footprint ceiling.
+1. The 264,635,750-byte passing runtime is an experimental `darwin-arm64`
+   archive, not an approved upstream or SAP-governed platform package. The
+   supported upstream multi-platform closure still uses 449,503,668 bytes.
 2. An actual BAS canary has not run.
 3. Dataset/model provenance, privacy, license, derivative-use, and
    redistribution clearance are not complete.
@@ -37,7 +40,7 @@ are not available in this repository:
 `proven` below means demonstrated by tests or an exact local artifact.
 `platform` means implemented but still requiring the named environment.
 `external` means the repository cannot complete the gate by itself. `failed`
-means a measured threshold was missed.
+means a measured threshold was missed by the named candidate.
 
 ## Requirement matrix
 
@@ -58,11 +61,11 @@ means a measured threshold was missed.
 | Package boundary | proven | generator tarball is 59,810 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
-| Total installed/cache footprint | failed | 449,503,668 bytes measured against a 314,572,800-byte ceiling; model transfer/cache separately pass | Qualify a supported platform-specific native runtime distribution or revise the approved product budget |
+| Total installed/cache footprint | proven locally / distribution pending | exact archive-bound `darwin-arm64` evaluation and footprint report: 264,635,750 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
 | Integrated performance | partial | provider-load, session-load, and T2 p95 pass on `darwin-arm64`; peak RSS is measured | Cold service, warm cache, first acquisition, host end-to-end, process-tree RSS, and release-platform p95 |
 | Realism | external | a blinded, randomized 307-field packet covers six domains and EDMX V2/V4/CSN; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
-| Security and supply chain | partial | package boundaries, immutable hashes, download limits, traversal/symlink/lock/cache defenses, bounded generation, and redacted diagnostics are tested | Formal threat-model review, dependency disposition, SBOM/provenance, and release signing policy |
+| Security and supply chain | partial | package boundaries, immutable hashes, archive-bound model evaluation, installed runtime identity, download limits, traversal/symlink/lock/cache defenses, bounded generation, and redacted diagnostics are tested | Formal threat-model review, dependency disposition, SBOM/provenance, and release signing policy |
 | Platform compatibility | platform | local macOS arm64 and packed fixtures pass | Node 22/24 on Ubuntu, Windows, and macOS; actual BAS; proxy/offline/read-only/path edge cases |
 | Release and rollback | external | local installer upgrade failure and byte-exact restore pass | Prereleases, public artifact verification, model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
@@ -72,14 +75,15 @@ means a measured threshold was missed.
 | --- | ---: |
 | `@sap-ux/fe-mockserver-core` | 27 suites, 358 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 22 suites, 151 tests passed; build passed |
-| development kit and evaluation harness | 6 suites, 63 tests passed |
+| `@sap-ux/mockserver-data-generator` | 22 suites, 153 tests passed; build passed |
+| development kit and evaluation harness | 6 suites, 65 tests passed; build passed |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
 | exact deterministic V4 archive canary | provider executed; metadata passed; one row returned; exact restore passed |
 | exact learned V4 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; exact restore passed |
 | package archive | 59,810 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
-| total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
+| upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
+| experimental platform-runtime total installed and cache | 264,635,750 / 314,572,800 bytes, pass |
 
 The full generator package has 82.90% statement coverage. The downloader's
 cross-process and cancellation branches have focused regressions, but the
@@ -96,21 +100,22 @@ and memory.
 
 The current `onnxruntime-node` dependency dominates the installed footprint
 because one installation contains native binaries for every supported platform.
-The measured Linux x64 subtree is 35,553,280 bytes, compared with a
-221,662,118-byte native-runtime increment for the multi-platform package.
-Using the measured deterministic dependency closure, one Linux x64 subtree,
-the current model cache, and the full generated-data-cache quota gives a
-preliminary total of approximately 263,394,830 bytes. That is about 51,177,970
-bytes below the total ceiling before small packaging overhead.
+An exact `darwin-arm64` archive proof retained the runtime API and the passing
+INT8 model. It ran all 233 governed classifier cases and all 16 SFT cases, kept
+16/16 parse/exact-key and 259/261 fill, and reduced the measured total to
+264,635,750 bytes—49,937,050 bytes below the ceiling. The footprint report and
+evaluation report are cryptographically bound to runtime archive SHA-256
+`a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
 
-The next bounded size task is therefore a supported platform-specific native
-runtime packaging proof. It must preserve the exact ONNX API and model output,
-use OS/CPU selection rather than deleting consumer files, include license and
-SBOM evidence, and rerun the complete install, runtime, structural, latency,
-RSS, and rollback matrix. If no supported or maintainable package can satisfy
-those conditions, the correct disposition is to retain native ONNX, keep it an
-explicit learned-mode dependency, and request a documented change to the total
-footprint policy rather than adopt WASM or ship a structurally broken model.
+The architecture is therefore technically proven, but the archive is not a
+production distribution. The next task is to obtain an upstream platform split
+or implement SAP-governed scoped selector/leaf packages with license, SBOM,
+signing, update, and rollback ownership. That distribution must rerun the full
+Node/OS installation, runtime, structural, latency, and RSS matrix. If no
+supported or maintainable package can satisfy those conditions, the correct
+disposition remains to retain native ONNX as an explicit learned-mode dependency
+and request a documented change to the total-footprint policy rather than adopt
+WASM or ship a structurally broken model.
 
 ## Remaining sequence
 
@@ -118,8 +123,9 @@ footprint policy rather than adopt WASM or ship a structurally broken model.
    `mockserver-data-generator-bas-canary.md`.
 2. Complete the governed artifact inventory and obtain model/data redistribution
    decisions; keep the preview internal if public redistribution is not cleared.
-3. Run the platform-specific native-runtime packaging proof and the missing
-   integrated timing/RSS measurements on the supported Node/OS matrix.
+3. Convert the passing platform-specific native-runtime proof into a supported
+   distribution and run the missing integrated timing/RSS measurements on the
+   supported Node/OS matrix.
 4. Publish an approved immutable preview model bundle and verify acquisition
    through the production manifest/cache path.
 5. Run the frozen structural application cohort on the exact candidate.

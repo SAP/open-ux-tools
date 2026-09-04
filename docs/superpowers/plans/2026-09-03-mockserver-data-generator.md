@@ -1089,7 +1089,8 @@ its file SHA-256 is
 `35b2088d357e218170791fc037ea9f73db2ab1c2a8dac60d95de3c25b39a4288`.
 Candidate 6 is complete and rejected: it proves byte feasibility but not usable
 generation. No realism judging is warranted, and the retained pilot INT8 model
-remains the quality baseline while the footprint gate remains unresolved.
+remains the quality baseline; the subsequent platform-runtime task must resolve
+the overall footprint.
 
 For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS, throughput, cold/warm latency, parse success, fill ratio, requested-row completion, schema/type/nullability/length/precision-scale/key/enum/FK/containment/navigation validity, relationship/coherence assertions, determinism, and fresh realism score. Count every frozen T2 attempt, including timeouts, empty responses, and malformed responses, in the parse denominator. Freeze eligible requested scalar slots before execution for the fill denominator; exclude authored, computed, server-managed, and metadata-defaulted slots before observing output.
 
@@ -1120,6 +1121,18 @@ and multi-platform work above is intentionally not implemented. The native
 candidate remains the baseline while model compression and supported
 platform-specific runtime packaging are evaluated.
 
+An archive-bound `darwin-arm64` feasibility proof then retained only the native
+subtree selected by `onnxruntime-node@1.24.3`. On clean commit
+`0eb470fa97035547589a2b2bae4a86668042d6c2`, the 10,195,380-byte archive ran the
+full 233-case classifier and 16-case SFT cohorts with unchanged SFT output,
+16/16 parse/exact-key, and 259/261 fill. The independently reinstalled footprint
+was 264,635,750 bytes against the 314,572,800-byte ceiling. Evaluation and
+footprint reports bind archive SHA-256
+`a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
+This proves local size/API/quality feasibility, not maintainable distribution or
+the required cross-platform matrix; the same-name hand-built archive is not a
+release artifact.
+
 ### Task 9.4: Select the Pareto winner
 
 **Files:**
@@ -1133,6 +1146,15 @@ platform-specific runtime packaging are evaluated.
 - [ ] Record the exact selected artifact hashes and runtime version in the candidate manifest.
 
 **Phase exit gate:** A reproducible Pareto table and signed selection record identify one candidate; WASM has an evidence-backed go/no-go result.
+
+**Implementation record (2026-09-04):** The retained INT8 model plus a
+platform-specific native runtime is the only locally passing size/quality pair.
+The model archive remains 164,924,986 bytes and intentionally misses the
+82,462,493-byte optimization target because every target-sized model failed the
+structural gate; the complete 264,635,750-byte product footprint passes the hard
+300 MiB ceiling. Selection cannot be signed or promoted until the runtime proof
+has an approved upstream or SAP-governed distribution with platform, license,
+SBOM, signing, and rollback evidence.
 
 ## Phase 10 — Qualify realism and the integrated product
 

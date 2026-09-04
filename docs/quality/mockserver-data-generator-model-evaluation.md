@@ -133,7 +133,7 @@ component fingerprints.
 
 ## Size and quantization decision
 
-The reviewed npm package contains no weights and packs to 58,273 bytes in the current development canary, far below the 5 MiB ceiling. Model and runtime footprints are reported separately:
+The reviewed npm package contains no weights and packs to 59,810 bytes in the current development canary, far below the 5 MiB ceiling. Model and runtime footprints are reported separately:
 
 | Candidate                                  | Model bytes | Development result                                                                                                         | Decision                          |
 | ------------------------------------------ | ----------: | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
@@ -309,11 +309,12 @@ the campaign file SHA-256 is
 
 Candidate 6 is therefore complete and rejected for promotion. No tested
 size-passing learned generator satisfies the frozen structural gates. The
-164,924,986-byte pilot INT8 model remains the quality baseline while the
-footprint gate remains unresolved; repeating the same pruning, token-budget,
-ordinary-SFT, or structural-distillation recipes is not justified.
+164,924,986-byte pilot INT8 model remains the quality baseline. The total
+footprint is instead technically feasible with the platform-specific native
+runtime proof below; repeating the same pruning, token-budget, ordinary-SFT, or
+structural-distillation recipes is not justified.
 
-## Machine-readable footprint baseline
+## Machine-readable multi-platform runtime baseline
 
 The production footprint harness measured clean commit
 `568aaf8b03a4bdf510d3203997171c308ab40ecd` on `darwin-arm64` with Node
@@ -366,13 +367,66 @@ it reproduced both classifier and SFT output fingerprints.
 | End-to-end host provider             |               — |       60,000 ms | not measured |
 
 The total is the learned dependency closure plus the verified model cache plus
-the configured 32 MiB generated-data-cache quota. Passing the npm and model
-transfer ceilings therefore does not make this candidate footprint-ready. The
-current native stack exceeds the total ceiling by 134,930,868 bytes, and the
-generator is 82,462,493 bytes above its optimization target. The next footprint
-work is the calibrated compression frontier and supported platform-specific
-runtime packaging, followed by the still-unmeasured integrated timings and
-release-platform reruns. The existing WASM no-go remains unchanged.
+the configured 32 MiB generated-data-cache quota. The unmodified upstream
+multi-platform dependency closure exceeds the total ceiling by 134,930,868
+bytes, and the generator is 82,462,493 bytes above its non-blocking optimization
+target. The platform-specific proof below addresses the total-size failure
+without weakening model quality. The still-unmeasured integrated timings and
+release-platform reruns remain required. The existing WASM no-go is unchanged.
+
+## Platform-specific native runtime feasibility proof
+
+A clean `darwin-arm64` proof retained only the native subtree selected by the
+`onnxruntime-node@1.24.3` loader and repacked the unchanged JavaScript runtime as
+an experimental same-name archive. The evaluation harness installed that exact
+archive with lifecycle scripts disabled and ran every isolated classifier and
+SFT worker through its entrypoint. The footprint harness independently
+reinstalled it, verified the installed package name and version, and required
+the evaluation report to contain the same archive SHA-256.
+
+| Evidence | Result |
+| --- | ---: |
+| Clean Open UX Tools commit | `0eb470fa97035547589a2b2bae4a86668042d6c2` |
+| Runtime archive bytes | 10,195,380 |
+| Runtime archive SHA-256 | `a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f` |
+| Unpacked runtime bytes | 36,223,887 |
+| Learned installed closure | 38,913,734 |
+| Verified model cache | 192,167,584 |
+| Generated-data-cache quota | 33,554,432 |
+| Total installed and cache footprint | **264,635,750 / 314,572,800, pass** |
+| Remaining total-footprint headroom | 49,937,050 |
+| Provider module-load p95 | 1.284 ms, pass |
+| Model session-load p95 | 712.35 ms, pass |
+| SFT T2 p50 / p95 | 1,256.10 / 11,654.72 ms, pass |
+| Peak process RSS | 1,514,766,336 bytes, measured |
+
+The archive-bound full evaluation again ran 233 governed classifier cases and
+all 16 SFT cases. The SFT result remained 16/16 parsed with exact keys and
+259/261 requested fields filled, and its output fingerprint remained
+`9b97cd178c9336617e6554bace5ea9fcf0e71d4301042b85180f6896c846c92c`.
+The evaluation report fingerprint is
+`62fc34b38e689937791677fd1ba589df06f47bb37e18b87a915ea84d6a3d4c5e`
+and its file SHA-256 is
+`2991c5baca1c995413f3e66313c6b866693227fed9a26813b98e648263c71f35`.
+The footprint report fingerprint is
+`24692142e347e18cd3812e92016554139dfec9ade1d23027b60125cc22b17f24`
+and its file SHA-256 is
+`a4735b4fe18364c1642c1626519249184648d801def58429fa31571888a59720`.
+
+This proves the size, API, inference, and quality feasibility of the retained
+INT8 model with one platform's native runtime. It is not yet a production
+distribution. The hand-built same-name archive has no independent release,
+license/SBOM, signing, update, or platform-selection workflow. ONNX Runtime's
+[current Node package manifest](https://github.com/microsoft/onnxruntime/blob/main/js/node/package.json)
+still publishes the supported native platforms inside one package rather than
+as platform leaf packages, while its
+[Node build instructions](https://github.com/microsoft/onnxruntime/blob/main/js/node/README.md)
+support building a local package for the current platform. Production therefore
+needs either an upstream split or SAP-governed scoped selector/leaf packages,
+followed by licensing, SBOM, signing, Node/OS matrix, installation, and rollback
+qualification. Until that exists, the supported upstream closure still fails
+the total-footprint gate even though the platform-specific architecture is
+proven viable.
 
 ## WASM decision
 
@@ -395,12 +449,13 @@ removes the other bundled platform binaries; its install flag controls
 additional downloaded execution-provider assets.
 
 The production package therefore keeps `onnxruntime-node` as an optional peer:
-deterministic installations remain about 49 KB plus ordinary JavaScript
-dependencies, while learned-mode users explicitly add the runtime and external
-model cache. Deleting files from a consumer's `node_modules` in a postinstall
-hook is not an acceptable production optimization. A future platform-specific
-runtime distribution can reduce a learned installation substantially without
-changing the model or accepting the observed WASM regression, but it must be a
+the deterministic package archive remains 59,810 bytes and its measured
+dependency closure is 2,127,427 bytes, while learned-mode users explicitly add
+the runtime and external model cache. Deleting files from a consumer's
+`node_modules` in a postinstall hook is not an acceptable production
+optimization. The feasibility proof above shows that a platform-specific
+runtime distribution reduces the learned installation enough without changing
+the model or accepting the observed WASM regression, but it must become a
 supported upstream package or a separately maintained, licensed artifact with
 the same compatibility and integrity tests.
 
