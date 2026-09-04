@@ -1,4 +1,5 @@
 import * as zod from 'zod';
+import { BuildingBlockType } from '@sap-ux/fe-fpm-writer';
 import { FunctionalityIdSchema } from './basic.js';
 
 /**
@@ -139,7 +140,7 @@ const BuildingBlockBaseSchema = zod.object({
  * Each discriminant value matches BuildingBlockType in fe-fpm-writer/src/building-block/types.ts.
  */
 const TableBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('table'),
+    buildingBlockType: zod.literal(BuildingBlockType.Table),
     filterBar: zod.string().optional().describe('ID of the FilterBar building block to associate with this table.'),
     personalization: zod
         .union([zod.boolean(), zod.enum(['Sort', 'Column', 'Filter'])])
@@ -166,7 +167,7 @@ const TableBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 });
 
 const ChartBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('chart'),
+    buildingBlockType: zod.literal(BuildingBlockType.Chart),
     filterBar: zod.string().optional().describe('ID of the FilterBar building block to associate with this chart.'),
     personalization: zod
         .union([zod.boolean(), zod.string()])
@@ -177,7 +178,7 @@ const ChartBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 });
 
 const FilterBarBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('filter-bar'),
+    buildingBlockType: zod.literal(BuildingBlockType.FilterBar),
     liveMode: zod
         .boolean()
         .optional()
@@ -217,19 +218,19 @@ const FieldFormatOptionsSchema = zod
     .describe('Format options controlling how the field value is rendered.');
 
 const FieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('field'),
+    buildingBlockType: zod.literal(BuildingBlockType.Field),
     readOnly: zod.boolean().optional().describe('Set the field to read-only mode.'),
     formatOptions: FieldFormatOptionsSchema,
     semanticObject: zod.string().optional().describe('Semantic object(s) for navigation.')
 });
 
 const FormBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('form'),
+    buildingBlockType: zod.literal(BuildingBlockType.Form),
     title: zod.string().describe('Title shown above the form.')
 });
 
 const PageBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('page'),
+    buildingBlockType: zod.literal(BuildingBlockType.Page),
     title: zod.string().optional().describe('Page title.'),
     description: zod.string().optional().describe('Page description.'),
     templateType: zod
@@ -239,7 +240,7 @@ const PageBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 });
 
 const RichTextEditorBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('rich-text-editor'),
+    buildingBlockType: zod.literal(BuildingBlockType.RichTextEditor),
     targetProperty: zod
         .string()
         .optional()
@@ -257,7 +258,7 @@ const RichTextEditorBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 });
 
 const RichTextEditorButtonGroupsBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('rich-text-editor-button-groups'),
+    buildingBlockType: zod.literal(BuildingBlockType.RichTextEditorButtonGroups),
     buttonGroups: zod
         .array(
             zod.object({
@@ -275,7 +276,7 @@ const RichTextEditorButtonGroupsBuildingBlockSchema = BuildingBlockBaseSchema.ex
 });
 
 const CustomFilterFieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('custom-filter-field'),
+    buildingBlockType: zod.literal(BuildingBlockType.CustomFilterField),
     anchor: zod.string().describe('Key of another filter to position this one relative to.'),
     label: zod.string().describe('Display text for this filter field.'),
     property: zod.string().describe('The property to filter by.'),
@@ -292,7 +293,7 @@ const CustomFilterFieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 });
 
 const CustomFormFieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('custom-form-field'),
+    buildingBlockType: zod.literal(BuildingBlockType.CustomFormField),
     label: zod.string().describe('Label text for this form field.'),
     formElementKey: zod.string().optional().describe('Optional key for the FormElement.'),
     position: zod
@@ -307,7 +308,7 @@ const CustomFormFieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 });
 
 const CustomColumnBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('custom-column'),
+    buildingBlockType: zod.literal(BuildingBlockType.CustomColumn),
     title: zod.string().describe('Column header text.'),
     width: zod.string().optional().describe('Column width, e.g. "10rem".'),
     columnKey: zod.string().optional().describe('Unique key for the column.'),
@@ -322,7 +323,7 @@ const CustomColumnBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 });
 
 const ActionBuildingBlockSchema = BuildingBlockBaseSchema.extend({
-    buildingBlockType: zod.literal('action'),
+    buildingBlockType: zod.literal(BuildingBlockType.Action),
     actionKey: zod.string().describe('Unique identifier for the action.'),
     text: zod.string().describe('Display text for the action button.'),
     anchor: zod.string().optional().describe('Key of another action to position this one relative to.'),
