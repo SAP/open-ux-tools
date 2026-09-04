@@ -152,6 +152,7 @@ The reviewed npm package contains no weights and packs to 58,273 bytes in the cu
 | Pretrained-rank 10,000 fresh SFT INT8       | 119,821,880 | Dynamic INT8 export of the fresh SFT; 12/16 parse and 118/261 fill                                                            | Reject                            |
 | Fresh SFT INT8, 600-token diagnostic        | 119,821,880 | Model-specific completion budget; 13/16 parse and 166/261 fill                                                               | Reject; stop budget tuning        |
 | Uniform depth-6 screen INT8                 |  78,305,643 | Full tokenizer and task-specific weights; 0/16 parse and 0/261 fill                                                          | Reject direct pruning             |
+| Uniform depth-7 size screen INT8            |  81,913,038 | Exact 17-input/15-output contract; clears the target by 549,455 bytes; quality not yet evaluated                             | Maximum-depth distillation base   |
 | Uniform depth-6 recovered FP32              | 311,719,705 | Three-epoch full-parameter recovery; 4/16 parse and 15/261 fill                                                              | Reject source model               |
 | Uniform depth-6 recovered INT8              |  78,305,644 | Clears the byte target by 4,156,849 bytes; 5/16 parse and 30/261 fill                                                        | Reject                            |
 | FP32                                       | 652,552,120 | Exact runtime contract, but 3.96 times INT8 bytes                                                                          | Reference only; do not distribute |
@@ -243,12 +244,18 @@ low-bit export are not justified for this candidate, and realism judging is
 correctly skipped.
 
 Candidate 6 first tested whether a smaller architecture can retain the proven
-full tokenizer and task-specific embeddings. The only same-width depth that can
-clear the target under dynamic INT8 is six layers: a uniformly initialized
+full tokenizer and task-specific embeddings. An initial conservative six-layer
 student retained teacher layers 0, 6, 12, 17, 23, and 29. All 57 mapped state
 tensors were bit-exact. Its 78,305,643-byte INT8 export reduced generator bytes
 by 52.52% and cleared the target by 4,156,850 bytes, but direct pruning completed
-none of the 16 frozen JSON cases.
+none of the 16 frozen JSON cases. Exact boundary measurement then showed that a
+seven-layer student also fits: its 81,913,038-byte INT8 graph has the exact
+17-input/15-output runtime contract and 549,455 bytes of target headroom. Seven
+layers is therefore the maximum-capacity same-width/full-tokenizer base for the
+next distillation experiment. Its size-evidence fingerprint is
+`ce04ce2ffc7f664b41c7a8d7feba32b29769a3eab4c8cb74b020ef3c842b4dd0`;
+the evidence file SHA-256 is
+`9cf896b3e2218ac4209080121fbbb4c6d486eed4fff1f0bcd03fed8c1b348ac7`.
 
 A bounded full-parameter recovery then used the original governed SFT sample:
 1,149 training examples and 194 held-back training-evaluation examples, with no

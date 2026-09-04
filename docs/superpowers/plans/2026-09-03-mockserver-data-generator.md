@@ -1064,6 +1064,13 @@ warranted. Candidate 6 remains open only for a bounded teacher-guided
 structural-token distillation experiment; repeating ordinary SFT or token-budget
 tuning is not justified.
 
+A subsequent exact boundary screen corrected the conservative depth estimate:
+a seven-layer, same-width, full-tokenizer INT8 graph is 81,913,038 bytes and
+still clears the target by 549,455 bytes with its exact causal-cache contract.
+Seven layers is the maximum-capacity base for that distillation experiment; the
+size-evidence fingerprint is
+`ce04ce2ffc7f664b41c7a8d7feba32b29769a3eab4c8cb74b020ef3c842b4dd0`.
+
 For every candidate, record model/tokenizer/transfer bytes, load time, peak RSS, throughput, cold/warm latency, parse success, fill ratio, requested-row completion, schema/type/nullability/length/precision-scale/key/enum/FK/containment/navigation validity, relationship/coherence assertions, determinism, and fresh realism score. Count every frozen T2 attempt, including timeouts, empty responses, and malformed responses, in the parse denominator. Freeze eligible requested scalar slots before execution for the fill denominator; exclude authored, computed, server-managed, and metadata-defaulted slots before observing output.
 
 **Candidate gate:** At least 99% raw-response parse/decode success, at least 95% eligible requested-field fill before deterministic fallback, no zero-row entity unless its fixture was predeclared `expectedEmpty`, 100% integrated structural and frozen relationship/coherence assertions, deterministic replay, no material throughput regression, and all realism gates. Size alone cannot win.
