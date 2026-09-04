@@ -2,11 +2,11 @@
 
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { lstatSync, readFileSync, readdirSync } from 'node:fs';
+import { lstatSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { cpus, tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
-import { basename, dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
     artifactRecord,
@@ -25,6 +25,7 @@ const GENERATOR_ROOT = join(REPOSITORY_ROOT, 'packages/mockserver-data-generator
 const GENERATOR_ENTRY = join(GENERATOR_ROOT, 'dist/index.js');
 const GENERATOR_REQUIRE = createRequire(GENERATOR_ENTRY);
 const DEFAULT_SEED = 2_026_090_4;
+const SHA_256 = /^[a-f\d]{64}$/u;
 
 function decimalInteger(value, label) {
     if (typeof value !== 'string' || !/^(?:0|[1-9]\d*)$/u.test(value)) {
@@ -46,6 +47,7 @@ function usage() {
         'Options:',
         '  --sft-candidates <int8,int4,fp32>  Candidates to execute (default: int8,int4)',
         '  --sft-candidate-manifest <path>     Repeatable external candidate manifest',
+        '  --runtime-tarball <path>             Exact ONNX runtime candidate archive',
         '  --max-sft-cases <number>            Fixed cohort prefix to execute (default: all)',
         '  --evidence-dir <path>                Write exact generated rows for fresh judging',
         '  --skip-classifier                    Do not run the classifier cohort',
@@ -71,6 +73,9 @@ export function parseArguments(argv) {
      *   output?: string;
      *   evidenceDir?: string;
      *   maxSftCases?: number;
+     *   runtimeTarball?: string;
+     *   runtimeEntry?: string;
+     *   runtimeArchiveSha256?: string;
      * }}
      */
     const options = {
@@ -107,6 +112,15 @@ export function parseArguments(argv) {
         } else if (argument === '--sft-candidate-manifest' && value) {
             options.candidateManifests.push(resolve(value));
             index += 1;
+        } else if (argument === '--runtime-tarball' && value) {
+            options.runtimeTarball = resolve(value);
+            index += 1;
+        } else if (argument === '--runtime-entry' && value) {
+            options.runtimeEntry = resolve(value);
+            index += 1;
+        } else if (argument === '--runtime-archive-sha256' && value) {
+            options.runtimeArchiveSha256 = value;
+            index += 1;
         } else if (argument === '--max-sft-cases' && value) {
             options.maxSftCases = decimalInteger(value, '--max-sft-cases');
             index += 1;
@@ -134,6 +148,19 @@ export function parseArguments(argv) {
     if (!options.skipSft && options.candidates.length === 0 && options.candidateManifests.length === 0) {
         throw new TypeError('At least one SFT candidate or candidate manifest is required');
     }
+    if (options.isolatedWorker) {
+        if (options.runtimeTarball) {
+            throw new TypeError('--runtime-tarball cannot be installed by an isolated worker');
+        }
+        if ((options.runtimeEntry === undefined) !== (options.runtimeArchiveSha256 === undefined)) {
+            throw new TypeError('isolated runtime entry and archive SHA-256 must be supplied together');
+        }
+        if (options.runtimeArchiveSha256 !== undefined && !SHA_256.test(options.runtimeArchiveSha256)) {
+            throw new TypeError('--runtime-archive-sha256 must be a lowercase SHA-256');
+        }
+    } else if (options.runtimeEntry !== undefined || options.runtimeArchiveSha256 !== undefined) {
+        throw new TypeError('installed-runtime arguments are internal to isolated evaluation workers');
+    }
     return options;
 }
 
@@ -156,6 +183,11 @@ function fingerprint(value) {
 
 function sha256File(path) {
     return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+function isOutside(root, path) {
+    const relation = relative(root, path);
+    return relation === '..' || relation.startsWith(`..${sep}`) || isAbsolute(relation);
 }
 
 function contentArtifact(id, filename, content) {
@@ -208,13 +240,93 @@ function sourceState() {
     };
 }
 
-function runtimeBinding() {
-    const runtime = GENERATOR_REQUIRE('onnxruntime-node');
+async function runtimeBinding(options) {
+    const importedRuntime = options.runtimeEntry
+        ? await import(pathToFileURL(options.runtimeEntry).href)
+        : GENERATOR_REQUIRE('onnxruntime-node');
+    const runtime = importedRuntime.default ?? importedRuntime;
     const version = runtime?.env?.versions?.node;
     if (typeof version !== 'string' || version.length === 0) {
         throw new Error('Could not resolve the ONNX Runtime version used by the evaluation');
     }
-    return { package: 'onnxruntime-node', version };
+    return {
+        package: 'onnxruntime-node',
+        version,
+        ...(options.runtimeArchiveSha256 ? { archiveSha256: options.runtimeArchiveSha256 } : {})
+    };
+}
+
+/**
+ * Validate an installed ONNX runtime package and resolve its exact module entrypoint.
+ *
+ * @param {string} packageRoot installed package root
+ * @param {string} archiveSha256 source archive SHA-256
+ * @returns {{entry: string, binding: {package: string, version: string, archiveSha256: string}}} runtime descriptor
+ */
+export function runtimeModuleDescriptor(packageRoot, archiveSha256) {
+    if (!SHA_256.test(archiveSha256)) {
+        throw new TypeError('runtime archive SHA-256 must be lowercase hexadecimal');
+    }
+    const rootDetails = lstatSync(packageRoot);
+    if (rootDetails.isSymbolicLink() || !rootDetails.isDirectory()) {
+        throw new TypeError('runtime package root must be a non-symbolic-link directory');
+    }
+    const canonicalRoot = realpathSync(packageRoot);
+    const packageJsonPath = join(canonicalRoot, 'package.json');
+    const packageJsonDetails = lstatSync(packageJsonPath);
+    if (packageJsonDetails.isSymbolicLink() || !packageJsonDetails.isFile()) {
+        throw new TypeError('runtime package.json must be a non-symbolic-link regular file');
+    }
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+    if (
+        packageJson?.name !== 'onnxruntime-node' ||
+        typeof packageJson.version !== 'string' ||
+        packageJson.version.length === 0 ||
+        typeof packageJson.main !== 'string' ||
+        packageJson.main.length === 0
+    ) {
+        throw new TypeError('runtime package identity and entrypoint must match onnxruntime-node');
+    }
+    const entry = resolve(canonicalRoot, packageJson.main);
+    if (isOutside(canonicalRoot, entry)) {
+        throw new TypeError('runtime entrypoint must be a contained non-symbolic-link regular file');
+    }
+    const entryDetails = lstatSync(entry);
+    if (entryDetails.isSymbolicLink() || !entryDetails.isFile()) {
+        throw new TypeError('runtime entrypoint must be a contained non-symbolic-link regular file');
+    }
+    const canonicalEntry = realpathSync(entry);
+    if (isOutside(canonicalRoot, canonicalEntry)) {
+        throw new TypeError('runtime entrypoint must be a contained non-symbolic-link regular file');
+    }
+    return Object.freeze({
+        entry: canonicalEntry,
+        binding: Object.freeze({
+            package: 'onnxruntime-node',
+            version: packageJson.version,
+            archiveSha256
+        })
+    });
+}
+
+async function installRuntimeCandidate(temporaryRoot, archivePath) {
+    const archiveDetails = lstatSync(archivePath);
+    if (archiveDetails.isSymbolicLink() || !archiveDetails.isFile()) {
+        throw new TypeError('runtime tarball must be a non-symbolic-link regular file');
+    }
+    const archiveSha256 = sha256File(archivePath);
+    const consumer = join(temporaryRoot, 'runtime-consumer');
+    await mkdir(consumer);
+    await writeFile(join(consumer, 'package.json'), '{"name":"mockgen-runtime-evaluation","private":true}\n');
+    execFileSync(
+        'npm',
+        ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--save-exact', resolve(archivePath)],
+        { cwd: consumer, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
+    );
+    if (sha256File(archivePath) !== archiveSha256) {
+        throw new Error('runtime tarball changed while it was installed for evaluation');
+    }
+    return runtimeModuleDescriptor(join(consumer, 'node_modules', 'onnxruntime-node'), archiveSha256);
 }
 
 function parseJsonLines(content) {
@@ -397,7 +509,7 @@ export function resolveSftCandidates(options) {
     return candidates;
 }
 
-async function runClassifier(generator, pilotRoot) {
+async function runClassifier(generator, pilotRoot, runtimeEntry) {
     const paths = classifierPaths(pilotRoot);
     const artifacts = [
         artifactRecord('classifier-encoder-int8', paths.encoder),
@@ -411,7 +523,7 @@ async function runClassifier(generator, pilotRoot) {
     const componentFingerprint = fingerprint(artifacts.slice(0, 3));
     const before = memoryBytes();
     const loadStart = nowMilliseconds();
-    const backend = await generator.loadOnnxBackend();
+    const backend = await generator.loadOnnxBackend(runtimeEntry ? pathToFileURL(runtimeEntry).href : undefined);
     const embedder = await generator.createMiniLmTextEmbedder({
         modelPath: paths.encoder,
         vocabularyPath: paths.vocabulary,
@@ -507,7 +619,9 @@ async function runSftCandidate(generator, options, candidate) {
     const tokenizerJson = JSON.parse(await readFile(paths.tokenizer, 'utf8'));
     const before = memoryBytes();
     const loadStart = nowMilliseconds();
-    const backend = await generator.loadCausalOnnxBackend();
+    const backend = await generator.loadCausalOnnxBackend(
+        options.runtimeEntry ? pathToFileURL(options.runtimeEntry).href : undefined
+    );
     const session = await generator.createCausalOnnxSession({
         modelPath: paths.model,
         config: {
@@ -607,7 +721,7 @@ async function runSftCandidate(generator, options, candidate) {
     };
 }
 
-function baseReport() {
+async function baseReport(options) {
     const packageJson = JSON.parse(readFileSync(join(GENERATOR_ROOT, 'package.json'), 'utf8'));
     const source = sourceState();
     return {
@@ -625,7 +739,7 @@ function baseReport() {
             node: process.version,
             platform: `${process.platform}-${process.arch}`,
             cpu: cpus()[0]?.model ?? 'unknown',
-            runtime: runtimeBinding()
+            runtime: await runtimeBinding(options)
         },
         policy: {
             generatedValuesInReport: false,
@@ -639,9 +753,9 @@ function baseReport() {
 
 async function runInProcess(options) {
     const generator = await import(pathToFileURL(GENERATOR_ENTRY).href);
-    const report = baseReport();
+    const report = await baseReport(options);
     if (!options.skipClassifier) {
-        report.classifier = await runClassifier(generator, options.pilotRoot);
+        report.classifier = await runClassifier(generator, options.pilotRoot, options.runtimeEntry);
     }
     if (!options.skipSft) {
         report.sft = [];
@@ -654,6 +768,9 @@ async function runInProcess(options) {
 
 function workerArguments(options, output, component, candidate) {
     const result = ['--pilot-root', options.pilotRoot, '--output', output, '--isolated-worker'];
+    if (options.runtimeEntry) {
+        result.push('--runtime-entry', options.runtimeEntry, '--runtime-archive-sha256', options.runtimeArchiveSha256);
+    }
     if (component === 'classifier') {
         result.push('--skip-sft');
     } else {
@@ -689,21 +806,31 @@ function executeWorker(options, output, component, candidate) {
 async function runIsolated(options) {
     const temporaryRoot = await mkdtemp(join(tmpdir(), 'mockgen-model-evaluation-'));
     try {
+        const runtimeCandidate = options.runtimeTarball
+            ? await installRuntimeCandidate(temporaryRoot, options.runtimeTarball)
+            : undefined;
+        const executionOptions = runtimeCandidate
+            ? {
+                  ...options,
+                  runtimeEntry: runtimeCandidate.entry,
+                  runtimeArchiveSha256: runtimeCandidate.binding.archiveSha256
+              }
+            : options;
         let classifierReport;
         const sftReports = [];
-        if (!options.skipClassifier) {
+        if (!executionOptions.skipClassifier) {
             const output = join(temporaryRoot, 'classifier.json');
-            executeWorker(options, output, 'classifier');
+            executeWorker(executionOptions, output, 'classifier');
             classifierReport = JSON.parse(await readFile(output, 'utf8'));
         }
-        if (!options.skipSft) {
-            for (const candidate of resolveSftCandidates(options)) {
+        if (!executionOptions.skipSft) {
+            for (const candidate of resolveSftCandidates(executionOptions)) {
                 const output = join(temporaryRoot, `sft-${candidate.id}.json`);
-                executeWorker(options, output, 'sft', candidate);
+                executeWorker(executionOptions, output, 'sft', candidate);
                 sftReports.push(JSON.parse(await readFile(output, 'utf8')));
             }
         }
-        return { ...baseReport(), ...mergeIsolatedReports(classifierReport, sftReports) };
+        return { ...(await baseReport(executionOptions)), ...mergeIsolatedReports(classifierReport, sftReports) };
     } finally {
         await rm(temporaryRoot, { recursive: true, force: true });
     }

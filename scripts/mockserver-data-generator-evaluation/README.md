@@ -14,6 +14,17 @@ pnpm mockserver-data-generator:evaluate-models \
 
 The default campaign executes the pilot classifier plus the INT8 and INT4 SFT exports. Add `--sft-candidates fp32,int8,int4` when the larger FP32 graph is available and the host has sufficient memory. `--max-sft-cases` creates a deterministic smoke subset; omit it for the full fixed held-out cohort.
 
+Evaluate an exact platform-runtime candidate, rather than the repository's normal
+`onnxruntime-node` installation, by adding:
+
+~~~sh
+  --runtime-tarball /absolute/path/to/onnxruntime-node-platform.tgz
+~~~
+
+The harness installs the archive with lifecycle scripts disabled, runs every
+isolated classifier and SFT worker against its contained runtime entrypoint, and
+records the archive SHA-256 in the evaluation report.
+
 Evaluate a graph produced outside the repository with a path-portable candidate
 manifest instead of copying or renaming it into the pilot layout:
 
@@ -108,12 +119,13 @@ pnpm mockserver-data-generator:measure-footprint \
   --require-clean \
   --model-manifest /absolute/path/to/model-manifest.json \
   --model-cache /absolute/path/to/verified-model-cache \
-  --evaluation-report /tmp/mockserver-data-generator-evaluation.json
+  --evaluation-report /tmp/mockserver-data-generator-evaluation.json \
+  --runtime-tarball /absolute/path/to/onnxruntime-node-platform.tgz
 ~~~
 
-Use a new output filename for every run; the harness refuses to overwrite evidence. It packs the current package, installs it in an isolated npm consumer, verifies the model cache, and reports package, dependency, runtime, model, generated-data-cache, latency, and memory measurements separately. It binds imported evaluation latency to the complete compiled generator tree, exact generation config, full frozen cohorts and seed, model artifacts, runtime, machine, and clean commit; smoke subsets cannot satisfy the footprint gate. Missing integrated measurements remain `not-measured` and keep `footprintReady` false. Reports contain fingerprints and aggregate values but no local paths or generated rows.
+Use a new output filename for every run; the harness refuses to overwrite evidence. It packs the current package, installs it in an isolated npm consumer, verifies the model cache, and reports package, dependency, runtime, model, generated-data-cache, latency, and memory measurements separately. When `--runtime-tarball` is used by both commands, the footprint report rejects evaluation evidence that is not bound to the same archive SHA-256. It also binds imported evaluation latency to the complete compiled generator tree, exact generation config, full frozen cohorts and seed, model artifacts, runtime, machine, and clean commit; smoke subsets cannot satisfy the footprint gate. Missing integrated measurements remain `not-measured` and keep `footprintReady` false. Reports contain fingerprints and aggregate values but no local paths or generated rows.
 
-The generator optimization gate uses the versioned, fingerprinted dynamic-INT8 baseline in `baselines/generator-int8-v1.json`; callers cannot replace it with an arbitrary byte count. Add `--enforce` in release automation when a failed or unmeasured gate must produce a nonzero exit. Omit it during exploratory campaigns so the report is still written for failed candidates.
+The generator optimization target uses the versioned, fingerprinted dynamic-INT8 baseline in `baselines/generator-int8-v1.json`; callers cannot replace it with an arbitrary byte count. It remains visible in `missedTargets` but is not a hard release gate when the total product footprint passes. Add `--enforce` in release automation when a failed or unmeasured required gate must produce a nonzero exit. Omit it during exploratory campaigns so the report is still written for failed candidates.
 
 ## Blinded whole-service realism campaign
 

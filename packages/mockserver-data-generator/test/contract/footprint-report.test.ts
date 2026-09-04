@@ -429,6 +429,31 @@ describe('footprint report contract', () => {
 
         const harness = report.harness as Record<string, unknown>;
         harness.platform = 'darwin-arm64';
+        (harness.runtime as Record<string, unknown>).archiveSha256 = 'e'.repeat(64);
+        delete report.reportFingerprint;
+        report.reportFingerprint = sha256(report);
+        expect(() =>
+            validateEvaluationReport(report, {
+                packageName: '@sap-ux/mockserver-data-generator',
+                packageVersion: '0.0.0',
+                generatorEntrySha256: '6'.repeat(64),
+                generatorBuildFingerprint: 'a'.repeat(64),
+                generationConfigFingerprint: 'd'.repeat(64),
+                codeCommit: '7'.repeat(40),
+                node: 'v22.22.2',
+                platform: 'darwin-arm64',
+                cpu: 'test-cpu',
+                runtimePackage: 'onnxruntime-node',
+                runtimeVersion: '1.24.3',
+                runtimePackageArchiveSha256: 'f'.repeat(64),
+                classifierCohortSha256: '8'.repeat(64),
+                sftCohortSha256: '9'.repeat(64),
+                classifierArtifacts,
+                sftArtifacts
+            })
+        ).toThrow('evaluation report runtime package archive SHA-256 does not match the current measurement');
+
+        delete (harness.runtime as Record<string, unknown>).archiveSha256;
         harness.generatorBuildFingerprint = 'b'.repeat(64);
         delete report.reportFingerprint;
         report.reportFingerprint = sha256(report);

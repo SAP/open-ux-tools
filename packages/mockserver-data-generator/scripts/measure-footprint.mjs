@@ -941,6 +941,15 @@ export function validateEvaluationReport(value, expected) {
     ]) {
         assertEqual(actual, expectedValue, label);
     }
+    const runtimeArchiveSha256 =
+        runtime.archiveSha256 === undefined
+            ? undefined
+            : sha256Value(runtime.archiveSha256, 'model evaluation runtime package archive SHA-256');
+    const expectedRuntimeArchiveSha256 =
+        bindings.runtimePackageArchiveSha256 === undefined
+            ? undefined
+            : sha256Value(bindings.runtimePackageArchiveSha256, 'current runtime package archive SHA-256');
+    assertEqual(runtimeArchiveSha256, expectedRuntimeArchiveSha256, 'runtime package archive SHA-256');
     const classifier = record(report.classifier, 'classifier evaluation');
     const classifierArtifacts = (Array.isArray(classifier.artifacts) ? classifier.artifacts : []).map(
         (artifact, index) => evaluationArtifact(artifact, `classifier evaluation artifact ${index}`)
@@ -1075,6 +1084,7 @@ async function collectFootprint(options) {
             cpu,
             runtimePackage: model?.runtime.package,
             runtimeVersion: model?.runtime.version,
+            runtimePackageArchiveSha256: installation.runtimePackageArchiveSha256,
             classifierCohortSha256: FROZEN_CLASSIFIER_COHORT_SHA256,
             sftCohortSha256: FROZEN_SFT_COHORT_SHA256,
             classifierArtifacts: classifierComponent?.files ?? [],

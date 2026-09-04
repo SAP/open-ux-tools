@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,6 +17,7 @@ import {
 import {
     loadSftCandidateManifest,
     parseArguments,
+    runtimeModuleDescriptor,
     resolveSftCandidates
 } from '../../../../../scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs';
 import {
@@ -92,6 +93,59 @@ describe('evaluation CLI contract', () => {
 
         expect(options.candidates).toEqual([]);
         expect(options.candidateManifests).toEqual(['/candidate-a.json', '/candidate-b.json']);
+    });
+
+    test('accepts a runtime candidate archive but reserves installed-runtime arguments for workers', () => {
+        expect(
+            parseArguments([
+                '--pilot-root',
+                '/pilot',
+                '--output',
+                '/report.json',
+                '--runtime-tarball',
+                '/runtime/onnxruntime-node.tgz'
+            ])
+        ).toMatchObject({ runtimeTarball: '/runtime/onnxruntime-node.tgz' });
+        expect(() =>
+            parseArguments([
+                '--pilot-root',
+                '/pilot',
+                '--output',
+                '/report.json',
+                '--runtime-entry',
+                '/runtime/dist/index.js',
+                '--runtime-archive-sha256',
+                'a'.repeat(64)
+            ])
+        ).toThrow('installed-runtime arguments are internal');
+    });
+
+    test('describes only an exact onnxruntime-node package with a contained regular entrypoint', () => {
+        const root = temporaryDirectory();
+        const dist = join(root, 'dist');
+        mkdirSync(dist);
+        writeFileSync(
+            join(root, 'package.json'),
+            '{"name":"onnxruntime-node","version":"1.24.3","main":"dist/index.js"}'
+        );
+        writeFileSync(join(dist, 'index.js'), 'module.exports = {};');
+
+        expect(runtimeModuleDescriptor(root, 'b'.repeat(64))).toEqual({
+            entry: realpathSync(join(dist, 'index.js')),
+            binding: {
+                package: 'onnxruntime-node',
+                version: '1.24.3',
+                archiveSha256: 'b'.repeat(64)
+            }
+        });
+
+        const outside = join(temporaryDirectory(), 'outside.js');
+        writeFileSync(outside, 'module.exports = {};');
+        rmSync(join(dist, 'index.js'));
+        symlinkSync(outside, join(dist, 'index.js'));
+        expect(() => runtimeModuleDescriptor(root, 'b'.repeat(64))).toThrow(
+            'runtime entrypoint must be a contained non-symbolic-link regular file'
+        );
     });
 
     test('loads a path-portable candidate manifest and binds all external evidence', () => {
