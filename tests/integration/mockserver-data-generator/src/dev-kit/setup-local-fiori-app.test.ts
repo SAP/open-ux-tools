@@ -4,6 +4,7 @@ import {
     mkdtempSync,
     mkdirSync,
     readFileSync,
+    realpathSync,
     readdirSync,
     rmSync,
     symlinkSync,
@@ -13,6 +14,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, jest, test } from '@jest/globals';
 import {
+    parseArguments,
     setupLocalFioriApp,
     validateApplicationRoot
 } from '../../../../../scripts/mockserver-data-generator-dev-kit/setup-local-fiori-app.mjs';
@@ -100,6 +102,25 @@ describe('application and package-manager validation', () => {
 });
 
 describe('transactional local setup', () => {
+    test('parses explicit learned-model inputs without enabling a network download', () => {
+        expect(
+            parseArguments([
+                '--app',
+                '/fiori-app',
+                '--model-manifest',
+                '/model/manifest.json',
+                '--model-cache',
+                '/model/cache',
+                '--verify'
+            ])
+        ).toMatchObject({
+            appRoot: '/fiori-app',
+            modelManifestPath: '/model/manifest.json',
+            modelCacheDirectory: '/model/cache',
+            verify: true
+        });
+    });
+
     test('dry-run reports a plan without writing or invoking a package manager', async () => {
         const app = temporaryDirectory('mockgen-dry-run-app-');
         const kit = temporaryDirectory('mockgen-dry-run-kit-');
@@ -192,6 +213,78 @@ describe('transactional local setup', () => {
         expect(readFileSync(join(app, 'package-lock.json'), 'utf8')).toBe(originals.lockfile);
         expect(existsSync(join(app, 'ui5-mock.yaml'))).toBe(false);
         expect(existsSync(join(app, '.mockserver-data-generator-dev'))).toBe(false);
+    });
+
+    test('installs the pinned native runtime and configures a verified offline learned model', async () => {
+        const app = temporaryDirectory('mockgen-learned-app-');
+        const kit = temporaryDirectory('mockgen-learned-kit-');
+        const model = temporaryDirectory('mockgen-learned-model-');
+        const manifestPath = join(model, 'model-manifest.json');
+        const cacheDirectory = join(model, 'cache');
+        writeApplication(app);
+        writeKit(kit);
+        mkdirSync(cacheDirectory);
+        writeFileSync(
+            manifestPath,
+            JSON.stringify({
+                components: [
+                    { runtime: { package: 'onnxruntime-node', version: '1.24.3' } },
+                    { runtime: { package: 'onnxruntime-node', version: '1.24.3' } }
+                ]
+            })
+        );
+        const runner = jest.fn(async (_request: unknown): Promise<void> => undefined);
+        const configure = jest.fn(async (_options: unknown): Promise<void> => undefined);
+        const runCanary = jest.fn(
+            async (
+                _appRoot: string,
+                _options?: { expectedLearned?: boolean }
+            ): Promise<{ integrationVerified: true; learnedRuntimeVerified: true }> => ({
+                integrationVerified: true,
+                learnedRuntimeVerified: true
+            })
+        );
+        const canonicalManifestPath = realpathSync(manifestPath);
+        const canonicalCacheDirectory = realpathSync(cacheDirectory);
+
+        const installed = await setupLocalFioriApp({
+            appRoot: app,
+            kitRoot: kit,
+            modelManifestPath: manifestPath,
+            modelCacheDirectory: cacheDirectory,
+            verify: true,
+            runner,
+            configure,
+            verifyInstalled: () => ({ installed: true }),
+            runCanary
+        });
+
+        expect(installed).toMatchObject({ status: 'installed', modelVerified: true });
+        expect(configure).toHaveBeenCalledWith(
+            expect.objectContaining({
+                model: expect.objectContaining({
+                    manifestPath: canonicalManifestPath,
+                    cacheDirectory: canonicalCacheDirectory,
+                    offline: true
+                })
+            })
+        );
+        expect(runner).toHaveBeenCalledWith(
+            expect.objectContaining({ args: expect.arrayContaining(['--save-exact', 'onnxruntime-node@1.24.3']) })
+        );
+        expect(runCanary).toHaveBeenCalledWith(expect.any(String), { expectedLearned: true });
+        expect(runner).toHaveBeenCalledWith(
+            expect.objectContaining({
+                command: process.execPath,
+                args: expect.arrayContaining([
+                    'verify',
+                    '--manifest',
+                    canonicalManifestPath,
+                    '--cache',
+                    canonicalCacheDirectory
+                ])
+            })
+        );
     });
 
     test('rolls back owned files when installation fails', async () => {

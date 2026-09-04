@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 /**
  * @typedef {{repository?: string, commit?: string, dirty?: boolean}} PackageSource
  * @typedef {{packageName: string, version: string, filename: string, bytes: number, sha256: string, entries?: string[], source?: PackageSource}} DevKitPackage
- * @typedef {{filename?: string, bytes?: number, sha256?: string, sourcePackageVersion?: string}} DevKitInstaller
+ * @typedef {{filename?: string, bytes?: number, sha256?: string, configureFilename?: string, configureBytes?: number, configureSha256?: string, pilotModelFilename?: string, pilotModelBytes?: number, pilotModelSha256?: string, sourcePackageVersion?: string}} DevKitInstaller
  * @typedef {{formatVersion: 1, reproducible: boolean, packages: DevKitPackage[], installer: DevKitInstaller}} DevKitManifest
  */
 

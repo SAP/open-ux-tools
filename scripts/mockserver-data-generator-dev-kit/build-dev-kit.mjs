@@ -142,23 +142,27 @@ setup keeps one \`sap-fe-mockserver\`, one \`ui5-mock.yaml\`, and the existing
 
 ## Optional classifier and SFT test
 
-After setup, a production-format immutable manifest that references approved
-internal or pilot-local artifacts can be prepared explicitly with the installed
-package:
+The retained pilot repository or extracted pilot bundle can be staged into the
+production cache contract without adding model weights to this kit:
 
 \`\`\`bash
-node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js prepare \\
-  --manifest /absolute/path/to/model-manifest.json \\
-  --cache "$PWD/.mockserver-data-generator-dev/model-cache"
-node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify \\
-  --manifest /absolute/path/to/model-manifest.json \\
-  --cache "$PWD/.mockserver-data-generator-dev/model-cache"
+node ./prepare-pilot-model-cache.mjs \\
+  --pilot-root /absolute/path/to/sap-ai-mockserver-or-extracted-pilot \\
+  --cache /absolute/path/to/local-mockgen-model/cache \\
+  --manifest-out /absolute/path/to/local-mockgen-model/model-manifest.json
+
+node ./setup-local-fiori-app.mjs \\
+  --app /absolute/path/to/generated-fiori-app \\
+  --kit-root /absolute/path/to/extracted-kit \\
+  --model-manifest /absolute/path/to/local-mockgen-model/model-manifest.json \\
+  --model-cache /absolute/path/to/local-mockgen-model/cache \\
+  --verify
 \`\`\`
 
-Install the exact \`onnxruntime-node\` version pinned by the manifest and point
-\`mockDataGenerator.options\` at that manifest and cache with
-\`modelOffline: true\`. The default canary remains a separate deterministic
-package-wiring check; this kit contains no model manifest, runtime, or weights.
+The installer saves the exact \`onnxruntime-node\` version pinned by the
+manifest, verifies the immutable cache, configures offline model paths, and
+requires the HTTP canary to report both classifier and SFT readiness. This kit
+contains no model manifest, runtime, or weights.
 `;
 }
 
@@ -197,6 +201,7 @@ export function buildDevKit({ hostRoot, outDir, requireClean = false }) {
 
         const setupOutput = join(stagingRoot, 'setup-local-fiori-app.mjs');
         const configureOutput = join(stagingRoot, 'configure-app.mjs');
+        const pilotModelOutput = join(stagingRoot, 'prepare-pilot-model-cache.mjs');
         bundleEntry(
             join(TOOLS_ROOT, 'scripts/mockserver-data-generator-dev-kit/setup-local-fiori-app.mjs'),
             setupOutput
@@ -206,6 +211,10 @@ export function buildDevKit({ hostRoot, outDir, requireClean = false }) {
             configureOutput,
             true
         );
+        bundleEntry(
+            join(TOOLS_ROOT, 'scripts/mockserver-data-generator-dev-kit/prepare-pilot-model-cache.mjs'),
+            pilotModelOutput
+        );
         const writerVersion = readJson(join(TOOLS_ROOT, 'packages/mockserver-config-writer/package.json')).version;
         const installer = {
             filename: 'setup-local-fiori-app.mjs',
@@ -214,6 +223,9 @@ export function buildDevKit({ hostRoot, outDir, requireClean = false }) {
             configureFilename: 'configure-app.mjs',
             configureBytes: statSync(configureOutput).size,
             configureSha256: sha256File(configureOutput),
+            pilotModelFilename: 'prepare-pilot-model-cache.mjs',
+            pilotModelBytes: statSync(pilotModelOutput).size,
+            pilotModelSha256: sha256File(pilotModelOutput),
             sourcePackageVersion: writerVersion
         };
         const manifest = createDevKitManifest({ packages, installer });

@@ -39,8 +39,9 @@ const JOURNAL_FILE = 'recovery.json';
 /**
  * @typedef {{command: string, args: string[], cwd: string, env?: NodeJS.ProcessEnv}} CommandStep
  * @typedef {{packageName: string, version: string, specification: string}} InstalledPackage
- * @typedef {{appRoot: string, generatorSpec: string, webappPath: string}} ConfigureInput
- * @typedef {{status: 'dry-run'|'installed'|'restored', appRoot: string, packageManager?: 'npm'|'pnpm', packages?: object[], installedVerification?: object, integrationVerified?: boolean, canary?: object}} SetupResult
+ * @typedef {{manifestPath: string, cacheDirectory: string, offline: true, runtimeSpec: string}} ModelDevelopmentInput
+ * @typedef {{appRoot: string, generatorSpec: string, webappPath: string, model?: ModelDevelopmentInput}} ConfigureInput
+ * @typedef {{status: 'dry-run'|'installed'|'restored', appRoot: string, packageManager?: 'npm'|'pnpm', packages?: object[], installedVerification?: object, integrationVerified?: boolean, modelVerified?: boolean, canary?: object}} SetupResult
  */
 
 /**
@@ -79,6 +80,72 @@ export function validateApplicationRoot(appRoot) {
         throw new Error('Refusing to use an Open UX repository as the Fiori application target');
     }
     return canonicalRoot;
+}
+
+function validateModelDevelopmentInput(manifestPath, cacheDirectory) {
+    if (!manifestPath && !cacheDirectory) {
+        return undefined;
+    }
+    if (!manifestPath || !cacheDirectory || !isAbsolute(manifestPath) || !isAbsolute(cacheDirectory)) {
+        throw new Error('--model-manifest and --model-cache must both be absolute paths');
+    }
+    for (const [path, label, kind] of [
+        [manifestPath, 'Model manifest', 'file'],
+        [cacheDirectory, 'Model cache', 'directory']
+    ]) {
+        if (!existsSync(path)) {
+            throw new Error(`${label} does not exist: ${path}`);
+        }
+        const details = lstatSync(path);
+        if (details.isSymbolicLink() || (kind === 'file' ? !details.isFile() : !details.isDirectory())) {
+            throw new Error(`${label} must be a regular non-symbolic-link ${kind}`);
+        }
+    }
+    const canonicalManifestPath = realpathSync(manifestPath);
+    const canonicalCacheDirectory = realpathSync(cacheDirectory);
+    let manifest;
+    try {
+        manifest = JSON.parse(readFileSync(canonicalManifestPath, 'utf8'));
+    } catch {
+        throw new Error('Model manifest must contain readable JSON');
+    }
+    if (!Array.isArray(manifest.components) || manifest.components.length === 0) {
+        throw new Error('Model manifest must declare at least one learned component');
+    }
+    const runtimes = new Set(
+        manifest.components.map(
+            (component) => `${String(component?.runtime?.package)}@${String(component?.runtime?.version)}`
+        )
+    );
+    if (runtimes.size !== 1) {
+        throw new Error('All learned components must pin the same development runtime');
+    }
+    const [runtimeSpec] = runtimes;
+    if (!/^onnxruntime-node@1\.24\.\d+(?:-[0-9A-Za-z.-]+)?$/u.test(runtimeSpec)) {
+        throw new Error('The current development kit supports an exact onnxruntime-node 1.24.x runtime');
+    }
+    return {
+        manifestPath: canonicalManifestPath,
+        cacheDirectory: canonicalCacheDirectory,
+        offline: true,
+        runtimeSpec
+    };
+}
+
+function createModelVerifyStep(appRoot, model) {
+    return {
+        command: process.execPath,
+        args: [
+            join(appRoot, 'node_modules', '@sap-ux', 'mockserver-data-generator', 'dist', 'cli.js'),
+            'verify',
+            '--manifest',
+            model.manifestPath,
+            '--cache',
+            model.cacheDirectory
+        ],
+        cwd: appRoot,
+        env: process.env
+    };
 }
 
 function readKitManifest(kitRoot) {
@@ -190,10 +257,12 @@ function assertSafeArtifactDirectory(appRoot, stateRoot, packageDirectory) {
  * @param {boolean} [options.restore] restore journaled application state
  * @param {boolean} [options.offline] require package-manager offline mode
  * @param {boolean} [options.verify] start a bounded application-local HTTP canary
+ * @param {string} [options.modelManifestPath] verified production-format model manifest
+ * @param {string} [options.modelCacheDirectory] verified production model cache
  * @param {(step: CommandStep) => Promise<void>} [options.runner] command runner
  * @param {(input: ConfigureInput) => Promise<void>} [options.configure] injected configuration function for tests
  * @param {(appRoot: string, packages: InstalledPackage[]) => object} [options.verifyInstalled] installed-state verifier
- * @param {(appRoot: string) => Promise<object>} [options.runCanary] HTTP canary implementation
+ * @param {(appRoot: string, options?: {expectedLearned?: boolean}) => Promise<object>} [options.runCanary] HTTP canary implementation
  * @returns {Promise<SetupResult>} structured setup result
  */
 export async function setupLocalFioriApp({
@@ -203,6 +272,8 @@ export async function setupLocalFioriApp({
     restore = false,
     offline = false,
     verify = false,
+    modelManifestPath,
+    modelCacheDirectory,
     runner = runCommand,
     configure,
     verifyInstalled = verifyInstalledApplication,
@@ -248,13 +319,15 @@ export async function setupLocalFioriApp({
         }
     }
 
+    const model = validateModelDevelopmentInput(modelManifestPath, modelCacheDirectory);
     const kit = readKitManifest(canonicalKitRoot);
     if (dryRun) {
         return {
             status: 'dry-run',
             appRoot: canonicalAppRoot,
             packageManager: packageManager.name,
-            packages: kit.packages.map(({ packageName, version, sha256 }) => ({ packageName, version, sha256 }))
+            packages: kit.packages.map(({ packageName, version, sha256 }) => ({ packageName, version, sha256 })),
+            ...(model ? { modelRuntime: model.runtimeSpec } : {})
         };
     }
 
@@ -306,16 +379,21 @@ export async function setupLocalFioriApp({
         await configureApplication({
             appRoot: canonicalAppRoot,
             generatorSpec: generator.specification,
-            webappPath: join(canonicalAppRoot, 'webapp')
+            webappPath: join(canonicalAppRoot, 'webapp'),
+            ...(model ? { model } : {})
         });
         await runner(
             createInstallStep(
                 packageManager,
-                localArtifacts.map((artifact) => artifact.specification),
+                [...localArtifacts.map((artifact) => artifact.specification), ...(model ? [model.runtimeSpec] : [])],
                 canonicalAppRoot,
-                offline
+                offline,
+                model !== undefined
             )
         );
+        if (model) {
+            await runner(createModelVerifyStep(canonicalAppRoot, model));
+        }
         const installedVerification = verifyInstalled(
             canonicalAppRoot,
             localArtifacts.map(({ packageName, version, specification }) => ({
@@ -324,7 +402,7 @@ export async function setupLocalFioriApp({
                 specification
             }))
         );
-        const canary = verify ? await runCanary(canonicalAppRoot) : undefined;
+        const canary = verify ? await runCanary(canonicalAppRoot, { expectedLearned: model !== undefined }) : undefined;
         recordPostHashes(canonicalAppRoot, journal.files);
         journal.status = 'installed';
         journal.installedAt = new Date().toISOString();
@@ -336,6 +414,7 @@ export async function setupLocalFioriApp({
             packages: journal.kit.packages,
             installedVerification,
             integrationVerified: canary?.integrationVerified === true,
+            ...(model ? { modelVerified: true } : {}),
             ...(canary ? { canary } : {})
         };
     } catch (error) {
@@ -382,7 +461,9 @@ export function parseArguments(argv) {
         dryRun: argv.includes('--dry-run'),
         restore: argv.includes('--restore'),
         offline: argv.includes('--offline'),
-        verify: argv.includes('--verify')
+        verify: argv.includes('--verify'),
+        modelManifestPath: readOption(argv, '--model-manifest'),
+        modelCacheDirectory: readOption(argv, '--model-cache')
     };
 }
 

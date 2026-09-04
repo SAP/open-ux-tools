@@ -110,6 +110,9 @@ describe('standard FE mockserver provider', () => {
         );
         expect(first.resources.Books?.[0]?.OpaqueTitle).toBe('Treasury Operations');
         expect(second).not.toHaveProperty('capabilities');
+        expect(context.logger.debug).toHaveBeenCalledWith(
+            'MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready'
+        );
         await provider.dispose();
         expect(dispose).toHaveBeenCalledTimes(1);
     });
@@ -263,6 +266,12 @@ describe('standard FE mockserver provider', () => {
             expect(warm.diagnostics).toContainEqual(expect.objectContaining({ code: 'GENERATED_DATA_CACHE_HIT' }));
             expect(loadRuntime).toHaveBeenCalledTimes(1);
             expect(modelFingerprints).toHaveBeenCalledTimes(2);
+            const capabilityLogs = context.logger.debug.mock.calls.filter(([message]) =>
+                String(message).startsWith('MOCK_DATA_GENERATOR_CAPABILITIES:')
+            );
+            expect(capabilityLogs).toEqual([
+                ['MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready']
+            ]);
         } finally {
             await rm(cacheRoot, { recursive: true, force: true });
         }

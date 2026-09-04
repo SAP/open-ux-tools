@@ -44,6 +44,12 @@ export function devInstall(argv) {
                 installerArgs.push(flag);
             }
         }
+        for (const option of ['--model-manifest', '--model-cache']) {
+            const value = readOption(argv, option);
+            if (value) {
+                installerArgs.push(option, value);
+            }
+        }
         execFileSync(process.execPath, installerArgs, { stdio: 'inherit' });
     } finally {
         rmSync(temporaryRoot, { recursive: true, force: true });

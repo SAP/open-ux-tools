@@ -75,6 +75,15 @@ function hostDiagnostics(
     ]);
 }
 
+function logCapabilities(
+    logger: HostGenerationContext['logger'],
+    capabilities: MockDataGeneratorResult['capabilities']
+): void {
+    logger.debug(
+        `MOCK_DATA_GENERATOR_CAPABILITIES: mode=${capabilities.mode} classifier=${capabilities.classifier} sft=${capabilities.sft}`
+    );
+}
+
 /**
  *
  * @param options
@@ -388,6 +397,7 @@ class FeMockserverDataGenerator {
         }
         const runtimeDiagnostics = learned ? modelDiagnostics(learned.diagnostics) : [];
         runtimeDiagnostics.forEach((diagnostic) => context.logger.warn(`${diagnostic.code}: ${diagnostic.message}`));
+        logCapabilities(context.logger, result.capabilities);
         return Object.freeze({
             resources: result.resources,
             diagnostics: hostDiagnostics([...cacheDiagnostics, ...runtimeDiagnostics, ...result.diagnostics]),

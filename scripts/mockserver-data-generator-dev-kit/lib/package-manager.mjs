@@ -27,13 +27,28 @@ export function detectPackageManager(appRoot) {
  * @param {string[]} packageSpecs local file package specifications
  * @param {string} appRoot application root
  * @param {boolean} [offline] require cached transitive dependencies
+ * @param {boolean} [exact] save dependency specifications without a semver range
  * @returns {{command: string, args: string[], cwd: string, env: NodeJS.ProcessEnv}}
  */
-export function createInstallStep(packageManager, packageSpecs, appRoot, offline = false) {
+export function createInstallStep(packageManager, packageSpecs, appRoot, offline = false, exact = false) {
     const args =
         packageManager.name === 'pnpm'
-            ? ['add', '--save-dev', ...(offline ? ['--offline'] : []), ...packageSpecs]
-            : ['install', '--save-dev', '--no-audit', '--no-fund', ...(offline ? ['--offline'] : []), ...packageSpecs];
+            ? [
+                  'add',
+                  '--save-dev',
+                  ...(exact ? ['--save-exact'] : []),
+                  ...(offline ? ['--offline'] : []),
+                  ...packageSpecs
+              ]
+            : [
+                  'install',
+                  '--save-dev',
+                  ...(exact ? ['--save-exact'] : []),
+                  '--no-audit',
+                  '--no-fund',
+                  ...(offline ? ['--offline'] : []),
+                  ...packageSpecs
+              ];
     return {
         command: process.platform === 'win32' ? `${packageManager.name}.cmd` : packageManager.name,
         args,

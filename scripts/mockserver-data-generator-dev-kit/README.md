@@ -22,42 +22,42 @@ verified separately against an explicitly prepared model cache.
 
 From the open-ux-tools worktree:
 
-~~~bash
+```bash
 pnpm mockserver-data-generator:dev-install -- \
   --app /absolute/path/to/fiori-app \
   --host-root /absolute/path/to/open-ux-odata-worktree \
   --verify
-~~~
+```
 
 The command builds and packs the three current packages, installs those exact
 tarballs, starts a bounded HTTP canary, and stops it. It does not leave a
 development server running. Continue manual testing with the application's
 unchanged command:
 
-~~~bash
+```bash
 cd /absolute/path/to/fiori-app
 npm run start-mock
-~~~
+```
 
 Restore installer-owned application files after testing:
 
-~~~bash
+```bash
 pnpm mockserver-data-generator:dev-install -- \
   --app /absolute/path/to/fiori-app \
   --host-root /absolute/path/to/open-ux-odata-worktree \
   --restore
-~~~
+```
 
 Restore refuses to overwrite files edited after setup. Resolve such a conflict
 manually rather than deleting the recovery journal.
 
 ## Build a portable archive
 
-~~~bash
+```bash
 pnpm mockserver-data-generator:dev-kit -- \
   --host-root /absolute/path/to/open-ux-odata-worktree \
   --out /absolute/path/to/output
-~~~
+```
 
 The JSON build report identifies the one exact archive by path, fingerprint,
 SHA-256, package versions, package checksums, and source cleanliness. Use
@@ -69,6 +69,7 @@ The archive contains only:
 - three npm tarballs;
 - a bundled transactional installer;
 - a bundled configuration writer;
+- a model-free bridge for staging an explicitly supplied retained pilot bundle;
 - an integrity/provenance manifest;
 - concise instructions.
 
@@ -81,29 +82,61 @@ cache.
 
 The default installer canary intentionally proves the package and standard
 mockserver integration without downloading model weights. To test the learned
-path after installation, prepare a production-format manifest that references
-approved internal or pilot-local artifacts with the installed generator CLI:
+path, first create or acquire a production-format manifest and verified cache.
 
-~~~bash
+For the retained pilot repository or extracted pilot bundle, the development
+bridge stages the existing classifier and INT8 SFT files directly into the
+production cache shape and writes a development-only immutable manifest:
+
+```bash
+MODEL_OUTPUT=/absolute/path/to/local-mockgen-model
+
+# From the open-ux-tools worktree:
+pnpm mockserver-data-generator:prepare-pilot-model -- \
+  --pilot-root /absolute/path/to/sap-ai-mockserver-or-extracted-pilot \
+  --cache "$MODEL_OUTPUT/cache" \
+  --manifest-out "$MODEL_OUTPUT/model-manifest.json"
+
+# Or, from an extracted portable development kit in BAS:
+node ./prepare-pilot-model-cache.mjs \
+  --pilot-root /absolute/path/to/extracted-pilot \
+  --cache "$MODEL_OUTPUT/cache" \
+  --manifest-out "$MODEL_OUTPUT/model-manifest.json"
+```
+
+The bridge does not modify the pilot, contact a network endpoint, or put model
+files in `open-ux-tools`. It rejects symbolic-link artifacts, stages the bundle
+atomically, and can be rerun only when the existing manifest and cache match.
+It is a development adapter for the retained pilot assets, not a public model
+distribution mechanism.
+
+Install the development kit with the staged manifest and cache. The installer
+adds the manifest's exact `onnxruntime-node` version, configures offline model
+paths on the existing provider, runs the packaged production `verify` command,
+and requires the HTTP canary to report both classifier and SFT readiness:
+
+```bash
 APP_ROOT=/absolute/path/to/fiori-app
-MODEL_MANIFEST=/absolute/path/to/model-manifest.json
-MODEL_CACHE="$APP_ROOT/.mockserver-data-generator-dev/model-cache"
+MODEL_OUTPUT=/absolute/path/to/local-mockgen-model
+MODEL_MANIFEST="$MODEL_OUTPUT/model-manifest.json"
+MODEL_CACHE="$MODEL_OUTPUT/cache"
 
-cd "$APP_ROOT"
-node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js prepare \
-  --manifest "$MODEL_MANIFEST" \
-  --cache "$MODEL_CACHE"
-node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify \
-  --manifest "$MODEL_MANIFEST" \
-  --cache "$MODEL_CACHE"
-~~~
+pnpm mockserver-data-generator:dev-install -- \
+  --app "$APP_ROOT" \
+  --host-root /absolute/path/to/open-ux-odata-worktree \
+  --model-manifest "$MODEL_MANIFEST" \
+  --model-cache "$MODEL_CACHE" \
+  --verify
+```
 
-Install the exact `onnxruntime-node` version pinned by that manifest, then add
-`modelManifestPath`, `modelCacheDirectory`, and `modelOffline: true` to the
-existing `mockDataGenerator.options` in `ui5-mock.yaml`. Keep the existing
-`sap-fe-mockserver` entry and `npm run start-mock` command. This is an explicit
-development workflow: the kit does not contain a model manifest, native runtime,
-or model weights, and it never silently downloads them during installation.
+For an approved remotely hosted production-format manifest, use the same CLI's
+`prepare` command instead; it downloads and verifies only the immutable sizes
+and SHA-256 values declared by that manifest.
+
+Keep the existing `sap-fe-mockserver` entry and `npm run start-mock` command.
+This is an explicit development workflow: the kit does not contain a model
+manifest, native runtime, or model weights, and it never silently downloads them
+during installation.
 
 Run the default deterministic canary separately from the learned-path check so
 a package-wiring pass is not mistaken for classifier/SFT readiness. An actual
@@ -112,17 +145,21 @@ native-runtime behavior.
 
 ## Install an extracted archive
 
-~~~bash
+```bash
 node /absolute/path/to/extracted-kit/setup-local-fiori-app.mjs \
   --app /absolute/path/to/fiori-app \
+  --kit-root /absolute/path/to/extracted-kit \
+  --model-manifest /absolute/path/to/local-mockgen-model/model-manifest.json \
+  --model-cache /absolute/path/to/local-mockgen-model/cache \
   --verify
-~~~
+```
 
 Useful flags:
 
 - --dry-run: validate and show the package plan without changing the app.
 - --offline: require package installation from the local cache.
 - --verify: run and stop metadata and entity HTTP canaries.
+- --model-manifest and --model-cache: install and require the learned classifier/SFT path.
 - --restore: restore journaled files and reconcile dependencies.
 
 Supported development fixtures cover OData V2 EDMX, OData V4 EDMX, and CDS

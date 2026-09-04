@@ -5,6 +5,7 @@ import { afterEach, describe, expect, test } from '@jest/globals';
 import {
     createCanaryConfiguration,
     discoverCanaryTarget,
+    verifyCanaryProcessEvidence,
     verifyInstalledApplication
 } from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/verify-app.mjs';
 
@@ -169,5 +170,22 @@ describe('installed application verification', () => {
 
         canary.cleanup();
         expect(() => readFileSync(canary.path, 'utf8')).toThrow();
+    });
+});
+
+describe('canary process evidence', () => {
+    const providerEvidence = 'Provider mockdata found for Products';
+    const learnedEvidence = 'MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready';
+
+    test('accepts provider evidence for the deterministic development path', () => {
+        expect(verifyCanaryProcessEvidence(providerEvidence, 'Products')).toEqual({ providerExecuted: true });
+    });
+
+    test('requires classifier and SFT readiness for the learned development path', () => {
+        expect(() => verifyCanaryProcessEvidence(providerEvidence, 'Products', true)).toThrow(/classifier and SFT/i);
+        expect(verifyCanaryProcessEvidence(`${providerEvidence}\n${learnedEvidence}`, 'Products', true)).toEqual({
+            providerExecuted: true,
+            learnedRuntimeVerified: true
+        });
     });
 });

@@ -228,11 +228,37 @@ function stopProcess(child) {
 }
 
 /**
+ * Verify host-side evidence that the configured provider supplied the rows and,
+ * when requested, that both learned components were ready.
+ *
+ * @param {string} output captured mockserver process output
+ * @param {string} entitySet canary entity set
+ * @param {boolean} [expectedLearned] whether learned runtime evidence is required
+ * @returns {{providerExecuted: true, learnedRuntimeVerified?: true}} process evidence report
+ */
+export function verifyCanaryProcessEvidence(output, entitySet, expectedLearned = false) {
+    const providerEvidence = `Provider mockdata found for ${entitySet}`;
+    if (!output.includes(providerEvidence)) {
+        throw new Error(
+            'MockGen provider did not publish the canary rows; standard fallback may have served the response'
+        );
+    }
+    if (expectedLearned) {
+        const learnedEvidence = 'MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready';
+        if (!output.includes(learnedEvidence)) {
+            throw new Error('MockGen classifier and SFT runtime were not both ready for the learned canary');
+        }
+        return { providerExecuted: true, learnedRuntimeVerified: true };
+    }
+    return { providerExecuted: true };
+}
+
+/**
  * Start the application-local Fiori/UI5 command headlessly and exercise metadata and entity endpoints.
  *
  * @param {string} appRoot application root
- * @param {{timeoutMs?: number}} [options] canary options
- * @returns {Promise<{integrationVerified: true, providerExecuted: true, port: number, metadataUrl: string, entityUrl: string, entitySet: string, rows: number}>} HTTP canary report
+ * @param {{timeoutMs?: number, expectedLearned?: boolean}} [options] canary options
+ * @returns {Promise<{integrationVerified: true, providerExecuted: true, learnedRuntimeVerified?: true, port: number, metadataUrl: string, entityUrl: string, entitySet: string, rows: number}>} HTTP canary report
  */
 export async function runFioriCanary(appRoot, options = {}) {
     const target = discoverCanaryTarget(appRoot);
@@ -275,15 +301,14 @@ export async function runFioriCanary(appRoot, options = {}) {
         if (!Array.isArray(rows) || rows.length === 0) {
             throw new Error('MockGen canary entity response contained no rows');
         }
-        const providerEvidence = `Provider mockdata found for ${target.entitySet}`;
-        if (!processState.output.includes(providerEvidence)) {
-            throw new Error(
-                'MockGen provider did not publish the canary rows; standard fallback may have served the response'
-            );
-        }
+        const processEvidence = verifyCanaryProcessEvidence(
+            processState.output,
+            target.entitySet,
+            options.expectedLearned
+        );
         return {
             integrationVerified: true,
-            providerExecuted: true,
+            ...processEvidence,
             port,
             metadataUrl,
             entityUrl,

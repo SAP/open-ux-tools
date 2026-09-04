@@ -8,9 +8,10 @@ import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
  * @param {string} options.appRoot application root
  * @param {string} options.webappPath application webapp directory
  * @param {string} options.generatorSpec application-local generator tarball specification
+ * @param {{manifestPath: string, cacheDirectory: string, offline: true}} [options.model] learned-model inputs
  * @returns {Promise<void>}
  */
-export async function configureFioriApplication({ appRoot, webappPath, generatorSpec }) {
+export async function configureFioriApplication({ appRoot, webappPath, generatorSpec, model }) {
     const editor = await generateMockserverConfig(appRoot, {
         webappPath,
         ui5MockYamlConfig: {
@@ -19,7 +20,14 @@ export async function configureFioriApplication({ appRoot, webappPath, generator
                 options: {
                     mode: 'auto',
                     seed: 42,
-                    rowsPerEntity: 10
+                    rowsPerEntity: 10,
+                    ...(model
+                        ? {
+                              modelManifestPath: model.manifestPath,
+                              modelCacheDirectory: model.cacheDirectory,
+                              modelOffline: true
+                          }
+                        : {})
                 }
             }
         }
