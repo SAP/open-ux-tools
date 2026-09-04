@@ -647,6 +647,107 @@ describe('standard FE mockserver provider', () => {
         }
     });
 
+    it('isolates promoted and rolled-back model fingerprints in the generated-data cache', async () => {
+        const cacheRoot = await mkdtemp(join(tmpdir(), 'mockgen-provider-model-rollback-cache-'));
+        const classifierA = 'a'.repeat(64);
+        const sftA = 'b'.repeat(64);
+        const classifierB = 'c'.repeat(64);
+        const sftB = 'd'.repeat(64);
+        const loadRuntimeA = jest.fn(async (): Promise<LearnedRuntimeHandle> => ({
+            runtime: {
+                classifier: {
+                    fingerprint: classifierA,
+                    classify: jest.fn(async () => ({ role: 'unknown', confidence: 0, source: 'classifier' }))
+                },
+                sft: {
+                    fingerprint: sftA,
+                    generate: jest.fn(async ({ rowCount }) => ({
+                        rows: Array.from({ length: rowCount }, () => ({ OpaqueTitle: 'Model A title' }))
+                    }))
+                }
+            },
+            diagnostics: [],
+            dispose: async () => undefined
+        }));
+        const loadRuntimeB = jest.fn(async (): Promise<LearnedRuntimeHandle> => ({
+            runtime: {
+                classifier: {
+                    fingerprint: classifierB,
+                    classify: jest.fn(async () => ({ role: 'unknown', confidence: 0, source: 'classifier' }))
+                },
+                sft: {
+                    fingerprint: sftB,
+                    generate: jest.fn(async ({ rowCount }) => ({
+                        rows: Array.from({ length: rowCount }, () => ({ OpaqueTitle: 'Model B title' }))
+                    }))
+                }
+            },
+            diagnostics: [],
+            dispose: async () => undefined
+        }));
+        const rollbackRuntime = jest.fn(async (): Promise<LearnedRuntimeHandle> => {
+            throw new Error('The matching N-1 cache should avoid model initialization');
+        });
+        const options = {
+            seed: 41,
+            rowsPerEntity: 1,
+            mode: 'learned' as const,
+            modelManifestPath: '/channel/current/model-manifest.json',
+            modelOffline: true,
+            generatedDataCacheDirectory: cacheRoot
+        };
+        const context = {
+            contractVersion: 1 as const,
+            service: { urlPath: '/model-rollback', odataVersion: '4.0' as const },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Books" EntityType="Demo.Book" /></EntityContainer><EntityType Name="Book"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /><Property Name="OpaqueTitle" Type="Edm.String" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Books', kind: 'entity-set' as const }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() }
+        };
+        const modelFingerprintsA = jest.fn(async () => ({ classifier: classifierA, sft: sftA }));
+        const modelFingerprintsB = jest.fn(async () => ({ classifier: classifierB, sft: sftB }));
+        const firstProvider = new FeMockserverDataGenerator(options, {
+            loadRuntime: loadRuntimeA,
+            modelFingerprints: modelFingerprintsA
+        });
+        const promotedProvider = new FeMockserverDataGenerator(options, {
+            loadRuntime: loadRuntimeB,
+            modelFingerprints: modelFingerprintsB
+        });
+        const rolledBackProvider = new FeMockserverDataGenerator(options, {
+            loadRuntime: rollbackRuntime,
+            modelFingerprints: modelFingerprintsA
+        });
+
+        try {
+            const first = await firstProvider.generate({ ...context, signal: new AbortController().signal });
+            await firstProvider.dispose();
+            const promoted = await promotedProvider.generate({ ...context, signal: new AbortController().signal });
+            await promotedProvider.dispose();
+            const rolledBack = await rolledBackProvider.generate({ ...context, signal: new AbortController().signal });
+            await rolledBackProvider.dispose();
+
+            expect(first.resources.Books?.[0]?.OpaqueTitle).toBe('Model A title');
+            expect(promoted.resources.Books?.[0]?.OpaqueTitle).toBe('Model B title');
+            expect(promoted.diagnostics).not.toContainEqual(
+                expect.objectContaining({ code: 'GENERATED_DATA_CACHE_HIT' })
+            );
+            expect(rolledBack.resources).toEqual(first.resources);
+            expect(rolledBack.diagnostics).toContainEqual(
+                expect.objectContaining({ code: 'GENERATED_DATA_CACHE_HIT' })
+            );
+            expect(loadRuntimeA).toHaveBeenCalledTimes(1);
+            expect(loadRuntimeB).toHaveBeenCalledTimes(1);
+            expect(rollbackRuntime).not.toHaveBeenCalled();
+            expect((await readdir(cacheRoot)).filter((name) => name.endsWith('.json'))).toHaveLength(2);
+        } finally {
+            await firstProvider.dispose();
+            await promotedProvider.dispose();
+            await rolledBackProvider.dispose();
+            await rm(cacheRoot, { recursive: true, force: true });
+        }
+    });
+
     it('reports a cache-read failure and continues with deterministic generation', async () => {
         const readGeneratedDataCache = jest.fn(async () => Promise.reject(new Error('cache unavailable')));
         const provider = new FeMockserverDataGenerator(

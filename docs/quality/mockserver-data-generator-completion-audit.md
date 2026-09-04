@@ -75,7 +75,7 @@ means a measured threshold was missed by the named candidate.
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
 | Platform compatibility | platform | local macOS arm64, packed fixtures, and an exact-archive npm install/restore under spaces and non-ASCII paths pass | Node 22/24 on Ubuntu, Windows, and macOS; actual BAS; proxy/read-only and cross-platform path edge cases |
-| Release and rollback | external | local installer upgrade failure and byte-exact restore pass | Prereleases, public artifact verification, model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
+| Release and rollback | partial / external | local installer upgrade failure and byte-exact restore pass; promoted model fingerprints cannot reuse N-1 generated rows, while an explicit rollback can reuse only its matching verified cache without model initialization | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
 ## Current verification snapshot
 
@@ -83,11 +83,12 @@ means a measured threshold was missed by the named candidate.
 | --- | ---: |
 | `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 182 tests passed; 85.51% statement coverage; build and package check passed; lint has zero errors |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 183 tests passed; 85.51% statement coverage; build and package check passed; lint has zero errors |
 | development kit, degradation, and evaluation harness | 11 suites, 101 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
 | exact deterministic archive canary | provider executed; metadata passed; one row returned; 16.680 ms verified generated-data cache path; 17.425 ms host; exact restore passed |
 | exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,606.016 ms runtime initialization; 2,771.970 ms generation; 2,772.726 ms host; exact restore passed |
+| local model rollback cache safety | model A, promoted model B, and rolled-back model A used fingerprint-isolated cache keys; B did not reuse A, while rollback reused only A without initializing a runtime |
 | current package archive | 78,775 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
