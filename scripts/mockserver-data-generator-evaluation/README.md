@@ -14,6 +14,42 @@ pnpm mockserver-data-generator:evaluate-models \
 
 The default campaign executes the pilot classifier plus the INT8 and INT4 SFT exports. Add `--sft-candidates fp32,int8,int4` when the larger FP32 graph is available and the host has sufficient memory. `--max-sft-cases` creates a deterministic smoke subset; omit it for the full fixed held-out cohort.
 
+Evaluate a graph produced outside the repository with a path-portable candidate
+manifest instead of copying or renaming it into the pilot layout:
+
+~~~sh
+pnpm mockserver-data-generator:evaluate-models \
+  --pilot-root /absolute/path/to/sap-ai-mockserver \
+  --output /tmp/mockserver-data-generator-candidate.json \
+  --skip-classifier \
+  --sft-candidate-manifest /absolute/path/to/candidate.json
+~~~
+
+The manifest schema is:
+
+~~~json
+{
+  "schemaVersion": 1,
+  "candidate": "gptq-int4-b32",
+  "artifacts": {
+    "model": "model.onnx",
+    "tokenizer": "tokenizer.json",
+    "configuration": "config.json",
+    "quantizationEvidence": "quantization-evidence.json"
+  },
+  "calibration": "representative",
+  "promotionEligible": true
+}
+~~~
+
+Artifact paths resolve relative to the manifest. Candidate IDs must be unique
+lowercase kebab-case. `calibration` is one of `not-required`, `representative`,
+`partial`, or `none`; a partially calibrated or uncalibrated candidate cannot
+be marked promotion-eligible. The quantization-evidence artifact is mandatory,
+but only its filename, byte count, and checksum enter the portable report.
+Supplying manifests without `--sft-candidates` evaluates only those manifests,
+so the fixed pilot candidates are never run implicitly.
+
 The report contains exact artifact bytes and SHA-256 hashes, governed classifier cohort counts, classifier accuracy/macro-F1/routed precision/coverage, SFT parse/exact-key/fill rates, load and generation latency, and observed process memory. Generated values are written only when an external evidence directory is supplied. A new realism judgment must use that evidence file and record its checksum; historical pilot judgments are comparison baselines, not promotion evidence.
 
 ## Package and learned-stack footprint

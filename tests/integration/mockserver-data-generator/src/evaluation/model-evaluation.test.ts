@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,6 +14,11 @@ import {
     scoreSftCases,
     selectGovernedClassifierRows
 } from '../../../../../scripts/mockserver-data-generator-evaluation/lib/evaluation.mjs';
+import {
+    loadSftCandidateManifest,
+    parseArguments,
+    resolveSftCandidates
+} from '../../../../../scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs';
 
 const temporaryDirectories: string[] = [];
 const evaluationScript = fileURLToPath(
@@ -67,6 +72,181 @@ describe('evaluation CLI contract', () => {
 
         expect(result.status).toBe(1);
         expect(result.stderr).toContain(`${argument} must be a decimal integer`);
+    });
+
+    test('uses custom manifests without silently running the fixed candidates', () => {
+        const options = parseArguments([
+            '--pilot-root',
+            '/pilot',
+            '--output',
+            '/report.json',
+            '--sft-candidate-manifest',
+            '/candidate-a.json',
+            '--sft-candidate-manifest',
+            '/candidate-b.json'
+        ]);
+
+        expect(options.candidates).toEqual([]);
+        expect(options.candidateManifests).toEqual(['/candidate-a.json', '/candidate-b.json']);
+    });
+
+    test('loads a path-portable candidate manifest and binds all external evidence', () => {
+        const root = temporaryDirectory();
+        const artifacts = join(root, 'artifacts');
+        mkdirSync(artifacts);
+        writeFileSync(join(artifacts, 'model.onnx'), 'model');
+        writeFileSync(join(artifacts, 'tokenizer.json'), '{}');
+        writeFileSync(join(artifacts, 'config.json'), '{}');
+        writeFileSync(join(artifacts, 'quantization.json'), '{"algorithm":"gptq"}\n');
+        const manifestPath = join(root, 'candidate.json');
+        writeFileSync(
+            manifestPath,
+            `${JSON.stringify({
+                schemaVersion: 1,
+                candidate: 'gptq-int4-b32',
+                artifacts: {
+                    model: 'artifacts/model.onnx',
+                    tokenizer: 'artifacts/tokenizer.json',
+                    configuration: 'artifacts/config.json',
+                    quantizationEvidence: 'artifacts/quantization.json'
+                },
+                calibration: 'representative',
+                promotionEligible: true
+            })}\n`
+        );
+
+        const candidate = loadSftCandidateManifest(manifestPath);
+
+        expect(candidate).toMatchObject({
+            id: 'gptq-int4-b32',
+            source: 'external-manifest',
+            calibration: 'representative',
+            promotionEligible: true,
+            paths: {
+                model: join(artifacts, 'model.onnx'),
+                tokenizer: join(artifacts, 'tokenizer.json'),
+                configuration: join(artifacts, 'config.json')
+            }
+        });
+        expect(candidate.binding.manifest).toMatchObject({ filename: 'candidate.json', bytes: expect.any(Number) });
+        expect(candidate.binding.quantizationEvidence).toMatchObject({
+            filename: 'quantization.json',
+            bytes: 21
+        });
+    });
+
+    test('rejects promotion eligibility for an uncalibrated low-precision candidate', () => {
+        const root = temporaryDirectory();
+        for (const filename of ['model.onnx', 'tokenizer.json', 'config.json']) {
+            writeFileSync(join(root, filename), filename);
+        }
+        const manifestPath = join(root, 'candidate.json');
+        writeFileSync(
+            manifestPath,
+            `${JSON.stringify({
+                schemaVersion: 1,
+                candidate: 'rtn-int4',
+                artifacts: {
+                    model: 'model.onnx',
+                    tokenizer: 'tokenizer.json',
+                    configuration: 'config.json'
+                },
+                calibration: 'none',
+                promotionEligible: true
+            })}\n`
+        );
+
+        expect(() => loadSftCandidateManifest(manifestPath)).toThrow(
+            'Partially calibrated or uncalibrated SFT candidates cannot be promotion eligible'
+        );
+    });
+
+    test('rejects promotion eligibility when only part of a candidate was calibrated', () => {
+        const root = temporaryDirectory();
+        for (const filename of ['model.onnx', 'tokenizer.json', 'config.json', 'quantization.json']) {
+            writeFileSync(join(root, filename), filename);
+        }
+        const manifestPath = join(root, 'candidate.json');
+        writeFileSync(
+            manifestPath,
+            `${JSON.stringify({
+                schemaVersion: 1,
+                candidate: 'hybrid-gptq-rtn-int4',
+                artifacts: {
+                    model: 'model.onnx',
+                    tokenizer: 'tokenizer.json',
+                    configuration: 'config.json',
+                    quantizationEvidence: 'quantization.json'
+                },
+                calibration: 'partial',
+                promotionEligible: true
+            })}\n`
+        );
+
+        expect(() => loadSftCandidateManifest(manifestPath)).toThrow(
+            'Partially calibrated or uncalibrated SFT candidates cannot be promotion eligible'
+        );
+    });
+
+    test('requires external candidates to bind their creation evidence', () => {
+        const root = temporaryDirectory();
+        for (const filename of ['model.onnx', 'tokenizer.json', 'config.json']) {
+            writeFileSync(join(root, filename), filename);
+        }
+        const manifestPath = join(root, 'candidate.json');
+        writeFileSync(
+            manifestPath,
+            `${JSON.stringify({
+                schemaVersion: 1,
+                candidate: 'candidate-without-evidence',
+                artifacts: {
+                    model: 'model.onnx',
+                    tokenizer: 'tokenizer.json',
+                    configuration: 'config.json'
+                },
+                calibration: 'not-required',
+                promotionEligible: false,
+                ineligibilityReason: 'Size-screened candidate.'
+            })}\n`
+        );
+
+        expect(() => loadSftCandidateManifest(manifestPath)).toThrow(
+            'SFT candidate quantization evidence must be a non-empty string'
+        );
+    });
+
+    test('rejects duplicate candidate identifiers before executing workers', () => {
+        const root = temporaryDirectory();
+        for (const candidateDirectory of ['a', 'b']) {
+            const directory = join(root, candidateDirectory);
+            mkdirSync(directory);
+            for (const filename of ['model.onnx', 'tokenizer.json', 'config.json', 'quantization.json']) {
+                writeFileSync(join(directory, filename), `${candidateDirectory}-${filename}`);
+            }
+            writeFileSync(
+                join(directory, 'candidate.json'),
+                `${JSON.stringify({
+                    schemaVersion: 1,
+                    candidate: 'same-candidate',
+                    artifacts: {
+                        model: 'model.onnx',
+                        tokenizer: 'tokenizer.json',
+                        configuration: 'config.json',
+                        quantizationEvidence: 'quantization.json'
+                    },
+                    calibration: 'representative',
+                    promotionEligible: true
+                })}\n`
+            );
+        }
+
+        expect(() =>
+            resolveSftCandidates({
+                pilotRoot: '/pilot',
+                candidates: [],
+                candidateManifests: [join(root, 'a/candidate.json'), join(root, 'b/candidate.json')]
+            })
+        ).toThrow('SFT candidate ids must be unique: same-candidate');
     });
 });
 

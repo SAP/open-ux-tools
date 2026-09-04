@@ -6,7 +6,7 @@ import { lstatSync, readFileSync, readdirSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { cpus, tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
-import { basename, join, relative, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
     artifactRecord,
@@ -45,6 +45,7 @@ function usage() {
         '',
         'Options:',
         '  --sft-candidates <int8,int4,fp32>  Candidates to execute (default: int8,int4)',
+        '  --sft-candidate-manifest <path>     Repeatable external candidate manifest',
         '  --max-sft-cases <number>            Fixed cohort prefix to execute (default: all)',
         '  --evidence-dir <path>                Write exact generated rows for fresh judging',
         '  --skip-classifier                    Do not run the classifier cohort',
@@ -56,10 +57,10 @@ function usage() {
     ].join('\n');
 }
 
-function parseArguments(argv) {
+export function parseArguments(argv) {
     const argumentsWithoutSeparator = argv[0] === '--' ? argv.slice(1) : argv;
     const options = {
-        candidates: ['int8', 'int4'],
+        candidateManifests: [],
         seed: DEFAULT_SEED,
         skipClassifier: false,
         skipSft: false,
@@ -89,6 +90,9 @@ function parseArguments(argv) {
         } else if (argument === '--sft-candidates' && value) {
             options.candidates = value.split(',').filter(Boolean);
             index += 1;
+        } else if (argument === '--sft-candidate-manifest' && value) {
+            options.candidateManifests.push(resolve(value));
+            index += 1;
         } else if (argument === '--max-sft-cases' && value) {
             options.maxSftCases = decimalInteger(value, '--max-sft-cases');
             index += 1;
@@ -108,9 +112,13 @@ function parseArguments(argv) {
     if (options.maxSftCases !== undefined && (!Number.isSafeInteger(options.maxSftCases) || options.maxSftCases <= 0)) {
         throw new TypeError('--max-sft-cases must be a positive integer');
     }
+    options.candidates ??= options.candidateManifests.length === 0 ? ['int8', 'int4'] : [];
     const supported = new Set(['fp32', 'int8', 'int4']);
-    if (options.candidates.length === 0 || options.candidates.some((candidate) => !supported.has(candidate))) {
+    if (options.candidates.some((candidate) => !supported.has(candidate))) {
         throw new TypeError('--sft-candidates accepts only fp32,int8,int4');
+    }
+    if (!options.skipSft && options.candidates.length === 0 && options.candidateManifests.length === 0) {
+        throw new TypeError('At least one SFT candidate or candidate manifest is required');
     }
     return options;
 }
@@ -213,9 +221,9 @@ function memoryBytes() {
     };
 }
 
-function sanitizeError(error, pilotRoot) {
+function sanitizeError(error, ...roots) {
     const message = error instanceof Error ? error.message : String(error);
-    return message.replaceAll(pilotRoot, '<pilot-root>').slice(0, 500);
+    return roots.reduce((sanitized, root) => sanitized.replaceAll(root, '<artifact-root>'), message).slice(0, 500);
 }
 
 function classifierPaths(pilotRoot) {
@@ -241,6 +249,117 @@ function sftPaths(pilotRoot, candidate) {
         configuration: join(directory, 'config.json'),
         cohort: join(pilotRoot, 'training/sft/eval/held-out-prompts.json')
     };
+}
+
+function manifestRecord(value, label) {
+    if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+        throw new TypeError(`${label} must be an object`);
+    }
+    return value;
+}
+
+function manifestString(value, label) {
+    if (typeof value !== 'string' || value.trim().length === 0) {
+        throw new TypeError(`${label} must be a non-empty string`);
+    }
+    return value;
+}
+
+function resolveManifestArtifact(root, value, label) {
+    const path = resolve(root, manifestString(value, label));
+    const details = lstatSync(path);
+    if (details.isSymbolicLink() || !details.isFile()) {
+        throw new TypeError(`${label} must resolve to a regular non-symbolic-link file`);
+    }
+    return path;
+}
+
+/**
+ * Load one external quantization/distillation candidate without leaking its paths.
+ *
+ * @param {string} manifestPath candidate manifest path
+ * @returns {Record<string, any>} normalized candidate descriptor
+ */
+export function loadSftCandidateManifest(manifestPath) {
+    const normalizedManifestPath = resolve(manifestPath);
+    const manifestDetails = lstatSync(normalizedManifestPath);
+    if (manifestDetails.isSymbolicLink() || !manifestDetails.isFile()) {
+        throw new TypeError('SFT candidate manifest must be a regular non-symbolic-link file');
+    }
+    const root = dirname(normalizedManifestPath);
+    const manifest = manifestRecord(JSON.parse(readFileSync(normalizedManifestPath, 'utf8')), 'SFT candidate manifest');
+    if (manifest.schemaVersion !== 1) {
+        throw new TypeError('SFT candidate manifest schemaVersion must be 1');
+    }
+    const id = manifestString(manifest.candidate, 'SFT candidate id');
+    if (!/^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/u.test(id)) {
+        throw new TypeError('SFT candidate id must contain only lowercase letters, digits, and hyphens');
+    }
+    const calibrationStates = new Set(['not-required', 'representative', 'partial', 'none']);
+    if (!calibrationStates.has(manifest.calibration) || typeof manifest.promotionEligible !== 'boolean') {
+        throw new TypeError(
+            'SFT candidate calibration must be not-required, representative, partial, or none and promotionEligible must be boolean'
+        );
+    }
+    if ((manifest.calibration === 'none' || manifest.calibration === 'partial') && manifest.promotionEligible) {
+        throw new TypeError('Partially calibrated or uncalibrated SFT candidates cannot be promotion eligible');
+    }
+    const ineligibilityReason =
+        manifest.promotionEligible === false
+            ? manifestString(manifest.ineligibilityReason, 'SFT candidate ineligibilityReason')
+            : undefined;
+    const artifacts = manifestRecord(manifest.artifacts, 'SFT candidate artifacts');
+    const model = resolveManifestArtifact(root, artifacts.model, 'SFT candidate model');
+    const tokenizer = resolveManifestArtifact(root, artifacts.tokenizer, 'SFT candidate tokenizer');
+    const configuration = resolveManifestArtifact(root, artifacts.configuration, 'SFT candidate configuration');
+    const quantizationEvidence = resolveManifestArtifact(
+        root,
+        artifacts.quantizationEvidence,
+        'SFT candidate quantization evidence'
+    );
+    return Object.freeze({
+        id,
+        source: 'external-manifest',
+        calibration: manifest.calibration,
+        promotionEligible: manifest.promotionEligible,
+        ...(ineligibilityReason ? { ineligibilityReason } : {}),
+        paths: Object.freeze({ model, tokenizer, configuration }),
+        binding: Object.freeze({
+            manifest: artifactRecord(`sft-${id}-candidate-manifest`, normalizedManifestPath),
+            quantizationEvidence: artifactRecord(`sft-${id}-quantization-evidence`, quantizationEvidence)
+        }),
+        manifestPath: normalizedManifestPath
+    });
+}
+
+function fixedSftCandidate(pilotRoot, candidate) {
+    const promotionEligible = candidate !== 'int4';
+    return Object.freeze({
+        id: candidate,
+        source: 'pilot-fixed',
+        calibration: candidate === 'int4' ? 'none' : 'not-required',
+        promotionEligible,
+        ...(promotionEligible
+            ? {}
+            : { ineligibilityReason: 'Historical uncalibrated weight-only INT4 failed the pilot quality gate.' }),
+        paths: Object.freeze(sftPaths(pilotRoot, candidate)),
+        binding: Object.freeze({})
+    });
+}
+
+export function resolveSftCandidates(options) {
+    const candidates = [
+        ...options.candidates.map((candidate) => fixedSftCandidate(options.pilotRoot, candidate)),
+        ...options.candidateManifests.map(loadSftCandidateManifest)
+    ];
+    const seen = new Set();
+    for (const candidate of candidates) {
+        if (seen.has(candidate.id)) {
+            throw new TypeError(`SFT candidate ids must be unique: ${candidate.id}`);
+        }
+        seen.add(candidate.id);
+    }
+    return candidates;
 }
 
 async function runClassifier(generator, pilotRoot) {
@@ -325,20 +444,27 @@ async function writeCandidateEvidence(evidenceDirectory, candidate, evidence) {
 }
 
 async function runSftCandidate(generator, options, candidate) {
-    const paths = sftPaths(options.pilotRoot, candidate);
+    const paths = candidate.paths;
     const generationConfiguration = productionGenerationConfiguration(
         await readFile(paths.configuration, 'utf8'),
         true
     );
     const generationConfigurationSource = `${JSON.stringify(generationConfiguration, null, 2)}\n`;
     const artifacts = [
-        artifactRecord(`sft-${candidate}-model`, paths.model),
-        artifactRecord(`sft-${candidate}-tokenizer`, paths.tokenizer),
-        contentArtifact(`sft-${candidate}-generation-config`, 'generation-config.json', generationConfigurationSource),
-        artifactRecord('sft-held-out-cohort', paths.cohort)
+        artifactRecord(`sft-${candidate.id}-model`, paths.model),
+        artifactRecord(`sft-${candidate.id}-tokenizer`, paths.tokenizer),
+        contentArtifact(
+            `sft-${candidate.id}-generation-config`,
+            'generation-config.json',
+            generationConfigurationSource
+        ),
+        artifactRecord('sft-held-out-cohort', join(options.pilotRoot, 'training/sft/eval/held-out-prompts.json')),
+        ...Object.values(candidate.binding)
     ];
     const componentFingerprint = fingerprint(artifacts.slice(0, 3));
-    const rawCohort = JSON.parse(await readFile(paths.cohort, 'utf8'));
+    const rawCohort = JSON.parse(
+        await readFile(join(options.pilotRoot, 'training/sft/eval/held-out-prompts.json'), 'utf8')
+    );
     const allCases = Object.entries(rawCohort)
         .sort(([left], [right]) => left.localeCompare(right))
         .map(([id, value]) => parseHeldOutPrompt(id, value));
@@ -398,7 +524,7 @@ async function runSftCandidate(generator, options, candidate) {
                     id: entry.id,
                     expectedKeys,
                     elapsedMs: nowMilliseconds() - start,
-                    error: sanitizeError(error, options.pilotRoot)
+                    error: sanitizeError(error, options.pilotRoot, dirname(paths.model))
                 });
             }
         }
@@ -409,7 +535,7 @@ async function runSftCandidate(generator, options, candidate) {
     const scored = scoreSftCases(results);
     const evidence = {
         schemaVersion: 1,
-        candidate,
+        candidate: candidate.id,
         componentFingerprint,
         seed: options.seed,
         cohortFingerprint: artifacts[3].sha256,
@@ -421,10 +547,14 @@ async function runSftCandidate(generator, options, candidate) {
         }))
     };
     const evidenceArtifact = options.evidenceDir
-        ? await writeCandidateEvidence(options.evidenceDir, candidate, evidence)
+        ? await writeCandidateEvidence(options.evidenceDir, candidate.id, evidence)
         : undefined;
     return {
-        candidate,
+        candidate: candidate.id,
+        candidateSource: candidate.source,
+        calibration: candidate.calibration,
+        promotionEligible: candidate.promotionEligible,
+        ...(candidate.ineligibilityReason ? { ineligibilityReason: candidate.ineligibilityReason } : {}),
         componentFingerprint,
         generationConfigFingerprint: fingerprint(generationConfiguration),
         artifacts,
@@ -480,7 +610,7 @@ async function runInProcess(options) {
     }
     if (!options.skipSft) {
         report.sft = [];
-        for (const candidate of options.candidates) {
+        for (const candidate of resolveSftCandidates(options)) {
             report.sft.push(await runSftCandidate(generator, options, candidate));
         }
     }
@@ -492,7 +622,12 @@ function workerArguments(options, output, component, candidate) {
     if (component === 'classifier') {
         result.push('--skip-sft');
     } else {
-        result.push('--skip-classifier', '--sft-candidates', candidate, '--seed', String(options.seed));
+        result.push('--skip-classifier', '--seed', String(options.seed));
+        if (candidate.source === 'external-manifest') {
+            result.push('--sft-candidate-manifest', candidate.manifestPath);
+        } else {
+            result.push('--sft-candidates', candidate.id);
+        }
         if (options.maxSftCases !== undefined) {
             result.push('--max-sft-cases', String(options.maxSftCases));
         }
@@ -527,8 +662,8 @@ async function runIsolated(options) {
             classifierReport = JSON.parse(await readFile(output, 'utf8'));
         }
         if (!options.skipSft) {
-            for (const candidate of options.candidates) {
-                const output = join(temporaryRoot, `sft-${candidate}.json`);
+            for (const candidate of resolveSftCandidates(options)) {
+                const output = join(temporaryRoot, `sft-${candidate.id}.json`);
                 executeWorker(options, output, 'sft', candidate);
                 sftReports.push(JSON.parse(await readFile(output, 'utf8')));
             }
@@ -550,7 +685,9 @@ async function main() {
     );
 }
 
-main().catch((error) => {
-    process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n\n${usage()}\n`);
-    process.exitCode = 1;
-});
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    main().catch((error) => {
+        process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n\n${usage()}\n`);
+        process.exitCode = 1;
+    });
+}
