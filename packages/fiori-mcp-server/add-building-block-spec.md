@@ -2,7 +2,13 @@
 
 ## Target Users
 
-Any developer or agent working with SAP Fiori apps via an MCP-compatible client (Claude Code, Cursor, Joule Desktop) — whether building directly or automating as part of a higher-level agent workflow.
+SAP Fiori developers who build apps using AI assistants — specifically those who work outside the SAP tooling ecosystem (VS Code + SAP extensions, BAS, Joule Desktop). This includes:
+
+- Developers using **Claude Code or Cursor** as their primary AI assistant who don't want to switch to Joule just to add a building block
+- Teams running **CI/CD pipelines** that scaffold Fiori apps programmatically — no GUI, no SAP tooling required
+- Developers who prefer not to be locked to BAS or VS Code with SAP extensions
+
+The tool does not target developers who already use Joule Desktop and the SAP Page Editor — those tools already work. It targets the gap where a developer wants to build a Fiori app with a non-SAP AI client and get the same Page Editor quality output.
 
 ---
 
@@ -34,9 +40,11 @@ The existing `execute_functionality` 3-step workflow does not cover building blo
 
 ## Solution
 
-Added an `add_building_block` tool to `@sap-ux/fiori-mcp-server` that calls `generateBuildingBlock()` from `@sap-ux/fe-fpm-writer` directly and exposes it as a structured MCP tool.
+Added an `add_building_block` tool to `@sap-ux/fiori-mcp-server` that calls `generateBuildingBlock()` from `@sap-ux/fe-fpm-writer` and exposes it as a structured MCP tool.
 
-The LLM handles judgment (which BB type, which properties, what aggregation path). The tool handles deterministic execution (calling the generator, writing files, returning results).
+The key point: `fe-fpm-writer` is the same generator the SAP Page Editor uses internally. By exposing it as an MCP tool, **any AI client that supports MCP** — not just Joule — can now add building blocks with Page Editor quality output. The developer does not need VS Code with SAP extensions, BAS, or Joule installed.
+
+The AI handles judgment (which BB type, which properties, what aggregation path). The tool handles deterministic execution (calling the generator, writing files, returning results).
 
 **Validated**: Works end-to-end through both Claude Code and Joule Desktop (via supergateway SSE on port 9881).
 
