@@ -237,40 +237,85 @@ function sample(
     candidates: ReadonlyArray<number>,
     history: ReadonlyArray<number>,
     input: ConstrainedTextGenerationInput,
-    random: () => number
+    random: () => number,
+    weights: Float64Array,
+    heap: Int32Array
 ): number {
     if (candidates.length === 0) {
         throw new Error('SFT grammar has no valid next token');
     }
     const repeated = new Set(history);
     const temperature = Math.max(input.temperature, 1e-6);
-    const scores = candidates.map((id) => {
+    const score = (id: number): number => {
         const raw = logits[id] ?? Number.NEGATIVE_INFINITY;
-        let penalized = raw;
+        let penalized: number = raw;
         if (repeated.has(id) && input.repetitionPenalty !== 1) {
             penalized = raw > 0 ? raw / input.repetitionPenalty : raw * input.repetitionPenalty;
         }
-        return { id, score: penalized / temperature };
-    });
-    const maximum = Math.max(...scores.map(({ score }) => score));
+        return penalized / temperature;
+    };
+    let maximum = Number.NEGATIVE_INFINITY;
+    for (const id of candidates) {
+        maximum = Math.max(maximum, score(id));
+    }
     if (!Number.isFinite(maximum)) {
         throw new Error('SFT runtime returned no finite allowed logits');
     }
-    const probabilities = scores.map(({ id, score }) => ({ id, probability: Math.exp(score - maximum) }));
-    const total = probabilities.reduce((sum, { probability }) => sum + probability, 0);
-    probabilities.forEach((entry) => (entry.probability /= total));
+    let total = 0;
+    for (let index = 0; index < candidates.length; index += 1) {
+        const weight = Math.exp(score(candidates[index]!) - maximum);
+        weights[index] = weight;
+        heap[index] = index;
+        total += weight;
+    }
+    const isHigher = (left: number, right: number): boolean => {
+        const leftWeight = weights[left]!;
+        const rightWeight = weights[right]!;
+        return leftWeight > rightWeight || (leftWeight === rightWeight && candidates[left]! < candidates[right]!);
+    };
+    const siftIndexDown = (start: number, size: number): void => {
+        let parent = start;
+        while (true) {
+            const left = parent * 2 + 1;
+            if (left >= size) {
+                return;
+            }
+            const right = left + 1;
+            const child = right < size && isHigher(heap[right]!, heap[left]!) ? right : left;
+            if (!isHigher(heap[child]!, heap[parent]!)) {
+                return;
+            }
+            [heap[parent], heap[child]] = [heap[child]!, heap[parent]!];
+            parent = child;
+        }
+    };
+    for (let index = Math.floor(candidates.length / 2) - 1; index >= 0; index -= 1) {
+        siftIndexDown(index, candidates.length);
+    }
     const topP = Math.min(1, Math.max(Number.EPSILON, input.topP));
-    const nucleus = selectNucleus(probabilities, topP);
-    const nucleusTotal = nucleus.reduce((sum, { probability }) => sum + probability, 0);
+    const threshold = total * topP;
+    let heapSize = candidates.length;
+    let nucleusTotal = 0;
+    while (heapSize > 0 && nucleusTotal < threshold) {
+        const highest = heap[0]!;
+        heapSize -= 1;
+        if (heapSize > 0) {
+            heap[0] = heap[heapSize]!;
+            siftIndexDown(0, heapSize);
+        }
+        heap[heapSize] = highest;
+        nucleusTotal += weights[highest]!;
+    }
     const draw = random() * nucleusTotal;
     let cumulative = 0;
-    for (const candidate of nucleus) {
-        cumulative += candidate.probability;
+    for (let index = candidates.length - 1; index >= heapSize; index -= 1) {
+        const candidateIndex = heap[index]!;
+        cumulative += weights[candidateIndex]!;
         if (draw < cumulative) {
-            return candidate.id;
+            return candidates[candidateIndex]!;
         }
     }
-    return nucleus.at(-1)!.id;
+    return candidates[heap[heapSize]!]!;
 }
 
 function tokenTextTable(tokenizer: CausalTokenizer): ReadonlyArray<string | undefined> {
@@ -293,6 +338,18 @@ function tokenTextTable(tokenizer: CausalTokenizer): ReadonlyArray<string | unde
 export function createCausalTextGenerator(options: CreateCausalTextGeneratorOptions): ConstrainedTextGenerator {
     const tokenTexts = tokenTextTable(options.tokenizer);
     const specialIds = new Set(options.tokenizer.specialTokenIds);
+    let previousGrammarKey: string | undefined;
+    let previousAllowedTokenResolver: ReturnType<typeof createAllowedTokenResolver> | undefined;
+    const allowedTokenResolver = (
+        grammar: ConstrainedTextGenerationInput['grammar']
+    ): ReturnType<typeof createAllowedTokenResolver> => {
+        const key = JSON.stringify(grammar);
+        if (key !== previousGrammarKey || !previousAllowedTokenResolver) {
+            previousGrammarKey = key;
+            previousAllowedTokenResolver = createAllowedTokenResolver(tokenTexts, specialIds);
+        }
+        return previousAllowedTokenResolver;
+    };
     let sessionQueue: Promise<void> = Promise.resolve();
     const runSession = (input: CausalLmInputs, signal: AbortSignal): Promise<CausalLmOutputs> => {
         const operation = sessionQueue
@@ -323,7 +380,9 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
             let pastKeyValues: ReadonlyMap<number, CausalLmKeyValue> = new Map();
             const generated: number[] = [];
             const random = seededRandom(input.seed);
-            const resolveAllowedTokens = createAllowedTokenResolver(tokenTexts, specialIds);
+            const resolveAllowedTokens = allowedTokenResolver(input.grammar);
+            const samplingWeights = new Float64Array(options.tokenizer.vocabSize);
+            const samplingHeap = new Int32Array(options.tokenizer.vocabSize);
 
             while (generated.length < input.maxNewTokens && !grammarComplete(state)) {
                 signal.throwIfAborted();
@@ -345,7 +404,15 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
                 if (output.lastLogits.length !== options.tokenizer.vocabSize) {
                     throw new TypeError('SFT logits do not match tokenizer vocabulary size');
                 }
-                const token = sample(output.lastLogits, resolveAllowedTokens(state), generated, input, random);
+                const token = sample(
+                    output.lastLogits,
+                    resolveAllowedTokens(state),
+                    generated,
+                    input,
+                    random,
+                    samplingWeights,
+                    samplingHeap
+                );
                 const text = tokenTexts[token];
                 if (text === undefined) {
                     throw new TypeError('SFT selected an undecodable token');

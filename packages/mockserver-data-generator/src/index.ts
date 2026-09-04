@@ -153,9 +153,9 @@ function validateOptions(options: MockDataGeneratorOptions): void {
     }
     if (
         options.sftTimeoutMs !== undefined &&
-        (!Number.isSafeInteger(options.sftTimeoutMs) || options.sftTimeoutMs <= 0 || options.sftTimeoutMs > 60_000)
+        (!Number.isSafeInteger(options.sftTimeoutMs) || options.sftTimeoutMs <= 0 || options.sftTimeoutMs > 120_000)
     ) {
-        throw new TypeError('Mock data generator SFT timeout must be an integer between 1 and 60000 milliseconds');
+        throw new TypeError('Mock data generator SFT timeout must be an integer between 1 and 120000 milliseconds');
     }
 }
 

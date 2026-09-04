@@ -214,7 +214,7 @@ function canSplitIncompleteCompletion(error: unknown, signal: AbortSignal): bool
  * @param options
  */
 export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions): SftGenerator {
-    const budgetMs = options.budgetMs ?? 60_000;
+    const budgetMs = options.budgetMs ?? 90_000;
     const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? 8;
     if (!Number.isFinite(budgetMs) || budgetMs <= 0) {
         throw new TypeError('SFT budget must be positive');
@@ -227,7 +227,7 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
         generate: async (input: SftGenerationInput, signal: AbortSignal) => {
             const context = abortContext(signal, budgetMs);
             const fieldChunks = chunkFields(input.fields, maxFieldsPerPrompt);
-            const rows: Array<Record<string, JsonValue>> = [];
+            const rows: Array<Record<string, JsonValue>> = Array.from({ length: input.rowCount }, () => ({}));
             let attempts = 0;
             let parsedResponses = 0;
             const generateFields = async (
@@ -279,12 +279,11 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                 }
             };
             try {
-                for (let rowIndex = 0; rowIndex < input.rowCount; rowIndex += 1) {
-                    const row: Record<string, JsonValue> = {};
-                    for (const [chunkIndex, fields] of fieldChunks.entries()) {
+                for (const [chunkIndex, fields] of fieldChunks.entries()) {
+                    for (let rowIndex = 0; rowIndex < input.rowCount; rowIndex += 1) {
                         try {
                             const partial = await generateFields(fields, rowIndex, String(chunkIndex));
-                            Object.assign(row, partial);
+                            Object.assign(rows[rowIndex]!, partial);
                         } catch (error) {
                             const reason = error instanceof Error ? error.message : String(error);
                             const failure = new Error(
@@ -302,10 +301,9 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                             throw failure;
                         }
                     }
-                    rows.push(Object.freeze(row));
                 }
                 return Object.freeze({
-                    rows: Object.freeze(rows),
+                    rows: Object.freeze(rows.map((row) => Object.freeze(row))),
                     statistics: Object.freeze({ attempts, parsedResponses })
                 });
             } finally {

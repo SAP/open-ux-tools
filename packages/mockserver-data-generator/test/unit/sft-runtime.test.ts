@@ -112,6 +112,38 @@ describe('pilot-compatible SFT runtime', () => {
         expect(new Set(generate.mock.calls.map(([request]) => request.seed)).size).toBe(3);
     });
 
+    test('generates both rows of a chunk consecutively so the grammar cache can be reused', async () => {
+        const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
+            JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
+        );
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate },
+            sampling: {
+                temperature: 0.6,
+                topP: 0.9,
+                repetitionPenalty: 1.15,
+                noRepeatNgramSize: 4,
+                maxNewTokens: 300
+            },
+            maxFieldsPerPrompt: 2
+        });
+        const fields = ['FieldA', 'FieldB', 'FieldC', 'FieldD'].map((name) => ({
+            name,
+            primitiveType: 'string',
+            nullable: false
+        }));
+
+        await generator.generate({ ...input, fields, rowCount: 2 }, new AbortController().signal);
+
+        expect(generate.mock.calls.map(([request]) => request.grammar.map(({ name }) => name))).toEqual([
+            ['FieldA', 'FieldB'],
+            ['FieldA', 'FieldB'],
+            ['FieldC', 'FieldD'],
+            ['FieldC', 'FieldD']
+        ]);
+    });
+
     test('uses eight-field default chunks with adaptive overflow splitting', async () => {
         const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
             JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))

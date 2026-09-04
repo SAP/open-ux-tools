@@ -207,7 +207,7 @@ export async function applySftGeneration(
                     ...(options.locale ? { locale: options.locale } : {})
                 }),
                 signal,
-                options.sftTimeoutMs ?? 60_000
+                options.sftTimeoutMs ?? 90_000
             );
             if (!output || !Array.isArray(output.rows)) {
                 throw new TypeError('Invalid SFT generation result');

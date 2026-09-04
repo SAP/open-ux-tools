@@ -134,6 +134,20 @@ describe('mockserver data generator public API', () => {
         expect(sft.generate).not.toHaveBeenCalled();
     });
 
+    it('accepts a bounded wide-entity SFT timeout and rejects values above two minutes', async () => {
+        const request: MockDataServiceRequest = {
+            metadata: { format: 'edmx', content: '<edmx:Edmx Version="4.0" />' },
+            service: { urlPath: '/timeout-validation', odataVersion: '4.0' },
+            targets: [],
+            existingData: {}
+        };
+
+        await expect(generateService(request, { sftTimeoutMs: 120_000 })).resolves.toBeDefined();
+        await expect(generateService(request, { sftTimeoutMs: 120_001 })).rejects.toThrow(
+            'SFT timeout must be an integer between 1 and 120000 milliseconds'
+        );
+    });
+
     it('generates deterministic, type-correct rows from EDMX without a learned runtime', async () => {
         const request: MockDataServiceRequest = {
             metadata: {
