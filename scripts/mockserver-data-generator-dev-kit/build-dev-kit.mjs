@@ -82,7 +82,14 @@ function packPackage({ root, packageName, destination, source }) {
     return { ...inspectPackedArtifact(finalPath, packageName, firstInspection.version), source };
 }
 
-function bundleEntry(entryPoint, outputFile, requireShim = false) {
+/**
+ * Bundle one development-kit entry point and all local modules into one portable file.
+ *
+ * @param {string} entryPoint source entry point
+ * @param {string} outputFile bundled output path
+ * @param {boolean} [requireShim] inject a CommonJS require shim
+ */
+export function bundleEntry(entryPoint, outputFile, requireShim = false) {
     const manager = packageManagerInvocation(TOOLS_ROOT);
     const args = [
         ...manager.prefix,

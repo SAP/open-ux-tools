@@ -3,7 +3,9 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, test } from '@jest/globals';
+import { bundleEntry } from '../../../../../scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs';
 import {
     assertSafeArchiveEntry,
     inspectPackedArtifact,
@@ -15,6 +17,9 @@ import {
 } from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/manifest.mjs';
 
 const temporaryDirectories: string[] = [];
+const pilotBridgeEntry = fileURLToPath(
+    new URL('../../../../../scripts/mockserver-data-generator-dev-kit/prepare-pilot-model-cache.mjs', import.meta.url)
+);
 
 function temporaryDirectory(): string {
     const directory = mkdtempSync(join(tmpdir(), 'mockgen-dev-kit-test-'));
@@ -91,6 +96,46 @@ describe('development kit artifact validation', () => {
         const archive = makePackageTarball();
         const wrong = createHash('sha256').update('wrong').digest('hex');
         expect(() => verifyFileChecksum(archive, wrong)).toThrow(/checksum mismatch/i);
+    });
+
+    test('bundles the pilot model bridge into one independently executable file', () => {
+        const root = temporaryDirectory();
+        const pilot = join(root, 'pilot');
+        const classifier = join(pilot, 'packages/mockgen-models/retrieval-model');
+        const classifierHead = join(pilot, 'packages/mockgen-core/models');
+        const sft = join(pilot, 'var/sft/onnx-export');
+        for (const directory of [classifier, classifierHead, sft]) {
+            mkdirSync(directory, { recursive: true });
+        }
+        writeFileSync(join(classifier, 'model_int8.onnx'), 'classifier');
+        writeFileSync(join(classifier, 'vocab.txt'), 'vocabulary');
+        writeFileSync(join(classifierHead, 'embedding-classifier-head.json'), '{"dim":384}\n');
+        writeFileSync(join(sft, 'model_int8.onnx'), 'generator');
+        writeFileSync(join(sft, 'tokenizer.json'), '{}\n');
+        writeFileSync(
+            join(sft, 'config.json'),
+            '{"num_hidden_layers":30,"num_key_value_heads":3,"hidden_size":576,"num_attention_heads":9}\n'
+        );
+        const bundled = join(root, 'prepare-pilot-model-cache.mjs');
+        const cache = join(root, 'cache');
+        const manifest = join(root, 'model-manifest.json');
+
+        bundleEntry(pilotBridgeEntry, bundled);
+        execFileSync(process.execPath, [bundled, '--pilot-root', pilot, '--cache', cache, '--manifest-out', manifest], {
+            encoding: 'utf8'
+        });
+
+        const modelManifest = JSON.parse(readFileSync(manifest, 'utf8')) as {
+            components: Array<{ files: Array<{ role: string; path: string }> }>;
+            revision: string;
+        };
+        const configurationArtifact = modelManifest.components
+            .flatMap(({ files }) => files)
+            .find(({ role }) => role === 'generation-config');
+        const configuration = JSON.parse(
+            readFileSync(join(cache, 'mockgen-pilot-int8', modelManifest.revision, configurationArtifact!.path), 'utf8')
+        ) as { samplingOptions: { maxNewTokens: number } };
+        expect(configuration.samplingOptions.maxNewTokens).toBe(300);
     });
 });
 
