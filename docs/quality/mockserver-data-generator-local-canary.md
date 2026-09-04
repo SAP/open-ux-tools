@@ -51,6 +51,24 @@ This rerun binds the final local canary to committed source and exact package
 contents. The earlier three-format run remains the cross-format fixture
 evidence.
 
+## Classifier/SFT production-candidate archive
+
+After the generated-data cache, EDMX complex-property compatibility, numeric
+facet guard, and frozen realism campaign landed, the kit was rebuilt from both
+clean feature worktrees and installed into another fresh OData V4 fixture:
+
+- Dev-kit fingerprint: `f5efd7eda59426d6b7a1c060de861984d2c120c1e561f8d46f6ad3d65cd31181`
+- Archive SHA-256: `9391bc9fddd0ef7f163cd32f3a7017a94f2aaa6910d5cb51f0c042c884c2138a`
+- Archive size: 515,411 bytes
+- Generator tarball: 53,842 bytes, SHA-256 `56c665256bd743400b1027c54336f8de459107df1c1e9cd6048085345e2fe24f`
+- Source state: clean `SAP/open-ux-tools` commit `fd142d5b5675159a251e72253aaeb1905ca302dc` and clean `SAP/open-ux-odata` commit `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`; reproducible
+- Installed configuration: unchanged `start-mock`, exactly one `sap-fe-mockserver`, and provider `@sap-ux/mockserver-data-generator/fe-mockserver`
+- HTTP verification: the provider executed, OData V4 `$metadata` passed, and `Products?$top=1` returned one row
+
+This exact archive contains code and matching host packages but no model
+weights. It verifies the transport and deterministic fallback used before a
+developer explicitly prepares the classifier/SFT model cache.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,

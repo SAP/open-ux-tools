@@ -7,6 +7,12 @@ Local Linux or macOS results do not establish BAS proxy, certificate,
 filesystem, preview-routing, or process behavior. Complete this record using a
 clean archive produced with --require-clean.
 
+Current clean archive candidate:
+
+- dev-kit fingerprint: `f5efd7eda59426d6b7a1c060de861984d2c120c1e561f8d46f6ad3d65cd31181`
+- archive SHA-256: `9391bc9fddd0ef7f163cd32f3a7017a94f2aaa6910d5cb51f0c042c884c2138a`
+- source commits: `SAP/open-ux-tools` `fd142d5b5675159a251e72253aaeb1905ca302dc`; `SAP/open-ux-odata` `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
+
 ## Inputs to record
 
 - BAS dev-space image and region:
