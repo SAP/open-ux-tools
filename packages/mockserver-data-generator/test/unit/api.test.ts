@@ -1,5 +1,7 @@
 import {
+    MAX_GENERATED_RESULT_BYTES,
     MAX_METADATA_INPUT_BYTES,
+    assertGeneratedResultWithinLimit,
     assertMetadataInputWithinLimit,
     createGenerationFingerprint,
     generateService,
@@ -103,6 +105,64 @@ describe('mockserver data generator public API', () => {
                 }
             })
         ).toThrow(/duplicate key/i);
+    });
+
+    it('rejects generated snapshots above the standard host 64 MiB output ceiling', async () => {
+        const request: MockDataServiceRequest = {
+            metadata: {
+                format: 'edmx',
+                content: `<?xml version="1.0"?>
+                    <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                        <edmx:DataServices>
+                            <Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                                <EntityContainer Name="Container">
+                                    <EntitySet Name="Records" EntityType="Demo.Record" />
+                                </EntityContainer>
+                                <EntityType Name="Record">
+                                    <Key><PropertyRef Name="ID" /></Key>
+                                    <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                                    <Property Name="Payload" Type="Edm.String" Nullable="false" />
+                                </EntityType>
+                            </Schema>
+                        </edmx:DataServices>
+                    </edmx:Edmx>`
+            },
+            service: { urlPath: '/records', odataVersion: '4.0' },
+            targets: [{ name: 'Records', kind: 'entity-set' }],
+            existingData: {}
+        };
+        const resultWithPayload = (payload: string) =>
+            ({
+                resources: { Records: [{ ID: 1, Payload: payload }] },
+                diagnostics: [],
+                capabilities: { mode: 'deterministic', classifier: 'unavailable', sft: 'unavailable' },
+                fingerprints: { request: 'request-fingerprint' }
+            }) as const;
+        const emptyResultBytes = Buffer.byteLength(JSON.stringify(resultWithPayload('')), 'utf8');
+        const exactPayload = 'x'.repeat(MAX_GENERATED_RESULT_BYTES - emptyResultBytes);
+        const exactResult = resultWithPayload(exactPayload);
+        const oversizedValue = `${exactPayload.slice(0, -2)}€`;
+        const oversizedResult = resultWithPayload(oversizedValue);
+        const sft: SftGenerator = {
+            fingerprint: 'oversized-output-sft',
+            generate: async () => ({ rows: [{ Payload: oversizedValue }] })
+        };
+
+        expect(Buffer.byteLength(JSON.stringify(exactResult), 'utf8')).toBe(MAX_GENERATED_RESULT_BYTES);
+        expect(Buffer.byteLength(JSON.stringify(oversizedResult), 'utf8')).toBe(MAX_GENERATED_RESULT_BYTES + 1);
+        expect(() => assertGeneratedResultWithinLimit(exactResult)).not.toThrow();
+        expect(() => validateGeneratedResult(request, exactResult)).not.toThrow();
+        expect(() => validateGeneratedResult(request, oversizedResult)).toThrow(
+            expect.objectContaining({
+                code: 'GENERATED_RESULT_TOO_LARGE',
+                maxBytes: MAX_GENERATED_RESULT_BYTES,
+                actualBytes: MAX_GENERATED_RESULT_BYTES + 1
+            })
+        );
+        await expect(generateService(request, { rowsPerEntity: 1 }, { sft })).rejects.toMatchObject({
+            code: 'GENERATED_RESULT_TOO_LARGE',
+            maxBytes: MAX_GENERATED_RESULT_BYTES
+        });
     });
 
     it('fingerprints material inputs and learned components but not abort-signal identity', () => {

@@ -16,6 +16,7 @@ import { parseCsn } from './schema/csn.js';
 import { classifySchema } from './semantics/classifier.js';
 import { resolveSemanticClassifications } from './semantics/lexical-fallback.js';
 import { assertMetadataInputWithinLimit } from './metadata-limit.js';
+import { assertGeneratedResultWithinLimit } from './result-limit.js';
 
 export {
     buildEmbeddingFieldText,
@@ -43,6 +44,11 @@ export {
     assertMetadataInputWithinLimit,
     isMetadataInputTooLargeError
 } from './metadata-limit.js';
+export {
+    MAX_GENERATED_RESULT_BYTES,
+    GeneratedResultTooLargeError,
+    assertGeneratedResultWithinLimit
+} from './result-limit.js';
 
 function canonicalJson(value: unknown): string {
     if (Array.isArray(value)) {
@@ -98,6 +104,7 @@ export function createGenerationFingerprint(
  */
 export function validateGeneratedResult(request: MockDataServiceRequest, result: MockDataGeneratorResult): void {
     assertMetadataInputWithinLimit(request.metadata);
+    assertGeneratedResultWithinLimit(result);
     const graph =
         request.metadata.format === 'edmx' ? parseEdmx(request.metadata.content) : parseCsn(request.metadata.content);
     const entities = new Map(graph.entities.map((entity) => [entity.entitySetName, entity]));
@@ -255,7 +262,7 @@ export async function generateService(
         }
         assertRelationshipIntegrity(graph, resources, request.existingData);
     }
-    return Object.freeze({
+    const result = Object.freeze({
         resources,
         diagnostics: Object.freeze(diagnostics),
         capabilities: Object.freeze(capabilities(runtime, classifierDegraded, sftDegraded)),
@@ -269,6 +276,8 @@ export async function generateService(
         }),
         statistics: Object.freeze({ sft: sftStatistics })
     });
+    assertGeneratedResultWithinLimit(result);
+    return result;
 }
 
 export type {

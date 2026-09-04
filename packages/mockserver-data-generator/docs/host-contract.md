@@ -197,6 +197,11 @@ provider emits the privacy-safe code `METADATA_INPUT_TOO_LARGE` with byte counts
 and rejects its whole result, allowing the host to continue through its normal
 built-in/empty fallback without publishing partial generated data.
 
+The generator also measures the complete serialized result and rejects it
+above 64 MiB with `GENERATED_RESULT_TOO_LARGE`. This mirrors the standard host
+ceiling and applies the same defense to direct native CAP generation before a
+result can be cached or inserted.
+
 ## Diagnostics boundary
 
 Returned diagnostics can include stable error codes, component versions,

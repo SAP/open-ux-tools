@@ -5,14 +5,14 @@ Date: 2026-09-04
 Candidate source:
 
 - exact realism runtime package: `817382b88f2cd88a84eb093410ad2a3a367b5505`
-- post-evidence production gate: `817382b88f2cd88a84eb093410ad2a3a367b5505`
-- development kit source: `817382b88f2cd88a84eb093410ad2a3a367b5505`
+- post-evidence production gate: `3d2e64c16ea14beb2fc180df2e63bdfa5de1df1f`
+- development kit source: `3d2e64c16ea14beb2fc180df2e63bdfa5de1df1f`
 - current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - development-kit `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - portable development-kit fingerprint:
-  `f7820bacc74174b3b47cc5ca53f8cec22ff17e07184778710b4997a7ddb0e0cd`
+  `e502705429c5c09c8714f677ca2d73d5e23448345362d86f89beb0fb7f807652`
 - portable development-kit SHA-256:
-  `e5e3ddeeab01daea4c120bdd8e59aededcc57280b14c0078251d2a7b8fab9b97`
+  `d1b85404cb9e052a77a95eb1a1b10072fb4f9a1f635ff5f4b4cf3fa82881df37`
 
 ## Verdict
 
@@ -63,9 +63,10 @@ means a measured threshold was missed by the named candidate.
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
 | Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, FE diagnostic/fallback, and CAP startup tests pass | Repeat against published FE and CAP packages on release platforms |
+| Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or CAP publication; CAP startup remains available with stable reporting | Repeat against published FE and CAP packages on release platforms |
 | UI5 config and application writer | proven | one middleware, one `ui5-mock.yaml`, one existing `start-mock`; add/remove and writer tests pass | Published-version compatibility run |
 | Local/BAS development kit | proven locally / platform | current 544,369-byte archive installs exact tarballs, verifies deterministic V4 and classifier/SFT V2 paths through the standard Fiori mockserver, and restores both fixtures byte-for-byte | Run the recorded procedure in an actual BAS dev space |
-| Native CAP adapter | proven locally | 19 tests cover opt-in profiles, preservation of existing persistence data, FK ordering, learned fallback, metadata ceiling fallback, generated cache, in-memory SQLite, restart determinism, and package boundary | Cross-platform and published-package canary |
+| Native CAP adapter | proven locally | 20 tests cover opt-in profiles, preservation of existing persistence data, FK ordering, learned fallback, metadata/result ceiling fallback, generated cache, in-memory SQLite, restart determinism, and package boundary | Cross-platform and published-package canary |
 | Package boundary | proven | current exact-kit generator tarball is 75,878 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
@@ -83,12 +84,12 @@ means a measured threshold was missed by the named candidate.
 | --- | ---: |
 | `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 179 tests passed; 85.44% statement coverage; build and package check passed; lint has zero errors |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 180 tests passed; 85.51% statement coverage; build and package check passed; lint has zero errors |
 | development kit, degradation, and evaluation harness | 11 suites, 98 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
-| `@sap-ux/mockserver-data-generator-cap` | 5 suites, 19 tests passed; 86.61% statement coverage; build passed; lint has zero errors |
-| exact deterministic archive canary | provider executed; metadata passed; one row returned; exact restore passed |
-| exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,437.508 ms runtime initialization; 2,635.900 ms generation; exact restore passed |
+| `@sap-ux/mockserver-data-generator-cap` | 5 suites, 20 tests passed; 86.72% statement coverage; build passed; lint has zero errors |
+| exact deterministic archive canary | provider executed; metadata passed; one row returned; 28.227 ms generation; 29.217 ms host; exact restore passed |
+| exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,506.964 ms runtime initialization; 2,745.367 ms generation; 2,746.204 ms host; exact restore passed |
 | current package archive | 75,878 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |

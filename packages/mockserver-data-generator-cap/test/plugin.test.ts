@@ -67,6 +67,88 @@ describe('native CAP plugin lifecycle', () => {
         );
     });
 
+    test('rejects an oversized live result before CAP cache or database publication', async () => {
+        let served: (() => Promise<void>) | undefined;
+        const warn = jest.fn();
+        const dispose = jest.fn(async () => undefined);
+        const writeGeneratedDataCache = jest.fn(async () => undefined);
+        const transaction = {
+            run: jest.fn(async (query: { kind: string; entity: string }) => {
+                if (query.kind !== 'select') {
+                    return undefined;
+                }
+                return query.entity === 'demo.Existing' ? [{ ID: 'existing-1' }] : [];
+            })
+        };
+        const cds = {
+            env: {
+                profiles: ['development'],
+                mockserverDataGenerator: {
+                    enabled: true,
+                    mode: 'learned',
+                    rowsPerEntity: 1,
+                    modelManifestPath: '/unused/manifest.json',
+                    generatedDataCacheDirectory: '/generated-cache'
+                }
+            },
+            model: {
+                definitions: {
+                    'demo.Existing': {
+                        kind: 'entity',
+                        elements: { ID: { key: true, type: 'cds.UUID', notNull: true } }
+                    },
+                    'demo.Missing': {
+                        kind: 'entity',
+                        elements: {
+                            ID: { key: true, type: 'cds.UUID', notNull: true },
+                            Payload: { type: 'cds.String', notNull: true }
+                        }
+                    }
+                }
+            },
+            db: { tx: jest.fn(async (handler: (tx: typeof transaction) => Promise<void>) => handler(transaction)) },
+            ql: {
+                SELECT: {
+                    from: (entity: string) => ({
+                        columns() {
+                            return this;
+                        },
+                        limit: () => ({ kind: 'select', entity })
+                    })
+                },
+                INSERT: {
+                    into: (entity: string) => ({
+                        entries: (rows: ReadonlyArray<Record<string, unknown>>) => ({ kind: 'insert', entity, rows })
+                    })
+                }
+            },
+            log: () => ({ info: jest.fn(), warn }),
+            on: jest.fn((_event: string, handler: () => Promise<void>) => {
+                served = handler;
+            })
+        };
+        const sft = {
+            fingerprint: 'oversized-cap-sft',
+            generate: jest.fn(async () => ({ rows: [{ Payload: '€'.repeat(Math.ceil((64 * 1024 * 1024 + 1) / 3)) }] }))
+        };
+
+        registerCapPlugin(cds, {
+            createRuntime: jest.fn(async () => ({ runtime: { sft }, dispose })),
+            modelFingerprints: jest.fn(async () => ({ sft: sft.fingerprint })),
+            readGeneratedDataCache: jest.fn(async () => undefined),
+            writeGeneratedDataCache
+        });
+        await expect(served?.()).resolves.toBeUndefined();
+
+        expect(warn).toHaveBeenCalledWith(
+            'GENERATED_RESULT_TOO_LARGE: generated CAP data exceeds the 64 MiB output ceiling; normal CAP data remains active.'
+        );
+        expect(transaction.run).toHaveBeenCalledWith({ kind: 'select', entity: 'demo.Existing' });
+        expect(transaction.run.mock.calls.some(([query]) => query.kind === 'insert')).toBe(false);
+        expect(writeGeneratedDataCache).not.toHaveBeenCalled();
+        expect(dispose).toHaveBeenCalledTimes(1);
+    });
+
     test('awaits seeding on served and degrades without blocking CAP startup', async () => {
         let served: (() => Promise<void>) | undefined;
         const warn = jest.fn();

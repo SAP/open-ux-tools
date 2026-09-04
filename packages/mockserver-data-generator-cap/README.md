@@ -41,6 +41,10 @@ UTF-8 metadata ceiling. Oversized input is rejected before hashing or parsing,
 reported as `METADATA_INPUT_TOO_LARGE`, and leaves the normal CAP data and
 startup path active.
 
+Generated results are rejected above the standard 64 MiB UTF-8 output ceiling
+before cache publication or database insertion. The plugin reports
+`GENERATED_RESULT_TOO_LARGE` and leaves normal CAP data and startup active.
+
 ## Verify the npm boundary
 
 Repository contributors can build the package and run `pnpm check:package`

@@ -202,6 +202,15 @@ export function registerCapPlugin(cds: CdsFacade, dependencies: PluginDependenci
                 logger(cds).warn(
                     'METADATA_INPUT_TOO_LARGE: CAP metadata exceeds the 32 MiB input ceiling; normal CAP data remains active.'
                 );
+            } else if (
+                error !== null &&
+                typeof error === 'object' &&
+                'code' in error &&
+                error.code === 'GENERATED_RESULT_TOO_LARGE'
+            ) {
+                logger(cds).warn(
+                    'GENERATED_RESULT_TOO_LARGE: generated CAP data exceeds the 64 MiB output ceiling; normal CAP data remains active.'
+                );
             } else {
                 logger(cds).warn(
                     'CAP seeding failed; deterministic generation remains available through normal CAP data.'

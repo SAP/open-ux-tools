@@ -1349,7 +1349,7 @@ matrix.
 - [x] Threat-model metadata parsing, path traversal, arbitrary module loading, model download, archive extraction, cache poisoning, lock attacks, prompt leakage, model provenance, and resource exhaustion.
 - [x] Allow only the configured provider module and validated model-manifest files; never execute downloaded model-side code.
 - [x] Reject EDMX/CSN above a fixed 32 MiB UTF-8 ceiling before hashing or parsing, with stable FE/CAP fallback diagnostics.
-- [ ] Enforce download size, generation time, row count, memory-aware concurrency, and output-size limits.
+- [x] Enforce download size, generation time, row count, memory-aware concurrency, and output-size limits.
 - [x] Run production dependency audit and record inherited upstream findings separately.
 - [ ] Produce or consume SBOM/provenance for npm and model artifacts according to SAP release policy.
 
@@ -1396,10 +1396,10 @@ pnpm audit --prod
 pnpm changeset status
 ```
 
-- [ ] Run all focused commands after each owning package phase.
+- [x] Run all focused commands after each owning package phase.
 - [ ] Run all full commands before each preview/stable release PR.
-- [ ] Do not fix unrelated failures inside feature commits; record them with upstream SHA and independent reproduction.
-- [ ] Require at least 80% coverage and full coverage of security/precedence/fallback branches in the new packages.
+- [x] Do not fix unrelated failures inside feature commits; record them with upstream SHA and independent reproduction.
+- [x] Require at least 80% coverage and full coverage of security/precedence/fallback branches in the new packages.
 
 **Phase exit gate:** Supported platform, install, security, audit, coverage, package-boundary, and repository gates pass or have an approved, pre-existing upstream exception unrelated to the feature.
 
