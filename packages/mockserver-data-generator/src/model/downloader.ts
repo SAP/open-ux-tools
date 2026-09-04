@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
-import { mkdir, open, rename, stat, unlink } from 'node:fs/promises';
+import { lstat, mkdir, open, readdir, rename, rmdir, stat, unlink } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import type { ModelArtifactFile, ModelManifest } from './manifest.js';
 import { modelBundleDirectory, verifyModelCache, type VerifiedModelCache } from './model-cache.js';
@@ -15,6 +15,20 @@ export interface PrepareModelCacheOptions {
 }
 
 const delay = (milliseconds: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, milliseconds));
+const LOCK_OWNER_PREFIX = 'owner-';
+const LOCK_RECLAIM_PREFIX = '.reclaim-';
+const LOCK_RELEASE_PREFIX = '.release-';
+
+interface AcquiredLock {
+    directory: string;
+    handle: Awaited<ReturnType<typeof open>>;
+    markerPath: string;
+    token: string;
+}
+
+function errorCode(error: unknown): string | undefined {
+    return (error as NodeJS.ErrnoException).code;
+}
 
 function artifactUrl(file: ModelArtifactFile, mirrorBaseUrl?: string): string {
     if (!mirrorBaseUrl) {
@@ -30,60 +44,298 @@ function artifactUrl(file: ModelArtifactFile, mirrorBaseUrl?: string): string {
     return new URL(file.path, base).toString();
 }
 
-function boundedSignal(parent: AbortSignal | undefined, timeoutMs: number): { signal: AbortSignal; dispose(): void } {
+function boundedSignal(
+    parent: AbortSignal | undefined,
+    timeoutMs: number
+): { signal: AbortSignal; abort(reason: unknown): void; dispose(): void } {
     const controller = new AbortController();
-    const abort = (): void => controller.abort(parent?.reason);
-    parent?.addEventListener('abort', abort, { once: true });
+    const abortFromParent = (): void => controller.abort(parent?.reason);
+    parent?.addEventListener('abort', abortFromParent, { once: true });
     if (parent?.aborted) {
-        abort();
+        abortFromParent();
     }
     const timer = setTimeout(() => controller.abort(new Error('model acquisition timed out')), timeoutMs);
     timer.unref();
     return {
         signal: controller.signal,
+        abort: (reason) => controller.abort(reason),
         dispose: () => {
             clearTimeout(timer);
-            parent?.removeEventListener('abort', abort);
+            parent?.removeEventListener('abort', abortFromParent);
         }
     };
 }
 
+async function reclaimStaleLock(lockDirectory: string, staleLockMs: number): Promise<boolean> {
+    let lockDetails: Awaited<ReturnType<typeof lstat>>;
+    try {
+        lockDetails = await lstat(lockDirectory);
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            return true;
+        }
+        throw error;
+    }
+    if (lockDetails.isFile()) {
+        throw new Error(
+            'incompatible legacy model-cache lock file detected; after confirming no older model preparation process is active, delete the lock file and retry'
+        );
+    }
+    if (!lockDetails.isDirectory()) {
+        return false;
+    }
+
+    let entries: string[];
+    try {
+        entries = await readdir(lockDirectory);
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            return true;
+        }
+        if (errorCode(error) === 'ENOTDIR') {
+            return false;
+        }
+        throw error;
+    }
+    let currentLockDetails: Awaited<ReturnType<typeof lstat>>;
+    try {
+        currentLockDetails = await lstat(lockDirectory);
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            return true;
+        }
+        if (errorCode(error) === 'ENOTDIR') {
+            return false;
+        }
+        throw error;
+    }
+    if (
+        !currentLockDetails.isDirectory() ||
+        currentLockDetails.dev !== lockDetails.dev ||
+        currentLockDetails.ino !== lockDetails.ino
+    ) {
+        return false;
+    }
+
+    if (entries.length === 0) {
+        if (Date.now() - currentLockDetails.mtimeMs <= staleLockMs) {
+            return false;
+        }
+        try {
+            await rmdir(lockDirectory);
+            return true;
+        } catch (error) {
+            if (errorCode(error) === 'ENOENT') {
+                return true;
+            }
+            if (errorCode(error) === 'ENOTEMPTY') {
+                return false;
+            }
+            throw error;
+        }
+    }
+
+    if (entries.length !== 1) {
+        return false;
+    }
+    const [entry] = entries;
+    if (
+        !entry.startsWith(LOCK_OWNER_PREFIX) &&
+        !entry.startsWith(LOCK_RECLAIM_PREFIX) &&
+        !entry.startsWith(LOCK_RELEASE_PREFIX)
+    ) {
+        return false;
+    }
+    let entryPath = join(lockDirectory, entry);
+    let details: Awaited<ReturnType<typeof stat>>;
+    try {
+        details = await stat(entryPath);
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            return true;
+        }
+        throw error;
+    }
+    if (Date.now() - details.mtimeMs <= staleLockMs) {
+        return false;
+    }
+
+    if (entry.startsWith(LOCK_OWNER_PREFIX)) {
+        const originalPath = entryPath;
+        entryPath = join(
+            lockDirectory,
+            `${LOCK_RECLAIM_PREFIX}${entry.slice(LOCK_OWNER_PREFIX.length)}-${randomUUID()}`
+        );
+        try {
+            await rename(originalPath, entryPath);
+        } catch (error) {
+            if (errorCode(error) === 'ENOENT') {
+                return true;
+            }
+            throw error;
+        }
+        details = await stat(entryPath);
+        if (Date.now() - details.mtimeMs <= staleLockMs) {
+            await rename(entryPath, originalPath);
+            return false;
+        }
+    }
+
+    try {
+        await unlink(entryPath);
+    } catch (error) {
+        if (errorCode(error) !== 'ENOENT') {
+            throw error;
+        }
+    }
+    try {
+        await rmdir(lockDirectory);
+        return true;
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            return true;
+        }
+        if (errorCode(error) === 'ENOTEMPTY') {
+            return false;
+        }
+        throw error;
+    }
+}
+
+async function isExclusiveOwner(lockDirectory: string, markerName: string): Promise<boolean> {
+    try {
+        const entries = await readdir(lockDirectory);
+        return entries.length === 1 && entries[0] === markerName;
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            return false;
+        }
+        throw error;
+    }
+}
+
 async function acquireLock(
-    lockPath: string,
+    lockDirectory: string,
     signal: AbortSignal,
     timeoutMs: number,
     staleLockMs: number
-): Promise<Awaited<ReturnType<typeof open>>> {
+): Promise<AcquiredLock> {
     const deadline = Date.now() + timeoutMs;
     while (true) {
         signal.throwIfAborted();
         try {
-            const handle = await open(lockPath, constants.O_CREAT | constants.O_EXCL | constants.O_RDWR, 0o600);
-            await handle.writeFile(JSON.stringify({ pid: process.pid, createdAt: Date.now() }));
-            await handle.sync();
-            return handle;
+            await mkdir(lockDirectory, { mode: 0o700 });
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
                 throw error;
             }
-            try {
-                const details = await stat(lockPath);
-                if (Date.now() - details.mtimeMs > staleLockMs) {
-                    await unlink(lockPath);
-                    continue;
-                }
-            } catch (lockError) {
-                if ((lockError as NodeJS.ErrnoException).code === 'ENOENT') {
-                    continue;
-                }
-                throw lockError;
+            if (await reclaimStaleLock(lockDirectory, staleLockMs)) {
+                continue;
             }
             if (Date.now() >= deadline) {
                 throw new Error('timed out waiting for the model-cache lock');
             }
             await delay(25);
+            continue;
+        }
+
+        const token = randomUUID();
+        const markerName = `${LOCK_OWNER_PREFIX}${token}`;
+        const markerPath = join(lockDirectory, markerName);
+        let handle: Awaited<ReturnType<typeof open>> | undefined;
+        try {
+            handle = await open(markerPath, constants.O_CREAT | constants.O_EXCL | constants.O_RDWR, 0o600);
+            await handle.writeFile(JSON.stringify({ pid: process.pid, token, createdAt: Date.now() }));
+            await handle.sync();
+            if (!(await isExclusiveOwner(lockDirectory, markerName))) {
+                await handle.close();
+                handle = undefined;
+                await unlink(markerPath).catch(() => undefined);
+                continue;
+            }
+            return { directory: lockDirectory, handle, markerPath, token };
+        } catch (error) {
+            await handle?.close().catch(() => undefined);
+            await unlink(markerPath).catch(() => undefined);
+            await rmdir(lockDirectory).catch(() => undefined);
+            if (errorCode(error) === 'ENOENT' || errorCode(error) === 'EEXIST') {
+                continue;
+            }
+            throw error;
         }
     }
+}
+
+async function refreshLock(lock: AcquiredLock): Promise<void> {
+    const now = new Date();
+    await lock.handle.utimes(now, now);
+    const details = await lock.handle.stat();
+    if (details.nlink < 1) {
+        throw new Error('model-cache lock ownership was lost');
+    }
+}
+
+async function assertLockOwnership(lock: AcquiredLock): Promise<void> {
+    await refreshLock(lock);
+    try {
+        const [owned, current] = await Promise.all([lock.handle.stat(), stat(lock.markerPath)]);
+        if (owned.nlink < 1 || owned.dev !== current.dev || owned.ino !== current.ino) {
+            throw new Error('model-cache lock ownership was lost');
+        }
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            throw new Error('model-cache lock ownership was lost');
+        }
+        throw error;
+    }
+}
+
+function keepLockAlive(
+    lock: AcquiredLock,
+    staleLockMs: number,
+    abort: (reason: unknown) => void
+): { dispose(): Promise<void> } {
+    let stopped = false;
+    let pending = Promise.resolve();
+    let timer: NodeJS.Timeout | undefined;
+    const intervalMs = Math.max(1, Math.floor(staleLockMs / 3));
+    const schedule = (): void => {
+        if (stopped) {
+            return;
+        }
+        timer = setTimeout(() => {
+            pending = refreshLock(lock)
+                .catch((error: unknown) => {
+                    stopped = true;
+                    abort(error);
+                })
+                .finally(schedule);
+        }, intervalMs);
+        timer.unref();
+    };
+    schedule();
+    return {
+        dispose: async () => {
+            stopped = true;
+            clearTimeout(timer);
+            await pending;
+        }
+    };
+}
+
+async function releaseLock(lock: AcquiredLock): Promise<void> {
+    await lock.handle.close();
+    const releasePath = join(lock.directory, `${LOCK_RELEASE_PREFIX}${lock.token}-${randomUUID()}`);
+    try {
+        await rename(lock.markerPath, releasePath);
+    } catch (error) {
+        if (errorCode(error) === 'ENOENT') {
+            return;
+        }
+        throw error;
+    }
+    await unlink(releasePath);
+    await rmdir(lock.directory);
 }
 
 async function downloadArtifact(
@@ -91,7 +343,8 @@ async function downloadArtifact(
     destination: string,
     fetchImplementation: typeof fetch,
     signal: AbortSignal,
-    mirrorBaseUrl?: string
+    mirrorBaseUrl: string | undefined,
+    assertOwnership: () => Promise<void>
 ): Promise<void> {
     const response = await fetchImplementation(artifactUrl(file, mirrorBaseUrl), { signal, redirect: 'follow' });
     if (!response.ok || !response.body) {
@@ -124,8 +377,10 @@ async function downloadArtifact(
         if (checksum.digest('hex') !== file.sha256) {
             throw new Error(`model download checksum mismatch for ${file.role}`);
         }
+        signal.throwIfAborted();
         await handle.sync();
         await handle.close();
+        await assertOwnership();
         await rename(temporaryPath, destination);
     } catch (error) {
         await handle.close().catch(() => undefined);
@@ -155,7 +410,9 @@ export async function prepareModelCache(
     const bundleDirectory = modelBundleDirectory(cacheRoot, manifest);
     await mkdir(bundleDirectory, { recursive: true });
     const lockPath = join(bundleDirectory, '.acquire.lock');
-    let lock: Awaited<ReturnType<typeof open>> | undefined;
+    let lock: AcquiredLock | undefined;
+    let lockHeartbeat: ReturnType<typeof keepLockAlive> | undefined;
+    let operationFailed = false;
     try {
         lock = await acquireLock(
             lockPath,
@@ -163,8 +420,10 @@ export async function prepareModelCache(
             options.lockTimeoutMs ?? 30_000,
             options.staleLockMs ?? 120_000
         );
+        lockHeartbeat = keepLockAlive(lock, options.staleLockMs ?? 120_000, acquisition.abort);
         const afterLock = await verifyModelCache(cacheRoot, manifest);
         if (afterLock.ready) {
+            await assertLockOwnership(lock);
             return afterLock;
         }
         for (const component of manifest.components) {
@@ -177,7 +436,8 @@ export async function prepareModelCache(
                     join(bundleDirectory, file.path),
                     options.fetch ?? fetch,
                     acquisition.signal,
-                    options.mirrorBaseUrl
+                    options.mirrorBaseUrl,
+                    () => assertLockOwnership(lock as AcquiredLock)
                 );
             }
         }
@@ -185,12 +445,26 @@ export async function prepareModelCache(
         if (!result.ready) {
             throw new Error('downloaded model bundle did not pass final verification');
         }
+        await assertLockOwnership(lock);
         return result;
+    } catch (error) {
+        operationFailed = true;
+        throw error;
     } finally {
-        acquisition.dispose();
-        if (lock) {
-            await lock.close().catch(() => undefined);
-            await unlink(lockPath).catch(() => undefined);
+        try {
+            await lockHeartbeat?.dispose();
+            if (lock) {
+                if (operationFailed) {
+                    await releaseLock(lock).catch(() => undefined);
+                } else {
+                    await releaseLock(lock);
+                }
+            }
+            if (!operationFailed) {
+                acquisition.signal.throwIfAborted();
+            }
+        } finally {
+            acquisition.dispose();
         }
     }
 }
