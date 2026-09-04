@@ -1331,10 +1331,10 @@ the external realism gate.
 - Create: `packages/mockserver-data-generator/test/security/path-and-manifest.test.ts`
 - Create in model repository: `governance/model-supply-chain-review-v1.md`
 
-- [ ] Threat-model metadata parsing, path traversal, arbitrary module loading, model download, archive extraction, cache poisoning, lock attacks, prompt leakage, model provenance, and resource exhaustion.
-- [ ] Allow only the configured provider module and validated model-manifest files; never execute downloaded model-side code.
+- [x] Threat-model metadata parsing, path traversal, arbitrary module loading, model download, archive extraction, cache poisoning, lock attacks, prompt leakage, model provenance, and resource exhaustion.
+- [x] Allow only the configured provider module and validated model-manifest files; never execute downloaded model-side code.
 - [ ] Enforce download size, generation time, row count, memory-aware concurrency, and output-size limits.
-- [ ] Run production dependency audit and record inherited upstream findings separately.
+- [x] Run production dependency audit and record inherited upstream findings separately.
 - [ ] Produce or consume SBOM/provenance for npm and model artifacts according to SAP release policy.
 
 ### Task 12.3: Finalize privacy-safe diagnostics and support workflow
