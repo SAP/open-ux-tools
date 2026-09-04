@@ -221,35 +221,52 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                 for (let rowIndex = 0; rowIndex < input.rowCount; rowIndex += 1) {
                     const row: Record<string, JsonValue> = {};
                     for (const [chunkIndex, fields] of fieldChunks.entries()) {
-                        context.signal.throwIfAborted();
-                        const prompt = renderPilotSftPrompt({ ...input, fields });
-                        const grammar = Object.freeze(
-                            fields.map((field) =>
-                                Object.freeze({
-                                    name: field.name,
-                                    valueKind: valueKind(field),
-                                    nullable: field.nullable
-                                })
-                            )
-                        );
-                        const expectedKeys = fields.map(({ name }) => name);
-                        const completion = await abortable(
-                            options.textGenerator.generate(
-                                Object.freeze({
-                                    prompt,
-                                    grammar,
-                                    seed: rowSeed(input.seed, input.entityName, rowIndex, chunkIndex),
-                                    ...options.sampling
-                                }),
+                        try {
+                            context.signal.throwIfAborted();
+                            const prompt = renderPilotSftPrompt({ ...input, fields });
+                            const grammar = Object.freeze(
+                                fields.map((field) =>
+                                    Object.freeze({
+                                        name: field.name,
+                                        valueKind: valueKind(field),
+                                        nullable: field.nullable
+                                    })
+                                )
+                            );
+                            const expectedKeys = fields.map(({ name }) => name);
+                            const completion = await abortable(
+                                options.textGenerator.generate(
+                                    Object.freeze({
+                                        prompt,
+                                        grammar,
+                                        seed: rowSeed(input.seed, input.entityName, rowIndex, chunkIndex),
+                                        ...options.sampling
+                                    }),
+                                    context.signal
+                                ),
                                 context.signal
-                            ),
-                            context.signal
-                        );
-                        const partial = firstJsonObject(completion);
-                        if (JSON.stringify(Object.keys(partial)) !== JSON.stringify(expectedKeys)) {
-                            throw new TypeError('SFT completion keys do not match the requested grammar');
+                            );
+                            const partial = firstJsonObject(completion);
+                            if (JSON.stringify(Object.keys(partial)) !== JSON.stringify(expectedKeys)) {
+                                throw new TypeError('SFT completion keys do not match the requested grammar');
+                            }
+                            Object.assign(row, partial);
+                        } catch (error) {
+                            const reason = error instanceof Error ? error.message : String(error);
+                            const failure = new Error(
+                                `SFT generation failed for row ${rowIndex + 1}, chunk ${chunkIndex + 1}/${fieldChunks.length}: ${reason}`,
+                                { cause: error }
+                            );
+                            if (
+                                typeof error === 'object' &&
+                                error !== null &&
+                                'code' in error &&
+                                typeof error.code === 'string'
+                            ) {
+                                Object.assign(failure, { code: error.code });
+                            }
+                            throw failure;
                         }
-                        Object.assign(row, partial);
                     }
                     rows.push(Object.freeze(row));
                 }

@@ -137,6 +137,38 @@ describe('pilot-compatible SFT runtime', () => {
         expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([8, 5]);
     });
 
+    test('identifies the failing row and field chunk without discarding the root cause', async () => {
+        const cause = new TypeError('SFT completion contains an unterminated JSON object');
+        const generate = jest
+            .fn<ReturnType<ConstrainedTextGenerator['generate']>, Parameters<ConstrainedTextGenerator['generate']>>()
+            .mockResolvedValueOnce('{"FieldA":"A","FieldB":"B"}')
+            .mockRejectedValueOnce(cause);
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate },
+            sampling: {
+                temperature: 0.6,
+                topP: 0.9,
+                repetitionPenalty: 1.15,
+                noRepeatNgramSize: 4,
+                maxNewTokens: 300
+            },
+            maxFieldsPerPrompt: 2
+        });
+        const fields = ['FieldA', 'FieldB', 'FieldC'].map((name) => ({
+            name,
+            primitiveType: 'string',
+            nullable: false
+        }));
+
+        await expect(
+            generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal)
+        ).rejects.toMatchObject({
+            message: 'SFT generation failed for row 1, chunk 2/2: SFT completion contains an unterminated JSON object',
+            cause
+        });
+    });
+
     test('bounds a non-cooperative backend and disposes it', async () => {
         const dispose = jest.fn(async () => undefined);
         const generator = createPilotSftGenerator({
