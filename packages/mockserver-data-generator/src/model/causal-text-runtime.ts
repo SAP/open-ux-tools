@@ -67,6 +67,49 @@ function allowedTokenIds(
     return result;
 }
 
+interface DecodedToken {
+    id: number;
+    text: string;
+    plainStringLength?: number;
+}
+
+function plainStringLength(text: string): number | undefined {
+    if (text.length === 0) {
+        return undefined;
+    }
+    let length = 0;
+    for (const character of text) {
+        if (character === '"' || character === '\\' || (character.codePointAt(0) ?? 0) < 0x20) {
+            return undefined;
+        }
+        length += 1;
+    }
+    return length;
+}
+
+function mergeTokenIds(left: ReadonlyArray<number>, right: ReadonlyArray<number>): number[] {
+    const merged: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+    while (leftIndex < left.length || rightIndex < right.length) {
+        if (rightIndex >= right.length || (leftIndex < left.length && left[leftIndex]! < right[rightIndex]!)) {
+            merged.push(left[leftIndex]!);
+            leftIndex += 1;
+        } else {
+            merged.push(right[rightIndex]!);
+            rightIndex += 1;
+        }
+    }
+    return merged;
+}
+
+function grammarCacheKey(state: JsonRowGrammarState): string {
+    if (state.phase === 'in-string-value' && state.maximumStringLength !== undefined) {
+        return JSON.stringify(state);
+    }
+    return JSON.stringify({ ...state, stringLength: 0 });
+}
+
 /**
  * Cache the tokenizer-wide grammar scan for equivalent decoder states.
  *
@@ -79,13 +122,46 @@ export function createAllowedTokenResolver(
     specialIds: ReadonlySet<number>
 ): (state: JsonRowGrammarState) => ReadonlyArray<number> {
     const cache = new Map<string, ReadonlyArray<number>>();
+    const decoded = texts.flatMap((tokenText, id): DecodedToken[] => {
+        if (specialIds.has(id) || tokenText === undefined) {
+            return [];
+        }
+        const length = plainStringLength(tokenText);
+        return [{ id, text: tokenText, ...(length === undefined ? {} : { plainStringLength: length }) }];
+    });
+    const plainStringTokens = decoded.filter(
+        (token): token is DecodedToken & { plainStringLength: number } => token.plainStringLength !== undefined
+    );
+    const complexStringTokens = decoded.filter(({ plainStringLength: length }) => length === undefined);
+    const plainCapacityCache = new Map<number, ReadonlyArray<number>>();
+    const maximumPlainLength = Math.max(0, ...plainStringTokens.map(({ plainStringLength: length }) => length));
     return (state) => {
-        const key = JSON.stringify(state);
+        const key = grammarCacheKey(state);
         const cached = cache.get(key);
         if (cached) {
             return cached;
         }
-        const allowed = Object.freeze(allowedTokenIds(state, texts, specialIds));
+        let allowed: ReadonlyArray<number>;
+        if (
+            state.phase === 'in-string-value' &&
+            !state.escaped &&
+            state.unicodeEscapeRemaining === 0 &&
+            state.maximumStringLength !== undefined
+        ) {
+            const capacity = Math.max(0, state.maximumStringLength - state.stringLength);
+            const capacityKey = Math.min(capacity, maximumPlainLength);
+            let plainIds = plainCapacityCache.get(capacityKey);
+            if (!plainIds) {
+                plainIds = Object.freeze(
+                    plainStringTokens.filter(({ plainStringLength: length }) => length <= capacity).map(({ id }) => id)
+                );
+                plainCapacityCache.set(capacityKey, plainIds);
+            }
+            const complexIds = complexStringTokens.filter(({ text }) => textAllowed(state, text)).map(({ id }) => id);
+            allowed = Object.freeze(mergeTokenIds(plainIds, complexIds));
+        } else {
+            allowed = Object.freeze(allowedTokenIds(state, texts, specialIds));
+        }
         cache.set(key, allowed);
         return allowed;
     };

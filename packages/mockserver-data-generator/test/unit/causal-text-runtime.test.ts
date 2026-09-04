@@ -5,7 +5,7 @@ import {
     type CausalLmSession,
     type CausalTokenizer
 } from '../../src/model/causal-text-runtime.js';
-import { createJsonRowGrammar } from '../../src/model/json-row-grammar.js';
+import { advanceText, createJsonRowGrammar } from '../../src/model/json-row-grammar.js';
 
 describe('grammar-constrained causal text runtime', () => {
     test('reuses allowed-token candidates for equivalent grammar states', () => {
@@ -17,6 +17,27 @@ describe('grammar-constrained causal text runtime', () => {
 
         expect(second).toBe(first);
         expect(first).toEqual([0, 1]);
+    });
+
+    test('reuses allowed-token candidates across unbounded string lengths', () => {
+        const resolveAllowed = createAllowedTokenResolver(['A', 'AB', '"', '\\n'], new Set());
+        const initial = createJsonRowGrammar([{ name: 'Name', valueKind: 'string', nullable: false }]);
+        const shortValue = advanceText(initial, '{"Name":"A');
+        const longerValue = advanceText(initial, '{"Name":"AB');
+
+        expect(resolveAllowed(longerValue)).toBe(resolveAllowed(shortValue));
+    });
+
+    test('filters multi-character tokens by the bounded string capacity', () => {
+        const resolveAllowed = createAllowedTokenResolver(['A', 'AB', 'ABC', '"', '\\n'], new Set());
+        const initial = createJsonRowGrammar([{ name: 'Code', valueKind: 'string', nullable: false, maxLength: 2 }]);
+        const emptyValue = advanceText(initial, '{"Code":"');
+        const oneCharacter = advanceText(emptyValue, 'A');
+        const fullValue = advanceText(oneCharacter, 'B');
+
+        expect(resolveAllowed(emptyValue)).toEqual([0, 1, 4]);
+        expect(resolveAllowed(oneCharacter)).toEqual([0, 3, 4]);
+        expect(resolveAllowed(fullValue)).toEqual([3]);
     });
 
     test('selects an exact top-p nucleus without sorting the full vocabulary', () => {
