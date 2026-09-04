@@ -5,6 +5,7 @@ import { Command, type Option } from 'commander';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { getLogger } from '../tracing/index.js';
+import { initI18n } from '../i18n.js';
 import { getAddCommands } from './add/index.js';
 import { getRemoveCommands } from './remove/index.js';
 import { getGenerateCommands } from './generate/index.js';
@@ -27,12 +28,14 @@ import { getUpdateCommands } from './update/index.js';
  *
  * @param argv - arguments, typically 'process.argv'
  */
-export function handleCreateFioriCommand(argv: string[]): void {
+export async function handleCreateFioriCommand(argv: string[]): Promise<void> {
     const logger = getLogger();
     if (!Array.isArray(argv) || argv.length < 2) {
         throw Error(`This function must be called from command line interface (cli). Or provide meaningful arguments.`);
     }
     try {
+        // Initialize i18n before executing commands
+        await initI18n();
         const program = getCommanderProgram();
         program.parse(argv);
     } catch (error) {

@@ -7,6 +7,8 @@ import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
+import { findSystemByUrl } from '../utils/system-lookup.js';
+import { t } from '../../i18n.js';
 
 /**
  * Add the "update system" subcommand to a passed command.
@@ -34,7 +36,7 @@ Example:
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
-        .option('--skip-check', 'Skip connection verification before saving')
+        .option('--skip-connection-validation', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
             await updateSystem({
@@ -44,7 +46,7 @@ Example:
                 username: options.username,
                 password: options.password,
                 clearCredentials: !!options.clearCredentials,
-                skipCheck: !!options.skipCheck
+                skipConnectionValidation: !!options.skipConnectionValidation
             });
         });
 }
@@ -132,7 +134,26 @@ async function determinePatch(
     }
 
     const fieldsToUpdate = await promptForUpdateFields(existing);
-    return await promptForFieldUpdates(fieldsToUpdate, existing);
+    let updateValues: Record<string, unknown>;
+    try {
+        updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
+    } catch (err) {
+        // User cancelled (e.g. declined clear-credentials confirmation)
+        if ((err as Error).message === 'Clear credentials cancelled') {
+            logger.info('Operation cancelled.');
+            return null;
+        }
+        throw err;
+    }
+
+    // Check if clearCredentials was selected in interactive mode
+    if (updateValues.clearCredentials) {
+        updateValues.username = '';
+        updateValues.password = '';
+        delete updateValues.clearCredentials;
+    }
+
+    return updateValues;
 }
 
 /**
@@ -142,20 +163,34 @@ async function determinePatch(
  * @param existing - existing system
  * @param params - update parameters
  * @param params.clearCredentials - whether credentials are being cleared
- * @param params.skipCheck - whether to skip connection check
+ * @param params.skipConnectionValidation - whether to skip connection check
  * @returns true if should proceed, false otherwise
  */
 async function verifyCredentialsUpdate(
     patch: Partial<BackendSystem>,
     existing: BackendSystem,
-    params: { clearCredentials: boolean; skipCheck?: boolean }
+    params: { clearCredentials: boolean; skipConnectionValidation?: boolean }
 ): Promise<boolean> {
-    const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
+    // Check if credentials are being updated (set to new values or cleared)
+    const hasUsernameChange = patch.username !== undefined;
+    const hasPasswordChange = patch.password !== undefined;
+    const updatingCredentials = hasUsernameChange || hasPasswordChange;
 
-    if (!updatingCredentials || params.clearCredentials) {
+    // Skip verification if:
+    // 1. No credential changes at all, OR
+    // 2. Explicitly clearing credentials (--clear-credentials flag), OR
+    // 3. Setting both to empty strings (clearing via interactive prompts)
+    if (!updatingCredentials) {
         return true;
     }
 
+    const clearingCredentials = params.clearCredentials || (patch.username === '' && patch.password === '');
+
+    if (clearingCredentials) {
+        return true;
+    }
+
+    // Otherwise, verify the new credentials work
     return await checkConnectionOrPrompt(
         {
             url: existing.url,
@@ -165,7 +200,7 @@ async function verifyCredentialsUpdate(
             username: (patch.username as string) ?? existing.username,
             password: (patch.password as string) ?? existing.password
         },
-        params.skipCheck || false
+        params.skipConnectionValidation || false
     );
 }
 
@@ -179,7 +214,7 @@ async function verifyCredentialsUpdate(
  * @param params.username - optional new username
  * @param params.password - optional new password
  * @param params.clearCredentials - if true, clears stored credentials
- * @param params.skipCheck - skip connection verification
+ * @param params.skipConnectionValidation - skip connection verification
  */
 async function updateSystem(params: {
     url?: string;
@@ -188,7 +223,7 @@ async function updateSystem(params: {
     username?: string;
     password?: string;
     clearCredentials: boolean;
-    skipCheck?: boolean;
+    skipConnectionValidation?: boolean;
 }): Promise<void> {
     const logger = getLogger();
     try {
@@ -205,10 +240,12 @@ async function updateSystem(params: {
         });
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
-        const existing = await service.read(key);
+
+        // Use smart lookup to handle client mismatch scenarios
+        const existing = await findSystemByUrl(identifier.url, identifier.client, service);
 
         if (!existing) {
+            const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
             logger.error(`System not found: ${key.getId()}`);
             return;
         }
@@ -216,6 +253,7 @@ async function updateSystem(params: {
         const patchRecord = await determinePatch(params, existing, logger);
 
         if (!patchRecord) {
+            logger.info('System was not updated.');
             return;
         }
 
@@ -225,6 +263,7 @@ async function updateSystem(params: {
             logger.error(
                 'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
             );
+            logger.info('System was not updated.');
             return;
         }
 
@@ -235,8 +274,9 @@ async function updateSystem(params: {
             return;
         }
 
+        const key = new BackendSystemKey({ url: existing.url, client: existing.client });
         await service.partialUpdate(key, patch);
-        logger.info(`System '${key.getId()}' updated.`);
+        logger.info(t('systemActions.systemUpdated', { name: existing.name }));
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);

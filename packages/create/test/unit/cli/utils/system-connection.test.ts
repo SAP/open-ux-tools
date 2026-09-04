@@ -4,13 +4,64 @@ import type prompts from 'prompts';
 const mockPrompts = jest.fn() as unknown as typeof prompts;
 const mockLoggerInfo = jest.fn();
 const mockLoggerWarn = jest.fn();
+const mockLoggerDebug = jest.fn();
+const mockAxiosGet = jest.fn();
+const mockCreateAbapServiceProvider = jest.fn();
+const mockLogErrorMsgs = jest.fn();
+const mockGetErrorType = jest.fn();
 
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
+
+// Mock i18n
+jest.unstable_mockModule('../../../../src/i18n.js', () => ({
+    t: (key: string, options?: Record<string, unknown>) => {
+        const translations: Record<string, string> = {
+            'systemConnection.invalidUrl': 'Invalid URL: {{url}}',
+            'systemConnection.skippingCheck': 'Skipping connection check (--skip-connection-validation flag provided)',
+            'systemConnection.verifying': 'Verifying connection to the back-end system...',
+            'systemConnection.connectionSuccessful': '✓ Connection achieved',
+            'systemConnection.connectionFailed': 'Connection check failed. Error: {{error}}',
+            'systemConnection.unknownError': 'Unknown error',
+            'systemConnection.saveAnywayPrompt': 'Connection check failed. Save system anyway?',
+            'systemConnection.errors.authFailed': 'Authentication failed (HTTP 401 Unauthorized)',
+            'systemConnection.errors.connectionRefused': 'Connection refused - system may be unreachable',
+            'systemConnection.errors.connectionTimeout': 'Connection timeout after {{timeout}}ms',
+            'systemConnection.errors.hostNotFound': 'Host not found (DNS resolution failed)',
+            'systemConnection.errors.connectionReset': 'Connection reset by server'
+        };
+        let result = translations[key] || key;
+        if (options) {
+            Object.entries(options).forEach(([k, v]) => {
+                result = result.replace(`{{${k}}}`, String(v));
+            });
+        }
+        return result;
+    },
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 jest.unstable_mockModule('../../../../src/tracing/index.js', () => ({
     getLogger: () => ({
         info: mockLoggerInfo,
-        warn: mockLoggerWarn
+        warn: mockLoggerWarn,
+        debug: mockLoggerDebug
     })
+}));
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: (...args: any[]) => mockCreateAbapServiceProvider(...args)
+}));
+
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ErrorHandler: class MockErrorHandler {
+        static getErrorType = (...args: any[]) => mockGetErrorType(...args);
+        logErrorMsgs = (...args: any[]) => mockLogErrorMsgs(...args);
+    },
+    ERROR_TYPE: {
+        AUTH: 'AUTH',
+        CONNECTION: 'CONNECTION',
+        TIMEOUT: 'TIMEOUT',
+        UNKNOWN: 'UNKNOWN'
+    }
 }));
 
 const { checkSystemConnection, checkConnectionOrPrompt } =
@@ -21,10 +72,28 @@ describe('system-connection', () => {
         mockPrompts.mockReset();
         mockLoggerInfo.mockReset();
         mockLoggerWarn.mockReset();
+        mockLoggerDebug.mockReset();
+        mockAxiosGet.mockReset();
+        mockCreateAbapServiceProvider.mockReset();
+        mockLogErrorMsgs.mockReset();
+        mockGetErrorType.mockReset();
+
+        // Default: successful connection
+        mockAxiosGet.mockResolvedValue({ status: 200 });
+        mockCreateAbapServiceProvider.mockResolvedValue({
+            get: mockAxiosGet
+        });
+
+        // Default: ErrorHandler returns generic error message
+        mockLogErrorMsgs.mockReturnValue('Connection error');
+        mockGetErrorType.mockReturnValue('UNKNOWN');
     });
 
     describe('checkSystemConnection', () => {
-        test('should return success for valid URL', async () => {
+        test('should attempt connection even without credentials', async () => {
+            // New behavior: always attempt HTTP connection to check if URL is reachable
+            mockAxiosGet.mockResolvedValueOnce({ status: 200 });
+
             const result = await checkSystemConnection({
                 url: 'https://valid.example.com',
                 systemType: 'OnPrem',
@@ -33,9 +102,13 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
+            expect(mockAxiosGet).toHaveBeenCalledWith('/', { timeout: 5000 });
         });
 
-        test('should return success for valid URL with client', async () => {
+        test('should attempt connection with client parameter even without credentials', async () => {
+            mockAxiosGet.mockResolvedValueOnce({ status: 200 });
+
             const result = await checkSystemConnection({
                 url: 'https://valid.example.com',
                 client: '100',
@@ -45,9 +118,11 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
+            expect(mockAxiosGet).toHaveBeenCalledWith('/', { timeout: 5000 });
         });
 
-        test('should return success for valid URL with credentials', async () => {
+        test('should attempt real connection with basic auth and credentials', async () => {
             const result = await checkSystemConnection({
                 url: 'https://valid.example.com',
                 systemType: 'OnPrem',
@@ -58,6 +133,150 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(true);
             expect(result.error).toBeUndefined();
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    url: 'https://valid.example.com',
+                    authenticationType: 'basic'
+                }),
+                expect.objectContaining({
+                    auth: {
+                        username: 'testuser',
+                        password: 'testpass'
+                    }
+                }),
+                false, // prompt
+                expect.anything() // logger
+            );
+            expect(mockAxiosGet).toHaveBeenCalledWith('/', { timeout: 5000 });
+        });
+
+        test('should pass client parameter when connecting', async () => {
+            const result = await checkSystemConnection({
+                url: 'https://valid.example.com',
+                client: '100',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                username: 'testuser',
+                password: 'testpass'
+            });
+
+            expect(result.success).toBe(true);
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    url: 'https://valid.example.com',
+                    client: '100',
+                    authenticationType: 'basic'
+                }),
+                expect.objectContaining({
+                    auth: {
+                        username: 'testuser',
+                        password: 'testpass'
+                    }
+                }),
+                false,
+                expect.anything()
+            );
+        });
+
+        test('should treat HTTP 401 as success (system is reachable)', async () => {
+            mockAxiosGet.mockRejectedValueOnce({
+                response: { status: 401 }
+            });
+
+            const result = await checkSystemConnection({
+                url: 'https://valid.example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                username: 'wronguser',
+                password: 'wrongpass'
+            });
+
+            expect(result.success).toBe(true); // 401 means system is reachable
+        });
+
+        test('should return error for connection refused', async () => {
+            mockAxiosGet.mockRejectedValueOnce({
+                code: 'ECONNREFUSED'
+            });
+            mockLogErrorMsgs.mockReturnValueOnce('Connection refused - system may be unreachable');
+
+            const result = await checkSystemConnection({
+                url: 'https://unreachable.example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                username: 'testuser',
+                password: 'testpass'
+            });
+
+            expect(result.success).toBe(false);
+            expect(result.error).toBe('Connection refused - system may be unreachable');
+        });
+
+        test('should return error for connection timeout', async () => {
+            mockAxiosGet.mockRejectedValueOnce({
+                code: 'ETIMEDOUT',
+                message: 'timeout of 5000ms exceeded'
+            });
+            mockLogErrorMsgs.mockReturnValueOnce('Connection timeout after 5000ms');
+
+            const result = await checkSystemConnection({
+                url: 'https://slow.example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                username: 'testuser',
+                password: 'testpass'
+            });
+
+            expect(result.success).toBe(false);
+            expect(result.error).toBe('Connection timeout after 5000ms');
+        });
+
+        test('should return generic error for other connection failures', async () => {
+            mockAxiosGet.mockRejectedValueOnce({
+                message: 'Network error'
+            });
+            mockLogErrorMsgs.mockReturnValueOnce('Network error');
+
+            const result = await checkSystemConnection({
+                url: 'https://example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'basic',
+                username: 'testuser',
+                password: 'testpass'
+            });
+
+            expect(result.success).toBe(false);
+            expect(result.error).toBe('Network error');
+        });
+
+        test('should validate connection for reentranceTicket auth (reachability check)', async () => {
+            // ReentranceTicket requires browser flow for auth, but we still check if host is reachable
+            // Mock 401 response (proves system is reachable, auth will happen later)
+            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
+
+            const result = await checkSystemConnection({
+                url: 'https://example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'reentranceTicket'
+            });
+
+            expect(result.success).toBe(true);
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled(); // Connection check now runs for all auth types
+        });
+
+        test('should validate connection for oauth2 auth (reachability check)', async () => {
+            // OAuth2 requires browser flow for auth, but we still check if host is reachable
+            // Mock 401 response (proves system is reachable, auth will happen later)
+            mockAxiosGet.mockRejectedValueOnce({ response: { status: 401 } });
+
+            const result = await checkSystemConnection({
+                url: 'https://example.com',
+                systemType: 'OnPrem',
+                authenticationType: 'oauth2'
+            });
+
+            expect(result.success).toBe(true);
+            expect(mockCreateAbapServiceProvider).toHaveBeenCalled(); // Connection check now runs for all auth types
         });
 
         test('should return error for invalid URL', async () => {
@@ -116,7 +335,7 @@ describe('system-connection', () => {
     });
 
     describe('checkConnectionOrPrompt', () => {
-        test('should skip check and return true when skipCheck is true', async () => {
+        test('should skip check and return true when skipConnectionValidation is true', async () => {
             const result = await checkConnectionOrPrompt(
                 {
                     url: 'https://example.com',
@@ -127,7 +346,9 @@ describe('system-connection', () => {
             );
 
             expect(result).toBe(true);
-            expect(mockLoggerInfo).toHaveBeenCalledWith('Skipping connection check (--skip-check flag provided)');
+            expect(mockLoggerInfo).toHaveBeenCalledWith(
+                'Skipping connection check (--skip-connection-validation flag provided)'
+            );
             expect(mockPrompts).not.toHaveBeenCalled();
         });
 
@@ -142,8 +363,8 @@ describe('system-connection', () => {
             );
 
             expect(result).toBe(true);
-            expect(mockLoggerInfo).toHaveBeenCalledWith('Verifying connection to backend system...');
-            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection successful');
+            expect(mockLoggerInfo).toHaveBeenCalledWith('Verifying connection to the back-end system...');
+            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection achieved');
             expect(mockPrompts).not.toHaveBeenCalled();
         });
 
@@ -215,7 +436,7 @@ describe('system-connection', () => {
             );
 
             expect(result).toBe(true);
-            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection successful');
+            expect(mockLoggerInfo).toHaveBeenCalledWith('✓ Connection achieved');
         });
 
         test('should display error message when available', async () => {
