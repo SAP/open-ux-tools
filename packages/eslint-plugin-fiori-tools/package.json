@@ -39,7 +39,7 @@
         "@eslint/js": "10.0.1",
         "@eslint/json": "0.14.0",
         "@eslint/plugin-kit": "0.6.1",
-        "@humanwhocodes/momoa": "^3.3.9",
+        "@humanwhocodes/momoa": "^3.3.12",
         "@jest/globals": "30.4.1",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
