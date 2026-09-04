@@ -15,6 +15,7 @@ overrides:
   onnxruntime-node>adm-zip: '>=0.6.0'
   sharp@<0.35.0: '>=0.33.5'
   '@huggingface/transformers>sharp': '>=0.35.0'
+  '@sap-ux/mockserver-data-generator>fast-xml-parser': 5.10.1
   fast-xml-parser: 5.8.0
   fast-uri: '>=3.1.5'
   '@babel/core@>=7.0.0 <8.0.0': 7.29.7
