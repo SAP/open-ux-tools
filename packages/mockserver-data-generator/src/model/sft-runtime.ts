@@ -215,7 +215,7 @@ function canSplitIncompleteCompletion(error: unknown, signal: AbortSignal): bool
  */
 export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions): SftGenerator {
     const budgetMs = options.budgetMs ?? 60_000;
-    const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? 6;
+    const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? 8;
     if (!Number.isFinite(budgetMs) || budgetMs <= 0) {
         throw new TypeError('SFT budget must be positive');
     }

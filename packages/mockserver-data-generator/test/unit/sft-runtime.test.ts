@@ -112,7 +112,7 @@ describe('pilot-compatible SFT runtime', () => {
         expect(new Set(generate.mock.calls.map(([request]) => request.seed)).size).toBe(3);
     });
 
-    test('uses six-field default chunks below the production model output budget', async () => {
+    test('uses eight-field default chunks with adaptive overflow splitting', async () => {
         const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
             JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
         );
@@ -135,16 +135,15 @@ describe('pilot-compatible SFT runtime', () => {
 
         await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
-        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([6, 6, 1]);
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([8, 5]);
     });
 
     test('splits an incomplete chunk and reports every raw completion attempt', async () => {
         const generate = jest
             .fn<ReturnType<ConstrainedTextGenerator['generate']>, Parameters<ConstrainedTextGenerator['generate']>>()
             .mockRejectedValueOnce(new Error('SFT generation ended before completing its JSON object'))
-            .mockResolvedValueOnce('{"FieldA":"A","FieldB":"B"}')
-            .mockResolvedValueOnce('{"FieldC":"C","FieldD":"D"}')
-            .mockResolvedValueOnce('{"FieldE":"E"}');
+            .mockResolvedValueOnce('{"FieldA":"A","FieldB":"B","FieldC":"C","FieldD":"D"}')
+            .mockResolvedValueOnce('{"FieldE":"E","FieldF":"F","FieldG":"G","FieldH":"H"}');
         const generator = createPilotSftGenerator({
             fingerprint: 'sft-model-sha256',
             textGenerator: { generate },
@@ -154,10 +153,9 @@ describe('pilot-compatible SFT runtime', () => {
                 repetitionPenalty: 1.15,
                 noRepeatNgramSize: 4,
                 maxNewTokens: 300
-            },
-            maxFieldsPerPrompt: 4
+            }
         });
-        const fields = ['FieldA', 'FieldB', 'FieldC', 'FieldD', 'FieldE'].map((name) => ({
+        const fields = ['FieldA', 'FieldB', 'FieldC', 'FieldD', 'FieldE', 'FieldF', 'FieldG', 'FieldH'].map((name) => ({
             name,
             primitiveType: 'string',
             nullable: false
@@ -165,13 +163,14 @@ describe('pilot-compatible SFT runtime', () => {
 
         const result = await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
-        expect(result.rows).toEqual([{ FieldA: 'A', FieldB: 'B', FieldC: 'C', FieldD: 'D', FieldE: 'E' }]);
-        expect(result.statistics).toEqual({ attempts: 4, parsedResponses: 3 });
+        expect(result.rows).toEqual([
+            { FieldA: 'A', FieldB: 'B', FieldC: 'C', FieldD: 'D', FieldE: 'E', FieldF: 'F', FieldG: 'G', FieldH: 'H' }
+        ]);
+        expect(result.statistics).toEqual({ attempts: 3, parsedResponses: 2 });
         expect(generate.mock.calls.map(([request]) => request.grammar.map(({ name }) => name))).toEqual([
+            ['FieldA', 'FieldB', 'FieldC', 'FieldD', 'FieldE', 'FieldF', 'FieldG', 'FieldH'],
             ['FieldA', 'FieldB', 'FieldC', 'FieldD'],
-            ['FieldA', 'FieldB'],
-            ['FieldC', 'FieldD'],
-            ['FieldE']
+            ['FieldE', 'FieldF', 'FieldG', 'FieldH']
         ]);
     });
 
