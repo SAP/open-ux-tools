@@ -287,6 +287,34 @@ Its checksum must be verified before extraction. It supersedes earlier archives
 for local or BAS functional testing; the older bound five-sample report remains
 the performance evidence until the supported release-platform campaign runs.
 
+## Current safe-diagnostics archive canary
+
+The kit was rebuilt after adding product-level degradation coverage, a
+package-scoped parser override, privacy-safe local support summaries, and the
+published troubleshooting guide. The exact archive was installed into a fresh
+OData V2 fixture with the retained classifier and INT8 SFT cache.
+
+- Dev-kit fingerprint: `f7820bacc74174b3b47cc5ca53f8cec22ff17e07184778710b4997a7ddb0e0cd`
+- Archive SHA-256: `e5e3ddeeab01daea4c120bdd8e59aededcc57280b14c0078251d2a7b8fab9b97`
+- Archive size: 542,926 bytes; 10 entries
+- Generator tarball: 74,500 bytes, SHA-256 `3e4713f6d1c4501a6049653c9d8f974c6e38ea8bfc4b6eff0c1b8ce56340bfe2`
+- Core tarball: 157,298 bytes, SHA-256 `94ecda7806d18d7b73e2e24f28418bc05440ddc4e8567d712c17d4a16e0a05bc`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `817382b88f2cd88a84eb093410ad2a3a367b5505` and clean `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`; reproducible
+- Model bridge: revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`, manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`, and 192,167,584 verified cache bytes
+- Installed workflow: unchanged `start-mock`, exactly one `sap-fe-mockserver`, provider `@sap-ux/mockserver-data-generator/fe-mockserver`, and exact `onnxruntime-node@1.24.3`
+- Learned verification: classifier and SFT ready; `providerExecuted: true`; `learnedRuntimeVerified: true`
+- HTTP verification: OData V2 `$metadata` passed and `Products?$top=1` returned one row
+- Observed timing: 1,437.508 ms model initialization; 2,635.900 ms whole-service generation; 2,636.680 ms host provider duration
+- Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f7820bacc74174b3.tgz`.
+Its checksum must be verified before extraction. It supersedes the
+parser-aligned archive for new local or BAS functional testing. The disposable
+canary fixture and copied model cache were removed after exact restore
+verification.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
