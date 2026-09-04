@@ -1,8 +1,18 @@
 import { spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import {
+    existsSync,
+    lstatSync,
+    mkdirSync,
+    mkdtempSync,
+    readFileSync,
+    readdirSync,
+    rmSync,
+    symlinkSync,
+    writeFileSync
+} from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -111,6 +121,65 @@ describe('published package boundary', () => {
         }
 
         expect(packageJson.files).toContain('docs');
+    });
+
+    it('keeps every relative README link inside the published package', () => {
+        const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+        const relativeLinks = [...readme.matchAll(/\[[^\]]+\]\(([^)]+)\)/gu)]
+            .map((match) => match[1])
+            .filter((target): target is string => Boolean(target))
+            .filter((target) => !target.startsWith('#') && !/^[a-z][a-z\d+.-]*:/iu.test(target))
+            .map((target) => target.split('#', 1)[0]);
+        const invalidLinks = relativeLinks.filter((target) => {
+            const resolvedTarget = resolve(packageRoot, target);
+            const packageRelativeTarget = relative(packageRoot, resolvedTarget);
+            return (
+                packageRelativeTarget.startsWith('..') ||
+                isAbsolute(packageRelativeTarget) ||
+                !existsSync(resolvedTarget) ||
+                !lstatSync(resolvedTarget).isFile()
+            );
+        });
+
+        expect(invalidLinks).toEqual([]);
+    });
+
+    it('enforces the documented internal dependency direction', () => {
+        const sourceRoot = join(packageRoot, 'src');
+        const layerRules: Readonly<Record<string, ReadonlySet<string>>> = {
+            schema: new Set(['schema']),
+            semantics: new Set(['schema', 'semantics', 'types']),
+            generation: new Set(['generation', 'schema', 'semantics', 'types']),
+            model: new Set(['model', 'types']),
+            cache: new Set(['cache', 'types'])
+        };
+        const violations: string[] = [];
+        for (const [layer, allowedTargets] of Object.entries(layerRules)) {
+            const layerRoot = join(sourceRoot, layer);
+            for (const entry of readdirSync(layerRoot, { withFileTypes: true })) {
+                if (!entry.isFile() || !/\.[cm]?ts$/u.test(entry.name)) {
+                    continue;
+                }
+                const sourcePath = join(layerRoot, entry.name);
+                const source = readFileSync(sourcePath, 'utf8');
+                const relativeImports = [...source.matchAll(/(?:from\s+|import\s*\()\s*['"](\.\.?\/[^'"]+)['"]/gu)];
+                for (const match of relativeImports) {
+                    const importTarget = match[1];
+                    if (!importTarget) {
+                        continue;
+                    }
+                    const targetFromSourceRoot = relative(sourceRoot, resolve(dirname(sourcePath), importTarget))
+                        .split(sep)
+                        .join('/');
+                    const targetLayer = targetFromSourceRoot.split('/', 1)[0]?.replace(/\.[^.]+$/u, '');
+                    if (!targetLayer || !allowedTargets.has(targetLayer)) {
+                        violations.push(`${layer}/${entry.name} -> ${importTarget}`);
+                    }
+                }
+            }
+        }
+
+        expect(violations).toEqual([]);
     });
 
     it('packs the current package below the size ceiling without forbidden artifacts', () => {

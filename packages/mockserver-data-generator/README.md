@@ -119,7 +119,9 @@ const result = await generateService(
 );
 ```
 
-See [the architecture design](../../docs/superpowers/specs/2026-09-03-mockserver-data-generator-design.md) and [host contract](./docs/host-contract.md) for the complete lifecycle, precedence, model, and degradation rules.
+See the [package architecture](./docs/architecture.md) and
+[host contract](./docs/host-contract.md) for the complete lifecycle,
+precedence, model, and degradation rules.
 Operational diagnosis, offline verification, forced regeneration, explicit
 model pinning, and provider rollback are covered in the
 [troubleshooting guide](./docs/troubleshooting.md).
@@ -127,7 +129,7 @@ model pinning, and provider rollback are covered in the
 ## Test current source in a Fiori application
 
 The packages are unpublished during development. Use the
-[local/BAS development kit](../../scripts/mockserver-data-generator-dev-kit/README.md)
+[local/BAS development kit](https://github.com/SAP/open-ux-tools/tree/main/scripts/mockserver-data-generator-dev-kit)
 to pack the current generator and matching FE mockserver host, install them
 transactionally into an existing generated application, run an HTTP canary, and
 restore the application afterward. Do not use a registry npx command for this
@@ -135,12 +137,12 @@ source state.
 
 ## Model evaluation
 
-The [model evaluation harness](../../scripts/mockserver-data-generator-evaluation/README.md)
+The [model evaluation harness](https://github.com/SAP/open-ux-tools/tree/main/scripts/mockserver-data-generator-evaluation)
 reuses the pilot classifier/SFT cohorts and artifacts through explicit local
 paths, fingerprints every input, compares quantization candidates in isolated
 processes, and emits no generated values into this repository. Current
 development measurements and the INT4/WASM decisions are recorded in the
-[model evaluation report](../../docs/quality/mockserver-data-generator-model-evaluation.md).
+[model evaluation report](https://github.com/SAP/open-ux-tools/blob/main/docs/quality/mockserver-data-generator-model-evaluation.md).
 
 ## Verify the npm boundary
 
