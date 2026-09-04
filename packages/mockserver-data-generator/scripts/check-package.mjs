@@ -18,6 +18,16 @@ const MODEL_MANIFEST_FILE = /(?:^|\/)model-manifest(?:[-_.][^/]*)?\.json$/iu;
 const IMMUTABLE_REVISION = /^[a-f\d]{40,64}$/u;
 const SHA_256 = /^[a-f\d]{64}$/u;
 
+function packageProfile(args) {
+    if (args.length === 0) {
+        return 'core';
+    }
+    if (args.length === 2 && args[0] === '--profile' && ['core', 'cap'].includes(args[1])) {
+        return args[1];
+    }
+    throw new Error('Usage: check-package.mjs [--profile core|cap]');
+}
+
 function packedFiles(report) {
     if (!report || typeof report !== 'object' || !Array.isArray(report.files)) {
         throw new Error('pnpm pack returned an invalid JSON report');
@@ -140,7 +150,7 @@ function assertPublishedModelManifest(path, content) {
     }
 }
 
-function assertNetworkFreePublicConstruction(packageRoot, installedPackageRoot) {
+function assertNetworkFreePublicConstruction(packageRoot, installedPackageRoot, profile) {
     const installedNodeModules = join(installedPackageRoot, 'node_modules');
     try {
         const sourceNodeModules = realpathSync(join(packageRoot, 'node_modules'));
@@ -151,7 +161,14 @@ function assertNetworkFreePublicConstruction(packageRoot, installedPackageRoot) 
         }
     }
     const publicEntry = pathToFileURL(join(installedPackageRoot, 'dist', 'index.js')).href;
-    const providerEntry = join(installedPackageRoot, 'dist', 'fe-mockserver.cjs');
+    const commonJsEntry =
+        profile === 'cap'
+            ? join(installedPackageRoot, 'cds-plugin.js')
+            : join(installedPackageRoot, 'dist', 'fe-mockserver.cjs');
+    const publicConstruction =
+        profile === 'cap'
+            ? `require(${JSON.stringify(commonJsEntry)});`
+            : `const Provider = require(${JSON.stringify(commonJsEntry)}); new Provider();`;
     const probe = `
         import dgram from 'node:dgram';
         import dns from 'node:dns';
@@ -187,8 +204,7 @@ function assertNetworkFreePublicConstruction(packageRoot, installedPackageRoot) 
 
         await import(${JSON.stringify(publicEntry)});
         const require = createRequire(import.meta.url);
-        const Provider = require(${JSON.stringify(providerEntry)});
-        new Provider();
+        ${publicConstruction}
     `;
     execFileSync(process.execPath, ['--input-type=module', '--eval', probe], {
         cwd: installedPackageRoot,
@@ -216,6 +232,7 @@ function packPackage(temporaryDirectory) {
 
 const temporaryDirectory = mkdtempSync(join(tmpdir(), 'mockserver-data-generator-package-'));
 try {
+    const profile = packageProfile(process.argv.slice(2));
     const output = packPackage(temporaryDirectory);
     const report = JSON.parse(output);
     const files = packedFiles(report);
@@ -225,14 +242,15 @@ try {
     if (bytes > MAXIMUM_PACKED_BYTES) {
         throw new Error(`Packed tarball is ${bytes} bytes and exceeds the 5 MiB ceiling`);
     }
-    assertNetworkFreePublicConstruction(process.cwd(), packedRoot);
+    assertNetworkFreePublicConstruction(process.cwd(), packedRoot, profile);
     process.stdout.write(
         `${JSON.stringify({
             packageName: report.name,
             maximumBytes: MAXIMUM_PACKED_BYTES,
             files: files.length,
             bytes,
-            networkFree: true
+            networkFree: true,
+            profile
         })}\n`
     );
 } finally {
