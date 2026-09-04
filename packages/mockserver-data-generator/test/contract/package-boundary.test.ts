@@ -83,6 +83,18 @@ afterEach(() => {
 });
 
 describe('published package boundary', () => {
+    it('tests the exact runtime dependency version declared for consumers', () => {
+        const packageJson: unknown = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+        const installedDependency: unknown = JSON.parse(
+            readFileSync(join(packageRoot, 'node_modules', 'fast-xml-parser', 'package.json'), 'utf8')
+        );
+        if (!isRecord(packageJson) || !isRecord(packageJson.dependencies) || !isRecord(installedDependency)) {
+            throw new Error('Package dependency metadata is missing');
+        }
+
+        expect(installedDependency.version).toBe(packageJson.dependencies['fast-xml-parser']);
+    });
+
     it('exposes the package check as an explicit package script', () => {
         const packageJson: unknown = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
         if (!isRecord(packageJson) || !isRecord(packageJson.scripts)) {
