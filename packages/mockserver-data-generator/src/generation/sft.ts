@@ -10,6 +10,7 @@ import type {
     SftFieldRequest,
     SftGenerator
 } from '../types.js';
+import { coherencePropertyNames } from './coherence.js';
 import { propertyValueIsValid } from './constraints.js';
 
 export interface SftRunResult {
@@ -138,9 +139,11 @@ export async function applySftGeneration(
 
     for (const [resourceName, fallbackRows] of Object.entries(resources)) {
         const entity = entities.get(resourceName);
-        const fields = entity
-            ? residualFields(entity, classifications, structuralProperties.get(resourceName) ?? new Set())
-            : [];
+        const reservedProperties = new Set(structuralProperties.get(resourceName) ?? []);
+        if (entity) {
+            coherencePropertyNames(entity).forEach((propertyName) => reservedProperties.add(propertyName));
+        }
+        const fields = entity ? residualFields(entity, classifications, reservedProperties) : [];
         if (!entity || fields.length === 0 || fallbackRows.length === 0) {
             generated[resourceName] = fallbackRows;
             continue;

@@ -11,6 +11,7 @@ import type {
 import type { SchemaEntity, SchemaGraph, SchemaProperty } from '../schema/graph.js';
 import { semanticPropertyKey } from '../semantics/classifier.js';
 import { semanticRowContext, semanticValue, type SemanticRowContext } from '../semantics/value-banks.js';
+import { applySemanticCoherence } from './coherence.js';
 import { propertyValueIsValid } from './constraints.js';
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'CHF'] as const;
@@ -524,7 +525,7 @@ export function generateDeterministicResources(
                 ])
             );
         });
-        resources[target.name] = rows;
+        resources[target.name] = applySemanticCoherence(entity, rows, options.seed ?? 1).map((row) => ({ ...row }));
     }
     const baseResources = Object.fromEntries(
         Object.entries(resources).map(([name, rows]) => [name, rows.map((row) => ({ ...row }))])
