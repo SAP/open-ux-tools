@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import type { MockDataGeneratorRuntime } from '@sap-ux/mockserver-data-generator';
 import { resolveCapConfiguration, type CapGeneratorConfiguration } from './config.js';
-import { seedCapDatabase, type CapDatabase, type CapQueryLanguage } from './seed.js';
+import { seedCapDatabase, type CapDatabase, type CapQueryLanguage, type GenerateService } from './seed.js';
 
 interface CapLogger {
     info(message: string): void;
@@ -19,6 +19,12 @@ interface CdsFacade {
 
 interface PluginDependencies {
     seed?(cds: CdsFacade, configuration: Extract<CapGeneratorConfiguration, { enabled: true }>): Promise<void>;
+    createRuntime?(
+        configuration: Extract<CapGeneratorConfiguration, { enabled: true }>,
+        log: CapLogger,
+        signal: AbortSignal
+    ): Promise<{ runtime: MockDataGeneratorRuntime; dispose(): Promise<void> }>;
+    generate?: GenerateService;
 }
 
 function logger(cds: CdsFacade): CapLogger {
@@ -60,21 +66,22 @@ async function runtime(
 
 async function seedFromCds(
     cds: CdsFacade,
-    configuration: Extract<CapGeneratorConfiguration, { enabled: true }>
+    configuration: Extract<CapGeneratorConfiguration, { enabled: true }>,
+    dependencies: PluginDependencies
 ): Promise<void> {
     if (!cds.model || !cds.db || !cds.ql) {
         throw new Error('CAP model, database, and query language must be available after served');
     }
     const log = logger(cds);
     const timeout = AbortSignal.timeout(60_000);
-    const generator = await import('@sap-ux/mockserver-data-generator');
-    const learned = await runtime(configuration, log, timeout);
+    const generate = dependencies.generate ?? (await import('@sap-ux/mockserver-data-generator')).generateService;
+    const learned = await (dependencies.createRuntime ?? runtime)(configuration, log, timeout);
     try {
         const result = await seedCapDatabase({
             csn: cds.model,
             database: cds.db,
             queryLanguage: cds.ql,
-            generate: generator.generateService,
+            generate,
             options: configuration.generation,
             runtime: learned.runtime,
             signal: timeout
@@ -100,7 +107,9 @@ export function registerCapPlugin(cds: CdsFacade, dependencies: PluginDependenci
             return;
         }
         try {
-            await (dependencies.seed ?? seedFromCds)(cds, configuration);
+            const seed =
+                dependencies.seed ?? ((facade, config): Promise<void> => seedFromCds(facade, config, dependencies));
+            await seed(cds, configuration);
         } catch {
             logger(cds).warn('CAP seeding failed; deterministic generation remains available through normal CAP data.');
         }

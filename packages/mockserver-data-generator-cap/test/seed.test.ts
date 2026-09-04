@@ -101,7 +101,7 @@ describe('native CAP database seeding', () => {
         expect(result).toEqual({ inserted: ['demo.Book'], preserved: ['demo.Author'] });
         expect(generate).toHaveBeenCalledWith(
             expect.objectContaining({
-                metadata: { format: 'csn', content: JSON.stringify(csn) },
+                metadata: { format: 'csn', content: expect.any(String) },
                 targets: [
                     { name: 'Author', kind: 'entity-set' },
                     { name: 'Book', kind: 'entity-set' }
@@ -115,6 +115,10 @@ describe('native CAP database seeding', () => {
             { rowsPerEntity: 3, seed: 7 },
             {}
         );
+        const generationCsn = JSON.parse(
+            (generate.mock.calls[0]?.[0] as { metadata: { content: string } }).metadata.content
+        ) as { definitions: Record<string, unknown> };
+        expect(Object.keys(generationCsn.definitions)).toEqual(['demo.Author', 'demo.Book']);
         expect(operations.filter(({ kind }) => kind === 'insert')).toEqual([
             {
                 kind: 'insert',
@@ -152,5 +156,56 @@ describe('native CAP database seeding', () => {
 
         expect(database.tx).toHaveBeenCalledTimes(1);
         expect(inserted).toEqual(['demo.Author', 'demo.Book']);
+    });
+
+    test('seeds a persistence entity when a service projection has the same local name', async () => {
+        const { generateService } = await import('@sap-ux/mockserver-data-generator');
+        const collisionCsn = {
+            definitions: {
+                'demo.Book': {
+                    kind: 'entity',
+                    elements: {
+                        ID: { key: true, type: 'cds.UUID', notNull: true },
+                        title: { type: 'cds.String', length: 80 }
+                    }
+                },
+                'CatalogService.Book': {
+                    kind: 'entity',
+                    query: { SELECT: { from: { ref: ['demo.Book'] } } },
+                    elements: {
+                        ID: { key: true, type: 'cds.UUID', notNull: true },
+                        title: { type: 'cds.String', length: 80 }
+                    }
+                }
+            }
+        };
+        const inserted: Array<Record<string, unknown>> = [];
+        const tx = {
+            run: jest.fn(async (query: Record<string, unknown>) => {
+                if (query.kind === 'insert') {
+                    inserted.push(query);
+                }
+                return [];
+            })
+        };
+        const database = { tx: jest.fn(async (handler: (transaction: typeof tx) => Promise<void>) => handler(tx)) };
+
+        const result = await seedCapDatabase({
+            csn: collisionCsn,
+            database,
+            queryLanguage: queryLanguage(),
+            generate: generateService,
+            options: { rowsPerEntity: 1, seed: 17 },
+            runtime: {}
+        });
+
+        expect(result).toEqual({ inserted: ['demo.Book'], preserved: [] });
+        expect(inserted).toEqual([
+            expect.objectContaining({
+                kind: 'insert',
+                entity: 'demo.Book',
+                rows: [expect.objectContaining({ ID: expect.any(String), title: expect.any(String) })]
+            })
+        ]);
     });
 });

@@ -134,6 +134,19 @@ function persistenceEntities(csn: unknown): ReadonlyArray<PersistenceEntity> {
     );
 }
 
+function persistenceCsn(csn: unknown, entities: ReadonlyArray<PersistenceEntity>): string {
+    if (!isRecord(csn) || !isRecord(csn.definitions)) {
+        throw new TypeError('Resolved CAP model must contain CSN definitions');
+    }
+    const persistenceNames = new Set(entities.map(({ qualifiedName }) => qualifiedName));
+    const definitions = Object.fromEntries(
+        Object.entries(csn.definitions).filter(
+            ([name, definition]) => !isRecord(definition) || definition.kind !== 'entity' || persistenceNames.has(name)
+        )
+    );
+    return JSON.stringify({ ...csn, definitions });
+}
+
 function foreignKeyOrder(entities: ReadonlyArray<PersistenceEntity>): ReadonlyArray<PersistenceEntity> {
     const byName = new Map(entities.map((entity) => [entity.qualifiedName, entity]));
     const visiting = new Set<string>();
@@ -212,6 +225,7 @@ function isJsonValue(value: unknown): value is JsonValue {
  */
 export async function seedCapDatabase(input: SeedCapDatabaseOptions): Promise<CapSeedResult> {
     const entities = foreignKeyOrder(persistenceEntities(input.csn));
+    const metadata = persistenceCsn(input.csn, entities);
     const signal = input.signal ?? new AbortController().signal;
     return input.database.tx(async (transaction) => {
         const existing: Record<string, ExistingMockData> = {};
@@ -225,7 +239,7 @@ export async function seedCapDatabase(input: SeedCapDatabaseOptions): Promise<Ca
             }
         }
         const request: MockDataServiceRequest = {
-            metadata: { format: 'csn', content: JSON.stringify(input.csn) },
+            metadata: { format: 'csn', content: metadata },
             service: { urlPath: '/$mockserver-data-generator', alias: 'CAP', odataVersion: '4.0' },
             targets: entities.map(({ resourceName }) => ({ name: resourceName, kind: 'entity-set' as const })),
             existingData: existing,
