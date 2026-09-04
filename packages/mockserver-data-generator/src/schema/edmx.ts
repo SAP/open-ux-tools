@@ -89,13 +89,24 @@ function annotations(property: XmlRecord): SchemaAnnotation[] {
         });
 }
 
-function parseProperty(property: XmlRecord, keys: ReadonlySet<string>): SchemaProperty {
+function parseProperty(
+    property: XmlRecord,
+    keys: ReadonlySet<string>,
+    structuredTypes: ReadonlySet<string>
+): SchemaProperty | undefined {
     const name = requiredString(property.Name, 'property name');
+    const declaredType = requiredString(property.Type, `type for ${name}`);
+    if (/^Collection\(.+\)$/.test(declaredType) || structuredTypes.has(declaredType)) {
+        if (keys.has(name)) {
+            throw new TypeError(`EDMX key ${name} cannot use unsupported structured type ${declaredType}`);
+        }
+        return undefined;
+    }
     const propertyAnnotations = annotations(property);
     const label = propertyAnnotations.find((annotation) => annotation.term.endsWith('.Label'))?.value;
     return {
         name,
-        primitiveType: primitiveType(requiredString(property.Type, `type for ${name}`)),
+        primitiveType: primitiveType(declaredType),
         nullable: property.Nullable !== false && property.Nullable !== 'false',
         isKey: keys.has(name),
         maxLength: optionalInteger(property.MaxLength),
@@ -140,6 +151,19 @@ export function parseEdmx(content: string): SchemaGraph {
     const schemas = asArray(parsed.Edmx.DataServices.Schema);
     if (schemas.length === 0) {
         throw new TypeError('EDMX document must contain at least one Schema');
+    }
+
+    const structuredTypes = new Set<string>();
+    for (const schema of schemas) {
+        const namespace = requiredString(schema.Namespace, 'schema namespace');
+        const alias = typeof schema.Alias === 'string' && schema.Alias.length > 0 ? schema.Alias : undefined;
+        for (const complexType of asArray(schema.ComplexType)) {
+            const name = requiredString(complexType.Name, 'complex type name');
+            structuredTypes.add(`${namespace}.${name}`);
+            if (alias) {
+                structuredTypes.add(`${alias}.${name}`);
+            }
+        }
     }
 
     const entityTypes = new Map<string, { schema: XmlRecord; entityType: XmlRecord }>();
@@ -194,8 +218,10 @@ export function parseEdmx(content: string): SchemaGraph {
                 const properties = new Map<string, SchemaProperty>();
                 for (const entityType of hierarchy) {
                     for (const property of asArray(entityType.Property)) {
-                        const parsedProperty = parseProperty(property, keyNames);
-                        properties.set(parsedProperty.name, parsedProperty);
+                        const parsedProperty = parseProperty(property, keyNames, structuredTypes);
+                        if (parsedProperty) {
+                            properties.set(parsedProperty.name, parsedProperty);
+                        }
                     }
                 }
                 entities.push({

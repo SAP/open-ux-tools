@@ -138,7 +138,7 @@ test('generates exactly one row for an EDMX singleton target', async () => {
     expect(result.resources.Me?.[0]).toEqual(expect.objectContaining({ ID: 1 }));
 });
 
-test('rejects complex and unknown property types instead of fabricating strings', async () => {
+test('skips declared complex properties instead of rejecting every scalar field in the service', async () => {
     const complexMetadata = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
   <edmx:DataServices>
@@ -154,14 +154,44 @@ test('rejects complex and unknown property types instead of fabricating strings'
   </edmx:DataServices>
 </edmx:Edmx>`;
 
-    await expect(
-        generateService({
+    const result = await generateService(
+        {
             metadata: { format: 'edmx', content: complexMetadata },
             service: { urlPath: '/catalog', odataVersion: '4.0' },
             targets: [{ name: 'Users', kind: 'entity-set' }],
             existingData: {}
-        })
-    ).rejects.toThrow(/unsupported property type Catalog\.Address/i);
+        },
+        { rowsPerEntity: 1 }
+    );
+
+    expect(result.resources.Users).toEqual([{ ID: 1 }]);
+});
+
+test('rejects undeclared custom and unknown Edm property types instead of fabricating strings', async () => {
+    const invalidMetadata = (type: string) => `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+  <edmx:DataServices>
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Catalog">
+      <EntityType Name="User">
+        <Key><PropertyRef Name="ID"/></Key>
+        <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="Invalid" Type="${type}"/>
+      </EntityType>
+      <EntityContainer Name="Container"><EntitySet Name="Users" EntityType="Catalog.User"/></EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
+
+    for (const type of ['Catalog.NotDeclared', 'Edm.NotAType']) {
+        await expect(
+            generateService({
+                metadata: { format: 'edmx', content: invalidMetadata(type) },
+                service: { urlPath: '/catalog', odataVersion: '4.0' },
+                targets: [{ name: 'Users', kind: 'entity-set' }],
+                existingData: {}
+            })
+        ).rejects.toThrow(new RegExp(`unsupported property type ${type.replace('.', '\\.')}`, 'i'));
+    }
 });
 
 test('includes inherited EDMX keys and properties', async () => {
