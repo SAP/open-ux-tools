@@ -16,7 +16,13 @@ import {
 import { tmpdir } from 'node:os';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { assertSafeArchiveEntry, inspectPackedArtifact, sha256File } from './lib/artifacts.mjs';
+import {
+    assertSafeArchiveEntry,
+    createDeterministicArchive,
+    inspectPackedArtifact,
+    normalizePackedArtifact,
+    sha256File
+} from './lib/artifacts.mjs';
 import { createDevKitManifest, fingerprintManifest } from './lib/manifest.mjs';
 
 const TOOLS_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -76,10 +82,12 @@ function packPackage({ root, packageName, destination, source }) {
         throw new Error(`pnpm pack did not produce ${packageName}`);
     }
     const firstInspection = inspectPackedArtifact(initialPath, packageName);
-    const finalFilename = basename(initialPath).replace(/\.tgz$/u, `-${firstInspection.sha256.slice(0, 12)}.tgz`);
+    normalizePackedArtifact(initialPath, manager);
+    const normalizedInspection = inspectPackedArtifact(initialPath, packageName, firstInspection.version);
+    const finalFilename = basename(initialPath).replace(/\.tgz$/u, `-${normalizedInspection.sha256.slice(0, 12)}.tgz`);
     const finalPath = join(destination, finalFilename);
     renameSync(initialPath, finalPath);
-    return { ...inspectPackedArtifact(finalPath, packageName, firstInspection.version), source };
+    return { ...inspectPackedArtifact(finalPath, packageName, normalizedInspection.version), source };
 }
 
 /**
@@ -249,9 +257,7 @@ export function buildDevKit({ hostRoot, outDir, requireClean = false }) {
         renameSync(stagingRoot, namedRoot);
         mkdirSync(outDir, { recursive: true });
         const temporaryArchive = join(outDir, `.${kitName}.${randomUUID()}.tmp`);
-        execute('tar', ['--format=ustar', '-czf', temporaryArchive, '-C', temporaryRoot, kitName], {
-            env: { COPYFILE_DISABLE: '1', COPY_EXTENDED_ATTRIBUTES_DISABLE: '1' }
-        });
+        createDeterministicArchive(temporaryRoot, kitName, temporaryArchive);
         const entries = archiveEntries(temporaryArchive);
         const archivePath = join(outDir, `${kitName}.tgz`);
         renameSync(temporaryArchive, archivePath);

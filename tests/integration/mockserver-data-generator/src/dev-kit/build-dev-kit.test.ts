@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,6 +10,7 @@ import { configureFioriApplication } from '../../../../../scripts/mockserver-dat
 import {
     assertSafeArchiveEntry,
     inspectPackedArtifact,
+    sha256File,
     verifyFileChecksum
 } from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/artifacts.mjs';
 import {
@@ -22,6 +23,11 @@ const pilotBridgeEntry = fileURLToPath(
     new URL('../../../../../scripts/mockserver-data-generator-dev-kit/prepare-pilot-model-cache.mjs', import.meta.url)
 );
 const fioriFixture = fileURLToPath(new URL('../../test/fixtures/fiori-v4', import.meta.url));
+const toolsPackageManager = (
+    JSON.parse(readFileSync(fileURLToPath(new URL('../../../../../package.json', import.meta.url)), 'utf8')) as {
+        packageManager: string;
+    }
+).packageManager;
 
 function temporaryDirectory(): string {
     const directory = mkdtempSync(join(tmpdir(), 'mockgen-dev-kit-test-'));
@@ -29,7 +35,12 @@ function temporaryDirectory(): string {
     return directory;
 }
 
-function makePackageTarball(options?: { includeBin?: boolean; includeDist?: boolean; packageName?: string }): string {
+function makePackageTarball(options?: {
+    includeBin?: boolean;
+    includeDist?: boolean;
+    packageName?: string;
+    reverseDependencies?: boolean;
+}): string {
     const root = temporaryDirectory();
     const packageRoot = join(root, 'package');
     mkdirSync(join(packageRoot, 'dist'), { recursive: true });
@@ -40,7 +51,10 @@ function makePackageTarball(options?: { includeBin?: boolean; includeDist?: bool
             version: '0.1.0',
             main: 'dist/index.js',
             bin: { 'mockserver-data-generator': 'dist/cli.js' },
-            exports: { '.': './dist/index.js' }
+            exports: { '.': './dist/index.js' },
+            devDependencies: options?.reverseDependencies
+                ? { '@example/z-last': '1.0.0', '@example/a-first': '1.0.0' }
+                : { '@example/a-first': '1.0.0', '@example/z-last': '1.0.0' }
         })
     );
     if (options?.includeDist !== false) {
@@ -104,6 +118,52 @@ describe('development kit artifact validation', () => {
         expect(artifact.entries).toContain('package/dist/cli.js');
         expect(artifact.bytes).toBeGreaterThan(0);
         expect(artifact.sha256).toMatch(/^[a-f\d]{64}$/);
+    });
+
+    test('normalizes semantically identical packed manifests before hashing', async () => {
+        const first = makePackageTarball();
+        const second = makePackageTarball({ reverseDependencies: true });
+        expect(sha256File(first)).not.toBe(sha256File(second));
+
+        const artifacts =
+            (await import('../../../../../scripts/mockserver-data-generator-dev-kit/lib/artifacts.mjs')) as unknown as {
+                normalizePackedArtifact?: (archivePath: string, manager: { command: string; prefix: string[] }) => void;
+            };
+        expect(typeof artifacts.normalizePackedArtifact).toBe('function');
+        artifacts.normalizePackedArtifact?.(first, { command: 'corepack', prefix: [toolsPackageManager] });
+        artifacts.normalizePackedArtifact?.(second, { command: 'corepack', prefix: [toolsPackageManager] });
+
+        expect(sha256File(first)).toBe(sha256File(second));
+    });
+
+    test('creates identical kit archives from equivalent trees with different timestamps', async () => {
+        const root = temporaryDirectory();
+        const firstRoot = join(root, 'first');
+        const secondRoot = join(root, 'second');
+        for (const sourceRoot of [firstRoot, secondRoot]) {
+            mkdirSync(join(sourceRoot, 'kit', 'packages'), { recursive: true });
+            writeFileSync(join(sourceRoot, 'kit', 'README.md'), 'portable kit\n');
+            writeFileSync(join(sourceRoot, 'kit', 'packages', 'generator.tgz'), 'package bytes');
+        }
+        const oldTimestamp = new Date('2020-01-01T00:00:00.000Z');
+        const newTimestamp = new Date('2026-01-01T00:00:00.000Z');
+        for (const item of ['kit/packages/generator.tgz', 'kit/packages', 'kit/README.md', 'kit']) {
+            utimesSync(join(firstRoot, item), oldTimestamp, oldTimestamp);
+            utimesSync(join(secondRoot, item), newTimestamp, newTimestamp);
+        }
+
+        const artifacts =
+            (await import('../../../../../scripts/mockserver-data-generator-dev-kit/lib/artifacts.mjs')) as unknown as {
+                createDeterministicArchive?: (sourceRoot: string, entryName: string, archivePath: string) => void;
+            };
+        expect(typeof artifacts.createDeterministicArchive).toBe('function');
+        const firstArchive = join(root, 'first.tgz');
+        const secondArchive = join(root, 'second.tgz');
+        artifacts.createDeterministicArchive?.(firstRoot, 'kit', firstArchive);
+        await new Promise((resolve) => setTimeout(resolve, 1_100));
+        artifacts.createDeterministicArchive?.(secondRoot, 'kit', secondArchive);
+
+        expect(sha256File(firstArchive)).toBe(sha256File(secondArchive));
     });
 
     test('rejects package-name mismatches and missing build output', () => {
