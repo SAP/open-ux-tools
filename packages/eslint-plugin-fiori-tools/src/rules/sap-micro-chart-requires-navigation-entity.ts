@@ -26,19 +26,19 @@ function getPropertyPathText(element: Element): string {
 /**
  * Returns `true` when `pathValue` violates the 1:n navigation requirement.
  *
- * Uses the linker pattern from `getEntityForContextPath`: navigates
- * `/${pageEntityName}/${firstSegment}` to obtain the navigation property element from
- * the metadata service (handling entity-set → entity-type fallback for V2 and CDS).
- * The element's `isCollectionValued` flag is the authoritative answer.
+ * Traverses each segment of the path against the entity type index (keyed by fully-qualified
+ * name matching `annotation.target`).  At each step:
+ * - If the segment is a collection-valued (1:n) navigation → valid, return `false`.
+ * - If the segment is a 1:1 navigation entity type → follow `structuredType` to next entity.
+ * - If the segment is a scalar property with no prior 1:n hop → violation, return `true`.
  *
- * When the metadata service cannot resolve the segment (incomplete fixtures, unknown
- * entity, CDS kinds not exposed as NavigationProperty), the function falls back to
+ * When a segment cannot be resolved (incomplete fixtures, unknown entity), falls back to
  * requiring a `/` separator as a best-effort heuristic.
  *
  * @param pathValue - The property path string to validate.
- * @param chartEntityType - The entity type name of the chart's context.
+ * @param chartEntityType - The fully-qualified entity type name of the chart's annotation target.
  * @param service - The parsed OData service.
- * @returns `true` when the path violates the 1:n navigation requirement, `false` when valid or undetermined.
+ * @returns `true` when the path violates the 1:n navigation requirement, `false` when valid.
  */
 function violatesNavigationRule(
     pathValue: string,
@@ -49,22 +49,27 @@ function violatesNavigationRule(
         return false;
     }
     if (service) {
-        let navSegments = pathValue.split('/');
-        // Navigate /<entitySetName>/<segment> — mirrors the linker's getEntityForContextPath pattern.
-        // getEntityForContextPath handles entity-set lookup (V4), structuredType fallback (V2),
-        // and returns the metadata element for the first path segment.
-        let navElement = getEntityTypeForContextPath(`/${chartEntityType}/${navSegments[0]}`, service);
-        while (navElement?.isEntityType) {
-            // If the navElement is an entity type, we need to check if it has a structured type and get that instead.
-            navSegments = navSegments.slice(1);
-            navElement = getEntityTypeForContextPath(`/${navElement.structuredType}/${navSegments[0]}`, service);
-        }
-        if (navElement) {
-            // Metadata resolved the segment — isCollectionValued is the authoritative answer.
-            return !navElement.isCollectionValued;
+        let currentEntityType = chartEntityType;
+        for (const segment of pathValue.split('/')) {
+            const navElement = getEntityTypeForContextPath(`/${currentEntityType}/${segment}`, service);
+            if (!navElement) {
+                break; // Segment unresolvable — fall through to heuristic.
+            }
+            if (navElement.isCollectionValued) {
+                return false; // Confirmed 1:n navigation — valid.
+            }
+            if (navElement.isEntityType && navElement.structuredType) {
+                // Confirmed 1:1 navigation hop — traverse into its entity type.
+                currentEntityType = navElement.structuredType;
+                continue;
+            }
+            // Element found but not classified as navigation (e.g. CDS association without flags set,
+            // or scalar property). Fall through to heuristic to avoid false positives.
+            break;
         }
     }
-    return false; // Undetermined: service not available or segment not resolved.  Do not report.
+    // Metadata unavailable or segment not resolved — require a navigation separator as best-effort.
+    return !pathValue.includes('/');
 }
 
 /**
