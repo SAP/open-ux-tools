@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `f3e32f88bfa2ccdfb179be6dde424dd0c13ee6927d4e2e4e0771ae12cd243468`
-- archive SHA-256: `8a8c4dd8981f69a31c692b946f2764f40d8d42a79a013a876ed6e52032911304`
-- archive size: 535,897 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `5a51e6cf73edd73f76316cbb3391df6221fd46fd`; `SAP/open-ux-odata` `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f3e32f88bfa2ccdf.tgz`
+- dev-kit fingerprint: `f9a0de8fc01b547be338dd852ca68785ed65810cc484a81d0197e4715c5c6e82`
+- archive SHA-256: `2cc3741f355ddab1076618d706834f133b7905c5ad5b8350ab1bf7ebb239d6a8`
+- archive size: 535,912 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `8255d109a619714364e0e0d7f78f444e749a3c54`; `SAP/open-ux-odata` `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f9a0de8fc01b547b.tgz`
 
 This candidate includes the current classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
@@ -27,8 +27,8 @@ learned OData V4 HTTP canary, and exact restore are recorded in the local canary
 report. Earlier clean archives remain the cross-format learned V2/V4/CDS and
 five-sample performance evidence; run the procedure below with the current
 archive to qualify the same learned path in BAS. The exact archive passed the
-local V2 HTTP canary with classifier and SFT ready, 930.404 ms runtime
-initialization, 3,199.362 ms whole-service generation, 3,200.181 ms host
+local V2 HTTP canary with classifier and SFT ready, 1,485.674 ms runtime
+initialization, 2,688.299 ms whole-service generation, 2,689.124 ms host
 provider time, one returned row, and byte-exact restore.
 
 ## Inputs to record

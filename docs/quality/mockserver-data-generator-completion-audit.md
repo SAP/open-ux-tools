@@ -4,14 +4,14 @@ Date: 2026-09-04
 
 Candidate source:
 
-- exact realism runtime package: `f18e99c8bc96a47d9432d19c6540d5a6dcf4f00b`
-- post-evidence production gate: `5a51e6cf73edd73f76316cbb3391df6221fd46fd`
-- development kit source: `5a51e6cf73edd73f76316cbb3391df6221fd46fd`
+- exact realism runtime package: `8255d109a619714364e0e0d7f78f444e749a3c54`
+- post-evidence production gate: `8255d109a619714364e0e0d7f78f444e749a3c54`
+- development kit source: `8255d109a619714364e0e0d7f78f444e749a3c54`
 - `SAP/open-ux-odata`: `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
 - portable development-kit fingerprint:
-  `f3e32f88bfa2ccdfb179be6dde424dd0c13ee6927d4e2e4e0771ae12cd243468`
+  `f9a0de8fc01b547be338dd852ca68785ed65810cc484a81d0197e4715c5c6e82`
 - portable development-kit SHA-256:
-  `8a8c4dd8981f69a31c692b946f2764f40d8d42a79a013a876ed6e52032911304`
+  `2cc3741f355ddab1076618d706834f133b7905c5ad5b8350ab1bf7ebb239d6a8`
 
 ## Verdict
 
@@ -81,12 +81,12 @@ means a measured threshold was missed by the named candidate.
 | --- | ---: |
 | `@sap-ux/fe-mockserver-core` | 27 suites, 358 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 173 tests passed; build passed; lint has zero errors |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 174 tests passed; build passed; lint has zero errors |
 | development kit and evaluation harness | 9 suites, 93 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
 | exact deterministic archive canary | provider executed; metadata passed; one row returned; exact restore passed |
-| exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 930.404 ms runtime initialization; 3,199.362 ms generation; exact restore passed |
+| exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,485.674 ms runtime initialization; 2,688.299 ms generation; exact restore passed |
 | current package archive | 67,487 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |

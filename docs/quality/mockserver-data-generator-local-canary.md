@@ -261,6 +261,32 @@ integrated-performance archive for new local or BAS functional testing; the
 older archive and bound five-sample reports remain the current performance
 evidence until that campaign is rerun on a supported release platform.
 
+## Current parser-aligned archive canary
+
+After correcting the workspace lockfile so tests and downstream consumers use
+the same declared `fast-xml-parser@5.10.1`, the package was rebuilt from a clean
+commit, its six-service realism cohort was replayed twice, and the exact new kit
+was installed into a fresh OData V2 fixture with the retained classifier and
+INT8 SFT cache.
+
+- Dev-kit fingerprint: `f9a0de8fc01b547be338dd852ca68785ed65810cc484a81d0197e4715c5c6e82`
+- Archive SHA-256: `2cc3741f355ddab1076618d706834f133b7905c5ad5b8350ab1bf7ebb239d6a8`
+- Archive size: 535,912 bytes; 10 entries
+- Generator tarball: 67,487 bytes, SHA-256 `fb1e6a9cc6fb353c891cc56d5c0cba22681238946fa8d4c45d86443a6ec9812c`
+- Core tarball: 157,298 bytes, SHA-256 `94ecda7806d18d7b73e2e24f28418bc05440ddc4e8567d712c17d4a16e0a05bc`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `8255d109a619714364e0e0d7f78f444e749a3c54` and clean `SAP/open-ux-odata` commit `64e37ac4a6d24607c28a06242075b95afbbc1ff2`; reproducible
+- Learned verification: classifier and SFT ready; `providerExecuted: true`; `learnedRuntimeVerified: true`
+- HTTP verification: OData V2 `$metadata` passed and `Products?$top=1` returned one row through exactly one `sap-fe-mockserver`
+- Observed timing: 1,485.674 ms model initialization; 2,688.299 ms whole-service generation; 2,689.124 ms host provider duration
+- Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f9a0de8fc01b547b.tgz`.
+Its checksum must be verified before extraction. It supersedes earlier archives
+for local or BAS functional testing; the older bound five-sample report remains
+the performance evidence until the supported release-platform campaign runs.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,

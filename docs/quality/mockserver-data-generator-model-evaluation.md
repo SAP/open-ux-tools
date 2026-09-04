@@ -133,7 +133,7 @@ component fingerprints.
 
 ## Size and quantization decision
 
-The reviewed npm package contains no weights and packs to 59,810 bytes in the current development canary, far below the 5 MiB ceiling. Model and runtime footprints are reported separately:
+The reviewed npm package contains no weights and packs to 67,487 bytes in the current development canary, far below the 5 MiB ceiling. Model and runtime footprints are reported separately:
 
 | Candidate                                  | Model bytes | Development result                                                                                                         | Decision                          |
 | ------------------------------------------ | ----------: | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
@@ -505,7 +505,7 @@ removes the other bundled platform binaries; its install flag controls
 additional downloaded execution-provider assets.
 
 The production package therefore keeps `onnxruntime-node` as an optional peer:
-the deterministic package archive remains 59,810 bytes and its measured
+the deterministic package archive remains 67,487 bytes and its measured
 dependency closure is 2,127,427 bytes, while learned-mode users explicitly add
 the runtime and external model cache. Deleting files from a consumer's
 `node_modules` in a postinstall hook is not an acceptable production
@@ -520,7 +520,7 @@ the same compatibility and integrity tests.
 The existing two-provider pilot report remains useful historical evidence: 60 fields across six domains were reviewed, 16 were rated realistic (26.67%), 10 provider disagreements were recorded, no critical issues were found, and the report failed its gate. It is not silently promoted or discarded.
 
 The production exporter generated the final blinded packet from clean package
-commit `f18e99c8bc96a47d9432d19c6540d5a6dcf4f00b`. It used model manifest
+commit `8255d109a619714364e0e0d7f78f444e749a3c54`. It used model manifest
 SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`
 and revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`.
 The retained classifier fingerprint is
@@ -528,12 +528,12 @@ The retained classifier fingerprint is
 the retained INT8 SFT fingerprint is
 `a1502adfda71285d06e0a6efdce0c7b1219395f12476b8da8778d18e06f0fa36`.
 
-The service-disjoint cohort manifest is outside the repository at
-`/Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/final-cohort-v1.json`.
+The service-disjoint cohort manifest is committed at
+`tests/integration/mockserver-data-generator/test/fixtures/realism-final-cohort-v1/final-cohort-v1.json`.
 It has SHA-256
-`9380c00559107b67e2522c8e96b1141d20c1a3eca71502ac6ddb5b53c4d15363`.
-The canonical outputs in that directory are `realism-evidence-v20.json` and
-`campaign-manifest-v20.json`; `realism-evidence-v21.json` is the byte-identical
+`59cf8e1fe12b06bf032e1b554a0a138cda1ced1d1fc2881a67147b1dfddb086e`.
+The canonical external outputs are `realism-evidence-v22.json` and
+`campaign-manifest-v22.json`; `realism-evidence-v23.json` is the byte-identical
 replay. The generation options are two rows per entity, seed 113, locale `en`,
 learned mode, and a 90-second SFT budget. The wider budget is scoped to the
 multi-entity campaign: it prevents wide services from being misclassified as
@@ -554,11 +554,11 @@ packet contain 311 records.
 | Contributing targets           | 6/6                                                                |
 | Deterministic replay           | byte-identical evidence file                                       |
 | Coverage gaps                 | 0                                                                  |
-| Candidate fingerprint         | `6a15c16bfe93e79f52403e9e85ebd16d03bf3fc3e86e78cbec6939d688b7ab10` |
-| Evidence fingerprint          | `d9eba16e521a3b9114ba4469e208a9655a7bbd6ea073ecdd2d18bd5e109223dd` |
-| Evidence file SHA-256         | `87802412479f96b628bbdaaa0186cd3c5d8c4fe5c488d2834540174871555015` |
-| Campaign fingerprint          | `e854c92d4c1f30d12df9cc08d23be0afb116b1c09ca67f53ab6651280d8043e3` |
-| Campaign manifest SHA-256     | `4e3997543d71ad1260383d843a8f44996e5f9fcbb6a5d7dc950fd194f13cf498` |
+| Candidate fingerprint         | `77c13df42d920480cdda00424b5c70307f2afc1d16f7b89dc6ea6400dacd10bb` |
+| Evidence fingerprint          | `f528a702d4b7fe108691c373a583a74a4330d300b52edcd8c111230ee8a835f7` |
+| Evidence file SHA-256         | `89cb8ba56a1344b35de2876e88ea467b89f27cc80534cd4aa0f8c00e8bbbd03e` |
+| Campaign fingerprint          | `25c6fda04f9eb80e5b1df07f76d68ca447aaa2159e2fcc332c61f60b71c0efb7` |
+| Campaign manifest SHA-256     | `19c226c55759eb0244c5bfafb72b64e7558498f0721cbdd9b48b4ea2a3c88e12` |
 | Runtime                       | Node 22.22.2, ONNX Runtime 1.24.3, darwin-arm64                    |
 
 The exporter independently rejects incomplete model caches, partial learned
