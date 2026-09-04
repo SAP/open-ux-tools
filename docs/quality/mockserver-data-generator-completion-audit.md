@@ -4,7 +4,7 @@ Date: 2026-09-04
 
 Candidate source:
 
-- exact realism runtime package: `8255d109a619714364e0e0d7f78f444e749a3c54`
+- exact realism runtime package: `817382b88f2cd88a84eb093410ad2a3a367b5505`
 - post-evidence production gate: `817382b88f2cd88a84eb093410ad2a3a367b5505`
 - development kit source: `817382b88f2cd88a84eb093410ad2a3a367b5505`
 - current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`

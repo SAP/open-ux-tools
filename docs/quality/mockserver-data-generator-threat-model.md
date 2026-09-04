@@ -8,11 +8,11 @@ open where listed below.
 Candidate code:
 
 - `SAP/open-ux-tools` runtime package commit
-  `8255d109a619714364e0e0d7f78f444e749a3c54`
+  `817382b88f2cd88a84eb093410ad2a3a367b5505`
 - `SAP/open-ux-odata` host test commit
   `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - package archive SHA-256
-  `fb1e6a9cc6fb353c891cc56d5c0cba22681238946fa8d4c45d86443a6ec9812c`
+  `3e4713f6d1c4501a6049653c9d8f974c6e38ea8bfc4b6eff0c1b8ce56340bfe2`
 - model manifest SHA-256
   `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`
 

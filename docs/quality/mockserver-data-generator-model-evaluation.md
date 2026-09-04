@@ -520,7 +520,7 @@ the same compatibility and integrity tests.
 The existing two-provider pilot report remains useful historical evidence: 60 fields across six domains were reviewed, 16 were rated realistic (26.67%), 10 provider disagreements were recorded, no critical issues were found, and the report failed its gate. It is not silently promoted or discarded.
 
 The production exporter generated the final blinded packet from clean package
-commit `8255d109a619714364e0e0d7f78f444e749a3c54`. It used model manifest
+commit `817382b88f2cd88a84eb093410ad2a3a367b5505`. It used model manifest
 SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`
 and revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`.
 The retained classifier fingerprint is
@@ -532,8 +532,8 @@ The service-disjoint cohort manifest is committed at
 `tests/integration/mockserver-data-generator/test/fixtures/realism-final-cohort-v1/final-cohort-v1.json`.
 It has SHA-256
 `59cf8e1fe12b06bf032e1b554a0a138cda1ced1d1fc2881a67147b1dfddb086e`.
-The canonical external outputs are `realism-evidence-v22.json` and
-`campaign-manifest-v22.json`; `realism-evidence-v23.json` is the byte-identical
+The canonical external outputs are `realism-evidence-v24.json` and
+`campaign-manifest-v24.json`; `realism-evidence-v25.json` is the byte-identical
 replay. The generation options are two rows per entity, seed 113, locale `en`,
 learned mode, and a 90-second SFT budget. The wider budget is scoped to the
 multi-entity campaign: it prevents wide services from being misclassified as
@@ -554,18 +554,24 @@ packet contain 311 records.
 | Contributing targets           | 6/6                                                                |
 | Deterministic replay           | byte-identical evidence file                                       |
 | Coverage gaps                 | 0                                                                  |
-| Candidate fingerprint         | `77c13df42d920480cdda00424b5c70307f2afc1d16f7b89dc6ea6400dacd10bb` |
-| Evidence fingerprint          | `f528a702d4b7fe108691c373a583a74a4330d300b52edcd8c111230ee8a835f7` |
-| Evidence file SHA-256         | `89cb8ba56a1344b35de2876e88ea467b89f27cc80534cd4aa0f8c00e8bbbd03e` |
-| Campaign fingerprint          | `25c6fda04f9eb80e5b1df07f76d68ca447aaa2159e2fcc332c61f60b71c0efb7` |
-| Campaign manifest SHA-256     | `19c226c55759eb0244c5bfafb72b64e7558498f0721cbdd9b48b4ea2a3c88e12` |
+| Candidate fingerprint         | `f15bd1de48b5371cd375d286014b06a67b8e2a01f3ade3c2460386897cdb9cc6` |
+| Evidence fingerprint          | `3b3283cb7d134fc4a26a9b250eac17c06c28847e240691e24f0ee67de7f1c2aa` |
+| Evidence file SHA-256         | `86ed29433ea71f8088c5be5fc326e9a93662939ee88edb276a9a761056382cd9` |
+| Campaign fingerprint          | `2f566106eb86195beae144eeafb573571ffa273b76d52dfa8d54aa26f55d05d8` |
+| Campaign manifest SHA-256     | `bba99441dc0af7f8a0fa71d128ef5a59495c48c744f2376d0874e5d6ecd4400c` |
 | Runtime                       | Node 22.22.2, ONNX Runtime 1.24.3, darwin-arm64                    |
 
 The exporter independently rejects incomplete model caches, partial learned
 runtimes, empty resources, and failed frozen assertions before it writes a
-packet. Independent verification re-sealed both fingerprints, recomputed every
-bound harness hash, found no local path or URL in the evidence/campaign files,
-and confirmed the repeated evidence files are byte-identical.
+packet. Independent verification re-sealed the evidence fingerprint, recomputed
+both campaign fingerprints, found no absolute local path in either
+evidence/campaign pair, and confirmed the repeated evidence files are
+byte-identical. The replay campaign manifest differs only in the evidence
+filename and the resulting campaign fingerprint, as designed. The v25 campaign
+fingerprint is
+`1ceed42cc861d5c140b2766e926d3a987cd7b80ff2e8d6ce8f40552a28e84532`
+and its file SHA-256 is
+`a40e314bc304fe4efc86e7a00dc909ed6d11ceef734bfb2437d524dcd4062871`.
 
 This proves the local structural, relationship, coherence, runtime-binding, and
 determinism gates for the macOS development candidate. It does not prove
