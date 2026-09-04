@@ -5,6 +5,7 @@ import { createReadStream, realpathSync } from 'node:fs';
 import { access, chmod, copyFile, lstat, mkdir, readFile, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { productionGenerationConfiguration } from './lib/model-config.mjs';
 
 const BUNDLE_ID = 'mockgen-pilot-int8';
 const RUNTIME_VERSION = '1.24.3';
@@ -57,13 +58,6 @@ async function sha256File(filePath) {
 function positiveInteger(value, label) {
     if (!Number.isSafeInteger(value) || value <= 0) {
         throw new TypeError(`${label} must be a positive integer`);
-    }
-    return value;
-}
-
-function positiveNumber(value, label) {
-    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
-        throw new TypeError(`${label} must be positive`);
     }
     return value;
 }
@@ -206,57 +200,6 @@ async function sourceLayout(pilotRoot) {
     };
 }
 
-function generationConfiguration(value, repositoryLayout) {
-    const input = JSON.parse(value);
-    const architecture = repositoryLayout
-        ? {
-              numHiddenLayers: input.num_hidden_layers,
-              numKeyValueHeads: input.num_key_value_heads,
-              hiddenSize: input.hidden_size,
-              numAttentionHeads: input.num_attention_heads
-          }
-        : {
-              numHiddenLayers: input.numHiddenLayers,
-              numKeyValueHeads: input.numKeyValueHeads,
-              hiddenSize: input.hiddenSize,
-              numAttentionHeads: input.numAttentionHeads
-          };
-    const sampling = repositoryLayout
-        ? {
-              temperature: 0.6,
-              topP: 0.9,
-              repetitionPenalty: 1.15,
-              noRepeatNgramSize: 4,
-              maxNewTokens: 300
-          }
-        : input.samplingOptions;
-    if (sampling === null || typeof sampling !== 'object' || Array.isArray(sampling)) {
-        throw new TypeError('SFT sampling configuration must be an object');
-    }
-    return {
-        numHiddenLayers: positiveInteger(architecture.numHiddenLayers, 'SFT hidden-layer count'),
-        numKeyValueHeads: positiveInteger(architecture.numKeyValueHeads, 'SFT key/value-head count'),
-        hiddenSize: positiveInteger(architecture.hiddenSize, 'SFT hidden size'),
-        numAttentionHeads: positiveInteger(architecture.numAttentionHeads, 'SFT attention-head count'),
-        samplingOptions: (() => {
-            const topP = positiveNumber(sampling.topP, 'SFT topP');
-            if (topP > 1) {
-                throw new TypeError('SFT topP must not exceed 1');
-            }
-            if (!Number.isSafeInteger(sampling.noRepeatNgramSize) || sampling.noRepeatNgramSize < 0) {
-                throw new TypeError('SFT no-repeat ngram size must be a non-negative integer');
-            }
-            return {
-                temperature: positiveNumber(sampling.temperature, 'SFT temperature'),
-                topP,
-                repetitionPenalty: positiveNumber(sampling.repetitionPenalty, 'SFT repetition penalty'),
-                noRepeatNgramSize: sampling.noRepeatNgramSize,
-                maxNewTokens: positiveInteger(sampling.maxNewTokens, 'SFT token budget')
-            };
-        })()
-    };
-}
-
 async function artifact(source) {
     const details = await lstat(source.source);
     return {
@@ -390,7 +333,7 @@ export async function preparePilotModelCache({ pilotRoot, cacheRoot, manifestPat
     const requestedManifestPath = resolve(manifestPath);
     await assertOutputsOutsidePilot(canonicalPilotRoot, requestedCacheRoot, requestedManifestPath);
     const layout = await sourceLayout(canonicalPilotRoot);
-    const configuration = generationConfiguration(
+    const configuration = productionGenerationConfiguration(
         await readFile(layout.configurationSource, 'utf8'),
         layout.repositoryLayout
     );

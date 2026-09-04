@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import {
     artifactRecord,
@@ -14,6 +16,9 @@ import {
 } from '../../../../../scripts/mockserver-data-generator-evaluation/lib/evaluation.mjs';
 
 const temporaryDirectories: string[] = [];
+const evaluationScript = fileURLToPath(
+    new URL('../../../../../scripts/mockserver-data-generator-evaluation/evaluate-pilot-models.mjs', import.meta.url)
+);
 
 function temporaryDirectory(): string {
     const directory = mkdtempSync(join(tmpdir(), 'mockgen-evaluation-test-'));
@@ -38,6 +43,30 @@ describe('model artifact evidence', () => {
             bytes: 9,
             sha256: createHash('sha256').update('candidate').digest('hex')
         });
+    });
+});
+
+describe('evaluation CLI contract', () => {
+    test.each([
+        ['--max-sft-cases', '1junk'],
+        ['--seed', '7junk']
+    ])('rejects partial integer value %s %s', (argument, value) => {
+        const result = spawnSync(
+            process.execPath,
+            [
+                evaluationScript,
+                '--pilot-root',
+                '/tmp/mockgen-nonexistent-pilot',
+                '--output',
+                '/tmp/mockgen-nonexistent-report.json',
+                argument,
+                value
+            ],
+            { encoding: 'utf8' }
+        );
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toContain(`${argument} must be a decimal integer`);
     });
 });
 

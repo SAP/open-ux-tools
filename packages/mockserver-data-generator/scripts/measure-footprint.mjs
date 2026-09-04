@@ -15,7 +15,7 @@ import {
     writeFileSync
 } from 'node:fs';
 import { cpus, tmpdir } from 'node:os';
-import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -41,6 +41,11 @@ const MAXIMUM_WARM_CACHE_STARTUP_MS = 200;
 const MAXIMUM_T2_GENERATION_MS = 20_000;
 const MAXIMUM_FIRST_USE_ACQUISITION_MS = 30_000;
 const MAXIMUM_HOST_PROVIDER_MS = 60_000;
+const FROZEN_CLASSIFIER_COHORT_SHA256 = '0d1d0a5c305083fb17e7bbe3149c828037616898e5464a8d6993818fd94fb6b3';
+const FROZEN_SFT_COHORT_SHA256 = '83dd7d4e1613a17715d9c5bce8e1aea43b505f0d6d6afb7d09993d8049c0c5d4';
+const FROZEN_SFT_SEED = 2_026_090_4;
+const CLASSIFIER_COHORT_POLICY =
+    'llm_agreement or verified human adjudication; unresolved automated-as-human rows quarantined';
 const SHA_256 = /^[a-f\d]{64}$/u;
 const IMMUTABLE_COMMIT = /^[a-f\d]{40,64}$/u;
 
@@ -260,6 +265,10 @@ export function buildFootprintReport(value) {
         packageVersion: string(candidate.packageVersion, 'candidate package version'),
         packageArchiveSha256: sha256Value(candidate.packageArchiveSha256, 'candidate package archive SHA-256'),
         generatorEntrySha256: sha256Value(candidate.generatorEntrySha256, 'candidate generator entry SHA-256'),
+        generatorBuildFingerprint: sha256Value(
+            candidate.generatorBuildFingerprint,
+            'candidate generator build fingerprint'
+        ),
         codeCommit: immutableCommit(candidate.codeCommit, 'candidate code commit'),
         sourceClean: boolean(candidate.sourceClean, 'candidate source-clean result'),
         ...(candidate.modelRevision === undefined
@@ -269,6 +278,14 @@ export function buildFootprintReport(value) {
             ? {}
             : {
                   modelManifestSha256: sha256Value(candidate.modelManifestSha256, 'candidate model manifest SHA-256')
+              }),
+        ...(candidate.generationConfigFingerprint === undefined
+            ? {}
+            : {
+                  generationConfigFingerprint: sha256Value(
+                      candidate.generationConfigFingerprint,
+                      'candidate generation config fingerprint'
+                  )
               }),
         ...(candidate.runtimePackage === undefined
             ? {}
@@ -508,6 +525,38 @@ function sha256File(filePath) {
     return createHash('sha256').update(readFileSync(filePath)).digest('hex');
 }
 
+function fingerprintDirectory(root) {
+    const rootDetails = lstatSync(root);
+    if (rootDetails.isSymbolicLink() || !rootDetails.isDirectory()) {
+        throw new Error('Compiled generator root must be a non-symbolic-link directory');
+    }
+    const pending = [root];
+    const files = [];
+    while (pending.length > 0) {
+        const directory = pending.pop();
+        for (const entry of readdirSync(directory, { withFileTypes: true })) {
+            const path = join(directory, entry.name);
+            const details = lstatSync(path);
+            if (details.isSymbolicLink()) {
+                throw new Error('Compiled generator output must not contain symbolic links');
+            }
+            if (details.isDirectory()) {
+                pending.push(path);
+            } else if (details.isFile()) {
+                files.push({
+                    path: relative(root, path).replaceAll('\\', '/'),
+                    bytes: details.size,
+                    sha256: sha256File(path)
+                });
+            } else {
+                throw new Error('Compiled generator output must contain only regular files and directories');
+            }
+        }
+    }
+    files.sort((left, right) => left.path.localeCompare(right.path));
+    return fingerprint(files);
+}
+
 export function measureDirectory(root) {
     const canonicalRoot = realpathSync(root);
     const pending = [canonicalRoot];
@@ -575,7 +624,10 @@ function buildAndVerifyPackage() {
     for (const script of ['clean', 'build', 'check:package']) {
         runPackageManager(['--filter', PACKAGE_NAME, 'run', script], { cwd: REPOSITORY_ROOT });
     }
-    return sha256File(GENERATOR_ENTRY);
+    return {
+        generatorEntrySha256: sha256File(GENERATOR_ENTRY),
+        generatorBuildFingerprint: fingerprintDirectory(join(PACKAGE_ROOT, 'dist'))
+    };
 }
 
 function npmVersion() {
@@ -710,6 +762,13 @@ async function modelMeasurement(options) {
     if (verifiedCacheBytes !== downloadBytes) {
         throw new Error('Verified model cache bytes do not match the manifest transfer bytes');
     }
+    const sftComponent = manifest.components.find(({ kind }) => kind === 'sft');
+    const generationConfigPath = sftComponent
+        ? verified.files.get(sftComponent.id)?.get('generation-config')
+        : undefined;
+    if (!generationConfigPath) {
+        throw new Error('Verified model cache has no SFT generation configuration');
+    }
     return {
         manifest,
         runtime,
@@ -722,7 +781,8 @@ async function modelMeasurement(options) {
             components,
             artifacts
         },
-        manifestSha256: sha256File(options.modelManifest)
+        manifestSha256: sha256File(options.modelManifest),
+        generationConfigFingerprint: fingerprint(JSON.parse(readFileSync(generationConfigPath, 'utf8')))
     };
 }
 
@@ -782,6 +842,7 @@ export function validateEvaluationReport(value, expected) {
         [harness.packageVersion, bindings.packageVersion, 'package version'],
         [harness.generatorEntry, 'index.js', 'generator entry'],
         [harness.generatorEntrySha256, bindings.generatorEntrySha256, 'generator entry SHA-256'],
+        [harness.generatorBuildFingerprint, bindings.generatorBuildFingerprint, 'generator build fingerprint'],
         [harness.codeCommit, bindings.codeCommit, 'code commit'],
         [harness.node, bindings.node, 'Node version'],
         [harness.platform, bindings.platform, 'platform'],
@@ -800,6 +861,18 @@ export function validateEvaluationReport(value, expected) {
     if (!classifierCohort || classifierArtifacts.length !== classifierComponentArtifacts.length + 1) {
         throw new Error('evaluation report has no unique classifier cohort artifact');
     }
+    assertEqual(classifierCohort.sha256, bindings.classifierCohortSha256, 'classifier cohort SHA-256');
+    const classifierCohortContract = record(classifier.cohort, 'classifier evaluation cohort');
+    const classifierMetrics = record(classifier.metrics, 'classifier evaluation metrics');
+    if (
+        classifierCohortContract.total !== 300 ||
+        classifierCohortContract.eligible !== 233 ||
+        classifierCohortContract.quarantined !== 67 ||
+        classifierCohortContract.policy !== CLASSIFIER_COHORT_POLICY ||
+        classifierMetrics.total !== 233
+    ) {
+        throw new Error('evaluation report is not the complete frozen classifier cohort');
+    }
     assertMatchingArtifactSet(
         classifierComponentArtifacts,
         Array.isArray(bindings.classifierArtifacts) ? bindings.classifierArtifacts : [],
@@ -811,10 +884,12 @@ export function validateEvaluationReport(value, expected) {
         'classifier component fingerprint'
     );
     const sftReports = Array.isArray(report.sft) ? report.sft : [];
-    const sft = record(
-        sftReports.find((candidate) => candidate?.candidate === 'int8'),
-        'INT8 SFT evaluation'
-    );
+    const int8Reports = sftReports.filter((candidate) => candidate?.candidate === 'int8');
+    if (int8Reports.length !== 1) {
+        throw new Error('evaluation report must contain exactly one INT8 SFT evaluation');
+    }
+    const sft = record(int8Reports[0], 'INT8 SFT evaluation');
+    assertEqual(sft.generationConfigFingerprint, bindings.generationConfigFingerprint, 'generation config fingerprint');
     const sftArtifacts = (Array.isArray(sft.artifacts) ? sft.artifacts : []).map((artifact, index) =>
         evaluationArtifact(artifact, `SFT evaluation artifact ${index}`)
     );
@@ -822,6 +897,18 @@ export function validateEvaluationReport(value, expected) {
     const sftComponentArtifacts = sftArtifacts.filter(({ id }) => id !== 'sft-held-out-cohort');
     if (!sftCohort || sftArtifacts.length !== sftComponentArtifacts.length + 1) {
         throw new Error('evaluation report has no unique SFT cohort artifact');
+    }
+    assertEqual(sftCohort.sha256, bindings.sftCohortSha256, 'SFT cohort SHA-256');
+    const sftCohortContract = record(sft.cohort, 'SFT evaluation cohort');
+    const sftMetrics = record(sft.metrics, 'SFT evaluation metrics');
+    if (
+        sftCohortContract.available !== 16 ||
+        sftCohortContract.executed !== 16 ||
+        sftCohortContract.seed !== FROZEN_SFT_SEED ||
+        sftCohortContract.locale !== 'en' ||
+        sftMetrics.total !== 16
+    ) {
+        throw new Error('evaluation report is not the complete frozen SFT cohort');
     }
     assertMatchingArtifactSet(
         sftComponentArtifacts,
@@ -870,7 +957,7 @@ async function collectFootprint(options) {
         if (realpathSync(source.repositoryRoot) !== realpathSync(REPOSITORY_ROOT)) {
             throw new Error('Footprint harness package root does not match the Git worktree root');
         }
-        const generatorEntrySha256 = buildAndVerifyPackage();
+        const { generatorEntrySha256, generatorBuildFingerprint } = buildAndVerifyPackage();
         const packageResult = packCurrentPackage(temporaryRoot);
         const sourceAfterPack = sourceState(options.requireClean);
         if (sourceAfterPack.commit !== source.commit || sourceAfterPack.clean !== source.clean) {
@@ -886,14 +973,18 @@ async function collectFootprint(options) {
             packageName: packageResult.packageName,
             packageVersion: packageResult.packageVersion,
             generatorEntrySha256,
+            generatorBuildFingerprint,
+            generationConfigFingerprint: model?.generationConfigFingerprint,
             codeCommit: source.commit,
             node: process.version,
             platform: `${process.platform}-${process.arch}`,
             cpu,
             runtimePackage: model?.runtime.package,
             runtimeVersion: model?.runtime.version,
+            classifierCohortSha256: FROZEN_CLASSIFIER_COHORT_SHA256,
+            sftCohortSha256: FROZEN_SFT_COHORT_SHA256,
             classifierArtifacts: classifierComponent?.files ?? [],
-            sftArtifacts: sftComponent?.files.filter(({ role }) => role !== 'generation-config') ?? []
+            sftArtifacts: sftComponent?.files ?? []
         });
         return buildFootprintReport({
             candidate: {
@@ -901,12 +992,14 @@ async function collectFootprint(options) {
                 packageVersion: packageResult.packageVersion,
                 packageArchiveSha256: packageResult.archiveSha256,
                 generatorEntrySha256,
+                generatorBuildFingerprint,
                 codeCommit: source.commit,
                 sourceClean: source.clean,
                 ...(model
                     ? {
                           modelRevision: model.manifest.revision,
                           modelManifestSha256: model.manifestSha256,
+                          generationConfigFingerprint: model.generationConfigFingerprint,
                           runtimePackage: model.runtime.package,
                           runtimeVersion: model.runtime.version,
                           generatorBaselineFingerprint: model.report.generatorBaseline.recordFingerprint

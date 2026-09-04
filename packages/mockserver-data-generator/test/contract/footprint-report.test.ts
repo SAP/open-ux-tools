@@ -18,6 +18,7 @@ interface GateResult {
 
 interface FootprintReport {
     reportFingerprint: string;
+    candidate: { generatorBuildFingerprint: string };
     metrics: {
         npm: { packedBytes: number; unpackedBytes: number };
         installation: {
@@ -69,6 +70,7 @@ function completeMeasurement(): unknown {
             packageVersion: '0.0.0',
             packageArchiveSha256: 'a'.repeat(64),
             generatorEntrySha256: '1'.repeat(64),
+            generatorBuildFingerprint: '2'.repeat(64),
             codeCommit: 'b'.repeat(40),
             sourceClean: true,
             modelRevision: 'c'.repeat(64),
@@ -173,6 +175,7 @@ describe('footprint report contract', () => {
         expect(report.gates.generatorOptimization.status).toBe('fail');
         expect(report.gates.providerModuleLoad.status).toBe('pass');
         expect(report.gates.sourceClean.status).toBe('pass');
+        expect(report.candidate.generatorBuildFingerprint).toBe('2'.repeat(64));
         expect(report.reportFingerprint).toMatch(/^[a-f\d]{64}$/u);
         expect(report.footprintReady).toBe(false);
     });
@@ -280,7 +283,8 @@ describe('footprint report contract', () => {
         ];
         const sftArtifacts = [
             { id: 'model', filename: 'model.onnx', bytes: 20, sha256: '4'.repeat(64) },
-            { id: 'tokenizer', filename: 'tokenizer.json', bytes: 21, sha256: '5'.repeat(64) }
+            { id: 'tokenizer', filename: 'tokenizer.json', bytes: 21, sha256: '5'.repeat(64) },
+            { id: 'generation-config', filename: 'generation-config.json', bytes: 22, sha256: 'c'.repeat(64) }
         ];
         const canonicalJson = (value: unknown): string => {
             if (Array.isArray(value)) {
@@ -305,6 +309,7 @@ describe('footprint report contract', () => {
                 packageVersion: '0.0.0',
                 generatorEntry: 'index.js',
                 generatorEntrySha256: '6'.repeat(64),
+                generatorBuildFingerprint: 'a'.repeat(64),
                 codeCommit: '7'.repeat(40),
                 sourceClean: true,
                 node: 'v22.22.2',
@@ -319,17 +324,25 @@ describe('footprint report contract', () => {
                     ...classifierArtifacts,
                     { id: 'classifier-gold-cohort', filename: 'gold.jsonl', bytes: 30, sha256: '8'.repeat(64) }
                 ],
-                metrics: { loadMs: 10, processMaxRssBytes: 100 }
+                cohort: {
+                    total: 300,
+                    eligible: 233,
+                    quarantined: 67,
+                    policy: 'llm_agreement or verified human adjudication; unresolved automated-as-human rows quarantined'
+                },
+                metrics: { total: 233, loadMs: 10, processMaxRssBytes: 100 }
             },
             sft: [
                 {
                     candidate: 'int8',
                     componentFingerprint: sha256(sftArtifacts),
+                    generationConfigFingerprint: 'd'.repeat(64),
                     artifacts: [
                         ...sftArtifacts,
                         { id: 'sft-held-out-cohort', filename: 'held-out.json', bytes: 31, sha256: '9'.repeat(64) }
                     ],
-                    metrics: { loadMs: 20, processMaxRssBytes: 200, latencyMs: { p50: 30, p95: 40 } }
+                    cohort: { available: 16, executed: 16, seed: 20_260_904, locale: 'en' },
+                    metrics: { total: 16, loadMs: 20, processMaxRssBytes: 200, latencyMs: { p50: 30, p95: 40 } }
                 }
             ]
         };
@@ -340,16 +353,94 @@ describe('footprint report contract', () => {
                 packageName: '@sap-ux/mockserver-data-generator',
                 packageVersion: '0.0.0',
                 generatorEntrySha256: '6'.repeat(64),
+                generatorBuildFingerprint: 'a'.repeat(64),
+                generationConfigFingerprint: 'd'.repeat(64),
                 codeCommit: '7'.repeat(40),
                 node: 'v22.22.2',
                 platform: 'darwin-arm64',
                 cpu: 'test-cpu',
                 runtimePackage: 'onnxruntime-node',
                 runtimeVersion: '1.24.3',
+                classifierCohortSha256: '8'.repeat(64),
+                sftCohortSha256: '9'.repeat(64),
                 classifierArtifacts,
                 sftArtifacts
             })
         ).toThrow('evaluation report platform does not match the current measurement');
+
+        const harness = report.harness as Record<string, unknown>;
+        harness.platform = 'darwin-arm64';
+        harness.generatorBuildFingerprint = 'b'.repeat(64);
+        delete report.reportFingerprint;
+        report.reportFingerprint = sha256(report);
+        expect(() =>
+            validateEvaluationReport(report, {
+                packageName: '@sap-ux/mockserver-data-generator',
+                packageVersion: '0.0.0',
+                generatorEntrySha256: '6'.repeat(64),
+                generatorBuildFingerprint: 'a'.repeat(64),
+                generationConfigFingerprint: 'd'.repeat(64),
+                codeCommit: '7'.repeat(40),
+                node: 'v22.22.2',
+                platform: 'darwin-arm64',
+                cpu: 'test-cpu',
+                runtimePackage: 'onnxruntime-node',
+                runtimeVersion: '1.24.3',
+                classifierCohortSha256: '8'.repeat(64),
+                sftCohortSha256: '9'.repeat(64),
+                classifierArtifacts,
+                sftArtifacts
+            })
+        ).toThrow('evaluation report generator build fingerprint does not match the current measurement');
+
+        harness.generatorBuildFingerprint = 'a'.repeat(64);
+        const [int8] = report.sft as Array<Record<string, unknown>>;
+        (int8.cohort as Record<string, unknown>).executed = 15;
+        delete report.reportFingerprint;
+        report.reportFingerprint = sha256(report);
+        expect(() =>
+            validateEvaluationReport(report, {
+                packageName: '@sap-ux/mockserver-data-generator',
+                packageVersion: '0.0.0',
+                generatorEntrySha256: '6'.repeat(64),
+                generatorBuildFingerprint: 'a'.repeat(64),
+                generationConfigFingerprint: 'd'.repeat(64),
+                codeCommit: '7'.repeat(40),
+                node: 'v22.22.2',
+                platform: 'darwin-arm64',
+                cpu: 'test-cpu',
+                runtimePackage: 'onnxruntime-node',
+                runtimeVersion: '1.24.3',
+                classifierCohortSha256: '8'.repeat(64),
+                sftCohortSha256: '9'.repeat(64),
+                classifierArtifacts,
+                sftArtifacts
+            })
+        ).toThrow('evaluation report is not the complete frozen SFT cohort');
+
+        (int8.cohort as Record<string, unknown>).executed = 16;
+        (report.sft as Array<Record<string, unknown>>).push({ ...int8 });
+        delete report.reportFingerprint;
+        report.reportFingerprint = sha256(report);
+        expect(() =>
+            validateEvaluationReport(report, {
+                packageName: '@sap-ux/mockserver-data-generator',
+                packageVersion: '0.0.0',
+                generatorEntrySha256: '6'.repeat(64),
+                generatorBuildFingerprint: 'a'.repeat(64),
+                generationConfigFingerprint: 'd'.repeat(64),
+                codeCommit: '7'.repeat(40),
+                node: 'v22.22.2',
+                platform: 'darwin-arm64',
+                cpu: 'test-cpu',
+                runtimePackage: 'onnxruntime-node',
+                runtimeVersion: '1.24.3',
+                classifierCohortSha256: '8'.repeat(64),
+                sftCohortSha256: '9'.repeat(64),
+                classifierArtifacts,
+                sftArtifacts
+            })
+        ).toThrow('evaluation report must contain exactly one INT8 SFT evaluation');
     });
 
     test('counts regular installed files without following npm executable links', async () => {

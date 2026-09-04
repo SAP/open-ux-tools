@@ -2,11 +2,11 @@
 
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { lstatSync, readFileSync, readdirSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { cpus, tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
-import { basename, join, resolve } from 'node:path';
+import { basename, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
     artifactRecord,
@@ -17,6 +17,7 @@ import {
     scoreSftCases,
     selectGovernedClassifierRows
 } from './lib/evaluation.mjs';
+import { productionGenerationConfiguration } from '../mockserver-data-generator-dev-kit/lib/model-config.mjs';
 
 const SCRIPT_ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '../..');
@@ -24,6 +25,17 @@ const GENERATOR_ROOT = join(REPOSITORY_ROOT, 'packages/mockserver-data-generator
 const GENERATOR_ENTRY = join(GENERATOR_ROOT, 'dist/index.js');
 const GENERATOR_REQUIRE = createRequire(GENERATOR_ENTRY);
 const DEFAULT_SEED = 2_026_090_4;
+
+function decimalInteger(value, label) {
+    if (typeof value !== 'string' || !/^(?:0|[1-9]\d*)$/u.test(value)) {
+        throw new TypeError(`${label} must be a decimal integer`);
+    }
+    const result = Number(value);
+    if (!Number.isSafeInteger(result)) {
+        throw new TypeError(`${label} must be a decimal integer`);
+    }
+    return result;
+}
 
 function usage() {
     return [
@@ -78,10 +90,10 @@ function parseArguments(argv) {
             options.candidates = value.split(',').filter(Boolean);
             index += 1;
         } else if (argument === '--max-sft-cases' && value) {
-            options.maxSftCases = Number.parseInt(value, 10);
+            options.maxSftCases = decimalInteger(value, '--max-sft-cases');
             index += 1;
         } else if (argument === '--seed' && value) {
-            options.seed = Number.parseInt(value, 10);
+            options.seed = decimalInteger(value, '--seed');
             index += 1;
         } else {
             throw new TypeError(`Unknown or incomplete argument: ${argument}`);
@@ -122,6 +134,47 @@ function fingerprint(value) {
 
 function sha256File(path) {
     return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+function contentArtifact(id, filename, content) {
+    return Object.freeze({
+        id,
+        filename,
+        bytes: Buffer.byteLength(content),
+        sha256: createHash('sha256').update(content).digest('hex')
+    });
+}
+
+function fingerprintDirectory(root) {
+    const rootDetails = lstatSync(root);
+    if (rootDetails.isSymbolicLink() || !rootDetails.isDirectory()) {
+        throw new Error('Compiled generator root must be a non-symbolic-link directory');
+    }
+    const pending = [root];
+    const files = [];
+    while (pending.length > 0) {
+        const directory = pending.pop();
+        for (const entry of readdirSync(directory, { withFileTypes: true })) {
+            const path = join(directory, entry.name);
+            const details = lstatSync(path);
+            if (details.isSymbolicLink()) {
+                throw new Error('Compiled generator output must not contain symbolic links');
+            }
+            if (details.isDirectory()) {
+                pending.push(path);
+            } else if (details.isFile()) {
+                files.push({
+                    path: relative(root, path).replaceAll('\\', '/'),
+                    bytes: details.size,
+                    sha256: sha256File(path)
+                });
+            } else {
+                throw new Error('Compiled generator output must contain only regular files and directories');
+            }
+        }
+    }
+    files.sort((left, right) => left.path.localeCompare(right.path));
+    return fingerprint(files);
 }
 
 function sourceState() {
@@ -185,6 +238,7 @@ function sftPaths(pilotRoot, candidate) {
     return {
         model: join(directory, filenames[candidate]),
         tokenizer: join(directory, 'tokenizer.json'),
+        configuration: join(directory, 'config.json'),
         cohort: join(pilotRoot, 'training/sft/eval/held-out-prompts.json')
     };
 }
@@ -272,12 +326,18 @@ async function writeCandidateEvidence(evidenceDirectory, candidate, evidence) {
 
 async function runSftCandidate(generator, options, candidate) {
     const paths = sftPaths(options.pilotRoot, candidate);
+    const generationConfiguration = productionGenerationConfiguration(
+        await readFile(paths.configuration, 'utf8'),
+        true
+    );
+    const generationConfigurationSource = `${JSON.stringify(generationConfiguration, null, 2)}\n`;
     const artifacts = [
         artifactRecord(`sft-${candidate}-model`, paths.model),
         artifactRecord(`sft-${candidate}-tokenizer`, paths.tokenizer),
+        contentArtifact(`sft-${candidate}-generation-config`, 'generation-config.json', generationConfigurationSource),
         artifactRecord('sft-held-out-cohort', paths.cohort)
     ];
-    const componentFingerprint = fingerprint(artifacts.slice(0, 2));
+    const componentFingerprint = fingerprint(artifacts.slice(0, 3));
     const rawCohort = JSON.parse(await readFile(paths.cohort, 'utf8'));
     const allCases = Object.entries(rawCohort)
         .sort(([left], [right]) => left.localeCompare(right))
@@ -289,7 +349,11 @@ async function runSftCandidate(generator, options, candidate) {
     const backend = await generator.loadCausalOnnxBackend();
     const session = await generator.createCausalOnnxSession({
         modelPath: paths.model,
-        config: { numLayers: 30, numKeyValueHeads: 3, headDimension: 64 },
+        config: {
+            numLayers: generationConfiguration.numHiddenLayers,
+            numKeyValueHeads: generationConfiguration.numKeyValueHeads,
+            headDimension: generationConfiguration.hiddenSize / generationConfiguration.numAttentionHeads
+        },
         backend
     });
     const sft = generator.createPilotSftGenerator({
@@ -298,13 +362,7 @@ async function runSftCandidate(generator, options, candidate) {
             tokenizer: generator.createSmolLm2Tokenizer(tokenizerJson),
             session
         }),
-        sampling: {
-            temperature: 0.6,
-            topP: 0.9,
-            repetitionPenalty: 1.15,
-            noRepeatNgramSize: 4,
-            maxNewTokens: 400
-        }
+        sampling: generationConfiguration.samplingOptions
     });
     const loadMs = nowMilliseconds() - loadStart;
     const results = [];
@@ -354,7 +412,7 @@ async function runSftCandidate(generator, options, candidate) {
         candidate,
         componentFingerprint,
         seed: options.seed,
-        cohortFingerprint: artifacts[2].sha256,
+        cohortFingerprint: artifacts[3].sha256,
         cases: results.map(({ id, expectedKeys, error, row }) => ({
             id,
             expectedKeys,
@@ -368,6 +426,7 @@ async function runSftCandidate(generator, options, candidate) {
     return {
         candidate,
         componentFingerprint,
+        generationConfigFingerprint: fingerprint(generationConfiguration),
         artifacts,
         cohort: { available: allCases.length, executed: cohort.length, seed: options.seed, locale: 'en' },
         metrics: {
@@ -395,6 +454,7 @@ function baseReport() {
             packageVersion: packageJson.version,
             generatorEntry: basename(GENERATOR_ENTRY),
             generatorEntrySha256: sha256File(GENERATOR_ENTRY),
+            generatorBuildFingerprint: fingerprintDirectory(join(GENERATOR_ROOT, 'dist')),
             codeCommit: source.codeCommit,
             sourceClean: source.sourceClean,
             node: process.version,
