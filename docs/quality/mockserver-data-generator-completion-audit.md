@@ -5,9 +5,10 @@ Date: 2026-09-04
 Candidate source:
 
 - exact realism runtime package: `8255d109a619714364e0e0d7f78f444e749a3c54`
-- post-evidence production gate: `8255d109a619714364e0e0d7f78f444e749a3c54`
+- post-evidence production gate: `158cbc671`
 - development kit source: `8255d109a619714364e0e0d7f78f444e749a3c54`
-- `SAP/open-ux-odata`: `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
+- current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- development-kit `SAP/open-ux-odata`: `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
 - portable development-kit fingerprint:
   `f9a0de8fc01b547be338dd852ca68785ed65810cc484a81d0197e4715c5c6e82`
 - portable development-kit SHA-256:
@@ -52,12 +53,12 @@ means a measured threshold was missed by the named candidate.
 
 | Area | Status | Evidence | Remaining gate |
 | --- | --- | --- | --- |
-| Generic host SPI | proven | `open-ux-odata` host contract, lifecycle, precedence, reload, containment, timeout, host timing, and middleware tests at `64e37ac4` | Publish the compatible host before the provider packages |
+| Generic host SPI | proven | `open-ux-odata` host contract, lifecycle, precedence, reload, containment, timeout, host timing, middleware, and provider-load fallback tests at `2a67399c` | Publish the compatible host before the provider packages |
 | Standard FE mockserver integration | proven | one `sap-fe-mockserver`, provider `@sap-ux/mockserver-data-generator/fe-mockserver`, conditional CommonJS export, packed integration tests, and exact-archive HTTP canary | Cross-platform and published-package canaries |
 | Authored-data preservation | proven | TS/JS/JSON/empty-data/provider/built-in precedence tests; tenant and authored-parent behavior remain host-owned | Repeat against published canary artifacts |
 | Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests; the final cohort has 16/16 non-empty resources and 11/11 passing frozen assertions | Release-platform cohort reruns |
 | Classifier and SFT reuse | proven locally | retained MiniLM classifier and SmolLM2 INT8 SFT cache verify and execute through the production package; the exact final cohort records 178/178 parsed responses and 821/846 accepted eligible fields across all six targets | Governance, managed immutable distribution, and fresh release-candidate qualification |
-| Failure degradation | proven | missing/rejected learned components, timeout, cancellation, malformed output, cache failure, and circuit-breaker tests retain deterministic output | Cross-platform process and first-download faults |
+| Failure degradation | proven locally | the [degradation evidence](./mockserver-data-generator-degradation.md) covers offline first use, missing model/runtime, corrupt acquisition, checksum rejection, timeout, malformed output, cache corruption, cancellation, provider load failure, retry policy, complete fallback rows, and diagnostic privacy | Repeat the matrix on release platforms and published artifacts |
 | Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, symlink rejection, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, and warm network-free cache | Approved remote bundle and proxy/BAS acquisition canary |
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
@@ -79,10 +80,10 @@ means a measured threshold was missed by the named candidate.
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/fe-mockserver-core` | 27 suites, 358 tests and 282 snapshots passed |
+| `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
 | `@sap-ux/mockserver-data-generator` | 23 suites, 174 tests passed; build passed; lint has zero errors |
-| development kit and evaluation harness | 9 suites, 93 tests passed; build passed; lint has zero errors |
+| development kit, degradation, and evaluation harness | 10 suites, 96 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
 | exact deterministic archive canary | provider executed; metadata passed; one row returned; exact restore passed |

@@ -1246,14 +1246,14 @@ the external realism gate.
 
 **Files:**
 
-- Create: `packages/mockserver-data-generator/test/integration/degradation.test.ts`
-- Create in model repository: `evaluation/degradation-report-v1.json`
+- Create: `tests/integration/mockserver-data-generator/src/degradation/provider-degradation.test.ts`
+- Create: `docs/quality/mockserver-data-generator-degradation.md`
 
-- [ ] Exercise missing model, missing optional runtime, offline first use, corrupt download, checksum mismatch, inference timeout, malformed output, cache corruption, and cancellation.
-- [ ] Exercise a provider package load failure in the host.
-- [ ] Require the standard mockserver to start and every required field to resolve through remaining tiers.
-- [ ] Require a failed model not to retry continuously during the same process and to be eligible on the next start.
-- [ ] Require diagnostics to explain degradation without logging metadata or values.
+- [x] Exercise missing model, missing optional runtime, offline first use, corrupt download, checksum mismatch, inference timeout, malformed output, cache corruption, and cancellation.
+- [x] Exercise a provider package load failure in the host.
+- [x] Require the standard mockserver to start and every required field to resolve through remaining tiers.
+- [x] Require a failed model not to retry continuously during the same provider lifecycle and to be eligible on the next lifecycle or process start.
+- [x] Require diagnostics to explain degradation without logging metadata or values.
 
 **Phase exit gate:** The exact candidate passes absolute structural gates, fresh dual-provider realism gates, determinism, and all degradation fixtures. A failed gate returns the artifact to candidate status.
 
