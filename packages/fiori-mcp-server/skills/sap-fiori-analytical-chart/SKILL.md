@@ -4,7 +4,7 @@ description: Add analytical chart (chart + table hybrid) to SAP Fiori Elements L
 argument-hint: Entity, dimension, measure, aggregation
 metadata:
   author: sap-fiori-tools
-  version: "0.0.2"
+  version: "0.0.3"
 ---
 
 # SAP Fiori Analytical Chart
@@ -45,10 +45,21 @@ Add **analytical chart + table (hybrid view)** to visualize aggregated data.
 ### Aggregated Property
 ```cds
 Analytics.AggregatedProperty #Amount_avg: {
+  Name: 'Amount_avg',
   AggregatableProperty: Amount,
-  AggregationMethod: 'average'
+  AggregationMethod: 'average',  // Valid values: 'sum', 'min', 'max', 'average', 'countdistinct'
+  ![@Common.Label]: 'Average Amount'
 }
 ```
+
+**Valid `AggregationMethod` values (lowercase string):**
+- `sum` - Sum of the non-null values
+- `min` - Smallest of the non-null values
+- `max` - Largest of the non-null values
+- `average` - Sum of non-null values divided by count of non-null values
+- `countdistinct` - Count of distinct values, omitting null values
+
+⚠️ **CRITICAL:** Must be a **lowercase string** (e.g., `'sum'`), **NOT** an enum (e.g., `#SUM`). Using an enum will cause SQL generation errors.
 
 ### Chart
 ```cds
@@ -96,7 +107,7 @@ UI.PresentationVariant #TableView: {
 - [ ] `@OData.applySupportedForAggregation: #FULL` on **projection view** (ZC_*)
 - [ ] `@Aggregation.default: #AVG` (or #SUM, #MIN, #MAX) on **measure field**
 - [ ] `@UI.chart` annotation with correct **qualifier** in metadata extension
-- [ ] Manifest `views.paths` configuration
+- [ ] Manifest `targets.<ListReport>.options.settings.views.paths` configuration
 - [ ] All CDS objects **activated**
 
 ---
@@ -186,18 +197,29 @@ annotate view ZC_ENTITY with
 
 **Manifest:**
 ```json
-"views": {
-  "paths": [
-    {
-      "primary": [
-        { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#AnalyticalChart" }
-      ],
-      "secondary": [
-        { "annotationPath": "com.sap.vocabularies.UI.v1.LineItem" }
-      ],
-      "defaultPath": "both"
+"targets": {
+  "MyListReport": {
+    "type": "Component",
+    "name": "sap.fe.templates.ListReport",
+    "options": {
+      "settings": {
+        "contextPath": "/MyEntity",
+        "views": {
+          "paths": [
+            {
+              "primary": [
+                { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#AnalyticalChart" }
+              ],
+              "secondary": [
+                { "annotationPath": "com.sap.vocabularies.UI.v1.LineItem" }
+              ],
+              "defaultPath": "both"
+            }
+          ]
+        }
+      }
     }
-  ]
+  }
 }
 ```
 
@@ -205,17 +227,28 @@ annotate view ZC_ENTITY with
 
 **Manifest:**
 ```json
-"views": {
-  "paths": [
-    {
-      "key": "ChartView",
-      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#ChartView"
-    },
-    {
-      "key": "TableView",
-      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#TableView"
+"targets": {
+  "MyListReport": {
+    "type": "Component",
+    "name": "sap.fe.templates.ListReport",
+    "options": {
+      "settings": {
+        "contextPath": "/MyEntity",
+        "views": {
+          "paths": [
+            {
+              "key": "ChartView",
+              "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#ChartView"
+            },
+            {
+              "key": "TableView",
+              "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#TableView"
+            }
+          ]
+        }
+      }
     }
-  ]
+  }
 }
 ```
 ---
@@ -254,7 +287,7 @@ npm start          # No refresh needed - fetches metadata from live backend at r
    - Activate metadata extension
 
 3. **Update Fiori App Manifest**
-   - Add `views.paths` configuration
+   - Add `views.paths` under `targets.<ListReport>.options.settings` (NOT inside `controlConfiguration`)
    - Save manifest.json
 
 4. **Test**
