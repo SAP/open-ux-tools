@@ -276,12 +276,20 @@ describe('footprint report contract', () => {
                 '--model-cache',
                 '/tmp/model-cache',
                 '--runtime-tarball',
-                '/tmp/onnxruntime-node.tgz'
+                '/tmp/onnxruntime-node.tgz',
+                '--integration-report',
+                '/tmp/integration.json'
             ])
-        ).toMatchObject({ runtimeTarball: '/tmp/onnxruntime-node.tgz' });
+        ).toMatchObject({
+            runtimeTarball: '/tmp/onnxruntime-node.tgz',
+            integrationReport: '/tmp/integration.json'
+        });
         expect(() =>
             parseArguments(['--output', '/tmp/footprint.json', '--runtime-tarball', '/tmp/onnxruntime-node.tgz'])
         ).toThrow('--runtime-tarball requires model inputs');
+        expect(() =>
+            parseArguments(['--output', '/tmp/footprint.json', '--integration-report', '/tmp/integration.json'])
+        ).toThrow('--integration-report requires model inputs');
         expect(() => parseArguments(['--output', '/tmp/footprint.json', '--runs', '2junk'])).toThrow(
             '--runs must be a decimal integer'
         );

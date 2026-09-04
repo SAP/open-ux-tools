@@ -5,6 +5,7 @@ import { afterEach, describe, expect, test } from '@jest/globals';
 import {
     createCanaryConfiguration,
     discoverCanaryTarget,
+    extractCanaryTimings,
     verifyCanaryProcessEvidence,
     verifyInstalledApplication
 } from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/verify-app.mjs';
@@ -202,6 +203,23 @@ describe('installed application verification', () => {
 
         canary.cleanup();
     });
+
+    test('binds a performance canary to an explicit generated-data cache directory', () => {
+        const fixture = writeVerifiedApp();
+        const cacheDirectory = join(fixture.appRoot, '.performance-cache');
+        mkdirSync(cacheDirectory);
+        const canary = createCanaryConfiguration(fixture.appRoot, {
+            expectedLearned: true,
+            generatedDataCacheDirectory: cacheDirectory
+        });
+        const configuration = readFileSync(canary.path, 'utf8');
+
+        expect(configuration).toMatch(/generatedDataCache: true/u);
+        expect(configuration).toContain(`generatedDataCacheDirectory: ${JSON.stringify(cacheDirectory)}`);
+        expect(configuration).not.toContain('generatedDataCache: false');
+
+        canary.cleanup();
+    });
 });
 
 describe('canary process evidence', () => {
@@ -218,5 +236,43 @@ describe('canary process evidence', () => {
             providerExecuted: true,
             learnedRuntimeVerified: true
         });
+    });
+});
+
+describe('canary performance evidence', () => {
+    test('extracts provider and host timings without accepting ambiguous duplicate phases', () => {
+        const output = [
+            'mock-data-generator:debug MOCK_DATA_GENERATOR_TIMING: phase=runtime-initialization durationMs=712.350',
+            'mock-data-generator:debug MOCK_DATA_GENERATOR_TIMING: phase=whole-service durationMs=11754.725',
+            'mock-data-generator:complete service=/sap/opu/odata4/mockgen durationMs=11760.125'
+        ].join('\n');
+
+        expect(extractCanaryTimings(output)).toEqual({
+            runtimeInitializationMs: 712.35,
+            wholeServiceGenerationMs: 11754.725,
+            hostProviderMs: 11760.125
+        });
+        expect(() => extractCanaryTimings(`${output}\n${output}`)).toThrow(/unique timing/u);
+    });
+
+    test('accepts a cache-hit timing only when no model runtime was initialized', () => {
+        const output = [
+            'mock-data-generator:debug GENERATED_DATA_CACHE_HIT: reused',
+            'mock-data-generator:debug MOCK_DATA_GENERATOR_TIMING: phase=generated-data-cache-hit durationMs=4.125',
+            'mock-data-generator:complete service=/sap/opu/odata4/mockgen durationMs=5.250'
+        ].join('\n');
+
+        expect(extractCanaryTimings(output, { expectedCacheHit: true })).toEqual({
+            generatedDataCacheHitMs: 4.125,
+            hostProviderMs: 5.25
+        });
+        expect(() =>
+            extractCanaryTimings(
+                `${output}\nMOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready`,
+                {
+                    expectedCacheHit: true
+                }
+            )
+        ).toThrow(/initialized a learned model runtime/u);
     });
 });

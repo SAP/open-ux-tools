@@ -84,6 +84,11 @@ function logCapabilities(
     );
 }
 
+function logTiming(logger: HostGenerationContext['logger'], phase: string, startedAt: number): void {
+    const durationMs = Math.max(0, performance.now() - startedAt);
+    logger.debug(`MOCK_DATA_GENERATOR_TIMING: phase=${phase} durationMs=${durationMs.toFixed(3)}`);
+}
+
 /**
  *
  * @param options
@@ -259,30 +264,40 @@ class FeMockserverDataGenerator {
         this.dependencies = { ...defaultDependencies, ...dependencies };
     }
 
-    private runtime(signal: AbortSignal): Promise<LearnedRuntimeHandle | undefined> {
+    private runtime(
+        signal: AbortSignal,
+        logger: HostGenerationContext['logger']
+    ): Promise<LearnedRuntimeHandle | undefined> {
         if (this.configuration.generation.mode === 'deterministic' || !this.configuration.model) {
             return Promise.resolve(undefined);
         }
         if (!this.runtimePromise) {
-            const attempt = this.dependencies.loadRuntime(this.configuration.model, signal).catch((error) => {
-                if (isGenerationCancellation(error, signal)) {
-                    if (this.runtimePromise === attempt) {
-                        this.runtimePromise = undefined;
+            const startedAt = performance.now();
+            const attempt = this.dependencies
+                .loadRuntime(this.configuration.model, signal)
+                .then((runtime) => {
+                    logTiming(logger, 'runtime-initialization', startedAt);
+                    return runtime;
+                })
+                .catch((error) => {
+                    if (isGenerationCancellation(error, signal)) {
+                        if (this.runtimePromise === attempt) {
+                            this.runtimePromise = undefined;
+                        }
+                        throw error;
                     }
-                    throw error;
-                }
-                return Object.freeze({
-                    runtime: Object.freeze({}),
-                    diagnostics: Object.freeze([
-                        Object.freeze({
-                            code: 'MODEL_CACHE_UNAVAILABLE' as const,
-                            message:
-                                'The learned runtime could not be initialized; deterministic generation remains active.'
-                        })
-                    ]),
-                    dispose: async () => undefined
+                    return Object.freeze({
+                        runtime: Object.freeze({}),
+                        diagnostics: Object.freeze([
+                            Object.freeze({
+                                code: 'MODEL_CACHE_UNAVAILABLE' as const,
+                                message:
+                                    'The learned runtime could not be initialized; deterministic generation remains active.'
+                            })
+                        ]),
+                        dispose: async () => undefined
+                    });
                 });
-            });
             this.runtimePromise = attempt;
         }
         return this.runtimePromise;
@@ -366,6 +381,7 @@ class FeMockserverDataGenerator {
 
     async generate(context: HostGenerationContext): Promise<HostMockDataGenerationResult> {
         if (this.disposed) throw new Error('Mock data generator provider has been disposed');
+        const startedAt = performance.now();
         const { createGenerationFingerprint, generateService, validateGeneratedResult } = await import('./index.js');
         const request = {
             metadata: { format: 'edmx' as const, content: context.metadata },
@@ -401,6 +417,7 @@ class FeMockserverDataGenerator {
                         message: 'A verified whole-service generated-data cache entry was reused.'
                     });
                     context.logger.debug(`${cacheDiagnostic.code}: ${cacheDiagnostic.message}`);
+                    logTiming(context.logger, 'generated-data-cache-hit', startedAt);
                     return Object.freeze({
                         resources: cached.resources,
                         diagnostics: hostDiagnostics([...cached.diagnostics, cacheDiagnostic]),
@@ -419,7 +436,7 @@ class FeMockserverDataGenerator {
                 context.logger.warn(`${diagnostic.code}: ${diagnostic.message}`);
             }
         }
-        const learned = await this.runtime(context.signal);
+        const learned = await this.runtime(context.signal, context.logger);
         const result = await generateService(
             request,
             this.configuration.generation,
@@ -445,6 +462,7 @@ class FeMockserverDataGenerator {
         const runtimeDiagnostics = learned ? modelDiagnostics(learned.diagnostics) : [];
         runtimeDiagnostics.forEach((diagnostic) => context.logger.warn(`${diagnostic.code}: ${diagnostic.message}`));
         logCapabilities(context.logger, result.capabilities);
+        logTiming(context.logger, 'whole-service', startedAt);
         return Object.freeze({
             resources: result.resources,
             diagnostics: hostDiagnostics([...cacheDiagnostics, ...runtimeDiagnostics, ...result.diagnostics]),

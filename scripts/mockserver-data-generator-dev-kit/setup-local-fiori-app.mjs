@@ -13,7 +13,7 @@ import {
     statSync
 } from 'node:fs';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { verifyFileChecksum } from './lib/artifacts.mjs';
 import {
     assertPostHashes,
@@ -126,6 +126,7 @@ function validateModelDevelopmentInput(manifestPath, cacheDirectory) {
     }
     return {
         manifestPath: canonicalManifestPath,
+        manifestSha256: createHash('sha256').update(readFileSync(canonicalManifestPath)).digest('hex'),
         cacheDirectory: canonicalCacheDirectory,
         offline: true,
         runtimeSpec
@@ -369,13 +370,24 @@ export async function setupLocalFioriApp({
     journal.status = 'installing';
     journal.kit = {
         reproducible: kit.manifest.reproducible === true,
-        packages: localArtifacts.map(({ packageName, version, sha256, specification }) => ({
+        packages: localArtifacts.map(({ packageName, version, sha256, specification, source }) => ({
             packageName,
             version,
             sha256,
-            specification
+            specification,
+            ...(source ? { source } : {})
         }))
     };
+    if (model) {
+        journal.model = {
+            manifestPath: model.manifestPath,
+            manifestSha256: model.manifestSha256,
+            cacheDirectory: model.cacheDirectory,
+            runtimeSpec: model.runtimeSpec
+        };
+    } else {
+        delete journal.model;
+    }
     writeJournal(canonicalAppRoot, stateRoot, journalPath, journal);
 
     try {

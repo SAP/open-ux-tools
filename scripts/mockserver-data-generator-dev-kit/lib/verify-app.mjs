@@ -138,13 +138,52 @@ function disableGeneratedDataCache(lines, middlewareIndex) {
     }
 }
 
+function configureGeneratedDataCacheDirectory(lines, middlewareIndex, directory) {
+    const middlewareIndent = lines[middlewareIndex].match(/^\s*/u)?.[0].length ?? 0;
+    const middlewareEnd = blockEnd(lines, middlewareIndex, middlewareIndent);
+    const generatorIndex = lines.findIndex(
+        (line, index) =>
+            index > middlewareIndex && index < middlewareEnd && /^\s+mockDataGenerator:\s*(?:#.*)?$/u.test(line)
+    );
+    if (generatorIndex < 0) {
+        throw new Error('MockGen provider configuration is unavailable for performance verification');
+    }
+    const generatorIndent = lines[generatorIndex].match(/^\s*/u)?.[0] ?? '';
+    let generatorEnd = blockEnd(lines, generatorIndex, generatorIndent.length, middlewareEnd);
+    let optionsIndex = lines.findIndex(
+        (line, index) => index > generatorIndex && index < generatorEnd && /^\s+options:\s*(?:#.*)?$/u.test(line)
+    );
+    if (optionsIndex < 0) {
+        lines.splice(generatorIndex + 1, 0, `${generatorIndent}  options:`);
+        optionsIndex = generatorIndex + 1;
+        generatorEnd += 1;
+    }
+    const optionsIndent = lines[optionsIndex].match(/^\s*/u)?.[0] ?? '';
+    const upsert = (name, value) => {
+        const optionsEnd = blockEnd(lines, optionsIndex, optionsIndent.length, generatorEnd);
+        const optionIndex = lines.findIndex(
+            (line, index) =>
+                index > optionsIndex && index < optionsEnd && new RegExp(`^\\s+${name}:\\s*`, 'u').test(line)
+        );
+        const rendered = `${optionsIndent}  ${name}: ${value}`;
+        if (optionIndex >= 0) {
+            lines[optionIndex] = rendered;
+        } else {
+            lines.splice(optionsIndex + 1, 0, rendered);
+            generatorEnd += 1;
+        }
+    };
+    upsert('generatedDataCacheDirectory', JSON.stringify(directory));
+    upsert('generatedDataCache', 'true');
+}
+
 /**
  * Create an application-local copy of the UI5 configuration with mockserver
  * debug logging enabled. The canary needs this to observe host-side evidence
  * that the provider, rather than the standard fallback, supplied the rows.
  *
  * @param {string} appRoot application root
- * @param {{expectedLearned?: boolean}} [options] canary configuration options
+ * @param {{expectedLearned?: boolean, generatedDataCacheDirectory?: string}} [options] canary configuration options
  * @returns {{path: string, cleanup: () => void}} temporary configuration
  */
 export function createCanaryConfiguration(appRoot, options = {}) {
@@ -187,7 +226,9 @@ export function createCanaryConfiguration(appRoot, options = {}) {
     } else {
         lines.splice(configurationIndex + 1, 0, `${childIndent}debug: true`);
     }
-    if (options.expectedLearned) {
+    if (options.generatedDataCacheDirectory) {
+        configureGeneratedDataCacheDirectory(lines, middlewareIndex, options.generatedDataCacheDirectory);
+    } else if (options.expectedLearned) {
         disableGeneratedDataCache(lines, middlewareIndex);
     }
     const path = join(appRoot, `.mockserver-data-generator-canary-${randomUUID()}.yaml`);
@@ -306,11 +347,60 @@ export function verifyCanaryProcessEvidence(output, entitySet, expectedLearned =
 }
 
 /**
+ * Extract monotonic provider timings emitted by the exact installed generator
+ * and host. A phase is accepted only once so concatenated or stale process
+ * output cannot be mistaken for one canary observation.
+ *
+ * @param {string} output captured mockserver process output
+ * @param {{expectedCacheHit?: boolean}} [options] timing evidence requirements
+ * @returns {{runtimeInitializationMs?: number, wholeServiceGenerationMs?: number, generatedDataCacheHitMs?: number, hostProviderMs?: number}}
+ */
+export function extractCanaryTimings(output, options = {}) {
+    const phaseNames = new Map([
+        ['runtime-initialization', 'runtimeInitializationMs'],
+        ['whole-service', 'wholeServiceGenerationMs'],
+        ['generated-data-cache-hit', 'generatedDataCacheHitMs']
+    ]);
+    const result = {};
+    for (const [phase, property] of phaseNames) {
+        const matches = [
+            ...output.matchAll(
+                new RegExp(`MOCK_DATA_GENERATOR_TIMING: phase=${phase} durationMs=(\\d+(?:\\.\\d+)?)\\s*$`, 'gmu')
+            )
+        ];
+        if (matches.length > 1) {
+            throw new Error(`Canary output must contain at most one unique timing for ${phase}`);
+        }
+        if (matches.length === 1) {
+            result[property] = Number(matches[0][1]);
+        }
+    }
+    const hostMatches = [
+        ...output.matchAll(/mock-data-generator:complete service=\S+ durationMs=(\d+(?:\.\d+)?)\s*$/gmu)
+    ];
+    if (hostMatches.length > 1) {
+        throw new Error('Canary output must contain at most one unique timing for the host provider');
+    }
+    if (hostMatches.length === 1) {
+        result.hostProviderMs = Number(hostMatches[0][1]);
+    }
+    if (options.expectedCacheHit) {
+        if (result.generatedDataCacheHitMs === undefined || !output.includes('GENERATED_DATA_CACHE_HIT:')) {
+            throw new Error('Canary output has no verified generated-data cache-hit timing');
+        }
+        if (result.runtimeInitializationMs !== undefined || output.includes('MOCK_DATA_GENERATOR_CAPABILITIES:')) {
+            throw new Error('Generated-data cache-hit canary initialized a learned model runtime');
+        }
+    }
+    return result;
+}
+
+/**
  * Start the application-local Fiori/UI5 command headlessly and exercise metadata and entity endpoints.
  *
  * @param {string} appRoot application root
- * @param {{timeoutMs?: number, expectedLearned?: boolean}} [options] canary options
- * @returns {Promise<{integrationVerified: true, providerExecuted: true, learnedRuntimeVerified?: true, port: number, metadataUrl: string, entityUrl: string, entitySet: string, rows: number}>} HTTP canary report
+ * @param {{timeoutMs?: number, expectedLearned?: boolean, expectedCacheHit?: boolean, generatedDataCacheDirectory?: string}} [options] canary options
+ * @returns {Promise<{integrationVerified: true, providerExecuted: true, learnedRuntimeVerified?: true, runtimeInitializationMs?: number, wholeServiceGenerationMs?: number, generatedDataCacheHitMs?: number, hostProviderMs?: number, port: number, metadataUrl: string, entityUrl: string, entitySet: string, rows: number}>} HTTP canary report
  */
 export async function runFioriCanary(appRoot, options = {}) {
     const target = discoverCanaryTarget(appRoot);
@@ -358,9 +448,11 @@ export async function runFioriCanary(appRoot, options = {}) {
             target.entitySet,
             options.expectedLearned
         );
+        const timings = extractCanaryTimings(processState.output, { expectedCacheHit: options.expectedCacheHit });
         return {
             integrationVerified: true,
             ...processEvidence,
+            ...timings,
             port,
             metadataUrl,
             entityUrl,

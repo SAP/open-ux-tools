@@ -57,10 +57,19 @@ function writeKit(root: string, version = '0.0.0', buildLabel = version): void {
             version,
             filename,
             bytes: readFileSync(filePath).byteLength,
-            sha256: sha256(filePath)
+            sha256: sha256(filePath),
+            source: {
+                repository:
+                    packageName === '@sap-ux/mockserver-data-generator' ? 'SAP/open-ux-tools' : 'SAP/open-ux-odata',
+                commit: packageName === '@sap-ux/mockserver-data-generator' ? 'a'.repeat(40) : 'b'.repeat(40),
+                dirty: false
+            }
         };
     });
-    writeFileSync(join(root, 'dev-kit-manifest.json'), `${JSON.stringify({ formatVersion: 1, packages }, null, 2)}\n`);
+    writeFileSync(
+        join(root, 'dev-kit-manifest.json'),
+        `${JSON.stringify({ formatVersion: 1, reproducible: true, packages }, null, 2)}\n`
+    );
 }
 
 afterEach(() => {
@@ -197,6 +206,14 @@ describe('transactional local setup', () => {
             verifyInstalled: () => ({ installed: true })
         });
         expect(installed.status).toBe('installed');
+        expect(installed.packages).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    packageName: '@sap-ux/mockserver-data-generator',
+                    source: { repository: 'SAP/open-ux-tools', commit: 'a'.repeat(40), dirty: false }
+                })
+            ])
+        );
         expect(configure).toHaveBeenCalledTimes(1);
         expect(runner).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -448,6 +465,15 @@ describe('transactional local setup', () => {
         });
 
         expect(installed).toMatchObject({ status: 'installed', modelVerified: true });
+        const journal = JSON.parse(
+            readFileSync(join(app, '.mockserver-data-generator-dev', 'recovery.json'), 'utf8')
+        ) as { model: Record<string, unknown> };
+        expect(journal.model).toEqual({
+            manifestPath: canonicalManifestPath,
+            manifestSha256: sha256(canonicalManifestPath),
+            cacheDirectory: canonicalCacheDirectory,
+            runtimeSpec: 'onnxruntime-node@1.24.3'
+        });
         expect(configure).toHaveBeenCalledWith(
             expect.objectContaining({
                 model: expect.objectContaining({

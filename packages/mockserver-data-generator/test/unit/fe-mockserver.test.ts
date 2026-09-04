@@ -8,6 +8,7 @@ import { join } from 'node:path';
 describe('standard FE mockserver provider', () => {
     it('implements host API v1 and maps the host context to whole-service generation', async () => {
         const provider = new FeMockserverDataGenerator({ seed: 31, rowsPerEntity: 1, generatedDataCache: false });
+        const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn() };
         const result = await provider.generate({
             contractVersion: 1,
             service: { urlPath: '/products', odataVersion: '4.0' },
@@ -28,7 +29,7 @@ describe('standard FE mockserver provider', () => {
                 </edmx:Edmx>`,
             targets: [{ name: 'Products', kind: 'entity-set' }],
             existingData: {},
-            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() },
+            logger,
             signal: new AbortController().signal
         });
 
@@ -36,6 +37,9 @@ describe('standard FE mockserver provider', () => {
         expect(result.resources.Products).toEqual([{ ID: 1, Name: 'Product 1' }]);
         expect(result.fingerprints?.request).toMatch(/^[a-f0-9]{64}$/);
         expect(result).not.toHaveProperty('capabilities');
+        expect(logger.debug).toHaveBeenCalledWith(
+            expect.stringMatching(/^MOCK_DATA_GENERATOR_TIMING: phase=whole-service durationMs=\d+\.\d{3}$/u)
+        );
         await expect(provider.dispose()).resolves.toBeUndefined();
     });
 
@@ -112,6 +116,9 @@ describe('standard FE mockserver provider', () => {
         expect(second).not.toHaveProperty('capabilities');
         expect(context.logger.debug).toHaveBeenCalledWith(
             'MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready'
+        );
+        expect(context.logger.debug).toHaveBeenCalledWith(
+            expect.stringMatching(/^MOCK_DATA_GENERATOR_TIMING: phase=runtime-initialization durationMs=\d+\.\d{3}$/u)
         );
         await provider.dispose();
         expect(dispose).toHaveBeenCalledTimes(1);
@@ -514,6 +521,11 @@ describe('standard FE mockserver provider', () => {
             expect(capabilityLogs).toEqual([
                 ['MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready']
             ]);
+            expect(context.logger.debug).toHaveBeenCalledWith(
+                expect.stringMatching(
+                    /^MOCK_DATA_GENERATOR_TIMING: phase=generated-data-cache-hit durationMs=\d+\.\d{3}$/u
+                )
+            );
         } finally {
             await rm(cacheRoot, { recursive: true, force: true });
         }

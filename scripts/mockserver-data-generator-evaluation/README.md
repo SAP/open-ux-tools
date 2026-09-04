@@ -101,6 +101,49 @@ separate governed model workspace.
 
 The report contains exact artifact bytes and SHA-256 hashes, governed classifier cohort counts, classifier accuracy/macro-F1/routed precision/coverage, SFT parse/exact-key/fill rates, load and generation latency, and observed process memory. Generated values are written only when an external evidence directory is supplied. A new realism judgment must use that evidence file and record its checksum; historical pilot judgments are comparison baselines, not promotion evidence.
 
+## Integrated Fiori and first-use performance
+
+Use a disposable npm-based Fiori elements application installed by the exact
+reproducible development kit. Install it with the classifier/SFT model manifest
+and verified cache so the standard `sap-fe-mockserver` path is exercised:
+
+~~~sh
+node /absolute/path/to/extracted-kit/setup-local-fiori-app.mjs \
+  --app /absolute/path/to/scratch-fiori-app \
+  --kit-root /absolute/path/to/extracted-kit \
+  --model-manifest /absolute/path/to/model-manifest.json \
+  --model-cache /absolute/path/to/verified-model-cache \
+  --verify
+~~~
+
+From the matching clean `open-ux-tools` worktree, collect at least five cold
+whole-service generations, five generated-data cache hits, and five first-use
+model acquisitions:
+
+~~~sh
+pnpm mockserver-data-generator:measure-integration -- \
+  --app /absolute/path/to/scratch-fiori-app \
+  --model-manifest /absolute/path/to/model-manifest.json \
+  --model-cache /absolute/path/to/verified-model-cache \
+  --runtime-tarball /absolute/path/to/onnxruntime-node-platform.tgz \
+  --output /tmp/mockserver-data-generator-integration.json \
+  --runs 5
+~~~
+
+The runtime archive is installed with lifecycle scripts disabled. The harness
+requires the clean generator commit, packed generator and host artifacts, model
+manifest, model revision, runtime archive, machine, and Fiori fixture to match
+the report. It also proves cache-hit startup does not initialize a model
+session. Model acquisition uses a loopback mirror of the exact checksum-verified
+artifacts and the production 30-second acquisition timeout. The report contains
+only hashes, aggregate timings, and environment identities—never generated rows
+or local paths.
+
+Treat the application as a scratch fixture: changing the runtime candidate can
+change `node_modules`, although the harness rejects changes to application-owned
+configuration and lockfiles. Restore or reinstall the development kit before
+using that application for another purpose.
+
 ## Package and learned-stack footprint
 
 Create a package-only baseline from a clean checkout:
@@ -120,10 +163,11 @@ pnpm mockserver-data-generator:measure-footprint \
   --model-manifest /absolute/path/to/model-manifest.json \
   --model-cache /absolute/path/to/verified-model-cache \
   --evaluation-report /tmp/mockserver-data-generator-evaluation.json \
+  --integration-report /tmp/mockserver-data-generator-integration.json \
   --runtime-tarball /absolute/path/to/onnxruntime-node-platform.tgz
 ~~~
 
-Use a new output filename for every run; the harness refuses to overwrite evidence. It packs the current package, installs it in an isolated npm consumer, verifies the model cache, and reports package, dependency, runtime, model, generated-data-cache, latency, and memory measurements separately. When `--runtime-tarball` is used by both commands, the footprint report rejects evaluation evidence that is not bound to the same archive SHA-256. It also binds imported evaluation latency to the complete compiled generator tree, exact generation config, full frozen cohorts and seed, model artifacts, runtime, machine, and clean commit; smoke subsets cannot satisfy the footprint gate. Missing integrated measurements remain `not-measured` and keep `footprintReady` false. Reports contain fingerprints and aggregate values but no local paths or generated rows.
+Use a new output filename for every run; the harness refuses to overwrite evidence. It packs the current package, installs it in an isolated npm consumer, verifies the model cache, and reports package, dependency, runtime, model, generated-data-cache, latency, and memory measurements separately. When `--runtime-tarball` is used by all three commands, the footprint report rejects evaluation or integration evidence that is not bound to the same archive SHA-256. It binds imported model latency to the complete compiled generator tree, exact generation config, full frozen cohorts and seed, model artifacts, runtime, machine, and clean commit; smoke subsets cannot satisfy the footprint gate. The integration report additionally supplies cold whole-service generation, warm cache startup, first-use acquisition, and host-provider timings from the standard Fiori mockserver path. Missing integrated measurements remain `not-measured` and keep `footprintReady` false. Reports contain fingerprints and aggregate values but no local paths or generated rows.
 
 The generator optimization target uses the versioned, fingerprinted dynamic-INT8 baseline in `baselines/generator-int8-v1.json`; callers cannot replace it with an arbitrary byte count. It remains visible in `missedTargets` but is not a hard release gate when the total product footprint passes. Add `--enforce` in release automation when a failed or unmeasured required gate must produce a nonzero exit. Omit it during exploratory campaigns so the report is still written for failed candidates.
 

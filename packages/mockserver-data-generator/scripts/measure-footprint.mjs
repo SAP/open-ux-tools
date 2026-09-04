@@ -17,6 +17,7 @@ import {
 import { cpus, tmpdir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { validateIntegrationPerformanceReport } from '../../../scripts/mockserver-data-generator-evaluation/lib/integration-performance.mjs';
 
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REPOSITORY_ROOT = resolve(PACKAGE_ROOT, '../..');
@@ -77,6 +78,7 @@ function usage() {
         '  --model-manifest <path>             Verified model manifest',
         '  --model-cache <path>                Verified model cache root',
         '  --evaluation-report <path>          Matching model-evaluation report',
+        '  --integration-report <path>         Matching Fiori/MockServer performance report',
         '  --runtime-tarball <path>            Exact platform runtime candidate archive',
         '  --runs <number>                     Fresh provider-load processes (default: 10)',
         '  --require-clean                     Reject a dirty source worktree',
@@ -325,6 +327,22 @@ export function buildFootprintReport(value) {
                   ),
                   sftCohortSha256: sha256Value(candidate.sftCohortSha256, 'candidate SFT cohort SHA-256')
               }),
+        ...(candidate.integrationReportSha256 === undefined
+            ? {}
+            : {
+                  integrationReportSha256: sha256Value(
+                      candidate.integrationReportSha256,
+                      'candidate integration report SHA-256'
+                  )
+              }),
+        ...(candidate.integrationReportFingerprint === undefined
+            ? {}
+            : {
+                  integrationReportFingerprint: sha256Value(
+                      candidate.integrationReportFingerprint,
+                      'candidate integration report fingerprint'
+                  )
+              }),
         ...(candidate.generatorBaselineFingerprint === undefined
             ? {}
             : {
@@ -384,6 +402,12 @@ export function buildFootprintReport(value) {
         normalizedCandidate.evaluationReportFingerprint === undefined
     ) {
         throw new Error('candidate evaluation report has no verified provenance binding');
+    }
+    if (
+        normalizedCandidate.integrationReportSha256 !== undefined &&
+        normalizedCandidate.integrationReportFingerprint === undefined
+    ) {
+        throw new Error('candidate integration report has no verified provenance binding');
     }
     const generatedDataQuotaBytes = positiveBytes(
         input.generatedDataCacheQuotaBytes,
@@ -516,6 +540,8 @@ export function parseArguments(argv) {
             options.modelCache = resolve(value);
         } else if (argument === '--evaluation-report') {
             options.evaluationReport = resolve(value);
+        } else if (argument === '--integration-report') {
+            options.integrationReport = resolve(value);
         } else if (argument === '--runtime-tarball') {
             options.runtimeTarball = resolve(value);
         } else if (argument === '--runs') {
@@ -533,6 +559,9 @@ export function parseArguments(argv) {
     }
     if (options.evaluationReport && !options.modelManifest) {
         throw new TypeError('--evaluation-report requires model inputs');
+    }
+    if (options.integrationReport && !options.modelManifest) {
+        throw new TypeError('--integration-report requires model inputs');
     }
     if (options.runtimeTarball && !options.modelManifest) {
         throw new TypeError('--runtime-tarball requires model inputs');
@@ -1048,6 +1077,18 @@ function evaluationMeasurement(filePath, bindings) {
     };
 }
 
+function integrationMeasurement(filePath, bindings) {
+    if (!filePath) {
+        return { timings: {}, sha256: undefined, reportFingerprint: undefined };
+    }
+    const verified = validateIntegrationPerformanceReport(JSON.parse(readFileSync(filePath, 'utf8')), bindings);
+    return {
+        timings: verified.timings,
+        sha256: sha256File(filePath),
+        reportFingerprint: verified.reportFingerprint
+    };
+}
+
 async function collectFootprint(options) {
     const temporaryRoot = mkdtempSync(join(tmpdir(), 'mockgen-footprint-'));
     try {
@@ -1090,6 +1131,23 @@ async function collectFootprint(options) {
             classifierArtifacts: classifierComponent?.files ?? [],
             sftArtifacts: sftComponent?.files ?? []
         });
+        const integration = integrationMeasurement(options.integrationReport, {
+            packageName: packageResult.packageName,
+            packageVersion: packageResult.packageVersion,
+            packageArchiveSha256: packageResult.archiveSha256,
+            generatorEntrySha256,
+            generatorBuildFingerprint,
+            codeCommit: source.commit,
+            modelManifestSha256: model?.manifestSha256,
+            modelRevision: model?.manifest.revision,
+            runtimePackage: model?.runtime.package,
+            runtimeVersion: model?.runtime.version,
+            runtimePackageArchiveSha256: installation.runtimePackageArchiveSha256,
+            node: process.version,
+            platform: process.platform,
+            architecture: process.arch,
+            cpu
+        });
         return buildFootprintReport({
             candidate: {
                 packageName: packageResult.packageName,
@@ -1119,6 +1177,12 @@ async function collectFootprint(options) {
                           classifierCohortSha256: evaluation.provenance.classifierCohortSha256,
                           sftCohortSha256: evaluation.provenance.sftCohortSha256
                       }
+                    : {}),
+                ...(integration.sha256
+                    ? {
+                          integrationReportSha256: integration.sha256,
+                          integrationReportFingerprint: integration.reportFingerprint
+                      }
                     : {})
             },
             environment: {
@@ -1142,7 +1206,8 @@ async function collectFootprint(options) {
             generatedDataCacheQuotaBytes: MAXIMUM_GENERATED_DATA_CACHE_BYTES,
             timings: {
                 providerModuleLoadMs: provider.samples,
-                ...evaluation.timings
+                ...evaluation.timings,
+                ...integration.timings
             },
             memory: { peakRssBytes: evaluation.peakRssBytes ?? provider.peakRssBytes }
         });
