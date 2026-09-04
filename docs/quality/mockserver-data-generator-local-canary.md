@@ -209,6 +209,31 @@ Its checksum must be verified before extraction. This canary supersedes the
 preceding archive for new local or BAS testing; the earlier records remain
 historical cross-format and upgrade evidence.
 
+## Current integrated-performance archive canary
+
+The kit was rebuilt after adding monotonic provider/host timing evidence and the
+fingerprinted Fiori integration-performance harness. Its exact extracted
+archive installed into a fresh OData V4 fixture with the real retained
+classifier and INT8 SFT cache, completed the learned HTTP canary, ran the full
+five-sample campaign, and restored the fixture byte for byte outside disposable
+`node_modules`.
+
+- Dev-kit fingerprint: `374c1611f8eb76ded0647ecfceb84e10edb29902bee178465955f5626e939afc`
+- Archive SHA-256: `7729156a88d41e7fd35729deea456fd43f57c6c705d930b7599001729396feab`
+- Archive size: 528,436 bytes; 10 entries
+- Generator tarball: 59,993 bytes, SHA-256 `3b5af462486b55bc3c412985f0e28064c783328cac5fc4c5c52f59d0d155a9f2`
+- Core tarball: 157,295 bytes, SHA-256 `6036648c586e90da5aa206da63c7f5b2fd5eaa29c68a5e5582f1e08ebee4969b`
+- Middleware tarball: 13,117 bytes, SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Source state: clean `SAP/open-ux-tools` commit `d9d813261b5a8a79761657a9505014c67fc50648` and clean `SAP/open-ux-odata` commit `64e37ac4a6d24607c28a06242075b95afbbc1ff2`; reproducible
+- Learned HTTP verification: classifier and SFT ready; provider executed; OData V4 `$metadata` passed; `Products?$top=1` returned one row; initial cold host duration was 2,933.717 ms
+- Integrated performance: five cold whole-service samples had 3,437.153 ms p95; five fresh-process cache hits had 25.306 ms p95 and did not initialize the model; five first-use acquisitions had 1,308.731 ms p95
+- Restore verification: the fixture matched the source fixture byte for byte outside disposable `node_modules`, and `.mockserver-data-generator-dev` was absent
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-374c1611f8eb76de.tgz`.
+Its checksum must be verified before extraction. This archive supersedes the
+preceding cache-hardening archive for new local or BAS testing.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,

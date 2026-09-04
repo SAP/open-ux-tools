@@ -413,6 +413,62 @@ The footprint report fingerprint is
 and its file SHA-256 is
 `a4735b4fe18364c1642c1626519249184648d801def58429fa31571888a59720`.
 
+### Current integrated Fiori proof
+
+The production-shaped rerun binds clean Open UX Tools commit
+`d9d813261b5a8a79761657a9505014c67fc50648` and Open UX OData host commit
+`64e37ac4a6d24607c28a06242075b95afbbc1ff2`. The exact development kit has
+fingerprint
+`374c1611f8eb76ded0647ecfceb84e10edb29902bee178465955f5626e939afc`,
+archive SHA-256
+`7729156a88d41e7fd35729deea456fd43f57c6c705d930b7599001729396feab`,
+and contains the 59,993-byte generator package with SHA-256
+`3b5af462486b55bc3c412985f0e28064c783328cac5fc4c5c52f59d0d155a9f2`.
+
+The kit installed the real retained classifier and INT8 SFT model into a fresh
+generated-style OData V4 application. The standard `sap-fe-mockserver` path
+served `$metadata` and `Products?$top=1`, reported both learned components
+ready, and preserved one middleware and the existing start flow. Five fresh
+processes were then measured for each integrated protocol.
+
+| Integrated measurement | p50 | p95 | Threshold | Status |
+| --- | ---: | ---: | ---: | --- |
+| Cold whole-service generation | 3,318.336 ms | 3,437.153 ms | 25,000 ms | pass |
+| Warm generated-data-cache startup | 21.768 ms | 25.306 ms | 200 ms | pass |
+| First-use acquisition of 192,167,584 bytes | 608.980 ms | 1,308.731 ms | 30,000 ms | pass |
+| End-to-end host provider | 3,319.233 ms | 3,438.173 ms | 60,000 ms | pass |
+
+Every warm-cache sample came from a fresh Fiori process and proved that no
+learned model session initialized. First-use acquisition used an empty cache, a
+loopback mirror over the exact verified artifacts, and the production
+30-second acquisition timeout. The report contains no application rows or local
+paths. Its fingerprint is
+`5ef61a30e33553acdaaee704f0108490e751d6638c22fa3699d5278157a93fbb`
+and its file SHA-256 is
+`f15b95f15fecee5774bb3da8020b34be10c764f477d5d6024ea8bc1680299f0e`.
+
+The matching full model evaluation again ran all 233 governed classifier cases
+and all 16 SFT cases. Routed classifier precision was 83.82% at 29.18%
+coverage; SFT remained 16/16 parsed with exact keys and filled 259/261 fields.
+Its fingerprint is
+`938af622b87f4de16fb92805f40b8c7cbafc520da5973c18fd3ff57e667a7eeb`
+and its file SHA-256 is
+`bf7a6c65aa00e3d801c3d049afa5acd2e6869c22a69681d2aec400e48a1e21cd`.
+
+The final footprint report cryptographically imports both reports and the same
+runtime archive. It measures 264,636,488 total installed-and-cache bytes,
+49,936,312 bytes below the 300 MiB ceiling. All hard gates pass; only the
+non-blocking 82,462,493-byte generator optimization target remains missed. Peak
+process RSS was 1,187,676,160 bytes. The footprint report fingerprint is
+`ea4a469cd80dfa874d13e784a4c9c6a762ddf39ec99980688fb07b3399697578`
+and its file SHA-256 is
+`1b329b6bfc675f67bc25bb6b24ba0a3b8fa10624c5c6e311619fd80974737514`.
+
+The three portable reports are retained together outside the repository at
+`mockserver-data-generator-runtime-proof-darwin-arm64-d9d813261`. This closes
+the previously unmeasured local integrated timing gates; supported runtime
+distribution and release-platform reruns remain separate work.
+
 This proves the size, API, inference, and quality feasibility of the retained
 INT8 model with one platform's native runtime. It is not yet a production
 distribution. The hand-built same-name archive has no independent release,

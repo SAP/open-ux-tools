@@ -1133,6 +1133,17 @@ This proves local size/API/quality feasibility, not maintainable distribution or
 the required cross-platform matrix; the same-name hand-built archive is not a
 release artifact.
 
+The production-shaped integration rerun on clean Open UX Tools commit
+`d9d813261b5a8a79761657a9505014c67fc50648` and Open UX OData commit
+`64e37ac4a6d24607c28a06242075b95afbbc1ff2` added five fresh-process samples
+for every missing local timing. The measured p95 values were 3,437.153 ms for
+cold whole-service generation, 25.306 ms for a cache hit without learned
+session initialization, 1,308.731 ms for first-use acquisition of all
+192,167,584 verified bytes, and 3,438.173 ms for the host provider path. The
+final report imports both fingerprinted evidence files, measures 264,636,488
+total bytes, and passes every hard footprint gate. Release-platform and BAS
+reruns remain required.
+
 ### Task 9.4: Select the Pareto winner
 
 **Files:**
@@ -1151,7 +1162,7 @@ release artifact.
 platform-specific native runtime is the only locally passing size/quality pair.
 The model archive remains 164,924,986 bytes and intentionally misses the
 82,462,493-byte optimization target because every target-sized model failed the
-structural gate; the complete 264,635,750-byte product footprint passes the hard
+structural gate; the complete 264,636,488-byte product footprint passes the hard
 300 MiB ceiling. Selection cannot be signed or promoted until the runtime proof
 has an approved upstream or SAP-governed distribution with platform, license,
 SBOM, signing, and rollback evidence.

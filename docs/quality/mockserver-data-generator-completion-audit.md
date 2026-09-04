@@ -4,10 +4,10 @@ Date: 2026-09-04
 
 Candidate source:
 
-- `SAP/open-ux-tools`: `0eb470fa97035547589a2b2bae4a86668042d6c2`
-- `SAP/open-ux-odata`: `d8c3b86f3cc31078c6fa27c9fea8c925d3038e47`
+- `SAP/open-ux-tools`: `d9d813261b5a8a79761657a9505014c67fc50648`
+- `SAP/open-ux-odata`: `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
 - portable development-kit fingerprint:
-  `fabc0de4a8579c742acc80c4f5e9629775af9818ad3b051fb750bca8d5e775ee`
+  `374c1611f8eb76ded0647ecfceb84e10edb29902bee178465955f5626e939afc`
 
 ## Verdict
 
@@ -25,7 +25,7 @@ quality, but several release gates require a maintainable distribution,
 environments, approvals, or external review that are not available in this
 repository:
 
-1. The 264,635,750-byte passing runtime is an experimental `darwin-arm64`
+1. The 264,636,488-byte passing runtime is an experimental `darwin-arm64`
    archive, not an approved upstream or SAP-governed platform package. The
    supported upstream multi-platform closure still uses 449,503,668 bytes.
 2. An actual BAS canary has not run.
@@ -46,7 +46,7 @@ means a measured threshold was missed by the named candidate.
 
 | Area | Status | Evidence | Remaining gate |
 | --- | --- | --- | --- |
-| Generic host SPI | proven | `open-ux-odata` host contract, lifecycle, precedence, reload, containment, timeout, and middleware tests at `d8c3b86f3` | Publish the compatible host before the provider packages |
+| Generic host SPI | proven | `open-ux-odata` host contract, lifecycle, precedence, reload, containment, timeout, host timing, and middleware tests at `64e37ac4` | Publish the compatible host before the provider packages |
 | Standard FE mockserver integration | proven | one `sap-fe-mockserver`, provider `@sap-ux/mockserver-data-generator/fe-mockserver`, conditional CommonJS export, packed integration tests, and exact-archive HTTP canary | Cross-platform and published-package canaries |
 | Authored-data preservation | proven | TS/JS/JSON/empty-data/provider/built-in precedence tests; tenant and authored-parent behavior remain host-owned | Repeat against published canary artifacts |
 | Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests | Full final application cohort |
@@ -54,15 +54,15 @@ means a measured threshold was missed by the named candidate.
 | Failure degradation | proven | missing/rejected learned components, timeout, cancellation, malformed output, cache failure, and circuit-breaker tests retain deterministic output | Cross-platform process and first-download faults |
 | Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, symlink rejection, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, and warm network-free cache | Approved remote bundle and proxy/BAS acquisition canary |
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
-| Generated-data cache | proven | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, and deterministic 32 MiB LRU quota | Integrated warm-start timing on release platforms |
+| Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
 | UI5 config and application writer | proven | one middleware, one `ui5-mock.yaml`, one existing `start-mock`; add/remove and writer tests pass | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | current 527,420-byte archive installs exact tarballs, verifies deterministic and learned paths, and restores the V4 fixture byte-for-byte | Run the recorded procedure in an actual BAS dev space |
+| Local/BAS development kit | proven locally / platform | current 528,436-byte archive installs exact tarballs, verifies deterministic and learned paths, measures the standard Fiori path, and restores the V4 fixture byte-for-byte | Run the recorded procedure in an actual BAS dev space |
 | Native CAP adapter | proven locally | 18 tests cover opt-in profiles, preservation of existing persistence data, FK ordering, learned fallback, generated cache, in-memory SQLite, restart determinism, and package boundary | Cross-platform and published-package canary |
-| Package boundary | proven | generator tarball is 59,810 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
+| Package boundary | proven | generator tarball is 59,993 bytes and contains no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
-| Total installed/cache footprint | proven locally / distribution pending | exact archive-bound `darwin-arm64` evaluation and footprint report: 264,635,750 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
-| Integrated performance | partial | provider-load, session-load, and T2 p95 pass on `darwin-arm64`; peak RSS is measured | Cold service, warm cache, first acquisition, host end-to-end, process-tree RSS, and release-platform p95 |
+| Total installed/cache footprint | proven locally / distribution pending | exact evaluation- and integration-bound `darwin-arm64` footprint: 264,636,488 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
+| Integrated performance | proven locally / platform | five-sample p95: 3,437.153 ms cold service, 25.306 ms warm cache, 1,308.731 ms first acquisition, and 3,438.173 ms host; peak RSS 1,187,676,160 bytes | Process-tree RSS and the supported Node/OS/BAS platform matrix |
 | Realism | external | a blinded, randomized 307-field packet covers six domains and EDMX V2/V4/CSN; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | package boundaries, immutable hashes, archive-bound model evaluation, installed runtime identity, download limits, traversal/symlink/lock/cache defenses, bounded generation, and redacted diagnostics are tested | Formal threat-model review, dependency disposition, SBOM/provenance, and release signing policy |
@@ -76,14 +76,15 @@ means a measured threshold was missed by the named candidate.
 | `@sap-ux/fe-mockserver-core` | 27 suites, 358 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
 | `@sap-ux/mockserver-data-generator` | 22 suites, 153 tests passed; build passed |
-| development kit and evaluation harness | 6 suites, 65 tests passed; build passed |
+| development kit and evaluation harness | 7 suites, 72 tests passed; build passed |
 | `@sap-ux/mockserver-data-generator-cap` | 5 suites, 18 tests passed; 86.49% statement coverage |
 | exact deterministic V4 archive canary | provider executed; metadata passed; one row returned; exact restore passed |
 | exact learned V4 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; exact restore passed |
-| package archive | 59,810 / 5,242,880 bytes, pass |
+| package archive | 59,993 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
-| experimental platform-runtime total installed and cache | 264,635,750 / 314,572,800 bytes, pass |
+| experimental platform-runtime total installed and cache | 264,636,488 / 314,572,800 bytes, pass |
+| integrated Fiori p95 | 3,437.153 ms cold; 25.306 ms cache; 1,308.731 ms acquisition; 3,438.173 ms host; all pass |
 
 The full generator package has 82.90% statement coverage. The downloader's
 cross-process and cancellation branches have focused regressions, but the
@@ -103,8 +104,9 @@ because one installation contains native binaries for every supported platform.
 An exact `darwin-arm64` archive proof retained the runtime API and the passing
 INT8 model. It ran all 233 governed classifier cases and all 16 SFT cases, kept
 16/16 parse/exact-key and 259/261 fill, and reduced the measured total to
-264,635,750 bytes—49,937,050 bytes below the ceiling. The footprint report and
-evaluation report are cryptographically bound to runtime archive SHA-256
+264,636,488 bytes—49,936,312 bytes below the ceiling. The footprint report,
+model evaluation, and integrated Fiori report are cryptographically bound to
+each other and runtime archive SHA-256
 `a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
 
 The architecture is therefore technically proven, but the archive is not a
@@ -124,7 +126,7 @@ WASM or ship a structurally broken model.
 2. Complete the governed artifact inventory and obtain model/data redistribution
    decisions; keep the preview internal if public redistribution is not cleared.
 3. Convert the passing platform-specific native-runtime proof into a supported
-   distribution and run the missing integrated timing/RSS measurements on the
+   distribution and rerun the integrated timing/RSS measurements on the
    supported Node/OS matrix.
 4. Publish an approved immutable preview model bundle and verify acquisition
    through the production manifest/cache path.
