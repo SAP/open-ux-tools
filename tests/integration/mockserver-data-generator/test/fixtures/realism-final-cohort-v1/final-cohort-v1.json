@@ -67,7 +67,7 @@
             "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 38, "parsedResponses": 38, "eligibleSlots": 146, "acceptedSlots": 129 },
+            "t2Expectations": { "attempts": 38, "parsedResponses": 38, "eligibleSlots": 146, "acceptedSlots": 143 },
             "relationships": [
                 {
                     "id": "finance-status-text",
@@ -179,7 +179,7 @@
             "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 16, "parsedResponses": 16, "eligibleSlots": 44, "acceptedSlots": 38 },
+            "t2Expectations": { "attempts": 16, "parsedResponses": 16, "eligibleSlots": 44, "acceptedSlots": 41 },
             "relationships": [
                 {
                     "id": "sales-agreement-date-range",
@@ -288,7 +288,7 @@
             "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 38, "parsedResponses": 38, "eligibleSlots": 146, "acceptedSlots": 100 },
+            "t2Expectations": { "attempts": 38, "parsedResponses": 38, "eligibleSlots": 146, "acceptedSlots": 136 },
             "relationships": [
                 {
                     "id": "service-quantity-unit",
@@ -387,7 +387,7 @@
             "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 26, "parsedResponses": 26, "eligibleSlots": 98, "acceptedSlots": 86 },
+            "t2Expectations": { "attempts": 26, "parsedResponses": 26, "eligibleSlots": 98, "acceptedSlots": 96 },
             "relationships": [
                 {
                     "id": "maintenance-material-status",
@@ -486,7 +486,7 @@
             "provenance": "CSN compiled after production-candidate selection from the pinned public Apache-2.0 SAP procurement sample.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 98, "parsedResponses": 98, "eligibleSlots": 388, "acceptedSlots": 382 },
+            "t2Expectations": { "attempts": 50, "parsedResponses": 50, "eligibleSlots": 388, "acceptedSlots": 387 },
             "relationships": [
                 {
                     "id": "master-data-supplier-contact",
@@ -592,7 +592,7 @@
             "provenance": "Public Apache-2.0 generic music-domain metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 10, "parsedResponses": 10, "eligibleSlots": 24, "acceptedSlots": 14 },
+            "t2Expectations": { "attempts": 10, "parsedResponses": 10, "eligibleSlots": 24, "acceptedSlots": 18 },
             "relationships": [
                 {
                     "id": "music-publication-price",

@@ -269,7 +269,7 @@ function aggregateSftStatistics(targets) {
         contributingTargets,
         targetCount: targets.length,
         acceptancePolicy: 'schema-valid-learned-values-with-deterministic-fallback',
-        passed: totals.attempts > 0 && parseRate >= 0.99 && contributingTargets === targets.length,
+        passed: totals.attempts > 0 && parseRate >= 0.99 && fillRate >= 0.95 && contributingTargets === targets.length,
         targets
     };
 }
@@ -343,7 +343,7 @@ async function exportCampaign(options) {
         seed: options.seed,
         locale: 'en',
         mode: 'learned',
-        sftTimeoutMs: 60_000
+        sftTimeoutMs: 90_000
     });
     const targets = [];
     const fields = [];
