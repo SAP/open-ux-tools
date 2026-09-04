@@ -254,11 +254,18 @@ pnpm mockserver-data-generator:realism-campaign --export \
   --selection-manifest /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/final-cohort-v1.json \
   --model-manifest /private/tmp/mockgen-current-model-22000e20/model-manifest.json \
   --model-cache /private/tmp/mockgen-current-model-22000e20/cache \
-  --out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/realism-evidence-v8.json \
-  --campaign-manifest-out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/realism-campaign-v8.json
+  --out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/realism-evidence-v20.json \
+  --campaign-manifest-out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/campaign-manifest-v20.json
 ```
 
 Expected: at least 300 blinded fields, a new evidence fingerprint, a new candidate fingerprint, and a campaign binding whose generation config contains `maxNewTokens: 300`.
+
+Observed: 311 blinded records, 178/178 parsed responses, 821/846 accepted
+eligible fields, all six targets contributing, all six structural targets
+passing, and an evidence file that was byte-identical on the v21 replay. The
+campaign uses `sftTimeoutMs: 90000` because the timeout covers the bounded set
+of per-entity completions for wide schemas; it does not change the model or the
+frozen 300-token per-completion configuration.
 
 - [x] **Step 2: Verify the sealed outputs independently**
 

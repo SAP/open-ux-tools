@@ -1209,14 +1209,16 @@ not reused as the final cohort.
 - [x] Replay identical inputs and compare output fingerprints.
 
 **Implementation record (2026-09-04):** Clean package commit
-`b0066d03bc524b96dadf194e9d113159c9eb070f` generated 16/16 non-empty
+`f18e99c8bc96a47d9432d19c6540d5a6dcf4f00b` generated 16/16 non-empty
 resources with the checksum-verified classifier and INT8 SFT runtime. Package
 validation passed every schema and relationship invariant, and the campaign's
 executable evaluator passed all 11 frozen coherence assertions. The repeated
-311-record evidence file was byte-identical. The final evidence fingerprint is
-`5ea7893e788a18953302646037f10c781daf591ff81800eedf790987764c4e1b`;
+311-record evidence file was byte-identical. Its strict learned gate recorded
+178/178 parsed responses, 821/846 accepted eligible fields, and contribution
+from all six targets. The final evidence fingerprint is
+`d9eba16e521a3b9114ba4469e208a9655a7bbd6ea073ecdd2d18bd5e109223dd`;
 the candidate fingerprint is
-`6d78a64d717b150f0910fd7fed789d8b84816def7ecd3ab110c3e4e1cc83b7e1`.
+`6a15c16bfe93e79f52403e9e85ebd16d03bf3fc3e86e78cbec6939d688b7ab10`.
 Existing-data precedence and non-mutation remain covered by the package and
 standard-host integration tests. This completes the local structural gate, not
 the external realism gate.

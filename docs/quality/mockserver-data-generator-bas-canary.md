@@ -9,13 +9,14 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `87e3f13ff4dbf47779c0991d6d710437c49c9fb37be4482be217f307b44abf90`
-- archive SHA-256: `8843c89710f7e2dcadddb1a11041ecdd54d11533a39d31ff70e48dc4ff0abf68`
-- archive size: 531,504 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `976a6e3b82046134aaa3f3d9ed55bd62a00eff82`; `SAP/open-ux-odata` `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-87e3f13ff4dbf477.tgz`
+- dev-kit fingerprint: `f3e32f88bfa2ccdfb179be6dde424dd0c13ee6927d4e2e4e0771ae12cd243468`
+- archive SHA-256: `8a8c4dd8981f69a31c692b946f2764f40d8d42a79a013a876ed6e52032911304`
+- archive size: 535,897 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `5a51e6cf73edd73f76316cbb3391df6221fd46fd`; `SAP/open-ux-odata` `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f3e32f88bfa2ccdf.tgz`
 
-This candidate includes the current classifier/SFT provider, optimized
+This candidate includes the current classifier/SFT provider, adaptive wide-schema
+batching, EDM maximum-length constrained decoding, optimized
 constrained decoder, production 300-token config, generated-data cache,
 reload-cancellation recovery, transactional installer recovery, and
 repeat-install upgrade safety. It also includes fenced cross-process model-cache
@@ -25,7 +26,10 @@ executable final-cohort gate. Its independently bundled retained-pilot bridge,
 learned OData V4 HTTP canary, and exact restore are recorded in the local canary
 report. Earlier clean archives remain the cross-format learned V2/V4/CDS and
 five-sample performance evidence; run the procedure below with the current
-archive to qualify the same learned path in BAS.
+archive to qualify the same learned path in BAS. The exact archive passed the
+local V2 HTTP canary with classifier and SFT ready, 930.404 ms runtime
+initialization, 3,199.362 ms whole-service generation, 3,200.181 ms host
+provider time, one returned row, and byte-exact restore.
 
 ## Inputs to record
 

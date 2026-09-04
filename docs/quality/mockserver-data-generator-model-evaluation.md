@@ -520,7 +520,7 @@ the same compatibility and integrity tests.
 The existing two-provider pilot report remains useful historical evidence: 60 fields across six domains were reviewed, 16 were rated realistic (26.67%), 10 provider disagreements were recorded, no critical issues were found, and the report failed its gate. It is not silently promoted or discarded.
 
 The production exporter generated the final blinded packet from clean package
-commit `b0066d03bc524b96dadf194e9d113159c9eb070f`. It used model manifest
+commit `f18e99c8bc96a47d9432d19c6540d5a6dcf4f00b`. It used model manifest
 SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`
 and revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`.
 The retained classifier fingerprint is
@@ -532,8 +532,12 @@ The service-disjoint cohort manifest is outside the repository at
 `/Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/final-cohort-v1.json`.
 It has SHA-256
 `9380c00559107b67e2522c8e96b1141d20c1a3eca71502ac6ddb5b53c4d15363`.
-The final outputs in that directory are `realism-evidence-v8.json` and
-`realism-campaign-v8.json`.
+The canonical outputs in that directory are `realism-evidence-v20.json` and
+`campaign-manifest-v20.json`; `realism-evidence-v21.json` is the byte-identical
+replay. The generation options are two rows per entity, seed 113, locale `en`,
+learned mode, and a 90-second SFT budget. The wider budget is scoped to the
+multi-entity campaign: it prevents wide services from being misclassified as
+model failures while every individual completion remains bounded.
 The cohort freezes 300 scalar fields: 50 in each of finance, sales, service,
 maintenance, master-data, and non-SAP; EDMX V2 contributes 150, EDMX V4 100,
 and CSN 50. Eleven additional blinded assertion records make the provider
@@ -545,13 +549,16 @@ packet contain 311 records.
 | Generated resources           | 16/16 non-empty                                                    |
 | Structural validation         | pass                                                               |
 | Frozen coherence assertions   | 11/11 pass                                                         |
+| SFT parse gate                 | 178/178 responses (100%)                                           |
+| SFT accepted-slot fill gate    | 821/846 fields (97.04%)                                            |
+| Contributing targets           | 6/6                                                                |
 | Deterministic replay           | byte-identical evidence file                                       |
 | Coverage gaps                 | 0                                                                  |
-| Candidate fingerprint         | `6d78a64d717b150f0910fd7fed789d8b84816def7ecd3ab110c3e4e1cc83b7e1` |
-| Evidence fingerprint          | `5ea7893e788a18953302646037f10c781daf591ff81800eedf790987764c4e1b` |
-| Evidence file SHA-256         | `ce0e06625173e53f0631b127a74affaebcaf29e68f68c824155294f81858d830` |
-| Campaign fingerprint          | `cb06e8f6852372ee1f725eb1db02d967d3e05ef6dd51bd9c65632cfba3558351` |
-| Campaign manifest SHA-256     | `ba25141ed7071f897c73ed76b08416c2174ff3b86933136ffe2ad3c73a46896c` |
+| Candidate fingerprint         | `6a15c16bfe93e79f52403e9e85ebd16d03bf3fc3e86e78cbec6939d688b7ab10` |
+| Evidence fingerprint          | `d9eba16e521a3b9114ba4469e208a9655a7bbd6ea073ecdd2d18bd5e109223dd` |
+| Evidence file SHA-256         | `87802412479f96b628bbdaaa0186cd3c5d8c4fe5c488d2834540174871555015` |
+| Campaign fingerprint          | `e854c92d4c1f30d12df9cc08d23be0afb116b1c09ca67f53ab6651280d8043e3` |
+| Campaign manifest SHA-256     | `4e3997543d71ad1260383d843a8f44996e5f9fcbb6a5d7dc950fd194f13cf498` |
 | Runtime                       | Node 22.22.2, ONNX Runtime 1.24.3, darwin-arm64                    |
 
 The exporter independently rejects incomplete model caches, partial learned
