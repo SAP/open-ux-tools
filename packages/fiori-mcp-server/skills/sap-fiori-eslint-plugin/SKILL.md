@@ -1,6 +1,6 @@
 ---
 name: sap-fiori-eslint-plugin
-description: >
+description: |
   Configure, migrate, or run ESLint with @sap-ux/eslint-plugin-fiori-tools in SAP Fiori projects
   (standalone or CAP). Use when ESLint is missing and the user wants to add it or add code quality
   checks; when an existing .eslintrc or eslint@8 config needs upgrading to ESLint 9 flat config;
