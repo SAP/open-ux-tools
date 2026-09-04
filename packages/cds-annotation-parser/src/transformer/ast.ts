@@ -459,6 +459,87 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
+     * Converts CDS term path
+     * @param assignmentChildren AssignmentChildren CST node
+     * @param location  CstNodeLocation
+     * @param path Path node to convert
+     * @param vocabularyService Vocabulary service instance
+     * @param vocabularyName Term vocabulary name
+     * @param groupName Name of an annotation group
+     * @param lastSegmentQualifier Qualifier node or undefined if not found
+     * @returns CDS annotation node
+     */
+    private convertCdsTerm(
+        assignmentChildren: AssignmentChildren,
+        location: CstNodeLocation,
+        path: Path,
+        vocabularyService: VocabularyService,
+        vocabularyName: string,
+        groupName: string | undefined,
+        lastSegmentQualifier: Qualifier | undefined
+    ): Annotation {
+        const cdsTerm = path.segments.map((segment) => segment.value).join('.');
+        const fullName = (groupName ? groupName + '.' : '') + cdsTerm;
+        const ast: Annotation = {
+            type: ANNOTATION_TYPE,
+            qualifier: lastSegmentQualifier,
+            term: {
+                segments: path.segments,
+                separators: path.separators,
+                type: PATH_TYPE,
+                value: fullName,
+                range: path.range
+            },
+            originalTerm: {
+                segments: path.segments,
+                separators: path.separators,
+                type: PATH_TYPE,
+                value: cdsTerm,
+                range: path.range
+            },
+            range: this.locationToRange(location)
+        };
+
+        let fullNameConverted = vocabularyService.cdsVocabulary.nameMap.get(fullName);
+        let segments: Identifier[];
+        let separators: Separator[] = [];
+        if (vocabularyName === 'ValueList') {
+            fullNameConverted = groupName ? cdsTerm : fullName;
+            segments = [...path.segments];
+            separators = [...path.separators];
+        } else {
+            if (!fullNameConverted) {
+                // some terms may not exist in the map (like cds.odata.bindingparameter.name)
+                const adaptedSegments = path.segments.map(
+                    (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
+                );
+                fullNameConverted = vocabularyService.cdsVocabulary.alias + '.' + adaptedSegments.join('');
+            }
+            if (groupName) {
+                fullNameConverted = fullNameConverted.slice(vocabularyService.cdsVocabulary.alias.length + 1);
+            }
+            const segmentValues = fullNameConverted.split('.');
+            segments = segmentValues.map((value) => ({ type: IDENTIFIER_TYPE, value }));
+            for (let index = 0; index < segments.length - 1; index++) {
+                separators.push({ type: SEPARATOR_TYPE, escaped: false, value: '.' });
+            }
+        }
+
+        ast.term = {
+            segments,
+            separators,
+            type: PATH_TYPE,
+            value: fullNameConverted,
+            range: path.range
+        };
+        if (hasItems(assignmentChildren.value)) {
+            ast.value = this.visit(assignmentChildren.value[0]) as AnnotationValue;
+        }
+        ast.colon = this.getColon(assignmentChildren);
+        return ast;
+    }
+
+    /**
      * Converts Path node to FlattenedExpression node.
      *
      * @param assignmentChildren AssignmentChildren CST node
@@ -482,57 +563,20 @@ class CstToAstVisitor extends Visitor {
         }
         const lastSegmentQualifier = this.getQualifier(assignmentChildren);
         const vocabularyName = groupName ?? path.segments[0].value;
-        if (vocabularyService.cdsVocabulary.nameMap && vocabularyService.cdsVocabulary.groupNames.has(vocabularyName)) {
-            const cdsTerm = path.segments.map((segment) => segment.value).join('.');
-            const fullName = (groupName ? groupName + '.' : '') + cdsTerm;
-            const ast: Annotation = {
-                type: ANNOTATION_TYPE,
-                qualifier: lastSegmentQualifier,
-                term: {
-                    segments: path.segments,
-                    separators: path.separators,
-                    type: PATH_TYPE,
-                    value: fullName,
-                    range: path.range
-                },
-                originalTerm: {
-                    segments: path.segments,
-                    separators: path.separators,
-                    type: PATH_TYPE,
-                    value: cdsTerm,
-                    range: path.range
-                },
-                range: this.locationToRange(location)
-            };
-            let fullNameConverted = vocabularyService.cdsVocabulary.nameMap.get(fullName);
-            if (!fullNameConverted) {
-                // some terms may not exist in the map (like cds.odata.bindingparameter.name)
-                const adaptedSegments = path.segments.map(
-                    (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
-                );
-                fullNameConverted = vocabularyService.cdsVocabulary.alias + '.' + adaptedSegments.join('');
-            }
-            if (groupName) {
-                fullNameConverted = fullNameConverted.slice(vocabularyService.cdsVocabulary.alias.length + 1);
-            }
-            const segmentValues = fullNameConverted.split('.');
-            const segments: Identifier[] = segmentValues.map((value) => ({ type: IDENTIFIER_TYPE, value }));
-            const separators: Separator[] = [];
-            for (let index = 0; index < segments.length - 1; index++) {
-                separators.push({ type: SEPARATOR_TYPE, escaped: false, value: '.' });
-            }
-            ast.term = {
-                segments,
-                separators,
-                type: PATH_TYPE,
-                value: fullNameConverted,
-                range: path.range
-            };
-            if (hasItems(assignmentChildren.value)) {
-                ast.value = this.visit(assignmentChildren.value[0]) as AnnotationValue;
-            }
-            ast.colon = this.getColon(assignmentChildren);
-            return ast;
+        if (
+            vocabularyService.cdsVocabulary.nameMap &&
+            (vocabularyService.cdsVocabulary.groupNames.has(vocabularyName) ||
+                (vocabularyName === 'ValueList' && path.segments.length === 2))
+        ) {
+            return this.convertCdsTerm(
+                assignmentChildren,
+                location,
+                path,
+                vocabularyService,
+                vocabularyName,
+                groupName,
+                lastSegmentQualifier
+            );
         }
 
         const flattenedPath = flattenedPathConverter.convert(true, path, lastSegmentQualifier);
