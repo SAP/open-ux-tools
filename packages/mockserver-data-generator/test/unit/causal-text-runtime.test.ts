@@ -28,6 +28,15 @@ describe('grammar-constrained causal text runtime', () => {
         expect(resolveAllowed(longerValue)).toBe(resolveAllowed(shortValue));
     });
 
+    test('reuses bounded-string candidates while every token still fits', () => {
+        const resolveAllowed = createAllowedTokenResolver(['A', 'North', '"', '\\n'], new Set());
+        const initial = createJsonRowGrammar([{ name: 'Name', valueKind: 'string', nullable: false, maxLength: 80 }]);
+        const shortValue = advanceText(initial, '{"Name":"A');
+        const longerValue = advanceText(initial, '{"Name":"North');
+
+        expect(resolveAllowed(longerValue)).toBe(resolveAllowed(shortValue));
+    });
+
     test('filters multi-character tokens by the bounded string capacity', () => {
         const resolveAllowed = createAllowedTokenResolver(['A', 'AB', 'ABC', '"', '\\n'], new Set());
         const initial = createJsonRowGrammar([{ name: 'Code', valueKind: 'string', nullable: false, maxLength: 2 }]);

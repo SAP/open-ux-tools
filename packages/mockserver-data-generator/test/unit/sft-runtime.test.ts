@@ -112,7 +112,7 @@ describe('pilot-compatible SFT runtime', () => {
         expect(new Set(generate.mock.calls.map(([request]) => request.seed)).size).toBe(3);
     });
 
-    test('keeps the default chunk below the production model output budget', async () => {
+    test('uses six-field default chunks below the production model output budget', async () => {
         const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
             JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
         );
@@ -135,7 +135,7 @@ describe('pilot-compatible SFT runtime', () => {
 
         await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
-        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([4, 4, 4, 1]);
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([6, 6, 1]);
     });
 
     test('splits an incomplete chunk and reports every raw completion attempt', async () => {

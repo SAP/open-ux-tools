@@ -103,8 +103,16 @@ function mergeTokenIds(left: ReadonlyArray<number>, right: ReadonlyArray<number>
     return merged;
 }
 
-function grammarCacheKey(state: JsonRowGrammarState): string {
+function grammarCacheKey(state: JsonRowGrammarState, maximumTokenLength: number): string {
     if (state.phase === 'in-string-value' && state.maximumStringLength !== undefined) {
+        const capacity = state.maximumStringLength - state.stringLength;
+        if (!state.escaped && state.unicodeEscapeRemaining === 0 && capacity >= maximumTokenLength) {
+            return JSON.stringify({
+                ...state,
+                stringLength: 0,
+                maximumStringLength: maximumTokenLength
+            });
+        }
         return JSON.stringify(state);
     }
     return JSON.stringify({ ...state, stringLength: 0 });
@@ -135,8 +143,9 @@ export function createAllowedTokenResolver(
     const complexStringTokens = decoded.filter(({ plainStringLength: length }) => length === undefined);
     const plainCapacityCache = new Map<number, ReadonlyArray<number>>();
     const maximumPlainLength = Math.max(0, ...plainStringTokens.map(({ plainStringLength: length }) => length));
+    const maximumTokenLength = Math.max(0, ...decoded.map(({ text }) => Array.from(text).length));
     return (state) => {
-        const key = grammarCacheKey(state);
+        const key = grammarCacheKey(state, maximumTokenLength);
         const cached = cache.get(key);
         if (cached) {
             return cached;
