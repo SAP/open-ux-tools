@@ -51,7 +51,11 @@ export function verifyInstalledApplication(appRoot, expectedPackages) {
     if (packageJson.scripts?.['start-mockgen'] !== undefined || existsSync(join(appRoot, 'ui5-mockgen.yaml'))) {
         throw new Error('MockGen must use the existing start-mock and ui5-mock.yaml flow');
     }
-    if (!String(packageJson.scripts?.['start-mock'] ?? '').includes('ui5-mock.yaml')) {
+    const startMock = String(packageJson.scripts?.['start-mock'] ?? '');
+    if (!startMock.startsWith('mockserver-data-generator start -- fiori run ')) {
+        throw new Error('start-mock is not configured through the MockGen launcher');
+    }
+    if (!startMock.includes('ui5-mock.yaml')) {
         throw new Error('start-mock does not target ui5-mock.yaml');
     }
     if (packageJson.ui5?.dependencies?.includes('@sap-ux/mockserver-data-generator')) {
@@ -325,16 +329,38 @@ function stopProcess(child) {
 }
 
 /**
+ * Build an explicit canary environment without trusting ambient activation.
+ *
+ * @param {boolean} mockgenEnabled whether MockGen is enabled for this canary
+ * @param {NodeJS.ProcessEnv} [parentEnvironment] parent environment
+ * @returns {NodeJS.ProcessEnv} child environment
+ */
+export function createCanaryEnvironment(mockgenEnabled, parentEnvironment = process.env) {
+    return {
+        ...parentEnvironment,
+        SAP_UX_MOCKGEN_ENABLED: mockgenEnabled ? '1' : '0',
+        BROWSER: 'none'
+    };
+}
+
+/**
  * Verify host-side evidence that the configured provider supplied the rows and,
  * when requested, that both learned components were ready.
  *
  * @param {string} output captured mockserver process output
  * @param {string} entitySet canary entity set
  * @param {boolean} [expectedLearned] whether learned runtime evidence is required
- * @returns {{providerExecuted: true, learnedRuntimeVerified?: true}} process evidence report
+ * @param {boolean} [mockgenEnabled] whether MockGen should have generated rows
+ * @returns {{providerExecuted: boolean, standardFallbackVerified?: true, learnedRuntimeVerified?: true}} process evidence report
  */
-export function verifyCanaryProcessEvidence(output, entitySet, expectedLearned = false) {
+export function verifyCanaryProcessEvidence(output, entitySet, expectedLearned = false, mockgenEnabled = true) {
     const providerEvidence = `Provider mockdata found for ${entitySet}`;
+    if (!mockgenEnabled) {
+        if (output.includes(providerEvidence) || output.includes('MOCK_DATA_GENERATOR_CAPABILITIES:')) {
+            throw new Error('MockGen unexpectedly published rows while the standard fallback canary was selected');
+        }
+        return { providerExecuted: false, standardFallbackVerified: true };
+    }
     if (!output.includes(providerEvidence)) {
         throw new Error(
             'MockGen provider did not publish the canary rows; standard fallback may have served the response'
@@ -403,10 +429,11 @@ export function extractCanaryTimings(output, options = {}) {
  * Start the application-local Fiori/UI5 command headlessly and exercise metadata and entity endpoints.
  *
  * @param {string} appRoot application root
- * @param {{timeoutMs?: number, expectedLearned?: boolean, expectedCacheHit?: boolean, generatedDataCacheDirectory?: string}} [options] canary options
- * @returns {Promise<{integrationVerified: true, providerExecuted: true, learnedRuntimeVerified?: true, runtimeInitializationMs?: number, wholeServiceGenerationMs?: number, generatedDataCacheHitMs?: number, hostProviderMs?: number, port: number, metadataUrl: string, entityUrl: string, entitySet: string, rows: number}>} HTTP canary report
+ * @param {{timeoutMs?: number, expectedLearned?: boolean, expectedCacheHit?: boolean, generatedDataCacheDirectory?: string, mockgenEnabled?: boolean}} [options] canary options
+ * @returns {Promise<{integrationVerified: true, providerExecuted: boolean, standardFallbackVerified?: true, learnedRuntimeVerified?: true, runtimeInitializationMs?: number, wholeServiceGenerationMs?: number, generatedDataCacheHitMs?: number, hostProviderMs?: number, port: number, metadataUrl: string, entityUrl: string, entitySet: string, rows: number}>} HTTP canary report
  */
 export async function runFioriCanary(appRoot, options = {}) {
+    const mockgenEnabled = options.mockgenEnabled !== false;
     const target = discoverCanaryTarget(appRoot);
     const fiori = join(appRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'fiori.cmd' : 'fiori');
     const ui5 = join(appRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'ui5.cmd' : 'ui5');
@@ -420,7 +447,7 @@ export async function runFioriCanary(appRoot, options = {}) {
     args.push('--config', canaryConfiguration.path, '--port', String(port));
     const child = spawn(executable, args, {
         cwd: appRoot,
-        env: { ...process.env, BROWSER: 'none' },
+        env: createCanaryEnvironment(mockgenEnabled),
         detached: process.platform !== 'win32',
         stdio: ['ignore', 'pipe', 'pipe'],
         shell: false
@@ -450,7 +477,8 @@ export async function runFioriCanary(appRoot, options = {}) {
         const processEvidence = verifyCanaryProcessEvidence(
             processState.output,
             target.entitySet,
-            options.expectedLearned
+            options.expectedLearned,
+            mockgenEnabled
         );
         const timings = extractCanaryTimings(processState.output, { expectedCacheHit: options.expectedCacheHit });
         return {

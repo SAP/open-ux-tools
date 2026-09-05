@@ -147,13 +147,15 @@ ${packageLines}
 node ./setup-local-fiori-app.mjs --app /absolute/path/to/generated-fiori-app
 node ./setup-local-fiori-app.mjs --app /absolute/path/to/generated-fiori-app --verify
 npm run start-mock
+npm run start-mock -- --mockgen
 \`\`\`
 
 Use \`--dry-run\` to inspect the operation, \`--offline\` to require a warm
 package-manager cache, \`--verify\` to run bounded metadata and entity HTTP
 canaries, and \`--restore\` to restore the journaled application files. The
 setup keeps one \`sap-fe-mockserver\`, one \`ui5-mock.yaml\`, and the existing
-\`start-mock\` flow. Model weights are not included.
+\`start-mock\` flow. The first command uses standard generation; \`--mockgen\`
+activates the installed provider. Model weights are not included.
 
 The verification-only debug configuration is created in an operating-system
 temporary directory rather than inside the Fiori project. Installation and

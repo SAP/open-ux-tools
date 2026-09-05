@@ -41,7 +41,7 @@ const JOURNAL_FILE = 'recovery.json';
  * @typedef {{packageName: string, version: string, specification: string}} InstalledPackage
  * @typedef {{manifestPath: string, cacheDirectory: string, offline: true, runtimeSpec: string}} ModelDevelopmentInput
  * @typedef {{appRoot: string, generatorSpec: string, webappPath: string, model?: ModelDevelopmentInput}} ConfigureInput
- * @typedef {{status: 'dry-run'|'installed'|'restored', appRoot: string, packageManager?: 'npm'|'pnpm', packages?: object[], installedVerification?: object, integrationVerified?: boolean, modelVerified?: boolean, canary?: object}} SetupResult
+ * @typedef {{status: 'dry-run'|'installed'|'restored', appRoot: string, packageManager?: 'npm'|'pnpm', packages?: object[], installedVerification?: object, integrationVerified?: boolean, modelVerified?: boolean, canaries?: {standard: object, mockgen: object}}} SetupResult
  */
 
 /**
@@ -263,7 +263,7 @@ function assertSafeArtifactDirectory(appRoot, stateRoot, packageDirectory) {
  * @param {(step: CommandStep) => Promise<void>} [options.runner] command runner
  * @param {(input: ConfigureInput) => Promise<void>} [options.configure] injected configuration function for tests
  * @param {(appRoot: string, packages: InstalledPackage[]) => object} [options.verifyInstalled] installed-state verifier
- * @param {(appRoot: string, options?: {expectedLearned?: boolean}) => Promise<object>} [options.runCanary] HTTP canary implementation
+ * @param {(appRoot: string, options?: {expectedLearned?: boolean, mockgenEnabled?: boolean}) => Promise<object>} [options.runCanary] HTTP canary implementation
  * @returns {Promise<SetupResult>} structured setup result
  */
 export async function setupLocalFioriApp({
@@ -421,7 +421,18 @@ export async function setupLocalFioriApp({
                 specification
             }))
         );
-        const canary = verify ? await runCanary(canonicalAppRoot, { expectedLearned: model !== undefined }) : undefined;
+        let canaries;
+        if (verify) {
+            const standard = await runCanary(canonicalAppRoot, {
+                expectedLearned: false,
+                mockgenEnabled: false
+            });
+            const mockgen = await runCanary(canonicalAppRoot, {
+                expectedLearned: model !== undefined,
+                mockgenEnabled: true
+            });
+            canaries = { standard, mockgen };
+        }
         recordPostHashes(canonicalAppRoot, journal.files);
         journal.status = 'installed';
         journal.installedAt = new Date().toISOString();
@@ -432,9 +443,10 @@ export async function setupLocalFioriApp({
             packageManager: packageManager.name,
             packages: journal.kit.packages,
             installedVerification,
-            integrationVerified: canary?.integrationVerified === true,
+            integrationVerified:
+                canaries?.standard?.integrationVerified === true && canaries?.mockgen?.integrationVerified === true,
             ...(model ? { modelVerified: true } : {}),
-            ...(canary ? { canary } : {})
+            ...(canaries ? { canaries } : {})
         };
     } catch (error) {
         restoreFiles(canonicalAppRoot, previousInstallation?.files ?? journal.files, { checkPostHashes: false });

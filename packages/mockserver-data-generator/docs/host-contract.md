@@ -18,7 +18,9 @@ Subject to the promotion gates, the package will provide realistic missing mock
 rows to the standard Fiori elements mockserver through the host's generic
 `mockDataGenerator` SPI. It is not a UI5 middleware and does not contribute
 services. Applications retain one `sap-fe-mockserver` middleware, one
-`ui5-mock.yaml`, and one `start-mock` command.
+`ui5-mock.yaml`, and one `start-mock` command. The command uses standard host
+generation by default and activates the provider only when the user appends
+`--mockgen`.
 
 The package owns schema interpretation, planning, realistic generation,
 constraint validation, learned-model resolution, caching, and privacy-safe
@@ -85,6 +87,13 @@ mockDataGenerator:
 
 The package is installed only as an application `devDependency`. It is never
 added to the legacy `package.json.ui5.dependencies` allow-list.
+
+The application installer wraps the original simple `fiori run` script as
+`mockserver-data-generator start -- <original command>`. The launcher removes
+one exact optional `--mockgen`, overwrites `SAP_UX_MOCKGEN_ENABLED` for the
+child, and starts the original command without a shell. The adapter returns an
+empty resource map before any generator work unless that marker is `1`, letting
+the host continue to its standard built-in fallback.
 
 ## Adapter behavior
 

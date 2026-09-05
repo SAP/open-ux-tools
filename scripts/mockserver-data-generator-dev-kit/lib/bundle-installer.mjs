@@ -3,6 +3,61 @@ import { join } from 'node:path';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { parseDocument } from 'yaml';
 
+const START_MOCK_LAUNCHER_PREFIX = 'mockserver-data-generator start -- ';
+
+function hasUnsupportedShellSyntax(command) {
+    let quote;
+    let escaped = false;
+    for (let index = 0; index < command.length; index += 1) {
+        const character = command[index];
+        if (escaped) {
+            escaped = false;
+            continue;
+        }
+        if (quote === "'") {
+            if (character === "'") quote = undefined;
+            continue;
+        }
+        if (character === '\\') {
+            escaped = true;
+            continue;
+        }
+        if (quote === '"') {
+            if (character === '"') {
+                quote = undefined;
+            } else if (character === '`' || (character === '$' && command[index + 1] === '(')) {
+                return true;
+            }
+            continue;
+        }
+        if (character === "'" || character === '"') {
+            quote = character;
+        } else if (
+            ['&', '|', ';', '<', '>', '`', '\n', '\r'].includes(character) ||
+            (character === '$' && command[index + 1] === '(')
+        ) {
+            return true;
+        }
+    }
+    return quote !== undefined || escaped;
+}
+
+/**
+ * Prefix a generated simple Fiori command with the package launcher.
+ *
+ * @param {string} script existing `start-mock` script
+ * @returns {string} idempotently wrapped script
+ */
+export function wrapStartMockScript(script) {
+    const original = script.startsWith(START_MOCK_LAUNCHER_PREFIX)
+        ? script.slice(START_MOCK_LAUNCHER_PREFIX.length)
+        : script;
+    if (!/^fiori[ \t]+run(?:[ \t]|$)/u.test(original) || hasUnsupportedShellSyntax(original)) {
+        throw new Error('start-mock must be a simple fiori run command before MockGen can wrap it');
+    }
+    return script.startsWith(START_MOCK_LAUNCHER_PREFIX) ? script : `${START_MOCK_LAUNCHER_PREFIX}${script}`;
+}
+
 /**
  * Configure the existing standard mockserver through its public config writer,
  * then add the development-only MockGen dependency and provider block locally.
@@ -31,6 +86,11 @@ export async function configureFioriApplication({ appRoot, webappPath, generator
 
     const packageJsonPath = join(appRoot, 'package.json');
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+    const startMock = packageJson.scripts?.['start-mock'];
+    if (typeof startMock !== 'string') {
+        throw new Error('The standard mockserver configuration did not create a start-mock script');
+    }
+    packageJson.scripts['start-mock'] = wrapStartMockScript(startMock);
     packageJson.devDependencies = {
         ...packageJson.devDependencies,
         '@sap-ux/mockserver-data-generator': generatorSpec

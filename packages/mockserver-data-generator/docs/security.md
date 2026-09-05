@@ -31,8 +31,11 @@ validation boundary:
   publishes a complete provider result.
 
 The provider is loaded only when an application explicitly configures
-`mockDataGenerator`. Importing the package and constructing the provider do not
-download models, initialize an inference session, or generate data.
+`mockDataGenerator`, and generation is enabled only for a launch requested with
+`npm run start-mock -- --mockgen`. Importing the package, constructing the
+provider, or starting without the flag does not parse metadata, access the
+generated-data cache, download models, initialize an inference session, or
+generate data.
 
 ## Model artifact controls
 

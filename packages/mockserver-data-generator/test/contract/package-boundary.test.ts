@@ -178,6 +178,14 @@ describe('published package boundary', () => {
         expect(hostContract).not.toMatch(/^\s*rowCount\s*:/mu);
     });
 
+    it('documents the single start-mock flow and explicit MockGen flag', () => {
+        const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+
+        expect(readme).toContain('npm run start-mock');
+        expect(readme).toContain('npm run start-mock -- --mockgen');
+        expect(readme).toMatch(/without the flag[\s\S]*standard mockserver/iu);
+    });
+
     it('states preview language scope and keeps quality claims separate', () => {
         const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
 

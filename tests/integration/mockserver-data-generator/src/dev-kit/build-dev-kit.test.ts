@@ -6,7 +6,10 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { bundleEntry, renderReadme } from '../../../../../scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs';
-import { configureFioriApplication } from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/bundle-installer.mjs';
+import {
+    configureFioriApplication,
+    wrapStartMockScript
+} from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/bundle-installer.mjs';
 import {
     assertSafeArchiveEntry,
     inspectPackedArtifact,
@@ -75,6 +78,28 @@ afterEach(() => {
 });
 
 describe('development kit artifact validation', () => {
+    test('wraps a simple Fiori start-mock script without changing its command', () => {
+        const original =
+            'fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html?sap-client=902&sap-ui-xx-viewCache=false"';
+
+        expect(wrapStartMockScript(original)).toBe(`mockserver-data-generator start -- ${original}`);
+        expect(wrapStartMockScript(`mockserver-data-generator start -- ${original}`)).toBe(
+            `mockserver-data-generator start -- ${original}`
+        );
+    });
+
+    test.each([
+        'vite --config ./ui5-mock.yaml',
+        'NODE_ENV=test fiori run --config ./ui5-mock.yaml',
+        'fiori run --config ./ui5-mock.yaml && echo changed',
+        'fiori run --config ./ui5-mock.yaml | tee output.log',
+        'fiori run --config $(select-config)',
+        'fiori run --config ./ui5-mock.yaml > output.log',
+        'fiori run --config "./ui5-mock.yaml'
+    ])('rejects an unsupported start-mock shell script: %s', (script) => {
+        expect(() => wrapStartMockScript(script)).toThrow(/simple fiori run command/i);
+    });
+
     test('documents the read-only verification boundary in the portable archive', () => {
         const readme = renderReadme({
             fingerprint: 'a'.repeat(64),
@@ -85,6 +110,7 @@ describe('development kit artifact validation', () => {
 
         expect(readme).toMatch(/operating-system\s+temporary directory/u);
         expect(readme).toMatch(/Installation and\s+restore still require a writable application/u);
+        expect(readme).toContain('npm run start-mock -- --mockgen');
     });
 
     test('configures MockGen without requiring changes to shared configuration packages', async () => {
@@ -99,10 +125,14 @@ describe('development kit artifact validation', () => {
 
         const packageJson = JSON.parse(readFileSync(join(appRoot, 'package.json'), 'utf8')) as {
             devDependencies?: Record<string, string>;
+            scripts?: Record<string, string>;
         };
         const ui5MockYaml = readFileSync(join(appRoot, 'ui5-mock.yaml'), 'utf8');
         expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBe(
             'file:.mockserver-data-generator-dev/packages/generator.tgz'
+        );
+        expect(packageJson.scripts?.['start-mock']).toMatch(
+            /^mockserver-data-generator start -- fiori run --config \.\/ui5-mock\.yaml/u
         );
         expect(ui5MockYaml.match(/name: sap-fe-mockserver/gu)).toHaveLength(1);
         expect(ui5MockYaml).toMatch(/name: ['"]@sap-ux\/mockserver-data-generator\/fe-mockserver['"]/u);

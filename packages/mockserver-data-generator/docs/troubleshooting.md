@@ -103,10 +103,12 @@ an automatic channel operation.
 
 ## Disable the provider
 
-Set `mockDataGenerator: false` for one service, or remove the
-`mockDataGenerator` configuration to return to the standard mockserver's
-built-in behavior. Keep the existing `sap-fe-mockserver` middleware and
-`start-mock` command; do not add a second middleware or start command.
+Run `npm run start-mock` without `--mockgen` to use the standard mockserver's
+built-in behavior for that launch. To remove the installed integration, use the
+development kit's guarded `--restore` flow; a service can also set
+`mockDataGenerator: false` to disable inherited provider configuration. Keep
+the existing `sap-fe-mockserver` middleware and `start-mock` command; do not add
+a second middleware or start command.
 
 ## Common degradation codes
 

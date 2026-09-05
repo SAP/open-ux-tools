@@ -81,6 +81,20 @@ function supportSurface(result: ProviderResult, logger: ReturnType<typeof hostCo
 }
 
 describe('FE provider degradation behavior', () => {
+    const originalActivation = process.env.SAP_UX_MOCKGEN_ENABLED;
+
+    beforeEach(() => {
+        process.env.SAP_UX_MOCKGEN_ENABLED = '1';
+    });
+
+    afterAll(() => {
+        if (originalActivation === undefined) {
+            delete process.env.SAP_UX_MOCKGEN_ENABLED;
+        } else {
+            process.env.SAP_UX_MOCKGEN_ENABLED = originalActivation;
+        }
+    });
+
     test('serves deterministic rows on offline first use without network access or sensitive diagnostics', async () => {
         const root = await mkdtemp(join(tmpdir(), 'mockgen-offline-first-use-'));
         const manifestPath = join(root, 'manifest.json');

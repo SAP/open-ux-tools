@@ -36,11 +36,14 @@ under the operating system's temporary directory rather than inside the Fiori
 project, so server verification itself also works after the installed project
 is made read-only when its model and generated-data caches remain writable
 elsewhere. Installation and restore still require a writable application.
-Continue manual testing with the application's unchanged command:
+Continue manual testing with the application's single wrapped command. Without
+the flag it uses standard mockserver generation; with the flag it activates
+MockGen:
 
 ```bash
 cd /absolute/path/to/fiori-app
 npm run start-mock
+npm run start-mock -- --mockgen
 ```
 
 Restore installer-owned application files after testing:
@@ -137,7 +140,8 @@ For an approved remotely hosted production-format manifest, use the same CLI's
 `prepare` command instead; it downloads and verifies only the immutable sizes
 and SHA-256 values declared by that manifest.
 
-Keep the existing `sap-fe-mockserver` entry and `npm run start-mock` command.
+Keep the existing `sap-fe-mockserver` entry and single `npm run start-mock`
+command. Add `-- --mockgen` only when testing MockGen.
 This is an explicit development workflow: the kit does not contain a model
 manifest, native runtime, or model weights, and it never silently downloads them
 during installation.

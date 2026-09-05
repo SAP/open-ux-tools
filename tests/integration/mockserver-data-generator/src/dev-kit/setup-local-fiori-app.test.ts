@@ -443,11 +443,15 @@ describe('transactional local setup', () => {
         const runCanary = jest.fn(
             async (
                 _appRoot: string,
-                _options?: { expectedLearned?: boolean }
-            ): Promise<{ integrationVerified: true; learnedRuntimeVerified: true }> => ({
-                integrationVerified: true,
-                learnedRuntimeVerified: true
-            })
+                options?: { expectedLearned?: boolean; mockgenEnabled?: boolean }
+            ): Promise<Record<string, unknown>> =>
+                options?.mockgenEnabled === false
+                    ? {
+                          integrationVerified: true,
+                          providerExecuted: false,
+                          standardFallbackVerified: true
+                      }
+                    : { integrationVerified: true, providerExecuted: true, learnedRuntimeVerified: true }
         );
         const canonicalManifestPath = realpathSync(manifestPath);
         const canonicalCacheDirectory = realpathSync(cacheDirectory);
@@ -464,7 +468,15 @@ describe('transactional local setup', () => {
             runCanary
         });
 
-        expect(installed).toMatchObject({ status: 'installed', modelVerified: true });
+        expect(installed).toMatchObject({
+            status: 'installed',
+            modelVerified: true,
+            integrationVerified: true,
+            canaries: {
+                standard: { standardFallbackVerified: true },
+                mockgen: { learnedRuntimeVerified: true }
+            }
+        });
         const journal = JSON.parse(
             readFileSync(join(app, '.mockserver-data-generator-dev', 'recovery.json'), 'utf8')
         ) as { model: Record<string, unknown> };
@@ -486,7 +498,14 @@ describe('transactional local setup', () => {
         expect(runner).toHaveBeenCalledWith(
             expect.objectContaining({ args: expect.arrayContaining(['--save-exact', 'onnxruntime-node@1.24.3']) })
         );
-        expect(runCanary).toHaveBeenCalledWith(expect.any(String), { expectedLearned: true });
+        expect(runCanary).toHaveBeenNthCalledWith(1, expect.any(String), {
+            expectedLearned: false,
+            mockgenEnabled: false
+        });
+        expect(runCanary).toHaveBeenNthCalledWith(2, expect.any(String), {
+            expectedLearned: true,
+            mockgenEnabled: true
+        });
         expect(runner).toHaveBeenCalledWith(
             expect.objectContaining({
                 command: process.execPath,

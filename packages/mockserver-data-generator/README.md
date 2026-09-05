@@ -91,6 +91,22 @@ server:
 
 Per-service settings can override the global setting, and `mockDataGenerator: false` opts one service out. Developer-authored JavaScript, TypeScript, or JSON mock data always wins.
 
+The setup helper keeps one `start-mock` script and wraps its existing Fiori
+command with this package's launcher. Without the flag, the standard mockserver
+generates missing data and MockGen performs no metadata, cache, model, network,
+or generation work:
+
+```bash
+npm run start-mock
+```
+
+Append the opt-in flag after npm's argument separator to use MockGen for the
+same server process. The launcher consumes the flag before starting Fiori:
+
+```bash
+npm run start-mock -- --mockgen
+```
+
 `sftTimeoutMs` bounds each entity-level fine-tuned inference. The direct API
 defaults to 90 seconds and accepts at most 120 seconds; the standard FE host
 independently caps the complete provider epoch at 60 seconds, so a larger

@@ -4,6 +4,7 @@ import { isAbsolute, join, relative } from 'node:path';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import {
     createCanaryConfiguration,
+    createCanaryEnvironment,
     discoverCanaryTarget,
     extractCanaryTimings,
     verifyCanaryProcessEvidence,
@@ -53,7 +54,9 @@ function writeVerifiedApp(): { appRoot: string; packages: ExpectedPackage[] } {
         join(appRoot, 'package.json'),
         `${JSON.stringify(
             {
-                scripts: { 'start-mock': 'fiori run --config ./ui5-mock.yaml' },
+                scripts: {
+                    'start-mock': 'mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml'
+                },
                 devDependencies: Object.fromEntries(packages.map((entry) => [entry.packageName, entry.specification])),
                 ui5: { dependencies: ['@sap-ux/ui5-middleware-fe-mockserver'] }
             },
@@ -110,6 +113,16 @@ describe('installed application verification', () => {
         writeFileSync(packageJsonPath, JSON.stringify(packageJson));
 
         expect(() => verifyInstalledApplication(fixture.appRoot, fixture.packages)).toThrow(/ui5\.dependencies/i);
+    });
+
+    test('rejects an unwrapped start-mock script', () => {
+        const fixture = writeVerifiedApp();
+        const packageJsonPath = join(fixture.appRoot, 'package.json');
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+        packageJson.scripts['start-mock'] = 'fiori run --config ./ui5-mock.yaml';
+        writeFileSync(packageJsonPath, JSON.stringify(packageJson));
+
+        expect(() => verifyInstalledApplication(fixture.appRoot, fixture.packages)).toThrow(/mockgen launcher/i);
     });
 
     test('rejects an installed package with a missing conditional export target', () => {
@@ -249,6 +262,29 @@ describe('canary process evidence', () => {
 
     test('accepts provider evidence for the deterministic development path', () => {
         expect(verifyCanaryProcessEvidence(providerEvidence, 'Products')).toEqual({ providerExecuted: true });
+    });
+
+    test('proves the standard fallback without accepting provider-generation evidence', () => {
+        expect(verifyCanaryProcessEvidence('Missing mockdata will be generated', 'Products', false, false)).toEqual({
+            providerExecuted: false,
+            standardFallbackVerified: true
+        });
+        expect(() => verifyCanaryProcessEvidence(providerEvidence, 'Products', false, false)).toThrow(
+            /unexpectedly published/i
+        );
+    });
+
+    test('overwrites ambient activation explicitly for each canary', () => {
+        expect(createCanaryEnvironment(false, { PATH: '/test/bin', SAP_UX_MOCKGEN_ENABLED: '1' })).toEqual({
+            PATH: '/test/bin',
+            SAP_UX_MOCKGEN_ENABLED: '0',
+            BROWSER: 'none'
+        });
+        expect(createCanaryEnvironment(true, { PATH: '/test/bin' })).toEqual({
+            PATH: '/test/bin',
+            SAP_UX_MOCKGEN_ENABLED: '1',
+            BROWSER: 'none'
+        });
     });
 
     test('requires classifier and SFT readiness for the learned development path', () => {

@@ -7,7 +7,8 @@ developer-authored mock-data source.
 
 The package is not middleware. Applications continue to use one
 `sap-fe-mockserver`, one `ui5-mock.yaml`, and their existing `start-mock`
-command.
+command. That command uses the standard generator by default; appending
+`--mockgen` enables this provider for one launch.
 
 ## System boundary
 
@@ -107,7 +108,9 @@ publication. Warm offline verification performs no network request.
 
 `onnxruntime-node` is an optional peer dependency. Importing the public package
 or constructing the provider performs no network access, model loading, or
-generation. A service adapter loads its learned runtime lazily after a verified
+generation. Without launcher activation, `generate` also returns immediately
+without parsing metadata or touching cache/model/network state. An activated
+service adapter loads its learned runtime lazily after a verified
 generated-data cache miss and releases owned sessions during disposal.
 
 Whole-service generated snapshots use a separate bounded cache. Its key binds

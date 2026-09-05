@@ -2,4 +2,4 @@
 '@sap-ux/mockserver-data-generator': minor
 ---
 
-FEAT: Add an opt-in context-aware data generator for the standard SAP Fiori mockserver.
+FEAT: Add a context-aware data generator for the standard SAP Fiori mockserver, activated with `npm run start-mock -- --mockgen`.
