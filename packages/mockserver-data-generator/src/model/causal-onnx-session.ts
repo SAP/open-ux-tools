@@ -88,15 +88,15 @@ export async function createCausalOnnxSession(options: CreateCausalOnnxSessionOp
         run: async (input: CausalLmInputs) => {
             const sequenceLength = input.inputIds.length;
             const feeds: Record<string, CausalOnnxTensor> = {
-                input_ids: options.backend.tensor('int64', BigInt64Array.from(input.inputIds, BigInt), [
+                'input_ids': options.backend.tensor('int64', BigInt64Array.from(input.inputIds, BigInt), [
                     1,
                     sequenceLength
                 ]),
-                attention_mask: options.backend.tensor('int64', BigInt64Array.from(input.attentionMask, BigInt), [
+                'attention_mask': options.backend.tensor('int64', BigInt64Array.from(input.attentionMask, BigInt), [
                     1,
                     input.attentionMask.length
                 ]),
-                position_ids: options.backend.tensor('int64', BigInt64Array.from(input.positionIds, BigInt), [
+                'position_ids': options.backend.tensor('int64', BigInt64Array.from(input.positionIds, BigInt), [
                     1,
                     sequenceLength
                 ])

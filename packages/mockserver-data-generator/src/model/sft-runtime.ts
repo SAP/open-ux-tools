@@ -176,7 +176,7 @@ function abortContext(parent: AbortSignal, budgetMs: number): { signal: AbortSig
     timer.unref();
     return {
         signal: controller.signal,
-        dispose: () => {
+        dispose: (): void => {
             clearTimeout(timer);
             parent.removeEventListener('abort', abortFromParent);
         }
@@ -297,13 +297,11 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                                 `SFT generation failed for row ${rowIndex + 1}, chunk ${chunkIndex + 1}/${fieldChunks.length}: ${reason}`,
                                 { cause: error }
                             );
-                            if (
-                                typeof error === 'object' &&
-                                error !== null &&
-                                'code' in error &&
-                                typeof error.code === 'string'
-                            ) {
-                                Object.assign(failure, { code: error.code });
+                            if (typeof error === 'object' && error !== null && 'code' in error) {
+                                const code = Reflect.get(error, 'code') as unknown;
+                                if (typeof code === 'string') {
+                                    Object.assign(failure, { code });
+                                }
                             }
                             throw failure;
                         }

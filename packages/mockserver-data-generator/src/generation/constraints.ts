@@ -89,5 +89,7 @@ export function propertyValueIsValid(property: SchemaProperty, value: unknown): 
             return typeof value === 'string' && dateTimeIsValid(value, true);
         case 'time':
             return typeof value === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(value);
+        default:
+            return false;
     }
 }

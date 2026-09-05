@@ -288,7 +288,7 @@ function isGenerationCancellation(error: unknown, signal: AbortSignal): boolean 
     return true;
 }
 
-/** CommonJS provider constructor loaded by @sap-ux/fe-mockserver-core. */
+/** CommonJS provider constructor loaded by `@sap-ux/fe-mockserver-core`. */
 class FeMockserverDataGenerator {
     public readonly apiVersion = 1 as const;
     private readonly configuration: ProviderConfiguration;

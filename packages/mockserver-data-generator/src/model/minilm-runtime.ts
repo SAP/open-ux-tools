@@ -84,17 +84,17 @@ export async function createMiniLmTextEmbedder(options: CreateMiniLmTextEmbedder
                     const sequenceLength = encoded.inputIds.length;
                     const dimensions = [1, sequenceLength];
                     const output = await session.run({
-                        input_ids: options.backend.tensor(
+                        'input_ids': options.backend.tensor(
                             'int64',
                             BigInt64Array.from(encoded.inputIds, BigInt),
                             dimensions
                         ),
-                        attention_mask: options.backend.tensor(
+                        'attention_mask': options.backend.tensor(
                             'int64',
                             BigInt64Array.from(encoded.attentionMask, BigInt),
                             dimensions
                         ),
-                        token_type_ids: options.backend.tensor(
+                        'token_type_ids': options.backend.tensor(
                             'int64',
                             BigInt64Array.from(encoded.tokenTypeIds, BigInt),
                             dimensions

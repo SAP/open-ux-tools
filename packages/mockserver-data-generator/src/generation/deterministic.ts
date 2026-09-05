@@ -100,6 +100,8 @@ function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: numbe
             return property.maxLength === undefined
                 ? `K${ordinal.toString(36)}`
                 : ordinal.toString(36).padStart(property.maxLength, '0').slice(-property.maxLength);
+        default:
+            throw new TypeError('Unsupported primitive key type');
     }
 }
 
@@ -171,6 +173,8 @@ function valueFor(
             return Buffer.from(`${entity.name}:${rowIndex + 1}`).toString('base64');
         case 'string':
             return stringValue(entity, property, rowIndex, hash);
+        default:
+            throw new TypeError('Unsupported primitive property type');
     }
 }
 
@@ -288,7 +292,10 @@ function valueSignature(value: JsonValue): string {
     return `${typeof value}:${JSON.stringify(value)}`;
 }
 
-function assignmentSignature(assignment: Readonly<Record<string, JsonValue>>, propertyNames: ReadonlyArray<string>) {
+function assignmentSignature(
+    assignment: Readonly<Record<string, JsonValue>>,
+    propertyNames: ReadonlyArray<string>
+): string {
     return propertyNames.map((name) => `${name}=${valueSignature(assignment[name])}`).join('|');
 }
 

@@ -18,7 +18,8 @@ function typeName(value: unknown): string {
         return value;
     }
     if (isRecord(value) && Array.isArray(value.ref)) {
-        const last = value.ref.at(-1);
+        const reference = value.ref as unknown[];
+        const last = reference.at(-1);
         return typeof last === 'string' ? last : '';
     }
     return '';
@@ -94,7 +95,7 @@ function resolveElement(
         return element;
     }
     const definition = definitions[name];
-    if (!definition || definition.type === undefined) {
+    if (definition?.type === undefined) {
         return element;
     }
     const inherited = resolveElement(definition, definitions, new Set(visited).add(name));
@@ -204,7 +205,8 @@ export function parseCsn(content: string): SchemaGraph {
                 if (!isRecord(key) || !Array.isArray(key.ref)) {
                     continue;
                 }
-                const targetProperty = key.ref.at(-1);
+                const reference = key.ref as unknown[];
+                const targetProperty = reference.at(-1);
                 if (typeof targetProperty !== 'string') {
                     continue;
                 }

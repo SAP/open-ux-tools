@@ -175,8 +175,8 @@ function boundedSignal(
     timer.unref();
     return {
         signal: controller.signal,
-        abort: (reason) => controller.abort(reason),
-        dispose: () => {
+        abort: (reason): void => controller.abort(reason),
+        dispose: (): void => {
             clearTimeout(timer);
             parent?.removeEventListener('abort', abortFromParent);
         }
@@ -432,7 +432,7 @@ function keepLockAlive(
     };
     schedule();
     return {
-        dispose: async () => {
+        dispose: async (): Promise<void> => {
             stopped = true;
             clearTimeout(timer);
             await pending;

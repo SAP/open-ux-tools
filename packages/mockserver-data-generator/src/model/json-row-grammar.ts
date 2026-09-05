@@ -137,6 +137,8 @@ function characterAllowed(state: JsonRowGrammarState, character: string): boolea
             );
         case 'done':
             return false;
+        default:
+            return false;
     }
 }
 
@@ -230,6 +232,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
             }
             return state;
         case 'done':
+            return state;
+        default:
             return state;
     }
 }
