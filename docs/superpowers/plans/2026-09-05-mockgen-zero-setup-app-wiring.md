@@ -451,7 +451,7 @@ npm run start-mock -- --mockgen
 Expected: the first command performs no provider/model/cache/network work; the
 second invokes exactly one provider and preserves authored mock data.
 
-- [ ] **Step 5: Push without creating a pull request**
+- [x] **Step 5: Push without creating a pull request**
 
 ```bash
 git status --short --branch
