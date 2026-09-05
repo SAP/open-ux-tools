@@ -28,6 +28,7 @@ type PathsFor<T extends Ui5Document['type']> =
  *
  */
 const PATH_MAPPING_DEFAULTS: { [K in Ui5Document['type']]: Required<PathsFor<K>> } = {
+    component: { src: 'src', test: 'test' },
     application: { webapp: DirName.Webapp },
     library: { src: 'src', test: 'test' },
     'theme-library': { src: 'src', test: 'test' },
@@ -49,11 +50,20 @@ async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
 /**
  * Get path to webapp.
  *
+ * For UI5 project type 'application', returns the configured `webapp` path (default: `webapp/`).
+ * For UI5 project type 'component', returns the configured `src` path (default: `src/`), treating it
+ * as the source root for compatibility with tooling that expects a webapp-like path.
+ * Callers that need the test path for component projects should use {@link getWebappTestPath} instead.
+ *
  * @param appRoot - root to the application
  * @param [memFs] - optional mem-fs editor instance
- * @returns - path to webapp folder
+ * @returns - path to webapp folder (or src folder for component projects)
  */
 export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
+    // Shortcut: if no ui5.yaml exists, skip YAML parsing and use the default webapp path
+    if (!(await fileExists(join(appRoot, FileName.Ui5Yaml), memFs))) {
+        return join(appRoot, DirName.Webapp);
+    }
     let pathMappings;
     try {
         pathMappings = await getPathMappings(appRoot, memFs);
@@ -61,7 +71,46 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
         // For backward compatibility ignore errors and use default
         pathMappings = {} as PathMappings;
     }
-    return 'webapp' in pathMappings ? pathMappings.webapp : join(appRoot, DirName.Webapp);
+    if ('webapp' in pathMappings) {
+        return pathMappings.webapp;
+    } else if ('src' in pathMappings) {
+        // For component projects, treat 'src' as 'webapp' for compatibility with tooling expecting 'webapp'
+        // Related to UI5 CLI v5 where project type 'application' migrated to 'component'
+        return pathMappings.src;
+    }
+    return join(appRoot, DirName.Webapp);
+}
+
+/**
+ * Get path to test.
+ *
+ * For UI5 project type 'application', returns `<webapp>/test/` (default: `webapp/test/`).
+ * For UI5 project type 'component', returns the configured `test` path (default: `test/`) directly,
+ * as component projects keep test files in a top-level `test/` folder separate from `src/`.
+ *
+ * @param appRoot - root to the application
+ * @param [memFs] - optional mem-fs editor instance
+ * @returns - path to test folder
+ */
+export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promise<string> {
+    // Shortcut: if no ui5.yaml exists, skip YAML parsing and use the default test path
+    if (!(await fileExists(join(appRoot, FileName.Ui5Yaml), memFs))) {
+        return join(appRoot, DirName.Webapp, 'test');
+    }
+    let pathMappings;
+    try {
+        pathMappings = await getPathMappings(appRoot, memFs);
+    } catch {
+        // For backward compatibility ignore errors and use default
+        pathMappings = {} as PathMappings;
+    }
+    if ('test' in pathMappings) {
+        return pathMappings.test;
+    }
+    if ('webapp' in pathMappings) {
+        return join(pathMappings.webapp, 'test');
+    }
+    return join(appRoot, DirName.Webapp, 'test');
 }
 
 /**
@@ -69,7 +118,7 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
  *
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
- * @param fileName - optional name of yaml file to be read. Defaults to 'ui5.yaml'.
+ * @param fileName - optional name of the yaml file to be read. Defaults to 'ui5.yaml'.
  * @returns - path mappings
  * @throws {Error} if ui5.yaml or 'type' cannot be read
  * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
@@ -98,7 +147,7 @@ export async function getPathMappings(
 
     // Use Record<string, string> to permit index access during the merge loop
     const result: Record<string, string> = {};
-    const configPaths = (configuration?.paths || {}) as Record<string, string>;
+    const configPaths = (configuration?.paths ?? {}) as Record<string, string>;
     const defaults = PATH_MAPPING_DEFAULTS[type] as Record<string, string>;
 
     for (const key in defaults) {

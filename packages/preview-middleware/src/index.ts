@@ -5,7 +5,9 @@ export {
     getPreviewPaths,
     sanitizeRtaConfig,
     logRemoteUrl,
-    isRemoteConnectionsEnabled
+    isRemoteConnectionsEnabled,
+    getResourcesPathPrefix,
+    getTestResourcesPathPrefix
 } from './base/index.js';
 export type {
     FlpConfig,

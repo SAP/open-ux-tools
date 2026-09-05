@@ -1,0 +1,8 @@
+{
+    "extends": "../tsconfig.json",
+    "include": ["../../../types/ui5.d.ts", "../../../types/mem-fs-editor.d.ts", "../test", "../src"],
+    "compilerOptions": {
+        "rootDir": "..",
+        "noEmit": true
+    }
+}
