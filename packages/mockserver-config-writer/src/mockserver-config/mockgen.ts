@@ -6,12 +6,49 @@ export const MOCKGEN_VERSION = '0.1.0';
 export const MOCKGEN_PROVIDER = '@sap-ux/mockserver-data-generator/fe-mockserver';
 export const MOCKGEN_LAUNCHER_PREFIX = 'mockserver-data-generator start -- ';
 
-type ShellQuote = "'" | '"';
+type ShellQuote = '"';
+
+const PERSISTED_MOCKGEN_FLAG = /(?:^|\s)(?:--mockgen|'--mockgen'|"--mockgen")(?=\s|$)/u;
+const UNSAFE_UNQUOTED_CHARACTERS = new Set([
+    '&',
+    '|',
+    ';',
+    '<',
+    '>',
+    '`',
+    '$',
+    '#',
+    '\\',
+    '(',
+    ')',
+    '%',
+    '!',
+    '^',
+    '{',
+    '}',
+    '[',
+    ']',
+    '*',
+    '?',
+    '~',
+    "'"
+]);
 
 interface CommandParseState {
     quote?: ShellQuote;
     word: string;
     wordStarted: boolean;
+}
+
+/**
+ * Check for line-breaking or platform-specific whitespace that cannot be
+ * preserved as an argument separator across npm shells.
+ *
+ * @param command package script
+ * @returns whether unsafe whitespace is present
+ */
+export function hasUnsafeCommandWhitespace(command: string): boolean {
+    return [...command].some((character) => /\s/u.test(character) && character !== ' ' && character !== '\t');
 }
 
 /**
@@ -24,7 +61,15 @@ interface CommandParseState {
 function consumeQuotedCharacter(state: CommandParseState, character: string): boolean {
     if (character === state.quote) {
         state.quote = undefined;
-    } else if (state.quote === '"' && (character === '$' || character === '`' || character === '\\')) {
+    } else if (
+        state.quote === '"' &&
+        (character === '$' ||
+            character === '`' ||
+            character === '\\' ||
+            character === '%' ||
+            character === '!' ||
+            character === '^')
+    ) {
         return false;
     } else {
         state.word += character;
@@ -71,16 +116,18 @@ function parseSimpleCommand(command: string): string[] | undefined {
     const words: string[] = [];
     const state: CommandParseState = { word: '', wordStarted: false };
     for (const character of command) {
-        if (state.quote !== undefined) {
+        if (hasUnsafeCommandWhitespace(character)) {
+            return undefined;
+        } else if (state.quote !== undefined) {
             if (!consumeQuotedCharacter(state, character)) {
                 return undefined;
             }
-        } else if (/\s/u.test(character)) {
+        } else if (character === ' ' || character === '\t') {
             finishWord(words, state);
-        } else if (character === "'" || character === '"') {
+        } else if (character === '"') {
             state.quote = character;
             state.wordStarted = true;
-        } else if (/[&|;<>`$#\\]/u.test(character)) {
+        } else if (UNSAFE_UNQUOTED_CHARACTERS.has(character)) {
             return undefined;
         } else {
             state.word += character;
@@ -104,10 +151,10 @@ function parseSimpleCommand(command: string): string[] | undefined {
  */
 export function canUseMockgenLauncher(script: string): boolean {
     const command = script.startsWith(MOCKGEN_LAUNCHER_PREFIX) ? script.slice(MOCKGEN_LAUNCHER_PREFIX.length) : script;
-    const words = parseSimpleCommand(command);
-    if (words?.includes('--mockgen')) {
+    if (PERSISTED_MOCKGEN_FLAG.test(command)) {
         throw new Error('The persisted start-mock command must not contain --mockgen');
     }
+    const words = parseSimpleCommand(command);
     return words?.[0] === 'fiori' && words[1] === 'run';
 }
 

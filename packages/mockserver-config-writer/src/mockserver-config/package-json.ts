@@ -5,6 +5,7 @@ import type { PackageJsonMockConfig } from '../types/index.js';
 import {
     addMockgenLauncher,
     canUseMockgenLauncher,
+    hasUnsafeCommandWhitespace,
     MOCKGEN_MODULE,
     MOCKGEN_VERSION,
     removeMockgenLauncher,
@@ -77,11 +78,15 @@ function enhanceDependencies(
  */
 function enhanceScripts(fs: Editor, packageJson: Package, mockgenSupported: boolean): boolean {
     packageJson.scripts ||= {};
+    const sourceStart = packageJson.scripts.start;
     const startMock =
-        copyStartScript(packageJson.scripts.start) ??
+        copyStartScript(sourceStart) ??
         packageJson.scripts['start-mock'] ??
         `fiori run --config ./ui5-mock.yaml --open "/"`;
-    const mockgenEnabled = mockgenSupported && canUseMockgenLauncher(startMock);
+    const mockgenEnabled =
+        mockgenSupported &&
+        (sourceStart === undefined || !hasUnsafeCommandWhitespace(sourceStart)) &&
+        canUseMockgenLauncher(startMock);
     packageJson.scripts['start-mock'] = mockgenEnabled
         ? addMockgenLauncher(startMock)
         : removeMockgenLauncher(startMock);

@@ -75,7 +75,12 @@ describe('Test generateMockserverConfig()', () => {
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('mockDataGenerator');
     });
 
-    test('Do not partially configure MockGen for a complex start command', async () => {
+    test.each([
+        ['a shell operator', 'fiori run --config ./ui5.yaml && echo complete'],
+        ['a line break', 'fiori run --config ./ui5.yaml\necho complete'],
+        ['a subshell expression', 'fiori run --config ./ui5.yaml (echo complete)'],
+        ['Windows variable expansion', 'fiori run --config ./ui5.yaml %MOCK_ARGS%']
+    ])('Do not partially configure MockGen when start contains %s', async (_description, startCommand) => {
         const basePath = join(__dirname, '../../fixtures/bare-minimum');
         const webappPath = join(basePath, 'webapp');
         const fs = await generateMockserverConfig(basePath, { webappPath });
@@ -83,7 +88,7 @@ describe('Test generateMockserverConfig()', () => {
         const packageJson = fs.readJSON(packageJsonPath) as Package;
         packageJson.scripts = {
             ...packageJson.scripts,
-            start: 'fiori run --config ./ui5.yaml && echo complete'
+            start: startCommand
         };
         fs.writeJSON(packageJsonPath, packageJson);
 
