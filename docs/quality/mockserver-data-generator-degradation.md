@@ -53,7 +53,8 @@ frozen workspace install therefore cannot silently restore the repository-wide
 
 ## Remaining boundary
 
-These checks are local macOS evidence. Node/OS, BAS, proxy, read-only-cache,
-process-tree memory, and published-artifact validation remain release-platform
-gates. The degradation results do not replace the independent realism review
-or model-governance approval.
+These checks are local macOS evidence. Environment-proxy routing has a local
+CONNECT regression; Node/OS, BAS HTTPS proxy and certificate behavior,
+read-only-cache operation, process-tree memory, and published-artifact
+validation remain release-platform gates. The degradation results do not
+replace the independent realism review or model-governance approval.

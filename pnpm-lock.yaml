@@ -3443,6 +3443,9 @@ importers:
       fast-xml-parser:
         specifier: 5.10.1
         version: 5.10.1
+      undici:
+        specifier: 7.29.0
+        version: 7.29.0
     devDependencies:
       onnxruntime-node:
         specifier: 1.24.3

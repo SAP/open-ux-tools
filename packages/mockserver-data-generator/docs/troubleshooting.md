@@ -49,6 +49,18 @@ them after exact byte-size and SHA-256 verification. For unpublished source,
 use the repository's local/BAS development-kit setup helper instead of a
 registry `npx` command.
 
+## Proxy or certificate failure during preparation
+
+Default model preparation honors `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY`,
+including their lowercase forms. Confirm those variables in the same shell
+that runs `prepare`; do not paste proxy URLs containing credentials into issue
+reports or logs. Use `NO_PROXY` for an approved direct mirror when required.
+
+A proxy or certificate error leaves no verified partial artifact. Correct the
+environment or trust configuration and run `prepare` again. A local CONNECT
+proxy regression covers environment routing, but the project must still run an
+HTTPS proxy and certificate canary in each supported BAS environment.
+
 ## Force whole-service regeneration
 
 For one diagnostic run, set `generatedDataCache: false`. This bypasses the

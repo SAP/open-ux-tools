@@ -14,10 +14,48 @@ export interface PrepareModelCacheOptions {
     mirrorBaseUrl?: string;
 }
 
+type ArtifactFetch = (input: string, init: RequestInit) => Promise<Response>;
+
+interface ArtifactTransport {
+    fetch: ArtifactFetch;
+    dispose(): Promise<void>;
+}
+
 const delay = (milliseconds: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, milliseconds));
 const LOCK_OWNER_PREFIX = 'owner-';
 const LOCK_RECLAIM_PREFIX = '.reclaim-';
 const LOCK_RELEASE_PREFIX = '.release-';
+
+function hasEnvironmentProxy(): boolean {
+    return ['http_proxy', 'HTTP_PROXY', 'https_proxy', 'HTTPS_PROXY'].some((name) => process.env[name]?.trim().length);
+}
+
+async function createArtifactTransport(fetchImplementation?: typeof fetch): Promise<ArtifactTransport> {
+    if (fetchImplementation) {
+        return {
+            fetch: fetchImplementation,
+            dispose: async () => undefined
+        };
+    }
+    if (!hasEnvironmentProxy()) {
+        return {
+            fetch,
+            dispose: async () => undefined
+        };
+    }
+
+    const { EnvHttpProxyAgent, fetch: undiciFetch } = await import('undici');
+    const dispatcher = new EnvHttpProxyAgent();
+    return {
+        fetch: async (input, init) =>
+            (await undiciFetch(input, {
+                dispatcher,
+                redirect: init.redirect,
+                signal: init.signal
+            })) as unknown as Response,
+        dispose: () => dispatcher.close()
+    };
+}
 
 interface AcquiredLock {
     directory: string;
@@ -99,7 +137,11 @@ function secureArtifactUrl(value: string, label: string): string {
     return parsed.toString();
 }
 
-async function fetchArtifact(value: string, fetchImplementation: typeof fetch, signal: AbortSignal): Promise<Response> {
+async function fetchArtifact(
+    value: string,
+    fetchImplementation: ArtifactFetch,
+    signal: AbortSignal
+): Promise<Response> {
     let currentUrl = secureArtifactUrl(value, 'model artifact URL');
     for (let redirects = 0; redirects <= MAXIMUM_ARTIFACT_REDIRECTS; redirects += 1) {
         const response = await fetchImplementation(currentUrl, { signal, redirect: 'manual' });
@@ -417,7 +459,7 @@ async function downloadArtifact(
     cacheRoot: string,
     file: ModelArtifactFile,
     destination: string,
-    fetchImplementation: typeof fetch,
+    fetchImplementation: ArtifactFetch,
     signal: AbortSignal,
     mirrorBaseUrl: string | undefined,
     assertOwnership: () => Promise<void>
@@ -489,6 +531,7 @@ export async function prepareModelCache(
     const lockPath = join(bundleDirectory, '.acquire.lock');
     let lock: AcquiredLock | undefined;
     let lockHeartbeat: ReturnType<typeof keepLockAlive> | undefined;
+    let artifactTransport: ArtifactTransport | undefined;
     let operationFailed = false;
     try {
         lock = await acquireLock(
@@ -503,6 +546,7 @@ export async function prepareModelCache(
             await assertLockOwnership(lock);
             return afterLock;
         }
+        artifactTransport = await createArtifactTransport(options.fetch);
         for (const component of manifest.components) {
             for (const file of component.files) {
                 if (afterLock.files.get(component.id)?.has(file.role)) {
@@ -512,7 +556,7 @@ export async function prepareModelCache(
                     cacheRoot,
                     file,
                     join(bundleDirectory, file.path),
-                    options.fetch ?? fetch,
+                    artifactTransport.fetch,
                     acquisition.signal,
                     options.mirrorBaseUrl,
                     () => assertLockOwnership(lock as AcquiredLock)
@@ -530,16 +574,20 @@ export async function prepareModelCache(
         throw error;
     } finally {
         try {
-            await lockHeartbeat?.dispose();
-            if (lock) {
-                if (operationFailed) {
-                    await releaseLock(lock).catch(() => undefined);
-                } else {
-                    await releaseLock(lock);
+            try {
+                await artifactTransport?.dispose();
+            } finally {
+                await lockHeartbeat?.dispose();
+                if (lock) {
+                    if (operationFailed) {
+                        await releaseLock(lock).catch(() => undefined);
+                    } else {
+                        await releaseLock(lock);
+                    }
                 }
-            }
-            if (!operationFailed) {
-                acquisition.signal.throwIfAborted();
+                if (!operationFailed) {
+                    acquisition.signal.throwIfAborted();
+                }
             }
         } finally {
             acquisition.dispose();

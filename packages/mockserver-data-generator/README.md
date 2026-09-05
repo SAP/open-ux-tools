@@ -47,6 +47,11 @@ manifest and rejects size or SHA-256 mismatches. `verify` performs no network
 access. Command output contains bundle and component fingerprints, but not
 artifact URLs or local cache paths.
 
+When no custom fetch implementation is supplied, `prepare` honors the standard
+`HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` environment variables (including
+their lowercase forms). Proxy support is loaded only for a cache miss when a
+proxy is configured; verified warm-cache use remains network-free.
+
 After verification, configure the standard mockserver provider to use the same
 manifest and cache:
 

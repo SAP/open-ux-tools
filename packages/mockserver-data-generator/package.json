@@ -45,7 +45,8 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "fast-xml-parser": "5.10.1"
+        "fast-xml-parser": "5.10.1",
+        "undici": "7.29.0"
     },
     "peerDependencies": {
         "onnxruntime-node": ">=1.24.3 <1.25.0"

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { createServer, type Server } from 'node:http';
 import { mkdir, mkdtemp, open, readFile, readdir, rm, symlink, utimes, writeFile } from 'node:fs/promises';
+import { connect } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { prepareModelCache } from '../../src/model/downloader.js';
@@ -88,6 +89,57 @@ describe('model downloader', () => {
         expect(await readdir(modelBundleDirectory(cacheRoot, candidate), { recursive: true })).not.toEqual(
             expect.arrayContaining([expect.stringMatching(/partial|lock/)])
         );
+    });
+
+    test('routes default model acquisition through the configured environment proxy', async () => {
+        let proxyRequests = 0;
+        const proxyTargets: string[] = [];
+        const proxy = createServer();
+        proxy.on('connect', (request, clientSocket, head) => {
+            proxyRequests += 1;
+            proxyTargets.push(request.url ?? '');
+            const [host, port] = (request.url ?? '').split(':');
+            const upstream = connect(Number(port), host, () => {
+                clientSocket.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+                if (head.length > 0) {
+                    upstream.write(head);
+                }
+                upstream.pipe(clientSocket);
+                clientSocket.pipe(upstream);
+            });
+            upstream.on('error', () => clientSocket.destroy());
+        });
+        await new Promise<void>((resolve) => proxy.listen(0, '127.0.0.1', resolve));
+        const address = proxy.address();
+        if (!address || typeof address === 'string') {
+            throw new Error('proxy fixture server did not bind');
+        }
+        const environmentKeys = ['http_proxy', 'HTTP_PROXY', 'no_proxy', 'NO_PROXY'] as const;
+        const previousEnvironment = Object.fromEntries(environmentKeys.map((key) => [key, process.env[key]]));
+        const proxyUrl = `http://127.0.0.1:${address.port}`;
+        process.env.http_proxy = proxyUrl;
+        process.env.HTTP_PROXY = proxyUrl;
+        delete process.env.no_proxy;
+        delete process.env.NO_PROXY;
+        try {
+            await expect(prepareModelCache(cacheRoot, manifest(`${baseUrl}/model.onnx`))).resolves.toMatchObject({
+                ready: true
+            });
+
+            expect(proxyRequests).toBe(1);
+            expect(requests).toBe(1);
+            expect(proxyTargets).toEqual([new URL(baseUrl).host]);
+        } finally {
+            for (const key of environmentKeys) {
+                const previous = previousEnvironment[key];
+                if (previous === undefined) {
+                    delete process.env[key];
+                } else {
+                    process.env[key] = previous;
+                }
+            }
+            await new Promise<void>((resolve, reject) => proxy.close((error) => (error ? reject(error) : resolve())));
+        }
     });
 
     test('coalesces concurrent acquisition behind the bundle lock', async () => {
