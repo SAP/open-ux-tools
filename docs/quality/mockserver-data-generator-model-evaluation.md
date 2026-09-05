@@ -819,8 +819,8 @@ measurements do not substitute for evidence bound to this changed generator.
 
 The existing two-provider pilot report remains useful historical evidence: 60 fields across six domains were reviewed, 16 were rated realistic (26.67%), 10 provider disagreements were recorded, no critical issues were found, and the report failed its gate. It is not silently promoted or discarded.
 
-The production exporter generated the final blinded packet from clean package
-commit `817382b88f2cd88a84eb093410ad2a3a367b5505`. It used model manifest
+The production exporter generated the current blinded packet from clean package
+commit `2279579bdb49c7f3b04b7055dbeb5650528b0602`. It used model manifest
 SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`
 and revision `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`.
 The retained classifier fingerprint is
@@ -829,15 +829,15 @@ the retained INT8 SFT fingerprint is
 `a1502adfda71285d06e0a6efdce0c7b1219395f12476b8da8778d18e06f0fa36`.
 
 The service-disjoint cohort manifest is committed at
-`tests/integration/mockserver-data-generator/test/fixtures/realism-final-cohort-v1/final-cohort-v1.json`.
+`tests/integration/mockserver-data-generator/test/fixtures/realism-final-cohort-v1/final-cohort-v6.json`.
 It has SHA-256
-`59cf8e1fe12b06bf032e1b554a0a138cda1ced1d1fc2881a67147b1dfddb086e`.
-The canonical external outputs are `realism-evidence-v24.json` and
-`campaign-manifest-v24.json`; `realism-evidence-v25.json` is the byte-identical
-replay. The generation options are two rows per entity, seed 113, locale `en`,
-learned mode, and a 90-second SFT budget. The wider budget is scoped to the
-multi-entity campaign: it prevents wide services from being misclassified as
-model failures while every individual completion remains bounded.
+`3280657c41658ed0b3a71d30becf2861a15de980748dbd94ea3d0c3dc20db146`.
+The canonical external outputs are `realism-evidence.json` and
+`realism-campaign.json`; an independent clean replay produced byte-identical
+copies of both files. The generation options are two rows per entity, seed 113,
+locale `en`, learned mode, and a 90-second SFT budget. The wider budget is scoped
+to the multi-entity campaign: it prevents wide services from being misclassified
+as model failures while every individual completion remains bounded.
 The cohort freezes 300 scalar fields: 50 in each of finance, sales, service,
 maintenance, master-data, and non-SAP; EDMX V2 contributes 150, EDMX V4 100,
 and CSN 50. Eleven additional blinded assertion records make the provider
@@ -849,29 +849,27 @@ packet contain 311 records.
 | Generated resources           | 16/16 non-empty                                                    |
 | Structural validation         | pass                                                               |
 | Frozen coherence assertions   | 11/11 pass                                                         |
-| SFT parse gate                 | 178/178 responses (100%)                                           |
-| SFT accepted-slot fill gate    | 821/846 fields (97.04%)                                            |
+| SFT parse gate                 | 124/124 responses (100%)                                           |
+| SFT accepted-slot fill gate    | 446/462 fields (96.54%)                                            |
 | Contributing targets           | 6/6                                                                |
-| Deterministic replay           | byte-identical evidence file                                       |
+| Deterministic replay           | byte-identical evidence and campaign files                         |
 | Coverage gaps                 | 0                                                                  |
-| Candidate fingerprint         | `f15bd1de48b5371cd375d286014b06a67b8e2a01f3ade3c2460386897cdb9cc6` |
-| Evidence fingerprint          | `3b3283cb7d134fc4a26a9b250eac17c06c28847e240691e24f0ee67de7f1c2aa` |
-| Evidence file SHA-256         | `86ed29433ea71f8088c5be5fc326e9a93662939ee88edb276a9a761056382cd9` |
-| Campaign fingerprint          | `2f566106eb86195beae144eeafb573571ffa273b76d52dfa8d54aa26f55d05d8` |
-| Campaign manifest SHA-256     | `bba99441dc0af7f8a0fa71d128ef5a59495c48c744f2376d0874e5d6ecd4400c` |
+| Candidate fingerprint         | `1b602829162d68b692bba1602194845bddf8144ff4808951e808e11cddb89742` |
+| Evidence fingerprint          | `c9733f8c5a828382f0b10f5eecbbde87f0f109dec06d8cebfaf39bc3587eb541` |
+| Evidence file SHA-256         | `7c3e13aa7a3f500beb1af5d1b5d359781a70b7e93949c3daf9ea045bc618261e` |
+| Campaign fingerprint          | `680de7c40e6dfbf0cf3c91d8a10b45993359e8d5dc18df6d67feb98f8feeecd1` |
+| Campaign manifest SHA-256     | `e4a5cc6f90d75deecce7a93c90b87988d69c94793a78022a9af23d14feb7b9a6` |
 | Runtime                       | Node 22.22.2, ONNX Runtime 1.24.3, darwin-arm64                    |
 
 The exporter independently rejects incomplete model caches, partial learned
 runtimes, empty resources, and failed frozen assertions before it writes a
 packet. Independent verification re-sealed the evidence fingerprint, recomputed
-both campaign fingerprints, found no absolute local path in either
-evidence/campaign pair, and confirmed the repeated evidence files are
-byte-identical. The replay campaign manifest differs only in the evidence
-filename and the resulting campaign fingerprint, as designed. The v25 campaign
-fingerprint is
-`1ceed42cc861d5c140b2766e926d3a987cd7b80ff2e8d6ce8f40552a28e84532`
-and its file SHA-256 is
-`a40e314bc304fe4efc86e7a00dc909ed6d11ceef734bfb2437d524dcd4062871`.
+the campaign fingerprint, found no absolute local path in the evidence/campaign
+pair, and confirmed that both replay files are byte-identical. Deterministic
+semantic triage of the unchanged 311-record packet found zero high- or
+medium-severity signals. Its report has SHA-256
+`6f4a3cf99be2040d15ee13c43bef94fac26e08f0265afe816eb9b9d7c4659326`.
+This automated triage is a defect screen, not a realism judgment.
 
 This proves the local structural, relationship, coherence, runtime-binding, and
 determinism gates for the macOS development candidate. It does not prove
