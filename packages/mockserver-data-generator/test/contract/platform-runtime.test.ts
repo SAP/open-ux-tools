@@ -1,10 +1,11 @@
 import { execFile as execFileCallback } from 'node:child_process';
-import { copyFile, cp, mkdir, mkdtemp, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
-import { loadCausalOnnxBackend, loadOnnxBackend } from '../../src/index.js';
+import { loadCausalOnnxBackend, loadOnnxBackend, parseModelManifest } from '../../src/index.js';
 
 interface RuntimePackageMetadata {
     name?: unknown;
@@ -13,6 +14,8 @@ interface RuntimePackageMetadata {
 
 const require = createRequire(import.meta.url);
 const execFile = promisify(execFileCallback);
+const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const runtimeBuilderPath = join(packageRoot, 'scripts', 'build-platform-runtime.mjs');
 const MUL_MODEL_BASE64 =
     'CAMSBmNoZW50YTpwChUKAVgKAVcSAVkaBW11bF8xIgNNdWwSCG11bCB0ZXN0KiMIAwgCEAEiGAAAgD8AAABAAABAQAAAgEAAAKBAAADAQEIBV1oTCgFYEg4KDAgBEggKAggDCgIIAmITCgFZEg4KDAgBEggKAggDCgIIAkIECgAQBw==';
 const NATIVE_INFERENCE_SCRIPT = `
@@ -43,25 +46,25 @@ async function directoryBytes(directory: string): Promise<number> {
     return total;
 }
 
-async function stageCurrentRuntime(runtimeEntry: string, destination: string): Promise<string> {
-    const runtimeRoot = dirname(dirname(runtimeEntry));
-    const runtimeRequire = createRequire(runtimeEntry);
-    const commonEntry = runtimeRequire.resolve('onnxruntime-common');
-    const commonRoot = dirname(dirname(dirname(commonEntry)));
-    const runtimeDestination = join(destination, 'node_modules', 'onnxruntime-node');
-    const commonDestination = join(destination, 'node_modules', 'onnxruntime-common');
-    await mkdir(runtimeDestination, { recursive: true });
-    await Promise.all([
-        cp(join(runtimeRoot, 'dist'), join(runtimeDestination, 'dist'), { recursive: true }),
-        cp(
-            join(runtimeRoot, 'bin', 'napi-v6', process.platform, process.arch),
-            join(runtimeDestination, 'bin', 'napi-v6', process.platform, process.arch),
-            { recursive: true }
-        ),
-        copyFile(join(runtimeRoot, 'package.json'), join(runtimeDestination, 'package.json')),
-        cp(commonRoot, commonDestination, { recursive: true })
-    ]);
-    return join(runtimeDestination, 'dist', 'index.js');
+interface RuntimeArtifactReport {
+    bytes: number;
+    files: number;
+    outputDirectory: string;
+    artifact: {
+        platform: string;
+        architecture: string;
+        entry: string;
+        fingerprint: string;
+        files: ReadonlyArray<{ path: string; bytes: number; sha256: string; url: string }>;
+    };
+}
+
+interface RuntimeArtifactBuilder {
+    buildPlatformRuntimeArtifact(options: {
+        outputDirectory: string;
+        artifactBaseUrl: string;
+        sbomUrl: string;
+    }): Promise<RuntimeArtifactReport>;
 }
 
 describe('native ONNX runtime platform contract', () => {
@@ -78,9 +81,19 @@ describe('native ONNX runtime platform contract', () => {
         await writeFile(modelPath, Buffer.from(MUL_MODEL_BASE64, 'base64'));
 
         try {
-            const runtimeEntry = require.resolve('onnxruntime-node');
+            const builder = (await import(pathToFileURL(runtimeBuilderPath).href)) as RuntimeArtifactBuilder;
             const stagedRuntimeRoot = join(temporaryDirectory, 'staged-runtime');
-            const stagedRuntimeEntry = await stageCurrentRuntime(runtimeEntry, stagedRuntimeRoot);
+            const report = await builder.buildPlatformRuntimeArtifact({
+                outputDirectory: stagedRuntimeRoot,
+                artifactBaseUrl: `https://models.example.test/${'a'.repeat(64)}/`,
+                sbomUrl: `https://models.example.test/${'a'.repeat(64)}/runtime.spdx.json`
+            });
+            const repeatedReport = await builder.buildPlatformRuntimeArtifact({
+                outputDirectory: join(temporaryDirectory, 'repeated-runtime'),
+                artifactBaseUrl: `https://models.example.test/${'a'.repeat(64)}/`,
+                sbomUrl: `https://models.example.test/${'a'.repeat(64)}/runtime.spdx.json`
+            });
+            const stagedRuntimeEntry = join(report.outputDirectory, 'files', report.artifact.entry);
             const { stdout } = await execFile(
                 process.execPath,
                 ['-e', NATIVE_INFERENCE_SCRIPT, stagedRuntimeEntry, modelPath],
@@ -91,7 +104,91 @@ describe('native ONNX runtime platform contract', () => {
             );
 
             expect(JSON.parse(stdout)).toEqual({ data: [1, 4, 9, 16, 25, 36], dims: [3, 2] });
-            expect(await directoryBytes(stagedRuntimeRoot)).toBeLessThanOrEqual(64 * 1024 * 1024);
+            expect(report).toMatchObject({
+                bytes: expect.any(Number),
+                outputDirectory: stagedRuntimeRoot,
+                artifact: {
+                    platform: process.platform,
+                    architecture: process.arch,
+                    entry: expect.stringMatching(/onnxruntime-node\/dist\/index\.js$/u),
+                    fingerprint: expect.stringMatching(/^[a-f\d]{64}$/u)
+                }
+            });
+            expect(report.artifact.files).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        path: report.artifact.entry,
+                        url: expect.stringMatching(/^https:\/\/models\.example\.test\//u)
+                    })
+                ])
+            );
+            expect(repeatedReport).toMatchObject({
+                bytes: report.bytes,
+                files: report.artifact.files.length,
+                artifact: report.artifact
+            });
+            expect(await directoryBytes(join(stagedRuntimeRoot, 'files'))).toBe(report.bytes);
+            expect(report.bytes).toBeLessThanOrEqual(64 * 1024 * 1024);
+            expect(() =>
+                parseModelManifest({
+                    formatVersion: 2,
+                    bundleId: 'platform-runtime-contract',
+                    revision: 'a'.repeat(64),
+                    lifecycle: 'development',
+                    components: [
+                        {
+                            id: 'classifier',
+                            kind: 'classifier',
+                            version: '1.0.0',
+                            fingerprint: 'b'.repeat(64),
+                            files: [
+                                {
+                                    role: 'encoder',
+                                    path: 'classifier/model.onnx',
+                                    bytes: 1,
+                                    sha256: 'c'.repeat(64),
+                                    url: `https://models.example.test/${'a'.repeat(64)}/classifier/model.onnx`
+                                }
+                            ],
+                            runtime: {
+                                backend: 'onnx',
+                                package: 'onnxruntime-node',
+                                version: runtimePackage.version,
+                                inputs: ['input_ids'],
+                                outputs: ['last_hidden_state'],
+                                outputFormat: 'embedding-classifier-v2'
+                            },
+                            license: {
+                                name: 'Apache-2.0',
+                                url: 'https://models.example.test/license'
+                            },
+                            modelCardUrl: 'https://models.example.test/model-card'
+                        }
+                    ],
+                    runtimes: [report.artifact]
+                })
+            ).not.toThrow();
+            await expect(
+                builder.buildPlatformRuntimeArtifact({
+                    outputDirectory: stagedRuntimeRoot,
+                    artifactBaseUrl: `https://models.example.test/${'a'.repeat(64)}/`,
+                    sbomUrl: `https://models.example.test/${'a'.repeat(64)}/runtime.spdx.json`
+                })
+            ).rejects.toThrow(/must not already exist/u);
+            await expect(
+                builder.buildPlatformRuntimeArtifact({
+                    outputDirectory: join(temporaryDirectory, 'mutable-runtime'),
+                    artifactBaseUrl: 'https://models.example.test/latest/',
+                    sbomUrl: `https://models.example.test/${'a'.repeat(64)}/runtime.spdx.json`
+                })
+            ).rejects.toThrow(/immutable commit or content-hash/u);
+            await expect(
+                builder.buildPlatformRuntimeArtifact({
+                    outputDirectory: 'relative-runtime',
+                    artifactBaseUrl: `https://models.example.test/${'a'.repeat(64)}/`,
+                    sbomUrl: `https://models.example.test/${'a'.repeat(64)}/runtime.spdx.json`
+                })
+            ).rejects.toThrow(/absolute path/u);
 
             const classifierBackend = await loadOnnxBackend('onnxruntime-node');
             const classifierTensor = classifierBackend.tensor('int64', BigInt64Array.of(7n, 11n), [1, 2]);
