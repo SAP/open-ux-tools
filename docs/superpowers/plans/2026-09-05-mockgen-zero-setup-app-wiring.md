@@ -380,7 +380,7 @@ git commit -m "docs(mockgen): document automatic app wiring"
 
 - Verify only; no new production file is introduced by this task.
 
-- [ ] **Step 1: Run focused quality gates**
+- [x] **Step 1: Run focused quality gates**
 
 ```bash
 fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer build
@@ -393,7 +393,7 @@ fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-data-gener
 
 Expected: every command exits zero without new warnings.
 
-- [ ] **Step 2: Verify package boundaries**
+- [x] **Step 2: Verify package boundaries**
 
 ```bash
 fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-data-generator check:package
@@ -403,7 +403,7 @@ git diff --check
 Expected: the generator tarball remains below 5 MiB and contains no model or
 runtime binary; the writer only emits the npm dependency string.
 
-- [ ] **Step 3: Re-run the development-kit boundary tests**
+- [x] **Step 3: Re-run the development-kit boundary tests**
 
 ```bash
 fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test \
@@ -414,7 +414,7 @@ Expected: the development kit replaces the registry dependency with its local
 tarball, keeps exactly one provider and launcher, and preserves the original
 generated command.
 
-- [ ] **Step 4: Rebuild the unpublished development kit**
+- [x] **Step 4: Rebuild the unpublished development kit**
 
 ```bash
 fnm exec --using=22.22.3 -- corepack pnpm mockserver-data-generator:dev-kit -- \
