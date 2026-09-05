@@ -367,6 +367,14 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
+    "description": "Defines whether the user can group data of a given table.",
+    "functionalityId": Array [
+      "table",
+      "personalization",
+      "group",
+    ],
+  },
+  Object {
     "description": "With quickVariantSelection you can switch to multiple views (single table mode). It links to a SelectionVariant (filters) or SelectionPresentationVariant (filters and sorters) that you have added to your annotations.",
     "functionalityId": Array [
       "TravelList",

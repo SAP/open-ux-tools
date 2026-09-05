@@ -1,6 +1,5 @@
 import type { JSONSchema7 } from 'json-schema';
-import uxSpec from '@sap/ux-specification';
-const { DirName, SchemaType, PageTypeV4, FileName } = uxSpec;
+import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification';
 import type {
     v4,
     ExportParametersV4Type,
