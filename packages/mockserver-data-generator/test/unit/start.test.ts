@@ -13,7 +13,9 @@ describe('start-mock launcher', () => {
         expect(
             parseStartCommand(['start', '--', 'fiori', 'run', '--config', './ui5-mock.yaml'], {
                 PATH: '/test/bin',
-                SAP_UX_MOCKGEN_ENABLED: '1'
+                SAP_UX_MOCKGEN_ENABLED: '1',
+                SAP_UX_MOCKGEN_MODEL_MANIFEST: '/untrusted/model-manifest.json',
+                SAP_UX_MOCKGEN_MODEL_CACHE: '/untrusted/cache'
             })
         ).toEqual({
             command: 'fiori',
@@ -62,6 +64,16 @@ describe('start-mock launcher', () => {
         const child = childProcess();
         const events: string[] = [];
         const assertHostCompatibility = jest.fn(() => events.push('compatibility'));
+        const prepareModelArtifacts = jest.fn(async (onStatus: (message: string) => void) => {
+            events.push('prepare-model');
+            onStatus('MOCKGEN_MODEL_CACHE_CHECKING');
+            onStatus('MOCKGEN_MODEL_CACHE_READY');
+            return {
+                manifestPath: '/managed/model-manifest.json',
+                cacheRoot: '/managed/model-cache'
+            };
+        });
+        const info = jest.fn();
         const spawn = jest.fn(() => {
             events.push('spawn');
             return child;
@@ -70,14 +82,24 @@ describe('start-mock launcher', () => {
         const completion = executeStartCommand(['start', '--', 'fiori', 'run', '--mockgen'], {
             assertHostCompatibility,
             env: { PATH: '/test/bin' },
+            info,
+            prepareModelArtifacts,
             signalSource,
             spawn
-        });
+        } as Parameters<typeof executeStartCommand>[1]);
 
-        expect(events).toEqual(['compatibility', 'spawn']);
+        await Promise.resolve();
+        expect(events).toEqual(['compatibility', 'prepare-model', 'spawn']);
         expect(assertHostCompatibility).toHaveBeenCalledTimes(1);
+        expect(prepareModelArtifacts).toHaveBeenCalledTimes(1);
+        expect(info.mock.calls).toEqual([['MOCKGEN_MODEL_CACHE_CHECKING'], ['MOCKGEN_MODEL_CACHE_READY']]);
         expect(spawn).toHaveBeenCalledWith('fiori', ['run'], {
-            env: { PATH: '/test/bin', SAP_UX_MOCKGEN_ENABLED: '1' },
+            env: {
+                PATH: '/test/bin',
+                SAP_UX_MOCKGEN_ENABLED: '1',
+                SAP_UX_MOCKGEN_MODEL_CACHE: '/managed/model-cache',
+                SAP_UX_MOCKGEN_MODEL_MANIFEST: '/managed/model-manifest.json'
+            },
             shell: false,
             stdio: 'inherit'
         });
@@ -114,6 +136,38 @@ describe('start-mock launcher', () => {
             })
         ).rejects.toThrow('MockGen host compatibility failed');
         expect(spawn).not.toHaveBeenCalled();
+    });
+
+    test('starts Fiori deterministically when automatic model acquisition fails', async () => {
+        const child = childProcess();
+        const spawn = jest.fn(() => child);
+        const warn = jest.fn();
+        const completion = executeStartCommand(['start', '--', 'fiori', 'run', '--mockgen'], {
+            assertHostCompatibility: () => undefined,
+            prepareModelArtifacts: async () => {
+                throw new Error('private failure at /Users/developer/model');
+            },
+            spawn,
+            warn
+        } as Parameters<typeof executeStartCommand>[1]);
+
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(warn).toHaveBeenCalledWith(
+            'MODEL_ACQUISITION_FAILED: learned generation is unavailable; deterministic generation remains active.'
+        );
+        expect(spawn).toHaveBeenCalledWith(
+            'fiori',
+            ['run'],
+            expect.objectContaining({
+                env: expect.objectContaining({ SAP_UX_MOCKGEN_ENABLED: '1' })
+            })
+        );
+        expect(spawn.mock.calls[0]?.[2].env).not.toHaveProperty('SAP_UX_MOCKGEN_MODEL_MANIFEST');
+        expect(spawn.mock.calls[0]?.[2].env).not.toHaveProperty('SAP_UX_MOCKGEN_MODEL_CACHE');
+
+        child.emit('close', 0, null);
+        await expect(completion).resolves.toBe(0);
     });
 
     test.each(['SIGINT', 'SIGTERM', 'SIGHUP'] as const)('forwards %s and maps a signalled exit', async (signal) => {

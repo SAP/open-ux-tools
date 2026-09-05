@@ -2,9 +2,14 @@ import type { ChildProcess } from 'node:child_process';
 import type { EventEmitter } from 'node:events';
 import crossSpawn from 'cross-spawn';
 import { assertCompatibleMockserver } from './host-compatibility.js';
+import type { PreparedModelArtifacts } from './model/release.js';
 
 const ACTIVATION_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_ENABLED';
+const MODEL_MANIFEST_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_MANIFEST';
+const MODEL_CACHE_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_CACHE';
 const FORWARDED_SIGNALS = ['SIGINT', 'SIGTERM', 'SIGHUP'] as const;
+const MODEL_ACQUISITION_WARNING =
+    'MODEL_ACQUISITION_FAILED: learned generation is unavailable; deterministic generation remains active.';
 
 type ForwardedSignal = (typeof FORWARDED_SIGNALS)[number];
 
@@ -22,12 +27,16 @@ interface StartSpawnOptions {
 }
 
 type StartSpawn = (command: string, args: ReadonlyArray<string>, options: StartSpawnOptions) => ChildProcess;
+type ModelStatusReporter = (message: string) => void;
 
 interface StartCommandDependencies {
     assertHostCompatibility?: () => void;
     env?: NodeJS.ProcessEnv;
+    info?: ModelStatusReporter;
+    prepareModelArtifacts?: (onStatus: ModelStatusReporter) => Promise<PreparedModelArtifacts | undefined>;
     signalSource?: StartSignalSource;
     spawn?: StartSpawn;
+    warn?: (message: string) => void;
 }
 
 export interface ParsedStartCommand {
@@ -61,13 +70,14 @@ export function parseStartCommand(
         throw new TypeError('--mockgen may be specified only once');
     }
     const mockgenEnabled = activationFlags.length === 1;
+    const environment = { ...parentEnvironment };
+    delete environment[MODEL_MANIFEST_ENVIRONMENT_VARIABLE];
+    delete environment[MODEL_CACHE_ENVIRONMENT_VARIABLE];
+    environment[ACTIVATION_ENVIRONMENT_VARIABLE] = mockgenEnabled ? '1' : '0';
     return Object.freeze({
         command,
         args: Object.freeze(childArguments.filter((argument) => argument !== '--mockgen')),
-        env: Object.freeze({
-            ...parentEnvironment,
-            [ACTIVATION_ENVIRONMENT_VARIABLE]: mockgenEnabled ? '1' : '0'
-        }),
+        env: Object.freeze(environment),
         mockgenEnabled
     });
 }
@@ -103,13 +113,40 @@ export async function executeStartCommand(
     dependencies: StartCommandDependencies = {}
 ): Promise<number> {
     const parsed = parseStartCommand(argv, dependencies.env ?? process.env);
+    let childEnvironment = parsed.env;
     if (parsed.mockgenEnabled) {
         (dependencies.assertHostCompatibility ?? assertCompatibleMockserver)();
+        try {
+            const info =
+                dependencies.info ??
+                ((message: string): void => {
+                    process.stdout.write(`${message}\n`);
+                });
+            const prepareModelArtifacts =
+                dependencies.prepareModelArtifacts ??
+                (async (onStatus: ModelStatusReporter): Promise<PreparedModelArtifacts | undefined> =>
+                    (await import('./model/release.js')).prepareDefaultModelArtifacts({ onStatus }));
+            const prepared = await prepareModelArtifacts(info);
+            if (prepared) {
+                childEnvironment = Object.freeze({
+                    ...parsed.env,
+                    [MODEL_MANIFEST_ENVIRONMENT_VARIABLE]: prepared.manifestPath,
+                    [MODEL_CACHE_ENVIRONMENT_VARIABLE]: prepared.cacheRoot
+                });
+            }
+        } catch {
+            const warn =
+                dependencies.warn ??
+                ((message: string): void => {
+                    process.stderr.write(`${message}\n`);
+                });
+            warn(MODEL_ACQUISITION_WARNING);
+        }
     }
     const spawn = dependencies.spawn ?? (crossSpawn as StartSpawn);
     const signalSource = dependencies.signalSource ?? process;
     const child = spawn(parsed.command, parsed.args, {
-        env: parsed.env,
+        env: childEnvironment,
         shell: false,
         stdio: 'inherit'
     });

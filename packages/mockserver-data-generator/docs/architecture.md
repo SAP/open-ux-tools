@@ -102,9 +102,12 @@ context and never writes developer mock files.
 
 Classifier and SFT weights are not npm contents. An immutable model manifest
 binds every component to a revision, byte count, SHA-256 checksum, runtime
-contract, and component fingerprint. The CLI prepares model files in a local
-cache using streamed size and checksum verification followed by atomic
-publication. Warm offline verification performs no network request.
+contract, and component fingerprint. A flagged launcher resolves the manifest
+owned by its package release, verifies or prepares model files in the default
+SAP tools user cache, and then passes only cache paths to the provider. Normal
+application YAML therefore contains no model or cache paths. Preparation uses
+streamed size and checksum verification followed by atomic publication. A warm
+flagged start and offline CLI verification perform no network request.
 
 `onnxruntime-node` is an optional peer dependency. Importing the public package
 or constructing the provider performs no network access, model loading, or
@@ -112,6 +115,12 @@ generation. Without launcher activation, `generate` also returns immediately
 without parsing metadata or touching cache/model/network state. An activated
 service adapter loads its learned runtime lazily after a verified
 generated-data cache miss and releases owned sessions during disposal.
+
+The selected native runtime is not yet part of automatic acquisition. The
+upstream dependency contains multiple platforms; release needs an approved,
+signed platform-specific distribution before the launcher can acquire only the
+current platform. The measured WASM candidate did not improve total footprint
+or performance and remains a no-go.
 
 Whole-service generated snapshots use a separate bounded cache. Its key binds
 metadata, service identity, eligible targets, existing relationship context,

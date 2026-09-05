@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { prepareModelCache, type PrepareModelCacheOptions } from './model/downloader.js';
 import { parseModelManifest, type ModelManifest } from './model/manifest.js';
 import { defaultModelCacheRoot, verifyModelCache, type VerifiedModelCache } from './model/model-cache.js';
+import { defaultReleaseModelManifestPath } from './model/release.js';
 import { executeStartCommand } from './start.js';
 
 type ModelCommand = 'prepare' | 'verify';
@@ -27,6 +28,7 @@ interface ModelCommandDependencies {
     ) => Promise<VerifiedModelCache>;
     verify?: (cacheRoot: string, manifest: ModelManifest) => Promise<VerifiedModelCache>;
     defaultCacheRoot?: () => string;
+    defaultManifestPath?: () => string;
 }
 
 interface ModelComponentReport {
@@ -61,11 +63,11 @@ function usage(): string {
         '  mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml [fiori-options] [--mockgen]',
         '',
         'Prepare immutable MockGen model artifacts for later local/offline use:',
-        '  mockserver-data-generator prepare --manifest <manifest.json> [--cache <directory>] \\',
+        '  mockserver-data-generator prepare [--manifest <manifest.json>] [--cache <directory>] \\',
         '    [--mirror <https-base-url>] [--timeout-ms <milliseconds>]',
         '',
         'Verify an existing model cache without network access:',
-        '  mockserver-data-generator verify --manifest <manifest.json> [--cache <directory>]'
+        '  mockserver-data-generator verify [--manifest <manifest.json>] [--cache <directory>]'
     ].join('\n');
 }
 
@@ -100,17 +102,18 @@ function positiveTimeout(value: string | undefined): number | undefined {
     return parsed;
 }
 
-function parseCommand(argv: ReadonlyArray<string>, defaultCacheRootPath: string): ParsedModelCommand {
+function parseCommand(
+    argv: ReadonlyArray<string>,
+    defaultCacheRootPath: string,
+    defaultManifestPath: string
+): ParsedModelCommand {
     const command = argv[0];
     if (command !== 'prepare' && command !== 'verify') {
         throw new TypeError('Choose exactly one model command: prepare or verify');
     }
     const allowed = new Set(['--manifest', '--cache', '--mirror', '--timeout-ms']);
     const options = optionValues(argv, allowed);
-    const manifestPath = options.get('--manifest');
-    if (!manifestPath) {
-        throw new TypeError('--manifest is required');
-    }
+    const manifestPath = options.get('--manifest') ?? defaultManifestPath;
     const mirrorBaseUrl = options.get('--mirror');
     const acquisitionTimeoutMs = positiveTimeout(options.get('--timeout-ms'));
     if (command === 'verify' && (mirrorBaseUrl !== undefined || acquisitionTimeoutMs !== undefined)) {
@@ -184,7 +187,11 @@ export async function executeModelCommand(
     argv: ReadonlyArray<string>,
     dependencies: ModelCommandDependencies = {}
 ): Promise<ModelCommandResult> {
-    const parsed = parseCommand(argv, (dependencies.defaultCacheRoot ?? defaultModelCacheRoot)());
+    const parsed = parseCommand(
+        argv,
+        (dependencies.defaultCacheRoot ?? defaultModelCacheRoot)(),
+        (dependencies.defaultManifestPath ?? defaultReleaseModelManifestPath)()
+    );
     const manifest = await readManifest(parsed.manifestPath);
     const cache =
         parsed.command === 'prepare'

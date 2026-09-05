@@ -40,7 +40,7 @@ function fakePackage(
         join(root, 'package.json'),
         JSON.stringify({
             name: '@sap-ux/mockserver-data-generator-test',
-            version: '1.0.0',
+            version: '0.0.0',
             files: ['dist', '.mockgen-cache'],
             ...packageJson
         })
@@ -133,6 +133,27 @@ describe('published package boundary', () => {
         }
 
         expect(packageJson.files).toContain('docs');
+    });
+
+    it('publishes the release-owned model manifest without publishing model weights', () => {
+        const packageJson: unknown = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+        if (!isRecord(packageJson) || !Array.isArray(packageJson.files)) {
+            throw new Error('Package file allow-list is missing');
+        }
+
+        expect(packageJson.files).toContain('resources');
+    });
+
+    it('blocks a publishable package version when its release model manifest is absent', () => {
+        const result = runChecker(
+            fakePackage(requiredDocumentation(), {
+                version: '0.1.0',
+                files: ['dist', 'README.md', 'docs', 'resources']
+            })
+        );
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toMatch(/release model manifest/i);
     });
 
     it('publishes package security guidance linked from the README', () => {

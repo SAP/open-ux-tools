@@ -13,9 +13,10 @@ This package is under development for an initial preview. The production design 
 
 The classifier and fine-tuned generator are independently replaceable runtimes. Their large model artifacts are acquired into a checksum-verified local cache and are not published in the npm package. Any unavailable or failed learned tier degrades to usable deterministic data.
 
-Learned mode also requires the optional `onnxruntime-node` peer. Each model
-manifest pins an exact runtime version, which must match the installed runtime;
-the initial preview supports the `1.24.x` line.
+Learned mode also requires the native ONNX runtime selected for the current
+platform. Each model manifest pins an exact runtime version. The current source
+validates the `onnxruntime-node` `1.24.x` contract, but an approved
+platform-specific runtime distribution is still a release gate.
 
 The initial preview is English-first. Non-English inputs retain structural
 validation and deterministic fallback protection, but semantic quality outside
@@ -25,51 +26,60 @@ gates. Pilot measurements are retained as historical comparison evidence; the
 exact release candidate still requires its own fingerprint-bound realism
 review.
 
-## Prepare the classifier and SFT model
+## Normal Fiori developer flow
 
-The npm package contains the classifier and SFT runtimes, but not their model
-weights. Given an approved immutable manifest, prepare its checksum-bound files
-once and then verify the same cache without network access:
+The generated application already contains the small npm package as a
+development dependency. Starting normally keeps standard mockserver behavior:
 
 ```bash
-node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js prepare \
-  --manifest /absolute/path/to/model-manifest.json \
-  --cache /absolute/path/to/mockgen-model-cache
+npm run start-mock
+```
 
-node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify \
-  --manifest /absolute/path/to/model-manifest.json \
-  --cache /absolute/path/to/mockgen-model-cache
+Add the one runtime flag to use MockGen:
+
+```bash
+npm run start-mock -- --mockgen
+```
+
+The first flagged start checks the package-owned release manifest and prepares
+the classifier and SFT files in the SAP tools user cache. It reports concise
+status codes while it works. Every artifact is size- and SHA-256-verified before
+it becomes usable. Later flagged starts verify and reuse the cache without a
+network request. The application directory and authored mock data are never
+changed.
+
+If acquisition fails, Fiori still starts and MockGen uses deterministic tiers.
+The package does not run `npm install` when the flag is used: installation
+happens through the application's normal dependencies, while only large release
+artifacts are acquired on first use.
+
+An optional command is available for offline or centrally provisioned
+environments. With a released package, its manifest and cache location are the
+defaults:
+
+```bash
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js prepare
+
+node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify
 ```
 
 `prepare` accepts an optional `--mirror <https-base-url>` and a bounded
-`--timeout-ms <milliseconds>`. It downloads only the exact bytes named by the
-manifest and rejects size or SHA-256 mismatches. `verify` performs no network
-access. Command output contains bundle and component fingerprints, but not
-artifact URLs or local cache paths.
+`--timeout-ms <milliseconds>`. Internal development and controlled rollback can
+also override `--manifest` and `--cache`. `verify` performs no network access.
+Command output contains bundle and component fingerprints, but not artifact
+URLs or local cache paths.
 
 When no custom fetch implementation is supplied, `prepare` honors the standard
 `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` environment variables (including
 their lowercase forms). Proxy support is loaded only for a cache miss when a
 proxy is configured; verified warm-cache use remains network-free.
 
-After verification, configure the standard mockserver provider to use the same
-manifest and cache:
-
-```yaml
-mockDataGenerator:
-  name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-  options:
-    mode: auto
-    modelManifestPath: /absolute/path/to/model-manifest.json
-    modelCacheDirectory: /absolute/path/to/mockgen-model-cache
-    modelOffline: true
-```
-
-The application also needs the exact `onnxruntime-node` version pinned by the
-manifest when exercising learned mode. An approved public model manifest is not
-yet shipped by this package; development can use a production-format manifest
-that references approved internal or pilot-local artifacts without copying its
-weights into this repository.
+Normal applications do not configure model or cache paths in YAML. The launcher
+passes its verified cache-only state privately to the provider. This source
+package is still version `0.0.0` and intentionally has no public release
+manifest; the package check prevents a publishable version from being packed
+without one. Development can use the local/BAS kit with approved pilot-local
+artifacts until the immutable hosted bundle and platform runtime are approved.
 
 ## FE mockserver integration
 
@@ -101,7 +111,8 @@ npm run start-mock
 ```
 
 Append the opt-in flag after npm's argument separator to use MockGen for the
-same server process. The launcher consumes the flag before starting Fiori:
+same server process. The launcher consumes the flag, prepares its release-owned
+artifacts, and then starts Fiori:
 
 ```bash
 npm run start-mock -- --mockgen
@@ -115,6 +126,12 @@ path-free compatibility message. `npm run start-mock` skips this check and
 continues to use standard mock data. The host packages containing the provider
 SPI and capability marker must therefore be released before this package; the
 first compatible npm versions will be recorded after that host release exists.
+
+The current implementation automatically prepares the classifier and SFT
+artifacts. Shipping the selected native runtime in the same platform-aware flow
+remains open because the upstream runtime package contains several operating
+systems and exceeds the approved footprint. The measured WASM candidate was
+larger and slower, so it is not the fallback plan.
 
 `sftTimeoutMs` bounds each entity-level fine-tuned inference. The direct API
 defaults to 90 seconds and accepts at most 120 seconds; the standard FE host

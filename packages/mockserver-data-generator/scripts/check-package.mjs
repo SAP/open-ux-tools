@@ -133,6 +133,16 @@ function assertOperationalDocumentation(packageRoot, files, profile) {
     }
 }
 
+function assertReleaseModelManifest(packageRoot, files, profile) {
+    if (profile !== 'core') {
+        return;
+    }
+    const packageJson = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+    if (packageJson.version !== '0.0.0' && !files.includes('resources/model-manifest.json')) {
+        throw new Error('A publishable generator package is missing its release model manifest');
+    }
+}
+
 function extractPackedPackage(archivePath, temporaryDirectory, reportedFiles) {
     const entries = listArchiveLines(archivePath, '-tzf');
     const verboseEntries = listArchiveLines(archivePath, '-tvzf');
@@ -298,6 +308,7 @@ try {
     }
     assertNetworkFreePublicConstruction(process.cwd(), packedRoot, profile);
     assertOperationalDocumentation(packedRoot, files, profile);
+    assertReleaseModelManifest(packedRoot, files, profile);
     process.stdout.write(
         `${JSON.stringify({
             packageName: report.name,

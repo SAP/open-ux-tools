@@ -41,6 +41,7 @@
         "README.md",
         "docs",
         "dist",
+        "resources",
         "!dist/*.map",
         "!dist/**/*.map"
     ],

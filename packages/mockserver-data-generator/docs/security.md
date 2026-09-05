@@ -48,9 +48,17 @@ Automatic acquisition accepts manifest-declared HTTPS artifacts and permits
 loopback HTTP as a transport exception. The loopback exception applies
 independently of manifest lifecycle and cannot address a non-local host.
 Redirects are followed manually for at most five hops, and every hop must
-satisfy the same transport policy. The default acquisition limit is 30
-seconds. Bytes are streamed into a uniquely named temporary file and published
-only after exact size and checksum verification.
+satisfy the same transport policy. The low-level downloader defaults to 30
+seconds, the flagged launcher uses a bounded five-minute first-use window, and
+the explicit provisioning CLI accepts a separately bounded timeout. Bytes are
+streamed into a uniquely named temporary file and published only after exact
+size and checksum verification.
+
+The launcher owns the default manifest and cache selection. It removes any
+inherited private model-path environment values, prepares only after explicit
+`--mockgen` activation, and passes a verified cache-only selection to the child
+process. Acquisition failures are redacted to a stable warning and do not stop
+Fiori or weaken deterministic structural validation.
 
 The developer selects the cache root, which may be absolute. Manifest-owned
 artifact paths must be normalized relative paths. Before network acquisition,
@@ -71,7 +79,10 @@ runtime contract.
 For offline or controlled environments, run `mockserver-data-generator
 prepare` while network access is available and then run
 `mockserver-data-generator verify`. Verification reads the local cache and
-performs no network request.
+performs no network request. Released packages use their built-in manifest and
+default SAP tools cache when no overrides are supplied; explicit paths are a
+controlled development/provisioning interface rather than an application YAML
+requirement.
 
 ## Resource and cache controls
 

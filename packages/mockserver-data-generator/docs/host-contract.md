@@ -95,6 +95,15 @@ child, and starts the original command without a shell. The adapter returns an
 empty resource map before any generator work unless that marker is `1`, letting
 the host continue to its standard built-in fallback.
 
+For a flagged launch, the launcher first verifies or prepares the model bundle
+selected by its package-owned manifest. A successful preparation is handed to
+the child through private manifest/cache environment values and is forced into
+offline mode inside the provider. Inherited values for those private variables
+are always removed before launch. Explicit model paths remain a controlled
+development override; normal application YAML does not contain them. A failed
+preparation emits one path-free warning and still starts the child so the
+deterministic tiers remain usable.
+
 ## Adapter behavior
 
 The host creates a fresh adapter instance for each eligible initial or reload
@@ -192,6 +201,13 @@ atomically cached in the SAP/Fiori tools user-data location. Mutable model
 names such as `latest` are not accepted in application configuration. A
 missing, corrupt, slow, or offline model degrades through deterministic tiers
 without weakening structural validity.
+
+The current source implements this release-owned flow for classifier and SFT
+artifacts. A publishable package version is rejected by its package-boundary
+check unless `resources/model-manifest.json` is present. The source version
+`0.0.0` may omit it so unpublished development kits can continue to use an
+explicit approved local manifest. Platform-specific native-runtime acquisition
+remains a separate release gate.
 
 Generated whole-service snapshots use a separate 32 MiB user-data cache. Its
 key includes all material generation inputs and learned-component

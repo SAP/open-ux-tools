@@ -111,6 +111,24 @@ describe('model preparation CLI', () => {
         );
     });
 
+    test('uses the package release manifest and SAP tools cache without production path arguments', async () => {
+        const cacheRoot = join(directory, 'default-cache');
+        const prepare = jest.fn(async () => readyCache());
+
+        const result = await executeModelCommand(['prepare'], {
+            defaultCacheRoot: () => cacheRoot,
+            defaultManifestPath: () => manifestPath,
+            prepare
+        } as Parameters<typeof executeModelCommand>[1]);
+
+        expect(result.exitCode).toBe(0);
+        expect(prepare).toHaveBeenCalledWith(
+            cacheRoot,
+            expect.objectContaining({ bundleId: 'mockgen-cli-test' }),
+            expect.objectContaining({ acquisitionTimeoutMs: 1_800_000 })
+        );
+    });
+
     test('verifies offline and returns an incomplete nonzero result without exposing local paths', async () => {
         const verify = jest.fn(async (): Promise<VerifiedModelCache> =>
             Object.freeze({
