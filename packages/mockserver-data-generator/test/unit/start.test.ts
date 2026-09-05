@@ -18,7 +18,8 @@ describe('start-mock launcher', () => {
                 SAP_UX_MOCKGEN_MODEL_CACHE: '/untrusted/cache',
                 ['sap_ux_mockgen_enabled']: '1',
                 ['Sap_Ux_Mockgen_Model_Manifest']: '/untrusted/windows-manifest.json',
-                ['sap_ux_mockgen_model_cache']: '/untrusted/windows-cache'
+                ['sap_ux_mockgen_model_cache']: '/untrusted/windows-cache',
+                ['Sap_Ux_Mockgen_Model_Unavailable']: '1'
             })
         ).toEqual({
             command: 'fiori',
@@ -163,7 +164,10 @@ describe('start-mock launcher', () => {
             'fiori',
             ['run'],
             expect.objectContaining({
-                env: expect.objectContaining({ SAP_UX_MOCKGEN_ENABLED: '1' })
+                env: expect.objectContaining({
+                    SAP_UX_MOCKGEN_ENABLED: '1',
+                    SAP_UX_MOCKGEN_MODEL_UNAVAILABLE: '1'
+                })
             })
         );
         expect(spawn.mock.calls[0]?.[2].env).not.toHaveProperty('SAP_UX_MOCKGEN_MODEL_MANIFEST');

@@ -62,7 +62,7 @@ function packedFiles(report) {
 function assertPackageBoundary(packageRoot, files) {
     const canonicalRoot = realpathSync(packageRoot);
     for (const path of files) {
-        if (path.startsWith('resources/') && !ALLOWED_RESOURCE_FILES.has(path)) {
+        if (path.toLowerCase().startsWith('resources/') && !ALLOWED_RESOURCE_FILES.has(path)) {
             throw new Error(`Unexpected published resource: ${path}`);
         }
         if (

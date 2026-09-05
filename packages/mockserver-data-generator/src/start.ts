@@ -7,10 +7,12 @@ import type { PreparedModelArtifacts } from './model/release.js';
 const ACTIVATION_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_ENABLED';
 const MODEL_MANIFEST_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_MANIFEST';
 const MODEL_CACHE_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_CACHE';
+const MODEL_UNAVAILABLE_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_UNAVAILABLE';
 const PRIVATE_ENVIRONMENT_VARIABLES = new Set([
     ACTIVATION_ENVIRONMENT_VARIABLE,
     MODEL_MANIFEST_ENVIRONMENT_VARIABLE,
-    MODEL_CACHE_ENVIRONMENT_VARIABLE
+    MODEL_CACHE_ENVIRONMENT_VARIABLE,
+    MODEL_UNAVAILABLE_ENVIRONMENT_VARIABLE
 ]);
 const FORWARDED_SIGNALS = ['SIGINT', 'SIGTERM', 'SIGHUP'] as const;
 const MODEL_ACQUISITION_WARNING =
@@ -143,6 +145,10 @@ export async function executeStartCommand(
                 });
             }
         } catch {
+            childEnvironment = Object.freeze({
+                ...parsed.env,
+                [MODEL_UNAVAILABLE_ENVIRONMENT_VARIABLE]: '1'
+            });
             const warn =
                 dependencies.warn ??
                 ((message: string): void => {

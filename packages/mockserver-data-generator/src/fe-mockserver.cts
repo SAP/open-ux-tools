@@ -71,6 +71,7 @@ interface HostMockDataGenerationResult {
 const MAX_HOST_DIAGNOSTICS = 100;
 const MODEL_MANIFEST_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_MANIFEST';
 const MODEL_CACHE_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_CACHE';
+const MODEL_UNAVAILABLE_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_UNAVAILABLE';
 
 function hostDiagnostics(
     diagnostics: ReadonlyArray<MockDataGeneratorResult['diagnostics'][number]>
@@ -224,7 +225,10 @@ function parseOptions(options: ProviderOptions = {}): ProviderConfiguration {
     });
 }
 
-function launcherPreparedModel(): ProviderModelOptions | undefined {
+function launcherPreparedModel(): ProviderModelOptions | null | undefined {
+    if (process.env[MODEL_UNAVAILABLE_ENVIRONMENT_VARIABLE] === '1') {
+        return null;
+    }
     const manifestPath = process.env[MODEL_MANIFEST_ENVIRONMENT_VARIABLE];
     const cacheDirectory = process.env[MODEL_CACHE_ENVIRONMENT_VARIABLE];
     if (!manifestPath || !cacheDirectory) {
@@ -320,7 +324,10 @@ class FeMockserverDataGenerator {
     constructor(options?: ProviderOptions, dependencies: Partial<ProviderDependencies> = {}) {
         const configuration = parseOptions(options);
         const preparedModel = launcherPreparedModel();
-        this.configuration = preparedModel ? Object.freeze({ ...configuration, model: preparedModel }) : configuration;
+        this.configuration =
+            preparedModel === undefined
+                ? configuration
+                : Object.freeze({ ...configuration, model: preparedModel ?? undefined });
         this.dependencies = { ...defaultDependencies, ...dependencies };
     }
 

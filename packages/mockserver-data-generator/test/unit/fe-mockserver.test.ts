@@ -9,11 +9,13 @@ describe('standard FE mockserver provider', () => {
     const originalActivation = process.env.SAP_UX_MOCKGEN_ENABLED;
     const originalModelManifest = process.env.SAP_UX_MOCKGEN_MODEL_MANIFEST;
     const originalModelCache = process.env.SAP_UX_MOCKGEN_MODEL_CACHE;
+    const originalModelUnavailable = process.env.SAP_UX_MOCKGEN_MODEL_UNAVAILABLE;
 
     beforeEach(() => {
         process.env.SAP_UX_MOCKGEN_ENABLED = '1';
         delete process.env.SAP_UX_MOCKGEN_MODEL_MANIFEST;
         delete process.env.SAP_UX_MOCKGEN_MODEL_CACHE;
+        delete process.env.SAP_UX_MOCKGEN_MODEL_UNAVAILABLE;
     });
 
     afterAll(() => {
@@ -31,6 +33,11 @@ describe('standard FE mockserver provider', () => {
             delete process.env.SAP_UX_MOCKGEN_MODEL_CACHE;
         } else {
             process.env.SAP_UX_MOCKGEN_MODEL_CACHE = originalModelCache;
+        }
+        if (originalModelUnavailable === undefined) {
+            delete process.env.SAP_UX_MOCKGEN_MODEL_UNAVAILABLE;
+        } else {
+            process.env.SAP_UX_MOCKGEN_MODEL_UNAVAILABLE = originalModelUnavailable;
         }
     });
 
@@ -329,6 +336,33 @@ describe('standard FE mockserver provider', () => {
             },
             expect.any(AbortSignal)
         );
+    });
+
+    it('suppresses legacy online YAML model paths after launcher acquisition fails', async () => {
+        process.env.SAP_UX_MOCKGEN_MODEL_UNAVAILABLE = '1';
+        const loadRuntime = jest.fn();
+        const provider = new FeMockserverDataGenerator(
+            {
+                mode: 'learned',
+                generatedDataCache: false,
+                modelManifestPath: '/legacy/model-manifest.json',
+                modelCacheDirectory: '/legacy/model-cache',
+                modelOffline: false
+            },
+            { loadRuntime }
+        );
+
+        await provider.generate({
+            contractVersion: 1,
+            service: { urlPath: '/records', odataVersion: '4.0' },
+            metadata: `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record" /></EntityContainer><EntityType Name="Record"><Key><PropertyRef Name="ID" /></Key><Property Name="ID" Type="Edm.Int32" Nullable="false" /></EntityType></Schema></edmx:DataServices></edmx:Edmx>`,
+            targets: [{ name: 'Records', kind: 'entity-set' }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() },
+            signal: new AbortController().signal
+        });
+
+        expect(loadRuntime).not.toHaveBeenCalled();
     });
 
     it('keeps host output narrow while delegating through the instrumentable production generator', async () => {
