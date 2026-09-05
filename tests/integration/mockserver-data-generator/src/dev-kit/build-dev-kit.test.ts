@@ -26,6 +26,7 @@ const pilotBridgeEntry = fileURLToPath(
     new URL('../../../../../scripts/mockserver-data-generator-dev-kit/prepare-pilot-model-cache.mjs', import.meta.url)
 );
 const fioriFixture = fileURLToPath(new URL('../../test/fixtures/fiori-v4', import.meta.url));
+const cdsFioriFixture = fileURLToPath(new URL('../../test/fixtures/fiori-cds', import.meta.url));
 const toolsPackageManager = (
     JSON.parse(readFileSync(fileURLToPath(new URL('../../../../../package.json', import.meta.url)), 'utf8')) as {
         packageManager: string;
@@ -78,6 +79,12 @@ afterEach(() => {
 });
 
 describe('development kit artifact validation', () => {
+    test('keeps standard missing-data generation enabled in the CDS canary fixture', () => {
+        const ui5MockYaml = readFileSync(join(cdsFioriFixture, 'ui5-mock.yaml'), 'utf8');
+
+        expect(ui5MockYaml).toMatch(/configuration:\s+generateMockData: true\s+metadataProcessor:/u);
+    });
+
     test('wraps a simple Fiori start-mock script without changing its command', () => {
         const original =
             'fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html?sap-client=902&sap-ui-xx-viewCache=false"';

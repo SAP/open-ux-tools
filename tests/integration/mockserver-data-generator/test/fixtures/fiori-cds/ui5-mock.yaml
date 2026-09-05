@@ -7,6 +7,7 @@ server:
         - name: sap-fe-mockserver
           beforeMiddleware: compression
           configuration:
+              generateMockData: true
               metadataProcessor:
                   name: '@sap-ux/fe-mockserver-plugin-cds'
               services:

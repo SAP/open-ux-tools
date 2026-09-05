@@ -634,6 +634,49 @@ Verify its SHA-256 before extraction. This evidence is local macOS arm64 proof;
 it does not replace BAS, release-platform, governance, independent realism, or
 publication gates.
 
+## Approved flag-gated integration canary
+
+The clean approved branches were rebuilt after the `--mockgen` launcher was
+added and the minimal generic host extension was accepted. The same retained
+classifier and INT8 SFT cache was exercised through freshly packed application
+dependencies rather than a workspace link.
+
+- Source state: clean `SAP/open-ux-tools` commit
+  `d65f9c1b5bbea6abeb96d921c9e079a97aeddcf6` and clean
+  `SAP/open-ux-odata` commit
+  `3556f352d0e4b8f7397bd30748110d2701cf0a1a`
+- Dev-kit fingerprint:
+  `f1905ad2a4d61e1e4a0e7809fad806172d655cb98851857e7e29679e0435f44f`
+- Archive SHA-256:
+  `4cfc35715eabc367c9926d1421ec73e3015d0c6576b65624931510126926d888`
+- Archive size: 561,891 bytes; 10 entries; two clean builds were
+  byte-identical
+- Generator tarball: 92,988 bytes; SHA-256
+  `8b65059aed715880c01d931a143eb7763dcbbe87a74b3f56b8b3197d6a480289`
+- Model bridge: revision
+  `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5`,
+  manifest SHA-256
+  `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`,
+  and 192,167,584 verified cache bytes
+- OData V2, OData V4, and CDS-through-FE each passed two HTTP canaries. The
+  unflagged path returned standard generated rows with `providerExecuted:
+  false`; the MockGen path reported `providerExecuted: true`, classifier ready,
+  SFT ready, and one returned row.
+- Learned whole-service generation was 1,681.945 ms for V2, 1,841.733 ms for
+  V4, and 1,611.430 ms for CDS. These are functional samples, not a p95
+  performance campaign.
+- The literal command `npm run start-mock -- --mockgen` was started from the
+  packed V4 application and returned a `Products` row with `Safety Valve`, a
+  coherent supplier email, price, and active flag. The literal unflagged command
+  used standard generated values.
+- Handoff archive:
+  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f1905ad2a4d61e1e.tgz`
+
+The first CDS standard canary identified that its hand-written test fixture had
+not enabled the standard mockserver's `generateMockData` option. The fixture was
+corrected and both CDS paths then passed; production behavior was not weakened
+to hide the missing standard option.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,

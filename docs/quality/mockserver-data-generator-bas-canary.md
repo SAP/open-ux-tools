@@ -9,13 +9,14 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `95c2b0662d3799281e72e554d3e996c49d934817dbce0140fdae0fb4030ebc35`
-- archive SHA-256: `b7b98ea55e452c3ed1256f764eb2785b10df13af3bf0ab0dc491f35775741225`
-- archive size: 553,897 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `f1e3db0e77c83b9be6a6bff0652923da26a263a3`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-95c2b0662d379928.tgz`
+- dev-kit fingerprint: `f1905ad2a4d61e1e4a0e7809fad806172d655cb98851857e7e29679e0435f44f`
+- archive SHA-256: `4cfc35715eabc367c9926d1421ec73e3015d0c6576b65624931510126926d888`
+- archive size: 561,891 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `d65f9c1b5bbea6abeb96d921c9e079a97aeddcf6`; `SAP/open-ux-odata` `3556f352d0e4b8f7397bd30748110d2701cf0a1a`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f1905ad2a4d61e1e.tgz`
 
-This candidate includes the current classifier/SFT provider, adaptive wide-schema
+This candidate includes the flag-gated `start-mock` launcher, the current
+classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
 constrained decoder, production 300-token config, generated-data cache,
 reload-cancellation recovery, transactional installer recovery, and
@@ -71,6 +72,7 @@ tar --extract --gzip --file "$KIT_ARCHIVE" \
 node "$KIT_ROOT/setup-local-fiori-app.mjs" \
   --app "$PWD" --verify
 npm run start-mock
+npm run start-mock -- --mockgen
 ```
 
 To exercise the proven classifier/SFT path, separately transfer an authorized
@@ -93,11 +95,14 @@ node "$KIT_ROOT/setup-local-fiori-app.mjs" \
   --model-cache "$MODEL_ROOT/cache" \
   --verify
 npm run start-mock
+npm run start-mock -- --mockgen
 ```
 
 The learned `--verify` result must contain both `modelVerified: true` and
-`learnedRuntimeVerified: true`. A provider/HTTP pass without those fields is not
-a classifier/SFT BAS pass.
+`learnedRuntimeVerified: true`. The unflagged manual command must use standard
+generation; only the command with `--mockgen` may report provider/model
+execution. A provider/HTTP pass without those fields is not a classifier/SFT
+BAS pass.
 
 After manual preview testing, stop the server and restore:
 
