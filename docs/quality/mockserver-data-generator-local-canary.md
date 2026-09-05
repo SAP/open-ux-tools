@@ -954,3 +954,23 @@ preceding compatibility archive remains the V2/V4/CDS evidence; the current
 archive still requires execution in an actual BAS dev space. Docker amd64
 emulation is functional Linux x64 evidence, not native performance, BAS,
 production model, or realism qualification.
+
+## Clean Linux source-package matrix
+
+The current generator source was also verified independently of the packaged
+application canary. A clean `git archive` snapshot at
+`25eab872ca45a1e0e1e8a26d421e0e7dc24f3608` retained generator product code
+from `3af20f0d4f7e2e42c45819ed52af33aec4beb971`, used the frozen workspace lock,
+and ran in Docker `linux/amd64`.
+
+- Node 22.23.2: build passed; 30/30 suites and 289/289 tests passed; ESLint
+  finished with zero errors; the exact package check reported 76 files,
+  101,068 bytes, and a network-free core profile.
+- Node 24.20.0: the same build, 30/30-suite and 289/289-test, zero-error lint,
+  and package checks passed. The test run completed in 83.307 seconds.
+- The real `onnxruntime-node@1.24.3` native-addon contract executed inside both
+  suites. No production model download was used by this source test.
+
+This closes a clean emulated Linux x64 source-package check on both supported
+Node lines. It remains distinct from native Ubuntu CI, the full six-cell
+Node/OS matrix, native performance, and actual BAS execution.

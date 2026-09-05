@@ -1350,6 +1350,19 @@ on macOS is not native Linux performance, hosted acquisition, BAS,
 proxy/certificate, or filesystem evidence, so the corresponding full platform
 checkbox remains open.
 
+**Clean Linux x64 source-package record (2026-09-05):** A clean `git archive`
+snapshot at `25eab872ca45a1e0e1e8a26d421e0e7dc24f3608` (generator product code
+unchanged from `3af20f0d4f7e2e42c45819ed52af33aec4beb971`) was installed from the
+frozen workspace lock in Docker `linux/amd64`. On Node 22.23.2 and Node
+24.20.0, the package independently passed `tsc --build`, all 30 suites and 289
+tests including the real native-runtime contract, zero-error ESLint, and the
+exact package-boundary command. Both package checks reported 76 files, 101,068
+bytes, a 5 MiB ceiling, and a network-free core profile. The source run and the
+exact packed-application canaries together close the local emulated Linux x64
+functional cells. They do not close native Ubuntu CI, Windows, macOS x64, BAS,
+proxy/certificate, filesystem, acquisition-hosting, or native performance
+cells, so the six-way platform checkbox remains open.
+
 ### Task 12.2: Perform threat modeling and dependency review
 
 **Files:**
