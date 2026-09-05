@@ -1,6 +1,6 @@
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { isAbsolute, join, relative } from 'node:path';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import {
     createCanaryConfiguration,
@@ -171,6 +171,27 @@ describe('installed application verification', () => {
 
         canary.cleanup();
         expect(() => readFileSync(canary.path, 'utf8')).toThrow();
+    });
+
+    test('creates the canary configuration without writing inside the application', () => {
+        const fixture = writeVerifiedApp();
+        const sourcePath = join(fixture.appRoot, 'ui5-mock.yaml');
+        const source = readFileSync(sourcePath, 'utf8');
+        chmodSync(sourcePath, 0o444);
+        chmodSync(fixture.appRoot, 0o555);
+        let cleanup: () => void = () => undefined;
+        try {
+            const canary = createCanaryConfiguration(fixture.appRoot);
+            cleanup = canary.cleanup;
+            const relativeCanaryPath = relative(fixture.appRoot, canary.path);
+
+            expect(relativeCanaryPath.startsWith('..') || isAbsolute(relativeCanaryPath)).toBe(true);
+            expect(readFileSync(sourcePath, 'utf8')).toBe(source);
+        } finally {
+            cleanup();
+            chmodSync(fixture.appRoot, 0o755);
+            chmodSync(sourcePath, 0o644);
+        }
     });
 
     test('forces the learned canary to execute instead of reusing generated rows', () => {

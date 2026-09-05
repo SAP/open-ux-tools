@@ -1,7 +1,8 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 
@@ -178,9 +179,11 @@ function configureGeneratedDataCacheDirectory(lines, middlewareIndex, directory)
 }
 
 /**
- * Create an application-local copy of the UI5 configuration with mockserver
- * debug logging enabled. The canary needs this to observe host-side evidence
- * that the provider, rather than the standard fallback, supplied the rows.
+ * Create an isolated copy of the UI5 configuration with mockserver debug
+ * logging enabled. The canary needs this to observe host-side evidence that
+ * the provider, rather than the standard fallback, supplied the rows. Keeping
+ * the copy outside the application also supports verification of a read-only
+ * project checkout.
  *
  * @param {string} appRoot application root
  * @param {{expectedLearned?: boolean, generatedDataCacheDirectory?: string}} [options] canary configuration options
@@ -231,7 +234,8 @@ export function createCanaryConfiguration(appRoot, options = {}) {
     } else if (options.expectedLearned) {
         disableGeneratedDataCache(lines, middlewareIndex);
     }
-    const path = join(appRoot, `.mockserver-data-generator-canary-${randomUUID()}.yaml`);
+    const directory = mkdtempSync(join(tmpdir(), 'mockserver-data-generator-canary-'));
+    const path = join(directory, `${randomUUID()}.yaml`);
     writeFileSync(path, `${lines.join('\n').replace(/\n+$/u, '')}\n`, {
         encoding: 'utf8',
         flag: 'wx',
@@ -239,7 +243,7 @@ export function createCanaryConfiguration(appRoot, options = {}) {
     });
     return {
         path,
-        cleanup: () => rmSync(path, { force: true })
+        cleanup: () => rmSync(directory, { recursive: true, force: true })
     };
 }
 
