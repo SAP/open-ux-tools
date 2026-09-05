@@ -890,10 +890,10 @@ export type Then = Opa5 & BaseArrangements & {
             const travelListJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
             expect(travelListJourneyContent).toContain(
-                'onTable().iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+                'onTable(defaultTableId).iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
             );
             expect(travelListJourneyContent).toContain(
-                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+                'onDialog(defaultTableId).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
             );
         });
 
@@ -1424,8 +1424,12 @@ export type Then = Opa5 & BaseArrangements & {
             const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
-            expect(lrContent).toContain('onTable("").iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")');
-            expect(lrContent).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
+            expect(lrContent).toContain(
+                'onTable(defaultTableId).iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+            );
+            expect(lrContent).toContain(
+                'onDialog(defaultTableId).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
 
             // ─── No JS leakage ───
             expect(content).not.toContain('sap.ui.define');
