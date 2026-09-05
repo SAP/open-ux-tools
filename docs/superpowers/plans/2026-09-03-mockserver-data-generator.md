@@ -1232,6 +1232,15 @@ cache emits a stable warning while retaining complete generated
 rows; a genuinely read-only project/BAS filesystem still requires the platform
 matrix.
 
+**Node 24 macOS arm64 record (2026-09-05):** On macOS 26.7 arm64 with Node
+24.20.0, the generator passed 23 suites/196 tests plus build, lint, and exact
+package checks; host core passed 27 suites/359 tests/282 snapshots; and the
+middleware passed 2 suites/12 tests. The exact fingerprinted development kit
+then passed clean deterministic V4 and retained-classifier/SFT V2 installs,
+HTTP canaries, and byte-exact restores. This closes only the macOS arm64 Node 24
+cell; macOS x64, Linux, Windows, BAS, proxy, and remaining filesystem cases stay
+open.
+
 ### Task 12.2: Perform threat modeling and dependency review
 
 **Files:**

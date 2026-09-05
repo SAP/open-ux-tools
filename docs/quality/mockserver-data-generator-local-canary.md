@@ -446,6 +446,22 @@ Verify its SHA-256 before extraction. It supersedes the packaged-architecture
 archive for new local or BAS functional testing; earlier archives remain
 historical evidence.
 
+## Node 24 macOS arm64 qualification
+
+The same exact archive and retained model bundle were exercised on macOS 26.7
+arm64 with Node 24.20.0 and pnpm 11.22.0. Node 24 was run from an npm-cached
+temporary runtime and was not installed system-wide.
+
+- `@sap-ux/mockserver-data-generator`: 23 suites and 196 tests passed; clean build, zero-error lint, and the 67-file/81,861-byte package boundary passed.
+- `@sap-ux/fe-mockserver-core`: 27 suites, 359 tests, and 282 snapshots passed. The two pre-existing Jest open-handle diagnostics remained visible after the passing run.
+- `@sap-ux/ui5-middleware-fe-mockserver`: 2 suites and 12 tests passed.
+- Deterministic archive verification: a clean 614-package OData V4 install loaded exactly one `sap-fe-mockserver`; the provider executed, metadata passed, one row was returned, cache-hit generation took 16.820 ms, and host provider work took 17.526 ms.
+- Learned archive verification: a clean 635-package OData V2 install verified the retained classifier and SFT bundle, reported `modelVerified: true` and `learnedRuntimeVerified: true`, and returned one row. Runtime initialization took 1,586.570 ms, whole-service generation 2,732.794 ms, and host provider work 2,733.526 ms.
+- Both Node 24 application copies restored byte-for-byte outside disposable `node_modules`.
+
+This closes only the macOS arm64 Node 24 cell. It does not establish macOS x64,
+Linux, Windows, BAS, proxy, or read-only-filesystem compatibility.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
