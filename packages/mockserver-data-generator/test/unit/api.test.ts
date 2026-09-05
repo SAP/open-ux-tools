@@ -305,7 +305,7 @@ describe('mockserver data generator public API', () => {
         expect(first.resources.Products).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
-                    Name: expect.stringMatching(/^Product /),
+                    Name: expect.stringMatching(/^(?:Industrial Pump|Safety Valve|Service Package|Control Module)$/),
                     Price: expect.any(Number),
                     CurrencyCode: expect.stringMatching(/^[A-Z]{3}$/),
                     Available: expect.any(Boolean)

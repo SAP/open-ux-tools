@@ -72,13 +72,33 @@ function primitiveType(type: string): PrimitiveType {
     }
 }
 
-function annotations(property: XmlRecord): SchemaAnnotation[] {
-    return asArray(property.Annotation)
+/**
+ * Reduce supported primitive EDMX annotation expressions to the canonical form.
+ *
+ * @param value - One annotation node or an array of annotation nodes.
+ * @returns Canonical annotations in document order.
+ */
+function parseAnnotations(value: unknown): SchemaAnnotation[] {
+    return asArray(value)
         .filter((annotation) => typeof annotation.Term === 'string')
         .map((annotation) => {
-            const valueEntry = ['String', 'Bool', 'Int', 'Float', 'Decimal'].find(
-                (key) => annotation[key] !== undefined
-            );
+            const valueEntry = [
+                'String',
+                'Bool',
+                'Int',
+                'Float',
+                'Decimal',
+                'Date',
+                'DateTimeOffset',
+                'TimeOfDay',
+                'Guid',
+                'Duration',
+                'EnumMember',
+                'PropertyPath',
+                'NavigationPropertyPath',
+                'AnnotationPath',
+                'Path'
+            ].find((key) => annotation[key] !== undefined);
             const value = valueEntry ? annotation[valueEntry] : undefined;
             return {
                 term: annotation.Term as string,
@@ -89,10 +109,54 @@ function annotations(property: XmlRecord): SchemaAnnotation[] {
         });
 }
 
+/**
+ * Merge inline annotations, SAP V2 attributes, and V4 external annotations.
+ *
+ * @param property - Parsed EDMX property node.
+ * @param externalAnnotations - Annotations addressed to the property through an external target.
+ * @returns All property evidence in deterministic precedence order.
+ */
+function annotations(property: XmlRecord, externalAnnotations: ReadonlyArray<SchemaAnnotation>): SchemaAnnotation[] {
+    const inline = parseAnnotations(property.Annotation);
+    const sapAttributes: ReadonlyArray<readonly [string, string]> = [
+        ['semantics', 'sap:semantics'],
+        ['unit', 'sap:unit'],
+        ['text', 'sap:text'],
+        ['field-control', 'sap:field-control']
+    ];
+    return [
+        ...inline,
+        ...sapAttributes.flatMap(([attribute, term]) => {
+            const value = property[attribute];
+            return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+                ? [{ term, value }]
+                : [];
+        }),
+        ...externalAnnotations
+    ];
+}
+
+/**
+ * Extract an ABAP Dictionary data-element id from a SAP DocumentationRef.
+ *
+ * @param propertyAnnotations - Canonical property annotations.
+ * @returns The declared data-element id for a `type=DE` reference.
+ */
+function documentationRefDataElement(propertyAnnotations: ReadonlyArray<SchemaAnnotation>): string | undefined {
+    const reference = propertyAnnotations.find((annotation) =>
+        annotation.term.toLowerCase().endsWith('.documentationref')
+    )?.value;
+    if (typeof reference !== 'string' || !/type=DE\b/iu.test(reference)) {
+        return undefined;
+    }
+    return /[?&]id=([a-z\d_]+)/iu.exec(reference)?.[1];
+}
+
 function parseProperty(
     property: XmlRecord,
     keys: ReadonlySet<string>,
-    structuredTypes: ReadonlySet<string>
+    structuredTypes: ReadonlySet<string>,
+    externalAnnotations: ReadonlyArray<SchemaAnnotation>
 ): SchemaProperty | undefined {
     const name = requiredString(property.Name, 'property name');
     const declaredType = requiredString(property.Type, `type for ${name}`);
@@ -102,8 +166,20 @@ function parseProperty(
         }
         return undefined;
     }
-    const propertyAnnotations = annotations(property);
-    const label = propertyAnnotations.find((annotation) => annotation.term.endsWith('.Label'))?.value;
+    const propertyAnnotations = annotations(property, externalAnnotations);
+    const annotationString = (...suffixes: ReadonlyArray<string>): string | undefined => {
+        const value = propertyAnnotations.find((annotation) =>
+            suffixes.some((suffix) => annotation.term.endsWith(suffix))
+        )?.value;
+        return typeof value === 'string' ? value : undefined;
+    };
+    const label = annotationString('.Label') ?? (typeof property.label === 'string' ? property.label : undefined);
+    const description =
+        annotationString('.Description') ?? (typeof property.quickinfo === 'string' ? property.quickinfo : undefined);
+    const dataElement =
+        annotationString('.DataElement') ??
+        (typeof property['data-element'] === 'string' ? property['data-element'] : undefined) ??
+        documentationRefDataElement(propertyAnnotations);
     return {
         name,
         primitiveType: primitiveType(declaredType),
@@ -112,7 +188,9 @@ function parseProperty(
         maxLength: optionalInteger(property.MaxLength),
         precision: optionalInteger(property.Precision),
         scale: optionalInteger(property.Scale),
-        ...(typeof label === 'string' ? { label } : {}),
+        ...(label ? { label } : {}),
+        ...(description ? { description } : {}),
+        ...(dataElement ? { dataElement } : {}),
         annotations: propertyAnnotations
     };
 }
@@ -153,10 +231,15 @@ export function parseEdmx(content: string): SchemaGraph {
         throw new TypeError('EDMX document must contain at least one Schema');
     }
 
+    const namespaceAliases = new Map<string, string>();
     const structuredTypes = new Set<string>();
     for (const schema of schemas) {
         const namespace = requiredString(schema.Namespace, 'schema namespace');
         const alias = typeof schema.Alias === 'string' && schema.Alias.length > 0 ? schema.Alias : undefined;
+        namespaceAliases.set(namespace, namespace);
+        if (alias) {
+            namespaceAliases.set(alias, namespace);
+        }
         for (const complexType of asArray(schema.ComplexType)) {
             const name = requiredString(complexType.Name, 'complex type name');
             structuredTypes.add(`${namespace}.${name}`);
@@ -166,28 +249,66 @@ export function parseEdmx(content: string): SchemaGraph {
         }
     }
 
-    const entityTypes = new Map<string, { schema: XmlRecord; entityType: XmlRecord }>();
+    const canonicalQualifiedType = (qualifiedType: string): string => {
+        const separator = qualifiedType.lastIndexOf('.');
+        if (separator <= 0 || separator === qualifiedType.length - 1) {
+            return qualifiedType;
+        }
+        const qualifier = qualifiedType.slice(0, separator);
+        const localName = qualifiedType.slice(separator + 1);
+        return `${namespaceAliases.get(qualifier) ?? qualifier}.${localName}`;
+    };
+    const externalAnnotations = new Map<string, SchemaAnnotation[]>();
     for (const schema of schemas) {
-        const namespace = requiredString(schema.Namespace, 'schema namespace');
-        for (const entityType of asArray(schema.EntityType)) {
-            const name = requiredString(entityType.Name, 'entity type name');
-            entityTypes.set(`${namespace}.${name}`, { schema, entityType });
+        for (const group of asArray(schema.Annotations)) {
+            const target = requiredString(group.Target, 'annotation target');
+            const pathSeparator = target.indexOf('/');
+            if (pathSeparator < 1 || pathSeparator === target.length - 1) {
+                continue;
+            }
+            const canonicalTarget = `${canonicalQualifiedType(target.slice(0, pathSeparator))}${target.slice(
+                pathSeparator
+            )}`;
+            const existing = externalAnnotations.get(canonicalTarget) ?? [];
+            externalAnnotations.set(canonicalTarget, [...existing, ...parseAnnotations(group.Annotation)]);
         }
     }
-    const entityTypeHierarchy = (qualifiedType: string, visiting: ReadonlySet<string> = new Set()): XmlRecord[] => {
-        if (visiting.has(qualifiedType)) {
-            throw new TypeError(`EDMX entity inheritance contains a cycle at ${qualifiedType}`);
+
+    interface ResolvedEntityType {
+        qualifiedType: string;
+        schema: XmlRecord;
+        entityType: XmlRecord;
+    }
+    const entityTypes = new Map<string, ResolvedEntityType>();
+    for (const schema of schemas) {
+        const namespace = requiredString(schema.Namespace, 'schema namespace');
+        const alias = typeof schema.Alias === 'string' && schema.Alias.length > 0 ? schema.Alias : undefined;
+        for (const entityType of asArray(schema.EntityType)) {
+            const name = requiredString(entityType.Name, 'entity type name');
+            const resolved = { qualifiedType: `${namespace}.${name}`, schema, entityType };
+            entityTypes.set(resolved.qualifiedType, resolved);
+            if (alias) {
+                entityTypes.set(`${alias}.${name}`, resolved);
+            }
         }
+    }
+    const entityTypeHierarchy = (
+        qualifiedType: string,
+        visiting: ReadonlySet<string> = new Set()
+    ): ResolvedEntityType[] => {
         const resolved = entityTypes.get(qualifiedType);
         if (!resolved) {
             throw new TypeError(`EDMX references unknown entity type ${qualifiedType}`);
         }
+        if (visiting.has(resolved.qualifiedType)) {
+            throw new TypeError(`EDMX entity inheritance contains a cycle at ${resolved.qualifiedType}`);
+        }
         if (typeof resolved.entityType.BaseType !== 'string') {
-            return [resolved.entityType];
+            return [resolved];
         }
         return [
-            ...entityTypeHierarchy(resolved.entityType.BaseType, new Set([...visiting, qualifiedType])),
-            resolved.entityType
+            ...entityTypeHierarchy(resolved.entityType.BaseType, new Set([...visiting, resolved.qualifiedType])),
+            resolved
         ];
     };
 
@@ -209,16 +330,22 @@ export function parseEdmx(content: string): SchemaGraph {
                 }
                 const hierarchy = entityTypeHierarchy(qualifiedType);
                 const keyNames = new Set(
-                    hierarchy.flatMap((entityType) =>
+                    hierarchy.flatMap(({ entityType }) =>
                         asArray(isRecord(entityType.Key) ? entityType.Key.PropertyRef : undefined).map((key) =>
                             requiredString(key.Name, `key in ${qualifiedType}`)
                         )
                     )
                 );
                 const properties = new Map<string, SchemaProperty>();
-                for (const entityType of hierarchy) {
+                for (const { entityType, qualifiedType: hierarchyType } of hierarchy) {
                     for (const property of asArray(entityType.Property)) {
-                        const parsedProperty = parseProperty(property, keyNames, structuredTypes);
+                        const propertyName = requiredString(property.Name, 'property name');
+                        const parsedProperty = parseProperty(
+                            property,
+                            keyNames,
+                            structuredTypes,
+                            externalAnnotations.get(`${hierarchyType}/${propertyName}`) ?? []
+                        );
                         if (parsedProperty) {
                             properties.set(parsedProperty.name, parsedProperty);
                         }
@@ -231,6 +358,9 @@ export function parseEdmx(content: string): SchemaGraph {
                 });
                 if (!entitySetByType.has(qualifiedType)) {
                     entitySetByType.set(qualifiedType, entitySetName);
+                }
+                if (!entitySetByType.has(resolved.qualifiedType)) {
+                    entitySetByType.set(resolved.qualifiedType, entitySetName);
                 }
                 entitySets.push({ entitySet, entitySetName, qualifiedType });
             }
@@ -247,7 +377,7 @@ export function parseEdmx(content: string): SchemaGraph {
 
     const relationships: SchemaRelationship[] = [];
     for (const { entitySet, entitySetName, qualifiedType } of entitySets) {
-        const sourceTypes = entityTypeHierarchy(qualifiedType);
+        const sourceTypes = entityTypeHierarchy(qualifiedType).map(({ entityType }) => entityType);
         const bindings = new Map(
             asArray(entitySet.NavigationPropertyBinding).map((binding) => [
                 requiredString(binding.Path, 'navigation binding path').split('/')[0],

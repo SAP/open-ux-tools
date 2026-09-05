@@ -28,6 +28,7 @@ function classifierInput(entityName: string, property: SchemaProperty): Semantic
         propertyName: property.name,
         primitiveType: property.primitiveType,
         ...(property.label ? { label: property.label } : {}),
+        ...(property.description ? { description: property.description } : {}),
         annotations: Object.freeze(
             property.annotations.map((annotation) =>
                 Object.freeze({
@@ -35,7 +36,8 @@ function classifierInput(entityName: string, property: SchemaProperty): Semantic
                     ...(annotation.value === undefined ? {} : { value: annotation.value })
                 })
             )
-        )
+        ),
+        ...(property.dataElement ? { dataElement: property.dataElement } : {})
     });
 }
 

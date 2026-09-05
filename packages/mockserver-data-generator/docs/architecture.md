@@ -66,6 +66,15 @@ eligible residual fields, and every replacement must satisfy the same property
 facets as deterministic values. Key fields, relationship fields, and
 coherence-owned fields are never delegated to SFT inference.
 
+The canonical graph retains CAP labels, descriptions, data elements, and
+annotations; SAP V2 property attributes; and V4 inline or externally targeted
+property annotations, including targets written with a schema alias. Explicit
+semantic markers are authoritative over learned output. Otherwise a calibrated
+classifier decision is preferred, followed by lexical evidence from the
+business-facing label and then the technical property name. Rich metadata is
+available to injected classifiers without changing the byte-level text contract
+used to train the retained pilot classifier head.
+
 The final result is immutable and contains generated resources, bounded safe
 diagnostics, learned-capability state, component fingerprints, and aggregate
 SFT statistics. Metadata is rejected above 32 MiB and the complete serialized

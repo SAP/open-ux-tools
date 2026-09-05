@@ -1,6 +1,7 @@
 import type { SchemaGraph, SchemaProperty } from '../schema/graph.js';
 import type { SemanticClassification } from '../types.js';
 import { semanticPropertyKey } from './classifier.js';
+import { semanticRoleForSapDataElement } from './sap-data-elements.js';
 
 function tokens(name: string): ReadonlyArray<string> {
     return name
@@ -15,8 +16,32 @@ function has(words: ReadonlySet<string>, ...candidates: ReadonlyArray<string>): 
     return candidates.some((candidate) => words.has(candidate));
 }
 
-function lexicalRole(property: SchemaProperty): string | undefined {
-    const fieldTokens = tokens(property.name);
+const EXPLICIT_TERM_ROLES: ReadonlyArray<readonly [string, string]> = [
+    ['.isemailaddress', 'email'],
+    ['.isphonenumber', 'phone'],
+    ['.isurl', 'url'],
+    ['.iscurrency', 'currency'],
+    ['.isocurrency', 'monetary_amount']
+];
+
+const SAP_SEMANTIC_ROLES = new Map<string, string>([
+    ['email', 'email'],
+    ['email-address', 'email'],
+    ['tel', 'phone'],
+    ['telephone', 'phone'],
+    ['phone', 'phone'],
+    ['url', 'url'],
+    ['uri', 'url'],
+    ['currency', 'currency'],
+    ['currency-code', 'currency'],
+    ['iso-currency', 'currency'],
+    ['unit', 'unit_of_measure'],
+    ['unit-of-measure', 'unit_of_measure'],
+    ['amount', 'monetary_amount']
+]);
+
+function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primitiveType']): string | undefined {
+    const fieldTokens = tokens(text);
     const words = new Set(fieldTokens);
     const last = fieldTokens.at(-1);
 
@@ -47,10 +72,10 @@ function lexicalRole(property: SchemaProperty): string | undefined {
     if (has(words, 'quantity', 'qty')) {
         return 'quantity';
     }
-    if (has(words, 'unit', 'uom') || (last === 'measure' && property.primitiveType === 'string')) {
+    if (has(words, 'unit', 'uom') || (last === 'measure' && primitiveType === 'string')) {
         return 'unit_of_measure';
     }
-    if (has(words, 'percentage', 'percent', 'rate') && property.primitiveType === 'decimal') {
+    if (has(words, 'percentage', 'percent', 'rate') && primitiveType === 'decimal') {
         return 'percentage';
     }
     if (has(words, 'start', 'begin', 'from') && has(words, 'date', 'time')) {
@@ -111,6 +136,53 @@ function lexicalRole(property: SchemaProperty): string | undefined {
 }
 
 /**
+ * Prefer a business-facing label over the technical property name.
+ *
+ * @param property - Canonical schema property.
+ * @returns A conservative lexical role, when one is recognized.
+ */
+function lexicalRole(property: SchemaProperty): string | undefined {
+    for (const evidence of [property.label, property.description, property.name]) {
+        if (evidence) {
+            const role = lexicalRoleForText(evidence, property.primitiveType);
+            if (role) {
+                return role;
+            }
+        }
+    }
+    return undefined;
+}
+
+/**
+ * Resolve only authoritative semantic markers whose meaning is unambiguous.
+ *
+ * @param property - Canonical schema property.
+ * @returns The explicit metadata role, when one is present.
+ */
+function explicitMetadataRole(property: SchemaProperty): string | undefined {
+    for (const annotation of property.annotations) {
+        if (annotation.value === false || annotation.value === 'false') {
+            continue;
+        }
+        const term = annotation.term.toLowerCase();
+        const termRole = EXPLICIT_TERM_ROLES.find(([suffix]) => term.endsWith(suffix))?.[1];
+        if (termRole) {
+            return termRole;
+        }
+        if (term.endsWith('.unit') && term.includes('measures')) {
+            return 'quantity';
+        }
+        if (term === 'sap:semantics' && typeof annotation.value === 'string') {
+            const sapSemanticRole = SAP_SEMANTIC_ROLES.get(annotation.value.toLowerCase());
+            if (sapSemanticRole) {
+                return sapSemanticRole;
+            }
+        }
+    }
+    return semanticRoleForSapDataElement(property.dataElement);
+}
+
+/**
  * Resolve conservative metadata/name roles, using learned output only above its calibrated routing threshold.
  *
  * @param graph
@@ -124,6 +196,11 @@ export function resolveSemanticClassifications(
     for (const entity of graph.entities) {
         for (const property of entity.properties) {
             const key = semanticPropertyKey(entity.entitySetName, property.name);
+            const explicitRole = explicitMetadataRole(property);
+            if (explicitRole) {
+                resolved.set(key, Object.freeze({ role: explicitRole, confidence: 1, source: 'metadata' as const }));
+                continue;
+            }
             const classification = learned.get(key);
             if (
                 classification &&
