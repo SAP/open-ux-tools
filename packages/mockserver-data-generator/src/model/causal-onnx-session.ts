@@ -10,6 +10,11 @@ export interface CausalOnnxSession {
     dispose?(): Promise<void> | void;
 }
 
+interface NativeCausalOnnxSession {
+    run(feeds: Readonly<Record<string, CausalOnnxTensor>>): Promise<Readonly<Record<string, CausalOnnxTensor>>>;
+    release(): Promise<void> | void;
+}
+
 export interface CausalOnnxBackend {
     createSession(modelPath: string): Promise<CausalOnnxSession>;
     tensor(
@@ -35,7 +40,7 @@ export async function loadCausalOnnxBackend(
     packageName: 'onnxruntime-node' | 'onnxruntime-web' = 'onnxruntime-node'
 ): Promise<CausalOnnxBackend> {
     const runtime = (await import(packageName)) as {
-        InferenceSession?: { create(modelPath: string, options?: object): Promise<CausalOnnxSession> };
+        InferenceSession?: { create(modelPath: string, options?: object): Promise<NativeCausalOnnxSession> };
         Tensor?: new (
             type: 'int64' | 'float32',
             data: BigInt64Array | Float32Array,
@@ -48,8 +53,8 @@ export async function loadCausalOnnxBackend(
         throw new TypeError(`${packageName} does not expose the required causal ONNX API`);
     }
     return Object.freeze({
-        createSession: (modelPath: string) =>
-            InferenceSession.create(modelPath, {
+        createSession: async (modelPath: string) => {
+            const session = await InferenceSession.create(modelPath, {
                 executionProviders: ['cpu'],
                 graphOptimizationLevel: 'all',
                 executionMode: 'sequential',
@@ -57,7 +62,12 @@ export async function loadCausalOnnxBackend(
                 enableMemPattern: true,
                 intraOpNumThreads: 4,
                 interOpNumThreads: 1
-            }),
+            });
+            return Object.freeze({
+                run: (feeds: Readonly<Record<string, CausalOnnxTensor>>) => session.run(feeds),
+                dispose: () => session.release()
+            });
+        },
         tensor: (type: 'int64' | 'float32', data: BigInt64Array | Float32Array, dimensions: ReadonlyArray<number>) =>
             new Tensor(type, data, dimensions)
     });

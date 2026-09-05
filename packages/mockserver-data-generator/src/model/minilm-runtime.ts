@@ -13,6 +13,11 @@ export interface OnnxSessionLike {
     dispose?(): Promise<void> | void;
 }
 
+interface NativeOnnxSessionLike {
+    run(feeds: Readonly<Record<string, OnnxTensorLike>>): Promise<Readonly<Record<string, OnnxTensorLike>>>;
+    release(): Promise<void> | void;
+}
+
 export interface OnnxBackend {
     createSession(modelPath: string): Promise<OnnxSessionLike>;
     tensor(type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>): OnnxTensorLike;
@@ -38,7 +43,7 @@ export async function loadOnnxBackend(
     packageName: 'onnxruntime-node' | 'onnxruntime-web' = 'onnxruntime-node'
 ): Promise<OnnxBackend> {
     const runtime = (await import(packageName)) as {
-        InferenceSession?: { create(modelPath: string, options?: object): Promise<OnnxSessionLike> };
+        InferenceSession?: { create(modelPath: string, options?: object): Promise<NativeOnnxSessionLike> };
         Tensor?: new (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) => OnnxTensorLike;
     };
     const InferenceSession = runtime.InferenceSession;
@@ -47,12 +52,17 @@ export async function loadOnnxBackend(
         throw new TypeError(`${packageName} does not expose the required ONNX runtime API`);
     }
     return Object.freeze({
-        createSession: (modelPath: string) =>
-            InferenceSession.create(modelPath, {
+        createSession: async (modelPath: string) => {
+            const session = await InferenceSession.create(modelPath, {
                 executionProviders: ['cpu'],
                 graphOptimizationLevel: 'all',
                 executionMode: 'sequential'
-            }),
+            });
+            return Object.freeze({
+                run: (feeds: Readonly<Record<string, OnnxTensorLike>>) => session.run(feeds),
+                dispose: () => session.release()
+            });
+        },
         tensor: (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) =>
             new Tensor(type, data, dimensions)
     });
