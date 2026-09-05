@@ -47,13 +47,14 @@ function mockDataGeneratorApiVersion(hostModule: unknown): unknown {
 export function assertCompatibleMockserver(options: MockserverHostCompatibilityOptions = {}): void {
     const cwd = options.cwd ?? process.cwd();
     const load = options.load ?? loadInstalledMockserver;
-    let hostModule: unknown;
+    let apiVersion: unknown;
     try {
-        hostModule = load(cwd, MOCK_DATA_GENERATOR_HOST_PACKAGE);
+        const hostModule = load(cwd, MOCK_DATA_GENERATOR_HOST_PACKAGE);
+        apiVersion = mockDataGeneratorApiVersion(hostModule);
     } catch {
         throw new Error(HOST_COMPATIBILITY_ERROR);
     }
-    if (mockDataGeneratorApiVersion(hostModule) !== REQUIRED_MOCK_DATA_GENERATOR_API_VERSION) {
+    if (apiVersion !== REQUIRED_MOCK_DATA_GENERATOR_API_VERSION) {
         throw new Error(HOST_COMPATIBILITY_ERROR);
     }
 }

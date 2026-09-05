@@ -39,4 +39,14 @@ describe('mockserver host compatibility', () => {
         expect(message).toBe(HOST_COMPATIBILITY_ERROR);
         expect(message).not.toContain('/private/developer');
     });
+
+    test('replaces marker-inspection details with the stable compatibility error', () => {
+        const hostModule = new Proxy(() => undefined, {
+            getOwnPropertyDescriptor: () => {
+                throw new Error('private /developer/path');
+            }
+        });
+
+        expect(() => assertCompatibleMockserver({ load: () => hostModule })).toThrow(HOST_COMPATIBILITY_ERROR);
+    });
 });
