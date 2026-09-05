@@ -4,44 +4,50 @@ Date: 2026-09-05
 
 Candidate source:
 
-- exact realism runtime package: `817382b88f2cd88a84eb093410ad2a3a367b5505`
-- post-evidence production gate: `88e0f6b878e02cbd7e92c6de96ab23c57c5de9f0`
-- development kit source: `f1e3db0e77c83b9be6a6bff0652923da26a263a3`
-- current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- development-kit `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- portable development-kit fingerprint:
+- current generator code and model/realism evidence:
+  `2279579bdb49c7f3b04b7055dbeb5650528b0602`
+- frozen, excluded `SAP/open-ux-odata` experiment:
+  `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- historical development-kit source:
+  `f1e3db0e77c83b9be6a6bff0652923da26a263a3`
+- historical portable development-kit fingerprint:
   `95c2b0662d3799281e72e554d3e996c49d934817dbce0140fdae0fb4030ebc35`
-- portable development-kit SHA-256:
+- historical portable development-kit SHA-256:
   `b7b98ea55e452c3ed1256f764eb2785b10df13af3bf0ab0dc491f35775741225`
 
 ## Verdict
 
-The production implementation is locally functional and substantially covers
-the agreed MockGen product scope: the standard FE mockserver owns serving,
-MockGen is an opt-in whole-service provider, authored data remains
-authoritative, the retained classifier and SFT model load through production
-contracts, deterministic degradation remains usable, and the packed local/BAS
-development kit installs and restores an existing Fiori application without
-requiring MockGen changes in shared configuration packages.
+The MockGen generation package is locally functional: EDMX V2/V4 and CSN
+generation, the retained classifier and SFT model, deterministic degradation,
+cache safety, package boundaries, and current-candidate evaluation are covered
+by package-local evidence. The accepted standard-mockserver integration is not
+yet proven. The earlier host-SPI branch and every dev-kit or Fiori canary that
+depends on it are frozen historical experiments after the scope correction;
+they are not current completion evidence.
 
-The candidate is not release-ready. The local platform-specific runtime proof
-now passes the total-footprint ceiling without changing classifier or SFT
-quality, but several release gates require a maintainable distribution,
-environments, approvals, or external review that are not available in this
-repository:
+The candidate is not release-ready. A historical platform-specific runtime
+proof passes the total-footprint ceiling without changing classifier or SFT
+quality, but it is not bound to the corrected integration. Several release
+gates require a maintainable distribution, additional environments, approvals,
+or external review that are not available in this repository or cannot proceed
+before the integration boundary is selected:
 
-1. The 266,375,866-byte passing runtime is an experimental `darwin-arm64`
+1. The package cannot both avoid every existing-package change and use the
+   previously selected in-process row-provider SPI. A package-local startup
+   overlay and a minimal host extension are different architectures; neither
+   has been accepted as the replacement boundary yet.
+2. The 266,375,866-byte passing runtime is an experimental `darwin-arm64`
    archive, not an approved upstream or SAP-governed platform package. The
    supported upstream multi-platform closure still uses 449,503,668 bytes.
-2. An actual BAS canary has not run.
-3. Dataset/model provenance, privacy, license, derivative-use, and
+3. An actual BAS canary has not run.
+4. Dataset/model provenance, privacy, license, derivative-use, and
    redistribution clearance are not complete.
-4. No approved immutable public model bundle or channel manifest exists.
-5. The exact candidate's 311-record blinded packet passes its local structural,
-   coherence, determinism, and SFT production gates (178/178 parsed and
-   821/846 accepted fields), but has not received the two independent provider
+5. No approved immutable public model bundle or channel manifest exists.
+6. The exact candidate's 311-record blinded packet passes its local structural,
+   coherence, determinism, and SFT production gates (124/124 parsed and
+   446/462 accepted fields), but has not received the two independent provider
    reviews, so there is no fresh realism pass.
-6. The full Node/OS matrix, release publication, public-artifact verification,
+7. The full Node/OS matrix, release publication, public-artifact verification,
    and channel rollback remain outstanding.
 
 `proven` below means demonstrated by tests or an exact local artifact.
@@ -53,56 +59,47 @@ means a measured threshold was missed by the named candidate.
 
 | Area | Status | Evidence | Remaining gate |
 | --- | --- | --- | --- |
-| Generic host SPI | proven | `open-ux-odata` host contract, lifecycle, precedence, reload, containment, timeout, host timing, middleware, and provider-load fallback tests at `2a67399c` | Publish the compatible host before the provider packages |
-| Standard FE mockserver integration | proven | one `sap-fe-mockserver`, provider `@sap-ux/mockserver-data-generator/fe-mockserver`, conditional CommonJS export, packed integration tests, and exact-archive HTTP canary | Cross-platform and published-package canaries |
-| Authored-data preservation | proven | TS/JS/JSON/empty-data/provider/built-in precedence tests; tenant and authored-parent behavior remain host-owned | Repeat against published canary artifacts |
+| Generic host SPI | frozen / excluded | The isolated `open-ux-odata` experiment covers lifecycle, precedence, reload, containment, timeout, and provider fallback at `2a67399c`, but the scope correction excludes it from the current solution | Decide whether a minimal host extension is allowed; otherwise replace this row with package-local integration evidence |
+| Standard FE mockserver integration | unresolved | The package has a conditional CommonJS provider export, but current `open-ux-odata` has no accepted row-provider hook and the historical HTTP canaries use the excluded branch | Select and implement the accepted integration without claiming the frozen branch |
+| Authored-data preservation | package-proven / integration pending | Whole-service generation accepts authoritative existing rows and tests relationship behavior without overwriting them | Prove preservation through the accepted packed Fiori integration |
 | Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests; the final cohort has 16/16 non-empty resources and 11/11 passing frozen assertions | Release-platform cohort reruns |
-| Classifier and SFT reuse | proven locally | retained MiniLM classifier and SmolLM2 INT8 SFT cache verify and execute through the production package; the exact final cohort records 178/178 parsed responses and 821/846 accepted eligible fields across all six targets | Governance, managed immutable distribution, and fresh release-candidate qualification |
-| Failure degradation | proven locally | the [degradation evidence](./mockserver-data-generator-degradation.md) covers offline first use, missing model/runtime, corrupt acquisition, checksum rejection, timeout, malformed output, cache corruption/read-only operation, cancellation, provider load failure, retry policy, complete fallback rows, and diagnostic privacy | Repeat the matrix on release platforms and published artifacts |
+| Classifier and SFT reuse | proven locally | retained MiniLM classifier and SmolLM2 INT8 SFT cache verify and execute through the production package; the exact current cohort records 124/124 parsed responses and 446/462 accepted eligible fields across all six targets | Governance, managed immutable distribution, and fresh release-candidate qualification |
+| Failure degradation | package-proven / integration pending | package tests cover offline first use, missing model/runtime, corrupt acquisition, checksum rejection, timeout, malformed output, cache corruption/read-only operation, cancellation, retry policy, complete fallback rows, and diagnostic privacy; host provider-load fallback evidence is historical | Repeat the matrix through the accepted integration on release platforms |
 | Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, pre-acquisition descendant-symlink rejection, HTTPS-preserving bounded redirects, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, warm network-free cache, and environment-proxy CONNECT routing | Approved remote bundle and BAS HTTPS proxy/certificate acquisition canary |
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
-| Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, multi-completion SFT statistics, deterministic 32 MiB LRU quota, and 19.737 ms fresh-process p95 without model initialization | Repeat on release platforms |
-| Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, and FE diagnostic/fallback tests pass | Repeat against the published FE package on release platforms |
-| Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or host publication | Repeat against the published FE package on release platforms |
-| Development-kit application setup | proven | one middleware, one `ui5-mock.yaml`, and the existing `start-mock`; the unpublished installer owns the local provider mutation while shared configuration packages remain unchanged | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | two clean-source builds produced the same current 553,897-byte archive byte-for-byte; the exact archive passed retained-classifier/SFT V4 HTTP, five-sample cold/warm/acquisition, and byte-exact application-restore canaries | Run the recorded procedure, including the learned path, in an actual BAS dev space |
-| Package boundary | proven | current source tarball is 85,845 bytes and contains required architecture, operations, proxy, security, and pilot-parity guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
+| Generated-data cache | package-proven / performance pending | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, multi-completion SFT statistics, and deterministic 32 MiB LRU quota pass package tests | Rebind fresh-process startup performance through the accepted integration |
+| Metadata input boundary | package-proven / integration pending | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit and multibyte limit-plus-one tests pass | Prove diagnostic and fallback behavior through the accepted integration |
+| Generated-result boundary | package-proven / integration pending | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache publication | Prove rejection before publication through the accepted integration |
+| Development-kit application setup | historical / redesign pending | The prior installer preserved one middleware, one `ui5-mock.yaml`, and one `start-mock`, but installed tarballs from the excluded host branch | Rebuild setup only after the integration boundary is accepted |
+| Local/BAS development kit | historical / platform pending | The historical archive passed local canaries and exact restore, but it is not evidence for the corrected architecture | Produce a new archive from accepted dependencies, then run it locally and in BAS |
+| Package boundary | proven | current source tarball is 90,623 bytes and contains required architecture, operations, proxy, security, and pilot-parity guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
-| Total installed/cache footprint | proven locally / distribution pending | exact pilot-parity evaluation- and integration-bound `darwin-arm64` footprint: 266,375,866 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
-| Integrated performance | proven locally / platform | current five-sample p95: 2,511.287 ms cold service, 19.737 ms warm cache, 618.199 ms first acquisition, and 2,512.224 ms host; peak RSS 1,410,744,320 bytes | Process-tree RSS and the supported Node/OS/BAS platform matrix |
-| Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and deterministic replay; its SFT gate is 100% parse and 97.04% accepted-slot fill; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
+| Total installed/cache footprint | current rebind incomplete | the current package-only report passes the 90,623-byte npm and 3,886,971-byte deterministic-install measurements, but correctly leaves learned and integrated gates unmeasured; the older 266,375,866-byte `darwin-arm64` result is historical feasibility evidence | Rebind the supported runtime and accepted integration to the current package commit |
+| Integrated performance | historical / unresolved | prior five-sample Fiori timings used the excluded host branch and cannot prove the corrected integration | Measure cold service, warm cache, first acquisition, host time, and process-tree RSS after implementation |
+| Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and byte-identical replay; its SFT gate is 100% parse and 96.54% accepted-slot fill; deterministic triage found no high/medium signal but is not a realism judgment | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
-| Platform compatibility | platform | macOS arm64 passes on Node 22.22.2 and 24.20.0, including generator/host suites, exact-archive deterministic and learned canaries, and restore; packed paths with spaces and non-ASCII characters pass; on Node 22 a fully non-writable installed application starts twice using an external generated-data cache without changing any of its 12,342 files; a local CONNECT proxy proves environment routing | macOS x64, Ubuntu and Windows on Node 22/24; actual BAS HTTPS proxy/certificate behavior and remaining cross-platform path edge cases |
-| Release and rollback | partial / external | local installer upgrade failure and byte-exact restore pass; promoted model fingerprints cannot reuse N-1 generated rows, while an explicit rollback can reuse only its matching verified cache without model initialization | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
+| Platform compatibility | package-local / platform pending | macOS arm64 package and learned-model evidence exists on Node 22.22.2; older host/archive canaries are historical after the integration correction | Accepted-integration tests on macOS x64, Ubuntu and Windows on Node 22/24 plus actual BAS proxy/certificate behavior |
+| Release and rollback | package-partial / external | promoted model fingerprints cannot reuse N-1 generated rows, while an explicit rollback can reuse only its matching verified cache without model initialization; installer restore evidence is historical | Accepted-installer restore, prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
 ## Current verification snapshot
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
-| `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 199 tests passed; 85.27% statement coverage; build and package check passed; lint has zero errors, production TypeScript safety rules are enforced, and the pilot-parity document is required in the packed boundary |
-| development kit, degradation, and evaluation harness | 11 suites, 103 tests passed; build passed; lint has zero errors |
-| final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
-| exact deterministic archive canary | provider executed; metadata passed; one row returned; 15.957 ms verified generated-data cache path; 16.739 ms host; exact restore passed |
-| exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,363.187 ms runtime initialization; 2,520.021 ms generation; 2,520.791 ms host; exact restore passed |
-| proxy-aware pre-cache-fix deterministic archive canary | exact `74af647b365069d6` archive installed 615 packages; one middleware and provider executed; metadata passed; one row returned; 17.098 ms generated-data cache path; 17.828 ms host; exact restore passed |
-| proxy-aware pre-cache-fix learned V2 archive canary | exact `74af647b365069d6` archive installed 636 packages; classifier and SFT ready; provider executed; metadata passed; one row returned; 1,359.545 ms runtime initialization; 2,535.986 ms generation; 2,536.934 ms host; exact restore passed |
-| cache-fix pre-hardening learned V4 archive canary | exact `3a16a758a6e58208` archive verified classifier and SFT, provider execution, metadata, one returned row, and exact restore; the five-sample rerun proved real SFT result publication and warm-cache reuse without model initialization |
-| current pilot-parity learned V4 archive canary | exact `95c2b0662d379928` archive verified classifier and SFT, provider execution, metadata, one returned row, reproducible packaging, and exact restore; the packed package contains the tested pilot-parity disposition |
-| current bound model evaluation | classifier ran all 233 governed cases; INT8 SFT passed 16/16 parse and exact keys with 261/261 fields filled; identical-seed classifier predictions, SFT output, and evidence hashes matched |
-| read-only application canary | exact archive packages installed into a 12,342-file application; the whole tree was non-writable; external-cache generation took 25.780 ms and 26.571 ms host time; the next start hit cache in 19.045 ms and 19.791 ms host time; the aggregate SHA-256 over every file checksum and path remained `7ca2bb0ea24d463c1e08db0c1e4fb55ac12f84190d26047be646e950573932c7` |
-| Node 24.20.0 macOS arm64 | generator 23 suites/196 tests, host core 27 suites/359 tests/282 snapshots, and middleware 2 suites/12 tests passed; exact V4 deterministic and V2 classifier/SFT archive canaries plus byte-exact restores passed |
-| local model rollback cache safety | model A, promoted model B, and rolled-back model A used fingerprint-isolated cache keys; B did not reuse A, while rollback reused only A without initializing a runtime |
-| current source package archive | 85,845 / 5,242,880 bytes, pass |
+| `@sap-ux/mockserver-data-generator` | 25 suites and 222 tests passed; 85.91% statement coverage and 85.65% line coverage |
+| current bound model evaluation | two clean isolated runs used all 233 governed classifier cases and all 16 SFT cases; classifier predictions, SFT output, and evidence hashes matched |
+| SFT evaluation | 16/16 parse and exact keys; 261/261 fields filled; p95 9,021.685 and 9,032.962 ms; peak process RSS 1,412,153,344 and 1,395,179,520 bytes |
+| current realism cohort | 311 records; 124/124 parsed; 446/462 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; evidence and campaign replay byte-identical |
+| deterministic semantic triage | zero high- or medium-severity signals in the unchanged current packet; external judgment still required |
+| current source package archive | 90,623 / 5,242,880 bytes, pass; archive SHA-256 `1ae0a71baea3d8d72d2db333ca236e36137ff46702d6ed90f0294c8b8f361937` |
+| deterministic installed closure | 3,886,971 bytes |
+| package provider module load | 1.205 ms p95 over 10 fresh processes |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
-| upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
-| experimental platform-runtime total installed and cache | 266,375,866 / 314,572,800 bytes, pass |
-| integrated Fiori p95 | 2,511.287 ms cold; 19.737 ms cache; 618.199 ms acquisition; 2,512.224 ms host; all pass |
+| current full footprint | `footprintReady: false`; learned-runtime and accepted-integration measurements are not bound to the current commit |
+| frozen host/integration evidence | host suites, packed Fiori canaries, restore tests, and integrated timings remain historical only; they are not current completion evidence |
 
-The full generator package has a passing coverage run over all 23 suites. The
+The full generator package has a passing coverage run over all 25 suites. The
 downloader's cross-process and cancellation branches have focused regressions,
 but the remaining platform-specific paths still require the release matrix
 rather than being inferred from local coverage.
@@ -117,18 +114,18 @@ and memory.
 
 The current `onnxruntime-node` dependency dominates the installed footprint
 because one installation contains native binaries for every supported platform.
-An exact `darwin-arm64` archive proof retained the runtime API and the passing
-INT8 model. It ran all 233 governed classifier cases and all 16 SFT cases, kept
-16/16 parse/exact-key and 261/261 fill, and measured the current total at
-266,375,866 bytes—48,196,934 bytes below the ceiling. The footprint report,
-model evaluation, and integrated Fiori report are cryptographically bound to
-each other and runtime archive SHA-256
-`a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
+The historical `darwin-arm64` archive proved that a platform-specific runtime
+can retain the API and passing INT8 model below the total ceiling. That report
+is not bound to the current generator and accepted integration, so it is
+feasibility evidence rather than a current pass. The current package-only
+measurement intentionally leaves the learned and integrated footprint gates
+unmeasured.
 
-The architecture is therefore technically proven, but the archive is not a
-production distribution. The next task is to obtain an upstream platform split
-or implement SAP-governed scoped selector/leaf packages with license, SBOM,
-signing, update, and rollback ownership. That distribution must rerun the full
+The platform-specific runtime distribution is therefore technically feasible,
+but the archive is not a production distribution. The next task is to obtain an
+upstream platform split or implement SAP-governed scoped selector/leaf packages
+with license, SBOM, signing, update, and rollback ownership. That distribution
+must rerun the full
 Node/OS installation, runtime, structural, latency, and RSS matrix. If no
 supported or maintainable package can satisfy those conditions, the correct
 disposition remains to retain native ONNX as an explicit learned-mode dependency
@@ -137,23 +134,28 @@ WASM or ship a structurally broken model.
 
 ## Remaining sequence
 
-1. Run the current fingerprinted archive in an actual BAS dev space and fill in
-   `mockserver-data-generator-bas-canary.md`.
-2. Complete the governed artifact inventory and obtain model/data redistribution
+1. Select the corrected integration boundary: package-only startup overlay or
+   explicitly permitted minimal host extension.
+2. Implement and test that integration with one `sap-fe-mockserver`, one
+   `ui5-mock.yaml`, and one `start-mock`, while preserving authored data.
+3. Rebuild the local development kit without excluded dependencies and run its
+   deterministic and learned paths in a generated Fiori application.
+4. Rebind the model evaluation, integrated performance, and complete footprint
+   reports to the same clean candidate and accepted dependency graph.
+5. Run the resulting fingerprinted archive in an actual BAS dev space and fill
+   in `mockserver-data-generator-bas-canary.md`.
+6. Complete the governed artifact inventory and obtain model/data redistribution
    decisions; keep the preview internal if public redistribution is not cleared.
-3. Convert the passing platform-specific native-runtime proof into a supported
-   distribution and rerun the integrated timing/RSS measurements on the
-   supported Node/OS matrix.
-4. Publish an approved immutable preview model bundle and verify acquisition
+7. Convert the platform-specific native-runtime proof into a supported
+   distribution and rerun the timing/RSS measurements on the Node/OS matrix.
+8. Publish an approved immutable preview model bundle and verify acquisition
    through the production manifest/cache path.
-5. Send the already prepared blinded packet to two independent providers and
-   compile their lineage-bound results; adjudicate disagreements only.
-6. Run release dependency/SBOM/threat-model review, publish compatible
-   prereleases in dependency order, and verify the public tarballs and model
-   hashes.
-7. Exercise the model-channel N-1 rollback and T2 kill switch before stable
-   promotion. Keep the pilot read-only until stable parity and rollback are
-   proven.
+9. Send the prepared blinded packet to two independent providers and compile
+   their lineage-bound results; adjudicate disagreements only.
+10. Run release dependency/SBOM/threat-model review, verify public artifacts,
+    and exercise model-channel N-1 rollback and the T2 kill switch before stable
+    promotion. Keep the pilot read-only until stable parity and rollback are
+    proven.
 
 No finance-application bug work is included in this audit; it remains deferred
 as requested.
