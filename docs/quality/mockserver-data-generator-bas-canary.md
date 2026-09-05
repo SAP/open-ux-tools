@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `2587b8efb75aa190ccb4de62b789713a31a798493aa808fb17bae000e1d077f5`
-- archive SHA-256: `badcc3f241607999720e2d670986d7d73dfa37e5feb54545aba9a3be0fc5b4f9`
-- archive size: 566,493 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `e319240ce9f2af70e78ad08a02ae394e7030e439`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
-- local handoff copy: `/absolute/path/to/mockserver-data-generator-dev-kit-2587b8efb75aa190.tgz`
+- dev-kit fingerprint: `dc912317987aed2762cf60c4633a2f0a2c292ffb4ca7d9f0dde10eaa2e7f0b32`
+- archive SHA-256: `29a5b6918a00bce92c0fda9167820d3e28a3958596ce679122cf201d8afda23f`
+- archive size: 566,654 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `8a460f4323db3d3385288b9965bc1be55ed4cdcb`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
+- local handoff copy: `/absolute/path/to/mockserver-data-generator-dev-kit-dc912317987aed27.tgz`
 
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema
@@ -28,11 +28,15 @@ executable final-cohort gate. It also contains the packaged security guide,
 pre-acquisition model-cache descendant checks, HTTPS-preserving bounded
 redirects, environment-proxy routing, and an exact packed-document/link
 contract. The exact archive passed separate standard and
-retained-classifier/SFT canaries in fresh packed OData V2, OData V4, and
-CDS-through-FE applications. It also passed the literal
-`npm run start-mock` and `npm run start-mock -- --mockgen` workflow. All five
-cold generations, warm-cache starts, and first-use acquisitions passed; warm
-starts did not initialize model sessions. The current p95 values are
+retained-classifier/SFT canaries in a fresh packed OData V4 application. The
+immediately preceding compatibility archive passed the same paths in fresh
+OData V2, OData V4, and CDS-through-FE applications, including the literal
+`npm run start-mock` and `npm run start-mock -- --mockgen` workflow. The current
+archive also reports supplied learned components as unavailable and omits their
+fingerprints when deterministic mode explicitly suppresses them. In the retained
+performance campaign, all five cold generations, warm-cache starts, and
+first-use acquisitions passed; warm starts did not initialize model sessions.
+Those retained p95 values are
 1,567.782 ms cold, 20.775 ms warm cache, 664.750 ms acquisition, and
 1,568.577 ms host provider work. The local CONNECT proxy regression does not
 substitute for an HTTPS proxy and certificate test inside BAS.
@@ -63,9 +67,9 @@ data, prompts, or model outputs.
 ## Procedure
 
 ```bash
-KIT_ARCHIVE="/absolute/path/to/mockserver-data-generator-dev-kit-<fingerprint>.tgz"
-KIT_SHA256="<exact-sha256-from-build-report>"
-KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-<fingerprint>"
+KIT_ARCHIVE="/absolute/path/to/mockserver-data-generator-dev-kit-dc912317987aed27.tgz"
+KIT_SHA256="29a5b6918a00bce92c0fda9167820d3e28a3958596ce679122cf201d8afda23f"
+KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-dc912317987aed27"
 
 node -e 'const [a,b,c]=process.versions.node.split(".").map(Number);if(a<22||(a===22&&(b<22||(b===22&&c<2))))throw Error("Node >=22.22.2 is required")'
 printf '%s  %s\n' "$KIT_SHA256" "$KIT_ARCHIVE" | sha256sum --check --strict -
