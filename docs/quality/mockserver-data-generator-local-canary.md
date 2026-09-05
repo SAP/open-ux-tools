@@ -418,7 +418,7 @@ Its SHA-256 must be verified before extraction. It supersedes the preceding
 reproducible archive for new local or BAS functional testing; the earlier
 archives remain historical evidence.
 
-## Current security-guidance archive canary
+## Security-guidance archive canary
 
 After package security guidance, model-cache descendant fencing, manual secure
 redirect handling, and packed-document validation landed, the kit was rebuilt
@@ -440,7 +440,7 @@ retained-model OData V2 installs, HTTP canaries, and restores.
 - Learned timing: 1,363.187 ms runtime initialization; 2,520.021 ms whole-service generation; 2,520.791 ms host provider duration
 - Restore verification: both application fixtures matched their original source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
-The current handoff archive is
+The handoff archive for this historical checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-47b4dc3ae32e8269.tgz`.
 Verify its SHA-256 before extraction. It supersedes the packaged-architecture
 archive for new local or BAS functional testing; earlier archives remain
@@ -460,7 +460,30 @@ temporary runtime and was not installed system-wide.
 - Both Node 24 application copies restored byte-for-byte outside disposable `node_modules`.
 
 This closes only the macOS arm64 Node 24 cell. It does not establish macOS x64,
-Linux, Windows, BAS, proxy, or read-only-filesystem compatibility.
+Linux, Windows, BAS, proxy, or read-only-filesystem compatibility on Node 24.
+
+## Current read-only verification archive
+
+After moving the verifier's temporary debug configuration outside the Fiori
+application and correcting its cache-hit evidence check, the development kit
+was built twice from the same clean sources. The archives were byte-identical.
+
+- Dev-kit fingerprint: `10cec2edfb02703255cfe7e15c2861f2250d74590a757ccb0a6847fa6229ef17`
+- Archive SHA-256: `6e69ab62a305bc2f34adf85d2de8970a9cee4c50b267aa9f4d04cf263e239888`
+- Archive size: 549,837 bytes; 10 entries
+- Source state: clean `SAP/open-ux-tools` commit `642720eacd5fa1f81f11c106ec0217222caa3903` and clean `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- Package identity: generator, core, and middleware tarballs are byte-identical to the preceding learned-model archive; only the bundled development verifier changed
+- Dedicated verification: 11 suites and 103 tests passed; TypeScript build, zero-error lint, and formatting passed
+- Exact-archive install: the 614-package OData V4 application contained exactly one `sap-fe-mockserver`; provider discovery, `$metadata`, `Products?$top=1`, and restore passed
+- Read-only generation: all 12,342 installed application files and directories were made non-writable; the verifier used a temporary configuration outside the project and a writable generated-data cache outside the project; generation took 25.780 ms and the host provider took 26.571 ms
+- Read-only cache hit: a second application start reused the external verified cache in 19.045 ms and the host provider took 19.791 ms, without model initialization
+- Application immutability: the aggregate SHA-256 over every file checksum and path was `7ca2bb0ea24d463c1e08db0c1e4fb55ac12f84190d26047be646e950573932c7` before and after both starts
+- Restore: after write permission was returned solely to the disposable fixture, installer restore matched the original application byte-for-byte outside disposable `node_modules`
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-10cec2edfb027032.tgz`.
+Verify the SHA-256 before extraction. This is the current local and BAS
+candidate; earlier archives remain historical evidence.
 
 ## Scope boundary
 

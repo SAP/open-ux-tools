@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, test } from '@jest/globals';
-import { bundleEntry } from '../../../../../scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs';
+import { bundleEntry, renderReadme } from '../../../../../scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs';
 import { configureFioriApplication } from '../../../../../scripts/mockserver-data-generator-dev-kit/lib/bundle-installer.mjs';
 import {
     assertSafeArchiveEntry,
@@ -75,6 +75,18 @@ afterEach(() => {
 });
 
 describe('development kit artifact validation', () => {
+    test('documents the read-only verification boundary in the portable archive', () => {
+        const readme = renderReadme({
+            fingerprint: 'a'.repeat(64),
+            archiveSha256: undefined,
+            reproducible: true,
+            packages: [{ packageName: '@sap-ux/mockserver-data-generator', version: '0.1.0', sha256: 'b'.repeat(64) }]
+        });
+
+        expect(readme).toMatch(/operating-system\s+temporary directory/u);
+        expect(readme).toMatch(/Installation and\s+restore still require a writable application/u);
+    });
+
     test('configures MockGen without requiring changes to shared configuration packages', async () => {
         const appRoot = temporaryDirectory();
         cpSync(fioriFixture, appRoot, { recursive: true });

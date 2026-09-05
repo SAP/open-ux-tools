@@ -31,8 +31,12 @@ pnpm mockserver-data-generator:dev-install -- \
 
 The command builds and packs the three current packages, installs those exact
 tarballs, starts a bounded HTTP canary, and stops it. It does not leave a
-development server running. Continue manual testing with the application's
-unchanged command:
+development server running. The canary writes its temporary debug configuration
+under the operating system's temporary directory rather than inside the Fiori
+project, so server verification itself also works after the installed project
+is made read-only when its model and generated-data caches remain writable
+elsewhere. Installation and restore still require a writable application.
+Continue manual testing with the application's unchanged command:
 
 ```bash
 cd /absolute/path/to/fiori-app

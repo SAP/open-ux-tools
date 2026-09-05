@@ -127,7 +127,7 @@ function archiveEntries(archivePath) {
     return entries;
 }
 
-function renderReadme({ fingerprint, archiveSha256, reproducible, packages }) {
+export function renderReadme({ fingerprint, archiveSha256, reproducible, packages }) {
     const packageLines = packages.map((entry) => `- ${entry.packageName}@${entry.version}: ${entry.sha256}`).join('\n');
     return `# Mockserver data generator development kit
 
@@ -154,6 +154,10 @@ package-manager cache, \`--verify\` to run bounded metadata and entity HTTP
 canaries, and \`--restore\` to restore the journaled application files. The
 setup keeps one \`sap-fe-mockserver\`, one \`ui5-mock.yaml\`, and the existing
 \`start-mock\` flow. Model weights are not included.
+
+The verification-only debug configuration is created in an operating-system
+temporary directory rather than inside the Fiori project. Installation and
+restore still require a writable application.
 
 ## Optional classifier and SFT test
 

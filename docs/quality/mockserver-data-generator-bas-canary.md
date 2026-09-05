@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `47b4dc3ae32e8269b4c666e188d188d9c1286d699499600eed440380285190ec`
-- archive SHA-256: `7dd025eaf82960defff50ed1d0aa4d3ac0b1a6aa788071926d77427407692f65`
-- archive size: 549,814 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `7aeee32044b5edf02be5159ec334f0b1589e934c`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-47b4dc3ae32e8269.tgz`
+- dev-kit fingerprint: `10cec2edfb02703255cfe7e15c2861f2250d74590a757ccb0a6847fa6229ef17`
+- archive SHA-256: `6e69ab62a305bc2f34adf85d2de8970a9cee4c50b267aa9f4d04cf263e239888`
+- archive size: 549,837 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `642720eacd5fa1f81f11c106ec0217222caa3903`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-10cec2edfb027032.tgz`
 
 This candidate includes the current classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
@@ -29,10 +29,12 @@ bundled retained-pilot bridge, learned OData V2 HTTP canary, and exact restore
 are recorded in the local canary report. Earlier clean archives remain the
 cross-format learned V2/V4/CDS and five-sample performance evidence; run the
 procedure below with the current archive to qualify the same learned path in
-BAS. The exact archive passed the local V2 HTTP canary with classifier and SFT
-ready, 1,363.187 ms runtime initialization, 2,520.021 ms whole-service
-generation, 2,520.791 ms host provider time, one returned row, and byte-exact
-restore.
+BAS. The current archive's three package tarballs are byte-identical to the
+archive that passed the local V2 HTTP canary with classifier and SFT ready,
+1,363.187 ms runtime initialization, 2,520.021 ms whole-service generation,
+2,520.791 ms host provider time, one returned row, and byte-exact restore. Its
+updated verifier also passed a fully read-only Node 22 application canary with
+an external generated-data cache; this does not substitute for the BAS run.
 
 ## Inputs to record
 

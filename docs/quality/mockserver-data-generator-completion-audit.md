@@ -6,13 +6,13 @@ Candidate source:
 
 - exact realism runtime package: `817382b88f2cd88a84eb093410ad2a3a367b5505`
 - post-evidence production gate: `88e0f6b878e02cbd7e92c6de96ab23c57c5de9f0`
-- development kit source: `7aeee32044b5edf02be5159ec334f0b1589e934c`
+- development kit source: `642720eacd5fa1f81f11c106ec0217222caa3903`
 - current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - development-kit `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - portable development-kit fingerprint:
-  `47b4dc3ae32e8269b4c666e188d188d9c1286d699499600eed440380285190ec`
+  `10cec2edfb02703255cfe7e15c2861f2250d74590a757ccb0a6847fa6229ef17`
 - portable development-kit SHA-256:
-  `7dd025eaf82960defff50ed1d0aa4d3ac0b1a6aa788071926d77427407692f65`
+  `6e69ab62a305bc2f34adf85d2de8970a9cee4c50b267aa9f4d04cf263e239888`
 
 ## Verdict
 
@@ -65,7 +65,7 @@ means a measured threshold was missed by the named candidate.
 | Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, and FE diagnostic/fallback tests pass | Repeat against the published FE package on release platforms |
 | Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or host publication | Repeat against the published FE package on release platforms |
 | Development-kit application setup | proven | one middleware, one `ui5-mock.yaml`, and the existing `start-mock`; the unpublished installer owns the local provider mutation while shared configuration packages remain unchanged | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | two clean-source builds produced the same current 549,814-byte archive byte-for-byte; it installs exact tarballs, verifies deterministic V4 and classifier/SFT V2 paths through the standard Fiori mockserver, and restores both fixtures byte-for-byte | Run the recorded procedure in an actual BAS dev space |
+| Local/BAS development kit | proven locally / platform | two clean-source builds produced the same current 549,837-byte archive byte-for-byte; it installs exact tarballs, verifies deterministic V4 through the standard Fiori mockserver, and restores the fixture byte-for-byte; its package tarballs are identical to the retained-classifier/SFT V2 canary | Run the recorded procedure, including the learned path, in an actual BAS dev space |
 | Package boundary | proven | current source tarball is 81,861 bytes and contains required architecture, operations, and security guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
@@ -74,7 +74,7 @@ means a measured threshold was missed by the named candidate.
 | Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and deterministic replay; its SFT gate is 100% parse and 97.04% accepted-slot fill; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
-| Platform compatibility | platform | macOS arm64 passes on Node 22.22.2 and 24.20.0, including generator/host suites, exact-archive deterministic and learned canaries, and restore; packed paths with spaces and non-ASCII characters pass | macOS x64, Ubuntu and Windows on Node 22/24; actual BAS; proxy/read-only and remaining cross-platform path edge cases |
+| Platform compatibility | platform | macOS arm64 passes on Node 22.22.2 and 24.20.0, including generator/host suites, exact-archive deterministic and learned canaries, and restore; packed paths with spaces and non-ASCII characters pass; on Node 22 a fully non-writable installed application starts twice using an external generated-data cache without changing any of its 12,342 files | macOS x64, Ubuntu and Windows on Node 22/24; actual BAS; proxy and remaining cross-platform path edge cases |
 | Release and rollback | partial / external | local installer upgrade failure and byte-exact restore pass; promoted model fingerprints cannot reuse N-1 generated rows, while an explicit rollback can reuse only its matching verified cache without model initialization | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
 ## Current verification snapshot
@@ -84,10 +84,11 @@ means a measured threshold was missed by the named candidate.
 | `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
 | `@sap-ux/mockserver-data-generator` | 23 suites, 196 tests passed; 85.55% statement coverage; build and package check passed; lint has zero errors |
-| development kit, degradation, and evaluation harness | 11 suites, 101 tests passed; build passed; lint has zero errors |
+| development kit, degradation, and evaluation harness | 11 suites, 103 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
-| exact deterministic archive canary | provider executed; metadata passed; one row returned; 16.738 ms verified generated-data cache path; 17.490 ms host; exact restore passed |
+| exact deterministic archive canary | provider executed; metadata passed; one row returned; 15.957 ms verified generated-data cache path; 16.739 ms host; exact restore passed |
 | exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,363.187 ms runtime initialization; 2,520.021 ms generation; 2,520.791 ms host; exact restore passed |
+| read-only application canary | exact archive packages installed into a 12,342-file application; the whole tree was non-writable; external-cache generation took 25.780 ms and 26.571 ms host time; the next start hit cache in 19.045 ms and 19.791 ms host time; the aggregate SHA-256 over every file checksum and path remained `7ca2bb0ea24d463c1e08db0c1e4fb55ac12f84190d26047be646e950573932c7` |
 | Node 24.20.0 macOS arm64 | generator 23 suites/196 tests, host core 27 suites/359 tests/282 snapshots, and middleware 2 suites/12 tests passed; exact V4 deterministic and V2 classifier/SFT archive canaries plus byte-exact restores passed |
 | local model rollback cache safety | model A, promoted model B, and rolled-back model A used fingerprint-isolated cache keys; B did not reuse A, while rollback reused only A without initializing a runtime |
 | current source package archive | 81,861 / 5,242,880 bytes, pass |
