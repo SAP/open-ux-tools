@@ -1,8 +1,10 @@
 # Mockserver Data Generator Design
 
-**Status:** Approved for implementation
+**Status:** Approved direction; zero-setup amendment pending written review
 
 **Date:** 2026-09-03
+
+**Updated:** 2026-09-05
 
 **Primary repository:** `SAP/open-ux-tools`
 
@@ -17,6 +19,13 @@ Reimplement the experimental MockGen integration pilot as the public package
 loaded by the existing `sap-fe-mockserver`; it will not register a second UI5
 middleware, create a second YAML file, or add a second start command.
 
+The existing `@sap-ux/mockserver-config-writer` is the single production
+bootstrap point. When the normal Fiori tools flow creates or refreshes a
+mockserver configuration, it adds the small MockGen package and its inactive
+provider configuration and wraps the generated `start-mock` command. A Fiori
+developer therefore does not run a MockGen installer. The only user action is
+to add `--mockgen` when starting the standard mockserver.
+
 The current mockserver API cannot inject rows into an already configured
 service. The referenced CDS package is a metadata processor that compiles CDS
 to EDMX, while the current general plugin interface only contributes additional
@@ -30,6 +39,9 @@ all model-management code remain owned by `SAP/open-ux-tools`.
   from metadata alone.
 - Keep standard mockserver behavior as the default and enable MockGen only when
   the user appends `--mockgen` to the existing `start-mock` npm script.
+- Require no MockGen-specific install, model preparation, YAML editing, or
+  environment-variable setup from a Fiori developer after the normal
+  application installation.
 - Support OData V2 EDMX, OData V4 EDMX, and CAP metadata used through the FE
   mockserver CDS metadata processor.
 - Preserve existing hand-authored JS, TS, and JSON mock data.
@@ -51,6 +63,8 @@ all model-management code remain owned by `SAP/open-ux-tools`.
 - Replacing `@sap-ux/ui5-middleware-fe-mockserver`.
 - Supporting OpenAPI input in the first SAP release.
 - Shipping training data, judge outputs, checkpoints, or model weights in npm.
+- Running a package manager or changing the application's `package.json` or
+  lockfile when `start-mock` executes.
 - Sending application metadata, generated values, or telemetry to SAP or a
   third party.
 - Using global links, workspace-directory `file:` dependencies, or copied
@@ -59,23 +73,49 @@ all model-management code remain owned by `SAP/open-ux-tools`.
   of realism.
 - Promoting or repeating a lower-precision experiment without documented
   calibration and the full candidate gates.
-- Implementing WASM unless the bounded native-versus-WASM experiment meets its
-  footprint, correctness, memory, and latency gates.
+- Implementing a WASM runtime in the first release. The completed bounded
+  experiment rejected it on measured latency, memory, and total product
+  footprint.
 
 ## Repository boundaries
 
 | Repository | Ownership |
 | --- | --- |
-| `SAP/open-ux-tools` | `@sap-ux/mockserver-data-generator`, package tests, evaluation and local/BAS development tooling, and consumer documentation |
+| `SAP/open-ux-tools` | `@sap-ux/mockserver-data-generator`, the narrow `@sap-ux/mockserver-config-writer` bootstrap integration, package tests, evaluation and local/BAS development tooling, and consumer documentation |
 | `SAP/open-ux-odata` | Generic `mockDataGenerator` SPI, provider loading, precedence and degradation behavior, host lifecycle, and host contract tests |
 | Internal model repository | Governed datasets, training and export code, immutable candidates, evaluation reports, and promotion attestations |
 | SAP model distribution namespace | Cleared immutable model bundles, manifests, model cards, licenses, and hashes |
 | Pilot repository | Read-only comparison evidence until stable cutover is complete |
 
-## Public package and configuration
+## Zero-setup production bootstrap
 
-The user installs one opt-in package and keeps one `start-mock` script. Normal
-startup remains the standard mockserver path:
+The normal Fiori tools mockserver setup already owns the application's
+mockserver dependency, `ui5-mock.yaml`, and `start-mock` script. It will also:
+
+1. add `@sap-ux/mockserver-data-generator` as a direct development dependency;
+2. add the inactive `mockDataGenerator` provider block to the existing
+   `sap-fe-mockserver` configuration; and
+3. preserve the generated Fiori command behind the MockGen launcher.
+
+This is a focused change to `@sap-ux/mockserver-config-writer`, not a new app
+generator flow. Newly generated applications receive it automatically.
+Existing applications receive it when their mockserver configuration is added
+or refreshed through the standard Fiori tools action. Neither path asks the
+developer to run a MockGen-specific setup script.
+
+The integration applies only to the standard
+`@sap-ux/ui5-middleware-fe-mockserver` configuration; callers that deliberately
+select a different mockserver module are unchanged. Removing the standard
+mockserver configuration also removes the generated MockGen dependency,
+provider block, and launcher command through the same writer lifecycle.
+
+`@sap-ux/mockserver-data-generator` is therefore published to the same npm
+registry and release channel as the other `SAP/open-ux-tools` packages. npm
+delivers only the lightweight code and default manifest; the large learned
+artifacts use the separate approved SAP distribution described below.
+
+After the application's normal package installation, startup without the flag
+remains the standard mockserver path:
 
 ```text
 npm run start-mock
@@ -88,8 +128,8 @@ argument separator:
 npm run start-mock -- --mockgen
 ```
 
-The installer wraps the application's existing simple Fiori command without
-copying or replacing it. For example:
+The config writer wraps the application's generated simple Fiori command
+without creating a second script. For example:
 
 ```json
 {
@@ -108,8 +148,13 @@ termination signals, and returns the child's exit status. Missing child
 commands, duplicate flags, or unsupported complex shell scripts fail with a
 clear diagnostic instead of being guessed or rewritten.
 
+The flag does not run `npm install` and does not mutate the application. The
+small MockGen JavaScript package is already present because it was installed
+with the application's normal development dependencies.
+
 When `--mockgen` is present, the launcher performs one compatibility handshake
-before spawning Fiori. The matching `SAP/open-ux-odata` core defines
+and prepares the release-owned learned artifacts before spawning Fiori. The
+matching `SAP/open-ux-odata` core defines
 `MOCK_DATA_GENERATOR_API_VERSION = 1`, and the CommonJS
 `@sap-ux/ui5-middleware-fe-mockserver` export exposes that marker as a static
 property. The launcher resolves this fixed middleware package name from the
@@ -154,17 +199,41 @@ mockDataGenerator:
 ```
 
 Model revisions and file hashes are release-owned and pinned in the package's
-model manifest. Normal application configuration does not use a mutable model
-name such as `latest`.
+default manifest. Normal application configuration contains no model path,
+runtime package, cache path, or mutable model name such as `latest`.
+
+On the first flagged start for the selected package release and platform, the
+launcher resolves that built-in manifest, selects the supported native runtime
+artifact for the current operating system and CPU architecture, and acquires
+the runtime and classifier/SFT artifacts into the SAP/Fiori tools user cache
+before starting Fiori. It prints concise first-use progress and uses a bounded
+five-minute acquisition deadline.
+Every file has an immutable identity, declared byte length, and SHA-256 digest.
+Downloads use a cross-process lock, temporary files, checksum verification, and
+atomic publication, so concurrent starts or interrupted downloads cannot expose
+a partial cache entry. Executable native artifacts additionally require the
+approved SAP distribution source and release signature policy.
+
+On later flagged starts, a fully verified cache entry is used directly with no
+network request or download. The application directory remains unchanged. If
+the cache is missing or invalid, only the missing release-owned artifacts are
+reacquired. If acquisition or verification fails, the launcher reports that
+learned generation is unavailable and still starts Fiori; the provider then
+uses its deterministic tiers. If native runtime loading fails after startup,
+the provider follows the same deterministic fallback. An optional `prepare`
+command remains available for offline or centrally provisioned environments,
+but it is not part of the normal Fiori developer workflow.
 
 The provider reads the launcher-owned activation marker at generation time. If
 the marker is not `1`, it immediately returns an empty resource map before
 metadata parsing, cache access, model loading, network access, or generation.
 The generic host then follows its existing per-resource precedence and uses the
-built-in generator when `generateMockData` is enabled. If the marker is `1`,
-the provider runs the classifier and SFT-capable generation path. Authored
-JS/TS/JSON data remains authoritative in both modes, and any active-provider
-failure degrades to the standard generator.
+existing built-in generator when `generateMockData` is enabled. If the marker
+is `1`, the provider uses the launcher's cache-only artifact state and runs the
+classifier and SFT-capable generation path; it never initiates a network request
+inside the mockserver host deadline. Authored JS/TS/JSON data remains
+authoritative in both modes, and any active-provider failure degrades to the
+standard generator.
 
 ## Host SPI
 
@@ -294,10 +363,13 @@ They exclude raw metadata, prompts, and generated values.
 ## Model distribution
 
 The npm tarball contains code, small reference catalogs, and a signed or
-otherwise integrity-checked manifest. It contains no ONNX or SafeTensors model.
-The resolver downloads immutable artifacts to a user cache, verifies declared
-size and SHA-256 before atomic publication, supports corporate proxies and an
-approved mirror, and uses a cross-process lock.
+otherwise integrity-checked release manifest. It contains no ONNX or
+SafeTensors model and no all-platform native runtime. The manifest binds a
+MockGen package release to immutable classifier, SFT, tokenizer, and
+platform-specific runtime artifacts. The resolver downloads only the artifacts
+for the current supported platform to a user cache, verifies declared size and
+SHA-256 before atomic publication, supports corporate proxies and an approved
+mirror, and uses a cross-process lock.
 
 Generated rows also use the SAP/Fiori tools user cache by default so a read-only
 application directory remains supported. An explicit `cacheDir` may opt into a
@@ -306,8 +378,8 @@ before an offline session; it does not create another application start flow.
 
 The classifier, generator model, and inference runtime remain independently
 versioned. Changing any fingerprint invalidates the compatible generated-data
-cache. A channel manifest can promote or withdraw an immutable model without
-rewriting the artifact.
+cache. Promotion or withdrawal publishes a new signed release manifest; an
+artifact at an existing immutable URL and digest is never rewritten.
 
 ## Local and BAS developer test kit
 
@@ -317,7 +389,8 @@ missing exports or files and cannot be transported from macOS to BAS Linux, so
 they are not the default workflow.
 
 Root-level development tooling supports the flow; it is not part of the public
-generator package or its runtime API:
+generator package or its runtime API. These scripts exist only while testing
+unpublished feature-branch packages locally or in BAS:
 
 ```text
 scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs
@@ -329,13 +402,12 @@ SPI is published, it also requires a compatible `open-ux-odata` checkout or
 explicit core and middleware tarballs. The portable command produces one dev-kit
 archive containing the generator, host core and middleware tarballs, a bundled
 development-only configuration installer, an integrity manifest, and BAS
-instructions. The installer uses the unchanged public
+instructions. The development installer uses the public
 `@sap-ux/mockserver-config-writer` API for the standard mockserver setup, then
-adds only the local MockGen dependency, provider block, and reversible launcher
-prefix around the existing simple `start-mock` command. It is fingerprinted and
-has no imports back into either source worktree. It does not require changes to
-shared configuration packages, include model weights, or carry platform-specific
-`node_modules`.
+stages the unpublished local MockGen dependency, provider block, and reversible
+launcher prefix around the existing simple `start-mock` command. It is
+fingerprinted and has no imports back into either source worktree. It does not
+include model weights or carry platform-specific `node_modules`.
 
 The installer requires an explicit existing Fiori application path and validates
 `package.json`, `webapp/manifest.json`, UI5 configuration, Node version, package
@@ -369,14 +441,16 @@ set, captures generator fingerprints and degradation state, and terminates each
 process. It does not execute a `start-mock` script that may contain `--open`.
 Normal setup does not leave a server running; `--start` is explicit.
 
-Model acquisition is also explicit through `--prepare-model`. This keeps the
-basic packaging/integration smoke independent from a large download and allows
-separate tests for deterministic fallback, a pre-cached model, and online model
-acquisition. An actual BAS canary remains required because BAS proxy, certificate,
-filesystem, and runtime behavior cannot be proven by a local Linux approximation.
-The development kit may expose `--prepare-model` once Phase 7 is implemented.
-Local tests can use fake or pilot-local artifacts, while public model manifests
-and downloads remain disabled until redistribution clearance.
+In the unpublished development kit, model acquisition is explicit through
+`--prepare-model`. This keeps the basic packaging/integration smoke independent
+from a large download and allows separate tests for deterministic fallback, a
+pre-cached model, and online model acquisition. This development-only step is
+not the production user experience: released packages automatically acquire
+their manifest-pinned artifacts on the first flagged run. An actual BAS canary
+remains required because BAS proxy, certificate, filesystem, and runtime
+behavior cannot be proven by a local Linux approximation. Local tests can use
+fake or pilot-local artifacts, while public model manifests and downloads
+remain disabled until redistribution clearance.
 
 ## Existing evidence and required repairs
 
@@ -404,32 +478,36 @@ required for the exact candidate fingerprint being promoted.
 - Total persistent incremental installed and cached footprint: at most 300 MiB,
   including an enforced 32 MiB generated-data-cache quota rather than an
   history-dependent observed cache size.
+- The production native runtime is a supported platform-specific artifact in
+  the SAP/Fiori tools cache. The application does not install the upstream
+  all-platform `onnxruntime-node` package, whose measured dependency closure
+  fails the total-footprint gate.
 - Provider/module-load p95: at most 250 ms; model-session-load p95: at most 5
   seconds; cold whole-service generation p95 with verified warm artifacts: at
   most 25 seconds on the accepted reference platform.
 - Generated-data cache hit: at most 200 ms added startup on the reference
   machine and no model session initialization.
 - T2 inference: bounded by the existing 20-second session budget.
-- Automatic first-use acquisition: bounded to 30 seconds before deterministic
-  fallback; slower or offline environments use the explicit `prepare` command.
-- End-to-end host provider deadline: 60 seconds, covering acquisition,
-  inference, result validation, and publication.
+- Automatic first-use acquisition runs in the launcher before Fiori starts and
+  is bounded to five minutes before deterministic fallback. Slower or offline
+  environments may use the optional `prepare` command.
+- End-to-end host provider deadline: 60 seconds, covering cache verification,
+  model-session initialization, inference, result validation, and publication.
 
 Model bytes, compressed transfer bytes, runtime installed bytes, cache bytes,
 load time, peak RSS, and generation latency are reported separately.
 `approvedBaselineBytes` is the exact generator-weight file length from the
 cleared dynamic-int8 manifest, never a rounded display value.
 
-The runtime experiment compares native ONNX Runtime with ONNX Runtime Web/WASM.
-Its footprint ratio uses only the package and backend-specific production
-dependency closure, with identical model and cache bytes held constant and the
-product-total effect reported separately. WASM advances only if that paired
-runtime footprint falls by at least 25% on the fixed primary platform, every
-required platform passes independently, every functional gate passes, memory
-stays within budget, and p95 generation latency is no worse than 1.5 times
-native while remaining inside the 20-second budget. Platform samples are never
-pooled. This experiment can reduce runtime packaging; it is not presented as a
-way to compress model weights.
+The bounded native-versus-WASM experiment is complete. Web/WASM reduced total
+product footprint by only 20.74%, classifier p95 was 2.90 times native, and
+process maximum RSS was about twice native. It therefore failed the frozen
+latency, memory, and total-product criteria. WASM is a no-go for this release;
+the supported platform-specific native runtime is the production direction.
+The existing local macOS arm64 proof meets the 300 MiB total limit at
+266,453,893 bytes, but that archive is experimental. Production release remains
+gated on supported, governed artifacts and equivalent qualification for every
+supported operating-system and CPU-architecture combination.
 
 ## Quality and promotion policy
 
@@ -480,9 +558,12 @@ project scope and would require a separate request and design.
 Release order is:
 
 1. Generic host SPI prerelease from `SAP/open-ux-odata`.
-2. Generator package preview from `SAP/open-ux-tools`.
-3. Cross-platform, size, security, real-application, and realism qualification.
-4. Stable package and model-channel promotion.
+2. Generator package and narrow config-writer integration preview from
+   `SAP/open-ux-tools`.
+3. Signed model and platform-runtime artifacts in the approved SAP distribution
+   location.
+4. Cross-platform, size, security, real-application, and realism qualification.
+5. Stable package and release-manifest promotion.
 
 Every model promotion is a reversible manifest change. The previous promoted
 model remains available, a kill switch can disable T2, and rollback to the
@@ -497,11 +578,13 @@ storage.
 
 The approved implementation scope is the production version of the pilot:
 generic host SPI, deterministic generation, classifier, SFT inference, and
-local/BAS tooling. CAP metadata is supported only through the standard FE
-mockserver CDS metadata processor. Shared UI5 configuration packages, general
-creation tooling, MCP content, and a native CAP adapter remain unchanged.
-Implementation and local evaluation may use the existing pilot workspace
-immediately.
+local/BAS tooling. It includes one narrow change to
+`@sap-ux/mockserver-config-writer` so the normal mockserver setup installs and
+configures the inactive bootstrap. CAP metadata is supported only through the
+standard FE mockserver CDS metadata processor. Other shared UI5 configuration
+packages, general creation tooling, MCP content, and a native CAP adapter remain
+unchanged. Implementation and local evaluation may use the existing pilot
+workspace immediately.
 
 Two normal engineering checkpoints protect repository and release boundaries:
 
