@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
-import { lstat, mkdir, open, readdir, rename, rmdir, stat, unlink } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { lstat, mkdir, open, readdir, realpath, rename, rmdir, stat, unlink } from 'node:fs/promises';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import type { ModelArtifactFile, ModelManifest } from './manifest.js';
 import { modelBundleDirectory, verifyModelCache, type VerifiedModelCache } from './model-cache.js';
 
@@ -30,6 +30,49 @@ function errorCode(error: unknown): string | undefined {
     return (error as NodeJS.ErrnoException).code;
 }
 
+function isWithin(root: string, candidate: string): boolean {
+    return candidate === root || candidate.startsWith(`${root}${sep}`);
+}
+
+async function ensureSafeCacheDirectory(cacheRoot: string, directory: string): Promise<string> {
+    const unresolvedRoot = resolve(cacheRoot);
+    const unresolvedDirectory = resolve(directory);
+    const relativeDirectory = relative(unresolvedRoot, unresolvedDirectory);
+    if (isAbsolute(relativeDirectory) || relativeDirectory === '..' || relativeDirectory.startsWith(`..${sep}`)) {
+        throw new TypeError('model cache path resolves outside the selected cache root');
+    }
+
+    await mkdir(unresolvedRoot, { recursive: true, mode: 0o700 });
+    const rootDetails = await stat(unresolvedRoot);
+    if (!rootDetails.isDirectory()) {
+        throw new TypeError('model cache root must be a directory');
+    }
+    const resolvedRoot = await realpath(unresolvedRoot);
+    let current = unresolvedRoot;
+    for (const segment of relativeDirectory.split(sep).filter(Boolean)) {
+        current = join(current, segment);
+        try {
+            await mkdir(current, { mode: 0o700 });
+        } catch (error) {
+            if (errorCode(error) !== 'EEXIST') {
+                throw error;
+            }
+        }
+        const details = await lstat(current);
+        if (details.isSymbolicLink()) {
+            throw new TypeError('model cache path must not contain symbolic links');
+        }
+        if (!details.isDirectory()) {
+            throw new TypeError('model cache path must contain directories only');
+        }
+        const resolvedCurrent = await realpath(current);
+        if (!isWithin(resolvedRoot, resolvedCurrent)) {
+            throw new TypeError('model cache path resolves outside the selected cache root');
+        }
+    }
+    return unresolvedDirectory;
+}
+
 function artifactUrl(file: ModelArtifactFile, mirrorBaseUrl?: string): string {
     if (!mirrorBaseUrl) {
         return file.url;
@@ -42,6 +85,38 @@ function artifactUrl(file: ModelArtifactFile, mirrorBaseUrl?: string): string {
         throw new TypeError('model mirror must use HTTPS');
     }
     return new URL(file.path, base).toString();
+}
+
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+const MAXIMUM_ARTIFACT_REDIRECTS = 5;
+
+function secureArtifactUrl(value: string, label: string): string {
+    const parsed = new URL(value);
+    const localHttp = parsed.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(parsed.hostname);
+    if (parsed.protocol !== 'https:' && !localHttp) {
+        throw new TypeError(`${label} must use HTTPS`);
+    }
+    return parsed.toString();
+}
+
+async function fetchArtifact(value: string, fetchImplementation: typeof fetch, signal: AbortSignal): Promise<Response> {
+    let currentUrl = secureArtifactUrl(value, 'model artifact URL');
+    for (let redirects = 0; redirects <= MAXIMUM_ARTIFACT_REDIRECTS; redirects += 1) {
+        const response = await fetchImplementation(currentUrl, { signal, redirect: 'manual' });
+        if (!REDIRECT_STATUSES.has(response.status)) {
+            return response;
+        }
+        const location = response.headers.get('location');
+        await response.body?.cancel();
+        if (!location) {
+            throw new Error('model artifact redirect has no location');
+        }
+        if (redirects === MAXIMUM_ARTIFACT_REDIRECTS) {
+            throw new Error('model artifact exceeded redirect limit');
+        }
+        currentUrl = secureArtifactUrl(new URL(location, currentUrl).toString(), 'model artifact redirect');
+    }
+    throw new Error('model artifact exceeded redirect limit');
 }
 
 function boundedSignal(
@@ -339,6 +414,7 @@ async function releaseLock(lock: AcquiredLock): Promise<void> {
 }
 
 async function downloadArtifact(
+    cacheRoot: string,
     file: ModelArtifactFile,
     destination: string,
     fetchImplementation: typeof fetch,
@@ -346,7 +422,9 @@ async function downloadArtifact(
     mirrorBaseUrl: string | undefined,
     assertOwnership: () => Promise<void>
 ): Promise<void> {
-    const response = await fetchImplementation(artifactUrl(file, mirrorBaseUrl), { signal, redirect: 'follow' });
+    const safeParent = await ensureSafeCacheDirectory(cacheRoot, dirname(destination));
+    const safeDestination = join(safeParent, basename(destination));
+    const response = await fetchArtifact(artifactUrl(file, mirrorBaseUrl), fetchImplementation, signal);
     if (!response.ok || !response.body) {
         throw new Error(`model download failed with HTTP ${response.status}`);
     }
@@ -355,8 +433,7 @@ async function downloadArtifact(
         throw new Error(`model download size mismatch for ${file.role}`);
     }
 
-    await mkdir(dirname(destination), { recursive: true });
-    const temporaryPath = `${destination}.partial-${process.pid}-${randomUUID()}`;
+    const temporaryPath = `${safeDestination}.partial-${process.pid}-${randomUUID()}`;
     const handle = await open(temporaryPath, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o600);
     const checksum = createHash('sha256');
     let received = 0;
@@ -381,7 +458,8 @@ async function downloadArtifact(
         await handle.sync();
         await handle.close();
         await assertOwnership();
-        await rename(temporaryPath, destination);
+        await ensureSafeCacheDirectory(cacheRoot, safeParent);
+        await rename(temporaryPath, safeDestination);
     } catch (error) {
         await handle.close().catch(() => undefined);
         await unlink(temporaryPath).catch(() => undefined);
@@ -401,14 +479,13 @@ export async function prepareModelCache(
     manifest: ModelManifest,
     options: PrepareModelCacheOptions = {}
 ): Promise<VerifiedModelCache> {
+    const bundleDirectory = await ensureSafeCacheDirectory(cacheRoot, modelBundleDirectory(cacheRoot, manifest));
     const cached = await verifyModelCache(cacheRoot, manifest);
     if (cached.ready) {
         return cached;
     }
 
     const acquisition = boundedSignal(options.signal, options.acquisitionTimeoutMs ?? 30_000);
-    const bundleDirectory = modelBundleDirectory(cacheRoot, manifest);
-    await mkdir(bundleDirectory, { recursive: true });
     const lockPath = join(bundleDirectory, '.acquire.lock');
     let lock: AcquiredLock | undefined;
     let lockHeartbeat: ReturnType<typeof keepLockAlive> | undefined;
@@ -432,6 +509,7 @@ export async function prepareModelCache(
                     continue;
                 }
                 await downloadArtifact(
+                    cacheRoot,
                     file,
                     join(bundleDirectory, file.path),
                     options.fetch ?? fetch,

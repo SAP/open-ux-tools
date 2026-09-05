@@ -86,6 +86,17 @@ function modelManifest(overrides: Readonly<Record<string, unknown>> = {}) {
     });
 }
 
+function requiredDocumentation(overrides: Readonly<Record<string, string>> = {}): Record<string, string> {
+    return {
+        'README.md': '# Test package',
+        'docs/architecture.md': '# Architecture',
+        'docs/host-contract.md': '# Host contract',
+        'docs/security.md': '# Security',
+        'docs/troubleshooting.md': '# Troubleshooting',
+        ...overrides
+    };
+}
+
 afterEach(() => {
     for (const root of temporaryRoots.splice(0)) {
         rmSync(root, { recursive: true, force: true });
@@ -121,6 +132,42 @@ describe('published package boundary', () => {
         }
 
         expect(packageJson.files).toContain('docs');
+    });
+
+    it('publishes package security guidance linked from the README', () => {
+        const securityPath = join(packageRoot, 'docs', 'security.md');
+        const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+
+        expect(existsSync(securityPath)).toBe(true);
+        if (!existsSync(securityPath)) {
+            return;
+        }
+
+        const security = readFileSync(securityPath, 'utf8');
+        expect(readme).toContain('[security guidance](./docs/security.md)');
+        expect(security).toContain('## Trust boundaries');
+        expect(security).toContain('## Model artifact controls');
+        expect(security).toContain('## Privacy and diagnostics');
+        expect(security).toContain('## Release limitations');
+    });
+
+    it('documents the accepted per-entity row-count option', () => {
+        const hostContract = readFileSync(join(packageRoot, 'docs', 'host-contract.md'), 'utf8');
+
+        expect(hostContract).toContain('rowsPerEntity: 10');
+        expect(hostContract).not.toMatch(/^\s*rowCount\s*:/mu);
+    });
+
+    it('states preview language scope and keeps quality claims separate', () => {
+        const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+
+        expect(readme).toContain('The initial preview is English-first.');
+        expect(readme).toMatch(
+            /Non-English inputs retain structural\s+validation and deterministic fallback protection/u
+        );
+        expect(readme).toMatch(
+            /Structural validity,\s+classifier accuracy, SFT parse\/fill rates, and judged realism are separate\s+gates\./u
+        );
     });
 
     it('keeps every relative README link inside the published package', () => {
@@ -195,6 +242,27 @@ describe('published package boundary', () => {
         expect(typeof report.files).toBe('number');
         expect(typeof report.bytes).toBe('number');
         expect(report.networkFree).toBe(true);
+    });
+
+    it('rejects a packed core package that omits required operational documentation', () => {
+        const files = requiredDocumentation();
+        delete files['docs/security.md'];
+        const result = runChecker(fakePackage(files, { files: ['dist', 'README.md', 'docs'] }));
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toContain('docs/security.md');
+    });
+
+    it('rejects a broken relative Markdown link in the packed package', () => {
+        const result = runChecker(
+            fakePackage(requiredDocumentation({ 'README.md': '[missing](./docs/missing.md)' }), {
+                files: ['dist', 'README.md', 'docs']
+            })
+        );
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toMatch(/broken relative Markdown link/i);
+        expect(result.stderr).toContain('./docs/missing.md');
     });
 
     it.each([
@@ -314,17 +382,21 @@ describe('published package boundary', () => {
     });
 
     it('confirms pnpm omits symbolic links from the archive', () => {
-        const root = fakePackage({
-            'dist/index.js': 'export {};',
-            'dist/fe-mockserver.cjs': 'module.exports = class Provider {};',
-            'outside.txt': 'not part of the package'
-        });
+        const root = fakePackage(
+            {
+                'dist/index.js': 'export {};',
+                'dist/fe-mockserver.cjs': 'module.exports = class Provider {};',
+                'outside.txt': 'not part of the package',
+                ...requiredDocumentation()
+            },
+            { files: ['dist', 'README.md', 'docs'] }
+        );
         symlinkSync(join(root, 'outside.txt'), join(root, 'dist', 'linked.txt'));
 
         const result = runChecker(root);
 
         expect({ status: result.status, stderr: result.stderr }).toEqual({ status: 0, stderr: '' });
-        expect(JSON.parse(result.stdout)).toMatchObject({ files: 3 });
+        expect(JSON.parse(result.stdout)).toMatchObject({ files: 8 });
     });
 
     it('rejects a compressed tarball above the five MiB ceiling', () => {

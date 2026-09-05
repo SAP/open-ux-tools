@@ -17,6 +17,14 @@ Learned mode also requires the optional `onnxruntime-node` peer. Each model
 manifest pins an exact runtime version, which must match the installed runtime;
 the initial preview supports the `1.24.x` line.
 
+The initial preview is English-first. Non-English inputs retain structural
+validation and deterministic fallback protection, but semantic quality outside
+the qualified English cohort is not yet a release claim. Structural validity,
+classifier accuracy, SFT parse/fill rates, and judged realism are separate
+gates. Pilot measurements are retained as historical comparison evidence; the
+exact release candidate still requires its own fingerprint-bound realism
+review.
+
 ## Prepare the classifier and SFT model
 
 The npm package contains the classifier and SFT runtimes, but not their model
@@ -78,7 +86,12 @@ server:
 
 Per-service settings can override the global setting, and `mockDataGenerator: false` opts one service out. Developer-authored JavaScript, TypeScript, or JSON mock data always wins.
 
-`sftTimeoutMs` bounds each entity-level fine-tuned inference (default and maximum: 60 seconds). After the first SFT runtime failure in a service generation, remaining entities use deterministic fallback without retrying that failed tier.
+`sftTimeoutMs` bounds each entity-level fine-tuned inference. The direct API
+defaults to 90 seconds and accepts at most 120 seconds; the standard FE host
+independently caps the complete provider epoch at 60 seconds, so a larger
+entity timeout cannot extend host startup. After the first SFT runtime failure
+in a service generation, remaining entities use deterministic fallback without
+retrying that failed tier.
 
 Whole-service results are cached by default beneath
 `~/.saptools/mockserver-data-generator/generated-data`, with a hard 32 MiB LRU
@@ -124,7 +137,9 @@ See the [package architecture](./docs/architecture.md) and
 precedence, model, and degradation rules.
 Operational diagnosis, offline verification, forced regeneration, explicit
 model pinning, and provider rollback are covered in the
-[troubleshooting guide](./docs/troubleshooting.md).
+[troubleshooting guide](./docs/troubleshooting.md). The package's trust
+boundaries, artifact controls, privacy rules, and open release gates are in the
+[security guidance](./docs/security.md).
 
 ## Test current source in a Fiori application
 

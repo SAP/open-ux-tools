@@ -370,6 +370,165 @@ describe('model downloader', () => {
         await expect(readFile(targetMarker, 'utf8')).resolves.toBe('must survive');
     });
 
+    test('rejects a symlinked bundle parent before downloading or writing outside the selected cache', async () => {
+        const candidate = manifest('https://models.example.invalid/model.onnx');
+        const outsideRoot = await mkdtemp(join(tmpdir(), 'mockgen-download-outside-'));
+        const fetchModel = jest.fn(
+            async () =>
+                new Response(modelBytes, {
+                    status: 200,
+                    headers: { 'content-length': String(modelBytes.length) }
+                })
+        );
+        try {
+            await symlink(outsideRoot, join(cacheRoot, candidate.bundleId), 'dir');
+
+            await expect(
+                prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })
+            ).rejects.toThrow('model cache path must not contain symbolic links');
+            expect(fetchModel).not.toHaveBeenCalled();
+            await expect(readdir(outsideRoot, { recursive: true })).resolves.toEqual([]);
+        } finally {
+            await rm(outsideRoot, { recursive: true, force: true });
+        }
+    });
+
+    test('rejects a symlinked artifact parent before downloading or writing outside the bundle', async () => {
+        const candidate = manifest('https://models.example.invalid/model.onnx');
+        const bundleDirectory = modelBundleDirectory(cacheRoot, candidate);
+        const outsideRoot = await mkdtemp(join(tmpdir(), 'mockgen-download-outside-'));
+        const fetchModel = jest.fn(
+            async () =>
+                new Response(modelBytes, {
+                    status: 200,
+                    headers: { 'content-length': String(modelBytes.length) }
+                })
+        );
+        try {
+            await mkdir(bundleDirectory, { recursive: true });
+            await symlink(outsideRoot, join(bundleDirectory, 'classifier'), 'dir');
+
+            await expect(
+                prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })
+            ).rejects.toThrow('model cache path must not contain symbolic links');
+            expect(fetchModel).not.toHaveBeenCalled();
+            await expect(readdir(outsideRoot, { recursive: true })).resolves.toEqual([]);
+        } finally {
+            await rm(outsideRoot, { recursive: true, force: true });
+        }
+    });
+
+    test('rejects an HTTPS redirect to non-loopback HTTP before contacting the redirected host', async () => {
+        const candidate = manifest('https://models.example.invalid/model.onnx');
+        const fetchModel = jest.fn(
+            async () =>
+                new Response(null, {
+                    status: 302,
+                    headers: { location: 'http://downloads.example.invalid/model.onnx' }
+                })
+        );
+
+        await expect(prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })).rejects.toThrow(
+            'model artifact redirect must use HTTPS'
+        );
+        expect(fetchModel).toHaveBeenCalledTimes(1);
+        await expect(
+            readFile(join(modelBundleDirectory(cacheRoot, candidate), 'classifier', 'model.onnx'))
+        ).rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    test('follows a valid HTTPS redirect and verifies the downloaded artifact', async () => {
+        const candidate = manifest('https://models.example.invalid/model.onnx');
+        const fetchModel = jest
+            .fn()
+            .mockResolvedValueOnce(
+                new Response(null, {
+                    status: 302,
+                    headers: { location: 'https://cdn.example.invalid/model.onnx' }
+                })
+            )
+            .mockResolvedValueOnce(
+                new Response(modelBytes, {
+                    status: 200,
+                    headers: { 'content-length': String(modelBytes.length) }
+                })
+            );
+
+        await expect(
+            prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })
+        ).resolves.toMatchObject({ ready: true });
+        expect(fetchModel.mock.calls.map(([url]) => url)).toEqual([
+            'https://models.example.invalid/model.onnx',
+            'https://cdn.example.invalid/model.onnx'
+        ]);
+    });
+
+    test('resolves a relative HTTPS redirect against the current artifact URL', async () => {
+        const candidate = manifest('https://models.example.invalid/releases/current/model.onnx');
+        const fetchModel = jest
+            .fn()
+            .mockResolvedValueOnce(new Response(null, { status: 307, headers: { location: '../model.onnx' } }))
+            .mockResolvedValueOnce(
+                new Response(modelBytes, {
+                    status: 200,
+                    headers: { 'content-length': String(modelBytes.length) }
+                })
+            );
+
+        await expect(
+            prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })
+        ).resolves.toMatchObject({ ready: true });
+        expect(fetchModel.mock.calls.map(([url]) => url)).toEqual([
+            'https://models.example.invalid/releases/current/model.onnx',
+            'https://models.example.invalid/releases/model.onnx'
+        ]);
+    });
+
+    test('accepts exactly five secure artifact redirects', async () => {
+        const candidate = manifest('https://models.example.invalid/0');
+        const requestedUrls: string[] = [];
+        const fetchModel = jest.fn(async (input: string | URL | Request) => {
+            const requestedUrl = String(input);
+            requestedUrls.push(requestedUrl);
+            const step = Number(new URL(requestedUrl).pathname.slice(1));
+            if (step < 5) {
+                return new Response(null, { status: 302, headers: { location: `/${step + 1}` } });
+            }
+            return new Response(modelBytes, {
+                status: 200,
+                headers: { 'content-length': String(modelBytes.length) }
+            });
+        });
+
+        await expect(
+            prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })
+        ).resolves.toMatchObject({ ready: true });
+        expect(requestedUrls).toEqual([0, 1, 2, 3, 4, 5].map((step) => `https://models.example.invalid/${step}`));
+    });
+
+    test('rejects a sixth artifact redirect before making a seventh request', async () => {
+        const candidate = manifest('https://models.example.invalid/0');
+        const fetchModel = jest.fn(async (input: string | URL | Request) => {
+            const step = Number(new URL(String(input)).pathname.slice(1));
+            return new Response(null, { status: 302, headers: { location: `/${step + 1}` } });
+        });
+
+        await expect(prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })).rejects.toThrow(
+            'model artifact exceeded redirect limit'
+        );
+        expect(fetchModel).toHaveBeenCalledTimes(6);
+    });
+
+    test('rejects an artifact redirect without a location', async () => {
+        const candidate = manifest('https://models.example.invalid/model.onnx');
+        const fetchModel = jest.fn(async () => new Response(null, { status: 302 }));
+
+        await expect(prepareModelCache(cacheRoot, candidate, { fetch: fetchModel as typeof fetch })).rejects.toThrow(
+            'model artifact redirect has no location'
+        );
+        expect(fetchModel).toHaveBeenCalledTimes(1);
+    });
+
     test.each([
         ['size', { bytes: modelBytes.length + 1 }],
         ['checksum', { checksum: 'f'.repeat(64) }]

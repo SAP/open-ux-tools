@@ -53,7 +53,7 @@ A Fiori application opts in inside the existing middleware configuration:
     mockDataGenerator:
       name: "@sap-ux/mockserver-data-generator/fe-mockserver"
       options:
-        rowCount: 10
+        rowsPerEntity: 10
         seed: 42
         locale: en
 ```

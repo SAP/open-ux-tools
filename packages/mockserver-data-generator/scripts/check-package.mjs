@@ -1,9 +1,19 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, symlinkSync } from 'node:fs';
+import {
+    existsSync,
+    lstatSync,
+    mkdirSync,
+    mkdtempSync,
+    readFileSync,
+    realpathSync,
+    rmSync,
+    statSync,
+    symlinkSync
+} from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join, resolve, sep } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const MAXIMUM_PACKED_BYTES = 5 * 1024 * 1024;
@@ -17,6 +27,13 @@ const UNC_DEVELOPER_PATH = /\\{2,}[A-Za-z0-9._-]+\\+[A-Za-z0-9.$_-]+\\+/u;
 const MODEL_MANIFEST_FILE = /(?:^|\/)model-manifest(?:[-_.][^/]*)?\.json$/iu;
 const IMMUTABLE_REVISION = /^[a-f\d]{40,64}$/u;
 const SHA_256 = /^[a-f\d]{64}$/u;
+const CORE_DOCUMENTATION = [
+    'README.md',
+    'docs/architecture.md',
+    'docs/host-contract.md',
+    'docs/security.md',
+    'docs/troubleshooting.md'
+];
 
 function packageProfile(args) {
     if (args.length === 0) {
@@ -77,6 +94,42 @@ function containsDeveloperPath(content) {
         return true;
     }
     return WINDOWS_DEVELOPER_PATH.test(content.replace(/\\+/gu, '/'));
+}
+
+function assertOperationalDocumentation(packageRoot, files, profile) {
+    if (profile !== 'core') {
+        return;
+    }
+    const publishedFiles = new Set(files);
+    for (const path of CORE_DOCUMENTATION) {
+        if (!publishedFiles.has(path)) {
+            throw new Error(`Packed core package is missing required documentation: ${path}`);
+        }
+    }
+
+    for (const path of files.filter((candidate) => candidate.toLowerCase().endsWith('.md'))) {
+        const sourcePath = join(packageRoot, path);
+        const content = readFileSync(sourcePath, 'utf8');
+        const relativeLinks = [...content.matchAll(/\[[^\]]+\]\(([^)]+)\)/gu)]
+            .map((match) => match[1])
+            .filter(Boolean)
+            .filter((target) => !target.startsWith('#') && !target.startsWith('//'))
+            .filter((target) => !/^[a-z][a-z\d+.-]*:/iu.test(target))
+            .map((target) => target.split('#', 1)[0]);
+        for (const target of relativeLinks) {
+            const resolvedTarget = resolve(dirname(sourcePath), target);
+            const packageRelativeTarget = relative(packageRoot, resolvedTarget);
+            if (
+                isAbsolute(packageRelativeTarget) ||
+                packageRelativeTarget === '..' ||
+                packageRelativeTarget.startsWith(`..${sep}`) ||
+                !existsSync(resolvedTarget) ||
+                !lstatSync(resolvedTarget).isFile()
+            ) {
+                throw new Error(`Broken relative Markdown link in packed package: ${path} -> ${target}`);
+            }
+        }
+    }
 }
 
 function extractPackedPackage(archivePath, temporaryDirectory, reportedFiles) {
@@ -243,6 +296,7 @@ try {
         throw new Error(`Packed tarball is ${bytes} bytes and exceeds the 5 MiB ceiling`);
     }
     assertNetworkFreePublicConstruction(process.cwd(), packedRoot, profile);
+    assertOperationalDocumentation(packedRoot, files, profile);
     process.stdout.write(
         `${JSON.stringify({
             packageName: report.name,

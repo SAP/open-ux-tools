@@ -1347,10 +1347,21 @@ pnpm changeset status
 - Modify: `packages/mockserver-data-generator/docs/security.md`
 - Modify: `packages/mockserver-data-generator/docs/troubleshooting.md`
 
-- [ ] Document opt-in setup, one-middleware configuration, model acquisition, offline preparation, deterministic seed, existing-data precedence, cache behavior, diagnostics, and rollback.
-- [ ] State preview limitations and English-first scope.
-- [ ] Distinguish structural validity, classifier metrics, LLM parse/fill metrics, and realism evidence.
-- [ ] Credit the pilot as evidence without exposing internal/customer artifacts.
+- [x] Document opt-in setup, one-middleware configuration, model acquisition, offline preparation, deterministic seed, existing-data precedence, cache behavior, diagnostics, and rollback.
+- [x] State preview limitations and English-first scope.
+- [x] Distinguish structural validity, classifier metrics, LLM parse/fill metrics, and realism evidence.
+- [x] Credit the pilot as evidence without exposing internal/customer artifacts.
+
+**Implementation record (2026-09-05):** The package now publishes architecture,
+host-contract, troubleshooting, and security guidance from its npm boundary.
+The exact packed-archive checker requires those operational documents and
+rejects inline relative Markdown links that do not resolve to regular files
+inside the extracted package. Contract tests also require the security guide,
+honest English-first claim boundaries, and the implemented `rowsPerEntity`
+option.
+Downloader regressions prove that manifest-controlled descendant symlinks and
+insecure redirect hops are rejected before external writes or redirected-host
+contact. Actual npm publication remains part of Task 13.1.
 
 ### Task 13.5: Promote stable and archive the pilot only after parity
 
