@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `64fbf17261ff5ade91004edc709f6cac450a2931013501a946fe701200fabad9`
-- archive SHA-256: `049927d74b1b596aed69afe8ec245dd0d9c98683e5665ff1bf0691015d2a3d9e`
-- archive size: 566,486 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `c6de01c559dec0e52d97b846171fe5af211fedd8`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
-- local handoff copy: `/absolute/path/to/mockserver-data-generator-dev-kit-64fbf17261ff5ade.tgz`
+- dev-kit fingerprint: `2587b8efb75aa190ccb4de62b789713a31a798493aa808fb17bae000e1d077f5`
+- archive SHA-256: `badcc3f241607999720e2d670986d7d73dfa37e5feb54545aba9a3be0fc5b4f9`
+- archive size: 566,493 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `e319240ce9f2af70e78ad08a02ae394e7030e439`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
+- local handoff copy: `/absolute/path/to/mockserver-data-generator-dev-kit-2587b8efb75aa190.tgz`
 
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema

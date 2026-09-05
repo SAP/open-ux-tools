@@ -1493,7 +1493,7 @@ Implement the deterministic, classifier, and SFT paths test-first using the exis
 ## Reviewed implementation checkpoint (2026-09-05)
 
 The approved runtime behavior is implemented on clean candidate commits
-`c6de01c559dec0e52d97b846171fe5af211fedd8` in `SAP/open-ux-tools` and
+`59a448414c9e601a42a3d18a23bc1c892dc0894f` in `SAP/open-ux-tools` and
 `b64ee8b60519f129ad975465536204c78a15be1a` in `SAP/open-ux-odata`.
 `npm run start-mock` remains standard and does not invoke MockGen;
 `npm run start-mock -- --mockgen` is the explicit opt-in. The launcher
@@ -1502,7 +1502,7 @@ arguments, while the generic host creates and disposes one provider per
 generation epoch and retains complete fallback behavior.
 
 The final focused review found no remaining critical or important issue in the
-launcher and lifecycle scope. Current local verification includes 243 generator
+launcher and lifecycle scope. Current local verification includes 250 generator
 tests, 364 host-core tests, 13 middleware tests, and 120 development-kit tests,
 plus clean builds and zero-error lint for the affected packages. Fresh packed
 OData V2, OData V4, and CDS-through-FE applications passed both standard and
@@ -1510,9 +1510,9 @@ learned HTTP paths. Literal `npm run start-mock` and
 `npm run start-mock -- --mockgen` commands also passed in the V4 fixture.
 
 The reproducible local/BAS kit is
-`/absolute/path/to/mockserver-data-generator-dev-kit-64fbf17261ff5ade.tgz`
-(566,486 bytes, SHA-256
-`049927d74b1b596aed69afe8ec245dd0d9c98683e5665ff1bf0691015d2a3d9e`).
+`/absolute/path/to/mockserver-data-generator-dev-kit-2587b8efb75aa190.tgz`
+(566,493 bytes, SHA-256
+`badcc3f241607999720e2d670986d7d73dfa37e5feb54545aba9a3be0fc5b4f9`).
 The reviewed platform-runtime campaign passes every hard local gate at
 266,453,893 installed-and-cache bytes. The 451,328,075-byte upstream result is
 the prior exact multi-platform baseline and still fails only the total-footprint
@@ -1566,15 +1566,16 @@ middleware package from the application only for `--mockgen`, rejects a
 missing, unloadable, or wrong-version host before child-process creation with a
 stable path-free message, and leaves unflagged startup untouched. Test-first
 verification observed the intended failures before implementation and now
-passes 28 suites/243 tests for the generator, 27 suites/364 tests for the host
+passes 29 suites/250 tests for the generator, 27 suites/364 tests for the host
 core, and 2 suites/13 tests for the middleware on both Node 22.22.3 and Node
 24.20.0; all affected builds and lints pass with zero errors. The 11-suite,
-120-test development-kit integration package also passes.
+120-test development-kit integration package also passes. Independent re-review
+found no remaining critical, important, or minor issue in this scope.
 
 The exact clean kit is fingerprint
-`64fbf17261ff5ade91004edc709f6cac450a2931013501a946fe701200fabad9`,
-566,486 bytes, with SHA-256
-`049927d74b1b596aed69afe8ec245dd0d9c98683e5665ff1bf0691015d2a3d9e`.
+`2587b8efb75aa190ccb4de62b789713a31a798493aa808fb17bae000e1d077f5`,
+566,493 bytes, with SHA-256
+`badcc3f241607999720e2d670986d7d73dfa37e5feb54545aba9a3be0fc5b4f9`.
 Two builds were byte-identical. Fresh V2, V4, and CDS-through-FE installs each
 passed separate standard and retained-classifier/SFT canaries. Literal V4
 commands returned `ProductName_0` without the flag and a learned `Safety Valve`
