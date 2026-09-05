@@ -582,6 +582,7 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 - Modify: `packages/mockserver-data-generator/src/start.ts`
 - Modify: `packages/mockserver-data-generator/test/unit/start.test.ts`
 - Modify: `packages/mockserver-data-generator/README.md`
+- Modify: `packages/mockserver-data-generator/docs/host-contract.md`
 
 - [ ] Add a failing middleware test that requires
       `FEMiddleware.MOCK_DATA_GENERATOR_API_VERSION` to equal `1`.

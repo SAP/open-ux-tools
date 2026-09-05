@@ -277,11 +277,19 @@ artifacts:
 - Absence of the provider is behavior-neutral.
 - The packed npm artifact is at most 5 MiB and contains no learned artifact.
 
-The compatible host package range is chosen only after these fixtures pass. A
-contract-version-1 host emits a clear diagnostic for an incompatible provider.
-A pre-SPI host may discard the unknown configuration before loading this
-adapter, so the configuration writer, local/BAS installer, and package
-compatibility metadata own the minimum-host diagnostic.
+The `SAP/open-ux-odata` core defines
+`MOCK_DATA_GENERATOR_API_VERSION = 1`, and its CommonJS middleware export
+advertises that value as a static property. Before a flagged start, the launcher
+resolves the application-installed middleware and requires that exact marker.
+A pre-SPI, missing, unloadable, or incompatible host therefore stops before the
+child process is created and receives one path-free diagnostic. Unflagged
+startup performs no compatibility lookup and remains the standard mockserver
+path.
+
+The host core and middleware must be published before the generator. Exact
+minimum npm versions are recorded only after that release exists; the source
+and development-kit contract uses the capability marker instead of guessing a
+future package number.
 
 ## Repository and release checks
 

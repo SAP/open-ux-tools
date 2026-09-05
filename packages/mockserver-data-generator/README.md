@@ -107,6 +107,15 @@ same server process. The launcher consumes the flag before starting Fiori:
 npm run start-mock -- --mockgen
 ```
 
+For the flagged command, the launcher resolves the application-installed
+`@sap-ux/ui5-middleware-fe-mockserver` and requires its
+`MOCK_DATA_GENERATOR_API_VERSION` capability to equal `1` before Fiori starts.
+An older, missing, or unloadable host stops only the flagged command with a
+path-free compatibility message. `npm run start-mock` skips this check and
+continues to use standard mock data. The host packages containing the provider
+SPI and capability marker must therefore be released before this package; the
+first compatible npm versions will be recorded after that host release exists.
+
 `sftTimeoutMs` bounds each entity-level fine-tuned inference. The direct API
 defaults to 90 seconds and accepts at most 120 seconds; the standard FE host
 independently caps the complete provider epoch at 60 seconds, so a larger

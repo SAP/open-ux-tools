@@ -60,14 +60,22 @@ describe('start-mock launcher', () => {
 
     test('spawns without a shell, inherits stdio, and returns the child exit code', async () => {
         const child = childProcess();
-        const spawn = jest.fn(() => child);
+        const events: string[] = [];
+        const assertHostCompatibility = jest.fn(() => events.push('compatibility'));
+        const spawn = jest.fn(() => {
+            events.push('spawn');
+            return child;
+        });
         const signalSource = new EventEmitter();
         const completion = executeStartCommand(['start', '--', 'fiori', 'run', '--mockgen'], {
+            assertHostCompatibility,
             env: { PATH: '/test/bin' },
             signalSource,
             spawn
         });
 
+        expect(events).toEqual(['compatibility', 'spawn']);
+        expect(assertHostCompatibility).toHaveBeenCalledTimes(1);
         expect(spawn).toHaveBeenCalledWith('fiori', ['run'], {
             env: { PATH: '/test/bin', SAP_UX_MOCKGEN_ENABLED: '1' },
             shell: false,
@@ -79,6 +87,33 @@ describe('start-mock launcher', () => {
         expect(signalSource.listenerCount('SIGINT')).toBe(0);
         expect(signalSource.listenerCount('SIGTERM')).toBe(0);
         expect(signalSource.listenerCount('SIGHUP')).toBe(0);
+    });
+
+    test('does not inspect host compatibility for the standard start', async () => {
+        const child = childProcess();
+        const assertHostCompatibility = jest.fn();
+        const completion = executeStartCommand(['start', '--', 'fiori', 'run'], {
+            assertHostCompatibility,
+            spawn: () => child
+        });
+
+        expect(assertHostCompatibility).not.toHaveBeenCalled();
+        child.emit('close', 0, null);
+        await expect(completion).resolves.toBe(0);
+    });
+
+    test('does not spawn Fiori when the flagged host is incompatible', async () => {
+        const spawn = jest.fn();
+
+        await expect(
+            executeStartCommand(['start', '--', 'fiori', 'run', '--mockgen'], {
+                assertHostCompatibility: () => {
+                    throw new Error('MockGen host compatibility failed');
+                },
+                spawn
+            })
+        ).rejects.toThrow('MockGen host compatibility failed');
+        expect(spawn).not.toHaveBeenCalled();
     });
 
     test.each(['SIGINT', 'SIGTERM', 'SIGHUP'] as const)('forwards %s and maps a signalled exit', async (signal) => {

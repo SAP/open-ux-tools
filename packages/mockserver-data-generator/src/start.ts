@@ -1,6 +1,7 @@
 import type { ChildProcess } from 'node:child_process';
 import type { EventEmitter } from 'node:events';
 import crossSpawn from 'cross-spawn';
+import { assertCompatibleMockserver } from './host-compatibility.js';
 
 const ACTIVATION_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_ENABLED';
 const FORWARDED_SIGNALS = ['SIGINT', 'SIGTERM', 'SIGHUP'] as const;
@@ -23,6 +24,7 @@ interface StartSpawnOptions {
 type StartSpawn = (command: string, args: ReadonlyArray<string>, options: StartSpawnOptions) => ChildProcess;
 
 interface StartCommandDependencies {
+    assertHostCompatibility?: () => void;
     env?: NodeJS.ProcessEnv;
     signalSource?: StartSignalSource;
     spawn?: StartSpawn;
@@ -101,6 +103,9 @@ export async function executeStartCommand(
     dependencies: StartCommandDependencies = {}
 ): Promise<number> {
     const parsed = parseStartCommand(argv, dependencies.env ?? process.env);
+    if (parsed.mockgenEnabled) {
+        (dependencies.assertHostCompatibility ?? assertCompatibleMockserver)();
+    }
     const spawn = dependencies.spawn ?? (crossSpawn as StartSpawn);
     const signalSource = dependencies.signalSource ?? process;
     const child = spawn(parsed.command, parsed.args, {
