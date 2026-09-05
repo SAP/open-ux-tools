@@ -19,12 +19,18 @@ import {
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
  * @param config - optional config for mockserver
+ * @param mockgenProviderAvailable - whether the YAML provider slot is available for MockGen
  * @returns whether complete MockGen application wiring was added
  */
-export function enhancePackageJson(fs: Editor, basePath: string, config?: PackageJsonMockConfig): boolean {
+export function enhancePackageJson(
+    fs: Editor,
+    basePath: string,
+    config?: PackageJsonMockConfig,
+    mockgenProviderAvailable = true
+): boolean {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
-    const mockgenEnabled = enhanceScripts(fs, packageJson, supportsMockgen(config));
+    const mockgenEnabled = enhanceScripts(fs, packageJson, supportsMockgen(config) && mockgenProviderAvailable);
     enhanceDependencies(packageJson, config?.mockserverModule, config?.mockserverVersion, mockgenEnabled);
     fs.writeJSON(packageJsonPath, packageJson);
     return mockgenEnabled;

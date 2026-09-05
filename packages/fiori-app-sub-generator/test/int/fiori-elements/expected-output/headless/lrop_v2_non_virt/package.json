@@ -12,13 +12,14 @@
   "devDependencies": {
     "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
-    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+    "@sap-ux/ui5-middleware-fe-mockserver": "2",
+    "@sap-ux/mockserver-data-generator": "0.1.0"
   },
   "scripts": {
     "start": "fiori run --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nonvirt-tile\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nonvirt-tile\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nonvirt-tile\"",
+    "start-mock": "mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nonvirt-tile\"",
     "deploy": "fiori verify",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \"/index.html?sap-ui-xx-viewCache=false\"",

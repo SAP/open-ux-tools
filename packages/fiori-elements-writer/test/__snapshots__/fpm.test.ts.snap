@@ -30,13 +30,14 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap-ux/mockserver-data-generator\\": \\"0.1.0\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
+    \\"start-mock\\": \\"mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
@@ -98,6 +99,13 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 builder:
   resources:
     excludes:
@@ -152,6 +160,13 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 builder:
   resources:
     excludes:
@@ -3610,7 +3625,8 @@ export default [
     \\"typescript\\": \\"^5.9.3\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
     \\"eslint\\": \\"^10\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap-ux/mockserver-data-generator\\": \\"0.1.0\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
@@ -3620,7 +3636,7 @@ export default [
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
+    \\"start-mock\\": \\"mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
@@ -3719,6 +3735,13 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 builder:
   resources:
     excludes:
@@ -3788,6 +3811,13 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 builder:
   resources:
     excludes:

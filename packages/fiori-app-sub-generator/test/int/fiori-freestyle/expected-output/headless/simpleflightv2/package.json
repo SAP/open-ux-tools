@@ -12,7 +12,8 @@
   "devDependencies": {
     "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
-    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+    "@sap-ux/ui5-middleware-fe-mockserver": "2",
+    "@sap-ux/mockserver-data-generator": "0.1.0"
   },
   "scripts": {
     "start": "fiori run --open \"test/flp.html#app-preview\"",
@@ -21,7 +22,7 @@
     "deploy": "fiori verify",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \"/index.html?sap-ui-xx-viewCache=false\"",
-    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"test/flp.html#app-preview\"",
+    "start-mock": "mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"test/flp.html#app-preview\"",
     "int-test": "fiori run --config ./ui5-mock.yaml --open \"test/integration/opaTests.qunit.html\"",
     "start-variants-management": "fiori run --open \"/preview.html#app-preview\"",
     "unit-test": "fiori run --config ./ui5-mock.yaml --open \"test/unit/unitTests.qunit.html\""

@@ -143,7 +143,7 @@ pnpm --filter @sap-ux/ui5-middleware-fe-mockserver test
 - [ ] Set provider/module-load p95 to at most 250 ms, model-session-load p95 to at most 5 seconds, and cold whole-service generation p95 to at most 25 seconds on the reference platform.
 - [ ] Set warm generated-data cache overhead to at most 200 ms on the reference machine without loading a model session.
 - [ ] Keep T2 inside the 20-second session budget.
-- [ ] Bound automatic first-use acquisition to 30 seconds before fallback and provide an explicit preparation command for slow/offline environments.
+- [ ] Bound automatic first-use acquisition to five minutes before fallback and provide an explicit preparation command for slow/offline environments.
 - [ ] Set the end-to-end host provider deadline to 60 seconds, covering acquisition, inference, result validation, and publication.
 - [ ] Record structural, classifier, output-quality, realism, privacy, and compatibility gates from Phases 8–10.
 - [ ] Freeze T2 parse/fill denominators, predeclared `expectedEmpty` resources, metadata-derived relationship assertions, and domain-coherence assertions before candidate execution; require 100% of every absolute structural and coherence assertion.
@@ -827,7 +827,7 @@ pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test:i
 - [ ] Make warm-cache execution perform no network call.
 - [ ] Add `mockserver-data-generator prepare` to acquire and verify pinned artifacts before an offline session; do not add another application start script.
 - [ ] Add `mockserver-data-generator verify` to check cached hashes and report component fingerprints without printing local data.
-- [ ] Bound automatic provider acquisition to 30 seconds before deterministic fallback; retain incomplete data only as a non-loadable resumable temporary file.
+- [ ] Bound automatic provider acquisition to five minutes before deterministic fallback; retain incomplete data only as a non-loadable resumable temporary file.
 
 **Implementation record (2026-09-05):** The production downloader and CLI now
 cover immutable manifests, streamed size/hash verification, secure redirects,

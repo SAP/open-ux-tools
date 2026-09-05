@@ -2484,6 +2484,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/mockserver-config-writer':
+        specifier: workspace:*
+        version: link:../mockserver-config-writer
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer

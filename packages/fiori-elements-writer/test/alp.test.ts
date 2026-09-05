@@ -95,6 +95,15 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     test.each(alpConfigs)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
+        const packageJson = fs.readJSON(join(testPath, 'package.json')) as {
+            devDependencies?: Record<string, string>;
+            scripts?: Record<string, string>;
+        };
+        expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBe('0.1.0');
+        expect(packageJson.scripts?.['start-mock']).toMatch(/^mockserver-data-generator start -- fiori run/u);
+        expect(fs.read(join(testPath, 'ui5-mock.yaml'))).toContain(
+            "name: '@sap-ux/mockserver-data-generator/fe-mockserver'"
+        );
         expect(fs.dump(testPath)).toMatchSnapshot();
 
         return new Promise(async (resolve) => {

@@ -26,10 +26,7 @@ const WINDOWS_DEVELOPER_PATH = /[A-Za-z]:\/Users\/[A-Za-z0-9._-]+\//u;
 const UNC_DEVELOPER_PATH = /\\{2,}[A-Za-z0-9._-]+\\+[A-Za-z0-9.$_-]+\\+/u;
 const MODEL_MANIFEST_FILE = /(?:^|\/)model-manifest(?:[-_.][^/]*)?\.json$/iu;
 const ALLOWED_RESOURCE_FILES = new Set(['resources/model-manifest.json']);
-const IMMUTABLE_REVISION = /^[a-f\d]{40,64}$/u;
-const SHA_256 = /^[a-f\d]{64}$/u;
 const REQUIRED_RUNTIME_TARGETS = new Set(['darwin-arm64', 'darwin-x64', 'linux-x64', 'win32-x64']);
-const MAXIMUM_PLATFORM_RUNTIME_BYTES = 64 * 1024 * 1024;
 const CORE_DOCUMENTATION = [
     'README.md',
     'docs/architecture.md',
@@ -61,7 +58,7 @@ function packedFiles(report) {
     });
 }
 
-function assertPackageBoundary(packageRoot, files) {
+async function assertPackageBoundary(packageRoot, files) {
     const canonicalRoot = realpathSync(packageRoot);
     for (const path of files) {
         if (path.toLowerCase().startsWith('resources/') && !ALLOWED_RESOURCE_FILES.has(path)) {
@@ -91,7 +88,7 @@ function assertPackageBoundary(packageRoot, files) {
             throw new Error(`Packed text contains an absolute developer path: ${path}`);
         }
         if (MODEL_MANIFEST_FILE.test(path)) {
-            assertPublishedModelManifest(path, content);
+            await assertPublishedModelManifest(packageRoot, path, content);
         }
     }
 }
@@ -187,76 +184,31 @@ function listArchiveLines(archivePath, mode) {
     return execFileSync('tar', [mode, archivePath], { encoding: 'utf8' }).split('\n').filter(Boolean);
 }
 
-function assertPublishedModelManifest(path, content) {
+async function assertPublishedModelManifest(packageRoot, path, content) {
     let manifest;
     try {
         manifest = JSON.parse(content.toString('utf8'));
     } catch {
         throw new Error(`Published model manifest is not valid JSON: ${path}`);
     }
-    if (!manifest || typeof manifest !== 'object' || !IMMUTABLE_REVISION.test(manifest.revision)) {
-        throw new Error(`Published model manifest has no immutable revision: ${path}`);
+    let parsedManifest;
+    try {
+        const validatorPath = pathToFileURL(join(packageRoot, 'dist', 'model', 'manifest.js')).href;
+        const validator = await import(validatorPath);
+        if (typeof validator.parseModelManifest !== 'function') {
+            throw new TypeError('packed runtime does not export parseModelManifest');
+        }
+        parsedManifest = validator.parseModelManifest(manifest);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`Published model manifest fails runtime validation: ${message}: ${path}`);
     }
-    if (!Array.isArray(manifest.components) || manifest.components.length === 0) {
-        throw new Error(`Published model manifest has no components: ${path}`);
-    }
-    if (manifest.formatVersion !== 2 || !Array.isArray(manifest.runtimes) || manifest.runtimes.length === 0) {
+    if (parsedManifest.formatVersion !== 2) {
         throw new Error(`Published model manifest has no platform runtime: ${path}`);
     }
-    for (const component of manifest.components) {
-        if (
-            !component ||
-            typeof component !== 'object' ||
-            !Array.isArray(component.files) ||
-            component.files.length === 0
-        ) {
-            throw new Error(`Published model manifest component has no files: ${path}`);
-        }
-        for (const file of component.files) {
-            if (!file || typeof file !== 'object' || !Number.isSafeInteger(file.bytes) || file.bytes <= 0) {
-                throw new Error(`Published model manifest artifact has no positive byte size: ${path}`);
-            }
-            if (!SHA_256.test(file.sha256)) {
-                throw new Error(`Published model manifest artifact has no lowercase SHA-256: ${path}`);
-            }
-        }
-    }
-    const runtimeTargets = new Set();
-    for (const runtime of manifest.runtimes) {
-        if (
-            !runtime ||
-            typeof runtime !== 'object' ||
-            typeof runtime.platform !== 'string' ||
-            typeof runtime.architecture !== 'string' ||
-            typeof runtime.entry !== 'string' ||
-            !SHA_256.test(runtime.fingerprint) ||
-            !Array.isArray(runtime.files) ||
-            runtime.files.length === 0
-        ) {
-            throw new Error(`Published model manifest has an invalid platform runtime: ${path}`);
-        }
-        const target = `${runtime.platform}-${runtime.architecture}`;
-        if (runtimeTargets.has(target)) {
-            throw new Error(`Published model manifest has a duplicate platform runtime: ${path}`);
-        }
-        runtimeTargets.add(target);
-        if (!runtime.files.some((file) => file?.role === 'entry' && file?.path === runtime.entry)) {
-            throw new Error(`Published model manifest platform runtime has no declared entry: ${path}`);
-        }
-        let runtimeBytes = 0;
-        for (const file of runtime.files) {
-            if (!file || typeof file !== 'object' || !Number.isSafeInteger(file.bytes) || file.bytes <= 0) {
-                throw new Error(`Published model manifest runtime artifact has no positive byte size: ${path}`);
-            }
-            if (!SHA_256.test(file.sha256)) {
-                throw new Error(`Published model manifest runtime artifact has no lowercase SHA-256: ${path}`);
-            }
-            runtimeBytes += file.bytes;
-            if (runtimeBytes > MAXIMUM_PLATFORM_RUNTIME_BYTES) {
-                throw new Error(`Published model manifest platform runtime exceeds 64 MiB: ${path}`);
-            }
-        }
-    }
+    const runtimeTargets = new Set(
+        parsedManifest.runtimes.map((runtime) => `${runtime.platform}-${runtime.architecture}`)
+    );
     if (
         runtimeTargets.size !== REQUIRED_RUNTIME_TARGETS.size ||
         [...REQUIRED_RUNTIME_TARGETS].some((target) => !runtimeTargets.has(target))
@@ -356,7 +308,7 @@ try {
     const report = JSON.parse(output);
     const files = packedFiles(report);
     const packedRoot = extractPackedPackage(report.filename, temporaryDirectory, files);
-    assertPackageBoundary(packedRoot, files);
+    await assertPackageBoundary(packedRoot, files);
     const bytes = statSync(report.filename).size;
     if (bytes > MAXIMUM_PACKED_BYTES) {
         throw new Error(`Packed tarball is ${bytes} bytes and exceeds the 5 MiB ceiling`);

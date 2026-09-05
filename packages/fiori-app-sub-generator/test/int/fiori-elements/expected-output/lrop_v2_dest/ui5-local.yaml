@@ -53,6 +53,13 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 builder:
   resources:
     excludes:

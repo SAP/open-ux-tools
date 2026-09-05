@@ -21,10 +21,13 @@ type MockserverConfigWithMockgen = MockserverConfig & {
  * @param config UI5 mockserver configuration
  * @param enabled whether automatic MockGen wiring is enabled
  */
-function updateMockgenProvider(config: UI5Config, enabled: boolean): void {
+function updateMockgenProvider(config: UI5Config, enabled: boolean | 'preserve'): void {
     const middleware = config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver');
     if (!middleware) {
         throw new Error('Could not find sap-fe-mockserver');
+    }
+    if (enabled === 'preserve') {
+        return;
     }
     const current = middleware.configuration.mockDataGenerator;
     if (enabled && current === undefined) {
@@ -37,6 +40,26 @@ function updateMockgenProvider(config: UI5Config, enabled: boolean): void {
         delete middleware.configuration.mockDataGenerator;
         config.updateCustomMiddleware(middleware);
     }
+}
+
+/**
+ * Check whether MockGen may own the generator slot in an existing mock YAML.
+ * A missing file, middleware, or provider leaves the slot available; a custom
+ * provider reserves it.
+ *
+ * @param fs - mem-fs reference to be used for file access
+ * @param basePath - path to project root
+ * @returns whether MockGen can be configured without replacing a custom provider
+ */
+export async function canConfigureMockgenProvider(fs: Editor, basePath: string): Promise<boolean> {
+    const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
+    if (!fs.exists(ui5MockYamlPath)) {
+        return true;
+    }
+    const config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+    const current =
+        config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver')?.configuration.mockDataGenerator;
+    return current === undefined || current.name === MOCKGEN_PROVIDER;
 }
 
 /**
@@ -60,14 +83,14 @@ function updateMockgenProvider(config: UI5Config, enabled: boolean): void {
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
  * @param config - optional config passed in by consumer
- * @param configureMockgen - whether to configure the default MockGen provider
+ * @param configureMockgen - whether to configure the default MockGen provider, or preserve its current state
  */
 export async function enhanceYaml(
     fs: Editor,
     basePath: string,
     webappPath: string,
     config?: Ui5MockYamlConfig,
-    configureMockgen = true
+    configureMockgen: boolean | 'preserve' = true
 ): Promise<void> {
     const overwrite = !!config?.overwrite;
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');

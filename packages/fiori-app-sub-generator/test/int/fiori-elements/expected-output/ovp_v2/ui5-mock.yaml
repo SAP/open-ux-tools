@@ -45,6 +45,13 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 builder:
   resources:
     excludes:

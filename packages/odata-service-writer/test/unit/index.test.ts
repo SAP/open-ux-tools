@@ -154,6 +154,13 @@ describe('generate', () => {
                         annotations:
                           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+                        mockDataGenerator:
+                          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+                          options:
+                            locale: en
+                            mode: auto
+                            rowsPerEntity: 10
+                            seed: 42
                 "
             `);
             // Value List references are saved
@@ -348,11 +355,12 @@ describe('generate', () => {
             // verify the updated package.json
             expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
                 devDependencies: {
+                    '@sap-ux/mockserver-data-generator': '0.1.0',
                     '@sap-ux/ui5-middleware-fe-mockserver': '2',
                     '@sap/ux-ui5-tooling': '1'
                 },
                 scripts: {
-                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                    'start-mock': `mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"/\"`
                 },
                 ui5: {
                     dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
@@ -401,11 +409,12 @@ describe('generate', () => {
             // verify the updated package.json
             expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
                 devDependencies: {
+                    '@sap-ux/mockserver-data-generator': '0.1.0',
                     '@sap-ux/ui5-middleware-fe-mockserver': '2',
                     '@sap/ux-ui5-tooling': '1'
                 },
                 scripts: {
-                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                    'start-mock': `mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"/\"`
                 },
                 ui5: {
                     dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
@@ -453,11 +462,12 @@ describe('generate', () => {
             // verify the updated package.json
             expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
                 devDependencies: {
+                    '@sap-ux/mockserver-data-generator': '0.1.0',
                     '@sap-ux/ui5-middleware-fe-mockserver': '2',
                     '@sap/ux-ui5-tooling': '1'
                 },
                 scripts: {
-                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                    'start-mock': `mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"/\"`
                 },
                 ui5: {
                     dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
@@ -490,11 +500,12 @@ describe('generate', () => {
             // verify the updated package.json
             expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
                 devDependencies: {
+                    '@sap-ux/mockserver-data-generator': '0.1.0',
                     '@sap-ux/ui5-middleware-fe-mockserver': '2',
                     '@sap/ux-ui5-tooling': '1'
                 },
                 scripts: {
-                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                    'start-mock': `mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"/\"`
                 },
                 ui5: {
                     dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']

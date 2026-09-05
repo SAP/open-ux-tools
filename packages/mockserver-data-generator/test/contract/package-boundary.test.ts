@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import {
+    copyFileSync,
     existsSync,
     lstatSync,
     mkdirSync,
@@ -41,6 +42,7 @@ function fakePackage(
         JSON.stringify({
             name: '@sap-ux/mockserver-data-generator-test',
             version: '0.0.0',
+            type: 'module',
             files: ['dist', '.mockgen-cache'],
             ...packageJson
         })
@@ -50,6 +52,9 @@ function fakePackage(
         'dist/fe-mockserver.cjs': 'module.exports = class Provider {};',
         ...files
     };
+    const validatorDestination = join(root, 'dist', 'model', 'manifest.js');
+    mkdirSync(dirname(validatorDestination), { recursive: true });
+    copyFileSync(join(packageRoot, 'dist', 'model', 'manifest.js'), validatorDestination);
     for (const [path, content] of Object.entries(publishedFiles)) {
         const destination = join(root, path);
         mkdirSync(dirname(destination), { recursive: true });
@@ -79,7 +84,17 @@ function modelManifest(overrides: Readonly<Record<string, unknown>> = {}) {
                         url: 'https://models.example.test/sft/model.onnx',
                         ...overrides
                     }
-                ]
+                ],
+                runtime: {
+                    backend: 'onnx',
+                    package: 'onnxruntime-node',
+                    version: '1.24.3',
+                    inputs: ['input_ids', 'attention_mask'],
+                    outputs: ['logits'],
+                    outputFormat: 'row-object-v1'
+                },
+                license: { name: 'Apache-2.0', url: 'https://models.example.test/sft/license' },
+                modelCardUrl: 'https://models.example.test/sft/model-card'
             }
         ],
         runtimes: [
@@ -237,6 +252,65 @@ describe('published package boundary', () => {
 
         expect(result.status).toBe(1);
         expect(result.stderr).toMatch(/darwin-arm64, darwin-x64, linux-x64, win32-x64/i);
+    });
+
+    it.each([
+        [
+            'a component runtime contract',
+            (manifest: { components: Array<Record<string, unknown>> }) => delete manifest.components[0]?.runtime
+        ],
+        [
+            'component license metadata',
+            (manifest: { components: Array<Record<string, unknown>> }) => delete manifest.components[0]?.license
+        ],
+        [
+            'a model card URL',
+            (manifest: { components: Array<Record<string, unknown>> }) => delete manifest.components[0]?.modelCardUrl
+        ],
+        [
+            'globally unique artifact paths',
+            (manifest: {
+                components: Array<{ files?: Array<Record<string, unknown>> }>;
+                runtimes: Array<{ files?: Array<Record<string, unknown>> }>;
+            }) => {
+                const componentPath = manifest.components[0]?.files?.[0]?.path;
+                if (manifest.runtimes[0]?.files?.[0]) {
+                    manifest.runtimes[0].files[0].path = componentPath;
+                }
+            }
+        ],
+        [
+            'the preview model-size limit',
+            (manifest: { components: Array<{ files?: Array<Record<string, unknown>> }> }) => {
+                if (manifest.components[0]?.files?.[0]) {
+                    manifest.components[0].files[0].bytes = 200 * 1024 * 1024 + 1;
+                }
+            }
+        ],
+        [
+            'matching component and platform runtime versions',
+            (manifest: { runtimes: Array<Record<string, unknown>> }) => {
+                if (manifest.runtimes[0]) {
+                    manifest.runtimes[0].version = '1.24.2';
+                }
+            }
+        ]
+    ])('rejects a publishable release manifest without %s', (_description, invalidate) => {
+        const manifest = JSON.parse(modelManifest()) as Parameters<typeof invalidate>[0];
+        invalidate(manifest);
+
+        const result = runChecker(
+            fakePackage(
+                {
+                    ...requiredDocumentation(),
+                    'resources/model-manifest.json': JSON.stringify(manifest)
+                },
+                { version: '0.1.0', files: ['dist', 'README.md', 'docs', 'resources'] }
+            )
+        );
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toMatch(/model manifest/i);
     });
 
     it.each([
@@ -547,7 +621,7 @@ describe('published package boundary', () => {
         const result = runChecker(root);
 
         expect({ status: result.status, stderr: result.stderr }).toEqual({ status: 0, stderr: '' });
-        expect(JSON.parse(result.stdout)).toMatchObject({ files: 9 });
+        expect(JSON.parse(result.stdout)).toMatchObject({ files: 10 });
     });
 
     it('rejects a compressed tarball above the five MiB ceiling', () => {

@@ -80,10 +80,13 @@ describe('ODataService templates', () => {
                 dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
             },
             devDependencies: {
+                '@sap-ux/mockserver-data-generator': '0.1.0',
                 '@sap-ux/ui5-middleware-fe-mockserver': '2',
                 '@sap/ux-ui5-tooling': '1'
             },
-            scripts: { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
+            scripts: {
+                'start-mock': 'mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open "/"'
+            }
         });
     });
 
