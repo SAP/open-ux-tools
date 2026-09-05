@@ -995,3 +995,39 @@ license, SBOM, signing, update, and rollback ownership. Until one exists, the
 normal upstream runtime remains supported but exceeds the proposed 300 MiB
 combined footprint gate; the small platform archive remains feasibility
 evidence only.
+
+## Final flag-gated review packet
+
+On 2026-09-06, exporting the final package candidate initially failed closed
+because the isolated evaluation harness had not explicitly activated the
+provider after production activation became default-off. The application path
+was correct; the defect was limited to the explicit offline review-packet
+command. A regression now requires that isolated provider dependency to opt in,
+while normal applications still require `--mockgen`.
+
+The corrected command exported the frozen cohort twice with byte-identical
+evidence and campaign files. No absolute developer or temporary path appears in
+either file.
+
+| Property | Final packet |
+| --- | --- |
+| Package commit | `04390772f75852440444a9ec076ee380e61aeaaf` |
+| Package source clean | yes |
+| Compiled package fingerprint | `dc9dbb26eca45f2cb035721eb12e35f1a727944d01600713d2489c77957bc075` |
+| Model manifest SHA-256 | `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961` |
+| Model revision | `2bf437ed75f992b610f52076d4a0e34eb75397d7e431d6efa1cf641e20f076f5` |
+| Review items | 311 |
+| Structural targets | 6/6 passed |
+| Frozen coherence assertions | 11/11 passed |
+| SFT parse | 124/124 |
+| SFT accepted slots | 446/462, 96.54% |
+| Candidate fingerprint | `57f7b96c5a55ae538f47600f688594f954357e651650c5278ac06478434b7dd1` |
+| Evidence fingerprint | `42922a81940f0dcc6fdacdd7648f6d5686238fa65d47623dca89221cc1d82cd7` |
+| Evidence file SHA-256 | `b12911c5bf8b19d5ea69e3de8e575e4121e62892f34adef118a72a85f7764d95` |
+| Campaign fingerprint | `6fe07fffedd44745d24a9cd377e63e564fd106842d73c78722dd711519c549df` |
+| Campaign file SHA-256 | `c13ad95a0071797a3bf894b9e2fb15c3c0b520217775880475e890b0eec844ad` |
+
+The private review packet is retained outside the public Open UX repositories.
+This completes packet preparation only. It is not a realism pass until exactly
+two independent, lineage-bound provider artifacts compile successfully and
+meet the 80% overall, per-domain, and per-format gates with no critical issue.

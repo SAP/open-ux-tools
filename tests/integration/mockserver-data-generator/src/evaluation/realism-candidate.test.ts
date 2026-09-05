@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { describe, expect, test } from '@jest/globals';
 import * as candidateHelpers from '../../../../../scripts/mockserver-data-generator-evaluation/lib/realism-candidate.mjs';
+import * as campaignHelpers from '../../../../../scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs';
 
 const SCRIPT = fileURLToPath(
     new URL('../../../../../scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs', import.meta.url)
@@ -30,6 +31,39 @@ describe('production-bound realism candidate', () => {
         );
 
         expect(result).toMatchObject({ status: 0, stderr: '' });
+    });
+
+    test('explicitly activates the isolated provider used to export the review packet', async () => {
+        const campaignApi = campaignHelpers as unknown as {
+            createEvaluationProviderDependencies?: (
+                generator: { generateService: (...args: unknown[]) => Promise<Record<string, unknown>> },
+                learned: Record<string, unknown>,
+                capture: (result: Record<string, unknown>) => void
+            ) => {
+                isMockgenEnabled: () => boolean;
+                loadRuntime: () => Promise<Record<string, unknown>>;
+                generateService: (...args: unknown[]) => Promise<Record<string, unknown>>;
+            };
+        };
+        expect(campaignApi.createEvaluationProviderDependencies).toEqual(expect.any(Function));
+        if (!campaignApi.createEvaluationProviderDependencies) {
+            return;
+        }
+        const result = { resources: {} };
+        let captured: Record<string, unknown> | undefined;
+        const learned = { runtime: { classifier: {}, sft: {} } };
+        const dependencies = campaignApi.createEvaluationProviderDependencies(
+            { generateService: async () => result },
+            learned,
+            (value) => {
+                captured = value;
+            }
+        );
+
+        expect(dependencies.isMockgenEnabled()).toBe(true);
+        await expect(dependencies.loadRuntime()).resolves.toBe(learned);
+        await expect(dependencies.generateService()).resolves.toBe(result);
+        expect(captured).toBe(result);
     });
 
     test('parses complete export and compile commands without accepting ambiguous values', () => {

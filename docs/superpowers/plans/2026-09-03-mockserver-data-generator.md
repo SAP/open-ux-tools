@@ -1770,3 +1770,21 @@ This closes the final local handoff reconciliation. Actual BAS execution,
 approved immutable model/runtime hosting, governance disposition, the native
 release-platform matrix, fresh dual-provider review, npm publication, and
 release rollback remain open and must not be inferred from the local pass.
+
+**Exact review-packet correction (2026-09-06):** The final realism export
+exposed that the isolated evaluation provider had not been explicitly enabled
+after provider activation became default-off. The exporter failed closed before
+writing evidence. A focused regression now requires explicit activation only
+inside that user-invoked offline exporter; application behavior remains gated by
+`--mockgen`.
+
+The corrected command exported the 311-item frozen packet twice with
+byte-identical evidence and campaign files. All 6 structural targets, 11 frozen
+coherence assertions, 124/124 SFT parses, and 446/462 eligible learned slots
+passed. Candidate fingerprint is
+`57f7b96c5a55ae538f47600f688594f954357e651650c5278ac06478434b7dd1`;
+evidence fingerprint is
+`42922a81940f0dcc6fdacdd7648f6d5686238fa65d47623dca89221cc1d82cd7`.
+The full integration workspace passes 11 suites/124 tests. Two independent
+provider reviews and consensus compilation remain open; packet generation alone
+does not pass the realism gate.

@@ -309,6 +309,28 @@ function rebuildGeneratorPackage() {
     }
 }
 
+/**
+ * Build the explicit dependencies for the isolated provider used by the export
+ * command. Application activation still comes from `--mockgen`; this evaluation
+ * command opts in directly because invoking it is already an explicit action.
+ *
+ * @param {{generateService(...args: unknown[]): Promise<object>}} generator Production generator API.
+ * @param {object} learned Complete verified learned runtime handle.
+ * @param {(result: object) => void} capture Records the exact production result for binding checks.
+ * @returns {object} Provider dependency overrides.
+ */
+export function createEvaluationProviderDependencies(generator, learned, capture) {
+    return Object.freeze({
+        isMockgenEnabled: () => true,
+        loadRuntime: async () => learned,
+        generateService: async (...args) => {
+            const result = await generator.generateService(...args);
+            capture(result);
+            return result;
+        }
+    });
+}
+
 async function exportCampaign(options) {
     const packageSourceBinding = packageBinding();
     rebuildGeneratorPackage();
@@ -350,6 +372,9 @@ async function exportCampaign(options) {
     const structuralTargets = [];
     const sftTargets = [];
     let capturedProviderResult;
+    const providerDependencies = createEvaluationProviderDependencies(generator, learned, (result) => {
+        capturedProviderResult = result;
+    });
     const provider = new FeMockserverDataGenerator(
         {
             ...generationOptions,
@@ -358,13 +383,7 @@ async function exportCampaign(options) {
             modelOffline: true,
             generatedDataCache: false
         },
-        {
-            loadRuntime: async () => learned,
-            generateService: async (...args) => {
-                capturedProviderResult = await generator.generateService(...args);
-                return capturedProviderResult;
-            }
-        }
+        providerDependencies
     );
     try {
         for (const target of supportedTargets) {
