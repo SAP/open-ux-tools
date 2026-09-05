@@ -95,6 +95,15 @@ describe('development kit artifact validation', () => {
         );
     });
 
+    test('rejects a persisted mockgen flag so the plain start command stays standard', () => {
+        expect(() => wrapStartMockScript('fiori run --config ./ui5-mock.yaml --open "/" --mockgen')).toThrow(
+            /must not contain --mockgen/i
+        );
+        expect(() => wrapStartMockScript('fiori run --config ./ui5-mock.yaml "--mockgen"')).toThrow(
+            /must not contain --mockgen/i
+        );
+    });
+
     test.each([
         'vite --config ./ui5-mock.yaml',
         'NODE_ENV=test fiori run --config ./ui5-mock.yaml',
@@ -144,6 +153,30 @@ describe('development kit artifact validation', () => {
         expect(ui5MockYaml.match(/name: sap-fe-mockserver/gu)).toHaveLength(1);
         expect(ui5MockYaml).toMatch(/name: ['"]@sap-ux\/mockserver-data-generator\/fe-mockserver['"]/u);
         expect(ui5MockYaml).toContain('mode: auto');
+    });
+
+    test('preserves an existing start-mock command when the config writer also sees start', async () => {
+        const appRoot = temporaryDirectory();
+        cpSync(fioriFixture, appRoot, { recursive: true });
+        const packageJsonPath = join(appRoot, 'package.json');
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as {
+            scripts: Record<string, string>;
+        };
+        const original =
+            'fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html?sap-client=902&sap-ui-xx-viewCache=false"';
+        packageJson.scripts['start-mock'] = original;
+        writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
+
+        await configureFioriApplication({
+            appRoot,
+            webappPath: join(appRoot, 'webapp'),
+            generatorSpec: 'file:.mockserver-data-generator-dev/packages/generator.tgz'
+        });
+
+        const configured = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as {
+            scripts: Record<string, string>;
+        };
+        expect(configured.scripts['start-mock']).toBe(`mockserver-data-generator start -- ${original}`);
     });
 
     test.each(['../escape', '/absolute/path', 'package/../../escape'])('rejects unsafe archive entry %s', (entry) => {

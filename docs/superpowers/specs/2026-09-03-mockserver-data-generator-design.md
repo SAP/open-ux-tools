@@ -188,7 +188,7 @@ initial-row ownership, safely enumerable existing rows, a narrow logger, and
 an `AbortSignal`. It contains no absolute application paths, metadata-processor
 options, or host internals. The host recursively validates, copies, and freezes
 the data-bearing service, target, existing-data, and option DTOs, then freezes
-the outer context. It passes the narrow logger wrapper and original live
+the outer context. It passes the narrow logger wrapper and a live host-owned
 `AbortSignal` by reference. Rows are independently bounded, validated, copied,
 and frozen. The result contains per-resource rows, structured diagnostics, and
 generator/model fingerprints. It never exposes model-specific objects to the

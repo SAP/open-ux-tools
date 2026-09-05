@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { executeModelCommand } from '../../src/cli.js';
+import { executeModelCommand, isOwnHelpRequest } from '../../src/cli.js';
 import type { VerifiedModelCache } from '../../src/model/model-cache.js';
 
 function manifestSource(): string {
@@ -151,5 +151,14 @@ describe('model preparation CLI', () => {
         await expect(
             executeModelCommand(['verify', '--manifest', manifestPath, '--mirror', 'https://mirror.example.invalid'])
         ).rejects.toThrow(/only valid with prepare/i);
+    });
+});
+
+describe('CLI dispatch', () => {
+    test('does not consume help flags that belong to the wrapped child command', () => {
+        expect(isOwnHelpRequest(['start', '--', 'node', '--help'])).toBe(false);
+        expect(isOwnHelpRequest(['start', '--', 'fiori', 'run', '-h'])).toBe(false);
+        expect(isOwnHelpRequest(['--help'])).toBe(true);
+        expect(isOwnHelpRequest(['prepare', '--help'])).toBe(true);
     });
 });

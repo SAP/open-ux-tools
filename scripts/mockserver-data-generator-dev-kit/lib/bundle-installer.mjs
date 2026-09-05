@@ -2,45 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { parseDocument } from 'yaml';
-
-const START_MOCK_LAUNCHER_PREFIX = 'mockserver-data-generator start -- ';
-
-function hasUnsupportedShellSyntax(command) {
-    let quote;
-    let escaped = false;
-    for (let index = 0; index < command.length; index += 1) {
-        const character = command[index];
-        if (escaped) {
-            escaped = false;
-            continue;
-        }
-        if (quote === "'") {
-            if (character === "'") quote = undefined;
-            continue;
-        }
-        if (character === '\\') {
-            escaped = true;
-            continue;
-        }
-        if (quote === '"') {
-            if (character === '"') {
-                quote = undefined;
-            } else if (character === '`' || (character === '$' && command[index + 1] === '(')) {
-                return true;
-            }
-            continue;
-        }
-        if (character === "'" || character === '"') {
-            quote = character;
-        } else if (
-            ['&', '|', ';', '<', '>', '`', '\n', '\r'].includes(character) ||
-            (character === '$' && command[index + 1] === '(')
-        ) {
-            return true;
-        }
-    }
-    return quote !== undefined || escaped;
-}
+import { parseStartMockScript, START_MOCK_LAUNCHER_PREFIX } from './start-mock-command.mjs';
 
 /**
  * Prefix a generated simple Fiori command with the package launcher.
@@ -49,12 +11,7 @@ function hasUnsupportedShellSyntax(command) {
  * @returns {string} idempotently wrapped script
  */
 export function wrapStartMockScript(script) {
-    const original = script.startsWith(START_MOCK_LAUNCHER_PREFIX)
-        ? script.slice(START_MOCK_LAUNCHER_PREFIX.length)
-        : script;
-    if (!/^fiori[ \t]+run(?:[ \t]|$)/u.test(original) || hasUnsupportedShellSyntax(original)) {
-        throw new Error('start-mock must be a simple fiori run command before MockGen can wrap it');
-    }
+    const { original } = parseStartMockScript(script);
     return script.startsWith(START_MOCK_LAUNCHER_PREFIX) ? script : `${START_MOCK_LAUNCHER_PREFIX}${script}`;
 }
 
@@ -71,6 +28,9 @@ export function wrapStartMockScript(script) {
  * @returns {Promise<void>}
  */
 export async function configureFioriApplication({ appRoot, webappPath, generatorSpec, model }) {
+    const packageJsonPath = join(appRoot, 'package.json');
+    const packageJsonBeforeConfiguration = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+    const existingStartMock = packageJsonBeforeConfiguration.scripts?.['start-mock'];
     const editor = await generateMockserverConfig(appRoot, {
         webappPath
     });
@@ -84,9 +44,8 @@ export async function configureFioriApplication({ appRoot, webappPath, generator
         });
     });
 
-    const packageJsonPath = join(appRoot, 'package.json');
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
-    const startMock = packageJson.scripts?.['start-mock'];
+    const startMock = typeof existingStartMock === 'string' ? existingStartMock : packageJson.scripts?.['start-mock'];
     if (typeof startMock !== 'string') {
         throw new Error('The standard mockserver configuration did not create a start-mock script');
     }

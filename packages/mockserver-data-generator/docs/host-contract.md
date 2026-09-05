@@ -97,9 +97,10 @@ the host continue to its standard built-in fallback.
 
 ## Adapter behavior
 
-The host creates one adapter instance per service registration, reuses it for
-serialized watch and explicit reloads, and passes validated, deeply copied
-options to its constructor. The adapter exposes
+The host creates a fresh adapter instance for each eligible initial or reload
+generation epoch and passes validated, deeply copied options to its
+constructor. This prevents a failed epoch from leaving mutable adapter state
+behind for the next reload. The adapter exposes
 `apiVersion: 1`; import and construction perform no download, model load,
 generation, or filesystem mutation. For each `generate` call, the adapter:
 
@@ -112,11 +113,12 @@ generation, or filesystem mutation. For each `generate` call, the adapter:
 5. Observes the host `AbortSignal`; each entity-level SFT call also has a
    bounded timeout. Host cancellation stops the stale learned work without
    poisoning later reloads. A genuine inference failure opens the affected
-   component circuit for the remainder of the process.
+   component circuit for the remainder of the generation epoch.
 
-`dispose()` may be synchronous or asynchronous. At service-registry shutdown it
-releases model sessions owned by that service adapter and tolerates repeated or
-partial cleanup.
+`dispose()` may be synchronous or asynchronous. The host calls it after each
+generation epoch, successful or failed, and contains synchronous failures or
+asynchronous cleanup that exceeds five seconds. The adapter releases model
+sessions and tolerates partial cleanup.
 
 The adapter never makes an LLM call from an HTTP request handler. Model work
 occurs only during initialization, explicit preparation, or watch reload.
@@ -128,8 +130,8 @@ expose absolute metadata/mock-data paths, metadata-processor options, internal
 capture flags, or the host logger object. The host recursively validates,
 copies, and freezes the data-bearing `service`, `targets`, `existingData`, and
 `options` values, then freezes the outer context object. The metadata string is
-immutable. It passes a narrow logger wrapper and the original live
-`AbortSignal` by reference so logging and cancellation remain operational.
+immutable. It passes a narrow logger wrapper and a live host-owned `AbortSignal`
+by reference so logging and cancellation remain operational.
 Rows returned by the adapter are independently validated, copied, and frozen.
 
 ## Existing-data and fallback guarantees
@@ -233,6 +235,13 @@ validation, copying, and freezing, checks it incrementally during traversal,
 and checks it again immediately before the atomic swap. A provider result that
 resolves before the deadline but crosses it during host processing is rejected
 as a timed-out stale epoch and cannot publish.
+
+The adapter is a trusted in-process development dependency, like other
+mockserver middleware. JavaScript timers cannot interrupt `generate()` or
+`dispose()` when synchronous CPU work blocks the Node.js event loop. The host
+will reject a late generation result once control returns, but responsiveness
+requires CPU-heavy provider work to yield or run in a worker thread or
+subprocess.
 
 Sanitized diagnostics and fingerprints are emitted through the host logger
 with a fixed `mock-data-generator:` prefix and one-line JSON payload. Provider

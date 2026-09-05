@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { isAbsolute, join, relative } from 'node:path';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import {
+    createCanaryLaunch,
     createCanaryConfiguration,
     createCanaryEnvironment,
     discoverCanaryTarget,
@@ -27,6 +28,9 @@ function writeInstalledPackage(appRoot: string, packageName: string, version: st
         JSON.stringify({ name: packageName, version, main: 'dist/index.js' })
     );
     writeFileSync(join(packageRoot, 'dist', 'index.js'), 'module.exports = {};\n');
+    if (packageName === '@sap-ux/mockserver-data-generator') {
+        writeFileSync(join(packageRoot, 'dist', 'cli.js'), '#!/usr/bin/env node\n');
+    }
 }
 
 type ExpectedPackage = { packageName: string; version: string; specification: string };
@@ -123,6 +127,42 @@ describe('installed application verification', () => {
         writeFileSync(packageJsonPath, JSON.stringify(packageJson));
 
         expect(() => verifyInstalledApplication(fixture.appRoot, fixture.packages)).toThrow(/mockgen launcher/i);
+    });
+
+    test('rejects a start-mock script whose config is only mentioned by another argument', () => {
+        const fixture = writeVerifiedApp();
+        const packageJsonPath = join(fixture.appRoot, 'package.json');
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+        packageJson.scripts['start-mock'] =
+            'mockserver-data-generator start -- fiori run --config ./other.yaml --open ./ui5-mock.yaml';
+        writeFileSync(packageJsonPath, JSON.stringify(packageJson));
+
+        expect(() => verifyInstalledApplication(fixture.appRoot, fixture.packages)).toThrow(/target ui5-mock\.yaml/i);
+    });
+
+    test('runs HTTP canaries through the installed launcher and appends activation only when requested', () => {
+        const fixture = writeVerifiedApp();
+        const executable = join(fixture.appRoot, 'node_modules', '.bin', 'fiori');
+        const childArgs = ['run', '--config', '/tmp/mockgen-canary.yaml', '--port', '12345'];
+
+        expect(createCanaryLaunch(fixture.appRoot, executable, childArgs, false)).toEqual({
+            command: process.execPath,
+            args: [
+                join(fixture.appRoot, 'node_modules', '@sap-ux', 'mockserver-data-generator', 'dist', 'cli.js'),
+                'start',
+                '--',
+                executable,
+                ...childArgs
+            ]
+        });
+        expect(createCanaryLaunch(fixture.appRoot, executable, childArgs, true).args).toEqual([
+            join(fixture.appRoot, 'node_modules', '@sap-ux', 'mockserver-data-generator', 'dist', 'cli.js'),
+            'start',
+            '--',
+            executable,
+            ...childArgs,
+            '--mockgen'
+        ]);
     });
 
     test('rejects an installed package with a missing conditional export target', () => {

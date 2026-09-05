@@ -5,6 +5,7 @@ import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
+import { verifyWrappedStartMockScript } from './start-mock-command.mjs';
 
 function unquote(value) {
     const trimmed = value.trim();
@@ -52,12 +53,7 @@ export function verifyInstalledApplication(appRoot, expectedPackages) {
         throw new Error('MockGen must use the existing start-mock and ui5-mock.yaml flow');
     }
     const startMock = String(packageJson.scripts?.['start-mock'] ?? '');
-    if (!startMock.startsWith('mockserver-data-generator start -- fiori run ')) {
-        throw new Error('start-mock is not configured through the MockGen launcher');
-    }
-    if (!startMock.includes('ui5-mock.yaml')) {
-        throw new Error('start-mock does not target ui5-mock.yaml');
-    }
+    verifyWrappedStartMockScript(startMock);
     if (packageJson.ui5?.dependencies?.includes('@sap-ux/mockserver-data-generator')) {
         throw new Error('@sap-ux/mockserver-data-generator must not be present in package.json ui5.dependencies');
     }
@@ -445,7 +441,8 @@ export async function runFioriCanary(appRoot, options = {}) {
     const port = await freePort();
     const args = executable === fiori ? ['run'] : ['serve'];
     args.push('--config', canaryConfiguration.path, '--port', String(port));
-    const child = spawn(executable, args, {
+    const launch = createCanaryLaunch(appRoot, executable, args, mockgenEnabled);
+    const child = spawn(launch.command, launch.args, {
         cwd: appRoot,
         env: createCanaryEnvironment(mockgenEnabled),
         detached: process.platform !== 'win32',
@@ -498,4 +495,24 @@ export async function runFioriCanary(appRoot, options = {}) {
         stopProcess(child);
         canaryConfiguration.cleanup();
     }
+}
+
+/**
+ * Route a canary through the application-installed MockGen launcher.
+ *
+ * @param {string} appRoot application root
+ * @param {string} executable application-local Fiori or UI5 executable
+ * @param {string[]} args child command arguments
+ * @param {boolean} mockgenEnabled whether to append the opt-in flag
+ * @returns {{command: string, args: string[]}} shell-free launcher invocation
+ */
+export function createCanaryLaunch(appRoot, executable, args, mockgenEnabled) {
+    const cli = join(appRoot, 'node_modules', '@sap-ux', 'mockserver-data-generator', 'dist', 'cli.js');
+    if (!existsSync(cli)) {
+        throw new Error('Application-local MockGen launcher is not installed');
+    }
+    return {
+        command: process.execPath,
+        args: [cli, 'start', '--', executable, ...args, ...(mockgenEnabled ? ['--mockgen'] : [])]
+    };
 }

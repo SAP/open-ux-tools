@@ -86,9 +86,15 @@ performs no network request.
   context, generation options, generator logic, and learned-component
   fingerprints.
 - Classifier and SFT failures open local circuit breakers so one failed runtime
-  is not retried repeatedly during the same provider lifecycle.
+  is not retried repeatedly during the same generation epoch.
 - SFT work observes an entity-level timeout and the host's live cancellation
   signal. The FE host additionally owns the end-to-end provider deadline.
+
+The provider is trusted application-local code running in the mockserver Node.js
+process. Its deadline prevents a late result from being published once control
+returns, but a timer cannot preempt synchronous JavaScript in `generate()` or
+`dispose()` that blocks the event loop. CPU-heavy provider work must yield or use
+the package's worker/subprocess boundaries.
 
 Deleting or editing model files is not a supported recovery mechanism. Pin a
 verified immutable manifest, disable the provider, or follow the packaged

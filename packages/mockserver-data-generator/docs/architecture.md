@@ -154,8 +154,8 @@ are never published.
 
 Reload ownership remains in the host. It serves the previous complete snapshot
 while a serialized generation epoch runs, suppresses stale results, atomically
-publishes a validated replacement, and disposes the provider when the service
-registry shuts down.
+publishes a validated replacement, and disposes the fresh epoch provider after
+that generation finishes.
 
 ## Development and release evidence
 

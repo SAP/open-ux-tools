@@ -210,9 +210,19 @@ function isMainModule(): boolean {
     }
 }
 
+/**
+ * Decide whether a help flag belongs to this CLI rather than the wrapped child command.
+ *
+ * @param argv command arguments after the executable name
+ * @returns whether MockGen usage should be printed
+ */
+export function isOwnHelpRequest(argv: ReadonlyArray<string>): boolean {
+    return argv[0] !== 'start' && (argv.includes('--help') || argv.includes('-h'));
+}
+
 if (isMainModule()) {
     const argv = process.argv.slice(2);
-    if (argv.includes('--help') || argv.includes('-h')) {
+    if (isOwnHelpRequest(argv)) {
         process.stdout.write(`${usage()}\n`);
     } else if (argv[0] === 'start') {
         executeStartCommand(argv)
