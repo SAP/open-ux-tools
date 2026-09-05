@@ -161,7 +161,7 @@ original application:
 - Failure verification: the integration suite covers a failed upgrade, failed automatic dependency rollback, explicit recovery, content-addressed package preservation, and restoration to the original pre-MockGen state; all 48 tests pass
 
 The handoff copy of this exact archive is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-62cb961976060a2b.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-62cb961976060a2b.tgz`.
 
 ## Production-config and decoder archive checkpoint
 
@@ -181,7 +181,7 @@ executes the independently bundled file and creates a verified model cache.
 - Restore verification: application files matched the pristine fixture byte for byte outside disposable `node_modules`, and `.mockserver-data-generator-dev` was removed
 
 The handoff copy of this exact current archive is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-22606ad3af28117e.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-22606ad3af28117e.tgz`.
 Its checksum must be verified before extraction. The prior archive remains the
 upgrade-source fixture; this current archive supersedes it for new local or BAS
 testing.
@@ -204,7 +204,7 @@ without a model and then with an independently staged retained-pilot cache.
 - Restore verification: the fixture matched its original files byte for byte outside disposable `node_modules`, and the installer recovery directory was removed
 
 The handoff copy of this exact current archive is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-fabc0de4a8579c74.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-fabc0de4a8579c74.tgz`.
 Its checksum must be verified before extraction. This canary supersedes the
 preceding archive for new local or BAS testing; the earlier records remain
 historical cross-format and upgrade evidence.
@@ -230,7 +230,7 @@ five-sample campaign, and restored the fixture byte for byte outside disposable
 - Restore verification: the fixture matched the source fixture byte for byte outside disposable `node_modules`, and `.mockserver-data-generator-dev` was absent
 
 The handoff archive for this integrated-performance checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-374c1611f8eb76de.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-374c1611f8eb76de.tgz`.
 Its checksum must be verified before extraction. This archive supersedes the
 preceding cache-hardening archive for new local or BAS testing.
 
@@ -255,7 +255,7 @@ byte-for-byte outside disposable `node_modules`.
 - Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
 
 The handoff archive for this checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-87e3f13ff4dbf477.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-87e3f13ff4dbf477.tgz`.
 Its checksum must be verified before extraction. This archive supersedes the
 integrated-performance archive for new local or BAS functional testing; the
 older archive and bound five-sample reports remain the current performance
@@ -282,7 +282,7 @@ INT8 SFT cache.
 - Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
 
 The handoff archive for this checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f9a0de8fc01b547b.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-f9a0de8fc01b547b.tgz`.
 Its checksum must be verified before extraction. It supersedes earlier archives
 for local or BAS functional testing; the older bound five-sample report remains
 the performance evidence until the supported release-platform campaign runs.
@@ -310,7 +310,7 @@ OData V2 fixture with the retained classifier and INT8 SFT cache.
 - Portable-path verification: the exact archive also completed a real npm install, deterministic provider/HTTP canary, and byte-exact restore when both the kit and Fiori application paths contained spaces and non-ASCII German/Japanese text; generation took 25.763 ms and the host provider took 26.565 ms
 
 The handoff archive for this checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f7820bacc74174b3.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-f7820bacc74174b3.tgz`.
 Its checksum must be verified before extraction. It supersedes the
 parser-aligned archive for new local or BAS functional testing. The disposable
 canary fixture and copied model cache were removed after exact restore
@@ -335,7 +335,7 @@ V4 and retained-model OData V2 installs, HTTP canaries, and restores.
 - Restore verification: both application fixtures matched their original source files byte for byte; generated YAML and recovery directories were absent; both disposable applications and the copied 192,167,584-byte model cache were removed
 
 The metadata-boundary handoff archive was
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-e502705429c5c09c.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-e502705429c5c09c.tgz`.
 It is retained as historical evidence and is superseded by the generated-result
 boundary archive below.
 
@@ -359,7 +359,7 @@ OData V4 and retained-model OData V2 installs, HTTP canaries, and restores.
 - Restore verification: both application fixtures matched their original source files byte for byte; generated YAML and recovery directories were absent; both disposable applications and the copied 192,167,584-byte model cache were removed
 
 The handoff archive for this checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-87c95ffaea3fee27.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-87c95ffaea3fee27.tgz`.
 Its SHA-256 must be verified before extraction. It supersedes the
 metadata-boundary archive for new local or BAS functional testing.
 
@@ -385,7 +385,7 @@ V2 installs, HTTP canaries, and restores.
 - Restore verification: both application fixtures matched their original source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
 The handoff archive for this checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-8b62350555c8503c.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-8b62350555c8503c.tgz`.
 Its SHA-256 must be verified before extraction. It supersedes the
 generated-result-boundary archive for new local or BAS functional testing; the
 earlier archives remain historical evidence.
@@ -413,7 +413,7 @@ and retained-model OData V2 installs, HTTP canaries, and restores.
 - Restore verification: both application fixtures matched their original source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
 The handoff archive for this checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-d02c59ff9342c409.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-d02c59ff9342c409.tgz`.
 Its SHA-256 must be verified before extraction. It supersedes the preceding
 reproducible archive for new local or BAS functional testing; the earlier
 archives remain historical evidence.
@@ -441,7 +441,7 @@ retained-model OData V2 installs, HTTP canaries, and restores.
 - Restore verification: both application fixtures matched their original source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
 The handoff archive for this historical checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-47b4dc3ae32e8269.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-47b4dc3ae32e8269.tgz`.
 Verify its SHA-256 before extraction. It supersedes the packaged-architecture
 archive for new local or BAS functional testing; earlier archives remain
 historical evidence.
@@ -482,7 +482,7 @@ was built twice from the same clean sources. The archives were byte-identical.
 - Restore: after write permission was returned solely to the disposable fixture, installer restore matched the original application byte-for-byte outside disposable `node_modules`
 
 The handoff archive for this read-only checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-7e0fccc5a7bf528d.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-7e0fccc5a7bf528d.tgz`.
 Verify the SHA-256 before extraction. It remains the exact read-only evidence;
 later archives supersede it for new local and BAS testing.
 
@@ -508,7 +508,7 @@ and retained-classifier/SFT V2 installations.
 - Restore verification: both fixtures matched their source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
 The handoff archive for this proxy-aware checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-74af647b365069d6.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-74af647b365069d6.tgz`.
 Verify its SHA-256 before extraction. The cache-fix archive below supersedes it
 for new local and BAS testing; this record remains the exact proxy-routing
 checkpoint.
@@ -537,10 +537,10 @@ and an enforced footprint run.
 - Deterministic replay: classifier prediction fingerprint `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7`, SFT output fingerprint `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3`, and evidence SHA-256 `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` matched the independent identical-seed replay
 - Footprint: 266,364,774 / 314,572,800 total installed-and-cache bytes; all required gates passed and `footprintReady` is true; the separate generator-halving optimization target remains missed
 - Report identities: evaluation fingerprint `2237987b581ad0a0689ff331985b9d4bf1f7c33a8ba886fe24d43102aeb0de81`, integration fingerprint `2463e1a0c832491831de6915699191113cb10b40cbf512f41ac215c00d2d8f31`, footprint fingerprint `a6b9a61aba123ed9ae4fcb04cdbe28c57c528e70d5f41e2616112b6ca159c122`
-- Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-cachefix-40393c7c6`
+- Persisted local evidence: `/absolute/path/to/mockserver-data-generator-runtime-proof-darwin-arm64-cachefix-40393c7c6`
 
 The handoff archive for this cache-fix checkpoint is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-3a16a758a6e58208.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-3a16a758a6e58208.tgz`.
 Verify its SHA-256 before extraction. The hardened archive below supersedes it
 for new local and BAS testing.
 
@@ -566,10 +566,10 @@ reintroduced. The exact hardened package was then rebuilt and requalified; no
 - Deterministic replay: classifier prediction fingerprint `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7`, SFT output fingerprint `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3`, and evidence SHA-256 `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` matched the independent identical-seed replay
 - Footprint: 266,366,901 / 314,572,800 total installed-and-cache bytes; all required gates passed and `footprintReady` is true; the separate generator-halving optimization target remains missed
 - Report identities: evaluation fingerprint `e4f6b8f92e9be1124f75ec6c32b7ddb98a4638eeab7e94f1b8e7f83c2863bc01`, integration fingerprint `38cc6a08616192caedd220d38a6ee77e24b787b6e6c858f2cb80b37263d58efe`, footprint fingerprint `bcd5df054928bc380bd1c69e12c819e4dd1bea000deab70c00226742053bff82`
-- Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-hardening-d26eaa535`
+- Persisted local evidence: `/absolute/path/to/mockserver-data-generator-runtime-proof-darwin-arm64-hardening-d26eaa535`
 
 The hardening-checkpoint handoff archive is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-07bca9812e87056f.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-07bca9812e87056f.tgz`.
 Verify its SHA-256 before extraction. Earlier archives remain historical
 evidence for their exact gates.
 
@@ -596,10 +596,10 @@ requalified.
 - Footprint: 266,367,320 / 314,572,800 total installed-and-cache bytes; all required gates passed and `footprintReady` is true; the separate generator-halving optimization target remains missed
 - Report identities: evaluation fingerprint `6629b66d87276b5e6b40b4742989fe1416d9f7806a292a0e5e1ad8e5eb8f6d60`, integration fingerprint `7924a6672c0935f683b21027fa8b57ae85aa43c745452ae74c0999513caa96ae`, footprint fingerprint `0a3369bb5163c85fd27125a7b9f2ab01ea0f20b88ae592c01384c1911d9c9cdc`
 - Restore: the bundled helper restored the Fiori fixture byte for byte outside disposable `node_modules` and removed its recovery state
-- Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-lint-safety-4d620e0fd`
+- Persisted local evidence: `/absolute/path/to/mockserver-data-generator-runtime-proof-darwin-arm64-lint-safety-4d620e0fd`
 
 The lint-safety checkpoint handoff archive is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-e72683c87dc4ac91.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-e72683c87dc4ac91.tgz`.
 Verify its SHA-256 before extraction. This evidence is local macOS arm64 proof;
 it does not replace BAS, release-platform, governance, independent realism, or
 publication gates.
@@ -626,10 +626,10 @@ boundaries from disappearing. No existing package implementation or frozen
 - Footprint: 266,375,866 / 314,572,800 total installed-and-cache bytes; all required gates passed and `footprintReady` is true; the separate generator-halving optimization target remains missed
 - Report identities: evaluation fingerprint `8e43270659e7580f8b293fc0497f67b1db63ec9e587a07d7cfcc575b053c43fe`, integration fingerprint `75c4edcdd344bc17031b23d229018558dd3fcec5a9d647b7cf73017b1e88c1cf`, footprint fingerprint `b29f0034b97de07ed520820c72d30ef5a9c28ca87dd558d4c825ece706050fa4`
 - Restore: the bundled helper restored the Fiori fixture byte for byte outside disposable `node_modules` and removed its recovery state
-- Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-pilot-parity-f1e3db0e7`
+- Persisted local evidence: `/absolute/path/to/mockserver-data-generator-runtime-proof-darwin-arm64-pilot-parity-f1e3db0e7`
 
 The current handoff archive is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-95c2b0662d379928.tgz`.
+`/absolute/path/to/mockserver-data-generator-dev-kit-95c2b0662d379928.tgz`.
 Verify its SHA-256 before extraction. This evidence is local macOS arm64 proof;
 it does not replace BAS, release-platform, governance, independent realism, or
 publication gates.
@@ -670,7 +670,7 @@ dependencies rather than a workspace link.
   coherent supplier email, price, and active flag. The literal unflagged command
   used standard generated values.
 - Handoff archive:
-  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f1905ad2a4d61e1e.tgz`
+  `/absolute/path/to/mockserver-data-generator-dev-kit-f1905ad2a4d61e1e.tgz`
 
 The first CDS standard canary identified that its hand-written test fixture had
 not enabled the standard mockserver's `generateMockData` option. The fixture was
@@ -696,7 +696,7 @@ platform runtime archive is 10,195,380 bytes with SHA-256
 `a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
 
 The six machine-readable reports are retained in
-`/Users/I335123/Downloads/mockserver-data-generator-evidence-c562a5571`.
+`/absolute/path/to/mockserver-data-generator-evidence-c562a5571`.
 The passing platform result proves the size-reduction approach, but the archive
 is still an experimental local build. It must be replaced by a supported
 per-platform distribution before release.
@@ -741,9 +741,9 @@ startup. No critical or important finding remained in that scope.
   Total installed-and-cache footprint was 266,453,893 bytes, leaving
   48,118,907 bytes below the 300 MiB gate.
 - Current reports are retained in
-  `/Users/I335123/Downloads/mockserver-data-generator-evidence-066acdfc`.
+  `/absolute/path/to/mockserver-data-generator-evidence-066acdfc`.
 - BAS handoff archive for this checkpoint:
-  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`.
+  `/absolute/path/to/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`.
 - The package-level native-runtime contract loaded the actual
   `onnxruntime-node@1.24.3` addon through both public MockGen tensor adapters on
   macOS arm64 with Node 22.22.3 and Node 24.20.0. The complete package passed
@@ -763,7 +763,7 @@ the native `release()` call.
 - Generator archive: 93,593 bytes; SHA-256
   `95b8aab55a3e000c56e9e76b99d40e06fc845d8dd284a1c2ba4c4a0b25888bbf`.
 - Reproducible development kit:
-  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`;
+  `/absolute/path/to/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`;
   564,878 bytes; fingerprint
   `5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`;
   SHA-256

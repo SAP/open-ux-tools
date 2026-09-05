@@ -925,7 +925,7 @@ failed the frozen structural quality gate.
 | Footprint | `d71574f5d42a18d908b63701a10041d827192a141e48b48e8678cd9d492e43e1` / `b8f7da4f5b6f6f2bb06d408dd621b8d9281a0eeee9cf9ad759fe90cdef0d21e4` | `43e190a3ae9ffdc9aab4679f6fe6f1cadf45a886c641a2e4af8a6b1f7c72438c` / `c2d35ae463757f6c90654e85942950dcc2721ec32205e7bf103118e5b7b7da9a` |
 
 The exact local reports are retained in
-`/Users/I335123/Downloads/mockserver-data-generator-evidence-c562a5571`.
+`/absolute/path/to/mockserver-data-generator-evidence-c562a5571`.
 This is current local feasibility evidence, not approval to publish the
 hand-built platform runtime. Production should use supported per-platform
 native packages and repeat the matrix on every supported environment. The WASM
@@ -964,9 +964,9 @@ its p95 was 9,130.225 ms and peak process RSS was 1,057,521,664 bytes.
 | Footprint | `001e7a7d78798f8a3c3bad07a52e2a0c541a62e4034e312be8864fd2f762c79b` | `a0a8d143693126cb67da86269f503671d6107f45d0ee419471b1d33daa1d788c` |
 
 The reports are retained in
-`/Users/I335123/Downloads/mockserver-data-generator-evidence-066acdfc`. The
+`/absolute/path/to/mockserver-data-generator-evidence-066acdfc`. The
 exact experimental runtime archive is retained at
-`/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-metadata-ba8699cdf/onnxruntime-node-1.24.3-darwin-arm64-experimental.tgz`
+`/absolute/path/to/mockserver-data-generator-runtime-proof-darwin-arm64-metadata-ba8699cdf/onnxruntime-node-1.24.3-darwin-arm64-experimental.tgz`
 with SHA-256
 `a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
 

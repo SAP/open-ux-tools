@@ -13,7 +13,7 @@ Current clean archive candidate:
 - archive SHA-256: `742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`
 - archive size: 564,878 bytes; 10 entries
 - source commits: `SAP/open-ux-tools` `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee`; `SAP/open-ux-odata` `45abe80a028530601bf5d67d565f3384a6648ead`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
+- local handoff copy: `/absolute/path/to/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
 
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema

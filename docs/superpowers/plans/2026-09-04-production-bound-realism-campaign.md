@@ -67,7 +67,7 @@ expect(() =>
 Run:
 
 ```bash
-export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH
+export PATH=/absolute/path/to/node-v22.22.2/bin:$PATH
 pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests exec jest \
   --runInBand src/evaluation/realism-candidate.test.ts
 ```
@@ -164,7 +164,7 @@ Exercise an exported `assertCompleteLearnedRuntime` helper with a classifier-onl
 Run:
 
 ```bash
-export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH
+export PATH=/absolute/path/to/node-v22.22.2/bin:$PATH
 pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests exec jest \
   --runInBand src/evaluation/realism-candidate.test.ts
 ```
@@ -206,7 +206,7 @@ if (invokedPath === fileURLToPath(import.meta.url)) {
 Run:
 
 ```bash
-export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH
+export PATH=/absolute/path/to/node-v22.22.2/bin:$PATH
 pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test
 ```
 
@@ -217,7 +217,7 @@ Expected: all evaluation/integration suites PASS.
 Run:
 
 ```bash
-export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH
+export PATH=/absolute/path/to/node-v22.22.2/bin:$PATH
 pnpm --filter @sap-ux/mockserver-data-generator build
 pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests build
 pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests lint
@@ -242,20 +242,20 @@ git commit -s -m "fix(mockserver-data-generator): bind realism to production mod
 - Modify: `scripts/mockserver-data-generator-evaluation/README.md`
 - Modify: `docs/quality/mockserver-data-generator-model-evaluation.md`
 - Modify: `docs/superpowers/plans/2026-09-03-mockserver-data-generator.md`
-- Create outside the repository: `/Users/I335123/Downloads/mockserver-data-generator-realism-2026-09-04/realism-evidence.json`
-- Create outside the repository: `/Users/I335123/Downloads/mockserver-data-generator-realism-2026-09-04/realism-campaign.json`
+- Create outside the repository: `/absolute/path/to/mockserver-data-generator-realism-2026-09-04/realism-evidence.json`
+- Create outside the repository: `/absolute/path/to/mockserver-data-generator-realism-2026-09-04/realism-campaign.json`
 
 - [x] **Step 1: Run the corrected exporter**
 
 ```bash
-export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH
+export PATH=/absolute/path/to/node-v22.22.2/bin:$PATH
 pnpm mockserver-data-generator:realism-campaign --export \
-  --pilot-root /Users/I335123/SAPDevelop/Projects/sap-ai-mockserver \
-  --selection-manifest /Users/I335123/SAPDevelop/Projects/open-ux-tools-mockserver-data-generator/tests/integration/mockserver-data-generator/test/fixtures/realism-final-cohort-v1/final-cohort-v1.json \
+  --pilot-root /absolute/path/to/sap-ai-mockserver \
+  --selection-manifest tests/integration/mockserver-data-generator/test/fixtures/realism-final-cohort-v1/final-cohort-v1.json \
   --model-manifest /private/tmp/mockgen-current-model-22000e20/model-manifest.json \
   --model-cache /private/tmp/mockgen-current-model-22000e20/cache \
-  --out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/realism-evidence-v22.json \
-  --campaign-manifest-out /Users/I335123/Downloads/mockserver-data-generator-realism-final-cohort-v1/campaign-manifest-v22.json
+  --out /absolute/path/to/mockserver-data-generator-realism-final-cohort-v1/realism-evidence-v22.json \
+  --campaign-manifest-out /absolute/path/to/mockserver-data-generator-realism-final-cohort-v1/campaign-manifest-v22.json
 ```
 
 Expected: at least 300 blinded fields, a new evidence fingerprint, a new candidate fingerprint, and a campaign binding whose generation config contains `maxNewTokens: 300`.
@@ -282,7 +282,7 @@ Update the evaluation README with both required model options. Record the exact 
 - [x] **Step 5: Re-run focused gates and commit documentation**
 
 ```bash
-export PATH=/Users/I335123/.nvm/versions/node/v22.22.2/bin:$PATH
+export PATH=/absolute/path/to/node-v22.22.2/bin:$PATH
 pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test
 pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests lint
 git diff --check

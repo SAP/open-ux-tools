@@ -1119,7 +1119,7 @@ uses 266,452,329 total bytes. It passes every hard local gate with 48,120,471
 bytes of headroom. Its cold, warm-cache, first-acquisition, and host p95 values
 are 1,853.041, 23.676, 582.150, and 1,853.872 ms respectively. The reports are
 retained under
-`/Users/I335123/Downloads/mockserver-data-generator-evidence-c562a5571`.
+`/absolute/path/to/mockserver-data-generator-evidence-c562a5571`.
 This completes the local rebind; BAS and the supported Node/OS distribution
 matrix remain open.
 
@@ -1477,7 +1477,7 @@ learned HTTP paths. Literal `npm run start-mock` and
 `npm run start-mock -- --mockgen` commands also passed in the V4 fixture.
 
 The reproducible local/BAS kit is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
+`/absolute/path/to/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
 (564,878 bytes, SHA-256
 `742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`).
 The reviewed platform-runtime campaign passes every hard local gate at
