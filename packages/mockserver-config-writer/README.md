@@ -11,6 +11,12 @@ MockGen launcher. It does not add MockGen to the legacy `ui5.dependencies`
 list. A caller that selects another mockserver module or skips `package.json`
 changes does not receive this automatic wiring.
 
+Automatic wiring is applied only when the selected `start-mock` command is a
+simple `fiori run` command. Commands containing shell operators, comments, or
+dynamic expansion retain standard mockserver behavior and receive no partial
+MockGen dependency or provider configuration. A saved `--mockgen` flag is
+rejected; pass it only at runtime as shown below.
+
 ## Installation
 Npm
 `npm install --save @sap-ux/mockserver-config-writer`

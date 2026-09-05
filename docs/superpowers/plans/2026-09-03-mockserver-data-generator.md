@@ -628,7 +628,9 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 - [x] Limit `packages/mockserver-config-writer` to the approved direct dependency, provider, launcher, and removal lifecycle.
 - [x] Keep `packages/create` byte-identical to `origin/main`.
 - [x] Keep `packages/fiori-mcp-server` byte-identical to `origin/main`.
-- [x] Add a MockGen changeset only for `packages/mockserver-config-writer`.
+- [x] Add the writer feature changeset plus the repository-required patch
+      cascade for `@sap-ux/fiori-mcp-server`, which bundles the writer; do not
+      change MCP production source.
 - [x] Keep unpublished local/BAS package and model-path overrides in the MockGen development-kit script.
 
 **Verification:**

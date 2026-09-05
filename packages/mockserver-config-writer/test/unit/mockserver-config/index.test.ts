@@ -1,6 +1,7 @@
 import { promises } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { Package } from '@sap-ux/project-access';
 import { generateMockserverConfig, removeMockserverConfig } from '../../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -71,6 +72,26 @@ describe('Test generateMockserverConfig()', () => {
             packageJsonConfig: { skip: true }
         });
 
+        expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('mockDataGenerator');
+    });
+
+    test('Do not partially configure MockGen for a complex start command', async () => {
+        const basePath = join(__dirname, '../../fixtures/bare-minimum');
+        const webappPath = join(basePath, 'webapp');
+        const fs = await generateMockserverConfig(basePath, { webappPath });
+        const packageJsonPath = join(basePath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        packageJson.scripts = {
+            ...packageJson.scripts,
+            start: 'fiori run --config ./ui5.yaml && echo complete'
+        };
+        fs.writeJSON(packageJsonPath, packageJson);
+
+        await generateMockserverConfig(basePath, { webappPath }, fs);
+
+        expect(
+            (fs.readJSON(packageJsonPath) as Package).devDependencies?.['@sap-ux/mockserver-data-generator']
+        ).toBeUndefined();
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('mockDataGenerator');
     });
 });

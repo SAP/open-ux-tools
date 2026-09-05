@@ -139,6 +139,12 @@ without creating a second script. For example:
 }
 ```
 
+If an existing command contains shell operators, comments, dynamic expansion,
+or another unsupported construct, the writer leaves that application wholly
+unwired for MockGen rather than emitting a dependency and provider that cannot
+be activated safely. A persisted exact `--mockgen` is rejected with a clear
+message because activation must remain a runtime choice.
+
 The launcher accepts `start -- <command> [arguments...]`, consumes exactly one
 optional `--mockgen` argument from the child-command arguments, and never passes
 that private option to the Fiori CLI. It always overwrites the internal child

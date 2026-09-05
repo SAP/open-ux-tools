@@ -61,14 +61,35 @@ describe('Test for start-mock script in package.json', () => {
         );
     });
 
-    test('Leave a complex shell command unwrapped', () => {
+    test('Leave a complex shell command wholly unwired', () => {
         const fs = getMockFsPackageJson(
             'any --config before && fiori run --open "folder/file.html?some-param=value#frag-ment" --config "ui5 .yaml" --other arg'
         );
-        enhancePackageJson(fs, basePath);
-        const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe(
+        const configured = enhancePackageJson(fs, basePath);
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        expect(configured).toBe(false);
+        expect(packageJson.scripts?.['start-mock']).toBe(
             'any --config before && fiori run --open "folder/file.html?some-param=value#frag-ment" --config ./ui5-mock.yaml --other arg'
+        );
+        expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBeUndefined();
+    });
+
+    test('Leave a shell-commented command wholly unwired', () => {
+        const fs = getMockFsPackageJson(undefined, 'fiori run --config ./ui5-mock.yaml # keep local');
+
+        const configured = enhancePackageJson(fs, basePath);
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+
+        expect(configured).toBe(false);
+        expect(packageJson.scripts?.['start-mock']).toBe('fiori run --config ./ui5-mock.yaml # keep local');
+        expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBeUndefined();
+    });
+
+    test.each(['--mockgen', "'--mockgen'", '"--mockgen"'])('Reject a persisted MockGen flag written as %s', (flag) => {
+        const fs = getMockFsPackageJson(undefined, `fiori run --config ./ui5-mock.yaml ${flag}`);
+
+        expect(() => enhancePackageJson(fs, basePath)).toThrow(
+            'The persisted start-mock command must not contain --mockgen'
         );
     });
 

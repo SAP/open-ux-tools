@@ -178,12 +178,18 @@ async function updateUi5MockYamlConfig(
 ): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
     if (overwrite) {
+        const currentMockserverMiddleware =
+            existingUi5MockYamlConfig.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver');
         const newMockserverMiddleware = await getNewMockserverMiddleware(
             basePath,
             webappPath,
             dataSourcesConfig,
             annotationsConfig
         );
+        if (currentMockserverMiddleware?.configuration.mockDataGenerator !== undefined) {
+            (newMockserverMiddleware.configuration as MockserverConfigWithMockgen).mockDataGenerator =
+                currentMockserverMiddleware.configuration.mockDataGenerator;
+        }
         existingUi5MockYamlConfig.updateCustomMiddleware(newMockserverMiddleware);
     } else {
         for (const dataSourceName in dataSourcesConfig) {

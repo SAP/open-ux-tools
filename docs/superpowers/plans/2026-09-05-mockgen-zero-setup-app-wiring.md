@@ -46,6 +46,8 @@ acquisition are implemented in the separate managed-artifacts track.
   tarball and may add development-only model paths.
 - Create `.changeset/mockgen-zero-setup-app-wiring.md`: release the writer
   behavior change.
+- Create `.changeset/mockgen-config-writer-bundle.md`: rebuild the MCP bundle
+  that includes the writer, without changing MCP source.
 
 ## Task 1: Add the direct package dependency and launcher
 
@@ -73,6 +75,10 @@ expect(packageJson.ui5?.dependencies).toEqual(['@sap-ux/ui5-middleware-fe-mockse
 
 Add a second call to `enhancePackageJson` and assert that the launcher prefix
 occurs once.
+
+Add regressions proving a persisted `--mockgen` is rejected and a command with
+shell operators or comments remains wholly unwired: no launcher, direct
+dependency, or provider is emitted.
 
 - [x] **Step 2: Write failing custom-module and removal tests**
 
@@ -130,9 +136,12 @@ function removeLauncher(script: string): string {
 }
 ```
 
-When a custom mockserver module is selected, delete only `MOCKGEN_MODULE` and
-remove only the exact MockGen prefix. Extend `removeFromPackageJson` to delete
-the direct generator dependency before the existing empty-object cleanup.
+When a custom mockserver module or unsupported complex command is selected,
+delete only `MOCKGEN_MODULE`, remove only the exact MockGen prefix, and return
+`false` so the public writer omits the provider too. Reject a persisted exact
+`--mockgen` with a message telling the developer to pass it at runtime. Extend
+`removeFromPackageJson` to delete the direct generator dependency before the
+existing empty-object cleanup.
 
 - [x] **Step 6: Run tests and verify GREEN**
 
@@ -228,7 +237,8 @@ function updateMockgenProvider(config: UI5Config, enabled: boolean): void {
 }
 ```
 
-Do not overwrite another provider and do not create another middleware.
+Do not overwrite another provider, including during `overwrite: true`, and do
+not create another middleware.
 
 - [x] **Step 5: Run the focused tests and inspect snapshots**
 
@@ -280,12 +290,12 @@ eligibility decision to YAML generation.
 
 - [x] **Step 3: Pass one eligibility decision through the writer**
 
-Use the same `supportsMockgen` result for package and YAML changes:
+Use the package writer's completed-wiring result for YAML changes:
 
 ```ts
-const mockgenEnabled = supportsMockgen(data.packageJsonConfig);
+let mockgenEnabled = false;
 if (!data.packageJsonConfig?.skip) {
-    enhancePackageJson(fs, basePath, data.packageJsonConfig);
+    mockgenEnabled = enhancePackageJson(fs, basePath, data.packageJsonConfig);
 }
 await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig, mockgenEnabled);
 ```
@@ -352,9 +362,13 @@ status as `Approved for implementation`.
 '@sap-ux/mockserver-config-writer': minor
 ---
 
-Configure the optional MockGen data generator in standard Fiori mockserver
+FEAT: Configure the optional MockGen data generator in standard Fiori mockserver
 applications while preserving the unflagged mockserver behavior.
 ```
+
+Add the repository-required patch changeset for
+`@sap-ux/fiori-mcp-server`, which bundles the writer at build time. This is
+release metadata only; no MCP production source is changed.
 
 - [x] **Step 4: Format and commit**
 
@@ -366,11 +380,13 @@ fnm exec --using=22.22.3 -- corepack pnpm exec prettier --write \
   scripts/mockserver-data-generator-dev-kit/lib/bundle-installer.mjs \
   scripts/mockserver-data-generator-dev-kit/README.md \
   docs/superpowers/specs/2026-09-03-mockserver-data-generator-design.md \
-  .changeset/mockgen-zero-setup-app-wiring.md
+  .changeset/mockgen-zero-setup-app-wiring.md \
+  .changeset/mockgen-config-writer-bundle.md
 git diff --check
 git add packages/mockserver-config-writer scripts/mockserver-data-generator-dev-kit \
   docs/superpowers/specs/2026-09-03-mockserver-data-generator-design.md \
-  .changeset/mockgen-zero-setup-app-wiring.md
+  .changeset/mockgen-zero-setup-app-wiring.md \
+  .changeset/mockgen-config-writer-bundle.md
 git commit -m "docs(mockgen): document automatic app wiring"
 ```
 

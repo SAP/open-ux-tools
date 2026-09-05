@@ -137,6 +137,25 @@ describe('Test enhanceYaml()', () => {
         ).toEqual({ name: 'example/custom-provider', options: { custom: 'retained' } });
     });
 
+    test('Preserve an existing custom mock data generator when services are overwritten', async () => {
+        const fs = getFsWithUi5MockYaml(
+            mockManifestJson,
+            `      mockDataGenerator:
+        name: example/custom-provider
+        options:
+          custom: retained
+`
+        );
+
+        await enhanceYaml(fs, basePath, webappPath, { overwrite: true });
+
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        expect(
+            ui5Config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver')?.configuration
+                .mockDataGenerator
+        ).toEqual({ name: 'example/custom-provider', options: { custom: 'retained' } });
+    });
+
     test('Remove only the MockGen provider when automatic wiring is disabled', async () => {
         const fs = getFsWithUi5MockYaml(
             mockManifestJson,
