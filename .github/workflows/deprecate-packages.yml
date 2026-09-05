@@ -1,0 +1,81 @@
+name: Deprecate npm Package Versions
+
+on:
+    workflow_dispatch:
+        inputs:
+            dry_run:
+                description: 'Dry run only (no changes applied)'
+                type: boolean
+                default: true
+            packages:
+                description: 'Comma-separated package names to process (leave empty for all)'
+                type: string
+                required: false
+
+jobs:
+    deprecate:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+              with:
+                  node-version: 22.x
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Configure npm authentication
+              if: inputs.dry_run == false
+              run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+
+            - name: Run deprecation script (dry run)
+              if: inputs.dry_run == true
+              env:
+                PACKAGES_INPUT: ${{ inputs.packages }}
+              run: |
+                  ARGS=""
+                  if [ -n "$PACKAGES_INPUT" ]; then
+                    ARGS="--packages $PACKAGES_INPUT"
+                  fi
+                  node_modules/.bin/ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
+
+            - name: Run deprecation script (execute)
+              if: inputs.dry_run == false
+              env:
+                PACKAGES_INPUT: ${{ inputs.packages }}
+              run: |
+                  ARGS="--execute"
+                  if [ -n "$PACKAGES_INPUT" ]; then
+                    ARGS="$ARGS --packages $PACKAGES_INPUT"
+                  fi
+                  node_modules/.bin/ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
+
+            - name: Write step summary
+              if: always()
+              run: |
+                  echo '## npm Deprecation Report' >> $GITHUB_STEP_SUMMARY
+                  echo '' >> $GITHUB_STEP_SUMMARY
+                  if [ "${{ inputs.dry_run }}" = "true" ]; then
+                    echo '> **Mode:** Dry run — no changes applied' >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo '> **Mode:** Execute — deprecations applied to npmjs.com' >> $GITHUB_STEP_SUMMARY
+                  fi
+                  echo '' >> $GITHUB_STEP_SUMMARY
+                  echo '```' >> $GITHUB_STEP_SUMMARY
+                  cat deprecation-report.txt >> $GITHUB_STEP_SUMMARY
+                  echo '```' >> $GITHUB_STEP_SUMMARY
+
+            - name: Upload report artifact
+              if: always()
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+              with:
+                  name: deprecation-report
+                  path: deprecation-report.txt
+                  retention-days: 30

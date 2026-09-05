@@ -1,0 +1,171 @@
+{
+    "packages": "*",
+    "ageMonths": 12,
+    "maxSupportedVersions": 30,
+    "supportedNodeMajors": [22, 24],
+    "legacyAnchors": {
+        "@sap-ux/abap-deploy-config-inquirer": [{ "version": "1.8.21", "reason": "last release supporting Node 20" }],
+        "@sap-ux/abap-deploy-config-sub-generator": [{ "version": "0.3.34", "reason": "last release supporting Node 20" }],
+        "@sap-ux/abap-deploy-config-writer": [{ "version": "0.3.16", "reason": "last release supporting Node 20" }],
+        "@sap-ux/adp-flp-config-sub-generator": [{ "version": "0.1.245", "reason": "last release supporting Node 20" }],
+        "@sap-ux/adp-tooling": [
+            { "version": "0.18.130", "reason": "last release supporting Node 20" },
+            { "version": "0.4.5", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/annotation-generator": [{ "version": "0.4.56", "reason": "last release supporting Node 20" }],
+        "@sap-ux/app-config-writer": [
+            { "version": "0.6.144", "reason": "last release supporting Node 20" },
+            { "version": "0.2.3", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/axios-extension": [
+            { "version": "1.25.35", "reason": "last release supporting Node 20" },
+            { "version": "1.5.1", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/backend-proxy-middleware": [
+            { "version": "0.12.9", "reason": "last release supporting Node 20" },
+            { "version": "0.6.77", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/backend-proxy-middleware-cf": [{ "version": "0.1.22", "reason": "last release supporting Node 20" }],
+        "@sap-ux/btp-utils": [
+            { "version": "1.1.15", "reason": "last release supporting Node 20" },
+            { "version": "0.11.9", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/cap-config-writer": [{ "version": "0.12.99", "reason": "last release supporting Node 20" }],
+        "@sap-ux/cds-annotation-parser": [{ "version": "0.2.36", "reason": "last release supporting Node 20" }],
+        "@sap-ux/cds-odata-annotation-converter": [{ "version": "0.7.17", "reason": "last release supporting Node 20" }],
+        "@sap-ux/cf-deploy-config-inquirer": [{ "version": "0.5.128", "reason": "last release supporting Node 20" }],
+        "@sap-ux/cf-deploy-config-sub-generator": [{ "version": "0.2.181", "reason": "last release supporting Node 20" }],
+        "@sap-ux/cf-deploy-config-writer": [{ "version": "0.3.106", "reason": "last release supporting Node 20" }],
+        "@sap-ux/control-property-editor": [{ "version": "0.7.25", "reason": "last release supporting Node 20" }],
+        "@sap-ux/create": [
+            { "version": "0.15.96", "reason": "last release supporting Node 20" },
+            { "version": "0.4.37", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/deploy-config-generator-shared": [{ "version": "0.1.126", "reason": "last release supporting Node 20" }],
+        "@sap-ux/deploy-config-sub-generator": [{ "version": "0.5.158", "reason": "last release supporting Node 20" }],
+        "@sap-ux/deploy-tooling": [
+            { "version": "0.18.25", "reason": "last release supporting Node 20" },
+            { "version": "0.9.20", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/environment-check": [
+            { "version": "0.18.126", "reason": "last release supporting Node 20" },
+            { "version": "0.15.68", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/eslint-plugin-fiori-tools": [
+            { "version": "10.0.6", "reason": "last release supporting Node 20" },
+            { "version": "0.2.2", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/fe-fpm-writer": [
+            { "version": "0.43.29", "reason": "last release supporting Node 20" },
+            { "version": "0.23.9", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/feature-toggle": [{ "version": "0.3.8", "reason": "last release supporting Node 20" }],
+        "@sap-ux/fiori-annotation-api": [{ "version": "0.9.49", "reason": "last release supporting Node 20" }],
+        "@sap-ux/fiori-app-sub-generator": [{ "version": "0.14.1", "reason": "last release supporting Node 20" }],
+        "@sap-ux/fiori-docs-embeddings": [{ "version": "0.4.18", "reason": "last release supporting Node 20" }],
+        "@sap-ux/fiori-elements-writer": [
+            { "version": "2.8.138", "reason": "last release supporting Node 20" },
+            { "version": "0.15.7", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/fiori-freestyle-writer": [
+            { "version": "2.5.105", "reason": "last release supporting Node 20" },
+            { "version": "0.20.14", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/fiori-generator-shared": [{ "version": "0.14.1", "reason": "last release supporting Node 20" }],
+        "@sap-ux/fiori-mcp-server": [{ "version": "0.6.58", "reason": "last release supporting Node 20" }],
+        "@sap-ux/fiori-tools-settings": [{ "version": "0.2.3", "reason": "last release supporting Node 20" }],
+        "@sap-ux/flp-config-inquirer": [{ "version": "0.4.191", "reason": "last release supporting Node 20" }],
+        "@sap-ux/flp-config-sub-generator": [{ "version": "0.3.203", "reason": "last release supporting Node 20" }],
+        "@sap-ux/generator-adp": [{ "version": "0.9.70", "reason": "last release supporting Node 20" }],
+        "@sap-ux/generator-odata-downloader": [{ "version": "0.1.1", "reason": "last release supporting Node 20" }],
+        "@sap-ux/guided-answers-helper": [{ "version": "0.4.2", "reason": "last release supporting Node 20" }],
+        "@sap-ux/i18n": [{ "version": "0.3.11", "reason": "last release supporting Node 20" }],
+        "@sap-ux/inquirer-common": [{ "version": "0.11.46", "reason": "last release supporting Node 20" }],
+        "@sap-ux/jest-environment-ui5": [{ "version": "5.3.20", "reason": "last release supporting Node 20" }],
+        "@sap-ux/jest-file-matchers": [{ "version": "0.2.11", "reason": "last release supporting Node 20" }],
+        "@sap-ux/jest-runner-puppeteer": [{ "version": "0.2.9", "reason": "last release supporting Node 20" }],
+        "@sap-ux/launch-config": [{ "version": "0.10.91", "reason": "last release supporting Node 20" }],
+        "@sap-ux/logger": [
+            { "version": "0.8.5", "reason": "last release supporting Node 20" },
+            { "version": "0.3.9", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/mockserver-config-writer": [
+            { "version": "0.9.77", "reason": "last release supporting Node 20" },
+            { "version": "0.1.14", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/nodejs-utils": [{ "version": "0.2.22", "reason": "last release supporting Node 20" }],
+        "@sap-ux/odata-annotation-core": [{ "version": "0.2.18", "reason": "last release supporting Node 20" }],
+        "@sap-ux/odata-annotation-core-types": [{ "version": "0.5.8", "reason": "last release supporting Node 20" }],
+        "@sap-ux/odata-entity-model": [{ "version": "0.3.7", "reason": "last release supporting Node 20" }],
+        "@sap-ux/odata-service-inquirer": [{ "version": "2.20.23", "reason": "last release supporting Node 20" }],
+        "@sap-ux/odata-service-writer": [
+            { "version": "0.31.13", "reason": "last release supporting Node 20" },
+            { "version": "0.14.36", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/odata-vocabularies": [{ "version": "0.4.31", "reason": "last release supporting Node 20" }],
+        "@sap-ux/preview-middleware": [
+            { "version": "0.25.44", "reason": "last release supporting Node 20" },
+            { "version": "0.7.14", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/project-access": [
+            { "version": "1.36.4", "reason": "last release supporting Node 20" },
+            { "version": "1.13.8", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/project-input-validator": [
+            { "version": "0.6.83", "reason": "last release supporting Node 20" },
+            { "version": "0.1.2", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/project-integrity": [{ "version": "0.2.73", "reason": "last release supporting Node 20" }],
+        "@sap-ux/reload-middleware": [{ "version": "0.3.26", "reason": "last release supporting Node 20" }],
+        "@sap-ux/repo-app-import-sub-generator": [{ "version": "0.3.326", "reason": "last release supporting Node 20" }],
+        "sap-ux-sap-systems-ext": [{ "version": "0.5.2", "reason": "last release supporting Node 20" }],
+        "@sap-ux/serve-static-middleware": [{ "version": "0.4.13", "reason": "last release supporting Node 20" }],
+        "@sap-ux/store": [
+            { "version": "1.5.13", "reason": "last release supporting Node 20" },
+            { "version": "0.3.16", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/system-access": [
+            { "version": "0.7.12", "reason": "last release supporting Node 20" },
+            { "version": "0.2.11", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/telemetry": [{ "version": "0.6.105", "reason": "last release supporting Node 20" }],
+        "@sap-ux/text-document-utils": [{ "version": "0.3.4", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui-components": [{ "version": "2.1.15", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui-prompting": [{ "version": "0.6.28", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui-service-inquirer": [{ "version": "0.2.172", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui-service-sub-generator": [{ "version": "0.1.235", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-application-inquirer": [{ "version": "0.17.23", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-application-writer": [
+            { "version": "1.8.8", "reason": "last release supporting Node 20" },
+            { "version": "0.25.10", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/ui5-config": [
+            { "version": "0.30.4", "reason": "last release supporting Node 20" },
+            { "version": "0.19.5", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/ui5-info": [{ "version": "0.13.21", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-library-inquirer": [{ "version": "0.6.106", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-library-reference-inquirer": [{ "version": "0.4.155", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-library-reference-sub-generator": [{ "version": "0.1.155", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-library-reference-writer": [{ "version": "0.2.73", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-library-sub-generator": [{ "version": "0.1.168", "reason": "last release supporting Node 20" }],
+        "@sap-ux/ui5-library-writer": [
+            { "version": "0.6.85", "reason": "last release supporting Node 20" },
+            { "version": "0.2.13", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/ui5-proxy-middleware": [
+            { "version": "1.6.34", "reason": "last release supporting Node 20" },
+            { "version": "1.2.6", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/ui5-test-writer": [
+            { "version": "0.7.113", "reason": "last release supporting Node 20" },
+            { "version": "0.2.1", "reason": "last release supporting Node 18" }
+        ],
+        "@sap-ux/xml-odata-annotation-converter": [{ "version": "0.4.13", "reason": "last release supporting Node 20" }],
+        "@sap-ux/yaml": [
+            { "version": "0.17.7", "reason": "last release supporting Node 20" },
+            { "version": "0.13.9", "reason": "last release supporting Node 18" }
+        ]
+    },
+    "excludePackages": []
+}
