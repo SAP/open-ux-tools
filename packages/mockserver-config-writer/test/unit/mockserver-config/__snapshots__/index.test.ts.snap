@@ -27,6 +27,13 @@ server:
             mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
             generateMockData: true
         annotations: []
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 "
 `;
 
@@ -60,5 +67,12 @@ server:
         mountPath: /
         services: []
         annotations: []
+        mockDataGenerator:
+          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+          options:
+            locale: en
+            mode: auto
+            rowsPerEntity: 10
+            seed: 42
 "
 `;

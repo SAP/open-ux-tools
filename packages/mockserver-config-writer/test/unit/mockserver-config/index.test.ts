@@ -15,9 +15,14 @@ describe('Test generateMockserverConfig()', () => {
 
         expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({
             'name': 'bare-minimum',
-            'devDependencies': { '@sap-ux/ui5-middleware-fe-mockserver': '2' },
+            'devDependencies': {
+                '@sap-ux/mockserver-data-generator': '0.1.0',
+                '@sap-ux/ui5-middleware-fe-mockserver': '2'
+            },
             'ui5': { 'dependencies': ['@sap-ux/ui5-middleware-fe-mockserver'] },
-            'scripts': { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
+            'scripts': {
+                'start-mock': 'mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open "/"'
+            }
         });
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
     });
@@ -33,11 +38,40 @@ describe('Test generateMockserverConfig()', () => {
 
         expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({
             'name': 'ui5-mock-config',
-            'devDependencies': { '@sap-ux/ui5-middleware-fe-mockserver': '2' },
+            'devDependencies': {
+                '@sap-ux/mockserver-data-generator': '0.1.0',
+                '@sap-ux/ui5-middleware-fe-mockserver': '2'
+            },
             'ui5': { 'dependencies': ['@sap-ux/ui5-middleware-fe-mockserver'] },
-            'scripts': { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
+            'scripts': {
+                'start-mock': 'mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open "/"'
+            }
         });
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
+    });
+
+    test('Do not configure MockGen for a custom mockserver module', async () => {
+        const basePath = join(__dirname, '../../fixtures/bare-minimum');
+        const webappPath = join(basePath, 'webapp');
+
+        const fs = await generateMockserverConfig(basePath, {
+            webappPath,
+            packageJsonConfig: { mockserverModule: 'dummy-mockserver', mockserverVersion: '1.0.0' }
+        });
+
+        expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('mockDataGenerator');
+    });
+
+    test('Do not configure MockGen when package.json changes are skipped', async () => {
+        const basePath = join(__dirname, '../../fixtures/bare-minimum');
+        const webappPath = join(basePath, 'webapp');
+
+        const fs = await generateMockserverConfig(basePath, {
+            webappPath,
+            packageJsonConfig: { skip: true }
+        });
+
+        expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('mockDataGenerator');
     });
 });
 

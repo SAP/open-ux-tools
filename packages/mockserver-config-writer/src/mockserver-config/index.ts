@@ -4,6 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { MockserverConfig } from '../types/index.js';
 import { enhancePackageJson, removeFromPackageJson } from './package-json.js';
 import { enhanceYaml, removeMockDataFolders, removeUi5MockYaml } from './ui5-mock-yaml.js';
+import { supportsMockgen } from './mockgen.js';
 
 /**
  *  Add mockserver configuration to a UI5 application.
@@ -17,10 +18,11 @@ export async function generateMockserverConfig(basePath: string, data: Mockserve
     if (!fs) {
         fs = create(createStorage());
     }
+    const configureMockgen = supportsMockgen(data.packageJsonConfig);
     if (!data.packageJsonConfig?.skip) {
         enhancePackageJson(fs, basePath, data.packageJsonConfig);
     }
-    await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig);
+    await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig, configureMockgen);
     return fs;
 }
 
