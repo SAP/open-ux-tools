@@ -15,6 +15,7 @@ import {
     selectGovernedClassifierRows
 } from '../../../../../scripts/mockserver-data-generator-evaluation/lib/evaluation.mjs';
 import {
+    WASM_DECISION,
     loadSftCandidateManifest,
     parseArguments,
     runtimeModuleDescriptor,
@@ -57,6 +58,10 @@ describe('model artifact evidence', () => {
 });
 
 describe('evaluation CLI contract', () => {
+    test('records the completed native-versus-WASM decision', () => {
+        expect(WASM_DECISION).toBe('native retained; WASM rejected by measured latency, memory, and total footprint');
+    });
+
     test.each([
         ['--max-sft-cases', '1junk'],
         ['--seed', '7junk']

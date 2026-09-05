@@ -26,6 +26,7 @@ const GENERATOR_ENTRY = join(GENERATOR_ROOT, 'dist/index.js');
 const GENERATOR_REQUIRE = createRequire(GENERATOR_ENTRY);
 const DEFAULT_SEED = 2_026_090_4;
 const SHA_256 = /^[a-f\d]{64}$/u;
+export const WASM_DECISION = 'native retained; WASM rejected by measured latency, memory, and total footprint';
 
 function decimalInteger(value, label) {
     if (typeof value !== 'string' || !/^(?:0|[1-9]\d*)$/u.test(value)) {
@@ -745,7 +746,7 @@ async function baseReport(options) {
             generatedValuesInReport: false,
             modelWeightsInRepository: false,
             freshJudgeRequiredForPromotion: true,
-            wasmDecision: 'deferred until native candidates establish the dependency-closure and latency baseline',
+            wasmDecision: WASM_DECISION,
             processIsolation: true
         }
     };
