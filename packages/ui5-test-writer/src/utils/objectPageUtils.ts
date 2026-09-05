@@ -31,8 +31,27 @@ import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js'
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
-import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
+import {
+    buildActionStateFromSpecModelKey,
+    getCriticalActionNames,
+    safeCheckButtonVisibility,
+    safeCheckEditVisibility
+} from './actionUtils.js';
 import { getListReportViews } from './listReportUtils.js';
+
+/**
+ * Optional context for {@link getObjectPageFeatures}.
+ */
+export interface ObjectPageFeaturesOptions {
+    /** Application manifest, used to resolve the parent List Report's default table tab. */
+    manifest?: Manifest;
+    /** Entity set of the parent List Report, used to resolve the originating view. */
+    listReportEntitySet?: string;
+    /** Resolver for i18n placeholder labels (`{i18n>key}` → translated text). */
+    resolveLabel?: I18nLabelResolver;
+    /** Annotation XML documents to merge with the metadata (for annotation-only terms). */
+    annotationXmls?: string[];
+}
 
 /**
  * Extracts feature data for object pages from the application model.
@@ -41,9 +60,7 @@ import { getListReportViews } from './listReportUtils.js';
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
  * @param log - optional logger instance
  * @param metadata - optional metadata for the OPA test generation
- * @param manifest - optional application manifest, used to resolve the parent List Report's default table tab
- * @param listReportEntitySet - entity set of the parent List Report, used to resolve the originating view
- * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @param options - optional context (manifest, parent List Report entity set, label resolver, annotation XMLs)
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
@@ -51,10 +68,10 @@ export async function getObjectPageFeatures(
     listReportPageKey?: string,
     log?: Logger,
     metadata?: string,
-    manifest?: Manifest,
-    listReportEntitySet?: string,
-    resolveLabel: I18nLabelResolver = passthroughLabelResolver
+    options: ObjectPageFeaturesOptions = {}
 ): Promise<ObjectPageFeatures[]> {
+    const { manifest, listReportEntitySet, annotationXmls } = options;
+    const resolveLabel = options.resolveLabel ?? passthroughLabelResolver;
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
         log?.warn('Object Pages not found in application model. Dynamic tests will not be generated for Object Pages.');
@@ -64,6 +81,9 @@ export async function getObjectPageFeatures(
     // attempt to get individual feature data for each object page
     const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
     const schemaNamespace = convertedMetadata?.namespace ?? '';
+    // IsActionCritical is an annotation-only term (typically in a separate annotation.xml), resolved
+    // separately so the merge cannot affect the main metadata conversion.
+    const criticalActions = getCriticalActionNames(metadata, annotationXmls);
     // Non-custom tabs of the parent List Report with their optional entity set. Used to pick the
     // tab a given Object Page is reached from on multi-view LRs; empty for single-table LRs.
     const listReportViews = getListReportViews(manifest, listReportPageKey);
@@ -89,11 +109,12 @@ export async function getObjectPageFeatures(
             schemaNamespace,
             metadata,
             log,
-            resolveLabel
+            resolveLabel,
+            criticalActions
         );
         // extract header-level actions
         pageFeatureData.headerActions = convertedMetadata
-            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace, resolveLabel)
+            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace, resolveLabel, criticalActions)
             : [];
         // determine edit button visibility from UpdateRestrictions on the OP entity set
         if (metadata && objectPage.entitySet) {
@@ -266,6 +287,7 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
  * @param metadata - optional raw metadata XML for resolving standard button visibility (Create/Delete)
  * @param log - optional logger instance
  * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns body sections data including sub-sections
  */
 function extractObjectPageBodySectionsData(
@@ -274,7 +296,8 @@ function extractObjectPageBodySectionsData(
     schemaNamespace?: string,
     metadata?: string,
     log?: Logger,
-    resolveLabel: I18nLabelResolver = passthroughLabelResolver
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver,
+    criticalActions?: Set<string>
 ): BodySectionFeatureData[] {
     const bodySections: BodySectionFeatureData[] = [];
     if (objectPage.model) {
@@ -305,7 +328,13 @@ function extractObjectPageBodySectionsData(
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
-                        ? extractSectionActions(section, convertedMetadata, schemaNamespace, resolveLabel)
+                        ? extractSectionActions(
+                              section,
+                              convertedMetadata,
+                              schemaNamespace,
+                              resolveLabel,
+                              criticalActions
+                          )
                         : []
             };
             // For table sections, resolve Create/Delete visibility from target entity set
@@ -443,6 +472,7 @@ function buildCustomActionState(item: AggregationItem, resolveLabel: I18nLabelRe
  * @param convertedMetadata - converted OData metadata
  * @param schemaNamespace - OData schema namespace used as service identifier
  * @param resolveLabel - resolver for i18n placeholder labels
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns the action or menu button state, or undefined if the entry is neither
  */
 function buildActionOrMenuState(
@@ -450,12 +480,19 @@ function buildActionOrMenuState(
     item: AggregationItem,
     convertedMetadata: ConvertedMetadata,
     schemaNamespace: string,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    criticalActions?: Set<string>
 ): ActionButtonState | undefined {
     if (isMenuActionItem(item)) {
         return buildMenuActionState(item, convertedMetadata, schemaNamespace, resolveLabel);
     }
-    const odataState = buildActionStateFromSpecModelKey(key, item.description, convertedMetadata, schemaNamespace);
+    const odataState = buildActionStateFromSpecModelKey(
+        key,
+        item.description,
+        convertedMetadata,
+        schemaNamespace,
+        criticalActions
+    );
     if (odataState) {
         return odataState;
     }
@@ -473,13 +510,15 @@ function buildActionOrMenuState(
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
  * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns array of action button states for the header toolbar
  */
 function extractHeaderActions(
     objectPage: PageWithModelV4,
     convertedMetadata: ConvertedMetadata,
     schemaNamespace: string,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    criticalActions?: Set<string>
 ): ActionButtonState[] {
     if (!objectPage.model) {
         return [];
@@ -488,7 +527,9 @@ function extractHeaderActions(
     const actionsAgg = getAggregations(headerAgg)['actions'];
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
-        .map(([key, item]) => buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel))
+        .map(([key, item]) =>
+            buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel, criticalActions)
+        )
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
 
@@ -500,13 +541,15 @@ function extractHeaderActions(
  * @param convertedMetadata - converted OData metadata for resolving action availability
  * @param schemaNamespace - OData schema namespace used as service identifier in action assertions
  * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @param criticalActions - set of action method names annotated Common.IsActionCritical
  * @returns array of action button states for the section toolbar
  */
 function extractSectionActions(
     section: BodySectionItem,
     convertedMetadata: ConvertedMetadata,
     schemaNamespace: string,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    criticalActions?: Set<string>
 ): ActionButtonState[] {
     let actionsAgg: AggregationItem | undefined;
 
@@ -524,7 +567,9 @@ function extractSectionActions(
     }
     const actionEntries = getAggregations(actionsAgg) as Record<string, AggregationItem>;
     return Object.entries(actionEntries)
-        .map(([key, item]) => buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel))
+        .map(([key, item]) =>
+            buildActionOrMenuState(key, item, convertedMetadata, schemaNamespace, resolveLabel, criticalActions)
+        )
         .filter((actionState): actionState is ActionButtonState => actionState !== undefined);
 }
 
