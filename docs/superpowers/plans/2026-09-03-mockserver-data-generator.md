@@ -1609,3 +1609,26 @@ through the same exact archive. Both transactional restores were byte-exact
 outside disposable `node_modules`. The preceding compatibility archive remains
 the fresh V2/V4/CDS cross-format evidence. Exact minimum npm versions remain
 intentionally unset until the host packages are actually released.
+
+**Automatic release-model acquisition increment (2026-09-05):** Commit
+`0eb3822d08c03863b6f10075c626ed8624e90bf2` makes a flagged launcher resolve
+the immutable manifest owned by its package release, verify the default SAP
+tools cache, acquire missing classifier/SFT artifacts under a five-minute
+deadline, and pass only verified cache paths to the provider in offline mode.
+Warm cache use bypasses acquisition, inherited private model-path variables are
+removed, and any preparation failure emits one path-free warning before Fiori
+starts with deterministic MockGen tiers. Normal application YAML has no model
+or cache paths. The optional `prepare` and `verify` commands use the package
+manifest and default cache without path arguments while retaining explicit
+development/provisioning overrides.
+
+The unpublished `0.0.0` source intentionally contains no invented public model
+location. A package-boundary check prevents any publishable version from being
+packed without `resources/model-manifest.json`; model weights remain excluded.
+The package passes 30 suites/260 tests, build, zero-error lint, changeset
+validation, and the 97,960-byte package boundary. The cross-repository
+development-kit package passes 11 suites/120 tests, build, and zero-error lint.
+These checks do not close the approved hosted-bundle, platform-specific native
+runtime distribution, actual BAS canary, or publication/rollback gates. WASM
+remains the measured no-go rather than an assumed solution to the runtime
+distribution gap.
