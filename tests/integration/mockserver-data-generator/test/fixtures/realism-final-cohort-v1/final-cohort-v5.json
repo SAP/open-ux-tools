@@ -1,0 +1,695 @@
+{
+    "version": 4,
+    "kind": "mockserver-data-generator-realism-cohort",
+    "cohortId": "final-cohort-v5",
+    "minimumReviewedFields": 300,
+    "isolation": {
+        "policy": "service-and-source-family-disjoint",
+        "status": "verified",
+        "checkedAgainst": [
+            {
+                "role": "classifier-train",
+                "path": "var/release/classifier-dataset/train.jsonl",
+                "bytes": 66517,
+                "sha256": "a59a74a3ae857e819c269a6bd24192baafaac04747119708b9b9968f098540a2"
+            },
+            {
+                "role": "classifier-validation",
+                "path": "var/release/classifier-dataset/validation.jsonl",
+                "bytes": 7412,
+                "sha256": "762afd017c6c35f5ca5c637709e7169a2ad4aea949782025eb6cedb7c4a95075"
+            },
+            {
+                "role": "classifier-public-real",
+                "path": "var/release/classifier-dataset/public-real.jsonl",
+                "bytes": 23176649,
+                "sha256": "c32ba6fb1b631ca69749e35fdea94a843b26872c75db63378ec2a0cc7e8fa13c"
+            },
+            {
+                "role": "classifier-reviewed-fixtures",
+                "path": "var/release/classifier-dataset/reviewed-fixtures.jsonl",
+                "bytes": 81991,
+                "sha256": "68833f9d1caf85a3b83e5d2c243103097050d0ec208790801c04d0bbeea976cc"
+            },
+            {
+                "role": "sft-train",
+                "path": "var/sft/sft-data/train.jsonl",
+                "bytes": 19878941,
+                "sha256": "6523908bf490ff80d5b2d39ae07836ef04f45677cfd5c671b21fb1f934af2fd2"
+            },
+            {
+                "role": "sft-eval",
+                "path": "var/sft/sft-data/eval.jsonl",
+                "bytes": 6917685,
+                "sha256": "86e66de8eaa0ed555bfd478c4154f98f1854c2eb0c6419c3e13faf9ca4bcde99"
+            },
+            {
+                "role": "pilot-model-selection",
+                "path": "benchmark/ml-native/llm-inspection-manifest.json",
+                "bytes": 4239,
+                "sha256": "202ca3ef76cd1b741bcc4792b22880231f0de3edcbbd58b82bb596fa5288f12f"
+            }
+        ],
+        "audit": {
+            "candidateServiceCount": 6,
+            "serviceOverlapCount": 0,
+            "sourceFamilyOverlapCount": 0
+        }
+    },
+    "targets": [
+        {
+            "domain": "finance",
+            "serviceId": "sap-far-manage-balance-sheet-v2-unseen",
+            "path": "schemas/finance-balance-sheet-v2.metadata.xml",
+            "format": "edmx",
+            "schemaFormat": "edmx-v2",
+            "serviceName": "FinanceBalanceSheetInspection",
+            "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
+            "fieldBudget": 50,
+            "expectedEmptyResources": [],
+            "t2Expectations": { "attempts": 20, "parsedResponses": 20, "eligibleSlots": 80, "acceptedSlots": 78 },
+            "relationships": [
+                {
+                    "id": "finance-status-text",
+                    "criterionType": "code-text",
+                    "entity": "C_ArbankstatementType",
+                    "properties": ["BankStatementStatus", "BankStatementStatus_Text"],
+                    "criterion": "Status code and status text must describe the same bank-statement state."
+                },
+                {
+                    "id": "finance-balance-currency",
+                    "criterionType": "amount-currency",
+                    "entity": "C_ArbankstatementType",
+                    "properties": [
+                        "Currency",
+                        "OpeningBalanceAmtInTransCrcy",
+                        "TotalDebitAmountInTransCrcy",
+                        "TotalCreditAmountInTransCrcy",
+                        "ClosingBalanceAmtInTransCrcy"
+                    ],
+                    "criterion": "Bank-statement balances and debit/credit totals must use one plausible transaction currency and coherent signs and scales."
+                },
+                {
+                    "id": "finance-posting-status",
+                    "criterionType": "status",
+                    "entity": "C_ArbankstatementType",
+                    "properties": ["BankLedgerIsPosted", "SubledgerIsPostedSuccessfully", "BankStatementIsInterpreted"],
+                    "criterion": "Posting and interpretation flags must form a plausible bank-statement processing state."
+                }
+            ],
+            "selection": [
+                {
+                    "entity": "C_ArbankstatementType",
+                    "properties": [
+                        "BankStatementShortID",
+                        "SendingBank",
+                        "BankStatementInternalID",
+                        "BankStatementRecipientRefID",
+                        "CompanyCode",
+                        "CompanyCode_Text",
+                        "HouseBank",
+                        "HouseBankAccount",
+                        "HouseBankAccount_Text",
+                        "BankStatement",
+                        "BankAccountInternalID",
+                        "BankAccountUUID",
+                        "BankStatementDate",
+                        "BankStatementTime",
+                        "BankStatementStatus",
+                        "BankStatementStatus_Text",
+                        "Currency",
+                        "BankLedgerIsPosted",
+                        "SubledgerIsPostedSuccessfully",
+                        "BankStatementIsInterpreted",
+                        "GLAccount",
+                        "BankAccount",
+                        "BankAccountHolderName",
+                        "BankAccountAdditionalName",
+                        "BankStatementPageNumber",
+                        "ChartOfAccounts",
+                        "OpeningBalanceIsInterim",
+                        "ClosingBalanceIsInterim",
+                        "BankDataStorageApplication",
+                        "OpeningBalanceAmtInTransCrcy",
+                        "InterimOpenBalAmtInTransCrcy",
+                        "InterimClsgBalAmtInTransCrcy",
+                        "TotalDebitAmountInTransCrcy",
+                        "TotalCreditAmountInTransCrcy",
+                        "ClosingBalanceAmtInTransCrcy",
+                        "InterestRateInPercent",
+                        "BankAccountType",
+                        "BankStatementNumberOfItems",
+                        "NumberOfItems",
+                        "PaymentTransactionTypeGroup",
+                        "BankStatementIsManuallyCreated",
+                        "CreatedByUser",
+                        "PersonFullName",
+                        "IncomingPaymentFile",
+                        "BankStatementImportDate",
+                        "BankStatementImportTime",
+                        "BankAccountReferenceText",
+                        "BankStatementFormat",
+                        "IBAN",
+                        "BankName"
+                    ]
+                }
+            ],
+            "schemaBytes": 2585065,
+            "schemaSha256": "ced4ee61b522971a25fd0b104a233ca8f24f4731887d9193df0829b8df1c68a9",
+            "source": {
+                "sourceFamily": "repository:sap/open-ux-odata:far-manage-balance-sheet-v2",
+                "repository": "https://github.com/SAP/open-ux-odata",
+                "revision": "d94d8d3c31bb770e267784e0011aee5fb7e361a6",
+                "repositoryPaths": [
+                    {
+                        "path": "packages/edmx-parser/test/fixtures/v2/FAR_MANAGE_BS_SRV/metadata.xml",
+                        "blobSha": "5570fb91c2fc503ceb0935028d74c92450b2e690"
+                    }
+                ],
+                "licenseIdentifier": "Apache-2.0"
+            }
+        },
+        {
+            "domain": "sales",
+            "serviceId": "sap-sales-item-proposal-v2-unseen",
+            "path": "schemas/sales-item-proposal-v2.metadata.xml",
+            "format": "edmx",
+            "schemaFormat": "edmx-v2",
+            "serviceName": "SalesItemProposalInspection",
+            "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
+            "fieldBudget": 50,
+            "expectedEmptyResources": [],
+            "t2Expectations": { "attempts": 6, "parsedResponses": 6, "eligibleSlots": 12, "acceptedSlots": 12 },
+            "relationships": [
+                {
+                    "id": "sales-agreement-date-range",
+                    "criterionType": "date-range",
+                    "entity": "C_SalesItemProposalTPType",
+                    "properties": ["AgrmtValdtyStartDate", "AgrmtValdtyEndDate"],
+                    "criterion": "Agreement validity start must be on or before agreement validity end."
+                },
+                {
+                    "id": "sales-unit-value-help",
+                    "criterionType": "value-help",
+                    "entity": "I_UnitOfMeasureType",
+                    "properties": ["UnitOfMeasure", "UnitOfMeasure_Text", "UnitOfMeasureISOCode"],
+                    "criterion": "Unit code, ISO code, and text must identify a plausible single unit of measure."
+                }
+            ],
+            "selection": [
+                {
+                    "entity": "C_SalesItemProposalTPType",
+                    "properties": [
+                        "Activation_ac",
+                        "Edit_ac",
+                        "Preparation_ac",
+                        "Validation_ac",
+                        "DistributionChannel_fc",
+                        "OrganizationDivision_fc",
+                        "SalesItemProposalType_fc",
+                        "SalesOrganization_fc",
+                        "SalesItemProposal",
+                        "SalesItemProposalType",
+                        "SalesOrganization",
+                        "SalesOrganizationName",
+                        "DistributionChannel",
+                        "OrganizationDivision",
+                        "SalesItemProposalDescription",
+                        "AgrmtValdtyStartDate",
+                        "AgrmtValdtyEndDate",
+                        "HasDraftEntity",
+                        "DraftUUID",
+                        "DraftEntityCreationDateTime",
+                        "DraftEntityLastChangeDateTime",
+                        "HasActiveEntity",
+                        "IsActiveEntity"
+                    ]
+                },
+                {
+                    "entity": "I_UnitOfMeasureType",
+                    "properties": [
+                        "UnitOfMeasure",
+                        "UnitOfMeasure_Text",
+                        "UnitOfMeasureSAPCode",
+                        "UnitOfMeasureISOCode",
+                        "IsPrimaryUnitForISOCode",
+                        "UnitOfMeasureNumberOfDecimals",
+                        "UnitOfMeasureIsCommercial",
+                        "UnitOfMeasureDimension",
+                        "SIUnitCnvrsnRateNumerator",
+                        "SIUnitCnvrsnRateDenominator",
+                        "SIUnitCnvrsnRateExponent",
+                        "SIUnitCnvrsnAdditiveValue",
+                        "UnitOfMeasureDspExponent",
+                        "UnitOfMeasureDspNmbrOfDcmls",
+                        "UnitOfMeasureTemperature",
+                        "UnitOfMeasureTemperatureUnit",
+                        "UnitOfMeasurePressure",
+                        "UnitOfMeasurePressureUnit"
+                    ]
+                },
+                {
+                    "entity": "C_CustomerBySalesItemProposalType",
+                    "properties": [
+                        "Customer",
+                        "SalesOrganization",
+                        "DistributionChannel",
+                        "Division",
+                        "SalesItemProposal",
+                        "CustomerName",
+                        "EmailAddress",
+                        "PhoneNumber",
+                        "MobilePhoneNumber"
+                    ]
+                }
+            ],
+            "schemaBytes": 72704,
+            "schemaSha256": "0de6febcc358e0f8479381f9a113174bb2d105bdd2c28ff143adc0d41ecb1a01",
+            "source": {
+                "sourceFamily": "repository:sap/open-ux-odata:sales-item-proposal-v2",
+                "repository": "https://github.com/SAP/open-ux-odata",
+                "revision": "d94d8d3c31bb770e267784e0011aee5fb7e361a6",
+                "repositoryPaths": [
+                    {
+                        "path": "packages/edmx-parser/test/fixtures/v2/SD_F2583_SLSITMPRPSL_SRV/metadata.xml",
+                        "blobSha": "b58b2c41416eb926b0b32eadd9fae51d4c175c8e"
+                    }
+                ],
+                "licenseIdentifier": "Apache-2.0"
+            }
+        },
+        {
+            "domain": "service",
+            "serviceId": "sap-service-confirmation-v2-unseen",
+            "path": "schemas/service-confirmation-v2.metadata.xml",
+            "format": "edmx",
+            "schemaFormat": "edmx-v2",
+            "serviceName": "ServiceConfirmationInspection",
+            "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
+            "fieldBudget": 50,
+            "expectedEmptyResources": [],
+            "t2Expectations": { "attempts": 28, "parsedResponses": 28, "eligibleSlots": 108, "acceptedSlots": 101 },
+            "relationships": [
+                {
+                    "id": "service-quantity-unit",
+                    "criterionType": "quantity-unit",
+                    "entity": "I_ServiceDocumentItemEnhcdType",
+                    "properties": ["ServiceDocumentItemQuantity", "ServiceDocItemQuantityUnit"],
+                    "criterion": "Service-item quantity must be non-negative and paired with a plausible unit."
+                },
+                {
+                    "id": "service-amount-currency",
+                    "criterionType": "amount-currency",
+                    "entity": "I_ServiceDocumentItemEnhcdType",
+                    "properties": ["ServiceDocumentItemNetAmount", "TransactionCurrency"],
+                    "criterion": "Service-item net amount must have a plausible sign and scale for its transaction currency."
+                }
+            ],
+            "selection": [
+                {
+                    "entity": "I_ServiceDocumentItemEnhcdType",
+                    "properties": [
+                        "ID",
+                        "ServiceObjectType",
+                        "ServiceDocument",
+                        "ServiceDocumentItem",
+                        "ServiceDocumentUUID",
+                        "ServiceDocumentDescription",
+                        "ServiceDocumentItemUUID",
+                        "ServiceDocumentItemCharUUID",
+                        "ServiceDocumentItemObjectType",
+                        "ParentServiceDocumentItemUUID",
+                        "ServiceDocumentItemDescription",
+                        "BillingDateTime",
+                        "BillingDocCreationDateTime",
+                        "BillingPlanTimeZone",
+                        "BillingPriceSourceName",
+                        "DocumentDescription",
+                        "PurchaseOrderByCustomer",
+                        "ServiceDocumentItemPriority",
+                        "ServiceDocumentType",
+                        "PostingDate",
+                        "TransactionCurrency",
+                        "SoldToPartyCountry",
+                        "SoldToPartyRegion",
+                        "SoldToParty",
+                        "ServiceTeam",
+                        "ResponsibleEmployee",
+                        "ServiceEmployee",
+                        "ContactPerson",
+                        "PayerParty",
+                        "BillToParty",
+                        "PaymentTerms",
+                        "ServiceDocumentItemStatus",
+                        "ServiceDocumentItemHasError",
+                        "SrvcDocItmIsReleasedForBilling",
+                        "ServiceDocItemBillingStatus",
+                        "ServiceDocumentItemIsOpen",
+                        "ServiceOrganization",
+                        "ResponsibleServiceOrganization",
+                        "ServiceDocItemCreationDateTime",
+                        "ServiceDocItemChangedDateTime",
+                        "ServiceDocItemCreationDate",
+                        "ServiceDocItemChangedDate",
+                        "ServiceDocItemCreatedByUser",
+                        "ServiceDocItemChangedByUser",
+                        "OriginallyRequestedProduct",
+                        "ServiceDocumentItemQuantity",
+                        "ServiceDocItemQuantityUnit",
+                        "ServiceDocItemCategory",
+                        "ServiceDocumentItemNetAmount",
+                        "BillableControl"
+                    ]
+                }
+            ],
+            "schemaBytes": 193057,
+            "schemaSha256": "19518efe12f20ad96a72906a8f47a4fd170b05de40e1a003b6067b7d754d4281",
+            "source": {
+                "sourceFamily": "repository:sap/open-ux-odata:service-confirmation-v2",
+                "repository": "https://github.com/SAP/open-ux-odata",
+                "revision": "d94d8d3c31bb770e267784e0011aee5fb7e361a6",
+                "repositoryPaths": [
+                    {
+                        "path": "packages/edmx-parser/test/fixtures/v2/CRMS4_SERV_CONFIRMATION_MANAGE_SRV/metadata.xml",
+                        "blobSha": "104e010f026ae69914e3603948685ccdee59efe8"
+                    }
+                ],
+                "licenseIdentifier": "Apache-2.0"
+            }
+        },
+        {
+            "domain": "maintenance",
+            "serviceId": "sap-eam-material-serial-v4-unseen",
+            "path": "schemas/maintenance-material-serial-v4.metadata.xml",
+            "format": "edmx",
+            "schemaFormat": "edmx-v4",
+            "serviceName": "MaintenanceMaterialSerialInspection",
+            "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
+            "fieldBudget": 50,
+            "expectedEmptyResources": [],
+            "t2Expectations": { "attempts": 12, "parsedResponses": 12, "eligibleSlots": 48, "acceptedSlots": 45 },
+            "relationships": [
+                {
+                    "id": "maintenance-material-status",
+                    "criterionType": "status",
+                    "entity": "C_EquipMaterialSerialNumberTPType",
+                    "properties": [
+                        "MatlSrlNmbrIsAvailable",
+                        "MatlSrlNmbrIsDeleted",
+                        "MatlSrlNmbrIsInactive",
+                        "MatlSrlNmbrIsInstalled",
+                        "MatlSrlNmbrIsInWarehouse",
+                        "MatlSrlNmbrIsAtCustomer"
+                    ],
+                    "criterion": "Material-serial lifecycle and location flags must form a plausible, non-contradictory maintenance state."
+                }
+            ],
+            "selection": [
+                {
+                    "entity": "C_EquipMaterialSerialNumberTPType",
+                    "properties": [
+                        "Material",
+                        "SerialNumber",
+                        "Equipment",
+                        "TechnicalObject",
+                        "TechObjIsEquipOrFuncnlLoc",
+                        "EquipmentCategory",
+                        "EquipmentName",
+                        "TechnicalObjectDescription",
+                        "UniqueItemIdentifier",
+                        "UniqueItemIdentifierStrucType",
+                        "UniqueItemIdentifierRespPlant",
+                        "HasEquipmentData",
+                        "EquipmentHasStockInformation",
+                        "CreatedByUser",
+                        "LastChangedByUser",
+                        "CreationDate",
+                        "LastChangeDate",
+                        "LastChangeDateTime",
+                        "EquipMaterialLastSerialNumber",
+                        "InventoryStockType",
+                        "Plant",
+                        "StorageLocation",
+                        "InventorySpecialStockType",
+                        "Customer",
+                        "Supplier",
+                        "CompanyCode",
+                        "SalesOrder",
+                        "SalesOrderItem",
+                        "WBSElementInternalID",
+                        "StockOwner",
+                        "MatlSrlNmbrMasterBatch",
+                        "MatlSrlNmbrLastGdsMvtDte",
+                        "MaterialSerialNumberStockBatch",
+                        "MatlSrlNmbrIsAvailable",
+                        "MatlSrlNmbrIsDeleted",
+                        "MatlSrlNmbrIsMrkdForDeltn",
+                        "MatlSrlNmbrIsInactive",
+                        "MatlSrlNmbrIsInstalled",
+                        "MatlSrlNmbrIsAllcToParent",
+                        "MatlSrlNmbrIsInWarehouse",
+                        "MatlSrlNmbrIsAssgdToDeliv",
+                        "MatlSrlNmbrIsAtCustomer",
+                        "MatlSrlNmbrIsUndrCnstrctn",
+                        "MatlSrlNmbrIsOnHold",
+                        "MatlSrlNmbrIsLocked",
+                        "MatlSrlNmbrIsIDUndefined",
+                        "MatlSrlNmbrIsAssgdToJITCall",
+                        "MatlSrlNmbrDocIsCreated",
+                        "MatlSrlNmbrHndlgUntIsAssgd",
+                        "MatlSrlNmbrInvtryIsActv"
+                    ]
+                }
+            ],
+            "schemaBytes": 303663,
+            "schemaSha256": "667093745d0327c60d664bac798c34fe5f2f827f4b731ec320abd44a5db3c6d5",
+            "source": {
+                "sourceFamily": "repository:sap/open-ux-odata:eam-material-serial-v4",
+                "repository": "https://github.com/SAP/open-ux-odata",
+                "revision": "d94d8d3c31bb770e267784e0011aee5fb7e361a6",
+                "repositoryPaths": [
+                    {
+                        "path": "packages/annotation-converter/test/fixtures/v4/actions/metadata.xml",
+                        "blobSha": "6cacae4462598821a4180c598cf85fad82f0a04b"
+                    }
+                ],
+                "licenseIdentifier": "Apache-2.0"
+            }
+        },
+        {
+            "domain": "master-data",
+            "serviceId": "sap-procurement-master-data-csn-unseen",
+            "path": "schemas/procurement-master-data.csn.json",
+            "format": "csn",
+            "schemaFormat": "csn",
+            "serviceName": "ProcurementMasterDataInspection",
+            "provenance": "CSN compiled after production-candidate selection from the pinned public Apache-2.0 SAP procurement sample.",
+            "fieldBudget": 50,
+            "expectedEmptyResources": [],
+            "t2Expectations": { "attempts": 50, "parsedResponses": 50, "eligibleSlots": 196, "acceptedSlots": 195 },
+            "relationships": [
+                {
+                    "id": "master-data-supplier-contact",
+                    "criterionType": "person-address",
+                    "entity": "Suppliers",
+                    "properties": [
+                        "ContactFirstName",
+                        "ContactLastName",
+                        "ContactEmail",
+                        "ContactPhoneNumber",
+                        "City",
+                        "Country"
+                    ],
+                    "criterion": "Supplier contact name, email, phone, city, and country must look mutually plausible."
+                }
+            ],
+            "selection": [
+                {
+                    "entity": "Suppliers",
+                    "properties": [
+                        "Alias1",
+                        "Alias2",
+                        "ANNumber",
+                        "ApprovalStatus",
+                        "BackupWithholdingExempt",
+                        "CertifiedDisabledOwned",
+                        "CertifiedDisadvantaged",
+                        "CertifiedDiversity",
+                        "CertifiedEthnicity",
+                        "CertifiedHUBZone",
+                        "CertifiedMinorityOwned",
+                        "CertifiedSBA8A",
+                        "CertifiedSDB",
+                        "CertifiedVeteranOwned",
+                        "CertifiedWomanOwned",
+                        "City",
+                        "CommonSupplierId",
+                        "CommonSupplierName",
+                        "ContactEmail",
+                        "ContactFirstName",
+                        "ContactLastName",
+                        "ContactPhoneNumber",
+                        "Country",
+                        "createdAt",
+                        "createdBy",
+                        "DEAltGlobalUltimateName",
+                        "DEBusinessStatus",
+                        "DECertifiedDisabledOwned",
+                        "DECertifiedDisadvantaged",
+                        "DECertifiedDiversity",
+                        "DECertifiedDiversityStatus",
+                        "DECertifiedDVO",
+                        "DECertifiedEthnicity",
+                        "DECertifiedGLBTOwned",
+                        "DECertifiedHBCU",
+                        "DECertifiedHubZone",
+                        "DECertifiedLaborSurplus",
+                        "DECertifiedMinorityOwned",
+                        "DECertifiedSBA8A",
+                        "DECertifiedSDB",
+                        "DECertifiedSmallBusiness",
+                        "DECertifiedVeteranOwned",
+                        "DECertifiedWomanOwned",
+                        "DECity",
+                        "DEConfidence",
+                        "DECongressionalDistrict",
+                        "DECountry",
+                        "DECreditRating",
+                        "DECSSClass",
+                        "DECSSPercentile"
+                    ]
+                }
+            ],
+            "schemaBytes": 1382323,
+            "schemaSha256": "8d1fb086b9a44c11835cb61d77739cb5f43457c86d5e9af13d946bd3dfe47838",
+            "source": {
+                "sourceFamily": "repository:sap-samples/btp-procurement-data-extractor:sac-master-data",
+                "repository": "https://github.com/SAP-samples/btp-procurement-data-extractor",
+                "revision": "77f0967441bea346762e412272ea657d23785f9e",
+                "repositoryPaths": [
+                    {
+                        "path": "srv/sac-service.cds",
+                        "blobSha": "d9743aed0c2a46ba2742964861d07e2b3d472673"
+                    }
+                ],
+                "licenseIdentifier": "Apache-2.0",
+                "derivation": {
+                    "entrypoints": ["db/index.cds", "srv/sac-service.cds"],
+                    "command": "cds compile db/index.cds srv/sac-service.cds --to json",
+                    "cdsVersion": "10.0.4",
+                    "cdsDevelopmentKitVersion": "10.0.7",
+                    "outputSha256": "8d1fb086b9a44c11835cb61d77739cb5f43457c86d5e9af13d946bd3dfe47838"
+                }
+            }
+        },
+        {
+            "domain": "non-sap",
+            "serviceId": "music-library-v4-unseen",
+            "path": "schemas/music-library-v4.metadata.xml",
+            "format": "edmx",
+            "schemaFormat": "edmx-v4",
+            "serviceName": "MusicLibraryInspection",
+            "provenance": "Public Apache-2.0 generic music-domain metadata fixture frozen after production-candidate selection.",
+            "fieldBudget": 50,
+            "expectedEmptyResources": [],
+            "t2Expectations": { "attempts": 8, "parsedResponses": 8, "eligibleSlots": 18, "acceptedSlots": 12 },
+            "relationships": [
+                {
+                    "id": "music-publication-price",
+                    "criterionType": "amount-currency",
+                    "entity": "PublicationsType",
+                    "properties": ["Price", "CurrencyCode"],
+                    "criterion": "Publication price must be non-negative and use a plausible currency code."
+                },
+                {
+                    "id": "music-draft-state",
+                    "criterionType": "draft",
+                    "entity": "ArtistsType",
+                    "properties": ["HasDraftEntity", "HasActiveEntity", "IsActiveEntity", "ActiveUUID"],
+                    "criterion": "Draft and active-entity flags and identifiers must form a plausible draft state."
+                }
+            ],
+            "selection": [
+                {
+                    "entity": "ArtistsType",
+                    "properties": [
+                        "ArtistUUID",
+                        "Name",
+                        "CountryOfOrigin",
+                        "CountryOfOrigin_Text",
+                        "RegionOfOrigin",
+                        "RegionOfOrigin_Text",
+                        "FoundingYear",
+                        "BreakupYear",
+                        "CreatedAt",
+                        "CreatedBy",
+                        "ChangedAt",
+                        "ChangedBy",
+                        "HasDraftEntity",
+                        "ActiveUUID",
+                        "DraftEntityCreationDateTime",
+                        "DraftEntityLastChangeDateTime",
+                        "HasActiveEntity",
+                        "IsActiveEntity"
+                    ]
+                },
+                {
+                    "entity": "TitlesType",
+                    "properties": [
+                        "TitleUUID",
+                        "PublicationUUID",
+                        "ArtistUUID",
+                        "Name",
+                        "Genre",
+                        "Length",
+                        "LengthUnit",
+                        "Price",
+                        "CurrencyCode",
+                        "HasDraftEntity",
+                        "ActiveUUID",
+                        "DraftEntityCreationDateTime",
+                        "DraftEntityLastChangeDateTime",
+                        "HasActiveEntity",
+                        "IsActiveEntity"
+                    ]
+                },
+                {
+                    "entity": "PublicationsType",
+                    "properties": [
+                        "PublicationUUID",
+                        "ArtistUUID",
+                        "Type",
+                        "Name",
+                        "ReleaseDate",
+                        "Price",
+                        "CurrencyCode",
+                        "HasDraftEntity",
+                        "ActiveUUID",
+                        "DraftEntityCreationDateTime",
+                        "DraftEntityLastChangeDateTime",
+                        "HasActiveEntity",
+                        "IsActiveEntity"
+                    ]
+                },
+                {
+                    "entity": "PersonsType",
+                    "properties": ["PersonUUID", "LastName", "FirstName", "FormattedName"]
+                }
+            ],
+            "schemaBytes": 112619,
+            "schemaSha256": "7fd82ddcf58e4b9aaadcab52cf818fa5653e399b432dc50613d720dca8c57bd1",
+            "source": {
+                "sourceFamily": "repository:sap/open-ux-tools:music-library-v4",
+                "repository": "https://github.com/SAP/open-ux-tools",
+                "revision": "6879d47df9097421fd98edf0800eb13c2c513aa9",
+                "repositoryPaths": [
+                    {
+                        "path": "packages/fiori-elements-writer/test/sample/music_v4/metadata.xml",
+                        "blobSha": "b5d4fac23b315b4b474ed19f85919cf2a1306ce2"
+                    }
+                ],
+                "licenseIdentifier": "Apache-2.0"
+            }
+        }
+    ]
+}

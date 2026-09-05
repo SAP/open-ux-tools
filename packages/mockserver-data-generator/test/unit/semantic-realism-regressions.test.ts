@@ -240,6 +240,53 @@ describe('semantic realism regressions', () => {
         expect(sft.generate).not.toHaveBeenCalled();
     });
 
+    it('rejects symbol-only SFT strings without counting them as accepted fills', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'symbol-only-hostile-sft',
+            generate: jest.fn(async () => ({
+                rows: [{ OpaqueText: '[{' }, { OpaqueText: 'Quarterly liquidity forecast' }]
+            }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Record': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    OpaqueText: { type: 'cds.String', length: 80 }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/records', odataVersion: '4.0' },
+                targets: [{ name: 'Record', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 31 },
+            { sft }
+        );
+
+        expect(result.resources.Record).toEqual([
+            { ID: 1, OpaqueText: 'Opaque Text 1' },
+            { ID: 2, OpaqueText: 'Quarterly liquidity forecast' }
+        ]);
+        expect(result.statistics.sft).toMatchObject({
+            eligibleSlots: 2,
+            acceptedSlots: 1,
+            assignments: [
+                expect.objectContaining({
+                    resource: 'Record',
+                    fields: [{ name: 'OpaqueText', eligibleSlots: 2, acceptedSlots: 1 }]
+                })
+            ]
+        });
+    });
+
     it('keeps numeric status values inside a compact governed domain', async () => {
         const result = await generateService(
             {

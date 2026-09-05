@@ -31,7 +31,13 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function validCandidate(property: SchemaProperty, value: unknown): value is JsonValue {
-    return propertyValueIsValid(property, value);
+    if (!propertyValueIsValid(property, value)) {
+        return false;
+    }
+    if (property.primitiveType !== 'string' || value === null || property.enumValues !== undefined) {
+        return true;
+    }
+    return typeof value === 'string' && /[\p{L}\p{N}]/u.test(value);
 }
 
 function completionStatistics(output: Awaited<ReturnType<SftGenerator['generate']>>): {

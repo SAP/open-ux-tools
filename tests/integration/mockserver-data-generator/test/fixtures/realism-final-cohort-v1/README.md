@@ -10,7 +10,9 @@ unchanged while refreezing T2 routing after governed SAP audit-user, boolean,
 organization-name, accounting-chart, equipment, short-control-code, and
 numeric-status semantics were added. `final-cohort-v4.json` again changes only
 the routing baseline after the pilot-governed plant and stock-batch roles were
-restored. Generated rows, model outputs, and human or LLM reviews must remain
+restored. `final-cohort-v5.json` changes only the SFT acceptance baseline after
+symbol-only, non-enum string candidates were rejected before deterministic
+fallback. Generated rows, model outputs, and human or LLM reviews must remain
 outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
@@ -25,12 +27,12 @@ The CSN fixture is a compiled representation of the bound CDS source. Its
 content hash, provenance, and source path are frozen in the manifest. See each
 upstream repository's `LICENSE` file for the Apache-2.0 terms.
 
-Both cohort versions are intentionally disjoint from the pilot classifier/SFT training,
+All cohort versions are intentionally disjoint from the pilot classifier/SFT training,
 validation, review, and model-selection inputs. The exporter verifies those
 inputs and recomputes the service/source-family isolation contract before model
 inference. Each manifest also freezes every service's raw T2 completion
 attempts, parsed responses, eligible slots, and accepted slots. A replay fails
 before publication when any of those denominators or contributions drift. The
-The v2, v3, and v4 routing baselines were each frozen before exporting or
+v2, v3, v4, and v5 routing baselines were each frozen before exporting or
 judging their corresponding metadata-grounded candidates; none is a relaxation
 of the parse, fill, or structural thresholds.
