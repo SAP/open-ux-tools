@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `ce2d81475039330022b721553a5d41d6f55542a8bfc7625f4882887a56439ac0`
-- archive SHA-256: `8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682`
-- archive size: 573,685 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `ffdb7d6a425616a930c522c6e72fecc1938b373c`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-ce2d814750393300.tgz`
+- dev-kit fingerprint: `d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`
+- archive SHA-256: `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`
+- archive size: 573,682 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `3af20f0d4cc0612adfbb3f5ac979337bd40410b1`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-d5cb0da4ac7c25fe.tgz`
 
 Optional retained learned-model input for the classifier/SFT canary:
 
@@ -85,9 +85,9 @@ data, prompts, or model outputs.
 ## Procedure
 
 ```bash
-KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-ce2d814750393300.tgz"
-KIT_SHA256="8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682"
-KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-ce2d814750393300"
+KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-d5cb0da4ac7c25fe.tgz"
+KIT_SHA256="67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250"
+KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-d5cb0da4ac7c25fe"
 
 node -e 'const [a,b,c]=process.versions.node.split(".").map(Number);if(a<22||(a===22&&(b<22||(b===22&&c<2))))throw Error("Node >=22.22.2 is required")'
 printf '%s  %s\n' "$KIT_SHA256" "$KIT_ARCHIVE" | sha256sum --check --strict -

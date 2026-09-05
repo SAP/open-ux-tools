@@ -16,7 +16,8 @@ verified separately against an explicitly prepared model cache.
 ## Prerequisites
 
 - Node.js 22.22.2 or newer
-- the open-ux-tools and matching open-ux-odata feature worktrees
+- the open-ux-tools worktree and either the matching open-ux-odata feature
+  worktree or its exact packed host-core and middleware archives
 - an existing generated Fiori application with package.json,
   webapp/manifest.json, and ui5.yaml or ui5-mock.yaml
 - registry access, or a complete package-manager cache when using --offline
@@ -68,6 +69,22 @@ pnpm mockserver-data-generator:dev-kit -- \
   --host-root /absolute/path/to/open-ux-odata-worktree \
   --out /absolute/path/to/output
 ```
+
+When the matching host checkout is not available, build the same kit from its
+two exact package archives:
+
+```bash
+pnpm mockserver-data-generator:dev-kit -- \
+  --host-core-tgz /absolute/path/to/sap-ux-fe-mockserver-core.tgz \
+  --host-middleware-tgz /absolute/path/to/sap-ux-ui5-middleware-fe-mockserver.tgz \
+  --host-source-commit 0123456789abcdef0123456789abcdef01234567 \
+  --out /absolute/path/to/output
+```
+
+Both archives must have been built from the stated 40-character
+`SAP/open-ux-odata` commit. The builder inspects and checksum-binds each input,
+and rejects a middleware archive whose exact host-core dependency does not
+match the supplied core version. Do not mix the checkout and archive modes.
 
 The JSON build report identifies the one exact archive by path, fingerprint,
 SHA-256, package versions, package checksums, and source cleanliness. Use

@@ -5,14 +5,14 @@ Date: 2026-09-05
 Candidate source:
 
 - reviewed generator, `--mockgen` launcher, deterministic-mode correction, and
-  compatibility evidence before this audit-only update:
-  `ffdb7d6a425616a930c522c6e72fecc1938b373c`
+  compatibility and development-kit packaging evidence before this audit-only
+  update: `3af20f0d4cc0612adfbb3f5ac979337bd40410b1`
 - reviewed minimal `SAP/open-ux-odata` host extension and API-version marker:
   `b64ee8b60519f129ad975465536204c78a15be1a`
 - current portable development-kit fingerprint:
-  `ce2d81475039330022b721553a5d41d6f55542a8bfc7625f4882887a56439ac0`
+  `d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`
 - current portable development-kit SHA-256:
-  `8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682`
+  `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`
 
 ## Verdict
 
@@ -66,7 +66,7 @@ means a measured threshold was missed by the named candidate.
 | Metadata input boundary | locally proven (compositional) | Actual MockGen package tests prove that EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing, including exact-limit and multibyte limit-plus-one cases; a separate accepted-host application test uses a contract-compatible provider that reports the same stable `METADATA_INPUT_TOO_LARGE` failure and proves privacy-safe standard fallback | Release-platform reruns |
 | Generated-result boundary | locally proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache publication; an accepted-host integration test proves an oversized provider result is not published, the application still becomes ready, and built-in mock rows are served after a privacy-safe fallback event | Release-platform reruns |
 | Development-kit application setup | locally proven | The installer wraps the generated `start-mock` command, runs separate standard and MockGen canaries, installs exact local tarballs, and restores original application files | BAS execution |
-| Local/BAS development kit | reproducible / BAS pending | The current 573,685-byte clean archive reproduced byte-for-byte twice. The preceding exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT V4 canaries locally on Node 22.22.3; the compatibility archive before it supplies fresh V2/V4/CDS coverage | Run the current fingerprinted archive in BAS |
+| Local/BAS development kit | reproducible / BAS pending | The current 573,682-byte clean archive reproduced byte-for-byte twice. The builder accepts either a matching host checkout or two inspected, checksum-bound host tarballs with an exact source-commit attestation, and rejects incomplete or version-incompatible inputs. The preceding exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT V4 canaries locally on Node 22.22.3; the compatibility archive before it supplies fresh V2/V4/CDS coverage | Run the current fingerprinted archive in BAS |
 | Package and repository boundary | proven | current generator tarball is 101,068 bytes and contains required architecture, operations, proxy, security, and pilot-parity guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; it has no production or peer dependency on the all-platform native runtime; import/construction network guards pass; the exact 10-entry development kit contains no developer or source-worktree paths | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
@@ -108,7 +108,7 @@ No pilot payload was copied or modified during this audit.
 | --- | ---: |
 | `@sap-ux/mockserver-data-generator` | 30 suites and 289 tests passed on Node 22.22.2 and Node 24.20.0; package build and zero-error lint passed on both |
 | reviewed host packages | `fe-mockserver-core`: 27 suites and 364 tests on both Node 22.22.3 and Node 24.20.0; middleware: 2 suites and 13 tests; affected builds and zero-error lint passed |
-| development-kit integration tests | 11 suites and 120 tests passed, including exact launcher dispatch, default-off persistence, CDS fallback, and final WASM-decision regressions |
+| development-kit integration tests | 11 suites and 123 tests passed on Node 22.22.2 and Node 24.20.0, including exact launcher dispatch, default-off persistence, CDS fallback, explicit host-tarball validation, and final WASM-decision regressions |
 | native runtime platform contract | the release builder produced a deterministic 30-file, 36,280,317-byte `onnxruntime-node@1.24.3` platform tree with fingerprint `e43288a91114ae6ba8b1b7d0ab95d00d50c6e7fb8a18f4ab7150c74bcf7f270a`; it imported through its copied file entry and executed a tiny ONNX graph, while both MockGen backend adapters constructed tensors, delegated session work, and released their native sessions on macOS arm64 with Node 22.22.2 and 24.20.0 |
 | retained bound model evaluation | the pre-cleanup platform-runtime report used all 233 governed classifier cases and all 16 SFT cases; output fingerprints match the prior accepted runs; the cleanup-only source change was checked with fresh learned canaries rather than relabelled as a fresh model campaign |
 | SFT evaluation | 16/16 parse and exact keys; 261/261 fields filled; p95 9,130.225 ms; peak process RSS 1,057,521,664 bytes with the platform runtime candidate |
@@ -118,7 +118,7 @@ No pilot payload was copied or modified during this audit.
 | deterministic installed closure | 3,945,496 bytes |
 | package provider module load | 1.331 ms p95 over 10 fresh processes |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
-| current clean dev kit | 573,685 bytes; fingerprint `ce2d81475039330022b721553a5d41d6f55542a8bfc7625f4882887a56439ac0`; SHA-256 `8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682`; two builds were byte-identical |
+| current clean dev kit | 573,682 bytes; fingerprint `d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`; SHA-256 `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`; two builds were byte-identical |
 | packed application canaries | The preceding exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT OData V4 canaries on Node 22.22.3; both installer restores passed. The compatibility archive before it remains the fresh V2/V4/CDS evidence. The current archive is the pending BAS candidate and is not relabelled as a completed BAS or application canary |
 | prior exact upstream full footprint | 451,328,075 / 314,572,800 bytes; only the total-footprint hard gate failed, so `footprintReady: false` |
 | current `darwin-arm64` proof | 266,453,893 / 314,572,800 bytes; every hard gate passes and `footprintReady: true` |

@@ -666,7 +666,7 @@ git diff --name-only origin/main -- packages/mockserver-config-writer
 - [ ] Add root commands `mockserver-data-generator:dev-kit` and `mockserver-data-generator:dev-install` that run with the repository's pinned Node and pnpm requirements.
 - [ ] Always run each package's clean build before `pnpm pack --json`; never trust ambient `dist`.
 - [ ] Pack `@sap-ux/mockserver-data-generator` plus the matching unpublished host core and middleware that contain the SPI.
-- [ ] Accept either `--host-root <open-ux-odata-worktree>` or explicit `--host-core-tgz` and `--host-middleware-tgz` inputs; reject an incomplete or incompatible set.
+- [x] Accept either `--host-root <open-ux-odata-worktree>` or explicit `--host-core-tgz` and `--host-middleware-tgz` inputs; reject an incomplete or incompatible set.
 - [x] Use the `@sap-ux/mockserver-config-writer` public API for standard MockGen wiring, then replace only the registry dependency and optional model paths with development-kit values.
 - [x] Prove the bundled installer has no imports back into either workspace and record its source package version, inventory, byte size, and hash.
 - [ ] Record package name, version, source repository, source commit, dirty-state flag, packed-file inventory, byte size, and SHA-256 in `dev-kit-manifest.json`.
@@ -1694,3 +1694,23 @@ a real ONNX graph. The full package remains at 30 suites/289 tests on Node
 recorded in
 `docs/quality/mockserver-data-generator-runtime-release.md`; target-platform
 execution, approval, hosting, signing, and publication remain open gates.
+
+**Explicit host-artifact development-kit increment (2026-09-05):** Commit
+`3af20f0d4` closes the remaining package-input branch in Task 6A.1. The
+development-kit builder now accepts either the matching `SAP/open-ux-odata`
+worktree or an explicit core/middleware tarball pair plus the exact source
+commit used to build them. It inspects and checksum-binds the copied archives,
+rejects incomplete modes, and requires the middleware's exact core dependency
+to equal the supplied core package version. Argument validation remains free of
+Git and filesystem side effects.
+
+The 11-suite/123-test integration package passes on Node 22.22.2 and Node
+24.20.0, together with build and zero-error lint. A real-tarball canary using
+the current host packages produced a valid 10-entry archive. The clean
+worktree-mode BAS candidate reproduced byte-for-byte twice at 573,682 bytes,
+with fingerprint
+`d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`
+and SHA-256
+`67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`.
+This is reproducibility and input-compatibility evidence, not an actual BAS
+execution result.
