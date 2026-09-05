@@ -1649,3 +1649,30 @@ the 98,334-byte package boundary. The development-kit integration package
 passes 11 suites/120 tests, build, and zero-error lint. Public model hosting,
 supported per-platform native runtime delivery, the actual BAS canary, and npm
 publication remain release work rather than completed local evidence.
+
+**Platform-runtime acquisition increment (2026-09-05):** Commit
+`6c05dc7f0558bf628edbf90538e686870d1c2c9c` completes the package side of the
+approved small-runtime design. Release-manifest format 2 binds an exact
+`onnxruntime-node` version and immutable, hashed file set to each supported
+`darwin-arm64`, `darwin-x64`, `linux-x64`, and `win32-x64` target. A flagged
+first start downloads only the current target together with missing model
+files, publishes nothing before complete verification, and makes a warm start
+network-free. The verified cache entry is loaded directly; a format-2 release
+never falls back to an application-installed all-platform runtime. Format 1 is
+retained only for the unpublished development kit.
+
+The package now has no production or peer dependency on
+`onnxruntime-node`; the exact version remains a development dependency for the
+native matrix contract. On macOS arm64, the test stages a normal
+platform-specific runtime tree, imports its copied entry in a clean child
+process, executes a real ONNX graph, and verifies the 36,783,485-byte tree is
+below the 64 MiB runtime ceiling. Downloader tests also prove that a verified
+partial current-platform runtime is reused, only its missing file is fetched,
+and an alternative platform is not contacted. The complete
+30-suite/289-test package passes on Node 22.22.3 and Node 24.20.0; the focused
+native/acquisition contracts were rerun after their final test hardening.
+Build, zero-error lint, the
+101,068-byte package boundary, changeset status, and the 11-suite/120-test
+cross-repository integration package pass. Approved hosted runtime files,
+license/SBOM/signing attestations, remote platform execution, and public model
+hosting remain release gates; this commit does not invent or publish them.
