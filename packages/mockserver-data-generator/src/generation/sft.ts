@@ -89,6 +89,34 @@ function residualFields(
     );
 }
 
+/**
+ * Resolve metadata-referenced UI field-control properties that must stay deterministic.
+ *
+ * @param entity - Canonical schema entity.
+ * @returns Referenced field-control property names owned by the deterministic tier.
+ */
+function metadataControlPropertyNames(entity: SchemaEntity): ReadonlySet<string> {
+    const propertyNames = new Set(entity.properties.map(({ name }) => name));
+    const controls = new Set<string>();
+    for (const property of entity.properties) {
+        for (const annotation of property.annotations) {
+            const term = annotation.term.toLowerCase();
+            const isV2PropertyReference = term === 'sap:field-control';
+            const isV4PropertyReference =
+                term.endsWith('.fieldcontrol') &&
+                (annotation.expressionKind === 'PropertyPath' || annotation.expressionKind === 'Path');
+            if (typeof annotation.value !== 'string' || !(isV2PropertyReference || isV4PropertyReference)) {
+                continue;
+            }
+            const referencedProperty = annotation.value.split('/').at(-1);
+            if (referencedProperty && propertyNames.has(referencedProperty)) {
+                controls.add(referencedProperty);
+            }
+        }
+    }
+    return controls;
+}
+
 async function generateWithinBudget(
     sft: SftGenerator,
     input: Parameters<SftGenerator['generate']>[0],
@@ -171,6 +199,7 @@ export async function applySftGeneration(
         const reservedProperties = new Set(structuralProperties.get(resourceName) ?? []);
         if (entity) {
             coherencePropertyNames(entity).forEach((propertyName) => reservedProperties.add(propertyName));
+            metadataControlPropertyNames(entity).forEach((propertyName) => reservedProperties.add(propertyName));
         }
         const fields = entity ? residualFields(entity, classifications, reservedProperties) : [];
         if (!entity || fields.length === 0 || fallbackRows.length === 0) {

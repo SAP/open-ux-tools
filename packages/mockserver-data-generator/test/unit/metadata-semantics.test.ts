@@ -1,4 +1,4 @@
-import { generateService, type SemanticClassifierInput } from '../../src/index.js';
+import { generateService, type SemanticClassifierInput, type SftGenerator } from '../../src/index.js';
 
 describe('metadata-grounded semantic generation', () => {
     it('uses a CAP label to resolve an opaque property without a learned runtime', async () => {
@@ -110,6 +110,152 @@ describe('metadata-grounded semantic generation', () => {
         expect(opaqueInput?.description).toBe('Primary contact email');
         expect(opaqueInput?.dataElement).toBe('AD_SMTPADR');
         expect(opaqueInput?.annotations).toContainEqual({ term: 'sap:semantics', value: 'email' });
+    });
+
+    it('keeps SAP V2 field-control properties out of the SFT business-value request', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'field-control-sft-v1',
+            generate: jest.fn(async () => ({ rows: [{ 'Name_fc': 0, OpaqueText: 'Quarterly liquidity forecast' }] }))
+        };
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+            <edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
+                <edmx:DataServices>
+                    <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm"
+                        xmlns:sap="http://www.sap.com/Protocols/SAPData" Namespace="Demo">
+                        <EntityType Name="Record">
+                            <Key><PropertyRef Name="ID" /></Key>
+                            <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                            <Property Name="Name_fc" Type="Edm.Byte" sap:label="Dyn. Field Control" />
+                            <Property Name="OpaqueText" Type="Edm.String" MaxLength="80"
+                                sap:field-control="Name_fc" />
+                        </EntityType>
+                        <EntityContainer Name="Container">
+                            <EntitySet Name="Records" EntityType="Demo.Record" />
+                        </EntityContainer>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>`;
+
+        await generateService(
+            {
+                metadata: { format: 'edmx', content: metadata },
+                service: { urlPath: '/records', odataVersion: '2.0' },
+                targets: [{ name: 'Records', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            {
+                classifier: {
+                    fingerprint: 'field-control-classifier-v1',
+                    classify: async () => ({ role: 'unknown', confidence: 0, source: 'unknown' })
+                },
+                sft
+            }
+        );
+
+        expect(sft.generate).toHaveBeenCalledWith(
+            expect.objectContaining({ fields: [expect.objectContaining({ name: 'OpaqueText' })] }),
+            expect.any(AbortSignal)
+        );
+    });
+
+    it('keeps V4 Common.FieldControl property paths out of the SFT business-value request', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'v4-field-control-sft-v1',
+            generate: jest.fn(async () => ({ rows: [{ NameControl: 0, OpaqueText: 'Liquidity forecast' }] }))
+        };
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+            <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+                <edmx:DataServices>
+                    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Demo">
+                        <EntityType Name="Record">
+                            <Key><PropertyRef Name="ID" /></Key>
+                            <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                            <Property Name="NameControl" Type="Edm.Byte" />
+                            <Property Name="OpaqueText" Type="Edm.String" MaxLength="80" />
+                        </EntityType>
+                        <Annotations Target="Demo.Record/OpaqueText">
+                            <Annotation Term="com.sap.vocabularies.Common.v1.FieldControl"
+                                PropertyPath="NameControl" />
+                        </Annotations>
+                        <EntityContainer Name="Container">
+                            <EntitySet Name="Records" EntityType="Demo.Record" />
+                        </EntityContainer>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>`;
+
+        await generateService(
+            {
+                metadata: { format: 'edmx', content: metadata },
+                service: { urlPath: '/records', odataVersion: '4.0' },
+                targets: [{ name: 'Records', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            {
+                classifier: {
+                    fingerprint: 'v4-field-control-classifier-v1',
+                    classify: async () => ({ role: 'unknown', confidence: 0, source: 'unknown' })
+                },
+                sft
+            }
+        );
+
+        expect(sft.generate).toHaveBeenCalledWith(
+            expect.objectContaining({ fields: [expect.objectContaining({ name: 'OpaqueText' })] }),
+            expect.any(AbortSignal)
+        );
+    });
+
+    it('does not treat a static V4 FieldControl enum as a property reference', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'v4-static-field-control-sft-v1',
+            generate: jest.fn(async () => ({ rows: [{ ReadOnly: 'Review', OpaqueText: 'Liquidity forecast' }] }))
+        };
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+            <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+                <edmx:DataServices>
+                    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Demo">
+                        <EntityType Name="Record">
+                            <Key><PropertyRef Name="ID" /></Key>
+                            <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                            <Property Name="ReadOnly" Type="Edm.String" MaxLength="20" />
+                            <Property Name="OpaqueText" Type="Edm.String" MaxLength="80">
+                                <Annotation Term="com.sap.vocabularies.Common.v1.FieldControl"
+                                    EnumMember="com.sap.vocabularies.Common.v1.FieldControlType/ReadOnly" />
+                            </Property>
+                        </EntityType>
+                        <EntityContainer Name="Container">
+                            <EntitySet Name="Records" EntityType="Demo.Record" />
+                        </EntityContainer>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>`;
+
+        await generateService(
+            {
+                metadata: { format: 'edmx', content: metadata },
+                service: { urlPath: '/records', odataVersion: '4.0' },
+                targets: [{ name: 'Records', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            {
+                classifier: {
+                    fingerprint: 'v4-static-field-control-classifier-v1',
+                    classify: async () => ({ role: 'unknown', confidence: 0, source: 'unknown' })
+                },
+                sft
+            }
+        );
+
+        expect(sft.generate).toHaveBeenCalledWith(
+            expect.objectContaining({
+                fields: [expect.objectContaining({ name: 'ReadOnly' }), expect.objectContaining({ name: 'OpaqueText' })]
+            }),
+            expect.any(AbortSignal)
+        );
     });
 
     it('gives an explicit semantic annotation precedence over misleading lexical metadata', async () => {

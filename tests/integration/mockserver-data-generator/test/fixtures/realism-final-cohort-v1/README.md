@@ -1,8 +1,12 @@
 # Mockserver data generator realism cohort
 
-This directory freezes the metadata-only `final-cohort-v1` input used by the
-production realism campaign. Generated rows, model outputs, and human or LLM
-reviews must remain outside the repository.
+This directory freezes the metadata-only inputs used by the production realism
+campaign. `final-cohort-v1.json` retains the original routing baseline.
+`final-cohort-v2.json` keeps the same service selection, metadata bytes,
+relationship assertions, and isolation evidence while refreezing T2 routing
+after the generator learned to consume SAP labels, data elements, and field
+control references. Generated rows, model outputs, and human or LLM reviews
+must remain outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
@@ -16,9 +20,12 @@ The CSN fixture is a compiled representation of the bound CDS source. Its
 content hash, provenance, and source path are frozen in the manifest. See each
 upstream repository's `LICENSE` file for the Apache-2.0 terms.
 
-The cohort is intentionally disjoint from the pilot classifier/SFT training,
+Both cohort versions are intentionally disjoint from the pilot classifier/SFT training,
 validation, review, and model-selection inputs. The exporter verifies those
 inputs and recomputes the service/source-family isolation contract before model
-inference. The manifest also freezes each service's raw T2 completion attempts,
-parsed responses, eligible slots, and accepted slots. A replay fails before
-publication when any of those denominators or contributions drift.
+inference. Each manifest also freezes every service's raw T2 completion
+attempts, parsed responses, eligible slots, and accepted slots. A replay fails
+before publication when any of those denominators or contributions drift. The
+v2 routing baseline was frozen before exporting or judging the corresponding
+metadata-grounded candidate; it is not a relaxation of the parse, fill, or
+structural thresholds.

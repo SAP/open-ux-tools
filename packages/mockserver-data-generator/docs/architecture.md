@@ -63,8 +63,9 @@ resolved metadata + eligible targets + read-only existing rows
 The optional classifier improves semantic routing; safe lexical and annotation
 rules cover abstentions. The optional fine-tuned generator may replace only
 eligible residual fields, and every replacement must satisfy the same property
-facets as deterministic values. Key fields, relationship fields, and
-coherence-owned fields are never delegated to SFT inference.
+facets as deterministic values. Key fields, relationship fields,
+coherence-owned fields, and properties referenced by V2 or V4 field-control
+metadata are never delegated to SFT inference.
 
 The canonical graph retains CAP labels, descriptions, data elements, and
 annotations; SAP V2 property attributes; and V4 inline or externally targeted

@@ -102,6 +102,7 @@ function parseAnnotations(value: unknown): SchemaAnnotation[] {
             const value = valueEntry ? annotation[valueEntry] : undefined;
             return {
                 term: annotation.Term as string,
+                ...(valueEntry ? { expressionKind: valueEntry } : {}),
                 ...(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
                     ? { value }
                     : {})

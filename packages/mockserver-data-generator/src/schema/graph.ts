@@ -4,6 +4,7 @@ export type PrimitiveType =
 export interface SchemaAnnotation {
     term: string;
     value?: string | number | boolean;
+    expressionKind?: string;
 }
 
 export interface SchemaProperty {
