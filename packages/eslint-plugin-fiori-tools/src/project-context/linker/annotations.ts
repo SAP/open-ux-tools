@@ -5,7 +5,6 @@ import {
     getElementAttributeValue,
     toFullyQualifiedName,
     parseIdentifier,
-    ELEMENT_TYPE,
     getElementAttribute,
     toFullyQualifiedPath,
     parsePath
@@ -411,59 +410,55 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
 }
 
 /**
- * Returns AnnotationPath property value.
+ * Returns the PropertyValue child element of a record for the given property name.
  *
- * @param record -The record element
- * @returns - Annotation path string
+ * @param record - The record element to search in
+ * @param propertyName - The value of the Property attribute to match (e.g. 'Target', 'ID', 'Facets')
+ * @returns The matching PropertyValue element, or undefined
  */
-function getTargetAnnotationPath(record: Element): string | undefined {
-    const target = record.content.find((child) => {
-        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
-            const name = getElementAttributeValue(child, Edm.Property);
-            return name === 'Target';
-        }
-        return false;
-    });
-    if (target?.type === ELEMENT_TYPE) {
-        const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
-        if (stringAttribute) {
-            return stringAttribute.value;
-        } else {
-            const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
-            if (annotationPathContent) {
-                return getElementText(annotationPathContent);
-            }
-        }
+export function getPropertyValueElement(record: Element, propertyName: string): Element | undefined {
+    return elementsWithName(Edm.PropertyValue, record).find(
+        (el) => getElementAttributeValue(el, Edm.Property) === propertyName
+    );
+}
+
+/**
+ * Returns AnnotationPath property value of the Target property in a record element.
+ * Handles both attribute form (`AnnotationPath="..."`) and child-element form (`<AnnotationPath>...</AnnotationPath>`).
+ *
+ * @param record - The record element
+ * @returns The annotation path string, or undefined if not found
+ */
+export function getTargetAnnotationPath(record: Element): string | undefined {
+    const target = getPropertyValueElement(record, 'Target');
+    if (!target) {
+        return undefined;
     }
-    return undefined;
+    const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
+    if (stringAttribute) {
+        return stringAttribute.value;
+    }
+    const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
+    return annotationPathContent ? getElementText(annotationPathContent) : undefined;
 }
 
 /**
  * Returns ID property value.
  *
  * @param record - The record element
- * @returns - String ID value
+ * @returns The string ID value, or undefined if not found
  */
 function getId(record: Element): string | undefined {
-    const id = record.content.find((child) => {
-        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
-            const name = getElementAttributeValue(child, Edm.Property);
-            return name === 'ID';
-        }
-        return false;
-    });
-    if (id?.type === ELEMENT_TYPE) {
-        const stringAttribute = getElementAttribute(id, Edm.String);
-        if (stringAttribute) {
-            return stringAttribute.value;
-        } else {
-            const idContent = findContentByName(id.content, Edm.String);
-            if (idContent) {
-                return getElementText(idContent);
-            }
-        }
+    const id = getPropertyValueElement(record, 'ID');
+    if (!id) {
+        return undefined;
     }
-    return undefined;
+    const stringAttribute = getElementAttribute(id, Edm.String);
+    if (stringAttribute) {
+        return stringAttribute.value;
+    }
+    const idContent = findContentByName(id.content, Edm.String);
+    return idContent ? getElementText(idContent) : undefined;
 }
 
 /**
