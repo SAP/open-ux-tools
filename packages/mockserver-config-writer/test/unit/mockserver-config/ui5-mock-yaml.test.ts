@@ -6,6 +6,13 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
 import { enhanceYaml } from '../../../src/mockserver-config/ui5-mock-yaml.js';
 
+type MockserverConfigWithMockgen = MockserverConfig & {
+    mockDataGenerator?: {
+        name: string;
+        options?: Record<string, unknown>;
+    };
+};
+
 describe('Test enhanceYaml()', () => {
     const basePath = join('/');
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
@@ -55,7 +62,11 @@ describe('Test enhanceYaml()', () => {
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
 
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
-        const mockserverConfig = ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        const mockserverConfig = ui5Config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver');
+        expect(mockserverConfig?.configuration.mockDataGenerator).toEqual({
+            name: '@sap-ux/mockserver-data-generator/fe-mockserver',
+            options: { locale: 'en', mode: 'auto', rowsPerEntity: 10, seed: 42 }
+        });
         expect(mockserverConfig?.configuration.services?.[0]).toStrictEqual({
             generateMockData: true,
             metadataPath: './webapp/localService/mainService/metadata.xml',
@@ -105,6 +116,43 @@ describe('Test enhanceYaml()', () => {
         const fs = getFsWithUi5MockYaml(mockManifestJson);
         await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
+    });
+
+    test('Preserve an existing custom mock data generator', async () => {
+        const fs = getFsWithUi5MockYaml(
+            mockManifestJson,
+            `      mockDataGenerator:
+        name: example/custom-provider
+        options:
+          custom: retained
+`
+        );
+
+        await enhanceYaml(fs, basePath, webappPath);
+
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        expect(
+            ui5Config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver')?.configuration
+                .mockDataGenerator
+        ).toEqual({ name: 'example/custom-provider', options: { custom: 'retained' } });
+    });
+
+    test('Remove only the MockGen provider when automatic wiring is disabled', async () => {
+        const fs = getFsWithUi5MockYaml(
+            mockManifestJson,
+            `      mockDataGenerator:
+        name: '@sap-ux/mockserver-data-generator/fe-mockserver'
+        options:
+          mode: auto
+`
+        );
+        await enhanceYaml(fs, basePath, webappPath, undefined, false);
+
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        expect(
+            ui5Config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver')?.configuration
+                .mockDataGenerator
+        ).toBeUndefined();
     });
 
     test('Update old ui5-mock.yaml with service overwrite', async () => {
@@ -205,7 +253,7 @@ describe('Test enhanceYaml()', () => {
         return fs;
     }
 
-    function getFsWithUi5MockYaml(manifestContent: string): Editor {
+    function getFsWithUi5MockYaml(manifestContent: string, mockDataGenerator = ''): Editor {
         return getFs({
             [ui5MockYamlPath]: `specVersion: '2.0'
 metadata:
@@ -217,7 +265,7 @@ server:
   - name: sap-fe-mockserver
     beforeMiddleware: fiori-tools-proxy
     configuration:
-      services:
+${mockDataGenerator}      services:
         - urlPath: /some/previous/service/uri
           metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
           mockdataRootPath: ./webapp/localService/previous-service/data

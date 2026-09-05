@@ -6,6 +6,38 @@ import type { Manifest } from '@sap-ux/project-access';
 import { DirName, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types/index.js';
 import { getODataSources } from '../app-info.js';
+import { MOCKGEN_PROVIDER } from './mockgen.js';
+
+type MockserverConfigWithMockgen = MockserverConfig & {
+    mockDataGenerator?: {
+        name: string;
+        options?: Record<string, unknown>;
+    };
+};
+
+/**
+ * Add the default MockGen provider or remove only that owned provider.
+ *
+ * @param config UI5 mockserver configuration
+ * @param enabled whether automatic MockGen wiring is enabled
+ */
+function updateMockgenProvider(config: UI5Config, enabled: boolean): void {
+    const middleware = config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver');
+    if (!middleware) {
+        throw new Error('Could not find sap-fe-mockserver');
+    }
+    const current = middleware.configuration.mockDataGenerator;
+    if (enabled && current === undefined) {
+        middleware.configuration.mockDataGenerator = {
+            name: MOCKGEN_PROVIDER,
+            options: { locale: 'en', mode: 'auto', rowsPerEntity: 10, seed: 42 }
+        };
+        config.updateCustomMiddleware(middleware);
+    } else if (!enabled && current?.name === MOCKGEN_PROVIDER) {
+        delete middleware.configuration.mockDataGenerator;
+        config.updateCustomMiddleware(middleware);
+    }
+}
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.
@@ -28,12 +60,14 @@ import { getODataSources } from '../app-info.js';
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
  * @param config - optional config passed in by consumer
+ * @param configureMockgen - whether to configure the default MockGen provider
  */
 export async function enhanceYaml(
     fs: Editor,
     basePath: string,
     webappPath: string,
-    config?: Ui5MockYamlConfig
+    config?: Ui5MockYamlConfig,
+    configureMockgen = true
 ): Promise<void> {
     const overwrite = !!config?.overwrite;
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
@@ -91,6 +125,7 @@ export async function enhanceYaml(
                   annotationsConfig
               );
     }
+    updateMockgenProvider(mockConfig, configureMockgen);
     const yaml = mockConfig.toString();
     fs.write(ui5MockYamlPath, yaml);
 }
