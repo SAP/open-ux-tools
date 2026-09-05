@@ -1,42 +1,41 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { IStyleFunction, ILabelStyles } from '@fluentui/react';
-import { Label } from '@fluentui/react';
-import type { UILabelProps } from '../../../src/components/UILabel';
-import { UILabel } from '../../../src/components/UILabel';
+import { render } from '@testing-library/react';
+import { labelGlobalStyle, UILabel } from '../../../src/components/UILabel';
+import type { ILabelStyleProps, ILabelStyles } from '@fluentui/react';
+
+// getStyles is only needed for the required ::after pseudo-element assertion,
+// which is not accessible via getComputedStyle or document.styleSheets in jsdom.
+function getStylesFn(): (props: ILabelStyleProps) => Partial<ILabelStyles> {
+    const instance = new UILabel({});
+    const jsx = instance.render() as React.ReactElement;
+    return jsx.props.styles;
+}
 
 describe('<UILabel />', () => {
-    let wrapper: Enzyme.ReactWrapper<UILabelProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UILabel>Dummy</UILabel>);
+    it('Should render a UILabel component', () => {
+        const { container } = render(<UILabel>Dummy</UILabel>);
+        expect(container.querySelectorAll('.ms-Label')).toHaveLength(1);
     });
 
-    afterEach(() => {
-        wrapper.unmount();
-    });
+    describe('Styles', () => {
+        it('default - label global styles applied', () => {
+            const styles = getStylesFn()({} as ILabelStyleProps) as ILabelStyles;
+            const root = styles.root as Array<unknown>;
+            expect(root[0]).toEqual({ marginTop: 25, ...labelGlobalStyle });
+        });
 
-    it('Should render a UIToggle component', () => {
-        expect(wrapper.find('.ms-Label').length).toEqual(1);
-    });
+        it('disabled - opacity 0.4 applied to rendered label', () => {
+            render(<UILabel disabled>Dummy</UILabel>);
+            const el = document.body.querySelector('label.ms-Label') as HTMLElement;
+            expect(window.getComputedStyle(el).opacity).toEqual('0.4');
+        });
 
-    it('Styles', () => {
-        const styles = (wrapper.find(Label).props().styles as IStyleFunction<{}, {}>)({}) as ILabelStyles;
-        expect(styles.root).toMatchInlineSnapshot(
-            {},
-            `
-            Array [
-              Object {
-                "color": "var(--vscode-input-foreground)",
-                "fontSize": "13px",
-                "fontWeight": "bold",
-                "marginTop": 25,
-                "padding": "4px 0",
-              },
-              undefined,
-              undefined,
-            ]
-        `
-        );
+        it('required - ::after indicator (pseudo-element, via getStyles)', () => {
+            const styles = getStylesFn()({ required: true } as ILabelStyleProps) as ILabelStyles;
+            const root = styles.root as Array<unknown>;
+            expect((root[2] as Record<string, unknown>)?.selectors).toMatchObject({
+                '::after': { color: 'var(--vscode-inputValidation-errorBorder)' }
+            });
+        });
     });
 });

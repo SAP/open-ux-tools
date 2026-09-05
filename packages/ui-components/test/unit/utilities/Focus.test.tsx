@@ -52,12 +52,12 @@ describe('focusToSibling', () => {
     test('Focus next from last element', () => {
         (mockGetNextElement as jest.Mock).mockReturnValue(null);
         (mockGetPreviousElement as jest.Mock).mockReturnValue(testElements.middle);
-        expect(focusToSibling(testElements.last, true)).toEqual(null);
+        expect(focusToSibling(testElements.last, true)).toBeNull();
     });
 
     test('Focus previous from first element', () => {
         (mockGetNextElement as jest.Mock).mockReturnValue(testElements.middle);
         (mockGetPreviousElement as jest.Mock).mockReturnValue(null);
-        expect(focusToSibling(testElements.first, false)).toEqual(null);
+        expect(focusToSibling(testElements.first, false)).toBeNull();
     });
 });
