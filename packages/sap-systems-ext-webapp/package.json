@@ -38,7 +38,7 @@
         "@testing-library/dom": "9.3.4",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "12.1.5",
-        "@testing-library/user-event": "14.6.1",
+        "@testing-library/user-event": "14.6.6",
         "@types/react": "16.14.69",
         "@types/react-dom": "16.9.25",
         "@types/react-redux": "7.1.34",
