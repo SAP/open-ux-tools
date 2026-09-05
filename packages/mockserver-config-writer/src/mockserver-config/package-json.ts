@@ -2,6 +2,14 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { PackageJsonMockConfig } from '../types/index.js';
+import {
+    addMockgenLauncher,
+    MOCKGEN_MODULE,
+    MOCKGEN_VERSION,
+    removeMockgenLauncher,
+    STANDARD_MOCKSERVER_MODULE,
+    supportsMockgen
+} from './mockgen.js';
 
 /**
  * Enhance the package.json with dependency for mockserver.
@@ -14,7 +22,7 @@ export function enhancePackageJson(fs: Editor, basePath: string, config?: Packag
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     enhanceDependencies(packageJson, config?.mockserverModule, config?.mockserverVersion);
-    enhanceScripts(fs, packageJson);
+    enhanceScripts(fs, packageJson, supportsMockgen(config));
     fs.writeJSON(packageJsonPath, packageJson);
 }
 
@@ -26,14 +34,15 @@ export function enhancePackageJson(fs: Editor, basePath: string, config?: Packag
  * @param mockserverModule - npm name of the mockserver module
  * @param version - npm version string
  */
-function enhanceDependencies(
-    packageJson: Package,
-    mockserverModule = '@sap-ux/ui5-middleware-fe-mockserver',
-    version = '2'
-): void {
+function enhanceDependencies(packageJson: Package, mockserverModule = STANDARD_MOCKSERVER_MODULE, version = '2'): void {
     packageJson.devDependencies = packageJson.devDependencies ?? {};
     delete packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'];
     packageJson.devDependencies[mockserverModule] = version;
+    if (mockserverModule === STANDARD_MOCKSERVER_MODULE) {
+        packageJson.devDependencies[MOCKGEN_MODULE] = MOCKGEN_VERSION;
+    } else {
+        delete packageJson.devDependencies[MOCKGEN_MODULE];
+    }
     if (isUi5CliHigherTwo(packageJson.devDependencies)) {
         removeMockserverUi5Dependencies(packageJson);
     } else {
@@ -54,13 +63,17 @@ function enhanceDependencies(
  *
  * @param fs - mem-fs reference to be used for file access
  * @param packageJson - path to package.json
+ * @param mockgenEnabled - whether the standard MockGen launcher should be present
  */
-function enhanceScripts(fs: Editor, packageJson: Package): void {
+function enhanceScripts(fs: Editor, packageJson: Package, mockgenEnabled: boolean): void {
     packageJson.scripts ||= {};
-    packageJson.scripts['start-mock'] =
+    const startMock =
         copyStartScript(packageJson.scripts.start) ??
         packageJson.scripts['start-mock'] ??
         `fiori run --config ./ui5-mock.yaml --open "/"`;
+    packageJson.scripts['start-mock'] = mockgenEnabled
+        ? addMockgenLauncher(startMock)
+        : removeMockgenLauncher(startMock);
 }
 
 /**
@@ -163,6 +176,7 @@ export function removeFromPackageJson(fs: Editor, basePath: string): void {
     }
     delete packageJson.devDependencies?.['@sap/ux-ui5-fe-mockserver-middleware'];
     delete packageJson.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver'];
+    delete packageJson.devDependencies?.[MOCKGEN_MODULE];
     if (packageJson.devDependencies && Object.keys(packageJson.devDependencies).length === 0) {
         delete packageJson.devDependencies;
     }
