@@ -274,7 +274,18 @@ function parseArguments(argv) {
     };
 }
 
-if (process.argv[1] && (await realpath(fileURLToPath(import.meta.url))) === (await realpath(process.argv[1]))) {
+async function isDirectExecution() {
+    if (!process.argv[1]) {
+        return false;
+    }
+    try {
+        return (await realpath(fileURLToPath(import.meta.url))) === (await realpath(process.argv[1]));
+    } catch {
+        return false;
+    }
+}
+
+if (await isDirectExecution()) {
     try {
         const report = await buildPlatformRuntimeArtifact(parseArguments(process.argv.slice(2)));
         process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);

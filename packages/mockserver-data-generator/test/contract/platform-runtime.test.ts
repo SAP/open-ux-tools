@@ -81,6 +81,15 @@ describe('native ONNX runtime platform contract', () => {
         await writeFile(modelPath, Buffer.from(MUL_MODEL_BASE64, 'base64'));
 
         try {
+            const originalProcessArgument = process.argv[1];
+            try {
+                process.argv[1] = '-';
+                await expect(import(`${pathToFileURL(runtimeBuilderPath).href}?non-file-argv`)).resolves.toHaveProperty(
+                    'buildPlatformRuntimeArtifact'
+                );
+            } finally {
+                process.argv[1] = originalProcessArgument;
+            }
             const builder = (await import(pathToFileURL(runtimeBuilderPath).href)) as RuntimeArtifactBuilder;
             const stagedRuntimeRoot = join(temporaryDirectory, 'staged-runtime');
             const report = await builder.buildPlatformRuntimeArtifact({
