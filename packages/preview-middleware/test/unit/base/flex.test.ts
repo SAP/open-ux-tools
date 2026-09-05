@@ -44,14 +44,16 @@ describe('flex', () => {
             byGlobMock.mockResolvedValueOnce([
                 mockChange('id1'),
                 mockChange('id2', '', 'ctrl_variant_management_change'),
-                mockChange('id3', 'manifest', 'appdescr_app_addAnnotationsToOData')
+                mockChange('id3', 'manifest', 'appdescr_app_addAnnotationsToOData'),
+                mockChange('id4', '', 'annotation_change')
             ]);
             const changes = await readChanges(project, logger);
-            expect(Object.keys(changes)).toHaveLength(3);
+            expect(Object.keys(changes)).toHaveLength(4);
             expect(changes).toEqual({
                 'sap.ui.fl.id1': { id: 'id1' },
                 'sap.ui.fl.id2': { id: 'id2' },
-                'sap.ui.fl.id3': { id: 'id3' }
+                'sap.ui.fl.id3': { id: 'id3' },
+                'sap.ui.fl.id4': { id: 'id4' }
             });
         });
 
