@@ -6,13 +6,13 @@ Candidate source:
 
 - exact realism runtime package: `817382b88f2cd88a84eb093410ad2a3a367b5505`
 - post-evidence production gate: `88e0f6b878e02cbd7e92c6de96ab23c57c5de9f0`
-- development kit source: `642720eacd5fa1f81f11c106ec0217222caa3903`
+- development kit source: `0441441e190bfab33130a4466c527239c8613648`
 - current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - development-kit `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - portable development-kit fingerprint:
-  `10cec2edfb02703255cfe7e15c2861f2250d74590a757ccb0a6847fa6229ef17`
+  `7e0fccc5a7bf528da54ae298fbb3568d8ed04b791b0b51fc962f3bb55bc58a00`
 - portable development-kit SHA-256:
-  `6e69ab62a305bc2f34adf85d2de8970a9cee4c50b267aa9f4d04cf263e239888`
+  `45d4d8537cb1ccd447ffd220aba287f138b07b71b7cd617171fcb31b11a0143d`
 
 ## Verdict
 
@@ -65,7 +65,7 @@ means a measured threshold was missed by the named candidate.
 | Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, and FE diagnostic/fallback tests pass | Repeat against the published FE package on release platforms |
 | Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or host publication | Repeat against the published FE package on release platforms |
 | Development-kit application setup | proven | one middleware, one `ui5-mock.yaml`, and the existing `start-mock`; the unpublished installer owns the local provider mutation while shared configuration packages remain unchanged | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | two clean-source builds produced the same current 549,837-byte archive byte-for-byte; it installs exact tarballs, verifies deterministic V4 through the standard Fiori mockserver, and restores the fixture byte-for-byte; its package tarballs are identical to the retained-classifier/SFT V2 canary | Run the recorded procedure, including the learned path, in an actual BAS dev space |
+| Local/BAS development kit | proven locally / platform | two clean-source builds produced the same current 549,919-byte archive byte-for-byte; its installer and three package tarballs are byte-identical to the read-only deterministic V4 and retained-classifier/SFT V2 canaries, and its generated handoff README documents the write-access boundary | Run the recorded procedure, including the learned path, in an actual BAS dev space |
 | Package boundary | proven | current source tarball is 81,861 bytes and contains required architecture, operations, and security guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |

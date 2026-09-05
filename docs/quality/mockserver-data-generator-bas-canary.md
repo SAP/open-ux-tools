@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `10cec2edfb02703255cfe7e15c2861f2250d74590a757ccb0a6847fa6229ef17`
-- archive SHA-256: `6e69ab62a305bc2f34adf85d2de8970a9cee4c50b267aa9f4d04cf263e239888`
-- archive size: 549,837 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `642720eacd5fa1f81f11c106ec0217222caa3903`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-10cec2edfb027032.tgz`
+- dev-kit fingerprint: `7e0fccc5a7bf528da54ae298fbb3568d8ed04b791b0b51fc962f3bb55bc58a00`
+- archive SHA-256: `45d4d8537cb1ccd447ffd220aba287f138b07b71b7cd617171fcb31b11a0143d`
+- archive size: 549,919 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `0441441e190bfab33130a4466c527239c8613648`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-7e0fccc5a7bf528d.tgz`
 
 This candidate includes the current classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
@@ -34,7 +34,9 @@ archive that passed the local V2 HTTP canary with classifier and SFT ready,
 1,363.187 ms runtime initialization, 2,520.021 ms whole-service generation,
 2,520.791 ms host provider time, one returned row, and byte-exact restore. Its
 updated verifier also passed a fully read-only Node 22 application canary with
-an external generated-data cache; this does not substitute for the BAS run.
+an external generated-data cache. The current archive adds generated handoff
+guidance while retaining the exact tested installer and package hashes; this
+does not substitute for the BAS run.
 
 ## Inputs to record
 
