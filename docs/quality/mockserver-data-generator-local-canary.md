@@ -974,3 +974,36 @@ and ran in Docker `linux/amd64`.
 This closes a clean emulated Linux x64 source-package check on both supported
 Node lines. It remains distinct from native Ubuntu CI, the full six-cell
 Node/OS matrix, native performance, and actual BAS execution.
+
+## Final pushed-branch archive canary
+
+The exact BAS handoff archive was rebuilt after final generator wiring and host
+lifecycle hardening, then installed from the extracted archive into a fresh
+OData V4 fixture on macOS arm64 with Node 22.22.2.
+
+- Clean pushed source commits: `SAP/open-ux-tools`
+  `04390772f75852440444a9ec076ee380e61aeaaf` and `SAP/open-ux-odata`
+  `e5179f28193cc1933344703beaedc909079dfec3`.
+- Development-kit fingerprint:
+  `9e22ef712db89875ddc5e0b3547654a2db0f3207865028dae61db8e7ba20a3c2`.
+- Archive SHA-256:
+  `a8a5041f94e63719f999dc780acfac0a6b34e949062c69f056265cfebdecc449`.
+- Archive size: 575,373 bytes; 10 entries; manifest `reproducible: true`.
+- Generator tarball: 101,068 bytes; SHA-256
+  `bb96b8172af15e29e5d871b91901d290b66e20a2304bacd81fb3f0f43bf55ec8`.
+- The standard HTTP canary returned one row with `providerExecuted: false` and
+  `standardFallbackVerified: true`. The flagged deterministic canary returned
+  one row with `providerExecuted: true`.
+- A separately staged retained 192,167,584-byte classifier/SFT cache verified
+  both components. The learned flagged canary returned one row with
+  `modelVerified: true` and `learnedRuntimeVerified: true`; runtime
+  initialization took 1,608.964 ms and whole-service generation took
+  1,646.468 ms.
+- Transactional restore returned the fixture byte-for-byte outside disposable
+  `node_modules`.
+- Handoff archive:
+  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-9e22ef712db89875.tgz`.
+
+This is the current local functional candidate and supersedes the previous kit
+for BAS testing. It does not turn the still-pending BAS, remote-platform,
+governance, public-hosting, or independent-realism gates into passes.

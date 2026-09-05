@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`
-- archive SHA-256: `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`
-- archive size: 573,682 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `3af20f0d4f7e2e42c45819ed52af33aec4beb971`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-d5cb0da4ac7c25fe.tgz`
+- dev-kit fingerprint: `9e22ef712db89875ddc5e0b3547654a2db0f3207865028dae61db8e7ba20a3c2`
+- archive SHA-256: `a8a5041f94e63719f999dc780acfac0a6b34e949062c69f056265cfebdecc449`
+- archive size: 575,373 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `04390772f75852440444a9ec076ee380e61aeaaf`; `SAP/open-ux-odata` `e5179f28193cc1933344703beaedc909079dfec3`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-9e22ef712db89875.tgz`
 
 Optional retained learned-model input for the classifier/SFT canary:
 
@@ -37,7 +37,11 @@ executable final-cohort gate. It also contains the packaged security guide,
 pre-acquisition model-cache descendant checks, HTTPS-preserving bounded
 redirects, environment-proxy routing, and an exact packed-document/link
 contract. The exact archive passed separate standard and
-retained-classifier/SFT canaries in a fresh packed OData V4 application. The
+retained-classifier/SFT canaries in a fresh packed OData V4 application on
+Node 22.22.2. Standard mode returned data without executing MockGen; flagged
+mode executed MockGen, and the learned run reported both `modelVerified: true`
+and `learnedRuntimeVerified: true`. Transactional restore returned the fixture
+byte-for-byte outside disposable `node_modules`. The
 immediately preceding compatibility archive passed the same paths in fresh
 OData V2, OData V4, and CDS-through-FE applications, including the literal
 `npm run start-mock` and `npm run start-mock -- --mockgen` workflow. The current
@@ -59,13 +63,13 @@ application-installed middleware and requires capability version 1 before
 Fiori is spawned. A plain `start-mock` performs no compatibility lookup. The
 exact archive is therefore the current BAS functional candidate.
 
-The same archive also passed a local Docker `linux/amd64` OData V4 install,
-standard/deterministic HTTP verification, retained classifier/SFT execution,
-and byte-exact transactional restore on Node 22.23.2 and Node 24.20.0. This
-proves the Linux x64 package and native learned path can execute on both
-supported Node lines, but Docker emulation does not
-replace this BAS canary or qualify BAS proxy, certificate, filesystem, and
-preview-routing behavior.
+The immediately preceding clean archive passed a local Docker `linux/amd64`
+OData V4 install, standard/deterministic HTTP verification, retained
+classifier/SFT execution, and byte-exact transactional restore on Node
+22.23.2 and Node 24.20.0. That historical run proves the Linux x64 package and
+native learned path can execute on both supported Node lines, but it is not
+relabeled as final-commit or BAS evidence. Docker emulation also does not
+qualify BAS proxy, certificate, filesystem, and preview-routing behavior.
 
 This archive also contains the production format-2 acquisition code: a future
 published package downloads only the current platform runtime together with
@@ -93,9 +97,9 @@ data, prompts, or model outputs.
 ## Procedure
 
 ```bash
-KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-d5cb0da4ac7c25fe.tgz"
-KIT_SHA256="67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250"
-KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-d5cb0da4ac7c25fe"
+KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-9e22ef712db89875.tgz"
+KIT_SHA256="a8a5041f94e63719f999dc780acfac0a6b34e949062c69f056265cfebdecc449"
+KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-9e22ef712db89875"
 
 node -e 'const [a,b,c]=process.versions.node.split(".").map(Number);if(a<22||(a===22&&(b<22||(b===22&&c<2))))throw Error("Node >=22.22.2 is required")'
 printf '%s  %s\n' "$KIT_SHA256" "$KIT_ARCHIVE" | sha256sum --check --strict -

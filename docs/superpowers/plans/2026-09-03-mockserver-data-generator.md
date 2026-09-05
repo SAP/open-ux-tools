@@ -1747,3 +1747,26 @@ and SHA-256
 `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`.
 This is reproducibility and input-compatibility evidence, not an actual BAS
 execution result.
+
+**Final hardening, push, and BAS-candidate checkpoint (2026-09-06):** The two
+approved feature branches are pushed without pull requests at Open UX Tools
+commit `04390772f75852440444a9ec076ee380e61aeaaf` and Open UX OData commit
+`e5179f28193cc1933344703beaedc909079dfec3`. Final local verification passed
+the generator's 30 suites/295 tests, the host core's 27 suites/367 tests/282
+snapshots, and the focused writer/integration suites. The package boundary
+remains 76 files and 101,068 bytes with no model weights or runtime binaries.
+
+The current 575,373-byte development kit is marked reproducible, has fingerprint
+`9e22ef712db89875ddc5e0b3547654a2db0f3207865028dae61db8e7ba20a3c2`,
+and has archive SHA-256
+`a8a5041f94e63719f999dc780acfac0a6b34e949062c69f056265cfebdecc449`.
+Its exact extracted archive passed fresh standard, deterministic `--mockgen`,
+and retained-classifier/SFT OData V4 canaries on macOS arm64 Node 22.22.2;
+standard mode did not execute the provider, while the learned flagged path
+reported both `modelVerified: true` and `learnedRuntimeVerified: true`.
+Transactional restore was byte-exact outside disposable `node_modules`.
+
+This closes the final local handoff reconciliation. Actual BAS execution,
+approved immutable model/runtime hosting, governance disposition, the native
+release-platform matrix, fresh dual-provider review, npm publication, and
+release rollback remain open and must not be inferred from the local pass.
