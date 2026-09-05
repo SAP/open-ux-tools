@@ -1,6 +1,6 @@
 # Mockserver Data Generator Design
 
-**Status:** Approved direction; zero-setup amendment pending written review
+**Status:** Approved for implementation
 
 **Date:** 2026-09-03
 
