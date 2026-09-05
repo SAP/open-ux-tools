@@ -12,7 +12,7 @@ Current clean archive candidate:
 - dev-kit fingerprint: `d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`
 - archive SHA-256: `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`
 - archive size: 573,682 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `3af20f0d4cc0612adfbb3f5ac979337bd40410b1`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
+- source commits: `SAP/open-ux-tools` `3af20f0d4f7e2e42c45819ed52af33aec4beb971`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
 - local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-d5cb0da4ac7c25fe.tgz`
 
 Optional retained learned-model input for the classifier/SFT canary:

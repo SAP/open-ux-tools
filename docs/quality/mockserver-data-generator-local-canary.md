@@ -908,3 +908,38 @@ evidence. This checkpoint binds the deterministic-reporting correction to an
 exact installable archive and proves that its learned path still executes; it
 does not replace the pending BAS, remote platform, governance, publication, or
 independent realism gates.
+
+## Explicit-host-input archive canary
+
+The Task 6A.1 host-package input correction was rebuilt from clean source and
+the exact BAS handoff archive was installed into a fresh packed OData V4
+fixture on macOS arm64 with Node 22.22.2.
+
+- Clean source commits: `SAP/open-ux-tools`
+  `3af20f0d4f7e2e42c45819ed52af33aec4beb971` and `SAP/open-ux-odata`
+  `b64ee8b60519f129ad975465536204c78a15be1a`.
+- Development-kit fingerprint:
+  `d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`.
+- Archive SHA-256:
+  `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`.
+- Archive size: 573,682 bytes; 10 entries; two clean builds were
+  byte-identical.
+- Generator tarball: 101,068 bytes; SHA-256
+  `bb96b8172af15e29e5d871b91901d290b66e20a2304bacd81fb3f0f43bf55ec8`.
+- The standard HTTP canary returned one row with `providerExecuted: false` and
+  `standardFallbackVerified: true`. The flagged deterministic canary returned
+  one row with `providerExecuted: true`; its generated-data-cache hit took
+  26.303 ms and host provider work took 27.193 ms.
+- The retained 192,167,584-byte classifier/SFT bundle was staged through the
+  archive's bundled bridge. Both components verified ready; the flagged
+  canary returned one row with `learnedRuntimeVerified: true`, initialized the
+  runtime in 1,578.541 ms, and completed whole-service generation in 1,617.978
+  ms with 1,618.824 ms of host provider work.
+- Transactional restore returned the fixture byte-for-byte outside disposable
+  `node_modules`, removed installer-owned state, and the temporary application,
+  model cache, and extracted archives were deleted after verification.
+
+This closes the exact-current-archive local application evidence gap. The
+preceding compatibility archive remains the V2/V4/CDS evidence; the current
+archive still requires execution in an actual BAS dev space and is not a
+production model, platform, or realism qualification.

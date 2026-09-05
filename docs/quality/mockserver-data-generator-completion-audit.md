@@ -6,7 +6,7 @@ Candidate source:
 
 - reviewed generator, `--mockgen` launcher, deterministic-mode correction, and
   compatibility and development-kit packaging evidence before this audit-only
-  update: `3af20f0d4cc0612adfbb3f5ac979337bd40410b1`
+  update: `3af20f0d4f7e2e42c45819ed52af33aec4beb971`
 - reviewed minimal `SAP/open-ux-odata` host extension and API-version marker:
   `b64ee8b60519f129ad975465536204c78a15be1a`
 - current portable development-kit fingerprint:
@@ -119,7 +119,7 @@ No pilot payload was copied or modified during this audit.
 | package provider module load | 1.331 ms p95 over 10 fresh processes |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | current clean dev kit | 573,682 bytes; fingerprint `d5cb0da4ac7c25fef9929238902b47e2aea492ea7278b96fcfd3614eddbd0ce2`; SHA-256 `67955d9fe14cd0c1872860c1be3e0f4b6d2e654b766e18638aa3d7931708c250`; two builds were byte-identical |
-| packed application canaries | The preceding exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT OData V4 canaries on Node 22.22.3; both installer restores passed. The compatibility archive before it remains the fresh V2/V4/CDS evidence. The current archive is the pending BAS candidate and is not relabelled as a completed BAS or application canary |
+| packed application canaries | The current exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT OData V4 canaries on Node 22.22.2; transactional restore returned the fixture byte-for-byte outside disposable `node_modules`. The preceding compatibility archive remains the fresh V2/V4/CDS evidence. The current archive is still only the pending BAS candidate and is not relabelled as a BAS pass |
 | prior exact upstream full footprint | 451,328,075 / 314,572,800 bytes; only the total-footprint hard gate failed, so `footprintReady: false` |
 | current `darwin-arm64` proof | 266,453,893 / 314,572,800 bytes; every hard gate passes and `footprintReady: true` |
 | retained pre-cleanup report fingerprints | evaluation `40e95b0bf7991cee7601aacd114de88f7746b0ab1210c0ded56d69e81e7046cb`; integration `e6bac4de3b0d355b4c7686fcc47826e93c6d7ff590414ecc1be3a9b6e50a3db3`; platform footprint `a0a8d143693126cb67da86269f503671d6107f45d0ee419471b1d33daa1d788c` |
