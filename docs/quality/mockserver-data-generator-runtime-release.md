@@ -1,7 +1,8 @@
 # Mockserver data generator platform-runtime release
 
-Status: source builder implemented and verified on macOS arm64; release
-execution, approval, hosting, and signing remain pending.
+Status: source builder implemented and verified on macOS arm64 and in a local
+Linux x64 container; native target execution, approval, hosting, and signing
+remain pending.
 
 ## Purpose
 
@@ -81,6 +82,27 @@ The local macOS arm64 proof currently emits 30 files, 36,280,317 bytes, and
 fingerprint
 `e43288a91114ae6ba8b1b7d0ab95d00d50c6e7fb8a18f4ab7150c74bcf7f270a`.
 This is implementation evidence, not an approved hosted release artifact.
+
+A separate local Docker `linux/amd64` proof installed the exact
+`onnxruntime-node@1.24.3` registry package and ran this builder inside Linux.
+The Debian 12 images were pinned during the run to image IDs
+`sha256:6e6261159fd399ebe5a3d556b7d89da9c85c873f3f270918aad6c8107da8b411`
+for Node 22.23.2 and
+`sha256:59c575db86dccc264e6b71c316548f05a5c3c7a9aa1c112dc019807e651fd06b`
+for Node 24.20.0.
+Two builds emitted byte-identical descriptors and file trees containing 30
+files and 35,625,373 bytes, with runtime fingerprint
+`38ca3f2b69edb996190c076ed9607906553851eed987bc1733051a42db2c292d`.
+The descriptor SHA-256 is
+`7e4c7e0279736f2ab164b7594d2a128197216904645c1e8ceb10bc19341d269f`.
+The copied entry executed a real ONNX multiplication graph and returned the
+expected `[1,4,9,16,25,36]` output on Node 22.23.2 and Node 24.20.0.
+
+This container proof validates the Linux x64 file selection, native addon,
+Node ABI compatibility, reproducibility, and 64 MiB runtime ceiling. Because
+it ran through amd64 container emulation on a macOS arm64 host, it is not
+native Linux performance evidence and does not qualify BAS proxy,
+certificates, filesystem behavior, acquisition, signing, or hosting.
 
 ## Publication boundary
 

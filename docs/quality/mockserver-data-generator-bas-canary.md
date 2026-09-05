@@ -59,6 +59,13 @@ application-installed middleware and requires capability version 1 before
 Fiori is spawned. A plain `start-mock` performs no compatibility lookup. The
 exact archive is therefore the current BAS functional candidate.
 
+The same archive also passed a local Docker `linux/amd64` OData V4 install,
+standard/deterministic HTTP verification, retained classifier/SFT execution,
+and byte-exact transactional restore on Node 22.23.2. This proves the Linux x64
+package and native learned path can execute, but Docker emulation does not
+replace this BAS canary or qualify BAS proxy, certificate, filesystem, and
+preview-routing behavior.
+
 This archive also contains the production format-2 acquisition code: a future
 published package downloads only the current platform runtime together with
 the classifier/SFT files and reuses its verified cache. The BAS archive itself

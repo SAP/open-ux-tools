@@ -1330,6 +1330,25 @@ HTTP canaries, and byte-exact restores. This closes only the macOS arm64 Node 24
 cell; macOS x64, Linux, Windows, BAS, proxy, and remaining filesystem cases stay
 open.
 
+**Local Linux x64 runtime record (2026-09-05):** The source-only release
+builder ran inside a Docker `linux/amd64` environment against the exact
+`onnxruntime-node@1.24.3` registry package. The Debian 12 Node 22.23.2 and Node
+24.20.0 image IDs are recorded in the runtime release procedure. Two builds
+produced byte-identical 30-file, 35,625,373-byte runtime trees with fingerprint
+`38ca3f2b69edb996190c076ed9607906553851eed987bc1733051a42db2c292d` and
+descriptor SHA-256
+`7e4c7e0279736f2ab164b7594d2a128197216904645c1e8ceb10bc19341d269f`.
+The copied runtime entry executed a real ONNX graph with exact expected output
+on Node 22.23.2 and Node 24.20.0. This closes the local Linux x64 runtime
+selection and ABI smoke. The exact current development kit also installed into
+a fresh OData V4 fixture in the Node 22.23.2 Linux x64 container: separate
+standard and deterministic HTTP canaries returned rows, the retained classifier
+and SFT verified and executed with `learnedRuntimeVerified: true`, and
+transactional restore returned the fixture byte-for-byte outside disposable
+`node_modules`. Docker amd64 emulation on macOS is not native Linux performance,
+hosted acquisition, BAS, proxy/certificate, or filesystem evidence, so the
+corresponding full platform checkbox remains open.
+
 ### Task 12.2: Perform threat modeling and dependency review
 
 **Files:**
