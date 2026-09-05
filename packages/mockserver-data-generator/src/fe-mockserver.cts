@@ -42,6 +42,7 @@ interface ProviderConfiguration {
 }
 
 interface ProviderDependencies {
+    isMockgenEnabled(): boolean;
     generateService(
         request: MockDataServiceRequest,
         options: MockDataGeneratorOptions,
@@ -61,7 +62,11 @@ interface ProviderDependencies {
     writeGeneratedDataCache(directory: string, key: string, result: MockDataGeneratorResult): Promise<void>;
 }
 
-type HostMockDataGenerationResult = Pick<MockDataGeneratorResult, 'resources' | 'diagnostics' | 'fingerprints'>;
+interface HostMockDataGenerationResult {
+    resources: MockDataGeneratorResult['resources'];
+    diagnostics?: MockDataGeneratorResult['diagnostics'];
+    fingerprints?: MockDataGeneratorResult['fingerprints'];
+}
 
 const MAX_HOST_DIAGNOSTICS = 100;
 
@@ -218,6 +223,7 @@ function parseOptions(options: ProviderOptions = {}): ProviderConfiguration {
 }
 
 const defaultDependencies: ProviderDependencies = {
+    isMockgenEnabled: () => process.env.SAP_UX_MOCKGEN_ENABLED === '1',
     generateService: async (request, options, runtime) =>
         (await import('./index.js')).generateService(request, options, runtime),
     loadRuntime: async (options, signal) => {
@@ -422,6 +428,9 @@ class FeMockserverDataGenerator {
 
     async generate(context: HostGenerationContext): Promise<HostMockDataGenerationResult> {
         if (this.disposed) throw new Error('Mock data generator provider has been disposed');
+        if (!this.dependencies.isMockgenEnabled()) {
+            return Object.freeze({ resources: Object.freeze({}) });
+        }
         const startedAt = performance.now();
         const {
             assertMetadataInputWithinLimit,

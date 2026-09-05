@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { prepareModelCache, type PrepareModelCacheOptions } from './model/downloader.js';
 import { parseModelManifest, type ModelManifest } from './model/manifest.js';
 import { defaultModelCacheRoot, verifyModelCache, type VerifiedModelCache } from './model/model-cache.js';
+import { executeStartCommand } from './start.js';
 
 type ModelCommand = 'prepare' | 'verify';
 
@@ -56,6 +57,9 @@ const PREPARE_TIMEOUT_MAXIMUM_MS = 30 * 60 * 1_000;
 
 function usage(): string {
     return [
+        'Start the existing Fiori mockserver command; append --mockgen to enable MockGen:',
+        '  mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml [fiori-options] [--mockgen]',
+        '',
         'Prepare immutable MockGen model artifacts for later local/offline use:',
         '  mockserver-data-generator prepare --manifest <manifest.json> [--cache <directory>] \\',
         '    [--mirror <https-base-url>] [--timeout-ms <milliseconds>]',
@@ -207,10 +211,22 @@ function isMainModule(): boolean {
 }
 
 if (isMainModule()) {
-    if (process.argv.includes('--help') || process.argv.includes('-h')) {
+    const argv = process.argv.slice(2);
+    if (argv.includes('--help') || argv.includes('-h')) {
         process.stdout.write(`${usage()}\n`);
+    } else if (argv[0] === 'start') {
+        executeStartCommand(argv)
+            .then((exitCode) => {
+                process.exitCode = exitCode;
+            })
+            .catch((error: unknown) => {
+                process.stderr.write(
+                    `MockGen start failed: ${error instanceof Error ? error.message : 'unknown error'}\n`
+                );
+                process.exitCode = 1;
+            });
     } else {
-        executeModelCommand(process.argv.slice(2))
+        executeModelCommand(argv)
             .then(({ exitCode, report: commandReport }) => {
                 process.stdout.write(`${JSON.stringify(commandReport, null, 2)}\n`);
                 process.exitCode = exitCode;

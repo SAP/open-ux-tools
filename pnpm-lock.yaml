@@ -3440,6 +3440,9 @@ importers:
 
   packages/mockserver-data-generator:
     dependencies:
+      cross-spawn:
+        specifier: 7.0.6
+        version: 7.0.6
       fast-xml-parser:
         specifier: 5.10.1
         version: 5.10.1
@@ -3447,6 +3450,9 @@ importers:
         specifier: 7.29.0
         version: 7.29.0
     devDependencies:
+      '@types/cross-spawn':
+        specifier: 6.0.6
+        version: 6.0.6
       onnxruntime-node:
         specifier: 1.24.3
         version: 1.24.3

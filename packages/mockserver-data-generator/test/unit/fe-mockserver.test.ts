@@ -6,6 +6,69 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 describe('standard FE mockserver provider', () => {
+    const originalActivation = process.env.SAP_UX_MOCKGEN_ENABLED;
+
+    beforeEach(() => {
+        process.env.SAP_UX_MOCKGEN_ENABLED = '1';
+    });
+
+    afterAll(() => {
+        if (originalActivation === undefined) {
+            delete process.env.SAP_UX_MOCKGEN_ENABLED;
+        } else {
+            process.env.SAP_UX_MOCKGEN_ENABLED = originalActivation;
+        }
+    });
+
+    it('does no generator work when the launcher has not enabled MockGen', async () => {
+        delete process.env.SAP_UX_MOCKGEN_ENABLED;
+        const generateService = jest.fn();
+        const loadRuntime = jest.fn();
+        const modelFingerprints = jest.fn();
+        const defaultGeneratedDataCacheRoot = jest.fn();
+        const readGeneratedDataCache = jest.fn();
+        const writeGeneratedDataCache = jest.fn();
+        const provider = new FeMockserverDataGenerator(
+            {
+                mode: 'learned',
+                modelManifestPath: '/must-not-be-read/model-manifest.json',
+                generatedDataCache: true
+            },
+            {
+                generateService,
+                loadRuntime,
+                modelFingerprints,
+                defaultGeneratedDataCacheRoot,
+                readGeneratedDataCache,
+                writeGeneratedDataCache
+            }
+        );
+        const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn() };
+
+        const result = await provider.generate({
+            contractVersion: 1,
+            service: { urlPath: '/disabled', odataVersion: '4.0' },
+            metadata: 'not metadata and deliberately invalid',
+            targets: [{ name: 'Rows', kind: 'entity-set' }],
+            existingData: {},
+            logger,
+            signal: new AbortController().signal
+        });
+
+        expect(result).toEqual({ resources: {} });
+        expect(Object.isFrozen(result)).toBe(true);
+        expect(Object.isFrozen(result.resources)).toBe(true);
+        expect(generateService).not.toHaveBeenCalled();
+        expect(loadRuntime).not.toHaveBeenCalled();
+        expect(modelFingerprints).not.toHaveBeenCalled();
+        expect(defaultGeneratedDataCacheRoot).not.toHaveBeenCalled();
+        expect(readGeneratedDataCache).not.toHaveBeenCalled();
+        expect(writeGeneratedDataCache).not.toHaveBeenCalled();
+        expect(logger.debug).not.toHaveBeenCalled();
+        expect(logger.info).not.toHaveBeenCalled();
+        expect(logger.warn).not.toHaveBeenCalled();
+    });
+
     it('rejects oversized metadata with a stable privacy-safe diagnostic before generation', async () => {
         const provider = new FeMockserverDataGenerator({ generatedDataCache: false });
         const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn() };
