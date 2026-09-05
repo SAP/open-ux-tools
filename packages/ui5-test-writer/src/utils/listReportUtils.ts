@@ -24,6 +24,8 @@ import { convert } from '@sap-ux/annotation-converter';
 import {
     extractActionMethodName,
     buildActionButtonState,
+    buildMenuActionState,
+    isMenuActionItem,
     safeCheckButtonVisibility,
     safeCheckButtonVisibilityFromMetadata
 } from './actionUtils.js';
@@ -170,10 +172,13 @@ export function getListReportFeatures(
         }
     }
 
-    // Custom (manifest-declared) toolbar actions have no OData counterpart and are matched by label.
-    // extractCustomToolBarActions filters strictly on actionType === 'Custom', so annotation-backed
-    // actions (already captured via safeCheckActionButtonStates) are never duplicated here.
-    toolBarActions = toolBarActions.concat(extractCustomToolBarActions(listReportPage.model, resolveLabel));
+    // Custom (manifest-declared) and menu (drop-down) toolbar actions have no OData counterpart in
+    // `safeCheckActionButtonStates` (which matches annotation actions by name). extractCustomToolBarActions
+    // adds custom actions (matched by label) and menu buttons with their child actions, without
+    // duplicating the annotation-backed actions already captured above.
+    toolBarActions = toolBarActions.concat(
+        extractCustomToolBarActions(listReportPage.model, resolveLabel, convertedMetadata)
+    );
 
     // Custom filter fields are matched by rendered label, so resolve unresolved i18n
     // placeholders via the property's OData `@Common.Label`.
@@ -242,26 +247,35 @@ export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
 }
 
 /**
- * Extracts custom (manifest-declared) toolbar actions from the List Report table toolbar.
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from the List Report
+ * table toolbar. Annotation-backed single actions are handled separately via the OData metadata
+ * path, so they are not emitted here.
  *
  * @param pageModel - the tree model containing the table toolbar definitions
  * @param resolveLabel - resolver for i18n placeholder labels
- * @returns array of custom toolbar action button states
+ * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
+ * @returns array of custom and menu toolbar action button states
  */
 export function extractCustomToolBarActions(
     pageModel: TreeModel,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    convertedMetadata?: ConvertedMetadata
 ): ActionButtonState[] {
     const actionAggregations = getToolBarActions(pageModel);
-    const customActions: ActionButtonState[] = [];
+    const schemaNamespace = convertedMetadata?.namespace ?? '';
+    const actions: ActionButtonState[] = [];
     for (const key of Object.keys(actionAggregations ?? {})) {
         const item = actionAggregations[key as keyof TreeAggregations] as unknown as AggregationItem;
+        if (isMenuActionItem(item)) {
+            actions.push(buildMenuActionState(item, convertedMetadata, schemaNamespace, resolveLabel));
+            continue;
+        }
         if (item?.schema?.actionType !== 'Custom') {
             continue;
         }
         const { label, unresolved } = resolveLabel(item.description);
         if (label) {
-            customActions.push({
+            actions.push({
                 label,
                 action: '',
                 visible: true,
@@ -271,7 +285,7 @@ export function extractCustomToolBarActions(
             });
         }
     }
-    return customActions;
+    return actions;
 }
 
 /**
