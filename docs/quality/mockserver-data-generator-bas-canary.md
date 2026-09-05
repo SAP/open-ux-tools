@@ -9,17 +9,18 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `e72683c87dc4ac91926d4dd9d9a82756e5615ff9e93b1210eb3a939734432a91`
-- archive SHA-256: `2c573d8ced54736639aef3dabc091e9a6ddae824fdab14ed96560637f434117d`
-- archive size: 551,068 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `4d620e0fd80814f729ac890597626596c8f93dda`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-e72683c87dc4ac91.tgz`
+- dev-kit fingerprint: `95c2b0662d3799281e72e554d3e996c49d934817dbce0140fdae0fb4030ebc35`
+- archive SHA-256: `b7b98ea55e452c3ed1256f764eb2785b10df13af3bf0ab0dc491f35775741225`
+- archive size: 553,897 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `f1e3db0e77c83b9be6a6bff0652923da26a263a3`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-95c2b0662d379928.tgz`
 
 This candidate includes the current classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
 constrained decoder, production 300-token config, generated-data cache,
 reload-cancellation recovery, transactional installer recovery, and
-repeat-install upgrade safety. It also includes fenced cross-process model-cache
+repeat-install upgrade safety and the package-checked pilot-parity disposition.
+It also includes fenced cross-process model-cache
 acquisition, late-cancellation publication protection, the 200 MiB
 preview/stable manifest ceiling, metadata-derived semantic coherence, and the
 executable final-cohort gate. It also contains the packaged security guide,
@@ -32,8 +33,8 @@ returns, unsafe assignments, default paths, consistent returns, and non-null
 assertions.
 All five cold generations, warm-cache starts, and first-use acquisitions
 passed; warm starts did not initialize model sessions. The current p95 values
-are 2,715.682 ms cold, 17.611 ms warm cache, 1,001.387 ms acquisition, and
-2,716.444 ms host provider work. Earlier clean archives remain the
+are 2,511.287 ms cold, 19.737 ms warm cache, 618.199 ms acquisition, and
+2,512.224 ms host provider work. Earlier clean archives remain the
 cross-format V2/V4/CDS and read-only evidence. The local CONNECT proxy
 regression does not substitute for an HTTPS proxy and certificate test inside
 BAS.

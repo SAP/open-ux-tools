@@ -599,7 +599,7 @@ The complete proof is retained outside the repository at
 It remains local macOS arm64 evidence and does not replace BAS, release-platform,
 governance, independent realism, or publication gates.
 
-### Current production lint-safety proof
+### Production lint-safety checkpoint
 
 Commit `4d620e0fd80814f729ac890597626596c8f93dda` promotes explicit production
 return types, safe assignments, default switch paths, consistent returns, and
@@ -658,6 +658,69 @@ with file SHA-256
 `9d988c30bffdfe6a2193548fff315a2bb8c1c7bba6e08cecdef2ec4bc45f990c`.
 The complete proof is retained outside the repository at
 `mockserver-data-generator-runtime-proof-darwin-arm64-lint-safety-4d620e0fd`.
+It remains local macOS arm64 evidence and does not replace BAS, release-platform,
+governance, independent realism, or publication gates.
+
+### Current pilot-parity proof
+
+Commit `f1e3db0e77c83b9be6a6bff0652923da26a263a3` adds the published pilot
+parity record, makes it part of the exact packed-package boundary, and verifies
+that it distinguishes preserved behavior, intentional production changes, and
+deferred or excluded scope. Runtime source remained byte-identical and the host
+source remained fixed at
+`2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`. Two clean dev-kit builds were
+byte-identical with fingerprint
+`95c2b0662d3799281e72e554d3e996c49d934817dbce0140fdae0fb4030ebc35`
+and SHA-256
+`b7b98ea55e452c3ed1256f764eb2785b10df13af3bf0ab0dc491f35775741225`.
+
+The exact 85,845-byte generator package has SHA-256
+`1586686f5b3c6e464b962444781f864863f795a2c84c5519a4306bdd11d33ba6`
+and compiled build fingerprint
+`170673efe05c45734287b2641c2997bee1a85e0d06d81b791fc63c7b1a74966f`.
+The complete evaluation and independent replay retained identical classifier
+predictions, SFT output, and byte-identical judge evidence.
+
+| Pilot-parity evaluation | Result |
+| --- | ---: |
+| Governed classifier cases | 233 |
+| Routed precision / coverage | 83.82% / 29.18% |
+| Classifier latency p95 | 1.388 ms |
+| SFT parse / exact-key cases | 16/16 / 16/16 |
+| SFT requested fields filled | 261/261 |
+| SFT p50 / p95 | 1,279.895 / 8,215.569 ms |
+| Peak process RSS | 1,410,744,320 bytes |
+| Classifier prediction fingerprint | `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7` |
+| SFT output fingerprint | `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3` |
+| SFT evidence SHA-256 | `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` |
+
+The evaluation report fingerprint is
+`8e43270659e7580f8b293fc0497f67b1db63ec9e587a07d7cfcc575b053c43fe`
+with file SHA-256
+`a307e6c8209a78e90c8183dd10b49221ed59c1275a8d67426b7a05a1ba3a34a5`.
+The replay file SHA-256 is
+`6646d26c26bc75bf1dcd61cd04de8d85ce0e82069704d905f9493bdaa73c8b1b`.
+
+| Pilot-parity integrated measurement | p50 | p95 | Threshold | Status |
+| --- | ---: | ---: | ---: | --- |
+| Cold whole-service generation | 1,972.141 ms | 2,511.287 ms | 25,000 ms | pass |
+| Warm generated-data-cache startup | 18.911 ms | 19.737 ms | 200 ms | pass |
+| First-use acquisition of 192,167,584 bytes | 494.434 ms | 618.199 ms | 30,000 ms | pass |
+| End-to-end host provider | 1,972.918 ms | 2,512.224 ms | 60,000 ms | pass |
+
+Every warm sample avoided model initialization. The integration fingerprint is
+`75c4edcdd344bc17031b23d229018558dd3fcec5a9d647b7cf73017b1e88c1cf`
+with file SHA-256
+`b07ceaa90d0ffeca5c65c8b4cfc69250f4b78e37b53d32ccb85de7327de3ca9e`.
+
+The enforced footprint is 266,375,866 bytes, leaving 48,196,934 bytes below
+the 300 MiB ceiling. Every required gate passes; the generator-halving target
+remains a separately reported non-blocking miss. The footprint fingerprint is
+`b29f0034b97de07ed520820c72d30ef5a9c28ca87dd558d4c825ece706050fa4`
+with file SHA-256
+`fd1316b32337e3fd62c97ebe9b7bbbdabefed068aa63f1f19e9cf5a2e4c95251`.
+The complete proof is retained outside the repository at
+`mockserver-data-generator-runtime-proof-darwin-arm64-pilot-parity-f1e3db0e7`.
 It remains local macOS arm64 evidence and does not replace BAS, release-platform,
 governance, independent realism, or publication gates.
 
