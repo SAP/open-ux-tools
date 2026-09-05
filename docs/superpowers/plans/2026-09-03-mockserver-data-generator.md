@@ -505,7 +505,24 @@ pnpm --filter @sap-ux/mockserver-data-generator pack --pack-destination ./test-o
 
 ## Phase 5 — Integrate the provider with the standard FE mockserver
 
-**Outcome:** A packed `@sap-ux/mockserver-data-generator` is loaded by one standard `sap-fe-mockserver` and supplies only missing entity sets.
+**Outcome:** A packed `@sap-ux/mockserver-data-generator` is loaded by one standard `sap-fe-mockserver`; the standard generator remains the default and `npm run start-mock -- --mockgen` opts into MockGen for missing entity sets.
+
+### Task 5.0: Add the flag-gated `start-mock` launcher
+
+**Files:**
+
+- Create: `packages/mockserver-data-generator/src/start.ts`
+- Create: `packages/mockserver-data-generator/test/unit/start.test.ts`
+- Modify: `packages/mockserver-data-generator/src/cli.ts`
+- Modify: `packages/mockserver-data-generator/package.json`
+- Modify: `pnpm-lock.yaml`
+
+- [ ] Write failing parser tests for `start -- <command>`, an optional exact `--mockgen` in the child arguments, a missing `--`, a missing child command, and duplicate `--mockgen` flags.
+- [ ] Run `pnpm --filter @sap-ux/mockserver-data-generator test -- start.test.ts` and confirm the tests fail because the launcher does not exist.
+- [ ] Implement a focused parser that removes only `--mockgen`, preserves the original child argument order byte-for-byte, and produces the child environment with `SAP_UX_MOCKGEN_ENABLED=1` when enabled and `SAP_UX_MOCKGEN_ENABLED=0` otherwise.
+- [ ] Write failing lifecycle tests using an injected child-process adapter for inherited stdio, shell-free spawning, child exit-code propagation, startup errors, and forwarding `SIGINT`, `SIGTERM`, and `SIGHUP`.
+- [ ] Add `cross-spawn@7.0.6` plus its existing repository type package, implement the minimum launcher lifecycle, and dispatch `start` separately from the existing `prepare` and `verify` commands.
+- [ ] Run the focused CLI/launcher tests, then the whole package suite, and commit only the launcher files and lockfile delta.
 
 ### Task 5.1: Implement the `/fe-mockserver` provider export
 
@@ -519,6 +536,8 @@ pnpm --filter @sap-ux/mockserver-data-generator pack --pack-destination ./test-o
 - Modify: `packages/mockserver-data-generator/package.json`
 
 - [ ] Write a failing structural contract test against the host's published SPI types.
+- [ ] Write a failing inactive-provider test that injects activation `false`, expects exactly `{ resources: {} }`, and proves metadata parsing, generated-data cache access, runtime/model loading, network access, generation, and logging are untouched.
+- [ ] Inject a small activation predicate whose production default reads only `SAP_UX_MOCKGEN_ENABLED === '1'`; check it before the dynamic generator import or any metadata/cache/model work.
 - [ ] Translate raw host metadata, existing-data context, cancellation, and logger into `generateService` without importing host internals.
 - [ ] Return immutable rows and safe diagnostics.
 - [ ] Provide `dispose()` for model sessions and in-flight work.
@@ -563,7 +582,7 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 - [ ] Fail with a clear configuration diagnostic on an older host; the standard mockserver itself must still be startable after the user removes the unsupported provider option.
 - [ ] Document the release-order constraint.
 
-**Phase exit gate:** Clean packed V2, V4, and CDS applications start with `npm run start-mock`, preserve user data, and fall back safely without a model.
+**Phase exit gate:** Clean packed V2, V4, and CDS applications prove both commands: `npm run start-mock` uses standard generation with no MockGen work, while `npm run start-mock -- --mockgen` uses the provider for missing data. Both preserve authored data and fall back safely when learned components are unavailable.
 
 ## Phase 6 — Guard the shared-package boundary
 
@@ -652,7 +671,8 @@ fnm exec --using=22.22.3 -- corepack pnpm mockserver-data-generator:dev-kit \
 - [ ] Copy the verified tarballs into `<app>/.mockserver-data-generator-dev/packages` before changing dependencies so all saved `file:` specifications remain valid after the source checkout or dev-kit archive moves.
 - [ ] Configure only the existing `sap-fe-mockserver` by calling the bundled/local config-writer code. Do not call a registry `npx`, introduce another middleware, add the generator to legacy `ui5.dependencies`, or create `ui5-mockgen.yaml`/`start-mockgen`.
 - [ ] Add the generator, matching host core, and middleware tarballs as application-local `file:` development dependencies in one awaited package-manager operation; propagate a nonzero install result.
-- [ ] Preserve existing scripts, services, mock paths, and hand-authored data, and keep the existing `start-mock` command.
+- [ ] Preserve existing services, mock paths, hand-authored data, and the single existing `start-mock` script. Replace only a supported simple Fiori command `X` with `mockserver-data-generator start -- X`; reject shell operators, environment assignments, command substitution, an already unrelated wrapper, or a missing/ambiguous `start-mock` rather than rewriting it.
+- [ ] Make the launcher rewrite idempotent and record the exact original script in the existing recovery journal so `--restore` returns it byte-for-byte.
 - [ ] Atomically write a recovery journal with original content and pre-install hashes before the first application edit; append expected/post-install hashes and package-manager state as each step completes.
 - [ ] Implement `--dry-run` without filesystem or package-manager writes.
 - [ ] Make repeat installation idempotent while allowing a newly packed build to replace the prior dev artifact and lockfile resolution.
@@ -676,7 +696,8 @@ fnm exec --using=22.22.3 -- corepack pnpm mockserver-data-generator:dev-kit \
 - [ ] Run the application's local UI5 CLI tree inspection against `ui5-mock.yaml` and require exactly one `sap-fe-mockserver`.
 - [ ] Require no generator entry in `package.json.ui5.dependencies`, no second mock YAML, and no `start-mockgen` script.
 - [ ] For `--verify`, choose a free loopback port, resolve the application-local Fiori/UI5 executable, and run the equivalent `fiori run --config ui5-mock.yaml` command headlessly without the script's common `--open` argument. Wait with a bounded timeout, request `$metadata` and the first discoverable entity set, record structured diagnostics, and always terminate the process tree.
-- [ ] Separately prove the existing `start-mock` script is unchanged and targets `ui5-mock.yaml`; do not blindly execute arbitrary application script contents during verification.
+- [ ] Prove the application retains exactly one `start-mock` script, that its original Fiori command and arguments are preserved behind the launcher, and that it still targets `ui5-mock.yaml`; do not blindly execute arbitrary application script contents during verification.
+- [ ] Run two canaries from the parsed child command: one with `SAP_UX_MOCKGEN_ENABLED=0` and one with `SAP_UX_MOCKGEN_ENABLED=1`. The disabled canary must show standard generated rows and no provider-generation evidence; the enabled canary must show provider rows or a recorded safe degradation reason.
 - [ ] Keep startup opt-in: normal setup exits after configuration, `--verify` runs and stops a canary, and `--start` intentionally leaves the foreground server to the developer.
 - [ ] Cover applications with and without prior mockserver configuration, OData V2, OData V4, CDS-through-FE, existing mock-file precedence, absent/corrupt model fallback, reinstall of a newer local tarball, interrupted install, and paths containing spaces.
 - [ ] Prove the standard mockserver still starts when the learned provider is unavailable and distinguish `installed`, `integrationVerified`, and `realismReady` in the summary.
@@ -696,7 +717,7 @@ fnm exec --using=22.22.3 -- corepack pnpm mockserver-data-generator:dev-kit \
 - [ ] Document that the kit is portable but not inherently air-gapped: non-local transitive dependencies still require the application's package-manager cache or registry access.
 - [ ] Support `--offline` as an explicit preflight that fails before edits when the complete dependency closure is unavailable locally.
 - [ ] Run at least one actual BAS canary because local Linux cannot prove BAS proxy, certificate, filesystem, preview routing, or runtime behavior.
-- [ ] In BAS, extract beneath a stable tools directory, run the bundled installer against the generated application, execute `--verify`, optionally run `--prepare-model` for a Phase 7-qualified and distributable kit, and finally use the unchanged `npm run start-mock` command.
+- [ ] In BAS, extract beneath a stable tools directory, run the bundled installer against the generated application, execute `--verify`, optionally run `--prepare-model` for a Phase 7-qualified and distributable kit, and finally prove both `npm run start-mock` and `npm run start-mock -- --mockgen`.
 - [ ] Record BAS image/runtime, app fixture fingerprint, dev-kit hash, package resolutions, model state, endpoint results, and cleanup/restore result without storing credentials or application data.
 
 **BAS example:**
@@ -715,6 +736,7 @@ tar --extract --gzip --file "$DEV_KIT_ARCHIVE" \
 node "$DEV_KIT_DIR/setup-local-fiori-app.mjs" \
     --app "$PWD" --verify
 npm run start-mock
+npm run start-mock -- --mockgen
 ```
 
 **Verification:**
@@ -1389,12 +1411,13 @@ contact. Actual npm publication remains part of Task 13.1.
 - [ ] Mark the pilot read-only only after stable users can install and run the production path.
 - [ ] Preserve its governed evidence and rejected experiments; do not delete the pilot or its only artifact copies.
 
-**Final exit gate:** The standard mockserver starts through the existing command, produces realistic and structurally valid missing data, preserves hand-authored data, survives all optional-model failures, stays within release budgets, passes fresh fingerprint-bound realism evaluation, and has a tested rollback path.
+**Final exit gate:** The standard mockserver starts through the existing command with standard generation by default; the same command plus `--mockgen` produces realistic and structurally valid missing data, preserves hand-authored data, survives all optional-model failures, stays within release budgets, passes fresh fingerprint-bound realism evaluation, and has a tested rollback path.
 
 ## Definition of done
 
 - [ ] No production package or documentation uses `@mockgen/*`, `start-mockgen`, or `ui5-mockgen.yaml`.
 - [ ] Only `sap-fe-mockserver` serves FE mock data.
+- [ ] `npm run start-mock` is behaviorally standard and performs no MockGen generation, model, cache, or network work; `npm run start-mock -- --mockgen` is the sole supported runtime opt-in.
 - [ ] `@sap-ux/mockserver-data-generator` and the host SPI have published compatibility tests.
 - [ ] OData V2, OData V4, and CDS-through-FE fixtures pass.
 - [ ] Existing mock files always win and remain unchanged.

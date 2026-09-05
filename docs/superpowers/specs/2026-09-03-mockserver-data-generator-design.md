@@ -1,6 +1,6 @@
 # Mockserver Data Generator Design
 
-**Status:** Draft for architecture review
+**Status:** Approved for implementation
 
 **Date:** 2026-09-03
 
@@ -28,6 +28,8 @@ all model-management code remain owned by `SAP/open-ux-tools`.
 
 - Generate realistic, structurally valid mock data for SAP Fiori applications
   from metadata alone.
+- Keep standard mockserver behavior as the default and enable MockGen only when
+  the user appends `--mockgen` to the existing `start-mock` npm script.
 - Support OData V2 EDMX, OData V4 EDMX, and CAP metadata used through the FE
   mockserver CDS metadata processor.
 - Preserve existing hand-authored JS, TS, and JSON mock data.
@@ -72,11 +74,39 @@ all model-management code remain owned by `SAP/open-ux-tools`.
 
 ## Public package and configuration
 
-The user installs one opt-in package and continues to run the existing command:
+The user installs one opt-in package and keeps one `start-mock` script. Normal
+startup remains the standard mockserver path:
 
 ```text
 npm run start-mock
 ```
+
+MockGen is enabled for one process by appending the explicit flag after npm's
+argument separator:
+
+```text
+npm run start-mock -- --mockgen
+```
+
+The installer wraps the application's existing simple Fiori command without
+copying or replacing it. For example:
+
+```json
+{
+  "scripts": {
+    "start-mock": "mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open test/flpSandbox.html"
+  }
+}
+```
+
+The launcher accepts `start -- <command> [arguments...]`, consumes exactly one
+optional `--mockgen` argument from the child-command arguments, and never passes
+that private option to the Fiori CLI. It always overwrites the internal child
+environment marker: `1` when the flag is present and `0` otherwise. It spawns
+the original command without a shell, inherits standard I/O, forwards
+termination signals, and returns the child's exit status. Missing child
+commands, duplicate flags, or unsupported complex shell scripts fail with a
+clear diagnostic instead of being guessed or rewritten.
 
 The standard middleware remains the only UI5 middleware:
 
@@ -88,7 +118,7 @@ The standard middleware remains the only UI5 middleware:
     mockDataGenerator:
       name: "@sap-ux/mockserver-data-generator/fe-mockserver"
       options:
-        rowCount: 10
+        rowsPerEntity: 10
         seed: 42
         locale: en
     services:
@@ -109,6 +139,15 @@ mockDataGenerator:
 Model revisions and file hashes are release-owned and pinned in the package's
 model manifest. Normal application configuration does not use a mutable model
 name such as `latest`.
+
+The provider reads the launcher-owned activation marker at generation time. If
+the marker is not `1`, it immediately returns an empty resource map before
+metadata parsing, cache access, model loading, network access, or generation.
+The generic host then follows its existing per-resource precedence and uses the
+built-in generator when `generateMockData` is enabled. If the marker is `1`,
+the provider runs the classifier and SFT-capable generation path. Authored
+JS/TS/JSON data remains authoritative in both modes, and any active-provider
+failure degrades to the standard generator.
 
 ## Host SPI
 
@@ -275,10 +314,11 @@ archive containing the generator, host core and middleware tarballs, a bundled
 development-only configuration installer, an integrity manifest, and BAS
 instructions. The installer uses the unchanged public
 `@sap-ux/mockserver-config-writer` API for the standard mockserver setup, then
-adds only the local MockGen dependency and provider block. It is fingerprinted
-and has no imports back into either source worktree. It does not require changes
-to shared configuration packages, include model weights, or carry
-platform-specific `node_modules`.
+adds only the local MockGen dependency, provider block, and reversible launcher
+prefix around the existing simple `start-mock` command. It is fingerprinted and
+has no imports back into either source worktree. It does not require changes to
+shared configuration packages, include model weights, or carry platform-specific
+`node_modules`.
 
 The installer requires an explicit existing Fiori application path and validates
 `package.json`, `webapp/manifest.json`, UI5 configuration, Node version, package
@@ -303,10 +343,12 @@ Changes to `package.json`, the lockfile, and `ui5-mock.yaml` remain visible for
 review.
 
 `--verify` checks that there is exactly one `sap-fe-mockserver`, no generator in
-the legacy `ui5.dependencies` allow-list, and only the existing `start-mock`
+the legacy `ui5.dependencies` allow-list, and only the wrapped `start-mock`
 script. It then invokes the equivalent application-local Fiori/UI5 command
-headlessly on a free loopback port, requests `$metadata` and one entity set,
-captures generator fingerprints and degradation state, and terminates the
+headlessly on a free loopback port twice: once with MockGen disabled to prove
+the standard path, and once with the same internal activation marker used by
+`--mockgen` to prove provider generation. It requests `$metadata` and one entity
+set, captures generator fingerprints and degradation state, and terminates each
 process. It does not execute a `start-mock` script that may contain `--open`.
 Normal setup does not leave a server running; `--start` is explicit.
 
