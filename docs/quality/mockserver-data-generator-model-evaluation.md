@@ -770,6 +770,51 @@ the model or accepting the observed WASM regression, but it must become a
 supported upstream package or a separately maintained, licensed artifact with
 the same compatibility and integrity tests.
 
+## Constrained-decoding candidate rebind
+
+Clean package commit
+`2279579bdb49c7f3b04b7055dbeb5650528b0602` adds grammar-level prevention of
+punctuation-only SFT string values while retaining post-generation validation as
+defense in depth. The fixed pilot classifier and INT8 SFT artifacts were
+evaluated twice from isolated processes on Node 22.22.2, ONNX Runtime 1.24.3,
+and macOS arm64. Both runs used all 233 governed classifier cases and all 16
+held-out SFT cases.
+
+| Measurement | First run | Replay |
+| --- | ---: | ---: |
+| Classifier routed precision / coverage | 83.82% / 29.18% | 83.82% / 29.18% |
+| Classifier p95 | 1.647 ms | 1.067 ms |
+| SFT parse / exact-key cases | 16/16 / 16/16 | 16/16 / 16/16 |
+| SFT requested fields filled | 261/261 | 261/261 |
+| SFT p50 / p95 | 1,305.479 / 9,021.685 ms | 1,315.371 / 9,032.962 ms |
+| Peak process RSS | 1,412,153,344 bytes | 1,395,179,520 bytes |
+
+The classifier prediction fingerprint was
+`996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7`
+in both runs. The SFT output fingerprint was
+`f5ed3d1895f1455a5cb314bb338a31e5698c7d6628cdccc6356be966dcb8dd3f`
+in both runs, and the external SFT evidence files were byte-identical with
+SHA-256
+`39c04a75f3f3c594cfbc6638d88990263a0fc7ea9cadabbae9b4f4966f1cfa5e`.
+The two aggregate report fingerprints differ because timing and memory samples
+are deliberately included; their file SHA-256 values are
+`77c4df6034be88880576eb16583d76c5b7a5deb6fbb957f1462b787c3e42188b`
+and
+`b564902b74df6b4f39c07186015b124a552ae238e1add461ba003e66110b0c36`.
+
+A package-only footprint measurement from the same clean commit packed the npm
+archive to 90,623 bytes, measured a 3,886,971-byte deterministic installation,
+and recorded a 1.205 ms provider module-load p95. The archive SHA-256 is
+`1ae0a71baea3d8d72d2db333ca236e36137ff46702d6ed90f0294c8b8f361937`;
+the footprint report fingerprint is
+`64127f6d7d3a3133751e8455cfaa3c033e0f0f707a3cc4eeb3b1c26fc6b3411d`
+and its file SHA-256 is
+`120c2b9be6f0c4da763939b19f3b24157e390e7a02b8febe428ee9568823e4a7`.
+That report correctly leaves `footprintReady` false: model acquisition,
+installed learned-runtime closure, whole-service generation, warm-cache startup,
+and host integration were not measured in this rebind. Historical integrated
+measurements do not substitute for evidence bound to this changed generator.
+
 ## Realism status
 
 The existing two-provider pilot report remains useful historical evidence: 60 fields across six domains were reviewed, 16 were rated realistic (26.67%), 10 provider disagreements were recorded, no critical issues were found, and the report failed its gate. It is not silently promoted or discarded.
