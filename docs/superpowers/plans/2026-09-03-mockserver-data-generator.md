@@ -618,26 +618,27 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 
 **Phase exit gate:** Clean packed V2, V4, and CDS applications prove both commands: `npm run start-mock` uses standard generation with no MockGen work, while `npm run start-mock -- --mockgen` uses the provider for missing data. Both preserve authored data and fall back safely when learned components are unavailable.
 
-## Phase 6 — Guard the shared-package boundary
+## Phase 6 — Guard the narrow shared-package boundary
 
-**Outcome:** MockGen remains isolated from unrelated UI5 configuration, creation, and MCP packages.
+**Outcome:** MockGen production bootstrapping is isolated to the existing mockserver config writer; unrelated UI5 configuration, creation, and MCP packages remain unchanged.
 
 ### Task 6.1: Keep shared packages unchanged
 
 - [x] Keep `packages/ui5-config` byte-identical to `origin/main`.
-- [x] Keep `packages/mockserver-config-writer` byte-identical to `origin/main`.
+- [x] Limit `packages/mockserver-config-writer` to the approved direct dependency, provider, launcher, and removal lifecycle.
 - [x] Keep `packages/create` byte-identical to `origin/main`.
 - [x] Keep `packages/fiori-mcp-server` byte-identical to `origin/main`.
-- [x] Do not add MockGen changesets for those packages.
-- [x] Put unpublished local/BAS opt-in behavior in the MockGen development-kit script.
+- [x] Add a MockGen changeset only for `packages/mockserver-config-writer`.
+- [x] Keep unpublished local/BAS package and model-path overrides in the MockGen development-kit script.
 
 **Verification:**
 
 ```bash
-git diff --exit-code origin/main -- packages/ui5-config packages/mockserver-config-writer packages/create packages/fiori-mcp-server
+git diff --exit-code origin/main -- packages/ui5-config packages/create packages/fiori-mcp-server
+git diff --name-only origin/main -- packages/mockserver-config-writer
 ```
 
-**Phase exit gate:** The four shared package trees have no MockGen diff, while the development kit still installs and verifies the provider in an existing Fiori application.
+**Phase exit gate:** Only the mockserver config writer has the approved production-bootstrap diff, the three unrelated package trees remain unchanged, and the development kit still installs and verifies unpublished artifacts in an existing Fiori application.
 
 ## Phase 6A — Build the local and BAS developer test kit
 
@@ -664,7 +665,7 @@ git diff --exit-code origin/main -- packages/ui5-config packages/mockserver-conf
 - [ ] Always run each package's clean build before `pnpm pack --json`; never trust ambient `dist`.
 - [ ] Pack `@sap-ux/mockserver-data-generator` plus the matching unpublished host core and middleware that contain the SPI.
 - [ ] Accept either `--host-root <open-ux-odata-worktree>` or explicit `--host-core-tgz` and `--host-middleware-tgz` inputs; reject an incomplete or incompatible set.
-- [x] Use the unchanged `@sap-ux/mockserver-config-writer` public API for standard mockserver setup, then add only the development-kit generator dependency and provider block locally.
+- [x] Use the `@sap-ux/mockserver-config-writer` public API for standard MockGen wiring, then replace only the registry dependency and optional model paths with development-kit values.
 - [x] Prove the bundled installer has no imports back into either workspace and record its source package version, inventory, byte size, and hash.
 - [ ] Record package name, version, source repository, source commit, dirty-state flag, packed-file inventory, byte size, and SHA-256 in `dev-kit-manifest.json`.
 - [ ] Allow intentional dirty development trees but label the kit non-reproducible; add `--require-clean` for a shareable BAS canary or review artifact.
@@ -1491,6 +1492,17 @@ contact. Actual npm publication remains part of Task 13.1.
 Implement the deterministic, classifier, and SFT paths test-first using the existing pilot as the behavioral and evidence baseline. Use the packed development kit continuously for manual local and BAS canaries. Standard pull-request review precedes merge, and model provenance plus hosted-artifact checks precede publication; neither is an unresolved architecture question. Request code review at every repository boundary and before each preview/stable publication.
 
 ## Reviewed implementation checkpoint (2026-09-05)
+
+**Zero-setup app-wiring amendment:** The manager-approved production flow
+supersedes the earlier requirement that `packages/mockserver-config-writer`
+remain byte-identical. The writer is now the narrow bootstrap owner: it adds the
+lightweight npm dependency, the inactive provider block, and the launcher while
+preserving standard unflagged startup. The focused implementation and
+verification steps are tracked in
+`docs/superpowers/plans/2026-09-05-mockgen-zero-setup-app-wiring.md`. Automatic
+first-use acquisition of the approved model and native runtime remains the next
+production implementation slice; it is not part of the application wiring
+change.
 
 The approved runtime behavior is implemented on clean candidate commits
 `59a448414c9e601a42a3d18a23bc1c892dc0894f` in `SAP/open-ux-tools` and

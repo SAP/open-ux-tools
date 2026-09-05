@@ -17,8 +17,8 @@ export function wrapStartMockScript(script) {
 
 /**
  * Configure the existing standard mockserver through its public config writer,
- * then add the development-only MockGen dependency and provider block locally.
- * Shared configuration packages do not need MockGen-specific changes.
+ * then replace its production MockGen defaults with the unpublished local
+ * package and optional development-only model paths.
  *
  * @param {object} options configuration options
  * @param {string} options.appRoot application root

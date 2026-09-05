@@ -55,7 +55,7 @@ acquisition are implemented in the separate managed-artifacts track.
 - Modify: `packages/mockserver-config-writer/src/mockserver-config/package-json.ts`
 - Test: `packages/mockserver-config-writer/test/unit/mockserver-config/package-json.test.ts`
 
-- [ ] **Step 1: Write failing default-wiring tests**
+- [x] **Step 1: Write failing default-wiring tests**
 
 Add assertions that default configuration produces exactly these relevant
 fields:
@@ -74,25 +74,25 @@ expect(packageJson.ui5?.dependencies).toEqual(['@sap-ux/ui5-middleware-fe-mockse
 Add a second call to `enhancePackageJson` and assert that the launcher prefix
 occurs once.
 
-- [ ] **Step 2: Write failing custom-module and removal tests**
+- [x] **Step 2: Write failing custom-module and removal tests**
 
 For `{ mockserverModule: 'dummy-mockserver', mockserverVersion: '1.2.3' }`,
 assert that no MockGen dependency or launcher is added. Extend the removal
 fixture with `@sap-ux/mockserver-data-generator` and a wrapped command, then
 assert both are removed with the standard mockserver configuration.
 
-- [ ] **Step 3: Run the focused test and verify RED**
+- [x] **Step 3: Run the focused test and verify RED**
 
 Run:
 
 ```bash
-pnpm --filter @sap-ux/mockserver-config-writer test -- \
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer test \
   --runTestsByPath test/unit/mockserver-config/package-json.test.ts
 ```
 
 Expected: FAIL because the generator dependency and launcher are absent.
 
-- [ ] **Step 4: Add shared MockGen wiring constants**
+- [x] **Step 4: Add shared MockGen wiring constants**
 
 Create `mockgen.ts` with these exports:
 
@@ -111,7 +111,7 @@ export function supportsMockgen(config?: PackageJsonMockConfig): boolean {
 }
 ```
 
-- [ ] **Step 5: Implement the minimal package mutation**
+- [x] **Step 5: Implement the minimal package mutation**
 
 Import the constants and use `supportsMockgen(config)` once in
 `enhancePackageJson`. For eligible apps, add `MOCKGEN_MODULE` only to
@@ -134,12 +134,12 @@ When a custom mockserver module is selected, delete only `MOCKGEN_MODULE` and
 remove only the exact MockGen prefix. Extend `removeFromPackageJson` to delete
 the direct generator dependency before the existing empty-object cleanup.
 
-- [ ] **Step 6: Run tests and verify GREEN**
+- [x] **Step 6: Run tests and verify GREEN**
 
 Run the command from Step 3. Expected: all package-json tests PASS with no
 warnings.
 
-- [ ] **Step 7: Commit the first TDD slice**
+- [x] **Step 7: Commit the first TDD slice**
 
 ```bash
 git add packages/mockserver-config-writer/src/mockserver-config/mockgen.ts \
@@ -157,7 +157,7 @@ git commit -m "feat(mockserver-config-writer): add MockGen launcher"
 - Test snapshots:
   `packages/mockserver-config-writer/test/unit/mockserver-config/__snapshots__/ui5-mock-yaml.test.ts.snap`
 
-- [ ] **Step 1: Write the failing provider test**
+- [x] **Step 1: Write the failing provider test**
 
 After `enhanceYaml`, resolve `sap-fe-mockserver` and assert:
 
@@ -185,7 +185,7 @@ type MockserverConfigWithMockgen = MockserverConfig & {
 };
 ```
 
-- [ ] **Step 2: Write preservation and disablement tests**
+- [x] **Step 2: Write preservation and disablement tests**
 
 Add an existing YAML fixture with
 `mockDataGenerator.name: "example/custom-provider"`; call `enhanceYaml` and
@@ -194,16 +194,16 @@ call `enhanceYaml(fs, basePath, webappPath, undefined, false)`, and assert that
 property is removed while services, annotations, and adjacent middleware
 remain.
 
-- [ ] **Step 3: Run the focused test and verify RED**
+- [x] **Step 3: Run the focused test and verify RED**
 
 ```bash
-pnpm --filter @sap-ux/mockserver-config-writer test -- \
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer test \
   --runTestsByPath test/unit/mockserver-config/ui5-mock-yaml.test.ts
 ```
 
 Expected: FAIL because `mockDataGenerator` is absent.
 
-- [ ] **Step 4: Implement one YAML helper**
+- [x] **Step 4: Implement one YAML helper**
 
 Extend `enhanceYaml` with `configureMockgen = true` and call this helper after
 the existing middleware has been created or updated:
@@ -230,20 +230,20 @@ function updateMockgenProvider(config: UI5Config, enabled: boolean): void {
 
 Do not overwrite another provider and do not create another middleware.
 
-- [ ] **Step 5: Run the focused tests and inspect snapshots**
+- [x] **Step 5: Run the focused tests and inspect snapshots**
 
 Run the Step 3 command. Expected: behavior assertions PASS and snapshots FAIL
 only because the new provider block is present. Update the snapshots with:
 
 ```bash
-pnpm --filter @sap-ux/mockserver-config-writer test -- \
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer test \
   --runTestsByPath test/unit/mockserver-config/ui5-mock-yaml.test.ts -u
 ```
 
 Inspect every changed snapshot and confirm each YAML document contains exactly
 one `sap-fe-mockserver` and at most one `mockDataGenerator`.
 
-- [ ] **Step 6: Commit the second TDD slice**
+- [x] **Step 6: Commit the second TDD slice**
 
 ```bash
 git add packages/mockserver-config-writer/src/mockserver-config/ui5-mock-yaml.ts \
@@ -261,24 +261,24 @@ git commit -m "feat(mockserver-config-writer): configure MockGen provider"
 - Test snapshots:
   `packages/mockserver-config-writer/test/unit/mockserver-config/__snapshots__/index.test.ts.snap`
 
-- [ ] **Step 1: Write failing public-API tests**
+- [x] **Step 1: Write failing public-API tests**
 
 Update the default expected package JSON to include the exact generator version
 and launcher. Assert the YAML provider through `UI5Config`. Add one test using a
 custom mockserver module and one using `packageJsonConfig.skip: true`; both must
 omit the MockGen provider.
 
-- [ ] **Step 2: Run the public-API test and verify RED**
+- [x] **Step 2: Run the public-API test and verify RED**
 
 ```bash
-pnpm --filter @sap-ux/mockserver-config-writer test -- \
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer test \
   --runTestsByPath test/unit/mockserver-config/index.test.ts
 ```
 
 Expected: FAIL because `generateMockserverConfig` does not pass the shared
 eligibility decision to YAML generation.
 
-- [ ] **Step 3: Pass one eligibility decision through the writer**
+- [x] **Step 3: Pass one eligibility decision through the writer**
 
 Use the same `supportsMockgen` result for package and YAML changes:
 
@@ -293,17 +293,17 @@ await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig, mockgen
 Keep `removeMockserverConfig` unchanged except for the dependency cleanup
 already owned by `removeFromPackageJson`; it deletes `ui5-mock.yaml` as before.
 
-- [ ] **Step 4: Run the public and full writer tests**
+- [x] **Step 4: Run the public and full writer tests**
 
 ```bash
-pnpm --filter @sap-ux/mockserver-config-writer test -- \
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer test \
   --runTestsByPath test/unit/mockserver-config/index.test.ts
-pnpm --filter @sap-ux/mockserver-config-writer test
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer test
 ```
 
 Expected: all writer tests PASS.
 
-- [ ] **Step 5: Commit the public lifecycle slice**
+- [x] **Step 5: Commit the public lifecycle slice**
 
 ```bash
 git add packages/mockserver-config-writer/src/mockserver-config/index.ts \
@@ -323,7 +323,7 @@ git commit -m "feat(mockserver-config-writer): wire MockGen by default"
   `docs/superpowers/specs/2026-09-03-mockserver-data-generator-design.md`
 - Create: `.changeset/mockgen-zero-setup-app-wiring.md`
 
-- [ ] **Step 1: Make the development override explicit**
+- [x] **Step 1: Make the development override explicit**
 
 Keep the dev kit's existing behavior: capture the pre-existing app command,
 call the public writer, replace the registry dependency with the local tarball
@@ -332,7 +332,7 @@ model paths. Update its comment to say that it overrides production defaults
 for unpublished testing; do not remove its recovery journal or local artifact
 verification.
 
-- [ ] **Step 2: Document the production developer experience**
+- [x] **Step 2: Document the production developer experience**
 
 Add these commands to the writer README:
 
@@ -345,7 +345,7 @@ State that the first command stays standard, the second activates MockGen, and
 the large model/runtime are not npm package contents. Mark the approved design
 status as `Approved for implementation`.
 
-- [ ] **Step 3: Add the changeset**
+- [x] **Step 3: Add the changeset**
 
 ```md
 ---
@@ -356,10 +356,10 @@ Configure the optional MockGen data generator in standard Fiori mockserver
 applications while preserving the unflagged mockserver behavior.
 ```
 
-- [ ] **Step 4: Format and commit**
+- [x] **Step 4: Format and commit**
 
 ```bash
-pnpm exec prettier --write \
+fnm exec --using=22.22.3 -- corepack pnpm exec prettier --write \
   packages/mockserver-config-writer/src/mockserver-config \
   packages/mockserver-config-writer/test/unit/mockserver-config \
   packages/mockserver-config-writer/README.md \
@@ -383,11 +383,11 @@ git commit -m "docs(mockgen): document automatic app wiring"
 - [ ] **Step 1: Run focused quality gates**
 
 ```bash
-pnpm --filter @sap-ux/mockserver-config-writer build
-pnpm --filter @sap-ux/mockserver-config-writer lint
-pnpm --filter @sap-ux/mockserver-config-writer test
-pnpm --filter @sap-ux/mockserver-data-generator build
-pnpm --filter @sap-ux/mockserver-data-generator test -- \
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer build
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer lint
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-config-writer test
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-data-generator build
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-data-generator test \
   --runTestsByPath test/unit/start.test.ts
 ```
 
@@ -396,7 +396,7 @@ Expected: every command exits zero without new warnings.
 - [ ] **Step 2: Verify package boundaries**
 
 ```bash
-pnpm --filter @sap-ux/mockserver-data-generator check:package
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux/mockserver-data-generator check:package
 git diff --check
 ```
 
@@ -406,7 +406,7 @@ runtime binary; the writer only emits the npm dependency string.
 - [ ] **Step 3: Re-run the development-kit boundary tests**
 
 ```bash
-pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test -- \
+fnm exec --using=22.22.3 -- corepack pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test \
   --runTestsByPath src/dev-kit/build-dev-kit.test.ts
 ```
 
@@ -417,7 +417,7 @@ generated command.
 - [ ] **Step 4: Rebuild the unpublished development kit**
 
 ```bash
-pnpm mockserver-data-generator:dev-kit -- \
+fnm exec --using=22.22.3 -- corepack pnpm mockserver-data-generator:dev-kit -- \
   --host-root /Users/I335123/SAPDevelop/Projects/open-ux-odata-mock-data-generator-spi \
   --out /Users/I335123/Downloads \
   --require-clean

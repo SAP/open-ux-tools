@@ -129,7 +129,7 @@ describe('development kit artifact validation', () => {
         expect(readme).toContain('npm run start-mock -- --mockgen');
     });
 
-    test('configures MockGen without requiring changes to shared configuration packages', async () => {
+    test('overrides production MockGen wiring with the unpublished local package', async () => {
         const appRoot = temporaryDirectory();
         cpSync(fioriFixture, appRoot, { recursive: true });
 

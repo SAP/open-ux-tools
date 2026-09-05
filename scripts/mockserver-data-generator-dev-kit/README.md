@@ -4,6 +4,9 @@ This development kit installs the unpublished MockGen package and the matching
 unpublished FE mockserver host packages into an existing generated Fiori
 application. It uses local npm tarballs, one standard sap-fe-mockserver
 middleware, the existing ui5-mock.yaml, and the existing start-mock command.
+The production config writer now creates the dependency, provider, and launcher
+wiring; this kit replaces the registry dependency with the exact unpublished
+tarball and adds development-only model paths when requested.
 
 Model weights, training data, and judge outputs are deliberately excluded. The
 default HTTP canary proves package discovery, provider loading, metadata
