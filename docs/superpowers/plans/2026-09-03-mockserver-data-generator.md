@@ -1632,3 +1632,20 @@ These checks do not close the approved hosted-bundle, platform-specific native
 runtime distribution, actual BAS canary, or publication/rollback gates. WASM
 remains the measured no-go rather than an assumed solution to the runtime
 distribution gap.
+
+**Release-acquisition review hardening (2026-09-05):** Independent review of
+the automatic first-use path found boundary issues in two passes. Commits
+`8baa2500b` and `1d81c4880` make launcher-prepared cache-only state override
+legacy YAML model paths, explicitly suppress legacy online model configuration
+after acquisition failure, remove private activation and model-state variables
+case-insensitively before spawning Fiori on Windows, and apply one deadline to
+manifest reading, cache hashing, download, and final verification. They also
+replace the broad published-resources rule with an exact allowlist for
+`resources/model-manifest.json`, including case-insensitive directory detection
+while retaining one case-exact allowed member. Regression tests cover each
+case, including renamed, nested, and mixed-case resource files. The package
+passes 30 suites/268 tests, build, zero-error lint, changeset validation, and
+the 98,334-byte package boundary. The development-kit integration package
+passes 11 suites/120 tests, build, and zero-error lint. Public model hosting,
+supported per-platform native runtime delivery, the actual BAS canary, and npm
+publication remain release work rather than completed local evidence.
