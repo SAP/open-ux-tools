@@ -15,6 +15,15 @@ Current clean archive candidate:
 - source commits: `SAP/open-ux-tools` `ffdb7d6a425616a930c522c6e72fecc1938b373c`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
 - local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-ce2d814750393300.tgz`
 
+Optional retained learned-model input for the classifier/SFT canary:
+
+- archive: `sap-ai-mockserver-llm-pilot-0.12.0.tgz`
+- archive SHA-256: `d5b0f5d72c1adf0f72c6b4a54f83d44e6ab0a2c2213c4ec38b057209626e9364`
+- archive size: 131,826,730 bytes
+- model fingerprint: `8241c95937623d6b5e61e6057f85e3ab5ede22a2bc0e57f221092db9bc8011da`
+- release state: `experimental-integration-only`; this is retained test input, not a production release
+- local handoff copy: `/Users/I335123/Downloads/sap-ai-mockserver-llm-pilot-0.12.0.tgz`
+
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
@@ -99,8 +108,17 @@ copy of the retained pilot bundle, then stage and verify it without putting
 weights in the development kit:
 
 ```bash
-PILOT_ROOT="/absolute/path/to/extracted-retained-pilot"
+PILOT_ARCHIVE="$HOME/projects/sap-ai-mockserver-llm-pilot-0.12.0.tgz"
+PILOT_SHA256="d5b0f5d72c1adf0f72c6b4a54f83d44e6ab0a2c2213c4ec38b057209626e9364"
+PILOT_ROOT="$HOME/tools/sap-ai-mockserver-llm-pilot-0.12.0"
 MODEL_ROOT="$HOME/tools/mockserver-data-generator-model-2bf437ed75f992b6"
+
+printf '%s  %s\n' "$PILOT_SHA256" "$PILOT_ARCHIVE" | sha256sum --check --strict -
+test ! -e "$PILOT_ROOT"
+mkdir -p "$PILOT_ROOT"
+tar --extract --gzip --file "$PILOT_ARCHIVE" \
+  --directory "$PILOT_ROOT" --strip-components=1 \
+  --no-same-owner --no-same-permissions
 
 node "$KIT_ROOT/prepare-pilot-model-cache.mjs" \
   --pilot-root "$PILOT_ROOT" \
