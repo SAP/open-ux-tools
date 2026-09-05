@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `38d36f81159922d0775bff35f0a412526b1352fbc536d1fef3bdec422280ad9b`
-- archive SHA-256: `dd3e959e318a844ce2cc84fc3cb762ed23056bdd02d380eb2ca9e17866a8008b`
-- archive size: 573,682 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `6c05dc7f0558bf628edbf90538e686870d1c2c9c`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-38d36f81159922d0.tgz`
+- dev-kit fingerprint: `ce2d81475039330022b721553a5d41d6f55542a8bfc7625f4882887a56439ac0`
+- archive SHA-256: `8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682`
+- archive size: 573,685 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `ffdb7d6a425616a930c522c6e72fecc1938b373c`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-ce2d814750393300.tgz`
 
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema
@@ -55,7 +55,9 @@ published package downloads only the current platform runtime together with
 the classifier/SFT files and reuses its verified cache. The BAS archive itself
 remains an unpublished development tool. Its optional retained-pilot procedure
 below still installs the exact development runtime explicitly; that extra step
-is not part of the eventual Fiori developer workflow.
+is not part of the eventual Fiori developer workflow. The source commit also
+contains the repeatable per-platform runtime builder used by the future release
+pipeline; it is not installed into the Fiori application.
 
 ## Inputs to record
 
@@ -74,9 +76,9 @@ data, prompts, or model outputs.
 ## Procedure
 
 ```bash
-KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-38d36f81159922d0.tgz"
-KIT_SHA256="dd3e959e318a844ce2cc84fc3cb762ed23056bdd02d380eb2ca9e17866a8008b"
-KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-38d36f81159922d0"
+KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-ce2d814750393300.tgz"
+KIT_SHA256="8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682"
+KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-ce2d814750393300"
 
 node -e 'const [a,b,c]=process.versions.node.split(".").map(Number);if(a<22||(a===22&&(b<22||(b===22&&c<2))))throw Error("Node >=22.22.2 is required")'
 printf '%s  %s\n' "$KIT_SHA256" "$KIT_ARCHIVE" | sha256sum --check --strict -

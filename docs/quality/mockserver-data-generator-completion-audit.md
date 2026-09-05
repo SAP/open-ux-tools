@@ -6,13 +6,13 @@ Candidate source:
 
 - reviewed generator, `--mockgen` launcher, deterministic-mode correction, and
   compatibility evidence before this audit-only update:
-  `6c05dc7f0558bf628edbf90538e686870d1c2c9c`
+  `ffdb7d6a425616a930c522c6e72fecc1938b373c`
 - reviewed minimal `SAP/open-ux-odata` host extension and API-version marker:
   `b64ee8b60519f129ad975465536204c78a15be1a`
 - current portable development-kit fingerprint:
-  `38d36f81159922d0775bff35f0a412526b1352fbc536d1fef3bdec422280ad9b`
+  `ce2d81475039330022b721553a5d41d6f55542a8bfc7625f4882887a56439ac0`
 - current portable development-kit SHA-256:
-  `dd3e959e318a844ce2cc84fc3cb762ed23056bdd02d380eb2ca9e17866a8008b`
+  `8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682`
 
 ## Verdict
 
@@ -29,10 +29,11 @@ proven, but several release gates require a maintainable distribution,
 additional environments, approvals, or external review:
 
 1. The package-side format-2 runtime selection, acquisition, verification, and
-   loading path is implemented. A 36,783,485-byte staged `darwin-arm64` file
-   set loads the real runtime below its 64 MiB ceiling, but approved hosted and
-   signed file sets for all four targets do not yet exist. The prior upstream
-   multi-platform closure still uses 451,328,075 bytes.
+   loading path is implemented. The repeatable release builder emits a
+   30-file, 36,280,317-byte `darwin-arm64` set that loads the real runtime below
+   its 64 MiB ceiling, but approved hosted and signed file sets for all four
+   targets do not yet exist. The prior upstream multi-platform closure still
+   uses 451,328,075 bytes.
 2. An actual BAS canary has not run.
 3. Dataset/model provenance, privacy, license, derivative-use, and
    redistribution clearance are not complete.
@@ -65,16 +66,16 @@ means a measured threshold was missed by the named candidate.
 | Metadata input boundary | locally proven (compositional) | Actual MockGen package tests prove that EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing, including exact-limit and multibyte limit-plus-one cases; a separate accepted-host application test uses a contract-compatible provider that reports the same stable `METADATA_INPUT_TOO_LARGE` failure and proves privacy-safe standard fallback | Release-platform reruns |
 | Generated-result boundary | locally proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache publication; an accepted-host integration test proves an oversized provider result is not published, the application still becomes ready, and built-in mock rows are served after a privacy-safe fallback event | Release-platform reruns |
 | Development-kit application setup | locally proven | The installer wraps the generated `start-mock` command, runs separate standard and MockGen canaries, installs exact local tarballs, and restores original application files | BAS execution |
-| Local/BAS development kit | reproducible / BAS pending | The current 573,682-byte clean archive reproduced byte-for-byte twice. The preceding exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT V4 canaries locally on Node 22.22.3; the compatibility archive before it supplies fresh V2/V4/CDS coverage | Run the current fingerprinted archive in BAS |
+| Local/BAS development kit | reproducible / BAS pending | The current 573,685-byte clean archive reproduced byte-for-byte twice. The preceding exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT V4 canaries locally on Node 22.22.3; the compatibility archive before it supplies fresh V2/V4/CDS coverage | Run the current fingerprinted archive in BAS |
 | Package and repository boundary | proven | current generator tarball is 101,068 bytes and contains required architecture, operations, proxy, security, and pilot-parity guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; it has no production or peer dependency on the all-platform native runtime; import/construction network guards pass; the exact 10-entry development kit contains no developer or source-worktree paths | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
-| Total installed/cache footprint | upstream fail / platform proof passes | The prior exact upstream dependency graph uses 451,328,075 bytes and therefore fails the 300 MiB gate; the prior platform-runtime candidate, same model, and same API use 266,453,893 bytes with the exact `darwin-arm64` runtime archive and pass with 48,118,907 bytes of headroom; the new copied-entry contract independently executes a 36,783,485-byte runtime tree | Produce approved hosted runtime file sets and repeat on every release platform |
+| Total installed/cache footprint | upstream fail / platform proof passes | The prior exact upstream dependency graph uses 451,328,075 bytes and therefore fails the 300 MiB gate; the prior platform-runtime candidate, same model, and same API use 266,453,893 bytes with the exact `darwin-arm64` runtime archive and pass with 48,118,907 bytes of headroom; the release builder independently emits and executes a 30-file, 36,280,317-byte runtime tree | Produce approved hosted runtime file sets and repeat on every release platform |
 | Integrated performance | locally proven | Five fresh-process samples on the prior fingerprinted platform-runtime candidate measured 1,567.782 ms cold p95, 20.775 ms warm-cache p95, 664.750 ms acquisition p95, and 1,568.577 ms host p95; all latency gates pass | Release-platform reruns |
 | Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and byte-identical replay; its SFT gate is 100% parse and 96.54% accepted-slot fill; deterministic triage found no high/medium signal but is not a realism judgment | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
-| Platform compatibility | local macOS / remote matrix pending | Accepted-integration V2/V4/CDS and learned-model evidence exists on macOS arm64; the real `onnxruntime-node` native addon executes a tiny graph, a copied platform-only tree imports from outside application dependencies, and both MockGen backend adapters create and release sessions on Node 22.22.3 and 24.20.0 | Let the existing six-cell repository CI run the same contract on Ubuntu, Windows, and macOS with Node 22/24, then complete actual BAS proxy/certificate behavior |
+| Platform compatibility | local macOS / remote matrix pending | Accepted-integration V2/V4/CDS and learned-model evidence exists on macOS arm64; the real `onnxruntime-node` native addon executes a tiny graph, a builder-produced platform-only tree imports from outside application dependencies, and both MockGen backend adapters create and release sessions on Node 22.22.2 and 24.20.0 | Let the existing six-cell repository CI run the same contract on Ubuntu, Windows, and macOS with Node 22/24, then complete actual BAS proxy/certificate behavior |
 | Release and rollback | package-partial / external | The current installer restore passes; promoted model fingerprints cannot reuse N-1 rows, while explicit rollback can reuse only its matching verified cache; deterministic mode suppresses supplied learned runtimes and reports no learned capabilities or fingerprints | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2-only kill switch canary, and stable promotion |
 
 ## Pilot evidence reconciliation
@@ -105,10 +106,10 @@ No pilot payload was copied or modified during this audit.
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 30 suites and 289 tests passed on Node 22.22.3 and Node 24.20.0; package build and zero-error lint passed on both |
+| `@sap-ux/mockserver-data-generator` | 30 suites and 289 tests passed on Node 22.22.2 and Node 24.20.0; package build and zero-error lint passed on both |
 | reviewed host packages | `fe-mockserver-core`: 27 suites and 364 tests on both Node 22.22.3 and Node 24.20.0; middleware: 2 suites and 13 tests; affected builds and zero-error lint passed |
 | development-kit integration tests | 11 suites and 120 tests passed, including exact launcher dispatch, default-off persistence, CDS fallback, and final WASM-decision regressions |
-| native runtime platform contract | a 36,783,485-byte copied `onnxruntime-node@1.24.3` platform tree imported through its file entry and executed a tiny ONNX graph; both MockGen backend adapters constructed tensors, delegated session work, and demonstrably released their native sessions on macOS arm64 with Node 22.22.3 and 24.20.0 |
+| native runtime platform contract | the release builder produced a deterministic 30-file, 36,280,317-byte `onnxruntime-node@1.24.3` platform tree with fingerprint `e43288a91114ae6ba8b1b7d0ab95d00d50c6e7fb8a18f4ab7150c74bcf7f270a`; it imported through its copied file entry and executed a tiny ONNX graph, while both MockGen backend adapters constructed tensors, delegated session work, and released their native sessions on macOS arm64 with Node 22.22.2 and 24.20.0 |
 | retained bound model evaluation | the pre-cleanup platform-runtime report used all 233 governed classifier cases and all 16 SFT cases; output fingerprints match the prior accepted runs; the cleanup-only source change was checked with fresh learned canaries rather than relabelled as a fresh model campaign |
 | SFT evaluation | 16/16 parse and exact keys; 261/261 fields filled; p95 9,130.225 ms; peak process RSS 1,057,521,664 bytes with the platform runtime candidate |
 | current realism cohort | 311 records; 124/124 parsed; 446/462 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; evidence and campaign replay byte-identical |
@@ -117,7 +118,7 @@ No pilot payload was copied or modified during this audit.
 | deterministic installed closure | 3,945,496 bytes |
 | package provider module load | 1.331 ms p95 over 10 fresh processes |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
-| current clean dev kit | 573,682 bytes; fingerprint `38d36f81159922d0775bff35f0a412526b1352fbc536d1fef3bdec422280ad9b`; SHA-256 `dd3e959e318a844ce2cc84fc3cb762ed23056bdd02d380eb2ca9e17866a8008b`; two builds were byte-identical |
+| current clean dev kit | 573,685 bytes; fingerprint `ce2d81475039330022b721553a5d41d6f55542a8bfc7625f4882887a56439ac0`; SHA-256 `8ced1e0f4003406de274a95e3d04a7f955facb045375299dea55dd243f31a682`; two builds were byte-identical |
 | packed application canaries | The preceding exact archive passed separate standard, deterministic MockGen, and retained-classifier/SFT OData V4 canaries on Node 22.22.3; both installer restores passed. The compatibility archive before it remains the fresh V2/V4/CDS evidence. The current archive is the pending BAS candidate and is not relabelled as a completed BAS or application canary |
 | prior exact upstream full footprint | 451,328,075 / 314,572,800 bytes; only the total-footprint hard gate failed, so `footprintReady: false` |
 | current `darwin-arm64` proof | 266,453,893 / 314,572,800 bytes; every hard gate passes and `footprintReady: true` |
@@ -149,14 +150,15 @@ pass locally. The equivalent upstream multi-platform runtime installation uses
 gate is total footprint.
 
 The package-side platform distribution is therefore implemented and locally
-feasible, but no runtime file set has been approved or hosted as a production
-artifact. The next task is to build each set on its target platform and attach
-license, SBOM, provenance, signing, update, and rollback evidence. Those exact
-artifacts must rerun the full Node/OS installation, runtime, structural,
-latency, and RSS matrix. If the governed distribution cannot satisfy those
-conditions, the correct disposition remains to request a documented change to
-the total-footprint policy rather than adopt WASM or ship a structurally broken
-model.
+feasible. The [platform-runtime release procedure](./mockserver-data-generator-runtime-release.md)
+now makes each target build repeatable, but no runtime file set has been
+approved or hosted as a production artifact. The next task is to execute that
+procedure on every target and attach license, SBOM, provenance, signing,
+update, and rollback evidence. Those exact artifacts must rerun the full
+Node/OS installation, runtime, structural, latency, and RSS matrix. If the
+governed distribution cannot satisfy those conditions, the correct disposition
+remains to request a documented change to the total-footprint policy rather
+than adopt WASM or ship a structurally broken model.
 
 ## Remaining sequence
 

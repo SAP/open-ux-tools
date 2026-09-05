@@ -1676,3 +1676,21 @@ Build, zero-error lint, the
 cross-repository integration package pass. Approved hosted runtime files,
 license/SBOM/signing attestations, remote platform execution, and public model
 hosting remain release gates; this commit does not invent or publish them.
+
+**Platform-runtime release builder (2026-09-05):** Commits `aac0e3139` and
+`ffdb7d6a4` add the source-only builder that turns the exact installed
+`onnxruntime-node@1.24.3` dependency into the current OS/CPU format-2 runtime
+descriptor and file tree. The builder accepts only the four supported targets,
+credential-free immutable HTTPS artifact and SBOM URLs, and a new absolute
+output directory. It rejects links and unsupported filesystem entries, copies
+files without overwrite, hashes files with bounded streaming memory, enforces
+the 64 MiB ceiling, and never uploads or publishes an artifact. Two builds on
+macOS arm64 produced the same 30-file descriptor and
+`e43288a91114ae6ba8b1b7d0ab95d00d50c6e7fb8a18f4ab7150c74bcf7f270a`
+fingerprint; the 36,280,317-byte closure imports from its copied entry and runs
+a real ONNX graph. The full package remains at 30 suites/289 tests on Node
+22.22.2 and Node 24.20.0, the 101,068-byte package boundary passes, and the
+11-suite/120-test integration package passes. The exact release procedure is
+recorded in
+`docs/quality/mockserver-data-generator-runtime-release.md`; target-platform
+execution, approval, hosting, signing, and publication remain open gates.
