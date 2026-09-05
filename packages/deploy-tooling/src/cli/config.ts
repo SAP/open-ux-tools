@@ -1,10 +1,13 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
+import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types/index.js';
 import { NAME } from '../types/index.js';
+import { readBuilderExcludes } from '../base/config.js';
+export { readBuilderExcludes } from '../base/config.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -164,9 +167,14 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
  *
  * @param taskConfig - base configuration from the file
  * @param options - CLI options
+ * @param logger - optional logger; passed to readBuilderExcludes for warning on read failure
  * @returns the merged config
  */
-export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions): Promise<AbapDeployConfig> {
+export async function mergeConfig(
+    taskConfig: AbapDeployConfig,
+    options: CliOptions,
+    logger?: Logger
+): Promise<AbapDeployConfig> {
     const app: Partial<BspConfig> = {
         name: options.name ?? taskConfig.app?.name,
         description: options.description ?? taskConfig.app?.description,
@@ -183,6 +191,9 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
     config.lrep = options.lrep;
+    const builderExcludes = options.config ? await readBuilderExcludes(options.config, logger) : [];
+    const merged = [...new Set([...(options.exclude ?? []), ...(taskConfig.exclude ?? []), ...builderExcludes])];
+    config.exclude = merged.length ? merged : undefined;
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';

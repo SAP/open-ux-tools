@@ -60,6 +60,8 @@ This is the minimal custom task configuration for deployment using package `$TMP
 
 > **Note:** The package name `$TMP` must be uppercase. If a lowercase variant, for example, `$tmp` is detected in the configuration, it is automatically normalized to `$TMP` and a warning is logged because lowercase values can cause deployment failures.
 
+> **Note:** `configuration.exclude` is automatically derived from `builder.resources.excludes` at generation time. You do not need to maintain it manually — patterns listed under `builder.resources.excludes` (e.g. `/test/**`, `/localService/**`) are converted to prefix patterns and written to `configuration.exclude`. The field can still be set explicitly for backward compatibility or to override the derived values.
+
 ```yaml
 - name: abap-deploy-task
   configuration:
@@ -70,6 +72,7 @@ This is the minimal custom task configuration for deployment using package `$TMP
       url: https://target.example
     exclude:
       - /test/
+      - /localService/
 ```
 
 #### Configuration with logging enabled
@@ -141,6 +144,7 @@ Options:
   --description <description>          Project description of the app
   --safe                               Prevents accidentally breaking deployments.
   --keep                               Keep a copy of the deployed archive in the project folder.
+  --exclude <patterns...>              Exclude files matching these path prefix patterns from the deployment archive (e.g. /test/ /localService/). Overrides the exclude list from the yaml config.
   --archive-url <url>                  Download app bundle from this url and upload this bundle for deployment
   --archive-path <path>                Provide path of the app bundle for deployment
   --archive-folder <path>              Provide path to a folder for deployment
@@ -180,8 +184,8 @@ builder:
           description: <app-description>
           package: <package-name>
           transport: <transport-request>
-        exclude:
-          - /test/
+        # configuration.exclude is auto-derived from builder.resources.excludes above.
+        # It will contain ['/test/', '/localService/'] at deploy time.
 ```
 Deploy CLI command;
 ```bash
