@@ -49,6 +49,14 @@ describe('grammar-constrained causal text runtime', () => {
         expect(resolveAllowed(fullValue)).toEqual([3]);
     });
 
+    test('does not let a symbol-only token exhaust a bounded generated string', () => {
+        const resolveAllowed = createAllowedTokenResolver(['[', 'A', '"'], new Set());
+        const initial = createJsonRowGrammar([{ name: 'Code', valueKind: 'string', nullable: false, maxLength: 1 }]);
+        const emptyValue = advanceText(initial, '{"Code":"');
+
+        expect(resolveAllowed(emptyValue)).toEqual([1]);
+    });
+
     test('selects an exact top-p nucleus without sorting the full vocabulary', () => {
         const probabilities = [
             { id: 2, probability: 0.4 },

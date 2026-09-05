@@ -56,4 +56,29 @@ describe('JSON row grammar literal validation', () => {
         expect(textAllowed(completeValue, '"}')).toBe(true);
         expect(grammarComplete(advanceText(completeValue, '"}'))).toBe(true);
     });
+
+    test('requires a Unicode letter or number before closing a generated string', () => {
+        const initial = createJsonRowGrammar([{ name: 'Name', valueKind: 'string', nullable: false }]);
+        const punctuationOnly = advanceText(initial, '{"Name":"[{');
+
+        expect(textAllowed(punctuationOnly, '"}')).toBe(false);
+        expect(textAllowed(punctuationOnly, 'é"}')).toBe(true);
+    });
+
+    test('recognizes alphanumeric content represented by a JSON Unicode escape', () => {
+        const initial = createJsonRowGrammar([{ name: 'Name', valueKind: 'string', nullable: false }]);
+        const escapedPunctuation = advanceText(initial, '{"Name":"\\u005B');
+        const escapedLetter = advanceText(initial, '{"Name":"\\u00FC');
+
+        expect(textAllowed(escapedPunctuation, '"}')).toBe(false);
+        expect(textAllowed(escapedLetter, '"}')).toBe(true);
+    });
+
+    test('reserves bounded string capacity for a letter or number', () => {
+        const initial = createJsonRowGrammar([{ name: 'Code', valueKind: 'string', nullable: false, maxLength: 1 }]);
+        const emptyValue = advanceText(initial, '{"Code":"');
+
+        expect(textAllowed(emptyValue, '[')).toBe(false);
+        expect(textAllowed(emptyValue, '7"}')).toBe(true);
+    });
 });

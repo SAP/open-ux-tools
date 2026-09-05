@@ -12,8 +12,11 @@ numeric-status semantics were added. `final-cohort-v4.json` again changes only
 the routing baseline after the pilot-governed plant and stock-batch roles were
 restored. `final-cohort-v5.json` changes only the SFT acceptance baseline after
 symbol-only, non-enum string candidates were rejected before deterministic
-fallback. Generated rows, model outputs, and human or LLM reviews must remain
-outside the repository.
+fallback. Its 435/462 accepted-slot preflight is retained as a failed gate.
+`final-cohort-v6.json` strengthens constrained decoding so every generated
+non-enum string contains a letter or number, while retaining post-generation
+validation as defense-in-depth. Generated rows, model outputs, and human or LLM
+reviews must remain outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
@@ -33,6 +36,6 @@ inputs and recomputes the service/source-family isolation contract before model
 inference. Each manifest also freezes every service's raw T2 completion
 attempts, parsed responses, eligible slots, and accepted slots. A replay fails
 before publication when any of those denominators or contributions drift. The
-v2, v3, v4, and v5 routing baselines were each frozen before exporting or
-judging their corresponding metadata-grounded candidates; none is a relaxation
-of the parse, fill, or structural thresholds.
+v2 through v6 routing baselines were each frozen before their corresponding
+preflight or export. The failed v5 baseline was not exported for judging, and
+none is a relaxation of the parse, fill, or structural thresholds.

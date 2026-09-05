@@ -179,12 +179,19 @@ export function createAllowedTokenResolver(
         ) {
             const capacity = Math.max(0, state.maximumStringLength - state.stringLength);
             const capacityKey = Math.min(capacity, maximumPlainLength);
-            let plainIds = plainCapacityCache.get(capacityKey);
-            if (!plainIds) {
-                plainIds = Object.freeze(
-                    plainStringTokens.filter(({ plainStringLength: length }) => length <= capacity).map(({ id }) => id)
-                );
-                plainCapacityCache.set(capacityKey, plainIds);
+            let plainIds: ReadonlyArray<number>;
+            if (state.stringHasAlphanumeric) {
+                plainIds = plainCapacityCache.get(capacityKey) ?? [];
+                if (plainIds.length === 0 && capacityKey > 0) {
+                    plainIds = Object.freeze(
+                        plainStringTokens
+                            .filter(({ plainStringLength: length }) => length <= capacity)
+                            .map(({ id }) => id)
+                    );
+                    plainCapacityCache.set(capacityKey, plainIds);
+                }
+            } else {
+                plainIds = plainStringTokens.filter(({ text }) => textAllowed(state, text)).map(({ id }) => id);
             }
             const complexIds = complexStringTokens.filter(({ text }) => textAllowed(state, text)).map(({ id }) => id);
             allowed = Object.freeze(mergeTokenIds(plainIds, complexIds));

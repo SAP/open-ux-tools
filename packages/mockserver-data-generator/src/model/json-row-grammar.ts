@@ -18,7 +18,8 @@ export interface JsonRowGrammarState {
     keyMatched: number;
     escaped: boolean;
     unicodeEscapeRemaining: number;
-    stringHasContent: boolean;
+    unicodeEscapeText: string;
+    stringHasAlphanumeric: boolean;
     stringLength: number;
     literalText: string;
     valueKind?: SftGrammarField['valueKind'];
@@ -30,6 +31,7 @@ const WHITESPACE = new Set([' ', '\t', '\n', '\r']);
 const NUMBER_START = new Set(['-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
 const JSON_ESCAPE = new Set(['"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u']);
 const HEX_DIGIT = /^[0-9A-Fa-f]$/u;
+const LETTER_OR_NUMBER = /[\p{L}\p{N}]/u;
 const COMPLETE_NUMBER = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/u;
 
 export function createJsonRowGrammar(fields: ReadonlyArray<SftGrammarField>): JsonRowGrammarState {
@@ -40,7 +42,8 @@ export function createJsonRowGrammar(fields: ReadonlyArray<SftGrammarField>): Js
         keyMatched: 0,
         escaped: false,
         unicodeEscapeRemaining: 0,
-        stringHasContent: false,
+        unicodeEscapeText: '',
+        stringHasAlphanumeric: false,
         stringLength: 0,
         literalText: '',
         nullable: true
@@ -103,26 +106,55 @@ function characterAllowed(state: JsonRowGrammarState, character: string): boolea
             return WHITESPACE.has(character) || startAllowed(state, character);
         case 'in-string-value':
             if (state.unicodeEscapeRemaining > 0) {
-                return (
-                    HEX_DIGIT.test(character) &&
-                    (state.maximumStringLength === undefined || state.stringLength < state.maximumStringLength)
-                );
+                if (
+                    !HEX_DIGIT.test(character) ||
+                    (state.maximumStringLength !== undefined && state.stringLength >= state.maximumStringLength)
+                ) {
+                    return false;
+                }
+                if (
+                    state.unicodeEscapeRemaining === 1 &&
+                    !state.stringHasAlphanumeric &&
+                    state.maximumStringLength !== undefined &&
+                    state.stringLength + 1 === state.maximumStringLength
+                ) {
+                    const decoded = String.fromCharCode(Number.parseInt(`${state.unicodeEscapeText}${character}`, 16));
+                    return LETTER_OR_NUMBER.test(decoded);
+                }
+                return true;
             }
             if (state.escaped) {
+                if (
+                    !JSON_ESCAPE.has(character) ||
+                    (state.maximumStringLength !== undefined && state.stringLength >= state.maximumStringLength)
+                ) {
+                    return false;
+                }
                 return (
-                    JSON_ESCAPE.has(character) &&
-                    (state.maximumStringLength === undefined || state.stringLength < state.maximumStringLength)
+                    character === 'u' ||
+                    state.stringHasAlphanumeric ||
+                    state.maximumStringLength === undefined ||
+                    state.stringLength + 1 < state.maximumStringLength
                 );
             }
-            if (character === '"' && !state.stringHasContent) {
+            if (character === '"' && !state.stringHasAlphanumeric) {
                 return false;
             }
             if (character === '"') {
                 return true;
             }
+            if (
+                (character.codePointAt(0) ?? 0) < 0x20 ||
+                (state.maximumStringLength !== undefined && state.stringLength >= state.maximumStringLength)
+            ) {
+                return false;
+            }
             return (
-                (character.codePointAt(0) ?? 0) >= 0x20 &&
-                (state.maximumStringLength === undefined || state.stringLength < state.maximumStringLength)
+                character === '\\' ||
+                state.stringHasAlphanumeric ||
+                LETTER_OR_NUMBER.test(character) ||
+                state.maximumStringLength === undefined ||
+                state.stringLength + 1 < state.maximumStringLength
             );
         case 'in-nonstring-value':
             return (
@@ -183,7 +215,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                     phase: 'in-string-value',
                     escaped: false,
                     unicodeEscapeRemaining: 0,
-                    stringHasContent: false,
+                    unicodeEscapeText: '',
+                    stringHasAlphanumeric: false,
                     stringLength: 0
                 };
             }
@@ -192,11 +225,19 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                 : state;
         case 'in-string-value':
             if (state.unicodeEscapeRemaining > 0) {
+                const unicodeEscapeText = `${state.unicodeEscapeText}${character}`;
+                const unicodeEscapeRemaining = state.unicodeEscapeRemaining - 1;
+                const decoded =
+                    unicodeEscapeRemaining === 0
+                        ? String.fromCharCode(Number.parseInt(unicodeEscapeText, 16))
+                        : undefined;
                 return {
                     ...state,
-                    unicodeEscapeRemaining: state.unicodeEscapeRemaining - 1,
-                    stringHasContent: true,
-                    stringLength: state.unicodeEscapeRemaining === 1 ? state.stringLength + 1 : state.stringLength
+                    unicodeEscapeRemaining,
+                    unicodeEscapeText: unicodeEscapeRemaining === 0 ? '' : unicodeEscapeText,
+                    stringHasAlphanumeric:
+                        state.stringHasAlphanumeric || (decoded !== undefined && LETTER_OR_NUMBER.test(decoded)),
+                    stringLength: unicodeEscapeRemaining === 0 ? state.stringLength + 1 : state.stringLength
                 };
             }
             if (state.escaped) {
@@ -204,7 +245,7 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                     ...state,
                     escaped: false,
                     unicodeEscapeRemaining: character === 'u' ? 4 : 0,
-                    stringHasContent: true,
+                    unicodeEscapeText: '',
                     stringLength: character === 'u' ? state.stringLength : state.stringLength + 1
                 };
             }
@@ -216,7 +257,7 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
             }
             return {
                 ...state,
-                stringHasContent: true,
+                stringHasAlphanumeric: state.stringHasAlphanumeric || LETTER_OR_NUMBER.test(character),
                 stringLength: state.stringLength + 1
             };
         case 'in-nonstring-value':
