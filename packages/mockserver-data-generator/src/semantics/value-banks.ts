@@ -14,6 +14,8 @@ const UNITS = ['EA', 'KG', 'L', 'H', 'PC'] as const;
 const ORGANIZATIONS = ['Northwind Trading', 'Alpine Supply', 'Blue River Industries', 'Summit Services'] as const;
 const PRODUCTS = ['Industrial Pump', 'Safety Valve', 'Service Package', 'Control Module'] as const;
 const STATUSES = ['Open', 'In Progress', 'Approved', 'Completed'] as const;
+const CHARTS_OF_ACCOUNTS = ['YCOA', 'INT', 'CAUS', 'IFRS'] as const;
+const CONTROL_CODES = ['01', '02', '03', '04'] as const;
 
 export interface SemanticRowContext {
     firstName: string;
@@ -57,6 +59,14 @@ function stringRoleValue(role: string, context: SemanticRowContext, hash: number
             return context.lastName;
         case 'person_full_name':
             return `${context.firstName} ${context.lastName}`;
+        case 'audit_user':
+            return `${context.firstName.at(0) ?? 'U'}${context.lastName}`.toUpperCase().replace(/[^A-Z0-9_]/gu, '');
+        case 'chart_of_accounts':
+            return CHARTS_OF_ACCOUNTS[hash % CHARTS_OF_ACCOUNTS.length];
+        case 'equipment_id':
+            return `EQ${String(hash % 10_000_000_000).padStart(10, '0')}`;
+        case 'control_code':
+            return CONTROL_CODES[hash % CONTROL_CODES.length];
         case 'email':
             return `${context.firstName.toLowerCase()}.${context.lastName.toLowerCase()}@example.com`;
         case 'phone':
@@ -128,6 +138,12 @@ export function semanticValue(
         return truncate(stringValue, property.maxLength);
     }
     switch (role) {
+        case 'boolean_flag':
+            return property.primitiveType === 'bool' ? hash % 2 === 0 : undefined;
+        case 'order_status':
+            return property.primitiveType === 'decimal' || property.primitiveType === 'int'
+                ? hash % STATUSES.length
+                : undefined;
         case 'monetary_amount':
             return property.primitiveType === 'decimal' || property.primitiveType === 'int'
                 ? Number((((hash % 900_000) + 10_000) / 100).toFixed(property.scale ?? 2))

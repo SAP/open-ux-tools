@@ -66,6 +66,12 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (has(words, 'currency', 'waers')) {
         return 'currency';
     }
+    if (has(words, 'chart') && has(words, 'account', 'accounts')) {
+        return 'chart_of_accounts';
+    }
+    if (last === 'equipment' || (has(words, 'technical') && has(words, 'object'))) {
+        return 'equipment_id';
+    }
     if (has(words, 'amount', 'price', 'total', 'net', 'gross')) {
         return 'monetary_amount';
     }
@@ -108,7 +114,7 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (has(words, 'street') || (has(words, 'address') && !has(words, 'email'))) {
         return 'street_address';
     }
-    if (has(words, 'company', 'organization', 'organisation') && has(words, 'name')) {
+    if (has(words, 'company', 'organization', 'organisation', 'supplier', 'vendor') && has(words, 'name')) {
         return 'org_name';
     }
     if (has(words, 'product', 'material') && has(words, 'name')) {
@@ -142,6 +148,25 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
  * @returns A conservative lexical role, when one is recognized.
  */
 function lexicalRole(property: SchemaProperty): string | undefined {
+    if (property.primitiveType === 'bool') {
+        return 'boolean_flag';
+    }
+    const propertyTokens = tokens(property.name);
+    const propertyWords = new Set(propertyTokens);
+    if (
+        property.primitiveType === 'string' &&
+        (property.maxLength ?? Number.POSITIVE_INFINITY) <= 2 &&
+        propertyTokens.at(-1) === 'control'
+    ) {
+        return 'control_code';
+    }
+    if (
+        has(propertyWords, 'created', 'changed', 'modified', 'updated') &&
+        has(propertyWords, 'by', 'user') &&
+        !has(propertyWords, 'name', 'description', 'fullname')
+    ) {
+        return 'audit_user';
+    }
     for (const evidence of [property.label, property.description, property.name]) {
         if (evidence) {
             const role = lexicalRoleForText(evidence, property.primitiveType);
