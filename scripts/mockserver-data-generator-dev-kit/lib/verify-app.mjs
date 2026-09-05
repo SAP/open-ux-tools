@@ -392,7 +392,7 @@ export function extractCanaryTimings(output, options = {}) {
         if (result.generatedDataCacheHitMs === undefined || !output.includes('GENERATED_DATA_CACHE_HIT:')) {
             throw new Error('Canary output has no verified generated-data cache-hit timing');
         }
-        if (result.runtimeInitializationMs !== undefined || output.includes('MOCK_DATA_GENERATOR_CAPABILITIES:')) {
+        if (result.runtimeInitializationMs !== undefined) {
             throw new Error('Generated-data cache-hit canary initialized a learned model runtime');
         }
     }

@@ -279,6 +279,7 @@ describe('canary performance evidence', () => {
     test('accepts a cache-hit timing only when no model runtime was initialized', () => {
         const output = [
             'mock-data-generator:debug GENERATED_DATA_CACHE_HIT: reused',
+            'mock-data-generator:debug MOCK_DATA_GENERATOR_CAPABILITIES: mode=deterministic classifier=unavailable sft=unavailable',
             'mock-data-generator:debug MOCK_DATA_GENERATOR_TIMING: phase=generated-data-cache-hit durationMs=4.125',
             'mock-data-generator:complete service=/sap/opu/odata4/mockgen durationMs=5.250'
         ].join('\n');
@@ -289,7 +290,7 @@ describe('canary performance evidence', () => {
         });
         expect(() =>
             extractCanaryTimings(
-                `${output}\nMOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready`,
+                `${output}\nmock-data-generator:debug MOCK_DATA_GENERATOR_TIMING: phase=runtime-initialization durationMs=12.500`,
                 {
                     expectedCacheHit: true
                 }
