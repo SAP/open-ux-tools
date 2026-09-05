@@ -211,6 +211,7 @@ export async function generateService(
 ): Promise<MockDataGeneratorResult> {
     validateOptions(options);
     assertMetadataInputWithinLimit(request.metadata);
+    const activeRuntime: MockDataGeneratorRuntime = options.mode === 'deterministic' ? {} : runtime;
     let resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>> = Object.freeze({});
     const diagnostics: MockDataGeneratorResult['diagnostics'][number][] = [];
     let classifierDegraded = false;
@@ -229,8 +230,8 @@ export async function generateService(
                 : parseCsn(request.metadata.content);
         const signal = request.signal ?? new AbortController().signal;
         let classifications: Awaited<ReturnType<typeof classifySchema>>['classifications'] = new Map();
-        if (runtime.classifier && options.mode !== 'deterministic') {
-            const classifierRun = await classifySchema(graph, runtime.classifier, signal);
+        if (activeRuntime.classifier) {
+            const classifierRun = await classifySchema(graph, activeRuntime.classifier, signal);
             classifications = classifierRun.classifications;
             diagnostics.push(...classifierRun.diagnostics);
             classifierDegraded = classifierRun.degraded;
@@ -245,14 +246,14 @@ export async function generateService(
         );
         resources = deterministic.resources;
         diagnostics.push(...deterministic.diagnostics);
-        if (runtime.sft && options.mode !== 'deterministic') {
+        if (activeRuntime.sft) {
             const sftRun = await applySftGeneration(
                 graph,
                 resources,
                 request.service,
                 options,
                 classifications,
-                runtime.sft,
+                activeRuntime.sft,
                 signal
             );
             resources = sftRun.resources;
@@ -265,14 +266,14 @@ export async function generateService(
     const result = Object.freeze({
         resources,
         diagnostics: Object.freeze(diagnostics),
-        capabilities: Object.freeze(capabilities(runtime, classifierDegraded, sftDegraded)),
+        capabilities: Object.freeze(capabilities(activeRuntime, classifierDegraded, sftDegraded)),
         fingerprints: Object.freeze({
             request: createGenerationFingerprint(request, options, {
-                ...(runtime.classifier ? { classifier: runtime.classifier.fingerprint } : {}),
-                ...(runtime.sft ? { sft: runtime.sft.fingerprint } : {})
+                ...(activeRuntime.classifier ? { classifier: activeRuntime.classifier.fingerprint } : {}),
+                ...(activeRuntime.sft ? { sft: activeRuntime.sft.fingerprint } : {})
             }),
-            ...(runtime.classifier ? { classifier: runtime.classifier.fingerprint } : {}),
-            ...(runtime.sft ? { sft: runtime.sft.fingerprint } : {})
+            ...(activeRuntime.classifier ? { classifier: activeRuntime.classifier.fingerprint } : {}),
+            ...(activeRuntime.sft ? { sft: activeRuntime.sft.fingerprint } : {})
         }),
         statistics: Object.freeze({ sft: sftStatistics })
     });

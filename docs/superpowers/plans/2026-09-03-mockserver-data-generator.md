@@ -1566,11 +1566,22 @@ middleware package from the application only for `--mockgen`, rejects a
 missing, unloadable, or wrong-version host before child-process creation with a
 stable path-free message, and leaves unflagged startup untouched. Test-first
 verification observed the intended failures before implementation and now
-passes 29 suites/250 tests for the generator, 27 suites/364 tests for the host
+passes 29 suites/251 tests for the generator, 27 suites/364 tests for the host
 core, and 2 suites/13 tests for the middleware on both Node 22.22.3 and Node
 24.20.0; all affected builds and lints pass with zero errors. The 11-suite,
 120-test development-kit integration package also passes. Independent re-review
 found no remaining critical, important, or minor issue in this scope.
+
+**Deterministic disablement increment (2026-09-05):** A test-first public API
+regression exposed that `mode: deterministic` skipped classifier and SFT calls
+but still reported both supplied runtime components as ready and included their
+fingerprints. The generator now removes the suppressed runtime from capability
+and fingerprint reporting as well as execution. Both supported Node lines pass
+29 suites/251 tests, build, and zero-error lint; the 11-suite/120-test
+cross-repository integration package and the 95,117-byte package boundary also
+pass. This provides an honest local all-learned-tier disablement control. The
+separate remote model-channel N-1 and T2-only kill-switch canary remain release
+gates.
 
 The exact clean kit is fingerprint
 `2587b8efb75aa190ccb4de62b789713a31a798493aa808fb17bae000e1d077f5`,

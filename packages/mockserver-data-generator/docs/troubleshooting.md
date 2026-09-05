@@ -110,6 +110,12 @@ development kit's guarded `--restore` flow; a service can also set
 the existing `sap-fe-mockserver` middleware and `start-mock` command; do not add
 a second middleware or start command.
 
+To retain MockGen's deterministic generation while disabling every learned
+tier, set `options.mode: deterministic`. The generator does not call the
+classifier or SFT runtime, reports both learned capabilities as unavailable,
+and omits their fingerprints from the result. This is a local operational
+control; it does not replace the still-pending model-channel T2 kill switch.
+
 ## Common degradation codes
 
 | Code | Meaning | Action |

@@ -239,6 +239,52 @@ describe('mockserver data generator public API', () => {
         expect(sft.generate).not.toHaveBeenCalled();
     });
 
+    it('reports learned components unavailable when deterministic mode suppresses a supplied runtime', async () => {
+        const classifier: SemanticClassifier = {
+            fingerprint: 'classifier-disabled-by-mode',
+            classify: jest.fn(async () => ({ role: 'unknown', confidence: 0, source: 'classifier' }))
+        };
+        const sft: SftGenerator = {
+            fingerprint: 'sft-disabled-by-mode',
+            generate: jest.fn(async () => ({ rows: [{ OpaqueName: 'Learned value' }] }))
+        };
+        const request: MockDataServiceRequest = {
+            metadata: {
+                format: 'edmx',
+                content: `<?xml version="1.0"?>
+                    <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                        <edmx:DataServices>
+                            <Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                                <EntityContainer Name="Container">
+                                    <EntitySet Name="Rows" EntityType="Demo.Row" />
+                                </EntityContainer>
+                                <EntityType Name="Row">
+                                    <Key><PropertyRef Name="ID" /></Key>
+                                    <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                                    <Property Name="OpaqueName" Type="Edm.String" Nullable="false" />
+                                </EntityType>
+                            </Schema>
+                        </edmx:DataServices>
+                    </edmx:Edmx>`
+            },
+            service: { urlPath: '/deterministic-kill-switch', odataVersion: '4.0' },
+            targets: [{ name: 'Rows', kind: 'entity-set' }],
+            existingData: {}
+        };
+
+        const result = await generateService(request, { mode: 'deterministic', rowsPerEntity: 1 }, { classifier, sft });
+
+        expect(result.capabilities).toEqual({
+            mode: 'deterministic',
+            classifier: 'unavailable',
+            sft: 'unavailable'
+        });
+        expect(result.fingerprints).not.toHaveProperty('classifier');
+        expect(result.fingerprints).not.toHaveProperty('sft');
+        expect(classifier.classify).not.toHaveBeenCalled();
+        expect(sft.generate).not.toHaveBeenCalled();
+    });
+
     it('accepts a bounded wide-entity SFT timeout and rejects values above two minutes', async () => {
         const request: MockDataServiceRequest = {
             metadata: { format: 'edmx', content: '<edmx:Edmx Version="4.0" />' },

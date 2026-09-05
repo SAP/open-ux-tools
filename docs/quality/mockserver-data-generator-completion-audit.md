@@ -73,7 +73,7 @@ means a measured threshold was missed by the named candidate.
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
 | Platform compatibility | local macOS / remote matrix pending | Accepted-integration V2/V4/CDS and learned-model evidence exists on macOS arm64; the real `onnxruntime-node` native addon executes a tiny graph and both MockGen backend adapters create and release sessions on Node 22.22.3 and 24.20.0 | Let the existing six-cell repository CI run the same contract on Ubuntu, Windows, and macOS with Node 22/24, then complete actual BAS proxy/certificate behavior |
-| Release and rollback | package-partial / external | The current installer restore passes; promoted model fingerprints cannot reuse N-1 rows, while explicit rollback can reuse only its matching verified cache | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
+| Release and rollback | package-partial / external | The current installer restore passes; promoted model fingerprints cannot reuse N-1 rows, while explicit rollback can reuse only its matching verified cache; deterministic mode suppresses supplied learned runtimes and reports no learned capabilities or fingerprints | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2-only kill switch canary, and stable promotion |
 
 ## Pilot evidence reconciliation
 
@@ -103,7 +103,7 @@ No pilot payload was copied or modified during this audit.
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 29 suites and 250 tests passed on both Node 22.22.3 and Node 24.20.0; package build and zero-error lint passed on both |
+| `@sap-ux/mockserver-data-generator` | 29 suites and 251 tests passed on both Node 22.22.3 and Node 24.20.0; package build and zero-error lint passed on both |
 | reviewed host packages | `fe-mockserver-core`: 27 suites and 364 tests on both Node 22.22.3 and Node 24.20.0; middleware: 2 suites and 13 tests; affected builds and zero-error lint passed |
 | development-kit integration tests | 11 suites and 120 tests passed, including exact launcher dispatch, default-off persistence, CDS fallback, and final WASM-decision regressions |
 | native runtime platform contract | the actual `onnxruntime-node@1.24.3` native addon executed a tiny ONNX graph; both public MockGen backend adapters constructed tensors, delegated session work, and demonstrably released their native sessions on macOS arm64 with Node 22.22.3 and 24.20.0 |
