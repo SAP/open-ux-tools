@@ -42,13 +42,14 @@ export async function loadCausalOnnxBackend(
             dimensions: ReadonlyArray<number>
         ) => CausalOnnxTensor;
     };
-    if (!runtime.InferenceSession?.create || !runtime.Tensor) {
+    const InferenceSession = runtime.InferenceSession;
+    const Tensor = runtime.Tensor;
+    if (!InferenceSession?.create || !Tensor) {
         throw new TypeError(`${packageName} does not expose the required causal ONNX API`);
     }
-    const Tensor = runtime.Tensor;
     return Object.freeze({
         createSession: (modelPath: string) =>
-            runtime.InferenceSession!.create(modelPath, {
+            InferenceSession.create(modelPath, {
                 executionProviders: ['cpu'],
                 graphOptimizationLevel: 'all',
                 executionMode: 'sequential',

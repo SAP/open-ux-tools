@@ -286,7 +286,11 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                     for (let rowIndex = 0; rowIndex < input.rowCount; rowIndex += 1) {
                         try {
                             const partial = await generateFields(fields, rowIndex, String(chunkIndex));
-                            Object.assign(rows[rowIndex]!, partial);
+                            const row = rows[rowIndex];
+                            if (!row) {
+                                throw new RangeError('SFT row index is outside its established bounds');
+                            }
+                            Object.assign(row, partial);
                         } catch (error) {
                             const reason = error instanceof Error ? error.message : String(error);
                             const failure = new Error(

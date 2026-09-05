@@ -41,13 +41,14 @@ export async function loadOnnxBackend(
         InferenceSession?: { create(modelPath: string, options?: object): Promise<OnnxSessionLike> };
         Tensor?: new (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) => OnnxTensorLike;
     };
-    if (!runtime.InferenceSession?.create || !runtime.Tensor) {
+    const InferenceSession = runtime.InferenceSession;
+    const Tensor = runtime.Tensor;
+    if (!InferenceSession?.create || !Tensor) {
         throw new TypeError(`${packageName} does not expose the required ONNX runtime API`);
     }
-    const Tensor = runtime.Tensor;
     return Object.freeze({
         createSession: (modelPath: string) =>
-            runtime.InferenceSession!.create(modelPath, {
+            InferenceSession.create(modelPath, {
                 executionProviders: ['cpu'],
                 graphOptimizationLevel: 'all',
                 executionMode: 'sequential'

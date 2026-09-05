@@ -73,6 +73,22 @@ interface DecodedToken {
     plainStringLength?: number;
 }
 
+/**
+ * Read an element after the caller has established the collection bounds.
+ *
+ * @param values bounded collection
+ * @param index established in-range index
+ * @param label privacy-safe collection label for an invariant failure
+ * @returns the indexed element
+ */
+function requiredElement<T>(values: ArrayLike<T>, index: number, label: string): T {
+    const value = values[index];
+    if (value === undefined) {
+        throw new RangeError(`${label} index is outside its established bounds`);
+    }
+    return value;
+}
+
 function plainStringLength(text: string): number | undefined {
     if (text.length === 0) {
         return undefined;
@@ -92,11 +108,15 @@ function mergeTokenIds(left: ReadonlyArray<number>, right: ReadonlyArray<number>
     let leftIndex = 0;
     let rightIndex = 0;
     while (leftIndex < left.length || rightIndex < right.length) {
-        if (rightIndex >= right.length || (leftIndex < left.length && left[leftIndex]! < right[rightIndex]!)) {
-            merged.push(left[leftIndex]!);
+        if (
+            rightIndex >= right.length ||
+            (leftIndex < left.length &&
+                requiredElement(left, leftIndex, 'left token') < requiredElement(right, rightIndex, 'right token'))
+        ) {
+            merged.push(requiredElement(left, leftIndex, 'left token'));
             leftIndex += 1;
         } else {
-            merged.push(right[rightIndex]!);
+            merged.push(requiredElement(right, rightIndex, 'right token'));
             rightIndex += 1;
         }
     }
@@ -193,11 +213,26 @@ function siftDown(heap: TokenProbability[], start: number): void {
             return;
         }
         const right = left + 1;
-        const child = right < heap.length && probabilityIsHigher(heap[right]!, heap[left]!) ? right : left;
-        if (!probabilityIsHigher(heap[child]!, heap[parent]!)) {
+        const child =
+            right < heap.length &&
+            probabilityIsHigher(
+                requiredElement(heap, right, 'probability heap'),
+                requiredElement(heap, left, 'probability heap')
+            )
+                ? right
+                : left;
+        if (
+            !probabilityIsHigher(
+                requiredElement(heap, child, 'probability heap'),
+                requiredElement(heap, parent, 'probability heap')
+            )
+        ) {
             return;
         }
-        [heap[parent], heap[child]] = [heap[child]!, heap[parent]!];
+        [heap[parent], heap[child]] = [
+            requiredElement(heap, child, 'probability heap'),
+            requiredElement(heap, parent, 'probability heap')
+        ];
         parent = child;
     }
 }
@@ -220,8 +255,11 @@ export function selectNucleus(
     const nucleus: TokenProbability[] = [];
     let cumulative = 0;
     while (heap.length > 0 && cumulative < topP) {
-        const highest = heap[0]!;
-        const last = heap.pop()!;
+        const highest = requiredElement(heap, 0, 'probability heap');
+        const last = heap.pop();
+        if (!last) {
+            throw new RangeError('probability heap became empty during selection');
+        }
         if (heap.length > 0) {
             heap[0] = last;
             siftDown(heap, 0);
@@ -263,15 +301,19 @@ function sample(
     }
     let total = 0;
     for (let index = 0; index < candidates.length; index += 1) {
-        const weight = Math.exp(score(candidates[index]!) - maximum);
+        const weight = Math.exp(score(requiredElement(candidates, index, 'candidate')) - maximum);
         weights[index] = weight;
         heap[index] = index;
         total += weight;
     }
     const isHigher = (left: number, right: number): boolean => {
-        const leftWeight = weights[left]!;
-        const rightWeight = weights[right]!;
-        return leftWeight > rightWeight || (leftWeight === rightWeight && candidates[left]! < candidates[right]!);
+        const leftWeight = requiredElement(weights, left, 'sampling weight');
+        const rightWeight = requiredElement(weights, right, 'sampling weight');
+        return (
+            leftWeight > rightWeight ||
+            (leftWeight === rightWeight &&
+                requiredElement(candidates, left, 'candidate') < requiredElement(candidates, right, 'candidate'))
+        );
     };
     const siftIndexDown = (start: number, size: number): void => {
         let parent = start;
@@ -281,11 +323,20 @@ function sample(
                 return;
             }
             const right = left + 1;
-            const child = right < size && isHigher(heap[right]!, heap[left]!) ? right : left;
-            if (!isHigher(heap[child]!, heap[parent]!)) {
+            const child =
+                right < size &&
+                isHigher(requiredElement(heap, right, 'sampling heap'), requiredElement(heap, left, 'sampling heap'))
+                    ? right
+                    : left;
+            if (
+                !isHigher(requiredElement(heap, child, 'sampling heap'), requiredElement(heap, parent, 'sampling heap'))
+            ) {
                 return;
             }
-            [heap[parent], heap[child]] = [heap[child]!, heap[parent]!];
+            [heap[parent], heap[child]] = [
+                requiredElement(heap, child, 'sampling heap'),
+                requiredElement(heap, parent, 'sampling heap')
+            ];
             parent = child;
         }
     };
@@ -297,25 +348,25 @@ function sample(
     let heapSize = candidates.length;
     let nucleusTotal = 0;
     while (heapSize > 0 && nucleusTotal < threshold) {
-        const highest = heap[0]!;
+        const highest = requiredElement(heap, 0, 'sampling heap');
         heapSize -= 1;
         if (heapSize > 0) {
-            heap[0] = heap[heapSize]!;
+            heap[0] = requiredElement(heap, heapSize, 'sampling heap');
             siftIndexDown(0, heapSize);
         }
         heap[heapSize] = highest;
-        nucleusTotal += weights[highest]!;
+        nucleusTotal += requiredElement(weights, highest, 'sampling weight');
     }
     const draw = random() * nucleusTotal;
     let cumulative = 0;
     for (let index = candidates.length - 1; index >= heapSize; index -= 1) {
-        const candidateIndex = heap[index]!;
-        cumulative += weights[candidateIndex]!;
+        const candidateIndex = requiredElement(heap, index, 'sampling heap');
+        cumulative += requiredElement(weights, candidateIndex, 'sampling weight');
         if (draw < cumulative) {
-            return candidates[candidateIndex]!;
+            return requiredElement(candidates, candidateIndex, 'candidate');
         }
     }
-    return candidates[heap[heapSize]!]!;
+    return requiredElement(candidates, requiredElement(heap, heapSize, 'sampling heap'), 'candidate');
 }
 
 function tokenTextTable(tokenizer: CausalTokenizer): ReadonlyArray<string | undefined> {
