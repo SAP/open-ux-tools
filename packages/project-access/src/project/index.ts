@@ -63,3 +63,4 @@ export {
 } from './specification.js';
 export { readFlexChanges } from './flex-changes.js';
 export { isUI5IdUnique } from './ui5-xml-id-validator.js';
+export { resolveApplicationTitle } from './app-title.js';
