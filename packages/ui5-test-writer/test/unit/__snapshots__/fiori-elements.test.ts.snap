@@ -246,7 +246,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -672,7 +673,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -1075,7 +1077,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -1478,7 +1481,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -1855,7 +1859,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -2184,7 +2189,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -2518,7 +2524,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -2925,7 +2932,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"vesc.demo.employee.project2\\": \\"../../\\"
+                \\"vesc.demo.employee.project2\\": \\"../../\\",
+                \\"vesc.demo.employee.project2.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -3449,7 +3457,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"vesc.demo.employee.project2\\": \\"../../\\"
+                \\"vesc.demo.employee.project2\\": \\"../../\\",
+                \\"vesc.demo.employee.project2.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -3952,7 +3961,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -5815,7 +5825,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -7509,7 +7520,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -9330,7 +9342,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -11157,7 +11170,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -11529,7 +11543,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"test.ui5-test-writer\\": \\"../../\\"
+                \\"test.ui5-test-writer\\": \\"../../\\",
+                \\"test.ui5-test-writer.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -11913,7 +11928,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -12371,7 +12387,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -12829,7 +12846,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -13261,7 +13279,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -13718,7 +13737,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"vesc.demo.employee.project2\\": \\"../../\\"
+                \\"vesc.demo.employee.project2\\": \\"../../\\",
+                \\"vesc.demo.employee.project2.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -14282,7 +14302,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -14810,7 +14831,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -15338,7 +15360,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -15836,7 +15859,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -16246,7 +16270,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -16656,7 +16681,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -17057,7 +17083,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -17525,7 +17552,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -17993,7 +18021,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -19920,7 +19949,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -21779,7 +21809,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23633,7 +23664,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"

@@ -25,7 +25,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 
     return new ListReport(
         {
-            appId: 'testNameSpace.lropv4cap',
+            appId: 'testnamespace.lropv4cap',
             componentId: 'BooksList',
             contextPath: '/Books'
         },

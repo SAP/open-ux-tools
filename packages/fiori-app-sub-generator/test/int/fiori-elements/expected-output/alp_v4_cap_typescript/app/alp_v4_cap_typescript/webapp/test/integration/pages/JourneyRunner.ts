@@ -5,11 +5,11 @@ import CustomBooksListGenerated from "./BooksList.gen";
 import CustomBooksObjectPageGenerated from "./BooksObjectPage.gen";
 
 const runner = new JourneyRunner({
-    launchUrl: sap.ui.require.toUrl("testNameSpace/alpv4captypescript") + "/test/flp.html#app-preview",
+    launchUrl: sap.ui.require.toUrl("testnamespace/alpv4captypescript") + "/test/flp.html#app-preview",
     pages: {
         onTheBooksListGenerated: new ListReport(
             {
-                appId: "testNameSpace.alpv4captypescript",
+                appId: "testnamespace.alpv4captypescript",
                 componentId: "BooksList",
                 entitySet: "Books",
                 contextPath: ""
@@ -18,7 +18,7 @@ const runner = new JourneyRunner({
         ),
         onTheBooksObjectPageGenerated: new ObjectPage(
             {
-                appId: "testNameSpace.alpv4captypescript",
+                appId: "testnamespace.alpv4captypescript",
                 componentId: "BooksObjectPage",
                 entitySet: "Books",
                 contextPath: ""

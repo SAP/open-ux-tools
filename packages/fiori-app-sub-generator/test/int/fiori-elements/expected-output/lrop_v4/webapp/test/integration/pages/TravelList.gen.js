@@ -25,7 +25,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 
     return new ListReport(
         {
-            appId: 'testNameSpace.lropv4',
+            appId: 'testnamespace.lropv4',
             componentId: 'TravelList',
             entitySet: 'Travel'
         },

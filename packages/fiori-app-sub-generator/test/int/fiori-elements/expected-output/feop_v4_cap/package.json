@@ -18,6 +18,6 @@
     "cds-plugin-ui5": "^0.17.0"
   },
   "scripts": {
-    "watch-feop_v4_cap": "cds watch --open testNameSpace.feopv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-feop_v4_cap": "cds watch --open testnamespace.feopv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"
   }
 }

@@ -24,7 +24,7 @@ sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
     };
 
     return new TemplatePage(
-        'testNameSpace.fpmv4::TravelMain',
+        'testnamespace.fpmv4::TravelMain',
         CustomPageDefinitions
     );
 });

@@ -32,7 +32,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 
     return new ObjectPage(
         {
-            appId: 'testNameSpace.feopv4cap',
+            appId: 'testnamespace.feopv4cap',
             componentId: 'BooksObjectPage',
             entitySet: 'Books'
         },

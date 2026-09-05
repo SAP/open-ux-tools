@@ -1,7 +1,7 @@
 {
   "_version": "1.33.0",
   "sap.app": {
-    "id": "testNameSpace.alpv4captypescript",
+    "id": "testnamespace.alpv4captypescript",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -60,7 +60,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "testNameSpace.alpv4captypescript.i18n.i18n"
+          "bundleName": "testnamespace.alpv4captypescript.i18n.i18n"
         }
       },
       "": {

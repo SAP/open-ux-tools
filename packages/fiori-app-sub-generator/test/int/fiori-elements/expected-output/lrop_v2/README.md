@@ -10,7 +10,7 @@
 |**Service URL**<br>https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/SEPMRA_PROD_MAN|
 |**Module Name**<br>lrop_v2|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
-|**Namespace**<br>testNameSpace|
+|**Namespace**<br>testnamespace|
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.98.0|
 |**Enable TypeScript**<br>False|
