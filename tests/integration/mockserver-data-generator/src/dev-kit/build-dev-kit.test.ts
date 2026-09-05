@@ -1,11 +1,16 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, test } from '@jest/globals';
-import { bundleEntry, renderReadme } from '../../../../../scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs';
+import {
+    buildDevKit,
+    bundleEntry,
+    parseBuildArguments,
+    renderReadme
+} from '../../../../../scripts/mockserver-data-generator-dev-kit/build-dev-kit.mjs';
 import {
     configureFioriApplication,
     wrapStartMockScript
@@ -40,6 +45,7 @@ function temporaryDirectory(): string {
 }
 
 function makePackageTarball(options?: {
+    dependencies?: Record<string, string>;
     includeBin?: boolean;
     includeDist?: boolean;
     packageName?: string;
@@ -56,6 +62,7 @@ function makePackageTarball(options?: {
             main: 'dist/index.js',
             bin: { 'mockserver-data-generator': 'dist/cli.js' },
             exports: { '.': './dist/index.js' },
+            ...(options?.dependencies ? { dependencies: options.dependencies } : {}),
             devDependencies: options?.reverseDependencies
                 ? { '@example/z-last': '1.0.0', '@example/a-first': '1.0.0' }
                 : { '@example/a-first': '1.0.0', '@example/z-last': '1.0.0' }
@@ -79,6 +86,117 @@ afterEach(() => {
 });
 
 describe('development kit artifact validation', () => {
+    test('builds from a complete pair of checksum-bound host tarballs without a host checkout', () => {
+        const coreArchive = makePackageTarball({ packageName: '@sap-ux/fe-mockserver-core' });
+        const middlewareArchive = makePackageTarball({
+            packageName: '@sap-ux/ui5-middleware-fe-mockserver',
+            dependencies: { '@sap-ux/fe-mockserver-core': '0.1.0' }
+        });
+        const outputDirectory = temporaryDirectory();
+        const hostSourceCommit = '1'.repeat(40);
+
+        const report = buildDevKit({
+            hostCoreTarball: coreArchive,
+            hostMiddlewareTarball: middlewareArchive,
+            hostSourceCommit,
+            outDir: outputDirectory
+        });
+
+        expect(existsSync(report.archivePath)).toBe(true);
+        expect(report.packages.map(({ packageName }) => packageName).sort()).toEqual([
+            '@sap-ux/fe-mockserver-core',
+            '@sap-ux/mockserver-data-generator',
+            '@sap-ux/ui5-middleware-fe-mockserver'
+        ]);
+        const kitRoot = basename(report.archivePath, '.tgz');
+        const manifest = JSON.parse(
+            execFileSync('tar', ['-xOf', report.archivePath, `${kitRoot}/dev-kit-manifest.json`], {
+                encoding: 'utf8'
+            })
+        ) as {
+            packages: Array<{
+                packageName: string;
+                source?: { repository?: string; commit?: string; dirty?: boolean };
+            }>;
+        };
+        expect(
+            manifest.packages
+                .filter(({ packageName }) => packageName !== '@sap-ux/mockserver-data-generator')
+                .map(({ source }) => source)
+        ).toEqual([
+            { repository: 'SAP/open-ux-odata', commit: hostSourceCommit, dirty: false },
+            { repository: 'SAP/open-ux-odata', commit: hostSourceCommit, dirty: false }
+        ]);
+    });
+
+    test('rejects an explicit middleware tarball built for a different host-core version', () => {
+        const coreArchive = makePackageTarball({ packageName: '@sap-ux/fe-mockserver-core' });
+        const middlewareArchive = makePackageTarball({
+            packageName: '@sap-ux/ui5-middleware-fe-mockserver',
+            dependencies: { '@sap-ux/fe-mockserver-core': '9.9.9' }
+        });
+
+        expect(() =>
+            buildDevKit({
+                hostCoreTarball: coreArchive,
+                hostMiddlewareTarball: middlewareArchive,
+                hostSourceCommit: '1'.repeat(40),
+                outDir: temporaryDirectory()
+            })
+        ).toThrow(/requires @sap-ux\/fe-mockserver-core@9\.9\.9/u);
+    });
+
+    test('accepts exactly one complete host input mode', () => {
+        const outputDirectory = temporaryDirectory();
+        const hostRoot = temporaryDirectory();
+        const coreArchive = makePackageTarball({ packageName: '@sap-ux/fe-mockserver-core' });
+        const middlewareArchive = makePackageTarball({
+            packageName: '@sap-ux/ui5-middleware-fe-mockserver',
+            dependencies: { '@sap-ux/fe-mockserver-core': '0.1.0' }
+        });
+
+        expect(
+            parseBuildArguments([
+                '--host-core-tgz',
+                coreArchive,
+                '--host-middleware-tgz',
+                middlewareArchive,
+                '--host-source-commit',
+                '1'.repeat(40),
+                '--out',
+                outputDirectory
+            ])
+        ).toEqual({
+            hostCoreTarball: coreArchive,
+            hostMiddlewareTarball: middlewareArchive,
+            hostSourceCommit: '1'.repeat(40),
+            outDir: outputDirectory,
+            requireClean: false
+        });
+        expect(parseBuildArguments(['--host-root', hostRoot, '--out', outputDirectory])).toEqual({
+            hostRoot,
+            outDir: outputDirectory,
+            requireClean: false
+        });
+        expect(() =>
+            parseBuildArguments([
+                '--host-root',
+                hostRoot,
+                '--host-core-tgz',
+                coreArchive,
+                '--host-middleware-tgz',
+                middlewareArchive,
+                '--host-source-commit',
+                '1'.repeat(40),
+                '--out',
+                outputDirectory
+            ])
+        ).toThrow(/exactly one host input mode/iu);
+        expect(() => parseBuildArguments(['--host-core-tgz', coreArchive, '--out', outputDirectory])).toThrow(
+            /both host package tarballs/iu
+        );
+    });
+
     test('keeps standard missing-data generation enabled in the CDS canary fixture', () => {
         const ui5MockYaml = readFileSync(join(cdsFioriFixture, 'ui5-mock.yaml'), 'utf8');
 

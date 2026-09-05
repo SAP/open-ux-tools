@@ -3,7 +3,10 @@
 import { execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import {
+    constants,
+    copyFileSync,
     existsSync,
+    lstatSync,
     mkdirSync,
     mkdtempSync,
     readFileSync,
@@ -26,11 +29,21 @@ import {
 import { createDevKitManifest, fingerprintManifest } from './lib/manifest.mjs';
 
 const TOOLS_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const PACKAGE_SPECS = [
-    { name: '@sap-ux/mockserver-data-generator', owner: 'tools' },
-    { name: '@sap-ux/fe-mockserver-core', owner: 'host' },
-    { name: '@sap-ux/ui5-middleware-fe-mockserver', owner: 'host' }
-];
+const GENERATOR_PACKAGE = '@sap-ux/mockserver-data-generator';
+const HOST_CORE_PACKAGE = '@sap-ux/fe-mockserver-core';
+const HOST_MIDDLEWARE_PACKAGE = '@sap-ux/ui5-middleware-fe-mockserver';
+const COMMIT_PATTERN = /^[a-f\d]{40}$/u;
+
+/**
+ * @typedef {object} DevKitReport
+ * @property {string} archivePath
+ * @property {number} bytes
+ * @property {string} sha256
+ * @property {string} fingerprint
+ * @property {boolean} reproducible
+ * @property {number} entries
+ * @property {Array<{packageName: string, version: string, sha256: string, bytes: number}>} packages
+ */
 
 function readJson(filePath) {
     return JSON.parse(readFileSync(filePath, 'utf8'));
@@ -88,6 +101,75 @@ function packPackage({ root, packageName, destination, source }) {
     const finalPath = join(destination, finalFilename);
     renameSync(initialPath, finalPath);
     return { ...inspectPackedArtifact(finalPath, packageName, normalizedInspection.version), source };
+}
+
+function copyPackedPackage({ archivePath, packageName, destination, source }) {
+    if (typeof archivePath !== 'string' || !isAbsolute(archivePath)) {
+        throw new Error(`Explicit tarball for ${packageName} must be an absolute path`);
+    }
+    const sourceInfo = lstatSync(archivePath);
+    if (!sourceInfo.isFile() || sourceInfo.isSymbolicLink()) {
+        throw new Error(`Explicit tarball for ${packageName} must be a regular non-symbolic-link file`);
+    }
+    const canonicalSource = realpathSync(archivePath);
+    const inspection = inspectPackedArtifact(canonicalSource, packageName);
+    const safePackageName = packageName.replace(/^@/u, '').replaceAll('/', '-');
+    const filename = `${safePackageName}-${inspection.version}-${inspection.sha256.slice(0, 12)}.tgz`;
+    const destinationPath = join(destination, filename);
+    copyFileSync(canonicalSource, destinationPath, constants.COPYFILE_EXCL);
+    return { ...inspectPackedArtifact(destinationPath, packageName, inspection.version), source };
+}
+
+function externalHostPackages({ hostCoreTarball, hostMiddlewareTarball, hostSourceCommit, destination }) {
+    const source = { repository: 'SAP/open-ux-odata', commit: hostSourceCommit, dirty: false };
+    const core = copyPackedPackage({
+        archivePath: hostCoreTarball,
+        packageName: HOST_CORE_PACKAGE,
+        destination,
+        source
+    });
+    const middleware = copyPackedPackage({
+        archivePath: hostMiddlewareTarball,
+        packageName: HOST_MIDDLEWARE_PACKAGE,
+        destination,
+        source
+    });
+    const middlewareManifest = JSON.parse(execute('tar', ['-xOf', hostMiddlewareTarball, 'package/package.json']));
+    const requiredCoreVersion = middlewareManifest.dependencies?.[HOST_CORE_PACKAGE];
+    if (requiredCoreVersion !== core.version) {
+        throw new Error(
+            `${HOST_MIDDLEWARE_PACKAGE}@${middleware.version} requires ${HOST_CORE_PACKAGE}@${String(requiredCoreVersion)}, but the supplied core is ${core.version}`
+        );
+    }
+    return [core, middleware];
+}
+
+function hostInput(options) {
+    const hasRoot = options.hostRoot !== undefined;
+    const externalValues = [options.hostCoreTarball, options.hostMiddlewareTarball, options.hostSourceCommit];
+    const hasExternal = externalValues.some((value) => value !== undefined);
+    if (hasRoot === hasExternal) {
+        throw new Error('Exactly one host input mode is required: --host-root or explicit host package tarballs');
+    }
+    if (hasRoot) {
+        if (typeof options.hostRoot !== 'string' || !isAbsolute(options.hostRoot)) {
+            throw new Error('--host-root must be an absolute path');
+        }
+        const root = resolve(options.hostRoot);
+        return { mode: 'worktree', root };
+    }
+    if (typeof options.hostCoreTarball !== 'string' || typeof options.hostMiddlewareTarball !== 'string') {
+        throw new Error('Both host package tarballs are required for the explicit host input mode');
+    }
+    if (typeof options.hostSourceCommit !== 'string' || !COMMIT_PATTERN.test(options.hostSourceCommit)) {
+        throw new Error('--host-source-commit must be the exact 40-character lowercase host commit');
+    }
+    return {
+        mode: 'tarballs',
+        core: options.hostCoreTarball,
+        middleware: options.hostMiddlewareTarball,
+        source: { repository: 'SAP/open-ux-odata', commit: options.hostSourceCommit, dirty: false }
+    };
 }
 
 /**
@@ -191,18 +273,28 @@ contains no model manifest, runtime, or weights.
  * Build a portable development kit from the current tools and host worktrees.
  *
  * @param {object} options build options
- * @param {string} options.hostRoot open-ux-odata worktree containing the host SPI
+ * @param {string} [options.hostRoot] open-ux-odata worktree containing the host SPI
+ * @param {string} [options.hostCoreTarball] packed host-core archive when no worktree is available
+ * @param {string} [options.hostMiddlewareTarball] packed middleware archive when no worktree is available
+ * @param {string} [options.hostSourceCommit] exact source commit for the explicit host archives
  * @param {string} options.outDir output directory
  * @param {boolean} [options.requireClean] reject dirty source worktrees
- * @returns {object} archive report
+ * @returns {DevKitReport} archive report
  */
-export function buildDevKit({ hostRoot, outDir, requireClean = false }) {
-    if (!isAbsolute(hostRoot) || !isAbsolute(outDir)) {
-        throw new Error('--host-root and --out must be absolute paths');
+export function buildDevKit({
+    hostRoot,
+    hostCoreTarball,
+    hostMiddlewareTarball,
+    hostSourceCommit,
+    outDir,
+    requireClean = false
+}) {
+    if (typeof outDir !== 'string' || !isAbsolute(outDir)) {
+        throw new Error('--out must be an absolute path');
     }
-    const canonicalHostRoot = resolve(hostRoot);
+    const host = hostInput({ hostRoot, hostCoreTarball, hostMiddlewareTarball, hostSourceCommit });
     const toolsSource = sourceState(TOOLS_ROOT, 'SAP/open-ux-tools');
-    const hostSource = sourceState(canonicalHostRoot, 'SAP/open-ux-odata');
+    const hostSource = host.mode === 'worktree' ? sourceState(host.root, 'SAP/open-ux-odata') : host.source;
     if (requireClean && (toolsSource.dirty || hostSource.dirty)) {
         throw new Error('--require-clean cannot build from a dirty source worktree');
     }
@@ -211,14 +303,31 @@ export function buildDevKit({ hostRoot, outDir, requireClean = false }) {
         const stagingRoot = join(temporaryRoot, 'payload');
         const packageDirectory = join(stagingRoot, 'packages');
         mkdirSync(packageDirectory, { recursive: true });
-        const packages = PACKAGE_SPECS.map((spec) =>
+        const hostPackages =
+            host.mode === 'worktree'
+                ? [HOST_CORE_PACKAGE, HOST_MIDDLEWARE_PACKAGE].map((packageName) =>
+                      packPackage({
+                          root: host.root,
+                          packageName,
+                          destination: packageDirectory,
+                          source: hostSource
+                      })
+                  )
+                : externalHostPackages({
+                      hostCoreTarball: host.core,
+                      hostMiddlewareTarball: host.middleware,
+                      hostSourceCommit: hostSource.commit,
+                      destination: packageDirectory
+                  });
+        const packages = [
             packPackage({
-                root: spec.owner === 'tools' ? TOOLS_ROOT : canonicalHostRoot,
-                packageName: spec.name,
+                root: TOOLS_ROOT,
+                packageName: GENERATOR_PACKAGE,
                 destination: packageDirectory,
-                source: spec.owner === 'tools' ? toolsSource : hostSource
-            })
-        );
+                source: toolsSource
+            }),
+            ...hostPackages
+        ];
 
         const setupOutput = join(stagingRoot, 'setup-local-fiori-app.mjs');
         const configureOutput = join(stagingRoot, 'configure-app.mjs');
@@ -293,11 +402,25 @@ function readOption(argv, name) {
 
 export function parseBuildArguments(argv) {
     const hostRoot = readOption(argv, '--host-root');
+    const hostCoreTarball = readOption(argv, '--host-core-tgz');
+    const hostMiddlewareTarball = readOption(argv, '--host-middleware-tgz');
+    const hostSourceCommit = readOption(argv, '--host-source-commit');
     const outDir = readOption(argv, '--out');
-    if (!hostRoot || !outDir) {
-        throw new Error('Usage: build-dev-kit.mjs --host-root <absolute-path> --out <absolute-directory>');
+    if (!outDir) {
+        throw new Error(
+            'Usage: build-dev-kit.mjs (--host-root <absolute-path> | --host-core-tgz <absolute-path> --host-middleware-tgz <absolute-path> --host-source-commit <commit>) --out <absolute-directory>'
+        );
     }
-    return { hostRoot, outDir, requireClean: argv.includes('--require-clean') };
+    const parsed = {
+        ...(hostRoot ? { hostRoot } : {}),
+        ...(hostCoreTarball ? { hostCoreTarball } : {}),
+        ...(hostMiddlewareTarball ? { hostMiddlewareTarball } : {}),
+        ...(hostSourceCommit ? { hostSourceCommit } : {}),
+        outDir,
+        requireClean: argv.includes('--require-clean')
+    };
+    hostInput(parsed);
+    return parsed;
 }
 
 if (process.argv[1] && realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])) {
