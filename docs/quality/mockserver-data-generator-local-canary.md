@@ -481,10 +481,36 @@ was built twice from the same clean sources. The archives were byte-identical.
 - Application immutability: the aggregate SHA-256 over every file checksum and path was `7ca2bb0ea24d463c1e08db0c1e4fb55ac12f84190d26047be646e950573932c7` before and after both starts
 - Restore: after write permission was returned solely to the disposable fixture, installer restore matched the original application byte-for-byte outside disposable `node_modules`
 
-The current handoff archive is
+The handoff archive for this read-only checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-7e0fccc5a7bf528d.tgz`.
-Verify the SHA-256 before extraction. This is the current local and BAS
-candidate; earlier archives remain historical evidence.
+Verify the SHA-256 before extraction. It remains the exact read-only evidence;
+later archives supersede it for new local and BAS testing.
+
+## Current proxy-aware archive canary
+
+After adding lazy environment-proxy support to model acquisition, the
+development kit was built twice from the same clean sources. The archives were
+byte-identical, and the exact handoff archive passed separate deterministic V4
+and retained-classifier/SFT V2 installations.
+
+- Dev-kit fingerprint: `74af647b365069d6fa5cecb21f85bdfff262040653a95efb91f24083d1c73ecb`
+- Archive SHA-256: `935257d2bd5c8df2b19af21df3f7af0fab703317fb3dc42e736a4d9c6e93dcaa`
+- Archive size: 550,771 bytes; 10 entries
+- Source state: clean `SAP/open-ux-tools` commit `912306df4df55103d858f29aad9896583c814337` and clean `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- Reproducibility: two clean builds had the same fingerprint, archive size, SHA-256, package hashes, and binary contents
+- Generator tarball: 82,560 bytes, SHA-256 `ecfc7831eade7c5242d5eb2bf4ff915219a6107a028defdcf85718183c15d176`
+- Host tarballs: core remained 157,296 bytes with SHA-256 `24877137509f13f4792931444b210313be4bbf273ef1c8fa5655a1e1cebc3251`; middleware remained 13,117 bytes with SHA-256 `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Package verification: 23 suites and 197 tests passed with 85.63% statement coverage; TypeScript build, zero-error lint, formatting, and the 67-file packed boundary passed
+- Proxy verification: default model acquisition used one local CONNECT tunnel when `HTTP_PROXY` was configured; the verified warm-cache path remains network-free
+- Deterministic verification: a real 615-package V4 install contained exactly one `sap-fe-mockserver`; provider discovery, `$metadata`, `Products?$top=1`, one generated row, and restore passed; the generated-data cache path took 17.098 ms and host provider work took 17.828 ms
+- Learned verification: a real 636-package V2 install used exact `onnxruntime-node@1.24.3`; retained manifest SHA-256 `9e787993af66db136a72ed415818cabbd21cf296f4ca8a0f9cdc0e13723be961`; both classifier and SFT were ready; the provider executed; `$metadata` and `Products?$top=1` passed with one row
+- Learned timing: 1,359.545 ms runtime initialization; 2,535.986 ms whole-service generation; 2,536.934 ms host provider duration
+- Restore verification: both fixtures matched their source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-74af647b365069d6.tgz`.
+Verify its SHA-256 before extraction. This is the current local and BAS
+candidate; prior archives remain historical evidence for their exact gates.
 
 ## Scope boundary
 

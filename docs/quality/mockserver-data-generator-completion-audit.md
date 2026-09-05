@@ -6,13 +6,13 @@ Candidate source:
 
 - exact realism runtime package: `817382b88f2cd88a84eb093410ad2a3a367b5505`
 - post-evidence production gate: `88e0f6b878e02cbd7e92c6de96ab23c57c5de9f0`
-- development kit source: `0441441e190bfab33130a4466c527239c8613648`
+- development kit source: `912306df4df55103d858f29aad9896583c814337`
 - current `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - development-kit `SAP/open-ux-odata`: `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
 - portable development-kit fingerprint:
-  `7e0fccc5a7bf528da54ae298fbb3568d8ed04b791b0b51fc962f3bb55bc58a00`
+  `74af647b365069d6fa5cecb21f85bdfff262040653a95efb91f24083d1c73ecb`
 - portable development-kit SHA-256:
-  `45d4d8537cb1ccd447ffd220aba287f138b07b71b7cd617171fcb31b11a0143d`
+  `935257d2bd5c8df2b19af21df3f7af0fab703317fb3dc42e736a4d9c6e93dcaa`
 
 ## Verdict
 
@@ -59,14 +59,14 @@ means a measured threshold was missed by the named candidate.
 | Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests; the final cohort has 16/16 non-empty resources and 11/11 passing frozen assertions | Release-platform cohort reruns |
 | Classifier and SFT reuse | proven locally | retained MiniLM classifier and SmolLM2 INT8 SFT cache verify and execute through the production package; the exact final cohort records 178/178 parsed responses and 821/846 accepted eligible fields across all six targets | Governance, managed immutable distribution, and fresh release-candidate qualification |
 | Failure degradation | proven locally | the [degradation evidence](./mockserver-data-generator-degradation.md) covers offline first use, missing model/runtime, corrupt acquisition, checksum rejection, timeout, malformed output, cache corruption/read-only operation, cancellation, provider load failure, retry policy, complete fallback rows, and diagnostic privacy | Repeat the matrix on release platforms and published artifacts |
-| Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, pre-acquisition descendant-symlink rejection, HTTPS-preserving bounded redirects, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, and warm network-free cache | Approved remote bundle and proxy/BAS acquisition canary |
+| Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, pre-acquisition descendant-symlink rejection, HTTPS-preserving bounded redirects, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, warm network-free cache, and environment-proxy CONNECT routing | Approved remote bundle and BAS HTTPS proxy/certificate acquisition canary |
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | proven locally / platform | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, deterministic 32 MiB LRU quota, and 25.306 ms fresh-process p95 without model initialization | Repeat on release platforms |
 | Metadata input boundary | proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit, multibyte limit-plus-one, and FE diagnostic/fallback tests pass | Repeat against the published FE package on release platforms |
 | Generated-result boundary | proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache or host publication | Repeat against the published FE package on release platforms |
 | Development-kit application setup | proven | one middleware, one `ui5-mock.yaml`, and the existing `start-mock`; the unpublished installer owns the local provider mutation while shared configuration packages remain unchanged | Published-version compatibility run |
-| Local/BAS development kit | proven locally / platform | two clean-source builds produced the same current 549,919-byte archive byte-for-byte; its installer and three package tarballs are byte-identical to the read-only deterministic V4 and retained-classifier/SFT V2 canaries, and its generated handoff README documents the write-access boundary | Run the recorded procedure, including the learned path, in an actual BAS dev space |
-| Package boundary | proven | current source tarball is 81,861 bytes and contains required architecture, operations, and security guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
+| Local/BAS development kit | proven locally / platform | two clean-source builds produced the same current 550,771-byte archive byte-for-byte; the exact archive passed deterministic V4 and retained-classifier/SFT V2 HTTP canaries and byte-exact application restore | Run the recorded procedure, including the learned path, in an actual BAS dev space |
+| Package boundary | proven | current source tarball is 82,560 bytes and contains required architecture, operations, proxy guidance, and security guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
 | Total installed/cache footprint | proven locally / distribution pending | exact evaluation- and integration-bound `darwin-arm64` footprint: 264,636,488 bytes against a 314,572,800-byte ceiling; upstream multi-platform closure remains 449,503,668 bytes | Convert the proof into supported upstream or SAP-governed platform packages and qualify every release platform |
@@ -74,7 +74,7 @@ means a measured threshold was missed by the named candidate.
 | Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and deterministic replay; its SFT gate is 100% parse and 97.04% accepted-slot fill; the historical pilot report remains comparison evidence and failed at 26.67% | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
-| Platform compatibility | platform | macOS arm64 passes on Node 22.22.2 and 24.20.0, including generator/host suites, exact-archive deterministic and learned canaries, and restore; packed paths with spaces and non-ASCII characters pass; on Node 22 a fully non-writable installed application starts twice using an external generated-data cache without changing any of its 12,342 files | macOS x64, Ubuntu and Windows on Node 22/24; actual BAS; proxy and remaining cross-platform path edge cases |
+| Platform compatibility | platform | macOS arm64 passes on Node 22.22.2 and 24.20.0, including generator/host suites, exact-archive deterministic and learned canaries, and restore; packed paths with spaces and non-ASCII characters pass; on Node 22 a fully non-writable installed application starts twice using an external generated-data cache without changing any of its 12,342 files; a local CONNECT proxy proves environment routing | macOS x64, Ubuntu and Windows on Node 22/24; actual BAS HTTPS proxy/certificate behavior and remaining cross-platform path edge cases |
 | Release and rollback | partial / external | local installer upgrade failure and byte-exact restore pass; promoted model fingerprints cannot reuse N-1 generated rows, while an explicit rollback can reuse only its matching verified cache without model initialization | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
 ## Current verification snapshot
@@ -83,15 +83,17 @@ means a measured threshold was missed by the named candidate.
 | --- | ---: |
 | `@sap-ux/fe-mockserver-core` | 27 suites, 359 tests and 282 snapshots passed |
 | `@sap-ux/ui5-middleware-fe-mockserver` | 2 suites, 12 tests passed |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 196 tests passed; 85.55% statement coverage; build and package check passed; lint has zero errors |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 197 tests passed; 85.63% statement coverage; build and package check passed; lint has zero errors |
 | development kit, degradation, and evaluation harness | 11 suites, 103 tests passed; build passed; lint has zero errors |
 | final realism cohort | 311 records; 178/178 parsed; 821/846 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; byte-identical replay |
 | exact deterministic archive canary | provider executed; metadata passed; one row returned; 15.957 ms verified generated-data cache path; 16.739 ms host; exact restore passed |
 | exact learned V2 archive canary | classifier and SFT ready; provider executed; metadata passed; one row returned; 1,363.187 ms runtime initialization; 2,520.021 ms generation; 2,520.791 ms host; exact restore passed |
+| current proxy-aware deterministic archive canary | exact `74af647b365069d6` archive installed 615 packages; one middleware and provider executed; metadata passed; one row returned; 17.098 ms generated-data cache path; 17.828 ms host; exact restore passed |
+| current proxy-aware learned V2 archive canary | exact `74af647b365069d6` archive installed 636 packages; classifier and SFT ready; provider executed; metadata passed; one row returned; 1,359.545 ms runtime initialization; 2,535.986 ms generation; 2,536.934 ms host; exact restore passed |
 | read-only application canary | exact archive packages installed into a 12,342-file application; the whole tree was non-writable; external-cache generation took 25.780 ms and 26.571 ms host time; the next start hit cache in 19.045 ms and 19.791 ms host time; the aggregate SHA-256 over every file checksum and path remained `7ca2bb0ea24d463c1e08db0c1e4fb55ac12f84190d26047be646e950573932c7` |
 | Node 24.20.0 macOS arm64 | generator 23 suites/196 tests, host core 27 suites/359 tests/282 snapshots, and middleware 2 suites/12 tests passed; exact V4 deterministic and V2 classifier/SFT archive canaries plus byte-exact restores passed |
 | local model rollback cache safety | model A, promoted model B, and rolled-back model A used fingerprint-isolated cache keys; B did not reuse A, while rollback reused only A without initializing a runtime |
-| current source package archive | 81,861 / 5,242,880 bytes, pass |
+| current source package archive | 82,560 / 5,242,880 bytes, pass |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
 | upstream multi-platform total installed and cache | 449,503,668 / 314,572,800 bytes, fail |
 | experimental platform-runtime total installed and cache | 264,636,488 / 314,572,800 bytes, pass |

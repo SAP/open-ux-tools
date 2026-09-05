@@ -770,6 +770,14 @@ pnpm --filter @sap-ux-private/mockserver-data-generator-integration-tests test:i
 - [ ] Add `mockserver-data-generator verify` to check cached hashes and report component fingerprints without printing local data.
 - [ ] Bound automatic provider acquisition to 30 seconds before deterministic fallback; retain incomplete data only as a non-loadable resumable temporary file.
 
+**Implementation record (2026-09-05):** The production downloader and CLI now
+cover immutable manifests, streamed size/hash verification, secure redirects,
+mirror selection, unique partial publication, cross-process ownership fencing,
+late cancellation, warm offline verification, and bounded acquisition. Commit
+`912306df4df55103d858f29aad9896583c814337` adds lazy `HTTP_PROXY`,
+`HTTPS_PROXY`, and `NO_PROXY` handling through a locally verified CONNECT path;
+actual BAS HTTPS proxy and certificate behavior remains a platform gate.
+
 ### Task 7.3: Add runtime contracts and degradation
 
 **Files:**
