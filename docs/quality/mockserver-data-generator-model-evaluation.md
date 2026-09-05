@@ -931,3 +931,47 @@ hand-built platform runtime. Production should use supported per-platform
 native packages and repeat the matrix on every supported environment. The WASM
 decision remains no-go: it was slower, used more memory, and did not solve the
 complete footprint as effectively as native platform packaging.
+
+## Post-review platform-runtime rebind
+
+The platform-runtime campaign was rerun after the launcher and host-lifecycle
+review against clean `SAP/open-ux-tools` commit
+`066acdfc366cd6d1bdbbdcbff2b7c95391ce254e` and clean `SAP/open-ux-odata`
+commit `45abe80a028530601bf5d67d565f3384a6648ead`. The retained model revision,
+classifier predictions, and SFT outputs are unchanged.
+
+The classifier again evaluated all 300 governed records: 233 were eligible and
+67 remained quarantined. Routed precision was 83.82% at 29.18% coverage. The
+INT8 SFT run parsed 16/16 responses with exact keys and filled 261/261 fields;
+its p95 was 9,130.225 ms and peak process RSS was 1,057,521,664 bytes.
+
+| Measurement | Reviewed `darwin-arm64` runtime proof |
+| --- | ---: |
+| Deterministic installed closure | 3,945,496 bytes |
+| Installed learned closure | 40,731,877 bytes |
+| Verified model cache | 192,167,584 bytes |
+| Total installed and cache footprint | **266,453,893 bytes, pass** |
+| Headroom below 300 MiB | 48,118,907 bytes |
+| Cold whole-service p95 | 1,567.782 ms |
+| Warm-cache p95 | 20.775 ms |
+| First acquisition p95 | 664.750 ms |
+| Host-provider p95 | 1,568.577 ms |
+
+| Report | File SHA-256 | Report fingerprint |
+| --- | --- | --- |
+| Model evaluation | `d11111b10b9229245bbe8c0d7c701239aae79d53a6715accf082b31053b3752a` | `40e95b0bf7991cee7601aacd114de88f7746b0ab1210c0ded56d69e81e7046cb` |
+| Integration | `bd34850f532db79bbf51f79c609d3b843e85f98ad2afec906f1845ab3449c734` | `e6bac4de3b0d355b4c7686fcc47826e93c6d7ff590414ecc1be3a9b6e50a3db3` |
+| Footprint | `001e7a7d78798f8a3c3bad07a52e2a0c541a62e4034e312be8864fd2f762c79b` | `a0a8d143693126cb67da86269f503671d6107f45d0ee419471b1d33daa1d788c` |
+
+The reports are retained in
+`/Users/I335123/Downloads/mockserver-data-generator-evidence-066acdfc`. The
+exact experimental runtime archive is retained at
+`/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-metadata-ba8699cdf/onnxruntime-node-1.24.3-darwin-arm64-experimental.tgz`
+with SHA-256
+`a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
+
+The upstream multi-platform campaign was not rerun after these review fixes;
+the preceding 451,328,075-byte result remains the prior exact upstream
+baseline. This new run proves that the reviewed code still passes with the
+platform-specific native approach. It does not convert the experimental
+archive into a supported production distribution.

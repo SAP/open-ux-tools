@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `f1905ad2a4d61e1e4a0e7809fad806172d655cb98851857e7e29679e0435f44f`
-- archive SHA-256: `4cfc35715eabc367c9926d1421ec73e3015d0c6576b65624931510126926d888`
-- archive size: 561,891 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `d65f9c1b5bbea6abeb96d921c9e079a97aeddcf6`; `SAP/open-ux-odata` `3556f352d0e4b8f7397bd30748110d2701cf0a1a`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f1905ad2a4d61e1e.tgz`
+- dev-kit fingerprint: `5f9e14c466306caae5ce9e663e8b7c56cad0de819e7a5b9850c6075087b32979`
+- archive SHA-256: `bc322672d0126bafe08ae7543bd98837abe5f9052e9f2ca36e8402d700e6c918`
+- archive size: 564,806 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `066acdfc366cd6d1bdbbdcbff2b7c95391ce254e`; `SAP/open-ux-odata` `45abe80a028530601bf5d67d565f3384a6648ead`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`
 
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema
@@ -27,18 +27,15 @@ preview/stable manifest ceiling, metadata-derived semantic coherence, and the
 executable final-cohort gate. It also contains the packaged security guide,
 pre-acquisition model-cache descendant checks, HTTPS-preserving bounded
 redirects, environment-proxy routing, and an exact packed-document/link
-contract. The exact archive passed a retained-classifier/SFT V4 canary and a
-five-sample integrated campaign after correcting chunked-SFT cache statistics
-and enforcing the package's production TypeScript safety rules for explicit
-returns, unsafe assignments, default paths, consistent returns, and non-null
-assertions.
-All five cold generations, warm-cache starts, and first-use acquisitions
-passed; warm starts did not initialize model sessions. The current p95 values
-are 2,511.287 ms cold, 19.737 ms warm cache, 618.199 ms acquisition, and
-2,512.224 ms host provider work. Earlier clean archives remain the
-cross-format V2/V4/CDS and read-only evidence. The local CONNECT proxy
-regression does not substitute for an HTTPS proxy and certificate test inside
-BAS.
+contract. The exact archive passed separate standard and
+retained-classifier/SFT canaries in fresh packed OData V2, OData V4, and
+CDS-through-FE applications. It also passed the literal
+`npm run start-mock` and `npm run start-mock -- --mockgen` workflow. All five
+cold generations, warm-cache starts, and first-use acquisitions passed; warm
+starts did not initialize model sessions. The current p95 values are
+1,567.782 ms cold, 20.775 ms warm cache, 664.750 ms acquisition, and
+1,568.577 ms host provider work. The local CONNECT proxy regression does not
+substitute for an HTTPS proxy and certificate test inside BAS.
 
 ## Inputs to record
 

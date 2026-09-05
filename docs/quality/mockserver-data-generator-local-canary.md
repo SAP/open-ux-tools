@@ -701,6 +701,50 @@ The passing platform result proves the size-reduction approach, but the archive
 is still an experimental local build. It must be replaced by a supported
 per-platform distribution before release.
 
+## Post-review launcher and lifecycle canary
+
+The final focused review identified and then verified fixes for child-help
+forwarding, permanently stored activation flags, preservation of an existing
+`start-mock` command, canary routing through the installed launcher, fresh
+providers per generation epoch, bounded cleanup, and disposal during partial
+startup. No critical or important finding remained in that scope.
+
+- Clean source commits: `SAP/open-ux-tools`
+  `066acdfc366cd6d1bdbbdcbff2b7c95391ce254e` and `SAP/open-ux-odata`
+  `45abe80a028530601bf5d67d565f3384a6648ead`
+- Dev-kit: 564,806 bytes; fingerprint
+  `5f9e14c466306caae5ce9e663e8b7c56cad0de819e7a5b9850c6075087b32979`;
+  SHA-256
+  `bc322672d0126bafe08ae7543bd98837abe5f9052e9f2ca36e8402d700e6c918`;
+  two clean builds were byte-identical
+- Package archives: generator 93,516 bytes / SHA-256
+  `5bc5b9eb1e99a60dabbdd90d3b024e37c92c395a89f77f577b2e15ba1c4d32f3`;
+  host core SHA-256
+  `c3af4c945c13999fcf33ee9120826260d70c8032bbf91976a6957a6913ee2d37`;
+  middleware SHA-256
+  `d8173e78239ce831a165ba7ca938646db92969093f1348dc043d471df4053d93`
+- Fresh packed V2, V4, and CDS-through-FE applications each passed separate
+  unflagged standard and flagged learned HTTP canaries. Every standard path
+  returned a row with `providerExecuted: false`; every flagged path returned a
+  row with `providerExecuted: true` and `learnedRuntimeVerified: true`.
+- Learned whole-service generation was 1,568.783 ms for V2, 1,694.341 ms for
+  V4, and 1,680.054 ms for CDS. These are functional samples.
+- The literal V4 command `npm run start-mock` served the standard
+  `ProductName_0` row. The literal command
+  `npm run start-mock -- --mockgen` served a learned `Safety Valve` row with a
+  coherent supplier email, price, and active flag.
+- The exact platform-runtime model campaign again ran all 233 governed
+  classifier cases and all 16 SFT cases. INT8 parsed 16/16 with exact keys and
+  filled 261/261 fields; classifier and SFT output fingerprints were unchanged.
+- The five-sample integrated p95 values were 1,567.782 ms cold, 20.775 ms warm
+  cache, 664.750 ms first acquisition, and 1,568.577 ms host provider work.
+  Total installed-and-cache footprint was 266,453,893 bytes, leaving
+  48,118,907 bytes below the 300 MiB gate.
+- Current reports are retained in
+  `/Users/I335123/Downloads/mockserver-data-generator-evidence-066acdfc`.
+- Current BAS handoff archive:
+  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,

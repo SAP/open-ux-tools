@@ -4,14 +4,14 @@ Date: 2026-09-05
 
 Candidate source:
 
-- approved generator and `--mockgen` launcher:
-  `c562a5571811b5e7bdab20ef732a6d103fab4fb6`
-- approved minimal `SAP/open-ux-odata` host extension:
-  `3556f352d0e4b8f7397bd30748110d2701cf0a1a`
+- reviewed generator and `--mockgen` launcher:
+  `066acdfc366cd6d1bdbbdcbff2b7c95391ce254e`
+- reviewed minimal `SAP/open-ux-odata` host extension:
+  `45abe80a028530601bf5d67d565f3384a6648ead`
 - current portable development-kit fingerprint:
-  `f1905ad2a4d61e1e4a0e7809fad806172d655cb98851857e7e29679e0435f44f`
+  `5f9e14c466306caae5ce9e663e8b7c56cad0de819e7a5b9850c6075087b32979`
 - current portable development-kit SHA-256:
-  `4cfc35715eabc367c9926d1421ec73e3015d0c6576b65624931510126926d888`
+  `bc322672d0126bafe08ae7543bd98837abe5f9052e9f2ca36e8402d700e6c918`
 
 ## Verdict
 
@@ -27,7 +27,7 @@ The candidate is not release-ready. The local product path is now selected and
 proven, but several release gates require a maintainable distribution,
 additional environments, approvals, or external review:
 
-1. The 266,452,329-byte passing runtime is an experimental `darwin-arm64`
+1. The 266,453,893-byte passing runtime is an experimental `darwin-arm64`
    archive, not an approved upstream or SAP-governed platform package. The
    supported upstream multi-platform closure still uses 451,328,075 bytes.
 2. An actual BAS canary has not run.
@@ -50,7 +50,7 @@ means a measured threshold was missed by the named candidate.
 
 | Area | Status | Evidence | Remaining gate |
 | --- | --- | --- | --- |
-| Generic host extension | locally proven | The approved `open-ux-odata` branch loads one optional, generic service-scoped provider; validates its bounded result; preserves authored data precedence; disposes it; and falls back to standard generation for an empty result, load failure, timeout, or invalid output | Ordinary maintainer review and release-platform reruns |
+| Generic host extension | locally proven | The reviewed `open-ux-odata` branch loads one optional, generic provider per eligible service-generation epoch; validates its bounded result; preserves authored data precedence; disposes it; and falls back to standard generation for an empty result, load failure, timeout, or invalid output | Ordinary maintainer review and release-platform reruns |
 | Standard FE mockserver integration | locally proven | Clean packed V2, V4, and CDS applications passed separate standard and MockGen HTTP canaries; the literal npm flag was also exercised | BAS and remaining Node/OS matrix |
 | Authored-data preservation | locally proven | Whole-service and host tests preserve contributor and JSON precedence; the packed application retains one standard middleware and configuration flow | Release-platform reruns |
 | Deterministic production engine | proven | EDMX V2/V4 and CSN parsing, constraints, relationships, semantic coherence, whole-service generation, determinism, and cache tests; the final cohort has 16/16 non-empty resources and 11/11 passing frozen assertions | Release-platform cohort reruns |
@@ -62,12 +62,12 @@ means a measured threshold was missed by the named candidate.
 | Metadata input boundary | package-proven / integration pending | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit and multibyte limit-plus-one tests pass | Prove diagnostic and fallback behavior through the accepted integration |
 | Generated-result boundary | package-proven / integration pending | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache publication | Prove rejection before publication through the accepted integration |
 | Development-kit application setup | locally proven | The installer wraps the generated `start-mock` command, runs separate standard and MockGen canaries, installs exact local tarballs, and restores original application files | BAS execution |
-| Local/BAS development kit | local pass / BAS pending | The 561,891-byte clean archive is reproducible and passed V2, V4, and CDS learned canaries locally | Run the same fingerprinted archive in BAS |
-| Package boundary | proven | current generator tarball is 92,988 bytes and contains required architecture, operations, proxy, security, and pilot-parity guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
+| Local/BAS development kit | local pass / BAS pending | The 564,806-byte clean archive is reproducible and passed V2, V4, and CDS standard plus learned canaries locally | Run the same fingerprinted archive in BAS |
+| Package boundary | proven | current generator tarball is 93,516 bytes and contains required architecture, operations, proxy, security, and pilot-parity guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
 | Quantization campaign | proven negative frontier | INT8, optimized INT8, INT4 variants, reduced vocabulary, reduced-token retraining, depth pruning, ordinary recovery, and structural distillation are fingerprinted; no size-passing candidate retains quality | Do not repeat these branches without a new hypothesis |
 | WASM | proven no-go | classifier p95 is 2.90 times native and process maximum RSS is about twice native while product size improves only 20.74% | None; retain native runtime |
-| Total installed/cache footprint | upstream fail / platform proof passes | The exact accepted dependency graph uses 451,328,075 bytes with the upstream multi-platform runtime and therefore fails the 300 MiB gate; the same code, model, and API use 266,452,329 bytes with the exact `darwin-arm64` runtime archive and pass with 48,120,471 bytes of headroom | Replace the experimental archive with a supported upstream or SAP-governed platform distribution and repeat on every release platform |
-| Integrated performance | locally proven | Five fresh-process samples on the upstream runtime measured 1,087.337 ms cold p95, 24.724 ms warm-cache p95, 1,063.347 ms acquisition p95, and 1,088.208 ms host p95; all latency gates pass | Release-platform reruns |
+| Total installed/cache footprint | upstream fail / platform proof passes | The prior exact upstream dependency graph uses 451,328,075 bytes and therefore fails the 300 MiB gate; the reviewed code, same model, and same API use 266,453,893 bytes with the exact `darwin-arm64` runtime archive and pass with 48,118,907 bytes of headroom | Replace the experimental archive with a supported upstream or SAP-governed platform distribution and repeat on every release platform |
+| Integrated performance | locally proven | Five fresh-process samples on the reviewed platform-runtime candidate measured 1,567.782 ms cold p95, 20.775 ms warm-cache p95, 664.750 ms acquisition p95, and 1,568.577 ms host p95; all latency gates pass | Release-platform reruns |
 | Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and byte-identical replay; its SFT gate is 100% parse and 96.54% accepted-slot fill; deterministic triage found no high/medium signal but is not a realism judgment | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
@@ -78,22 +78,22 @@ means a measured threshold was missed by the named candidate.
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 26 suites and 233 tests passed; package build and zero-error lint passed |
-| accepted host packages | `fe-mockserver-core`: 27 suites and 359 tests; middleware: 2 suites and 12 tests; both builds and zero-error lint passed |
-| development-kit integration tests | 11 suites and 116 tests passed, including the CDS standard-fallback fixture and final WASM-decision regressions |
-| current bound model evaluation | the accepted upstream and platform-runtime reports each used all 233 governed classifier cases and all 16 SFT cases; classifier and SFT output fingerprints matched |
-| SFT evaluation | 16/16 parse and exact keys; 261/261 fields filled; p95 9,629.433 ms; peak process RSS 1,095,057,408 bytes with the upstream runtime candidate |
+| `@sap-ux/mockserver-data-generator` | 26 suites and 235 tests passed; package build and zero-error lint passed |
+| reviewed host packages | `fe-mockserver-core`: 27 suites and 362 tests; middleware: 2 suites and 12 tests; both builds and zero-error lint passed |
+| development-kit integration tests | 11 suites and 120 tests passed, including exact launcher dispatch, default-off persistence, CDS fallback, and final WASM-decision regressions |
+| current bound model evaluation | the reviewed platform-runtime report used all 233 governed classifier cases and all 16 SFT cases; output fingerprints match the prior accepted runs |
+| SFT evaluation | 16/16 parse and exact keys; 261/261 fields filled; p95 9,130.225 ms; peak process RSS 1,057,521,664 bytes with the platform runtime candidate |
 | current realism cohort | 311 records; 124/124 parsed; 446/462 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; evidence and campaign replay byte-identical |
 | deterministic semantic triage | zero high- or medium-severity signals in the unchanged current packet; external judgment still required |
-| current source package archive | 92,988 / 5,242,880 bytes, pass; archive SHA-256 `8b65059aed715880c01d931a143eb7763dcbbe87a74b3f56b8b3197d6a480289` |
-| deterministic installed closure | 3,943,941 bytes |
-| package provider module load | 1.330 ms p95 over 10 fresh processes |
+| current source package archive | 93,516 / 5,242,880 bytes, pass; archive SHA-256 `5bc5b9eb1e99a60dabbdd90d3b024e37c92c395a89f77f577b2e15ba1c4d32f3` |
+| deterministic installed closure | 3,945,496 bytes |
+| package provider module load | 1.331 ms p95 over 10 fresh processes |
 | model transfer and verified cache | 192,167,584 / 209,715,200 bytes, pass |
-| current clean dev kit | 561,891 bytes; fingerprint `f1905ad2a4d61e1e4a0e7809fad806172d655cb98851857e7e29679e0435f44f`; two builds were byte-identical |
+| current clean dev kit | 564,806 bytes; fingerprint `5f9e14c466306caae5ce9e663e8b7c56cad0de819e7a5b9850c6075087b32979`; two builds were byte-identical |
 | current packed application canaries | V2, V4, and CDS standard paths served rows without provider output; all three MockGen paths verified classifier and SFT readiness and served rows |
-| current upstream full footprint | 451,328,075 / 314,572,800 bytes; only the total-footprint hard gate fails, so `footprintReady: false` |
-| current `darwin-arm64` proof | 266,452,329 / 314,572,800 bytes; every hard gate passes and `footprintReady: true` |
-| current report fingerprints | evaluation `156ead96207e66ac27ad9bcd71bfca90e8470385a49a0977053531f8e498473d`; integration `c2d62841fa83ae59afb78c75083e61b886905015c5f98b2111cb362eefc3d864`; upstream footprint `b8f7da4f5b6f6f2bb06d408dd621b8d9281a0eeee9cf9ad759fe90cdef0d21e4`; platform footprint `c2d35ae463757f6c90654e85942950dcc2721ec32205e7bf103118e5b7b7da9a` |
+| prior exact upstream full footprint | 451,328,075 / 314,572,800 bytes; only the total-footprint hard gate failed, so `footprintReady: false` |
+| current `darwin-arm64` proof | 266,453,893 / 314,572,800 bytes; every hard gate passes and `footprintReady: true` |
+| current reviewed report fingerprints | evaluation `40e95b0bf7991cee7601aacd114de88f7746b0ab1210c0ded56d69e81e7046cb`; integration `e6bac4de3b0d355b4c7686fcc47826e93c6d7ff590414ecc1be3a9b6e50a3db3`; platform footprint `a0a8d143693126cb67da86269f503671d6107f45d0ee419471b1d33daa1d788c` |
 
 The full generator package has a passing coverage run over all 26 suites. The
 downloader's cross-process and cancellation branches have focused regressions,
@@ -111,8 +111,8 @@ and memory.
 The current `onnxruntime-node` dependency dominates the installed footprint
 because one installation contains native binaries for every supported platform.
 The exact accepted code, model, and integration were also measured with the
-SHA-256-bound `darwin-arm64` runtime archive. That candidate uses 40,730,313
-installed learned bytes and 266,452,329 total installed-and-cache bytes, so all
+SHA-256-bound `darwin-arm64` runtime archive. That candidate uses 40,731,877
+installed learned bytes and 266,453,893 total installed-and-cache bytes, so all
 hard footprint, quality, and latency gates pass locally. The equivalent
 upstream multi-platform runtime installation uses 225,606,059 learned bytes and
 451,328,075 total bytes; its only failing hard gate is total footprint.

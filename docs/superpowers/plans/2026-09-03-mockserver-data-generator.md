@@ -1455,3 +1455,37 @@ contact. Actual npm publication remains part of Task 13.1.
 ## Implementation handoff
 
 Implement the deterministic, classifier, and SFT paths test-first using the existing pilot as the behavioral and evidence baseline. Use the packed development kit continuously for manual local and BAS canaries. Standard pull-request review precedes merge, and model provenance plus hosted-artifact checks precede publication; neither is an unresolved architecture question. Request code review at every repository boundary and before each preview/stable publication.
+
+## Reviewed implementation checkpoint (2026-09-05)
+
+The approved runtime behavior is implemented on clean candidate commits
+`066acdfc366cd6d1bdbbdcbff2b7c95391ce254e` in `SAP/open-ux-tools` and
+`45abe80a028530601bf5d67d565f3384a6648ead` in `SAP/open-ux-odata`.
+`npm run start-mock` remains standard and does not invoke MockGen;
+`npm run start-mock -- --mockgen` is the explicit opt-in. The launcher
+preserves generated application behavior and forwards ordinary child
+arguments, while the generic host creates and disposes one provider per
+generation epoch and retains complete fallback behavior.
+
+The final focused review found no remaining critical or important issue in the
+launcher and lifecycle scope. Current local verification includes 235 generator
+tests, 362 host-core tests, 12 middleware tests, and 120 development-kit tests,
+plus clean builds and zero-error lint for the affected packages. Fresh packed
+OData V2, OData V4, and CDS-through-FE applications passed both standard and
+learned HTTP paths. Literal `npm run start-mock` and
+`npm run start-mock -- --mockgen` commands also passed in the V4 fixture.
+
+The reproducible local/BAS kit is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`
+(564,806 bytes, SHA-256
+`bc322672d0126bafe08ae7543bd98837abe5f9052e9f2ca36e8402d700e6c918`).
+The reviewed platform-runtime campaign passes every hard local gate at
+266,453,893 installed-and-cache bytes. The 451,328,075-byte upstream result is
+the prior exact multi-platform baseline and still fails only the total-footprint
+gate. WASM remains a measured no-go.
+
+Local implementation and handoff packaging are complete. The next bounded
+step is the actual BAS canary. Supported per-platform runtime distribution,
+remaining Node/OS cells, model/data approvals, independent realism review,
+publication, and rollback verification remain release gates rather than local
+implementation gaps.
