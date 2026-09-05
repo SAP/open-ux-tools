@@ -83,6 +83,24 @@ describe('generated-data cache', () => {
         expect(await readdir(cacheRoot)).toEqual([`${cacheKey}.json`]);
     });
 
+    test('preserves multiple raw SFT completions for one entity assignment', async () => {
+        const generated = result();
+        const withChunkedCompletions: MockDataGeneratorResult = {
+            ...generated,
+            statistics: {
+                sft: {
+                    ...generated.statistics.sft,
+                    attempts: 10,
+                    parsedResponses: 10
+                }
+            }
+        };
+
+        await writeGeneratedDataCache(cacheRoot, cacheKey, withChunkedCompletions);
+
+        await expect(readGeneratedDataCache(cacheRoot, cacheKey)).resolves.toEqual(withChunkedCompletions);
+    });
+
     test('quarantines a corrupt entry and reports a cache miss', async () => {
         await writeFile(join(cacheRoot, `${cacheKey}.json`), '{not-json');
 

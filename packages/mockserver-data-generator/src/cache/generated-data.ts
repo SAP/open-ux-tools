@@ -234,8 +234,7 @@ function statistics(value: unknown): MockDataGeneratorStatistics {
         0
     );
     if (
-        attempts !== assignments.length ||
-        parsedResponses !== assignments.filter(({ parsed }) => parsed).length ||
+        attempts < assignments.length ||
         eligibleSlots !== assignmentEligibleSlots ||
         acceptedSlots !== assignmentAcceptedSlots ||
         acceptedSlots > eligibleSlots
