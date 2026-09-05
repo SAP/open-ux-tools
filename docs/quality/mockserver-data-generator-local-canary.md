@@ -789,21 +789,28 @@ the native `release()` call.
   the model-quality evidence; the fresh canaries prove the changed artifact
   still loads and executes both learned components.
 
-## Oversized input and result host fallback
+## Input and result boundary fallback
 
 The accepted `SAP/open-ux-odata` host integration now has an application-level
 regression for a provider result above the fixed 64 MiB JSON ceiling. The host
 rejects that result before publication, emits only the bounded generic fallback
 event, completes application startup, and serves built-in generated rows.
-The same path now passes a valid EDMX above the fixed 32 MiB UTF-8 input ceiling
-to the provider unchanged, contains the stable MockGen rejection, and serves
-built-in rows.
+The metadata evidence is deliberately compositional: actual MockGen package
+tests prove the fixed 32 MiB UTF-8 ceiling and stable
+`METADATA_INPUT_TOO_LARGE` failure, while a separate accepted-host application
+test uses a contract-compatible provider reporting that failure and proves that
+the host contains it, emits only the generic fallback event, and serves built-in
+rows.
 
-- Host evidence commit: `2a5f6385a7bb574e3308f8ba1055e69b94ddaf86`.
+- Host evidence commit: `a84630efb55a8568dfb79088f77ac67dd326a270`.
 - Node 22.22.3: 27 suites, 364 tests, and 282 snapshots passed; build and
   zero-error lint passed.
 - Node 24.20.0: 27 suites, 364 tests, and 282 snapshots passed; build and
   zero-error lint passed.
+- A focused two-test sample used shared multibyte chunks and the lightweight
+  metadata-error stand-in, completing in 1.77 seconds with 466,092,032 bytes
+  maximum RSS. This is test-harness evidence, not a production runtime
+  benchmark.
 - The two existing Jest open-handle notices from `logRequests.test.ts` remain
   unchanged and are outside the MockGen host-contract change.
 - This is test-only host evidence. It does not change the runtime package bytes,

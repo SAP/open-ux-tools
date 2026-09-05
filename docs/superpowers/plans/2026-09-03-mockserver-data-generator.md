@@ -1461,7 +1461,7 @@ Implement the deterministic, classifier, and SFT paths test-first using the exis
 
 The approved runtime behavior is implemented on clean candidate commits
 `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee` in `SAP/open-ux-tools` and
-`2a5f6385a7bb574e3308f8ba1055e69b94ddaf86` in `SAP/open-ux-odata`.
+`a84630efb55a8568dfb79088f77ac67dd326a270` in `SAP/open-ux-odata`.
 `npm run start-mock` remains standard and does not invoke MockGen;
 `npm run start-mock -- --mockgen` is the explicit opt-in. The launcher
 preserves generated application behavior and forwards ordinary child
@@ -1514,12 +1514,14 @@ campaign was not repeated for this cleanup-only change; its prior
 fingerprint-bound report remains the quality evidence rather than being
 mislabelled as a fresh run.
 
-**Input and result boundary increment (2026-09-05):** The accepted host now has
-application-level regressions for both a provider result above 64 MiB and valid
-EDMX input above 32 MiB. They prove that the result is rejected before
-publication, oversized metadata reaches the provider unchanged, only the
-bounded generic fallback event is emitted, application readiness succeeds, and
-built-in mock rows remain available. The full host-core suite now passes 27
-suites, 364 tests, and 282 snapshots on both Node 22.22.3 and Node 24.20.0,
-together with build and zero-error lint. This closes both local boundary
-integration gates.
+**Input and result boundary increment (2026-09-05):** The accepted host has an
+application-level regression for a provider result above 64 MiB, proving that
+the result is rejected before publication while application readiness and
+built-in mock rows remain available. Metadata evidence is compositional: actual
+MockGen package tests prove the 32 MiB UTF-8 ceiling and stable
+`METADATA_INPUT_TOO_LARGE` rejection, while a separate host application test
+uses a contract-compatible provider reporting that failure to prove bounded,
+privacy-safe standard fallback. The full host-core suite passes 27 suites, 364
+tests, and 282 snapshots on both Node 22.22.3 and Node 24.20.0, together with
+build and zero-error lint. This closes both local boundary gates without
+misstating the separate repository test layers as one cross-repository test.

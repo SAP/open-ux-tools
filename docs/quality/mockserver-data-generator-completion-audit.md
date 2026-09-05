@@ -7,7 +7,7 @@ Candidate source:
 - reviewed generator and `--mockgen` launcher:
   `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee`
 - reviewed minimal `SAP/open-ux-odata` host extension:
-  `2a5f6385a7bb574e3308f8ba1055e69b94ddaf86`
+  `a84630efb55a8568dfb79088f77ac67dd326a270`
 - current portable development-kit fingerprint:
   `5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`
 - current portable development-kit SHA-256:
@@ -59,7 +59,7 @@ means a measured threshold was missed by the named candidate.
 | Model acquisition and cache | proven locally | immutable revision, bytes, SHA-256, atomic publication, pre-acquisition descendant-symlink rejection, HTTPS-preserving bounded redirects, fenced cross-process acquisition, stale-lock recovery, late cancellation, offline verify, warm network-free cache, and environment-proxy CONNECT routing | Approved remote bundle and BAS HTTPS proxy/certificate acquisition canary |
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | locally proven | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, multi-completion SFT statistics, and deterministic 32 MiB LRU quota pass package tests; five fresh-process warm-cache samples had a 24.724 ms p95 with no learned runtime initialization | Release-platform reruns |
-| Metadata input boundary | locally proven | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit and multibyte limit-plus-one tests pass; an accepted-host application test passes a valid oversized EDMX to the provider unchanged and proves privacy-safe standard fallback after the stable MockGen rejection | Release-platform reruns |
+| Metadata input boundary | locally proven (compositional) | Actual MockGen package tests prove that EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing, including exact-limit and multibyte limit-plus-one cases; a separate accepted-host application test uses a contract-compatible provider that reports the same stable `METADATA_INPUT_TOO_LARGE` failure and proves privacy-safe standard fallback | Release-platform reruns |
 | Generated-result boundary | locally proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache publication; an accepted-host integration test proves an oversized provider result is not published, the application still becomes ready, and built-in mock rows are served after a privacy-safe fallback event | Release-platform reruns |
 | Development-kit application setup | locally proven | The installer wraps the generated `start-mock` command, runs separate standard and MockGen canaries, installs exact local tarballs, and restores original application files | BAS execution |
 | Local/BAS development kit | local pass / BAS pending | The 564,878-byte clean archive is reproducible and passed V2, V4, and CDS standard plus learned canaries locally on Node 22.22.3 | Run the same fingerprinted archive in BAS |

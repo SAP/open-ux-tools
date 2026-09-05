@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `5f9e14c466306caae5ce9e663e8b7c56cad0de819e7a5b9850c6075087b32979`
-- archive SHA-256: `bc322672d0126bafe08ae7543bd98837abe5f9052e9f2ca36e8402d700e6c918`
-- archive size: 564,806 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `066acdfc366cd6d1bdbbdcbff2b7c95391ce254e`; `SAP/open-ux-odata` `45abe80a028530601bf5d67d565f3384a6648ead`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`
+- dev-kit fingerprint: `5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`
+- archive SHA-256: `742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`
+- archive size: 564,878 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee`; `SAP/open-ux-odata` `45abe80a028530601bf5d67d565f3384a6648ead`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
 
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema
@@ -36,6 +36,13 @@ starts did not initialize model sessions. The current p95 values are
 1,567.782 ms cold, 20.775 ms warm cache, 664.750 ms acquisition, and
 1,568.577 ms host provider work. The local CONNECT proxy regression does not
 substitute for an HTTPS proxy and certificate test inside BAS.
+
+The current archive also contains the native-session lifecycle correction:
+both MockGen ONNX backend adapters map their internal `dispose()` operation to
+the runtime's actual `release()` API. A real native-addon contract on Node 22
+and Node 24 proves that sessions reject inference after disposal. The later
+host-only boundary-test commits do not change runtime package bytes, so this
+archive remains the current BAS functional candidate.
 
 ## Inputs to record
 
