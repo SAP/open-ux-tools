@@ -1,4 +1,4 @@
-import { parseModelManifest } from '../../src/model/manifest.js';
+import { parseModelManifest, selectPlatformRuntime } from '../../src/model/manifest.js';
 
 const sha = (character: string): string => character.repeat(64);
 
@@ -63,6 +63,42 @@ function validManifest(): unknown {
     };
 }
 
+function validReleaseManifest(): any {
+    const candidate = validManifest() as any;
+    candidate.formatVersion = 2;
+    candidate.runtimes = [
+        {
+            id: 'onnxruntime-node-darwin-arm64',
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            platform: 'darwin',
+            architecture: 'arm64',
+            fingerprint: sha('e'),
+            entry: 'runtime/darwin-arm64/index.cjs',
+            files: [
+                {
+                    role: 'entry',
+                    path: 'runtime/darwin-arm64/index.cjs',
+                    bytes: 1_024,
+                    sha256: sha('f'),
+                    url: `https://models.example.invalid/${'1'.repeat(40)}/runtime/darwin-arm64/index.cjs`
+                },
+                {
+                    role: 'binding',
+                    path: 'runtime/darwin-arm64/onnxruntime_binding.node',
+                    bytes: 2_048,
+                    sha256: sha('1'),
+                    url: `https://models.example.invalid/${'1'.repeat(40)}/runtime/darwin-arm64/onnxruntime_binding.node`
+                }
+            ],
+            license: { name: 'MIT', url: 'https://example.invalid/runtime-license' },
+            sourceUrl: 'https://example.invalid/runtime-source',
+            sbomUrl: 'https://example.invalid/runtime-sbom'
+        }
+    ];
+    return candidate;
+}
+
 describe('model manifest', () => {
     test('accepts independently versioned classifier and SFT artifacts', () => {
         const manifest = parseModelManifest(validManifest());
@@ -115,5 +151,82 @@ describe('model manifest', () => {
 
         aboveLimit.lifecycle = 'development';
         expect(() => parseModelManifest(aboveLimit)).not.toThrow();
+    });
+
+    test('selects one immutable native runtime for the current platform from a versioned release manifest', () => {
+        const manifest = parseModelManifest(validReleaseManifest());
+
+        expect(manifest.formatVersion).toBe(2);
+        expect(selectPlatformRuntime(manifest, 'darwin', 'arm64')).toMatchObject({
+            id: 'onnxruntime-node-darwin-arm64',
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            platform: 'darwin',
+            architecture: 'arm64',
+            fingerprint: sha('e'),
+            entry: 'runtime/darwin-arm64/index.cjs'
+        });
+        expect(Object.isFrozen(manifest.runtimes)).toBe(true);
+        expect(Object.isFrozen(manifest.runtimes[0]?.files)).toBe(true);
+    });
+
+    test('keeps development format 1 compatible without a downloaded runtime', () => {
+        const manifest = parseModelManifest(validManifest());
+
+        expect(manifest.formatVersion).toBe(1);
+        expect(manifest.runtimes).toEqual([]);
+        expect(selectPlatformRuntime(manifest, 'darwin', 'arm64')).toBeUndefined();
+    });
+
+    test.each([
+        ['unknown format', (value: any) => (value.formatVersion = 3), /formatVersion/u],
+        [
+            'runtime path traversal',
+            (value: any) => (value.runtimes[0].entry = '../index.cjs'),
+            /artifact path|runtime entry/u
+        ],
+        [
+            'runtime entry outside its files',
+            (value: any) => (value.runtimes[0].entry = 'runtime/darwin-arm64/missing.cjs'),
+            /runtime entry/u
+        ],
+        ['runtime version range', (value: any) => (value.runtimes[0].version = '^1.24.3'), /runtime version/u],
+        ['runtime package mismatch', (value: any) => (value.runtimes[0].version = '1.24.2'), /model component/u],
+        ['runtime byte ceiling', (value: any) => (value.runtimes[0].files[0].bytes = 64 * 1024 * 1024), /64 MiB/u]
+    ])('rejects a release manifest with %s', (_label, mutate, message) => {
+        const candidate = validReleaseManifest();
+        mutate(candidate);
+        expect(() => parseModelManifest(candidate)).toThrow(message);
+    });
+
+    test('rejects duplicate platform runtime targets and cross-runtime file paths', () => {
+        const duplicateTarget = validReleaseManifest();
+        duplicateTarget.runtimes.push({
+            ...duplicateTarget.runtimes[0],
+            id: 'duplicate-runtime',
+            fingerprint: sha('2'),
+            files: [
+                {
+                    ...duplicateTarget.runtimes[0].files[0],
+                    path: 'runtime/darwin-arm64/duplicate.cjs',
+                    role: 'entry'
+                }
+            ],
+            entry: 'runtime/darwin-arm64/duplicate.cjs'
+        });
+        expect(() => parseModelManifest(duplicateTarget)).toThrow(/duplicate platform runtime target/i);
+
+        const duplicatePath = validReleaseManifest();
+        duplicatePath.runtimes[0].files[0].path = duplicatePath.components[0].files[0].path;
+        duplicatePath.runtimes[0].entry = duplicatePath.components[0].files[0].path;
+        expect(() => parseModelManifest(duplicatePath)).toThrow(/duplicate file path/i);
+    });
+
+    test('rejects release use on a platform absent from the immutable manifest', () => {
+        const manifest = parseModelManifest(validReleaseManifest());
+
+        expect(() => selectPlatformRuntime(manifest, 'linux', 'x64')).toThrow(
+            'No native MockGen runtime is available for linux-x64'
+        );
     });
 });

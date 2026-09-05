@@ -50,14 +50,6 @@
         "fast-xml-parser": "5.10.1",
         "undici": "7.29.0"
     },
-    "peerDependencies": {
-        "onnxruntime-node": ">=1.24.3 <1.25.0"
-    },
-    "peerDependenciesMeta": {
-        "onnxruntime-node": {
-            "optional": true
-        }
-    },
     "devDependencies": {
         "@types/cross-spawn": "6.0.6",
         "onnxruntime-node": "1.24.3"

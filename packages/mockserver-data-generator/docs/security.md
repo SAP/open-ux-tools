@@ -71,10 +71,15 @@ against an operating-system user who can concurrently replace its paths.
 Interrupted, partial, or checksum-mismatched files are never loadable
 artifacts.
 
-Model bundles contain data only. They cannot declare packages, scripts,
-entrypoints, hooks, or other executable code. The optional native inference
-runtime is installed separately and its version must match the manifest's
-runtime contract.
+Model-component files contain data only. Release-manifest format 2 separately
+declares executable native-runtime file sets for each supported OS/CPU target.
+Each set is capped at 64 MiB, pins its package/version and entry file, records
+license, source, and SBOM links, and gives every file an exact byte count and
+SHA-256. The resolver downloads only the current target as flat files, so it
+does not extract an untrusted archive. The entry is exposed to the learned
+loader only after every selected runtime file and every model component has
+passed verification. Production never falls back to an application-installed
+all-platform runtime for a format-2 release manifest.
 
 For offline or controlled environments, run `mockserver-data-generator
 prepare` while network access is available and then run

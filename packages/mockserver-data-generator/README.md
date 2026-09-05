@@ -14,9 +14,11 @@ This package is under development for an initial preview. The production design 
 The classifier and fine-tuned generator are independently replaceable runtimes. Their large model artifacts are acquired into a checksum-verified local cache and are not published in the npm package. Any unavailable or failed learned tier degrades to usable deterministic data.
 
 Learned mode also requires the native ONNX runtime selected for the current
-platform. Each model manifest pins an exact runtime version. The current source
-validates the `onnxruntime-node` `1.24.x` contract, but an approved
-platform-specific runtime distribution is still a release gate.
+platform. Release-manifest format 2 pins one exact, checksum-verified runtime
+file set per supported operating system and CPU architecture. The current
+source validates the `onnxruntime-node` `1.24.x` contract and can acquire and
+load that platform-specific runtime, but approved hosted runtime artifacts are
+still a release gate.
 
 The initial preview is English-first. Non-English inputs retain structural
 validation and deterministic fallback protection, but semantic quality outside
@@ -42,11 +44,11 @@ npm run start-mock -- --mockgen
 ```
 
 The first flagged start checks the package-owned release manifest and prepares
-the classifier and SFT files in the SAP tools user cache. It reports concise
-status codes while it works. Every artifact is size- and SHA-256-verified before
-it becomes usable. Later flagged starts verify and reuse the cache without a
-network request. The application directory and authored mock data are never
-changed.
+the classifier, SFT, and current-platform native runtime files in the SAP tools
+user cache. It reports concise status codes while it works. Every artifact is
+size- and SHA-256-verified before it becomes usable. Later flagged starts verify
+and reuse the cache without a network request. The application directory and
+authored mock data are never changed.
 
 If acquisition fails, Fiori still starts and MockGen uses deterministic tiers.
 The package does not run `npm install` when the flag is used: installation
@@ -66,8 +68,9 @@ node ./node_modules/@sap-ux/mockserver-data-generator/dist/cli.js verify
 `prepare` accepts an optional `--mirror <https-base-url>` and a bounded
 `--timeout-ms <milliseconds>`. Internal development and controlled rollback can
 also override `--manifest` and `--cache`. `verify` performs no network access.
-Command output contains bundle and component fingerprints, but not artifact
-URLs or local cache paths.
+Command output contains bundle, component, and selected platform-runtime
+fingerprints and reports model/runtime bytes separately, but not artifact URLs
+or local cache paths.
 
 When no custom fetch implementation is supplied, `prepare` honors the standard
 `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` environment variables (including
@@ -79,7 +82,7 @@ passes its verified cache-only state privately to the provider. This source
 package is still version `0.0.0` and intentionally has no public release
 manifest; the package check prevents a publishable version from being packed
 without one. Development can use the local/BAS kit with approved pilot-local
-artifacts until the immutable hosted bundle and platform runtime are approved.
+artifacts until the immutable hosted bundle and platform runtimes are approved.
 
 ## FE mockserver integration
 
@@ -127,11 +130,11 @@ continues to use standard mock data. The host packages containing the provider
 SPI and capability marker must therefore be released before this package; the
 first compatible npm versions will be recorded after that host release exists.
 
-The current implementation automatically prepares the classifier and SFT
-artifacts. Shipping the selected native runtime in the same platform-aware flow
-remains open because the upstream runtime package contains several operating
-systems and exceeds the approved footprint. The measured WASM candidate was
-larger and slower, so it is not the fallback plan.
+The launcher also prepares the selected native runtime from a format-2 release
+manifest. The Fiori application does not install the upstream all-platform
+runtime package. Publication remains blocked until the platform file sets are
+approved, hosted, SBOM-bound, and qualified across the supported matrix. The
+measured WASM candidate was larger and slower, so it is not the fallback plan.
 
 `sftTimeoutMs` bounds each entity-level fine-tuned inference. The direct API
 defaults to 90 seconds and accepts at most 120 seconds; the standard FE host

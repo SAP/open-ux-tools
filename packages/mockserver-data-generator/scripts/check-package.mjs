@@ -28,6 +28,8 @@ const MODEL_MANIFEST_FILE = /(?:^|\/)model-manifest(?:[-_.][^/]*)?\.json$/iu;
 const ALLOWED_RESOURCE_FILES = new Set(['resources/model-manifest.json']);
 const IMMUTABLE_REVISION = /^[a-f\d]{40,64}$/u;
 const SHA_256 = /^[a-f\d]{64}$/u;
+const REQUIRED_RUNTIME_TARGETS = new Set(['darwin-arm64', 'darwin-x64', 'linux-x64', 'win32-x64']);
+const MAXIMUM_PLATFORM_RUNTIME_BYTES = 64 * 1024 * 1024;
 const CORE_DOCUMENTATION = [
     'README.md',
     'docs/architecture.md',
@@ -198,6 +200,9 @@ function assertPublishedModelManifest(path, content) {
     if (!Array.isArray(manifest.components) || manifest.components.length === 0) {
         throw new Error(`Published model manifest has no components: ${path}`);
     }
+    if (manifest.formatVersion !== 2 || !Array.isArray(manifest.runtimes) || manifest.runtimes.length === 0) {
+        throw new Error(`Published model manifest has no platform runtime: ${path}`);
+    }
     for (const component of manifest.components) {
         if (
             !component ||
@@ -215,6 +220,52 @@ function assertPublishedModelManifest(path, content) {
                 throw new Error(`Published model manifest artifact has no lowercase SHA-256: ${path}`);
             }
         }
+    }
+    const runtimeTargets = new Set();
+    for (const runtime of manifest.runtimes) {
+        if (
+            !runtime ||
+            typeof runtime !== 'object' ||
+            typeof runtime.platform !== 'string' ||
+            typeof runtime.architecture !== 'string' ||
+            typeof runtime.entry !== 'string' ||
+            !SHA_256.test(runtime.fingerprint) ||
+            !Array.isArray(runtime.files) ||
+            runtime.files.length === 0
+        ) {
+            throw new Error(`Published model manifest has an invalid platform runtime: ${path}`);
+        }
+        const target = `${runtime.platform}-${runtime.architecture}`;
+        if (runtimeTargets.has(target)) {
+            throw new Error(`Published model manifest has a duplicate platform runtime: ${path}`);
+        }
+        runtimeTargets.add(target);
+        if (!runtime.files.some((file) => file?.role === 'entry' && file?.path === runtime.entry)) {
+            throw new Error(`Published model manifest platform runtime has no declared entry: ${path}`);
+        }
+        let runtimeBytes = 0;
+        for (const file of runtime.files) {
+            if (!file || typeof file !== 'object' || !Number.isSafeInteger(file.bytes) || file.bytes <= 0) {
+                throw new Error(`Published model manifest runtime artifact has no positive byte size: ${path}`);
+            }
+            if (!SHA_256.test(file.sha256)) {
+                throw new Error(`Published model manifest runtime artifact has no lowercase SHA-256: ${path}`);
+            }
+            runtimeBytes += file.bytes;
+            if (runtimeBytes > MAXIMUM_PLATFORM_RUNTIME_BYTES) {
+                throw new Error(`Published model manifest platform runtime exceeds 64 MiB: ${path}`);
+            }
+        }
+    }
+    if (
+        runtimeTargets.size !== REQUIRED_RUNTIME_TARGETS.size ||
+        [...REQUIRED_RUNTIME_TARGETS].some((target) => !runtimeTargets.has(target))
+    ) {
+        throw new Error(
+            `Published model manifest must provide exactly these platform runtimes: ${[
+                ...REQUIRED_RUNTIME_TARGETS
+            ].join(', ')}: ${path}`
+        );
     }
 }
 

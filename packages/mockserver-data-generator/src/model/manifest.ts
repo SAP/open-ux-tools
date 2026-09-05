@@ -1,6 +1,8 @@
 export type ModelComponentKind = 'classifier' | 'sft';
 export type ModelLifecycle = 'development' | 'preview' | 'stable';
 export type ModelOutputFormat = 'embedding-classifier-v2' | 'row-object-v1';
+export type ModelRuntimePlatform = 'darwin' | 'linux' | 'win32';
+export type ModelRuntimeArchitecture = 'arm64' | 'x64';
 
 export interface ModelArtifactFile {
     role: string;
@@ -30,16 +32,32 @@ export interface ModelComponentManifest {
     modelCardUrl: string;
 }
 
+export interface ModelRuntimeArtifact {
+    id: string;
+    package: 'onnxruntime-node';
+    version: string;
+    platform: ModelRuntimePlatform;
+    architecture: ModelRuntimeArchitecture;
+    fingerprint: string;
+    entry: string;
+    files: ReadonlyArray<ModelArtifactFile>;
+    license: Readonly<{ name: string; url: string }>;
+    sourceUrl: string;
+    sbomUrl: string;
+}
+
 export interface ModelManifest {
-    formatVersion: 1;
+    formatVersion: 1 | 2;
     bundleId: string;
     revision: string;
     lifecycle: ModelLifecycle;
     components: ReadonlyArray<ModelComponentManifest>;
+    runtimes: ReadonlyArray<ModelRuntimeArtifact>;
 }
 
 type UnknownRecord = Record<string, unknown>;
 const MAX_DISTRIBUTED_MODEL_BUNDLE_BYTES = 200 * 1024 * 1024;
+const MAX_PLATFORM_RUNTIME_BYTES = 64 * 1024 * 1024;
 
 function record(value: unknown, label: string): UnknownRecord {
     if (value === null || typeof value !== 'object' || Array.isArray(value)) {
@@ -189,6 +207,42 @@ function component(value: unknown): ModelComponentManifest {
     });
 }
 
+function runtimeArtifact(value: unknown): ModelRuntimeArtifact {
+    const input = record(value, 'platform runtime');
+    const files = Array.isArray(input.files) ? input.files.map(artifactFile) : [];
+    if (files.length === 0) {
+        throw new TypeError('platform runtime files must be a non-empty array');
+    }
+    const fileRoles = files.map(({ role }) => role);
+    if (new Set(fileRoles).size !== fileRoles.length) {
+        throw new TypeError('platform runtime contains a duplicate file role');
+    }
+    const entry = relativeArtifactPath(input.entry);
+    if (!files.some((file) => file.role === 'entry' && file.path === entry)) {
+        throw new TypeError('platform runtime entry must identify its declared entry file');
+    }
+    if (files.reduce((total, file) => total + file.bytes, 0) > MAX_PLATFORM_RUNTIME_BYTES) {
+        throw new TypeError('each platform runtime must not exceed 64 MiB');
+    }
+    const license = record(input.license, 'platform runtime license');
+    return Object.freeze({
+        id: identifier(input.id, 'platform runtime id'),
+        package: oneOf(input.package, ['onnxruntime-node'] as const, 'platform runtime package'),
+        version: exactRuntimeVersion(input.version),
+        platform: oneOf(input.platform, ['darwin', 'linux', 'win32'] as const, 'platform runtime platform'),
+        architecture: oneOf(input.architecture, ['arm64', 'x64'] as const, 'platform runtime architecture'),
+        fingerprint: hash(input.fingerprint, 'platform runtime fingerprint'),
+        entry,
+        files: Object.freeze(files),
+        license: Object.freeze({
+            name: string(license.name, 'platform runtime license name'),
+            url: url(license.url, 'platform runtime license URL')
+        }),
+        sourceUrl: url(input.sourceUrl, 'platform runtime source URL'),
+        sbomUrl: url(input.sbomUrl, 'platform runtime SBOM URL')
+    });
+}
+
 /**
  * Validate and freeze an untrusted model-distribution manifest.
  *
@@ -196,13 +250,40 @@ function component(value: unknown): ModelComponentManifest {
  */
 export function parseModelManifest(value: unknown): ModelManifest {
     const input = record(value, 'model manifest');
-    if (input.formatVersion !== 1) {
-        throw new TypeError('model manifest formatVersion must be 1');
+    if (input.formatVersion !== 1 && input.formatVersion !== 2) {
+        throw new TypeError('model manifest formatVersion must be 1 or 2');
     }
     if (!Array.isArray(input.components) || input.components.length === 0) {
         throw new TypeError('model manifest components must be a non-empty array');
     }
     const components = input.components.map(component);
+    let runtimes: ModelRuntimeArtifact[] = [];
+    if (input.formatVersion === 1) {
+        if (input.runtimes !== undefined && (!Array.isArray(input.runtimes) || input.runtimes.length > 0)) {
+            throw new TypeError('platform runtimes require model manifest formatVersion 2');
+        }
+    } else {
+        if (!Array.isArray(input.runtimes) || input.runtimes.length === 0) {
+            throw new TypeError('model manifest formatVersion 2 requires platform runtimes');
+        }
+        runtimes = input.runtimes.map(runtimeArtifact);
+        const runtimeContracts = new Set(components.map(({ runtime }) => `${runtime.package}\u0000${runtime.version}`));
+        if (runtimeContracts.size !== 1) {
+            throw new TypeError('formatVersion 2 model components must share one native runtime contract');
+        }
+        const [componentRuntime] = runtimeContracts;
+        if (runtimes.some((runtime) => `${runtime.package}\u0000${runtime.version}` !== componentRuntime)) {
+            throw new TypeError('platform runtime does not match the model component runtime contract');
+        }
+        const runtimeIds = runtimes.map(({ id }) => id);
+        if (new Set(runtimeIds).size !== runtimeIds.length) {
+            throw new TypeError('model manifest contains a duplicate platform runtime ID');
+        }
+        const runtimeTargets = runtimes.map(({ platform, architecture }) => `${platform}-${architecture}`);
+        if (new Set(runtimeTargets).size !== runtimeTargets.length) {
+            throw new TypeError('model manifest contains a duplicate platform runtime target');
+        }
+    }
     const componentIds = components.map(({ id }) => id);
     if (new Set(componentIds).size !== componentIds.length) {
         throw new TypeError('model manifest contains a duplicate component ID');
@@ -211,7 +292,10 @@ export function parseModelManifest(value: unknown): ModelManifest {
     if (new Set(componentKinds).size !== componentKinds.length) {
         throw new TypeError('model manifest contains a duplicate component kind');
     }
-    const filePaths = components.flatMap(({ files }) => files.map(({ path }) => path));
+    const filePaths = [
+        ...components.flatMap(({ files }) => files.map(({ path }) => path)),
+        ...runtimes.flatMap(({ files }) => files.map(({ path }) => path))
+    ];
     if (new Set(filePaths).size !== filePaths.length) {
         throw new TypeError('model manifest contains a duplicate file path');
     }
@@ -228,10 +312,38 @@ export function parseModelManifest(value: unknown): ModelManifest {
         }
     }
     return Object.freeze({
-        formatVersion: 1,
+        formatVersion: input.formatVersion,
         bundleId: identifier(input.bundleId, 'model manifest bundleId'),
         revision: immutableRevision(input.revision),
         lifecycle,
-        components: Object.freeze(components)
+        components: Object.freeze(components),
+        runtimes: Object.freeze(runtimes)
     });
+}
+
+/**
+ * Select the one immutable native runtime eligible for this Node platform.
+ * Development format 1 manifests retain the explicit locally installed runtime
+ * path used by the unpublished test kit.
+ *
+ * @param manifest parsed model manifest
+ * @param platform Node operating-system identifier
+ * @param architecture Node CPU architecture identifier
+ * @returns selected release runtime, or undefined for a development manifest
+ */
+export function selectPlatformRuntime(
+    manifest: ModelManifest,
+    platform: string = process.platform,
+    architecture: string = process.arch
+): ModelRuntimeArtifact | undefined {
+    if (manifest.formatVersion === 1) {
+        return undefined;
+    }
+    const runtime = manifest.runtimes.find(
+        (candidate) => candidate.platform === platform && candidate.architecture === architecture
+    );
+    if (!runtime) {
+        throw new Error(`No native MockGen runtime is available for ${platform}-${architecture}`);
+    }
+    return runtime;
 }

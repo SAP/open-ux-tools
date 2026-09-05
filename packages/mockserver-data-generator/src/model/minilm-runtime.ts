@@ -34,22 +34,25 @@ export interface CreateMiniLmTextEmbedderOptions {
     backend: OnnxBackend;
 }
 
+interface OnnxRuntimeModule {
+    InferenceSession?: { create(modelPath: string, options?: object): Promise<NativeOnnxSessionLike> };
+    Tensor?: new (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) => OnnxTensorLike;
+    default?: OnnxRuntimeModule;
+}
+
 /**
- * Load onnxruntime lazily so the generator package stays usable without a native runtime.
+ * Adapt an already integrity-verified runtime module to the classifier backend.
  *
- * @param packageName
+ * @param module imported runtime module
+ * @param label privacy-safe source label for diagnostics
  */
-export async function loadOnnxBackend(
-    packageName: 'onnxruntime-node' | 'onnxruntime-web' = 'onnxruntime-node'
-): Promise<OnnxBackend> {
-    const runtime = (await import(packageName)) as {
-        InferenceSession?: { create(modelPath: string, options?: object): Promise<NativeOnnxSessionLike> };
-        Tensor?: new (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) => OnnxTensorLike;
-    };
-    const InferenceSession = runtime.InferenceSession;
-    const Tensor = runtime.Tensor;
+export function createOnnxBackend(module: unknown, label: string): OnnxBackend {
+    const imported = module as OnnxRuntimeModule;
+    const runtime = imported.InferenceSession || imported.Tensor ? imported : imported.default;
+    const InferenceSession = runtime?.InferenceSession;
+    const Tensor = runtime?.Tensor;
     if (!InferenceSession?.create || !Tensor) {
-        throw new TypeError(`${packageName} does not expose the required ONNX runtime API`);
+        throw new TypeError(`${label} does not expose the required ONNX runtime API`);
     }
     return Object.freeze({
         createSession: async (modelPath: string) => {
@@ -66,6 +69,17 @@ export async function loadOnnxBackend(
         tensor: (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) =>
             new Tensor(type, data, dimensions)
     });
+}
+
+/**
+ * Load onnxruntime lazily so the generator package stays usable without a native runtime.
+ *
+ * @param packageName
+ */
+export async function loadOnnxBackend(
+    packageName: 'onnxruntime-node' | 'onnxruntime-web' = 'onnxruntime-node'
+): Promise<OnnxBackend> {
+    return createOnnxBackend(await import(packageName), packageName);
 }
 
 /**

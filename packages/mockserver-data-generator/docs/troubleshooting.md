@@ -117,8 +117,8 @@ control; it does not replace the still-pending model-channel T2 kill switch.
 | Code | Meaning | Action |
 | --- | --- | --- |
 | `MODEL_CACHE_UNAVAILABLE` | The manifest, acquisition, or verified cache could not initialize learned mode | Run offline `verify`; prepare the exact manifest if appropriate; deterministic data remains active |
-| `CLASSIFIER_RUNTIME_UNAVAILABLE` | The classifier component or exact optional runtime is unavailable | Check the manifest-pinned `onnxruntime-node` version; SFT and lower tiers remain eligible |
-| `SFT_RUNTIME_UNAVAILABLE` | The SFT component or exact optional runtime is unavailable | Check the verified SFT files and runtime version; lower tiers remain active |
+| `CLASSIFIER_RUNTIME_UNAVAILABLE` | The classifier component or selected checksum-verified native runtime is unavailable | Run `verify` and check that the release manifest supports the current OS/CPU; SFT and lower tiers remain eligible |
+| `SFT_RUNTIME_UNAVAILABLE` | The SFT component or selected checksum-verified native runtime is unavailable | Run `verify` and inspect the privacy-safe component/runtime status; lower tiers remain active |
 | `CLASSIFIER_INFERENCE_FAILED` | One classifier inference failed | The classifier circuit stays open for the current generation epoch; correct the runtime and trigger a fresh start or reload |
 | `SFT_INFERENCE_TIMEOUT` | Entity-level SFT inference exceeded its configured budget | Reduce workload or investigate the runtime; deterministic values are served |
 | `SFT_INFERENCE_FAILED` | SFT execution or output validation failed | Inspect component readiness and retry in a fresh process after correction |

@@ -5,7 +5,7 @@ import { realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { prepareModelCache, type PrepareModelCacheOptions } from './model/downloader.js';
-import { parseModelManifest, type ModelManifest } from './model/manifest.js';
+import { parseModelManifest, selectPlatformRuntime, type ModelManifest } from './model/manifest.js';
 import { defaultModelCacheRoot, verifyModelCache, type VerifiedModelCache } from './model/model-cache.js';
 import { defaultReleaseModelManifestPath } from './model/release.js';
 import { executeStartCommand } from './start.js';
@@ -40,6 +40,17 @@ interface ModelComponentReport {
     failures: ReadonlyArray<{ role: string; reason: string }>;
 }
 
+interface ModelRuntimeReport {
+    id: string;
+    package: 'onnxruntime-node';
+    version: string;
+    platform: 'darwin' | 'linux' | 'win32';
+    architecture: 'arm64' | 'x64';
+    fingerprint: string;
+    ready: boolean;
+    failures: ReadonlyArray<{ role: string; reason: string }>;
+}
+
 export interface ModelCommandReport {
     command: ModelCommand;
     status: 'ready' | 'incomplete';
@@ -47,7 +58,10 @@ export interface ModelCommandReport {
     revision: string;
     lifecycle: 'development' | 'preview' | 'stable';
     expectedBytes: number;
+    modelExpectedBytes: number;
+    runtimeExpectedBytes: number;
     components: ReadonlyArray<ModelComponentReport>;
+    runtime?: ModelRuntimeReport;
 }
 
 export interface ModelCommandResult {
@@ -162,17 +176,41 @@ function report(command: ModelCommand, manifest: ModelManifest, cache: VerifiedM
             failures: Object.freeze(failures)
         });
     });
+    const runtime = selectPlatformRuntime(manifest);
+    const runtimeFailures = runtime
+        ? cache.failures
+              .filter((failure) => failure.componentId === runtime.id)
+              .map(({ role, reason }) => Object.freeze({ role, reason }))
+        : [];
+    const modelExpectedBytes = manifest.components.reduce(
+        (total, component) => total + component.files.reduce((sum, file) => sum + file.bytes, 0),
+        0
+    );
+    const runtimeExpectedBytes = runtime?.files.reduce((total, file) => total + file.bytes, 0) ?? 0;
     return Object.freeze({
         command,
         status: cache.ready ? 'ready' : 'incomplete',
         bundleId: manifest.bundleId,
         revision: manifest.revision,
         lifecycle: manifest.lifecycle,
-        expectedBytes: manifest.components.reduce(
-            (total, component) => total + component.files.reduce((sum, file) => sum + file.bytes, 0),
-            0
-        ),
-        components: Object.freeze(components)
+        expectedBytes: modelExpectedBytes + runtimeExpectedBytes,
+        modelExpectedBytes,
+        runtimeExpectedBytes,
+        components: Object.freeze(components),
+        ...(runtime
+            ? {
+                  runtime: Object.freeze({
+                      id: runtime.id,
+                      package: runtime.package,
+                      version: runtime.version,
+                      platform: runtime.platform,
+                      architecture: runtime.architecture,
+                      fingerprint: runtime.fingerprint,
+                      ready: cache.runtime?.id === runtime.id && runtimeFailures.length === 0,
+                      failures: Object.freeze(runtimeFailures)
+                  })
+              }
+            : {})
     });
 }
 

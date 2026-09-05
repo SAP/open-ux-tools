@@ -40,6 +40,35 @@ function manifestSource(): string {
     });
 }
 
+function releaseManifestSource(): string {
+    const candidate = JSON.parse(manifestSource()) as any;
+    candidate.formatVersion = 2;
+    candidate.runtimes = [
+        {
+            id: `onnxruntime-node-${process.platform}-${process.arch}`,
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            platform: process.platform,
+            architecture: process.arch,
+            fingerprint: 'c'.repeat(64),
+            entry: `runtime/${process.platform}-${process.arch}/index.cjs`,
+            files: [
+                {
+                    role: 'entry',
+                    path: `runtime/${process.platform}-${process.arch}/index.cjs`,
+                    bytes: 2,
+                    sha256: 'd'.repeat(64),
+                    url: `https://models.example.invalid/${'1'.repeat(40)}/runtime/index.cjs`
+                }
+            ],
+            license: { name: 'MIT', url: 'https://example.invalid/runtime-license' },
+            sourceUrl: 'https://example.invalid/runtime-source',
+            sbomUrl: 'https://example.invalid/runtime-sbom'
+        }
+    ];
+    return JSON.stringify(candidate);
+}
+
 function readyCache(): VerifiedModelCache {
     return Object.freeze({
         ready: true,
@@ -127,6 +156,47 @@ describe('model preparation CLI', () => {
             expect.objectContaining({ bundleId: 'mockgen-cli-test' }),
             expect.objectContaining({ acquisitionTimeoutMs: 1_800_000 })
         );
+    });
+
+    test('reports selected platform-runtime identity and bytes separately without exposing its cache path', async () => {
+        await writeFile(manifestPath, releaseManifestSource());
+        const runtimeEntry = join(directory, 'private-runtime-entry.cjs');
+        const prepare = jest.fn(async (): Promise<VerifiedModelCache> =>
+            Object.freeze({
+                ...readyCache(),
+                runtime: Object.freeze({
+                    id: `onnxruntime-node-${process.platform}-${process.arch}`,
+                    package: 'onnxruntime-node' as const,
+                    version: '1.24.3',
+                    fingerprint: 'c'.repeat(64),
+                    entry: runtimeEntry,
+                    files: new Map([['entry', runtimeEntry]])
+                }),
+                runtimeFiles: new Map([['entry', runtimeEntry]])
+            })
+        );
+
+        const result = await executeModelCommand(
+            ['prepare', '--manifest', manifestPath, '--cache', join(directory, 'cache')],
+            { prepare }
+        );
+
+        expect(result.report).toMatchObject({
+            expectedBytes: 5,
+            modelExpectedBytes: 3,
+            runtimeExpectedBytes: 2,
+            runtime: {
+                id: `onnxruntime-node-${process.platform}-${process.arch}`,
+                package: 'onnxruntime-node',
+                version: '1.24.3',
+                platform: process.platform,
+                architecture: process.arch,
+                fingerprint: 'c'.repeat(64),
+                ready: true,
+                failures: []
+            }
+        });
+        expect(JSON.stringify(result.report)).not.toContain(directory);
     });
 
     test('verifies offline and returns an incomplete nonzero result without exposing local paths', async () => {

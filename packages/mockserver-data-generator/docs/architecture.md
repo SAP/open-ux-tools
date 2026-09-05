@@ -109,18 +109,22 @@ application YAML therefore contains no model or cache paths. Preparation uses
 streamed size and checksum verification followed by atomic publication. A warm
 flagged start and offline CLI verification perform no network request.
 
-`onnxruntime-node` is an optional peer dependency. Importing the public package
-or constructing the provider performs no network access, model loading, or
-generation. Without launcher activation, `generate` also returns immediately
-without parsing metadata or touching cache/model/network state. An activated
-service adapter loads its learned runtime lazily after a verified
-generated-data cache miss and releases owned sessions during disposal.
+The all-platform `onnxruntime-node` package is not a production dependency or
+peer dependency. Importing the public package or constructing the provider
+performs no network access, model loading, or generation. Without launcher
+activation, `generate` also returns immediately without parsing metadata or
+touching cache/model/network state. An activated service adapter loads its
+learned runtime lazily after a verified generated-data cache miss and releases
+owned sessions during disposal.
 
-The selected native runtime is not yet part of automatic acquisition. The
-upstream dependency contains multiple platforms; release needs an approved,
-signed platform-specific distribution before the launcher can acquire only the
-current platform. The measured WASM candidate did not improve total footprint
-or performance and remains a no-go.
+Release-manifest format 2 contains immutable file lists for the supported
+`darwin-arm64`, `darwin-x64`, `linux-x64`, and `win32-x64` runtimes. Acquisition
+downloads only the current target, verifies every file, and exposes its declared
+entry only after the complete runtime is ready. Development format 1 remains
+compatible with the unpublished kit's explicitly installed runtime. Approved,
+hosted and signed platform file sets are still required before publication.
+The measured WASM candidate did not improve total footprint or performance and
+remains a no-go.
 
 Whole-service generated snapshots use a separate bounded cache. Its key binds
 metadata, service identity, eligible targets, existing relationship context,

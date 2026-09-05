@@ -46,6 +46,66 @@ function manifest(url: string, overrides: { bytes?: number; checksum?: string } 
     });
 }
 
+function releaseManifest(modelUrl: string, runtimeUrl: string): ModelManifest {
+    const candidate = JSON.parse(JSON.stringify(manifest(modelUrl))) as any;
+    candidate.formatVersion = 2;
+    const alternateTarget =
+        process.platform === 'darwin' && process.arch === 'arm64'
+            ? { platform: 'linux', architecture: 'x64' }
+            : { platform: 'darwin', architecture: 'arm64' };
+    candidate.runtimes = [
+        {
+            id: `onnxruntime-node-${process.platform}-${process.arch}`,
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            platform: process.platform,
+            architecture: process.arch,
+            fingerprint: 'c'.repeat(64),
+            entry: `runtime/${process.platform}-${process.arch}/index.cjs`,
+            files: [
+                {
+                    role: 'entry',
+                    path: `runtime/${process.platform}-${process.arch}/index.cjs`,
+                    bytes: modelBytes.length,
+                    sha256: createHash('sha256').update(modelBytes).digest('hex'),
+                    url: runtimeUrl
+                },
+                {
+                    role: 'binding',
+                    path: `runtime/${process.platform}-${process.arch}/onnxruntime_binding.node`,
+                    bytes: modelBytes.length,
+                    sha256: createHash('sha256').update(modelBytes).digest('hex'),
+                    url: `${runtimeUrl}.node`
+                }
+            ],
+            license: { name: 'MIT', url: 'https://example.invalid/runtime-license' },
+            sourceUrl: 'https://example.invalid/runtime-source',
+            sbomUrl: 'https://example.invalid/runtime-sbom'
+        },
+        {
+            id: `onnxruntime-node-${alternateTarget.platform}-${alternateTarget.architecture}`,
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            ...alternateTarget,
+            fingerprint: 'd'.repeat(64),
+            entry: `runtime/${alternateTarget.platform}-${alternateTarget.architecture}/index.cjs`,
+            files: [
+                {
+                    role: 'entry',
+                    path: `runtime/${alternateTarget.platform}-${alternateTarget.architecture}/index.cjs`,
+                    bytes: modelBytes.length,
+                    sha256: createHash('sha256').update(modelBytes).digest('hex'),
+                    url: `${runtimeUrl}.other`
+                }
+            ],
+            license: { name: 'MIT', url: 'https://example.invalid/runtime-license' },
+            sourceUrl: 'https://example.invalid/runtime-source',
+            sbomUrl: 'https://example.invalid/runtime-sbom'
+        }
+    ];
+    return parseModelManifest(candidate);
+}
+
 describe('model downloader', () => {
     let cacheRoot: string;
     let server: Server;
@@ -89,6 +149,39 @@ describe('model downloader', () => {
         expect(await readdir(modelBundleDirectory(cacheRoot, candidate), { recursive: true })).not.toEqual(
             expect.arrayContaining([expect.stringMatching(/partial|lock/)])
         );
+    });
+
+    test('downloads only the native runtime selected for the current platform and reuses it offline', async () => {
+        const candidate = releaseManifest(`${baseUrl}/model.onnx`, `${baseUrl}/runtime.cjs`);
+        const bundleDirectory = modelBundleDirectory(cacheRoot, candidate);
+        const cachedRuntimeEntry = join(bundleDirectory, `runtime/${process.platform}-${process.arch}/index.cjs`);
+        await mkdir(join(cachedRuntimeEntry, '..'), { recursive: true });
+        await writeFile(cachedRuntimeEntry, modelBytes);
+
+        const cold = await prepareModelCache(cacheRoot, candidate);
+        const warmFetch = jest.fn(async () => {
+            throw new Error('network must not be used for a warm verified runtime cache');
+        });
+        const warm = await prepareModelCache(cacheRoot, candidate, { fetch: warmFetch as typeof fetch });
+
+        expect(cold.ready).toBe(true);
+        expect(cold.runtime).toMatchObject({
+            id: `onnxruntime-node-${process.platform}-${process.arch}`,
+            package: 'onnxruntime-node',
+            version: '1.24.3'
+        });
+        expect(warm.runtime).toEqual(cold.runtime);
+        expect(cold.runtime?.files).toEqual(
+            new Map([
+                ['entry', cachedRuntimeEntry],
+                [
+                    'binding',
+                    join(bundleDirectory, `runtime/${process.platform}-${process.arch}/onnxruntime_binding.node`)
+                ]
+            ])
+        );
+        expect(requests).toBe(2);
+        expect(warmFetch).not.toHaveBeenCalled();
     });
 
     test('routes default model acquisition through the configured environment proxy', async () => {

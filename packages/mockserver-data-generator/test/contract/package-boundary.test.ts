@@ -60,7 +60,7 @@ function fakePackage(
 
 function modelManifest(overrides: Readonly<Record<string, unknown>> = {}) {
     return JSON.stringify({
-        formatVersion: 1,
+        formatVersion: 2,
         bundleId: 'mockgen-test',
         revision: 'a'.repeat(64),
         lifecycle: 'preview',
@@ -82,6 +82,32 @@ function modelManifest(overrides: Readonly<Record<string, unknown>> = {}) {
                 ]
             }
         ],
+        runtimes: [
+            ['darwin', 'arm64'],
+            ['darwin', 'x64'],
+            ['linux', 'x64'],
+            ['win32', 'x64']
+        ].map(([platform, architecture], index) => ({
+            id: `onnxruntime-node-${platform}-${architecture}`,
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            platform,
+            architecture,
+            fingerprint: String(index + 1).repeat(64),
+            entry: `runtime/${platform}-${architecture}/index.cjs`,
+            files: [
+                {
+                    role: 'entry',
+                    path: `runtime/${platform}-${architecture}/index.cjs`,
+                    bytes: 512,
+                    sha256: 'e'.repeat(64),
+                    url: `https://models.example.test/runtime/${platform}-${architecture}/index.cjs`
+                }
+            ],
+            license: { name: 'MIT', url: 'https://models.example.test/runtime/license' },
+            sourceUrl: 'https://models.example.test/runtime/source',
+            sbomUrl: 'https://models.example.test/runtime/sbom'
+        })),
         ...('revision' in overrides ? { revision: overrides.revision } : {})
     });
 }
@@ -115,6 +141,17 @@ describe('published package boundary', () => {
         }
 
         expect(installedDependency.version).toBe(packageJson.dependencies['fast-xml-parser']);
+    });
+
+    it('keeps the all-platform native runtime out of consumer dependencies', () => {
+        const packageJson: unknown = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+        if (!isRecord(packageJson) || !isRecord(packageJson.devDependencies)) {
+            throw new Error('Package dependency metadata is missing');
+        }
+
+        expect(isRecord(packageJson.dependencies) && packageJson.dependencies['onnxruntime-node']).toBeFalsy();
+        expect(isRecord(packageJson.peerDependencies) && packageJson.peerDependencies['onnxruntime-node']).toBeFalsy();
+        expect(packageJson.devDependencies['onnxruntime-node']).toBe('1.24.3');
     });
 
     it('exposes the package check as an explicit package script', () => {
@@ -154,6 +191,52 @@ describe('published package boundary', () => {
 
         expect(result.status).toBe(1);
         expect(result.stderr).toMatch(/release model manifest/i);
+    });
+
+    it('accepts a publishable package only with a platform-runtime release manifest', () => {
+        const result = runChecker(
+            fakePackage(
+                { ...requiredDocumentation(), 'resources/model-manifest.json': modelManifest() },
+                { version: '0.1.0', files: ['dist', 'README.md', 'docs', 'resources'] }
+            )
+        );
+
+        expect({ status: result.status, stderr: result.stderr }).toEqual({ status: 0, stderr: '' });
+    });
+
+    it('rejects a publishable package whose release manifest cannot acquire a platform runtime', () => {
+        const legacyManifest = JSON.parse(modelManifest()) as Record<string, unknown>;
+        legacyManifest.formatVersion = 1;
+        delete legacyManifest.runtimes;
+        const result = runChecker(
+            fakePackage(
+                {
+                    ...requiredDocumentation(),
+                    'resources/model-manifest.json': JSON.stringify(legacyManifest)
+                },
+                { version: '0.1.0', files: ['dist', 'README.md', 'docs', 'resources'] }
+            )
+        );
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toMatch(/platform runtime/i);
+    });
+
+    it('rejects a publishable release manifest missing a supported runtime target', () => {
+        const incompleteManifest = JSON.parse(modelManifest()) as { runtimes: unknown[] };
+        incompleteManifest.runtimes.pop();
+        const result = runChecker(
+            fakePackage(
+                {
+                    ...requiredDocumentation(),
+                    'resources/model-manifest.json': JSON.stringify(incompleteManifest)
+                },
+                { version: '0.1.0', files: ['dist', 'README.md', 'docs', 'resources'] }
+            )
+        );
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toMatch(/darwin-arm64, darwin-x64, linux-x64, win32-x64/i);
     });
 
     it.each([

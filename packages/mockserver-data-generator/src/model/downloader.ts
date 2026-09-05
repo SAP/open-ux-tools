@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
 import { lstat, mkdir, open, readdir, realpath, rename, rmdir, stat, unlink } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import type { ModelArtifactFile, ModelManifest } from './manifest.js';
+import { selectPlatformRuntime, type ModelArtifactFile, type ModelManifest } from './manifest.js';
 import { modelBundleDirectory, verifyModelCache, type VerifiedModelCache } from './model-cache.js';
 
 export interface PrepareModelCacheOptions {
@@ -551,6 +551,23 @@ export async function prepareModelCache(
         for (const component of manifest.components) {
             for (const file of component.files) {
                 if (afterLock.files.get(component.id)?.has(file.role)) {
+                    continue;
+                }
+                await downloadArtifact(
+                    cacheRoot,
+                    file,
+                    join(bundleDirectory, file.path),
+                    artifactTransport.fetch,
+                    acquisition.signal,
+                    options.mirrorBaseUrl,
+                    () => assertLockOwnership(lock as AcquiredLock)
+                );
+            }
+        }
+        const runtime = selectPlatformRuntime(manifest);
+        if (runtime) {
+            for (const file of runtime.files) {
+                if (afterLock.runtimeFiles?.has(file.role)) {
                     continue;
                 }
                 await downloadArtifact(

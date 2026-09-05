@@ -64,6 +64,27 @@ function manifest(): ModelManifest {
     });
 }
 
+function releaseManifest(): ModelManifest {
+    const candidate = JSON.parse(JSON.stringify(manifest())) as any;
+    candidate.formatVersion = 2;
+    candidate.runtimes = [
+        {
+            id: `onnxruntime-node-${process.platform}-${process.arch}`,
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            platform: process.platform,
+            architecture: process.arch,
+            fingerprint: 'c'.repeat(64),
+            entry: `runtime/${process.platform}-${process.arch}/index.cjs`,
+            files: [file('entry', `runtime/${process.platform}-${process.arch}/index.cjs`, '7')],
+            license: { name: 'MIT', url: 'https://example.invalid/runtime-license' },
+            sourceUrl: 'https://example.invalid/runtime-source',
+            sbomUrl: 'https://example.invalid/runtime-sbom'
+        }
+    ];
+    return parseModelManifest(candidate);
+}
+
 const cache: VerifiedModelCache = {
     ready: true,
     failures: [],
@@ -185,6 +206,76 @@ describe('learned runtime composition', () => {
         };
 
         const result = await createLearnedRuntime(parseModelManifest(incompatible), cache, factories);
+
+        expect(result.runtime).toEqual({});
+        expect(result.diagnostics).toEqual([
+            expect.objectContaining({ code: 'CLASSIFIER_RUNTIME_UNAVAILABLE', componentId: 'classifier' }),
+            expect.objectContaining({ code: 'SFT_RUNTIME_UNAVAILABLE', componentId: 'sft' })
+        ]);
+        expect(factories.classifier).not.toHaveBeenCalled();
+        expect(factories.sft).not.toHaveBeenCalled();
+    });
+
+    test('passes the verified platform runtime entry to both learned component factories', async () => {
+        const classifier: SemanticClassifier = { fingerprint: 'classifier', classify: jest.fn() };
+        const sft: SftGenerator = { fingerprint: 'sft', generate: jest.fn() };
+        const classifierFactory = jest.fn(
+            async (
+                _component: ModelManifest['components'][number],
+                _files: ReadonlyMap<string, string>,
+                runtime: Parameters<LearnedComponentFactories['classifier']>[2]
+            ) => ({ value: classifier, runtime })
+        );
+        const sftFactory = jest.fn(
+            async (
+                _component: ModelManifest['components'][number],
+                _files: ReadonlyMap<string, string>,
+                runtime: Parameters<LearnedComponentFactories['sft']>[2]
+            ) => ({ value: sft, runtime })
+        );
+        const runtimeCache = {
+            ...cache,
+            runtime: {
+                id: `onnxruntime-node-${process.platform}-${process.arch}`,
+                package: 'onnxruntime-node' as const,
+                version: '1.24.3',
+                fingerprint: 'c'.repeat(64),
+                entry: '/cache/runtime/index.cjs',
+                files: new Map([['entry', '/cache/runtime/index.cjs']])
+            }
+        };
+
+        const result = await createLearnedRuntime(releaseManifest(), runtimeCache, {
+            classifier: classifierFactory,
+            sft: sftFactory
+        });
+
+        expect(result.runtime).toEqual({ classifier, sft });
+        expect(classifierFactory).toHaveBeenCalledWith(
+            expect.objectContaining({ kind: 'classifier' }),
+            cache.files.get('classifier'),
+            {
+                package: 'onnxruntime-node',
+                version: '1.24.3',
+                fingerprint: 'c'.repeat(64),
+                specifier: expect.stringMatching(/^file:/u)
+            }
+        );
+        expect(sftFactory).toHaveBeenCalledWith(expect.objectContaining({ kind: 'sft' }), cache.files.get('sft'), {
+            package: 'onnxruntime-node',
+            version: '1.24.3',
+            fingerprint: 'c'.repeat(64),
+            specifier: expect.stringMatching(/^file:/u)
+        });
+    });
+
+    test('does not fall back to an application-installed runtime for a release manifest with no verified runtime', async () => {
+        const factories: LearnedComponentFactories = {
+            classifier: jest.fn(),
+            sft: jest.fn()
+        };
+
+        const result = await createLearnedRuntime(releaseManifest(), cache, factories);
 
         expect(result.runtime).toEqual({});
         expect(result.diagnostics).toEqual([

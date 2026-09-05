@@ -36,21 +36,29 @@ export interface CreateCausalOnnxSessionOptions {
     backend: CausalOnnxBackend;
 }
 
-export async function loadCausalOnnxBackend(
-    packageName: 'onnxruntime-node' | 'onnxruntime-web' = 'onnxruntime-node'
-): Promise<CausalOnnxBackend> {
-    const runtime = (await import(packageName)) as {
-        InferenceSession?: { create(modelPath: string, options?: object): Promise<NativeCausalOnnxSession> };
-        Tensor?: new (
-            type: 'int64' | 'float32',
-            data: BigInt64Array | Float32Array,
-            dimensions: ReadonlyArray<number>
-        ) => CausalOnnxTensor;
-    };
-    const InferenceSession = runtime.InferenceSession;
-    const Tensor = runtime.Tensor;
+interface CausalOnnxRuntimeModule {
+    InferenceSession?: { create(modelPath: string, options?: object): Promise<NativeCausalOnnxSession> };
+    Tensor?: new (
+        type: 'int64' | 'float32',
+        data: BigInt64Array | Float32Array,
+        dimensions: ReadonlyArray<number>
+    ) => CausalOnnxTensor;
+    default?: CausalOnnxRuntimeModule;
+}
+
+/**
+ * Adapt an already integrity-verified runtime module to the causal backend.
+ *
+ * @param module imported runtime module
+ * @param label privacy-safe source label for diagnostics
+ */
+export function createCausalOnnxBackend(module: unknown, label: string): CausalOnnxBackend {
+    const imported = module as CausalOnnxRuntimeModule;
+    const runtime = imported.InferenceSession || imported.Tensor ? imported : imported.default;
+    const InferenceSession = runtime?.InferenceSession;
+    const Tensor = runtime?.Tensor;
     if (!InferenceSession?.create || !Tensor) {
-        throw new TypeError(`${packageName} does not expose the required causal ONNX API`);
+        throw new TypeError(`${label} does not expose the required causal ONNX API`);
     }
     return Object.freeze({
         createSession: async (modelPath: string) => {
@@ -71,6 +79,12 @@ export async function loadCausalOnnxBackend(
         tensor: (type: 'int64' | 'float32', data: BigInt64Array | Float32Array, dimensions: ReadonlyArray<number>) =>
             new Tensor(type, data, dimensions)
     });
+}
+
+export async function loadCausalOnnxBackend(
+    packageName: 'onnxruntime-node' | 'onnxruntime-web' = 'onnxruntime-node'
+): Promise<CausalOnnxBackend> {
+    return createCausalOnnxBackend(await import(packageName), packageName);
 }
 
 function validateConfig(config: CausalOnnxConfig): void {

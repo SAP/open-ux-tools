@@ -3,7 +3,12 @@ import { createReadStream } from 'node:fs';
 import { lstat, realpath } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join, resolve, sep } from 'node:path';
-import type { ModelManifest } from './manifest.js';
+import {
+    selectPlatformRuntime,
+    type ModelArtifactFile,
+    type ModelManifest,
+    type ModelRuntimeArtifact
+} from './manifest.js';
 
 export type ModelCacheFailureReason = 'missing' | 'not-file' | 'size' | 'checksum' | 'unreadable';
 
@@ -16,7 +21,18 @@ export interface ModelCacheFailure {
 export interface VerifiedModelCache {
     ready: boolean;
     files: ReadonlyMap<string, ReadonlyMap<string, string>>;
+    runtime?: VerifiedPlatformRuntime;
+    runtimeFiles?: ReadonlyMap<string, string>;
     failures: ReadonlyArray<ModelCacheFailure>;
+}
+
+export interface VerifiedPlatformRuntime {
+    id: string;
+    package: 'onnxruntime-node';
+    version: string;
+    fingerprint: string;
+    entry: string;
+    files: ReadonlyMap<string, string>;
 }
 
 /**
@@ -57,6 +73,79 @@ async function sha256(filePath: string, signal?: AbortSignal): Promise<string> {
     return digest.digest('hex');
 }
 
+async function verifyArtifact(
+    cacheRoot: string,
+    bundleDirectory: string,
+    file: ModelArtifactFile,
+    signal?: AbortSignal
+): Promise<{ path?: string; failure?: ModelCacheFailureReason }> {
+    signal?.throwIfAborted();
+    const filePath = artifactPath(bundleDirectory, file.path);
+    try {
+        const details = await lstat(filePath);
+        if (!details.isFile()) {
+            return { failure: 'not-file' };
+        }
+        const [resolvedRoot, resolvedBundle, resolvedFile] = await Promise.all([
+            realpath(resolve(cacheRoot)),
+            realpath(bundleDirectory),
+            realpath(filePath)
+        ]);
+        if (
+            !resolvedBundle.startsWith(`${resolvedRoot}${sep}`) ||
+            !resolvedFile.startsWith(`${resolvedBundle}${sep}`)
+        ) {
+            return { failure: 'not-file' };
+        }
+        if (details.size !== file.bytes) {
+            return { failure: 'size' };
+        }
+        if ((await sha256(filePath, signal)) !== file.sha256) {
+            return { failure: 'checksum' };
+        }
+        return { path: filePath };
+    } catch (error) {
+        if (signal?.aborted) {
+            signal.throwIfAborted();
+        }
+        return { failure: (error as NodeJS.ErrnoException).code === 'ENOENT' ? 'missing' : 'unreadable' };
+    }
+}
+
+async function verifyRuntime(
+    cacheRoot: string,
+    bundleDirectory: string,
+    runtime: ModelRuntimeArtifact,
+    failures: ModelCacheFailure[],
+    signal?: AbortSignal
+): Promise<{ runtime?: VerifiedPlatformRuntime; files: ReadonlyMap<string, string> }> {
+    const files = new Map<string, string>();
+    for (const file of runtime.files) {
+        signal?.throwIfAborted();
+        const result = await verifyArtifact(cacheRoot, bundleDirectory, file, signal);
+        if (result.failure) {
+            failures.push(Object.freeze({ componentId: runtime.id, role: file.role, reason: result.failure }));
+        } else if (result.path) {
+            files.set(file.role, result.path);
+        }
+    }
+    const entry = files.get('entry');
+    if (files.size !== runtime.files.length || !entry) {
+        return Object.freeze({ files });
+    }
+    return Object.freeze({
+        files,
+        runtime: Object.freeze({
+            id: runtime.id,
+            package: runtime.package,
+            version: runtime.version,
+            fingerprint: runtime.fingerprint,
+            entry,
+            files
+        })
+    });
+}
+
 /**
  * Verify artifacts independently and expose paths only for complete components.
  *
@@ -78,40 +167,11 @@ export async function verifyModelCache(
         const componentFiles = new Map<string, string>();
         for (const file of component.files) {
             signal?.throwIfAborted();
-            const filePath = artifactPath(bundleDirectory, file.path);
-            let failure: ModelCacheFailureReason | undefined;
-            try {
-                const details = await lstat(filePath);
-                if (!details.isFile()) {
-                    failure = 'not-file';
-                } else {
-                    const [resolvedRoot, resolvedBundle, resolvedFile] = await Promise.all([
-                        realpath(resolve(cacheRoot)),
-                        realpath(bundleDirectory),
-                        realpath(filePath)
-                    ]);
-                    if (
-                        !resolvedBundle.startsWith(`${resolvedRoot}${sep}`) ||
-                        !resolvedFile.startsWith(`${resolvedBundle}${sep}`)
-                    ) {
-                        failure = 'not-file';
-                    } else if (details.size !== file.bytes) {
-                        failure = 'size';
-                    } else if ((await sha256(filePath, signal)) !== file.sha256) {
-                        failure = 'checksum';
-                    }
-                }
-            } catch (error) {
-                if (signal?.aborted) {
-                    signal.throwIfAborted();
-                }
-                const code = (error as NodeJS.ErrnoException).code;
-                failure = code === 'ENOENT' ? 'missing' : 'unreadable';
-            }
-            if (failure) {
-                failures.push(Object.freeze({ componentId: component.id, role: file.role, reason: failure }));
-            } else {
-                componentFiles.set(file.role, filePath);
+            const result = await verifyArtifact(cacheRoot, bundleDirectory, file, signal);
+            if (result.failure) {
+                failures.push(Object.freeze({ componentId: component.id, role: file.role, reason: result.failure }));
+            } else if (result.path) {
+                componentFiles.set(file.role, result.path);
             }
         }
         if (componentFiles.size === component.files.length) {
@@ -119,8 +179,26 @@ export async function verifyModelCache(
         }
     }
 
+    const selectedRuntime = selectPlatformRuntime(manifest);
+    const runtimeResult = selectedRuntime
+        ? await verifyRuntime(cacheRoot, bundleDirectory, selectedRuntime, failures, signal)
+        : undefined;
+    const runtime = runtimeResult?.runtime;
+
     if (failures.length > 0) {
-        return Object.freeze({ ready: false, files: verified, failures: Object.freeze(failures) });
+        return Object.freeze({
+            ready: false,
+            files: verified,
+            ...(runtime ? { runtime } : {}),
+            ...(runtimeResult ? { runtimeFiles: runtimeResult.files } : {}),
+            failures: Object.freeze(failures)
+        });
     }
-    return Object.freeze({ ready: true, files: verified, failures: Object.freeze([]) });
+    return Object.freeze({
+        ready: true,
+        files: verified,
+        ...(runtime ? { runtime } : {}),
+        ...(runtimeResult ? { runtimeFiles: runtimeResult.files } : {}),
+        failures: Object.freeze([])
+    });
 }
