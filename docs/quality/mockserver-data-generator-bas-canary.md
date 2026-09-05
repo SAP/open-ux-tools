@@ -61,8 +61,9 @@ exact archive is therefore the current BAS functional candidate.
 
 The same archive also passed a local Docker `linux/amd64` OData V4 install,
 standard/deterministic HTTP verification, retained classifier/SFT execution,
-and byte-exact transactional restore on Node 22.23.2. This proves the Linux x64
-package and native learned path can execute, but Docker emulation does not
+and byte-exact transactional restore on Node 22.23.2 and Node 24.20.0. This
+proves the Linux x64 package and native learned path can execute on both
+supported Node lines, but Docker emulation does not
 replace this BAS canary or qualify BAS proxy, certificate, filesystem, and
 preview-routing behavior.
 

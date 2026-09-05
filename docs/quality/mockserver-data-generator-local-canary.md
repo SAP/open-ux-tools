@@ -938,14 +938,16 @@ fixture on macOS arm64 with Node 22.22.2.
 - Transactional restore returned the fixture byte-for-byte outside disposable
   `node_modules`, removed installer-owned state, and the temporary application,
   model cache, and extracted archives were deleted after verification.
-- The same exact archive then ran inside Docker `linux/amd64` on Node 22.23.2.
-  Its standard canary returned one row with `providerExecuted: false`; its
-  flagged deterministic canary returned one row with `providerExecuted: true`;
-  and its separately staged retained classifier/SFT canary returned one row
-  with `modelVerified: true` and `learnedRuntimeVerified: true`. Learned runtime
-  initialization took 3,603.648 ms and whole-service generation took 3,797.407
-  ms under emulation. Transactional restore again returned the fixture
-  byte-for-byte outside `node_modules` and removed installer-owned state.
+- The same exact archive then ran inside Docker `linux/amd64` on Node 22.23.2
+  and Node 24.20.0. On each Node line, its standard canary returned one row with
+  `providerExecuted: false`; its flagged deterministic canary returned one row
+  with `providerExecuted: true`; and its separately staged retained
+  classifier/SFT canary returned one row with `modelVerified: true` and
+  `learnedRuntimeVerified: true`. Under emulation, learned runtime initialization
+  and whole-service generation took 3,603.648/3,797.407 ms on Node 22 and
+  3,538.740/3,809.742 ms on Node 24. Both transactional restores returned the
+  fixture byte-for-byte outside `node_modules` and removed installer-owned
+  state.
 
 This closes the exact-current-archive local application evidence gap. The
 preceding compatibility archive remains the V2/V4/CDS evidence; the current

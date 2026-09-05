@@ -1341,13 +1341,14 @@ descriptor SHA-256
 The copied runtime entry executed a real ONNX graph with exact expected output
 on Node 22.23.2 and Node 24.20.0. This closes the local Linux x64 runtime
 selection and ABI smoke. The exact current development kit also installed into
-a fresh OData V4 fixture in the Node 22.23.2 Linux x64 container: separate
-standard and deterministic HTTP canaries returned rows, the retained classifier
-and SFT verified and executed with `learnedRuntimeVerified: true`, and
-transactional restore returned the fixture byte-for-byte outside disposable
-`node_modules`. Docker amd64 emulation on macOS is not native Linux performance,
-hosted acquisition, BAS, proxy/certificate, or filesystem evidence, so the
-corresponding full platform checkbox remains open.
+fresh OData V4 fixtures in the Node 22.23.2 and Node 24.20.0 Linux x64
+containers: separate standard and deterministic HTTP canaries returned rows,
+the retained classifier and SFT verified and executed with
+`learnedRuntimeVerified: true`, and both transactional restores returned the
+fixture byte-for-byte outside disposable `node_modules`. Docker amd64 emulation
+on macOS is not native Linux performance, hosted acquisition, BAS,
+proxy/certificate, or filesystem evidence, so the corresponding full platform
+checkbox remains open.
 
 ### Task 12.2: Perform threat modeling and dependency review
 
