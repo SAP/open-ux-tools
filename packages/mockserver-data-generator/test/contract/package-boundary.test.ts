@@ -91,6 +91,7 @@ function requiredDocumentation(overrides: Readonly<Record<string, string>> = {})
         'README.md': '# Test package',
         'docs/architecture.md': '# Architecture',
         'docs/host-contract.md': '# Host contract',
+        'docs/pilot-parity.md': '# Pilot parity',
         'docs/security.md': '# Security',
         'docs/troubleshooting.md': '# Troubleshooting',
         ...overrides
@@ -149,6 +150,25 @@ describe('published package boundary', () => {
         expect(security).toContain('## Model artifact controls');
         expect(security).toContain('## Privacy and diagnostics');
         expect(security).toContain('## Release limitations');
+    });
+
+    it('publishes an explicit pilot-parity disposition linked from the README', () => {
+        const parityPath = join(packageRoot, 'docs', 'pilot-parity.md');
+        const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+
+        expect(existsSync(parityPath)).toBe(true);
+        if (!existsSync(parityPath)) {
+            return;
+        }
+
+        const parity = readFileSync(parityPath, 'utf8');
+        expect(readme).toContain('[pilot parity](./docs/pilot-parity.md)');
+        expect(parity).toContain('## Preserved behavior');
+        expect(parity).toContain('## Intentional production changes');
+        expect(parity).toContain('## Deferred or excluded pilot scope');
+        expect(parity).toContain('## Stable-promotion gate');
+        expect(parity).toContain('OpenAPI');
+        expect(parity).toContain('English-first');
     });
 
     it('documents the accepted per-entity row-count option', () => {
@@ -396,7 +416,7 @@ describe('published package boundary', () => {
         const result = runChecker(root);
 
         expect({ status: result.status, stderr: result.stderr }).toEqual({ status: 0, stderr: '' });
-        expect(JSON.parse(result.stdout)).toMatchObject({ files: 8 });
+        expect(JSON.parse(result.stdout)).toMatchObject({ files: 9 });
     });
 
     it('rejects a compressed tarball above the five MiB ceiling', () => {

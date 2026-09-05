@@ -31,6 +31,7 @@ const CORE_DOCUMENTATION = [
     'README.md',
     'docs/architecture.md',
     'docs/host-contract.md',
+    'docs/pilot-parity.md',
     'docs/security.md',
     'docs/troubleshooting.md'
 ];

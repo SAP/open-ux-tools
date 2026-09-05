@@ -140,6 +140,8 @@ const result = await generateService(
 See the [package architecture](./docs/architecture.md) and
 [host contract](./docs/host-contract.md) for the complete lifecycle,
 precedence, model, and degradation rules.
+The [pilot parity](./docs/pilot-parity.md) record identifies preserved behavior,
+intentional production changes, and excluded or still-deferred pilot scope.
 Operational diagnosis, offline verification, forced regeneration, explicit
 model pinning, and provider rollback are covered in the
 [troubleshooting guide](./docs/troubleshooting.md). The package's trust
