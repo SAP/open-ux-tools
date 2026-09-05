@@ -40,7 +40,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
-        "nock": "14.0.16",
+        "nock": "14.0.17",
         "@sap-ux/logger": "workspace:*"
     },
     "files": [
