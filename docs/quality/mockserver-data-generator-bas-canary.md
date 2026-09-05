@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`
-- archive SHA-256: `742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`
-- archive size: 564,878 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee`; `SAP/open-ux-odata` `45abe80a028530601bf5d67d565f3384a6648ead`
-- local handoff copy: `/absolute/path/to/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
+- dev-kit fingerprint: `64fbf17261ff5ade91004edc709f6cac450a2931013501a946fe701200fabad9`
+- archive SHA-256: `049927d74b1b596aed69afe8ec245dd0d9c98683e5665ff1bf0691015d2a3d9e`
+- archive size: 566,486 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `c6de01c559dec0e52d97b846171fe5af211fedd8`; `SAP/open-ux-odata` `b64ee8b60519f129ad975465536204c78a15be1a`
+- local handoff copy: `/absolute/path/to/mockserver-data-generator-dev-kit-64fbf17261ff5ade.tgz`
 
 This candidate includes the flag-gated `start-mock` launcher, the current
 classifier/SFT provider, adaptive wide-schema
@@ -40,9 +40,11 @@ substitute for an HTTPS proxy and certificate test inside BAS.
 The current archive also contains the native-session lifecycle correction:
 both MockGen ONNX backend adapters map their internal `dispose()` operation to
 the runtime's actual `release()` API. A real native-addon contract on Node 22
-and Node 24 proves that sessions reject inference after disposal. The later
-host-only boundary-test commits do not change runtime package bytes, so this
-archive remains the current BAS functional candidate.
+and Node 24 proves that sessions reject inference after disposal. It also
+contains the host API-version handshake: only a `--mockgen` start resolves the
+application-installed middleware and requires capability version 1 before
+Fiori is spawned. A plain `start-mock` performs no compatibility lookup. The
+exact archive is therefore the current BAS functional candidate.
 
 ## Inputs to record
 

@@ -584,35 +584,35 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 - Modify: `packages/mockserver-data-generator/README.md`
 - Modify: `packages/mockserver-data-generator/docs/host-contract.md`
 
-- [ ] Add a failing middleware test that requires
+- [x] Add a failing middleware test that requires
       `FEMiddleware.MOCK_DATA_GENERATOR_API_VERSION` to equal `1`.
-- [ ] Run
+- [x] Run
       `pnpm --filter @sap-ux/ui5-middleware-fe-mockserver test -- index.test.ts`
       and confirm the assertion fails because the marker is absent.
-- [ ] Define `MOCK_DATA_GENERATOR_API_VERSION = 1 as const` in the host core API
+- [x] Define `MOCK_DATA_GENERATOR_API_VERSION = 1 as const` in the host core API
       and attach the imported constant to the existing CommonJS middleware
       function export without changing its callable default behavior.
-- [ ] Re-run the focused middleware test and both affected host builds.
-- [ ] Add failing generator tests for compatible, missing, unloadable, and
+- [x] Re-run the focused middleware test and both affected host builds.
+- [x] Add failing generator tests for compatible, missing, unloadable, and
       wrong-version middleware exports. The public assertion API must accept an
       injected loader so these cases do not depend on ambient `node_modules`.
-- [ ] Add failing launcher tests proving `--mockgen` checks compatibility before
+- [x] Add failing launcher tests proving `--mockgen` checks compatibility before
       spawn, an incompatible host prevents spawn with a path-free diagnostic,
       and the unflagged command performs no compatibility lookup.
-- [ ] Run
+- [x] Run
       `pnpm --filter @sap-ux/mockserver-data-generator test -- host-compatibility.test.ts start.test.ts`
       and confirm failure occurs because the assertion module and launcher hook
       do not exist.
-- [ ] Implement a fixed-name application-local loader with `createRequire`,
+- [x] Implement a fixed-name application-local loader with `createRequire`,
       require the middleware marker to equal `1`, and emit only:
       `MockGen requires a compatible @sap-ux/ui5-middleware-fe-mockserver with mock data generator API version 1. Run npm run start-mock without --mockgen to use standard mock data.`
-- [ ] Invoke the assertion only for parsed `--mockgen` starts and before child
+- [x] Invoke the assertion only for parsed `--mockgen` starts and before child
       process creation; leave signal handling and all ordinary child arguments
       unchanged.
-- [ ] Document capability-based compatibility and the host-first release order.
+- [x] Document capability-based compatibility and the host-first release order.
       Record exact minimum npm versions only after the host packages are
       published, rather than guessing prerelease numbers.
-- [ ] Run both repository package suites, builds, and lints on Node 22 and Node
+- [x] Run both repository package suites, builds, and lints on Node 22 and Node
       24; rebuild the clean development kit and repeat the literal standard and
       flagged application commands before pushing either branch.
 
@@ -1493,8 +1493,8 @@ Implement the deterministic, classifier, and SFT paths test-first using the exis
 ## Reviewed implementation checkpoint (2026-09-05)
 
 The approved runtime behavior is implemented on clean candidate commits
-`3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee` in `SAP/open-ux-tools` and
-`a84630efb55a8568dfb79088f77ac67dd326a270` in `SAP/open-ux-odata`.
+`c6de01c559dec0e52d97b846171fe5af211fedd8` in `SAP/open-ux-tools` and
+`b64ee8b60519f129ad975465536204c78a15be1a` in `SAP/open-ux-odata`.
 `npm run start-mock` remains standard and does not invoke MockGen;
 `npm run start-mock -- --mockgen` is the explicit opt-in. The launcher
 preserves generated application behavior and forwards ordinary child
@@ -1502,17 +1502,17 @@ arguments, while the generic host creates and disposes one provider per
 generation epoch and retains complete fallback behavior.
 
 The final focused review found no remaining critical or important issue in the
-launcher and lifecycle scope. Current local verification includes 236 generator
-tests, 364 host-core tests, 12 middleware tests, and 120 development-kit tests,
+launcher and lifecycle scope. Current local verification includes 243 generator
+tests, 364 host-core tests, 13 middleware tests, and 120 development-kit tests,
 plus clean builds and zero-error lint for the affected packages. Fresh packed
 OData V2, OData V4, and CDS-through-FE applications passed both standard and
 learned HTTP paths. Literal `npm run start-mock` and
 `npm run start-mock -- --mockgen` commands also passed in the V4 fixture.
 
 The reproducible local/BAS kit is
-`/absolute/path/to/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
-(564,878 bytes, SHA-256
-`742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`).
+`/absolute/path/to/mockserver-data-generator-dev-kit-64fbf17261ff5ade.tgz`
+(566,486 bytes, SHA-256
+`049927d74b1b596aed69afe8ec245dd0d9c98683e5665ff1bf0691015d2a3d9e`).
 The reviewed platform-runtime campaign passes every hard local gate at
 266,453,893 installed-and-cache bytes. The 451,328,075-byte upstream result is
 the prior exact multi-platform baseline and still fails only the total-footprint
@@ -1558,3 +1558,25 @@ privacy-safe standard fallback. The full host-core suite passes 27 suites, 364
 tests, and 282 snapshots on both Node 22.22.3 and Node 24.20.0, together with
 build and zero-error lint. This closes both local boundary gates without
 misstating the separate repository test layers as one cross-repository test.
+
+**Host compatibility increment (2026-09-05):** The host core now owns
+`MOCK_DATA_GENERATOR_API_VERSION = 1`, and the callable CommonJS middleware
+export advertises that capability. The generator launcher resolves the fixed
+middleware package from the application only for `--mockgen`, rejects a
+missing, unloadable, or wrong-version host before child-process creation with a
+stable path-free message, and leaves unflagged startup untouched. Test-first
+verification observed the intended failures before implementation and now
+passes 28 suites/243 tests for the generator, 27 suites/364 tests for the host
+core, and 2 suites/13 tests for the middleware on both Node 22.22.3 and Node
+24.20.0; all affected builds and lints pass with zero errors. The 11-suite,
+120-test development-kit integration package also passes.
+
+The exact clean kit is fingerprint
+`64fbf17261ff5ade91004edc709f6cac450a2931013501a946fe701200fabad9`,
+566,486 bytes, with SHA-256
+`049927d74b1b596aed69afe8ec245dd0d9c98683e5665ff1bf0691015d2a3d9e`.
+Two builds were byte-identical. Fresh V2, V4, and CDS-through-FE installs each
+passed separate standard and retained-classifier/SFT canaries. Literal V4
+commands returned `ProductName_0` without the flag and a learned `Safety Valve`
+row with `--mockgen`. Exact minimum npm versions remain intentionally unset
+until the host packages are actually released.

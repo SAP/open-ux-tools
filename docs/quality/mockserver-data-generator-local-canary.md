@@ -824,3 +824,48 @@ deterministic fallback behavior, retained-pilot classifier/SFT loading, HTTP
 serving, and restore behavior. It does not prove BAS environment compatibility
 or promote the model's realism. Those require the BAS record and completion of
 the fingerprinted external review campaign.
+
+## Host API compatibility archive canary
+
+The capability handshake was rebuilt from clean commits
+`c6de01c559dec0e52d97b846171fe5af211fedd8` in `SAP/open-ux-tools` and
+`b64ee8b60519f129ad975465536204c78a15be1a` in `SAP/open-ux-odata`.
+
+- Development-kit fingerprint:
+  `64fbf17261ff5ade91004edc709f6cac450a2931013501a946fe701200fabad9`
+- Archive SHA-256:
+  `049927d74b1b596aed69afe8ec245dd0d9c98683e5665ff1bf0691015d2a3d9e`
+- Archive size: 566,486 bytes; 10 entries; two clean builds were
+  byte-identical
+- Generator tarball: 94,953 bytes; SHA-256
+  `443d35d67cea683520a596575dabab09344bf9e1d3cdfa2ccf5cda885386e7dd`
+- Host tarballs: core SHA-256
+  `f07d75c02e9c5dbdd201072510498138794f3ec72f5b5cc80a214d410db4a397`;
+  middleware SHA-256
+  `04838c2de96ba2621ee6065f73a9f3bd7caf097fdc55fbe81ba256b27fed0d27`
+- Fresh packed V2, V4, and CDS-through-FE applications each passed separate
+  standard and `--mockgen` HTTP canaries. Standard paths returned one row with
+  `providerExecuted: false`; flagged paths returned one row with
+  `providerExecuted: true` and `learnedRuntimeVerified: true`.
+- Learned whole-service generation was 2,865.913 ms for V2, 1,461.104 ms for
+  V4, and 1,446.072 ms for CDS. These are functional samples, not a performance
+  campaign.
+- Literal V4 `npm run start-mock` returned `ProductName_0`. Literal
+  `npm run start-mock -- --mockgen` returned a learned `Safety Valve` row with
+  coherent supplier email, price, and active flag.
+- The V4 and CDS transactional restores passed. The disposable V2 application
+  copy was removed after its successful verification. A first V4 attempt ended
+  during npm extraction because the host volume had 116 MiB free; after only
+  the disposable canary trees created for this run were removed, a fresh V4
+  install passed. This was an environment-capacity failure, not an application
+  or MockGen failure.
+- Handoff archive:
+  `/absolute/path/to/mockserver-data-generator-dev-kit-64fbf17261ff5ade.tgz`
+
+This archive proves the application-installed middleware advertises API version
+1 and the flagged launcher accepts it before starting Fiori. Unit regressions
+separately prove that missing, unloadable, markerless, and wrong-version hosts
+stop before child-process creation with the stable path-free diagnostic, while
+unflagged startup performs no compatibility lookup. BAS, remote platform CI,
+published-version compatibility, governance, and independent realism gates
+remain open.
