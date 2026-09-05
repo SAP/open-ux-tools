@@ -469,7 +469,7 @@ The three portable reports are retained together outside the repository at
 the previously unmeasured local integrated timing gates; supported runtime
 distribution and release-platform reruns remain separate work.
 
-### Current cache-fix evaluation and integrated proof
+### Cache-fix evaluation and integrated proof
 
 The proxy-aware candidate was rerun after the integrated warm-cache protocol
 exposed an invalid cache-statistics invariant: raw SFT row/chunk completion
@@ -486,7 +486,7 @@ Its compiled generator fingerprint is
 The evaluation and replay used the same platform runtime archive identified
 above and ran the complete retained INT8 cohorts.
 
-| Current evaluation | Result |
+| Cache-fix evaluation | Result |
 | --- | ---: |
 | Governed classifier cases | 233 |
 | Routed precision / coverage | 83.82% / 29.18% |
@@ -511,7 +511,7 @@ The exact package and compatible host were installed into a generated-style V4
 application with both learned components verified. Five fresh processes were
 measured for every integrated protocol:
 
-| Current integrated measurement | p50 | p95 | Threshold | Status |
+| Cache-fix integrated measurement | p50 | p95 | Threshold | Status |
 | --- | ---: | ---: | ---: | --- |
 | Cold whole-service generation | 1,986.364 ms | 2,595.700 ms | 25,000 ms | pass |
 | Warm generated-data-cache startup | 18.823 ms | 19.072 ms | 200 ms | pass |
@@ -537,6 +537,67 @@ The reports and generated-value evidence are retained outside the repository at
 `mockserver-data-generator-runtime-proof-darwin-arm64-cachefix-40393c7c6`.
 This remains local macOS arm64 evidence, not an approved runtime distribution or
 a substitute for BAS, cross-platform, governance, or independent realism gates.
+
+### Current production-TypeScript hardening proof
+
+Commit `d26eaa535637c29552b6f1364f751035ee15750b` removes every production
+TypeScript non-null assertion from the model-runtime implementation and makes
+the package lint fail if one is reintroduced. The host source remained fixed at
+`2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`. Two clean dev-kit builds were
+byte-identical with fingerprint
+`07bca9812e87056fb1e7af1af38f9395ad4452dba43ee44a30578fad3baa2cde`
+and SHA-256
+`9137cbcb98a490ef7830ad17ab3675e8e90f6381200de9e970e35e81f4b4c285`.
+
+The exact 82,926-byte generator package has SHA-256
+`16ca9cc103b85e16be983d903d26fefd379c380968bdb4884469b6f4a5e017ea`
+and compiled build fingerprint
+`997ba740c440760fac487f182aa9ff11227a430fd7b6ff1d775f93400d9d4b86`.
+The complete evaluation and independent replay retained identical classifier
+predictions, SFT output, and judge-evidence hashes.
+
+| Hardened evaluation | Result |
+| --- | ---: |
+| Governed classifier cases | 233 |
+| Routed precision / coverage | 83.82% / 29.18% |
+| Classifier latency p95 | 0.911 ms |
+| SFT parse / exact-key cases | 16/16 / 16/16 |
+| SFT requested fields filled | 261/261 |
+| SFT p50 / p95 | 1,287.554 / 8,190.491 ms |
+| Peak process RSS | 1,447,985,152 bytes |
+| Classifier prediction fingerprint | `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7` |
+| SFT output fingerprint | `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3` |
+| SFT evidence SHA-256 | `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` |
+
+The evaluation report fingerprint is
+`e4f6b8f92e9be1124f75ec6c32b7ddb98a4638eeab7e94f1b8e7f83c2863bc01`
+with file SHA-256
+`0c333099cb6003a52c876bb27796d06789fecb1d552c83a052baadd46afe34e6`.
+The replay file SHA-256 is
+`32f805e86903843877b3628bdc1bab40cc8c7c22c26cabcb2ce00b672da8a316`.
+
+| Hardened integrated measurement | p50 | p95 | Threshold | Status |
+| --- | ---: | ---: | ---: | --- |
+| Cold whole-service generation | 1,979.323 ms | 2,548.303 ms | 25,000 ms | pass |
+| Warm generated-data-cache startup | 16.860 ms | 19.659 ms | 200 ms | pass |
+| First-use acquisition of 192,167,584 bytes | 982.305 ms | 1,094.513 ms | 30,000 ms | pass |
+| End-to-end host provider | 1,980.128 ms | 2,549.076 ms | 60,000 ms | pass |
+
+Every warm sample avoided model initialization. The integration fingerprint is
+`38cc6a08616192caedd220d38a6ee77e24b787b6e6c858f2cb80b37263d58efe`
+with file SHA-256
+`2504bb859965dc80fa8a5cb64991ebcdbf8639f358a1e55753b1db50119a602b`.
+
+The enforced footprint is 266,366,901 bytes, leaving 48,205,899 bytes below
+the 300 MiB ceiling. Every required gate passes; the generator-halving target
+remains a separately reported non-blocking miss. The footprint fingerprint is
+`bcd5df054928bc380bd1c69e12c819e4dd1bea000deab70c00226742053bff82`
+with file SHA-256
+`f300b12aa094c691997b0e2cf4dfc9abb98c5a15ed1e62126b17e4879a2192bc`.
+The complete proof is retained outside the repository at
+`mockserver-data-generator-runtime-proof-darwin-arm64-hardening-d26eaa535`.
+It remains local macOS arm64 evidence and does not replace BAS, release-platform,
+governance, independent realism, or publication gates.
 
 This proves the size, API, inference, and quality feasibility of the retained
 INT8 model with one platform's native runtime. It is not yet a production

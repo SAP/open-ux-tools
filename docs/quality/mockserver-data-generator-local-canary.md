@@ -137,7 +137,7 @@ installation and restored the application files, but exposed that a later
 journal. Commit `40ceed804` makes that state dependency-only recovery; the
 development-kit integration suite now covers the failure and retry path.
 
-## Current repeat-install and upgrade archive canary
+## Repeat-install and upgrade archive checkpoint
 
 The installer was hardened so that installing a newer local kit preserves both
 the application's last working MockGen configuration and its exact staged
@@ -163,7 +163,7 @@ original application:
 The handoff copy of this exact archive is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-62cb961976060a2b.tgz`.
 
-## Current production-config and decoder archive canary
+## Production-config and decoder archive checkpoint
 
 The kit was rebuilt after the constrained-decoder optimization, full compiled
 build/evaluation binding, frozen-cohort enforcement, and production generation
@@ -186,7 +186,7 @@ Its checksum must be verified before extraction. The prior archive remains the
 upgrade-source fixture; this current archive supersedes it for new local or BAS
 testing.
 
-## Current cache-hardening archive canary
+## Cache-hardening archive checkpoint
 
 The kit was rebuilt after cross-process model-cache fencing, late-cancellation
 publication protection, and the 200 MiB preview/stable manifest ceiling landed.
@@ -209,7 +209,7 @@ Its checksum must be verified before extraction. This canary supersedes the
 preceding archive for new local or BAS testing; the earlier records remain
 historical cross-format and upgrade evidence.
 
-## Current integrated-performance archive canary
+## Integrated-performance archive checkpoint
 
 The kit was rebuilt after adding monotonic provider/host timing evidence and the
 fingerprinted Fiori integration-performance harness. Its exact extracted
@@ -234,7 +234,7 @@ The handoff archive for this integrated-performance checkpoint is
 Its checksum must be verified before extraction. This archive supersedes the
 preceding cache-hardening archive for new local or BAS testing.
 
-## Current coherence-enabled archive canary
+## Coherence-enabled archive checkpoint
 
 The kit was rebuilt from clean worktrees after the production semantic
 coherence layer and executable final-cohort gate landed. Its exact extracted
@@ -254,14 +254,14 @@ byte-for-byte outside disposable `node_modules`.
 - Observed one-run timing: 3,416.661 ms model initialization; 7,610.522 ms whole-service generation; 7,611.491 ms host provider duration. These are canary observations, not the five-sample performance report.
 - Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
 
-The current handoff archive is
+The handoff archive for this checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-87e3f13ff4dbf477.tgz`.
 Its checksum must be verified before extraction. This archive supersedes the
 integrated-performance archive for new local or BAS functional testing; the
 older archive and bound five-sample reports remain the current performance
 evidence until that campaign is rerun on a supported release platform.
 
-## Current parser-aligned archive canary
+## Parser-aligned archive checkpoint
 
 After correcting the workspace lockfile so tests and downstream consumers use
 the same declared `fast-xml-parser@5.10.1`, the package was rebuilt from a clean
@@ -281,13 +281,13 @@ INT8 SFT cache.
 - Observed timing: 1,485.674 ms model initialization; 2,688.299 ms whole-service generation; 2,689.124 ms host provider duration
 - Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
 
-The current handoff archive is
+The handoff archive for this checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f9a0de8fc01b547b.tgz`.
 Its checksum must be verified before extraction. It supersedes earlier archives
 for local or BAS functional testing; the older bound five-sample report remains
 the performance evidence until the supported release-platform campaign runs.
 
-## Current safe-diagnostics archive canary
+## Safe-diagnostics archive checkpoint
 
 The kit was rebuilt after adding product-level degradation coverage, a
 package-scoped parser override, privacy-safe local support summaries, and the
@@ -309,14 +309,14 @@ OData V2 fixture with the retained classifier and INT8 SFT cache.
 - Restore verification: the application matched the pristine fixture byte-for-byte outside `node_modules`, and `.mockserver-data-generator-dev` was absent
 - Portable-path verification: the exact archive also completed a real npm install, deterministic provider/HTTP canary, and byte-exact restore when both the kit and Fiori application paths contained spaces and non-ASCII German/Japanese text; generation took 25.763 ms and the host provider took 26.565 ms
 
-The current handoff archive is
+The handoff archive for this checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f7820bacc74174b3.tgz`.
 Its checksum must be verified before extraction. It supersedes the
 parser-aligned archive for new local or BAS functional testing. The disposable
 canary fixture and copied model cache were removed after exact restore
 verification.
 
-## Current metadata-boundary archive canary
+## Metadata-boundary archive checkpoint
 
 After the fixed 32 MiB UTF-8 metadata ceiling landed, the kit was rebuilt from
 both clean worktrees. The exact archive completed separate deterministic OData
@@ -339,7 +339,7 @@ The metadata-boundary handoff archive was
 It is retained as historical evidence and is superseded by the generated-result
 boundary archive below.
 
-## Current generated-result-boundary archive canary
+## Generated-result-boundary archive checkpoint
 
 After the generator gained the same fixed 64 MiB UTF-8 aggregate result ceiling
 as the standard FE host, the development kit was
@@ -358,12 +358,12 @@ OData V4 and retained-model OData V2 installs, HTTP canaries, and restores.
 - Learned timing: 1,412.620 ms runtime initialization; 2,623.729 ms whole-service generation; 2,624.564 ms host provider duration
 - Restore verification: both application fixtures matched their original source files byte for byte; generated YAML and recovery directories were absent; both disposable applications and the copied 192,167,584-byte model cache were removed
 
-The current handoff archive is
+The handoff archive for this checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-87c95ffaea3fee27.tgz`.
 Its SHA-256 must be verified before extraction. It supersedes the
 metadata-boundary archive for new local or BAS functional testing.
 
-## Current reproducible archive canary
+## Reproducible archive checkpoint
 
 After package-manifest ordering, staging timestamps, and the gzip header were
 made deterministic, two complete sequential builds from the same clean source
@@ -384,13 +384,13 @@ V2 installs, HTTP canaries, and restores.
 - Learned timing: 1,378.088 ms runtime initialization; 2,547.669 ms whole-service generation; 2,548.433 ms host provider duration
 - Restore verification: both application fixtures matched their original source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
-The current handoff archive is
+The handoff archive for this checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-8b62350555c8503c.tgz`.
 Its SHA-256 must be verified before extraction. It supersedes the
 generated-result-boundary archive for new local or BAS functional testing; the
 earlier archives remain historical evidence.
 
-## Current packaged-architecture archive canary
+## Packaged-architecture archive checkpoint
 
 After the consumer architecture document and relative-link package contract
 landed, the kit was rebuilt twice from clean source. The packed generator
@@ -412,7 +412,7 @@ and retained-model OData V2 installs, HTTP canaries, and restores.
 - Learned timing: 1,606.016 ms runtime initialization; 2,771.970 ms whole-service generation; 2,772.726 ms host provider duration
 - Restore verification: both application fixtures matched their original source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
-The current handoff archive is
+The handoff archive for this checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-d02c59ff9342c409.tgz`.
 Its SHA-256 must be verified before extraction. It supersedes the preceding
 reproducible archive for new local or BAS functional testing; the earlier
@@ -462,7 +462,7 @@ temporary runtime and was not installed system-wide.
 This closes only the macOS arm64 Node 24 cell. It does not establish macOS x64,
 Linux, Windows, BAS, proxy, or read-only-filesystem compatibility on Node 24.
 
-## Current read-only verification archive
+## Read-only verification checkpoint
 
 After moving the verifier's temporary debug configuration outside the Fiori
 application and correcting its cache-hit evidence check, the development kit
@@ -513,7 +513,7 @@ Verify its SHA-256 before extraction. The cache-fix archive below supersedes it
 for new local and BAS testing; this record remains the exact proxy-routing
 checkpoint.
 
-## Current chunked-SFT cache and footprint canary
+## Chunked-SFT cache and footprint checkpoint
 
 The five-sample integrated campaign exposed that the generated-data cache
 validator treated raw row/chunk completion attempts as if they were entity
@@ -539,10 +539,39 @@ and an enforced footprint run.
 - Report identities: evaluation fingerprint `2237987b581ad0a0689ff331985b9d4bf1f7c33a8ba886fe24d43102aeb0de81`, integration fingerprint `2463e1a0c832491831de6915699191113cb10b40cbf512f41ac215c00d2d8f31`, footprint fingerprint `a6b9a61aba123ed9ae4fcb04cdbe28c57c528e70d5f41e2616112b6ca159c122`
 - Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-cachefix-40393c7c6`
 
-The current handoff archive is
+The handoff archive for this cache-fix checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-3a16a758a6e58208.tgz`.
-Verify its SHA-256 before extraction. This is the current local and BAS
-candidate; earlier archives remain historical evidence for their exact gates.
+Verify its SHA-256 before extraction. The hardened archive below supersedes it
+for new local and BAS testing.
+
+## Current production-TypeScript hardening canary
+
+The approved implementation specification prohibits production TypeScript
+non-null assertions. Enabling that rule exposed 34 assertions confined to four
+MockGen model-runtime files. Explicit validated references and bounded element
+access replaced every assertion. The rule now fails package lint if one is
+reintroduced. The exact hardened package was then rebuilt and requalified; no
+`open-ux-odata` source changed during this pass.
+
+- Dev-kit fingerprint: `07bca9812e87056fb1e7af1af38f9395ad4452dba43ee44a30578fad3baa2cde`
+- Archive SHA-256: `9137cbcb98a490ef7830ad17ab3675e8e90f6381200de9e970e35e81f4b4c285`
+- Archive size: 551,117 bytes; 10 entries
+- Source state: clean `SAP/open-ux-tools` commit `d26eaa535637c29552b6f1364f751035ee15750b` and unchanged `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- Reproducibility: two clean builds had identical package hashes, fingerprints, sizes, SHA-256 values, and binary contents
+- Generator tarball: 82,926 bytes, SHA-256 `16ca9cc103b85e16be983d903d26fefd379c380968bdb4884469b6f4a5e017ea`
+- Package verification: 23 suites and 198 tests passed with 85.50% statement coverage; TypeScript build, zero-error lint, formatting, the non-null-assertion rule, and the 67-file packed boundary passed
+- Learned V4 verification: both classifier and SFT were ready; the provider executed; `$metadata` and `Products?$top=1` passed with one row; initialization took 1,359.535 ms, generation 2,510.007 ms, and host provider work 2,510.805 ms
+- Integrated p95 over five fresh-process samples: 2,548.303 ms cold whole-service generation, 19.659 ms warm-cache startup, 1,094.513 ms first acquisition, and 2,549.076 ms host provider work; every warm sample avoided model initialization
+- Model evaluation: all 233 governed classifier cases ran; routed precision was 83.82% at 29.18% coverage; INT8 SFT passed 16/16 parse and exact-key checks and filled 261/261 requested fields; p95 was 8,190.491 ms
+- Deterministic replay: classifier prediction fingerprint `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7`, SFT output fingerprint `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3`, and evidence SHA-256 `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` matched the independent identical-seed replay
+- Footprint: 266,366,901 / 314,572,800 total installed-and-cache bytes; all required gates passed and `footprintReady` is true; the separate generator-halving optimization target remains missed
+- Report identities: evaluation fingerprint `e4f6b8f92e9be1124f75ec6c32b7ddb98a4638eeab7e94f1b8e7f83c2863bc01`, integration fingerprint `38cc6a08616192caedd220d38a6ee77e24b787b6e6c858f2cb80b37263d58efe`, footprint fingerprint `bcd5df054928bc380bd1c69e12c819e4dd1bea000deab70c00226742053bff82`
+- Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-hardening-d26eaa535`
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-07bca9812e87056f.tgz`.
+Verify its SHA-256 before extraction. Earlier archives remain historical
+evidence for their exact gates.
 
 ## Scope boundary
 

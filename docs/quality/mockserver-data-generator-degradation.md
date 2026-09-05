@@ -41,7 +41,7 @@ Current local snapshot:
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 198 tests passed; 85.62% statement coverage |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 198 tests passed; 85.50% statement coverage; production non-null assertions rejected by lint |
 | MockGen integration workspace | 11 suites, 103 tests passed |
 | Affected builds | Passed |
 | Affected lint | Zero errors |
