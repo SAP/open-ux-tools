@@ -538,7 +538,7 @@ The reports and generated-value evidence are retained outside the repository at
 This remains local macOS arm64 evidence, not an approved runtime distribution or
 a substitute for BAS, cross-platform, governance, or independent realism gates.
 
-### Current production-TypeScript hardening proof
+### Production-TypeScript hardening checkpoint
 
 Commit `d26eaa535637c29552b6f1364f751035ee15750b` removes every production
 TypeScript non-null assertion from the model-runtime implementation and makes
@@ -596,6 +596,68 @@ with file SHA-256
 `f300b12aa094c691997b0e2cf4dfc9abb98c5a15ed1e62126b17e4879a2192bc`.
 The complete proof is retained outside the repository at
 `mockserver-data-generator-runtime-proof-darwin-arm64-hardening-d26eaa535`.
+It remains local macOS arm64 evidence and does not replace BAS, release-platform,
+governance, independent realism, or publication gates.
+
+### Current production lint-safety proof
+
+Commit `4d620e0fd80814f729ac890597626596c8f93dda` promotes explicit production
+return types, safe assignments, default switch paths, consistent returns, and
+the non-null-assertion ban to package lint errors. The current violations were
+removed while the host source remained fixed at
+`2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`. Two clean dev-kit builds were
+byte-identical with fingerprint
+`e72683c87dc4ac91926d4dd9d9a82756e5615ff9e93b1210eb3a939734432a91`
+and SHA-256
+`2c573d8ced54736639aef3dabc091e9a6ddae824fdab14ed96560637f434117d`.
+
+The exact 83,011-byte generator package has SHA-256
+`ae1ace0934a64b935f78d198ac2b713fc1e236dbc549369b39f2853fc0308d4e`
+and compiled build fingerprint
+`170673efe05c45734287b2641c2997bee1a85e0d06d81b791fc63c7b1a74966f`.
+The complete evaluation and independent replay retained identical classifier
+predictions, SFT output, and byte-identical judge evidence.
+
+| Lint-safety evaluation | Result |
+| --- | ---: |
+| Governed classifier cases | 233 |
+| Routed precision / coverage | 83.82% / 29.18% |
+| Classifier latency p95 | 0.929 ms |
+| SFT parse / exact-key cases | 16/16 / 16/16 |
+| SFT requested fields filled | 261/261 |
+| SFT p50 / p95 | 1,261.771 / 8,196.967 ms |
+| Peak process RSS | 1,435,779,072 bytes |
+| Classifier prediction fingerprint | `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7` |
+| SFT output fingerprint | `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3` |
+| SFT evidence SHA-256 | `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` |
+
+The evaluation report fingerprint is
+`6629b66d87276b5e6b40b4742989fe1416d9f7806a292a0e5e1ad8e5eb8f6d60`
+with file SHA-256
+`a28b3b60b8726b13319ad5b18e54d04c061a50ee7288a6139d57137be2ab468d`.
+The replay file SHA-256 is
+`1451c03eed8156cf0e6fe7423956edcca366bbcee49fb3385595be2491998453`.
+
+| Lint-safety integrated measurement | p50 | p95 | Threshold | Status |
+| --- | ---: | ---: | ---: | --- |
+| Cold whole-service generation | 1,971.942 ms | 2,715.682 ms | 25,000 ms | pass |
+| Warm generated-data-cache startup | 16.341 ms | 17.611 ms | 200 ms | pass |
+| First-use acquisition of 192,167,584 bytes | 634.056 ms | 1,001.387 ms | 30,000 ms | pass |
+| End-to-end host provider | 1,972.792 ms | 2,716.444 ms | 60,000 ms | pass |
+
+Every warm sample avoided model initialization. The integration fingerprint is
+`7924a6672c0935f683b21027fa8b57ae85aa43c745452ae74c0999513caa96ae`
+with file SHA-256
+`68e32f272dea9c6420842124ce15b7abeb53ad73c089b9fd11852f56af121442`.
+
+The enforced footprint is 266,367,320 bytes, leaving 48,205,480 bytes below
+the 300 MiB ceiling. Every required gate passes; the generator-halving target
+remains a separately reported non-blocking miss. The footprint fingerprint is
+`0a3369bb5163c85fd27125a7b9f2ab01ea0f20b88ae592c01384c1911d9c9cdc`
+with file SHA-256
+`9d988c30bffdfe6a2193548fff315a2bb8c1c7bba6e08cecdef2ec4bc45f990c`.
+The complete proof is retained outside the repository at
+`mockserver-data-generator-runtime-proof-darwin-arm64-lint-safety-4d620e0fd`.
 It remains local macOS arm64 evidence and does not replace BAS, release-platform,
 governance, independent realism, or publication gates.
 

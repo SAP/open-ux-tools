@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `07bca9812e87056fb1e7af1af38f9395ad4452dba43ee44a30578fad3baa2cde`
-- archive SHA-256: `9137cbcb98a490ef7830ad17ab3675e8e90f6381200de9e970e35e81f4b4c285`
-- archive size: 551,117 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `d26eaa535637c29552b6f1364f751035ee15750b`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-07bca9812e87056f.tgz`
+- dev-kit fingerprint: `e72683c87dc4ac91926d4dd9d9a82756e5615ff9e93b1210eb3a939734432a91`
+- archive SHA-256: `2c573d8ced54736639aef3dabc091e9a6ddae824fdab14ed96560637f434117d`
+- archive size: 551,068 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `4d620e0fd80814f729ac890597626596c8f93dda`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-e72683c87dc4ac91.tgz`
 
 This candidate includes the current classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
@@ -27,11 +27,13 @@ pre-acquisition model-cache descendant checks, HTTPS-preserving bounded
 redirects, environment-proxy routing, and an exact packed-document/link
 contract. The exact archive passed a retained-classifier/SFT V4 canary and a
 five-sample integrated campaign after correcting chunked-SFT cache statistics
-and enforcing the package's no-non-null-assertion source contract.
+and enforcing the package's production TypeScript safety rules for explicit
+returns, unsafe assignments, default paths, consistent returns, and non-null
+assertions.
 All five cold generations, warm-cache starts, and first-use acquisitions
 passed; warm starts did not initialize model sessions. The current p95 values
-are 2,548.303 ms cold, 19.659 ms warm cache, 1,094.513 ms acquisition, and
-2,549.076 ms host provider work. Earlier clean archives remain the
+are 2,715.682 ms cold, 17.611 ms warm cache, 1,001.387 ms acquisition, and
+2,716.444 ms host provider work. Earlier clean archives remain the
 cross-format V2/V4/CDS and read-only evidence. The local CONNECT proxy
 regression does not substitute for an HTTPS proxy and certificate test inside
 BAS.

@@ -544,7 +544,7 @@ The handoff archive for this cache-fix checkpoint is
 Verify its SHA-256 before extraction. The hardened archive below supersedes it
 for new local and BAS testing.
 
-## Current production-TypeScript hardening canary
+## Production-TypeScript hardening checkpoint
 
 The approved implementation specification prohibits production TypeScript
 non-null assertions. Enabling that rule exposed 34 assertions confined to four
@@ -568,10 +568,41 @@ reintroduced. The exact hardened package was then rebuilt and requalified; no
 - Report identities: evaluation fingerprint `e4f6b8f92e9be1124f75ec6c32b7ddb98a4638eeab7e94f1b8e7f83c2863bc01`, integration fingerprint `38cc6a08616192caedd220d38a6ee77e24b787b6e6c858f2cb80b37263d58efe`, footprint fingerprint `bcd5df054928bc380bd1c69e12c819e4dd1bea000deab70c00226742053bff82`
 - Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-hardening-d26eaa535`
 
-The current handoff archive is
+The hardening-checkpoint handoff archive is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-07bca9812e87056f.tgz`.
 Verify its SHA-256 before extraction. Earlier archives remain historical
 evidence for their exact gates.
+
+## Current production lint-safety canary
+
+Commit `4d620e0fd80814f729ac890597626596c8f93dda` promotes five production
+TypeScript safety rules to package lint errors: explicit function return types,
+unsafe assignments, default switch paths, consistent returns, and non-null
+assertions. All current production violations were removed without changing
+the frozen `open-ux-odata` source. The exact package was rebuilt and fully
+requalified.
+
+- Dev-kit fingerprint: `e72683c87dc4ac91926d4dd9d9a82756e5615ff9e93b1210eb3a939734432a91`
+- Archive SHA-256: `2c573d8ced54736639aef3dabc091e9a6ddae824fdab14ed96560637f434117d`
+- Archive size: 551,068 bytes; 10 entries
+- Source state: clean `SAP/open-ux-tools` commit `4d620e0fd80814f729ac890597626596c8f93dda` and unchanged `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- Reproducibility: two clean builds had identical package hashes, fingerprints, sizes, SHA-256 values, and binary contents
+- Generator tarball: 83,011 bytes, SHA-256 `ae1ace0934a64b935f78d198ac2b713fc1e236dbc549369b39f2853fc0308d4e`
+- Package verification: 23 suites and 198 tests passed with 85.27% statement coverage; TypeScript build, zero-error lint, formatting, all production safety rules, and the packed boundary passed
+- Learned V4 verification: both classifier and SFT were ready; the provider executed; `$metadata` and `Products?$top=1` passed with one row; initialization took 1,392.648 ms, generation 2,558.063 ms, and host provider work 2,558.854 ms
+- Integrated p95 over five fresh-process samples: 2,715.682 ms cold whole-service generation, 17.611 ms warm-cache startup, 1,001.387 ms first acquisition, and 2,716.444 ms host provider work; every warm sample avoided model initialization
+- Model evaluation: all 233 governed classifier cases ran; routed precision was 83.82% at 29.18% coverage; INT8 SFT passed 16/16 parse and exact-key checks and filled 261/261 requested fields; p95 was 8,196.967 ms
+- Deterministic replay: classifier prediction fingerprint `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7`, SFT output fingerprint `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3`, and evidence SHA-256 `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` matched the independent replay byte for byte
+- Footprint: 266,367,320 / 314,572,800 total installed-and-cache bytes; all required gates passed and `footprintReady` is true; the separate generator-halving optimization target remains missed
+- Report identities: evaluation fingerprint `6629b66d87276b5e6b40b4742989fe1416d9f7806a292a0e5e1ad8e5eb8f6d60`, integration fingerprint `7924a6672c0935f683b21027fa8b57ae85aa43c745452ae74c0999513caa96ae`, footprint fingerprint `0a3369bb5163c85fd27125a7b9f2ab01ea0f20b88ae592c01384c1911d9c9cdc`
+- Restore: the bundled helper restored the Fiori fixture byte for byte outside disposable `node_modules` and removed its recovery state
+- Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-lint-safety-4d620e0fd`
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-e72683c87dc4ac91.tgz`.
+Verify its SHA-256 before extraction. This evidence is local macOS arm64 proof;
+it does not replace BAS, release-platform, governance, independent realism, or
+publication gates.
 
 ## Scope boundary
 
