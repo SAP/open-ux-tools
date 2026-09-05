@@ -191,6 +191,55 @@ describe('semantic realism regressions', () => {
         expect(sft.generate).not.toHaveBeenCalled();
     });
 
+    it('uses governed SAP plant and stock-batch identifiers before SFT', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'maintenance-identifier-hostile-sft',
+            generate: jest.fn(async () => ({
+                rows: [{ Plant: ')} {', MaterialSerialNumberStockBatch: '[{' }]
+            }))
+        };
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+            <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+                <edmx:DataServices>
+                    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Demo">
+                        <EntityType Name="Stock">
+                            <Key><PropertyRef Name="ID" /></Key>
+                            <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                            <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" />
+                            <Property Name="MaterialSerialNumberStockBatch" Type="Edm.String"
+                                Nullable="false" MaxLength="10" />
+                        </EntityType>
+                        <Annotations Target="Demo.Stock/Plant">
+                            <Annotation Term="Common.DocumentationRef"
+                                String="urn:sap-com:documentation:key?=type=DE&amp;id=WERKS_D" />
+                        </Annotations>
+                        <Annotations Target="Demo.Stock/MaterialSerialNumberStockBatch">
+                            <Annotation Term="Common.DocumentationRef"
+                                String="urn:sap-com:documentation:key?=type=DE&amp;id=B_CHARGE" />
+                        </Annotations>
+                        <EntityContainer Name="Container">
+                            <EntitySet Name="Stocks" EntityType="Demo.Stock" />
+                        </EntityContainer>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>`;
+
+        const result = await generateService(
+            {
+                metadata: { format: 'edmx', content: metadata },
+                service: { urlPath: '/stocks', odataVersion: '4.0' },
+                targets: [{ name: 'Stocks', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            { sft }
+        );
+
+        expect(result.resources.Stocks?.[0]?.Plant).toMatch(/^(?:1010|1110|1710|3010)$/u);
+        expect(result.resources.Stocks?.[0]?.MaterialSerialNumberStockBatch).toMatch(/^\d{10}$/u);
+        expect(sft.generate).not.toHaveBeenCalled();
+    });
+
     it('keeps numeric status values inside a compact governed domain', async () => {
         const result = await generateService(
             {

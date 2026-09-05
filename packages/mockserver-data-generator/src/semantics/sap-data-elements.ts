@@ -11,6 +11,8 @@ const DATA_ELEMENTS_BY_ROLE: ReadonlyArray<readonly [string, ReadonlyArray<strin
     ['org_name', ['BANKA', 'NAME1', 'NAME1_GP', 'BUTXT', 'AD_NAME1', 'BU_NAMEOR1', 'BU_NAMEOR2', 'BU_NAMEGR1']],
     ['currency', ['WAERS', 'WAERS_CURC', 'WAERS_V', 'WAERK']],
     ['unit_of_measure', ['MEINS', 'MSEHI', 'ISOCD_UNIT', 'MSEH3', 'FARR_QUANTITY_UNIT']],
+    ['plant', ['WERKS_D']],
+    ['batch', ['B_CHARGE']],
     ['language', ['SPRAS', 'LANGU', 'DDLANGUAGE', 'BU_LANGU_CORR', 'EHFND_LANGU']],
     ['person_full_name', ['AD_NAMTEXT', 'BU_NAME1TX']],
     ['person_first_name', ['AD_NAMEFIR', 'BU_MCNAME2']],

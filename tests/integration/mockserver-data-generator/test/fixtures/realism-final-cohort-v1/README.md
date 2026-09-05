@@ -8,8 +8,10 @@ after the generator learned to consume SAP labels, data elements, and field
 control references. `final-cohort-v3.json` keeps those inputs and assertions
 unchanged while refreezing T2 routing after governed SAP audit-user, boolean,
 organization-name, accounting-chart, equipment, short-control-code, and
-numeric-status semantics were added. Generated rows, model outputs, and human
-or LLM reviews must remain outside the repository.
+numeric-status semantics were added. `final-cohort-v4.json` again changes only
+the routing baseline after the pilot-governed plant and stock-batch roles were
+restored. Generated rows, model outputs, and human or LLM reviews must remain
+outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
@@ -29,6 +31,6 @@ inputs and recomputes the service/source-family isolation contract before model
 inference. Each manifest also freezes every service's raw T2 completion
 attempts, parsed responses, eligible slots, and accepted slots. A replay fails
 before publication when any of those denominators or contributions drift. The
-v2 and v3 routing baselines were each frozen before exporting or judging their
-corresponding metadata-grounded candidates; neither is a relaxation of the
-parse, fill, or structural thresholds.
+The v2, v3, and v4 routing baselines were each frozen before exporting or
+judging their corresponding metadata-grounded candidates; none is a relaxation
+of the parse, fill, or structural thresholds.

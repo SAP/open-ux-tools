@@ -16,6 +16,7 @@ const PRODUCTS = ['Industrial Pump', 'Safety Valve', 'Service Package', 'Control
 const STATUSES = ['Open', 'In Progress', 'Approved', 'Completed'] as const;
 const CHARTS_OF_ACCOUNTS = ['YCOA', 'INT', 'CAUS', 'IFRS'] as const;
 const CONTROL_CODES = ['01', '02', '03', '04'] as const;
+const PLANTS = ['1010', '1110', '1710', '3010'] as const;
 
 export interface SemanticRowContext {
     firstName: string;
@@ -67,6 +68,10 @@ function stringRoleValue(role: string, context: SemanticRowContext, hash: number
             return `EQ${String(hash % 10_000_000_000).padStart(10, '0')}`;
         case 'control_code':
             return CONTROL_CODES[hash % CONTROL_CODES.length];
+        case 'plant':
+            return PLANTS[hash % PLANTS.length];
+        case 'batch':
+            return String(hash % 10_000_000_000).padStart(10, '0');
         case 'email':
             return `${context.firstName.toLowerCase()}.${context.lastName.toLowerCase()}@example.com`;
         case 'phone':
