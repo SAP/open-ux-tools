@@ -1461,7 +1461,7 @@ Implement the deterministic, classifier, and SFT paths test-first using the exis
 
 The approved runtime behavior is implemented on clean candidate commits
 `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee` in `SAP/open-ux-tools` and
-`45abe80a028530601bf5d67d565f3384a6648ead` in `SAP/open-ux-odata`.
+`8c1f9dc4b258f69f3bcb19b06ff46aa864fa57a5` in `SAP/open-ux-odata`.
 `npm run start-mock` remains standard and does not invoke MockGen;
 `npm run start-mock -- --mockgen` is the explicit opt-in. The launcher
 preserves generated application behavior and forwards ordinary child
@@ -1470,7 +1470,7 @@ generation epoch and retains complete fallback behavior.
 
 The final focused review found no remaining critical or important issue in the
 launcher and lifecycle scope. Current local verification includes 236 generator
-tests, 362 host-core tests, 12 middleware tests, and 120 development-kit tests,
+tests, 363 host-core tests, 12 middleware tests, and 120 development-kit tests,
 plus clean builds and zero-error lint for the affected packages. Fresh packed
 OData V2, OData V4, and CDS-through-FE applications passed both standard and
 learned HTTP paths. Literal `npm run start-mock` and
@@ -1513,3 +1513,12 @@ INT8 SFT execution plus transactional restore. The frozen model-quality
 campaign was not repeated for this cleanup-only change; its prior
 fingerprint-bound report remains the quality evidence rather than being
 mislabelled as a fresh run.
+
+**Generated-result boundary increment (2026-09-05):** The accepted host now
+has an application-level regression for a provider result above 64 MiB. It
+proves that the result is rejected before publication, only the bounded generic
+fallback event is emitted, application readiness succeeds, and built-in mock
+rows remain available. The full host-core suite now passes 27 suites, 363 tests,
+and 282 snapshots on both Node 22.22.3 and Node 24.20.0, together with build and
+zero-error lint. This closes the local generated-result integration gate; the
+metadata-input fallback gate remains the next local boundary check.

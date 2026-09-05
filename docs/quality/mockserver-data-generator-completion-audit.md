@@ -7,7 +7,7 @@ Candidate source:
 - reviewed generator and `--mockgen` launcher:
   `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee`
 - reviewed minimal `SAP/open-ux-odata` host extension:
-  `45abe80a028530601bf5d67d565f3384a6648ead`
+  `8c1f9dc4b258f69f3bcb19b06ff46aa864fa57a5`
 - current portable development-kit fingerprint:
   `5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`
 - current portable development-kit SHA-256:
@@ -60,7 +60,7 @@ means a measured threshold was missed by the named candidate.
 | Model bundle size policy | proven | preview/stable manifests are rejected above 200 MiB; development experiments remain explicit; retained cache is 192,167,584 bytes | Apply the policy to the eventual published manifest |
 | Generated-data cache | locally proven | fingerprinting, validation, corruption quarantine, atomic writes, concurrent publication, multi-completion SFT statistics, and deterministic 32 MiB LRU quota pass package tests; five fresh-process warm-cache samples had a 24.724 ms p95 with no learned runtime initialization | Release-platform reruns |
 | Metadata input boundary | package-proven / integration pending | EDMX/CSN are measured as UTF-8 and rejected above a fixed 32 MiB ceiling before hashing or parsing; exact-limit and multibyte limit-plus-one tests pass | Prove diagnostic and fallback behavior through the accepted integration |
-| Generated-result boundary | package-proven / integration pending | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache publication | Prove rejection before publication through the accepted integration |
+| Generated-result boundary | locally proven | complete live and cached results are measured as UTF-8 and rejected above the standard 64 MiB ceiling before cache publication; an accepted-host integration test proves an oversized provider result is not published, the application still becomes ready, and built-in mock rows are served after a privacy-safe fallback event | Release-platform reruns |
 | Development-kit application setup | locally proven | The installer wraps the generated `start-mock` command, runs separate standard and MockGen canaries, installs exact local tarballs, and restores original application files | BAS execution |
 | Local/BAS development kit | local pass / BAS pending | The 564,878-byte clean archive is reproducible and passed V2, V4, and CDS standard plus learned canaries locally on Node 22.22.3 | Run the same fingerprinted archive in BAS |
 | Package boundary | proven | current generator tarball is 93,593 bytes and contains required architecture, operations, proxy, security, and pilot-parity guidance with valid inline relative links but no weights, datasets, caches, judge output, source maps, or developer paths; import/construction network guards pass | Verify public npm tarballs after publication |
@@ -79,7 +79,7 @@ means a measured threshold was missed by the named candidate.
 | Scope | Result |
 | --- | ---: |
 | `@sap-ux/mockserver-data-generator` | 27 suites and 236 tests passed on both Node 22.22.3 and Node 24.20.0; package build and zero-error lint passed on both |
-| reviewed host packages | `fe-mockserver-core`: 27 suites and 362 tests; middleware: 2 suites and 12 tests; both builds and zero-error lint passed |
+| reviewed host packages | `fe-mockserver-core`: 27 suites and 363 tests on both Node 22.22.3 and Node 24.20.0; middleware: 2 suites and 12 tests; affected builds and zero-error lint passed |
 | development-kit integration tests | 11 suites and 120 tests passed, including exact launcher dispatch, default-off persistence, CDS fallback, and final WASM-decision regressions |
 | native runtime platform contract | the actual `onnxruntime-node@1.24.3` native addon executed a tiny ONNX graph; both public MockGen backend adapters constructed tensors, delegated session work, and demonstrably released their native sessions on macOS arm64 with Node 22.22.3 and 24.20.0 |
 | retained bound model evaluation | the pre-cleanup platform-runtime report used all 233 governed classifier cases and all 16 SFT cases; output fingerprints match the prior accepted runs; the cleanup-only source change was checked with fresh learned canaries rather than relabelled as a fresh model campaign |
