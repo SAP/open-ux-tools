@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `f9a0de8fc01b547be338dd852ca68785ed65810cc484a81d0197e4715c5c6e82`
-- archive SHA-256: `2cc3741f355ddab1076618d706834f133b7905c5ad5b8350ab1bf7ebb239d6a8`
-- archive size: 535,912 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `8255d109a619714364e0e0d7f78f444e749a3c54`; `SAP/open-ux-odata` `64e37ac4a6d24607c28a06242075b95afbbc1ff2`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-f9a0de8fc01b547b.tgz`
+- dev-kit fingerprint: `47b4dc3ae32e8269b4c666e188d188d9c1286d699499600eed440380285190ec`
+- archive SHA-256: `7dd025eaf82960defff50ed1d0aa4d3ac0b1a6aa788071926d77427407692f65`
+- archive size: 549,814 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `7aeee32044b5edf02be5159ec334f0b1589e934c`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-47b4dc3ae32e8269.tgz`
 
 This candidate includes the current classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
@@ -22,14 +22,17 @@ reload-cancellation recovery, transactional installer recovery, and
 repeat-install upgrade safety. It also includes fenced cross-process model-cache
 acquisition, late-cancellation publication protection, the 200 MiB
 preview/stable manifest ceiling, metadata-derived semantic coherence, and the
-executable final-cohort gate. Its independently bundled retained-pilot bridge,
-learned OData V4 HTTP canary, and exact restore are recorded in the local canary
-report. Earlier clean archives remain the cross-format learned V2/V4/CDS and
-five-sample performance evidence; run the procedure below with the current
-archive to qualify the same learned path in BAS. The exact archive passed the
-local V2 HTTP canary with classifier and SFT ready, 1,485.674 ms runtime
-initialization, 2,688.299 ms whole-service generation, 2,689.124 ms host
-provider time, one returned row, and byte-exact restore.
+executable final-cohort gate. It also contains the packaged security guide,
+pre-acquisition model-cache descendant checks, HTTPS-preserving bounded
+redirects, and an exact packed-document/link contract. Its independently
+bundled retained-pilot bridge, learned OData V2 HTTP canary, and exact restore
+are recorded in the local canary report. Earlier clean archives remain the
+cross-format learned V2/V4/CDS and five-sample performance evidence; run the
+procedure below with the current archive to qualify the same learned path in
+BAS. The exact archive passed the local V2 HTTP canary with classifier and SFT
+ready, 1,363.187 ms runtime initialization, 2,520.021 ms whole-service
+generation, 2,520.791 ms host provider time, one returned row, and byte-exact
+restore.
 
 ## Inputs to record
 
