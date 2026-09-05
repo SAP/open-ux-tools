@@ -744,6 +744,10 @@ startup. No critical or important finding remained in that scope.
   `/Users/I335123/Downloads/mockserver-data-generator-evidence-066acdfc`.
 - Current BAS handoff archive:
   `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`.
+- The package-level native-runtime contract loaded the actual
+  `onnxruntime-node@1.24.3` addon through both public MockGen tensor adapters on
+  macOS arm64 with Node 22.22.3 and Node 24.20.0. The complete package passed
+  27 suites and 236 tests, build, and zero-error lint on both Node lines.
 
 ## Scope boundary
 

@@ -71,16 +71,17 @@ means a measured threshold was missed by the named candidate.
 | Realism | external | a blinded, randomized 311-record packet covers six domains and EDMX V2/V4/CSN; 300 scalar fields and 11 coherence assertions pass the executable local gate and byte-identical replay; its SFT gate is 100% parse and 96.54% accepted-slot fill; deterministic triage found no high/medium signal but is not a realism judgment | Two independent, lineage-bound provider reviews and at least 80% overall plus every domain/format |
 | Data/model governance | external | a fingerprinted retained-evidence reuse audit and 67-record classifier quarantine exist; source payloads and weights remain out of the public repository | Complete the private authoritative inventory and obtain owner-approved provenance, privacy, license, retention, derivative-use, and redistribution disposition |
 | Security and supply chain | partial | the [threat model](./mockserver-data-generator-threat-model.md) records package boundaries, immutable hashes, archive-bound evaluation, runtime identity, download and metadata limits, traversal/symlink/lock/cache defenses, bounded generation, redacted diagnostics, and the baseline dependency audit | Complete remaining platform tests, upstream dependency disposition, SBOM/provenance, and release signing policy |
-| Platform compatibility | local macOS / platform pending | Accepted-integration V2/V4/CDS and learned-model evidence exists on macOS arm64 with Node 22.22.2 | macOS x64, Ubuntu and Windows on Node 22/24 plus actual BAS proxy/certificate behavior |
+| Platform compatibility | local macOS / remote matrix pending | Accepted-integration V2/V4/CDS and learned-model evidence exists on macOS arm64; the real `onnxruntime-node` native addon and both MockGen tensor adapters pass on Node 22.22.3 and 24.20.0 | Let the existing six-cell repository CI run the same contract on Ubuntu, Windows, and macOS with Node 22/24, then complete actual BAS proxy/certificate behavior |
 | Release and rollback | package-partial / external | The current installer restore passes; promoted model fingerprints cannot reuse N-1 rows, while explicit rollback can reuse only its matching verified cache | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
 ## Current verification snapshot
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 26 suites and 235 tests passed; package build and zero-error lint passed |
+| `@sap-ux/mockserver-data-generator` | 27 suites and 236 tests passed on both Node 22.22.3 and Node 24.20.0; package build and zero-error lint passed on both |
 | reviewed host packages | `fe-mockserver-core`: 27 suites and 362 tests; middleware: 2 suites and 12 tests; both builds and zero-error lint passed |
 | development-kit integration tests | 11 suites and 120 tests passed, including exact launcher dispatch, default-off persistence, CDS fallback, and final WASM-decision regressions |
+| native runtime platform contract | the actual `onnxruntime-node@1.24.3` native addon loaded through both public MockGen backend adapters and constructed classifier and SFT tensors on macOS arm64 with Node 22.22.3 and 24.20.0 |
 | current bound model evaluation | the reviewed platform-runtime report used all 233 governed classifier cases and all 16 SFT cases; output fingerprints match the prior accepted runs |
 | SFT evaluation | 16/16 parse and exact keys; 261/261 fields filled; p95 9,130.225 ms; peak process RSS 1,057,521,664 bytes with the platform runtime candidate |
 | current realism cohort | 311 records; 124/124 parsed; 446/462 accepted fields; all 6 targets contribute; 6/6 structural targets and 11/11 frozen assertions passed; evidence and campaign replay byte-identical |
@@ -95,7 +96,7 @@ means a measured threshold was missed by the named candidate.
 | current `darwin-arm64` proof | 266,453,893 / 314,572,800 bytes; every hard gate passes and `footprintReady: true` |
 | current reviewed report fingerprints | evaluation `40e95b0bf7991cee7601aacd114de88f7746b0ab1210c0ded56d69e81e7046cb`; integration `e6bac4de3b0d355b4c7686fcc47826e93c6d7ff590414ecc1be3a9b6e50a3db3`; platform footprint `a0a8d143693126cb67da86269f503671d6107f45d0ee419471b1d33daa1d788c` |
 
-The full generator package has a passing coverage run over all 26 suites. The
+The full generator package has a passing coverage run over all 27 suites. The
 downloader's cross-process and cancellation branches have focused regressions,
 but the remaining platform-specific paths still require the release matrix
 rather than being inferred from local coverage.

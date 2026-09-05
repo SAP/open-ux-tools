@@ -975,3 +975,23 @@ the preceding 451,328,075-byte result remains the prior exact upstream
 baseline. This new run proves that the reviewed code still passes with the
 platform-specific native approach. It does not convert the experimental
 archive into a supported production distribution.
+
+## Native runtime distribution disposition
+
+The current
+[ONNX Runtime Node documentation](https://onnxruntime.ai/docs/get-started/with-javascript/node.html)
+exposes one installation command, `npm install onnxruntime-node`, for its
+prebuilt Windows, Linux, and macOS binaries; it does not publish a documented
+family of platform-specific Node packages. The installed
+`onnxruntime-node@1.24.3` package reports 220,344,078 unpacked bytes and contains
+native binaries for multiple operating systems and architectures. That matches
+the measured upstream footprint failure.
+
+MockGen will therefore not delete files from a consumer installation, rely on
+an npm postinstall mutation, or publish the hand-built measurement archive as
+a release dependency. The production choices remain an upstream-maintained
+platform split or SAP-governed, separately named platform packages with
+license, SBOM, signing, update, and rollback ownership. Until one exists, the
+normal upstream runtime remains supported but exceeds the proposed 300 MiB
+combined footprint gate; the small platform archive remains feasibility
+evidence only.

@@ -1468,7 +1468,7 @@ arguments, while the generic host creates and disposes one provider per
 generation epoch and retains complete fallback behavior.
 
 The final focused review found no remaining critical or important issue in the
-launcher and lifecycle scope. Current local verification includes 235 generator
+launcher and lifecycle scope. Current local verification includes 236 generator
 tests, 362 host-core tests, 12 middleware tests, and 120 development-kit tests,
 plus clean builds and zero-error lint for the affected packages. Fresh packed
 OData V2, OData V4, and CDS-through-FE applications passed both standard and
@@ -1489,3 +1489,13 @@ step is the actual BAS canary. Supported per-platform runtime distribution,
 remaining Node/OS cells, model/data approvals, independent realism review,
 publication, and rollback verification remain release gates rather than local
 implementation gaps.
+
+**Native-runtime matrix increment (2026-09-05):** A package contract now loads
+the real `onnxruntime-node@1.24.3` native addon through both public MockGen
+backend adapters. The complete 27-suite/236-test package, build, and zero-error
+lint pass on macOS arm64 with Node 22.22.3 and Node 24.20.0. Because the
+repository pipeline already runs the package suite on Ubuntu, Windows, and
+macOS with both Node lines, the same contract will become six-cell evidence
+once the branch is pushed and CI runs. The current upstream Node package has no
+documented platform-specific npm-package family, so no consumer-package pruning
+or private runtime name was added. BAS and remote CI execution remain open.
