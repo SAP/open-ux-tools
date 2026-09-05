@@ -108,6 +108,23 @@ termination signals, and returns the child's exit status. Missing child
 commands, duplicate flags, or unsupported complex shell scripts fail with a
 clear diagnostic instead of being guessed or rewritten.
 
+When `--mockgen` is present, the launcher performs one compatibility handshake
+before spawning Fiori. The matching `SAP/open-ux-odata` core defines
+`MOCK_DATA_GENERATOR_API_VERSION = 1`, and the CommonJS
+`@sap-ux/ui5-middleware-fe-mockserver` export exposes that marker as a static
+property. The launcher resolves this fixed middleware package name from the
+application working directory and requires the marker to equal `1`. A missing,
+unloadable, or incompatible host produces one path-free diagnostic explaining
+that MockGen needs a compatible SAP mockserver and that the unflagged command
+remains available. The child command is not spawned in that case. An unflagged
+start performs no host lookup or compatibility work.
+
+The handshake is capability-based rather than tied to a prerelease package
+number, because changeset application may move the eventual host version before
+publication. `SAP/open-ux-odata` must publish the marker and provider SPI before
+the MockGen package is published; the first compatible released host versions
+are recorded after that release exists.
+
 The standard middleware remains the only UI5 middleware:
 
 ```yaml

@@ -574,14 +574,46 @@ pnpm --filter @sap-ux/mockserver-data-generator test:integration
 
 **Files:**
 
-- Modify: `packages/mockserver-data-generator/package.json`
+- Modify in `SAP/open-ux-odata`: `packages/fe-mockserver-core/src/api.ts`
+- Modify in `SAP/open-ux-odata`: `packages/ui5-middleware-fe-mockserver/src/index.ts`
+- Modify in `SAP/open-ux-odata`: `packages/ui5-middleware-fe-mockserver/test/index.test.ts`
+- Create: `packages/mockserver-data-generator/src/host-compatibility.ts`
+- Create: `packages/mockserver-data-generator/test/unit/host-compatibility.test.ts`
+- Modify: `packages/mockserver-data-generator/src/start.ts`
+- Modify: `packages/mockserver-data-generator/test/unit/start.test.ts`
 - Modify: `packages/mockserver-data-generator/README.md`
-- Create: `packages/mockserver-data-generator/test/contract/host-compatibility.test.ts`
 
-- [ ] Set the minimum supported `@sap-ux/fe-mockserver-core`/middleware version containing the SPI.
-- [ ] Use an open peer range when the host is a peer and a pinned dev dependency for tests.
-- [ ] Fail with a clear configuration diagnostic on an older host; the standard mockserver itself must still be startable after the user removes the unsupported provider option.
-- [ ] Document the release-order constraint.
+- [ ] Add a failing middleware test that requires
+      `FEMiddleware.MOCK_DATA_GENERATOR_API_VERSION` to equal `1`.
+- [ ] Run
+      `pnpm --filter @sap-ux/ui5-middleware-fe-mockserver test -- index.test.ts`
+      and confirm the assertion fails because the marker is absent.
+- [ ] Define `MOCK_DATA_GENERATOR_API_VERSION = 1 as const` in the host core API
+      and attach the imported constant to the existing CommonJS middleware
+      function export without changing its callable default behavior.
+- [ ] Re-run the focused middleware test and both affected host builds.
+- [ ] Add failing generator tests for compatible, missing, unloadable, and
+      wrong-version middleware exports. The public assertion API must accept an
+      injected loader so these cases do not depend on ambient `node_modules`.
+- [ ] Add failing launcher tests proving `--mockgen` checks compatibility before
+      spawn, an incompatible host prevents spawn with a path-free diagnostic,
+      and the unflagged command performs no compatibility lookup.
+- [ ] Run
+      `pnpm --filter @sap-ux/mockserver-data-generator test -- host-compatibility.test.ts start.test.ts`
+      and confirm failure occurs because the assertion module and launcher hook
+      do not exist.
+- [ ] Implement a fixed-name application-local loader with `createRequire`,
+      require the middleware marker to equal `1`, and emit only:
+      `MockGen requires a compatible @sap-ux/ui5-middleware-fe-mockserver with mock data generator API version 1. Run npm run start-mock without --mockgen to use standard mock data.`
+- [ ] Invoke the assertion only for parsed `--mockgen` starts and before child
+      process creation; leave signal handling and all ordinary child arguments
+      unchanged.
+- [ ] Document capability-based compatibility and the host-first release order.
+      Record exact minimum npm versions only after the host packages are
+      published, rather than guessing prerelease numbers.
+- [ ] Run both repository package suites, builds, and lints on Node 22 and Node
+      24; rebuild the clean development kit and repeat the literal standard and
+      flagged application commands before pushing either branch.
 
 **Phase exit gate:** Clean packed V2, V4, and CDS applications prove both commands: `npm run start-mock` uses standard generation with no MockGen work, while `npm run start-mock -- --mockgen` uses the provider for missing data. Both preserve authored data and fall back safely when learned components are unavailable.
 
