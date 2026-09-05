@@ -271,6 +271,66 @@ describe('standard FE mockserver provider', () => {
         );
     });
 
+    it('gives launcher-prepared cache-only state precedence over legacy YAML model paths', async () => {
+        process.env.SAP_UX_MOCKGEN_MODEL_MANIFEST = '/managed/model-manifest.json';
+        process.env.SAP_UX_MOCKGEN_MODEL_CACHE = '/managed/model-cache';
+        const loadRuntime = jest.fn(async (): Promise<LearnedRuntimeHandle> => ({
+            runtime: {},
+            diagnostics: [],
+            dispose: async () => undefined
+        }));
+        const provider = new FeMockserverDataGenerator(
+            {
+                mode: 'learned',
+                generatedDataCache: false,
+                modelManifestPath: '/legacy/model-manifest.json',
+                modelCacheDirectory: '/legacy/model-cache',
+                modelOffline: false
+            },
+            {
+                generateService: async () => ({
+                    resources: { Records: [{ ID: 1 }] },
+                    diagnostics: [],
+                    capabilities: {
+                        mode: 'deterministic' as const,
+                        classifier: 'unavailable' as const,
+                        sft: 'unavailable' as const
+                    },
+                    fingerprints: { request: 'a'.repeat(64) },
+                    statistics: {
+                        sft: {
+                            attempts: 0,
+                            parsedResponses: 0,
+                            eligibleSlots: 0,
+                            acceptedSlots: 0,
+                            assignments: []
+                        }
+                    }
+                }),
+                loadRuntime
+            }
+        );
+
+        await provider.generate({
+            contractVersion: 1,
+            service: { urlPath: '/records', odataVersion: '4.0' },
+            metadata: '<?xml version="1.0"?><edmx:Edmx />',
+            targets: [{ name: 'Records', kind: 'entity-set' }],
+            existingData: {},
+            logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn() },
+            signal: new AbortController().signal
+        });
+
+        expect(loadRuntime).toHaveBeenCalledWith(
+            {
+                manifestPath: '/managed/model-manifest.json',
+                cacheDirectory: '/managed/model-cache',
+                offline: true
+            },
+            expect.any(AbortSignal)
+        );
+    });
+
     it('keeps host output narrow while delegating through the instrumentable production generator', async () => {
         const generateService = jest.fn(async () => ({
             resources: { Records: [{ ID: 1 }] },

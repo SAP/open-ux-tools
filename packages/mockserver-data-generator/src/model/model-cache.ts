@@ -46,11 +46,14 @@ function artifactPath(bundleDirectory: string, relativePath: string): string {
     return candidate;
 }
 
-async function sha256(filePath: string): Promise<string> {
+async function sha256(filePath: string, signal?: AbortSignal): Promise<string> {
     const digest = createHash('sha256');
+    signal?.throwIfAborted();
     for await (const chunk of createReadStream(filePath)) {
+        signal?.throwIfAborted();
         digest.update(chunk as Buffer);
     }
+    signal?.throwIfAborted();
     return digest.digest('hex');
 }
 
@@ -59,15 +62,22 @@ async function sha256(filePath: string): Promise<string> {
  *
  * @param cacheRoot
  * @param manifest
+ * @param signal Optional cancellation signal.
  */
-export async function verifyModelCache(cacheRoot: string, manifest: ModelManifest): Promise<VerifiedModelCache> {
+export async function verifyModelCache(
+    cacheRoot: string,
+    manifest: ModelManifest,
+    signal?: AbortSignal
+): Promise<VerifiedModelCache> {
     const bundleDirectory = modelBundleDirectory(cacheRoot, manifest);
     const verified = new Map<string, ReadonlyMap<string, string>>();
     const failures: ModelCacheFailure[] = [];
 
     for (const component of manifest.components) {
+        signal?.throwIfAborted();
         const componentFiles = new Map<string, string>();
         for (const file of component.files) {
+            signal?.throwIfAborted();
             const filePath = artifactPath(bundleDirectory, file.path);
             let failure: ModelCacheFailureReason | undefined;
             try {
@@ -87,11 +97,14 @@ export async function verifyModelCache(cacheRoot: string, manifest: ModelManifes
                         failure = 'not-file';
                     } else if (details.size !== file.bytes) {
                         failure = 'size';
-                    } else if ((await sha256(filePath)) !== file.sha256) {
+                    } else if ((await sha256(filePath, signal)) !== file.sha256) {
                         failure = 'checksum';
                     }
                 }
             } catch (error) {
+                if (signal?.aborted) {
+                    signal.throwIfAborted();
+                }
                 const code = (error as NodeJS.ErrnoException).code;
                 failure = code === 'ENOENT' ? 'missing' : 'unreadable';
             }

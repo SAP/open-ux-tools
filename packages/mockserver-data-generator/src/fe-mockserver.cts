@@ -319,7 +319,7 @@ class FeMockserverDataGenerator {
 
     constructor(options?: ProviderOptions, dependencies: Partial<ProviderDependencies> = {}) {
         const configuration = parseOptions(options);
-        const preparedModel = configuration.model ? undefined : launcherPreparedModel();
+        const preparedModel = launcherPreparedModel();
         this.configuration = preparedModel ? Object.freeze({ ...configuration, model: preparedModel }) : configuration;
         this.dependencies = { ...defaultDependencies, ...dependencies };
     }

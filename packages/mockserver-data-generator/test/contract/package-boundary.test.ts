@@ -156,6 +156,22 @@ describe('published package boundary', () => {
         expect(result.stderr).toMatch(/release model manifest/i);
     });
 
+    it.each(['resources/classifier.weights', 'resources/model.onnx_data', 'resources/nested/catalog.json'])(
+        'rejects an unexpected published resource %s',
+        (artifact) => {
+            const result = runChecker(
+                fakePackage(
+                    { ...requiredDocumentation(), [artifact]: 'disguised learned artifact' },
+                    { files: ['dist', 'README.md', 'docs', 'resources'] }
+                )
+            );
+
+            expect(result.status).toBe(1);
+            expect(result.stderr).toMatch(/unexpected published resource/i);
+            expect(result.stderr).toContain(artifact);
+        }
+    );
+
     it('publishes package security guidance linked from the README', () => {
         const securityPath = join(packageRoot, 'docs', 'security.md');
         const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');

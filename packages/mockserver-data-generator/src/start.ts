@@ -7,6 +7,11 @@ import type { PreparedModelArtifacts } from './model/release.js';
 const ACTIVATION_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_ENABLED';
 const MODEL_MANIFEST_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_MANIFEST';
 const MODEL_CACHE_ENVIRONMENT_VARIABLE = 'SAP_UX_MOCKGEN_MODEL_CACHE';
+const PRIVATE_ENVIRONMENT_VARIABLES = new Set([
+    ACTIVATION_ENVIRONMENT_VARIABLE,
+    MODEL_MANIFEST_ENVIRONMENT_VARIABLE,
+    MODEL_CACHE_ENVIRONMENT_VARIABLE
+]);
 const FORWARDED_SIGNALS = ['SIGINT', 'SIGTERM', 'SIGHUP'] as const;
 const MODEL_ACQUISITION_WARNING =
     'MODEL_ACQUISITION_FAILED: learned generation is unavailable; deterministic generation remains active.';
@@ -71,8 +76,11 @@ export function parseStartCommand(
     }
     const mockgenEnabled = activationFlags.length === 1;
     const environment = { ...parentEnvironment };
-    delete environment[MODEL_MANIFEST_ENVIRONMENT_VARIABLE];
-    delete environment[MODEL_CACHE_ENVIRONMENT_VARIABLE];
+    for (const name of Object.keys(environment)) {
+        if (PRIVATE_ENVIRONMENT_VARIABLES.has(name.toUpperCase())) {
+            delete environment[name];
+        }
+    }
     environment[ACTIVATION_ENVIRONMENT_VARIABLE] = mockgenEnabled ? '1' : '0';
     return Object.freeze({
         command,

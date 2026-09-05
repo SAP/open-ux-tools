@@ -2,6 +2,8 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { prepareDefaultModelArtifacts } from '../../src/model/release.js';
+import type { PrepareModelCacheOptions } from '../../src/model/downloader.js';
+import type { ModelManifest } from '../../src/model/manifest.js';
 import type { VerifiedModelCache } from '../../src/model/model-cache.js';
 
 function manifestSource(): string {
@@ -64,7 +66,9 @@ describe('default release model acquisition', () => {
 
     test('prepares the packaged immutable manifest with the five-minute launcher deadline', async () => {
         const cacheRoot = join(directory, 'cache');
-        const prepare = jest.fn(async () => readyCache());
+        const prepare = jest.fn(
+            async (_cacheRoot: string, _manifest: ModelManifest, _options: PrepareModelCacheOptions) => readyCache()
+        );
         const onStatus = jest.fn();
 
         const prepared = await prepareDefaultModelArtifacts({
@@ -88,8 +92,11 @@ describe('default release model acquisition', () => {
                 lifecycle: 'preview',
                 revision: '1'.repeat(40)
             }),
-            { acquisitionTimeoutMs: 300_000 }
+            expect.objectContaining({
+                acquisitionTimeoutMs: 300_000
+            })
         );
+        expect(prepare.mock.calls[0]?.[2].signal).toBeInstanceOf(AbortSignal);
     });
 
     test('uses a verified warm cache without entering acquisition', async () => {
@@ -119,6 +126,20 @@ describe('default release model acquisition', () => {
                 prepare: async () => Object.freeze({ ready: false, files: new Map(), failures: Object.freeze([]) })
             })
         ).rejects.toThrow('release model artifacts did not pass verification');
+    });
+
+    test('bounds the complete release preparation including the initial cache verification', async () => {
+        await expect(
+            prepareDefaultModelArtifacts({
+                acquisitionTimeoutMs: 5,
+                manifestPath,
+                cacheRoot: join(directory, 'cache'),
+                verify: async (_cacheRoot, _manifest, signal?: AbortSignal) =>
+                    new Promise((_resolve, reject) => {
+                        signal?.addEventListener('abort', () => reject(signal.reason), { once: true });
+                    })
+            })
+        ).rejects.toThrow('model acquisition timed out');
     });
 
     test('reports no selected release model when the unpublished package has no built-in manifest', async () => {

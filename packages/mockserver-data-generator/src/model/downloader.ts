@@ -521,19 +521,20 @@ export async function prepareModelCache(
     manifest: ModelManifest,
     options: PrepareModelCacheOptions = {}
 ): Promise<VerifiedModelCache> {
-    const bundleDirectory = await ensureSafeCacheDirectory(cacheRoot, modelBundleDirectory(cacheRoot, manifest));
-    const cached = await verifyModelCache(cacheRoot, manifest);
-    if (cached.ready) {
-        return cached;
-    }
-
     const acquisition = boundedSignal(options.signal, options.acquisitionTimeoutMs ?? 30_000);
-    const lockPath = join(bundleDirectory, '.acquire.lock');
     let lock: AcquiredLock | undefined;
     let lockHeartbeat: ReturnType<typeof keepLockAlive> | undefined;
     let artifactTransport: ArtifactTransport | undefined;
     let operationFailed = false;
     try {
+        const bundleDirectory = await ensureSafeCacheDirectory(cacheRoot, modelBundleDirectory(cacheRoot, manifest));
+        acquisition.signal.throwIfAborted();
+        const cached = await verifyModelCache(cacheRoot, manifest, acquisition.signal);
+        if (cached.ready) {
+            return cached;
+        }
+
+        const lockPath = join(bundleDirectory, '.acquire.lock');
         lock = await acquireLock(
             lockPath,
             acquisition.signal,
@@ -541,7 +542,7 @@ export async function prepareModelCache(
             options.staleLockMs ?? 120_000
         );
         lockHeartbeat = keepLockAlive(lock, options.staleLockMs ?? 120_000, acquisition.abort);
-        const afterLock = await verifyModelCache(cacheRoot, manifest);
+        const afterLock = await verifyModelCache(cacheRoot, manifest, acquisition.signal);
         if (afterLock.ready) {
             await assertLockOwnership(lock);
             return afterLock;
@@ -563,7 +564,7 @@ export async function prepareModelCache(
                 );
             }
         }
-        const result = await verifyModelCache(cacheRoot, manifest);
+        const result = await verifyModelCache(cacheRoot, manifest, acquisition.signal);
         if (!result.ready) {
             throw new Error('downloaded model bundle did not pass final verification');
         }

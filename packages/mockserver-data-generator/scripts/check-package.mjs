@@ -25,6 +25,7 @@ const UNIX_DEVELOPER_PATH = /\/(?:(?:Users|home)\/[A-Za-z0-9._-]+|root)\//u;
 const WINDOWS_DEVELOPER_PATH = /[A-Za-z]:\/Users\/[A-Za-z0-9._-]+\//u;
 const UNC_DEVELOPER_PATH = /\\{2,}[A-Za-z0-9._-]+\\+[A-Za-z0-9.$_-]+\\+/u;
 const MODEL_MANIFEST_FILE = /(?:^|\/)model-manifest(?:[-_.][^/]*)?\.json$/iu;
+const ALLOWED_RESOURCE_FILES = new Set(['resources/model-manifest.json']);
 const IMMUTABLE_REVISION = /^[a-f\d]{40,64}$/u;
 const SHA_256 = /^[a-f\d]{64}$/u;
 const CORE_DOCUMENTATION = [
@@ -61,6 +62,9 @@ function packedFiles(report) {
 function assertPackageBoundary(packageRoot, files) {
     const canonicalRoot = realpathSync(packageRoot);
     for (const path of files) {
+        if (path.startsWith('resources/') && !ALLOWED_RESOURCE_FILES.has(path)) {
+            throw new Error(`Unexpected published resource: ${path}`);
+        }
         if (
             FORBIDDEN_EXTENSION.test(path) ||
             FORBIDDEN_DIRECTORY.test(path) ||

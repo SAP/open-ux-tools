@@ -15,7 +15,10 @@ describe('start-mock launcher', () => {
                 PATH: '/test/bin',
                 SAP_UX_MOCKGEN_ENABLED: '1',
                 SAP_UX_MOCKGEN_MODEL_MANIFEST: '/untrusted/model-manifest.json',
-                SAP_UX_MOCKGEN_MODEL_CACHE: '/untrusted/cache'
+                SAP_UX_MOCKGEN_MODEL_CACHE: '/untrusted/cache',
+                ['sap_ux_mockgen_enabled']: '1',
+                ['Sap_Ux_Mockgen_Model_Manifest']: '/untrusted/windows-manifest.json',
+                ['sap_ux_mockgen_model_cache']: '/untrusted/windows-cache'
             })
         ).toEqual({
             command: 'fiori',
