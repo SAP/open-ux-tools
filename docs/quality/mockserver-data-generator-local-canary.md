@@ -701,7 +701,7 @@ The passing platform result proves the size-reduction approach, but the archive
 is still an experimental local build. It must be replaced by a supported
 per-platform distribution before release.
 
-## Post-review launcher and lifecycle canary
+## Prior post-review launcher and lifecycle canary
 
 The final focused review identified and then verified fixes for child-help
 forwarding, permanently stored activation flags, preservation of an existing
@@ -742,12 +742,52 @@ startup. No critical or important finding remained in that scope.
   48,118,907 bytes below the 300 MiB gate.
 - Current reports are retained in
   `/Users/I335123/Downloads/mockserver-data-generator-evidence-066acdfc`.
-- Current BAS handoff archive:
+- BAS handoff archive for this checkpoint:
   `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`.
 - The package-level native-runtime contract loaded the actual
   `onnxruntime-node@1.24.3` addon through both public MockGen tensor adapters on
   macOS arm64 with Node 22.22.3 and Node 24.20.0. The complete package passed
   27 suites and 236 tests, build, and zero-error lint on both Node lines.
+
+## Native session lifecycle artifact refresh
+
+The production backend adapters had treated ONNX Runtime sessions as if they
+exposed `dispose()`. The supported `onnxruntime-node` API exposes `release()`, so
+the previous optional call never released classifier or SFT sessions. The
+adapters now retain MockGen's internal `dispose()` lifecycle while mapping it to
+the native `release()` call.
+
+- Clean source commits: `SAP/open-ux-tools`
+  `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee` and `SAP/open-ux-odata`
+  `45abe80a028530601bf5d67d565f3384a6648ead`.
+- Generator archive: 93,593 bytes; SHA-256
+  `95b8aab55a3e000c56e9e76b99d40e06fc845d8dd284a1c2ba4c4a0b25888bbf`.
+- Reproducible development kit:
+  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`;
+  564,878 bytes; fingerprint
+  `5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`;
+  SHA-256
+  `742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`;
+  two clean builds were byte-identical.
+- The native contract executed a tiny ONNX graph, created sessions through
+  both public MockGen backends, disposed them, and proved a valid subsequent
+  inference fails with `Session already disposed`. Its child process is bounded
+  to 30 seconds and 1 MiB of output.
+- The complete package passed 27 suites and 236 tests, build, and zero-error
+  lint on both Node 22.22.3 and Node 24.20.0. Independent review found no
+  remaining critical, important, or minor issue.
+- The exact kit passed fresh V2, V4, and CDS-through-FE application canaries on
+  Node 22.22.3. Every standard path returned one row with
+  `providerExecuted: false`; every `--mockgen` path returned one row with
+  `providerExecuted: true` and `learnedRuntimeVerified: true`; all three
+  transactional restores passed.
+- Learned whole-service generation was 1,443.000 ms for V2, 1,439.029 ms for
+  V4, and 1,444.726 ms for CDS. These are functional samples, not a performance
+  campaign.
+- The frozen classifier/SFT quality and footprint campaign was not repeated for
+  this cleanup-only source change. The prior fingerprint-bound reports remain
+  the model-quality evidence; the fresh canaries prove the changed artifact
+  still loads and executes both learned components.
 
 ## Scope boundary
 

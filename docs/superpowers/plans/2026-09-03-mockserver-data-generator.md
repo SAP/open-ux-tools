@@ -540,7 +540,8 @@ pnpm --filter @sap-ux/mockserver-data-generator pack --pack-destination ./test-o
 - [x] Inject a small activation predicate whose production default reads only `SAP_UX_MOCKGEN_ENABLED === '1'`; check it before the dynamic generator import or any metadata/cache/model work.
 - [ ] Translate raw host metadata, existing-data context, cancellation, and logger into `generateService` without importing host internals.
 - [ ] Return immutable rows and safe diagnostics.
-- [ ] Provide `dispose()` for model sessions and in-flight work.
+- [x] Provide `dispose()` for model sessions and in-flight work; the native
+      backend adapters map that lifecycle to ONNX Runtime's `release()` API.
 - [ ] Export ESM for direct consumers and a conditional CommonJS `/fe-mockserver` entry for the current host loader.
 - [ ] Build the `/fe-mockserver` adapter to an explicit `dist-cjs` output and expose conditional `types`, `import`, and `require` entries from the package export map.
 - [ ] Prove that importing either entry performs no download, model load, generation, or filesystem mutation.
@@ -1459,7 +1460,7 @@ Implement the deterministic, classifier, and SFT paths test-first using the exis
 ## Reviewed implementation checkpoint (2026-09-05)
 
 The approved runtime behavior is implemented on clean candidate commits
-`066acdfc366cd6d1bdbbdcbff2b7c95391ce254e` in `SAP/open-ux-tools` and
+`3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee` in `SAP/open-ux-tools` and
 `45abe80a028530601bf5d67d565f3384a6648ead` in `SAP/open-ux-odata`.
 `npm run start-mock` remains standard and does not invoke MockGen;
 `npm run start-mock -- --mockgen` is the explicit opt-in. The launcher
@@ -1476,9 +1477,9 @@ learned HTTP paths. Literal `npm run start-mock` and
 `npm run start-mock -- --mockgen` commands also passed in the V4 fixture.
 
 The reproducible local/BAS kit is
-`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5f9e14c466306caa.tgz`
-(564,806 bytes, SHA-256
-`bc322672d0126bafe08ae7543bd98837abe5f9052e9f2ca36e8402d700e6c918`).
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-5b5c476ba56a79da.tgz`
+(564,878 bytes, SHA-256
+`742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`).
 The reviewed platform-runtime campaign passes every hard local gate at
 266,453,893 installed-and-cache bytes. The 451,328,075-byte upstream result is
 the prior exact multi-platform baseline and still fails only the total-footprint
@@ -1491,11 +1492,24 @@ publication, and rollback verification remain release gates rather than local
 implementation gaps.
 
 **Native-runtime matrix increment (2026-09-05):** A package contract now loads
-the real `onnxruntime-node@1.24.3` native addon through both public MockGen
-backend adapters. The complete 27-suite/236-test package, build, and zero-error
-lint pass on macOS arm64 with Node 22.22.3 and Node 24.20.0. Because the
-repository pipeline already runs the package suite on Ubuntu, Windows, and
-macOS with both Node lines, the same contract will become six-cell evidence
-once the branch is pushed and CI runs. The current upstream Node package has no
-documented platform-specific npm-package family, so no consumer-package pruning
-or private runtime name was added. BAS and remote CI execution remain open.
+the real `onnxruntime-node@1.24.3` native addon and executes a tiny ONNX graph in
+a normal child process. Both public MockGen backend adapters create native
+sessions, delegate session work, and map the package's `dispose()` lifecycle to
+ONNX Runtime's actual `release()` API. A valid inference after disposal must
+fail as already disposed, so a no-op cleanup cannot satisfy the contract. The
+complete 27-suite/236-test package, build, and zero-error lint pass on macOS
+arm64 with Node 22.22.3 and Node 24.20.0. Because the repository pipeline
+already runs the package suite on Ubuntu, Windows, and macOS with both Node
+lines, the same contract will become six-cell evidence once the branch is
+pushed and CI runs. The current upstream Node package has no documented
+platform-specific npm-package family, so no consumer-package pruning or private
+runtime name was added. BAS and remote CI execution remain open.
+
+The exact clean kit for this increment is fingerprint
+`5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`.
+It reproduced byte-for-byte twice and passed V2, V4, and CDS standard and
+`--mockgen` canaries on Node 22.22.3, including verified retained classifier and
+INT8 SFT execution plus transactional restore. The frozen model-quality
+campaign was not repeated for this cleanup-only change; its prior
+fingerprint-bound report remains the quality evidence rather than being
+mislabelled as a fresh run.
