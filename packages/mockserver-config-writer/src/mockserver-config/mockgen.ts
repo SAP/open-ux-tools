@@ -155,6 +155,9 @@ export function canUseMockgenLauncher(script: string): boolean {
         throw new Error('The persisted start-mock command must not contain --mockgen');
     }
     const words = parseSimpleCommand(command);
+    if (words?.includes('--mockgen')) {
+        throw new Error('The persisted start-mock command must not contain --mockgen');
+    }
     return words?.[0] === 'fiori' && words[1] === 'run';
 }
 

@@ -85,13 +85,16 @@ describe('Test for start-mock script in package.json', () => {
         expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBeUndefined();
     });
 
-    test.each(['--mockgen', "'--mockgen'", '"--mockgen"'])('Reject a persisted MockGen flag written as %s', (flag) => {
-        const fs = getMockFsPackageJson(undefined, `fiori run --config ./ui5-mock.yaml ${flag}`);
+    test.each(['--mockgen', "'--mockgen'", '"--mockgen"', '--mock"gen"', '--"mockgen"', '"--mock"gen'])(
+        'Reject a persisted MockGen flag written as %s',
+        (flag) => {
+            const fs = getMockFsPackageJson(undefined, `fiori run --config ./ui5-mock.yaml ${flag}`);
 
-        expect(() => enhancePackageJson(fs, basePath)).toThrow(
-            'The persisted start-mock command must not contain --mockgen'
-        );
-    });
+            expect(() => enhancePackageJson(fs, basePath)).toThrow(
+                'The persisted start-mock command must not contain --mockgen'
+            );
+        }
+    );
 
     function getMockFsPackageJson(startScript?: string, startMockScript?: string): Editor {
         const fs = create(createStorage());
