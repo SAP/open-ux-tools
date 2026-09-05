@@ -4,14 +4,15 @@ Date: 2026-09-05
 
 Candidate source:
 
-- reviewed generator and `--mockgen` launcher:
-  `3615a1d47f5aa90a36d1ca77ea6954b4e3f7fbee`
-- reviewed minimal `SAP/open-ux-odata` host extension:
-  `a84630efb55a8568dfb79088f77ac67dd326a270`
+- reviewed generator, `--mockgen` launcher, and compatibility evidence before
+  this audit-only update:
+  `bc249fa67985f4de07b550c4ef80d904c5533a17`
+- reviewed minimal `SAP/open-ux-odata` host extension and API-version marker:
+  `b64ee8b60519f129ad975465536204c78a15be1a`
 - current portable development-kit fingerprint:
-  `5b5c476ba56a79da923278d4a43f7454505fccea9651559230121ba519a1ed94`
+  `2587b8efb75aa190ccb4de62b789713a31a798493aa808fb17bae000e1d077f5`
 - current portable development-kit SHA-256:
-  `742d6fa78494d55b1795a4e7eaf273b5db00d29381b09162420fe7b1a2eea196`
+  `badcc3f241607999720e2d670986d7d73dfa37e5feb54545aba9a3be0fc5b4f9`
 
 ## Verdict
 
@@ -74,6 +75,30 @@ means a measured threshold was missed by the named candidate.
 | Platform compatibility | local macOS / remote matrix pending | Accepted-integration V2/V4/CDS and learned-model evidence exists on macOS arm64; the real `onnxruntime-node` native addon executes a tiny graph and both MockGen backend adapters create and release sessions on Node 22.22.3 and 24.20.0 | Let the existing six-cell repository CI run the same contract on Ubuntu, Windows, and macOS with Node 22/24, then complete actual BAS proxy/certificate behavior |
 | Release and rollback | package-partial / external | The current installer restore passes; promoted model fingerprints cannot reuse N-1 rows, while explicit rollback can reuse only its matching verified cache | Prereleases, public artifact verification, remote model-channel N-1 rollback, T2 kill switch canary, and stable promotion |
 
+## Pilot evidence reconciliation
+
+The retained pilot classifier, SFT model, and earlier LLM judging were not
+discarded or replaced. A read-only reconciliation against the clean pilot
+workspace at commit `4d834454d6c23a291e534272b617609556be7903`
+confirmed the following dispositions:
+
+| Pilot asset | Production use | Remaining issue |
+| --- | --- | --- |
+| MiniLM INT8 encoder, vocabulary, and calibrated classifier head | Reused byte-for-byte through the development model bridge; the production evaluation records their exact hashes and component fingerprint | Public distribution still needs the normal model/data approval |
+| 300-record classifier cohort | Reused; all 233 direct two-provider agreements or verifiable human decisions are evaluated, while the 67 inaccurately labelled automated adjudications remain quarantined | The quarantined records are not silently treated as human labels |
+| SmolLM2 INT8 SFT graph, tokenizer, generation contract, training report, and held-out prompts | Reused byte-for-byte; no initial retraining is required, and the production adapter/runtime has passed the fixed local evaluation | The training-data manifest proves technical lineage but is not a complete owner-approved source and redistribution register |
+| Earlier OpenAI and Anthropic realism review | Preserved as the historical failed baseline: 16/60 realistic consensus, 37 major defects, no critical defects, and 10 disagreements | Its aggregate is bound to a different evidence fingerprint and cannot certify the current 311-record packet |
+| Newer ML-native pilot experiments | Reference-only; the pilot manifest currently marks that successor line `experimental-degraded` with no promoted planner or generator | It does not replace or invalidate the retained production candidate described here |
+
+The reconciliation therefore closes the question of whether the existing
+classifier, SFT work, quantization experiments, and LLM judgments were taken
+into account: they were. It intentionally does not claim the external approval
+that is still missing. The legacy-review source record is evaluation-only,
+private, pending license/privacy review, and not redistributable; the retained
+SFT inputs also lack a complete approved source-by-source redistribution
+decision. Those decisions must be completed outside the public repositories.
+No pilot payload was copied or modified during this audit.
+
 ## Current verification snapshot
 
 | Scope | Result |
@@ -96,7 +121,7 @@ means a measured threshold was missed by the named candidate.
 | current `darwin-arm64` proof | 266,453,893 / 314,572,800 bytes; every hard gate passes and `footprintReady: true` |
 | retained pre-cleanup report fingerprints | evaluation `40e95b0bf7991cee7601aacd114de88f7746b0ab1210c0ded56d69e81e7046cb`; integration `e6bac4de3b0d355b4c7686fcc47826e93c6d7ff590414ecc1be3a9b6e50a3db3`; platform footprint `a0a8d143693126cb67da86269f503671d6107f45d0ee419471b1d33daa1d788c` |
 
-The full generator package has a passing coverage run over all 27 suites. The
+The full generator package has a passing coverage run over all 29 suites. The
 downloader's cross-process and cancellation branches have focused regressions,
 but the remaining platform-specific paths still require the release matrix
 rather than being inferred from local coverage.
