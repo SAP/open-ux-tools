@@ -95,6 +95,7 @@ jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider
 const { initI18n, t } = await import('../../src/i18n.js');
 const { PromptState } = await import('../../src/prompts/prompt-state.js');
 const {
+    updateDestinationPromptState,
     validateAppDescription,
     validateClient,
     validateClientChoiceQuestion,
@@ -951,6 +952,18 @@ describe('Test validators', () => {
         it('should update abort in state to be true', () => {
             validateConfirmQuestion(false);
             expect(PromptState.abapDeployConfig.abort).toBeTruthy();
+        });
+    });
+
+    describe('updateDestinationPromptState', () => {
+        it('should store Authentication type from destination in PromptState', () => {
+            updateDestinationPromptState('DestSAML', mockDestinations as any);
+            expect(PromptState.abapDeployConfig.destinationAuthType).toBe('SAMLAssertion');
+        });
+
+        it('should store NoAuthentication type from destination in PromptState', () => {
+            updateDestinationPromptState('Dest2', mockDestinations as any);
+            expect(PromptState.abapDeployConfig.destinationAuthType).toBe('NoAuthentication');
         });
     });
 
