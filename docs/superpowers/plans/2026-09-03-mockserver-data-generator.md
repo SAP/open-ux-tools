@@ -1106,6 +1106,22 @@ final report imports both fingerprinted evidence files, measures 264,636,488
 total bytes, and passes every hard footprint gate. Release-platform and BAS
 reruns remain required.
 
+**Accepted flag-gated rebind (2026-09-05):** The campaign was repeated against
+clean Open UX Tools commit
+`c562a5571811b5e7bdab20ef732a6d103fab4fb6` and the accepted Open UX OData host
+commit `3556f352d0e4b8f7397bd30748110d2701cf0a1a`. The upstream
+multi-platform runtime passes every local quality and latency gate but uses
+451,328,075 total installed-and-cache bytes, so its total-footprint gate fails.
+The exact 10,195,380-byte `darwin-arm64` runtime archive retains all 233
+classifier cases and 16/16 SFT parse/exact-key cases, fills 261/261 fields, and
+uses 266,452,329 total bytes. It passes every hard local gate with 48,120,471
+bytes of headroom. Its cold, warm-cache, first-acquisition, and host p95 values
+are 1,853.041, 23.676, 582.150, and 1,853.872 ms respectively. The reports are
+retained under
+`/Users/I335123/Downloads/mockserver-data-generator-evidence-c562a5571`.
+This completes the local rebind; BAS and the supported Node/OS distribution
+matrix remain open.
+
 ### Task 9.4: Select the Pareto winner
 
 **Files:**
@@ -1128,6 +1144,12 @@ structural gate; the complete 264,636,488-byte product footprint passes the hard
 300 MiB ceiling. Selection cannot be signed or promoted until the runtime proof
 has an approved upstream or SAP-governed distribution with platform, license,
 SBOM, signing, and rollback evidence.
+
+The accepted 2026-09-05 rebind confirms the same decision on the actual
+`--mockgen` integration: retain the quality-passing INT8 model, reject WASM,
+and reduce the runtime through supported per-platform native packaging. The
+local selected pair is not a publishable selection record until that packaging
+is maintained and the release-platform matrix passes.
 
 ## Phase 10 — Qualify realism and the integrated product
 

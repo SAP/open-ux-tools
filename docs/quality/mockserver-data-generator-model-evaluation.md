@@ -882,3 +882,52 @@ checksums are recorded here.
 ## Reproduce
 
 See [the evaluation harness](../../scripts/mockserver-data-generator-evaluation/README.md). Reports contain hashes and aggregate metrics but no generated values or absolute pilot paths. Exact candidate outputs for judging are emitted only to an explicitly supplied external evidence directory.
+
+## Approved `--mockgen` candidate rebind
+
+The complete evaluation and footprint campaign was rerun against clean
+`SAP/open-ux-tools` commit
+`c562a5571811b5e7bdab20ef732a6d103fab4fb6` and clean
+`SAP/open-ux-odata` commit
+`3556f352d0e4b8f7397bd30748110d2701cf0a1a`. This is the accepted flag-gated
+integration: ordinary `start-mock` uses the standard generator and the exact
+`--mockgen` flag activates the retained classifier and INT8 SFT model.
+
+The governed classifier result is unchanged: 233 eligible cases from 300
+records, 83.82% routed precision at 29.18% coverage, and prediction fingerprint
+`996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7`.
+The INT8 SFT run parsed 16/16 cases with exact keys and filled 261/261 fields;
+its output fingerprint is
+`f5ed3d1895f1455a5cb314bb338a31e5698c7d6628cdccc6356be966dcb8dd3f`.
+
+| Measurement | Upstream multi-platform runtime | `darwin-arm64` runtime proof |
+| --- | ---: | ---: |
+| Installed learned closure | 225,606,059 bytes | 40,730,313 bytes |
+| Verified model cache | 192,167,584 bytes | 192,167,584 bytes |
+| Total installed and cache footprint | **451,328,075 bytes, fail** | **266,452,329 bytes, pass** |
+| Cold whole-service p95 | 1,087.337 ms | 1,853.041 ms |
+| Warm-cache p95 | 24.724 ms | 23.676 ms |
+| First acquisition p95 | 1,063.347 ms | 582.150 ms |
+| Host-provider p95 | 1,088.208 ms | 1,853.872 ms |
+| SFT p95 | 9,629.433 ms | 10,395.818 ms |
+| Peak process RSS | 1,095,057,408 bytes | 1,217,413,120 bytes |
+
+The upstream runtime passes every quality and latency gate but fails the 300 MiB
+total-footprint gate. The SHA-256-bound platform runtime passes every hard gate
+and leaves 48,120,471 bytes of headroom. The separate request to halve the SFT
+artifact remains a non-blocking miss because every tested size-passing model
+failed the frozen structural quality gate.
+
+| Report | Upstream file SHA-256 / fingerprint | Platform file SHA-256 / fingerprint |
+| --- | --- | --- |
+| Model evaluation | `26c33456e8130b4fea2521c8bb56b66c7679d7ddb7117a3f7a510b7a2ce28a16` / `156ead96207e66ac27ad9bcd71bfca90e8470385a49a0977053531f8e498473d` | `7ba4c174cbe0fe4e6f9ea5f310cdbe4996795e6ba2e0906c369ffca01021b4a3` / `48f81d011a6f635d3d413fc1b4d881d016970e444f15b704a00014694008d7b0` |
+| Integration | `5d11405c1287d8897ad77359bf061c82d65290f9d8df786424d90db5b9fd1f08` / `c2d62841fa83ae59afb78c75083e61b886905015c5f98b2111cb362eefc3d864` | `309b9ebc6c1d0f8572a4f90075f6d130196f8cf40e2a99665b0c699c02438988` / `4145c51230d8f23cd92c3847570a888e672fbf9ec62707c6ff1c76f9390ec882` |
+| Footprint | `d71574f5d42a18d908b63701a10041d827192a141e48b48e8678cd9d492e43e1` / `b8f7da4f5b6f6f2bb06d408dd621b8d9281a0eeee9cf9ad759fe90cdef0d21e4` | `43e190a3ae9ffdc9aab4679f6fe6f1cadf45a886c641a2e4af8a6b1f7c72438c` / `c2d35ae463757f6c90654e85942950dcc2721ec32205e7bf103118e5b7b7da9a` |
+
+The exact local reports are retained in
+`/Users/I335123/Downloads/mockserver-data-generator-evidence-c562a5571`.
+This is current local feasibility evidence, not approval to publish the
+hand-built platform runtime. Production should use supported per-platform
+native packages and repeat the matrix on every supported environment. The WASM
+decision remains no-go: it was slower, used more memory, and did not solve the
+complete footprint as effectively as native platform packaging.

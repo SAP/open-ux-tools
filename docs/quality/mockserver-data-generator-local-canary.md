@@ -677,6 +677,30 @@ not enabled the standard mockserver's `generateMockData` option. The fixture was
 corrected and both CDS paths then passed; production behavior was not weakened
 to hide the missing standard option.
 
+### Current performance and footprint rebind
+
+The five-sample performance campaign and complete installation measurement were
+then rerun at clean generator commit
+`c562a5571811b5e7bdab20ef732a6d103fab4fb6` with the same clean host commit,
+package archive, model revision, and model manifest listed above.
+
+| Candidate | Cold p95 | Warm p95 | Acquisition p95 | Host p95 | Total footprint | Result |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| Upstream `onnxruntime-node` | 1,087.337 ms | 24.724 ms | 1,063.347 ms | 1,088.208 ms | 451,328,075 bytes | latency passes; size fails |
+| Exact `darwin-arm64` runtime archive | 1,853.041 ms | 23.676 ms | 582.150 ms | 1,853.872 ms | 266,452,329 bytes | all hard gates pass locally |
+
+Both candidates executed all 233 governed classifier cases and all 16 SFT
+cases. The upstream run filled 261/261 SFT fields with a 9,629.433 ms p95. The
+platform run also filled 261/261 fields with a 10,395.818 ms p95. The exact
+platform runtime archive is 10,195,380 bytes with SHA-256
+`a9ebf9496d8c5cbefae9e4204779e9744e42ffb74e8bc342464abcea347de24f`.
+
+The six machine-readable reports are retained in
+`/Users/I335123/Downloads/mockserver-data-generator-evidence-c562a5571`.
+The passing platform result proves the size-reduction approach, but the archive
+is still an experimental local build. It must be replaced by a supported
+per-platform distribution before release.
+
 ## Scope boundary
 
 This record proves local packaging, installation, discovery, provider execution,
