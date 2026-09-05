@@ -789,17 +789,20 @@ the native `release()` call.
   the model-quality evidence; the fresh canaries prove the changed artifact
   still loads and executes both learned components.
 
-## Oversized generated-result host fallback
+## Oversized input and result host fallback
 
 The accepted `SAP/open-ux-odata` host integration now has an application-level
 regression for a provider result above the fixed 64 MiB JSON ceiling. The host
 rejects that result before publication, emits only the bounded generic fallback
 event, completes application startup, and serves built-in generated rows.
+The same path now passes a valid EDMX above the fixed 32 MiB UTF-8 input ceiling
+to the provider unchanged, contains the stable MockGen rejection, and serves
+built-in rows.
 
-- Host evidence commit: `8c1f9dc4b258f69f3bcb19b06ff46aa864fa57a5`.
-- Node 22.22.3: 27 suites, 363 tests, and 282 snapshots passed; build and
+- Host evidence commit: `2a5f6385a7bb574e3308f8ba1055e69b94ddaf86`.
+- Node 22.22.3: 27 suites, 364 tests, and 282 snapshots passed; build and
   zero-error lint passed.
-- Node 24.20.0: 27 suites, 363 tests, and 282 snapshots passed; build and
+- Node 24.20.0: 27 suites, 364 tests, and 282 snapshots passed; build and
   zero-error lint passed.
 - The two existing Jest open-handle notices from `logRequests.test.ts` remain
   unchanged and are outside the MockGen host-contract change.
