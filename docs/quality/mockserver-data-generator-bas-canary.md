@@ -9,11 +9,11 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `74af647b365069d6fa5cecb21f85bdfff262040653a95efb91f24083d1c73ecb`
-- archive SHA-256: `935257d2bd5c8df2b19af21df3f7af0fab703317fb3dc42e736a4d9c6e93dcaa`
-- archive size: 550,771 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `912306df4df55103d858f29aad9896583c814337`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-74af647b365069d6.tgz`
+- dev-kit fingerprint: `3a16a758a6e582080b7769dc34c884dab85f5dad00dfc17ff3b80459e392b774`
+- archive SHA-256: `cb2a72cc2973631cda6d2f00b2bf810b634c5d720750b816d932618ec7281db1`
+- archive size: 550,571 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `40393c7c6f98d13ad79301b83be7ab24a84a7e46`; `SAP/open-ux-odata` `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-3a16a758a6e58208.tgz`
 
 This candidate includes the current classifier/SFT provider, adaptive wide-schema
 batching, EDM maximum-length constrained decoding, optimized
@@ -25,14 +25,15 @@ preview/stable manifest ceiling, metadata-derived semantic coherence, and the
 executable final-cohort gate. It also contains the packaged security guide,
 pre-acquisition model-cache descendant checks, HTTPS-preserving bounded
 redirects, environment-proxy routing, and an exact packed-document/link
-contract. The exact archive passed a 615-package deterministic V4 canary and a
-636-package retained-classifier/SFT V2 canary. The learned canary reported both
-components ready, 1,359.545 ms runtime initialization, 2,535.986 ms
-whole-service generation, 2,536.934 ms host provider time, one returned row,
-and byte-exact restore. Earlier clean archives remain the cross-format
-V2/V4/CDS, read-only, and five-sample performance evidence. The local CONNECT
-proxy regression does not substitute for an HTTPS proxy and certificate test
-inside BAS.
+contract. The exact archive passed a retained-classifier/SFT V4 canary and a
+five-sample integrated campaign after correcting chunked-SFT cache statistics.
+All five cold generations, warm-cache starts, and first-use acquisitions
+passed; warm starts did not initialize model sessions. The current p95 values
+are 2,595.700 ms cold, 19.072 ms warm cache, 1,221.860 ms acquisition, and
+2,596.510 ms host provider work. Earlier clean archives remain the
+cross-format V2/V4/CDS and read-only evidence. The local CONNECT proxy
+regression does not substitute for an HTTPS proxy and certificate test inside
+BAS.
 
 ## Inputs to record
 

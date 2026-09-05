@@ -469,6 +469,75 @@ The three portable reports are retained together outside the repository at
 the previously unmeasured local integrated timing gates; supported runtime
 distribution and release-platform reruns remain separate work.
 
+### Current cache-fix evaluation and integrated proof
+
+The proxy-aware candidate was rerun after the integrated warm-cache protocol
+exposed an invalid cache-statistics invariant: raw SFT row/chunk completion
+attempts were required to equal entity assignments. Commit
+`40393c7c6f98d13ad79301b83be7ab24a84a7e46` corrects that invariant while
+retaining the attempt, parsed-response, eligible-slot, accepted-slot, and
+assignment bounds. A focused regression failed before the correction and the
+full package then passed 23 suites and 198 tests.
+
+The exact 82,508-byte package archive has SHA-256
+`f40c4a1eb86b95fb6776ed929934a40f978c7691f641b31b8be7ad824a6cacd5`.
+Its compiled generator fingerprint is
+`c4c8d488b1adf9f8d0fcad6ec57d1261f20a922f82ef498362c4e89016d3514a`.
+The evaluation and replay used the same platform runtime archive identified
+above and ran the complete retained INT8 cohorts.
+
+| Current evaluation | Result |
+| --- | ---: |
+| Governed classifier cases | 233 |
+| Routed precision / coverage | 83.82% / 29.18% |
+| Classifier latency p95 | 1.004 ms |
+| SFT parse / exact-key cases | 16/16 / 16/16 |
+| SFT requested fields filled | 261/261 |
+| SFT p50 / p95 | 1,237.172 / 7,559.574 ms |
+| Peak process RSS | 1,448,493,056 bytes |
+| Classifier prediction fingerprint | `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7` |
+| SFT output fingerprint | `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3` |
+| SFT evidence SHA-256 | `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` |
+
+The independent identical-seed replay produced the same classifier prediction,
+SFT output, and evidence hashes. The evaluation report fingerprint is
+`2237987b581ad0a0689ff331985b9d4bf1f7c33a8ba886fe24d43102aeb0de81`
+with file SHA-256
+`4887feca24f957e9ff6d81fd74e147c02ea66ce6de25cd5ca83a11276fe87084`.
+The replay file SHA-256 is
+`102bf5a730f3bdb055dc725707091e55da82854b4e492d6067af9e5bcb737959`.
+
+The exact package and compatible host were installed into a generated-style V4
+application with both learned components verified. Five fresh processes were
+measured for every integrated protocol:
+
+| Current integrated measurement | p50 | p95 | Threshold | Status |
+| --- | ---: | ---: | ---: | --- |
+| Cold whole-service generation | 1,986.364 ms | 2,595.700 ms | 25,000 ms | pass |
+| Warm generated-data-cache startup | 18.823 ms | 19.072 ms | 200 ms | pass |
+| First-use acquisition of 192,167,584 bytes | 523.127 ms | 1,221.860 ms | 30,000 ms | pass |
+| End-to-end host provider | 1,987.151 ms | 2,596.510 ms | 60,000 ms | pass |
+
+Every warm sample reused the corrected cache without initializing a model
+session. The integration report fingerprint is
+`2463e1a0c832491831de6915699191113cb10b40cbf512f41ac215c00d2d8f31`
+with file SHA-256
+`d66788290b94d61ff3d6378adb0829991942e1c6c2c10404f47f8bb4d0e5d1e7`.
+
+The enforced footprint report imports the exact evaluation, integration,
+runtime, model, and package identities. It records 266,364,774 total
+installed-and-cache bytes, leaving 48,208,026 bytes below the 300 MiB ceiling.
+Every required gate passes and `footprintReady` is true; only the explicitly
+non-blocking generator-halving target remains missed. The footprint report
+fingerprint is
+`a6b9a61aba123ed9ae4fcb04cdbe28c57c528e70d5f41e2616112b6ca159c122`
+with file SHA-256
+`34f40d076ea4d69a56bad001bbed7ef9c38e159c76bc5f55076e6eecce1db00b`.
+The reports and generated-value evidence are retained outside the repository at
+`mockserver-data-generator-runtime-proof-darwin-arm64-cachefix-40393c7c6`.
+This remains local macOS arm64 evidence, not an approved runtime distribution or
+a substitute for BAS, cross-platform, governance, or independent realism gates.
+
 This proves the size, API, inference, and quality feasibility of the retained
 INT8 model with one platform's native runtime. It is not yet a production
 distribution. The hand-built same-name archive has no independent release,

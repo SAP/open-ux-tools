@@ -22,6 +22,7 @@ the successful pilot repository is not used as a writable evidence store.
 | Oversized EDMX or CSN | `packages/mockserver-data-generator/test/unit/api.test.ts`; `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts` | Input above 32 MiB UTF-8 is rejected before hashing or parsing; FE uses standard host fallback with stable `METADATA_INPUT_TOO_LARGE` reporting |
 | Oversized generated result | `packages/mockserver-data-generator/test/unit/api.test.ts`; `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts` | A complete result above 64 MiB UTF-8 is rejected before cache or host publication; the standard FE host fallback remains active with stable `GENERATED_RESULT_TOO_LARGE` reporting |
 | Generated-data cache corruption | `packages/mockserver-data-generator/test/unit/generated-data-cache.test.ts`; `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts` | The entry is quarantined and the service is regenerated |
+| Chunked SFT cache statistics | `packages/mockserver-data-generator/test/unit/generated-data-cache.test.ts`; exact five-sample integrated canary | Multiple raw row/chunk completions remain valid under one entity assignment and publish to the warm cache |
 | Read-only generated-data cache | `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts` | FE retains complete generated rows, emits a stable warning, and continues without caching |
 | Cancellation | `packages/mockserver-data-generator/test/unit/model-downloader.test.ts`; `packages/mockserver-data-generator/test/unit/fe-mockserver.test.ts` | No late artifact is published; host cancellation does not permanently poison a learned tier |
 | Provider package load failure | `packages/fe-mockserver-core/test/unit/mockDataGenerator.test.ts` in `open-ux-odata` | The standard mockserver starts and retains built-in generation |
@@ -40,8 +41,8 @@ Current local snapshot:
 
 | Scope | Result |
 | --- | ---: |
-| `@sap-ux/mockserver-data-generator` | 23 suites, 180 tests passed; 85.51% statement coverage |
-| MockGen integration workspace | 11 suites, 98 tests passed |
+| `@sap-ux/mockserver-data-generator` | 23 suites, 198 tests passed; 85.62% statement coverage |
+| MockGen integration workspace | 11 suites, 103 tests passed |
 | Affected builds | Passed |
 | Affected lint | Zero errors |
 | Frozen workspace install | Passed |

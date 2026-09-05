@@ -229,7 +229,7 @@ five-sample campaign, and restored the fixture byte for byte outside disposable
 - Integrated performance: five cold whole-service samples had 3,437.153 ms p95; five fresh-process cache hits had 25.306 ms p95 and did not initialize the model; five first-use acquisitions had 1,308.731 ms p95
 - Restore verification: the fixture matched the source fixture byte for byte outside disposable `node_modules`, and `.mockserver-data-generator-dev` was absent
 
-The current handoff archive is
+The handoff archive for this integrated-performance checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-374c1611f8eb76de.tgz`.
 Its checksum must be verified before extraction. This archive supersedes the
 preceding cache-hardening archive for new local or BAS testing.
@@ -486,7 +486,7 @@ The handoff archive for this read-only checkpoint is
 Verify the SHA-256 before extraction. It remains the exact read-only evidence;
 later archives supersede it for new local and BAS testing.
 
-## Current proxy-aware archive canary
+## Proxy-aware archive canary
 
 After adding lazy environment-proxy support to model acquisition, the
 development kit was built twice from the same clean sources. The archives were
@@ -507,10 +507,42 @@ and retained-classifier/SFT V2 installations.
 - Learned timing: 1,359.545 ms runtime initialization; 2,535.986 ms whole-service generation; 2,536.934 ms host provider duration
 - Restore verification: both fixtures matched their source files byte for byte outside disposable `node_modules`; generated YAML and recovery directories were absent after restore
 
-The current handoff archive is
+The handoff archive for this proxy-aware checkpoint is
 `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-74af647b365069d6.tgz`.
+Verify its SHA-256 before extraction. The cache-fix archive below supersedes it
+for new local and BAS testing; this record remains the exact proxy-routing
+checkpoint.
+
+## Current chunked-SFT cache and footprint canary
+
+The five-sample integrated campaign exposed that the generated-data cache
+validator treated raw row/chunk completion attempts as if they were entity
+assignments. The production SFT path therefore generated valid rows but could
+not publish them for a warm start. A failing unit regression reproduced the
+10-attempt/one-assignment case before the validator was corrected. The exact
+fixed package then passed the full package suite, a learned V4 HTTP canary, the
+cold/warm/acquisition campaign, a full classifier/SFT evaluation with replay,
+and an enforced footprint run.
+
+- Dev-kit fingerprint: `3a16a758a6e582080b7769dc34c884dab85f5dad00dfc17ff3b80459e392b774`
+- Archive SHA-256: `cb2a72cc2973631cda6d2f00b2bf810b634c5d720750b816d932618ec7281db1`
+- Archive size: 550,571 bytes; 10 entries
+- Source state: clean `SAP/open-ux-tools` commit `40393c7c6f98d13ad79301b83be7ab24a84a7e46` and clean `SAP/open-ux-odata` commit `2a67399cd92a2ab0a0a88f472d55dccc51dc9b2b`
+- Reproducibility: two clean builds had identical package hashes, fingerprints, sizes, SHA-256 values, and binary contents
+- Generator tarball: 82,508 bytes, SHA-256 `f40c4a1eb86b95fb6776ed929934a40f978c7691f641b31b8be7ad824a6cacd5`
+- Package verification: 23 suites and 198 tests passed; TypeScript build, zero-error lint, formatting, and the 67-file packed boundary passed
+- Learned V4 verification: both classifier and SFT were ready; the provider executed; `$metadata` and `Products?$top=1` passed with one row; the installer restored the fixture byte for byte outside disposable `node_modules`
+- Integrated p95 over five fresh-process samples: 2,595.700 ms cold whole-service generation, 19.072 ms warm-cache startup, 1,221.860 ms first acquisition, and 2,596.510 ms host provider work; every warm sample avoided model initialization
+- Model evaluation: all 233 governed classifier cases ran; routed precision was 83.82% at 29.18% coverage; INT8 SFT passed 16/16 parse and exact-key checks and filled 261/261 requested fields; p95 was 7,559.574 ms
+- Deterministic replay: classifier prediction fingerprint `996ecd51682b602623671a1607b2c7c152d6efc8a663fdeec29a1f12da4293b7`, SFT output fingerprint `a387914bf81db43f653aaf217fa5c275b10891ebf70d41414ab4a89c590acaf3`, and evidence SHA-256 `89a942e186b0f9510aa026ee6f1293a5f98de5a2450ae0e8c428c31a36d8b17b` matched the independent identical-seed replay
+- Footprint: 266,364,774 / 314,572,800 total installed-and-cache bytes; all required gates passed and `footprintReady` is true; the separate generator-halving optimization target remains missed
+- Report identities: evaluation fingerprint `2237987b581ad0a0689ff331985b9d4bf1f7c33a8ba886fe24d43102aeb0de81`, integration fingerprint `2463e1a0c832491831de6915699191113cb10b40cbf512f41ac215c00d2d8f31`, footprint fingerprint `a6b9a61aba123ed9ae4fcb04cdbe28c57c528e70d5f41e2616112b6ca159c122`
+- Persisted local evidence: `/Users/I335123/Downloads/mockserver-data-generator-runtime-proof-darwin-arm64-cachefix-40393c7c6`
+
+The current handoff archive is
+`/Users/I335123/Downloads/mockserver-data-generator-dev-kit-3a16a758a6e58208.tgz`.
 Verify its SHA-256 before extraction. This is the current local and BAS
-candidate; prior archives remain historical evidence for their exact gates.
+candidate; earlier archives remain historical evidence for their exact gates.
 
 ## Scope boundary
 
