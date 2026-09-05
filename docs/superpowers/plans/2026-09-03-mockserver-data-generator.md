@@ -1502,17 +1502,18 @@ arguments, while the generic host creates and disposes one provider per
 generation epoch and retains complete fallback behavior.
 
 The final focused review found no remaining critical or important issue in the
-launcher and lifecycle scope. Current local verification includes 250 generator
+launcher and lifecycle scope. Current local verification includes 251 generator
 tests, 364 host-core tests, 13 middleware tests, and 120 development-kit tests,
-plus clean builds and zero-error lint for the affected packages. Fresh packed
-OData V2, OData V4, and CDS-through-FE applications passed both standard and
-learned HTTP paths. Literal `npm run start-mock` and
-`npm run start-mock -- --mockgen` commands also passed in the V4 fixture.
+plus clean builds and zero-error lint for the affected packages. The preceding
+compatibility archive passed fresh packed OData V2, OData V4, and CDS-through-FE
+applications on both standard and learned HTTP paths. The current archive
+repeated standard, deterministic MockGen, and retained-classifier/SFT checks in
+a fresh V4 fixture.
 
 The reproducible local/BAS kit is
-`/absolute/path/to/mockserver-data-generator-dev-kit-2587b8efb75aa190.tgz`
-(566,493 bytes, SHA-256
-`badcc3f241607999720e2d670986d7d73dfa37e5feb54545aba9a3be0fc5b4f9`).
+`/absolute/path/to/mockserver-data-generator-dev-kit-dc912317987aed27.tgz`
+(566,654 bytes, SHA-256
+`29a5b6918a00bce92c0fda9167820d3e28a3958596ce679122cf201d8afda23f`).
 The reviewed platform-runtime campaign passes every hard local gate at
 266,453,893 installed-and-cache bytes. The 451,328,075-byte upstream result is
 the prior exact multi-platform baseline and still fails only the total-footprint
@@ -1583,12 +1584,14 @@ pass. This provides an honest local all-learned-tier disablement control. The
 separate remote model-channel N-1 and T2-only kill-switch canary remain release
 gates.
 
-The exact clean kit is fingerprint
-`2587b8efb75aa190ccb4de62b789713a31a798493aa808fb17bae000e1d077f5`,
-566,493 bytes, with SHA-256
-`badcc3f241607999720e2d670986d7d73dfa37e5feb54545aba9a3be0fc5b4f9`.
-Two builds were byte-identical. Fresh V2, V4, and CDS-through-FE installs each
-passed separate standard and retained-classifier/SFT canaries. Literal V4
-commands returned `ProductName_0` without the flag and a learned `Safety Valve`
-row with `--mockgen`. Exact minimum npm versions remain intentionally unset
-until the host packages are actually released.
+The exact clean kit for the deterministic-reporting increment is fingerprint
+`dc912317987aed2762cf60c4633a2f0a2c292ffb4ca7d9f0dde10eaa2e7f0b32`,
+566,654 bytes, with SHA-256
+`29a5b6918a00bce92c0fda9167820d3e28a3958596ce679122cf201d8afda23f`.
+Two builds were byte-identical. A fresh OData V4 application passed separate
+standard and deterministic `--mockgen` canaries on Node 22.22.3; a second clean
+installation verified and executed the retained classifier and INT8 SFT model
+through the same exact archive. Both transactional restores were byte-exact
+outside disposable `node_modules`. The preceding compatibility archive remains
+the fresh V2/V4/CDS cross-format evidence. Exact minimum npm versions remain
+intentionally unset until the host packages are actually released.

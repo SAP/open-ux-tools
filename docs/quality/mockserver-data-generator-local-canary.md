@@ -870,3 +870,41 @@ unflagged subprocess succeeds with no host installed, proving that it performs
 no compatibility lookup. Independent re-review found no remaining critical,
 important, or minor issue. BAS, remote platform CI, published-version
 compatibility, governance, and independent realism gates remain open.
+
+## Deterministic disablement archive canary
+
+The public deterministic-mode correction was rebuilt from clean source and
+exercised through the exact portable archive rather than a workspace link.
+
+- Clean source commits: `SAP/open-ux-tools`
+  `8a460f4323db3d3385288b9965bc1be55ed4cdcb` and `SAP/open-ux-odata`
+  `b64ee8b60519f129ad975465536204c78a15be1a`.
+- Development-kit fingerprint:
+  `dc912317987aed2762cf60c4633a2f0a2c292ffb4ca7d9f0dde10eaa2e7f0b32`.
+- Archive SHA-256:
+  `29a5b6918a00bce92c0fda9167820d3e28a3958596ce679122cf201d8afda23f`.
+- Archive size: 566,654 bytes; 10 entries; two clean builds were
+  byte-identical.
+- Generator tarball: 95,117 bytes; SHA-256
+  `f6449b4044398c2a6f686af63c706a7bb0ffcf1a774225c117b4b8dda4de3925`.
+- A fresh packed OData V4 application passed separate standard and `--mockgen`
+  HTTP canaries on Node 22.22.3. The standard path returned one row with
+  `providerExecuted: false`; the flagged deterministic path returned one row
+  with `providerExecuted: true`, a 19.348 ms generated-data-cache hit, and
+  20.170 ms host provider work.
+- A separate clean installation staged the retained 192,167,584-byte
+  classifier and INT8 SFT cache through the bundled bridge. Both components
+  verified ready; the flagged HTTP canary reported `learnedRuntimeVerified:
+  true`, returned one row, initialized the runtime in 1,418.885 ms, and
+  completed whole-service generation in 1,443.159 ms.
+- Both installations restored the fixture byte for byte outside disposable
+  `node_modules` and removed installer-owned state. Temporary applications and
+  copied model caches were then removed.
+- Handoff archive:
+  `/absolute/path/to/mockserver-data-generator-dev-kit-dc912317987aed27.tgz`.
+
+The preceding compatibility archive remains the fresh V2/V4/CDS cross-format
+evidence. This checkpoint binds the deterministic-reporting correction to an
+exact installable archive and proves that its learned path still executes; it
+does not replace the pending BAS, remote platform, governance, publication, or
+independent realism gates.
