@@ -101,8 +101,20 @@ function expectCoherentUnit(row: Readonly<Record<string, unknown>>): void {
         D: 'Day',
         WK: 'Week'
     };
+    const isoCodes: Readonly<Record<string, string>> = {
+        EA: 'EA',
+        KG: 'KGM',
+        L: 'LTR',
+        H: 'HUR',
+        PC: 'PCE',
+        M: 'MTR',
+        S: 'SEC',
+        MIN: 'MIN',
+        D: 'DAY',
+        WK: 'WEE'
+    };
     expect(units[String(row.UnitOfMeasure)]).toBe(row.UnitOfMeasure_Text);
-    expect(row.UnitOfMeasureISOCode).toBe(row.UnitOfMeasure);
+    expect(row.UnitOfMeasureISOCode).toBe(isoCodes[String(row.UnitOfMeasure)]);
 }
 
 describe('cross-field semantic coherence', () => {
@@ -190,7 +202,7 @@ describe('cross-field semantic coherence', () => {
         expect(result.resources.Units).toHaveLength(12);
         expect(new Set(result.resources.Units.map((row) => row.UnitOfMeasure)).size).toBe(12);
         result.resources.Units.forEach((row) => {
-            expect(row.UnitOfMeasureISOCode).toBe(row.UnitOfMeasure);
+            expect(String(row.UnitOfMeasureISOCode).length).toBeGreaterThan(0);
             expect(String(row.UnitOfMeasure_Text).length).toBeGreaterThan(0);
         });
     });

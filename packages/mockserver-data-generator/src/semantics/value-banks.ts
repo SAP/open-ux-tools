@@ -42,7 +42,7 @@ const LOCATIONS = [
         regionName: 'Prague',
         postalCode: '11000',
         phonePrefix: '+420 2',
-        mobilePrefix: '+420 601'
+        mobilePrefix: '+420 60'
     }
 ] as const;
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'CHF'] as const;

@@ -1549,7 +1549,7 @@ describe('semantic realism regressions', () => {
             expect(Number.isInteger(row.UnitOfMeasurePressure)).toBe(true);
             expect(Number(row.UnitOfMeasurePressure)).toBeGreaterThanOrEqual(-3);
             expect(Number(row.UnitOfMeasurePressure)).toBeLessThanOrEqual(3);
-            expect(row.MobilePhoneNumber).toMatch(/^\+(?:49 151|353 85|39 320|420 601) /u);
+            expect(row.MobilePhoneNumber).toMatch(/^\+(?:49 151|353 85|39 320|420 60) \d{7}$/u);
             expect(row.SalesItemProposalDescription).toMatch(/ proposal$/u);
         });
         expect(sft.generate).not.toHaveBeenCalled();

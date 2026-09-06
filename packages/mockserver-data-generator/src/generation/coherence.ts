@@ -13,15 +13,15 @@ const STATUS_VALUES = [
 
 const UNIT_VALUES = [
     { code: 'EA', iso: 'EA', text: 'Each' },
-    { code: 'KG', iso: 'KG', text: 'Kilogram' },
-    { code: 'L', iso: 'L', text: 'Litre' },
-    { code: 'H', iso: 'H', text: 'Hour' },
-    { code: 'PC', iso: 'PC', text: 'Piece' },
-    { code: 'M', iso: 'M', text: 'Metre' },
-    { code: 'S', iso: 'S', text: 'Second' },
+    { code: 'KG', iso: 'KGM', text: 'Kilogram' },
+    { code: 'L', iso: 'LTR', text: 'Litre' },
+    { code: 'H', iso: 'HUR', text: 'Hour' },
+    { code: 'PC', iso: 'PCE', text: 'Piece' },
+    { code: 'M', iso: 'MTR', text: 'Metre' },
+    { code: 'S', iso: 'SEC', text: 'Second' },
     { code: 'MIN', iso: 'MIN', text: 'Minute' },
-    { code: 'D', iso: 'D', text: 'Day' },
-    { code: 'WK', iso: 'WK', text: 'Week' }
+    { code: 'D', iso: 'DAY', text: 'Day' },
+    { code: 'WK', iso: 'WEE', text: 'Week' }
 ] as const;
 
 const START_MARKERS = new Set(['start', 'begin', 'from']);
