@@ -27,8 +27,10 @@ and records the narrower, fully accepted SFT route. `final-cohort-v10.json`
 refreezes that route after service and supplier semantics were governed.
 `final-cohort-v11.json` keeps the same services, selected fields, schemas,
 relationships, and fully accepted route while binding evaluation to the sales,
-maintenance, and finance semantic corrections. Generated rows, model outputs,
-and human or LLM reviews must remain outside the repository.
+maintenance, and finance semantic corrections. `final-cohort-v12.json` retains
+that route after correcting the coherent SAP ISO unit codes and Czech mobile
+number length. Generated rows, model outputs, and human or LLM reviews must
+remain outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
