@@ -9,11 +9,19 @@ clean archive produced with --require-clean.
 
 Current clean archive candidate:
 
-- dev-kit fingerprint: `9e22ef712db89875ddc5e0b3547654a2db0f3207865028dae61db8e7ba20a3c2`
-- archive SHA-256: `a8a5041f94e63719f999dc780acfac0a6b34e949062c69f056265cfebdecc449`
-- archive size: 575,373 bytes; 10 entries
-- source commits: `SAP/open-ux-tools` `04390772f75852440444a9ec076ee380e61aeaaf`; `SAP/open-ux-odata` `e5179f28193cc1933344703beaedc909079dfec3`
-- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-9e22ef712db89875.tgz`
+- dev-kit fingerprint: `401d0161affb9491a708d00295790e2f012a6130884111ac14a1e31da1fd3113`
+- archive SHA-256: `e0e7d6a0d77e93f489f3e479ef5e192175a6ccc14c1f220c439288ae9566350f`
+- archive size: 586,523 bytes; 10 entries
+- source commits: `SAP/open-ux-tools` `19ba63f69ed6d69736203e8dc5e88b6d70eb0302`; `SAP/open-ux-odata` `e5179f28193cc1933344703beaedc909079dfec3`
+- local handoff copy: `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-401d0161affb9491.tgz`
+
+Two independent builds from those clean commits produced byte-identical
+archives. This candidate supersedes the earlier handoff archive and contains
+the corrected realism implementation qualified on the frozen 311-field
+cohort: strict two-provider consensus accepted 285 fields (91.64%), every
+domain and format exceeded 80%, and no critical issue or coverage gap was
+reported. That is local qualification evidence; it does not replace the BAS
+procedure below.
 
 Optional retained learned-model input for the classifier/SFT canary:
 
@@ -97,9 +105,9 @@ data, prompts, or model outputs.
 ## Procedure
 
 ```bash
-KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-9e22ef712db89875.tgz"
-KIT_SHA256="a8a5041f94e63719f999dc780acfac0a6b34e949062c69f056265cfebdecc449"
-KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-9e22ef712db89875"
+KIT_ARCHIVE="$HOME/projects/mockserver-data-generator-dev-kit-401d0161affb9491.tgz"
+KIT_SHA256="e0e7d6a0d77e93f489f3e479ef5e192175a6ccc14c1f220c439288ae9566350f"
+KIT_ROOT="$HOME/tools/mockserver-data-generator-dev-401d0161affb9491"
 
 node -e 'const [a,b,c]=process.versions.node.split(".").map(Number);if(a<22||(a===22&&(b<22||(b===22&&c<2))))throw Error("Node >=22.22.2 is required")'
 printf '%s  %s\n' "$KIT_SHA256" "$KIT_ARCHIVE" | sha256sum --check --strict -

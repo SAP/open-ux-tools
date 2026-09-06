@@ -1834,7 +1834,12 @@ workspace passes 12 suites/131 tests. The package-only footprint rebind is
 earlier exact model/runtime measurements.
 
 This completes the local implementation and realism qualification planned for
-the feature branch. Reproducible BAS archive generation, final review, and the
-tools-branch push remain in progress. The user will perform the actual BAS
-canary. Hosting, signing, governance, platform-matrix release execution, npm
-publication, and rollback rehearsal remain later release gates.
+the feature branch. Two clean development-kit builds then produced the same
+586,523-byte BAS archive, fingerprint
+`401d0161affb9491a708d00295790e2f012a6130884111ac14a1e31da1fd3113`,
+and SHA-256
+`e0e7d6a0d77e93f489f3e479ef5e192175a6ccc14c1f220c439288ae9566350f`.
+Final review and the tools-branch push remain in progress. The user will
+perform the actual BAS canary. Hosting, signing, governance, platform-matrix
+release execution, npm publication, and rollback rehearsal remain later
+release gates.
