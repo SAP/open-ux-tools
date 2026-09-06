@@ -23,8 +23,12 @@ bounded to 80 characters. Its preflight records 86/86 parsed responses and
 307/312 accepted slots. `final-cohort-v8.json` refreezes T2 routing after the
 remaining governed business-code roles were restored. `final-cohort-v9.json`
 clarifies the exact bank-balance equation, adds governed bank-statement fields,
-and records the narrower, fully accepted SFT route. Generated rows, model
-outputs, and human or LLM reviews must remain outside the repository.
+and records the narrower, fully accepted SFT route. `final-cohort-v10.json`
+refreezes that route after service and supplier semantics were governed.
+`final-cohort-v11.json` keeps the same services, selected fields, schemas,
+relationships, and fully accepted route while binding evaluation to the sales,
+maintenance, and finance semantic corrections. Generated rows, model outputs,
+and human or LLM reviews must remain outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
