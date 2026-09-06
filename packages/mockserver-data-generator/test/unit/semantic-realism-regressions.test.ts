@@ -489,9 +489,7 @@ describe('semantic realism regressions', () => {
         );
 
         const row = result.resources.Supplier?.[0];
-        expect(row?.DECertifiedEthnicity).toMatch(
-            /^(?:Asian|Black or African American|Hispanic or Latino|Native American|Not Specified)$/u
-        );
+        expect(row?.DECertifiedEthnicity).toMatch(/^(?:Asian|Black|Hispanic or Latino|Indigenous|Not Specified)$/u);
         expect(row?.DECity).toMatch(/^(?:Berlin|Dublin|Milan|Prague)$/u);
         expect(row?.DECountry).toMatch(/^(?:DE|IE|IT|CZ)$/u);
         expect(row?.DECountryDescription).toMatch(/^(?:Germany|Ireland|Italy|Czechia)$/u);
@@ -1489,5 +1487,148 @@ describe('semantic realism regressions', () => {
             expect(['M', 'CM', 'MM', 'KM']).toContain(row.LengthUnit);
             expect(['MIN', 'S']).not.toContain(row.LengthUnit);
         });
+    });
+
+    it('keeps service-item quantities, amounts, flags, references, categories, and GUID text realistic', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'service-item-hostile-sft',
+            generate: jest.fn(async (input) => ({
+                rows: Array.from({ length: input.rowCount }, () =>
+                    Object.fromEntries(input.fields.map(({ name }) => [name, 'AI']))
+                )
+            }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.ServiceItem': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    ServiceDocumentItemQuantity: {
+                                        type: 'cds.Decimal',
+                                        precision: 13,
+                                        scale: 3,
+                                        '@Common.Label': 'Order Quantity'
+                                    },
+                                    ServiceDocumentItemNetAmount: {
+                                        type: 'cds.Decimal',
+                                        precision: 16,
+                                        scale: 3,
+                                        '@Common.Label': 'Net Value'
+                                    },
+                                    ServiceDocumentItemHasError: {
+                                        type: 'cds.String',
+                                        length: 1,
+                                        '@Common.Label': 'Error Status'
+                                    },
+                                    ServiceDocumentItemIsOpen: {
+                                        type: 'cds.String',
+                                        length: 1,
+                                        '@Common.Label': 'Open'
+                                    },
+                                    ServiceDocumentItemCharUUID: {
+                                        type: 'cds.String',
+                                        length: 32,
+                                        '@Common.Label': 'Object GUID'
+                                    },
+                                    PurchaseOrderByCustomer: {
+                                        type: 'cds.String',
+                                        length: 35,
+                                        '@Common.Label': 'Ext. Reference'
+                                    },
+                                    ServiceDocItemCategory: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Item Category'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/service-items', odataVersion: '4.0' },
+                targets: [{ name: 'ServiceItem', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 113 },
+            { sft }
+        );
+
+        const rows = result.resources.ServiceItem ?? [];
+        expect(rows).toHaveLength(2);
+        rows.forEach((row) => {
+            expect(Number(row.ServiceDocumentItemQuantity)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.ServiceDocumentItemQuantity)).toBeLessThanOrEqual(90.99);
+            expect(Number(row.ServiceDocumentItemNetAmount)).toBeGreaterThanOrEqual(100);
+            expect(Number(row.ServiceDocumentItemNetAmount)).toBeLessThanOrEqual(9_099.99);
+            expect(row.ServiceDocumentItemCharUUID).toMatch(/^[A-F0-9]{32}$/u);
+            expect(String(row.ServiceDocumentItemCharUUID).slice(0, 8)).not.toBe(
+                String(row.ServiceDocumentItemCharUUID).slice(8, 16)
+            );
+            expect(row.PurchaseOrderByCustomer).toMatch(/^PO-\d{4}-\d{6}$/u);
+            expect(['SRVP', 'SVCP', 'SVCT']).toContain(row.ServiceDocItemCategory);
+        });
+        expect(rows.map(({ ServiceDocumentItemHasError }) => ServiceDocumentItemHasError)).toEqual(['', 'X']);
+        expect(rows.map(({ ServiceDocumentItemIsOpen }) => ServiceDocumentItemIsOpen)).toEqual(['', 'X']);
+        expect(sft.generate).not.toHaveBeenCalled();
+    });
+
+    it('uses usable supplier aliases and neutral diversity-enrichment values before SFT', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'supplier-enrichment-hostile-sft',
+            generate: jest.fn(async (input) => ({
+                rows: Array.from({ length: input.rowCount }, () =>
+                    Object.fromEntries(input.fields.map(({ name }) => [name, null]))
+                )
+            }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Supplier': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    Alias1: { type: 'cds.String', length: 512 },
+                                    Alias2: { type: 'cds.String', length: 512 },
+                                    DEConfidence: { type: 'cds.String', length: 10 },
+                                    DECertifiedEthnicity: { type: 'cds.String', length: 50 },
+                                    DECongressionalDistrict: { type: 'cds.String', length: 50 },
+                                    DECSSClass: { type: 'cds.Double' }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/suppliers', odataVersion: '4.0' },
+                targets: [{ name: 'Supplier', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 113 },
+            { sft }
+        );
+
+        const rows = result.resources.Supplier ?? [];
+        expect(rows).toHaveLength(2);
+        rows.forEach((row) => {
+            expect(String(row.Alias1).length).toBeGreaterThan(2);
+            expect(String(row.Alias2).length).toBeGreaterThan(2);
+            expect(['High', 'Medium', 'Low']).toContain(row.DEConfidence);
+            expect(['Asian', 'Black', 'Hispanic or Latino', 'Indigenous', 'Not Specified']).toContain(
+                row.DECertifiedEthnicity
+            );
+            expect(row.DECongressionalDistrict).toMatch(/^District \d{1,2}$/u);
+            expect(Number.isInteger(row.DECSSClass)).toBe(true);
+            expect(Number(row.DECSSClass)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.DECSSClass)).toBeLessThanOrEqual(5);
+        });
+        expect(sft.generate).not.toHaveBeenCalled();
     });
 });

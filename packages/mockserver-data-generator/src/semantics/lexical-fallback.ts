@@ -53,9 +53,11 @@ const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'bank_statement_type',
     'business_network_id',
     'company_code',
+    'confidence_level',
     'congressional_district',
     'count',
     'credit_rating',
+    'customer_purchase_order',
     'distribution_channel',
     'document_id',
     'document_item',
@@ -63,6 +65,7 @@ const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'employee_id',
     'genre',
     'gl_account',
+    'guid_text',
     'house_bank',
     'indicator',
     'length_unit',
@@ -75,6 +78,7 @@ const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'risk_class',
     'sales_document_type',
     'sales_organization',
+    'service_document_item_category',
     'service_document_type',
     'service_organization',
     'service_team',
@@ -203,14 +207,38 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (primitiveType === 'string' && has(words, 'is', 'has') && has(words, 'open', 'error')) {
         return 'indicator';
     }
+    if (has(words, 'purchase') && has(words, 'order') && has(words, 'customer')) {
+        return 'customer_purchase_order';
+    }
+    if (has(words, 'service') && has(words, 'doc', 'document') && has(words, 'item') && has(words, 'category')) {
+        return 'service_document_item_category';
+    }
     if (has(words, 'service') && has(words, 'document') && has(words, 'item') && has(words, 'object', 'type')) {
         return 'object_type';
     }
     if (
+        primitiveType === 'string' &&
         has(words, 'service') &&
         has(words, 'document') &&
         has(words, 'item') &&
-        !has(words, 'name', 'text', 'description', 'status', 'uuid', 'guid', 'char', 'open', 'error')
+        !has(
+            words,
+            'name',
+            'text',
+            'description',
+            'status',
+            'uuid',
+            'guid',
+            'char',
+            'open',
+            'error',
+            'amount',
+            'net',
+            'gross',
+            'quantity',
+            'qty',
+            'category'
+        )
     ) {
         return 'document_item';
     }
@@ -220,7 +248,26 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (
         has(words, 'service') &&
         has(words, 'document') &&
-        !has(words, 'name', 'text', 'description', 'status', 'uuid', 'guid', 'char')
+        !has(
+            words,
+            'name',
+            'text',
+            'description',
+            'status',
+            'uuid',
+            'guid',
+            'char',
+            'item',
+            'items',
+            'open',
+            'error',
+            'amount',
+            'net',
+            'gross',
+            'quantity',
+            'qty',
+            'category'
+        )
     ) {
         return 'document_id';
     }
@@ -245,7 +292,7 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (primitiveType === 'string' && has(words, 'length') && has(words, 'unit')) {
         return 'length_unit';
     }
-    if (has(words, 'alias')) {
+    if (has(words, 'alias') || fieldTokens.some((token) => /^alias\d+$/u.test(token))) {
         return 'org_name';
     }
     if (has(words, 'an') && has(words, 'number')) {
@@ -259,6 +306,9 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     }
     if (has(words, 'credit') && has(words, 'rating')) {
         return 'credit_rating';
+    }
+    if (primitiveType === 'string' && has(words, 'confidence')) {
+        return 'confidence_level';
     }
     if (fieldTokens.some((token) => token === 'css' || token.endsWith('css')) && has(words, 'class')) {
         return 'risk_class';

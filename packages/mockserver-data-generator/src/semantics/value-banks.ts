@@ -49,13 +49,7 @@ const STATUSES = ['Open', 'In Progress', 'Approved', 'Completed'] as const;
 const CHARTS_OF_ACCOUNTS = ['YCOA', 'INT', 'CAUS', 'IFRS'] as const;
 const CONTROL_CODES = ['01', '02', '03', '04'] as const;
 const PLANTS = ['1010', '1110', '1710', '3010'] as const;
-const ETHNICITIES = [
-    'Asian',
-    'Black or African American',
-    'Hispanic or Latino',
-    'Native American',
-    'Not Specified'
-] as const;
+const ETHNICITIES = ['Asian', 'Black', 'Hispanic or Latino', 'Indigenous', 'Not Specified'] as const;
 const FIELD_CONTROL_VALUES = [0, 1, 3, 7] as const;
 const STATUS_CODES = ['O', 'I', 'A', 'C'] as const;
 const MEASUREMENT_DIMENSIONS = ['TIME', 'LENGTH', 'MASS', 'TEMP', 'PRESSURE'] as const;
@@ -93,9 +87,17 @@ function repeatedDigits(hash: number, maximumLength = 10): string {
     return source.repeat(Math.ceil(maximumLength / source.length)).slice(0, maximumLength);
 }
 
-function repeatedHex(hash: number, maximumLength: number): string {
-    const source = hash.toString(16).toUpperCase().padStart(8, '0');
-    return source.repeat(Math.ceil(maximumLength / source.length)).slice(0, maximumLength);
+function stableHex(hash: number, rowIndex: number, maximumLength: number): string {
+    let state = (hash ^ Math.imul(rowIndex + 1, 0x9e3779b9)) >>> 0;
+    let value = '';
+    while (value.length < maximumLength) {
+        state ^= state << 13;
+        state ^= state >>> 17;
+        state ^= state << 5;
+        state >>>= 0;
+        value += state.toString(16).toUpperCase().padStart(8, '0');
+    }
+    return value.slice(0, maximumLength);
 }
 
 function completeString(candidates: ReadonlyArray<string>, maximumLength: number | undefined): string {
@@ -194,7 +196,11 @@ function stringRoleValue(
         case 'unique_item_identifier':
             return `UII-${2021 + (hash % 6)}-${fixedDigits(hash, 6)}`;
         case 'guid_text':
-            return repeatedHex(hash, property.maxLength ?? 32);
+            return stableHex(hash, rowIndex, property.maxLength ?? 32);
+        case 'customer_purchase_order':
+            return `PO-${context.startDate.getUTCFullYear()}-${fixedDigits(hash, 6)}`;
+        case 'service_document_item_category':
+            return ['SRVP', 'SVCP', 'SVCT'][hash % 3];
         case 'control_code':
             return CONTROL_CODES[hash % CONTROL_CODES.length];
         case 'plant':
@@ -245,7 +251,7 @@ function stringRoleValue(
                 ? STATUS_CODES[hash % STATUS_CODES.length]
                 : STATUSES[hash % STATUSES.length];
         case 'indicator':
-            return hash % 2 === 0 ? '' : 'X';
+            return rowIndex % 2 === 0 ? '' : 'X';
         case 'measurement_dimension':
             return MEASUREMENT_DIMENSIONS[hash % MEASUREMENT_DIMENSIONS.length];
         case 'source_name':
@@ -260,6 +266,8 @@ function stringRoleValue(
                 : ['Europe/Dublin', 'Europe/Berlin', 'America/New_York', 'Asia/Tokyo'][hash % 4];
         case 'ethnicity':
             return ETHNICITIES[hash % ETHNICITIES.length];
+        case 'confidence_level':
+            return ['High', 'Medium', 'Low'][hash % 3];
         case 'temperature_unit':
             return ['C', 'F', 'K'][hash % 3];
         case 'pressure_unit':
@@ -331,7 +339,7 @@ function stringRoleValue(
         case 'length_unit':
             return ['M', 'CM', 'MM', 'KM'][hash % 4];
         case 'congressional_district':
-            return ['CA-12', 'NY-10', 'TX-07', 'IL-05'][hash % 4];
+            return `District ${(hash % 50) + 1}`;
         case 'credit_rating':
             return ['AAA', 'AA', 'A', 'BBB'][hash % 4];
         default:
@@ -400,7 +408,7 @@ export function semanticValue(
         case 'interest_rate':
             return boundedNumericValue(property, hash, 0, 20);
         case 'risk_class':
-            return boundedNumericValue(property, hash, 1, 5);
+            return boundedNumericValue(property, 0, 1 + (hash % 5), 1 + (hash % 5));
         case 'temperature':
             return boundedNumericValue(property, hash, -30, 50);
         case 'pressure':
