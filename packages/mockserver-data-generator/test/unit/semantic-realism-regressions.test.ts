@@ -723,10 +723,12 @@ describe('semantic realism regressions', () => {
             expect(Number(row.SIUnitCnvrsnRateExponent)).toBeLessThanOrEqual(6);
             expect(Number(row.NumberOfItems)).toBeGreaterThanOrEqual(1);
             expect(Number(row.NumberOfItems)).toBeLessThanOrEqual(500);
-            expect(Number(row.UnitOfMeasureTemperature)).toBeGreaterThanOrEqual(-30);
-            expect(Number(row.UnitOfMeasureTemperature)).toBeLessThanOrEqual(50);
-            expect(Number(row.UnitOfMeasurePressure)).toBeGreaterThanOrEqual(0.5);
-            expect(Number(row.UnitOfMeasurePressure)).toBeLessThanOrEqual(20);
+            expect(Number.isInteger(row.UnitOfMeasureTemperature)).toBe(true);
+            expect(Number(row.UnitOfMeasureTemperature)).toBeGreaterThanOrEqual(-3);
+            expect(Number(row.UnitOfMeasureTemperature)).toBeLessThanOrEqual(3);
+            expect(Number.isInteger(row.UnitOfMeasurePressure)).toBe(true);
+            expect(Number(row.UnitOfMeasurePressure)).toBeGreaterThanOrEqual(-3);
+            expect(Number(row.UnitOfMeasurePressure)).toBeLessThanOrEqual(3);
             expect(Number(row.PublicationPrice)).toBeGreaterThanOrEqual(5);
             expect(Number(row.PublicationPrice)).toBeLessThanOrEqual(500);
             expect(Number(row.InterestRateInPercent)).toBeGreaterThanOrEqual(0);
@@ -1317,9 +1319,9 @@ describe('semantic realism regressions', () => {
             expect(row.BankAccountHolderName).toMatch(
                 /^(?:Northwind Trading|Alpine Supply|Blue River Industries|Summit Services)$/u
             );
-            expect(['Operating', 'Payroll', 'Clearing', 'Savings']).toContain(row.BankAccountType);
+            expect(['Checking', 'Savings', 'Money Market', 'Current']).toContain(row.BankAccountType);
             expect(row.BankStatement).toMatch(/^\d{5}$/u);
-            expect(['MT', 'BA', 'CA']).toContain(row.BankStatementFormat);
+            expect(row.BankStatementFormat).toBe('MT');
             expect(row.IncomingPaymentFile).toMatch(/^PAY\d{8}$/u);
             expect(['INBOUND', 'OUTBOUND', 'TRANSFER']).toContain(row.PaymentTransactionTypeGroup);
             expect(['Deutsche Bank', 'JPMorgan Chase', 'Barclays Bank', 'Bank of Ireland']).toContain(row.SendingBank);
@@ -1487,6 +1489,117 @@ describe('semantic realism regressions', () => {
             expect(['M', 'CM', 'MM', 'KM']).toContain(row.LengthUnit);
             expect(['MIN', 'S']).not.toContain(row.LengthUnit);
         });
+    });
+
+    it('keeps sales contacts and unit-master values in their SAP business domains', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'sales-domain-hostile-sft',
+            generate: jest.fn(async (input) => ({
+                rows: Array.from({ length: input.rowCount }, () =>
+                    Object.fromEntries(input.fields.map(({ name }) => [name, 'AI']))
+                )
+            }))
+        };
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+            <edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+                xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" Version="1.0">
+                <edmx:DataServices m:DataServiceVersion="2.0">
+                    <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm"
+                        xmlns:sap="http://www.sap.com/Protocols/SAPData" Namespace="Demo">
+                        <EntityType Name="SalesRecord">
+                            <Key><PropertyRef Name="ID" /></Key>
+                            <Property Name="ID" Type="Edm.Int32" Nullable="false" />
+                            <Property Name="UnitOfMeasure" Type="Edm.String" MaxLength="3"
+                                sap:semantics="unit-of-measure" />
+                            <Property Name="UnitOfMeasureISOCode" Type="Edm.String" MaxLength="3"
+                                sap:label="ISO code" />
+                            <Property Name="UnitOfMeasurePressure" Type="Edm.Decimal"
+                                Precision="3" Scale="0" sap:label="Pressure Value" />
+                            <Property Name="MobilePhoneNumber" Type="Edm.String" MaxLength="30"
+                                sap:semantics="tel" />
+                            <Property Name="SalesItemProposalDescription" Type="Edm.String" MaxLength="40"
+                                sap:label="Description" />
+                        </EntityType>
+                        <EntityContainer Name="Container" m:IsDefaultEntityContainer="true">
+                            <EntitySet Name="SalesRecords" EntityType="Demo.SalesRecord" />
+                        </EntityContainer>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>`;
+        const result = await generateService(
+            {
+                metadata: { format: 'edmx', content: metadata },
+                service: { urlPath: '/sales-records', odataVersion: '2.0' },
+                targets: [{ name: 'SalesRecords', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 5, seed: 113 },
+            { sft }
+        );
+        const isoCodeByUnit = new Map([
+            ['EA', 'EA'],
+            ['KG', 'KGM'],
+            ['L', 'LTR'],
+            ['H', 'HUR'],
+            ['PC', 'PCE']
+        ]);
+
+        result.resources.SalesRecords?.forEach((row) => {
+            expect(row.UnitOfMeasureISOCode).toBe(isoCodeByUnit.get(String(row.UnitOfMeasure)));
+            expect(Number.isInteger(row.UnitOfMeasurePressure)).toBe(true);
+            expect(Number(row.UnitOfMeasurePressure)).toBeGreaterThanOrEqual(-3);
+            expect(Number(row.UnitOfMeasurePressure)).toBeLessThanOrEqual(3);
+            expect(row.MobilePhoneNumber).toMatch(/^\+(?:49 151|353 85|39 320|420 601) /u);
+            expect(row.SalesItemProposalDescription).toMatch(/ proposal$/u);
+        });
+        expect(sft.generate).not.toHaveBeenCalled();
+    });
+
+    it('uses equipment names and compact IUID configuration values for maintenance fields', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'maintenance-domain-hostile-sft',
+            generate: jest.fn(async (input) => ({
+                rows: Array.from({ length: input.rowCount }, () =>
+                    Object.fromEntries(input.fields.map(({ name }) => [name, 'AI']))
+                )
+            }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Equipment': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    EquipmentName: { type: 'cds.String', length: 40 },
+                                    TechnicalObjectDescription: { type: 'cds.String', length: 40 },
+                                    UniqueItemIdentifierRespPlant: { type: 'cds.String', length: 4 },
+                                    UniqueItemIdentifierStrucType: { type: 'cds.String', length: 10 }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/equipment', odataVersion: '4.0' },
+                targets: [{ name: 'Equipment', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 113 },
+            { sft }
+        );
+
+        result.resources.Equipment?.forEach((row) => {
+            expect(['Hydraulic Pump', 'Safety Valve', 'Control Module', 'Heat Exchanger']).toContain(row.EquipmentName);
+            expect(['Hydraulic Pump', 'Safety Valve', 'Control Module', 'Heat Exchanger']).toContain(
+                row.TechnicalObjectDescription
+            );
+            expect(['1010', '1110', '1710', '3010']).toContain(row.UniqueItemIdentifierRespPlant);
+            expect(['GS1', 'EPC', 'UID']).toContain(row.UniqueItemIdentifierStrucType);
+        });
+        expect(sft.generate).not.toHaveBeenCalled();
     });
 
     it('keeps service-item quantities, amounts, flags, references, categories, and GUID text realistic', async () => {

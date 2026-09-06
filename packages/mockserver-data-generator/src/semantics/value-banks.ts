@@ -11,7 +11,8 @@ const LOCATIONS = [
         region: 'BE',
         regionName: 'Berlin',
         postalCode: '10115',
-        phonePrefix: '+49 30'
+        phonePrefix: '+49 30',
+        mobilePrefix: '+49 151'
     },
     {
         city: 'Dublin',
@@ -20,7 +21,8 @@ const LOCATIONS = [
         region: 'L',
         regionName: 'Leinster',
         postalCode: 'D02',
-        phonePrefix: '+353 1'
+        phonePrefix: '+353 1',
+        mobilePrefix: '+353 85'
     },
     {
         city: 'Milan',
@@ -29,7 +31,8 @@ const LOCATIONS = [
         region: 'MI',
         regionName: 'Lombardy',
         postalCode: '20121',
-        phonePrefix: '+39 02'
+        phonePrefix: '+39 02',
+        mobilePrefix: '+39 320'
     },
     {
         city: 'Prague',
@@ -38,13 +41,22 @@ const LOCATIONS = [
         region: 'PR',
         regionName: 'Prague',
         postalCode: '11000',
-        phonePrefix: '+420 2'
+        phonePrefix: '+420 2',
+        mobilePrefix: '+420 601'
     }
 ] as const;
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'CHF'] as const;
 const UNITS = ['EA', 'KG', 'L', 'H', 'PC'] as const;
+const UNIT_ISO_CODES: Readonly<Record<(typeof UNITS)[number], string>> = {
+    EA: 'EA',
+    KG: 'KGM',
+    L: 'LTR',
+    H: 'HUR',
+    PC: 'PCE'
+};
 const ORGANIZATIONS = ['Northwind Trading', 'Alpine Supply', 'Blue River Industries', 'Summit Services'] as const;
 const PRODUCTS = ['Industrial Pump', 'Safety Valve', 'Service Package', 'Control Module'] as const;
+const EQUIPMENT_NAMES = ['Hydraulic Pump', 'Safety Valve', 'Control Module', 'Heat Exchanger'] as const;
 const STATUSES = ['Open', 'In Progress', 'Approved', 'Completed'] as const;
 const CHARTS_OF_ACCOUNTS = ['YCOA', 'INT', 'CAUS', 'IFRS'] as const;
 const CONTROL_CODES = ['01', '02', '03', '04'] as const;
@@ -195,6 +207,8 @@ function stringRoleValue(
             return `AN${fixedDigits(hash, 10)}`;
         case 'unique_item_identifier':
             return `UII-${2021 + (hash % 6)}-${fixedDigits(hash, 6)}`;
+        case 'unique_item_identifier_structure_type':
+            return ['GS1', 'EPC', 'UID'][hash % 3];
         case 'guid_text':
             return stableHex(hash, rowIndex, property.maxLength ?? 32);
         case 'customer_purchase_order':
@@ -211,12 +225,16 @@ function stringRoleValue(
             return `${context.firstName.toLowerCase()}.${context.lastName.toLowerCase()}@example.com`;
         case 'phone':
             return `${context.location.phonePrefix} ${String((hash % 9_000_000) + 1_000_000)}`;
+        case 'mobile_phone':
+            return `${context.location.mobilePrefix} ${String((hash % 9_000_000) + 1_000_000)}`;
         case 'url':
             return `https://example.com/${context.organization.toLowerCase().replace(/\s+/g, '-')}`;
         case 'currency':
             return context.currency;
         case 'unit_of_measure':
             return context.unit;
+        case 'unit_of_measure_iso':
+            return UNIT_ISO_CODES[context.unit];
         case 'country':
             return context.location.country;
         case 'country_name':
@@ -235,6 +253,8 @@ function stringRoleValue(
             return completeString([context.organization, ...SHORT_ORGANIZATIONS, 'Alpine Co.'], property.maxLength);
         case 'product_name':
             return context.product;
+        case 'equipment_name':
+            return EQUIPMENT_NAMES[hash % EQUIPMENT_NAMES.length];
         case 'product_category':
             return ['Hardware', 'Services', 'Software', 'Supplies'][hash % 4];
         case 'description':
@@ -246,6 +266,8 @@ function stringRoleValue(
                 [SHORT_DESCRIPTIONS[hash % SHORT_DESCRIPTIONS.length], 'Service item', 'Service'],
                 property.maxLength
             );
+        case 'sales_item_proposal_description':
+            return completeString([`${context.product} proposal`, 'Product proposal', 'Proposal'], property.maxLength);
         case 'order_status':
             return property.maxLength !== undefined && property.maxLength < 11
                 ? STATUS_CODES[hash % STATUS_CODES.length]
@@ -277,7 +299,7 @@ function stringRoleValue(
         case 'bic':
             return ['DEUTDEFF', 'BOFIIE2D', 'CHASUS33', 'BARCGB22'][hash % 4];
         case 'bank_account_type':
-            return ['Operating', 'Payroll', 'Clearing', 'Savings'][hash % 4];
+            return ['Checking', 'Savings', 'Money Market', 'Current'][hash % 4];
         case 'bank_account_internal_id':
             return fixedDigits(hash, Math.min(property.maxLength ?? 10, 10));
         case 'bank_statement_id':
@@ -289,7 +311,7 @@ function stringRoleValue(
         case 'bank_statement_type':
             return BANK_STATEMENT_TYPES[hash % BANK_STATEMENT_TYPES.length];
         case 'bank_statement_format':
-            return ['MT', 'BA', 'CA'][hash % 3];
+            return 'MT';
         case 'payment_file_id':
             return `PAY${fixedDigits(hash, 8)}`;
         case 'payment_transaction_group':
@@ -385,6 +407,10 @@ export function semanticValue(
             return property.primitiveType === 'int' ? hash % 7 : undefined;
         case 'exponent':
             return boundedNumericValue(property, hash, -6, 6);
+        case 'dimension_exponent': {
+            const exponent = (hash % 7) - 3;
+            return boundedNumericValue(property, 0, exponent, exponent);
+        }
         case 'count':
             return boundedNumericValue(property, hash, 1, 500);
         case 'conversion_factor':

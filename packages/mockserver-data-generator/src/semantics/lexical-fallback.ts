@@ -61,22 +61,27 @@ const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'distribution_channel',
     'document_id',
     'document_item',
+    'dimension_exponent',
     'duration_unit',
     'employee_id',
+    'equipment_name',
     'genre',
     'gl_account',
     'guid_text',
     'house_bank',
     'indicator',
     'length_unit',
+    'mobile_phone',
     'object_type',
     'org_name',
     'payment_file_id',
     'payment_terms',
     'payment_transaction_group',
+    'plant',
     'publication_type',
     'risk_class',
     'sales_document_type',
+    'sales_item_proposal_description',
     'sales_organization',
     'service_document_item_category',
     'service_document_type',
@@ -85,7 +90,9 @@ const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'source_name',
     'storage_location',
     'technical_object_type',
-    'unique_item_identifier'
+    'unit_of_measure_iso',
+    'unique_item_identifier',
+    'unique_item_identifier_structure_type'
 ]);
 
 function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primitiveType']): string | undefined {
@@ -96,7 +103,10 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (has(words, 'email', 'mail')) {
         return 'email';
     }
-    if (has(words, 'phone', 'telephone', 'mobile')) {
+    if (has(words, 'mobile')) {
+        return 'mobile_phone';
+    }
+    if (has(words, 'phone', 'telephone')) {
         return 'phone';
     }
     if (has(words, 'url', 'uri', 'website', 'homepage')) {
@@ -175,6 +185,30 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
         (has(words, 'type') || (has(words, 'equip') && has(words, 'funcnl', 'functional')))
     ) {
         return 'technical_object_type';
+    }
+    if (has(words, 'equipment') && has(words, 'name', 'description', 'text')) {
+        return 'equipment_name';
+    }
+    if (has(words, 'tech', 'technical') && has(words, 'object') && has(words, 'name', 'description', 'text')) {
+        return 'equipment_name';
+    }
+    if (
+        has(words, 'unique') &&
+        has(words, 'item') &&
+        has(words, 'id', 'identifier') &&
+        has(words, 'plant') &&
+        has(words, 'resp', 'responsible')
+    ) {
+        return 'plant';
+    }
+    if (
+        has(words, 'unique') &&
+        has(words, 'item') &&
+        has(words, 'id', 'identifier') &&
+        has(words, 'struc', 'structure') &&
+        has(words, 'type')
+    ) {
+        return 'unique_item_identifier_structure_type';
     }
     if (has(words, 'unique') && has(words, 'item') && has(words, 'id', 'identifier')) {
         return 'unique_item_identifier';
@@ -273,6 +307,9 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     }
     if (has(words, 'proposal') && !has(words, 'name', 'text', 'description', 'type', 'status')) {
         return 'document_id';
+    }
+    if (has(words, 'sales') && has(words, 'item') && has(words, 'proposal') && has(words, 'description')) {
+        return 'sales_item_proposal_description';
     }
     if (has(words, 'sales') && has(words, 'document') && has(words, 'type')) {
         return 'sales_document_type';
@@ -381,6 +418,9 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (has(words, 'quantity', 'qty')) {
         return 'quantity';
     }
+    if (primitiveType === 'string' && has(words, 'unit') && has(words, 'iso') && has(words, 'code')) {
+        return 'unit_of_measure_iso';
+    }
     if (has(words, 'dimension')) {
         return 'measurement_dimension';
     }
@@ -401,6 +441,14 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     }
     if (primitiveType === 'string' && has(words, 'pressure') && has(words, 'unit')) {
         return 'pressure_unit';
+    }
+    if (
+        (primitiveType === 'int' || primitiveType === 'decimal') &&
+        has(words, 'unit') &&
+        has(words, 'measure') &&
+        has(words, 'pressure', 'length', 'mass', 'temperature', 'time')
+    ) {
+        return 'dimension_exponent';
     }
     if (has(words, 'temperature')) {
         return 'temperature';
@@ -604,6 +652,9 @@ function refinedMetadataRole(property: SchemaProperty, explicitRole: string): st
         return specializedUnitRole(property) ?? explicitRole;
     }
     if (explicitRole === 'monetary_amount' && lexicalRefinement === 'price') {
+        return lexicalRefinement;
+    }
+    if (explicitRole === 'phone' && lexicalRefinement === 'mobile_phone') {
         return lexicalRefinement;
     }
     if (explicitRole === 'quantity' && lexicalRefinement === 'duration') {
