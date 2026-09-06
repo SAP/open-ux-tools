@@ -31,8 +31,9 @@ maintenance, and finance semantic corrections. `final-cohort-v12.json` retains
 that route after correcting the coherent SAP ISO unit codes and Czech mobile
 number length. `final-cohort-v13.json` retains the route after making SAP Ariba
 supplier data-enrichment locations and US congressional districts row-coherent.
-Generated rows, model outputs, and human or LLM reviews must remain outside the
-repository.
+`final-cohort-v14.json` retains it after governing supplier approval, enriched
+business status, and privacy-safe enrichment ethnicity values. Generated rows,
+model outputs, and human or LLM reviews must remain outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
