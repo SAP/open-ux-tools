@@ -41,6 +41,42 @@ const SAP_SEMANTIC_ROLES = new Map<string, string>([
     ['amount', 'monetary_amount']
 ]);
 
+const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
+    'account_description',
+    'bank_account_type',
+    'bank_name',
+    'bank_statement_format',
+    'bank_statement_id',
+    'business_network_id',
+    'company_code',
+    'congressional_district',
+    'credit_rating',
+    'distribution_channel',
+    'document_id',
+    'document_item',
+    'duration_unit',
+    'employee_id',
+    'genre',
+    'indicator',
+    'length_unit',
+    'object_type',
+    'org_name',
+    'payment_file_id',
+    'payment_terms',
+    'payment_transaction_group',
+    'publication_type',
+    'risk_class',
+    'sales_document_type',
+    'sales_organization',
+    'service_document_type',
+    'service_organization',
+    'service_team',
+    'source_name',
+    'storage_location',
+    'technical_object_type',
+    'unique_item_identifier'
+]);
+
 function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primitiveType']): string | undefined {
     const fieldTokens = tokens(text);
     const words = new Set(fieldTokens);
@@ -63,6 +99,134 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     }
     if (has(words, 'fullname') || (has(words, 'full', 'display') && has(words, 'name'))) {
         return 'person_full_name';
+    }
+    if (has(words, 'artist') && has(words, 'name')) {
+        return 'person_full_name';
+    }
+    if (has(words, 'account') && has(words, 'holder')) {
+        return 'org_name';
+    }
+    if (has(words, 'bank') && has(words, 'account') && has(words, 'type')) {
+        return 'bank_account_type';
+    }
+    if (has(words, 'statement') && has(words, 'format')) {
+        return 'bank_statement_format';
+    }
+    if (has(words, 'bank') && has(words, 'statement') && !has(words, 'page', 'format', 'short')) {
+        return 'bank_statement_id';
+    }
+    if (has(words, 'incoming', 'payment') && has(words, 'file')) {
+        return 'payment_file_id';
+    }
+    if (has(words, 'payment', 'pmnt') && has(words, 'transaction', 'tran') && has(words, 'group')) {
+        return 'payment_transaction_group';
+    }
+    if (has(words, 'sending') && has(words, 'bank')) {
+        return 'bank_name';
+    }
+    if (has(words, 'company') && has(words, 'code') && !has(words, 'name', 'text', 'description')) {
+        return 'company_code';
+    }
+    if (has(words, 'storage') && has(words, 'location')) {
+        return 'storage_location';
+    }
+    if (
+        has(words, 'tech', 'technical') &&
+        has(words, 'obj', 'object') &&
+        (has(words, 'type') || (has(words, 'equip') && has(words, 'funcnl', 'functional')))
+    ) {
+        return 'technical_object_type';
+    }
+    if (has(words, 'unique') && has(words, 'item') && has(words, 'id', 'identifier')) {
+        return 'unique_item_identifier';
+    }
+    if (has(words, 'distribution') && has(words, 'channel')) {
+        return 'distribution_channel';
+    }
+    if (has(words, 'sales') && has(words, 'organization', 'organisation') && has(words, 'description', 'name')) {
+        return 'org_name';
+    }
+    if (has(words, 'sales') && has(words, 'organization', 'organisation') && !has(words, 'fc')) {
+        return 'sales_organization';
+    }
+    if (has(words, 'payment') && has(words, 'terms')) {
+        return 'payment_terms';
+    }
+    if (has(words, 'employee') && !has(words, 'name', 'description')) {
+        return 'employee_id';
+    }
+    if (
+        has(words, 'service') &&
+        has(words, 'organization', 'organisation') &&
+        !has(words, 'name', 'text', 'description')
+    ) {
+        return 'service_organization';
+    }
+    if (has(words, 'service') && has(words, 'team')) {
+        return 'service_team';
+    }
+    if (primitiveType === 'string' && has(words, 'is', 'has') && has(words, 'open', 'error')) {
+        return 'indicator';
+    }
+    if (has(words, 'service') && has(words, 'document') && has(words, 'item') && has(words, 'object', 'type')) {
+        return 'object_type';
+    }
+    if (
+        has(words, 'service') &&
+        has(words, 'document') &&
+        has(words, 'item') &&
+        !has(words, 'name', 'text', 'description', 'status', 'uuid', 'guid', 'char', 'open', 'error')
+    ) {
+        return 'document_item';
+    }
+    if (has(words, 'service') && has(words, 'document') && has(words, 'type')) {
+        return 'service_document_type';
+    }
+    if (
+        has(words, 'service') &&
+        has(words, 'document') &&
+        !has(words, 'name', 'text', 'description', 'status', 'uuid', 'guid', 'char')
+    ) {
+        return 'document_id';
+    }
+    if (has(words, 'proposal') && !has(words, 'name', 'text', 'description', 'type', 'status')) {
+        return 'document_id';
+    }
+    if (has(words, 'sales') && has(words, 'document') && has(words, 'type')) {
+        return 'sales_document_type';
+    }
+    if (has(words, 'object') && has(words, 'type')) {
+        return 'object_type';
+    }
+    if (has(words, 'publication') && has(words, 'type')) {
+        return 'publication_type';
+    }
+    if (has(words, 'genre')) {
+        return 'genre';
+    }
+    if (has(words, 'title') && has(words, 'length')) {
+        return primitiveType === 'string' ? 'duration_unit' : 'duration';
+    }
+    if (primitiveType === 'string' && has(words, 'length') && has(words, 'unit')) {
+        return 'length_unit';
+    }
+    if (has(words, 'alias')) {
+        return 'org_name';
+    }
+    if (has(words, 'an') && has(words, 'number')) {
+        return 'business_network_id';
+    }
+    if (has(words, 'ultimate') && has(words, 'name')) {
+        return 'org_name';
+    }
+    if (has(words, 'congressional') && has(words, 'district')) {
+        return 'congressional_district';
+    }
+    if (has(words, 'credit') && has(words, 'rating')) {
+        return 'credit_rating';
+    }
+    if (fieldTokens.some((token) => token === 'css' || token.endsWith('css')) && has(words, 'class')) {
+        return 'risk_class';
     }
     if (has(words, 'formatted') && has(words, 'name')) {
         return 'person_full_name';
@@ -238,11 +402,15 @@ function lexicalRole(property: SchemaProperty): string | undefined {
     const propertyTokens = tokens(property.name);
     const propertyWords = new Set(propertyTokens);
     const technicalRole = lexicalRoleForText(property.name, property.primitiveType);
-    if (technicalRole === 'source_name' || technicalRole === 'account_description') {
-        return technicalRole;
-    }
     if (property.name.toLowerCase().endsWith('_fc') || (has(propertyWords, 'field') && has(propertyWords, 'control'))) {
         return property.primitiveType === 'string' ? 'control_code' : 'field_control';
+    }
+    if (
+        technicalRole &&
+        (AUTHORITATIVE_TECHNICAL_ROLES.has(technicalRole) ||
+            (propertyTokens.includes('text') && ['country_name', 'region_name'].includes(technicalRole)))
+    ) {
+        return technicalRole;
     }
     if (
         property.primitiveType === 'string' &&
@@ -286,12 +454,17 @@ function preferredLexicalRole(property: SchemaProperty): string | undefined {
     return undefined;
 }
 
-function specializedUnitRole(property: SchemaProperty): 'temperature_unit' | 'pressure_unit' | undefined {
+function specializedUnitRole(
+    property: SchemaProperty
+): 'duration_unit' | 'length_unit' | 'temperature_unit' | 'pressure_unit' | undefined {
     const roles = new Set(
         [property.name, property.label, property.description]
             .filter((evidence): evidence is string => Boolean(evidence))
             .map((evidence) => lexicalRoleForText(evidence, property.primitiveType))
             .map((role) => {
+                if (role === 'duration_unit' || role === 'length_unit') {
+                    return role;
+                }
                 if (role === 'temperature' || role === 'temperature_unit') {
                     return 'temperature_unit';
                 }
@@ -300,7 +473,10 @@ function specializedUnitRole(property: SchemaProperty): 'temperature_unit' | 'pr
                 }
                 return undefined;
             })
-            .filter((role): role is 'temperature_unit' | 'pressure_unit' => role !== undefined)
+            .filter(
+                (role): role is 'duration_unit' | 'length_unit' | 'temperature_unit' | 'pressure_unit' =>
+                    role !== undefined
+            )
     );
     return roles.size === 1 ? roles.values().next().value : undefined;
 }
@@ -334,6 +510,20 @@ function explicitMetadataRole(property: SchemaProperty): string | undefined {
     return semanticRoleForSapDataElement(property.dataElement);
 }
 
+function refinedMetadataRole(property: SchemaProperty, explicitRole: string): string {
+    const lexicalRefinement = preferredLexicalRole(property);
+    if (explicitRole === 'unit_of_measure') {
+        return specializedUnitRole(property) ?? explicitRole;
+    }
+    if (explicitRole === 'monetary_amount' && lexicalRefinement === 'price') {
+        return lexicalRefinement;
+    }
+    if (explicitRole === 'quantity' && lexicalRefinement === 'duration') {
+        return lexicalRefinement;
+    }
+    return explicitRole;
+}
+
 /**
  * Resolve conservative metadata/name roles, using learned output only above its calibrated routing threshold.
  *
@@ -352,8 +542,7 @@ export function resolveSemanticClassifications(
             const role = lexicalRole(property);
             const classification = learned.get(key);
             if (explicitRole) {
-                const refinedRole =
-                    explicitRole === 'unit_of_measure' ? (specializedUnitRole(property) ?? explicitRole) : explicitRole;
+                const refinedRole = refinedMetadataRole(property, explicitRole);
                 resolved.set(key, Object.freeze({ role: refinedRole, confidence: 1, source: 'metadata' as const }));
                 continue;
             }

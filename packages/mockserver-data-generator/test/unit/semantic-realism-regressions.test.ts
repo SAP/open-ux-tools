@@ -1054,4 +1054,345 @@ describe('semantic realism regressions', () => {
             expect(row.ArtistUUID).not.toMatch(/-0{12}$/u);
         });
     });
+
+    it('uses governed SAP transaction and organization codes instead of residual SFT guesses', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'sap-business-code-hostile-sft',
+            generate: jest.fn(async (input) => ({
+                rows: Array.from({ length: input.rowCount }, () =>
+                    Object.fromEntries(input.fields.map(({ name }) => [name, 'RANDOM/AI']))
+                )
+            }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Transaction': {
+                                kind: 'entity',
+                                elements: {
+                                    Customer: { type: 'cds.String', length: 10, key: true, notNull: true },
+                                    SalesItemProposal: {
+                                        type: 'cds.String',
+                                        length: 10,
+                                        key: true,
+                                        notNull: true
+                                    },
+                                    BankAccountHolderName: {
+                                        type: 'cds.String',
+                                        length: 35,
+                                        '@Common.Label': 'Account Holder'
+                                    },
+                                    BankAccountType: {
+                                        type: 'cds.String',
+                                        length: 23,
+                                        '@Common.Label': 'Bank Account Type'
+                                    },
+                                    BankStatement: {
+                                        type: 'cds.String',
+                                        length: 5,
+                                        '@Common.Label': 'Bank Statement No.'
+                                    },
+                                    BankStatementFormat: {
+                                        type: 'cds.String',
+                                        length: 2,
+                                        '@Common.Label': 'Statement Format'
+                                    },
+                                    IncomingPaymentFile: {
+                                        type: 'cds.String',
+                                        length: 14,
+                                        '@Common.Label': 'File ID'
+                                    },
+                                    PaymentTransactionTypeGroup: {
+                                        type: 'cds.String',
+                                        length: 8,
+                                        '@Common.Label': 'Pmnt Tran Type Group'
+                                    },
+                                    SendingBank: {
+                                        type: 'cds.String',
+                                        length: 50,
+                                        '@Common.Label': 'Sending Bank'
+                                    },
+                                    CompanyCode: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Company Code'
+                                    },
+                                    StorageLocation: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Storage Location'
+                                    },
+                                    TechObjIsEquipOrFuncnlLoc: {
+                                        type: 'cds.String',
+                                        length: 20,
+                                        '@Common.Label': 'Tech. Obj. Type'
+                                    },
+                                    UniqueItemIdentifier: {
+                                        type: 'cds.String',
+                                        length: 72,
+                                        '@Common.Label': 'Unique Item ID'
+                                    },
+                                    DistributionChannel: {
+                                        type: 'cds.String',
+                                        length: 2,
+                                        '@Common.Label': 'Distribution Channel'
+                                    },
+                                    SalesOrganization: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Sales Organization'
+                                    },
+                                    SalesOrganizationName: {
+                                        type: 'cds.String',
+                                        length: 20,
+                                        '@Common.Label': 'Sales Organization Description'
+                                    },
+                                    PaymentTerms: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Terms of Payment'
+                                    },
+                                    ResponsibleEmployee: {
+                                        type: 'cds.String',
+                                        length: 10,
+                                        '@Common.Label': 'Employee Responsible'
+                                    },
+                                    ResponsibleServiceOrganization: {
+                                        type: 'cds.String',
+                                        length: 14,
+                                        '@Common.Label': 'OU (Service)'
+                                    },
+                                    ServiceDocument: {
+                                        type: 'cds.String',
+                                        length: 10,
+                                        '@Common.Label': 'Transaction ID'
+                                    },
+                                    ServiceDocumentItem: {
+                                        type: 'cds.String',
+                                        length: 6,
+                                        '@Common.Label': 'Item Number in Doc.'
+                                    },
+                                    ServiceDocumentItemObjectType: {
+                                        type: 'cds.String',
+                                        length: 10,
+                                        '@Common.Label': 'Object Type'
+                                    },
+                                    ServiceDocumentType: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Transaction Type'
+                                    },
+                                    ServiceEmployee: {
+                                        type: 'cds.String',
+                                        length: 10,
+                                        '@Common.Label': 'Exec.Service Emp.'
+                                    },
+                                    ServiceOrganization: {
+                                        type: 'cds.String',
+                                        length: 14,
+                                        '@Common.Label': 'Service Organization'
+                                    },
+                                    ServiceTeam: {
+                                        type: 'cds.String',
+                                        length: 10,
+                                        '@Common.Label': 'Service Team'
+                                    },
+                                    ServiceDocumentItemIsOpen: {
+                                        type: 'cds.String',
+                                        length: 1,
+                                        '@Common.Label': 'Open'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/transactions', odataVersion: '4.0' },
+                targets: [{ name: 'Transaction', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 31 },
+            { sft }
+        );
+
+        result.resources.Transaction?.forEach((row, rowIndex) => {
+            expect(row.Customer).toMatch(/^\d{10}$/u);
+            expect(row.SalesItemProposal).toMatch(/^\d{10}$/u);
+            expect(row.BankAccountHolderName).toMatch(
+                /^(?:Northwind Trading|Alpine Supply|Blue River Industries|Summit Services)$/u
+            );
+            expect(['Operating', 'Payroll', 'Clearing', 'Savings']).toContain(row.BankAccountType);
+            expect(row.BankStatement).toMatch(/^\d{5}$/u);
+            expect(['MT', 'BA', 'CA']).toContain(row.BankStatementFormat);
+            expect(row.IncomingPaymentFile).toMatch(/^PAY\d{8}$/u);
+            expect(['INBOUND', 'OUTBOUND', 'TRANSFER']).toContain(row.PaymentTransactionTypeGroup);
+            expect(['Deutsche Bank', 'JPMorgan Chase', 'Barclays Bank', 'Bank of Ireland']).toContain(row.SendingBank);
+            expect(row.CompanyCode).toMatch(/^\d{4}$/u);
+            expect(row.StorageLocation).toMatch(/^[A-Z0-9]{4}$/u);
+            expect(['Equipment', 'Functional Location']).toContain(row.TechObjIsEquipOrFuncnlLoc);
+            expect(row.UniqueItemIdentifier).toMatch(/^UII-\d{4}-\d{6}$/u);
+            expect(row.DistributionChannel).toMatch(/^\d{2}$/u);
+            expect(row.SalesOrganization).toMatch(/^\d{4}$/u);
+            expect(row.SalesOrganizationName).toMatch(/^(?:Northwind Trading|Alpine Supply|Summit Services)$/u);
+            expect(['0001', '0002', 'Z030', 'Z060']).toContain(row.PaymentTerms);
+            expect(row.ResponsibleEmployee).toMatch(/^\d{10}$/u);
+            expect(row.ResponsibleServiceOrganization).toMatch(/^SORG\d{4}$/u);
+            expect(row.ServiceDocument).toMatch(/^\d{10}$/u);
+            expect(row.ServiceDocumentItem).toBe(String((rowIndex + 1) * 10).padStart(6, '0'));
+            expect(['BUS2000116', 'BUS2000120']).toContain(row.ServiceDocumentItemObjectType);
+            expect(['SRVO', 'SVC1', 'SVO1']).toContain(row.ServiceDocumentType);
+            expect(row.ServiceEmployee).toMatch(/^\d{10}$/u);
+            expect(row.ServiceOrganization).toMatch(/^SORG\d{4}$/u);
+            expect(row.ServiceTeam).toMatch(/^TEAM\d{4}$/u);
+            expect(['', 'X']).toContain(row.ServiceDocumentItemIsOpen);
+        });
+        expect(sft.generate).not.toHaveBeenCalled();
+    });
+
+    it('uses currency minor units and realistic price and duration domains', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Balance': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    Currency: { type: 'cds.String', length: 3, enum: { JPY: {} } },
+                                    OpeningBalanceAmount: { type: 'cds.Decimal', precision: 12, scale: 3 },
+                                    TotalDebitAmount: { type: 'cds.Decimal', precision: 12, scale: 3 },
+                                    TotalCreditAmount: { type: 'cds.Decimal', precision: 12, scale: 3 },
+                                    ClosingBalanceAmount: { type: 'cds.Decimal', precision: 12, scale: 3 },
+                                    PublicationPrice: {
+                                        type: 'cds.Decimal',
+                                        precision: 13,
+                                        '@Common.Label': 'Price',
+                                        '@Measures.ISOCurrency': 'Currency'
+                                    },
+                                    TitleLength: {
+                                        type: 'cds.Decimal',
+                                        precision: 13,
+                                        scale: 2,
+                                        '@Common.Label': 'Title Length',
+                                        '@Measures.Unit': 'TitleLengthUnit'
+                                    },
+                                    TitleLengthUnit: {
+                                        type: 'cds.String',
+                                        length: 3,
+                                        '@Common.Label': 'Title Length Unit'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/balances', odataVersion: '4.0' },
+                targets: [{ name: 'Balance', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 31 }
+        );
+
+        result.resources.Balance?.forEach((row) => {
+            expect(Number.isInteger(row.OpeningBalanceAmount)).toBe(true);
+            expect(Number.isInteger(row.TotalDebitAmount)).toBe(true);
+            expect(Number.isInteger(row.TotalCreditAmount)).toBe(true);
+            expect(Number.isInteger(row.ClosingBalanceAmount)).toBe(true);
+            expect(row.ClosingBalanceAmount).toBe(
+                Number(row.OpeningBalanceAmount) + Number(row.TotalCreditAmount) - Number(row.TotalDebitAmount)
+            );
+            expect(Number(row.PublicationPrice)).toBeGreaterThanOrEqual(5);
+            expect(Number(row.PublicationPrice)).toBeLessThanOrEqual(500);
+            expect(Number(row.TitleLength)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.TitleLength)).toBeLessThanOrEqual(15);
+            expect(['MIN', 'S']).toContain(row.TitleLengthUnit);
+        });
+    });
+
+    it('resolves a SAP WAERS annotation target and applies ISO 4217 minor units', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Invoice': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    WAERS: {
+                                        type: 'cds.String',
+                                        length: 3,
+                                        enum: { JPY: {}, KWD: {}, CLF: {} }
+                                    },
+                                    GrossValue: {
+                                        type: 'cds.Decimal',
+                                        precision: 12,
+                                        scale: 4,
+                                        '@Measures.ISOCurrency': 'WAERS'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/invoices', odataVersion: '4.0' },
+                targets: [{ name: 'Invoice', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 3, seed: 31 }
+        );
+        const allowedDigits = new Map([
+            ['JPY', 0],
+            ['KWD', 3],
+            ['CLF', 4]
+        ]);
+
+        result.resources.Invoice.forEach((row) => {
+            const digits = allowedDigits.get(String(row.WAERS));
+            const scaled = Number(row.GrossValue) * 10 ** Number(digits);
+            expect(Math.abs(scaled - Math.round(scaled))).toBeLessThan(1e-8);
+        });
+    });
+
+    it('keeps a physical LengthUnit in a physical measurement domain', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Dimension': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    Length: {
+                                        type: 'cds.Decimal',
+                                        precision: 8,
+                                        scale: 2,
+                                        '@Measures.Unit': 'LengthUnit'
+                                    },
+                                    LengthUnit: { type: 'cds.String', length: 3, '@Common.Label': 'Length Unit' }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/dimensions', odataVersion: '4.0' },
+                targets: [{ name: 'Dimension', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 4, seed: 31 }
+        );
+
+        result.resources.Dimension.forEach((row) => {
+            expect(['M', 'CM', 'MM', 'KM']).toContain(row.LengthUnit);
+            expect(['MIN', 'S']).not.toContain(row.LengthUnit);
+        });
+    });
 });

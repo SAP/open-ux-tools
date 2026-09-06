@@ -56,6 +56,65 @@ function binaryOrdinal(ordinal: number, maximumLength?: number): string {
     return Buffer.from(hexadecimal.length % 2 === 0 ? hexadecimal : `0${hexadecimal}`, 'hex').toString('base64');
 }
 
+function numericStringKey(length: number, ordinal: number): string {
+    const capacity = 10n ** BigInt(length);
+    const baseline = length === 1 ? 0n : 10n ** BigInt(length - 1);
+    return ((baseline + BigInt(ordinal)) % capacity).toString().padStart(length, '0');
+}
+
+interface GovernedStringKeyDomain {
+    cardinality: number;
+    value: (ordinal: number) => string;
+}
+
+function cappedPower(base: number, exponent: number): number {
+    let result = 1;
+    for (let index = 0; index < exponent && result < 1_001; index += 1) {
+        result = Math.min(1_001, result * base);
+    }
+    return result;
+}
+
+/** Keep governed key formatting and declared capacity on the same domain definition. */
+function governedStringKeyDomain(property: SchemaProperty): GovernedStringKeyDomain | undefined {
+    const words = new Set(
+        property.name
+            .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+            .replace(/[_-]+/g, ' ')
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean)
+    );
+    if (words.has('serial')) {
+        const length = Math.min(property.maxLength ?? 18, 18);
+        if (length === 0) {
+            return { cardinality: 0, value: () => '' };
+        }
+        let prefix = '';
+        if (length >= 3) {
+            prefix = 'SN';
+        } else if (length === 2) {
+            prefix = 'S';
+        }
+        const suffixLength = length - prefix.length;
+        const cardinality = cappedPower(36, suffixLength);
+        return {
+            cardinality,
+            value: (ordinal) =>
+                `${prefix}${(ordinal % cardinality).toString(36).toUpperCase().padStart(suffixLength, '0')}`
+        };
+    }
+    if ([...words].some((word) => ['customer', 'supplier', 'proposal', 'order', 'document'].includes(word))) {
+        const length = Math.min(property.maxLength ?? 10, 10);
+        if (length === 0) {
+            return { cardinality: 0, value: () => '' };
+        }
+        const cardinality = cappedPower(10, length);
+        return { cardinality, value: (ordinal) => numericStringKey(length, ordinal) };
+    }
+    return undefined;
+}
+
 function integerRange(
     property: SchemaProperty,
     preferredMinimum: number,
@@ -109,6 +168,10 @@ function keyValue(property: SchemaProperty, ordinal: number, seed: number, scope
         case 'binary':
             return binaryOrdinal(ordinal, property.maxLength);
         case 'string': {
+            const governed = governedStringKeyDomain(property);
+            if (governed) {
+                return governed.value(ordinal);
+            }
             const seedHex = createHash('sha256').update(`${seed}:${scope}`).digest('hex').slice(0, 16);
             if (property.maxLength === undefined) {
                 return `K${seedHex}${ordinal.toString(36)}`;
@@ -304,7 +367,7 @@ function valueFor(
     if (property.enumValues && property.enumValues.length > 0) {
         return property.enumValues[rowIndex % property.enumValues.length];
     }
-    const governedValue = semanticValue(role, property, rowContext, hash);
+    const governedValue = semanticValue(role, property, rowContext, hash, rowIndex);
     if (governedValue !== undefined && propertyValueIsValid(property, governedValue)) {
         return governedValue;
     }
@@ -365,7 +428,10 @@ function finiteKeyCardinality(property: SchemaProperty): number | undefined {
         if (property.maxLength === 0) {
             return 0;
         }
-        return Math.min(1_001, 36 ** property.maxLength);
+        return governedStringKeyDomain(property)?.cardinality ?? cappedPower(36, property.maxLength);
+    }
+    if (property.primitiveType === 'string') {
+        return governedStringKeyDomain(property)?.cardinality;
     }
     if (property.primitiveType === 'decimal' && property.precision !== undefined) {
         return property.precision >= 4 ? 1_001 : 10 ** property.precision;
@@ -395,7 +461,9 @@ function keyPlan(
                 return left.profile.shared ? -1 : 1;
             }
             return left.profile.shared
-                ? left.profile.scope.localeCompare(right.profile.scope)
+                ? Number(!left.property.name.toLowerCase().includes('serial')) -
+                      Number(!right.property.name.toLowerCase().includes('serial')) ||
+                      left.profile.scope.localeCompare(right.profile.scope)
                 : left.index - right.index;
         });
     const cardinalities = keys.map(({ property, profile }) => ({

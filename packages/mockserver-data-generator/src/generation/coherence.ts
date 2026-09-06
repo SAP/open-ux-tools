@@ -192,6 +192,19 @@ interface BalanceGroup {
     closing: SchemaProperty;
 }
 
+interface MonetaryGroup {
+    currency: SchemaProperty;
+    amounts: ReadonlyArray<SchemaProperty>;
+}
+
+interface ConversionGroup {
+    unit?: SchemaProperty;
+    additive?: SchemaProperty;
+    numerator?: SchemaProperty;
+    denominator?: SchemaProperty;
+    exponent?: SchemaProperty;
+}
+
 function balanceGroup(entity: SchemaEntity): BalanceGroup | undefined {
     const numeric = entity.properties.filter(
         (property) =>
@@ -205,6 +218,79 @@ function balanceGroup(entity: SchemaEntity): BalanceGroup | undefined {
     const credit = find(['credit', 'amount']);
     const closing = find(['closing', 'balance']);
     return opening && debit && credit && closing ? { opening, debit, credit, closing } : undefined;
+}
+
+function monetaryGroups(entity: SchemaEntity): ReadonlyArray<MonetaryGroup> {
+    const stringProperties = entity.properties.filter((property) => property.primitiveType === 'string');
+    const currencies = stringProperties.filter(
+        (property) =>
+            tokens(property.name).some((token) => token === 'currency' || token === 'waers') ||
+            property.dataElement?.toUpperCase() === 'WAERS' ||
+            property.annotations.some(
+                ({ term, value }) =>
+                    term.toLowerCase() === 'sap:semantics' &&
+                    typeof value === 'string' &&
+                    ['currency', 'currency-code', 'iso-currency'].includes(value.toLowerCase())
+            )
+    );
+    const currencyAnnotationTarget = (property: SchemaProperty): SchemaProperty | undefined => {
+        for (const { term, value } of property.annotations) {
+            const normalizedTerm = term.toLowerCase();
+            if (
+                typeof value !== 'string' ||
+                (!normalizedTerm.endsWith('.isocurrency') && normalizedTerm !== 'sap:unit')
+            ) {
+                continue;
+            }
+            const propertyName = value.split('/').at(-1);
+            const target = stringProperties.find(({ name }) => name === propertyName);
+            if (target && (normalizedTerm.endsWith('.isocurrency') || currencies.includes(target))) {
+                return target;
+            }
+        }
+        return undefined;
+    };
+    const amounts = entity.properties.filter((property) => {
+        if (property.primitiveType !== 'decimal' && property.primitiveType !== 'int') {
+            return false;
+        }
+        const nameTokens = tokens(property.name);
+        return (
+            currencyAnnotationTarget(property) !== undefined ||
+            nameTokens.some((token) => ['amount', 'amt', 'balance', 'price'].includes(token))
+        );
+    });
+    const grouped = new Map<string, MonetaryGroup>();
+    for (const amount of amounts) {
+        const annotationCurrency = currencyAnnotationTarget(amount);
+        const contextualCurrency = currencies.find((currency) => {
+            const amountContext = contextualTokens(
+                amount,
+                new Set(['amount', 'amt', 'balance', 'price', 'net', 'gross'])
+            );
+            const currencyContext = contextualTokens(currency, new Set(['currency', 'code']));
+            return [...amountContext].some((token) => currencyContext.has(token));
+        });
+        const currency =
+            annotationCurrency ?? contextualCurrency ?? (currencies.length === 1 ? currencies[0] : undefined);
+        if (currency) {
+            const group = grouped.get(currency.name) ?? { currency, amounts: [] };
+            grouped.set(currency.name, { currency, amounts: [...group.amounts, amount] });
+        }
+    }
+    return [...grouped.values()];
+}
+
+function conversionGroup(entity: SchemaEntity): ConversionGroup | undefined {
+    const properties = propertyMap(entity);
+    const group = {
+        unit: properties.get('unitofmeasure'),
+        additive: properties.get('siunitcnvrsnadditivevalue'),
+        numerator: properties.get('siunitcnvrsnratenumerator'),
+        denominator: properties.get('siunitcnvrsnratedenominator'),
+        exponent: properties.get('siunitcnvrsnrateexponent')
+    };
+    return Object.values(group).filter(Boolean).length >= 3 ? group : undefined;
 }
 
 const LIFECYCLE_SUFFIXES = {
@@ -534,6 +620,119 @@ function reconcileBalance(row: MutableRow, group: BalanceGroup, protectedPropert
     row[group.closing.name] = tuple.closing;
 }
 
+/**
+ * Complete non-two-digit exceptions from the active ISO 4217 List One published by SIX on 2026-01-01.
+ * Codes not listed here use two minor-unit digits. Precious-metal and testing codes have no minor unit.
+ *
+ * @see https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml
+ */
+const ISO_4217_MINOR_UNIT_EXCEPTIONS = new Map<string, number>([
+    ...[
+        'BIF',
+        'CLP',
+        'DJF',
+        'GNF',
+        'ISK',
+        'JPY',
+        'KMF',
+        'KRW',
+        'PYG',
+        'RWF',
+        'UGX',
+        'UYI',
+        'VND',
+        'VUV',
+        'XAF',
+        'XOF',
+        'XPF'
+    ].map((currency) => [currency, 0] as const),
+    ...['BHD', 'IQD', 'JOD', 'KWD', 'LYD', 'OMR', 'TND'].map((currency) => [currency, 3] as const),
+    ...['CLF', 'UYW'].map((currency) => [currency, 4] as const)
+]);
+const ISO_4217_WITHOUT_MINOR_UNIT = new Set([
+    'XAG',
+    'XAU',
+    'XBA',
+    'XBB',
+    'XBC',
+    'XBD',
+    'XDR',
+    'XPD',
+    'XPT',
+    'XSU',
+    'XTS',
+    'XUA',
+    'XXX'
+]);
+
+function currencyFractionDigits(currency: string): number | undefined {
+    return ISO_4217_WITHOUT_MINOR_UNIT.has(currency) ? undefined : (ISO_4217_MINOR_UNIT_EXCEPTIONS.get(currency) ?? 2);
+}
+
+function reconcileMonetaryGroup(
+    rows: ReadonlyArray<MutableRow>,
+    group: MonetaryGroup,
+    protectedProperties: ReadonlySet<string>
+): void {
+    rows.forEach((row) => {
+        const currency = row[group.currency.name];
+        if (typeof currency !== 'string') {
+            return;
+        }
+        const currencyScale = currencyFractionDigits(currency.toUpperCase());
+        if (currencyScale === undefined) {
+            return;
+        }
+        group.amounts.forEach((property) => {
+            if (propertyIsProtected(property, protectedProperties)) {
+                return;
+            }
+            const value = row[property.name];
+            if (typeof value !== 'number') {
+                return;
+            }
+            const propertyScale = property.primitiveType === 'int' ? 0 : (property.scale ?? currencyScale);
+            setIfValid(row, property, Number(value.toFixed(Math.min(currencyScale, propertyScale))));
+        });
+    });
+}
+
+function reconcileConversion(
+    rows: ReadonlyArray<MutableRow>,
+    group: ConversionGroup,
+    protectedProperties: ReadonlySet<string>
+): void {
+    if (
+        groupIsProtected(
+            Object.values(group).filter((property): property is SchemaProperty => Boolean(property)),
+            protectedProperties
+        )
+    ) {
+        return;
+    }
+    rows.forEach((row) => {
+        const factors: Readonly<Record<string, Readonly<{ numerator: number; denominator: number }>>> = {
+            H: { numerator: 3_600, denominator: 1 },
+            MIN: { numerator: 60, denominator: 1 },
+            L: { numerator: 1, denominator: 1_000 }
+        };
+        const unit = group.unit ? row[group.unit.name] : undefined;
+        const factor = typeof unit === 'string' ? factors[unit] : undefined;
+        if (group.additive) {
+            setIfValid(row, group.additive, 0);
+        }
+        if (group.numerator) {
+            setIfValid(row, group.numerator, factor?.numerator ?? 1);
+        }
+        if (group.denominator) {
+            setIfValid(row, group.denominator, factor?.denominator ?? 1);
+        }
+        if (group.exponent) {
+            setIfValid(row, group.exponent, 0);
+        }
+    });
+}
+
 const LIFECYCLE_STATES: ReadonlyArray<Readonly<Record<LifecycleRole, boolean>>> = [
     { available: true, deleted: false, inactive: false, installed: false, warehouse: true, customer: false },
     { available: false, deleted: false, inactive: false, installed: true, warehouse: false, customer: false },
@@ -631,6 +830,11 @@ export function coherencePropertyNames(entity: SchemaEntity): ReadonlySet<string
     if (balance) {
         Object.values(balance).forEach((property) => names.add(property.name));
     }
+    monetaryGroups(entity).forEach(({ amounts }) => amounts.forEach((property) => names.add(property.name)));
+    const conversion = conversionGroup(entity);
+    if (conversion) {
+        Object.values(conversion).forEach((property) => property && names.add(property.name));
+    }
     lifecycleGroups(entity).forEach((group) => Object.values(group).forEach((property) => names.add(property.name)));
     const draft = draftGroup(entity);
     if (draft) {
@@ -662,9 +866,16 @@ export function applySemanticCoherence(
     if (units) {
         reconcileUnits(rows, units, seed, protectedProperties);
     }
+    for (const monetaryGroup of monetaryGroups(entity)) {
+        reconcileMonetaryGroup(rows, monetaryGroup, protectedProperties);
+    }
     const balance = balanceGroup(entity);
     if (balance) {
         rows.forEach((row) => reconcileBalance(row, balance, protectedProperties));
+    }
+    const conversion = conversionGroup(entity);
+    if (conversion) {
+        reconcileConversion(rows, conversion, protectedProperties);
     }
     for (const group of lifecycleGroups(entity)) {
         reconcileLifecycle(rows, group, seed, protectedProperties);

@@ -211,4 +211,79 @@ describe('whole-service constraints', () => {
         expect(keys).toHaveLength(1_000);
         expect(new Set(keys)).toHaveProperty('size', 1_000);
     });
+
+    test.each([
+        [1, 10, 11, true],
+        [2, 100, 101, true],
+        [3, 1_000, 1_000, false]
+    ])(
+        'uses the actual numeric SAP key capacity for a Customer key of length %i',
+        async (length, capacity, requestedRows, isReduced) => {
+            const result = await generateService(
+                {
+                    metadata: {
+                        format: 'csn',
+                        content: JSON.stringify({
+                            definitions: {
+                                'Demo.CustomerRecord': {
+                                    kind: 'entity',
+                                    elements: {
+                                        Customer: { key: true, notNull: true, type: 'cds.String', length },
+                                        value: { type: 'cds.String', length: 20 }
+                                    }
+                                }
+                            }
+                        })
+                    },
+                    service: { urlPath: '/customer-records', odataVersion: '4.0' },
+                    targets: [{ name: 'CustomerRecord', kind: 'entity-set' }],
+                    existingData: {}
+                },
+                { rowsPerEntity: requestedRows, seed: 91 }
+            );
+            const keys = result.resources.CustomerRecord.map(({ Customer }) => String(Customer));
+
+            expect(keys).toHaveLength(capacity);
+            expect(new Set(keys)).toHaveProperty('size', capacity);
+            expect(keys.every((key) => key.length === length && /^\d+$/u.test(key))).toBe(true);
+            const reduction = result.diagnostics.find(
+                ({ code, target }) =>
+                    code === 'ROW_COUNT_REDUCED_UNSATISFIABLE_KEY_DOMAIN' && target === 'CustomerRecord'
+            );
+            expect(Boolean(reduction)).toBe(isReduced);
+        }
+    );
+
+    test.each([1, 2, 3])('keeps a Serial key unique at its governed length-%i boundary', async (length) => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.SerialRecord': {
+                                kind: 'entity',
+                                elements: {
+                                    SerialNumber: { key: true, notNull: true, type: 'cds.String', length }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/serial-records', odataVersion: '4.0' },
+                targets: [{ name: 'SerialRecord', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 37, seed: 91 }
+        );
+        const keys = result.resources.SerialRecord.map(({ SerialNumber }) => String(SerialNumber));
+        const expectedCapacity = 36;
+
+        expect(keys).toHaveLength(expectedCapacity);
+        expect(new Set(keys)).toHaveProperty('size', expectedCapacity);
+        expect(keys.every((key) => key.length === length)).toBe(true);
+        expect(result.diagnostics).toContainEqual(
+            expect.objectContaining({ code: 'ROW_COUNT_REDUCED_UNSATISFIABLE_KEY_DOMAIN', target: 'SerialRecord' })
+        );
+    });
 });

@@ -66,6 +66,9 @@ const ACCOUNT_DESCRIPTIONS = [
     'Clearing Account',
     'Collections Account'
 ] as const;
+const BANK_NAMES = ['Deutsche Bank', 'JPMorgan Chase', 'Barclays Bank', 'Bank of Ireland'] as const;
+const SHORT_ORGANIZATIONS = ['Northwind Trading', 'Alpine Supply', 'Summit Services'] as const;
+const SHORT_DESCRIPTIONS = ['Pump inspection', 'Valve repair', 'Module service', 'Safety check'] as const;
 
 export interface SemanticRowContext {
     firstName: string;
@@ -90,6 +93,18 @@ function repeatedDigits(hash: number, maximumLength = 10): string {
 function repeatedHex(hash: number, maximumLength: number): string {
     const source = hash.toString(16).toUpperCase().padStart(8, '0');
     return source.repeat(Math.ceil(maximumLength / source.length)).slice(0, maximumLength);
+}
+
+function completeString(candidates: ReadonlyArray<string>, maximumLength: number | undefined): string {
+    return (
+        candidates.find((candidate) => maximumLength === undefined || candidate.length <= maximumLength) ??
+        truncate(candidates.at(-1) ?? 'Value', maximumLength)
+    );
+}
+
+function fixedDigits(hash: number, length: number): string {
+    const modulus = 10n ** BigInt(length);
+    return (BigInt(hash) % modulus).toString().padStart(length, '0');
 }
 
 function numericFacetBounds(property: SchemaProperty): Readonly<{ minimum: number; maximum: number; scale: number }> {
@@ -151,7 +166,8 @@ function stringRoleValue(
     role: string,
     property: SchemaProperty,
     context: SemanticRowContext,
-    hash: number
+    hash: number,
+    rowIndex: number
 ): string | undefined {
     switch (role) {
         case 'person_first_name':
@@ -167,9 +183,13 @@ function stringRoleValue(
         case 'equipment_id':
             return `EQ${String(hash % 10_000_000_000).padStart(10, '0')}`;
         case 'numeric_identifier':
-            return repeatedDigits(hash, property.maxLength ?? 10);
+            return repeatedDigits(hash, Math.min(property.maxLength ?? 10, 18));
         case 'business_identifier':
             return `ID${hash.toString(36).toUpperCase().padStart(8, '0')}`;
+        case 'business_network_id':
+            return `AN${fixedDigits(hash, 10)}`;
+        case 'unique_item_identifier':
+            return `UII-${2021 + (hash % 6)}-${fixedDigits(hash, 6)}`;
         case 'guid_text':
             return repeatedHex(hash, property.maxLength ?? 32);
         case 'control_code':
@@ -203,7 +223,7 @@ function stringRoleValue(
         case 'street_address':
             return `${(hash % 180) + 1} Market Street`;
         case 'org_name':
-            return context.organization;
+            return completeString([context.organization, ...SHORT_ORGANIZATIONS, 'Alpine Co.'], property.maxLength);
         case 'product_name':
             return context.product;
         case 'product_category':
@@ -213,7 +233,10 @@ function stringRoleValue(
         case 'notes':
         case 'comment':
         case 'remark':
-            return `${context.product} for ${context.organization}`;
+            return completeString(
+                [SHORT_DESCRIPTIONS[hash % SHORT_DESCRIPTIONS.length], 'Service item', 'Service'],
+                property.maxLength
+            );
         case 'order_status':
             return property.maxLength !== undefined && property.maxLength < 11
                 ? STATUS_CODES[hash % STATUS_CODES.length]
@@ -229,7 +252,9 @@ function stringRoleValue(
         case 'language':
             return ['EN', 'DE', 'FR', 'IT'][hash % 4];
         case 'timezone':
-            return ['Europe/Dublin', 'Europe/Berlin', 'America/New_York', 'Asia/Tokyo'][hash % 4];
+            return property.maxLength !== undefined && property.maxLength <= 6
+                ? ['UTC', 'CET', 'EST', 'JST'][hash % 4]
+                : ['Europe/Dublin', 'Europe/Berlin', 'America/New_York', 'Asia/Tokyo'][hash % 4];
         case 'ethnicity':
             return ETHNICITIES[hash % ETHNICITIES.length];
         case 'temperature_unit':
@@ -240,6 +265,58 @@ function stringRoleValue(
             return `DE${String((hash % 90) + 10)}37040044${String(hash).padStart(10, '0').slice(-10)}`;
         case 'bic':
             return ['DEUTDEFF', 'BOFIIE2D', 'CHASUS33', 'BARCGB22'][hash % 4];
+        case 'bank_account_type':
+            return ['Operating', 'Payroll', 'Clearing', 'Savings'][hash % 4];
+        case 'bank_statement_id':
+            return fixedDigits(hash, Math.min(property.maxLength ?? 5, 5));
+        case 'bank_statement_format':
+            return ['MT', 'BA', 'CA'][hash % 3];
+        case 'payment_file_id':
+            return `PAY${fixedDigits(hash, 8)}`;
+        case 'payment_transaction_group':
+            return ['INBOUND', 'OUTBOUND', 'TRANSFER'][hash % 3];
+        case 'bank_name':
+            return BANK_NAMES[hash % BANK_NAMES.length];
+        case 'company_code':
+            return ['1000', '1010', '1710', '3000'][hash % 4];
+        case 'storage_location':
+            return ['0001', '0002', 'A001', 'B001'][hash % 4];
+        case 'technical_object_type':
+            return ['Equipment', 'Functional Location'][hash % 2];
+        case 'distribution_channel':
+            return ['10', '20', '30'][hash % 3];
+        case 'sales_organization':
+            return ['1000', '1010', '1710', '3000'][hash % 4];
+        case 'payment_terms':
+            return ['0001', '0002', 'Z030', 'Z060'][hash % 4];
+        case 'employee_id':
+            return fixedDigits(hash, Math.min(property.maxLength ?? 10, 10));
+        case 'service_organization':
+            return `SORG${fixedDigits(hash, 4)}`;
+        case 'service_team':
+            return `TEAM${fixedDigits(hash, 4)}`;
+        case 'document_id':
+            return fixedDigits(hash, Math.min(property.maxLength ?? 10, 10));
+        case 'document_item':
+            return String((rowIndex + 1) * 10).padStart(Math.min(property.maxLength ?? 6, 6), '0');
+        case 'object_type':
+            return ['BUS2000116', 'BUS2000120'][hash % 2];
+        case 'service_document_type':
+            return ['SRVO', 'SVC1', 'SVO1'][hash % 3];
+        case 'sales_document_type':
+            return ['OR', 'QT', 'SIP'][hash % 3];
+        case 'publication_type':
+            return ['MAG', 'JRN', 'BOK'][hash % 3];
+        case 'genre':
+            return ['POP', 'ROC', 'JAZ', 'CLS'][hash % 4];
+        case 'duration_unit':
+            return ['MIN', 'S'][hash % 2];
+        case 'length_unit':
+            return ['M', 'CM', 'MM', 'KM'][hash % 4];
+        case 'congressional_district':
+            return ['CA-12', 'NY-10', 'TX-07', 'IL-05'][hash % 4];
+        case 'credit_rating':
+            return ['AAA', 'AA', 'A', 'BBB'][hash % 4];
         default:
             return undefined;
     }
@@ -257,12 +334,13 @@ export function semanticValue(
     role: string | undefined,
     property: SchemaProperty,
     context: SemanticRowContext,
-    hash: number
+    hash: number,
+    rowIndex = 0
 ): JsonValue | undefined {
     if (!role) {
         return undefined;
     }
-    const stringValue = stringRoleValue(role, property, context, hash);
+    const stringValue = stringRoleValue(role, property, context, hash, rowIndex);
     if (stringValue !== undefined && property.primitiveType === 'string') {
         return truncate(stringValue, property.maxLength);
     }
@@ -296,12 +374,16 @@ export function semanticValue(
             return boundedNumericValue(property, hash, 100, 9_099.99);
         case 'price':
             return boundedNumericValue(property, hash, 5, 500);
+        case 'duration':
+            return boundedNumericValue(property, hash, 1, 15);
         case 'quantity':
             return boundedNumericValue(property, hash, 1, 90.99);
         case 'percentage':
             return boundedNumericValue(property, hash, 0, 100);
         case 'interest_rate':
             return boundedNumericValue(property, hash, 0, 20);
+        case 'risk_class':
+            return boundedNumericValue(property, hash, 1, 5);
         case 'temperature':
             return boundedNumericValue(property, hash, -30, 50);
         case 'pressure':
