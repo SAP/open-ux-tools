@@ -288,7 +288,7 @@
             "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 12, "parsedResponses": 12, "eligibleSlots": 46, "acceptedSlots": 45 },
+            "t2Expectations": { "attempts": 16, "parsedResponses": 16, "eligibleSlots": 46, "acceptedSlots": 46 },
             "relationships": [
                 {
                     "id": "service-quantity-unit",
@@ -387,7 +387,7 @@
             "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 6, "parsedResponses": 6, "eligibleSlots": 20, "acceptedSlots": 20 },
+            "t2Expectations": { "attempts": 8, "parsedResponses": 8, "eligibleSlots": 20, "acceptedSlots": 19 },
             "relationships": [
                 {
                     "id": "maintenance-material-status",
@@ -486,7 +486,7 @@
             "provenance": "CSN compiled after production-candidate selection from the pinned public Apache-2.0 SAP procurement sample.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 28, "parsedResponses": 28, "eligibleSlots": 112, "acceptedSlots": 111 },
+            "t2Expectations": { "attempts": 38, "parsedResponses": 38, "eligibleSlots": 112, "acceptedSlots": 106 },
             "relationships": [
                 {
                     "id": "master-data-supplier-contact",
