@@ -16,6 +16,7 @@ import { coherencePropertyNames } from './coherence.js';
 import { propertyValueIsValid } from './constraints.js';
 
 const SFT_PRIMITIVE_TYPES = new Set<SchemaProperty['primitiveType']>(['string', 'int', 'decimal']);
+const MAX_SFT_STRING_LENGTH = 80;
 
 export interface SftRunResult {
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
@@ -87,12 +88,16 @@ function residualFields(
             )
             .map((property) => {
                 const classification = classifications.get(semanticPropertyKey(entity.entitySetName, property.name));
+                const maxLength =
+                    property.primitiveType === 'string'
+                        ? Math.min(property.maxLength ?? MAX_SFT_STRING_LENGTH, MAX_SFT_STRING_LENGTH)
+                        : property.maxLength;
                 return Object.freeze({
                     name: property.name,
                     primitiveType: property.primitiveType,
                     ...(classification ? { semanticRole: classification.role } : {}),
                     nullable: property.nullable,
-                    ...(property.maxLength === undefined ? {} : { maxLength: property.maxLength })
+                    ...(maxLength === undefined ? {} : { maxLength })
                 });
             })
     );

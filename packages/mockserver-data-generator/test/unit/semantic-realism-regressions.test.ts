@@ -80,13 +80,14 @@ describe('semantic realism regressions', () => {
         );
     });
 
-    it('keeps machine-structured primitive values out of the SFT request', async () => {
+    it('routes only bounded language and numeric values to the SFT request', async () => {
         const sft: SftGenerator = {
             fingerprint: 'structured-primitive-hostile-sft',
             generate: jest.fn(async () => ({
                 rows: [
                     {
                         OpaqueText: 'Quarterly demand forecast',
+                        OpaqueUnbounded: 'Preventive maintenance planning',
                         OpaqueInteger: 23,
                         OpaqueDecimal: 42.5
                     }
@@ -131,7 +132,14 @@ describe('semantic realism regressions', () => {
                             primitiveType: 'string',
                             nullable: true,
                             isKey: false,
-                            maxLength: 80,
+                            maxLength: 255,
+                            annotations: []
+                        },
+                        {
+                            name: 'OpaqueUnbounded',
+                            primitiveType: 'string',
+                            nullable: true,
+                            isKey: false,
                             annotations: []
                         },
                         { name: 'OpaqueInteger', primitiveType: 'int', nullable: true, isKey: false, annotations: [] },
@@ -162,6 +170,7 @@ describe('semantic realism regressions', () => {
                         OpaqueBinary: 'bW9ja2dlbg==',
                         OpaqueFlag: true,
                         OpaqueText: 'Opaque Text 1',
+                        OpaqueUnbounded: 'Opaque Unbounded 1',
                         OpaqueInteger: 1,
                         OpaqueDecimal: 1.5
                     }
@@ -177,7 +186,8 @@ describe('semantic realism regressions', () => {
         expect(sft.generate).toHaveBeenCalledWith(
             expect.objectContaining({
                 fields: [
-                    expect.objectContaining({ name: 'OpaqueText', primitiveType: 'string' }),
+                    expect.objectContaining({ name: 'OpaqueText', primitiveType: 'string', maxLength: 80 }),
+                    expect.objectContaining({ name: 'OpaqueUnbounded', primitiveType: 'string', maxLength: 80 }),
                     expect.objectContaining({ name: 'OpaqueInteger', primitiveType: 'int' }),
                     expect.objectContaining({ name: 'OpaqueDecimal', primitiveType: 'decimal' })
                 ]
