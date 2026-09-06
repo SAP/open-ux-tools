@@ -1714,6 +1714,9 @@ describe('semantic realism regressions', () => {
                                     DEConfidence: { type: 'cds.String', length: 10 },
                                     DECertifiedEthnicity: { type: 'cds.String', length: 50 },
                                     DECongressionalDistrict: { type: 'cds.String', length: 50 },
+                                    DECity: { type: 'cds.String', length: 50 },
+                                    DEState: { type: 'cds.String', length: 50 },
+                                    DECountry: { type: 'cds.String', length: 50 },
                                     DECSSClass: { type: 'cds.Double' }
                                 }
                             }
@@ -1737,7 +1740,12 @@ describe('semantic realism regressions', () => {
             expect(['Asian', 'Black', 'Hispanic or Latino', 'Indigenous', 'Not Specified']).toContain(
                 row.DECertifiedEthnicity
             );
-            expect(row.DECongressionalDistrict).toMatch(/^District \d{1,2}$/u);
+            expect([
+                ['San Francisco', 'CA', 'US', 'CA-11'],
+                ['Austin', 'TX', 'US', 'TX-35'],
+                ['New York', 'NY', 'US', 'NY-12'],
+                ['Chicago', 'IL', 'US', 'IL-05']
+            ]).toContainEqual([row.DECity, row.DEState, row.DECountry, row.DECongressionalDistrict]);
             expect(Number.isInteger(row.DECSSClass)).toBe(true);
             expect(Number(row.DECSSClass)).toBeGreaterThanOrEqual(1);
             expect(Number(row.DECSSClass)).toBeLessThanOrEqual(5);

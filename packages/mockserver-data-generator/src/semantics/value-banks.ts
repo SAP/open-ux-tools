@@ -45,6 +45,40 @@ const LOCATIONS = [
         mobilePrefix: '+420 60'
     }
 ] as const;
+const DATA_ENRICHMENT_LOCATIONS = [
+    {
+        city: 'San Francisco',
+        country: 'US',
+        district: 'CA-11',
+        postalCode: '94105',
+        region: 'CA',
+        streetAddress: '135 Market Street'
+    },
+    {
+        city: 'Austin',
+        country: 'US',
+        district: 'TX-35',
+        postalCode: '78701',
+        region: 'TX',
+        streetAddress: '210 Congress Avenue'
+    },
+    {
+        city: 'New York',
+        country: 'US',
+        district: 'NY-12',
+        postalCode: '10017',
+        region: 'NY',
+        streetAddress: '350 Madison Avenue'
+    },
+    {
+        city: 'Chicago',
+        country: 'US',
+        district: 'IL-05',
+        postalCode: '60606',
+        region: 'IL',
+        streetAddress: '200 West Adams Street'
+    }
+] as const;
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'CHF'] as const;
 const UNITS = ['EA', 'KG', 'L', 'H', 'PC'] as const;
 const UNIT_ISO_CODES: Readonly<Record<(typeof UNITS)[number], string>> = {
@@ -249,6 +283,16 @@ function stringRoleValue(
             return context.location.postalCode;
         case 'street_address':
             return `${(hash % 180) + 1} Market Street`;
+        case 'data_enrichment_city':
+            return DATA_ENRICHMENT_LOCATIONS[rowIndex % DATA_ENRICHMENT_LOCATIONS.length].city;
+        case 'data_enrichment_country':
+            return DATA_ENRICHMENT_LOCATIONS[rowIndex % DATA_ENRICHMENT_LOCATIONS.length].country;
+        case 'data_enrichment_postal_code':
+            return DATA_ENRICHMENT_LOCATIONS[rowIndex % DATA_ENRICHMENT_LOCATIONS.length].postalCode;
+        case 'data_enrichment_region':
+            return DATA_ENRICHMENT_LOCATIONS[rowIndex % DATA_ENRICHMENT_LOCATIONS.length].region;
+        case 'data_enrichment_street_address':
+            return DATA_ENRICHMENT_LOCATIONS[rowIndex % DATA_ENRICHMENT_LOCATIONS.length].streetAddress;
         case 'org_name':
             return completeString([context.organization, ...SHORT_ORGANIZATIONS, 'Alpine Co.'], property.maxLength);
         case 'product_name':
@@ -361,7 +405,7 @@ function stringRoleValue(
         case 'length_unit':
             return ['M', 'CM', 'MM', 'KM'][hash % 4];
         case 'congressional_district':
-            return `District ${(hash % 50) + 1}`;
+            return DATA_ENRICHMENT_LOCATIONS[rowIndex % DATA_ENRICHMENT_LOCATIONS.length].district;
         case 'credit_rating':
             return ['AAA', 'AA', 'A', 'BBB'][hash % 4];
         default:

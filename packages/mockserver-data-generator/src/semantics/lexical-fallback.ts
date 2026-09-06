@@ -578,6 +578,30 @@ function lexicalRole(property: SchemaProperty): string | undefined {
     return roles.size === 1 ? roles.values().next().value : undefined;
 }
 
+function dataEnrichmentRole(entity: SchemaGraph['entities'][number], property: SchemaProperty): string | undefined {
+    const names = entity.properties.map(({ name }) => name.toLowerCase());
+    const hasDataEnrichmentFields =
+        names.includes('deconfidence') &&
+        names.some((name) => name.startsWith('decertified') || name === 'decongressionaldistrict');
+    if (!hasDataEnrichmentFields) {
+        return undefined;
+    }
+    switch (property.name.toLowerCase()) {
+        case 'decity':
+            return 'data_enrichment_city';
+        case 'decountry':
+            return 'data_enrichment_country';
+        case 'depostalcode':
+            return 'data_enrichment_postal_code';
+        case 'destate':
+            return 'data_enrichment_region';
+        case 'destreetaddress':
+            return 'data_enrichment_street_address';
+        default:
+            return undefined;
+    }
+}
+
 function preferredLexicalRole(property: SchemaProperty): string | undefined {
     for (const evidence of [property.label, property.description, property.name]) {
         if (evidence) {
@@ -678,7 +702,7 @@ export function resolveSemanticClassifications(
         for (const property of entity.properties) {
             const key = semanticPropertyKey(entity.entitySetName, property.name);
             const explicitRole = explicitMetadataRole(property);
-            const role = lexicalRole(property);
+            const role = dataEnrichmentRole(entity, property) ?? lexicalRole(property);
             const classification = learned.get(key);
             if (explicitRole) {
                 const refinedRole = refinedMetadataRole(property, explicitRole);
