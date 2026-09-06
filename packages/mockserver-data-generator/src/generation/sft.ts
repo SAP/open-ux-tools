@@ -15,6 +15,8 @@ import type {
 import { coherencePropertyNames } from './coherence.js';
 import { propertyValueIsValid } from './constraints.js';
 
+const SFT_PRIMITIVE_TYPES = new Set<SchemaProperty['primitiveType']>(['string', 'int', 'decimal']);
+
 export interface SftRunResult {
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
     diagnostics: ReadonlyArray<MockDataGeneratorDiagnostic>;
@@ -78,6 +80,7 @@ function residualFields(
             .filter(
                 (property) =>
                     !property.isKey &&
+                    SFT_PRIMITIVE_TYPES.has(property.primitiveType) &&
                     !(property.primitiveType === 'string' && property.maxLength === 0) &&
                     !structuralProperties.has(property.name) &&
                     isResidual(classifications.get(semanticPropertyKey(entity.entitySetName, property.name)))

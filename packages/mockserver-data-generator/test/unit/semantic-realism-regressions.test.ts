@@ -1,4 +1,6 @@
 import { generateService, type SftGenerator } from '../../src/index.js';
+import { applySftGeneration } from '../../src/generation/sft.js';
+import type { SchemaGraph } from '../../src/schema/graph.js';
 
 describe('semantic realism regressions', () => {
     it('routes audit principals to governed user identifiers before SFT', async () => {
@@ -74,6 +76,112 @@ describe('semantic realism regressions', () => {
         expect(typeof result.resources.Record?.[0]?.[activationProperty]).toBe('boolean');
         expect(sft.generate).toHaveBeenCalledWith(
             expect.objectContaining({ fields: [expect.objectContaining({ name: 'OpaqueText' })] }),
+            expect.any(AbortSignal)
+        );
+    });
+
+    it('keeps machine-structured primitive values out of the SFT request', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'structured-primitive-hostile-sft',
+            generate: jest.fn(async () => ({
+                rows: [
+                    {
+                        OpaqueText: 'Quarterly demand forecast',
+                        OpaqueInteger: 23,
+                        OpaqueDecimal: 42.5
+                    }
+                ]
+            }))
+        };
+        const graph = {
+            namespace: 'Demo',
+            entities: [
+                {
+                    name: 'Record',
+                    entitySetName: 'Record',
+                    properties: [
+                        { name: 'ID', primitiveType: 'int', nullable: false, isKey: true, annotations: [] },
+                        { name: 'OpaqueGuid', primitiveType: 'guid', nullable: true, isKey: false, annotations: [] },
+                        { name: 'OpaqueDate', primitiveType: 'date', nullable: true, isKey: false, annotations: [] },
+                        {
+                            name: 'OpaqueDateTime',
+                            primitiveType: 'datetime',
+                            nullable: true,
+                            isKey: false,
+                            annotations: []
+                        },
+                        {
+                            name: 'OpaqueTimestamp',
+                            primitiveType: 'datetimeoffset',
+                            nullable: true,
+                            isKey: false,
+                            annotations: []
+                        },
+                        { name: 'OpaqueTime', primitiveType: 'time', nullable: true, isKey: false, annotations: [] },
+                        {
+                            name: 'OpaqueBinary',
+                            primitiveType: 'binary',
+                            nullable: true,
+                            isKey: false,
+                            annotations: []
+                        },
+                        { name: 'OpaqueFlag', primitiveType: 'bool', nullable: true, isKey: false, annotations: [] },
+                        {
+                            name: 'OpaqueText',
+                            primitiveType: 'string',
+                            nullable: true,
+                            isKey: false,
+                            maxLength: 80,
+                            annotations: []
+                        },
+                        { name: 'OpaqueInteger', primitiveType: 'int', nullable: true, isKey: false, annotations: [] },
+                        {
+                            name: 'OpaqueDecimal',
+                            primitiveType: 'decimal',
+                            nullable: true,
+                            isKey: false,
+                            annotations: []
+                        }
+                    ]
+                }
+            ],
+            relationships: []
+        } as const satisfies SchemaGraph;
+
+        await applySftGeneration(
+            graph,
+            {
+                Record: [
+                    {
+                        ID: 1,
+                        OpaqueGuid: '142a6df8-6649-4aab-8ef3-773daec61ecf',
+                        OpaqueDate: '2026-09-04',
+                        OpaqueDateTime: '2026-09-04T12:00:00',
+                        OpaqueTimestamp: '2026-09-04T12:00:00Z',
+                        OpaqueTime: '12:00:00',
+                        OpaqueBinary: 'bW9ja2dlbg==',
+                        OpaqueFlag: true,
+                        OpaqueText: 'Opaque Text 1',
+                        OpaqueInteger: 1,
+                        OpaqueDecimal: 1.5
+                    }
+                ]
+            },
+            { urlPath: '/records', odataVersion: '4.0' },
+            { seed: 31 },
+            new Map(),
+            sft,
+            new AbortController().signal
+        );
+
+        expect(sft.generate).toHaveBeenCalledWith(
+            expect.objectContaining({
+                fields: [
+                    expect.objectContaining({ name: 'OpaqueText', primitiveType: 'string' }),
+                    expect.objectContaining({ name: 'OpaqueInteger', primitiveType: 'int' }),
+                    expect.objectContaining({ name: 'OpaqueDecimal', primitiveType: 'decimal' })
+                ]
+            }),
             expect.any(AbortSignal)
         );
     });
