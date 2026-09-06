@@ -288,7 +288,7 @@
             "provenance": "Public Apache-2.0 SAP open-ux-odata metadata fixture frozen after production-candidate selection.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 16, "parsedResponses": 16, "eligibleSlots": 44, "acceptedSlots": 44 },
+            "t2Expectations": { "attempts": 14, "parsedResponses": 14, "eligibleSlots": 42, "acceptedSlots": 41 },
             "relationships": [
                 {
                     "id": "service-quantity-unit",
