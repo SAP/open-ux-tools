@@ -15,8 +15,13 @@ symbol-only, non-enum string candidates were rejected before deterministic
 fallback. Its 435/462 accepted-slot preflight is retained as a failed gate.
 `final-cohort-v6.json` strengthens constrained decoding so every generated
 non-enum string contains a letter or number, while retaining post-generation
-validation as defense-in-depth. Generated rows, model outputs, and human or LLM
-reviews must remain outside the repository.
+validation as defense-in-depth. `final-cohort-v7.json` keeps the six services,
+field selection, metadata, and assertions unchanged while refreezing routing
+after relationship-aware key generation, corrected lifecycle and draft-state
+checks, machine-structured values were removed from SFT, and SFT strings were
+bounded to 80 characters. Its preflight records 86/86 parsed responses and
+307/312 accepted slots. Generated rows, model outputs, and human or LLM reviews
+must remain outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
@@ -36,6 +41,6 @@ inputs and recomputes the service/source-family isolation contract before model
 inference. Each manifest also freezes every service's raw T2 completion
 attempts, parsed responses, eligible slots, and accepted slots. A replay fails
 before publication when any of those denominators or contributions drift. The
-v2 through v6 routing baselines were each frozen before their corresponding
+v2 through v7 routing baselines were each frozen before their corresponding
 preflight or export. The failed v5 baseline was not exported for judging, and
 none is a relaxation of the parse, fill, or structural thresholds.

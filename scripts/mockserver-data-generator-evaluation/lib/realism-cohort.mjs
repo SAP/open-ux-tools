@@ -307,7 +307,8 @@ function lifecycleStatusIsCoherent(row, properties) {
         return false;
     }
     return (
-        available === !(deleted || inactive) &&
+        available === warehouse &&
+        !(available && installed) &&
         !(installed && warehouse) &&
         !(customer && !installed) &&
         !((deleted || inactive) && (installed || warehouse || customer))
@@ -348,7 +349,7 @@ function draftIsCoherent(row, properties) {
         typeof hasActive === 'boolean' &&
         typeof isActive === 'boolean' &&
         hasActive === !isActive &&
-        hasDraft === isActive &&
+        hasDraft === false &&
         (isActive ? activeUuid === null : typeof activeUuid === 'string')
     );
 }

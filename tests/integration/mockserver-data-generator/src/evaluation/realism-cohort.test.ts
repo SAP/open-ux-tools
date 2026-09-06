@@ -393,13 +393,25 @@ describe('production realism cohort', () => {
                     HasDraftEntity: false,
                     HasActiveEntity: true,
                     IsActiveEntity: false,
-                    ActiveUUID: '00000000-0000-4000-a000-000000000001',
+                    ActiveUUID: '00000000-0000-4000-a000-000000000001' as string | null,
                     UnitOfMeasure: 'KG',
                     UnitOfMeasure_Text: 'Kilogram',
                     UnitOfMeasureISOCode: 'KG'
                 }
             ]
         };
+        resources.Items.push({
+            ...resources.Items[0],
+            ItemIsAvailable: false,
+            ItemIsInstalled: true,
+            ItemIsInWarehouse: false
+        });
+        resources.Items.push({
+            ...resources.Items[0],
+            HasActiveEntity: false,
+            IsActiveEntity: true,
+            ActiveUUID: null
+        });
 
         expect(evaluateCohortTarget(target, graph, [{ name: 'Items' }], resources)).toMatchObject({
             passed: true,
