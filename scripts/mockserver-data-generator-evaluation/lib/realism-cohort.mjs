@@ -48,6 +48,18 @@ const UNIT_TEXT = new Map([
     ['D', 'Day'],
     ['WK', 'Week']
 ]);
+const UNIT_ISO_CODE = new Map([
+    ['EA', 'EA'],
+    ['KG', 'KGM'],
+    ['L', 'LTR'],
+    ['H', 'HUR'],
+    ['PC', 'PCE'],
+    ['M', 'MTR'],
+    ['S', 'SEC'],
+    ['MIN', 'MIN'],
+    ['D', 'DAY'],
+    ['WK', 'WEE']
+]);
 const COUNTRY_BY_CITY = new Map([
     ['Berlin', 'DE'],
     ['Dublin', 'IE'],
@@ -358,7 +370,7 @@ function valueHelpIsCoherent(row, properties) {
     const code = rowValue(row, properties, (name) => name === 'unitofmeasure');
     const text = rowValue(row, properties, (name) => name === 'unitofmeasuretext');
     const iso = rowValue(row, properties, (name) => name === 'unitofmeasureisocode');
-    return typeof code === 'string' && UNIT_TEXT.get(code) === text && iso === code;
+    return typeof code === 'string' && UNIT_TEXT.get(code) === text && UNIT_ISO_CODE.get(code) === iso;
 }
 
 function assertionIsCoherent(assertion, row) {

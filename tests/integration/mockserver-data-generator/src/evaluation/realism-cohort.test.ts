@@ -396,7 +396,7 @@ describe('production realism cohort', () => {
                     ActiveUUID: '00000000-0000-4000-a000-000000000001' as string | null,
                     UnitOfMeasure: 'KG',
                     UnitOfMeasure_Text: 'Kilogram',
-                    UnitOfMeasureISOCode: 'KG'
+                    UnitOfMeasureISOCode: 'KGM'
                 }
             ]
         };
