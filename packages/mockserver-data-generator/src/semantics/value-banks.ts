@@ -312,6 +312,12 @@ function stringRoleValue(
             );
         case 'sales_item_proposal_description':
             return completeString([`${context.product} proposal`, 'Product proposal', 'Proposal'], property.maxLength);
+        case 'approval_status':
+            return ['Approved', 'Pending', 'Rejected', 'Under Review'][hash % 4];
+        case 'data_enrichment_business_status':
+            return ['Active', 'Inactive', 'Out of Business', 'Unknown'][hash % 4];
+        case 'data_enrichment_ethnicity':
+            return ['Not Specified', 'Not Disclosed'][rowIndex % 2];
         case 'order_status':
             return property.maxLength !== undefined && property.maxLength < 11
                 ? STATUS_CODES[hash % STATUS_CODES.length]

@@ -43,6 +43,7 @@ const SAP_SEMANTIC_ROLES = new Map<string, string>([
 
 const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'account_description',
+    'approval_status',
     'bank_account_type',
     'bank_account_internal_id',
     'bank_name',
@@ -511,6 +512,9 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
         return last ?? 'notes';
     }
     if (has(words, 'status')) {
+        if (has(words, 'approval')) {
+            return 'approval_status';
+        }
         if (primitiveType === 'string' && has(words, 'error') && text.toLowerCase().includes('has')) {
             return 'indicator';
         }
@@ -587,6 +591,11 @@ function dataEnrichmentRole(entity: SchemaGraph['entities'][number], property: S
         return undefined;
     }
     switch (property.name.toLowerCase()) {
+        case 'debusinessstatus':
+            return 'data_enrichment_business_status';
+        case 'decertifiedethnicity':
+        case 'dediversityethnicity':
+            return 'data_enrichment_ethnicity';
         case 'decity':
             return 'data_enrichment_city';
         case 'decountry':

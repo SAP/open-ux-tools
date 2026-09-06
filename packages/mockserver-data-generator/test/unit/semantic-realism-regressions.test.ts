@@ -1711,7 +1711,9 @@ describe('semantic realism regressions', () => {
                                     ID: { type: 'cds.Integer', key: true, notNull: true },
                                     Alias1: { type: 'cds.String', length: 512 },
                                     Alias2: { type: 'cds.String', length: 512 },
+                                    ApprovalStatus: { type: 'cds.String', length: 25 },
                                     DEConfidence: { type: 'cds.String', length: 10 },
+                                    DEBusinessStatus: { type: 'cds.String', length: 100 },
                                     DECertifiedEthnicity: { type: 'cds.String', length: 50 },
                                     DECongressionalDistrict: { type: 'cds.String', length: 50 },
                                     DECity: { type: 'cds.String', length: 50 },
@@ -1736,10 +1738,10 @@ describe('semantic realism regressions', () => {
         rows.forEach((row) => {
             expect(String(row.Alias1).length).toBeGreaterThan(2);
             expect(String(row.Alias2).length).toBeGreaterThan(2);
+            expect(['Approved', 'Pending', 'Rejected', 'Under Review']).toContain(row.ApprovalStatus);
             expect(['High', 'Medium', 'Low']).toContain(row.DEConfidence);
-            expect(['Asian', 'Black', 'Hispanic or Latino', 'Indigenous', 'Not Specified']).toContain(
-                row.DECertifiedEthnicity
-            );
+            expect(['Active', 'Inactive', 'Out of Business', 'Unknown']).toContain(row.DEBusinessStatus);
+            expect(['Not Specified', 'Not Disclosed']).toContain(row.DECertifiedEthnicity);
             expect([
                 ['San Francisco', 'CA', 'US', 'CA-11'],
                 ['Austin', 'TX', 'US', 'TX-35'],
