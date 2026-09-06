@@ -486,7 +486,7 @@
             "provenance": "CSN compiled after production-candidate selection from the pinned public Apache-2.0 SAP procurement sample.",
             "fieldBudget": 50,
             "expectedEmptyResources": [],
-            "t2Expectations": { "attempts": 36, "parsedResponses": 36, "eligibleSlots": 106, "acceptedSlots": 100 },
+            "t2Expectations": { "attempts": 36, "parsedResponses": 36, "eligibleSlots": 106, "acceptedSlots": 106 },
             "relationships": [
                 {
                     "id": "master-data-supplier-contact",
