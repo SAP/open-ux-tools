@@ -144,7 +144,7 @@ describe('pilot-compatible SFT runtime', () => {
         ]);
     });
 
-    test('uses conservative default chunks for ordinary entities', async () => {
+    test('uses three-field chunks for reliable ordinary-entity JSON generation', async () => {
         const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
             JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
         );
@@ -167,7 +167,7 @@ describe('pilot-compatible SFT runtime', () => {
 
         await generator.generate({ ...input, fields, rowCount: 1 }, new AbortController().signal);
 
-        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([4, 4, 4, 1]);
+        expect(generate.mock.calls.map(([request]) => request.grammar.length)).toEqual([3, 3, 3, 3, 1]);
     });
 
     test('uses eight-field chunks for entities with at least one hundred residual fields', async () => {

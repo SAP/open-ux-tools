@@ -228,7 +228,7 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
         fingerprint: options.fingerprint,
         generate: async (input: SftGenerationInput, signal: AbortSignal) => {
             const context = abortContext(signal, budgetMs);
-            const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? (input.fields.length >= 100 ? 8 : 4);
+            const maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? (input.fields.length >= 100 ? 8 : 3);
             const fieldChunks = chunkFields(input.fields, maxFieldsPerPrompt);
             const rows: Array<Record<string, JsonValue>> = Array.from({ length: input.rowCount }, () => ({}));
             let attempts = 0;

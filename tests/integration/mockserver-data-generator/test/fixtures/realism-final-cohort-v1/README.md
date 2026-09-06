@@ -20,8 +20,11 @@ field selection, metadata, and assertions unchanged while refreezing routing
 after relationship-aware key generation, corrected lifecycle and draft-state
 checks, machine-structured values were removed from SFT, and SFT strings were
 bounded to 80 characters. Its preflight records 86/86 parsed responses and
-307/312 accepted slots. Generated rows, model outputs, and human or LLM reviews
-must remain outside the repository.
+307/312 accepted slots. `final-cohort-v8.json` refreezes T2 routing after the
+remaining governed business-code roles were restored. `final-cohort-v9.json`
+clarifies the exact bank-balance equation, adds governed bank-statement fields,
+and records the narrower, fully accepted SFT route. Generated rows, model
+outputs, and human or LLM reviews must remain outside the repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
