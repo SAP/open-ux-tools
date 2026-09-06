@@ -29,8 +29,10 @@ refreezes that route after service and supplier semantics were governed.
 relationships, and fully accepted route while binding evaluation to the sales,
 maintenance, and finance semantic corrections. `final-cohort-v12.json` retains
 that route after correcting the coherent SAP ISO unit codes and Czech mobile
-number length. Generated rows, model outputs, and human or LLM reviews must
-remain outside the repository.
+number length. `final-cohort-v13.json` retains the route after making SAP Ariba
+supplier data-enrichment locations and US congressional districts row-coherent.
+Generated rows, model outputs, and human or LLM reviews must remain outside the
+repository.
 
 The manifest records the exact source repository, commit, repository path, Git
 blob, byte count, and SHA-256 for every schema. The six inputs come from these
