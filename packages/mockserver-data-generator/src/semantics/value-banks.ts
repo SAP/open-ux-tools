@@ -12,7 +12,9 @@ const LOCATIONS = [
         regionName: 'Berlin',
         postalCode: '10115',
         phonePrefix: '+49 30',
-        mobilePrefix: '+49 151'
+        phoneSubscriberDigits: 7,
+        mobilePrefix: '+49 151',
+        mobileSubscriberDigits: 8
     },
     {
         city: 'Dublin',
@@ -22,7 +24,9 @@ const LOCATIONS = [
         regionName: 'Leinster',
         postalCode: 'D02',
         phonePrefix: '+353 1',
-        mobilePrefix: '+353 85'
+        phoneSubscriberDigits: 7,
+        mobilePrefix: '+353 85',
+        mobileSubscriberDigits: 7
     },
     {
         city: 'Milan',
@@ -32,7 +36,9 @@ const LOCATIONS = [
         regionName: 'Lombardy',
         postalCode: '20121',
         phonePrefix: '+39 02',
-        mobilePrefix: '+39 320'
+        phoneSubscriberDigits: 7,
+        mobilePrefix: '+39 320',
+        mobileSubscriberDigits: 7
     },
     {
         city: 'Prague',
@@ -42,7 +48,9 @@ const LOCATIONS = [
         regionName: 'Prague',
         postalCode: '11000',
         phonePrefix: '+420 2',
-        mobilePrefix: '+420 60'
+        phoneSubscriberDigits: 8,
+        mobilePrefix: '+420 601',
+        mobileSubscriberDigits: 6
     }
 ] as const;
 const DATA_ENRICHMENT_LOCATIONS = [
@@ -112,6 +120,11 @@ const GL_ACCOUNTS = ['0000113100', '0000400000', '0000550000', '0000610000'] as 
 const HOUSE_BANKS = ['DE01', 'US01', 'GB01', 'IE01'] as const;
 const SHORT_ORGANIZATIONS = ['Northwind Trading', 'Alpine Supply', 'Summit Services'] as const;
 const SHORT_DESCRIPTIONS = ['Pump inspection', 'Valve repair', 'Module service', 'Safety check'] as const;
+
+function subscriberDigits(hash: number, length: number): string {
+    const minimum = 10 ** (length - 1);
+    return String((hash % (9 * minimum)) + minimum);
+}
 
 export interface SemanticRowContext {
     firstName: string;
@@ -258,9 +271,12 @@ function stringRoleValue(
         case 'email':
             return `${context.firstName.toLowerCase()}.${context.lastName.toLowerCase()}@example.com`;
         case 'phone':
-            return `${context.location.phonePrefix} ${String((hash % 9_000_000) + 1_000_000)}`;
+            return `${context.location.phonePrefix} ${subscriberDigits(hash, context.location.phoneSubscriberDigits)}`;
         case 'mobile_phone':
-            return `${context.location.mobilePrefix} ${String((hash % 9_000_000) + 1_000_000)}`;
+            return `${context.location.mobilePrefix} ${subscriberDigits(
+                hash,
+                context.location.mobileSubscriberDigits
+            )}`;
         case 'url':
             return `https://example.com/${context.organization.toLowerCase().replace(/\s+/g, '-')}`;
         case 'currency':
@@ -384,6 +400,8 @@ function stringRoleValue(
             return ['10', '20', '30'][hash % 3];
         case 'sales_organization':
             return ['1000', '1010', '1710', '3000'][hash % 4];
+        case 'sales_division':
+            return ['00', '01', '10', '20'][hash % 4];
         case 'payment_terms':
             return ['0001', '0002', 'Z030', 'Z060'][hash % 4];
         case 'employee_id':

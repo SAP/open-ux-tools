@@ -82,6 +82,7 @@ const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'publication_type',
     'risk_class',
     'sales_document_type',
+    'sales_division',
     'sales_item_proposal_description',
     'sales_organization',
     'service_document_item_category',
@@ -216,6 +217,9 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     }
     if (has(words, 'distribution') && has(words, 'channel')) {
         return 'distribution_channel';
+    }
+    if (has(words, 'division') && !has(words, 'description', 'name', 'text')) {
+        return 'sales_division';
     }
     if (has(words, 'sales') && has(words, 'organization', 'organisation') && has(words, 'description', 'name')) {
         return 'org_name';

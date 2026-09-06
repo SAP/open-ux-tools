@@ -16,6 +16,10 @@ import { propertyValueIsValid } from './constraints.js';
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'CHF'] as const;
 const HOUSE_BANK_KEYS = ['DE01', 'US01', 'GB01', 'IE01'] as const;
+const SALES_ORGANIZATION_KEYS = ['1000', '1010', '1710', '3000'] as const;
+const DISTRIBUTION_CHANNEL_KEYS = ['10', '20', '30'] as const;
+const SALES_DIVISION_KEYS = ['00', '01', '10', '20'] as const;
+const SALES_DOCUMENT_TYPE_KEYS = ['OR', 'QT', 'SIP'] as const;
 
 function routedRole(classification: SemanticClassification | undefined): string | undefined {
     if (
@@ -76,6 +80,16 @@ function cappedPower(base: number, exponent: number): number {
     return result;
 }
 
+function configuredStringKeyDomain(
+    property: SchemaProperty,
+    candidates: ReadonlyArray<string>
+): GovernedStringKeyDomain | undefined {
+    const values = candidates.filter((value) => property.maxLength === undefined || value.length <= property.maxLength);
+    return values.length === 0
+        ? undefined
+        : { cardinality: values.length, value: (ordinal) => values[ordinal % values.length] };
+}
+
 /** Keep governed key formatting and declared capacity on the same domain definition. */
 function governedStringKeyDomain(property: SchemaProperty): GovernedStringKeyDomain | undefined {
     const words = new Set(
@@ -86,6 +100,18 @@ function governedStringKeyDomain(property: SchemaProperty): GovernedStringKeyDom
             .split(/\s+/)
             .filter(Boolean)
     );
+    if (words.has('sales') && words.has('organization')) {
+        return configuredStringKeyDomain(property, SALES_ORGANIZATION_KEYS);
+    }
+    if (words.has('distribution') && words.has('channel')) {
+        return configuredStringKeyDomain(property, DISTRIBUTION_CHANNEL_KEYS);
+    }
+    if (words.has('division')) {
+        return configuredStringKeyDomain(property, SALES_DIVISION_KEYS);
+    }
+    if (words.has('sales') && words.has('proposal') && words.has('type')) {
+        return configuredStringKeyDomain(property, SALES_DOCUMENT_TYPE_KEYS);
+    }
     if (words.has('bank') && words.has('statement') && words.has('short') && words.has('id')) {
         const length = Math.min(property.maxLength ?? 8, 8);
         if (length === 0) {

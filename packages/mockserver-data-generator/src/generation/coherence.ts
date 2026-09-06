@@ -173,6 +173,8 @@ interface UnitGroup {
     code: SchemaProperty;
     text: SchemaProperty;
     iso: SchemaProperty;
+    temperature?: SchemaProperty;
+    pressure?: SchemaProperty;
 }
 
 function unitGroup(entity: SchemaEntity): UnitGroup | undefined {
@@ -180,8 +182,10 @@ function unitGroup(entity: SchemaEntity): UnitGroup | undefined {
     const code = properties.get('unitofmeasure');
     const text = properties.get('unitofmeasuretext');
     const iso = properties.get('unitofmeasureisocode');
+    const temperature = properties.get('unitofmeasuretemperature');
+    const pressure = properties.get('unitofmeasurepressure');
     return code?.primitiveType === 'string' && text?.primitiveType === 'string' && iso?.primitiveType === 'string'
-        ? { code, text, iso }
+        ? { code, text, iso, temperature, pressure }
         : undefined;
 }
 
@@ -494,6 +498,14 @@ function reconcileUnits(
     const preserveCodes =
         propertyIsProtected(group.code, protectedProperties) || (group.code.isKey && rows.length > values.length);
     rows.forEach((row, rowIndex) => {
+        const reconcileDimensionExponents = (): void => {
+            if (group.temperature && !propertyIsProtected(group.temperature, protectedProperties)) {
+                setIfValid(row, group.temperature, 0);
+            }
+            if (group.pressure && !propertyIsProtected(group.pressure, protectedProperties)) {
+                setIfValid(row, group.pressure, 0);
+            }
+        };
         if (preserveCodes) {
             const currentCode = row[group.code.name];
             const value = typeof currentCode === 'string' ? unitValue(currentCode, group) : undefined;
@@ -501,12 +513,14 @@ function reconcileUnits(
                 row[group.text.name] = value.text;
                 row[group.iso.name] = value.iso;
             }
+            reconcileDimensionExponents();
             return;
         }
         const value = values[(Math.abs(seed) + rowIndex) % values.length];
         row[group.code.name] = value.code;
         row[group.text.name] = value.text;
         row[group.iso.name] = value.iso;
+        reconcileDimensionExponents();
     });
 }
 
@@ -824,7 +838,7 @@ export function coherencePropertyNames(entity: SchemaEntity): ReadonlySet<string
     });
     const units = unitGroup(entity);
     if (units && unitDomain(units).length > 0) {
-        Object.values(units).forEach((property) => names.add(property.name));
+        Object.values(units).forEach((property) => property && names.add(property.name));
     }
     const balance = balanceGroup(entity);
     if (balance) {

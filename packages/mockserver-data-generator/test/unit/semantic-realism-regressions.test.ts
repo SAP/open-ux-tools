@@ -1511,8 +1511,12 @@ describe('semantic realism regressions', () => {
                             <Property Name="ID" Type="Edm.Int32" Nullable="false" />
                             <Property Name="UnitOfMeasure" Type="Edm.String" MaxLength="3"
                                 sap:semantics="unit-of-measure" />
+                            <Property Name="UnitOfMeasure_Text" Type="Edm.String" MaxLength="30"
+                                sap:label="UoM Text" />
                             <Property Name="UnitOfMeasureISOCode" Type="Edm.String" MaxLength="3"
                                 sap:label="ISO code" />
+                            <Property Name="UnitOfMeasureTemperature" Type="Edm.Decimal"
+                                Precision="3" Scale="0" sap:label="Temperature" />
                             <Property Name="UnitOfMeasurePressure" Type="Edm.Decimal"
                                 Precision="3" Scale="0" sap:label="Pressure Value" />
                             <Property Name="MobilePhoneNumber" Type="Edm.String" MaxLength="30"
@@ -1541,18 +1545,81 @@ describe('semantic realism regressions', () => {
             ['KG', 'KGM'],
             ['L', 'LTR'],
             ['H', 'HUR'],
-            ['PC', 'PCE']
+            ['PC', 'PCE'],
+            ['M', 'MTR'],
+            ['S', 'SEC'],
+            ['MIN', 'MIN'],
+            ['D', 'DAY'],
+            ['WK', 'WEE']
         ]);
 
         result.resources.SalesRecords?.forEach((row) => {
             expect(row.UnitOfMeasureISOCode).toBe(isoCodeByUnit.get(String(row.UnitOfMeasure)));
-            expect(Number.isInteger(row.UnitOfMeasurePressure)).toBe(true);
-            expect(Number(row.UnitOfMeasurePressure)).toBeGreaterThanOrEqual(-3);
-            expect(Number(row.UnitOfMeasurePressure)).toBeLessThanOrEqual(3);
-            expect(row.MobilePhoneNumber).toMatch(/^\+(?:49 151|353 85|39 320|420 60) \d{7}$/u);
+            expect(row.UnitOfMeasureTemperature).toBe(0);
+            expect(row.UnitOfMeasurePressure).toBe(0);
+            expect(row.MobilePhoneNumber).toMatch(
+                /^(?:\+49 151 \d{8}|\+353 85 \d{7}|\+39 320 \d{7}|\+420 601 \d{6})$/u
+            );
             expect(row.SalesItemProposalDescription).toMatch(/ proposal$/u);
         });
         expect(sft.generate).not.toHaveBeenCalled();
+    });
+
+    it('keeps SAP sales-area keys and divisions in recognizable configured domains', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.SalesArea': {
+                                kind: 'entity',
+                                elements: {
+                                    Customer: { type: 'cds.String', length: 10, key: true, notNull: true },
+                                    SalesOrganization: { type: 'cds.String', length: 4, key: true, notNull: true },
+                                    DistributionChannel: { type: 'cds.String', length: 2, key: true, notNull: true },
+                                    Division: { type: 'cds.String', length: 2, key: true, notNull: true },
+                                    OrganizationDivision: {
+                                        type: 'cds.String',
+                                        length: 2,
+                                        '@Common.Label': 'Division'
+                                    }
+                                }
+                            },
+                            'Demo.SalesProposalType': {
+                                kind: 'entity',
+                                elements: {
+                                    SalesItemProposalType: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        key: true,
+                                        notNull: true,
+                                        '@Common.Label': 'Sales Document Type'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/sales-areas', odataVersion: '4.0' },
+                targets: [
+                    { name: 'SalesArea', kind: 'entity-set' },
+                    { name: 'SalesProposalType', kind: 'entity-set' }
+                ],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 113 }
+        );
+
+        result.resources.SalesArea?.forEach((row) => {
+            expect(['1000', '1010', '1710', '3000']).toContain(row.SalesOrganization);
+            expect(['10', '20', '30']).toContain(row.DistributionChannel);
+            expect(['00', '01', '10', '20']).toContain(row.Division);
+            expect(['00', '01', '10', '20']).toContain(row.OrganizationDivision);
+        });
+        result.resources.SalesProposalType?.forEach((row) => {
+            expect(['OR', 'QT', 'SIP']).toContain(row.SalesItemProposalType);
+        });
     });
 
     it('uses equipment names and compact IUID configuration values for maintenance fields', async () => {
