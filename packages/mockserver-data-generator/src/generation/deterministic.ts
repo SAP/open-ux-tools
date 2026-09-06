@@ -68,7 +68,7 @@ function integerRange(
     return minimum <= maximum ? { minimum, maximum } : { minimum: facetMinimum, maximum: facetMaximum };
 }
 
-function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: number, seed: number): JsonValue {
+function keyValue(property: SchemaProperty, ordinal: number, seed: number, scope: string): JsonValue {
     const values = uniqueEnumValues(property);
     if (values.length > 0) {
         return values[ordinal % values.length];
@@ -86,9 +86,7 @@ function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: numbe
         case 'bool':
             return ordinal % 2 === 1;
         case 'guid': {
-            const value = createHash('sha256')
-                .update(`${seed}:${entity.entitySetName}:${property.name}:${ordinal}`)
-                .digest('hex');
+            const value = createHash('sha256').update(`${seed}:${scope}:${ordinal}`).digest('hex');
             return `${value.slice(0, 8)}-${value.slice(8, 12)}-4${value.slice(13, 16)}-a${value.slice(
                 17,
                 20
@@ -111,10 +109,7 @@ function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: numbe
         case 'binary':
             return binaryOrdinal(ordinal, property.maxLength);
         case 'string': {
-            const seedHex = createHash('sha256')
-                .update(`${seed}:${entity.entitySetName}:${property.name}`)
-                .digest('hex')
-                .slice(0, 16);
+            const seedHex = createHash('sha256').update(`${seed}:${scope}`).digest('hex').slice(0, 16);
             if (property.maxLength === undefined) {
                 return `K${seedHex}${ordinal.toString(36)}`;
             }
@@ -125,6 +120,153 @@ function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: numbe
         default:
             throw new TypeError('Unsupported primitive key type');
     }
+}
+
+interface KeyGenerationProfile {
+    scope: string;
+    property: SchemaProperty;
+    shared: boolean;
+}
+
+function propertyReference(entitySetName: string, propertyName: string): string {
+    return `${entitySetName}\u0000${propertyName}`;
+}
+
+function commonKeyProperty(properties: ReadonlyArray<SchemaProperty>): SchemaProperty | undefined {
+    const first = properties[0];
+    if (!first || properties.some(({ primitiveType }) => primitiveType !== first.primitiveType)) {
+        return undefined;
+    }
+    const constrainedEnums = properties.filter(({ enumValues }) => enumValues !== undefined);
+    const enumValues =
+        constrainedEnums.length === 0
+            ? undefined
+            : uniqueEnumValues(constrainedEnums[0]).filter((value) =>
+                  properties.every((property) => propertyValueIsValid(property, value))
+              );
+    if (enumValues?.length === 0) {
+        return undefined;
+    }
+    const maximumLengths = properties.flatMap(({ maxLength }) => (maxLength === undefined ? [] : [maxLength]));
+    const numericMinimums = properties.flatMap(({ numericMinimum }) =>
+        numericMinimum === undefined ? [] : [numericMinimum]
+    );
+    const numericMaximums = properties.flatMap(({ numericMaximum }) =>
+        numericMaximum === undefined ? [] : [numericMaximum]
+    );
+    const numericMinimum = numericMinimums.length === 0 ? undefined : Math.max(...numericMinimums);
+    const numericMaximum = numericMaximums.length === 0 ? undefined : Math.min(...numericMaximums);
+    if (numericMinimum !== undefined && numericMaximum !== undefined && numericMinimum > numericMaximum) {
+        return undefined;
+    }
+    const decimalScale =
+        first.primitiveType === 'decimal' ? Math.min(...properties.map(({ scale }) => scale ?? 0)) : first.scale;
+    const decimalPrecisionBounds =
+        first.primitiveType === 'decimal'
+            ? properties.flatMap(({ precision, scale }) =>
+                  precision === undefined ? [] : [precision - ((scale ?? 0) - (decimalScale ?? 0))]
+              )
+            : [];
+    const decimalPrecision =
+        decimalPrecisionBounds.length === 0 ? first.precision : Math.min(...decimalPrecisionBounds);
+    if (first.primitiveType === 'decimal' && decimalPrecision !== undefined && decimalPrecision < 1) {
+        return undefined;
+    }
+    return {
+        ...first,
+        maxLength: maximumLengths.length === 0 ? undefined : Math.min(...maximumLengths),
+        precision: decimalPrecision,
+        scale: decimalScale,
+        numericMinimum,
+        numericMaximum,
+        enumValues
+    };
+}
+
+function relationshipKeyProfiles(graph: SchemaGraph): ReadonlyMap<string, KeyGenerationProfile> {
+    const entities = new Map(graph.entities.map((entity) => [entity.entitySetName, entity]));
+    const groupedTargets = new Map<string, Set<string>>();
+    for (const relationship of graph.relationships) {
+        const targetEntity = entities.get(relationship.toEntitySet);
+        for (const { sourceProperty, targetProperty } of relationship.mappings) {
+            if (!targetEntity?.properties.some(({ name, isKey }) => isKey && name === targetProperty)) {
+                continue;
+            }
+            const source = propertyReference(relationship.fromEntitySet, sourceProperty);
+            const targets = groupedTargets.get(source) ?? new Set<string>();
+            targets.add(propertyReference(relationship.toEntitySet, targetProperty));
+            groupedTargets.set(source, targets);
+        }
+    }
+    const parents = new Map<string, string>();
+    const find = (reference: string): string => {
+        const parent = parents.get(reference) ?? reference;
+        if (parent === reference) {
+            parents.set(reference, reference);
+            return reference;
+        }
+        const root = find(parent);
+        parents.set(reference, root);
+        return root;
+    };
+    const union = (left: string, right: string): void => {
+        const leftRoot = find(left);
+        const rightRoot = find(right);
+        if (leftRoot !== rightRoot) {
+            parents.set(rightRoot, leftRoot < rightRoot ? leftRoot : rightRoot);
+            parents.set(leftRoot, leftRoot < rightRoot ? leftRoot : rightRoot);
+        }
+    };
+    for (const [source, targets] of groupedTargets) {
+        const targetReferences = [...targets];
+        if (targetReferences.length < 2) {
+            continue;
+        }
+        targetReferences.forEach((reference) => union(source, reference));
+    }
+    const components = new Map<string, string[]>();
+    for (const reference of parents.keys()) {
+        const root = find(reference);
+        const component = components.get(root) ?? [];
+        component.push(reference);
+        components.set(root, component);
+    }
+    const profiles = new Map<string, KeyGenerationProfile>();
+    for (const references of components.values()) {
+        if (references.length < 2) {
+            continue;
+        }
+        const properties = references.flatMap((reference) => {
+            const [entitySetName, propertyName] = reference.split('\u0000');
+            const property = entities.get(entitySetName)?.properties.find(({ name }) => name === propertyName);
+            return property ? [property] : [];
+        });
+        if (properties.length !== references.length) {
+            continue;
+        }
+        const property = commonKeyProperty(properties);
+        if (!property) {
+            continue;
+        }
+        const sortedReferences = [...references].sort();
+        const scope = `relationship:${createHash('sha256').update(sortedReferences.join('|')).digest('hex')}`;
+        sortedReferences.forEach((reference) => profiles.set(reference, { scope, property, shared: true }));
+    }
+    return profiles;
+}
+
+function keyProfile(
+    entity: SchemaEntity,
+    property: SchemaProperty,
+    profiles: ReadonlyMap<string, KeyGenerationProfile>
+): KeyGenerationProfile {
+    return (
+        profiles.get(propertyReference(entity.entitySetName, property.name)) ?? {
+            scope: `entity:${entity.entitySetName}:${property.name}`,
+            property,
+            shared: false
+        }
+    );
 }
 
 function stringValue(entity: SchemaEntity, property: SchemaProperty, rowIndex: number, hash: number): string {
@@ -151,11 +293,13 @@ function valueFor(
     seed: number,
     role: string | undefined,
     rowContext: SemanticRowContext,
-    keyOrdinal?: number
+    keyOrdinal?: number,
+    generationProfile?: KeyGenerationProfile
 ): JsonValue {
     const hash = stableNumber(`${seed}:${entity.entitySetName}:${property.name}:${rowIndex}`);
     if (property.isKey && keyOrdinal !== undefined) {
-        return keyValue(entity, property, keyOrdinal, seed);
+        const profile = generationProfile ?? keyProfile(entity, property, new Map());
+        return keyValue(profile.property, keyOrdinal, seed, profile.scope);
     }
     if (property.enumValues && property.enumValues.length > 0) {
         return property.enumValues[rowIndex % property.enumValues.length];
@@ -240,10 +384,24 @@ function finiteKeyCardinality(property: SchemaProperty): number | undefined {
 
 function keyPlan(
     entity: SchemaEntity,
-    requestedRows: number
+    requestedRows: number,
+    profiles: ReadonlyMap<string, KeyGenerationProfile>
 ): { rowCount: number; ordinals: ReadonlyMap<string, (rowIndex: number) => number> } {
-    const keys = entity.properties.filter(({ isKey }) => isKey);
-    const cardinalities = keys.map((property) => ({ property, cardinality: finiteKeyCardinality(property) }));
+    const keys = entity.properties
+        .map((property, index) => ({ property, index, profile: keyProfile(entity, property, profiles) }))
+        .filter(({ property }) => property.isKey)
+        .sort((left, right) => {
+            if (left.profile.shared !== right.profile.shared) {
+                return left.profile.shared ? -1 : 1;
+            }
+            return left.profile.shared
+                ? left.profile.scope.localeCompare(right.profile.scope)
+                : left.index - right.index;
+        });
+    const cardinalities = keys.map(({ property, profile }) => ({
+        property,
+        cardinality: finiteKeyCardinality(profile.property)
+    }));
     const everyKeyFinite =
         cardinalities.length > 0 && cardinalities.every(({ cardinality }) => cardinality !== undefined);
     const capacity = everyKeyFinite
@@ -527,6 +685,7 @@ export function generateDeterministicResources(
     existingData: Readonly<Record<string, ExistingMockData>> = {}
 ): DeterministicGenerationResult {
     const entities = new Map(graph.entities.map((entity) => [entity.entitySetName, entity]));
+    const generationProfiles = relationshipKeyProfiles(graph);
     const resources: Record<string, Array<Record<string, JsonValue>>> = {};
     const diagnostics: MockDataGeneratorDiagnostic[] = [];
     for (const target of targets) {
@@ -535,7 +694,7 @@ export function generateDeterministicResources(
             continue;
         }
         const requestedRows = rowCount(target, entity, options);
-        const plannedKeys = keyPlan(entity, requestedRows);
+        const plannedKeys = keyPlan(entity, requestedRows, generationProfiles);
         if (plannedKeys.rowCount < requestedRows) {
             diagnostics.push(
                 Object.freeze({
@@ -559,7 +718,8 @@ export function generateDeterministicResources(
                         seed,
                         routedRole(classifications.get(semanticPropertyKey(entity.entitySetName, property.name))),
                         rowContext,
-                        plannedKeys.ordinals.get(property.name)?.(rowIndex)
+                        plannedKeys.ordinals.get(property.name)?.(rowIndex),
+                        property.isKey ? keyProfile(entity, property, generationProfiles) : undefined
                     )
                 ])
             );
