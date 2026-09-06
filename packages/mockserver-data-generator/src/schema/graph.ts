@@ -15,6 +15,8 @@ export interface SchemaProperty {
     maxLength?: number;
     precision?: number;
     scale?: number;
+    numericMinimum?: number;
+    numericMaximum?: number;
     label?: string;
     description?: string;
     dataElement?: string;

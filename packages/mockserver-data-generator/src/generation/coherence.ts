@@ -27,6 +27,16 @@ const UNIT_VALUES = [
 const START_MARKERS = new Set(['start', 'begin', 'from']);
 const END_MARKERS = new Set(['end', 'until', 'to']);
 const TEMPORAL_TYPES = new Set<SchemaProperty['primitiveType']>(['date', 'datetime', 'datetimeoffset']);
+const PHONE_PREFIXES = new Map([
+    ['DE', '+49 30'],
+    ['GERMANY', '+49 30'],
+    ['IE', '+353 1'],
+    ['IRELAND', '+353 1'],
+    ['IT', '+39 02'],
+    ['ITALY', '+39 02'],
+    ['CZ', '+420 2'],
+    ['CZECHIA', '+420 2']
+]);
 
 function tokens(value: string): ReadonlyArray<string> {
     return value
@@ -43,6 +53,77 @@ function normalized(value: string): string {
 
 function propertyMap(entity: SchemaEntity): ReadonlyMap<string, SchemaProperty> {
     return new Map(entity.properties.map((property) => [normalized(property.name), property]));
+}
+
+interface CountryPhonePair {
+    country: SchemaProperty;
+    phone: SchemaProperty;
+}
+
+function contextualTokens(property: SchemaProperty, ignored: ReadonlySet<string>): ReadonlySet<string> {
+    return new Set(tokens(property.name).filter((token) => !ignored.has(token)));
+}
+
+function matchingCountry(phone: SchemaProperty, countries: ReadonlyArray<SchemaProperty>): SchemaProperty | undefined {
+    if (countries.length === 1) {
+        return countries[0];
+    }
+    const generic = countries.find((country) => normalized(country.name) === 'country');
+    const phoneContext = contextualTokens(phone, new Set(['phone', 'telephone', 'mobile', 'number']));
+    const ranked = countries
+        .map((country) => ({
+            country,
+            score: [...contextualTokens(country, new Set(['country', 'code']))].filter((token) =>
+                phoneContext.has(token)
+            ).length
+        }))
+        .sort((left, right) => right.score - left.score);
+    return ranked[0]?.score > 0 && ranked[0].score > (ranked[1]?.score ?? -1) ? ranked[0].country : generic;
+}
+
+function countryPhonePairs(entity: SchemaEntity): ReadonlyArray<CountryPhonePair> {
+    const countries = entity.properties.filter(
+        (property) =>
+            property.primitiveType === 'string' &&
+            tokens(property.name).includes('country') &&
+            !tokens(property.name).some((token) => token === 'name' || token === 'text' || token === 'description')
+    );
+    const phones = entity.properties.filter(
+        (property) =>
+            property.primitiveType === 'string' &&
+            tokens(property.name).some((token) => token === 'phone' || token === 'telephone' || token === 'mobile')
+    );
+    return phones.flatMap((phone) => {
+        const country = matchingCountry(phone, countries);
+        return country ? [{ country, phone }] : [];
+    });
+}
+
+function reconcileCountryPhones(
+    rows: ReadonlyArray<MutableRow>,
+    pairs: ReadonlyArray<CountryPhonePair>,
+    seed: number,
+    protectedProperties: ReadonlySet<string>
+): void {
+    rows.forEach((row, rowIndex) => {
+        pairs.forEach(({ country, phone }, phoneIndex) => {
+            if (propertyIsProtected(phone, protectedProperties)) {
+                return;
+            }
+            const countryValue = row[country.name];
+            const prefix =
+                typeof countryValue === 'string' ? PHONE_PREFIXES.get(countryValue.trim().toUpperCase()) : undefined;
+            if (!prefix) {
+                return;
+            }
+            const current = row[phone.name];
+            const currentDigits = typeof current === 'string' ? current.replace(/\D/gu, '').slice(-7) : '';
+            const fallbackDigits = String(
+                ((Math.abs(seed) + rowIndex * 1_000_003 + phoneIndex * 97) % 9_000_000) + 1_000_000
+            );
+            setIfValid(row, phone, `${prefix} ${currentDigits.length === 7 ? currentDigits : fallbackDigits}`);
+        });
+    });
 }
 
 function datePairKey(property: SchemaProperty, markers: ReadonlySet<string>): string | undefined {
@@ -455,7 +536,7 @@ function reconcileBalance(row: MutableRow, group: BalanceGroup, protectedPropert
 
 const LIFECYCLE_STATES: ReadonlyArray<Readonly<Record<LifecycleRole, boolean>>> = [
     { available: true, deleted: false, inactive: false, installed: false, warehouse: true, customer: false },
-    { available: true, deleted: false, inactive: false, installed: true, warehouse: false, customer: false },
+    { available: false, deleted: false, inactive: false, installed: true, warehouse: false, customer: false },
     { available: false, deleted: false, inactive: true, installed: false, warehouse: false, customer: false },
     { available: false, deleted: true, inactive: false, installed: false, warehouse: false, customer: false }
 ];
@@ -490,7 +571,7 @@ function reconcileDraft(
         const active = (Math.abs(seed) + rowIndex) % 2 === 0;
         setIfValid(row, group.isActive, active);
         setIfValid(row, group.hasActive, !active);
-        setIfValid(row, group.hasDraft, active);
+        setIfValid(row, group.hasDraft, false);
         if (group.activeUuid && !active) {
             const current = row[group.activeUuid.name];
             if (!propertyValueIsValid(group.activeUuid, current)) {
@@ -559,6 +640,7 @@ export function coherencePropertyNames(entity: SchemaEntity): ReadonlySet<string
     if (processingStatus) {
         Object.values(processingStatus).forEach((property) => names.add(property.name));
     }
+    countryPhonePairs(entity).forEach(({ phone }) => names.add(phone.name));
     return names;
 }
 
@@ -594,6 +676,10 @@ export function applySemanticCoherence(
     const processingStatus = processingStatusGroup(entity);
     if (processingStatus) {
         reconcileProcessingStatus(rows, processingStatus, seed, protectedProperties);
+    }
+    const countryPhones = countryPhonePairs(entity);
+    if (countryPhones.length > 0) {
+        reconcileCountryPhones(rows, countryPhones, seed, protectedProperties);
     }
     return rows;
 }

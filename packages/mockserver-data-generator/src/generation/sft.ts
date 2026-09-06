@@ -37,7 +37,7 @@ function validCandidate(property: SchemaProperty, value: unknown): value is Json
     if (property.primitiveType !== 'string' || value === null || property.enumValues !== undefined) {
         return true;
     }
-    return typeof value === 'string' && /[\p{L}\p{N}]/u.test(value);
+    return typeof value === 'string' && /[\p{L}\p{N}]/u.test(value) && !/^\s*[\[{]/u.test(value);
 }
 
 function completionStatistics(output: Awaited<ReturnType<SftGenerator['generate']>>): {

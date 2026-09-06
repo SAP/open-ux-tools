@@ -323,4 +323,617 @@ describe('semantic realism regressions', () => {
             )
         ).toBe(true);
     });
+
+    it('prefers unambiguous business metadata over a conflicting learned role', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Supplier': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    DECertifiedEthnicity: { type: 'cds.String', length: 50 },
+                                    DECity: { type: 'cds.String', length: 50 },
+                                    DECountry: { type: 'cds.String', length: 2 },
+                                    DECountryDescription: { type: 'cds.String', length: 40 },
+                                    DERegionDescription: { type: 'cds.String', length: 40 },
+                                    BillingPlanTimeZone: { type: 'cds.String', length: 40 },
+                                    FoundingYear: { type: 'cds.String', length: 4 },
+                                    CompanyCode_Text: {
+                                        type: 'cds.String',
+                                        length: 40,
+                                        '@Common.Label': 'Company Name'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/suppliers', odataVersion: '4.0' },
+                targets: [{ name: 'Supplier', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            {
+                classifier: {
+                    fingerprint: 'conflicting-learned-role-v1',
+                    classify: async () => ({
+                        role: 'unit_of_measure',
+                        confidence: 0.99,
+                        routeThreshold: 0.5,
+                        source: 'classifier'
+                    })
+                }
+            }
+        );
+
+        const row = result.resources.Supplier?.[0];
+        expect(row?.DECertifiedEthnicity).toMatch(
+            /^(?:Asian|Black or African American|Hispanic or Latino|Native American|Not Specified)$/u
+        );
+        expect(row?.DECity).toMatch(/^(?:Berlin|Dublin|Milan|Prague)$/u);
+        expect(row?.DECountry).toMatch(/^(?:DE|IE|IT|CZ)$/u);
+        expect(row?.DECountryDescription).toMatch(/^(?:Germany|Ireland|Italy|Czechia)$/u);
+        expect(row?.DERegionDescription).toMatch(/^(?:Berlin|Leinster|Lombardy|Prague)$/u);
+        expect(row?.BillingPlanTimeZone).toMatch(/^(?:Europe\/Dublin|Europe\/Berlin|America\/New_York|Asia\/Tokyo)$/u);
+        expect(row?.FoundingYear).toMatch(/^20\d{2}$/u);
+        expect(row?.CompanyCode_Text).toMatch(
+            /^(?:Northwind Trading|Alpine Supply|Blue River Industries|Summit Services)$/u
+        );
+    });
+
+    it('does not treat descriptions and addresses containing business-object words as identifiers', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.ServiceItem': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    ServiceDocumentItemDescription: { type: 'cds.String', length: 80 },
+                                    SalesOrderDescription: { type: 'cds.String', length: 80 },
+                                    CustomerAddress: { type: 'cds.String', length: 80 }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/service-items', odataVersion: '4.0' },
+                targets: [{ name: 'ServiceItem', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            {
+                classifier: {
+                    fingerprint: 'description-role-v1',
+                    classify: async () => ({
+                        role: 'description',
+                        confidence: 0.99,
+                        routeThreshold: 0.5,
+                        source: 'classifier'
+                    })
+                }
+            }
+        );
+
+        const row = result.resources.ServiceItem?.[0];
+        expect(row?.ServiceDocumentItemDescription).toMatch(/\D/u);
+        expect(row?.SalesOrderDescription).toMatch(/\D/u);
+        expect(row?.CustomerAddress).toMatch(/^\d+ Market Street$/u);
+    });
+
+    it('defers contradictory lexical evidence to a confident learned classification', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Contact': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    EmailCode: {
+                                        type: 'cds.String',
+                                        length: 40,
+                                        '@Common.Label': 'Phone Number'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/contacts', odataVersion: '4.0' },
+                targets: [{ name: 'Contact', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            {
+                classifier: {
+                    fingerprint: 'city-role-v1',
+                    classify: async () => ({
+                        role: 'city',
+                        confidence: 0.99,
+                        routeThreshold: 0.5,
+                        source: 'classifier'
+                    })
+                }
+            }
+        );
+
+        expect(result.resources.Contact?.[0]?.EmailCode).toMatch(/^(?:Berlin|Dublin|Milan|Prague)$/u);
+    });
+
+    it('intersects governed numeric ranges with decimal facets and integer subtypes', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Measurement': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    NarrowPrice: {
+                                        type: 'cds.Decimal',
+                                        precision: 1,
+                                        scale: 0,
+                                        '@Common.Label': 'Price'
+                                    },
+                                    BytePrice: { type: 'cds.UInt8', '@Common.Label': 'Price' },
+                                    ByteTemperature: { type: 'cds.UInt8', '@Common.Label': 'Temperature' },
+                                    ByteExponent: { type: 'cds.UInt8', '@Common.Label': 'Exponent' },
+                                    ByteCount: { type: 'cds.UInt8', '@Common.Label': 'Item Count' },
+                                    ByteOpaque: { type: 'cds.UInt8' },
+                                    Int16Opaque: { type: 'cds.Int16' },
+                                    Int32Opaque: { type: 'cds.Int32' },
+                                    Int64Opaque: { type: 'cds.Int64' }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/measurements', odataVersion: '4.0' },
+                targets: [{ name: 'Measurement', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 20, seed: 31 }
+        );
+
+        result.resources.Measurement?.forEach((row) => {
+            expect(Number(row.NarrowPrice)).toBeGreaterThanOrEqual(5);
+            expect(Number(row.NarrowPrice)).toBeLessThanOrEqual(9);
+            expect(Number(row.BytePrice)).toBeGreaterThanOrEqual(5);
+            expect(Number(row.BytePrice)).toBeLessThanOrEqual(255);
+            expect(Number(row.ByteTemperature)).toBeGreaterThanOrEqual(0);
+            expect(Number(row.ByteTemperature)).toBeLessThanOrEqual(50);
+            expect(Number(row.ByteExponent)).toBeGreaterThanOrEqual(0);
+            expect(Number(row.ByteExponent)).toBeLessThanOrEqual(6);
+            expect(Number(row.ByteCount)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.ByteCount)).toBeLessThanOrEqual(255);
+            expect(Number(row.ByteOpaque)).toBeGreaterThanOrEqual(0);
+            expect(Number(row.ByteOpaque)).toBeLessThanOrEqual(255);
+            expect(typeof row.Int16Opaque).toBe('number');
+            expect(Number(row.Int16Opaque)).toBeGreaterThanOrEqual(-32_768);
+            expect(Number(row.Int16Opaque)).toBeLessThanOrEqual(32_767);
+            expect(typeof row.Int32Opaque).toBe('number');
+            expect(typeof row.Int64Opaque).toBe('number');
+        });
+    });
+
+    it('uses compact business ranges for metadata-identified numeric fields', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Measurement': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    SalesOrganization_fc: {
+                                        type: 'cds.Integer',
+                                        '@Common.Label': 'Dyn. Field Control'
+                                    },
+                                    UnitOfMeasureDspNmbrOfDcmls: {
+                                        type: 'cds.Integer',
+                                        '@Common.Label': 'Decimal Places'
+                                    },
+                                    SIUnitCnvrsnRateExponent: {
+                                        type: 'cds.Integer',
+                                        '@Common.Label': 'Exponent'
+                                    },
+                                    NumberOfItems: { type: 'cds.Integer', '@Common.Label': 'Number of Items' },
+                                    UnitOfMeasureTemperature: {
+                                        type: 'cds.Decimal',
+                                        precision: 9,
+                                        scale: 2,
+                                        '@Common.Label': 'Temperature'
+                                    },
+                                    UnitOfMeasurePressure: {
+                                        type: 'cds.Decimal',
+                                        precision: 9,
+                                        scale: 2,
+                                        '@Common.Label': 'Pressure Value'
+                                    },
+                                    PublicationPrice: {
+                                        type: 'cds.Decimal',
+                                        precision: 9,
+                                        scale: 2,
+                                        '@Common.Label': 'Price'
+                                    },
+                                    InterestRateInPercent: {
+                                        type: 'cds.Decimal',
+                                        precision: 5,
+                                        scale: 2,
+                                        '@Common.Label': 'Credit Interest Rate'
+                                    },
+                                    IntegerPrice: { type: 'cds.Integer', '@Common.Label': 'Price' },
+                                    IntegerInterestRate: {
+                                        type: 'cds.Integer',
+                                        '@Common.Label': 'Credit Interest Rate'
+                                    },
+                                    IntegerTemperature: { type: 'cds.Integer', '@Common.Label': 'Temperature' },
+                                    IntegerPressure: { type: 'cds.Integer', '@Common.Label': 'Pressure Value' },
+                                    IntegerConversionOffset: {
+                                        type: 'cds.Integer',
+                                        '@Common.Label': 'Additive Constant'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/measurements', odataVersion: '4.0' },
+                targets: [{ name: 'Measurement', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 4, seed: 31 }
+        );
+
+        result.resources.Measurement?.forEach((row) => {
+            expect([0, 1, 3, 7]).toContain(row.SalesOrganization_fc);
+            expect(Number(row.UnitOfMeasureDspNmbrOfDcmls)).toBeGreaterThanOrEqual(0);
+            expect(Number(row.UnitOfMeasureDspNmbrOfDcmls)).toBeLessThanOrEqual(6);
+            expect(Number(row.SIUnitCnvrsnRateExponent)).toBeGreaterThanOrEqual(-6);
+            expect(Number(row.SIUnitCnvrsnRateExponent)).toBeLessThanOrEqual(6);
+            expect(Number(row.NumberOfItems)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.NumberOfItems)).toBeLessThanOrEqual(500);
+            expect(Number(row.UnitOfMeasureTemperature)).toBeGreaterThanOrEqual(-30);
+            expect(Number(row.UnitOfMeasureTemperature)).toBeLessThanOrEqual(50);
+            expect(Number(row.UnitOfMeasurePressure)).toBeGreaterThanOrEqual(0.5);
+            expect(Number(row.UnitOfMeasurePressure)).toBeLessThanOrEqual(20);
+            expect(Number(row.PublicationPrice)).toBeGreaterThanOrEqual(5);
+            expect(Number(row.PublicationPrice)).toBeLessThanOrEqual(500);
+            expect(Number(row.InterestRateInPercent)).toBeGreaterThanOrEqual(0);
+            expect(Number(row.InterestRateInPercent)).toBeLessThanOrEqual(20);
+            expect(Number(row.IntegerPrice)).toBeGreaterThanOrEqual(5);
+            expect(Number(row.IntegerPrice)).toBeLessThanOrEqual(500);
+            expect(Number(row.IntegerInterestRate)).toBeGreaterThanOrEqual(0);
+            expect(Number(row.IntegerInterestRate)).toBeLessThanOrEqual(20);
+            expect(Number(row.IntegerTemperature)).toBeGreaterThanOrEqual(-30);
+            expect(Number(row.IntegerTemperature)).toBeLessThanOrEqual(50);
+            expect(Number(row.IntegerPressure)).toBeGreaterThanOrEqual(0.5);
+            expect(Number(row.IntegerPressure)).toBeLessThanOrEqual(20);
+            expect(Number(row.IntegerConversionOffset)).toBeGreaterThanOrEqual(-10);
+            expect(Number(row.IntegerConversionOffset)).toBeLessThanOrEqual(10);
+        });
+    });
+
+    it('rejects structured-output debris returned as SFT text', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'structured-debris-hostile-sft',
+            generate: jest.fn(async () => ({ rows: [{ OpaqueText: '[] [08/12/' }, { OpaqueText: '[[0, 31275' }] }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Record': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    OpaqueText: { type: 'cds.String', length: 80 }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/records', odataVersion: '4.0' },
+                targets: [{ name: 'Record', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 31 },
+            { sft }
+        );
+
+        expect(result.resources.Record).toEqual([
+            { ID: 1, OpaqueText: 'Opaque Text 1' },
+            { ID: 2, OpaqueText: 'Opaque Text 2' }
+        ]);
+        expect(result.statistics.sft.acceptedSlots).toBe(0);
+    });
+
+    it('keeps generated phone prefixes consistent with the row country', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Contact': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    City: { type: 'cds.String', length: 40 },
+                                    SoldToPartyCountry: { type: 'cds.String', length: 2, enum: { DE: {} } },
+                                    PhoneNumber: { type: 'cds.String', length: 30 }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/contacts', odataVersion: '4.0' },
+                targets: [{ name: 'Contact', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 4, seed: 31 }
+        );
+
+        const prefixes: Readonly<Record<string, string>> = { DE: '+49 ', IE: '+353 ', IT: '+39 ', CZ: '+420 ' };
+        result.resources.Contact?.forEach((row) => {
+            expect(String(row.PhoneNumber).startsWith(prefixes[String(row.SoldToPartyCountry)])).toBe(true);
+        });
+    });
+
+    it('keeps common business identifiers deterministic and out of residual SFT generation', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'identifier-hostile-sft',
+            generate: jest.fn(async () => ({
+                rows: [
+                    {
+                        BankAccount: 'Mr. 123456',
+                        GLAccount: 'GLAccount ',
+                        SalesOrder: '[] [08/12/',
+                        ServiceDocumentItem: 'SEM028',
+                        Customer: 'PERSON_426',
+                        ServiceDocumentItemCharUUID: 'C819',
+                        MaterialBatch: '[[0, 31275'
+                    }
+                ]
+            }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Document': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    BankAccount: {
+                                        type: 'cds.String',
+                                        length: 18,
+                                        '@Common.Label': 'Account Number'
+                                    },
+                                    GLAccount: { type: 'cds.String', length: 10, '@Common.Label': 'G/L Account' },
+                                    SalesOrder: { type: 'cds.String', length: 10 },
+                                    ServiceDocumentItem: {
+                                        type: 'cds.String',
+                                        length: 6,
+                                        '@Common.Label': 'Item Number in Doc.'
+                                    },
+                                    Customer: { type: 'cds.String', length: 10 },
+                                    ServiceDocumentItemCharUUID: {
+                                        type: 'cds.String',
+                                        length: 32,
+                                        '@Common.Label': 'Object GUID'
+                                    },
+                                    MaterialBatch: { type: 'cds.String', length: 10, '@Common.Label': 'Batch' }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/documents', odataVersion: '4.0' },
+                targets: [{ name: 'Document', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 1, seed: 31 },
+            { sft }
+        );
+
+        const row = result.resources.Document?.[0];
+        expect(row?.BankAccount).toMatch(/^\d{18}$/u);
+        expect(row?.GLAccount).toMatch(/^\d{10}$/u);
+        expect(row?.SalesOrder).toMatch(/^\d{10}$/u);
+        expect(row?.ServiceDocumentItem).toMatch(/^\d{6}$/u);
+        expect(row?.Customer).toMatch(/^\d{10}$/u);
+        expect(row?.ServiceDocumentItemCharUUID).toMatch(/^[A-F0-9]{32}$/u);
+        expect(row?.MaterialBatch).toMatch(/^\d{10}$/u);
+        expect(sft.generate).not.toHaveBeenCalled();
+    });
+
+    it('uses meaningful unit metadata and compact conversion values', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Unit': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    UnitOfMeasureDimension: {
+                                        type: 'cds.String',
+                                        length: 8,
+                                        '@Common.Label': 'Dimension'
+                                    },
+                                    UnitOfMeasureTemperatureUnit: {
+                                        type: 'cds.String',
+                                        length: 3,
+                                        '@Common.Label': 'Temperature Unit',
+                                        '@sap:semantics': 'unit-of-measure'
+                                    },
+                                    UnitOfMeasurePressureUnit: {
+                                        type: 'cds.String',
+                                        length: 3,
+                                        '@Common.Label': 'Unit of Pressure',
+                                        '@sap:semantics': 'unit-of-measure'
+                                    },
+                                    TemperatureUnit: {
+                                        type: 'cds.String',
+                                        length: 3,
+                                        '@Common.Label': 'Temperature',
+                                        '@sap:semantics': 'unit-of-measure'
+                                    },
+                                    PressureUnit: {
+                                        type: 'cds.String',
+                                        length: 3,
+                                        '@Common.Label': 'Pressure',
+                                        '@sap:semantics': 'unit-of-measure'
+                                    },
+                                    SIUnitCnvrsnAdditiveValue: {
+                                        type: 'cds.Decimal',
+                                        precision: 9,
+                                        scale: 4,
+                                        '@Common.Label': 'Additive Constant'
+                                    },
+                                    SIUnitCnvrsnRateNumerator: {
+                                        type: 'cds.Decimal',
+                                        precision: 5,
+                                        scale: 0,
+                                        '@Common.Label': 'Conversion Numerator'
+                                    },
+                                    SIUnitCnvrsnRateDenominator: {
+                                        type: 'cds.Decimal',
+                                        precision: 5,
+                                        scale: 0,
+                                        '@Common.Label': 'Conversion Denominator'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/units', odataVersion: '4.0' },
+                targets: [{ name: 'Unit', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 4, seed: 31 }
+        );
+
+        result.resources.Unit?.forEach((row) => {
+            expect(['TIME', 'LENGTH', 'MASS', 'TEMP', 'PRESSURE']).toContain(row.UnitOfMeasureDimension);
+            expect(['C', 'F', 'K']).toContain(row.UnitOfMeasureTemperatureUnit);
+            expect(['BAR', 'PSI', 'PA', 'KPA']).toContain(row.UnitOfMeasurePressureUnit);
+            expect(['C', 'F', 'K']).toContain(row.TemperatureUnit);
+            expect(['BAR', 'PSI', 'PA', 'KPA']).toContain(row.PressureUnit);
+            expect(Number(row.SIUnitCnvrsnAdditiveValue)).toBeGreaterThanOrEqual(-10);
+            expect(Number(row.SIUnitCnvrsnAdditiveValue)).toBeLessThanOrEqual(10);
+            expect(Number(row.SIUnitCnvrsnRateNumerator)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.SIUnitCnvrsnRateNumerator)).toBeLessThanOrEqual(100);
+            expect(Number(row.SIUnitCnvrsnRateDenominator)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.SIUnitCnvrsnRateDenominator)).toBeLessThanOrEqual(100);
+        });
+    });
+
+    it('uses compact status codes and business-facing companion descriptions', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.ServiceItem': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { type: 'cds.Integer', key: true, notNull: true },
+                                    ServiceDocumentItemStatus: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Life Cycle Status'
+                                    },
+                                    ServiceDocumentItemHasError: {
+                                        type: 'cds.String',
+                                        length: 1,
+                                        '@Common.Label': 'Error Status'
+                                    },
+                                    BillingPriceSourceName: {
+                                        type: 'cds.String',
+                                        length: 20,
+                                        '@Common.Label': 'Price Source'
+                                    },
+                                    HouseBankAccount_Text: {
+                                        type: 'cds.String',
+                                        length: 40,
+                                        '@Common.Label': 'Description'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/service-items', odataVersion: '4.0' },
+                targets: [{ name: 'ServiceItem', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 4, seed: 31 }
+        );
+
+        result.resources.ServiceItem?.forEach((row) => {
+            expect(['O', 'I', 'A', 'C']).toContain(row.ServiceDocumentItemStatus);
+            expect(['', 'X']).toContain(row.ServiceDocumentItemHasError);
+            expect(['Contract', 'Price List', 'Service Agreement', 'Manual']).toContain(row.BillingPriceSourceName);
+            expect(['Operating Account', 'Payroll Account', 'Clearing Account', 'Collections Account']).toContain(
+                row.HouseBankAccount_Text
+            );
+        });
+    });
+
+    it('uses non-placeholder seeded values for generated string and GUID keys', async () => {
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.Proposal': {
+                                kind: 'entity',
+                                elements: {
+                                    SalesItemProposal: { type: 'cds.String', length: 10, key: true, notNull: true },
+                                    ArtistUUID: { type: 'cds.UUID', key: true, notNull: true }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/proposals', odataVersion: '4.0' },
+                targets: [{ name: 'Proposal', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 31 }
+        );
+
+        expect(result.resources.Proposal).toHaveLength(2);
+        expect(new Set(result.resources.Proposal?.map((row) => row.SalesItemProposal)).size).toBe(2);
+        expect(new Set(result.resources.Proposal?.map((row) => row.ArtistUUID)).size).toBe(2);
+        result.resources.Proposal?.forEach((row) => {
+            expect(row.SalesItemProposal).not.toMatch(/^0{8,}/u);
+            expect(row.ArtistUUID).not.toMatch(/-0{12}$/u);
+        });
+    });
 });

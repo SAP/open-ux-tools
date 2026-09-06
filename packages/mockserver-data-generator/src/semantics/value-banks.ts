@@ -4,10 +4,42 @@ import type { SchemaProperty } from '../schema/graph.js';
 const FIRST_NAMES = ['Amelia', 'Lucas', 'Sofia', 'Noah', 'Maya', 'Elias', 'Nora', 'Daniel'] as const;
 const LAST_NAMES = ['Fischer', 'Murphy', 'Rossi', 'Novak', 'Silva', 'Weber', 'Martin', 'Keller'] as const;
 const LOCATIONS = [
-    { city: 'Berlin', country: 'DE', countryName: 'Germany', region: 'BE', postalCode: '10115' },
-    { city: 'Dublin', country: 'IE', countryName: 'Ireland', region: 'L', postalCode: 'D02' },
-    { city: 'Milan', country: 'IT', countryName: 'Italy', region: 'MI', postalCode: '20121' },
-    { city: 'Prague', country: 'CZ', countryName: 'Czechia', region: 'PR', postalCode: '11000' }
+    {
+        city: 'Berlin',
+        country: 'DE',
+        countryName: 'Germany',
+        region: 'BE',
+        regionName: 'Berlin',
+        postalCode: '10115',
+        phonePrefix: '+49 30'
+    },
+    {
+        city: 'Dublin',
+        country: 'IE',
+        countryName: 'Ireland',
+        region: 'L',
+        regionName: 'Leinster',
+        postalCode: 'D02',
+        phonePrefix: '+353 1'
+    },
+    {
+        city: 'Milan',
+        country: 'IT',
+        countryName: 'Italy',
+        region: 'MI',
+        regionName: 'Lombardy',
+        postalCode: '20121',
+        phonePrefix: '+39 02'
+    },
+    {
+        city: 'Prague',
+        country: 'CZ',
+        countryName: 'Czechia',
+        region: 'PR',
+        regionName: 'Prague',
+        postalCode: '11000',
+        phonePrefix: '+420 2'
+    }
 ] as const;
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'CHF'] as const;
 const UNITS = ['EA', 'KG', 'L', 'H', 'PC'] as const;
@@ -17,6 +49,23 @@ const STATUSES = ['Open', 'In Progress', 'Approved', 'Completed'] as const;
 const CHARTS_OF_ACCOUNTS = ['YCOA', 'INT', 'CAUS', 'IFRS'] as const;
 const CONTROL_CODES = ['01', '02', '03', '04'] as const;
 const PLANTS = ['1010', '1110', '1710', '3010'] as const;
+const ETHNICITIES = [
+    'Asian',
+    'Black or African American',
+    'Hispanic or Latino',
+    'Native American',
+    'Not Specified'
+] as const;
+const FIELD_CONTROL_VALUES = [0, 1, 3, 7] as const;
+const STATUS_CODES = ['O', 'I', 'A', 'C'] as const;
+const MEASUREMENT_DIMENSIONS = ['TIME', 'LENGTH', 'MASS', 'TEMP', 'PRESSURE'] as const;
+const PRICE_SOURCES = ['Contract', 'Price List', 'Service Agreement', 'Manual'] as const;
+const ACCOUNT_DESCRIPTIONS = [
+    'Operating Account',
+    'Payroll Account',
+    'Clearing Account',
+    'Collections Account'
+] as const;
 
 export interface SemanticRowContext {
     firstName: string;
@@ -31,6 +80,52 @@ export interface SemanticRowContext {
 
 function truncate(value: string, maximumLength?: number): string {
     return maximumLength === undefined ? value : Array.from(value).slice(0, maximumLength).join('');
+}
+
+function repeatedDigits(hash: number, maximumLength = 10): string {
+    const source = String(hash).padStart(10, '0');
+    return source.repeat(Math.ceil(maximumLength / source.length)).slice(0, maximumLength);
+}
+
+function repeatedHex(hash: number, maximumLength: number): string {
+    const source = hash.toString(16).toUpperCase().padStart(8, '0');
+    return source.repeat(Math.ceil(maximumLength / source.length)).slice(0, maximumLength);
+}
+
+function numericFacetBounds(property: SchemaProperty): Readonly<{ minimum: number; maximum: number; scale: number }> {
+    if (property.primitiveType === 'int') {
+        return {
+            minimum: property.numericMinimum ?? Number.MIN_SAFE_INTEGER,
+            maximum: property.numericMaximum ?? Number.MAX_SAFE_INTEGER,
+            scale: 0
+        };
+    }
+    const scale = Math.min(property.scale ?? (property.precision === undefined ? 2 : 0), 6);
+    const precision = Math.min(property.precision ?? 15, 15);
+    const maximum =
+        property.precision === undefined
+            ? Number.MAX_SAFE_INTEGER
+            : (10 ** precision - 1) / 10 ** Math.min(property.scale ?? 0, precision);
+    return { minimum: -maximum, maximum, scale };
+}
+
+function boundedNumericValue(
+    property: SchemaProperty,
+    hash: number,
+    desiredMinimum: number,
+    desiredMaximum: number
+): number | undefined {
+    if (property.primitiveType !== 'int' && property.primitiveType !== 'decimal') {
+        return undefined;
+    }
+    const facets = numericFacetBounds(property);
+    const factor = 10 ** facets.scale;
+    const minimum = Math.ceil(Math.max(desiredMinimum, facets.minimum) * factor);
+    const maximum = Math.floor(Math.min(desiredMaximum, facets.maximum) * factor);
+    if (minimum > maximum) {
+        return undefined;
+    }
+    return Number(((minimum + (hash % (maximum - minimum + 1))) / factor).toFixed(facets.scale));
 }
 
 /**
@@ -52,7 +147,12 @@ export function semanticRowContext(hash: number): SemanticRowContext {
     });
 }
 
-function stringRoleValue(role: string, context: SemanticRowContext, hash: number): string | undefined {
+function stringRoleValue(
+    role: string,
+    property: SchemaProperty,
+    context: SemanticRowContext,
+    hash: number
+): string | undefined {
     switch (role) {
         case 'person_first_name':
             return context.firstName;
@@ -66,6 +166,12 @@ function stringRoleValue(role: string, context: SemanticRowContext, hash: number
             return CHARTS_OF_ACCOUNTS[hash % CHARTS_OF_ACCOUNTS.length];
         case 'equipment_id':
             return `EQ${String(hash % 10_000_000_000).padStart(10, '0')}`;
+        case 'numeric_identifier':
+            return repeatedDigits(hash, property.maxLength ?? 10);
+        case 'business_identifier':
+            return `ID${hash.toString(36).toUpperCase().padStart(8, '0')}`;
+        case 'guid_text':
+            return repeatedHex(hash, property.maxLength ?? 32);
         case 'control_code':
             return CONTROL_CODES[hash % CONTROL_CODES.length];
         case 'plant':
@@ -75,7 +181,7 @@ function stringRoleValue(role: string, context: SemanticRowContext, hash: number
         case 'email':
             return `${context.firstName.toLowerCase()}.${context.lastName.toLowerCase()}@example.com`;
         case 'phone':
-            return `+353 1 ${String((hash % 9_000_000) + 1_000_000)}`;
+            return `${context.location.phonePrefix} ${String((hash % 9_000_000) + 1_000_000)}`;
         case 'url':
             return `https://example.com/${context.organization.toLowerCase().replace(/\s+/g, '-')}`;
         case 'currency':
@@ -90,6 +196,8 @@ function stringRoleValue(role: string, context: SemanticRowContext, hash: number
             return context.location.city;
         case 'region':
             return context.location.region;
+        case 'region_name':
+            return context.location.regionName;
         case 'postal_code':
             return context.location.postalCode;
         case 'street_address':
@@ -107,11 +215,27 @@ function stringRoleValue(role: string, context: SemanticRowContext, hash: number
         case 'remark':
             return `${context.product} for ${context.organization}`;
         case 'order_status':
-            return STATUSES[hash % STATUSES.length];
+            return property.maxLength !== undefined && property.maxLength < 11
+                ? STATUS_CODES[hash % STATUS_CODES.length]
+                : STATUSES[hash % STATUSES.length];
+        case 'indicator':
+            return hash % 2 === 0 ? '' : 'X';
+        case 'measurement_dimension':
+            return MEASUREMENT_DIMENSIONS[hash % MEASUREMENT_DIMENSIONS.length];
+        case 'source_name':
+            return PRICE_SOURCES[hash % PRICE_SOURCES.length];
+        case 'account_description':
+            return ACCOUNT_DESCRIPTIONS[hash % ACCOUNT_DESCRIPTIONS.length];
         case 'language':
             return ['EN', 'DE', 'FR', 'IT'][hash % 4];
         case 'timezone':
             return ['Europe/Dublin', 'Europe/Berlin', 'America/New_York', 'Asia/Tokyo'][hash % 4];
+        case 'ethnicity':
+            return ETHNICITIES[hash % ETHNICITIES.length];
+        case 'temperature_unit':
+            return ['C', 'F', 'K'][hash % 3];
+        case 'pressure_unit':
+            return ['BAR', 'PSI', 'PA', 'KPA'][hash % 4];
         case 'iban':
             return `DE${String((hash % 90) + 10)}37040044${String(hash).padStart(10, '0').slice(-10)}`;
         case 'bic':
@@ -138,31 +262,50 @@ export function semanticValue(
     if (!role) {
         return undefined;
     }
-    const stringValue = stringRoleValue(role, context, hash);
+    const stringValue = stringRoleValue(role, property, context, hash);
     if (stringValue !== undefined && property.primitiveType === 'string') {
         return truncate(stringValue, property.maxLength);
     }
     switch (role) {
+        case 'year':
+            if (property.primitiveType === 'int') {
+                return context.startDate.getUTCFullYear();
+            }
+            return property.primitiveType === 'string' ? String(context.startDate.getUTCFullYear()) : undefined;
         case 'boolean_flag':
             return property.primitiveType === 'bool' ? hash % 2 === 0 : undefined;
+        case 'field_control':
+            return property.primitiveType === 'int'
+                ? FIELD_CONTROL_VALUES[hash % FIELD_CONTROL_VALUES.length]
+                : undefined;
+        case 'decimal_places':
+            return property.primitiveType === 'int' ? hash % 7 : undefined;
+        case 'exponent':
+            return boundedNumericValue(property, hash, -6, 6);
+        case 'count':
+            return boundedNumericValue(property, hash, 1, 500);
+        case 'conversion_factor':
+            return boundedNumericValue(property, hash, 1, 100);
+        case 'conversion_offset':
+            return boundedNumericValue(property, hash, -10, 10);
         case 'order_status':
             return property.primitiveType === 'decimal' || property.primitiveType === 'int'
                 ? hash % STATUSES.length
                 : undefined;
         case 'monetary_amount':
-            return property.primitiveType === 'decimal' || property.primitiveType === 'int'
-                ? Number((((hash % 900_000) + 10_000) / 100).toFixed(property.scale ?? 2))
-                : undefined;
+            return boundedNumericValue(property, hash, 100, 9_099.99);
+        case 'price':
+            return boundedNumericValue(property, hash, 5, 500);
         case 'quantity':
-            return property.primitiveType === 'decimal' || property.primitiveType === 'int'
-                ? Number((((hash % 9_000) + 100) / 100).toFixed(property.scale ?? 2))
-                : undefined;
+            return boundedNumericValue(property, hash, 1, 90.99);
         case 'percentage':
-            return property.primitiveType === 'decimal' || property.primitiveType === 'int'
-                ? Number(((hash % 10_001) / 100).toFixed(property.scale ?? 2))
-                : undefined;
-        case 'year':
-            return property.primitiveType === 'int' ? context.startDate.getUTCFullYear() : undefined;
+            return boundedNumericValue(property, hash, 0, 100);
+        case 'interest_rate':
+            return boundedNumericValue(property, hash, 0, 20);
+        case 'temperature':
+            return boundedNumericValue(property, hash, -30, 50);
+        case 'pressure':
+            return boundedNumericValue(property, hash, 0.5, 20);
         case 'start_date':
             return property.primitiveType === 'date' ? context.startDate.toISOString().slice(0, 10) : undefined;
         case 'end_date': {

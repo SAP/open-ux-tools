@@ -5,6 +5,7 @@ import { semanticRoleForSapDataElement } from './sap-data-elements.js';
 
 function tokens(name: string): ReadonlyArray<string> {
     return name
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
         .replace(/([a-z\d])([A-Z])/g, '$1 $2')
         .replace(/[_-]+/g, ' ')
         .toLowerCase()
@@ -63,6 +64,50 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (has(words, 'fullname') || (has(words, 'full', 'display') && has(words, 'name'))) {
         return 'person_full_name';
     }
+    if (has(words, 'formatted') && has(words, 'name')) {
+        return 'person_full_name';
+    }
+    if (has(words, 'timezone') || (has(words, 'time') && has(words, 'zone'))) {
+        return 'timezone';
+    }
+    if (has(words, 'ethnicity', 'ethnic')) {
+        return 'ethnicity';
+    }
+    if (primitiveType === 'string' && has(words, 'source') && has(words, 'name')) {
+        return 'source_name';
+    }
+    if (primitiveType === 'string' && has(words, 'account') && has(words, 'text', 'description')) {
+        return 'account_description';
+    }
+    if (primitiveType === 'string' && has(words, 'uuid', 'guid')) {
+        return 'guid_text';
+    }
+    if (primitiveType === 'string' && has(words, 'batch')) {
+        return 'batch';
+    }
+    if (primitiveType === 'string' && has(words, 'plant')) {
+        return 'plant';
+    }
+    if (primitiveType === 'string' && has(words, 'account') && has(words, 'number', 'gl')) {
+        return 'numeric_identifier';
+    }
+    if (
+        primitiveType === 'string' &&
+        !has(words, 'status', 'name', 'text', 'description', 'address') &&
+        ((has(words, 'document') && has(words, 'item')) || has(words, 'order'))
+    ) {
+        return 'numeric_identifier';
+    }
+    if (
+        primitiveType === 'string' &&
+        !has(words, 'name', 'text', 'description', 'address', 'status') &&
+        has(words, 'customer', 'supplier', 'payer', 'party', 'owner')
+    ) {
+        return 'numeric_identifier';
+    }
+    if (primitiveType === 'string' && has(words, 'identifier', 'reference') && has(words, 'id', 'number', 'key')) {
+        return 'business_identifier';
+    }
     if (has(words, 'currency', 'waers')) {
         return 'currency';
     }
@@ -72,11 +117,50 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (last === 'equipment' || (has(words, 'technical') && has(words, 'object'))) {
         return 'equipment_id';
     }
-    if (has(words, 'amount', 'price', 'total', 'net', 'gross')) {
+    if (has(words, 'interest') && has(words, 'rate')) {
+        return 'interest_rate';
+    }
+    if (has(words, 'price')) {
+        return 'price';
+    }
+    if (has(words, 'amount', 'total', 'net', 'gross')) {
         return 'monetary_amount';
     }
     if (has(words, 'quantity', 'qty')) {
         return 'quantity';
+    }
+    if (has(words, 'dimension')) {
+        return 'measurement_dimension';
+    }
+    if (has(words, 'additive') && has(words, 'constant', 'value')) {
+        return 'conversion_offset';
+    }
+    if (has(words, 'conversion', 'cnvrsn') && has(words, 'numerator', 'denominator')) {
+        return 'conversion_factor';
+    }
+    if (has(words, 'decimal', 'decimals', 'dcmls') && has(words, 'place', 'places', 'number', 'nmbr', 'rounding')) {
+        return 'decimal_places';
+    }
+    if (has(words, 'exponent')) {
+        return 'exponent';
+    }
+    if (primitiveType === 'string' && has(words, 'temperature') && has(words, 'unit')) {
+        return 'temperature_unit';
+    }
+    if (primitiveType === 'string' && has(words, 'pressure') && has(words, 'unit')) {
+        return 'pressure_unit';
+    }
+    if (has(words, 'temperature')) {
+        return 'temperature';
+    }
+    if (has(words, 'pressure')) {
+        return 'pressure';
+    }
+    if (
+        primitiveType === 'int' &&
+        (has(words, 'count') || (has(words, 'number', 'no', 'nmbr') && has(words, 'item', 'items')))
+    ) {
+        return 'count';
     }
     if (has(words, 'unit', 'uom') || (last === 'measure' && primitiveType === 'string')) {
         return 'unit_of_measure';
@@ -100,13 +184,13 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
         return 'time';
     }
     if (has(words, 'country')) {
-        return last === 'name' ? 'country_name' : 'country';
+        return has(words, 'name', 'text', 'description') ? 'country_name' : 'country';
     }
     if (has(words, 'city', 'town')) {
         return 'city';
     }
     if (has(words, 'region', 'state', 'province')) {
-        return 'region';
+        return has(words, 'name', 'text', 'description') ? 'region_name' : 'region';
     }
     if (has(words, 'postal', 'postcode', 'zipcode') || (has(words, 'zip') && has(words, 'code'))) {
         return 'postal_code';
@@ -114,7 +198,7 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (has(words, 'street') || (has(words, 'address') && !has(words, 'email'))) {
         return 'street_address';
     }
-    if (has(words, 'company', 'organization', 'organisation', 'supplier', 'vendor') && has(words, 'name')) {
+    if (has(words, 'company', 'organization', 'organisation', 'supplier', 'vendor', 'customer') && has(words, 'name')) {
         return 'org_name';
     }
     if (has(words, 'product', 'material') && has(words, 'name')) {
@@ -127,13 +211,13 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
         return last ?? 'notes';
     }
     if (has(words, 'status')) {
+        if (primitiveType === 'string' && has(words, 'error') && text.toLowerCase().includes('has')) {
+            return 'indicator';
+        }
         return 'order_status';
     }
     if (has(words, 'language', 'locale')) {
         return 'language';
-    }
-    if (has(words, 'timezone')) {
-        return 'timezone';
     }
     if (has(words, 'year')) {
         return 'year';
@@ -153,6 +237,13 @@ function lexicalRole(property: SchemaProperty): string | undefined {
     }
     const propertyTokens = tokens(property.name);
     const propertyWords = new Set(propertyTokens);
+    const technicalRole = lexicalRoleForText(property.name, property.primitiveType);
+    if (technicalRole === 'source_name' || technicalRole === 'account_description') {
+        return technicalRole;
+    }
+    if (property.name.toLowerCase().endsWith('_fc') || (has(propertyWords, 'field') && has(propertyWords, 'control'))) {
+        return property.primitiveType === 'string' ? 'control_code' : 'field_control';
+    }
     if (
         property.primitiveType === 'string' &&
         (property.maxLength ?? Number.POSITIVE_INFINITY) <= 2 &&
@@ -167,6 +258,23 @@ function lexicalRole(property: SchemaProperty): string | undefined {
     ) {
         return 'audit_user';
     }
+    if (
+        property.primitiveType === 'string' &&
+        has(propertyWords, 'error') &&
+        property.name.toLowerCase().includes('has')
+    ) {
+        return 'indicator';
+    }
+    const roles = new Set(
+        [property.name, property.label, property.description]
+            .filter((evidence): evidence is string => Boolean(evidence))
+            .map((evidence) => lexicalRoleForText(evidence, property.primitiveType))
+            .filter((role): role is string => role !== undefined)
+    );
+    return roles.size === 1 ? roles.values().next().value : undefined;
+}
+
+function preferredLexicalRole(property: SchemaProperty): string | undefined {
     for (const evidence of [property.label, property.description, property.name]) {
         if (evidence) {
             const role = lexicalRoleForText(evidence, property.primitiveType);
@@ -176,6 +284,25 @@ function lexicalRole(property: SchemaProperty): string | undefined {
         }
     }
     return undefined;
+}
+
+function specializedUnitRole(property: SchemaProperty): 'temperature_unit' | 'pressure_unit' | undefined {
+    const roles = new Set(
+        [property.name, property.label, property.description]
+            .filter((evidence): evidence is string => Boolean(evidence))
+            .map((evidence) => lexicalRoleForText(evidence, property.primitiveType))
+            .map((role) => {
+                if (role === 'temperature' || role === 'temperature_unit') {
+                    return 'temperature_unit';
+                }
+                if (role === 'pressure' || role === 'pressure_unit') {
+                    return 'pressure_unit';
+                }
+                return undefined;
+            })
+            .filter((role): role is 'temperature_unit' | 'pressure_unit' => role !== undefined)
+    );
+    return roles.size === 1 ? roles.values().next().value : undefined;
 }
 
 /**
@@ -222,11 +349,18 @@ export function resolveSemanticClassifications(
         for (const property of entity.properties) {
             const key = semanticPropertyKey(entity.entitySetName, property.name);
             const explicitRole = explicitMetadataRole(property);
+            const role = lexicalRole(property);
+            const classification = learned.get(key);
             if (explicitRole) {
-                resolved.set(key, Object.freeze({ role: explicitRole, confidence: 1, source: 'metadata' as const }));
+                const refinedRole =
+                    explicitRole === 'unit_of_measure' ? (specializedUnitRole(property) ?? explicitRole) : explicitRole;
+                resolved.set(key, Object.freeze({ role: refinedRole, confidence: 1, source: 'metadata' as const }));
                 continue;
             }
-            const classification = learned.get(key);
+            if (role) {
+                resolved.set(key, Object.freeze({ role, confidence: 0.8, source: 'lexical-fallback' as const }));
+                continue;
+            }
             if (
                 classification &&
                 classification.role !== 'unknown' &&
@@ -235,10 +369,15 @@ export function resolveSemanticClassifications(
                 resolved.set(key, classification);
                 continue;
             }
-            const role = lexicalRole(property);
-            if (role) {
-                resolved.set(key, Object.freeze({ role, confidence: 0.8, source: 'lexical-fallback' as const }));
-            } else if (classification) {
+            const fallbackRole = preferredLexicalRole(property);
+            if (fallbackRole) {
+                resolved.set(
+                    key,
+                    Object.freeze({ role: fallbackRole, confidence: 0.7, source: 'lexical-fallback' as const })
+                );
+                continue;
+            }
+            if (classification) {
                 resolved.set(key, classification);
             }
         }

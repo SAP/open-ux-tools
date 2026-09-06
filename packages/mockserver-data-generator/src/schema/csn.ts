@@ -31,6 +31,9 @@ function primitiveType(value: unknown): PrimitiveType {
         case 'cds.Integer16':
         case 'cds.Integer32':
         case 'cds.Integer64':
+        case 'cds.Int16':
+        case 'cds.Int32':
+        case 'cds.Int64':
         case 'cds.UInt8':
             return 'int';
         case 'cds.Decimal':
@@ -54,6 +57,25 @@ function primitiveType(value: unknown): PrimitiveType {
             return 'binary';
         default:
             return 'string';
+    }
+}
+
+function integerBounds(value: unknown): Readonly<{ numericMinimum: number; numericMaximum: number }> | undefined {
+    switch (typeName(value)) {
+        case 'cds.UInt8':
+            return { numericMinimum: 0, numericMaximum: 255 };
+        case 'cds.Integer16':
+        case 'cds.Int16':
+            return { numericMinimum: -32_768, numericMaximum: 32_767 };
+        case 'cds.Integer':
+        case 'cds.Integer32':
+        case 'cds.Int32':
+            return { numericMinimum: -2_147_483_648, numericMaximum: 2_147_483_647 };
+        case 'cds.Integer64':
+        case 'cds.Int64':
+            return { numericMinimum: Number.MIN_SAFE_INTEGER, numericMaximum: Number.MAX_SAFE_INTEGER };
+        default:
+            return undefined;
     }
 }
 
@@ -141,6 +163,7 @@ function property(name: string, declared: CsnRecord, resolved: CsnRecord): Schem
     const description = stringAnnotation(resolved, 'Core.Description', 'description');
     const dataElement = stringAnnotation(resolved, 'sap.dataElement', 'SAP.Common.DataElement');
     const values = enumValues(resolved);
+    const bounds = integerBounds(resolved.type);
     return {
         name,
         primitiveType: primitiveType(resolved.type),
@@ -149,6 +172,7 @@ function property(name: string, declared: CsnRecord, resolved: CsnRecord): Schem
         maxLength: optionalInteger(resolved.length),
         precision: optionalInteger(resolved.precision),
         scale: optionalInteger(resolved.scale),
+        ...bounds,
         ...(label ? { label } : {}),
         ...(description ? { description } : {}),
         ...(dataElement ? { dataElement } : {}),

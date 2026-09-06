@@ -76,14 +76,15 @@ function expectCoherentDocument(row: Readonly<Record<string, unknown>>): void {
     expect(row.BankLedgerIsPosted || row.SubledgerIsPostedSuccessfully).toBe(row.BankStatementIsInterpreted === 'X');
 
     expect(row.MaterialIsInstalled && row.MaterialIsInWarehouse).toBe(false);
+    expect(row.MaterialIsAvailable && row.MaterialIsInstalled).toBe(false);
     expect(row.MaterialIsAtCustomer && !row.MaterialIsInstalled).toBe(false);
     if (row.MaterialIsDeleted || row.MaterialIsInactive) {
         expect(row.MaterialIsInstalled || row.MaterialIsInWarehouse || row.MaterialIsAtCustomer).toBe(false);
     }
-    expect(row.MaterialIsAvailable).toBe(!(row.MaterialIsDeleted || row.MaterialIsInactive));
+    expect(row.MaterialIsAvailable).toBe(row.MaterialIsInWarehouse);
 
     expect(row.HasActiveEntity).toBe(!row.IsActiveEntity);
-    expect(row.HasDraftEntity).toBe(row.IsActiveEntity);
+    expect(row.HasDraftEntity).toBe(false);
     expect(row.IsActiveEntity ? null : row.ActiveUUID).toBe(row.ActiveUUID);
 }
 

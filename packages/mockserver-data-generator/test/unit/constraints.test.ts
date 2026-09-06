@@ -130,6 +130,52 @@ describe('whole-service constraints', () => {
         );
     });
 
+    test('preserves unsigned-byte bounds for validation, values, and key cardinality', async () => {
+        const byteProperty: SchemaProperty = {
+            name: 'ByteValue',
+            primitiveType: 'int',
+            nullable: false,
+            isKey: false,
+            numericMinimum: 0,
+            numericMaximum: 255,
+            annotations: []
+        };
+        expect(propertyValueIsValid(byteProperty, -1)).toBe(false);
+        expect(propertyValueIsValid(byteProperty, 0)).toBe(true);
+        expect(propertyValueIsValid(byteProperty, 255)).toBe(true);
+        expect(propertyValueIsValid(byteProperty, 256)).toBe(false);
+
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.ByteRecord': {
+                                kind: 'entity',
+                                elements: {
+                                    ID: { key: true, notNull: true, type: 'cds.UInt8' },
+                                    OpaqueValue: { type: 'cds.UInt8' }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/byte-records', odataVersion: '4.0' },
+                targets: [{ name: 'ByteRecord', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 300, seed: 91 }
+        );
+
+        expect(result.resources.ByteRecord).toHaveLength(255);
+        expect(result.resources.ByteRecord.every(({ ID }) => Number(ID) >= 1 && Number(ID) <= 255)).toBe(true);
+        expect(result.resources.ByteRecord.every(({ OpaqueValue }) => Number(OpaqueValue) <= 255)).toBe(true);
+        expect(result.diagnostics).toContainEqual(
+            expect.objectContaining({ code: 'ROW_COUNT_REDUCED_UNSATISFIABLE_KEY_DOMAIN', target: 'ByteRecord' })
+        );
+    });
+
     test.each([
         ['date', { type: 'cds.Date' }],
         ['datetimeoffset', { type: 'cds.Timestamp' }],

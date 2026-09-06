@@ -54,7 +54,12 @@ export function propertyValueIsValid(property: SchemaProperty, value: unknown): 
     }
     switch (property.primitiveType) {
         case 'int':
-            return typeof value === 'number' && Number.isSafeInteger(value);
+            return (
+                typeof value === 'number' &&
+                Number.isSafeInteger(value) &&
+                (property.numericMinimum === undefined || value >= property.numericMinimum) &&
+                (property.numericMaximum === undefined || value <= property.numericMaximum)
+            );
         case 'decimal': {
             if (typeof value !== 'number' || !Number.isFinite(value)) {
                 return false;

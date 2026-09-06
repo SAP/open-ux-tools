@@ -72,6 +72,23 @@ function primitiveType(type: string): PrimitiveType {
     }
 }
 
+function integerBounds(type: string): Readonly<{ numericMinimum: number; numericMaximum: number }> | undefined {
+    switch (type) {
+        case 'Edm.Byte':
+            return { numericMinimum: 0, numericMaximum: 255 };
+        case 'Edm.SByte':
+            return { numericMinimum: -128, numericMaximum: 127 };
+        case 'Edm.Int16':
+            return { numericMinimum: -32_768, numericMaximum: 32_767 };
+        case 'Edm.Int32':
+            return { numericMinimum: -2_147_483_648, numericMaximum: 2_147_483_647 };
+        case 'Edm.Int64':
+            return { numericMinimum: Number.MIN_SAFE_INTEGER, numericMaximum: Number.MAX_SAFE_INTEGER };
+        default:
+            return undefined;
+    }
+}
+
 /**
  * Reduce supported primitive EDMX annotation expressions to the canonical form.
  *
@@ -189,6 +206,7 @@ function parseProperty(
         maxLength: optionalInteger(property.MaxLength),
         precision: optionalInteger(property.Precision),
         scale: optionalInteger(property.Scale),
+        ...integerBounds(declaredType),
         ...(label ? { label } : {}),
         ...(description ? { description } : {}),
         ...(dataElement ? { dataElement } : {}),

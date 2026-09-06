@@ -56,14 +56,28 @@ function binaryOrdinal(ordinal: number, maximumLength?: number): string {
     return Buffer.from(hexadecimal.length % 2 === 0 ? hexadecimal : `0${hexadecimal}`, 'hex').toString('base64');
 }
 
+function integerRange(
+    property: SchemaProperty,
+    preferredMinimum: number,
+    preferredMaximum: number
+): Readonly<{ minimum: number; maximum: number }> {
+    const facetMinimum = property.numericMinimum ?? Number.MIN_SAFE_INTEGER;
+    const facetMaximum = property.numericMaximum ?? Number.MAX_SAFE_INTEGER;
+    const minimum = Math.max(facetMinimum, preferredMinimum);
+    const maximum = Math.min(facetMaximum, preferredMaximum);
+    return minimum <= maximum ? { minimum, maximum } : { minimum: facetMinimum, maximum: facetMaximum };
+}
+
 function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: number, seed: number): JsonValue {
     const values = uniqueEnumValues(property);
     if (values.length > 0) {
         return values[ordinal % values.length];
     }
     switch (property.primitiveType) {
-        case 'int':
-            return ordinal + 1;
+        case 'int': {
+            const range = integerRange(property, 1, Number.MAX_SAFE_INTEGER);
+            return range.minimum + ordinal;
+        }
         case 'decimal': {
             const precision = Math.min(property.precision ?? 15, 15);
             const scale = Math.min(property.scale ?? 0, precision);
@@ -72,13 +86,13 @@ function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: numbe
         case 'bool':
             return ordinal % 2 === 1;
         case 'guid': {
-            const prefix = createHash('sha256')
-                .update(`${seed}:${entity.entitySetName}:${property.name}`)
+            const value = createHash('sha256')
+                .update(`${seed}:${entity.entitySetName}:${property.name}:${ordinal}`)
                 .digest('hex');
-            return `${prefix.slice(0, 8)}-${prefix.slice(8, 12)}-4${prefix.slice(13, 16)}-a${prefix.slice(
+            return `${value.slice(0, 8)}-${value.slice(8, 12)}-4${value.slice(13, 16)}-a${value.slice(
                 17,
                 20
-            )}-${ordinal.toString(16).padStart(12, '0')}`;
+            )}-${value.slice(20, 32)}`;
         }
         case 'date':
             return new Date(Date.UTC(2000, 0, ordinal + 1)).toISOString().slice(0, 10);
@@ -96,10 +110,18 @@ function keyValue(entity: SchemaEntity, property: SchemaProperty, ordinal: numbe
         }
         case 'binary':
             return binaryOrdinal(ordinal, property.maxLength);
-        case 'string':
-            return property.maxLength === undefined
-                ? `K${ordinal.toString(36)}`
-                : ordinal.toString(36).padStart(property.maxLength, '0').slice(-property.maxLength);
+        case 'string': {
+            const seedHex = createHash('sha256')
+                .update(`${seed}:${entity.entitySetName}:${property.name}`)
+                .digest('hex')
+                .slice(0, 16);
+            if (property.maxLength === undefined) {
+                return `K${seedHex}${ordinal.toString(36)}`;
+            }
+            const capacity = 36n ** BigInt(property.maxLength);
+            const value = (BigInt(`0x${seedHex}`) + BigInt(ordinal)) % capacity;
+            return value.toString(36).toUpperCase().padStart(property.maxLength, '0');
+        }
         default:
             throw new TypeError('Unsupported primitive key type');
     }
@@ -143,8 +165,10 @@ function valueFor(
         return governedValue;
     }
     switch (property.primitiveType) {
-        case 'int':
-            return property.isKey ? rowIndex + 1 : hash % 10_000;
+        case 'int': {
+            const range = integerRange(property, 0, 9_999);
+            return range.minimum + (hash % (range.maximum - range.minimum + 1));
+        }
         case 'decimal': {
             const precision = Math.min(property.precision ?? 8, 15);
             const scale = Math.min(property.scale ?? 2, precision);
@@ -184,6 +208,14 @@ function finiteKeyCardinality(property: SchemaProperty): number | undefined {
     }
     if (property.primitiveType === 'bool') {
         return 2;
+    }
+    if (
+        property.primitiveType === 'int' &&
+        property.numericMinimum !== undefined &&
+        property.numericMaximum !== undefined
+    ) {
+        const range = integerRange(property, 1, property.numericMaximum);
+        return Math.min(1_001, range.maximum - range.minimum + 1);
     }
     if (property.primitiveType === 'string' && property.maxLength !== undefined) {
         if (property.maxLength === 0) {

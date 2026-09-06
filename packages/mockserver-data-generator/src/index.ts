@@ -68,7 +68,7 @@ function fingerprint(value: unknown): string {
     return createHash('sha256').update(canonicalJson(value)).digest('hex');
 }
 
-const GENERATOR_LOGIC_VERSION = 2;
+const GENERATOR_LOGIC_VERSION = 3;
 
 /**
  * Fingerprint every material generation input while excluding live process objects.
