@@ -213,6 +213,36 @@ pnpm mockserver-data-generator:realism-campaign --compile \
   --out /tmp/mockserver-data-generator-realism-consensus.json
 ~~~
 
+If a provider cannot reliably return all 300+ reviews in one response, prepare
+deterministic bounded inputs instead of weakening the coverage requirement:
+
+~~~sh
+pnpm mockserver-data-generator:realism-review-batches --prepare \
+  --evidence /tmp/mockserver-data-generator-realism-evidence.json \
+  --out-dir /tmp/provider-batches \
+  --maximum-fields-per-batch 50
+~~~
+
+Run the retained pilot's `ml:review-provider` command once for every
+`input-NNN.json` named by `manifest.json`. Each provider artifact must have a
+new output path. Then assemble the exact set:
+
+~~~sh
+pnpm mockserver-data-generator:realism-review-batches --assemble \
+  --pilot-root /absolute/path/to/sap-ai-mockserver \
+  --evidence /tmp/mockserver-data-generator-realism-evidence.json \
+  --batch-manifest /tmp/provider-batches/manifest.json \
+  --provider-artifact /tmp/provider-batches/provider-001.json \
+  --provider-artifact /tmp/provider-batches/provider-002.json \
+  --out /tmp/provider-complete.json
+~~~
+
+Repeat `--provider-artifact` for every manifest entry. The assembler rejects a
+missing, duplicate, mixed-provider, schema-mismatched, or evidence-mismatched
+batch. Its final artifact binds the full evidence source and records every
+batch input and provider-artifact fingerprint. Batch files and provider output
+remain external evidence and must not be committed to Open UX Tools.
+
 The compiler uses pessimistic consensus and passes only when the overall score
 and every domain and format score are at least 80%, no critical issue exists,
 both providers are independent, and their artifacts match the exact evidence,

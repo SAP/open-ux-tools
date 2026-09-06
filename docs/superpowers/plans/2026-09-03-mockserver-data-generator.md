@@ -1788,3 +1788,22 @@ evidence fingerprint is
 The full integration workspace passes 11 suites/124 tests. Two independent
 provider reviews and consensus compilation remain open; packet generation alone
 does not pass the realism gate.
+
+**Two-provider realism result and bounded-review harness (2026-09-06):** The
+exact 311-record packet now has independent OpenAI GPT-5.5 and Google Gemini
+2.5 Flash reviews. OpenAI accepted 186 fields, Google accepted 252, and the
+pessimistic consensus accepted 184 (59.16%), with one critical issue and 93
+disagreements. Every domain and format is below the frozen 80% consensus gate;
+the current candidate therefore fails realism and is not production-ready.
+
+A full single-response Anthropic review exceeded the initial $1 ceiling and a
+bounded $2.50 retry returned output that failed strict validation. A full
+Gemini response also failed extraction. The evaluation harness now prepares
+deterministic provider batches and assembles them only after exact evidence,
+prompt, schema, provider, and every-field coverage checks. Seven Gemini batches
+produced the complete second artifact without reducing the 311-record gate.
+The integration workspace passes 12 suites/131 tests with the new harness, and
+a real prepare/assemble replay is byte-identical.
+The next implementation increment is a ranked semantic correction cycle for
+SFT acceptance guards, label-aware deterministic ranges/text, and row-level
+coherence, followed by a completely fresh export and two-provider review.

@@ -77,7 +77,8 @@
         "mockserver-data-generator:build-vocabulary-candidate": "node scripts/mockserver-data-generator-evaluation/build-vocabulary-candidate.mjs",
         "mockserver-data-generator:measure-footprint": "node packages/mockserver-data-generator/scripts/measure-footprint.mjs",
         "mockserver-data-generator:measure-integration": "node scripts/mockserver-data-generator-evaluation/measure-integration.mjs",
-        "mockserver-data-generator:realism-campaign": "node scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs"
+        "mockserver-data-generator:realism-campaign": "node scripts/mockserver-data-generator-evaluation/prepare-realism-campaign.mjs",
+        "mockserver-data-generator:realism-review-batches": "node scripts/mockserver-data-generator-evaluation/realism-review-batches.mjs"
     },
     "engines": {
         "npm": "please-use-pnpm",

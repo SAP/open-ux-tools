@@ -1031,3 +1031,51 @@ The private review packet is retained outside the public Open UX repositories.
 This completes packet preparation only. It is not a realism pass until exactly
 two independent, lineage-bound provider artifacts compile successfully and
 meet the 80% overall, per-domain, and per-format gates with no critical issue.
+
+## Final two-provider result
+
+OpenAI GPT-5.5 reviewed the full packet directly. Google Gemini 2.5 Flash used
+seven deterministic batches of at most 50 records because single-response
+non-Codex transports did not reliably return a valid 311-review JSON object.
+The checked-in batch harness rejects missing, duplicate, mixed-provider, or
+lineage-mismatched artifacts and assembles one provider artifact bound to the
+full evidence source. Generated values and all provider outputs remain in the
+private evidence directory.
+
+| Result | OpenAI | Google | Pessimistic consensus |
+| --- | ---: | ---: | ---: |
+| Realistic fields | 186/311 | 252/311 | 184/311 |
+| Realistic rate | 59.81% | 81.03% | 59.16% |
+| Critical issues | 0 | 1 | 1 |
+| Provider disagreements | — | — | 93 |
+
+| Consensus stratum | Realistic | Rate | Critical |
+| --- | ---: | ---: | ---: |
+| Finance | 29/53 | 54.72% | 0 |
+| Sales | 27/52 | 51.92% | 0 |
+| Service | 22/52 | 42.31% | 0 |
+| Maintenance | 31/51 | 60.78% | 0 |
+| Master data | 39/51 | 76.47% | 1 |
+| Non-SAP | 36/52 | 69.23% | 0 |
+| EDMX V2 | 78/157 | 49.68% | 0 |
+| EDMX V4 | 67/103 | 65.05% | 0 |
+| CSN | 39/51 | 76.47% | 1 |
+
+The gate therefore fails. The consensus artifact fingerprint is
+`700d59bf18351380b4c672c52d3d9107b3e6962968f616260af8480c4403e017`
+and its file SHA-256 is
+`470a3a6b3d226d6d9a52bbddf6dbb5601f884465deabef73f2540a37f6a0e2d6`.
+The OpenAI artifact SHA-256 is
+`0b70c714aaa04943d0b3754df4a8422bf9b41cf357e3d1a60378cdbf0a3fca97`;
+the assembled Google artifact SHA-256 is
+`587f7e33107e861a111873c0b183ea57bff466c7d90e5274555516441aa1b235`.
+
+The main correction groups are malformed or cross-domain SFT strings,
+placeholder/truncated deterministic text, unconstrained numeric fields such as
+field-control codes, decimal counts, prices, rates, and temperatures, and
+seven failed relationship assertions. The first correction cycle must remove
+the critical ethnicity/location confusion, add semantic range and lexical
+guards before accepting SFT values, make deterministic fallbacks label-aware,
+and enforce row-level business relationships. A new candidate requires a fresh
+packet and two fresh provider artifacts; this failed result is not overwritten
+or relabelled.
