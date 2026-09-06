@@ -1007,3 +1007,38 @@ OData V4 fixture on macOS arm64 with Node 22.22.2.
 This is the current local functional candidate and supersedes the previous kit
 for BAS testing. It does not turn the still-pending BAS, remote-platform,
 governance, public-hosting, or independent-realism gates into passes.
+
+## Corrected-realism archive canary
+
+The development kit was rebuilt after the complete semantic correction cycle
+and its successful two-provider realism qualification. Two builds from the
+same clean sources were byte-identical. The exact Downloads handoff archive was
+then extracted and installed into a fresh disposable OData V4 fixture with the
+retained classifier and INT8 SFT cache.
+
+- Clean source commits: `SAP/open-ux-tools`
+  `19ba63f69ed6d69736203e8dc5e88b6d70eb0302` and `SAP/open-ux-odata`
+  `e5179f28193cc1933344703beaedc909079dfec3`.
+- Development-kit fingerprint:
+  `401d0161affb9491a708d00295790e2f012a6130884111ac14a1e31da1fd3113`.
+- Archive SHA-256:
+  `e0e7d6a0d77e93f489f3e479ef5e192175a6ccc14c1f220c439288ae9566350f`.
+- Archive size: 586,523 bytes; 10 entries; manifest `reproducible: true`.
+- Generator tarball: 112,199 bytes; SHA-256
+  `942fa936dc0e42a908c76ce36840435f611b0d1c0b721349114388f8551669fc`.
+- The standard HTTP canary returned one row with `providerExecuted: false` and
+  `standardFallbackVerified: true`. It performed no MockGen provider work.
+- The flagged canary verified both learned components and returned one row with
+  `providerExecuted: true`, `modelVerified: true`, and
+  `learnedRuntimeVerified: true`. Runtime initialization took 1,462.466 ms,
+  whole-service generation took 1,500.205 ms, and host provider work took
+  1,511.604 ms. These are functional observations, not a performance campaign.
+- Transactional restore returned the application fixture byte-for-byte outside
+  disposable `node_modules`; the 395 MiB temporary tree was then removed.
+- Handoff archive:
+  `/Users/I335123/Downloads/mockserver-data-generator-dev-kit-401d0161affb9491.tgz`.
+
+This exact archive is the current local functional and BAS handoff candidate.
+Its implementation separately passes the frozen 311-field realism gate at
+91.64% strict consensus with every domain and format above 80% and no critical
+issue. Actual BAS execution remains pending and will be performed by the user.
