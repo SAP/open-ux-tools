@@ -15,6 +15,7 @@ import { applySemanticCoherence } from './coherence.js';
 import { propertyValueIsValid } from './constraints.js';
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'CHF'] as const;
+const HOUSE_BANK_KEYS = ['DE01', 'US01', 'GB01', 'IE01'] as const;
 
 function routedRole(classification: SemanticClassification | undefined): string | undefined {
     if (
@@ -85,6 +86,25 @@ function governedStringKeyDomain(property: SchemaProperty): GovernedStringKeyDom
             .split(/\s+/)
             .filter(Boolean)
     );
+    if (words.has('bank') && words.has('statement') && words.has('short') && words.has('id')) {
+        const length = Math.min(property.maxLength ?? 8, 8);
+        if (length === 0) {
+            return { cardinality: 0, value: () => '' };
+        }
+        const cardinality = cappedPower(10, length);
+        return {
+            cardinality,
+            value: (ordinal) => (length === 8 ? String(20_260_001 + ordinal) : numericStringKey(length, ordinal))
+        };
+    }
+    if (words.has('house') && words.has('bank') && !words.has('account')) {
+        const values = HOUSE_BANK_KEYS.filter(
+            (value) => property.maxLength === undefined || value.length <= property.maxLength
+        );
+        return values.length === 0
+            ? { cardinality: 0, value: () => '' }
+            : { cardinality: values.length, value: (ordinal) => values[ordinal % values.length] };
+    }
     if (words.has('serial')) {
         const length = Math.min(property.maxLength ?? 18, 18);
         if (length === 0) {

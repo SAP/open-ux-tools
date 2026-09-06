@@ -67,6 +67,9 @@ const ACCOUNT_DESCRIPTIONS = [
     'Collections Account'
 ] as const;
 const BANK_NAMES = ['Deutsche Bank', 'JPMorgan Chase', 'Barclays Bank', 'Bank of Ireland'] as const;
+const BANK_STATEMENT_TYPES = ['EBS', 'MANL', 'API', 'FILE'] as const;
+const GL_ACCOUNTS = ['0000113100', '0000400000', '0000550000', '0000610000'] as const;
+const HOUSE_BANKS = ['DE01', 'US01', 'GB01', 'IE01'] as const;
 const SHORT_ORGANIZATIONS = ['Northwind Trading', 'Alpine Supply', 'Summit Services'] as const;
 const SHORT_DESCRIPTIONS = ['Pump inspection', 'Valve repair', 'Module service', 'Safety check'] as const;
 
@@ -267,8 +270,16 @@ function stringRoleValue(
             return ['DEUTDEFF', 'BOFIIE2D', 'CHASUS33', 'BARCGB22'][hash % 4];
         case 'bank_account_type':
             return ['Operating', 'Payroll', 'Clearing', 'Savings'][hash % 4];
+        case 'bank_account_internal_id':
+            return fixedDigits(hash, Math.min(property.maxLength ?? 10, 10));
         case 'bank_statement_id':
             return fixedDigits(hash, Math.min(property.maxLength ?? 5, 5));
+        case 'bank_statement_page':
+            return String((rowIndex % 99) + 1);
+        case 'bank_statement_short_id':
+            return fixedDigits(20_260_001 + rowIndex, Math.min(property.maxLength ?? 8, 8));
+        case 'bank_statement_type':
+            return BANK_STATEMENT_TYPES[hash % BANK_STATEMENT_TYPES.length];
         case 'bank_statement_format':
             return ['MT', 'BA', 'CA'][hash % 3];
         case 'payment_file_id':
@@ -277,6 +288,12 @@ function stringRoleValue(
             return ['INBOUND', 'OUTBOUND', 'TRANSFER'][hash % 3];
         case 'bank_name':
             return BANK_NAMES[hash % BANK_NAMES.length];
+        case 'gl_account':
+            return GL_ACCOUNTS[hash % GL_ACCOUNTS.length];
+        case 'house_bank':
+            return HOUSE_BANKS[hash % HOUSE_BANKS.length];
+        case 'count':
+            return String((hash % Math.min(500, 10 ** Math.min(property.maxLength ?? 3, 3) - 1)) + 1);
         case 'company_code':
             return ['1000', '1010', '1710', '3000'][hash % 4];
         case 'storage_location':

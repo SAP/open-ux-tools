@@ -44,12 +44,17 @@ const SAP_SEMANTIC_ROLES = new Map<string, string>([
 const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'account_description',
     'bank_account_type',
+    'bank_account_internal_id',
     'bank_name',
     'bank_statement_format',
     'bank_statement_id',
+    'bank_statement_page',
+    'bank_statement_short_id',
+    'bank_statement_type',
     'business_network_id',
     'company_code',
     'congressional_district',
+    'count',
     'credit_rating',
     'distribution_channel',
     'document_id',
@@ -57,6 +62,8 @@ const AUTHORITATIVE_TECHNICAL_ROLES = new Set([
     'duration_unit',
     'employee_id',
     'genre',
+    'gl_account',
+    'house_bank',
     'indicator',
     'length_unit',
     'object_type',
@@ -106,14 +113,42 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (has(words, 'account') && has(words, 'holder')) {
         return 'org_name';
     }
+    if (has(words, 'bank') && has(words, 'account') && has(words, 'additional') && has(words, 'name')) {
+        return 'account_description';
+    }
+    if (has(words, 'bank') && has(words, 'account') && has(words, 'internal') && has(words, 'id')) {
+        return 'bank_account_internal_id';
+    }
     if (has(words, 'bank') && has(words, 'account') && has(words, 'type')) {
         return 'bank_account_type';
+    }
+    if (has(words, 'bank') && has(words, 'data') && has(words, 'storage') && has(words, 'application')) {
+        return 'bank_statement_type';
     }
     if (has(words, 'statement') && has(words, 'format')) {
         return 'bank_statement_format';
     }
-    if (has(words, 'bank') && has(words, 'statement') && !has(words, 'page', 'format', 'short')) {
+    if (has(words, 'bank') && has(words, 'statement') && has(words, 'page') && has(words, 'number')) {
+        return 'bank_statement_page';
+    }
+    if (has(words, 'bank') && has(words, 'statement') && has(words, 'short') && has(words, 'id', 'key')) {
+        return 'bank_statement_short_id';
+    }
+    if (has(words, 'bank') && has(words, 'statement') && has(words, 'type')) {
+        return 'bank_statement_type';
+    }
+    if (
+        has(words, 'bank') &&
+        has(words, 'statement') &&
+        !has(words, 'page', 'format', 'short', 'type', 'item', 'items', 'record', 'records')
+    ) {
         return 'bank_statement_id';
+    }
+    if (has(words, 'house') && has(words, 'bank') && !has(words, 'name', 'text', 'description', 'account')) {
+        return 'house_bank';
+    }
+    if (has(words, 'bank') && has(words, 'name')) {
+        return 'bank_name';
     }
     if (has(words, 'incoming', 'payment') && has(words, 'file')) {
         return 'payment_file_id';
@@ -252,7 +287,10 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
     if (primitiveType === 'string' && has(words, 'plant')) {
         return 'plant';
     }
-    if (primitiveType === 'string' && has(words, 'account') && has(words, 'number', 'gl')) {
+    if (primitiveType === 'string' && has(words, 'gl') && has(words, 'account')) {
+        return 'gl_account';
+    }
+    if (primitiveType === 'string' && has(words, 'account') && has(words, 'number')) {
         return 'numeric_identifier';
     }
     if (
@@ -321,7 +359,7 @@ function lexicalRoleForText(text: string, primitiveType: SchemaProperty['primiti
         return 'pressure';
     }
     if (
-        primitiveType === 'int' &&
+        (primitiveType === 'int' || primitiveType === 'string') &&
         (has(words, 'count') || (has(words, 'number', 'no', 'nmbr') && has(words, 'item', 'items')))
     ) {
         return 'count';

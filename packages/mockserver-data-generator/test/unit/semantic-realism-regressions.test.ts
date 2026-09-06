@@ -884,6 +884,101 @@ describe('semantic realism regressions', () => {
         expect(sft.generate).not.toHaveBeenCalled();
     });
 
+    it('uses governed SAP bank-statement values instead of opaque identifiers or generated prose', async () => {
+        const sft: SftGenerator = {
+            fingerprint: 'bank-statement-hostile-sft',
+            generate: jest.fn(async (input) => ({
+                rows: Array.from({ length: input.rowCount }, () =>
+                    Object.fromEntries(input.fields.map(({ name }) => [name, 'RANDOM/AI']))
+                )
+            }))
+        };
+        const result = await generateService(
+            {
+                metadata: {
+                    format: 'csn',
+                    content: JSON.stringify({
+                        definitions: {
+                            'Demo.BankStatement': {
+                                kind: 'entity',
+                                elements: {
+                                    BankStatementShortID: {
+                                        type: 'cds.String',
+                                        length: 8,
+                                        key: true,
+                                        notNull: true,
+                                        '@Common.Label': 'Statement Short Key'
+                                    },
+                                    BankAccountAdditionalName: {
+                                        type: 'cds.String',
+                                        length: 35,
+                                        '@Common.Label': 'Additional Acct Name'
+                                    },
+                                    BankAccountInternalID: {
+                                        type: 'cds.String',
+                                        length: 10,
+                                        '@Common.Label': 'Technical ID'
+                                    },
+                                    BankDataStorageApplication: {
+                                        type: 'cds.String',
+                                        length: 4,
+                                        '@Common.Label': 'Bank Statement Type'
+                                    },
+                                    BankName: { type: 'cds.String', length: 60, '@Common.Label': 'House Bank Name' },
+                                    BankStatementNumberOfItems: {
+                                        type: 'cds.String',
+                                        length: 5,
+                                        '@Common.Label': 'No. of Memo Records'
+                                    },
+                                    BankStatementPageNumber: {
+                                        type: 'cds.String',
+                                        length: 5,
+                                        '@Common.Label': 'Page Number'
+                                    },
+                                    GLAccount: { type: 'cds.String', length: 10, '@Common.Label': 'G/L Account' },
+                                    HouseBank: {
+                                        type: 'cds.String',
+                                        length: 5,
+                                        key: true,
+                                        notNull: true,
+                                        '@Common.Label': 'House Bank'
+                                    },
+                                    NumberOfItems: { type: 'cds.Integer', '@Common.Label': 'No. of Stmnt Items' }
+                                }
+                            }
+                        }
+                    })
+                },
+                service: { urlPath: '/bank-statements', odataVersion: '4.0' },
+                targets: [{ name: 'BankStatement', kind: 'entity-set' }],
+                existingData: {}
+            },
+            { rowsPerEntity: 2, seed: 31 },
+            { sft }
+        );
+
+        const rows = result.resources.BankStatement ?? [];
+        expect(rows).toHaveLength(2);
+        expect(new Set(rows.map(({ BankStatementShortID }) => BankStatementShortID)).size).toBe(2);
+        rows.forEach((row, rowIndex) => {
+            expect(row.BankStatementShortID).toBe(String(20_260_001 + rowIndex));
+            expect(['Operating Account', 'Payroll Account', 'Clearing Account', 'Collections Account']).toContain(
+                row.BankAccountAdditionalName
+            );
+            expect(row.BankAccountInternalID).toMatch(/^\d{10}$/u);
+            expect(['EBS', 'MANL', 'API', 'FILE']).toContain(row.BankDataStorageApplication);
+            expect(['Deutsche Bank', 'JPMorgan Chase', 'Barclays Bank', 'Bank of Ireland']).toContain(row.BankName);
+            expect(Number(row.BankStatementNumberOfItems)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.BankStatementNumberOfItems)).toBeLessThanOrEqual(500);
+            expect(row.BankStatementPageNumber).toBe(String(rowIndex + 1));
+            expect(['0000113100', '0000400000', '0000550000', '0000610000']).toContain(row.GLAccount);
+            expect(['DE01', 'US01', 'GB01', 'IE01']).toContain(row.HouseBank);
+            expect(Number(row.NumberOfItems)).toBeGreaterThanOrEqual(1);
+            expect(Number(row.NumberOfItems)).toBeLessThanOrEqual(500);
+        });
+        expect(sft.generate).not.toHaveBeenCalled();
+    });
+
     it('uses meaningful unit metadata and compact conversion values', async () => {
         const result = await generateService(
             {
