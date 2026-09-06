@@ -1079,3 +1079,73 @@ guards before accepting SFT values, make deterministic fallbacks label-aware,
 and enforce row-level business relationships. A new candidate requires a fresh
 packet and two fresh provider artifacts; this failed result is not overwritten
 or relabelled.
+
+## Corrected production-candidate realism pass
+
+The correction cycles retained the pilot classifier and INT8 SFT model while
+adding production-side acceptance guards, SAP-aware value domains, label-aware
+fallbacks, and row-level coherence. The frozen `final-cohort-v15` selection
+manifest has SHA-256
+`f971d243081cb52057b28693912d72a0d9c9c097a77619405ac5a600c0f3f3a3`.
+It remains service- and source-family-disjoint from the classifier and SFT
+training inputs.
+
+The candidate was exported from clean package commit
+`8c302b056fd5aa58949bd511cfdcf1463dd8a88b`. The two following commits only
+freeze the cohort and bind its expected SFT accounting. A second export to a
+new directory produced byte-identical evidence and campaign files.
+
+| Candidate evidence | Result |
+| --- | ---: |
+| Review fields | 311 |
+| Structural targets | 6/6 passed |
+| Frozen coherence assertions | 11/11 passed |
+| SFT responses parsed | 76/76 |
+| SFT accepted slots | 198/200, 99.00% |
+| Candidate fingerprint | `c165d1b797173b265c989ff37be5bef6f2db25b6c70158209eee90469100e096` |
+| Evidence fingerprint | `409bea608cd27690208322f23f57f616aa44b829e6cdb26c2cb4d0d3de496477` |
+| Evidence file SHA-256 | `6741e03785ecedb2969f87efdd4dbbfdf1b3754c336cf446f6f4fa3402dd6b61` |
+| Campaign fingerprint | `75ea0c0f94900c9275e33068033012515f9aa9d5dafdb1788fc4cabf6d846460` |
+| Campaign file SHA-256 | `57ef17679de4264179c89670f4175fad03fdcdc626d7f878cb1cf72a9291da84` |
+
+Google Gemini 2.5 Flash accepted 304/311 fields and OpenAI GPT-5.5 accepted
+290/311. Both provider artifacts cover every field, are lineage-bound to the
+same evidence, and contain no critical issue. The strict consensus accepts a
+field only when both reviewers accept it.
+
+| Consensus stratum | Realistic | Rate | Critical |
+| --- | ---: | ---: | ---: |
+| Overall | 285/311 | 91.64% | 0 |
+| Finance | 50/53 | 94.34% | 0 |
+| Sales | 49/52 | 94.23% | 0 |
+| Service | 48/52 | 92.31% | 0 |
+| Maintenance | 46/51 | 90.20% | 0 |
+| Master data | 46/51 | 90.20% | 0 |
+| Non-SAP | 46/52 | 88.46% | 0 |
+| EDMX V2 | 147/157 | 93.63% | 0 |
+| EDMX V4 | 92/103 | 89.32% | 0 |
+| CSN | 46/51 | 90.20% | 0 |
+
+The result passes the frozen 80% overall, per-domain, and per-format thresholds
+with zero critical issues and no coverage gap. There are 25 reviewer
+disagreements; pessimistic consensus already counts every disagreement as a
+failure. The consensus fingerprint is
+`f1e188ee7de5570bb073d9e72e23408f4eb46c1d222bc79a0a3bb5b4564fed09`
+and its file SHA-256 is
+`aff73b9fecadc7627eceeebd80cab41d1034e5e1e8720ffc6fea7ad33d27fed1`.
+The private evidence is retained outside the repository under
+`/absolute/path/to/open-ux-tools-9ee7d8e8d-realism-v10`.
+
+The package-only footprint rebind at commit
+`9ee7d8e8d49d7173947cf2f246687a9f6c35efaa` reports a 112,199-byte packed
+archive, 454,129 unpacked bytes, a 4,029,897-byte deterministic install, and a
+1.36 ms p95 module load. It passes the package boundary. Learned-model,
+native-runtime, and full start-up measurements were deliberately not repeated
+in that package-only run, so its `footprintReady: false` is not a failed
+release gate. The earlier exact runtime evaluation still selects INT8 plus a
+platform-specific native runtime; WASM and smaller quantization candidates
+remain rejected by the recorded quality/latency gates.
+
+This closes the local realism gate for the corrected candidate. It does not
+claim BAS execution, approved immutable model/runtime hosting, signing,
+governance approval, npm publication, or the release-platform matrix.

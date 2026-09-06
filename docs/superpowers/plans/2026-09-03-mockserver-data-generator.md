@@ -1807,3 +1807,34 @@ a real prepare/assemble replay is byte-identical.
 The next implementation increment is a ranked semantic correction cycle for
 SFT acceptance guards, label-aware deterministic ranges/text, and row-level
 coherence, followed by a completely fresh export and two-provider review.
+
+**Corrected realism-gate checkpoint (2026-09-06):** The ranked correction
+cycles are complete. They retain the pilot classifier and INT8 SFT model and
+add production acceptance guards, SAP-aware configured domains, label-aware
+fallbacks, and row-level coherence. The frozen `final-cohort-v15` manifest is
+training-source-disjoint and has SHA-256
+`f971d243081cb52057b28693912d72a0d9c9c097a77619405ac5a600c0f3f3a3`.
+
+The clean code candidate exported 311 review fields twice with byte-identical
+evidence and campaign files. All 6 structural targets and 11 assertions pass;
+76/76 SFT responses parse and 198/200 eligible SFT slots are accepted. Google
+accepted 304/311 fields and OpenAI accepted 290/311. Their pessimistic
+consensus accepts 285/311 fields (91.64%), reports zero critical issues and no
+coverage gap, and passes the 80% overall, every-domain, and every-format gates.
+The lowest stratum is non-SAP at 88.46%.
+
+The candidate, evidence, campaign, and consensus fingerprints are respectively
+`c165d1b797173b265c989ff37be5bef6f2db25b6c70158209eee90469100e096`,
+`409bea608cd27690208322f23f57f616aa44b829e6cdb26c2cb4d0d3de496477`,
+`75ea0c0f94900c9275e33068033012515f9aa9d5dafdb1788fc4cabf6d846460`,
+and `f1e188ee7de5570bb073d9e72e23408f4eb46c1d222bc79a0a3bb5b4564fed09`.
+The full generator package passes 30 suites/329 tests and the integration
+workspace passes 12 suites/131 tests. The package-only footprint rebind is
+112,199 packed bytes and passes its package boundary; it does not replace the
+earlier exact model/runtime measurements.
+
+This completes the local implementation and realism qualification planned for
+the feature branch. Reproducible BAS archive generation, final review, and the
+tools-branch push remain in progress. The user will perform the actual BAS
+canary. Hosting, signing, governance, platform-matrix release execution, npm
+publication, and rollback rehearsal remain later release gates.
