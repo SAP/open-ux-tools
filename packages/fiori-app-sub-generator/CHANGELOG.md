@@ -1,5 +1,13 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.48
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace this.env.error() with throw to support newer Yeoman versions that no longer expose env.error [[6d6f4bf](https://github.com/SAP/open-ux-tools/commit/6d6f4bfc44585b778911a9ea69ae641a445d338c)]
+
 ## 1.3.47
 
 ### Patch Changes
