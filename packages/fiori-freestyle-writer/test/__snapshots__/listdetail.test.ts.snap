@@ -82,8 +82,9 @@ export default [
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -2818,8 +2819,9 @@ export default [
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -5554,8 +5556,9 @@ export default [
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/types\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/types\\"
         ]
     },
     \\"include\\": [
@@ -10867,8 +10870,9 @@ export default [
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
