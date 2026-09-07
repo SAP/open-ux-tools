@@ -35,8 +35,14 @@ Install via the Claude Code CLI:
 claude plugin install https://github.com/SAP/open-ux-tools.git#plugins-coding-agents/fiori-tools
 ```
 
-Or add via the Claude Code marketplace: search for `sap-fiori-mcp-server`.
+Or add via the Claude Code marketplace: search for `sap-ux-fiori-tools`.
 
 ## Version Alignment
 
-The plugin version in `.claude-plugin/plugin.json`, `.github/plugin/plugin.json`, and the pinned server version in `.mcp.json` all track the `@sap-ux/fiori-mcp-server` npm package version. They are updated automatically by `packages/fiori-mcp-server/scripts/sync-mcp-manifests.cjs` when the server package version is bumped.
+Plugin versions in `.claude-plugin/plugin.json` and `.github/plugin/plugin.json` are independent of the MCP server version.
+
+**Automated** — on each `@sap-ux/fiori-mcp-server` npm release, `packages/fiori-mcp-server/scripts/sync-mcp-manifests.cjs` runs in CI and:
+- Patch-bumps the plugin `version` in both manifests
+- Updates the pinned server version in `.mcp.json`
+
+**Manual** — when skills change (editing a `SKILL.md`, adding or removing a skill), bump the `version` field in **both** `.claude-plugin/plugin.json` and `.github/plugin/plugin.json` by hand as part of the same commit.
