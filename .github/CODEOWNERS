@@ -126,6 +126,7 @@
 /packages/fiori-docs-embeddings/     @SAP/ux-tools-mcp-and-tooling
 /packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-mcp-and-tooling
 /packages/create/                    @SAP/ux-tools-mcp-and-tooling
+/plugins-coding-agents/fiori/        @SAP/ux-tools-mcp-and-tooling
 
 # Localisation texts — must remain last; globs overlay package-level rules
 **/i18n.json                                                     @SAP/ux-tools-text-reviewers
