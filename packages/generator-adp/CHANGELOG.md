@@ -1,5 +1,40 @@
 # @sap-ux/generator-adp
 
+## 1.0.57
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-04
+
+#### Bug Fixes
+
+- When we select system we must not pass credentials from the answers to the abap provider. [[9f0e853](https://github.com/SAP/open-ux-tools/commit/9f0e853c1962cbdf779580540501641b5237cd27)]
+
+## 1.0.56
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.50 → 1.0.51
+- @sap-ux/telemetry 2.0.4 → 2.0.5
+- @sap-ux/fiori-generator-shared 1.2.12 → 1.2.13
+- @sap-ux/inquirer-common 1.0.37 → 1.0.38
+
+## 1.0.55
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Bug Fixes
+
+- [BAS] [ADP][Auth] After one successful login user is able to log in a system with invalid credentials. [[6d8bc09](https://github.com/SAP/open-ux-tools/commit/6d8bc09db9da11baa7343a7c8ed4547b090e0ae5)]
+
 ## 1.0.54
 
 ### Patch Changes
