@@ -1,5 +1,45 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.48
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace this.env.error() with throw to support newer Yeoman versions that no longer expose env.error [[6d6f4bf](https://github.com/SAP/open-ux-tools/commit/6d6f4bfc44585b778911a9ea69ae641a445d338c)]
+
+## 1.3.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.45 → 3.1.46
+- @sap-ux/fiori-freestyle-writer 3.0.90 → 3.0.91
+- @sap-ux/odata-service-inquirer 3.2.14 → 3.2.15
+- @sap-ux/telemetry 2.0.4 → 2.0.5
+- @sap-ux/fiori-generator-shared 1.2.12 → 1.2.13
+- @sap-ux/cap-config-writer 1.0.34 → 1.0.35
+- @sap-ux/ui5-application-inquirer 1.0.37 → 1.0.38
+
+## 1.3.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-tools-settings 1.0.1 → 1.1.0
+
+## 1.3.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.44 → 3.1.45
+- @sap-ux/fiori-freestyle-writer 3.0.89 → 3.0.90
+- @sap-ux/odata-service-inquirer 3.2.14 → 3.2.14
+
 ## 1.3.44
 
 ### Patch Changes
