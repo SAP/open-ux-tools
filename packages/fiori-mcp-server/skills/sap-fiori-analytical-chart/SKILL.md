@@ -21,7 +21,7 @@ Add **analytical chart + table (hybrid view)** to visualize aggregated data.
 1. **Entity** - Which entity to add the analytical chart to
 2. **Dimension field** - The field to group by (e.g., Category, Status, Destination)
 3. **Measure field** - The numeric field to aggregate (e.g., Amount, TotalPrice, ReservationPrice)
-4. **Aggregation method** - How to aggregate: sum, avg, min, or max
+4. **Aggregation method** - How to aggregate (see valid values below)
 5. **Chart type** - Bar, Column, Line, Pie, HeatMap, Waterfall, HorizontalWaterfall
 6. **Display mode** - How the chart should be shown:
    - **Separate tabs** (Approach 2)
@@ -47,7 +47,7 @@ Add **analytical chart + table (hybrid view)** to visualize aggregated data.
 Analytics.AggregatedProperty #Amount_avg: {
   Name: 'Amount_avg',
   AggregatableProperty: Amount,
-  AggregationMethod: 'average',  // Valid values: 'sum', 'min', 'max', 'average', 'countdistinct'
+  AggregationMethod: 'average',
   ![@Common.Label]: 'Average Amount'
 }
 ```
@@ -198,12 +198,12 @@ annotate view ZC_ENTITY with
 **Manifest:**
 ```json
 "targets": {
-  "MyListReport": {
+  "<ListReport>": {  // Replace with your actual List Report target name
     "type": "Component",
     "name": "sap.fe.templates.ListReport",
     "options": {
       "settings": {
-        "contextPath": "/MyEntity",
+        "contextPath": "/<YourEntity>",  // Replace with your entity set path
         "views": {
           "paths": [
             {
@@ -228,12 +228,12 @@ annotate view ZC_ENTITY with
 **Manifest:**
 ```json
 "targets": {
-  "MyListReport": {
+  "<ListReport>": {  // Replace with your actual List Report target name
     "type": "Component",
     "name": "sap.fe.templates.ListReport",
     "options": {
       "settings": {
-        "contextPath": "/MyEntity",
+        "contextPath": "/<YourEntity>",  // Replace with your entity set path
         "views": {
           "paths": [
             {
