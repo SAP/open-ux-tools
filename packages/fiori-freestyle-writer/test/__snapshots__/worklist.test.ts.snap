@@ -13223,9 +13223,8 @@ export default [
                 \\"./webapp/*\\"
             ]
         },
-        \\"typeRoots\\": [
-            \\"./node_modules/@types\\",
-            \\"./node_modules/@sapui5/ts-types-esm\\"
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -16638,9 +16637,8 @@ export default [
                 \\"./webapp/*\\"
             ]
         },
-        \\"typeRoots\\": [
-            \\"./node_modules/@types\\",
-            \\"./node_modules/@sapui5/ts-types-esm\\"
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
