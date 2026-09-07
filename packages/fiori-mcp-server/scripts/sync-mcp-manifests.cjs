@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Syncs the server version into server.json and the pinned server version in .mcp.json.
-// Also patch-bumps the plugin manifest versions in plugins-coding-agents/fiori-tools so that
+// Also patch-bumps the plugin manifest versions in plugins-coding-agents/fiori so that
 // a new server release is reflected in the plugin version too.
 // Called from the version job in pipeline.yml after `changeset version` bumps package.json.
 
@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const pluginRoot = path.join(__dirname, '..', '..', '..', 'plugins-coding-agents', 'fiori-tools');
+const pluginRoot = path.join(__dirname, '..', '..', '..', 'plugins-coding-agents', 'fiori');
 
 const pkgPath = path.join(__dirname, '..', 'package.json');
 const serverJsonPath = path.join(__dirname, '..', 'server.json');

@@ -4,7 +4,7 @@ This document describes the purpose of the key configuration files in this packa
 
 ## Plugin Assets
 
-Claude Code and Awesome Copilot plugin assets (skills, plugin manifests, `.mcp.json`) live in [`plugins-coding-agents/fiori-tools/`](../../../plugins-coding-agents/fiori-tools/). See the README there for installation instructions.
+Claude Code and Awesome Copilot plugin assets (skills, plugin manifests, `.mcp.json`) live in [`plugins-coding-agents/fiori/`](../../../plugins-coding-agents/fiori/). See the README there for installation instructions.
 
 ## Configuration Files
 

@@ -32,7 +32,7 @@ The MCP server binary is published as [@sap-ux/fiori-mcp-server](https://www.npm
 Install via the Claude Code CLI:
 
 ```bash
-claude plugin install https://github.com/SAP/open-ux-tools.git#plugins-coding-agents/fiori-tools
+claude plugin install https://github.com/SAP/open-ux-tools.git#plugins-coding-agents/fiori
 ```
 
 Or add via the Claude Code marketplace: search for `sap-ux-fiori-tools`.
