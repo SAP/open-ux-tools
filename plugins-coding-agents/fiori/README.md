@@ -37,6 +37,17 @@ claude plugin install https://github.com/SAP/open-ux-tools.git#plugins-coding-ag
 
 Or add via the Claude Code marketplace: search for `sap-ux-fiori-tools`.
 
+## Migrating from the old plugin name
+
+The plugin was previously distributed as `sap-fiori-mcp-server` from `packages/fiori-mcp-server/`. It has been renamed to `sap-ux-fiori-tools` and relocated to this directory.
+
+Claude Code does not auto-migrate on rename. If you have the old plugin installed, uninstall it and reinstall:
+
+```bash
+claude plugin uninstall sap-fiori-mcp-server
+claude plugin install https://github.com/SAP/open-ux-tools.git#plugins-coding-agents/fiori
+```
+
 ## Version Alignment
 
 Plugin versions in `.claude-plugin/plugin.json` and `.github/plugin/plugin.json` are independent of the MCP server version.
