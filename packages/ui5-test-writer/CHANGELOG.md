@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-07
+
+#### Features
+
+- Generate OPA sort-order tests for List Report columns backed by a Text annotation [[714e3c5](https://github.com/SAP/open-ux-tools/commit/714e3c50d47fd768c19d81c693e3a1be2b2bddcd)]
+
 ## 1.9.6
 
 ### Patch Changes
