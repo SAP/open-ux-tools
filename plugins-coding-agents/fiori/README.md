@@ -41,7 +41,9 @@ Or add via the Claude Code marketplace: search for `sap-ux-fiori-tools`.
 
 The plugin was previously distributed as `sap-fiori-mcp-server` from `packages/fiori-mcp-server/`. It has been renamed to `sap-ux-fiori-tools` and relocated to this directory.
 
-Claude Code does not auto-migrate on rename. If you have the old plugin installed, uninstall it and reinstall:
+If you installed via the Claude Code marketplace, the rename is handled automatically — Claude Code rewrites the old slug to the new one on next sync via the `renames` map in `claude-plugins-official`.
+
+If you installed via a direct git URL pointing at the old path, reinstall manually:
 
 ```bash
 claude plugin uninstall sap-fiori-mcp-server
