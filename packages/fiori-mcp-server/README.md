@@ -20,13 +20,13 @@ For the best experience we recommend using this server alongside [@cap-js/mcp-se
 
 The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.
 
-> **Note:** The server binary resolves to `@sap-ux/fiori-mcp-server@latest` at launch time. This is intentional — the server floats to the newest npm release so you always get the latest tools, while skill content (when installed via the GitHub Copilot marketplace) is pinned to the commit referenced in the marketplace entry.
+> **Note:** Replace `<version>` with the specific version you want to pin to (e.g. `1.12.2`). The current release version is shown on the [npm page](https://www.npmjs.com/package/@sap-ux/fiori-mcp-server). Using a pinned version rather than `@latest` ensures reproducible behaviour and prevents untested updates from being picked up automatically.
 
 ### Claude Code
 
 **Option A — CLI (recommended):**
 ```bash
-claude mcp add fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@latest fiori-mcp
+claude mcp add fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@<version> fiori-mcp
 ```
 
 **Option B — drop a `.mcp.json` file in your project root:**
@@ -37,7 +37,7 @@ claude mcp add fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@latest fiori-mcp
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"]
     }
   }
 }
@@ -54,7 +54,7 @@ Open the Cline extension settings and add the server under **MCP Servers**:
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"]
     }
   }
 }
@@ -74,7 +74,7 @@ Edit (or create) the MCP config file for your scope:
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"]
     }
   }
 }
@@ -91,7 +91,7 @@ Edit `~/.codeium/windsurf/mcp_config.json`:
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"]
     }
   }
 }
@@ -108,7 +108,7 @@ For any other MCP client, use the following `npx`-based configuration:
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"]
     }
   }
 }
@@ -210,7 +210,7 @@ By default, logging is enabled at the `error` level. To adjust the log level or 
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "args": ["--yes","@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"],
       "env": {
         "LOG_LEVEL": "debug"
       }
@@ -242,7 +242,7 @@ Set the `NODE_EXTRA_CA_CERTS` environment variable to the path of your CA certif
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"],
       "env": {
         "NODE_EXTRA_CA_CERTS": "/path/to/your/certificate.crt"
       }
@@ -276,7 +276,7 @@ Set the `NODE_EXTRA_CA_CERTS` environment variable to the path of your CA certif
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@<version>", "fiori-mcp"],
       "env": {
         "NODE_TLS_REJECT_UNAUTHORIZED": "0"
       }
