@@ -11,7 +11,14 @@
     "homepage": "https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori-tools",
     "repository": "https://github.com/SAP/open-ux-tools",
     "license": "Apache-2.0",
-    "keywords": ["sap", "fiori", "ui5", "cap", "mcp", "fiori-elements"],
+    "keywords": [
+        "sap",
+        "fiori",
+        "ui5",
+        "cap",
+        "mcp",
+        "fiori-elements"
+    ],
     "extensions": {
         "com.github.awesome-copilot": {
             "skills": [
