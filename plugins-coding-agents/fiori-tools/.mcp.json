@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "fiori-mcp": {
+            "type": "stdio",
+            "timeout": 600,
+            "command": "npx",
+            "args": ["--yes", "--ignore-scripts", "@sap-ux/fiori-mcp-server@1.12.2", "fiori-mcp"]
+        }
+    }
+}
