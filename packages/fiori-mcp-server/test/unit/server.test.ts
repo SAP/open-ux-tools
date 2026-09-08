@@ -100,14 +100,10 @@ describe('FioriFunctionalityServer', () => {
             'download_odata_service_metadata',
             'generate_fiori_app_odata',
             'generate_fiori_app_cap',
-            'generate_adaptation_project',
-            'open_adaptation_editor',
-            'adp_controller_extension',
-            'run_rta_workflow_step',
-            'read_odata_metadata_adp',
             'list_functionality',
             'get_functionality_details',
             'execute_functionality'
+            // ADP tools are omitted — they require SAP_FIORI_MCP_ADP_TOOLS=true
         ]);
     });
 
@@ -354,14 +350,10 @@ describe('FioriFunctionalityServer', () => {
                 'download_odata_service_metadata',
                 'generate_fiori_app_odata',
                 'generate_fiori_app_cap',
-                'generate_adaptation_project',
-                'open_adaptation_editor',
-                'adp_controller_extension',
-                'run_rta_workflow_step',
-                'read_odata_metadata_adp',
                 'list_functionality',
                 'get_functionality_details',
                 'execute_functionality'
+                // ADP tools are omitted — they require SAP_FIORI_MCP_ADP_TOOLS=true
             ]);
         });
 

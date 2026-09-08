@@ -100,7 +100,9 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
   _Owner: tools (code) + skill (SKILL.md for importKeyUserChanges)_ | _Assignee: —_
 
-- [ ] **Decide and implement: promote `lookup-aggregation.mjs` to a first-class MCP tool**  
+- [ ] **Potential: convert `adp_controller_extension` tool to a skill**  
+  The tool's two phases (read manifest/scan changes, write files) are operations the model can perform using its native file tools (`Read`, `Write`, `Edit`, `Bash`). Converting to a skill would simplify the MCP surface, work with any client that has file tools, and make the code-generation logic fully transparent and editable without rebuilding the server. Trade-off: server-side path traversal protection and `.change` file skipping become skill instructions rather than enforced code — weaker guarantees. Needs deliberate team decision and careful testing before undertaking.  
+  _Owner: tools_ | _Assignee: —_
   Currently the skill instructs the AI to call `node ~/.claude/skills/…/lookup-aggregation.mjs` via the `Bash` tool. This requires `Bash` access (not available in pure MCP clients) and forces the AI to parse raw stdout.
 
   **Options:**
