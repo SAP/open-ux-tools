@@ -48,8 +48,6 @@ export async function lookupUi5Documentation(
 ): Promise<LookupUi5DocumentationResult> {
     const { lookupType, library, control, appPath } = params;
 
-    // Resolve ui5.yaml by walking up from appPath (or the current working directory). A missing yaml
-    // simply means we go straight to the public fallback.
     const { url: configuredBase, version } = await resolveUi5Config(appPath ?? process.cwd());
 
     const result = await resolveApiJson(configuredBase, version, library);

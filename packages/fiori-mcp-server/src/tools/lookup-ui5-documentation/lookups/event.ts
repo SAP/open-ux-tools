@@ -1,11 +1,7 @@
-// Event lookup: extracts a single control event's documentation, walking the control's inheritance
-// chain so inherited events (often declared in an ancestor library) resolve too.
-
 import type { LookupUi5DocumentationInput } from '../../../types/index.js';
 import type { EventLookupResult, LookupSource, Ui5Event, Ui5Symbol } from '../types.js';
 import { resolveMember } from './find-member.js';
 
-// Extracts the events array from a symbol's `ui5-metadata`.
 const selectEvents = (symbol: Ui5Symbol): Ui5Event[] | undefined => symbol['ui5-metadata']?.events;
 
 /**

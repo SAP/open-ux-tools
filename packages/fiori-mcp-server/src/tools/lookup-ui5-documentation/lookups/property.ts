@@ -1,11 +1,7 @@
-// Property lookup: extracts a single control property's documentation, walking the control's
-// inheritance chain so inherited properties (often declared in an ancestor library) resolve too.
-
 import type { LookupUi5DocumentationInput } from '../../../types/index.js';
 import type { LookupSource, PropertyLookupResult, Ui5Property, Ui5Symbol } from '../types.js';
 import { resolveMember } from './find-member.js';
 
-// Extracts the properties array from a symbol's `ui5-metadata`.
 const selectProperties = (symbol: Ui5Symbol): Ui5Property[] | undefined => symbol['ui5-metadata']?.properties;
 
 /**

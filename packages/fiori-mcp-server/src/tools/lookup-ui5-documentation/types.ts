@@ -1,12 +1,6 @@
-// Shared types for the `lookup_ui5_documentation` tool.
-//
-// These describe the minimal shape of a UI5 designtime api.json that the lookup relies on, plus the
-// resolved-fetch metadata and the result union returned to the caller. The result is a union keyed by
-// `lookupType` so further member types (association/control) can extend it later.
-//
-// Field shapes mirror packages/preview-middleware-client/src/cpe/api-json.d.ts (the authoritative
-// api.json schema). Note the gotchas: properties have no `cardinality`, and event `parameters` is a
-// record keyed by parameter name, not an array.
+// Shared types for the `lookup_ui5_documentation` tool: the minimal api.json shape the lookup relies
+// on, the resolved-fetch metadata, and the `lookupType`-keyed result union (widens as member types
+// are added). Field shapes mirror packages/preview-middleware-client/src/cpe/api-json.d.ts.
 
 /** A single aggregation entry as it appears in a control's `ui5-metadata`. */
 export interface Ui5Aggregation {

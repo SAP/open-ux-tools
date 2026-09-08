@@ -1,7 +1,3 @@
-// Shared inheritance-chain search used by every lookupType handler. This is the one place that walks
-// a resolved control chain and reads the matching `ui5-metadata` array, so aggregation/property/event
-// handlers don't each reimplement the walk.
-
 import type { Ui5Symbol } from '../types.js';
 
 /** A member found in the chain, together with the fully-qualified name of the class that declares it. */
