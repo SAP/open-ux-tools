@@ -2765,6 +2765,9 @@ importers:
       '@sap-ux/text-document-utils':
         specifier: workspace:*
         version: link:../text-document-utils
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0

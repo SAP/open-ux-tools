@@ -64,6 +64,9 @@
     },
     {
       "path": "../text-document-utils"
+    },
+    {
+      "path": "../ui5-config"
     }
   ]
 }

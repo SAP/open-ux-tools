@@ -25,6 +25,7 @@ import {
     adpControllerExtension,
     runRtaWorkflowStep,
     readODataMetadataAdp,
+    lookupUi5Documentation,
     tools
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
@@ -41,7 +42,8 @@ import type {
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
-    AdpMetadataInput
+    AdpMetadataInput,
+    LookupUi5DocumentationInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -60,6 +62,7 @@ type ToolArgs =
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
     | AdpMetadataInput
+    | LookupUi5DocumentationInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -304,6 +307,9 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         break;
                     case 'read_odata_metadata_adp':
                         result = await readODataMetadataAdp(args as AdpMetadataInput);
+                        break;
+                    case 'lookup_ui5_documentation':
+                        result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);
                         break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
