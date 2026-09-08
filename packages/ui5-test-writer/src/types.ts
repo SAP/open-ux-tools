@@ -200,6 +200,20 @@ export type FilterBarItem = {
     custom: boolean;
 };
 
+/**
+ * Per-tab feature data for a multi-table (Multiple Table Mode) List Report. Each non-custom tab is
+ * checked separately (columns, actions, create/delete, contact cards) against its own table.
+ */
+export type ListReportTab = {
+    key: string;
+    entitySet?: string;
+    tableColumns: TableColumnFeatureData;
+    contactCardColumns: ContactCardField[];
+    toolBarActions: ActionButtonState[];
+    createButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+    deleteButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+};
+
 export type ListReportFeatures = {
     name?: string;
     createButton?: {
@@ -222,6 +236,11 @@ export type ListReportFeatures = {
      * single-table LRs. Used to target a specific tab via `onTable("<key>")`.
      */
     tableIdentifiers?: string[];
+    /**
+     * Per-tab feature data for multi-table List Reports; empty for single-table LRs (in which case the
+     * top-level `tableColumns` / `toolBarActions` / `contactCardColumns` describe the single table).
+     */
+    tabs?: ListReportTab[];
     semanticKey?: {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];

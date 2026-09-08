@@ -78,6 +78,44 @@ function journey() {
     //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
     // });
 
+<%_ if (tabs && tabs.length > 0) { -%>
+    opaTest("Check table columns and actions per tab", function (_Given: Given, When: When, Then: Then) {
+        <%_ tabs.forEach(function(tab) { _%>
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ if (tab.createButton.visible && !isALP) { _%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckCreate({ visible: true });
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressCreate();
+        <%_ } _%>
+        <%_ if (tab.deleteButton.visible) { _%>
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressDelete();
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true });
+        <%_ } _%>
+        <%_ tab.toolBarActions.forEach(function(item) { _%>
+        <%_ if (item.visible) { _%>
+        <%_ if (item.custom) { _%>
+        <%_ if (item.labelUnresolved) { _%>
+        // TODO: label is an unresolved i18n key; replace with the rendered action text
+        <%_ } _%>
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { visible: true });
+        <%_ } else { _%>
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+        <%_ } _%>
+        <%_ } _%>
+        <%_ }); _%>
+        <%_ if (Object.keys(tab.tableColumns).length > 0) { _%>
+        Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
+        <%_ } _%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
+        <%_ tab.contactCardColumns.forEach(function(column) { _%>
+        // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
+        When.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iClickLink(0, "<%- column.property %>");
+        Then.onThe<%- startLR %>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+        <%_ }); _%>
+        <%_ }); -%>
+    });
+<%_ } else { -%>
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
     opaTest("Check table columns and actions", function (_Given: Given, _When: When, Then: Then) {
         <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
@@ -119,24 +157,18 @@ function journey() {
         <%_ }); -%>
     });
 <%_ } -%>
+<%_ } -%>
 <%_ if (startLR) { -%>
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         <%_ if (!hideFilterBar) { -%>
         When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%_ } -%>
-        <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { -%>
-        <%_ tableIdentifiers.forEach(function(tabId) { _%>
-        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tabId %>" });
-        Then.onThe<%- startLR%>Generated.onTable("<%- tabId %>").iCheckRows();
-        <%_ }); -%>
-        <%_ } else { -%>
-        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
-        <%_ } -%>
-        <%_ if (navigatedOP) { -%>
-        <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { _%>
+        <%_ if (tabs && tabs.length > 0) { -%>
         When.onThe<%- startLR%>Generated.iGoToView({ key: defaultTableId });
-        <%_ } _%>
+        <%_ } -%>
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+        <%_ if (navigatedOP) { -%>
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressRow(0);
         Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
         <%_ } -%>

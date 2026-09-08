@@ -21,6 +21,7 @@ import {
     getCustomFilterFieldProperties,
     getTableIdentifiers,
     getListReportViews,
+    getListReportTabs,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
     getFilterFieldItems,
@@ -2638,5 +2639,88 @@ describe('extractCustomToolBarActions()', () => {
     test('returns an empty array when there are no custom actions', () => {
         const model = buildModel({});
         expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
+    });
+});
+
+describe('getListReportTabs()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: { targets: { MyLR: { options: { settings: { views: { paths } } } } } }
+            }
+        }) as unknown as Manifest;
+
+    const makeViewNode = (columns: Record<string, unknown>, customActionDescription?: string): TreeAggregation => {
+        const aggregations: Record<string, unknown> = { columns: { aggregations: columns } };
+        if (customActionDescription) {
+            aggregations['toolBar'] = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            CustomAction: { schema: { actionType: 'Custom' }, description: customActionDescription }
+                        }
+                    }
+                }
+            };
+        }
+        return { aggregations } as unknown as TreeAggregation;
+    };
+
+    const makePage = (views: Record<string, TreeAggregation>): PageWithModelV4 =>
+        ({
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: { table: { aggregations: { views: { aggregations: views } } } } } }
+        }) as unknown as PageWithModelV4;
+
+    test('returns an empty array for a single-table List Report (no views block)', () => {
+        const page = {
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: {} } }
+        } as unknown as PageWithModelV4;
+        expect(getListReportTabs(page, undefined, undefined)).toEqual([]);
+    });
+
+    test('returns an empty array when only one non-custom tab exists', () => {
+        const page = makePage({ '1': makeViewNode({}) });
+        const manifest = makeManifest([{ key: '1' }, { key: '5', template: 'x.CustomTab' }]);
+        expect(getListReportTabs(page, undefined, manifest)).toEqual([]);
+    });
+
+    test('builds per-tab data, resolving each tab entity set and skipping custom tabs', () => {
+        const page = makePage({
+            '1': makeViewNode(
+                { 'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } } },
+                'My Custom Action'
+            ),
+            '6': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '5', template: 'x.CustomTab' },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+
+        const tabs = getListReportTabs(page, undefined, manifest);
+
+        expect(tabs).toHaveLength(2);
+        expect(tabs[0]).toMatchObject({
+            key: '1',
+            entitySet: 'Customer',
+            tableColumns: { A: { header: 'A' } },
+            contactCardColumns: [],
+            toolBarActions: [{ label: 'My Custom Action', custom: true, visible: true }]
+        });
+        expect(tabs[0].createButton.visible).toBe(false);
+        expect(tabs[1]).toMatchObject({
+            key: '6',
+            entitySet: 'CompanyCodeDetail',
+            tableColumns: { B: { header: 'B' } },
+            contactCardColumns: [],
+            toolBarActions: []
+        });
     });
 });
