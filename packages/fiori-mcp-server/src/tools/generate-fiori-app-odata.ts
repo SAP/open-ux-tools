@@ -135,7 +135,12 @@ async function resolveServiceMetadata(
     host: string,
     client?: string,
     destination?: string
-): Promise<Pick<NonNullable<GeneratorConfigODataWithAPI['service']>, 'edmx' | 'externalServices' | 'annotations' | 'authenticationType'>> {
+): Promise<
+    Pick<
+        NonNullable<GeneratorConfigODataWithAPI['service']>,
+        'edmx' | 'externalServices' | 'annotations' | 'authenticationType'
+    >
+> {
     const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
 
     if (!host && !destination) {
@@ -145,7 +150,7 @@ async function resolveServiceMetadata(
     let serviceProvider: AbapServiceProvider | undefined;
     let backendSystem: BackendSystem | undefined;
     try {
-        ({ serviceProvider, backendSystem } = await getAbapServiceProvider(host, client, destination) ?? {});
+        ({ serviceProvider, backendSystem } = (await getAbapServiceProvider(host, client, destination)) ?? {});
     } catch (error) {
         logger.error(
             `Error creating the ABAP service provider: ${error instanceof Error ? error.message : String(error)}`
@@ -271,7 +276,7 @@ async function getAbapServiceProvider(
     host: string,
     client?: string,
     destinationName?: string
-): Promise<{ serviceProvider?: AbapServiceProvider; backendSystem?: BackendSystem; } | undefined> {
+): Promise<{ serviceProvider?: AbapServiceProvider; backendSystem?: BackendSystem } | undefined> {
     let serviceProvider: ServiceProvider | undefined;
     let backendSystem: BackendSystem | undefined;
     if (destinationName) {
