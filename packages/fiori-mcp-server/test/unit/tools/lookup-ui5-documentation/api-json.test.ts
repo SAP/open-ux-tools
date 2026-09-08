@@ -274,6 +274,30 @@ describe('resolveLibraryForClass', () => {
         expect(second).toBe(first);
         expect(fetchMock).not.toHaveBeenCalled();
     });
+
+    test('does not cache a miss: a later call retries and can succeed', async () => {
+        // given: a unique key so neither the in-memory memo nor the disk cache is warm, and every
+        // candidate library 404s → the first call is a miss
+        const base = 'https://lib-d.example.com';
+        const version = '1.113.0';
+        const fqName = 'sap.lib.d.transient.Ctrl';
+        fetchMock.mockResolvedValue({ ok: false, status: 404 });
+        // when
+        const miss = await resolveLibraryForClass(fqName, base, version);
+        // then
+        expect(miss).toBeNull();
+
+        // given: the CDN recovers
+        fetchMock.mockReset();
+        const data: ApiJson = { symbols: [{ name: fqName }] };
+        fetchMock.mockResolvedValueOnce({ ok: true, json: async () => data });
+        // when: the same key is resolved again
+        const recovered = await resolveLibraryForClass(fqName, base, version);
+        // then: the miss was not memoized, so the network is retried and the class resolves
+        expect(recovered).not.toBeNull();
+        expect(recovered!.data).toEqual(data);
+        expect(fetchMock).toHaveBeenCalled();
+    });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -22,6 +22,10 @@ interface Ui5YamlConfig {
 }
 
 const FALLBACK_BASE = 'https://ui5.sap.com';
+// Disk cache for fetched api.json documents. Entries are refreshed on re-fetch of the same
+// base × version × library key once older than CACHE_TTL_MS, but keys that are no longer used (old
+// UI5 versions, projects you switched away from) are never pruned. The directory only ever holds
+// public api.json docs, so it is safe to delete manually at any time to reclaim space.
 const CACHE_DIR = join(homedir(), '.cache', 'fiori-mcp-ui5-doc');
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 1 day
 const FIORI_TOOLS_PROXY = 'fiori-tools-proxy';
@@ -281,8 +285,32 @@ export function findControl(apiJson: ApiJson, controlName: string): Ui5Symbol | 
     return apiJson.symbols.find((s) => s.name === controlName) ?? null;
 }
 
-/** In-memory memo for class→api.json resolution, keyed by base|version|fqName. Process-lifetime. */
-const classLibraryCache = new Map<string, ResolveApiJsonResult | null>();
+/**
+ * In-memory memo for class→api.json resolution, keyed by base|version|fqName. Only *successful*
+ * resolutions are stored — a miss (e.g. a transient CDN failure) is never cached, so it stays
+ * retryable on the next call rather than poisoning the entry for the process lifetime. Bounded to
+ * {@link MAX_CLASS_CACHE_ENTRIES}; the oldest-inserted entry is evicted when full (FIFO).
+ */
+const classLibraryCache = new Map<string, ResolveApiJsonResult>();
+
+/** Upper bound on {@link classLibraryCache} entries, to cap memory over a long-running process. */
+const MAX_CLASS_CACHE_ENTRIES = 256;
+
+/**
+ * Stores a successful class resolution, evicting the oldest-inserted entry when at capacity.
+ *
+ * @param key - The base|version|fqName cache key.
+ * @param result - The resolve result to memoize.
+ */
+function cacheClassResult(key: string, result: ResolveApiJsonResult): void {
+    if (classLibraryCache.size >= MAX_CLASS_CACHE_ENTRIES) {
+        const oldest = classLibraryCache.keys().next().value;
+        if (oldest !== undefined) {
+            classLibraryCache.delete(oldest);
+        }
+    }
+    classLibraryCache.set(key, result);
+}
 
 /**
  * Derives candidate library names for a class as the dotted prefixes of its fully-qualified name
@@ -304,7 +332,7 @@ function candidateLibraries(fqName: string): string[] {
 /**
  * Resolves the library api.json that declares a given class by probing candidate libraries derived
  * from the class's fully-qualified name. Reuses {@link resolveApiJson} (disk cache + fallbacks) and
- * memoizes the outcome for the process lifetime.
+ * memoizes a successful outcome. Misses are not cached, so a transient failure can be retried.
  *
  * @param fqName - Fully-qualified class name to locate.
  * @param configuredBase - Base URL discovered from ui5.yaml, or null.
@@ -318,17 +346,16 @@ export async function resolveLibraryForClass(
 ): Promise<ResolveApiJsonResult | null> {
     const cacheKey = `${configuredBase ?? ''}|${version ?? ''}|${fqName}`;
     const cached = classLibraryCache.get(cacheKey);
-    if (cached !== undefined) {
+    if (cached) {
         return cached;
     }
     for (const library of candidateLibraries(fqName)) {
         const result = await resolveApiJson(configuredBase, version, library);
         if (result && findControl(result.data, fqName)) {
-            classLibraryCache.set(cacheKey, result);
+            cacheClassResult(cacheKey, result);
             return result;
         }
     }
-    classLibraryCache.set(cacheKey, null);
     return null;
 }
 
