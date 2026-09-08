@@ -2,14 +2,18 @@ import { jest } from '@jest/globals';
 import type { ApiJson, ResolveApiJsonResult, Ui5Symbol } from '../../../../src/tools/lookup-ui5-documentation/types.js';
 import type { LookupUi5DocumentationInput } from '../../../../src/types/index.js';
 
-// ── Mock api-json.js ONLY; real handlers do the extraction ───────────────────
+// ── Mock the resolver/cache/control modules; real handlers do the extraction ─
 const mockResolveUi5Config = jest.fn<any>();
 const mockResolveApiJson = jest.fn<any>();
 const mockFindControl = jest.fn<any>();
 const mockResolveControlChain = jest.fn<any>();
+jest.unstable_mockModule('../../../../src/tools/lookup-ui5-documentation/ui5-config-resolver.js', () => ({
+    resolveUi5Config: mockResolveUi5Config
+}));
+jest.unstable_mockModule('../../../../src/tools/lookup-ui5-documentation/api-json-cache.js', () => ({
+    resolveApiJson: mockResolveApiJson
+}));
 jest.unstable_mockModule('../../../../src/tools/lookup-ui5-documentation/api-json.js', () => ({
-    resolveUi5Config: mockResolveUi5Config,
-    resolveApiJson: mockResolveApiJson,
     findControl: mockFindControl,
     resolveControlChain: mockResolveControlChain
 }));

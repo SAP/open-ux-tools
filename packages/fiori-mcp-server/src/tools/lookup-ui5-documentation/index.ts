@@ -5,7 +5,9 @@
 // a two-line change: implement it under ./lookups/ and register it in LOOKUP_HANDLERS below.
 
 import type { LookupUi5DocumentationInput } from '../../types/index.js';
-import { findControl, resolveApiJson, resolveControlChain, resolveUi5Config } from './api-json.js';
+import { resolveApiJson } from './api-json-cache.js';
+import { findControl, resolveControlChain } from './api-json.js';
+import { resolveUi5Config } from './ui5-config-resolver.js';
 import { lookupAggregation } from './lookups/aggregation.js';
 import { lookupEvent } from './lookups/event.js';
 import { lookupProperty } from './lookups/property.js';
