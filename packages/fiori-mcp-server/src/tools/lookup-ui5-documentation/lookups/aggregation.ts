@@ -3,7 +3,7 @@
 
 import type { LookupUi5DocumentationInput } from '../../../types/index.js';
 import type { AggregationLookupResult, LookupSource, Ui5Aggregation, Ui5Symbol } from '../types.js';
-import { findMemberInChain, knownMemberNames } from './find-member.js';
+import { resolveMember } from './find-member.js';
 
 // Extracts the aggregations array from a symbol's `ui5-metadata`.
 const selectAggregations = (symbol: Ui5Symbol): Ui5Aggregation[] | undefined => symbol['ui5-metadata']?.aggregations;
@@ -24,16 +24,10 @@ export function lookupAggregation(
 ): AggregationLookupResult {
     const { library, control, member } = params;
 
-    const found = findMemberInChain(chain, selectAggregations, member);
-    if (!found) {
-        const known = knownMemberNames(chain, selectAggregations);
-        throw new Error(
-            `Aggregation ${member} not found on ${control} or its ancestors. ` +
-                `Known aggregations: ${known.length ? known.join(', ') : '(none)'}.`
-        );
-    }
-
-    const { member: agg, definedIn } = found;
+    const { member: agg, definedIn } = resolveMember(chain, selectAggregations, member, control, {
+        singular: 'Aggregation',
+        plural: 'aggregations'
+    });
     return {
         lookupType: 'aggregation',
         library,

@@ -3,7 +3,7 @@
 
 import type { LookupUi5DocumentationInput } from '../../../types/index.js';
 import type { EventLookupResult, LookupSource, Ui5Event, Ui5Symbol } from '../types.js';
-import { findMemberInChain, knownMemberNames } from './find-member.js';
+import { resolveMember } from './find-member.js';
 
 // Extracts the events array from a symbol's `ui5-metadata`.
 const selectEvents = (symbol: Ui5Symbol): Ui5Event[] | undefined => symbol['ui5-metadata']?.events;
@@ -25,16 +25,10 @@ export function lookupEvent(
 ): EventLookupResult {
     const { library, control, member } = params;
 
-    const found = findMemberInChain(chain, selectEvents, member);
-    if (!found) {
-        const known = knownMemberNames(chain, selectEvents);
-        throw new Error(
-            `Event ${member} not found on ${control} or its ancestors. ` +
-                `Known events: ${known.length ? known.join(', ') : '(none)'}.`
-        );
-    }
-
-    const { member: event, definedIn } = found;
+    const { member: event, definedIn } = resolveMember(chain, selectEvents, member, control, {
+        singular: 'Event',
+        plural: 'events'
+    });
     return {
         lookupType: 'event',
         library,

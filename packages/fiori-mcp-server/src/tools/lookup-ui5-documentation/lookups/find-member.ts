@@ -53,3 +53,42 @@ export function knownMemberNames<T extends { name: string }>(
     }
     return [...names];
 }
+
+/** Human-readable labels for a member kind, used to build a "not found" error message. */
+export interface MemberLabels {
+    /** Capitalized singular, e.g. "Aggregation". */
+    singular: string;
+    /** Lowercase plural, e.g. "aggregations" (passed explicitly to avoid mis-pluralizing "property"). */
+    plural: string;
+}
+
+/**
+ * Finds a member in the chain or throws a descriptive "not found" error listing the known members.
+ * Shared by every lookupType handler so the search-and-error logic lives in one place; each handler
+ * still shapes its own per-type result afterwards (which TypeScript cannot meaningfully narrow here).
+ *
+ * @param chain - The inheritance chain `[control, ...ancestors]`.
+ * @param select - Extracts the member array of the relevant kind from a symbol.
+ * @param member - The member name to look up.
+ * @param control - Fully-qualified control name, for the error message.
+ * @param labels - Singular/plural labels for the member kind, for the error message.
+ * @returns The matching member and its declaring class.
+ * @throws {Error} When the member is not found anywhere in the chain.
+ */
+export function resolveMember<T extends { name: string }>(
+    chain: Ui5Symbol[],
+    select: (symbol: Ui5Symbol) => T[] | undefined,
+    member: string,
+    control: string,
+    labels: MemberLabels
+): FoundMember<T> {
+    const found = findMemberInChain(chain, select, member);
+    if (!found) {
+        const known = knownMemberNames(chain, select);
+        throw new Error(
+            `${labels.singular} ${member} not found on ${control} or its ancestors. ` +
+                `Known ${labels.plural}: ${known.length ? known.join(', ') : '(none)'}.`
+        );
+    }
+    return found;
+}
