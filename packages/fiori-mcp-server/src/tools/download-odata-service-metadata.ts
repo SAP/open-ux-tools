@@ -38,6 +38,19 @@ export async function downloadODataServiceMetadata(
         };
     }
 
+    if (!fs.existsSync(params.appPath) || !fs.statSync(params.appPath).isDirectory()) {
+        return {
+            status: 'Error',
+            message:
+                `appPath does not exist or is not a directory: ${params.appPath}. Create the directory before calling this tool ` +
+                `(e.g. on Unix: \`mkdir -p ${params.appPath}\`, on Windows: \`mkdir "${params.appPath}"\`). This tool does not create directories.`,
+            parameters: EMPTY_PARAMS,
+            appPath: params.appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
     if (!servicePath) {
         return {
             status: 'Error',
