@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Bug Fixes
+
+- update manifest config sample for analytical chart skill [[3af2405](https://github.com/SAP/open-ux-tools/commit/3af24052f4654091e1fa535cf336d1f0e6fba3d2)]
+
 ## 1.12.2
 
 ### Patch Changes
