@@ -238,12 +238,3 @@ export const LookupUi5DocumentationInputSchema = zod.object({
                 'configured UI5 base URL and version. Falls back to the public https://ui5.sap.com when omitted or not found.'
         )
 });
-
-export const ODataServiceInputSchema = zod.object({
-    appPath: zod
-        .string()
-        .describe(
-            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
-        ),
-    filter: zod.string().optional().describe('Filter string to match service names')
-});

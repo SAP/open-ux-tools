@@ -43,7 +43,6 @@ import type {
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
     AdpMetadataInput,
-    ODataServiceInput,
     LookupUi5DocumentationInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
@@ -63,7 +62,6 @@ type ToolArgs =
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
     | AdpMetadataInput
-    | ODataServiceInput
     | LookupUi5DocumentationInput
     | Record<string, unknown>;
 

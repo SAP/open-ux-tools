@@ -13,7 +13,6 @@ import type {
     AdpControllerExtensionInputSchema,
     RunRtaWorkflowStepInputSchema,
     AdpMetadataInputSchema,
-    ODataServiceInputSchema,
     LookupUi5DocumentationInputSchema
 } from './input.js';
 import type {
@@ -50,7 +49,6 @@ export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInp
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
 export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
 export type AdpMetadataInput = zod.infer<typeof AdpMetadataInputSchema>;
-export type ODataServiceInput = zod.infer<typeof ODataServiceInputSchema>;
 export type LookupUi5DocumentationInput = zod.infer<typeof LookupUi5DocumentationInputSchema>;
 export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
 export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
