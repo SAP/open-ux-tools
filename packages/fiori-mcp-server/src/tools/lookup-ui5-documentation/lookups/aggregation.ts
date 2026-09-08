@@ -12,10 +12,10 @@ const selectAggregations = (symbol: Ui5Symbol): Ui5Aggregation[] | undefined => 
  * Extracts documentation for a control aggregation, resolving inherited aggregations via the chain.
  *
  * @param chain - The control's inheritance chain `[control, ...ancestors]`.
- * @param params - The tool input (the `member` field names the aggregation and is required).
+ * @param params - The tool input (the `member` field names the aggregation).
  * @param source - Provenance of the api.json that produced the chain.
  * @returns Structured aggregation documentation.
- * @throws {Error} When the `member` input is missing or the aggregation is not found in the chain.
+ * @throws {Error} When the aggregation is not found in the chain.
  */
 export function lookupAggregation(
     chain: Ui5Symbol[],
@@ -23,9 +23,6 @@ export function lookupAggregation(
     source: LookupSource
 ): AggregationLookupResult {
     const { library, control, member } = params;
-    if (!member) {
-        throw new Error('The "member" parameter is required when lookupType is "aggregation".');
-    }
 
     const found = findMemberInChain(chain, selectAggregations, member);
     if (!found) {

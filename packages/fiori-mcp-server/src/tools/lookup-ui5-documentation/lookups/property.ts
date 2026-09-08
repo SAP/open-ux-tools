@@ -12,10 +12,10 @@ const selectProperties = (symbol: Ui5Symbol): Ui5Property[] | undefined => symbo
  * Extracts documentation for a control property, resolving inherited properties via the chain.
  *
  * @param chain - The control's inheritance chain `[control, ...ancestors]`.
- * @param params - The tool input (the `member` field names the property and is required).
+ * @param params - The tool input (the `member` field names the property).
  * @param source - Provenance of the api.json that produced the chain.
  * @returns Structured property documentation.
- * @throws {Error} When the `member` input is missing or the property is not found in the chain.
+ * @throws {Error} When the property is not found in the chain.
  */
 export function lookupProperty(
     chain: Ui5Symbol[],
@@ -23,9 +23,6 @@ export function lookupProperty(
     source: LookupSource
 ): PropertyLookupResult {
     const { library, control, member } = params;
-    if (!member) {
-        throw new Error('The "member" parameter is required when lookupType is "property".');
-    }
 
     const found = findMemberInChain(chain, selectProperties, member);
     if (!found) {

@@ -13,10 +13,10 @@ const selectEvents = (symbol: Ui5Symbol): Ui5Event[] | undefined => symbol['ui5-
  * `parameters` are preserved as a record (their api.json shape), not flattened to an array.
  *
  * @param chain - The control's inheritance chain `[control, ...ancestors]`.
- * @param params - The tool input (the `member` field names the event and is required).
+ * @param params - The tool input (the `member` field names the event).
  * @param source - Provenance of the api.json that produced the chain.
  * @returns Structured event documentation.
- * @throws {Error} When the `member` input is missing or the event is not found in the chain.
+ * @throws {Error} When the event is not found in the chain.
  */
 export function lookupEvent(
     chain: Ui5Symbol[],
@@ -24,9 +24,6 @@ export function lookupEvent(
     source: LookupSource
 ): EventLookupResult {
     const { library, control, member } = params;
-    if (!member) {
-        throw new Error('The "member" parameter is required when lookupType is "event".');
-    }
 
     const found = findMemberInChain(chain, selectEvents, member);
     if (!found) {

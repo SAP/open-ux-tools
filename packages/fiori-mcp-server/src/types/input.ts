@@ -225,10 +225,9 @@ export const LookupUi5DocumentationInputSchema = zod.object({
     control: zod.string().describe('Fully-qualified control name (e.g. "sap.ui.comp.smarttable.SmartTable").'),
     member: zod
         .string()
-        .optional()
         .describe(
             'Name of the aggregation, property or event to look up (e.g. "customToolbar", "busy", "press"). ' +
-                'Required for the aggregation, property, and event lookupTypes (validated server-side).'
+                'Required for every lookupType.'
         ),
     appPath: zod
         .string()

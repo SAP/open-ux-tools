@@ -67,7 +67,7 @@ const source: LookupSource = {
     fallbackUsed: false
 };
 
-const baseInput = (member: string | undefined, lookupType: LookupUi5DocumentationInput['lookupType']): LookupUi5DocumentationInput => ({
+const baseInput = (member: string, lookupType: LookupUi5DocumentationInput['lookupType']): LookupUi5DocumentationInput => ({
     lookupType,
     library: 'sap.m',
     control: 'sap.m.Table',
@@ -104,12 +104,6 @@ describe('lookup handlers', () => {
             expect(result.description).toBeNull();
         });
 
-        test('throws when member is missing', () => {
-            expect(() => lookupAggregation(chain, baseInput(undefined, 'aggregation'), source)).toThrow(
-                'The "member" parameter is required when lookupType is "aggregation".'
-            );
-        });
-
         test('throws with the known aggregation names when not found', () => {
             expect(() => lookupAggregation(chain, baseInput('missing', 'aggregation'), source)).toThrow(
                 /Aggregation missing not found on sap.m.Table.*Known aggregations: columns, items\./
@@ -144,12 +138,6 @@ describe('lookup handlers', () => {
             expect(result.since).toBe('1.16');
         });
 
-        test('throws when member is missing', () => {
-            expect(() => lookupProperty(chain, baseInput(undefined, 'property'), source)).toThrow(
-                'The "member" parameter is required when lookupType is "property".'
-            );
-        });
-
         test('throws with the known property names when not found', () => {
             expect(() => lookupProperty(chain, baseInput('missing', 'property'), source)).toThrow(
                 /Property missing not found.*Known properties: growing, busy\./
@@ -176,12 +164,6 @@ describe('lookup handlers', () => {
             expect(result.inherited).toBe(true);
             expect(result.parameters).toEqual({ element: { name: 'element', type: 'sap.ui.core.Element' } });
             expect(result.since).toBeNull();
-        });
-
-        test('throws when member is missing', () => {
-            expect(() => lookupEvent(chain, baseInput(undefined, 'event'), source)).toThrow(
-                'The "member" parameter is required when lookupType is "event".'
-            );
         });
 
         test('throws with the known event names when not found', () => {
