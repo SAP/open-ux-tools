@@ -303,6 +303,7 @@ describe('<UIFlexibleTable />', () => {
             expect(root.length).toEqual(1);
             expect(root.getElement().props.style).toMatchInlineSnapshot(`
                 Object {
+                  "--flexible-table-actions-min-width": "54px",
                   "maxWidth": "1000px",
                 }
             `);
@@ -314,6 +315,7 @@ describe('<UIFlexibleTable />', () => {
             const root2 = wrapper.find(selectors.tableRoot);
             expect(root2.getElement().props.style).toMatchInlineSnapshot(`
                 Object {
+                  "--flexible-table-actions-min-width": "54px",
                   "maxWidth": "100%",
                 }
             `);
@@ -349,6 +351,36 @@ describe('<UIFlexibleTable />', () => {
                 reverseBackground: false
             });
             expect(wrapper.find(selectors.reverseBackground).length).toEqual(0);
+        });
+
+        describe('actions column min-width CSS variable', () => {
+            const getActionsMinWidth = () =>
+                wrapper.find(selectors.tableRoot).getElement().props.style?.['--flexible-table-actions-min-width'];
+
+            it('reorder + delete — max width', () => {
+                wrapper.setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn() });
+                const width = parseInt(getActionsMinWidth(), 10);
+                expect(width).toBeGreaterThan(0);
+            });
+
+            it('only delete — less than reorder + delete', () => {
+                wrapper.setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn() });
+                const withReorder = parseInt(getActionsMinWidth(), 10);
+                wrapper.setProps({ onTableReorder: undefined });
+                const withoutReorder = parseInt(getActionsMinWidth(), 10);
+                expect(withoutReorder).toBeLessThan(withReorder);
+                expect(withoutReorder).toBeGreaterThan(0);
+            });
+
+            it('readonly — zero width', () => {
+                wrapper.setProps({ onTableReorder: () => undefined, onDeleteRow: jest.fn(), readonly: true });
+                expect(getActionsMinWidth()).toBe('0px');
+            });
+
+            it('no actions — zero width', () => {
+                wrapper.setProps({ onTableReorder: undefined, onDeleteRow: undefined, onRenderActions: undefined });
+                expect(getActionsMinWidth()).toBe('0px');
+            });
         });
 
         describe('Add button', () => {

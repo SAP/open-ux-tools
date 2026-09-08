@@ -17,8 +17,9 @@
 
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"
-], function (opaTest, runner) {
+    "./pages/JourneyRunner"<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>,
+    "sap/ui/core/library"<% } %>
+], function (opaTest, runner<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>, coreLibrary<% } %>) {
     "use strict";
 
     function journey() {
@@ -69,6 +70,8 @@ sap.ui.define([
         //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
         //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         //     Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+        //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
         // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
@@ -84,14 +87,30 @@ sap.ui.define([
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
+            <%_ if (item.custom) { _%>
+            <%_ if (item.labelUnresolved) { _%>
+            // TODO: label is an unresolved i18n key; replace with the rendered action text
+            <%_ } _%>
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { visible: true });
+            <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            <%_ } _%>
             <%_ } _%>
             <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
             Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
             <%_ } -%>
+        });
+<%_ } -%>
+<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
+        opaTest("Check text annotation for columns", function (Given, When, Then) {
+            <%_ textAnnotationColumns.forEach(function(column) { _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
+            <%_ }); -%>
         });
 <%_ } -%>
 

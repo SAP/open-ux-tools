@@ -37,6 +37,15 @@ const cjsCompatBanner = [
 const patchBabelEslintParser = {
     name: 'patch-babel-eslint-parser',
     setup(build) {
+        // Redirect "@babel/parser" imports to the version from our dep tree.
+        // Needed because the patched static import is processed in the context of
+        // @babel/eslint-parser's location in the pnpm store, where @babel/parser
+        // is not a sibling — we resolve it explicitly from this package's root.
+        const babelParserEntry = req.resolve('@babel/parser');
+        build.onResolve({ filter: /^@babel\/parser$/ }, () => ({
+            path: babelParserEntry
+        }));
+
         build.onLoad({ filter: /@babel[\\/]eslint-parser[\\/]lib[\\/]index\.js$/ }, (args) => {
             let source = readFileSync(args.path, 'utf8');
             const patched = source.replace(
