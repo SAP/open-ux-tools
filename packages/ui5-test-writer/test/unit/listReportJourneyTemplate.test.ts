@@ -23,6 +23,7 @@ function renderListReportJourney(bucket: string, tabs: unknown[]): string {
         deleteButton: { visible: false },
         isALP: false,
         semanticKey: {},
+        textAnnotationColumns: [],
         tableIdentifiers: ['1', '6'],
         tabs
     });
