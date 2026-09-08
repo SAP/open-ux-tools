@@ -10,6 +10,7 @@ import type { Annotations, ExternalService, ServiceProvider } from '@sap-ux/axio
 import { createForDestination, AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider, findSystem } from './services/sap-system.js';
 import { WebIDEUsage } from '@sap-ux/btp-utils';
+import { BackendSystem } from '@sap-ux/store';
 
 async function executeOData(validated: GeneratorConfigOData, appPath: string): Promise<GenerateAppOutput> {
     const generatorConfigValidated: GeneratorConfigOData = validateWithSchema(generatorConfigOData, validated);
@@ -47,7 +48,7 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
     try {
         if (generatorConfig.service) {
             const { servicePath, host, client, destination } = generatorConfig.service;
-            const { edmx, externalServices, annotations } = await resolveServiceMetadata(
+            const { edmx, externalServices, annotations, authenticationType } = await resolveServiceMetadata(
                 metadataPath,
                 servicePath,
                 host,
@@ -57,6 +58,7 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
             generatorConfig.service.edmx = edmx;
             generatorConfig.service.externalServices = externalServices;
             generatorConfig.service.annotations = annotations;
+            generatorConfig.service.authenticationType = authenticationType;
         }
 
         const content = JSON.stringify(generatorConfig, null, 4);
@@ -133,7 +135,7 @@ async function resolveServiceMetadata(
     host: string,
     client?: string,
     destination?: string
-): Promise<Pick<NonNullable<GeneratorConfigODataWithAPI['service']>, 'edmx' | 'externalServices' | 'annotations'>> {
+): Promise<Pick<NonNullable<GeneratorConfigODataWithAPI['service']>, 'edmx' | 'externalServices' | 'annotations' | 'authenticationType'>> {
     const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
 
     if (!host && !destination) {
@@ -141,8 +143,9 @@ async function resolveServiceMetadata(
     }
 
     let serviceProvider: AbapServiceProvider | undefined;
+    let backendSystem: BackendSystem | undefined;
     try {
-        serviceProvider = await getAbapServiceProvider(host, client, destination);
+        ({ serviceProvider, backendSystem } = await getAbapServiceProvider(host, client, destination) ?? {});
     } catch (error) {
         logger.error(
             `Error creating the ABAP service provider: ${error instanceof Error ? error.message : String(error)}`
@@ -160,7 +163,8 @@ async function resolveServiceMetadata(
     return {
         edmx: metadata,
         externalServices: await getExternalServiceMetadata(serviceProvider, servicePath, metadata),
-        annotations: await getServiceAnnotations(serviceProvider, servicePath, metadata)
+        annotations: await getServiceAnnotations(serviceProvider, servicePath, metadata),
+        authenticationType: backendSystem?.authenticationType ?? undefined
     };
 }
 
@@ -267,8 +271,9 @@ async function getAbapServiceProvider(
     host: string,
     client?: string,
     destinationName?: string
-): Promise<AbapServiceProvider | undefined> {
+): Promise<{ serviceProvider?: AbapServiceProvider; backendSystem?: BackendSystem; } | undefined> {
     let serviceProvider: ServiceProvider | undefined;
+    let backendSystem: BackendSystem | undefined;
     if (destinationName) {
         // To avoid an additional call to listDestinations, we create a destination provider directly with the given name.
         const destination = { Name: destinationName, WebIDEUsage: WebIDEUsage.ODATA_ABAP };
@@ -285,6 +290,7 @@ async function getAbapServiceProvider(
         const { system } = await findSystem(findSystemQuery);
         if (system) {
             serviceProvider = createAbapServiceProvider(system);
+            backendSystem = system;
         } else {
             const clientInfo = client ? ` and client: ${client}` : '';
             logger.error(`Failed to find system for host: ${host}${clientInfo}`);
@@ -297,5 +303,5 @@ async function getAbapServiceProvider(
         return undefined;
     }
 
-    return serviceProvider;
+    return { serviceProvider, backendSystem };
 }
