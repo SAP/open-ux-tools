@@ -10,7 +10,7 @@ import type { Annotations, ExternalService, ServiceProvider } from '@sap-ux/axio
 import { createForDestination, AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider, findSystem } from './services/sap-system.js';
 import { WebIDEUsage } from '@sap-ux/btp-utils';
-import { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 
 async function executeOData(validated: GeneratorConfigOData, appPath: string): Promise<GenerateAppOutput> {
     const generatorConfigValidated: GeneratorConfigOData = validateWithSchema(generatorConfigOData, validated);
@@ -164,7 +164,7 @@ async function resolveServiceMetadata(
         edmx: metadata,
         externalServices: await getExternalServiceMetadata(serviceProvider, servicePath, metadata),
         annotations: await getServiceAnnotations(serviceProvider, servicePath, metadata),
-        authenticationType: backendSystem?.authenticationType ?? undefined
+        authenticationType: backendSystem?.authenticationType
     };
 }
 

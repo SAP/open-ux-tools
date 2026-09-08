@@ -2,7 +2,7 @@ import { Authentication } from '@sap-ux/btp-utils';
 import type { Annotations, EntitySetData, ExternalService } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen.js';
 import type { CapRuntime } from './cap.js';
-import { AuthenticationType } from '@sap-ux/store';
+import type { AuthenticationType } from '@sap-ux/store';
 
 /**
  * Shared types used by headless generation from multiple modules
