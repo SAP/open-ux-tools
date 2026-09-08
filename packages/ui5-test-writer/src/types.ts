@@ -151,6 +151,15 @@ export type ContactCardField = {
     property: string;
 };
 
+/**
+ * A table column whose bound property carries both a `Common.Text` annotation and a
+ * `UI.TextArrangement` annotation. `textProperty` is the text/description property the
+ * column can be sorted by (the `Common.Text` target, e.g. "CustomerName").
+ */
+export type TextAnnotationColumn = {
+    textProperty: string;
+};
+
 export type BodySubSectionFeatureData = {
     id: string;
     navigationProperty?: string;
@@ -216,6 +225,11 @@ export type ListReportFeatures = {
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     contactCardColumns: ContactCardField[];
     toolBarActions?: ActionButtonState[];
+    /**
+     * Columns whose bound property has both a `Common.Text` and a `UI.TextArrangement`
+     * annotation; used to generate sort-order tests against the text/description property.
+     */
+    textAnnotationColumns?: TextAnnotationColumn[];
     isALP?: boolean;
     /**
      * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
