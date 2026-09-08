@@ -100,15 +100,8 @@ Each task has an `_Owner:` line (track) and an `_Assignee:` line (person). Fill 
 
   _Owner: tools (code) + skill (SKILL.md for importKeyUserChanges)_ | _Assignee: —_
 
-- [ ] **Decide and implement: promote `lookup-aggregation.mjs` to a first-class MCP tool**  
-  Currently the skill instructs the AI to call `node ~/.claude/skills/…/lookup-aggregation.mjs` via the `Bash` tool. This requires `Bash` access (not available in pure MCP clients) and forces the AI to parse raw stdout.
-
-  **Options:**
-  - **A (recommended): New standalone MCP tool `get_aggregation_metadata(library, control, aggregation, ui5Url?, version?)`** — returns structured JSON, caches under `~/.cache/adp-aggregation-lookup/`. SKILL.md step 6 replaces the bash call with a tool call. The `.mjs` script stays as a dev/CLI convenience.
-  - **B: Step in `run_rta_workflow_step`** — doesn't fit; aggregation lookup is a static HTTP fetch, not browser automation.
-  - **C: Keep as shell script** — fragile, not portable.
-
-  **Decision needed:** confirm option A, assign implementation.  
+- [x] **Decide and implement: promote `lookup-aggregation.mjs` to a first-class MCP tool**  
+  Shipped as `lookup_ui5_documentation` (supports aggregation/property/event, walks inheritance chain). `lookup-aggregation.mjs` retired. SKILL.md updated.  
   _Owner: tools_ | _Assignee: —_ Mihail
 
 ---
@@ -265,9 +258,8 @@ Per `AGENTS.md`: always reuse existing functions from common libraries. `manifes
   `ODataMetadataEntry` is now exported from `src/tools/read-odata-metadata.ts`.  
   _Owner: tools_ | _Assignee: —_ Nikita
 
-- [ ] **Changeset message doesn't mention the new skills**  
-  Update `.changeset/fiori-mcp-server-adp-tools.md` to mention the two new SKILL.md files and `lookup-aggregation.mjs`.  
-  _File:_ `.changeset/fiori-mcp-server-adp-tools.md`  
+- [x] **Changeset message doesn't mention the new skills**  
+  `lookup-aggregation.mjs` retired; `lookup_ui5_documentation` changeset covers the feature. Stale reference resolved.  
   _Owner: tools_ | _Assignee: —_
 
 - [ ] **`skills/` in `package.json` `files` — confirm intentional and document**  

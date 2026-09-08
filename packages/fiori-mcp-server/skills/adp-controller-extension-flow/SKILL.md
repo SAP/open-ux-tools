@@ -281,35 +281,37 @@ Call `step: "get_context"`, payload `{ controlId, actionId }`. The response is r
 
 `availableModels[<name>].contextEntityType` already tells you which entity the control is bound to and `contextPath` gives you the OData path. For the common "what is this bound to / what's the entity type here" question that Step 7 (OData metadata) used to answer, **inspect `availableModels` first** — it short-circuits the metadata call entirely. Only fall through to `read_odata_metadata_adp` (Step 7) when you need information `availableModels` can't give you: property-level details, navigation paths, annotation-driven hints, alternative entity sets, or the full EDMX of an unbound area.
 
-#### Looking up aggregation descriptions
+#### Mandatory aggregation/member verification (hard rule — no exceptions)
 
-`get_context` tells you which aggregations exist (`aggregationsByClass[]`, `parentAggregationName`, `defaultChildAggregation`) and which control defines each one (`definedIn` + `libraryName`), but **not what they're for**. When picking `targetAggregation` for `CTX_ADDXML` (Step 8) you frequently need the aggregation's purpose, allowed type, and cardinality to avoid putting a button into the wrong slot.
+`get_context` tells you which aggregations exist (`aggregationsByClass[]`, `parentAggregationName`, `defaultChildAggregation`) and which control defines each one (`definedIn` + `libraryName`), but **not what they're for**. Before writing any fragment XML you MUST call `mcp__fiori-mcp__lookup_ui5_documentation` to verify the aggregation's accepted type and cardinality against the actual deployed UI5 version.
 
-Run the bundled script to fetch the aggregation's official UI5 docs:
+**Never skip this call.** Type contracts change between UI5 releases — the only safe source is the tool output.
 
-```bash
-node .claude/skills/adp-controller-extension-flow/scripts/lookup-aggregation.mjs \
-  --lib <libraryName from aggregationsByClass> \
-  --control <definedIn from aggregationsByClass> \
-  --aggregation <aggregation name>
+Call `mcp__fiori-mcp__lookup_ui5_documentation` for every aggregation you plan to use:
+
+```
+mcp__fiori-mcp__lookup_ui5_documentation({
+  lookupType: "aggregation",   // or "property" or "event"
+  library: "<libraryName from aggregationsByClass>",
+  control: "<control FQ name — leaf control is fine; the tool walks the chain>",
+  member: "<aggregation / property / event name>",
+  appPath: "<adaptation project root>"   // used to discover ui5.yaml version
+})
 ```
 
-The script:
-- Walks up from `cwd` to find `ui5.yaml` (or pass `--ui5-yaml <path>`) and reads `ui5.url` + `ui5.version` from any `ui5:` block in the proxy/preview middleware config.
-- Fetches `<ui5.url>/<version>/test-resources/<lib path>/designtime/api.json` first (configured base + version).
-- Falls back through: configured base + latest → `https://ui5.sap.com/<version>/...` → `https://ui5.sap.com/test-resources/...` (latest). Handles 404s on removed versions.
-- Caches each api.json for 24 h under `~/.cache/adp-aggregation-lookup/`.
-- Prints JSON with `description`, `type`, `cardinality`, `since`, plus a `source` block showing which URL/version actually served the data.
+Returns `description`, `type`, `since`, `definedIn`, `inherited`, plus lookup-type-specific fields (`cardinality` for aggregations; `defaultValue`/`group`/`bindable` for properties; `parameters` for events), and a `source` block.
 
-**Always pass the control from `definedIn`, not the leaf control.** The script does not walk the inheritance chain — for an aggregation inherited from `sap.m.FlexBox`, pass `--control sap.m.FlexBox --lib sap.m`, not the SmartTable. `aggregationsByClass[].definedIn` already gives you this.
-
-**Do not write any fragment XML until you have run this script for every aggregation you plan to use** — `targetAggregation` and every named child aggregation inside the fragment. Run it against the control that owns each aggregation. Three hard rules on the output:
+**Do not write any fragment XML until you have called this tool for every aggregation you plan to use** — `targetAggregation`, every named child aggregation inside the fragment, AND the default aggregation of every non-trivial control you introduce inside the fragment (e.g. a `Dialog`, `SimpleForm`, `VBox`). The scope is all controls in the fragment, not just the outermost placement slot. Three hard rules on the output:
 
 - **Missing:** an aggregation not returned does not exist; unknown aggregations are silently discarded while `call_action` still reports `success: true`.
 - **Cardinality:** if the result is `0..1` but you need multiple instances (e.g. per-row content), this aggregation cannot serve that purpose — find the correct multi-instance aggregation on the parent container.
 - **No existing children:** if the aggregation has no existing children in `get_overlays`, do not use it as a placement target — it may render hidden or inactive at runtime.
 
-If the accepted type doesn't match, check for a wrapper before seeking an alternative placement. Before using a control from a library not in `aggregationsByClass[].libraryName` for this session, run the script against one of its aggregations — a 404 means the library is absent from this runtime.
+If the accepted type doesn't match, check for a wrapper before seeking an alternative placement. Before using a control from a library not in `aggregationsByClass[].libraryName` for this session, call the tool against one of its aggregations — a tool error indicating all fetches failed means the library is absent from this runtime.
+
+#### XML namespace prefix rule (hard rule)
+
+The `library` field in the tool response is the **exact string to use as the XML namespace** in the fragment. Never derive the namespace from the control name or from memory — sub-packages look similar to their parent library root but are distinct strings. Always read it from `library` in the tool output.
 
 ### Step 7 — Read OData metadata (conditional, only when a data binding is involved)
 
@@ -340,7 +342,7 @@ Build `actionPayload` from the action's `parameters` schema (Step 5), the elemen
 
 **For `CTX_ADDXML`:**
 - `fragmentPath`: `fragments/<Name>.fragment.xml` — pick `<Name>` from the user's intent (e.g. `OrderDetailsButton`). The fragment file itself is created in Step 12.
-- `targetAggregation`: from `get_context`. Always run the `lookup-aggregation.mjs` script (see Step 6) to confirm the aggregation name exists on the control, its accepted `controlType`, and its cardinality before finalising the payload — getting this wrong inserts the fragment into the wrong slot and `call_action` will still report `success: true`.
+- `targetAggregation`: from `get_context`. Always call `lookup_ui5_documentation` (see Step 6) to confirm the aggregation name exists on the control, its accepted `controlType`, and its cardinality before finalising the payload — getting this wrong inserts the fragment into the wrong slot and `call_action` will still report `success: true`.
 - `index`: `0` for "at the beginning"; for "append at end" use the current child count, which is `aggregationsByClass[<class with the aggregation>].aggregations[<aggregation name>].contentLength` from the Step 6 response (fall back to `defaultChildAggregation.content.length` when the aggregation is the default and `aggregationsByClass` wasn't populated). Ask if the user said "after the X" and the position isn't determinable from context.
 
 **For `CTX_EXTEND_CONTROLLER`:**
@@ -437,7 +439,7 @@ Store the returned `site` (and `frameId` if present). Navigate back to the editi
 
 **Absent child overlay → diagnose immediately:**
 1. Check the wrapper element type used in the fragment. SAPUI5 aggregations enforce type contracts: e.g. `SmartForm.groupElements` requires children that implement `IFormGroupElement` (`sap.ui.comp.smartform.GroupElement` qualifies; `sap.ui.layout.HorizontalLayout` does not). A wrong wrapper is silently dropped with no error.
-2. Re-run the `lookup-aggregation.mjs` script (Step 6) for the target aggregation and compare its accepted `controlType` against what your fragment root element actually is.
+2. Call `lookup_ui5_documentation` (see Step 6) for the target aggregation and compare its accepted `controlType` against what your fragment root element actually is.
 3. Replace the wrapper with the correct SAPUI5 type, write the corrected fragment file, call `restart`, re-navigate, and call `get_overlays` again.
 4. Repeat until the new control's own overlay entry is present.
 
