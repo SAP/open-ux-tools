@@ -139,7 +139,7 @@ You can also connect to multiple back-end systems like this.
       url: https://my.backend.com:1234
 ```
 #### [Connecting to the SAP Business Technology Platform](#connecting-to-the-sap-business-technology-platform)
-If you want to connect to an ABAP Environment on SAP Business Technology Platform then you will need to set the optional property `scp` to `true`. For any other target, remove this property or set it to `false`.
+If you want to connect to an ABAP Environment on SAP Business Technology Platform, you **must** set the `authenticationType` property to `reentranceTicket`. The default authentication type is `basic`, which is not supported on ABAP Environment on SAP Business Technology Platform.
 
 ```
 - name: fiori-tools-proxy
@@ -148,7 +148,7 @@ If you want to connect to an ABAP Environment on SAP Business Technology Platfor
     backend:
     - path: /sap
       url: https://my.steampunk.com:1234
-      scp: true
+      authenticationType: reentranceTicket
 ```
 
 #### [Connecting to the SAP Business Accelerator Hub](#connecting-to-the-sap-business-accelerator-hub)
@@ -676,11 +676,6 @@ The target object contains properties identifying your target SAP system.
 - `<number> range [0..999]` (optional)
 - The client property is used to identify the SAP client that is to be used in the backend system. It translates to the url parameter `sap-client=<client>` If the client parameter is not provide, the default client will be used.
 
-##### scp
-
-- `<boolean>` (default: `false`)
-- By default, the deployment task will use basic authentication when connecting to the backend. If the target system is ABAP Environment on SAP Business Technology Platform, this parameter needs to be set to `true`.
-
 ##### service
 
 - `<string>` (default: `/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV`)
@@ -704,7 +699,7 @@ For local usage, we recommend to not use the credentials object at all. As resul
 
 ##### authenticationType 
 - `<string>` (optional)
-- Authentication type for the app (e.g. 'basic', 'reentranceTicket'). IMPORTANT: It is required for authentication with reentrance tickets.
+- Authentication type for the app (e.g. `'basic'`, `'reentranceTicket'`). When connecting to an ABAP Environment on SAP Business Technology Platform, set this to `reentranceTicket`. This replaces the deprecated `scp` property.
 
 #### app
 
