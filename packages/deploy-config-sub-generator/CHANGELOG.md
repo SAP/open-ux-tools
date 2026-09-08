@@ -1,5 +1,30 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.66
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-03
+
+#### Bug Fixes
+
+- Replace this.env.error() with throw to support newer Yeoman versions that no longer expose env.error [[6d6f4bf](https://github.com/SAP/open-ux-tools/commit/6d6f4bfc44585b778911a9ea69ae641a445d338c)]
+
+## 1.0.65
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/deploy-config-generator-shared 1.0.34 → 1.0.35
+- @sap-ux/odata-service-inquirer 3.2.14 → 3.2.15
+- @sap-ux/abap-deploy-config-sub-generator 1.0.55 → 1.0.56
+- @sap-ux/cf-deploy-config-sub-generator 1.0.43 → 1.0.44
+- @sap-ux/fiori-generator-shared 1.2.12 → 1.2.13
+- @sap-ux/inquirer-common 1.0.37 → 1.0.38
+
 ## 1.0.64
 
 ### Patch Changes

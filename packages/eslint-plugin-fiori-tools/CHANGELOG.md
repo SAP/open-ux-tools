@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.9.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-01
+
+#### Bug Fixes
+
+- handle json parsing failures in the language parser. [[c9e527c](https://github.com/SAP/open-ux-tools/commit/c9e527ce6b3b0ab861d2a37ba601070e3ff73fc5)]
+
 ## 10.9.2
 
 ### Patch Changes
