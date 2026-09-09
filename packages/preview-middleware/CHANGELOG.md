@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 1.2.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Bug Fixes
+
+- Disable UI2 AppVariant personalization storage for ADP preview on UI5 < 1.148 [[b4351aa](https://github.com/SAP/open-ux-tools/commit/b4351aa079562e5a60d90259a5554d610fb2fe8a)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux-private/preview-middleware-client [[6163dfc](https://github.com/SAP/open-ux-tools/commit/6163dfc4d7d1ae628dedd93f93b4a743ec583d25)]
+
 ## 1.2.9
 
 ### Patch Changes
