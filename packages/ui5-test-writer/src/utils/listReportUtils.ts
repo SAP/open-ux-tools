@@ -383,8 +383,8 @@ export function getListReportTabs(
         }
         const entitySet = view.entitySet ?? listReportPage.entitySet;
         let toolBarActions: ActionButtonState[] = [];
-        let createButton = buildButtonState(undefined);
-        let deleteButton = buildButtonState(undefined);
+        let createButton = buildButtonState();
+        let deleteButton = buildButtonState();
         if (convertedMetadata && entitySet) {
             const actionNames = getToolBarActionItems(getToolBarActionsFromTableNode(tableNode));
             toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySet, actionNames, log);

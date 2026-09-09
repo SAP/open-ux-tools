@@ -3019,4 +3019,46 @@ describe('getListReportTabs()', () => {
             toolBarActions: []
         });
     });
+
+    test('resolves per-tab action and button state when metadata is available', () => {
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.String"/></EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        expect(tabs.map((tab) => tab.key)).toEqual(['1', '2']);
+        expect(Array.isArray(tabs[0].toolBarActions)).toBe(true);
+        expect(typeof tabs[0].createButton.visible).toBe('boolean');
+    });
+
+    test('skips a manifest view that has no matching spec-model table node', () => {
+        // Manifest declares three tabs but the spec model only carries table nodes for two of them.
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }, { key: '9' }]);
+
+        expect(getListReportTabs(page, undefined, manifest).map((tab) => tab.key)).toEqual(['1', '2']);
+    });
 });
