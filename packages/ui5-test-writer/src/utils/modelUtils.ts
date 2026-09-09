@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { createApplicationAccess, getWebappPath } from '@sap-ux/project-access';
+import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
@@ -14,7 +14,6 @@ import type {
 import type { AppFeatures, FPMFeatures } from '../types.js';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
-import { readAnnotationXmls } from './metadataXmlUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
 import { buildI18nLabelResolver, passthroughLabelResolver, type I18nLabelResolver } from './i18nUtils.js';
 
@@ -144,11 +143,16 @@ export async function getAppFeatures(
             }
         }
 
-        try {
-            annotationXmls = readAnnotationXmls(manifest, await getWebappPath(basePath, fs), fs);
-        } catch (error) {
-            log?.debug(`Failed to read annotation files: ${error instanceof Error ? error.message : String(error)}`);
-        }
+        // Local annotation files (e.g. webapp/annotations/annotation.xml) are not part of the
+        // service $metadata; read them so annotation-only terms (e.g. UI.TextArrangement,
+        // Common.IsActionCritical) are available when the metadata is converted.
+        const annotationRefs = appAccess.project?.apps['']?.services?.mainService?.annotations ?? [];
+        annotationXmls = annotationRefs
+            .map((annotation) => annotation.local)
+            .filter((path): path is string => !!path)
+            .map((path) => fs?.read(path))
+            .filter((content): content is string => !!content);
+
         resolveLabel = await buildLabelResolver(appAccess, log);
 
         if (appModel?.applicationModel) {
