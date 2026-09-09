@@ -2,7 +2,12 @@ import { jest } from '@jest/globals';
 import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types.js';
 import { PromptNames, AppDownloadType } from '../../src/app/types.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { adtSourceTemplateId, generatorTitleConfig } from '../../src/utils/constants.js';
+import {
+    adtSourceTemplateId,
+    appListResultFields,
+    abapRepoResultFields,
+    generatorTitleConfig
+} from '../../src/utils/constants.js';
 import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
@@ -61,7 +66,7 @@ describe('fetchAppListForSelectedSystem', () => {
         expect(result).toEqual([]);
     });
 
-    it('should filter out ADT source template apps for AbapRepository download type', async () => {
+    it('should filter out ADT source template apps for AbapRepository download type on modern systems', async () => {
         const adtApp = { 'sap.app/sourceTemplate/id': adtSourceTemplateId, id: 'adt-app' };
         const regularApp = { 'sap.app/sourceTemplate/id': 'some/other/template', id: 'regular-app' };
         const noTemplateApp = { id: 'no-template-app' };
@@ -75,7 +80,71 @@ describe('fetchAppListForSelectedSystem', () => {
             undefined,
             AppDownloadType.AbapRepository
         );
+
+        expect(mockSearch).toHaveBeenCalledTimes(1);
+        expect(mockSearch).toHaveBeenCalledWith(expect.anything(), appListResultFields);
         expect(result).toEqual([regularApp, noTemplateApp]);
+    });
+
+    it('should retry without sourceTemplate/id for AbapRepository download type on older systems (HTTP 400)', async () => {
+        const regularApp = { 'sap.app/id': 'regular-app', repoName: 'repo1', url: 'http://url' };
+        const columnUnknownError = new Error('400 Column sap.app/sourceTemplate/id is unknown');
+        const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockResolvedValueOnce([regularApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(mockSearch).toHaveBeenNthCalledWith(1, expect.anything(), appListResultFields);
+        expect(mockSearch).toHaveBeenNthCalledWith(2, expect.anything(), abapRepoResultFields);
+        expect(result).toEqual([regularApp]);
+    });
+
+    it('should return empty array and log error when retry also fails on older systems', async () => {
+        const columnUnknownError = new Error('400 Column sap.app/sourceTemplate/id is unknown');
+        const retryError = new Error('Network failure');
+        const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockRejectedValueOnce(retryError);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.applicationListFetchError', { error: retryError.message })
+        );
+        expect(result).toEqual([]);
+    });
+
+    it('should not retry for AbapRepository when the error is not a sourceTemplate column unknown 400', async () => {
+        const unrelatedError = new Error('500 Internal Server Error');
+        const mockSearch = jest.fn().mockRejectedValueOnce(unrelatedError);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(1);
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.applicationListFetchError', { error: unrelatedError.message })
+        );
+        expect(result).toEqual([]);
     });
 
     it('should log an error if getAppList throws an error', async () => {

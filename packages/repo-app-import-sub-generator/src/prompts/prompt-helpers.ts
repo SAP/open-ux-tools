@@ -2,7 +2,9 @@ import {
     appListResultFields,
     downloadTypeConfig,
     generatorTitleConfig,
-    adtSourceTemplateId
+    adtSourceTemplateId,
+    abapRepoResultFields,
+    sourceTemplateIdField
 } from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { AppInfo, AppItem } from '../app/types.js';
@@ -73,33 +75,55 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
 };
 
 /**
+ * Returns true when an HTTP error indicates the system does not know the
+ * `sap.app/sourceTemplate/id` column (HTTP 400 with the expected message body).
+ *
+ * @param {unknown} error - The error thrown by the app index search call.
+ * @returns {boolean} Whether the error is a "column unknown" 400 response.
+ */
+function isUnsupportedFieldError(error: unknown): boolean {
+    if (error instanceof Error) {
+        return error.message.includes('400') && error.message.includes(sourceTemplateIdField);
+    }
+    return false;
+}
+
+/**
  * Fetches a list of deployed applications from the ABAP repository.
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string} appId - Application ID to filter the list.
  * @param {AppDownloadType} downloadType - The download type determining which search params to use.
- * @returns {Promise<AppIndex>} A list of applications filtered by source template.
+ * @returns {Promise<AppIndex>} A list of applications.
  */
 async function getAppList(
     provider: AbapServiceProvider,
     appId?: string,
     downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<AppIndex> {
+    const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
+    const searchParams = appId ? { ...baseSearchParams, 'sap.app/id': appId } : baseSearchParams;
+
     try {
-        const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
-        const searchParams = appId
-            ? {
-                  ...baseSearchParams,
-                  'sap.app/id': appId
-              }
-            : baseSearchParams;
         const results = await provider.getAppIndex().search(searchParams, appListResultFields);
         if (downloadType === AppDownloadType.AbapRepository) {
             // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
-            return results.filter((app) => app['sap.app/sourceTemplate/id'] !== adtSourceTemplateId);
+            return results.filter((app) => app[sourceTemplateIdField] !== adtSourceTemplateId);
         }
         return results;
     } catch (error) {
+        if (downloadType === AppDownloadType.AbapRepository && isUnsupportedFieldError(error)) {
+            // Safe to skip ADT filter — a system that doesn't support this field cannot have ADT-deployed apps.
+            RepoAppDownloadLogger.logger?.debug(`${sourceTemplateIdField} not supported, retrying without it`);
+            try {
+                return await provider.getAppIndex().search(searchParams, abapRepoResultFields);
+            } catch (retryError) {
+                RepoAppDownloadLogger.logger?.error(
+                    t('error.applicationListFetchError', { error: retryError.message })
+                );
+                return [];
+            }
+        }
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
         return [];
     }
