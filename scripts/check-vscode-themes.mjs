@@ -199,13 +199,11 @@ async function fetchAndParseColors(filename, base) {
  * Include files always live in DEFAULTS_BASE regardless of the theme's own base URL.
  */
 async function fetchThemeColors(file, base, includes) {
-    let merged = {};
-    for (const parentFile of includes) {
-        const parentColors = await fetchAndParseColors(parentFile, DEFAULTS_BASE);
-        merged = { ...merged, ...parentColors };
-    }
-    const topColors = await fetchAndParseColors(file, base);
-    return { ...merged, ...topColors };
+    const [includeResults, topColors] = await Promise.all([
+        Promise.all(includes.map((f) => fetchAndParseColors(f, DEFAULTS_BASE))),
+        fetchAndParseColors(file, base),
+    ]);
+    return Object.assign({}, ...includeResults, topColors);
 }
 
 /**
@@ -220,24 +218,24 @@ function hexToFigmaRgba(hex) {
     return { r, g, b, a };
 }
 
+const toHex = (v) =>
+    Math.round(v * 255)
+        .toString(16)
+        .padStart(2, '0');
+
 /**
  * Convert Figma RGBA floats back to a normalized lowercase hex string.
  */
 function figmaRgbaToHex({ r, g, b, a }) {
-    const toHex = (v) =>
-        Math.round(v * 255)
-            .toString(16)
-            .padStart(2, '0');
     const base = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-    const hex = a < 1 ? `${base}${toHex(a)}` : base;
-    return hex.toLowerCase();
+    return (a < 1 ? `${base}${toHex(a)}` : base).toLowerCase();
 }
 
 /**
  * Compare colors via their hex representations to avoid float precision noise.
- * Strips a trailing 'ff' alpha (fully opaque) so that #f0f1f2 and #f0f1f2ff are
- * treated as equal — both are fully visible, the difference is just Microsoft being
- * explicit about the implicit default.
+ * Strips a trailing 'ff' alpha so that #f0f1f2 and #f0f1f2ff compare equal —
+ * some upstream theme JSON files include an explicit full-opacity alpha suffix
+ * that Figma omits, and figmaRgbaToHex never emits one for fully-opaque colors.
  */
 function colorsEqual(figmaRgba, newHex) {
     const normalized = (h) => (h.length === 9 && h.endsWith('ff') ? h.slice(0, 7) : h);
@@ -316,6 +314,13 @@ function createFigmaVariable(vscodeKey, allUpstream, tsDefaults, nextId) {
 
 // ─── TypeScript source parsing ───────────────────────────────────────────────
 
+const THEME_KEY_RES = Object.fromEntries(
+    ['dark', 'light', 'hcDark', 'hcLight'].map((k) => [k, new RegExp(`\\b${k}\\s*:\\s*([^,}\\n]+)`)])
+);
+const ANSI_KEY_RES = Object.fromEntries(
+    ['dark', 'light', 'hcDark', 'hcLight'].map((k) => [k, new RegExp(`\\b${k}\\s*:\\s*'([^']+)'`)])
+);
+
 /**
  * Parse registerColor() default values from a VSCode TypeScript source file.
  * Returns a map of tokenName → { dark, light, hcDark, hcLight } (hex strings or null).
@@ -353,8 +358,7 @@ function parseTsColorDefaults(source) {
 
         const entry = {};
         for (const key of ['dark', 'light', 'hcDark', 'hcLight']) {
-            const keyRe = new RegExp(`\\b${key}\\s*:\\s*([^,}\\n]+)`);
-            const km = defaultsBlock.match(keyRe);
+            const km = defaultsBlock.match(THEME_KEY_RES[key]);
             if (!km) {
                 entry[key] = null;
                 continue;
@@ -401,9 +405,45 @@ function parseTsColorDefaults(source) {
     return { results, constToToken };
 }
 
+function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const l = (min + max) / 2;
+    const chroma = max - min;
+    if (chroma === 0) return { h: 0, s: 0, l };
+    const s = Math.min(l <= 0.5 ? chroma / (2 * l) : chroma / (2 - 2 * l), 1);
+    let h = 0;
+    switch (max) {
+        case r: h = (g - b) / chroma + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / chroma + 2; break;
+        case b: h = (r - g) / chroma + 4; break;
+    }
+    return { h: Math.round(h * 60), s, l };
+}
+
+function hslToRgb(h, s, l) {
+    h /= 360;
+    if (s === 0) { const v = Math.round(l * 255); return { r: v, g: v, b: v }; }
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    const hue2rgb = (t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+    };
+    return {
+        r: Math.round(hue2rgb(h + 1/3) * 255),
+        g: Math.round(hue2rgb(h) * 255),
+        b: Math.round(hue2rgb(h - 1/3) * 255),
+    };
+}
+
 /**
  * Resolve raw TypeScript color expressions to hex strings.
- * Mutates the values map in-place until stable, returning the resolved hex map.
+ * Builds and returns a new resolved hex map; does not mutate rawMap.
  *
  * Supported expressions (case-sensitive):
  *   '#RRGGBB[AA]' → hex string
@@ -442,11 +482,7 @@ function resolveColorExpressions(rawMap, constToToken) {
             if (!refHex) return null;
             const alpha = parseFloat(transparentMatch[2]);
             if (isNaN(alpha)) return null;
-            const base = refHex.replace('#', '');
-            const a = Math.round(alpha * 255)
-                .toString(16)
-                .padStart(2, '0');
-            return `#${base.slice(0, 6)}${a}`;
+            return figmaRgbaToHex({ ...hexToFigmaRgba(refHex), a: alpha });
         }
 
         // darken(ref, factor) / lighten(ref, factor)
@@ -457,13 +493,14 @@ function resolveColorExpressions(rawMap, constToToken) {
             const factor = parseFloat(darkenMatch[3]);
             if (isNaN(factor)) return refHex;
             const base = refHex.replace('#', '');
-            const r = parseInt(base.slice(0, 2), 16);
-            const g = parseInt(base.slice(2, 4), 16);
-            const b = parseInt(base.slice(4, 6), 16);
-            const adjust = darkenMatch[1] === 'darken' ? (1 - factor) : (1 + factor);
-            const clamp = (v) => Math.min(255, Math.max(0, Math.round(v * adjust)));
-            const toHex = (v) => v.toString(16).padStart(2, '0');
-            return `#${toHex(clamp(r))}${toHex(clamp(g))}${toHex(clamp(b))}`;
+            const { h, s, l } = rgbToHsl(
+                parseInt(base.slice(0, 2), 16),
+                parseInt(base.slice(2, 4), 16),
+                parseInt(base.slice(4, 6), 16)
+            );
+            const newL = darkenMatch[1] === 'darken' ? l - l * factor : l + l * factor;
+            const { r, g, b } = hslToRgb(h, s, Math.max(0, Math.min(1, newL)));
+            return `#${toHex(r/255)}${toHex(g/255)}${toHex(b/255)}`;
         }
 
         // opaque(ref)
@@ -546,8 +583,7 @@ function parseAnsiColorMap(source) {
         const defaultsBlock = match[2];
         const entry = {};
         for (const key of ['dark', 'light', 'hcDark', 'hcLight']) {
-            const keyRe = new RegExp(`\\b${key}\\s*:\\s*'([^']+)'`);
-            const km = defaultsBlock.match(keyRe);
+            const km = defaultsBlock.match(ANSI_KEY_RES[key]);
             entry[key] = km ? `'${km[1]}'` : null;
         }
         results[tokenName] = entry;
@@ -592,11 +628,14 @@ async function fetchTsDefaults() {
     const rawMap = {};
     const constToToken = {};
 
-    for (const file of TS_COLOR_SOURCES) {
-        const source = await fetchText(RAW_BASE + file);
+    const allFiles = [...TS_COLOR_SOURCES, ...EXTENSION_PACKAGE_SOURCES];
+    const sources = await Promise.all(allFiles.map((f) => fetchText(RAW_BASE + f)));
+
+    for (let i = 0; i < TS_COLOR_SOURCES.length; i++) {
+        const source = sources[i];
         if (!source) continue;
+        const file = TS_COLOR_SOURCES[i];
         const { results, constToToken: fileConstMap } = parseTsColorDefaults(source);
-        // Also parse ansiColorMap for the terminal color registry file
         if (file.includes('terminalColorRegistry')) {
             Object.assign(rawMap, parseAnsiColorMap(source));
         }
@@ -604,9 +643,8 @@ async function fetchTsDefaults() {
         Object.assign(constToToken, fileConstMap);
     }
 
-    // Parse colors contributed by extensions via package.json
-    for (const file of EXTENSION_PACKAGE_SOURCES) {
-        const source = await fetchText(RAW_BASE + file);
+    for (let i = 0; i < EXTENSION_PACKAGE_SOURCES.length; i++) {
+        const source = sources[TS_COLOR_SOURCES.length + i];
         if (!source) continue;
         Object.assign(rawMap, parseExtensionPackageColors(source));
     }
@@ -616,31 +654,44 @@ async function fetchTsDefaults() {
 
 // ─── main ────────────────────────────────────────────────────────────────────
 
+function applyColor(variable, modeId, newHex, key, changed) {
+    const currentRgba = variable.valuesByMode[modeId];
+    if (!currentRgba) return;
+    if (!colorsEqual(currentRgba, newHex)) {
+        changed.push({ key, oldHex: figmaRgbaToHex(currentRgba), newHex });
+        const newRgba = hexToFigmaRgba(newHex);
+        variable.valuesByMode[modeId] = newRgba;
+        if (variable.resolvedValuesByMode?.[modeId]) {
+            variable.resolvedValuesByMode[modeId].resolvedValue = newRgba;
+        }
+    }
+}
+
 async function main() {
     const tokens = JSON.parse(readFileSync(TOKENS_PATH, 'utf8'));
 
-    const varByName = new Map();
-    for (const v of tokens.variables) {
-        varByName.set(v.name, v);
-    }
+    const varByName = new Map(tokens.variables.map((v) => [v.name, v]));
 
-    // 1. Fetch the authoritative list of valid VSCode color token names.
-    const knownVarsRes = await fetch(KNOWN_VARS_URL);
-    if (!knownVarsRes.ok) throw new Error(`Failed to fetch known variables: ${knownVarsRes.status}`);
-    const { colors: knownVarsCss } = await knownVarsRes.json();
+    // 1/2/3. Fetch known-variables, theme JSONs, and TS defaults concurrently.
+    const [knownVarsJson, upstreamEntries, tsDefaults] = await Promise.all([
+        fetch(KNOWN_VARS_URL).then((r) => {
+            if (!r.ok) throw new Error(`Failed to fetch known variables: ${r.status}`);
+            return r.json();
+        }),
+        Promise.all(
+            THEMES.map(async ({ file, modeId, label, base, includes }) => [
+                modeId,
+                { label, colors: await fetchThemeColors(file, base, includes) },
+            ])
+        ),
+        fetchTsDefaults(),
+    ]);
+    const { colors: knownVarsCss } = knownVarsJson;
     // Convert CSS custom properties to hyphen-form token names:
     // '--vscode-editor-background' → 'editor-background'
     const knownVarsHyphen = new Set(knownVarsCss.map((v) => v.replace(/^--vscode-/, '')));
-
-    // 2. Fetch theme JSON files (explicit overrides).
-    const upstream = {};
-    for (const { file, modeId, label, base, includes } of THEMES) {
-        upstream[modeId] = { label, colors: await fetchThemeColors(file, base, includes) };
-    }
+    const upstream = Object.fromEntries(upstreamEntries);
     const allUpstreamColors = Object.fromEntries(Object.entries(upstream).map(([k, v]) => [k, v.colors]));
-
-    // 3. Fetch TypeScript source defaults (baked-in values for tokens not in any theme file).
-    const tsDefaults = await fetchTsDefaults();
 
     // 4. Compute the next available VariableID index.
     let nextId =
@@ -659,15 +710,9 @@ async function main() {
 
     for (const cssVar of knownVarsCss) {
         const hyphenName = cssVar.replace(/^--vscode-/, '');
-        // Check if we already have this token (hyphen form is the Figma name)
         if (varByName.has(hyphenName)) continue;
 
-        // Derive the VSCode dot-form key from the hyphen form for looking up theme colors.
-        // Note: VSCode token names use dots, but CSS vars use hyphens for ALL separators.
-        // We store in Figma as hyphen-form which is also the CSS var (minus --vscode- prefix).
-        const vscodeKey = hyphenName; // we'll use hyphen form for all lookups too
-
-        const newVar = createFigmaVariable(vscodeKey, allUpstreamColors, tsDefaults, nextId++);
+        const newVar = createFigmaVariable(hyphenName, allUpstreamColors, tsDefaults, nextId++);
         newVar.name = hyphenName;
 
         // Detect modes where we have no upstream source at all:
@@ -675,18 +720,14 @@ async function main() {
         // Note: inTsDefaults=true with a null value means VSCode intentionally set it to null — not flagged.
         const dotKey = hyphenName.replaceAll('-', '.');
         const inTsDefaults = dotKey in tsDefaults || hyphenName in tsDefaults;
-        const missingModes = [];
-        if (!inTsDefaults) {
-            for (const { modeId, label } of THEMES) {
-                const hasTheme = allUpstreamColors[modeId]?.[dotKey] != null || allUpstreamColors[modeId]?.[hyphenName] != null;
-                if (!hasTheme) missingModes.push(label);
-            }
-        }
+        const noUpstream = !inTsDefaults && THEMES.every(
+            ({ modeId }) => allUpstreamColors[modeId]?.[dotKey] == null && allUpstreamColors[modeId]?.[hyphenName] == null
+        );
         tokens.variables.push(newVar);
         tokens.variableIds.push(newVar.id);
         varByName.set(newVar.name, newVar);
         addedFigmaNames.add(newVar.name);
-        added.push({ name: hyphenName, missingModes });
+        added.push({ name: hyphenName, noUpstream });
     }
 
     // 6. Prune tokens NOT in known-variables.json.
@@ -706,10 +747,11 @@ async function main() {
     //     - tokens with no upstream registerColor() get tagged
     //     - tokens that gained a registerColor() upstream have the tag removed
     const UNREGISTERED_TAG = '⚠️ no upstream registerColor — add source file to TS_COLOR_SOURCES in scripts/check-vscode-themes.mjs if one exists';
+    const upstreamColorValues = Object.values(allUpstreamColors);
     for (const v of tokens.variables) {
         const dotKey = v.name.replaceAll('-', '.');
         const inTsDefaults = dotKey in tsDefaults || v.name in tsDefaults;
-        const hasAnyThemeValue = Object.values(allUpstreamColors).some(
+        const hasAnyThemeValue = upstreamColorValues.some(
             (colors) => colors[dotKey] != null || colors[v.name] != null
         );
         const isUnregistered = !inTsDefaults && !hasAnyThemeValue;
@@ -738,19 +780,7 @@ async function main() {
             if (addedFigmaNames.has(figmaName)) continue; // skip tokens added this run — their values are already correct
 
             const variable = varByName.get(figmaName);
-            const currentRgba = variable.valuesByMode[modeId];
-            if (!currentRgba) continue;
-
-            if (!colorsEqual(currentRgba, newHex)) {
-                const oldHex = figmaRgbaToHex(currentRgba);
-                changed.push({ key: vscodeKey, oldHex, newHex });
-
-                const newRgba = hexToFigmaRgba(newHex);
-                variable.valuesByMode[modeId] = newRgba;
-                if (variable.resolvedValuesByMode?.[modeId]) {
-                    variable.resolvedValuesByMode[modeId].resolvedValue = newRgba;
-                }
-            }
+            applyColor(variable, modeId, newHex, vscodeKey, changed);
         }
 
         // Also update tokens whose values come from TS defaults (not theme files).
@@ -773,19 +803,7 @@ async function main() {
             if (!newHex) continue;
 
             const variable = varByName.get(figmaName);
-            const currentRgba = variable.valuesByMode[modeId];
-            if (!currentRgba) continue;
-            if (addedFigmaNames.has(figmaName)) continue;
-
-            if (!colorsEqual(currentRgba, newHex)) {
-                const oldHex = figmaRgbaToHex(currentRgba);
-                changed.push({ key: tokenName, oldHex, newHex });
-                const newRgba = hexToFigmaRgba(newHex);
-                variable.valuesByMode[modeId] = newRgba;
-                if (variable.resolvedValuesByMode?.[modeId]) {
-                    variable.resolvedValuesByMode[modeId].resolvedValue = newRgba;
-                }
-            }
+            applyColor(variable, modeId, newHex, tokenName, changed);
         }
 
         if (changed.length) {
@@ -839,18 +857,17 @@ async function main() {
     }
 
     if (added.length) {
-        const noSource = added.filter(({ missingModes }) => missingModes.length === 4).length;
+        const noSource = added.filter(({ noUpstream }) => noUpstream).length;
         const noSourceNote = noSource
             ? `\n\n> ⚠️ ${noSource} token${noSource === 1 ? '' : 's'} added with no upstream default in any mode — check if new TS source files need adding to \`TS_COLOR_SOURCES\` in \`scripts/check-vscode-themes.mjs\`.`
             : '';
         const rows = added
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map(({ name, missingModes }) => missingModes.length === 4
+            .map(({ name, noUpstream }) => noUpstream
                 ? `| \`${name}\` ⚠️ no upstream registerColor |`
                 : `| \`${name}\` |`)
             .join('\n');
         sections.push(`### Added (${added.length} new tokens)${noSourceNote}\n\n| Token |\n|-------|\n${rows}`);
-
     }
 
     if (removed.length) {
