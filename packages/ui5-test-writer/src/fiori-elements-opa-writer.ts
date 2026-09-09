@@ -26,7 +26,8 @@ import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
-import { isALPManifestTarget } from './utils/listReportUtils.js';
+import { getListReportViews, isALPManifestTarget } from './utils/listReportUtils.js';
+import { resolveOriginatingView } from './utils/objectPageUtils.js';
 import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -139,10 +140,20 @@ export async function generateOPAFiles(
             page.template = 'ListReport';
         }
     }
+    // Resolve which LR tab the navigated Object Page is reached from, so the multi-tab journey navigates
+    // from that tab rather than always the default one (the OP may live on a non-default tab's entity set).
+    const navigatedOPTabKey = LROP.pageOP
+        ? resolveOriginatingView(
+              getListReportViews(manifest, LROP.pageLR?.targetKey),
+              LROP.pageOP.entitySet,
+              LROP.pageLR?.entitySet
+          )?.key
+        : undefined;
     const journeyParams: JourneyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
+        navigatedOPTabKey,
         hideFilterBar: config.hideFilterBar
     };
 

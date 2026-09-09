@@ -176,12 +176,19 @@ function journey() {
         When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%_ } -%>
         <%_ if (tabs && tabs.length > 0) { -%>
-        When.onThe<%- startLR%>Generated.iGoToView({ key: defaultTableId });
+        <%_ const navTabId = navigatedOPTabKey || tableIdentifiers[0]; -%>
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- navTabId %>" });
+        Then.onThe<%- startLR%>Generated.onTable("<%- navTabId %>").iCheckRows();
+        <%_ if (navigatedOP) { -%>
+        When.onThe<%- startLR%>Generated.onTable("<%- navTabId %>").iPressRow(0);
+        Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
         <%_ } -%>
+        <%_ } else { -%>
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
         <%_ if (navigatedOP) { -%>
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressRow(0);
         Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
+        <%_ } -%>
         <%_ } -%>
     });
 <%_ } -%>

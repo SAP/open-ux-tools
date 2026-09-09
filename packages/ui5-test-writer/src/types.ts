@@ -60,6 +60,7 @@ export type JourneyParams = {
     startPages: string[];
     startLR: string | undefined;
     navigatedOP: string | undefined;
+    navigatedOPTabKey?: string;
     hideFilterBar: boolean;
 };
 
