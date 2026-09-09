@@ -90,4 +90,6 @@ export const appListResultFields = [
 ];
 
 // Fallback for older systems that reject sap.app/sourceTemplate/id with HTTP 400.
-export const appListFieldsWithoutSourceTemplate = appListResultFields.filter((field) => field !== sourceTemplateIdField);
+export const appListFieldsWithoutSourceTemplate = appListResultFields.filter(
+    (field) => field !== sourceTemplateIdField
+);
