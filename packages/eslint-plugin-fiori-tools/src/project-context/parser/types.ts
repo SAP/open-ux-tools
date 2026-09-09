@@ -6,6 +6,7 @@ import type { ServiceIndex } from './service.js';
 
 export interface ParsedProject {
     projectType: ProjectType;
+    appRoot: string;
     apps: { [name: string]: ParsedApp };
     documents: { [uri: string]: DocumentType };
 }
