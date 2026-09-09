@@ -1,4 +1,4 @@
-import { dirname, join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
 import { jest } from '@jest/globals';
@@ -188,16 +188,16 @@ export function npmInstall(projectPath: string, checkCds = true): void {
 }
 
 export function setup(name: string, capAppPath?: string) {
-    const lookup: Record<string, { changes: FileChange[]; filename: string }> = {};
+    const lookup: Record<string, { changes: FileChange[]; filename: string; code?: string }> = {};
     if (capAppPath) {
         // install relevant cds-dk for cds compilation
         npmInstall(CAP_PROJECT_PATH);
     }
 
-    function createTestFunction<T extends { name: string; filename: string }>(prefix: string) {
+    function createTestFunction<T extends { name: string; filename: string; code?: string }>(prefix: string) {
         return function (testCode: T, changes: FileChange[]): T {
             const key = [name, prefix, testCode.name].join(' ');
-            lookup[key] = { changes, filename: testCode.filename };
+            lookup[key] = { changes, filename: testCode.filename, code: testCode.code };
             return {
                 ...testCode
             };
@@ -209,12 +209,19 @@ export function setup(name: string, capAppPath?: string) {
         if (!key || !lookup[key]) {
             return;
         }
-        const { changes = [], filename } = lookup[key];
-        const projectCwdCap = capAppPath && CAP_PROJECT_PATH;
+        const { changes = [], filename, code } = lookup[key];
+        const projectCwdCap = capAppPath;
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;
         jest.spyOn(process, 'cwd').mockReturnValue(cwd);
         ProjectContext.resetForTesting();
+        // Pre-load the test file's own content so the parser sees the in-memory version
+        // rather than falling back to the original file on disk.
+        if (code && isAbsolute(filename)) {
+            const filePath = normalizePath(filename);
+            const fileUri = pathToFileURL(filePath).toString();
+            ProjectContext.updateFile(fileUri, code);
+        }
         for (const change of changes) {
             const path = normalizePath(change.filename);
             const uri = pathToFileURL(path).toString();
