@@ -4,6 +4,7 @@ import type { ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
 import type { ProjectContext } from '../project-context.js';
 import { getRecordType } from './annotations.js';
+import { pathToFileURL } from 'node:url';
 
 export const COLLECTION_FACET_TYPE = 'com.sap.vocabularies.UI.v1.CollectionFacet';
 const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
@@ -135,22 +136,22 @@ export function collectFacetI18nKeys(
  */
 export function collectSectionLabelKeys(projectContext: ProjectContext): Map<string, string[]> {
     const keyToPageNames = new Map<string, string[]>();
-    for (const [appKey, app] of Object.entries(projectContext.linkedModel.apps)) {
-        const parsedApp = projectContext.index.apps[appKey];
-        const parsedService = projectContext.getIndexedServiceForMainService(parsedApp);
-        if (!parsedService) {
+    const appUri = pathToFileURL(projectContext.index.appRoot).toString();
+    const app = projectContext.linkedModel.apps[appUri];
+    const parsedApp = projectContext.index.apps[appUri];
+    const parsedService = projectContext.getIndexedServiceForMainService(parsedApp);
+    if (!parsedService) {
+        return keyToPageNames;
+    }
+    for (const page of app.pages) {
+        if (page.type !== 'object-page') {
             continue;
         }
-        for (const page of app.pages) {
-            if (page.type !== 'object-page') {
-                continue;
-            }
-            const entityType = page.entity?.structuredType;
-            if (!entityType) {
-                continue;
-            }
-            collectFacetI18nKeys(entityType, page.targetName, parsedService, keyToPageNames);
+        const entityType = page.entity?.structuredType;
+        if (!entityType) {
+            continue;
         }
+        collectFacetI18nKeys(entityType, page.targetName, parsedService, keyToPageNames);
     }
     return keyToPageNames;
 }
