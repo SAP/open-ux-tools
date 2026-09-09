@@ -128,16 +128,10 @@ describe('FE V4 quick actions', () => {
         // Re-establish pass-through defaults after clearAllMocks wipes implementations.
         // With jest.unstable_mockModule + spread pattern, jest.fn() mocks lose their
         // implementation on clearAllMocks, unlike jest.spyOn which preserves it.
-        getUi5VersionMock.mockImplementation((...args) =>
-            (_versionUtils.getUi5Version as Function)(...args)
-        );
+        getUi5VersionMock.mockImplementation((...args) => (_versionUtils.getUi5Version as Function)(...args));
         checkForExistingChangeMock.mockReturnValue(false);
-        getV4AppComponentMock.mockImplementation((...args) =>
-            (_utils.getV4AppComponent as Function)(...args)
-        );
-        getParentContainerMock.mockImplementation((...args) =>
-            (_QCUtils.getParentContainer as Function)(...args)
-        );
+        getV4AppComponentMock.mockImplementation((...args) => (_utils.getV4AppComponent as Function)(...args));
+        getParentContainerMock.mockImplementation((...args) => (_QCUtils.getParentContainer as Function)(...args));
         getExistingControllerMock.mockImplementation((...args) =>
             (_apiHandler.getExistingController as Function)(...args)
         );
@@ -307,8 +301,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp.v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp.v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -555,8 +549,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp/v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp/v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -1570,8 +1564,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp/v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp/v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -2502,8 +2496,8 @@ describe('FE V4 quick actions', () => {
                     ]
                 });
                 getExistingControllerMock.mockResolvedValue({
-                    controllerPathFromRoot: 'adp/v4/test.js',
-                    controllerExists: true,
+                    baseControllerPathFromRoot: 'adp/v4/test.js',
+                    baseControllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
@@ -3545,13 +3539,11 @@ describe('FE V4 quick actions', () => {
                                 jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                     return 'component-id';
                                 });
-                                jest.spyOn(Component, 'getComponentById').mockImplementation(
-                                    (id) => {
-                                        if (id === 'component-id') {
-                                            return component as unknown as ComponentMock;
-                                        }
+                                jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
+                                    if (id === 'component-id') {
+                                        return component as unknown as ComponentMock;
                                     }
-                                );
+                                });
                                 container.getCurrentPage.mockImplementation(() => {
                                     return componentContainer;
                                 });
@@ -4267,8 +4259,8 @@ describe('FE V4 quick actions', () => {
                         ]
                     });
                     getExistingControllerMock.mockResolvedValue({
-                        controllerPathFromRoot: 'adp.v4/test.js',
-                        controllerExists: true,
+                        baseControllerPathFromRoot: 'adp.v4/test.js',
+                        baseControllerExists: true,
                         isRunningInBAS: false,
                         controllerPath: 'webapp/adp/v4/test.js',
                         isTsSupported: false

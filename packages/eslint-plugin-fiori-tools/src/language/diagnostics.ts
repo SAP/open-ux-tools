@@ -131,9 +131,7 @@ export interface NoDataFieldIntentBasedNavigation {
     type: typeof NO_DATA_FIELD_INTENT_BASED_NAVIGATION;
     pageNames: string[];
     annotation: {
-        file: string;
         recordType: string;
-        annotationPath: string;
         reference: AnnotationReference;
         reportedParent: Element;
     };

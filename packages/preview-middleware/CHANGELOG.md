@@ -1,5 +1,117 @@
 # @sap-ux/preview-middleware
 
+## 1.2.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Bug Fixes
+
+- Disable UI2 AppVariant personalization storage for ADP preview on UI5 < 1.148 [[b4351aa](https://github.com/SAP/open-ux-tools/commit/b4351aa079562e5a60d90259a5554d610fb2fe8a)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux-private/preview-middleware-client [[6163dfc](https://github.com/SAP/open-ux-tools/commit/6163dfc4d7d1ae628dedd93f93b4a743ec583d25)]
+
+## 1.2.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.50 → 1.0.51
+
+## 1.2.8
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Correct UI label texts in the controller extension dialog [[b19615c](https://github.com/SAP/open-ux-tools/commit/b19615cc5d3c846c9c38ade51a24c078a1c06060)]
+
+## 1.2.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.49 → 1.0.50
+
+## 1.2.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[ef7c4b4](https://github.com/SAP/open-ux-tools/commit/ef7c4b4cce828fff70c10389bd58f6f02179d10d)]
+
+#### Release Date
+
+2026-08-26
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.48 → 1.0.49
+- @sap-ux/system-access 1.0.11 → 1.0.12
+
+## 1.2.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.47 → 1.0.48
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/system-access 1.0.11 → 1.0.11
+
+## 1.2.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/adp-tooling 1.0.46 → 1.0.47
+- @sap-ux/system-access 1.0.11 → 1.0.11
+- @sap-ux/i18n 1.0.2 → 1.0.3
+
+## 1.2.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.45 → 1.0.46
+
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/adp-tooling 1.0.44 → 1.0.45
+- @sap-ux/system-access 1.0.10 → 1.0.11
+
+## 1.2.1
+
+### Patch Changes
+
+#### Features
+
+- Ability to create entity specific controller extensions [[57cb8f9](https://github.com/SAP/open-ux-tools/commit/57cb8f93bb625ca20a4a0096a4f7369bb1e3ec75)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.43 → 1.0.44
+
 ## 1.2.0
 
 ### Minor Changes

@@ -49,10 +49,19 @@ class ClientFactory {
             return '';
         }
 
-        // ApplicationInsights v3+ requires InstrumentationKey=<uuid> format
+        // ApplicationInsights v3+ requires InstrumentationKey=<uuid> format.
+        // The IngestionEndpoint/LiveEndpoint must be set explicitly: the @azure/monitor-opentelemetry-exporter
+        // (>= 1.0.0-beta.44, pulled in by applicationinsights 3.16.0) refuses to follow the global endpoint's
+        // cross-origin 307/308 redirect to the regional endpoint (isSameRegisteredDomain guard), so a bare
+        // InstrumentationKey would silently drop all telemetry. The endpoints default to the westus2 region
+        // and can be overridden by the consumer via initTelemetrySettings.
         const instrumentationKey = key === instrumentationKeyPlaceholder ? '00000000-0000-0000-0000-000000000000' : key;
 
-        return `InstrumentationKey=${instrumentationKey}`;
+        return (
+            `InstrumentationKey=${instrumentationKey};` +
+            `IngestionEndpoint=${TelemetrySettings.azureIngestionEndpoint};` +
+            `LiveEndpoint=${TelemetrySettings.azureLiveEndpoint};`
+        );
     }
 }
 

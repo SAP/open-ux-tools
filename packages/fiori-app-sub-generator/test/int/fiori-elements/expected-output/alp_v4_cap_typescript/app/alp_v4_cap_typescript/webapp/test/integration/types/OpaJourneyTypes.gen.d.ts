@@ -20,6 +20,23 @@ import type BaseArrangements from "sap/fe/test/BaseArrangements";
 import type { actions as BooksListGeneratedCustomActions, assertions as BooksListGeneratedCustomAssertions } from "../pages/BooksList.gen";
 import type { actions as BooksObjectPageGeneratedCustomActions, assertions as BooksObjectPageGeneratedCustomAssertions } from "../pages/BooksObjectPage.gen";
 
+/**
+ * Enables OPA5 fluent `.and` chaining on page objects and their sub-objects.
+ *
+ * @example
+ * Then.onTheObjectPageGenerated.iCheckSection({ section: "A" }).and.iCheckSection({ section: "B" });
+ * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
+ */
+type WithAnd<T> = {
+    [K in keyof T | 'and']: K extends 'and'
+        ? WithAnd<T>
+        : K extends keyof T
+        ? T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+            : T[K]
+        : never;
+};
+
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
@@ -27,13 +44,13 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheBooksListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof BooksListGeneratedCustomActions;
-    onTheBooksObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof BooksObjectPageGeneratedCustomActions;
+    onTheBooksListGenerated: WithAnd<Opa5 & ListReportActions & TemplatePageActions & typeof BooksListGeneratedCustomActions>;
+    onTheBooksObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof BooksObjectPageGeneratedCustomActions>;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheBooksListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof BooksListGeneratedCustomAssertions;
-    onTheBooksObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BooksObjectPageGeneratedCustomAssertions;
+    onTheBooksListGenerated: WithAnd<Opa5 & ListReportAssertions & TemplatePageAssertions & typeof BooksListGeneratedCustomAssertions>;
+    onTheBooksObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BooksObjectPageGeneratedCustomAssertions>;
     onTheShell: Shell;
 };

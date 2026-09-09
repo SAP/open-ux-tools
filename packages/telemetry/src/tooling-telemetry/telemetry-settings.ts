@@ -116,6 +116,12 @@ export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSett
         if (options.resourceId) {
             TelemetrySettings.azureInstrumentationKey = options.resourceId;
         }
+        if (options.ingestionEndpoint) {
+            TelemetrySettings.azureIngestionEndpoint = options.ingestionEndpoint;
+        }
+        if (options.liveEndpoint) {
+            TelemetrySettings.azureLiveEndpoint = options.liveEndpoint;
+        }
         const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
             entityName: 'telemetrySetting'
         });

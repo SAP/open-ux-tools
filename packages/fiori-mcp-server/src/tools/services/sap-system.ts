@@ -206,12 +206,42 @@ async function getServiceFromBackendSystem(backendSystem: BackendSystem, service
 }
 
 /**
- * Checks if the provided metadata is a valid (parseable, and not error).
+ * Determines whether a response body looks like OData EDMX metadata (XML) rather
+ * than an HTML error/maintenance/login page. A backend that is temporarily
+ * unavailable often returns a 200 response with such a page, which the HTTP layer
+ * treats as success and therefore does not reject.
+ *
+ * @param body - The response body returned by the service.
+ * @returns True if the body appears to be XML/EDMX metadata.
+ */
+function isEdmx(body: string): boolean {
+    const trimmed = body.trimStart();
+    if (/^<!doctype\s+html/i.test(trimmed) || /^<html[\s>]/i.test(trimmed)) {
+        return false;
+    }
+    return trimmed.startsWith('<?xml') || /<(?:[a-z0-9]+:)?Edmx[\s/>]/i.test(trimmed);
+}
+
+/**
+ * Checks if the provided metadata is valid (parseable EDMX and not an error).
+ * Produces an accurate, OData-version-neutral error describing whether the
+ * metadata was missing, was not metadata at all (e.g. an HTML error page), or
+ * could not be parsed.
  *
  * @param metadata - The EDMX metadata XML as string.
  * @throws An error if the metadata is not valid.
  */
 function checkMetadata(metadata: string): void {
+    if (!metadata?.trim()) {
+        throw new Error(
+            'No metadata was returned by the service. The system may be temporarily unavailable, or the service path may be incorrect.'
+        );
+    }
+    if (!isEdmx(metadata)) {
+        throw new Error(
+            'The service did not return OData metadata — an HTML or error page was received instead. The system may be temporarily unavailable or require authentication.'
+        );
+    }
     let parsedMetadata: unknown;
     let parseError: unknown;
     try {
@@ -222,7 +252,7 @@ function checkMetadata(metadata: string): void {
     }
     if (!parsedMetadata) {
         const detail = parseError instanceof Error ? ` Reason: ${parseError.message}` : '';
-        throw new Error(`Failed to parse service metadata. The service may not be a valid OData V4 service. ${detail}`);
+        throw new Error(`Failed to parse the service metadata as valid OData.${detail}`);
     }
 }
 

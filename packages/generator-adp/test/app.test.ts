@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import fs from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
@@ -794,6 +795,128 @@ describe('Adaptation Project Generator Integration Test', () => {
             await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
 
             expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', 'Failure: boom');
+        });
+
+        describe('JSON input file', () => {
+            const jsonTmpOutputDir = join(__dirname, 'test-output-app-json-tmp');
+            const tempFileIds: string[] = [];
+
+            const jsonKeyUserChange = {
+                content: {
+                    fileName: 'id_1767885281745_1726_renameLabel',
+                    changeType: 'renameLabel',
+                    reference: apps[0].id,
+                    layer: 'CUSTOMER',
+                    namespace: `apps/${apps[0].id}/changes/`,
+                    projectId: apps[0].id,
+                    fileType: 'annotation_change',
+                    content: {
+                        annotationPath: '/category_ID@com.vocabularies.Common.v1.Label'
+                    },
+                    selector: {
+                        serviceUrl: '/odata/test/service'
+                    }
+                },
+                texts: {
+                    annotationText: {
+                        value: 'Category ID',
+                        type: 'XFLD'
+                    }
+                }
+            };
+
+            const baseJsonInput: JsonInput = {
+                system: 'urlA',
+                username: 'user1',
+                password: 'pass1',
+                client: '010',
+                application: 'sap.ui.demoapps.f1',
+                namespace: 'customer.my.app',
+                applicationTitle: 'My app title',
+                targetFolder: jsonTmpOutputDir,
+                projectType: AdaptationProjectType.ON_PREMISE
+            };
+
+            beforeEach(() => {
+                fs.mkdirSync(jsonTmpOutputDir, { recursive: true });
+                mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
+            });
+
+            afterEach(() => {
+                for (const id of tempFileIds.splice(0)) {
+                    const filePath = join(tmpdir(), `${id}.txt`);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            });
+
+            afterAll(() => {
+                rimraf.sync(jsonTmpOutputDir);
+            });
+
+            it('should generate key user changes from a matching JSON input file', async () => {
+                const id = `adp-app-test-changes-${process.pid}`;
+                tempFileIds.push(id);
+                fs.writeFileSync(join(tmpdir(), `${id}.txt`), JSON.stringify({ keyUserChanges: [jsonKeyUserChange] }));
+
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.changes.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).resolves.not.toThrow();
+
+                const projectFolder = join(jsonTmpOutputDir, jsonInput.projectName!);
+                const changesDir = join(projectFolder, 'webapp', 'changes');
+                expect(fs.existsSync(changesDir)).toBe(true);
+                const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.annotation_change'));
+                expect(changeFiles.length).toBeGreaterThan(0);
+            });
+
+            it('should generate a project without key user changes when the JSON input file is missing', async () => {
+                const id = `adp-app-test-missing-${process.pid}`;
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.missing.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).resolves.not.toThrow();
+
+                const projectFolder = join(jsonTmpOutputDir, jsonInput.projectName!);
+                expect(fs.existsSync(join(projectFolder, 'webapp', 'manifest.appdescr_variant'))).toBe(true);
+                expect(fs.existsSync(join(projectFolder, 'webapp', 'changes'))).toBe(false);
+                expect(mockWriteResult).toHaveBeenCalledWith(id, projectFolder);
+            });
+
+            it('should write a failure result when the JSON input file is corrupt', async () => {
+                const id = `adp-app-test-corrupt-${process.pid}`;
+                tempFileIds.push(id);
+                fs.writeFileSync(join(tmpdir(), `${id}.txt`), '{ not json');
+
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.corrupt.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+                expect(mockWriteResult).toHaveBeenCalledWith(id, 'Failure: Failed to parse JSON input file');
+            });
         });
 
         it('should create adaptation project from json correctly', async () => {
