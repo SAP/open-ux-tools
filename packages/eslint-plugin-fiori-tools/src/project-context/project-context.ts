@@ -146,7 +146,14 @@ export class ProjectContext {
      */
     public reindex(uri: string, content: string): void {
         ProjectContext.fileCache.set(uri, content);
-        const { diagnostics, index } = ProjectContext.parser.reparse(uri, this.index, ProjectContext.fileCacheProxy);
+        const { i18nPathsByApp } = ProjectContext.findFioriArtifacts(uri);
+        const { diagnostics, index } = ProjectContext.parser.reparse(
+            uri,
+            this.index,
+            i18nPathsByApp,
+            this.index.appRoot,
+            ProjectContext.fileCacheProxy
+        );
 
         for (const diagnostic of diagnostics) {
             DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);
@@ -179,18 +186,24 @@ export class ProjectContext {
      */
     private static findFioriArtifacts(_uri: string): WorkerResult {
         // potential issue when called from application modeler or via ESLint API
-        const root = normalizePath(process.cwd());
+        const appRoot = normalizePath(process.cwd());
         try {
-            const cachedValue = this.projectArtifactCache.get(root);
-            if (cachedValue) {
+            const cachedValue = this.projectArtifactCache.get(appRoot);
+            if (cachedValue?.appRoot === appRoot) {
                 return cachedValue;
             }
-            const artifacts = getArtifactWorker()(root);
-            this.projectArtifactCache.set(root, artifacts);
+            const artifacts = getArtifactWorker()(appRoot);
+            this.projectArtifactCache.set(appRoot, artifacts);
             return artifacts;
         } catch (error) {
             console.error('Error finding Fiori artifacts:', error);
-            return { artifacts: {}, projectType: 'EDMXBackend' };
+            return {
+                artifacts: {},
+                projectType: 'EDMXBackend',
+                i18nPathsByApp: {},
+                appRoot: '',
+                projectRoot: ''
+            };
         }
     }
 
@@ -281,16 +294,21 @@ export class ProjectContext {
         for (const appRoot of this.appRoots.values()) {
             if (uri.startsWith(appRoot)) {
                 const cachedValue = this.instanceCache.get(appRoot);
-                if (cachedValue) {
+                if (cachedValue?.index.appRoot === appRoot) {
                     this.instanceCache.set(uri, cachedValue);
                     return cachedValue;
                 }
             }
         }
 
-        const { artifacts, projectType } = this.findFioriArtifacts(uri);
-
-        const { diagnostics, index } = this.parser.parse(projectType, artifacts, this.fileCacheProxy);
+        const { artifacts, projectType, i18nPathsByApp, appRoot } = this.findFioriArtifacts(uri);
+        const { diagnostics, index } = this.parser.parse(
+            projectType,
+            artifacts,
+            i18nPathsByApp,
+            appRoot,
+            this.fileCacheProxy
+        );
 
         for (const diagnostic of diagnostics) {
             DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);

@@ -209,6 +209,12 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
     },
     check(context) {
+        if (
+            !(context.sourceCode instanceof FioriAnnotationSourceCode) &&
+            !(context.sourceCode instanceof FioriI18nSourceCode)
+        ) {
+            return [];
+        }
         if (context.sourceCode instanceof FioriAnnotationSourceCode) {
             return checkAnnotationSource(context.sourceCode);
         }
@@ -222,17 +228,28 @@ const rule: FioriRuleDefinition = createFioriRule({
         if (!annotationDiagnostics.length) {
             return {};
         }
-        const lookup = new Set(annotationDiagnostics.map((r) => r.annotation!.reportedParent));
+        const byParent = new Map<Element, NoCommaInSectionTitle[]>();
+        for (const record of annotationDiagnostics) {
+            const parent = record.annotation!.reportedParent;
+            const bucket = byParent.get(parent);
+            if (bucket) {
+                bucket.push(record);
+            } else {
+                byParent.set(parent, [record]);
+            }
+        }
         return {
             ['target>element[name="Annotation"]'](node: Element): void {
-                if (!lookup.has(node)) {
+                const diagnostics = byParent.get(node);
+                if (!diagnostics) {
                     return;
                 }
-                annotationDiagnostics
-                    .filter((r) => r.annotation!.reportedParent === node)
-                    .forEach((r) =>
-                        context.report({ node: r.annotation!.reference.value, messageId: NO_COMMA_IN_SECTION_TITLE })
-                    );
+                for (const diagnostic of diagnostics) {
+                    context.report({
+                        node: diagnostic.annotation!.reference.value,
+                        messageId: NO_COMMA_IN_SECTION_TITLE
+                    });
+                }
             }
         };
     },
@@ -241,10 +258,10 @@ const rule: FioriRuleDefinition = createFioriRule({
         if (!i18nDiagnostics.length) {
             return {};
         }
+        const flaggedEntries = new Set(i18nDiagnostics.map((diagnostic) => diagnostic.i18n!.entry));
         return {
             'i18n-entry'(node: I18nEntry): void {
-                const diagnostic = i18nDiagnostics.some((r) => r.i18n!.entry === node);
-                if (diagnostic) {
+                if (flaggedEntries.has(node)) {
                     context.report({ node, messageId: NO_COMMA_IN_SECTION_TITLE });
                 }
             }

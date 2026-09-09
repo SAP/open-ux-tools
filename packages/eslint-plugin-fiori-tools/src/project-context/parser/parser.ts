@@ -26,6 +26,7 @@ import type {
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { collectFlexChanges, getAppForPath, isFlexChange } from '../utils.js';
+import { parseI18nToAst } from '../../language/i18n/source-code.js';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -51,7 +52,7 @@ export class ApplicationParser {
      * @param fileCache - Map of file URIs to their contents
      */
     private reset(projectType: ProjectType, fileCache: Map<string, string>): void {
-        this.index = { projectType, apps: {}, documents: {} };
+        this.index = { projectType, apps: {}, documents: {}, appRoot: '' };
         this.diagnostics = [];
         this.context = { projectType, fileCache };
     }
@@ -61,16 +62,20 @@ export class ApplicationParser {
      *
      * @param projectType - The type of project being parsed
      * @param artifacts - The discovered Fiori artifacts to parse
+     * @param i18nPathsByApp - Map of application roots to i18n file paths
+     * @param appRoot - The root path of the application
      * @param fileCache - Map of file URIs to their contents
      * @returns The parsed project index and diagnostics
      */
     public parse(
         projectType: ProjectType,
         artifacts: FoundFioriArtifacts,
+        i18nPathsByApp: { [appRoot: string]: string[] },
+        appRoot: string,
         fileCache: Map<string, string>
     ): ParseResult {
         this.reset(projectType, fileCache);
-
+        this.index.appRoot = appRoot;
         for (const app of artifacts.applications ?? []) {
             try {
                 const manifestUri = pathToFileURL(app.manifestPath).toString();
@@ -101,7 +106,7 @@ export class ApplicationParser {
                     projectRootPath: app.projectRoot,
                     changes,
                     services: {},
-                    i18nBundles: collectI18nBundles(getI18nFilePaths(webappPath, manifest), this.context.fileCache)
+                    i18nBundles: collectI18nBundles(i18nPathsByApp[app.appRoot] ?? [], this.context.fileCache)
                 };
                 this.index.apps[appRootUri] = parsedApp;
                 this.parseServicesForApp(app.projectRoot, services, parsedApp);
@@ -164,11 +169,17 @@ export class ApplicationParser {
      *
      * @param uri - The URI of the manifest.json file to reparse
      * @param index - The current parsed project index
+     * @param i18nPathsByApp - Map of application roots to i18n file paths
      * @param fileCache - Map of file URIs to their contents
      */
-    private reparseJSON(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
+    private reparseJSON(
+        uri: string,
+        index: ParsedProject,
+        i18nPathsByApp: { [appRoot: string]: string[] },
+        fileCache: Map<string, string>
+    ): void {
         for (const [key, previousApp] of Object.entries(index.apps)) {
-            if (previousApp.manifest.manifestUri !== uri) {
+            if (previousApp?.manifest.manifestUri !== uri) {
                 continue;
             }
             const manifestContent = fileCache.get(uri) ?? '';
@@ -189,7 +200,7 @@ export class ApplicationParser {
                 projectRootPath: previousApp.projectRootPath,
                 services: {},
                 changes: previousApp.changes,
-                i18nBundles: collectI18nBundles(getI18nFilePaths(webappPath, manifest), fileCache)
+                i18nBundles: collectI18nBundles(i18nPathsByApp[join(previousApp.projectRootPath, key)] ?? [], fileCache)
             };
 
             const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
@@ -297,11 +308,12 @@ export class ApplicationParser {
      *
      * @param uri - The URI of the .properties file to reparse
      * @param index - The current parsed project index
+     * @param appRoot - The application root path
      * @param fileCache - Map of file URIs to their contents
      */
-    private reparseI18n(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
-        const path = fileURLToPath(uri);
-        const app = getAppForPath(index.apps, path);
+    private reparseI18n(uri: string, index: ParsedProject, appRoot: string, fileCache: Map<string, string>): void {
+        const appUri = pathToFileURL(appRoot).toString();
+        const app = index.apps[appUri];
         if (!app) {
             return;
         }
@@ -310,7 +322,7 @@ export class ApplicationParser {
             return;
         }
         try {
-            const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
+            const content = fileCache.get(uri) ?? readFileSync(appRoot, { encoding: 'utf8', flag: 'r' });
             app.i18nBundles[bundleIndex] = { uri, entries: parseI18nProperties(content) };
         } catch {
             // keep existing bundle on read failure
@@ -322,20 +334,28 @@ export class ApplicationParser {
      *
      * @param uri - The URI of the file to reparse
      * @param index - The current parsed project index
+     * @param i18nPathsByApp - Map of application roots to i18n file paths
+     * @param appRoot - The application root path
      * @param fileCache - Map of file URIs to their contents
      */
-    public reparse(uri: string, index: ParsedProject, fileCache: Map<string, string>): ParseResult {
+    public reparse(
+        uri: string,
+        index: ParsedProject,
+        i18nPathsByApp: { [appRoot: string]: string[] },
+        appRoot: string,
+        fileCache: Map<string, string>
+    ): ParseResult {
         this.reset(index.projectType, fileCache);
         if (uri.endsWith('.cds')) {
             this.reparseCDS(index, fileCache);
         } else if (uri.endsWith('manifest.json')) {
-            this.reparseJSON(uri, index, fileCache);
+            this.reparseJSON(uri, index, i18nPathsByApp, fileCache);
         } else if (uri.endsWith('.xml')) {
             this.reparseXML(uri, index);
         } else if (uri.endsWith('.change')) {
             this.reparseChange(uri, index, fileCache);
         } else if (uri.endsWith('.properties')) {
-            this.reparseI18n(uri, index, fileCache);
+            this.reparseI18n(uri, index, appRoot, fileCache);
         }
         return { index: index, diagnostics: [] };
     }
@@ -556,41 +576,12 @@ function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
  * @returns Record mapping i18n keys to their values
  */
 function parseI18nProperties(content: string): Record<string, string> {
+    const ast = parseI18nToAst(content);
     const entries: Record<string, string> = {};
-    for (const line of content.split('\n')) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('!')) {
-            continue;
-        }
-        const eqIdx = trimmed.indexOf('=');
-        if (eqIdx > 0) {
-            entries[trimmed.slice(0, eqIdx).trim()] = trimmed.slice(eqIdx + 1);
-        }
+    for (const entry of ast.entries) {
+        entries[entry.key.value] = entry.value.value;
     }
     return entries;
-}
-
-/**
- * Collects unique i18n file paths declared in the manifest.
- * Checks sap.app.i18n (string form) and sap.ui5.models ResourceModel entries.
- *
- * @param webappPath - The absolute path to the webapp directory
- * @param manifest - The parsed manifest object
- * @returns Deduplicated array of absolute filesystem paths to i18n files
- */
-function getI18nFilePaths(webappPath: string, manifest: Manifest): string[] {
-    const paths = new Set<string>();
-    const appI18n = manifest['sap.app']?.i18n;
-    if (typeof appI18n === 'string') {
-        paths.add(normalizePath(join(webappPath, appI18n)));
-    }
-    const models = (manifest['sap.ui5']?.models ?? {}) as Record<string, { type?: string; uri?: string }>;
-    for (const model of Object.values(models)) {
-        if (model.type === 'sap.ui.model.resource.ResourceModel' && typeof model.uri === 'string') {
-            paths.add(normalizePath(join(webappPath, model.uri)));
-        }
-    }
-    return [...paths];
 }
 
 /**
@@ -605,7 +596,7 @@ function collectI18nBundles(paths: string[], fileCache: Map<string, string>): I1
     for (const filePath of paths) {
         const uri = pathToFileURL(filePath).toString();
         try {
-            const content = fileCache.get(uri) ?? readFileSync(fileURLToPath(uri), { encoding: 'utf8', flag: 'r' });
+            const content = fileCache.get(uri) ?? readFileSync(filePath, { encoding: 'utf8', flag: 'r' });
             bundles.push({ uri, entries: parseI18nProperties(content) });
         } catch {
             // skip unreadable i18n files
