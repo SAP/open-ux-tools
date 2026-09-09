@@ -5,11 +5,15 @@ import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import {
     adtSourceTemplateId,
     appListResultFields,
-    abapRepoResultFields,
-    generatorTitleConfig
+    appListFieldsWithoutSourceTemplate,
+    generatorTitleConfig,
+    sourceTemplateIdField
 } from '../../src/utils/constants.js';
 import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
+
+const createAxiosError = (status: number, message: string): Error =>
+    Object.assign(new Error(message), { isAxiosError: true, response: { status } });
 
 jest.unstable_mockModule('../../src/utils/logger', () => {
     const mock = {
@@ -88,7 +92,7 @@ describe('fetchAppListForSelectedSystem', () => {
 
     it('should retry without sourceTemplate/id for AbapRepository download type on older systems (HTTP 400)', async () => {
         const regularApp = { 'sap.app/id': 'regular-app', repoName: 'repo1', url: 'http://url' };
-        const columnUnknownError = new Error('400 Column sap.app/sourceTemplate/id is unknown');
+        const columnUnknownError = createAxiosError(400, `Column ${sourceTemplateIdField} is unknown`);
         const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockResolvedValueOnce([regularApp]);
         const provider = {
             getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
@@ -102,12 +106,12 @@ describe('fetchAppListForSelectedSystem', () => {
 
         expect(mockSearch).toHaveBeenCalledTimes(2);
         expect(mockSearch).toHaveBeenNthCalledWith(1, expect.anything(), appListResultFields);
-        expect(mockSearch).toHaveBeenNthCalledWith(2, expect.anything(), abapRepoResultFields);
+        expect(mockSearch).toHaveBeenNthCalledWith(2, expect.anything(), appListFieldsWithoutSourceTemplate);
         expect(result).toEqual([regularApp]);
     });
 
     it('should return empty array and log error when retry also fails on older systems', async () => {
-        const columnUnknownError = new Error('400 Column sap.app/sourceTemplate/id is unknown');
+        const columnUnknownError = createAxiosError(400, `Column ${sourceTemplateIdField} is unknown`);
         const retryError = new Error('Network failure');
         const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockRejectedValueOnce(retryError);
         const provider = {
@@ -128,7 +132,7 @@ describe('fetchAppListForSelectedSystem', () => {
     });
 
     it('should not retry for AbapRepository when the error is not a sourceTemplate column unknown 400', async () => {
-        const unrelatedError = new Error('500 Internal Server Error');
+        const unrelatedError = createAxiosError(500, 'Internal Server Error');
         const mockSearch = jest.fn().mockRejectedValueOnce(unrelatedError);
         const provider = {
             getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })

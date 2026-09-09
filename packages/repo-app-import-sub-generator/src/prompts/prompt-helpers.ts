@@ -3,10 +3,11 @@ import {
     downloadTypeConfig,
     generatorTitleConfig,
     adtSourceTemplateId,
-    abapRepoResultFields,
+    appListFieldsWithoutSourceTemplate,
     sourceTemplateIdField
 } from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
+import { isAxiosError } from '@sap-ux/axios-extension';
 import type { AppInfo, AppItem } from '../app/types.js';
 import { AppDownloadType } from '../app/types.js';
 import { PromptState } from './prompt-state.js';
@@ -75,17 +76,14 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
 };
 
 /**
- * Returns true when an HTTP error indicates the system does not know the
- * `sap.app/sourceTemplate/id` column (HTTP 400 with the expected message body).
+ * Returns true when the error is an HTTP 400 response indicating the system
+ * does not know the `sap.app/sourceTemplate/id` column.
  *
  * @param {unknown} error - The error thrown by the app index search call.
  * @returns {boolean} Whether the error is a "column unknown" 400 response.
  */
 function isUnsupportedFieldError(error: unknown): boolean {
-    if (error instanceof Error) {
-        return error.message.includes('400') && error.message.includes(sourceTemplateIdField);
-    }
-    return false;
+    return isAxiosError(error) && error.response?.status === 400 && error.message.includes(sourceTemplateIdField);
 }
 
 /**
@@ -116,15 +114,15 @@ async function getAppList(
             // Safe to skip ADT filter — a system that doesn't support this field cannot have ADT-deployed apps.
             RepoAppDownloadLogger.logger?.debug(`${sourceTemplateIdField} not supported, retrying without it`);
             try {
-                return await provider.getAppIndex().search(searchParams, abapRepoResultFields);
+                return await provider.getAppIndex().search(searchParams, appListFieldsWithoutSourceTemplate);
             } catch (retryError) {
-                RepoAppDownloadLogger.logger?.error(
-                    t('error.applicationListFetchError', { error: retryError.message })
-                );
+                const message = retryError instanceof Error ? retryError.message : String(retryError);
+                RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
                 return [];
             }
         }
-        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
+        const message = error instanceof Error ? error.message : String(error);
+        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
     }
 }
