@@ -793,7 +793,7 @@ async function main() {
 
             // Only update if this token has NO value in the theme JSON for this mode
             // (i.e. it wasn't covered by the theme file loop above)
-            if (vscodeColors[tokenName] !== undefined || vscodeColors[tokenName.replaceAll('.', '-')] !== undefined) {
+            if (vscodeColors[tokenName] != null || vscodeColors[tokenName.replaceAll('.', '-')] != null) {
                 continue; // already handled by theme file loop
             }
 
