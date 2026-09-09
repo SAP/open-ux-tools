@@ -45,8 +45,8 @@ jobs:
                     echo "PaletteBot encountered an error (exit code $EXIT_CODE) — check the logs above" >&2
                     exit 1
                   fi
-                  if [ -f "${{ runner.temp }}/theme-diff.json" ]; then
-                    echo "diff_file=${{ runner.temp }}/theme-diff.json" >> "$GITHUB_OUTPUT"
+                  if [ -f "$DIFF_OUTPUT" ]; then
+                    echo "diff_file=$DIFF_OUTPUT" >> "$GITHUB_OUTPUT"
                     echo "has_changes=true" >> "$GITHUB_OUTPUT"
                   else
                     echo "has_changes=false" >> "$GITHUB_OUTPUT"
@@ -103,6 +103,50 @@ jobs:
                           '`design-tokens/vscode_themes.json` in this repo is',
                           'updated automatically when changes are detected.',
                           '',
+                          '---',
+                          '',
+                          '## 🔧 Maintenance guide',
+                          '',
+                          '### Token added with `⚠️ no upstream registerColor`',
+                          '',
+                          'This means the token exists in VSCode\'s known-variables list but has no `registerColor()` call',
+                          'in any of the TypeScript source files that PaletteBot monitors. Its color value will be',
+                          'transparent at runtime until VSCode registers it.',
+                          '',
+                          '**To investigate:**',
+                          '1. Take the token name from the report (e.g. `editor-background`)',
+                          '2. Convert hyphens to dots: `editor.background`',
+                          '3. Search the VSCode repo: https://github.com/search?q=repo%3Amicrosoft%2Fvscode+%22editor.background%22&type=code',
+                          '   (replace the token name in the URL)',
+                          '4. If a `registerColor(\'token.name\', ...)` call exists in a file **not** listed in',
+                          '   `TS_COLOR_SOURCES` inside `scripts/check-vscode-themes.mjs`, add that file path to the array.',
+                          '5. If no `registerColor()` exists anywhere, the token has no theme-engine backing.',
+                          '   The Figma variable will exist but resolve to transparent at runtime.',
+                          '   You can verify in VSCode: open the feature that uses the token, then open its DevTools',
+                          '   (`Help > Toggle Developer Tools` — make sure you are on the page/webview where the token appears),',
+                          '   then run `getComputedStyle(document.documentElement).getPropertyValue(\'--vscode-token-name\')`.',
+                          '   An empty string confirms the property is unset and the element will render transparent.',
+                          '   The token will appear in the **All unregistered tokens** list at the bottom of every report.',
+                          '   Monitor the VSCode repo — if a `registerColor()` call is added later, add the source file to `TS_COLOR_SOURCES`.',
+                          '',
+                          '### Token removed unexpectedly',
+                          '',
+                          'Tokens are pruned when they disappear from VSCode\'s',
+                          '[`vscode-known-variables.json`](https://github.com/microsoft/vscode/blob/main/build/lib/stylelint/vscode-known-variables.json).',
+                          'This is intentional — the token was renamed or removed upstream.',
+                          'Check the VSCode repo for the new name if you need to preserve the Figma mapping.',
+                          '',
+                          '### Color value looks wrong after an update',
+                          '',
+                          'PaletteBot resolves values in priority order:',
+                          '1. **Theme JSON override** — explicit hex in the theme file (highest priority)',
+                          '2. **`registerColor()` default** — parsed from TypeScript source files in `TS_COLOR_SOURCES`',
+                          '3. **Transparent** — fallback when neither source has a value',
+                          '',
+                          'If a value looks wrong, the most likely cause is a cross-file color reference',
+                          '(e.g. `registerColor(\'foo\', someOtherToken, ...)`) where `someOtherToken` is defined',
+                          'in a file not in `TS_COLOR_SOURCES`. Add the missing file to fix the resolution.',
+                          '',
                           '@SAP/ux-design-reviewers',
                         ].join('\n'),
                       });
@@ -134,14 +178,16 @@ jobs:
                       const report = JSON.parse(fs.readFileSync(process.env.DIFF_FILE, 'utf8'));
                       const sha = process.env.COMMIT_SHA;
                       const shortSha = sha ? sha.slice(0, 7) : '(unknown)';
-                      const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${sha}`;
+                      const commitUrl = sha
+                          ? `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${sha}`
+                          : null;
                       const issueNumber = Number('${{ steps.tracking-issue.outputs.issue_number }}');
 
                       await github.rest.issues.createComment({
                         owner: context.repo.owner,
                         repo: context.repo.repo,
                         issue_number: issueNumber,
-                        body: `${report.body}\n_Committed: [${context.repo.owner}/${context.repo.repo}@\`${shortSha}\`](${commitUrl}) · [Download vscode_themes.json](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/design-tokens/vscode_themes.json)_\n\n@SAP/ux-design-reviewers`,
+                        body: `${report.body}\n_Committed: ${commitUrl ? `[${context.repo.owner}/${context.repo.repo}@\`${shortSha}\`](${commitUrl})` : shortSha} · [Download vscode_themes.json](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/design-tokens/vscode_themes.json)_\n\n@SAP/ux-design-reviewers`,
                       });
                       core.notice(`Posted theme diff to issue #${issueNumber}`);
               env:
