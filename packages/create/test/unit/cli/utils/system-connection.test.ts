@@ -12,6 +12,21 @@ const mockGetErrorType = jest.fn();
 
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
 
+jest.unstable_mockModule('../../../../src/i18n.js', () => ({
+    t: (key: string, params?: any) => {
+        const translations: Record<string, string> = {
+            'systemConnection.invalidUrl': `Invalid URL: '${params?.url}'`,
+            'systemConnection.unknownError': 'An unknown error occurred',
+            'systemConnection.skippingCheck': 'Skipping connection check (--skip-connection-validation flag provided)',
+            'systemConnection.verifying': 'Verifying connection to the back-end system...',
+            'systemConnection.connectionSuccessful': '✓ Connection achieved',
+            'systemConnection.connectionFailed': `Connection check failed: ${params?.error}`,
+            'systemConnection.saveAnywayPrompt': 'Connection check failed. Save system anyway?'
+        };
+        return translations[key] || key;
+    }
+}));
+
 jest.unstable_mockModule('../../../../src/tracing/index.js', () => ({
     getLogger: () => ({
         info: mockLoggerInfo,
