@@ -67,30 +67,6 @@ annotate service.Incidents with @(
 );
 `;
 
-// Outer CollectionFacet with two children, inner CollectionFacet with one ReferenceFacet — VIOLATION on inner
-const CAP_NESTED_SINGLE_FACET_IN_COLLECTION = `
-annotate service.Incidents with @(
-    UI.Facets: [{
-        $Type : 'UI.CollectionFacet',
-        ID    : 'Outer',
-        Facets: [
-            {
-                $Type : 'UI.ReferenceFacet',
-                Target: '@UI.FieldGroup#Details',
-            },
-            {
-                $Type : 'UI.CollectionFacet',
-                ID    : 'Inner',
-                Facets: [{
-                    $Type : 'UI.ReferenceFacet',
-                    Target: '@UI.FieldGroup#Address',
-                }],
-            },
-        ],
-    }],
-);
-`;
-
 // Qualified UI.Facets with a single ReferenceFacet in CollectionFacet — VIOLATION
 const CAP_SINGLE_FACET_IN_COLLECTION_QUALIFIED = `
 annotate service.Incidents with @(
@@ -150,20 +126,6 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 name: 'CollectionFacet with single ReferenceFacet',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_SINGLE_FACET_IN_COLLECTION,
-                errors: [
-                    {
-                        message:
-                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
-                    }
-                ]
-            },
-            []
-        ),
-        createInvalidTest(
-            {
-                name: 'nested CollectionFacet with single ReferenceFacet',
-                filename: CAP_ANNOTATIONS_PATH,
-                code: CAP_ANNOTATIONS + CAP_NESTED_SINGLE_FACET_IN_COLLECTION,
                 errors: [
                     {
                         message:

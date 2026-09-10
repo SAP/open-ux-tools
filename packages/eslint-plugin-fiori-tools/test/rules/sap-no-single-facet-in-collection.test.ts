@@ -1,4 +1,3 @@
-import { pathToFileURL } from 'node:url';
 import { RuleTester } from 'eslint';
 import noSingleFacetInCollectionRule from '../../src/rules/sap-no-single-facet-in-collection.js';
 import { meta, languages } from '../../src/index.js';
@@ -13,7 +12,6 @@ import {
     V4_MANIFEST,
     V4_MANIFEST_PATH
 } from '../test-helper.js';
-import { ProjectContext } from '../../src/project-context/project-context.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -96,35 +94,6 @@ const V4_FIRST_LEVEL_AND_NESTED_SINGLE_FACET = `
                         </Collection>
                     </PropertyValue>
                 </Record>
-                <Record Type="UI.CollectionFacet">
-                    <PropertyValue Property="ID" String="Outer"/>
-                    <PropertyValue Property="Facets">
-                        <Collection>
-                            <Record Type="UI.ReferenceFacet">
-                                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
-                            </Record>
-                            <Record Type="UI.CollectionFacet">
-                                <PropertyValue Property="ID" String="Inner"/>
-                                <PropertyValue Property="Facets">
-                                    <Collection>
-                                        <Record Type="UI.ReferenceFacet">
-                                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Address"/>
-                                        </Record>
-                                    </Collection>
-                                </PropertyValue>
-                            </Record>
-                        </Collection>
-                    </PropertyValue>
-                </Record>
-            </Collection>
-        </Annotation>
-    </Annotations>`;
-
-// V4: outer CollectionFacet with two children, inner CollectionFacet with one ReferenceFacet — VIOLATION on inner
-const V4_NESTED_SINGLE_FACET_IN_COLLECTION = `
-    <Annotations Target="IncidentService.Incidents">
-        <Annotation Term="UI.Facets">
-            <Collection>
                 <Record Type="UI.CollectionFacet">
                     <PropertyValue Property="ID" String="Outer"/>
                     <PropertyValue Property="Facets">
@@ -314,20 +283,6 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
         ),
         createInvalidTest(
             {
-                name: 'V4: nested CollectionFacet with single ReferenceFacet',
-                filename: V4_ANNOTATIONS_PATH,
-                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_NESTED_SINGLE_FACET_IN_COLLECTION),
-                errors: [
-                    {
-                        message:
-                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
-                    }
-                ]
-            },
-            []
-        ),
-        createInvalidTest(
-            {
                 name: 'V2: CollectionFacet with single ReferenceFacet',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_SINGLE_FACET_IN_COLLECTION),
@@ -342,14 +297,10 @@ ruleTester.run(TEST_NAME, noSingleFacetInCollectionRule, {
         ),
         createInvalidTest(
             {
-                name: 'V4: first-level error and nested CollectionFacet error both reported',
+                name: 'V4: first-level error and nested CollectionFacet error only first reported',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FIRST_LEVEL_AND_NESTED_SINGLE_FACET),
                 errors: [
-                    {
-                        message:
-                            'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
-                    },
                     {
                         message:
                             'UI.CollectionFacet must not contain only one UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'

@@ -45,30 +45,6 @@ function hasSingleReferenceFacet(childCollection: Element, aliasInfo: AliasInfor
 }
 
 /**
- * Checks one level of nested CollectionFacets inside a parent CollectionFacet's child collection.
- * Pushes any nested CollectionFacet that itself has exactly one ReferenceFacet child.
- *
- * @param childCollection - The child Facets Collection element of the parent CollectionFacet
- * @param aliasInfo - Alias information for resolving qualified names
- * @param result - Array to push violating nested records into
- */
-function collectNestedSingleChildFacets(
-    childCollection: Element,
-    aliasInfo: AliasInformation,
-    result: Element[]
-): void {
-    for (const nestedRecord of elementsWithName(Edm.Record, childCollection)) {
-        if (getRecordType(aliasInfo, nestedRecord) !== UI_COLLECTION_FACET) {
-            continue;
-        }
-        const nestedChildCollection = getFacetsChildCollection(nestedRecord);
-        if (nestedChildCollection && hasSingleReferenceFacet(nestedChildCollection, aliasInfo)) {
-            result.push(nestedRecord);
-        }
-    }
-}
-
-/**
  * Finds CollectionFacet records that contain exactly one ReferenceFacet child.
  * Checks both the top-level UI.Facets collection and one level of nesting inside
  * CollectionFacets (second-level CollectionFacets). Third-level and beyond are out of scope.
@@ -93,8 +69,6 @@ function findCollectionFacetsWithSingleChild(facetsCollection: Element, aliasInf
         if (hasSingleReferenceFacet(childCollection, aliasInfo)) {
             singleChildFacets.push(record);
         }
-        // Check one level of nesting: CollectionFacets inside this CollectionFacet
-        collectNestedSingleChildFacets(childCollection, aliasInfo, singleChildFacets);
     }
 
     return singleChildFacets;

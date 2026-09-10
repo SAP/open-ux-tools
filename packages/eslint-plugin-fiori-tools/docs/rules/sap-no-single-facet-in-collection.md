@@ -28,30 +28,6 @@ annotate service.Incidents with @(
 );
 ```
 
-```cds
-// Nested CollectionFacet with a single ReferenceFacet child (inner violation)
-annotate service.Incidents with @(
-    UI.Facets: [{
-        $Type : 'UI.CollectionFacet',
-        ID    : 'Outer',
-        Facets: [
-            {
-                $Type : 'UI.ReferenceFacet',
-                Target: '@UI.FieldGroup#Details',
-            },
-            {
-                $Type : 'UI.CollectionFacet',
-                ID    : 'Inner',
-                Facets: [{
-                    $Type : 'UI.ReferenceFacet',
-                    Target: '@UI.FieldGroup#Address',
-                }],
-            },
-        ],
-    }],
-);
-```
-
 ```xml
 <!-- CollectionFacet with a single ReferenceFacet child -->
 <Annotations Target="MyService.MyEntity">
