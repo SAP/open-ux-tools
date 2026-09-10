@@ -41,7 +41,7 @@ export async function getProjectArtifacts(filePath: string): Promise<WorkerResul
             i18nPaths.push(appI18nPaths['sap.app']);
             if (!isCap) {
                 for (const model of Object.values(appI18nPaths.models)) {
-                    if (i18nPaths.indexOf(model.path) === -1) {
+                    if (!i18nPaths.includes(model.path)) {
                         i18nPaths.push(model.path);
                     }
                 }
