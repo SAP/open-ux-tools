@@ -421,7 +421,10 @@ describe('AbapServiceProvider', () => {
             });
 
             test('should abort remaining requests and log warning on 401 from first', async () => {
-                const authError = Object.assign(new Error('Unauthorized'), { isAxiosError: true, response: { status: 401 } });
+                const authError = Object.assign(new Error('Unauthorized'), {
+                    isAxiosError: true,
+                    response: { status: 401 }
+                });
                 const secondMetadataSpy = jest.fn().mockResolvedValue('metadata');
                 const logSpy = jest.spyOn(provider.log, 'warn');
                 jest.spyOn(provider, 'service').mockImplementation((path) => {
@@ -441,7 +444,10 @@ describe('AbapServiceProvider', () => {
             });
 
             test('should abort remaining requests on 403 from first', async () => {
-                const authError = Object.assign(new Error('Forbidden'), { isAxiosError: true, response: { status: 403 } });
+                const authError = Object.assign(new Error('Forbidden'), {
+                    isAxiosError: true,
+                    response: { status: 403 }
+                });
                 const secondMetadataSpy = jest.fn().mockResolvedValue('metadata');
                 jest.spyOn(provider, 'service').mockImplementation((path) => {
                     if (path === '/sap/opu/odata/srv_f4/one') {
@@ -485,7 +491,10 @@ describe('AbapServiceProvider', () => {
             });
 
             test('should abort on 401 when only one reference is provided', async () => {
-                const authError = Object.assign(new Error('Unauthorized'), { isAxiosError: true, response: { status: 401 } });
+                const authError = Object.assign(new Error('Unauthorized'), {
+                    isAxiosError: true,
+                    response: { status: 401 }
+                });
                 const logSpy = jest.spyOn(provider.log, 'warn');
                 jest.spyOn(provider, 'service').mockReturnValue({
                     metadata: jest.fn().mockRejectedValue(authError)
