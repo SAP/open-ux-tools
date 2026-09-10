@@ -23,7 +23,7 @@ jest.unstable_mockModule('../../src/project/i18n/i18n.js', () => ({
 
 const { resolveApplicationTitle } = await import('../../src/project/app-title.js');
 
-const MANIFEST_PATH = '/project/webapp/manifest.json';
+const WEBAPP_PATH = '/project/webapp';
 const I18N_PATH = '/project/webapp/i18n/i18n.properties';
 
 function makeManifest(title?: string): Manifest {
@@ -45,27 +45,21 @@ describe('resolveApplicationTitle()', () => {
         mockGetI18nPropertiesPaths.mockReset();
     });
 
-    test('when neither manifest nor manifestPath is provided, returns undefined', async () => {
-        const result = await resolveApplicationTitle({});
-
-        expect(result).toBeUndefined();
-    });
-
-    test('when manifestPath provided and title is a plain string, returns the plain string without i18n lookup', async () => {
+    test('when webappPath provided and title is a plain string, returns the plain string without i18n lookup', async () => {
         mockReadJSON.mockResolvedValue(makeManifest('My App'));
 
-        const result = await resolveApplicationTitle({ manifestPath: MANIFEST_PATH });
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
 
         expect(result).toBe('My App');
         expect(mockGetI18nPropertiesPaths).not.toHaveBeenCalled();
     });
 
-    test('when manifestPath provided and title is an i18n key, returns value resolved from bundle', async () => {
+    test('when webappPath provided and title is an i18n key, returns value resolved from bundle', async () => {
         mockReadJSON.mockResolvedValue(makeManifest('{{appTitle}}'));
         mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
         mockGetPropertiesI18nBundle.mockResolvedValue(makeBundle('appTitle', 'My Resolved App'));
 
-        const result = await resolveApplicationTitle({ manifestPath: MANIFEST_PATH });
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
 
         expect(result).toBe('My Resolved App');
     });
@@ -75,34 +69,26 @@ describe('resolveApplicationTitle()', () => {
         mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
         mockGetPropertiesI18nBundle.mockResolvedValue({});
 
-        const result = await resolveApplicationTitle({ manifestPath: MANIFEST_PATH });
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
 
         expect(result).toBeUndefined();
     });
 
-    test('when only manifest provided and title is a plain string, returns the plain string without reading manifest again', async () => {
+    test('when manifest is pre-parsed and title is a plain string, returns plain string without re-reading manifest', async () => {
         const manifest = makeManifest('Direct Title');
 
-        const result = await resolveApplicationTitle({ manifest });
+        const result = await resolveApplicationTitle({ manifest, webappPath: WEBAPP_PATH });
 
         expect(mockReadJSON).not.toHaveBeenCalled();
         expect(result).toBe('Direct Title');
     });
 
-    test('when only manifest provided and title is an i18n key, returns undefined (no path to resolve i18n)', async () => {
-        const manifest = makeManifest('{{appTitle}}');
-
-        const result = await resolveApplicationTitle({ manifest });
-
-        expect(result).toBeUndefined();
-    });
-
-    test('when both manifest and manifestPath provided, manifest is not re-read from disk', async () => {
+    test('when manifest is pre-parsed and title is an i18n key, resolves without re-reading manifest', async () => {
         const manifest = makeManifest('{{appTitle}}');
         mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
         mockGetPropertiesI18nBundle.mockResolvedValue(makeBundle('appTitle', 'Resolved'));
 
-        const result = await resolveApplicationTitle({ manifest, manifestPath: MANIFEST_PATH });
+        const result = await resolveApplicationTitle({ manifest, webappPath: WEBAPP_PATH });
 
         expect(mockReadJSON).not.toHaveBeenCalled();
         expect(result).toBe('Resolved');
@@ -111,7 +97,7 @@ describe('resolveApplicationTitle()', () => {
     test('when sap.app.title is absent, returns undefined', async () => {
         mockReadJSON.mockResolvedValue(makeManifest(undefined));
 
-        const result = await resolveApplicationTitle({ manifestPath: MANIFEST_PATH });
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
 
         expect(result).toBeUndefined();
     });
@@ -121,7 +107,7 @@ describe('resolveApplicationTitle()', () => {
         mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
         mockGetPropertiesI18nBundle.mockRejectedValue(new Error('ENOENT: file not found'));
 
-        const result = await resolveApplicationTitle({ manifestPath: MANIFEST_PATH });
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
 
         expect(result).toBeUndefined();
     });

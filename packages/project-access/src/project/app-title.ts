@@ -1,6 +1,8 @@
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { extractDoubleCurlyBracketsKey, getPropertiesI18nBundle } from '@sap-ux/i18n';
 import type { Logger } from '@sap-ux/logger';
+import { FileName } from '../constants.js';
 import { readJSON } from '../file/index.js';
 import type { Manifest } from '../types/index.js';
 import { getI18nPropertiesPaths } from './i18n/i18n.js';
@@ -8,8 +10,8 @@ import { getI18nPropertiesPaths } from './i18n/i18n.js';
 /**
  * Resolves the application title from the manifest, following i18n key references when present.
  *
- * @param params - either a manifestPath to read from disk, a pre-parsed manifest, or both
- * @param params.manifestPath - path to manifest.json; required to read manifest from disk and to resolve i18n paths
+ * @param params - webapp path and optional pre-parsed manifest
+ * @param params.webappPath - path to the webapp directory; used to locate manifest.json and resolve i18n paths
  * @param params.manifest - pre-parsed manifest content; pass to avoid re-reading from disk
  * @param [options] - optional options
  * @param [options.memFs] - optional mem-fs-editor instance
@@ -17,19 +19,15 @@ import { getI18nPropertiesPaths } from './i18n/i18n.js';
  * @returns the resolved title string, or undefined if it cannot be determined
  */
 export async function resolveApplicationTitle(
-    params: { manifestPath?: string; manifest?: Manifest },
+    params: { webappPath: string; manifest?: Manifest },
     options?: { memFs?: Editor; logger?: Logger }
 ): Promise<string | undefined> {
-    const { manifestPath } = params;
+    const { webappPath } = params;
     let { manifest } = params;
     const { memFs, logger } = options ?? {};
+    const manifestPath = join(webappPath, FileName.Manifest);
 
-    if (!manifest) {
-        if (!manifestPath) {
-            return undefined;
-        }
-        manifest = await readJSON<Manifest>(manifestPath, memFs);
-    }
+    manifest ??= await readJSON<Manifest>(manifestPath, memFs);
 
     const rawTitle = manifest?.['sap.app']?.title;
     if (!rawTitle) {
@@ -39,10 +37,6 @@ export async function resolveApplicationTitle(
     const i18nKey = extractDoubleCurlyBracketsKey(rawTitle);
     if (!i18nKey) {
         return rawTitle;
-    }
-
-    if (!manifestPath) {
-        return undefined;
     }
 
     try {
