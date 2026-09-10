@@ -120,7 +120,7 @@ annotate service.Incidents with @(
 </Annotations>
 ```
 
-Nested CollectionFacets with a single ReferenceFacet child are not checked:
+Nested CollectionFacets with a single ReferenceFacet child are not checked, because with nested `UI.CollectionFacet` - all sub-sections appear separately.
 
 ```cds
 annotate service.Incidents with @(
