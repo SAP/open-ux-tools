@@ -1,4 +1,5 @@
 import { join as joinPosix } from 'node:path/posix';
+import { isAxiosError } from 'axios';
 
 import { ODataVersion } from '../base/odata-service.js';
 import { ServiceProvider } from '../base/service-provider.js';
@@ -333,7 +334,7 @@ export class AbapServiceProvider extends ServiceProvider {
                     });
                 }
             } catch (error) {
-                const status = (error as { response?: { status?: number } })?.response?.status;
+                const status = isAxiosError(error) ? error.response?.status : undefined;
                 if (rejectOnAuthError && (status === 401 || status === 403)) {
                     throw error;
                 }
@@ -343,7 +344,7 @@ export class AbapServiceProvider extends ServiceProvider {
             }
         };
 
-        if (waitForFirst && references.length > 1) {
+        if (waitForFirst) {
             const [first, ...rest] = references;
             try {
                 await fetchOne(first, true);
@@ -351,7 +352,9 @@ export class AbapServiceProvider extends ServiceProvider {
                 this.log.warn('Authentication failure fetching external service metadata, aborting remaining requests');
                 return valueListReferences;
             }
-            await Promise.allSettled(rest.map((ref) => fetchOne(ref)));
+            if (rest.length > 0) {
+                await Promise.allSettled(rest.map((ref) => fetchOne(ref)));
+            }
         } else {
             await Promise.allSettled(references.map((ref) => fetchOne(ref)));
         }

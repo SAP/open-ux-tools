@@ -421,7 +421,7 @@ describe('AbapServiceProvider', () => {
             });
 
             test('should abort remaining requests and log warning on 401 from first', async () => {
-                const authError = Object.assign(new Error('Unauthorized'), { response: { status: 401 } });
+                const authError = Object.assign(new Error('Unauthorized'), { isAxiosError: true, response: { status: 401 } });
                 const secondMetadataSpy = jest.fn().mockResolvedValue('metadata');
                 const logSpy = jest.spyOn(provider.log, 'warn');
                 jest.spyOn(provider, 'service').mockImplementation((path) => {
@@ -441,7 +441,7 @@ describe('AbapServiceProvider', () => {
             });
 
             test('should abort remaining requests on 403 from first', async () => {
-                const authError = Object.assign(new Error('Forbidden'), { response: { status: 403 } });
+                const authError = Object.assign(new Error('Forbidden'), { isAxiosError: true, response: { status: 403 } });
                 const secondMetadataSpy = jest.fn().mockResolvedValue('metadata');
                 jest.spyOn(provider, 'service').mockImplementation((path) => {
                     if (path === '/sap/opu/odata/srv_f4/one') {
@@ -482,6 +482,21 @@ describe('AbapServiceProvider', () => {
 
                 expect(result).toHaveLength(1);
                 expect(metadataSpy).toHaveBeenCalledTimes(1);
+            });
+
+            test('should abort on 401 when only one reference is provided', async () => {
+                const authError = Object.assign(new Error('Unauthorized'), { isAxiosError: true, response: { status: 401 } });
+                const logSpy = jest.spyOn(provider.log, 'warn');
+                jest.spyOn(provider, 'service').mockReturnValue({
+                    metadata: jest.fn().mockRejectedValue(authError)
+                } as any);
+
+                const result = await provider.fetchExternalServices([references[0]], true);
+
+                expect(result).toHaveLength(0);
+                expect(logSpy).toHaveBeenCalledWith(
+                    'Authentication failure fetching external service metadata, aborting remaining requests'
+                );
             });
         });
     });
