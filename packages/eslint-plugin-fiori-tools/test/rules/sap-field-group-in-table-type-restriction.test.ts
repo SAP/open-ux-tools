@@ -156,6 +156,57 @@ const V2_MANIFEST_WITH_GRID_TABLE = getManifestAsCode(V2_MANIFEST, [
     }
 ]);
 
+// Object page: CollectionFacet containing a ReferenceFacet pointing to incidentFlow/@UI.LineItem
+// incidentFlow/@UI.LineItem has a DataFieldForAnnotation targeting a FieldGroup
+const V4_COLLECTION_FACET_WITH_FIELDGROUP = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.Facets">
+            <Collection>
+                <Record Type="UI.CollectionFacet">
+                    <PropertyValue Property="ID" String="IncidentDetails"/>
+                    <PropertyValue Property="Label" String="Incident Details"/>
+                    <PropertyValue Property="Facets">
+                        <Collection>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="ID" String="IncidentFlowSection"/>
+                                <PropertyValue Property="Label" String="Incident Flow"/>
+                                <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
+                            </Record>
+                        </Collection>
+                    </PropertyValue>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.IncidentFlow">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#FlowData"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>`;
+
+// V4 manifest: set GridTable for the incidentFlow table on the IncidentsObjectPage
+const V4_MANIFEST_OP_INCIDENT_FLOW_GRID_TABLE = getManifestAsCode(V4_MANIFEST, [
+    {
+        path: [
+            'sap.ui5',
+            'routing',
+            'targets',
+            'IncidentsObjectPage',
+            'options',
+            'settings',
+            'controlConfiguration',
+            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+            'tableSettings',
+            'type'
+        ],
+        value: 'GridTable'
+    }
+]);
+
 ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
     valid: [
         createValidTest(
@@ -203,6 +254,14 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 name: 'V2: DataFieldForAnnotation targeting FieldGroup without configured table type',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_LINEITEM_WITH_FIELDGROUP)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V4: CollectionFacet with ReferenceFacet → FieldGroup in ResponsiveTable (default)',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_COLLECTION_FACET_WITH_FIELDGROUP)
             },
             []
         )
@@ -253,6 +312,20 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 ]
             },
             [{ filename: V2_MANIFEST_PATH, code: V2_MANIFEST_WITH_GRID_TABLE }]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4: CollectionFacet with ReferenceFacet → FieldGroup in GridTable on object page',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_COLLECTION_FACET_WITH_FIELDGROUP),
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in GridTable in the Incident Flow section. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
+            },
+            [{ filename: V4_MANIFEST_PATH, code: V4_MANIFEST_OP_INCIDENT_FLOW_GRID_TABLE }]
         )
     ]
 });
