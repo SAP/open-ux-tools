@@ -224,6 +224,20 @@ describe('ui5-test-writer', () => {
                 );
             });
 
+            it('comments out the confirmation-dialog steps for a dynamically-enabled critical action', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To New', action: 'setToNew', visible: true, enabled: 'dynamic', isCritical: true }
+                ]);
+                const lines = journey.split('\n').map((line) => line.trim());
+                // Conditionally enabled (Core.OperationAvailable path) → steps are emitted commented out, never run.
+                expect(lines).toContain(
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("Set To New");'
+                );
+                const active = lines.filter((line) => !line.startsWith('//'));
+                expect(active.some((line) => line.includes('onMessageDialog'))).toBe(false);
+                expect(active.some((line) => line.includes('iExecuteAction("Set To New")'))).toBe(false);
+            });
+
             it('omits the confirmation-dialog steps when no action is critical', () => {
                 const journey = renderListReportJourney([
                     { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }

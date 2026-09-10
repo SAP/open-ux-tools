@@ -96,7 +96,16 @@ sap.ui.define([
             <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
-            <%_ if (item.isCritical) { _%>
+            <%_ if (item.isCritical && item.enabled === 'dynamic') { _%>
+            // "<%- item.label %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the confirmation dialog.
+            <%_ if (!hideFilterBar) { _%>
+            // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            <%_ } _%>
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            // Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+            // When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+            <%_ } else if (item.isCritical) { _%>
             <%_ if (!hideFilterBar) { _%>
             When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
             <%_ } _%>

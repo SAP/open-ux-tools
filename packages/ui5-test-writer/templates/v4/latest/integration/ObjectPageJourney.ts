@@ -36,7 +36,7 @@ const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).s
         || (section.contactCardFields && section.contactCardFields.length > 0)
         || (section.contactCardColumns && section.contactCardColumns.length > 0)
         || (section.subSections || []).some(function(sub) { return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); })
-        || (section.actions || []).some(function(action) { return action.visible && (action.isCritical || action.menuActions); });
+        || (section.actions || []).some(function(action) { return action.visible && ((action.isCritical && action.enabled !== 'dynamic') || action.menuActions); });
 });
 const headerHasMenu = (headerActions || []).some(function(action) { return action.visible && action.menuActions; });
 -%>
@@ -73,7 +73,7 @@ function journey() {
     });
 
 <% if (headerActions?.length > 0) { -%>
-    opaTest("Check header actions of the Object Page", function (_Given: Given, <% if (headerHasMenu || headerActions.some(function(action) { return action.visible && action.isCritical; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
+    opaTest("Check header actions of the Object Page", function (_Given: Given, <% if (headerHasMenu || headerActions.some(function(action) { return action.visible && action.isCritical && action.enabled !== 'dynamic'; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (editButton?.visible) { -%>
         // Ensure the opened entity is not in Draft state before uncommenting
         // Then.onThe<%- name%>Generated.onHeader().iCheckEdit({ visible: true });
@@ -101,7 +101,12 @@ function journey() {
 <%         } else { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%         } -%>
-<%         if (action.isCritical) { -%>
+<%         if (action.isCritical && action.enabled === 'dynamic') { -%>
+        // "<%- action.label || action.action %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the opened entity. Uncomment when the entity state enables it to test the confirmation dialog.
+        // When.onThe<%- name%>Generated.onHeader().iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+        // When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%         } else if (action.isCritical) { -%>
         When.onThe<%- name%>Generated.onHeader().iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
         Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
         When.onThe<%- name%>Generated.onMessageDialog().iCancel();
@@ -181,7 +186,13 @@ function journey() {
 <%              } else { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
-<%              if (action.isCritical) { -%>
+<%              if (action.isCritical && action.enabled === 'dynamic') { -%>
+        // "<%- action.label || action.action %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the confirmation dialog.
+        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iSelectRows(0);
+        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+        // When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%              } else if (action.isCritical) { -%>
         // Critical action (Common.IsActionCritical): select a row, press it, assert the confirmation dialog opens, then cancel so it is not executed.
         When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iSelectRows(0);
         When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
@@ -211,7 +222,12 @@ function journey() {
 <%              } else { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
-<%              if (action.isCritical) { -%>
+<%              if (action.isCritical && action.enabled === 'dynamic') { -%>
+        // "<%- action.label || action.action %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the opened entity. Uncomment when the entity state enables it to test the confirmation dialog.
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+        // When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%              } else if (action.isCritical) { -%>
         // Critical action (Common.IsActionCritical): press it, assert the confirmation dialog opens, then cancel so it is not executed.
         When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
         Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();

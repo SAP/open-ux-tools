@@ -82,7 +82,7 @@ function journey() {
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-    opaTest("Check table columns and actions", function (_Given: Given, <% if (toolBarActions && toolBarActions.some(function(item) { return item.visible && item.isCritical; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
+    opaTest("Check table columns and actions", function (_Given: Given, <% if (toolBarActions && toolBarActions.some(function(item) { return item.visible && item.isCritical && item.enabled !== 'dynamic'; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
         <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
         <%_ if (createButton.visible && !isALP) { _%>
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
@@ -103,7 +103,16 @@ function journey() {
         <%_ } else { _%>
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
-        <%_ if (item.isCritical) { _%>
+        <%_ if (item.isCritical && item.enabled === 'dynamic') { _%>
+        // "<%- item.label %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the confirmation dialog.
+        <%_ if (!hideFilterBar) { _%>
+        // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } _%>
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+        // Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+        // When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+        <%_ } else if (item.isCritical) { _%>
         <%_ if (!hideFilterBar) { _%>
         When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%_ } _%>
