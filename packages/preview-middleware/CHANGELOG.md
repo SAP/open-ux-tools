@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 1.2.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.51 → 1.0.52
+- @sap-ux/system-access 1.0.12 → 1.0.13
+
 ## 1.2.10
 
 ### Patch Changes
