@@ -48,7 +48,10 @@
         "connectionSuccessful": "✓ Connection achieved",
         "connectionFailed": "Connection check failed. {{error}}",
         "unknownError": "Unknown error",
-        "saveAnywayPrompt": "Connection check failed. Save system anyway?"
+        "saveAnywayPrompt": "Connection check failed. Save system anyway?",
+        "catalogServicesFound": "Found {{count}} catalog service",
+        "catalogServicesFound_other": "Found {{count}} catalog services",
+        "metadataRequestSuccessful": "✓ Metadata request successful"
     },
     "systemActions": {
         "systemNotAdded": "System was not added.",

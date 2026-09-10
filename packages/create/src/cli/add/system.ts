@@ -249,6 +249,7 @@ async function addSystem(params: {
                 client: config.client,
                 systemType: config.systemType,
                 authenticationType: config.authenticationType as AuthenticationType,
+                connectionType: config.connectionType,
                 username: config.username,
                 password: config.password
             },

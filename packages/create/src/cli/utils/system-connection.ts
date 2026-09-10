@@ -1,18 +1,20 @@
 import prompts from 'prompts';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
-import { AuthenticationType } from '@sap-ux/store';
+import { AuthenticationType, ConnectionType } from '@sap-ux/store';
+import { ODataVersion } from '@sap-ux/axios-extension';
 import { getLogger } from '../../tracing/index.js';
 import { t } from '../../i18n.js';
 
 /**
- * Checks connection to a backend system.
+ * Checks connection to a backend system by validating based on the connection type.
  *
  * @param config - System configuration to test
  * @param config.url - System URL
  * @param config.client - SAP client (optional)
  * @param config.systemType - System type (OnPrem, AbapCloud, etc.)
  * @param config.authenticationType - Authentication type
+ * @param config.connectionType - Connection type (determines validation method)
  * @param config.username - Username for basic auth (optional)
  * @param config.password - Password for basic auth (optional)
  * @returns Connection check result with success status and optional error message
@@ -22,6 +24,7 @@ export async function checkSystemConnection(config: {
     client?: string;
     systemType: string;
     authenticationType: AuthenticationType;
+    connectionType: string;
     username?: string;
     password?: string;
 }): Promise<{ success: boolean; error?: string }> {
@@ -60,9 +63,25 @@ export async function checkSystemConnection(config: {
         // prompt=false because we're in non-interactive connection check mode
         const service = await createAbapServiceProvider(target, requestOptions, false, logger);
 
-        // Attempt a lightweight HTTP request to verify connectivity
-        // Use root endpoint with short timeout - 401 or 200 means system is reachable
-        await service.get('/', { timeout: 5000 });
+        // Validate based on connection type
+        if (config.connectionType === ConnectionType.AbapCatalog) {
+            // For ABAP catalog connections, request catalog services
+            const catalog = service.catalog(ODataVersion.v2);
+            const services = await catalog.listServices();
+            logger.info(t('systemConnection.catalogServicesFound', { count: services.length }));
+            return { success: true };
+        } else if (config.connectionType === ConnectionType.ODataService) {
+            // For OData service URLs, attempt metadata request
+            const response = await service.get('/$metadata', { timeout: 5000 });
+            if (response.status === 200) {
+                logger.info(t('systemConnection.metadataRequestSuccessful'));
+                return { success: true };
+            }
+        } else if (config.connectionType === ConnectionType.GenericHost) {
+            // For generic host, basic connectivity check
+            await service.get('/', { timeout: 5000 });
+            return { success: true };
+        }
 
         return { success: true };
     } catch (error: any) {
@@ -92,6 +111,7 @@ export async function checkSystemConnection(config: {
  * @param config.client - SAP client (optional)
  * @param config.systemType - System type (OnPrem, AbapCloud, etc.)
  * @param config.authenticationType - Authentication type
+ * @param config.connectionType - Connection type (determines validation method)
  * @param config.username - Username for basic auth (optional)
  * @param config.password - Password for basic auth (optional)
  * @param skipConnectionValidation - If true, skip the connection check
@@ -103,6 +123,7 @@ export async function checkConnectionOrPrompt(
         client?: string;
         systemType: string;
         authenticationType: AuthenticationType;
+        connectionType: string;
         username?: string;
         password?: string;
     },

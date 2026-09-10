@@ -197,6 +197,7 @@ async function verifyCredentialsUpdate(
             client: existing.client,
             systemType: existing.systemType,
             authenticationType: existing.authenticationType || 'basic',
+            connectionType: existing.connectionType,
             username: (patch.username as string) ?? existing.username,
             password: (patch.password as string) ?? existing.password
         },
