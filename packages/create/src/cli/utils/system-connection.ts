@@ -1,19 +1,18 @@
 import prompts from 'prompts';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
+import { AuthenticationType } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 import { t } from '../../i18n.js';
 
 /**
  * Checks connection to a backend system.
- * Note: For re-entrance ticket and OAuth2 authentication, connection checks are skipped
- * as authentication happens in browser/external flow.
  *
  * @param config - System configuration to test
  * @param config.url - System URL
  * @param config.client - SAP client (optional)
  * @param config.systemType - System type (OnPrem, AbapCloud, etc.)
- * @param config.authenticationType - Authentication type (basic, reentranceTicket, oauth2)
+ * @param config.authenticationType - Authentication type
  * @param config.username - Username for basic auth (optional)
  * @param config.password - Password for basic auth (optional)
  * @returns Connection check result with success status and optional error message
@@ -22,13 +21,13 @@ export async function checkSystemConnection(config: {
     url: string;
     client?: string;
     systemType: string;
-    authenticationType: string;
+    authenticationType: AuthenticationType;
     username?: string;
     password?: string;
 }): Promise<{ success: boolean; error?: string }> {
     // Basic URL validation
     try {
-        const _url = new URL(config.url);
+        new URL(config.url);
     } catch {
         return { success: false, error: t('systemConnection.invalidUrl', { url: config.url }) };
     }
@@ -41,14 +40,14 @@ export async function checkSystemConnection(config: {
         const target = {
             url: config.url,
             client: config.client,
-            authenticationType: config.authenticationType as any
+            authenticationType: config.authenticationType
         };
 
         // Build request options with auth if provided
         // For basic auth with credentials, include them
         // For reentranceTicket/oauth2, omit auth (will get 401 but proves reachability)
         const requestOptions =
-            config.authenticationType === 'basic' && config.username && config.password
+            config.authenticationType === AuthenticationType.Basic && config.username && config.password
                 ? {
                       auth: {
                           username: config.username,
@@ -92,7 +91,7 @@ export async function checkSystemConnection(config: {
  * @param config.url - System URL
  * @param config.client - SAP client (optional)
  * @param config.systemType - System type (OnPrem, AbapCloud, etc.)
- * @param config.authenticationType - Authentication type (basic, reentranceTicket, oauth2)
+ * @param config.authenticationType - Authentication type
  * @param config.username - Username for basic auth (optional)
  * @param config.password - Password for basic auth (optional)
  * @param skipConnectionValidation - If true, skip the connection check
@@ -103,7 +102,7 @@ export async function checkConnectionOrPrompt(
         url: string;
         client?: string;
         systemType: string;
-        authenticationType: string;
+        authenticationType: AuthenticationType;
         username?: string;
         password?: string;
     },
