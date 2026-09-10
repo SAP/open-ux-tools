@@ -216,9 +216,6 @@ function createFigmaVariable(vscodeKey, allUpstream, tsDefaults, nextId) {
 
 // ─── TypeScript source parsing ───────────────────────────────────────────────
 
-const THEME_KEY_RES = Object.fromEntries(
-    ['dark', 'light', 'hcDark', 'hcLight'].map((k) => [k, new RegExp(`\\b${k}\\s*:\\s*([^,}\\n]+)`)])
-);
 const ANSI_KEY_RES = Object.fromEntries(
     ['dark', 'light', 'hcDark', 'hcLight'].map((k) => [k, new RegExp(`\\b${k}\\s*:\\s*'([^']+)'`)])
 );
@@ -271,12 +268,25 @@ function parseTsColorDefaults(source) {
 
         const entry = {};
         for (const key of ['dark', 'light', 'hcDark', 'hcLight']) {
-            const km = defaultsBlock.match(THEME_KEY_RES[key]);
-            if (!km) {
+            const keyMatch = defaultsBlock.match(new RegExp(`\\b${key}\\s*:\\s*`));
+            if (!keyMatch) {
                 entry[key] = null;
                 continue;
             }
-            entry[key] = km[1].trim();
+            // Walk from the start of the value to the first top-level comma or closing brace,
+            // respecting paren depth so transparent(x, 0.5) is not split mid-argument.
+            let depth = 0;
+            let start = keyMatch.index + keyMatch[0].length;
+            let j = start;
+            while (j < defaultsBlock.length) {
+                const ch = defaultsBlock[j];
+                if (ch === '(') depth++;
+                else if (ch === ')') depth--;
+                else if ((ch === ',' || ch === '}') && depth === 0) break;
+                j++;
+            }
+            const val = defaultsBlock.slice(start, j).trim();
+            entry[key] = val || null;
         }
         results[tokenName] = entry;
     }
