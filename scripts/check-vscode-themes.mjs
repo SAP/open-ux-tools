@@ -33,104 +33,6 @@ const RAW_BASE = 'https://raw.githubusercontent.com/microsoft/vscode/main/';
 const KNOWN_VARS_URL =
     'https://raw.githubusercontent.com/microsoft/vscode/main/build/lib/stylelint/vscode-known-variables.json';
 
-// TypeScript source files in the VSCode repo that define colors via registerColor().
-// Each provides default values for tokens not overridden by theme JSON files.
-const TS_COLOR_SOURCES = [
-    // Platform colors
-    'src/vs/platform/theme/common/colors/baseColors.ts',
-    'src/vs/platform/theme/common/colors/editorColors.ts',
-    'src/vs/platform/theme/common/colors/inputColors.ts',
-    'src/vs/platform/theme/common/colors/listColors.ts',
-    'src/vs/platform/theme/common/colors/menuColors.ts',
-    'src/vs/platform/theme/common/colors/miscColors.ts',
-    'src/vs/platform/theme/common/colors/minimapColors.ts',
-    'src/vs/platform/theme/common/colors/chartsColors.ts',
-    'src/vs/platform/theme/common/colors/quickpickColors.ts',
-    'src/vs/platform/theme/common/colors/searchColors.ts',
-    // Editor
-    'src/vs/editor/common/core/editorColorRegistry.ts',
-    'src/vs/editor/contrib/symbolIcons/browser/symbolIcons.ts',
-    'src/vs/editor/contrib/peekView/browser/peekView.ts',
-    'src/vs/editor/contrib/parameterHints/browser/parameterHintsWidget.ts',
-    'src/vs/editor/browser/widget/multiDiffEditor/colors.ts',
-    'src/vs/editor/contrib/inlineCompletions/browser/view/inlineEdits/theme.ts',
-    'src/vs/editor/contrib/folding/browser/foldingDecorations.ts',
-    'src/vs/editor/contrib/wordHighlighter/browser/highlightDecorations.ts',
-    'src/vs/editor/contrib/bracketMatching/browser/bracketMatching.ts',
-    'src/vs/editor/contrib/linkedEditing/browser/linkedEditing.ts',
-    'src/vs/editor/contrib/suggest/browser/suggestWidget.ts',
-    'src/vs/editor/contrib/placeholderText/browser/placeholderText.contribution.ts',
-    'src/vs/editor/browser/widget/diffEditor/registrations.contribution.ts',
-    // Workbench
-    'src/vs/workbench/common/theme.ts',
-    // Debug
-    'src/vs/workbench/contrib/debug/browser/debugColors.ts',
-    'src/vs/workbench/contrib/debug/browser/breakpointEditorContribution.ts',
-    'src/vs/workbench/contrib/debug/browser/callStackEditorContribution.ts',
-    'src/vs/workbench/contrib/debug/browser/exceptionWidget.ts',
-    // Testing
-    'src/vs/workbench/contrib/testing/browser/theme.ts',
-    // Notebook
-    'src/vs/workbench/contrib/notebook/browser/notebookEditorWidget.ts',
-    // SCM/Git
-    'src/vs/workbench/contrib/scm/browser/scmHistory.ts',
-    'src/vs/workbench/contrib/scm/common/quickDiff.ts',
-    // MergeEditor
-    'src/vs/workbench/contrib/mergeEditor/browser/view/colors.ts',
-    // Extensions
-    'src/vs/workbench/contrib/extensions/browser/extensionsWidgets.ts',
-    'src/vs/workbench/contrib/extensions/browser/extensionsActions.ts',
-    'src/vs/workbench/services/extensionManagement/common/extensionsIcons.ts',
-    // Welcome / Getting Started
-    'src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedColors.ts',
-    'src/vs/workbench/contrib/welcomeWalkthrough/common/walkThroughUtils.ts',
-    // Comments
-    'src/vs/workbench/contrib/comments/browser/commentColors.ts',
-    'src/vs/workbench/contrib/comments/browser/commentGlyphWidget.ts',
-    // Terminal
-    'src/vs/workbench/contrib/terminal/common/terminalColorRegistry.ts',
-    'src/vs/workbench/contrib/terminalContrib/stickyScroll/browser/terminalStickyScrollColorRegistry.ts',
-    'src/vs/workbench/contrib/terminalContrib/commandGuide/browser/terminal.commandGuide.contribution.ts',
-    'src/vs/workbench/contrib/terminalContrib/suggest/browser/terminalSymbolIcons.ts',
-    // Interactive
-    'src/vs/workbench/contrib/interactive/browser/interactive.contribution.ts',
-    // Preferences / Settings
-    'src/vs/workbench/contrib/preferences/common/settingsEditorColorRegistry.ts',
-    'src/vs/workbench/contrib/preferences/browser/keybindingsEditor.ts',
-    // InlineChat
-    'src/vs/workbench/contrib/inlineChat/common/inlineChat.ts',
-    // Markdown
-    'src/vs/workbench/contrib/markdown/common/markdownColors.ts',
-    // Chat / Agents
-    'src/vs/workbench/contrib/chat/common/widget/chatColors.ts',
-    'src/vs/workbench/contrib/chat/browser/agentSessions/agentSessions.ts',
-    // MCP
-    'src/vs/workbench/contrib/mcp/browser/mcpServerWidgets.ts',
-    // Action widget
-    'src/vs/platform/actionWidget/browser/actionWidget.ts',
-    // Debug (additional)
-    'src/vs/workbench/contrib/debug/browser/debugEditorContribution.ts',
-    'src/vs/workbench/contrib/debug/browser/statusbarColorProvider.ts',
-    // Remote / Ports
-    'src/vs/workbench/contrib/remote/browser/tunnelView.ts',
-    // SearchEditor
-    'src/vs/workbench/contrib/searchEditor/browser/searchEditor.ts',
-    // GotoError / MarkerNavigation
-    'src/vs/editor/contrib/gotoError/browser/gotoErrorWidget.ts',
-    // Find widget
-    'src/vs/workbench/contrib/codeEditor/browser/find/simpleFindWidget.ts',
-    // User Data Profiles
-    'src/vs/workbench/contrib/userDataProfile/browser/userDataProfilesEditor.ts',
-    // Sessions (newer agents UI)
-    'src/vs/sessions/common/theme.ts',
-    'src/vs/sessions/browser/parts/mobile/contributions/mobileDiffColors.ts',
-    'src/vs/sessions/contrib/agentFeedback/browser/agentFeedbackOverviewRulerContribution.ts',
-    // AgentsVoice
-    'src/vs/workbench/contrib/agentsVoice/common/agentsVoiceColors.ts',
-    // Chat editing (minimap.chatEditHighlight)
-    'src/vs/workbench/contrib/chat/browser/chatEditing/chatEditingModifiedFileEntry.ts',
-];
-
 // VSCode theme files → Figma mode IDs
 // Include chains are resolved bottom-up at fetch time.
 const THEMES = [
@@ -344,15 +246,26 @@ function parseTsColorDefaults(source) {
     // Maps JS const name (e.g. MODERN_TAB_ACTIVE_BACKGROUND or listInactiveSelectionBackground) → token name
     const constToToken = {};
 
-    // Match registerColor calls where the default is an object literal { dark: ..., light: ..., ... }
-    const OBJECT_RE =
-        /(?:(?:export\s+)?const\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*)?registerColor\(\s*['"]([^'"]+)['"]\s*,\s*(\{[\s\S]*?\})\s*,/g;
+    // Match registerColor calls where the default is an object literal { dark: ..., light: ..., ... }.
+    // We locate the opening { with a regex then extract the full block with a brace-depth walker so
+    // nested braces (e.g. helper({ tint: 0.1 })) don't truncate the capture.
+    const OBJECT_START_RE =
+        /(?:(?:export\s+)?const\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*)?registerColor\(\s*['"]([^'"]+)['"]\s*,\s*\{/g;
 
     let match;
-    while ((match = OBJECT_RE.exec(source)) !== null) {
+    while ((match = OBJECT_START_RE.exec(source)) !== null) {
         const constName = match[1];
         const tokenName = match[2];
-        const defaultsBlock = match[3];
+
+        // Walk from the opening { (last char of the match) to the matching closing }
+        let depth = 1;
+        let i = match.index + match[0].length;
+        while (i < source.length && depth > 0) {
+            if (source[i] === '{') depth++;
+            else if (source[i] === '}') depth--;
+            i++;
+        }
+        const defaultsBlock = source.slice(match.index + match[0].length - 1, i);
 
         if (constName) constToToken[constName] = tokenName;
 
@@ -442,6 +355,25 @@ function hslToRgb(h, s, l) {
 }
 
 /**
+ * Split a comma-separated argument string respecting paren depth,
+ * so nested calls like transparent(x, 0.5) are not split mid-argument.
+ */
+function splitTopLevelArgs(str) {
+    const args = [];
+    let depth = 0, start = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === '(') depth++;
+        else if (str[i] === ')') depth--;
+        else if (str[i] === ',' && depth === 0) {
+            args.push(str.slice(start, i).trim());
+            start = i + 1;
+        }
+    }
+    args.push(str.slice(start).trim());
+    return args;
+}
+
+/**
  * Resolve raw TypeScript color expressions to hex strings.
  * Builds and returns a new resolved hex map; does not mutate rawMap.
  *
@@ -514,7 +446,7 @@ function resolveColorExpressions(rawMap, constToToken) {
         // oneOf(a, b, ...) — use first resolvable
         const oneOfMatch = val.match(/^oneOf\((.+)\)$/);
         if (oneOfMatch) {
-            const args = oneOfMatch[1].split(',').map((s) => s.trim());
+            const args = splitTopLevelArgs(oneOfMatch[1]);
             for (const arg of args) {
                 const r = resolveRef(arg, mode, depth + 1);
                 if (r) return r;
@@ -621,6 +553,45 @@ const EXTENSION_PACKAGE_SOURCES = [
     'extensions/git/package.json',
 ];
 
+const GITHUB_SEARCH_URL =
+    'https://api.github.com/search/code?q=registerColor+repo:microsoft/vscode+path:src/vs+extension:ts&per_page=100';
+
+// Files returned by the search API that reference registerColor but don't define
+// built-in color tokens (infrastructure, tests, type declarations, theme service).
+const TS_SEARCH_EXCLUDES = [
+    /\/test\//,
+    /\.test\.ts$/,
+    /\.d\.ts$/,
+    /colorUtils\.ts$/,
+    /extHost\.api\.impl/,
+    /extHostLanguageFeatures/,
+    /standaloneLanguages/,
+    /colorThemeSchema/,
+    /themeExtensionPoints/,
+    /workbenchThemeService/,
+    /debug\.contribution/,
+    /terminal\.contribution/,
+    /colorExtensionPoint/,
+];
+
+/**
+ * Fetch the list of VSCode TS files that define registerColor() calls via the
+ * GitHub code search API.
+ */
+async function fetchTsColorSources() {
+    const token = process.env.GITHUB_TOKEN;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const res = await fetch(GITHUB_SEARCH_URL, { headers });
+    if (!res.ok) throw new Error(`GitHub search API returned ${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data.items)) throw new Error('GitHub search API response malformed');
+    const files = data.items
+        .map((item) => item.path)
+        .filter((path) => !TS_SEARCH_EXCLUDES.some((re) => re.test(path)));
+    process.stderr.write(`GitHub search: discovered ${files.length} TS color source files\n`);
+    return files;
+}
+
 /**
  * Fetch and parse all TS color source files, returning a resolved hex map.
  */
@@ -628,13 +599,14 @@ async function fetchTsDefaults() {
     const rawMap = {};
     const constToToken = {};
 
-    const allFiles = [...TS_COLOR_SOURCES, ...EXTENSION_PACKAGE_SOURCES];
+    const tsColorSources = await fetchTsColorSources();
+    const allFiles = [...tsColorSources, ...EXTENSION_PACKAGE_SOURCES];
     const sources = await Promise.all(allFiles.map((f) => fetchText(RAW_BASE + f)));
 
-    for (let i = 0; i < TS_COLOR_SOURCES.length; i++) {
+    for (let i = 0; i < tsColorSources.length; i++) {
         const source = sources[i];
         if (!source) continue;
-        const file = TS_COLOR_SOURCES[i];
+        const file = tsColorSources[i];
         const { results, constToToken: fileConstMap } = parseTsColorDefaults(source);
         if (file.includes('terminalColorRegistry')) {
             Object.assign(rawMap, parseAnsiColorMap(source));
@@ -644,7 +616,7 @@ async function fetchTsDefaults() {
     }
 
     for (let i = 0; i < EXTENSION_PACKAGE_SOURCES.length; i++) {
-        const source = sources[TS_COLOR_SOURCES.length + i];
+        const source = sources[tsColorSources.length + i];
         if (!source) continue;
         Object.assign(rawMap, parseExtensionPackageColors(source));
     }
@@ -704,6 +676,11 @@ async function main() {
     //    Any token in vscode_themes.json whose hyphen-form name is NOT in the known vars list will be pruned.
     //    This removes GitLens tokens, Rainbow CSV tokens, git extension tokens, and obsolete tokens.
 
+    const isInTsDefaults = (name) => {
+        const dotKey = name.replaceAll('-', '.');
+        return dotKey in tsDefaults || name in tsDefaults;
+    };
+
     // Add new tokens from known-variables that don't exist in the current file.
     const added = [];
     const addedFigmaNames = new Set();
@@ -713,14 +690,12 @@ async function main() {
         if (varByName.has(hyphenName)) continue;
 
         const newVar = createFigmaVariable(hyphenName, allUpstreamColors, tsDefaults, nextId++);
-        newVar.name = hyphenName;
 
         // Detect modes where we have no upstream source at all:
         // the token has no registerColor() entry anywhere AND no theme JSON override.
         // Note: inTsDefaults=true with a null value means VSCode intentionally set it to null — not flagged.
         const dotKey = hyphenName.replaceAll('-', '.');
-        const inTsDefaults = dotKey in tsDefaults || hyphenName in tsDefaults;
-        const noUpstream = !inTsDefaults && THEMES.every(
+        const noUpstream = !isInTsDefaults(hyphenName) && THEMES.every(
             ({ modeId }) => allUpstreamColors[modeId]?.[dotKey] == null && allUpstreamColors[modeId]?.[hyphenName] == null
         );
         tokens.variables.push(newVar);
@@ -746,15 +721,14 @@ async function main() {
     //     This runs on every execution so the tag self-corrects in both directions:
     //     - tokens with no upstream registerColor() get tagged
     //     - tokens that gained a registerColor() upstream have the tag removed
-    const UNREGISTERED_TAG = '⚠️ no upstream registerColor — add source file to TS_COLOR_SOURCES in scripts/check-vscode-themes.mjs if one exists';
+    const UNREGISTERED_TAG = '⚠️ no upstream registerColor — token has no default color value in any VSCode source file';
     const upstreamColorValues = Object.values(allUpstreamColors);
     for (const v of tokens.variables) {
         const dotKey = v.name.replaceAll('-', '.');
-        const inTsDefaults = dotKey in tsDefaults || v.name in tsDefaults;
         const hasAnyThemeValue = upstreamColorValues.some(
             (colors) => colors[dotKey] != null || colors[v.name] != null
         );
-        const isUnregistered = !inTsDefaults && !hasAnyThemeValue;
+        const isUnregistered = !isInTsDefaults(v.name) && !hasAnyThemeValue;
         if (isUnregistered && v.description !== UNREGISTERED_TAG) {
             v.description = UNREGISTERED_TAG;
         } else if (!isUnregistered && v.description === UNREGISTERED_TAG) {
@@ -859,7 +833,7 @@ async function main() {
     if (added.length) {
         const noSource = added.filter(({ noUpstream }) => noUpstream).length;
         const noSourceNote = noSource
-            ? `\n\n> ⚠️ ${noSource} token${noSource === 1 ? '' : 's'} added with no upstream default in any mode — check if new TS source files need adding to \`TS_COLOR_SOURCES\` in \`scripts/check-vscode-themes.mjs\`.`
+            ? `\n\n> ⚠️ ${noSource} token${noSource === 1 ? '' : 's'} added with no upstream default in any mode — no \`registerColor()\` call was found. These tokens may resolve to transparent at runtime.`
             : '';
         const rows = added
             .sort((a, b) => a.name.localeCompare(b.name))
