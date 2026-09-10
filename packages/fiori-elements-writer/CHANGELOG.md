@@ -1,5 +1,18 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.48
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.10.0 → 1.10.1
+- @sap-ux/fe-fpm-writer 1.3.17 → 1.3.17
+
 ## 3.1.47
 
 ### Patch Changes
