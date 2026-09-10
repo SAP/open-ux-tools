@@ -1,5 +1,28 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.51
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- thread authenticationType into connectedSystem backendSystem in service defaults [[41e9341](https://github.com/SAP/open-ux-tools/commit/41e934192805ce9fc954bc34b42f9085b3ea2b36)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+- @sap-ux/fiori-generator-shared 1.2.13 → 1.2.14
+- @sap-ux/odata-service-inquirer 3.2.15 → 3.2.16
+- @sap-ux/odata-service-writer 1.0.21 → 1.0.21
+- @sap-ux/cap-config-writer 1.0.35 → 1.0.36
+- @sap-ux/fiori-elements-writer 3.1.48 → 3.1.49
+- @sap-ux/fiori-freestyle-writer 3.0.93 → 3.0.94
+- @sap-ux/ui5-application-inquirer 1.0.38 → 1.0.39
+
 ## 1.3.50
 
 ### Patch Changes
