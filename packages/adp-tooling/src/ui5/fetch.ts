@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import axios from 'axios';
-import { getProxyAgentConfig } from '@sap-ux/axios-extension';
+import { getProxyAgentConfig, isAxiosError } from '@sap-ux/axios-extension';
 
 import type { UI5Version } from '../types.js';
 import { buildFallbackMap } from './format.js';
@@ -32,17 +32,21 @@ export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Vers
  * @returns {Promise<string[]>} A promise that resolves to an array of formatted internal version strings.
  */
 export async function fetchInternalVersions(latestVersion: string): Promise<string[]> {
+    let data;
     try {
-        const { data } = await axios.get(UI5_VERSIONS_NEO_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_NEO_CDN_URL));
-
-        return (
-            data?.routes?.map((route: { target: { version: string } }) => {
-                return route.target.version === latestVersion
-                    ? `${route.target.version} ${LATEST_VERSION}`
-                    : route.target.version;
-            }) ?? []
-        );
-    } catch {
-        return [];
+        ({ data } = await axios.get(UI5_VERSIONS_NEO_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_NEO_CDN_URL)));
+    } catch (e) {
+        if (isAxiosError(e) && e.response) {
+            return [];
+        }
+        throw e;
     }
+
+    return (
+        data?.routes?.map((route: { target: { version: string } }) => {
+            return route.target.version === latestVersion
+                ? `${route.target.version} ${LATEST_VERSION}`
+                : route.target.version;
+        }) ?? []
+    );
 }

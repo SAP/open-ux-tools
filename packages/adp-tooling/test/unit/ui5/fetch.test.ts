@@ -48,10 +48,21 @@ describe('ui5 fetchers', () => {
             expect(result).toEqual(['1.119.0', '1.120.0 (latest)']);
         });
 
-        it('should return an empty list if the request fails', async () => {
-            axiosGetMock.mockRejectedValue(new Error('Request failed with status code 400'));
+        it('should return an empty list on an HTTP error response', async () => {
+            axiosGetMock.mockRejectedValue(
+                Object.assign(new Error('Request failed with status code 400'), {
+                    isAxiosError: true,
+                    response: { status: 400 }
+                })
+            );
 
             expect(await fetchInternalVersions('1.120.0')).toEqual([]);
+        });
+
+        it('should propagate network errors', async () => {
+            axiosGetMock.mockRejectedValue(new Error('getaddrinfo ENOTFOUND'));
+
+            await expect(fetchInternalVersions('1.120.0')).rejects.toThrow('getaddrinfo ENOTFOUND');
         });
     });
 });
