@@ -8,11 +8,17 @@ The `UI.FieldGroup` annotation is only supported in `ResponsiveTable`. Using it 
 
 The rule checks every `UI.DataFieldForAnnotation` record inside a `UI.LineItem`. If its `Target` property points to a `UI.FieldGroup` and the table's configured `tableSettings.type` is one of the unsupported types, that is, `GridTable`, `AnalyticalTable`, `TreeTable`, a violation is reported on the `DataFieldForAnnotation` record.
 
+The rule covers all tables in an application:
+- **List report pages**: tables bound directly to a `UI.LineItem` annotation.
+- **Object page sections**: tables referenced by a `UI.ReferenceFacet` inside `UI.Facets`, including facets nested within a `UI.CollectionFacet`.
+
 Applies to SAP Fiori elements for OData V2 and OData V4 applications.
 
 ### Warning
 
 `UI.FieldGroup` is not supported in the selected table type. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.
+
+For object page tables, the section name (from the `ReferenceFacet`'s `Label`) is included in the message: `UI.FieldGroup is not supported in GridTable in the <Section Name> section.`
 
 #### XML Annotations
 
@@ -26,6 +32,39 @@ The following patterns are considered warnings:
             <!-- Violation: FieldGroup not supported in GridTable -->
             <Record Type="UI.DataFieldForAnnotation">
                 <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ContactData"/>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>
+```
+
+The rule also flags violations in object page tables referenced via `UI.Facets`, including tables nested inside a `UI.CollectionFacet`:
+
+```xml
+<!-- manifest.json on IncidentsObjectPage: controlConfiguration for "incidentFlow/@UI.LineItem": { "tableSettings": { "type": "GridTable" } } -->
+<Annotations Target="MyService.Incidents">
+    <Annotation Term="UI.Facets">
+        <Collection>
+            <Record Type="UI.CollectionFacet">
+                <PropertyValue Property="Label" String="Incident Details"/>
+                <PropertyValue Property="Facets">
+                    <Collection>
+                        <!-- Violation reported here (section: "Incident Flow") -->
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Incident Flow"/>
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>
+<Annotations Target="MyService.IncidentFlow">
+    <Annotation Term="UI.LineItem">
+        <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#FlowData"/>
             </Record>
         </Collection>
     </Annotation>
