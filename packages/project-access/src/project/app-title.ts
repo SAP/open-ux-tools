@@ -11,17 +11,18 @@ import { getI18nPropertiesPaths } from './i18n/i18n.js';
  * @param params - either a manifestPath to read from disk, a pre-parsed manifest, or both
  * @param params.manifestPath - path to manifest.json; required to read manifest from disk and to resolve i18n paths
  * @param params.manifest - pre-parsed manifest content; pass to avoid re-reading from disk
- * @param memFs - optional mem-fs-editor instance
- * @param logger - optional logger instance
+ * @param [options] - optional options
+ * @param [options.memFs] - optional mem-fs-editor instance
+ * @param [options.logger] - optional logger instance
  * @returns the resolved title string, or undefined if it cannot be determined
  */
 export async function resolveApplicationTitle(
     params: { manifestPath?: string; manifest?: Manifest },
-    memFs?: Editor,
-    logger?: Logger
+    options?: { memFs?: Editor; logger?: Logger }
 ): Promise<string | undefined> {
     const { manifestPath } = params;
     let { manifest } = params;
+    const { memFs, logger } = options ?? {};
 
     if (!manifest) {
         if (!manifestPath) {
