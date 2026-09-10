@@ -9,7 +9,7 @@ When a collection facet contains only a single reference facet, the wrapper adds
 This rule scans `UI.Facets` annotations and reports any `UI.CollectionFacet` record whose `Facets` property contains exactly one child of type `UI.ReferenceFacet`. This applies to both OData V2 and OData V4 annotation files.
 
 ### Warning
-`UI.CollectionFacet` must not contain only a single `UI.ReferenceFacet`. Use `UI.ReferenceFacet` directly under `UI.Facets` instead.
+`UI.CollectionFacet` should not contain single `UI.ReferenceFacet`. Use `UI.ReferenceFacet` directly under `UI.Facets` instead.
 
 The following patterns are considered warnings:
 
@@ -118,6 +118,31 @@ annotate service.Incidents with @(
         </Collection>
     </Annotation>
 </Annotations>
+```
+
+Nested CollectionFacets with a single ReferenceFacet child are not checked:
+
+```cds
+annotate service.Incidents with @(
+    UI.Facets: [{
+        $Type : 'UI.CollectionFacet',
+        ID    : 'Outer',
+        Facets: [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Target: '@UI.FieldGroup#Details',
+            },
+            {
+                $Type : 'UI.CollectionFacet',
+                ID    : 'Inner',
+                Facets: [{
+                    $Type : 'UI.ReferenceFacet',
+                    Target: '@UI.FieldGroup#Address',
+                }],
+            },
+        ],
+    }],
+);
 ```
 
 ### How to Fix
