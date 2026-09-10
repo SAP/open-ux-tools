@@ -12,7 +12,7 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
-import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
+import { UI_COLLECTION_FACET, UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
 
 /**
  * index - Index of annotation
@@ -89,6 +89,28 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
 }
 
 /**
+ * Extracts nested facet records from a CollectionFacet's Facets property.
+ *
+ * @param record - The CollectionFacet element
+ * @returns Array of nested record elements
+ */
+function getCollectionFacetRecords(record: Element): Element[] {
+    const facetsPropValue = record.content.find((child) => {
+        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
+            return getElementAttributeValue(child, Edm.Property) === 'Facets';
+        }
+        return false;
+    });
+    if (facetsPropValue?.type === ELEMENT_TYPE) {
+        const [nestedCollection] = elementsWithName(Edm.Collection, facetsPropValue);
+        if (nestedCollection) {
+            return elementsWithName(Edm.Record, nestedCollection);
+        }
+    }
+    return [];
+}
+
+/**
  * Collects object page table sections.
  *
  * @param entityType - Entity type name
@@ -110,9 +132,13 @@ function getOPTableSections(entityType: string, service: ParsedService): TableSe
     const aliasInfo = service.artifacts.aliasInfo[facets.top.uri];
     let index = 0;
     for (const record of records) {
-        const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
-        if (section?.type === 'table-section') {
-            sections.push(section);
+        const type = getRecordType(aliasInfo, record);
+        const facetRecords = type === UI_COLLECTION_FACET ? getCollectionFacetRecords(record) : [record];
+        for (const facetRecord of facetRecords) {
+            const section = processReferenceFacetRecord(facetRecord, aliasInfo, entityType, service, facets, index);
+            if (section?.type === 'table-section') {
+                sections.push(section);
+            }
         }
         index++;
     }

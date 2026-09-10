@@ -18,12 +18,14 @@ const UNSUPPORTED_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTa
  * @param table - The linked table with type configuration
  * @param parsedService - Parsed OData service
  * @param pageName - Page target name for reporting
+ * @param pageSectionName - Optional section label from the enclosing ReferenceFacet
  * @param problems - Accumulator for found violations
  */
 function checkTableForFieldGroupViolations(
     table: FeV4Table | FeV2Table,
     parsedService: ParsedService,
     pageName: string,
+    pageSectionName: string | undefined,
     problems: FieldGroupInTableTypeRestriction[]
 ): void {
     const tableType = table.configuration.tableType.valueInFile;
@@ -55,7 +57,10 @@ function checkTableForFieldGroupViolations(
         }
 
         const existingIndex = problems.findIndex(
-            (p) => p.annotation.reference.value === record && p.tableType === tableType
+            (p) =>
+                p.annotation.reference.value === record &&
+                p.tableType === tableType &&
+                p.pageSectionName === pageSectionName
         );
         if (existingIndex > -1) {
             problems[existingIndex] = {
@@ -67,11 +72,36 @@ function checkTableForFieldGroupViolations(
                 type: FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION,
                 pageNames: [pageName],
                 tableType,
+                pageSectionName,
                 annotation: {
                     reference: { uri: lineItem.top.uri, value: record },
                     reportedParent: lineItem.top.value
                 }
             });
+        }
+    }
+}
+
+type SectionLike = { type: string; annotation?: { label?: string }; children?: Array<{ type: string }> };
+
+/**
+ * Checks all table sections on an object page for FieldGroup violations.
+ *
+ * @param sections - Table sections from the object page
+ * @param targetName - Page target name for reporting
+ * @param parsedService - Parsed OData service
+ * @param problems - Accumulator for found violations
+ */
+function checkObjectPageSectionsForFieldGroups(
+    sections: SectionLike[],
+    targetName: string,
+    parsedService: ParsedService,
+    problems: FieldGroupInTableTypeRestriction[]
+): void {
+    for (const section of sections.filter((s) => s.type === 'table-section')) {
+        const table = section.children?.find((t) => t.type === 'table') as FeV4Table | FeV2Table | undefined;
+        if (table) {
+            checkTableForFieldGroupViolations(table, parsedService, targetName, section.annotation?.label, problems);
         }
     }
 }
@@ -88,7 +118,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION]:
-                'UI.FieldGroup is not supported in {{tableType}}. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                'UI.FieldGroup is not supported in {{tableType}}{{sectionText}}. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
         },
         schema: []
     },
@@ -104,8 +134,18 @@ const rule: FioriRuleDefinition = createFioriRule({
             }
 
             for (const page of app.pages) {
-                for (const table of (page.lookup['table'] ?? []) as (FeV4Table | FeV2Table)[]) {
-                    checkTableForFieldGroupViolations(table, parsedService, page.targetName, problems);
+                if (page.type === 'object-page') {
+                    // Safe cast: page.type === 'object-page' guarantees sections exist; SectionLike models only what we use
+                    checkObjectPageSectionsForFieldGroups(
+                        page.sections as SectionLike[],
+                        page.targetName,
+                        parsedService,
+                        problems
+                    );
+                } else {
+                    for (const table of (page.lookup['table'] ?? []) as (FeV4Table | FeV2Table)[]) {
+                        checkTableForFieldGroupViolations(table, parsedService, page.targetName, undefined, problems);
+                    }
                 }
             }
         }
@@ -132,7 +172,10 @@ const rule: FioriRuleDefinition = createFioriRule({
                         context.report({
                             node: r.annotation.reference.value as Element,
                             messageId: FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION,
-                            data: { tableType: r.tableType }
+                            data: {
+                                tableType: r.tableType,
+                                sectionText: r.pageSectionName ? ` in the ${r.pageSectionName} section` : ''
+                            }
                         });
                     });
             }

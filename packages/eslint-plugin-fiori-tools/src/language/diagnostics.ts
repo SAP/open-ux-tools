@@ -194,6 +194,7 @@ export interface FieldGroupInTableTypeRestriction {
     type: typeof FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION;
     pageNames: string[];
     tableType: string;
+    pageSectionName?: string;
     annotation: {
         reference: AnnotationReference;
         reportedParent: Element;
