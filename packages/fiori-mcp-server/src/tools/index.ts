@@ -25,6 +25,24 @@ const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
 
 const adpTools = [
     {
+        name: 'lookup_ui5_documentation',
+        description: `Looks up UI5 control documentation from a library's designtime api.json.
+
+        This tool:
+        - Reads ui5.yaml (discovered from the provided appPath) to resolve the configured UI5 base URL and version, falling back to the public https://ui5.sap.com when none is found
+        - Fetches (and caches) the control's api.json and extracts the requested piece of documentation
+        - Currently supports lookupType "aggregation" (type, cardinality, visibility, since, description), "property" (type, defaultValue, group, bindable, visibility, since, description), and "event" (parameters, visibility, since, description). Inherited members are resolved by walking the control's inheritance chain across libraries.
+
+        Use this when creating controller extensions or fragments and you need the exact metadata of a control's aggregation, property or event (e.g. the type of "customToolbar" on a SmartTable) rather than guessing.`,
+        annotations: {
+            title: 'Look up UI5 Documentation',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: true
+        },
+        inputSchema: convertToSchema(Input.LookupUi5DocumentationInputSchema)
+    },
+    {
         name: 'generate_adaptation_project',
         description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
 
@@ -302,24 +320,6 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: generatorConfigCAPJson
-    },
-    {
-        name: 'lookup_ui5_documentation',
-        description: `Looks up UI5 control documentation from a library's designtime api.json.
-
-        This tool:
-        - Reads ui5.yaml (discovered from the provided appPath) to resolve the configured UI5 base URL and version, falling back to the public https://ui5.sap.com when none is found
-        - Fetches (and caches) the control's api.json and extracts the requested piece of documentation
-        - Currently supports lookupType "aggregation" (type, cardinality, visibility, since, description), "property" (type, defaultValue, group, bindable, visibility, since, description), and "event" (parameters, visibility, since, description). Inherited members are resolved by walking the control's inheritance chain across libraries.
-
-        Use this when creating controller extensions or fragments and you need the exact metadata of a control's aggregation, property or event (e.g. the type of "customToolbar" on a SmartTable) rather than guessing.`,
-        annotations: {
-            title: 'Look up UI5 Documentation',
-            readOnlyHint: true,
-            idempotentHint: true,
-            openWorldHint: true
-        },
-        inputSchema: convertToSchema(Input.LookupUi5DocumentationInputSchema)
     },
     {
         name: 'list_functionality',
