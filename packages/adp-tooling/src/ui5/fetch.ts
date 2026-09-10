@@ -32,11 +32,17 @@ export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Vers
  * @returns {Promise<string[]>} A promise that resolves to an array of formatted internal version strings.
  */
 export async function fetchInternalVersions(latestVersion: string): Promise<string[]> {
-    const { data } = await axios.get(UI5_VERSIONS_NEO_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_NEO_CDN_URL));
+    try {
+        const { data } = await axios.get(UI5_VERSIONS_NEO_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_NEO_CDN_URL));
 
-    return data?.routes?.map((route: { target: { version: string } }) => {
-        return route.target.version === latestVersion
-            ? `${route.target.version} ${LATEST_VERSION}`
-            : route.target.version;
-    });
+        return (
+            data?.routes?.map((route: { target: { version: string } }) => {
+                return route.target.version === latestVersion
+                    ? `${route.target.version} ${LATEST_VERSION}`
+                    : route.target.version;
+            }) ?? []
+        );
+    } catch {
+        return [];
+    }
 }

@@ -47,5 +47,11 @@ describe('ui5 fetchers', () => {
             expect(axiosGetMock).toHaveBeenCalledWith(UI5_VERSIONS_NEO_CDN_URL, expect.any(Object));
             expect(result).toEqual(['1.119.0', '1.120.0 (latest)']);
         });
+
+        it('should return an empty list if the request fails', async () => {
+            axiosGetMock.mockRejectedValue(new Error('Request failed with status code 400'));
+
+            expect(await fetchInternalVersions('1.120.0')).toEqual([]);
+        });
     });
 });
