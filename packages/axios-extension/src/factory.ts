@@ -3,16 +3,13 @@ import {
     BAS_DEST_INSTANCE_CRED_HEADER,
     getCredentialsForDestinationService,
     getDestinationUrlForAppStudio,
-    isAbapSystem,
-    isAppStudio
+    isAbapSystem
 } from '@sap-ux/btp-utils';
 import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
-import { HttpProxyAgent } from 'http-proxy-agent';
 import { type AgentOptions, Agent as HttpsAgent } from 'node:https';
-import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
 import cloneDeep from 'lodash/cloneDeep.js';
-import { getProxyForUrl } from 'proxy-from-env';
 import { inspect } from 'node:util';
+import { getProxyAgentConfig } from './proxy.js';
 import { AbapServiceProvider } from './abap/index.js';
 import type { RefreshTokenChanged, ServiceInfo } from './auth/index.js';
 import {
@@ -27,35 +24,6 @@ import type { ProviderConfiguration } from './base/service-provider.js';
 import { ServiceProvider } from './base/service-provider.js';
 
 type Class<T> = new (...args: any[]) => T;
-
-/**
- * PatchedHttpsProxyAgent is a custom implementation of HttpsProxyAgent that allows to pass additional options, currently not supported by the original implementation when calling tls.connect
- */
-export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<Uri> {
-    private readonly extraOptions: any;
-
-    /**
-     * Extension of the base constructor.
-     *
-     * @param proxy
-     * @param opts
-     */
-    constructor(proxy: Uri | URL, opts?: HttpsProxyAgentOptions<Uri>) {
-        super(proxy, opts);
-        this.extraOptions = opts;
-    }
-
-    /**
-     * Performs transparent encryption of written data and all required TLS negotiation.
-     *
-     * @param req
-     * @param opts
-     * @returns {Promise<net.Socket>}
-     */
-    async connect(req: any, opts: any) {
-        return super.connect(req, { ...this.extraOptions, ...opts });
-    }
-}
 
 /**
  * Create a new instance of given type and set default configuration merged with the given config.
@@ -92,13 +60,7 @@ function createInstance<T extends ServiceProvider>(
     // NO_PROXY hostname matching works correctly against the actual target URL.
     instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
         const fullUrl = instance.getUri(request);
-        const localProxy = getProxyForUrl(fullUrl);
-        if (localProxy && !isAppStudio()) {
-            // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
-            request.httpsAgent = new PatchedHttpsProxyAgent(localProxy, agentOptions as HttpsProxyAgentOptions<string>);
-            request.httpAgent = new HttpProxyAgent(localProxy);
-            request.proxy = false;
-        }
+        Object.assign(request, getProxyAgentConfig(fullUrl, agentOptions as AgentOptions));
         return request;
     });
 
