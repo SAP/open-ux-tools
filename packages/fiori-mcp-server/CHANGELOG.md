@@ -1,5 +1,41 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Bug Fixes
+
+- update manifest config sample for analytical chart skill [[3af2405](https://github.com/SAP/open-ux-tools/commit/3af24052f4654091e1fa535cf336d1f0e6fba3d2)]
+
+## 1.12.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/nodejs-utils [[30c8bbf](https://github.com/SAP/open-ux-tools/commit/30c8bbf4a155d45d6b7440e76171c24bd8b3a778)]
+
+## 1.12.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Bug Fixes
+
+- `download_odata_service_metadata` returns a structured error when `appPath` does not exist, and clarifies the pre-condition in the parameter description so LLMs know to create the directory first [[5dd1cfd](https://github.com/SAP/open-ux-tools/commit/5dd1cfd1a81eee693313445bf8ddf264b54a857c)]
+
 ## 1.12.0
 
 ### Minor Changes
