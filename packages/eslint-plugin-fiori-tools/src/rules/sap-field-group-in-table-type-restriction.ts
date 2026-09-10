@@ -1,5 +1,5 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
-import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
+import { Edm, elementsWithName } from '@sap-ux/odata-annotation-core';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { FieldGroupInTableTypeRestriction } from '../language/diagnostics.js';
@@ -45,19 +45,18 @@ function checkTableForFieldGroupViolations(
         return;
     }
 
-    const dataFieldForAnnotationRecords = elements((el) => {
-        if (el.name !== Edm.Record) {
-            return false;
-        }
-        return getRecordType(aliasInfo, el) === DATA_FIELD_FOR_ANNOTATION;
-    }, collection);
+    const dataFieldForAnnotationRecords = elementsWithName(Edm.Record, collection).filter(
+        (el) => getRecordType(aliasInfo, el) === DATA_FIELD_FOR_ANNOTATION
+    );
 
     for (const record of dataFieldForAnnotationRecords) {
-        if (!getTargetAnnotationPath(record)?.includes('FieldGroup')) {
+        if (!getTargetAnnotationPath(record)?.includes('.FieldGroup')) {
             continue;
         }
 
-        const existingIndex = problems.findIndex((p) => p.annotation.reference.value === record);
+        const existingIndex = problems.findIndex(
+            (p) => p.annotation.reference.value === record && p.tableType === tableType
+        );
         if (existingIndex > -1) {
             problems[existingIndex] = {
                 ...problems[existingIndex],
