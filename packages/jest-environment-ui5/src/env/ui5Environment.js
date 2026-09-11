@@ -51,7 +51,7 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
     globalWindow.window['sap-ui-config'] = {
         bindingSyntax: 'complex',
         'xx-waitForTheme': false,
-        loglevel: process.env.BUILD_TYPE === 'production' ? 'ERROR' : 'INFO',
+        'log-level': process.env.BUILD_TYPE === 'production' ? 'ERROR' : 'INFO',
         libs: 'sap.ui.core, sap.m', //, sap.ui.mdc, sap.ui.fl",
         language: 'EN',
         async: true,
