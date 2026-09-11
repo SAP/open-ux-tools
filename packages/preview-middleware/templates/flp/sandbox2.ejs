@@ -10,12 +10,12 @@
 
 <% if (ui5.versionMajor === 1) { -%>
     <!-- FLP Sandbox Boot task - registers ConfigurationProvider via xx-bootTask mechanism -->
-    <script src="<%- basePath %>/resources/sap/ushell/sandbox/SandboxBootTask.js"></script>
+    <script src="<%- rootBasePath %>/resources/sap/ushell/sandbox/SandboxBootTask.js"></script>
 
 <% } -%>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options="allow"' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
-        src="<%- basePath %>/resources/sap-ui-core.js"
+        src="<%- rootBasePath %>/resources/sap-ui-core.js"
         data-sap-ui-async="true"
         data-sap-ui-theme="<%- ui5.theme %>"
         data-sap-ui-compat-version="edge"

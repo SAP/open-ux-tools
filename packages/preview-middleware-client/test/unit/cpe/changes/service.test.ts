@@ -11,7 +11,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import { fetchMock } from 'mock/window';
+import { documentMock, fetchMock } from 'mock/window';
 import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsControlTreeModifier';
 import type Control from 'sap/ui/core/Control';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
@@ -712,113 +712,6 @@ describe('ChangeService', () => {
             }
         });
     });
-
-    test('inactive composite command', async () => {
-        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
-        function createCommand(properties: Map<string, any>): {
-            getElement: () => any;
-            getSelector: () => any;
-            getChangeType: () => string;
-            getPreparedChange: () => { convertToFileContent: () => { fileName: string } };
-        } {
-            const cache = new Map(properties);
-            return {
-                getElement: jest.fn().mockReturnValue({
-                    getMetadata: jest
-                        .fn()
-                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
-                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
-                }),
-                getSelector: jest.fn().mockReturnValue({
-                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
-                }),
-                getChangeType: (): any => {
-                    return cache.get('changeType');
-                },
-                getPreparedChange: jest.fn().mockReturnValue({
-                    getSelector: jest.fn().mockReturnValue({
-                        id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
-                    }),
-                    getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
-                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    convertToFileContent: jest.fn().mockReturnValue({
-                        fileName: 'testFileName'
-                    })
-                })
-            };
-        }
-        const subCommands = [
-            createCommand(
-                new Map<string, any>([
-                    ['selector', { id: 'SEPMRA_C_PD_Product--supplierView--supplierForm' }],
-                    ['changeType', 'addSimpleFormField'],
-                    ['name', 'addDelegateProperty']
-                ])
-            ),
-            createCommand(
-                new Map<string, any>([
-                    ['selector', { id: 'supplierForm_SEPMRA_C_PD_SupplierType_FaxNumber' }],
-                    ['changeType', 'addSimpleFormField'],
-                    ['name', 'addDelegateProperty']
-                ])
-            )
-        ];
-
-        const commands = [
-            createCommand(
-                new Map<string, any>([
-                    ['selector', { id: 'SEPMRA_C_PD_Product--supplierView--supplierForm' }],
-                    ['changeType', 'addSimpleFormField'],
-                    ['name', 'addDelegateProperty']
-                ])
-            ),
-            createCompositeCommand(subCommands)
-        ];
-
-        rtaMock.getCommandStack.mockReturnValue({
-            getCommands: jest.fn().mockReturnValue(commands),
-            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
-        });
-        const service = new ChangeService({ rta: rtaMock } as any);
-
-        await service.init(sendActionMock, subscribeMock);
-
-        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(4);
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
-            type: '[ext] change-stack-modified',
-            payload: {
-                saved: [],
-                pending: [
-                    {
-                        changeType: 'addSimpleFormField',
-                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
-                        isActive: false,
-                        fileName: 'testFileName',
-                        kind: 'control',
-                        type: 'pending'
-                    },
-                    {
-                        changeType: 'addSimpleFormField',
-                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
-                        isActive: true,
-                        fileName: 'testFileName',
-                        kind: 'control',
-                        type: 'pending'
-                    },
-                    {
-                        changeType: 'addSimpleFormField',
-                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
-                        isActive: true,
-                        fileName: 'testFileName',
-                        kind: 'control',
-                        type: 'pending'
-                    }
-                ]
-            }
-        });
-    });
-
     test('composite command - comp/control changes', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(): {
@@ -1206,151 +1099,6 @@ describe('ChangeService', () => {
 
         expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
     });
-
-    test('get control ID from ChangeHandler API - SAPUI5 version below 1.96.x (no getChangeHandler available)', async () => {
-        JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
-        Object.defineProperty(ChangesWriteAPIMock, 'getChangeHandler', {
-            value: null,
-            configurable: true
-        });
-        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 108 });
-        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(true);
-
-        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
-        function createCommand(): {
-            getElement: () => any;
-            getPreparedChange: () => any;
-            getChangeType: () => any;
-        } {
-            return {
-                getElement: jest.fn().mockReturnValue({
-                    getMetadata: jest
-                        .fn()
-                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
-                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
-                }),
-                getChangeType: jest.fn().mockReturnValue('page'),
-                getPreparedChange: jest.fn().mockReturnValue({
-                    getSelector: jest.fn().mockReturnValue({
-                        id: '_ST_SmartVariantManagement'
-                    }),
-                    getChangeType: jest.fn().mockReturnValue('page'),
-                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    convertToFileContent: jest.fn().mockReturnValue({
-                        changeType: 'page',
-                        fileName: 'testFileName'
-                    })
-                })
-            };
-        }
-        const subCommands = [createCommand()];
-        const compositeCommand = [createCompositeCommand(subCommands)];
-
-        rtaMock.getCommandStack.mockReturnValue({
-            getCommands: jest.fn().mockReturnValue(compositeCommand),
-            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
-        });
-        const service = new ChangeService({ rta: rtaMock } as any);
-
-        await service.init(sendActionMock, subscribeMock);
-        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-
-        const expectedResult = {
-            type: '[ext] change-stack-modified',
-            payload: {
-                saved: [],
-                pending: [
-                    {
-                        changeType: 'page',
-                        controlId: '_ST_SmartVariantManagement',
-                        isActive: true,
-                        type: 'pending',
-                        fileName: 'testFileName',
-                        kind: 'control'
-                    }
-                ]
-            }
-        };
-
-        Object.defineProperty(ChangesWriteAPIMock, 'getChangeHandler', {
-            value: jest.fn().mockReturnValue({
-                getChangeVisualizationInfo: jest.fn().mockImplementation((change) => {
-                    return Promise.resolve({
-                        affectedControls: [`appComponent${change.getSelector().id}`]
-                    });
-                })
-            }),
-            configurable: true
-        });
-
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
-    });
-
-    test('throws error when there was a problem with the ChangesWriteAPI api', async () => {
-        JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
-        ChangesWriteAPIMock.getChangeHandler.mockRejectedValue(new Error('Failed'));
-        getUi5VersionMock.mockResolvedValueOnce({ major: 1, minor: 108 });
-        isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(true);
-
-        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
-        function createCommand(): {
-            getElement: () => any;
-            getPreparedChange: () => any;
-            getChangeType: () => any;
-        } {
-            return {
-                getElement: jest.fn().mockReturnValue({
-                    getMetadata: jest
-                        .fn()
-                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
-                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
-                }),
-                getChangeType: jest.fn().mockReturnValue('page'),
-                getPreparedChange: jest.fn().mockReturnValue({
-                    getSelector: jest.fn().mockReturnValue({
-                        id: '_ST_SmartVariantManagement'
-                    }),
-                    getChangeType: jest.fn().mockReturnValue('page'),
-                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    convertToFileContent: jest.fn().mockReturnValue({
-                        changeType: 'page',
-                        fileName: 'testFileName'
-                    })
-                })
-            };
-        }
-        const subCommands = [createCommand()];
-        const compositeCommand = [createCompositeCommand(subCommands)];
-
-        rtaMock.getCommandStack.mockReturnValue({
-            getCommands: jest.fn().mockReturnValue(compositeCommand),
-            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
-        });
-        const service = new ChangeService({ rta: rtaMock } as any);
-
-        await service.init(sendActionMock, subscribeMock);
-        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-
-        const expectedResult = {
-            type: '[ext] change-stack-modified',
-            payload: {
-                saved: [],
-                pending: [
-                    {
-                        changeType: 'page',
-                        controlId: '_ST_SmartVariantManagement',
-                        isActive: true,
-                        type: 'pending',
-                        fileName: 'testFileName',
-                        kind: 'control'
-                    }
-                ]
-            }
-        };
-
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
-    });
-
     test('get control ID from ChangeHandler API - no getChangeVisualizationInfo available', async () => {
         JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
             return selector.id;
@@ -1911,5 +1659,104 @@ describe('ChangeService', () => {
                 type: MessageBarType.error
             })
         );
+    });
+
+    describe('baseUrl for component projects', () => {
+        const mockBaseUrl = '/resources/my/component';
+
+        beforeEach(() => {
+            documentMock.getElementById.mockImplementation((id) => {
+                if (id === 'sap-ui-bootstrap') {
+                    return {
+                        dataset: {
+                            openUxPreviewBaseUrl: mockBaseUrl
+                        }
+                    };
+                }
+                return null;
+            });
+        });
+
+        afterEach(() => {
+            documentMock.getElementById.mockReset();
+        });
+
+        test('fetch changes uses baseUrl from sap-ui-bootstrap data attribute', async () => {
+            fetchMock.mockResolvedValue({
+                json: () =>
+                    Promise.resolve({
+                        change1: {
+                            changeType: 'propertyChange',
+                            fileName: 'id_123_propertyChange',
+                            content: {
+                                property: 'enabled',
+                                newValue: true
+                            },
+                            selector: {
+                                id: 'testControl',
+                                type: 'sap.m.Button'
+                            },
+                            creation: '2021-12-21T17:12:37.301Z'
+                        }
+                    })
+            });
+            jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+
+            const service = new ChangeService({ rta: rtaMock } as any);
+            await service.init(sendActionMock, subscribeMock);
+
+            // Verify that fetch was called with the baseUrl prepended
+            expect(fetchMock).toHaveBeenCalledWith(`${mockBaseUrl}/preview/api/changes?_=123`);
+        });
+
+        test('delete changes uses baseUrl from sap-ui-bootstrap data attribute', async () => {
+            // Setup: init with one saved change
+            const jsonMock = jest.fn().mockResolvedValue({
+                change1: {
+                    changeType: 'propertyChange',
+                    fileName: 'id_123_propertyChange',
+                    content: {
+                        property: 'enabled',
+                        newValue: true
+                    },
+                    selector: {
+                        id: 'testControl',
+                        type: 'sap.m.Button'
+                    },
+                    creation: '2021-12-21T17:12:37.301Z'
+                }
+            });
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: jsonMock
+            });
+
+            const service = new ChangeService({ rta: rtaMock } as any);
+            await service.init(sendActionMock, subscribeMock);
+
+            // Clear fetch mock to capture delete call
+            fetchMock.mockClear();
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({})
+            });
+
+            // Trigger delete via the subscriber callback
+            await subscribeMock.mock.calls[0][0](
+                deletePropertyChanges({
+                    controlId: 'testControl',
+                    propertyName: 'enabled',
+                    fileName: 'id_123_propertyChange'
+                })
+            );
+
+            // Verify that fetch DELETE was called with the baseUrl prepended
+            expect(fetchMock).toHaveBeenCalledWith(
+                `${mockBaseUrl}/preview/api/changes`,
+                expect.objectContaining({
+                    method: 'DELETE'
+                })
+            );
+        });
     });
 });

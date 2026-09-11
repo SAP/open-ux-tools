@@ -50,6 +50,7 @@ export {
     getProject,
     getProjectType,
     getWebappPath,
+    getWebappTestPath,
     hasUI5CliV3,
     isCapProject,
     isCapJavaProject,

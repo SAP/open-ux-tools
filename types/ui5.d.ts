@@ -100,6 +100,8 @@ declare module '@ui5/builder' {
 }
 
 declare module '@ui5/server' {
+    // eslint-disable-next-line sonarjs/no-implicit-dependencies
+    import type { Ui5Document } from '@sap-ux/ui5-config';
     export interface MiddlewareUtils {
         /**
          * Get project utilities.
@@ -124,6 +126,11 @@ declare module '@ui5/server' {
              * Gets the app id.
              */
             getNamespace(): string;
+
+            /**
+             * Gets the type of the project.
+             */
+            getType(): Ui5Document['type'];
         };
     }
 
