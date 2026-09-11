@@ -1,4 +1,4 @@
-# Actions Reference
+# RTA Actions
 
 > Referenced from [SKILL.md](../SKILL.md). Use the `id` values from this table — **never invent or guess an action id.** If `actionsCatalog` exposes ids not listed here, surface them to the user rather than picking.
 

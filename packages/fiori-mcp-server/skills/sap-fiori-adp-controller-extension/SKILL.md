@@ -61,9 +61,9 @@ For the standard adaptation editor preview iframe, pass `frameId: "preview"` in 
 
 > **When to reach for the page-action steps.** The six RTA steps (`get_overlays` → … → `save`) assume the page is already showing the control to edit. In Fiori Elements apps that often isn't true on first load — a List Report shows no rows until "Go" is pressed; an Object Page is only reachable after picking a row. Use `get_page_actions` / `call_page_action` / `press_interactive` to drive these pre-RTA navigations from the skill instead of asking the user to click manually. See **Step 2 — Navigate the app** below.
 
-## Actions Reference
+## RTA Actions
 
-`CTX_ADDXML` (fragment insert) and `CTX_EXTEND_CONTROLLER` (controller attach). Field schemas and disambiguation table: **[references/actions-reference.md](references/actions-reference.md)**.
+`CTX_ADDXML` (fragment insert) and `CTX_EXTEND_CONTROLLER` (controller attach). Field schemas and disambiguation table: **[references/rta-actions.md](references/rta-actions.md)**.
 
 ## Confidence & HITL Gating
 
@@ -138,9 +138,9 @@ Store the chosen `controlId` and its confidence for the final summary.
 
 The chosen overlay carries its available action ids in `actionIds`; the rich per-action metadata (label, description, parameters) for each id lives in the top-level `actionsCatalog` returned alongside `get_overlays`. There is no separate `get_actions` step — read both from the Step 3 response.
 
-Pick an action by `id` from the **[Actions Reference](references/actions-reference.md)**. **Never invent an action id**; if `actionsCatalog` contains an id that isn't in the reference, ask the user.
+Pick an action by `id` from the **[RTA Actions](references/rta-actions.md)** — and only if that `id` is also present in the chosen overlay's `actionIds`. **Never invent an action id.** If the user's intent needs an action that isn't in the reference, surface the overlay's available actions and ask the user rather than picking.
 
-Map user intent using the *Disambiguation by intent* table in the [Actions Reference](references/actions-reference.md). If the verb doesn't map cleanly (e.g. "tweak the toolbar"), confidence is low — list the actions from `actionIds` (with their labels from `actionsCatalog`) and ask.
+Map user intent using the *Disambiguation by intent* table in the [RTA Actions](references/rta-actions.md). If the verb doesn't map cleanly (e.g. "tweak the toolbar"), confidence is low — list the actions from `actionIds` (with their labels from `actionsCatalog`) and ask.
 
 **Confidence gating** (thresholds from [references/hitl-gating.md](references/hitl-gating.md#per-decision-thresholds)):
 - **Schema-inspection prerequisite for High band:** Before assigning ≥ 0.85, you must have read the candidate's `parameters` schema (from `actionsCatalog[actionId]`) and confirmed it matches the kind of operation the user described. If you have not inspected the schema, cap confidence at **0.65** (medium → announce, do not run silently).
@@ -225,7 +225,7 @@ Feed these decisions into Step 8 (payload preparation) and into the fragment XML
 
 ### Step 8 — Prepare action payload (AI decision)
 
-Build `actionPayload` from the action's `parameters` schema (Step 5), the element context (Step 6), and the user's instructions. **Use the exact field names from the [Actions Reference](references/actions-reference.md)** — `fragmentPath` (not `fragmentName`), `codeRef`, `viewId`, etc.
+Build `actionPayload` from the action's `parameters` schema (Step 5), the element context (Step 6), and the user's instructions. **Use the exact field names from the [RTA Actions](references/rta-actions.md)** — `fragmentPath` (not `fragmentName`), `codeRef`, `viewId`, etc.
 
 **For `CTX_ADDXML`:**
 - `fragmentPath`: `fragments/<Name>.fragment.xml` — pick `<Name>` from the user's intent (e.g. `OrderDetailsButton`). The fragment file itself is created in Step 12.
@@ -379,4 +379,4 @@ When the user requests multiple changes:
 
 ## Example Session
 
-Worked example (button + dialog on an Object Page): **[references/example-session.md](references/example-session.md)**.
+Workflow example (button + dialog on an Object Page): **[references/example-session.md](references/example-session.md)**.
