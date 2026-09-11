@@ -53,7 +53,7 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "qrcode": "1.5.4",
-        "@sap/bas-sdk": "3.13.10"
+        "@sap/bas-sdk": "3.13.15"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
