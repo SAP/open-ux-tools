@@ -41,7 +41,7 @@
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
-        "@types/lodash": "4.17.24",
+        "@types/lodash": "4.17.25",
         "@types/semver": "7.7.1",
         "@types/js-yaml": "4.0.9"
     },
