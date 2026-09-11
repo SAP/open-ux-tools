@@ -38,6 +38,20 @@ async function executeCap(validated: GeneratorConfigCAP, appPath: string): Promi
     const configPath = `${appName}-generator-config.json`;
     const outputPath = join(targetDir, configPath);
 
+    if (existsSync(resolvedAppPath)) {
+        return {
+            status: 'Error',
+            message:
+                `The target app folder already exists: "${resolvedAppPath}". ` +
+                `The generator cannot run because it would delete and recreate this folder. ` +
+                `Either remove the folder manually, use a different project name, or choose a different targetFolder.`,
+            parameters: validated,
+            appPath: resolvedAppPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
     await checkIfGeneratorInstalled();
 
     try {

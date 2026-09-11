@@ -34,7 +34,14 @@ export const project = z.object({
         .regex(/^[a-z0-9-]+$/),
     title: z.optional(z.string()),
     description: z.string(),
-    targetFolder: z.string().describe('Absolute path to the project folder (projectPath).'),
+    targetFolder: z
+        .string()
+        .describe(
+            'Absolute path to the project folder (projectPath). ' +
+                '🚨 The subfolder <targetFolder>/<project.name> MUST NOT already exist — ' +
+                'the generator will refuse to run if it does. ' +
+                'Do NOT pre-create that subfolder; only the parent targetFolder may exist.'
+        ),
     ui5Version: z.string().default(LATEST_UI5_VERSION)
 });
 

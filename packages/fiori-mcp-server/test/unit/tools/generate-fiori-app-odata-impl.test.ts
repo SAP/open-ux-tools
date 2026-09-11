@@ -88,7 +88,9 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         mockMkdir.mockResolvedValue(undefined);
         mockWriteFile.mockResolvedValue(undefined);
         mockUnlink.mockResolvedValue(undefined);
-        mockExistsSync.mockReturnValue(true);
+        // First call is the pre-flight app-folder check (must be false = folder does not exist yet).
+        // Subsequent calls are the finally-block cleanup checks (must be true = temp files exist).
+        mockExistsSync.mockReturnValueOnce(false).mockReturnValue(true);
     });
 
     test('should successfully generate application with valid parameters', async () => {
@@ -214,6 +216,30 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         expect(mockUnlink).toHaveBeenCalledTimes(2);
         expect(mockUnlink).toHaveBeenCalledWith(expect.stringContaining('-generator-config.json'));
         expect(mockUnlink).toHaveBeenCalledWith(expect.stringContaining('metadata.xml'));
+    });
+
+    test('should return error when app subfolder already exists', async () => {
+        mockExistsSync.mockReset();
+        mockExistsSync.mockReturnValue(true); // app folder exists on the first (pre-flight) check
+
+        const args = {
+            floorplan: 'FE_LROP',
+            project: {
+                name: 'testapp',
+                targetFolder: mockAppPath
+            },
+            service: {
+                servicePath: '/sap/opu/odata4/service',
+                url: 'https://test.example.com'
+            }
+        };
+
+        const result = await generateFioriAppOData(args);
+
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('already exists');
+        expect(mockCheckIfGeneratorInstalled).not.toHaveBeenCalled();
+        expect(mockRunCmd).not.toHaveBeenCalled();
     });
 
     test('should throw error when projectPath is invalid', async () => {
@@ -351,7 +377,9 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     });
 
     test('should only clean up files that exist', async () => {
-        mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
+        // calls: [0] app-folder check (false=ok), [1] config file in finally (false=skip), [2] metadata file in finally (true=unlink)
+        mockExistsSync.mockReset();
+        mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true);
 
         const args = {
             floorplan: 'FE_LROP',
