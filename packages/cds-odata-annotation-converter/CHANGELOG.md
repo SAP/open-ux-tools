@@ -1,5 +1,17 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 1.0.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Update @sap/ux-cds-compiler-facade to 1.25.0 and fix imports to use named exports [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
 ## 1.0.10
 
 ### Patch Changes

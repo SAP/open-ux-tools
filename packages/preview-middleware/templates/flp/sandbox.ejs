@@ -35,7 +35,16 @@
                         }
                     }
                 }
-            },
+            },<% if (locals.disableAppVariantStorage) { %>
+            services: {
+                Personalization: {
+                    config: {
+                        appVariantStorage: {
+                            enabled: false
+                        }
+                    }
+                }
+            },<% } %>
             applications:  <%- JSON.stringify(apps) %>
         };
     </script>

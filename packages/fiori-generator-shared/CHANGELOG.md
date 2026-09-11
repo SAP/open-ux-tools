@@ -1,5 +1,45 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.2.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- add authenticationType field to AppConfig service type [[41e9341](https://github.com/SAP/open-ux-tools/commit/41e934192805ce9fc954bc34b42f9085b3ea2b36)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+
+## 1.2.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.4 → 2.0.5
+
+## 1.2.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.3 → 2.0.4
+
+## 1.2.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.2 → 2.0.3
+
 ## 1.2.10
 
 ### Patch Changes

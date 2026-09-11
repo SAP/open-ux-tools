@@ -110,7 +110,7 @@ describe('generateFioriAppOData - External Services', () => {
             // Then: External services should be fetched
             expect(mockGetExternalServiceReferences).toHaveBeenCalledWith(validArgs.service.servicePath, '<edmx/>', []);
             expect(mockFindSystem).toHaveBeenCalled();
-            expect(mockProvider.fetchExternalServices).toHaveBeenCalledWith(mockRefs);
+            expect(mockProvider.fetchExternalServices).toHaveBeenCalledWith(mockRefs, true);
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Found 1 external service reference'));
             expect(mockLogger.info).toHaveBeenCalledWith(
                 expect.stringContaining('Successfully fetched 1 external service')
@@ -467,6 +467,20 @@ describe('generateFioriAppOData - External Services', () => {
             expect(result.status).toBe('Success');
         });
 
+        test('should write authenticationType from backendSystem into the generator config', async () => {
+            // Given: A system with an authenticationType
+            const mockSystem = { url: 'https://example.com', authenticationType: 'basic' };
+            mockFindSystem.mockResolvedValue({ system: mockSystem });
+            mockCreateAbapServiceProvider.mockReturnValue(new MockAbapServiceProvider());
+
+            // When: Generating the app
+            await generateFioriAppOData(validArgs);
+
+            // Then: authenticationType from the found system is written into the config
+            const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
+            expect(configContent.service.authenticationType).toBe('basic');
+        });
+
         test('should create the ABAP service provider only once and reuse it for external services and annotations', async () => {
             // Given: A V2 service with BOTH external service references and backend annotations
             mockGetExternalServiceReferences.mockReturnValue([{ type: 'value-list' }]);
@@ -485,7 +499,7 @@ describe('generateFioriAppOData - External Services', () => {
             expect(mockFindSystem).toHaveBeenCalledTimes(1);
             expect(mockCreateAbapServiceProvider).toHaveBeenCalledTimes(1);
             // And both consumers used that same provider instance
-            expect(mockProvider.fetchExternalServices).toHaveBeenCalledWith([{ type: 'value-list' }]);
+            expect(mockProvider.fetchExternalServices).toHaveBeenCalledWith([{ type: 'value-list' }], true);
             expect(mockGetAnnotations).toHaveBeenCalledWith({ path: validArgs.service.servicePath });
             const configContent = JSON.parse(mockWriteFile.mock.calls[0][1] as string);
             expect(configContent.service.externalServices).toEqual([{ name: 'Help1', metadata: '<edmx/>' }]);

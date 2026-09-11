@@ -147,7 +147,12 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
         client: service?.client,
         edmx: service?.edmx,
         version,
-        valueListMetadata: service?.externalServices
+        valueListMetadata: service?.externalServices,
+        connectedSystem: {
+            backendSystem: {
+                authenticationType: service?.authenticationType
+            }
+        }
     } as Service;
 
     if (service?.destination) {

@@ -1,5 +1,52 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+- @sap-ux/fiori-generator-shared 1.2.13 → 1.2.14
+- @sap-ux/odata-service-inquirer 3.2.15 → 3.2.16
+- @sap-ux/odata-service-writer 1.0.21 → 1.0.21
+- @sap-ux/inquirer-common 1.0.38 → 1.0.39
+
+## 0.3.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.14 → 3.2.15
+- @sap-ux/telemetry 2.0.4 → 2.0.5
+- @sap-ux/fiori-generator-shared 1.2.12 → 1.2.13
+- @sap-ux/inquirer-common 1.0.37 → 1.0.38
+
+## 0.3.44
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.3 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.2.11 → 1.2.12
+- @sap-ux/inquirer-common 1.0.36 → 1.0.37
+- @sap-ux/odata-service-inquirer 3.2.13 → 3.2.14
+
+## 0.3.43
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.6 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.10 → 1.2.11
+- @sap-ux/odata-service-inquirer 3.2.12 → 3.2.13
+- @sap-ux/telemetry 2.0.2 → 2.0.3
+- @sap-ux/ui5-config 1.0.9 → 1.0.9
+- @sap-ux/inquirer-common 1.0.35 → 1.0.36
+
 ## 0.3.42
 
 ### Patch Changes
