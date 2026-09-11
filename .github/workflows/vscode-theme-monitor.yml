@@ -57,6 +57,7 @@ jobs:
                   fi
               env:
                   DIFF_OUTPUT: ${{ runner.temp }}/theme-diff.json
+                  GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
             - name: Commit updated vscode_themes.json
               if: steps.check.outputs.has_changes == 'true'
@@ -76,7 +77,7 @@ jobs:
               id: tracking-issue
               uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
               with:
-                  github-token: ${{ steps.app-token.outputs.token }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
                   script: |
                       const TRACKING_LABEL = 'palettebot';
                       const TRACKING_TITLE = 'PaletteBot — VSCode Theme Changes';
@@ -166,7 +167,7 @@ jobs:
               if: steps.check.outputs.has_changes == 'false' && steps.tracking-issue.outcome == 'success'
               uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
               with:
-                  github-token: ${{ steps.app-token.outputs.token }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
                   script: |
                       const issueNumber = Number('${{ steps.tracking-issue.outputs.issue_number }}');
                       const timestamp = new Date().toISOString().slice(0, 10);
@@ -182,7 +183,7 @@ jobs:
               if: steps.check.outputs.has_changes == 'true' && steps.commit.outcome == 'success' && steps.tracking-issue.outcome == 'success'
               uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
               with:
-                  github-token: ${{ steps.app-token.outputs.token }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
                   script: |
                       const fs = require('fs');
                       const report = JSON.parse(fs.readFileSync(process.env.DIFF_FILE, 'utf8'));
