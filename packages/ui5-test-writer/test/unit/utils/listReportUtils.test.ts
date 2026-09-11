@@ -21,6 +21,7 @@ import {
     getCustomFilterFieldProperties,
     getTableIdentifiers,
     getListReportViews,
+    getListReportTabs,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
     hasTextArrangement,
@@ -2934,5 +2935,130 @@ describe('extractCustomToolBarActions()', () => {
     test('returns an empty array when there are no custom actions', () => {
         const model = buildModel({});
         expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
+    });
+});
+
+describe('getListReportTabs()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: { targets: { MyLR: { options: { settings: { views: { paths } } } } } }
+            }
+        }) as unknown as Manifest;
+
+    const makeViewNode = (columns: Record<string, unknown>, customActionDescription?: string): TreeAggregation => {
+        const aggregations: Record<string, unknown> = { columns: { aggregations: columns } };
+        if (customActionDescription) {
+            aggregations['toolBar'] = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            CustomAction: { schema: { actionType: 'Custom' }, description: customActionDescription }
+                        }
+                    }
+                }
+            };
+        }
+        return { aggregations } as unknown as TreeAggregation;
+    };
+
+    const makePage = (views: Record<string, TreeAggregation>): PageWithModelV4 =>
+        ({
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: { table: { aggregations: { views: { aggregations: views } } } } } }
+        }) as unknown as PageWithModelV4;
+
+    test('returns an empty array for a single-table List Report (no views block)', () => {
+        const page = {
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: {} } }
+        } as unknown as PageWithModelV4;
+        expect(getListReportTabs(page, undefined, undefined)).toEqual([]);
+    });
+
+    test('returns an empty array when only one non-custom tab exists', () => {
+        const page = makePage({ '1': makeViewNode({}) });
+        const manifest = makeManifest([{ key: '1' }, { key: '5', template: 'x.CustomTab' }]);
+        expect(getListReportTabs(page, undefined, manifest)).toEqual([]);
+    });
+
+    test('builds per-tab data, resolving each tab entity set and skipping custom tabs', () => {
+        const page = makePage({
+            '1': makeViewNode(
+                { 'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } } },
+                'My Custom Action'
+            ),
+            '6': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '5', template: 'x.CustomTab' },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+
+        const tabs = getListReportTabs(page, undefined, manifest);
+
+        expect(tabs).toHaveLength(2);
+        expect(tabs[0]).toMatchObject({
+            key: '1',
+            entitySet: 'Customer',
+            tableColumns: { A: { header: 'A' } },
+            contactCardColumns: [],
+            toolBarActions: [{ label: 'My Custom Action', custom: true, visible: true }]
+        });
+        expect(tabs[0].createButton.visible).toBe(false);
+        expect(tabs[1]).toMatchObject({
+            key: '6',
+            entitySet: 'CompanyCodeDetail',
+            tableColumns: { B: { header: 'B' } },
+            contactCardColumns: [],
+            toolBarActions: []
+        });
+    });
+
+    test('resolves per-tab action and button state when metadata is available', () => {
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.String"/></EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        expect(tabs.map((tab) => tab.key)).toEqual(['1', '2']);
+        expect(Array.isArray(tabs[0].toolBarActions)).toBe(true);
+        expect(typeof tabs[0].createButton.visible).toBe('boolean');
+    });
+
+    test('skips a manifest view that has no matching spec-model table node', () => {
+        // Manifest declares three tabs but the spec model only carries table nodes for two of them.
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }, { key: '9' }]);
+
+        expect(getListReportTabs(page, undefined, manifest).map((tab) => tab.key)).toEqual(['1', '2']);
     });
 });

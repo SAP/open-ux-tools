@@ -65,6 +65,7 @@ function journey() {
         Then.onThe<%- name%>Generated.iSeeThisPage();
     });
 
+
 <% if (headerActions?.length > 0) { -%>
     opaTest("Check header actions of the Object Page", function (_Given: Given, <% if (headerHasMenu) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (editButton?.visible) { -%>
