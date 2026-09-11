@@ -12,6 +12,8 @@ export interface DownloadTypeConfig {
 
 // The source template ID used for filtering the apps in the repository
 export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
+// The app index field name for the source template ID
+export const sourceTemplateIdField = 'sap.app/sourceTemplate/id';
 
 /**
  * Title and description config per download flow, used in the constructor
@@ -75,13 +77,19 @@ export const defaultAnswers: RepoAppDownloadAnswers = {
 // Path for storing the extracted files from repository
 export const extractedFilePath = 'extractedFiles';
 
-// Fields to retrieve from the app list, useful for displaying app metadata
+// Fields to retrieve from the app list, useful for displaying app metadata.
+// Includes sap.app/sourceTemplate/id so ADT-deployed apps can be filtered out on modern systems.
 export const appListResultFields = [
-    'sap.app/id', // ID of the application
-    'sap.app/title', // Title of the application
-    'sap.app/description', // Description of the application
-    'sap.app/sourceTemplate/id', // ID of the source template
-    'repoName', // Repository name where the app is located
-    'fileType', // Type of file (.zip etc)
-    'url' // URL for accessing the app
+    'sap.app/id',
+    'sap.app/title',
+    'sap.app/description',
+    sourceTemplateIdField,
+    'repoName',
+    'fileType',
+    'url'
 ];
+
+// Fallback for older systems that reject sap.app/sourceTemplate/id with HTTP 400.
+export const appListFieldsWithoutSourceTemplate = appListResultFields.filter(
+    (field) => field !== sourceTemplateIdField
+);
