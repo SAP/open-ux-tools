@@ -51,19 +51,31 @@ export function parseI18nToAst(text: string): I18nDocument {
         const eqIdx = trimmed.indexOf('=');
         if (eqIdx > 0) {
             const lineIdx = i + 1; // 1-based line number for SourceLocation
+            const leadingSpaces = line.length - line.trimStart().length;
+            const keyRaw = trimmed.slice(0, eqIdx);
+            const keyStr = keyRaw.trimEnd();
+            const keyTrailingSpaces = keyRaw.length - keyStr.length;
             const valueStartIdx = eqIdx + 1;
-            const valueStr = trimmed.slice(valueStartIdx);
+            const valueRaw = trimmed.slice(valueStartIdx);
+            const valueStr = valueRaw.trimStart();
+            const valueOffset = valueRaw.length - valueStr.length;
             entries.push({
                 type: 'i18n-entry',
                 key: {
-                    value: trimmed.slice(0, eqIdx).trim(),
-                    range: { start: { line: lineIdx, column: 1 }, end: { line: lineIdx, column: eqIdx } }
+                    value: keyStr,
+                    range: {
+                        start: { line: lineIdx, column: leadingSpaces + 1 },
+                        end: { line: lineIdx, column: leadingSpaces + eqIdx - keyTrailingSpaces }
+                    }
                 },
                 value: {
                     value: valueStr,
                     range: {
-                        start: { line: lineIdx, column: valueStartIdx + 1 },
-                        end: { line: lineIdx, column: valueStartIdx + 1 + valueStr.length }
+                        start: { line: lineIdx, column: leadingSpaces + valueStartIdx + valueOffset + 1 },
+                        end: {
+                            line: lineIdx,
+                            column: leadingSpaces + valueStartIdx + valueOffset + 1 + valueStr.length
+                        }
                     }
                 }
             });

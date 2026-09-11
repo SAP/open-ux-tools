@@ -166,4 +166,49 @@ describe('FioriI18nSourceCode', () => {
         expect(ast.entries).toHaveLength(0);
         expect(ast.type).toBe('i18n-document');
     });
+
+    it('should strip leading whitespace after = and adjust column offset', () => {
+        // "key =  value" — 1 trailing space before =, 2 spaces before "value"
+        const ast = parseI18nToAst('key =  value');
+        expect(ast.entries).toHaveLength(1);
+        const entry = ast.entries[0];
+        // key: trimmed.slice(0,4)="key ", trimEnd()="key", keyTrailingSpaces=1 → end col = 0+4-1=3
+        expect(entry.key.value).toBe('key');
+        expect(entry.key.range.start.column).toBe(1);
+        expect(entry.key.range.end.column).toBe(3);
+        // value: valueStartIdx=5, valueOffset=2 → start col = 0+5+2+1=8, end = 8+5=13
+        expect(entry.value.value).toBe('value');
+        expect(entry.value.range.start.column).toBe(8);
+        expect(entry.value.range.end.column).toBe(13);
+    });
+
+    it('should account for leading whitespace before a key', () => {
+        // "       formsSection=forms , section" — 7 leading spaces (as in SAP i18n files)
+        const ast = parseI18nToAst('       formsSection=forms , section');
+        expect(ast.entries).toHaveLength(1);
+        const entry = ast.entries[0];
+        expect(entry.key.value).toBe('formsSection');
+        // leadingSpaces=7 → start col = 7+1=8, eqIdx=12, no trailing spaces → end col = 7+12=19
+        expect(entry.key.range.start.column).toBe(8);
+        expect(entry.key.range.end.column).toBe(19);
+        expect(entry.value.value).toBe('forms , section');
+        // valueStartIdx=13, valueOffset=0 → start col = 7+13+0+1=21, end = 21+15=36
+        expect(entry.value.range.start.column).toBe(21);
+        expect(entry.value.range.end.column).toBe(36);
+    });
+
+    it('should skip SAP annotation comment and correctly parse indented key on next line', () => {
+        const text = ['#XFLD,50: Label for a section', '       formsSection=forms , section'].join('\n');
+        const ast = parseI18nToAst(text);
+        expect(ast.entries).toHaveLength(1);
+        const entry = ast.entries[0];
+        // comment on line 1 is skipped; entry is on line 2
+        expect(entry.key.range.start.line).toBe(2);
+        expect(entry.key.value).toBe('formsSection');
+        expect(entry.key.range.start.column).toBe(8);
+        expect(entry.key.range.end.column).toBe(19);
+        expect(entry.value.value).toBe('forms , section');
+        expect(entry.value.range.start.column).toBe(21);
+        expect(entry.value.range.end.column).toBe(36);
+    });
 });
