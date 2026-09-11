@@ -25,7 +25,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 
     return new ListReport(
         {
-            appId: 'testNameSpace.alpv4cap',
+            appId: 'testnamespace.alpv4cap',
             componentId: 'BooksList',
             entitySet: 'Books'
         },

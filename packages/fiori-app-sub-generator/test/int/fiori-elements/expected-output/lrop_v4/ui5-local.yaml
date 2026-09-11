@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv4
+  name: testnamespace.lropv4
 type: application
 framework:
   name: SAPUI5

@@ -220,7 +220,7 @@ describe('Headless generation', () => {
             project: {
                 title: 'Project\'s "Title"',
                 description: 'Test \'Project\' "Description"',
-                namespace: 'testNameSpace',
+                namespace: 'testnamespace',
                 ui5Version: '1.84.0',
                 localUI5Version: '1.82.2',
                 targetFolder: testDir,

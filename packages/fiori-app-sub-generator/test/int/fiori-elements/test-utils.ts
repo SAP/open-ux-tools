@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const EXPECTED_OUTPUT_DIR_NAME = './expected-output';
 
-export const testNameSpace = 'testNameSpace';
+export const testnamespace = 'testnamespace';
 export const testUI5Version = '1.98.0';
 
 /**
@@ -72,7 +72,7 @@ export const v4EntityConfig: State['entityRelatedConfig'] = {
 export const baseTestProject = (targetFolder = getTestDir()): Partial<Project> => ({
     title: `Project's "Title"`,
     description: `Test 'Project' "Description"`,
-    namespace: testNameSpace,
+    namespace: testnamespace,
     targetFolder: targetFolder,
     ui5Version: testUI5Version,
     ui5Theme: 'sap_fiori_3',

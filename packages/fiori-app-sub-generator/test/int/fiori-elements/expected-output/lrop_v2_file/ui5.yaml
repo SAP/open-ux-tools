@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2file
+  name: testnamespace.lropv2file
 type: application
 server:
   customMiddleware:
@@ -31,7 +31,7 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
           intent:
-            object: testNameSpacelropv2file
+            object: testnamespacelropv2file
             action: tile
 builder:
   resources:

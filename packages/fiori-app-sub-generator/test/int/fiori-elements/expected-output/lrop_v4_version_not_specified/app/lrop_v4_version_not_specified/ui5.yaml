@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv4versionnotspecified
+  name: testnamespace.lropv4versionnotspecified
 type: application
 server:
   customMiddleware:
