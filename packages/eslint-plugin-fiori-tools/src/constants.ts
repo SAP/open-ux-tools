@@ -1,4 +1,6 @@
 export const UI_LINE_ITEM = 'com.sap.vocabularies.UI.v1.LineItem';
+export const UI_CHART = 'com.sap.vocabularies.UI.v1.Chart';
+export const UI_DATA_FIELD_FOR_ANNOTATION = 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation';
 export const COMMON_TEXT = 'com.sap.vocabularies.Common.v1.Text';
 export const COMMON_TEXT_ARRANGEMENT = 'com.sap.vocabularies.Common.v1.TextArrangement';
 export const COMMON_LABEL = 'com.sap.vocabularies.Common.v1.Label';

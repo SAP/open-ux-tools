@@ -21,7 +21,7 @@ export interface ServiceIndex {
      * Key is simple identifier as it would be used in context path by SAP Fiori elements.
      */
     entitySets: Record<string, MetadataElement>;
-
+    entityTypes: Record<string, MetadataElement>;
     annotations: AnnotationIndex;
 }
 
@@ -230,6 +230,7 @@ export function buildServiceIndex(
     v2Annotations: V2Annotation[] = []
 ): ServiceIndex {
     const entitySets: Record<string, MetadataElement> = {};
+    const entityTypes: Record<string, MetadataElement> = {};
     for (const document of Object.values(artifacts.annotationFiles)) {
         documents[document.uri] = document;
     }
@@ -241,6 +242,8 @@ export function buildServiceIndex(
             entityContainer = element;
         } else if (element.kind === 'EntitySet' || element.kind === 'entitySet') {
             entitySets[element.name] = element;
+        } else if (element.kind === 'EntityType' || element.kind === 'entityType') {
+            entityTypes[element.name] = element;
         }
     });
 
@@ -249,6 +252,7 @@ export function buildServiceIndex(
     return {
         entitySets: entitySets,
         entityContainer,
+        entityTypes: entityTypes,
         annotations: annotationIndex
     };
 }
