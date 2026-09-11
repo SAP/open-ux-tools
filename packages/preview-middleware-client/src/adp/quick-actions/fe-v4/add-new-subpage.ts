@@ -142,16 +142,21 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         }
         const entityTypePath = entitySet.$Type;
         const entitySetNavigationKeys = Object.keys(entitySet.$NavigationPropertyBinding);
+        const routes = (this.context.manifest['sap.ui5'].routing?.routes ?? []) as Array<{ pattern?: string }>;
 
         for (const navigationProperty of entitySetNavigationKeys) {
             const associationEnd = (await metaModel.requestObject(`/${entityTypePath}/${navigationProperty}`)) as {
                 $Type: string;
                 $isCollection: boolean;
                 $kind: 'NavigationProperty';
-            };
+            }; // NO SONAR;
             if (associationEnd?.$isCollection) {
                 const targetEntitySet = entitySet.$NavigationPropertyBinding[navigationProperty];
-                await this.addNavigationOptionIfAvailable(metaModel, targetEntitySet, navigationProperty);
+                // Check by route rather than by entity set: multiple nav properties can target the same
+                // entity set, so a page existing for one nav property must not block others.
+                if (targetEntitySet && !routes.some((r) => r.pattern?.includes(`/${navigationProperty}(`))) {
+                    this.navProperties.push({ entitySet: targetEntitySet, navProperty: navigationProperty });
+                }
             }
         }
     }
