@@ -24,6 +24,8 @@ export interface PageSetting {
     createMode: string;
     condensedTableLayout: boolean;
     liveMode?: boolean;
+    inlineDelete: boolean;
+    multiSelect: boolean;
 }
 
 export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
@@ -37,6 +39,8 @@ export interface TableSettings {
     copy: boolean;
     showPasteButton: boolean;
     enableExport: boolean;
+    inlineDelete: boolean;
+    multiSelect: boolean;
 }
 
 export type FlexChangeProperty = 'enableExport' | 'showPasteButton' | 'useExportToExcel' | 'liveMode';
@@ -115,18 +119,25 @@ const getPropertyChangeConfig = (
  *
  * @param pathToPage
  * @param pageTableChanges
+ * @param settings
+ * @param settings.createMode
+ * @param settings.tableType
+ * @param settings.copy
+ * @param settings.inlineDelete
+ * @param settings.multiSelect
  * @param minUI5Version
- * @param createMode
- * @param tableType
- * @param copy
  */
 function createTableConfiguration(
     pathToPage: string[],
     pageTableChanges: FlexChange[],
-    minUI5Version?: MinUI5Version,
-    createMode?: string,
-    tableType?: string,
-    copy?: boolean
+    settings: {
+        createMode?: string;
+        tableType?: string;
+        copy?: boolean;
+        inlineDelete?: boolean;
+        multiSelect?: boolean;
+    },
+    minUI5Version?: MinUI5Version
 ) {
     const exportProperty =
         minUI5Version && isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 145 })
@@ -138,17 +149,17 @@ function createTableConfiguration(
         createMode: {
             values: createModeValues,
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'createMode'],
-            valueInFile: createMode
+            valueInFile: settings.createMode
         },
         tableType: {
             values: tableTypeValues,
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'type'],
-            valueInFile: tableType
+            valueInFile: settings.tableType
         },
         copy: {
             values: [true, false],
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'copy'],
-            valueInFile: copy
+            valueInFile: settings.copy
         },
         enableExport: {
             values: [true, false],
@@ -163,6 +174,16 @@ function createTableConfiguration(
             valueInFile: showPasteButton?.value,
             changeFileUri: showPasteButton?.changeFileUri ?? '',
             configurationPath: []
+        },
+        inlineDelete: {
+            values: [true, false],
+            configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'inlineDelete'],
+            valueInFile: settings.inlineDelete
+        },
+        multiSelect: {
+            values: [true, false],
+            configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'multiSelect'],
+            valueInFile: settings.multiSelect
         }
     };
 }
@@ -174,18 +195,26 @@ function createTableConfiguration(
  * @param minUI5Version
  * @param sectionKey
  * @param createMode
- * @param tableType
- * @param copy
  * @param pageTableChanges
+ * @param settings
+ * @param settings.tableType
+ * @param settings.copy
+ * @param settings.inlineDelete
+ * @param settings.multiSelect
+ * @returns
  */
 function createSectionTableConfiguration(
     pathToPage: string[],
     minUI5Version: MinUI5Version | undefined,
     sectionKey: string,
     createMode: string | undefined,
-    tableType: string | undefined,
-    copy: boolean | undefined,
-    pageTableChanges: FlexChange[]
+    pageTableChanges: FlexChange[],
+    settings: {
+        tableType: string | undefined;
+        copy: boolean | undefined;
+        inlineDelete?: boolean;
+        multiSelect?: boolean;
+    }
 ) {
     const exportProperty =
         minUI5Version && isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 145 })
@@ -210,7 +239,7 @@ function createSectionTableConfiguration(
                 'tableSettings',
                 'type'
             ],
-            valueInFile: tableType
+            valueInFile: settings.tableType
         },
         copy: {
             values: [true, false],
@@ -223,7 +252,7 @@ function createSectionTableConfiguration(
                 'tableSettings',
                 'copy'
             ],
-            valueInFile: copy
+            valueInFile: settings.copy
         },
         enableExport: {
             values: [true, false],
@@ -238,6 +267,32 @@ function createSectionTableConfiguration(
             valueInFile: showPasteButton?.value,
             changeFileUri: showPasteButton?.changeFileUri ?? '',
             configurationPath: []
+        },
+        inlineDelete: {
+            values: [true, false],
+            configurationPath: [
+                ...pathToPage,
+                'component',
+                'settings',
+                'sections',
+                sectionKey,
+                'tableSettings',
+                'inlineDelete'
+            ],
+            valueInFile: settings.inlineDelete
+        },
+        multiSelect: {
+            values: [true, false],
+            configurationPath: [
+                ...pathToPage,
+                'component',
+                'settings',
+                'sections',
+                sectionKey,
+                'tableSettings',
+                'multiSelect'
+            ],
+            valueInFile: settings.multiSelect
         }
     };
 }
@@ -252,11 +307,15 @@ function findSectionSettings(configuration: ManifestPageSettings): {
     createMode?: string;
     tableType?: string;
     copy?: boolean;
+    inlineDelete?: boolean;
+    multiSelect?: boolean;
 } {
     let sectionEntityKey = '';
     let createMode: string | undefined;
     let tableType: string | undefined;
     let copy: boolean | undefined;
+    let inlineDelete: boolean | undefined;
+    let multiSelect: boolean | undefined;
 
     for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
         if (value.createMode !== undefined) {
@@ -271,9 +330,17 @@ function findSectionSettings(configuration: ManifestPageSettings): {
             sectionEntityKey = key;
             copy = value.tableSettings.copy;
         }
+        if (value.tableSettings?.inlineDelete !== undefined) {
+            sectionEntityKey = key;
+            inlineDelete = value.tableSettings.inlineDelete;
+        }
+        if (value.tableSettings?.multiSelect !== undefined) {
+            sectionEntityKey = key;
+            multiSelect = value.tableSettings.multiSelect;
+        }
     }
 
-    return { sectionKey: sectionEntityKey, createMode, tableType, copy };
+    return { sectionKey: sectionEntityKey, createMode, tableType, copy, inlineDelete, multiSelect };
 }
 
 /**
@@ -287,13 +354,22 @@ function findSectionSettings(configuration: ManifestPageSettings): {
  * @param sectionSettings.createMode
  * @param sectionSettings.tableType
  * @param sectionSettings.copy
+ * @param sectionSettings.inlineDelete
+ * @param sectionSettings.multiSelect
  * @param pageTableChanges
  */
 function createLinkedTableForSection(
     table: TableNode,
     minUI5Version: MinUI5Version | undefined,
     pathToPage: string[],
-    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string; copy?: boolean },
+    sectionSettings: {
+        sectionKey: string;
+        createMode?: string;
+        tableType?: string;
+        copy?: boolean;
+        inlineDelete?: boolean;
+        multiSelect?: boolean;
+    },
     pageTableChanges: FlexChange[]
 ): Table {
     return {
@@ -304,9 +380,13 @@ function createLinkedTableForSection(
             minUI5Version,
             sectionSettings.sectionKey,
             sectionSettings.createMode,
-            sectionSettings.tableType,
-            sectionSettings.copy,
-            pageTableChanges
+            pageTableChanges,
+            {
+                tableType: sectionSettings.tableType,
+                copy: sectionSettings.copy,
+                inlineDelete: sectionSettings.inlineDelete,
+                multiSelect: sectionSettings.multiSelect
+            }
         ),
         children: []
     };
@@ -332,13 +412,17 @@ function getEntityData(service: ParsedService, entitySetName: string) {
  * @param createMode
  * @param condensedTableLayout
  * @param pageChanges
+ * @param inlineDelete - page-level tableSettings inlineDelete (object page only)
+ * @param multiSelect - page-level tableSettings multiSelect (object page only)
  */
 function createPageConfiguration(
     path: string[],
     name: string,
     createMode: string | undefined,
     condensedTableLayout: boolean | undefined,
-    pageChanges: FlexChange[]
+    pageChanges: FlexChange[],
+    inlineDelete?: boolean,
+    multiSelect?: boolean
 ) {
     const liveMode = getPropertyChangeConfig(pageChanges, 'liveMode');
     return {
@@ -358,6 +442,16 @@ function createPageConfiguration(
             valueInFile: liveMode?.value,
             changeFileUri: liveMode?.changeFileUri ?? '',
             configurationPath: []
+        },
+        inlineDelete: {
+            values: [true, false],
+            configurationPath: [...path, name, 'component', 'settings', 'tableSettings', 'inlineDelete'],
+            valueInFile: inlineDelete
+        },
+        multiSelect: {
+            values: [true, false],
+            configurationPath: [...path, name, 'component', 'settings', 'tableSettings', 'multiSelect'],
+            valueInFile: multiSelect
         }
     };
 }
@@ -397,6 +491,8 @@ interface ManifestPageSettings {
                 createMode?: string;
                 type?: string;
                 copy?: boolean;
+                inlineDelete?: boolean;
+                multiSelect?: boolean;
             };
             sections?: {
                 [sectionKey: string]: {
@@ -404,6 +500,8 @@ interface ManifestPageSettings {
                     tableSettings?: {
                         type?: string;
                         copy?: boolean;
+                        inlineDelete?: boolean;
+                        multiSelect?: boolean;
                     };
                 };
             };
@@ -511,11 +609,13 @@ function linkObjectPagePage(
     const sections = collectSections('v2', entityType, mainService);
     const createMode = target.component?.settings?.createMode;
     const componentName = 'sap.suite.ui.generic.template.ObjectPage';
+    const inlineDelete = target.component?.settings?.tableSettings?.inlineDelete;
+    const multiSelect = target.component?.settings?.tableSettings?.multiSelect;
     const page: FeV2ObjectPage = {
         type: 'object-page',
         targetName: name,
         componentName,
-        configuration: createPageConfiguration(path, name, createMode, undefined, []), // pageChanges not required for V2 object page config
+        configuration: createPageConfiguration(path, name, createMode, undefined, [], inlineDelete, multiSelect),
         entitySetName,
         entity,
         sections: [],
@@ -624,6 +724,8 @@ function linkListReportTable(
     const createMode = tableSettingsConfig.createMode;
     const tableType = tableSettingsConfig.type;
     const copy = tableSettingsConfig.copy;
+    const inlineDelete = tableSettingsConfig.inlineDelete;
+    const multiSelect = tableSettingsConfig.multiSelect;
     const pageTableChanges = getPageChanges(app.changes, page);
     const minUI5Version = app.manifest.minUI5Version;
     const linkedTable: Table = {
@@ -632,10 +734,8 @@ function linkListReportTable(
         configuration: createTableConfiguration(
             pathToPage,
             pageTableChanges,
-            minUI5Version,
-            createMode,
-            tableType,
-            copy
+            { createMode, tableType, copy, inlineDelete, multiSelect },
+            minUI5Version
         ),
         children: []
     };
@@ -705,6 +805,8 @@ function linkObjectPageSections(
             const createMode = sectionConfig.createMode;
             const tableType = sectionConfig.tableSettings?.type;
             const copy = sectionConfig.tableSettings?.copy;
+            const inlineDelete = sectionConfig.tableSettings?.inlineDelete;
+            const multiSelect = sectionConfig.tableSettings?.multiSelect;
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
                 configuration: createSectionTableConfiguration(
@@ -712,9 +814,8 @@ function linkObjectPageSections(
                     app.manifest.minUI5Version,
                     sectionKey,
                     createMode,
-                    tableType,
-                    copy,
-                    []
+                    [],
+                    { tableType, copy, inlineDelete, multiSelect }
                 )
             };
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
