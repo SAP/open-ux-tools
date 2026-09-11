@@ -10,7 +10,7 @@ import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
 import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import { PageDescriptorV4 } from '../../controllers/types.js';
-import { getPageId } from './utils.js';
+import { getPageId, hasRouteForNavProperty } from './utils.js';
 
 export const OBJECT_PAGE_COMPONENT_NAME_V4 = 'sap.fe.templates.ObjectPage.ObjectPage';
 
@@ -142,7 +142,10 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         }
         const entityTypePath = entitySet.$Type;
         const entitySetNavigationKeys = Object.keys(entitySet.$NavigationPropertyBinding);
-        const routes = (this.context.manifest['sap.ui5'].routing?.routes ?? []) as Array<{ pattern?: string }>;
+        const pageId = getPageId(this.context);
+        if (!pageId) {
+            return;
+        }
 
         for (const navigationProperty of entitySetNavigationKeys) {
             const associationEnd = (await metaModel.requestObject(`/${entityTypePath}/${navigationProperty}`)) as {
@@ -152,9 +155,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
             }; // NO SONAR;
             if (associationEnd?.$isCollection) {
                 const targetEntitySet = entitySet.$NavigationPropertyBinding[navigationProperty];
-                // Check by route rather than by entity set: multiple nav properties can target the same
-                // entity set, so a page existing for one nav property must not block others.
-                if (targetEntitySet && !routes.some((r) => r.pattern?.includes(`/${navigationProperty}(`))) {
+                if (targetEntitySet && !hasRouteForNavProperty(this.context.manifest, pageId, navigationProperty)) {
                     this.navProperties.push({ entitySet: targetEntitySet, navProperty: navigationProperty });
                 }
             }

@@ -4595,13 +4595,12 @@ describe('FE V4 quick actions', () => {
                     'id': 'TravelList',
                     'name': 'sap.fe.templates.ListReport',
                     'options': {
-                        'settings': testCase.isContextPathDefined
-                            ? {
-                                  'contextPath': '/Travel'
-                              }
-                            : {
-                                  'entitySet': 'Travel'
-                              }
+                        'settings': {
+                            ...(testCase.isContextPathDefined ? { 'contextPath': '/Travel' } : { 'entitySet': 'Travel' }),
+                            ...(testCase.isListReport && testCase.isNewPageUnavailable
+                                ? { navigation: { _Booking: { detail: { route: 'TravelObjectPage' } } } }
+                                : {})
+                        }
                     }
                 },
                 ...(testCase.isListReport && testCase.isNewPageUnavailable
@@ -4626,7 +4625,10 @@ describe('FE V4 quick actions', () => {
                     'name': 'sap.fe.templates.ObjectPage',
                     'options': {
                         'settings': {
-                            'entitySet': 'Booking'
+                            'entitySet': 'Booking',
+                            ...(!testCase.isListReport && testCase.isNewPageUnavailable
+                                ? { navigation: { _BookSupplement: { detail: { route: 'BookSupplementObjectPage' } } } }
+                                : {})
                         }
                     }
                 },
@@ -4846,9 +4848,10 @@ describe('FE V4 quick actions', () => {
             }
         });
 
-        test('multiple nav properties pointing to same entity set - only those without a route are offered', async () => {
+        test('multiple nav properties pointing to same entity set - only those without a navigation route are offered', async () => {
             // Regression test for: "Add Subpage" greyed out when a CDS extension adds a new nav property
-            // that maps to an entity set already used by other nav properties which do have routes.
+            // that maps to an entity set already used by other nav properties which do have navigation routes.
+            // hasRouteForNavProperty checks targets[pageId].options.settings.navigation[navProp].detail.route.
             mockTelemetryEventIdentifier();
             getUi5VersionMock.mockResolvedValue({ major: 1, minor: 135 });
 
@@ -4891,8 +4894,8 @@ describe('FE V4 quick actions', () => {
 
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
 
-            // Three nav properties all target 'Child01'; Subtype1 and Subtype2 already have routes.
-            // NewSubtype (the CDS extension) has no route yet and must be offered.
+            // Three nav properties all target 'Child01'; Subtype1 and Subtype2 already have navigation routes.
+            // NewSubtype (the CDS extension) has no navigation route yet and must be offered.
             const routes = [
                 { pattern: ':?query:', name: 'ParentSetList', target: 'ParentSetList' },
                 { pattern: '/ParentSet({key}):?query:', name: 'ParentSetObjectPage', target: 'ParentSetObjectPage' },
@@ -4903,7 +4906,16 @@ describe('FE V4 quick actions', () => {
                 ParentSetObjectPage: {
                     id: 'ParentSetObjectPage',
                     name: 'sap.fe.templates.ObjectPage',
-                    options: { settings: { entitySet: 'ParentSet' } }
+                    options: {
+                        settings: {
+                            entitySet: 'ParentSet',
+                            // _Subtype1 and _Subtype2 already have navigation routes; _NewSubtype does not
+                            navigation: {
+                                _Subtype1: { detail: { route: 'Subtype1ObjectPage' } },
+                                _Subtype2: { detail: { route: 'Subtype2ObjectPage' } }
+                            }
+                        }
+                    }
                 },
                 Subtype1ObjectPage: {
                     id: 'Subtype1ObjectPage',
@@ -4977,7 +4989,7 @@ describe('FE V4 quick actions', () => {
                 executeQuickAction({ id: 'objectPage0-add-new-subpage', kind: 'simple' })
             );
 
-            // Only _NewSubtype (no existing route) must be offered; _Subtype1 and _Subtype2 are blocked.
+            // Only _NewSubtype (no navigation route entry) must be offered; _Subtype1 and _Subtype2 are blocked.
             expect(DialogFactory.createDialog).toHaveBeenCalledWith(
                 mockOverlay,
                 rtaMock,

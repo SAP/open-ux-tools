@@ -11,7 +11,7 @@ jest.unstable_mockModule('open/ux/preview/client/utils/fe-v4', () => ({
     getV4AppComponent: getV4AppComponentMock
 }));
 
-const { getPropertyPath, getPageId, getAppDescriptorBase } =
+const { getPropertyPath, getPageId, getAppDescriptorBase, hasRouteForNavProperty } =
     await import('open/ux/preview/client/adp/quick-actions/fe-v4/utils');
 
 function makeContext(stableId: string | undefined): QuickActionContext {
@@ -51,6 +51,58 @@ describe('getAppDescriptorBase', () => {
     test('returns undefined when pageId cannot be derived', () => {
         getV4AppComponentMock.mockReturnValue(mockAppComponent);
         expect(getAppDescriptorBase(makeContext(undefined))).toBeUndefined();
+    });
+});
+
+describe('hasRouteForNavProperty', () => {
+    const makeManifest = (targetSettings: Record<string, unknown> = {}) =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyPage: {
+                            options: { settings: targetSettings }
+                        }
+                    }
+                }
+            }
+        }) as any;
+
+    test('returns true when navigation route is present for the given nav property', () => {
+        const manifest = makeManifest({
+            entitySet: 'Orders',
+            navigation: { _Items: { detail: { route: 'ItemsObjectPage' } } }
+        });
+        expect(hasRouteForNavProperty(manifest, 'MyPage', '_Items')).toBe(true);
+    });
+
+    test('returns false when navigation entry exists but detail.route is absent', () => {
+        const manifest = makeManifest({
+            navigation: { _Items: { detail: {} } }
+        });
+        expect(hasRouteForNavProperty(manifest, 'MyPage', '_Items')).toBe(false);
+    });
+
+    test('returns false when nav property has no entry in navigation', () => {
+        const manifest = makeManifest({
+            navigation: { _Other: { detail: { route: 'OtherPage' } } }
+        });
+        expect(hasRouteForNavProperty(manifest, 'MyPage', '_Items')).toBe(false);
+    });
+
+    test('returns false when navigation config is absent from settings', () => {
+        const manifest = makeManifest({ entitySet: 'Orders' });
+        expect(hasRouteForNavProperty(manifest, 'MyPage', '_Items')).toBe(false);
+    });
+
+    test('returns false when sourcePageId does not exist in targets', () => {
+        const manifest = makeManifest({ navigation: { _Items: { detail: { route: 'ItemsObjectPage' } } } });
+        expect(hasRouteForNavProperty(manifest, 'UnknownPage', '_Items')).toBe(false);
+    });
+
+    test('returns false when routing targets are absent from manifest', () => {
+        const manifest = { 'sap.ui5': {} } as any;
+        expect(hasRouteForNavProperty(manifest, 'MyPage', '_Items')).toBe(false);
     });
 });
 
