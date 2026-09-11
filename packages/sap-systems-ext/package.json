@@ -65,7 +65,7 @@
         "i18next": "26.3.6",
         "jsonc-parser": "3.3.1",
         "normalize-path": "3.0.0",
-        "npm-run-all2": "9.0.2",
+        "npm-run-all2": "9.0.3",
         "os-name": "4.0.1",
         "vscode-uri": "3.1.0",
         "@vscode/vsce": "3.9.2"
