@@ -201,7 +201,7 @@ async function getExternalServiceMetadata(
 
         logger.info(`Found ${externalServiceRefs.length} external service reference(s), fetching metadata...`);
 
-        const extServiceData = await serviceProvider.fetchExternalServices(externalServiceRefs);
+        const extServiceData = await serviceProvider.fetchExternalServices(externalServiceRefs, true);
         const duration = (performance.now() - startTime).toFixed(0);
         logger.info(`Successfully fetched ${extServiceData.length} external service(s) in ${duration}ms`);
         return extServiceData;

@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[118d3d8](https://github.com/SAP/open-ux-tools/commit/118d3d866ad0003a51a79b3640f3d6cdfe42643b)]
+
 ## 1.0.29
 
 ### Patch Changes
