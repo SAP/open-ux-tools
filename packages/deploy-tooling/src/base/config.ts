@@ -3,6 +3,8 @@ import type { AbapTarget, AbapDeployConfig } from '../types/index.js';
 import { isUrlTarget } from '@sap-ux/system-access';
 import type { BspConfig } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
+import { UI5Config } from '@sap-ux/ui5-config';
+import { readFile } from 'node:fs/promises';
 
 /**
  * Clones the given config and removes secrets so that it can be printed to a log file.
@@ -89,4 +91,29 @@ export function validateConfig(config: AbapDeployConfig | undefined, logger?: Lo
     }
 
     return config;
+}
+
+/**
+ * Reads builder.resources.excludes from the deploy config file and converts glob patterns to prefix patterns.
+ * Returns an empty array if the section is absent or the file cannot be read.
+ *
+ * @param deployConfigPath - path to the ui5-deploy.yaml file
+ * @param logger - optional logger; if provided, a warning is emitted when the file cannot be read
+ * @returns normalised prefix patterns e.g. ['/test/', '/localService/']
+ */
+export async function readBuilderExcludes(deployConfigPath: string, logger?: Logger): Promise<string[]> {
+    try {
+        const content = await readFile(deployConfigPath, 'utf-8');
+        const ui5Config = await UI5Config.newInstance(content);
+        return ui5Config.getBuilderResourceExcludes().map((p) => {
+            const prefix = p.replace(/\/\*+$/, '/');
+            const withSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
+            return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
+        });
+    } catch (e) {
+        logger?.warn(
+            `Could not read builder excludes from ${deployConfigPath}: ${e instanceof Error ? e.message : String(e)}`
+        );
+        return [];
+    }
 }
