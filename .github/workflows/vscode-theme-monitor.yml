@@ -57,6 +57,7 @@ jobs:
                   fi
               env:
                   DIFF_OUTPUT: ${{ runner.temp }}/theme-diff.json
+                  GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
             - name: Commit updated vscode_themes.json
               if: steps.check.outputs.has_changes == 'true'
