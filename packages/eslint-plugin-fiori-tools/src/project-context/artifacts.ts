@@ -27,26 +27,26 @@ export async function getProjectArtifacts(filePath: string): Promise<WorkerResul
             artifacts: ['applications', 'adaptations']
         });
         let i18nPathsByApp: { [appRoot: string]: string[] } = {};
-        let i18nPaths: string[] = [];
         const isCap = projectType === 'CAPJava' || projectType === 'CAPNodejs';
+        let capI18nPaths: string[] = [];
         if (isCap) {
             const env = await getCapEnvironment(projectRoot);
             const cdsFiles = await getCdsFiles(projectRoot, true);
             // Get CAP project i18n properties file paths
-            i18nPaths = getCapI18nFiles(projectRoot, env, cdsFiles).map((path) => capPropertiesPath(path, env));
+            capI18nPaths = getCapI18nFiles(projectRoot, env, cdsFiles).map((path) => capPropertiesPath(path, env));
         }
         for (const app of artifacts.applications ?? []) {
-            // Get application i18n properites file paths
+            // Get application i18n properties file paths
             const appI18nPaths = await getI18nPropertiesPaths(app.manifestPath);
-            i18nPaths.push(appI18nPaths['sap.app']);
+            const i18nPaths = [...capI18nPaths, appI18nPaths['sap.app']];
             if (!isCap) {
                 for (const model of Object.values(appI18nPaths.models)) {
                     if (!i18nPaths.includes(model.path)) {
                         i18nPaths.push(model.path);
                     }
                 }
-                i18nPathsByApp = { ...i18nPathsByApp, [app.appRoot]: i18nPaths };
             }
+            i18nPathsByApp = { ...i18nPathsByApp, [app.appRoot]: i18nPaths };
         }
         return { artifacts, projectType, i18nPathsByApp, appRoot: roots?.appRoot ?? projectRoot, projectRoot };
     } catch {
