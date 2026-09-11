@@ -793,10 +793,7 @@ describe('helper', () => {
         });
 
         test('should keep incrementing until a free name is found', () => {
-            mockExistsSync
-                .mockReturnValueOnce(true)
-                .mockReturnValueOnce(true)
-                .mockReturnValue(false);
+            mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValue(false);
             expect(getDefaultProjectName('/some/path')).toBe('app.variant3');
         });
 
