@@ -3,6 +3,14 @@ import type { ExtractedFile } from '../types.js';
 const PATH_MARKER = /\*\*Path:\*\*\s*(.+)/;
 const FENCE_OPEN = /^```(\w+)?/;
 
+function isFenceClose(line: string, inCodeBlock: boolean): boolean {
+    return inCodeBlock && line.startsWith('```');
+}
+
+function isFenceOpen(line: string, inCodeBlock: boolean): boolean {
+    return !inCodeBlock && FENCE_OPEN.test(line);
+}
+
 /**
  * Parses an AI response containing markdown code blocks preceded by
  * `**Path:** <fullFilePath>` markers and returns the extracted files. Lines
@@ -23,27 +31,26 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
         const pathMatch = line.match(PATH_MARKER);
         if (pathMatch) {
             currentPath = pathMatch[1].trim();
-            // Handle the rare case where the fence open appears on the same line as the path marker.
             const remainder = line.slice(line.indexOf(pathMatch[0]) + pathMatch[0].length);
-            if (FENCE_OPEN.test(remainder) && !inCodeBlock) {
+            if (isFenceOpen(remainder, inCodeBlock)) {
                 inCodeBlock = true;
                 currentCode = '';
             }
             continue;
         }
 
-        if (FENCE_OPEN.test(line) && !inCodeBlock) {
-            inCodeBlock = true;
-            currentCode = '';
-            continue;
-        }
-
-        if (line.startsWith('```') && inCodeBlock) {
+        if (isFenceClose(line, inCodeBlock)) {
             inCodeBlock = false;
             if (currentPath && currentCode.trim()) {
                 codeBlocks.push({ path: currentPath, code: currentCode.trim() });
             }
             currentPath = '';
+            currentCode = '';
+            continue;
+        }
+
+        if (isFenceOpen(line, inCodeBlock)) {
+            inCodeBlock = true;
             currentCode = '';
             continue;
         }

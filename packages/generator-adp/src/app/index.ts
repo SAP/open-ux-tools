@@ -27,6 +27,7 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
+    getDefaultProjectName,
     getOrCreateServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
@@ -67,7 +68,7 @@ import { getFlexLayer } from './layer.js';
 import { getPrompts } from './questions/attributes.js';
 import { CFServicesPrompter } from './questions/cf-services.js';
 import { ConfigPrompter } from './questions/configuration.js';
-import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values.js';
+import { getDefaultNamespace } from './questions/helper/default-values.js';
 import { validateJsonInput } from './questions/helper/validators.js';
 import {
     TargetEnv,

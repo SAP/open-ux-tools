@@ -1,7 +1,10 @@
 import { lookupAggregation } from '../../../../src/tools/lookup-ui5-documentation/lookups/aggregation.js';
 import { lookupProperty } from '../../../../src/tools/lookup-ui5-documentation/lookups/property.js';
 import { lookupEvent } from '../../../../src/tools/lookup-ui5-documentation/lookups/event.js';
-import { findMemberInChain, knownMemberNames } from '../../../../src/tools/lookup-ui5-documentation/lookups/find-member.js';
+import {
+    findMemberInChain,
+    knownMemberNames
+} from '../../../../src/tools/lookup-ui5-documentation/lookups/find-member.js';
 import type { LookupSource, Ui5Aggregation, Ui5Symbol } from '../../../../src/tools/lookup-ui5-documentation/types.js';
 import type { LookupUi5DocumentationInput } from '../../../../src/types/index.js';
 
@@ -38,7 +41,9 @@ const table: Ui5Symbol = {
                 visibility: 'public',
                 since: '1.16',
                 description: 'Fires on selection.',
-                parameters: { listItem: { name: 'listItem', type: 'sap.m.ListItemBase', description: 'The selected item.' } }
+                parameters: {
+                    listItem: { name: 'listItem', type: 'sap.m.ListItemBase', description: 'The selected item.' }
+                }
             }
         ]
     }
@@ -53,8 +58,16 @@ const listBase: Ui5Symbol = {
 const control: Ui5Symbol = {
     name: 'sap.ui.core.Control',
     'ui5-metadata': {
-        properties: [{ name: 'busy', type: 'boolean', defaultValue: false, group: 'Misc', bindable: true, visibility: 'public' }],
-        events: [{ name: 'validationError', visibility: 'public', parameters: { element: { name: 'element', type: 'sap.ui.core.Element' } } }]
+        properties: [
+            { name: 'busy', type: 'boolean', defaultValue: false, group: 'Misc', bindable: true, visibility: 'public' }
+        ],
+        events: [
+            {
+                name: 'validationError',
+                visibility: 'public',
+                parameters: { element: { name: 'element', type: 'sap.ui.core.Element' } }
+            }
+        ]
     }
 };
 const chain: Ui5Symbol[] = [table, listBase, control];
@@ -67,7 +80,10 @@ const source: LookupSource = {
     fallbackUsed: false
 };
 
-const baseInput = (member: string, lookupType: LookupUi5DocumentationInput['lookupType']): LookupUi5DocumentationInput => ({
+const baseInput = (
+    member: string,
+    lookupType: LookupUi5DocumentationInput['lookupType']
+): LookupUi5DocumentationInput => ({
     lookupType,
     library: 'sap.m',
     control: 'sap.m.Table',

@@ -15,6 +15,8 @@ const GENERATION_TIMEOUT_MS = 5 * 60_000;
 /**
  * Returns true if `yo` is available on PATH. Used to avoid re-downloading
  * Yeoman via `npx -y` on every invocation (slow on cold/corporate networks).
+ *
+ * @returns `true` if `yo` is on PATH, `false` otherwise.
  */
 function isYoAvailable(): boolean {
     try {
@@ -27,9 +29,12 @@ function isYoAvailable(): boolean {
 }
 
 /**
- * Builds the command + args to invoke the @sap-ux/adp Yeoman generator.
+ * Builds the command + args to invoke the {@link https://www.npmjs.com/package/@sap-ux/adp-tooling | sap-ux/adp} Yeoman generator.
  * Uses the globally-installed `yo` when available to avoid network round-trips;
  * falls back to `npx -y yo@4` for fresh environments.
+ *
+ * @param jsonString - JSON-serialised generator options to pass as a positional argument.
+ * @returns An object containing the command string and its argument array.
  */
 function buildGeneratorCommand(jsonString: string): { cmd: string; args: string[] } {
     if (isYoAvailable()) {
@@ -40,6 +45,11 @@ function buildGeneratorCommand(jsonString: string): { cmd: string; args: string[
 
 /**
  * Rejects with a descriptive error if the given promise does not settle within `timeoutMs`.
+ *
+ * @param promise - The promise to race against the timeout.
+ * @param timeoutMs - Maximum milliseconds to wait before rejecting.
+ * @param onTimeoutMessage - The error message used when the timeout fires.
+ * @returns A promise that resolves with the value of `promise` or rejects on timeout.
  */
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutMessage: string): Promise<T> {
     let timer: NodeJS.Timeout | undefined;
@@ -56,7 +66,7 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutM
 }
 
 /**
- * Generates a new SAP Fiori adaptation project by invoking the @sap-ux/adp Yeoman generator.
+ * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *
  * @param params - Input parameters for the adaptation project generation.
  * @returns A promise resolving to the execution output.

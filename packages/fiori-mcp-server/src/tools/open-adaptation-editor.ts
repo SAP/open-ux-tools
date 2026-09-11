@@ -10,6 +10,10 @@ const TIMEOUT_MS = 30000;
 /**
  * Resolves the command and arguments to launch the Fiori editor CLI.
  * Prefers the local node binary directly over the .bin symlink, falls back to npm.
+ *
+ * @param appPath - Absolute path to the adaptation project root.
+ * @param isWindows - Whether the current platform is Windows.
+ * @returns An object containing the command and its arguments.
  */
 function resolveFioriBin(appPath: string, isWindows: boolean): { command: string; args: string[] } {
     const fioriBinTarget = join(appPath, 'node_modules', '@sap', 'ux-ui5-tooling', 'bin', 'fiori.cjs');
@@ -27,6 +31,10 @@ function resolveFioriBin(appPath: string, isWindows: boolean): { command: string
 /**
  * Waits for the editor server to emit its URL on stdout (or stderr).
  * Resolves when the URL is found or when the timeout elapses.
+ *
+ * @param childProcess - The spawned editor child process to listen on.
+ * @param timeoutMs - Maximum milliseconds to wait before resolving with undefined URL.
+ * @returns A promise resolving with the server URL, editor path, and any stderr output.
  */
 function waitForEditorUrl(
     childProcess: ChildProcess,
@@ -37,15 +45,18 @@ function waitForEditorUrl(
         let foundEditorPath: string | undefined;
         let stderrOutput = '';
         let settled = false;
+        const timer = { id: undefined as ReturnType<typeof setTimeout> | undefined };
 
         const done = (): void => {
-            if (settled) return;
+            if (settled) {
+                return;
+            }
             settled = true;
-            clearTimeout(timeoutId);
+            clearTimeout(timer.id);
             resolve({ serverUrl: foundServerUrl, editorPath: foundEditorPath, stderrOutput });
         };
 
-        const timeoutId = setTimeout(() => {
+        timer.id = setTimeout(() => {
             logger.warn('Timeout waiting for editor URL');
             done();
         }, timeoutMs);
@@ -54,7 +65,7 @@ function waitForEditorUrl(
             const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
 
             rl.on('line', (line: string) => {
-                const clean = line.replace(/\[[0-9;]*m/g, '');
+                const clean = line.replace(new RegExp(String.fromCharCode(27) + '\\[[0-9;]*m', 'g'), '');
                 logger.debug(`Editor: ${clean}`);
 
                 if (!foundEditorPath) {
@@ -95,12 +106,15 @@ function waitForEditorUrl(
 
 /**
  * Parses the port from a server URL string.
+ *
+ * @param serverUrl - The full server URL to extract the port from.
+ * @returns The numeric port, or `undefined` if the URL cannot be parsed.
  */
 function parsePort(serverUrl: string): number | undefined {
     try {
         const urlObj = new URL(serverUrl);
         if (urlObj.port) {
-            return parseInt(urlObj.port, 10);
+            return Number.parseInt(urlObj.port, 10);
         }
         return urlObj.protocol === 'https:' ? 443 : 80;
     } catch {
@@ -110,6 +124,11 @@ function parsePort(serverUrl: string): number | undefined {
 
 /**
  * Builds the kill instructions string returned to the caller so they can stop the editor process.
+ *
+ * @param pid - The process ID of the running editor server.
+ * @param port - The listening port, used to generate an alternative port-based kill command.
+ * @param isWindows - Whether the current platform is Windows.
+ * @returns A formatted string with platform-appropriate instructions for stopping the process.
  */
 function buildKillInstructions(pid: number, port: number | undefined, isWindows: boolean): string {
     const byPid = isWindows
