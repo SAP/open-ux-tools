@@ -687,13 +687,16 @@ async function fetchTsDefaults() {
     const tsSources = sources.slice(0, tsColorSources.length);
     const extSources = sources.slice(tsColorSources.length);
 
-    tsColorSources.forEach((file, i) => {
+    tsColorSources.forEach((_file, i) => {
         const source = tsSources[i];
         if (!source) return;
         const { results, constToToken: fileConstMap } = parseTsColorDefaults(source);
-        if (file.includes('terminalColorRegistry')) {
-            Object.assign(rawMap, parseAnsiColorMap(source));
-        }
+        // The 16 terminal.ansi* tokens live in an ansiColorMap object literal (not registerColor
+        // calls), historically only in terminalColorRegistry.ts. Run the ANSI parser on every
+        // source rather than gating on that filename: its regex only matches the
+        // 'terminal.ansi…': { index, defaults } shape, so it is a no-op elsewhere, and this keeps
+        // the tokens resolving even if upstream renames or relocates the file.
+        Object.assign(rawMap, parseAnsiColorMap(source));
         Object.assign(rawMap, results);
         Object.assign(constToToken, fileConstMap);
     });
