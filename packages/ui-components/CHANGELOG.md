@@ -1,5 +1,7 @@
 # @sap-ux/ui-components
 
+## 3.0.15
+
 ## 3.0.14
 
 ### Patch Changes

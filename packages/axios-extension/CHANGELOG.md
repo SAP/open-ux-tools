@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 2.0.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- add waitForFirst option to fetchExternalServices to abort on auth failure [[118d3d8](https://github.com/SAP/open-ux-tools/commit/118d3d866ad0003a51a79b3640f3d6cdfe42643b)]
+
 ## 2.0.9
 
 ### Patch Changes
