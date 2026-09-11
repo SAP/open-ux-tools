@@ -76,14 +76,14 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
 };
 
 /**
- * Returns true when the error is an HTTP 400 response indicating the system
- * does not know the `sap.app/sourceTemplate/id` column.
+ * Returns true when the error is an HTTP 400 response from the app index search,
+ * indicating the system does not support one of the requested fields.
  *
  * @param {unknown} error - The error thrown by the app index search call.
- * @returns {boolean} Whether the error is a "column unknown" 400 response.
+ * @returns {boolean} Whether the error is a 400 response.
  */
 function isUnsupportedFieldError(error: unknown): boolean {
-    return isAxiosError(error) && error.response?.status === 400 && error.message.includes(sourceTemplateIdField);
+    return isAxiosError(error) && error.response?.status === 400;
 }
 
 /**
@@ -112,12 +112,13 @@ async function getAppList(
     } catch (error) {
         if (downloadType === AppDownloadType.AbapRepository && isUnsupportedFieldError(error)) {
             // Safe to skip ADT filter — a system that doesn't support this field cannot have ADT-deployed apps.
-            RepoAppDownloadLogger.logger?.debug(`${sourceTemplateIdField} not supported, retrying without it`);
             try {
-                return await provider.getAppIndex().search(searchParams, appListFieldsWithoutSourceTemplate);
+                const retryResults = await provider.getAppIndex().search(searchParams, appListFieldsWithoutSourceTemplate);
+                return retryResults;
             } catch (retryError) {
-                const message = retryError instanceof Error ? retryError.message : String(retryError);
-                RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
+                const retryMessage = retryError instanceof Error ? retryError.message : String(retryError);
+                const retryResponseData = isAxiosError(retryError) ? JSON.stringify(retryError.response?.data) : undefined;
+                RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: retryMessage }));
                 return [];
             }
         }

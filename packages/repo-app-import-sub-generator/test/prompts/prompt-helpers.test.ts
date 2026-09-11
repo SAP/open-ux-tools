@@ -6,8 +6,7 @@ import {
     adtSourceTemplateId,
     appListResultFields,
     appListFieldsWithoutSourceTemplate,
-    generatorTitleConfig,
-    sourceTemplateIdField
+    generatorTitleConfig
 } from '../../src/utils/constants.js';
 import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
@@ -92,7 +91,7 @@ describe('fetchAppListForSelectedSystem', () => {
 
     it('should retry without sourceTemplate/id for AbapRepository download type on older systems (HTTP 400)', async () => {
         const regularApp = { 'sap.app/id': 'regular-app', repoName: 'repo1', url: 'http://url' };
-        const columnUnknownError = createAxiosError(400, `Column ${sourceTemplateIdField} is unknown`);
+        const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
         const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockResolvedValueOnce([regularApp]);
         const provider = {
             getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
@@ -111,7 +110,7 @@ describe('fetchAppListForSelectedSystem', () => {
     });
 
     it('should return empty array and log error when retry also fails on older systems', async () => {
-        const columnUnknownError = createAxiosError(400, `Column ${sourceTemplateIdField} is unknown`);
+        const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
         const retryError = new Error('Network failure');
         const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockRejectedValueOnce(retryError);
         const provider = {
@@ -131,7 +130,7 @@ describe('fetchAppListForSelectedSystem', () => {
         expect(result).toEqual([]);
     });
 
-    it('should not retry for AbapRepository when the error is not a sourceTemplate column unknown 400', async () => {
+    it('should not retry for AbapRepository when the error is not HTTP 400', async () => {
         const unrelatedError = createAxiosError(500, 'Internal Server Error');
         const mockSearch = jest.fn().mockRejectedValueOnce(unrelatedError);
         const provider = {
