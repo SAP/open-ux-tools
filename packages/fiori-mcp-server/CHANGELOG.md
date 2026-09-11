@@ -1,5 +1,21 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- propagate authenticationType from BackendSystem into the generator config written to disk [[41e9341](https://github.com/SAP/open-ux-tools/commit/41e934192805ce9fc954bc34b42f9085b3ea2b36)]
+
+#### Bug Fixes
+
+- Redirect AI agent to search_docs when updating service metadata in an existing Fiori app instead of incorrectly using download_odata_service_metadata [[59a74a5](https://github.com/SAP/open-ux-tools/commit/59a74a524ee68a226eb67fe88500809208711cc3)]
+
 ## 1.12.3
 
 ### Patch Changes

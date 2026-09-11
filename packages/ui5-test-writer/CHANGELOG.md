@@ -1,5 +1,14 @@
 # @sap-ux/ui5-test-writer
 
+## 1.10.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.13 → 1.2.14
+- @sap-ux/preview-middleware 1.2.10 → 1.2.11
+
 ## 1.10.1
 
 ### Patch Changes
