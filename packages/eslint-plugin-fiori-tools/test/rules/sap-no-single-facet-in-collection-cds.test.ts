@@ -129,7 +129,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 errors: [
                     {
                         message:
-                            'UI.CollectionFacet should not contain single UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                            'UI.CollectionFacet should not contain a single UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
                     }
                 ]
             },
@@ -143,7 +143,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, noSingleFacetInCollectionRule, {
                 errors: [
                     {
                         message:
-                            'UI.CollectionFacet should not contain single UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                            'UI.CollectionFacet should not contain a single UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
                     }
                 ]
             },
