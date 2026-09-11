@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 2.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Features
+
+- Add resolveApplicationTitle to resolve app title from manifest and i18n [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
 ## 2.1.13
 
 ### Patch Changes
