@@ -102,15 +102,17 @@ export const GenerateAppOutputSchema = zod.object({
     timestamp: zod.string()
 });
 
-export const LookupUi5DocumentationOutputSchema = zod.object({
-    lookupType: zod.enum(['aggregation', 'property', 'event']),
-    library: zod.string(),
-    control: zod.string(),
-    definedIn: zod.string(),
-    inherited: zod.boolean(),
-    since: zod.string().nullable(),
-    description: zod.string().nullable()
-}).catchall(zod.unknown());
+export const LookupUi5DocumentationOutputSchema = zod
+    .object({
+        lookupType: zod.enum(['aggregation', 'property', 'event']),
+        library: zod.string(),
+        control: zod.string(),
+        definedIn: zod.string(),
+        inherited: zod.boolean(),
+        since: zod.string().nullable(),
+        description: zod.string().nullable()
+    })
+    .catchall(zod.unknown());
 
 export const ODataMetadataEntrySchema = zod.object({
     id: zod.string(),

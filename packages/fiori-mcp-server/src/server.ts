@@ -323,9 +323,7 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     default:
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
-                        throw new Error(
-                            `Unknown tool: ${name}. Try one of: ${tools.map((t) => t.name).join(', ')}.`
-                        );
+                        throw new Error(`Unknown tool: ${name}. Try one of: ${tools.map((t) => t.name).join(', ')}.`);
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
                 const convertedResult = this.convertResultToCallToolResult(result);

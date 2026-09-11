@@ -12,9 +12,8 @@ jest.unstable_mockModule('node:os', () => ({
 }));
 
 // ── Import SUT AFTER mocks ───────────────────────────────────────────────────
-const { findControl, resolveControlChain, resolveLibraryForClass } = await import(
-    '../../../../src/tools/lookup-ui5-documentation/api-json.js'
-);
+const { findControl, resolveControlChain, resolveLibraryForClass } =
+    await import('../../../../src/tools/lookup-ui5-documentation/api-json.js');
 
 afterAll(() => {
     rmSync(MOCK_HOME, { recursive: true, force: true });

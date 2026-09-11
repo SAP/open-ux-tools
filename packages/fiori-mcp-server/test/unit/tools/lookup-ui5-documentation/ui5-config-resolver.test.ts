@@ -12,9 +12,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // ── Import SUT AFTER mocks ───────────────────────────────────────────────────
-const { findUi5Yaml, resolveUi5Config } = await import(
-    '../../../../src/tools/lookup-ui5-documentation/ui5-config-resolver.js'
-);
+const { findUi5Yaml, resolveUi5Config } =
+    await import('../../../../src/tools/lookup-ui5-documentation/ui5-config-resolver.js');
 
 // ─────────────────────────────────────────────────────────────────────────────
 describe('findUi5Yaml', () => {

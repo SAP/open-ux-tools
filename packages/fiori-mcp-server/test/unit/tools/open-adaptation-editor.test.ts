@@ -120,9 +120,7 @@ describe('openAdaptationEditor', () => {
     });
 
     test('uses process.execPath when fiori.cjs binary target exists', async () => {
-        mockExistsSync.mockImplementation((p: unknown) =>
-            typeof p === 'string' && p.includes('fiori.cjs')
-        );
+        mockExistsSync.mockImplementation((p: unknown) => typeof p === 'string' && p.includes('fiori.cjs'));
         const child = new FakeChildProcess(42);
         mockSpawn.mockReturnValue(child);
 
@@ -140,8 +138,8 @@ describe('openAdaptationEditor', () => {
     });
 
     test('falls back to .bin/fiori when fiori.cjs missing but .bin/fiori exists', async () => {
-        mockExistsSync.mockImplementation((p: unknown) =>
-            typeof p === 'string' && p.includes('.bin') && p.includes('fiori')
+        mockExistsSync.mockImplementation(
+            (p: unknown) => typeof p === 'string' && p.includes('.bin') && p.includes('fiori')
         );
         const child = new FakeChildProcess(43);
         mockSpawn.mockReturnValue(child);

@@ -84,14 +84,22 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'get_overlays': {
                 const site = requireSite(input.site);
-                const { overlays, actionsCatalog } = await getOverlays(defaultTransport, { site, frameId: input.frameId });
+                const { overlays, actionsCatalog } = await getOverlays(defaultTransport, {
+                    site,
+                    frameId: input.frameId
+                });
                 return { overlays, actionsCatalog };
             }
             case 'get_context': {
                 const site = requireSite(input.site);
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
-                const context = await getElementContext(defaultTransport, { site, frameId: input.frameId }, controlId, actionId);
+                const context = await getElementContext(
+                    defaultTransport,
+                    { site, frameId: input.frameId },
+                    controlId,
+                    actionId
+                );
                 return { context };
             }
             case 'call_action': {
@@ -99,7 +107,13 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
                 const actionPayload = requireObject(input.payload, 'actionPayload');
-                const ok = await executeAction(defaultTransport, { site, frameId: input.frameId }, controlId, actionId, actionPayload);
+                const ok = await executeAction(
+                    defaultTransport,
+                    { site, frameId: input.frameId },
+                    controlId,
+                    actionId,
+                    actionPayload
+                );
                 return { success: ok };
             }
             case 'save': {
@@ -124,10 +138,10 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'get_page_actions': {
                 const site = requireSite(input.site);
-                const { registered, interactive, interactiveTruncated } = await getPageActions(
-                    defaultTransport,
-                    { site, frameId: input.frameId }
-                );
+                const { registered, interactive, interactiveTruncated } = await getPageActions(defaultTransport, {
+                    site,
+                    frameId: input.frameId
+                });
                 return {
                     registered,
                     interactive,
