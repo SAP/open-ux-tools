@@ -205,5 +205,4 @@ In case you detect an issue with this rule, please open a GitHub issue [here](ht
 
 ## Further Reading
 
-- [SAP Fiori Design Guidelines - Object Page Sections](https://experience.sap.com/fiori-design-web/object-page/)
-- [UI.Facets Vocabulary Reference](https://github.com/SAP/odata-vocabularies/blob/main/vocabularies/UI.md#Facets)
+- [Defining and Configuring Sections](https://ui5.sap.com/#/topic/facfea09018d4376acaceddb7e3f03b6)
