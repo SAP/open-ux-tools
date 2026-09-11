@@ -197,13 +197,18 @@ describe('system-connection', () => {
             expect(mockAxiosGet).toHaveBeenCalledWith('/', { timeout: 5000 });
         });
 
-        test('should validate reentranceTicket auth without credentials', async () => {
+        test.each([
+            { authType: 'reentranceTicket', systemType: 'AbapCloud' },
+            { authType: 'oauth2', systemType: 'AbapCloud' },
+            { authType: 'reentranceTicket', systemType: 'OnPrem' },
+            { authType: 'oauth2', systemType: 'OnPrem' }
+        ])('should validate $authType auth without credentials ($systemType)', async ({ authType, systemType }) => {
             mockCatalogListServices.mockResolvedValueOnce([{ name: 'Service1' }]);
 
             const result = await checkSystemConnection({
                 url: 'https://example.com',
-                systemType: 'AbapCloud',
-                authenticationType: 'reentranceTicket',
+                systemType,
+                authenticationType: authType,
                 connectionType: 'abap_catalog'
             });
 
@@ -211,26 +216,12 @@ describe('system-connection', () => {
             expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
                 expect.objectContaining({
                     url: 'https://example.com',
-                    authenticationType: 'reentranceTicket'
+                    authenticationType: authType
                 }),
-                undefined, // No auth for reentranceTicket
+                undefined, // No auth for reentranceTicket/oauth2
                 false,
                 expect.anything()
             );
-        });
-
-        test('should validate oauth2 auth without credentials', async () => {
-            mockCatalogListServices.mockResolvedValueOnce([{ name: 'Service1' }]);
-
-            const result = await checkSystemConnection({
-                url: 'https://example.com',
-                systemType: 'AbapCloud',
-                authenticationType: 'oauth2',
-                connectionType: 'abap_catalog'
-            });
-
-            expect(result.success).toBe(true);
-            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
         });
 
         test('should pass client parameter when connecting', async () => {
@@ -335,34 +326,6 @@ describe('system-connection', () => {
 
             expect(result.success).toBe(false);
             expect(result.error).toBe('Network error');
-        });
-
-        test('should validate connection for reentranceTicket auth (reachability check)', async () => {
-            mockCatalogListServices.mockResolvedValueOnce([{ name: 'Service1' }]);
-
-            const result = await checkSystemConnection({
-                url: 'https://example.com',
-                systemType: 'OnPrem',
-                authenticationType: 'reentranceTicket',
-                connectionType: 'abap_catalog'
-            });
-
-            expect(result.success).toBe(true);
-            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
-        });
-
-        test('should validate connection for oauth2 auth (reachability check)', async () => {
-            mockCatalogListServices.mockResolvedValueOnce([{ name: 'Service1' }]);
-
-            const result = await checkSystemConnection({
-                url: 'https://example.com',
-                systemType: 'OnPrem',
-                authenticationType: 'oauth2',
-                connectionType: 'abap_catalog'
-            });
-
-            expect(result.success).toBe(true);
-            expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
         });
 
         test('should return error for invalid URL', async () => {
