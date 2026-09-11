@@ -28,7 +28,7 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
     let currentCode = '';
 
     for (const line of lines) {
-        const pathMatch = line.match(PATH_MARKER);
+        const pathMatch = PATH_MARKER.exec(line);
         if (pathMatch) {
             currentPath = pathMatch[1].trim();
             const remainder = line.slice(line.indexOf(pathMatch[0]) + pathMatch[0].length);

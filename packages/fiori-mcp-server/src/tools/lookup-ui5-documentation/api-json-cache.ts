@@ -26,7 +26,7 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 1 day
  * @returns Slash-separated path (e.g. "sap/ui/comp").
  */
 function libToPath(libraryName: string): string {
-    return libraryName.replace(/\./g, '/');
+    return libraryName.replaceAll('.', '/');
 }
 
 /**

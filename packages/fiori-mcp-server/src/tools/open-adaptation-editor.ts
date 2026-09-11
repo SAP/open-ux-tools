@@ -65,18 +65,18 @@ function waitForEditorUrl(
             const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
 
             rl.on('line', (line: string) => {
-                const clean = line.replace(new RegExp(String.fromCharCode(27) + '\\[[0-9;]*m', 'g'), '');
+                const clean = line.replace(new RegExp(String.fromCodePoint(27) + String.raw`\[[0-9;]*m`, 'g'), '');
                 logger.debug(`Editor: ${clean}`);
 
                 if (!foundEditorPath) {
-                    const pathMatch = line.match(/fiori run --open\s+([^\s]+)/);
+                    const pathMatch = /fiori run --open\s+([^\s]+)/.exec(line);
                     if (pathMatch?.[1]) {
                         foundEditorPath = pathMatch[1];
                     }
                 }
 
                 if (!foundServerUrl) {
-                    const urlMatch = line.match(/^URL:\s*(https?:\/\/[^\s]+)/);
+                    const urlMatch = /^URL:\s*(https?:\/\/[^\s]+)/.exec(line);
                     if (urlMatch?.[1]) {
                         foundServerUrl = urlMatch[1];
                         logger.info(`Extracted server URL: ${foundServerUrl}`);

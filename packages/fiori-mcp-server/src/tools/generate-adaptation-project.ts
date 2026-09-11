@@ -66,6 +66,25 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutM
 }
 
 /**
+ * Copies non-empty optional fields from `fields` into `target`.
+ *
+ * @param target - The object to write the fields into.
+ * @param fields - Optional input fields; undefined and empty-string values are skipped.
+ */
+function applyOptionalFields(
+    target: Record<string, unknown>,
+    fields: Partial<
+        Pick<GenerateAdaptationProjectInput, 'namespace' | 'applicationTitle' | 'client' | 'username' | 'password'>
+    >
+): void {
+    for (const [key, value] of Object.entries(fields)) {
+        if (value !== undefined && value !== '') {
+            target[key] = value;
+        }
+    }
+}
+
+/**
  * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *
  * @param params - Input parameters for the adaptation project generation.
@@ -106,21 +125,7 @@ export async function generateAdaptationProject(
             projectName: projectName ?? getDefaultProjectName(finalTargetFolder)
         };
 
-        if (namespace) {
-            jsonInput.namespace = namespace;
-        }
-        if (applicationTitle) {
-            jsonInput.applicationTitle = applicationTitle;
-        }
-        if (client) {
-            jsonInput.client = client;
-        }
-        if (username) {
-            jsonInput.username = username;
-        }
-        if (password) {
-            jsonInput.password = password;
-        }
+        applyOptionalFields(jsonInput, { namespace, applicationTitle, client, username, password });
 
         if (importKeyUserChanges) {
             const keyUserChanges = await withTimeout(

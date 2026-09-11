@@ -73,8 +73,7 @@ export async function fetchKeyUserChanges(options: FetchKeyUserChangesOptions): 
         throw new Error(`No adaptations found for application '${application}' on system '${system}'.`);
     }
 
-    const defaultAdaptation = adaptations.find((a) => a.id === DEFAULT_ADAPTATION_ID);
-    if (!defaultAdaptation) {
+    if (!adaptations.some((a) => a.id === DEFAULT_ADAPTATION_ID)) {
         const available = adaptations.map((a) => a.id).join(', ');
         throw new Error(
             `No DEFAULT adaptation found for application '${application}'. Available adaptations: ${available}.`
