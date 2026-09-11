@@ -314,4 +314,68 @@ describe('browser/playwright-bridge', () => {
         await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/locked by another process/);
         expect(launchMock).toHaveBeenCalledTimes(1);
     });
+
+    test('skips frame whose frameElement() rejects (null element guard)', async () => {
+        // One frame whose frameElement throws (simulates detached frame), one that matches.
+        const nullFrame = new FakeFrame(null);
+        nullFrame.frameElement.mockRejectedValueOnce(new Error('detached'));
+        const matchedFrame = new FakeFrame('preview');
+        const page = new FakePage([nullFrame, matchedFrame]);
+        setupBrowser([page]);
+        matchedFrame.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction(SITE_A, 'a', {}, 'preview');
+        expect(result.payload).toBe('ok');
+
+        await fs.stopBrowser();
+    });
+
+    test('pageerror event handler fires without throwing', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        await fs.callFrontendAction(SITE_A, 'a');
+
+        // Emit pageerror — should not throw.
+        expect(() => page.emit('pageerror', new Error('script error'))).not.toThrow();
+
+        await fs.stopBrowser();
+    });
+
+    test('isRegistryEmpty returns true before any connection and false after one is open', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        expect(fs.isRegistryEmpty()).toBe(true);
+
+        await fs.callFrontendAction(SITE_A, 'a');
+        expect(fs.isRegistryEmpty()).toBe(false);
+
+        await fs.stopBrowser();
+        expect(fs.isRegistryEmpty()).toBe(true);
+    });
+
+    test('does not retry when fallback launch also fails for an unrelated reason', async () => {
+        launchMock
+            .mockRejectedValueOnce(new Error("Executable doesn't exist at /usr/bin/google-chrome"))
+            .mockRejectedValueOnce(new Error('sandboxing policy violation'));
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/sandboxing policy violation/);
+        expect(launchMock).toHaveBeenCalledTimes(2);
+    });
+
+    test('isMissingBrowserError returns false for non-Error thrown values', async () => {
+        // Throw a string (non-Error) from the primary launch — must NOT trigger the fallback retry.
+        launchMock.mockRejectedValueOnce('not an error object');
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toBe('not an error object');
+        expect(launchMock).toHaveBeenCalledTimes(1);
+    });
 });

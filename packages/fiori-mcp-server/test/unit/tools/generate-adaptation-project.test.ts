@@ -26,7 +26,9 @@ jest.unstable_mockModule('../../../src/tools/generate-adaptation-project/key-use
 const actualChildProcess = await import('node:child_process');
 jest.unstable_mockModule('node:child_process', () => ({
     ...actualChildProcess,
-    execFileSync: jest.fn().mockImplementation(() => { throw new Error('not found'); })
+    execFileSync: jest.fn().mockImplementation(() => {
+        throw new Error('not found');
+    })
 }));
 
 const actualFs = await import('node:fs');
@@ -168,5 +170,50 @@ describe('generateAdaptationProject', () => {
 
         expect(result.status).toEqual('Error');
         expect(result.message).toContain('boom');
+    });
+
+    test('returns Error when targetFolder is not an absolute path', async () => {
+        const result = await generateAdaptationProject({
+            system: 'UYZ/200',
+            application: 'app.id',
+            appPath: '/tmp/app',
+            targetFolder: 'relative/path'
+        } as any);
+
+        expect(result.status).toEqual('Error');
+        expect(result.message).toContain('targetFolder must be an absolute path');
+        expect(result.message).toContain('relative/path');
+        expect(mockRunCmdArgs).not.toHaveBeenCalled();
+    });
+
+    test('spawns yo directly when yo is available on PATH', async () => {
+        // Override execFileSync to simulate yo being available.
+        const { execFileSync: mockExecFileSync } = jest.mocked(await import('node:child_process'));
+        (mockExecFileSync as jest.MockedFunction<any>).mockImplementationOnce(() => undefined);
+
+        const result = await generateAdaptationProject({
+            system: 'UYZ/200',
+            application: 'app.id',
+            appPath: '/tmp/app'
+        } as any);
+
+        expect(result.status).toEqual('Success');
+        const [cmd, args] = mockRunCmdArgs.mock.calls[0] as [string, string[]];
+        expect(cmd).toEqual('yo');
+        expect(args[0]).toEqual('@sap-ux/adp');
+        expect(args[args.length - 1]).toEqual('--force');
+    });
+
+    test('logs stderr output when generator writes to stderr', async () => {
+        mockRunCmdArgs.mockResolvedValue({ stdout: '', stderr: 'some warning from yo' });
+
+        const result = await generateAdaptationProject({
+            system: 'UYZ/200',
+            application: 'app.id',
+            appPath: '/tmp/app'
+        } as any);
+
+        expect(result.status).toEqual('Success');
+        expect(mockLoggerWarn).toHaveBeenCalledWith('some warning from yo');
     });
 });

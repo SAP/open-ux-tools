@@ -137,4 +137,22 @@ describe('adpControllerExtension', () => {
         }
     });
 
+    test('includes existing project files section when controller extension already exists', async () => {
+        const appPath = createAdpProject('CUSTOMER_BASE');
+        // Write a pre-existing controller extension file so the scanner picks it up.
+        const extDir = join(appPath, 'webapp', 'changes', 'coding');
+        const { mkdirSync, writeFileSync } = await import('node:fs');
+        mkdirSync(extDir, { recursive: true });
+        writeFileSync(join(extDir, 'ExistingExt.js'), '// existing controller extension');
+
+        try {
+            const result = await adpControllerExtension({ appPath, prompt: 'add another method' });
+            expect(result.status).toBe('Info');
+            expect(result.message).toContain('EXISTING PROJECT FILES');
+            expect(result.message).toContain('ExistingExt.js');
+            expect(result.message).toContain('// existing controller extension');
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
 });

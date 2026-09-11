@@ -772,7 +772,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -793,7 +793,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -815,7 +815,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
