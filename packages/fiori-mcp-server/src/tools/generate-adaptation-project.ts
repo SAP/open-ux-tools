@@ -1,9 +1,8 @@
-import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types/index.js';
+import type { GenerateAdaptationProjectOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { isAbsolute, join } from 'node:path';
 import { promises as FSpromises } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
-import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
 import { fetchKeyUserChanges } from './generate-adaptation-project/key-user-changes.js';
 import { getDefaultProjectName } from '@sap-ux/adp-tooling';
 
@@ -40,15 +39,6 @@ function buildGeneratorCommand(jsonString: string): { cmd: string; args: string[
 }
 
 /**
- * Returns a copy of `params` with sensitive credential fields removed so they
- * are never echoed back in the tool response envelope.
- */
-function safeParams(params: GenerateAdaptationProjectInput): Record<string, unknown> {
-    const { password: _password, username: _username, ...rest } = params;
-    return rest;
-}
-
-/**
  * Rejects with a descriptive error if the given promise does not settle within `timeoutMs`.
  */
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutMessage: string): Promise<T> {
@@ -65,18 +55,6 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutM
     }
 }
 
-function errorResponse(message: string, params: GenerateAdaptationProjectInput, appPath: string): ExecuteFunctionalityOutput {
-    return {
-        functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
-        status: 'Error',
-        message,
-        parameters: safeParams(params),
-        appPath,
-        changes: [],
-        timestamp: new Date().toISOString()
-    };
-}
-
 /**
  * Generates a new SAP Fiori adaptation project by invoking the @sap-ux/adp Yeoman generator.
  *
@@ -85,7 +63,7 @@ function errorResponse(message: string, params: GenerateAdaptationProjectInput, 
  */
 export async function generateAdaptationProject(
     params: GenerateAdaptationProjectInput
-): Promise<ExecuteFunctionalityOutput> {
+): Promise<GenerateAdaptationProjectOutput> {
     const {
         system,
         application,
@@ -101,17 +79,13 @@ export async function generateAdaptationProject(
     } = params;
 
     if (!system || !application) {
-        return errorResponse('Missing required parameters: system and application are required.', params, appPath);
+        return { status: 'Error', message: 'Missing required parameters: system and application are required.' };
     }
 
     const finalTargetFolder = targetFolder ?? appPath;
 
     if (!isAbsolute(finalTargetFolder)) {
-        return errorResponse(
-            `targetFolder must be an absolute path. Received: "${finalTargetFolder}"`,
-            params,
-            appPath
-        );
+        return { status: 'Error', message: `targetFolder must be an absolute path. Received: "${finalTargetFolder}"` };
     }
 
     try {
@@ -156,12 +130,12 @@ export async function generateAdaptationProject(
             if (keyUserChanges.length > 0) {
                 jsonInput.keyUserChanges = keyUserChanges;
             } else {
-                return errorResponse(
-                    `importKeyUserChanges was requested but no key user changes were returned for '${application}' on '${system}'. ` +
-                        'Set importKeyUserChanges to false to generate the project without importing changes.',
-                    params,
-                    appPath
-                );
+                return {
+                    status: 'Error',
+                    message:
+                        `importKeyUserChanges was requested but no key user changes were returned for '${application}' on '${system}'. ` +
+                        'Set importKeyUserChanges to false to generate the project without importing changes.'
+                };
             }
         }
 
@@ -186,17 +160,13 @@ export async function generateAdaptationProject(
 
         const projectPath = join(finalTargetFolder, jsonInput.projectName);
         return {
-            functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
             status: 'Success',
             message: `Adaptation project generated successfully at ${projectPath}.`,
-            parameters: safeParams(params),
-            appPath: projectPath,
-            changes: [],
-            timestamp: new Date().toISOString()
+            projectPath
         };
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         logger.error(`Error generating adaptation project: ${message}`);
-        return errorResponse(`Error generating adaptation project: ${message}`, params, appPath);
+        return { status: 'Error', message: `Error generating adaptation project: ${message}` };
     }
 }

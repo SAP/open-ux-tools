@@ -40,7 +40,8 @@ const adpTools = [
             idempotentHint: true,
             openWorldHint: true
         },
-        inputSchema: convertToSchema(Input.LookupUi5DocumentationInputSchema)
+        inputSchema: convertToSchema(Input.LookupUi5DocumentationInputSchema),
+        outputSchema: convertToSchema(Output.LookupUi5DocumentationOutputSchema)
     },
     {
         name: 'generate_adaptation_project',
@@ -68,7 +69,8 @@ const adpTools = [
             idempotentHint: false,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema)
+        inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema),
+        outputSchema: convertToSchema(Output.GenerateAdaptationProjectOutputSchema)
     },
     {
         name: 'open_adaptation_editor',
@@ -87,7 +89,8 @@ const adpTools = [
             idempotentHint: false,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema)
+        inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema),
+        outputSchema: convertToSchema(Output.OpenAdaptationEditorOutputSchema)
     },
     {
         name: 'adp_controller_extension',
@@ -111,7 +114,7 @@ const adpTools = [
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema),
-        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+        outputSchema: convertToSchema(Output.AdpControllerExtensionOutputSchema)
     },
     {
         name: 'run_rta_workflow_step',
@@ -156,7 +159,8 @@ const adpTools = [
             idempotentHint: true,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.AdpMetadataInputSchema)
+        inputSchema: convertToSchema(Input.ReadODataMetadataInputSchema),
+        outputSchema: convertToSchema(Output.ReadODataMetadataOutputSchema)
     }
 ] as Tool[];
 

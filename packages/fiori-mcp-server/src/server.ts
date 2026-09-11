@@ -42,7 +42,7 @@ import type {
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
-    AdpMetadataInput,
+    ReadODataMetadataInput,
     LookupUi5DocumentationInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
@@ -61,7 +61,7 @@ type ToolArgs =
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
-    | AdpMetadataInput
+    | ReadODataMetadataInput
     | LookupUi5DocumentationInput
     | Record<string, unknown>;
 
@@ -306,7 +306,7 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
                         break;
                     case 'read_odata_metadata_adp':
-                        result = await readODataMetadataAdp(args as AdpMetadataInput);
+                        result = await readODataMetadataAdp(args as ReadODataMetadataInput);
                         break;
                     case 'lookup_ui5_documentation':
                         result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);

@@ -1,10 +1,9 @@
-import type { ExecuteFunctionalityOutput, OpenAdaptationEditorInput } from '../types/index.js';
+import type { OpenAdaptationEditorOutput, OpenAdaptationEditorInput } from '../types/index.js';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { logger } from '../utils/index.js';
-import { OPEN_ADAPTATION_EDITOR_ID } from '../constant.js';
 
 const TIMEOUT_MS = 30000;
 
@@ -135,7 +134,7 @@ function buildKillInstructions(pid: number, port: number | undefined, isWindows:
  * @param params - Input parameters containing the appPath.
  * @returns A promise resolving to the execution output with editor URL and process info.
  */
-export async function openAdaptationEditor(params: OpenAdaptationEditorInput): Promise<ExecuteFunctionalityOutput> {
+export async function openAdaptationEditor(params: OpenAdaptationEditorInput): Promise<OpenAdaptationEditorOutput> {
     const { appPath } = params;
 
     try {
@@ -162,26 +161,16 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             }
             const detail = stderrOutput ? `\nProcess stderr:\n${stderrOutput.trim()}` : '';
             return {
-                functionalityId: OPEN_ADAPTATION_EDITOR_ID,
                 status: 'Error',
-                message: `Timeout: Could not extract server URL from editor output within 30 seconds${detail}`,
-                parameters: params,
-                appPath,
-                changes: [],
-                timestamp: new Date().toISOString()
+                message: `Timeout: Could not extract server URL from editor output within 30 seconds${detail}`
             };
         }
 
         const processId = childProcess.pid;
         if (!processId) {
             return {
-                functionalityId: OPEN_ADAPTATION_EDITOR_ID,
                 status: 'Error',
-                message: 'Failed to get process ID from spawned editor process',
-                parameters: params,
-                appPath,
-                changes: [],
-                timestamp: new Date().toISOString()
+                message: 'Failed to get process ID from spawned editor process'
             };
         }
 
@@ -204,29 +193,17 @@ ${portLine}
 ${killCommandsSection}`;
 
         return {
-            functionalityId: OPEN_ADAPTATION_EDITOR_ID,
             status: 'Success',
             message,
-            parameters: {
-                ...params,
-                editorUrl,
-                processId,
-                ...(port && { port })
-            },
-            appPath,
-            changes: [],
-            timestamp: new Date().toISOString()
+            editorUrl,
+            processId,
+            ...(port && { port })
         };
     } catch (error) {
         logger.error(`Error opening adaptation editor: ${error}`);
         return {
-            functionalityId: OPEN_ADAPTATION_EDITOR_ID,
             status: 'Error',
-            message: 'Error opening adaptation editor: ' + (error instanceof Error ? error.message : String(error)),
-            parameters: params,
-            appPath,
-            changes: [],
-            timestamp: new Date().toISOString()
+            message: 'Error opening adaptation editor: ' + (error instanceof Error ? error.message : String(error))
         };
     }
 }

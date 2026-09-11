@@ -6,7 +6,7 @@ import prettifyXml from 'prettify-xml';
 
 import { getProvider } from './services/abap-context.js';
 import { logger } from '../utils/index.js';
-import type { AdpMetadataInput } from '../types/index.js';
+import type { ReadODataMetadataInput } from '../types/index.js';
 
 type Ui5Model = { dataSource?: string } & Record<string, unknown>;
 
@@ -26,7 +26,7 @@ export type ODataMetadataEntry = {
  * @param params Input parameters including `appPath` and the optional `saveLocal` flag.
  * @returns One entry per OData data source: id, service URL, formatted metadata XML, and bound model.
  */
-export async function readODataMetadataAdp(params: AdpMetadataInput): Promise<ODataMetadataEntry[]> {
+export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ODataMetadataEntry[]> {
     const { appPath, saveLocal = false } = params;
     const abapProvider = await getProvider(appPath);
     const variant = await getVariant(appPath);

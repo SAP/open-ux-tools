@@ -193,7 +193,7 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         )
 });
 
-export const AdpMetadataInputSchema = zod.object({
+export const ReadODataMetadataInputSchema = zod.object({
     appPath: zod
         .string()
         .describe(

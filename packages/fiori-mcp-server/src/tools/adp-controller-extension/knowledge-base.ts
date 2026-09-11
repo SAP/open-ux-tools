@@ -1,5 +1,4 @@
-import type { ExecuteFunctionalityOutput } from '../../types/index.js';
-import { buildOutput } from './output.js';
+import type { AdpControllerExtensionOutput } from '../../types/index.js';
 import type { ExistingProjectFile, ProjectContext } from './types.js';
 
 const KNOWLEDGE_BASE = `You are a SAPUI5 Adaptation Project expert specializing in controller extensions and xml fragments for adaptation projects.
@@ -194,7 +193,7 @@ export function buildKnowledgeBaseResponse(
     reason: string,
     projectContext?: ProjectContext,
     existingFiles?: ExistingProjectFile[]
-): ExecuteFunctionalityOutput {
+): AdpControllerExtensionOutput {
     let message = `${reason}\n\n`;
     message += `=== GENERATION RULES ===\n${KNOWLEDGE_BASE}\n\n`;
     message += `=== HOW TO CALL THIS TOOL ===\n`;
@@ -220,5 +219,5 @@ export function buildKnowledgeBaseResponse(
         }
     }
 
-    return buildOutput('Info', message, appPath);
+    return { status: 'Info', message, appPath, changes: [] };
 }

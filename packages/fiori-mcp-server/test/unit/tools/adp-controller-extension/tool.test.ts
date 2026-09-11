@@ -9,7 +9,6 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { adpControllerExtension } = await import('../../../../src/tools/adp-controller-extension/tool.js');
-const { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } = await import('../../../../src/constant.js');
 
 const mockedGetVariant = mockGetVariant;
 
@@ -33,7 +32,6 @@ describe('adpControllerExtension', () => {
     test('returns info envelope when appPath is missing', async () => {
         const result = await adpControllerExtension({ appPath: '' } as never);
         expect(result.status).toBe('Info');
-        expect(result.functionalityId).toBe(ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID);
         expect(result.message).toContain('Missing required parameter: appPath');
     });
 
@@ -139,17 +137,4 @@ describe('adpControllerExtension', () => {
         }
     });
 
-    test('strips aiResponse from the parameters echoed back to the caller', async () => {
-        const appPath = createAdpProject();
-        const aiResponse = ['**Path:** webapp/changes/coding/MyExt.js', '```js', '// x', '```'].join('\n');
-
-        try {
-            const result = await adpControllerExtension({ appPath, aiResponse, prompt: 'p' });
-            expect(result.status).toBe('Success');
-            expect(result.parameters).toEqual({ appPath, prompt: 'p' });
-            expect(JSON.stringify(result.parameters)).not.toContain('Path:');
-        } finally {
-            rmSync(appPath, { recursive: true, force: true });
-        }
-    });
 });
