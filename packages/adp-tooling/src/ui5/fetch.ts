@@ -1,4 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import axios from 'axios';
+import { getProxyAgentConfig, isAxiosError } from '@sap-ux/axios-extension';
 
 import type { UI5Version } from '../types.js';
 import { buildFallbackMap } from './format.js';
@@ -13,11 +15,8 @@ import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL, LATEST_VERSION } from '
  */
 export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Version> {
     try {
-        const response = await fetch(UI5_VERSIONS_CDN_URL);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch public UI5 versions. Status: ${response.status}`);
-        }
-        return (await response.json()) as UI5Version;
+        const { data } = await axios.get<UI5Version>(UI5_VERSIONS_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_CDN_URL));
+        return data;
     } catch (e) {
         logger?.warn(
             '[ui5-info] Falling back to built-in UI5 version list: ' + (e instanceof Error ? e.message : String(e))
@@ -33,12 +32,21 @@ export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Vers
  * @returns {Promise<string[]>} A promise that resolves to an array of formatted internal version strings.
  */
 export async function fetchInternalVersions(latestVersion: string): Promise<string[]> {
-    const response = await fetch(UI5_VERSIONS_NEO_CDN_URL);
-    const data = await response.json();
+    let data;
+    try {
+        ({ data } = await axios.get(UI5_VERSIONS_NEO_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_NEO_CDN_URL)));
+    } catch (e) {
+        if (isAxiosError(e) && e.response) {
+            return [];
+        }
+        throw e;
+    }
 
-    return data?.routes?.map((route: { target: { version: string } }) => {
-        return route.target.version === latestVersion
-            ? `${route.target.version} ${LATEST_VERSION}`
-            : route.target.version;
-    });
+    return (
+        data?.routes?.map((route: { target: { version: string } }) => {
+            return route.target.version === latestVersion
+                ? `${route.target.version} ${LATEST_VERSION}`
+                : route.target.version;
+        }) ?? []
+    );
 }

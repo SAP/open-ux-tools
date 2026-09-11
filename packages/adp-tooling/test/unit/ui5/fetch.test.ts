@@ -1,36 +1,31 @@
-import { supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
+import axios from 'axios';
 
 import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetch.js';
 import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL } from '../../../src/base/constants/index.js';
 
-import { fetchMock } from '../../__mock__/global.js';
 import { buildFallbackMap } from '../../../src/index.js';
 
 describe('ui5 fetchers', () => {
+    const axiosGetMock = jest.spyOn(axios, 'get');
+
     beforeEach(() => {
-        fetchMock.mockClear();
+        axiosGetMock.mockReset();
     });
 
     describe('fetchPublicVersions', () => {
-        it('should return parsed JSON when fetch is successful', async () => {
+        it('should return parsed data when the request is successful', async () => {
             const mockData = { latest: { version: '1.120.0' } };
 
-            fetchMock.mockResolvedValue({
-                ok: true,
-                json: async () => mockData
-            });
+            axiosGetMock.mockResolvedValue({ data: mockData });
 
             const result = await fetchPublicVersions();
 
-            expect(fetchMock).toHaveBeenCalledWith(UI5_VERSIONS_CDN_URL);
+            expect(axiosGetMock).toHaveBeenCalledWith(UI5_VERSIONS_CDN_URL, expect.any(Object));
             expect(result).toEqual(mockData);
         });
 
-        it('should resolve to offline ui5 version fallbacks if fetch fails (non-ok response)', async () => {
-            fetchMock.mockResolvedValue({
-                ok: false,
-                status: 500
-            });
+        it('should resolve to offline ui5 version fallbacks if the request fails', async () => {
+            axiosGetMock.mockRejectedValue(new Error('Request failed with status code 500'));
 
             const versions = await fetchPublicVersions();
 
@@ -45,14 +40,29 @@ describe('ui5 fetchers', () => {
                 routes: [{ target: { version: '1.119.0' } }, { target: { version: '1.120.0' } }]
             };
 
-            fetchMock.mockResolvedValue({
-                json: async () => mockResponse
-            });
+            axiosGetMock.mockResolvedValue({ data: mockResponse });
 
             const result = await fetchInternalVersions(latestVersion);
 
-            expect(fetchMock).toHaveBeenCalledWith(UI5_VERSIONS_NEO_CDN_URL);
+            expect(axiosGetMock).toHaveBeenCalledWith(UI5_VERSIONS_NEO_CDN_URL, expect.any(Object));
             expect(result).toEqual(['1.119.0', '1.120.0 (latest)']);
+        });
+
+        it('should return an empty list on an HTTP error response', async () => {
+            axiosGetMock.mockRejectedValue(
+                Object.assign(new Error('Request failed with status code 400'), {
+                    isAxiosError: true,
+                    response: { status: 400 }
+                })
+            );
+
+            expect(await fetchInternalVersions('1.120.0')).toEqual([]);
+        });
+
+        it('should propagate network errors', async () => {
+            axiosGetMock.mockRejectedValue(new Error('getaddrinfo ENOTFOUND'));
+
+            await expect(fetchInternalVersions('1.120.0')).rejects.toThrow('getaddrinfo ENOTFOUND');
         });
     });
 });
