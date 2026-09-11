@@ -33,12 +33,14 @@ import type {
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { Project } from '@sap-ux/project-access';
-import type { Record as RecordNode } from '@sap-ux/cds-annotation-parser';
+import type { FlattenedAnnotationSegment, Record as RecordNode } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
     ANNOTATION_GROUP_TYPE,
     ANNOTATION_TYPE,
     COLLECTION_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
     QUALIFIER_TYPE,
     RECORD_PROPERTY_TYPE,
     RECORD_TYPE,
@@ -621,7 +623,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             document.ast,
             pointer
         ).reverse();
-        if (currentAstNode?.type === RECORD_PROPERTY_TYPE) {
+        if (
+            currentAstNode?.type === RECORD_PROPERTY_TYPE ||
+            (currentAstNode.type === FLATTENED_EXPRESSION_TYPE && parentAstNode.type === RECORD_TYPE)
+        ) {
             writer.addChange({
                 type: 'delete-record-property',
                 pointer: pointer
@@ -639,7 +644,9 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             });
         } else if (
             (currentAstNode?.type === ANNOTATION_TYPE && parentAstNode.type === TARGET_TYPE) ||
-            (currentAstNode?.type === ANNOTATION_TYPE && parentAstNode.type === ANNOTATION_GROUP_ITEMS_TYPE)
+            (currentAstNode?.type === ANNOTATION_TYPE && parentAstNode.type === ANNOTATION_GROUP_ITEMS_TYPE) ||
+            (currentAstNode?.type === FLATTENED_EXPRESSION_TYPE && parentAstNode.type === TARGET_TYPE) ||
+            (currentAstNode?.type === FLATTENED_EXPRESSION_TYPE && parentAstNode.type === ANNOTATION_GROUP_ITEMS_TYPE)
         ) {
             writer.addChange({
                 type: 'delete-annotation',
@@ -1164,7 +1171,12 @@ function deleteChildFlattenedStructures(
             } else if (assignment.type === ANNOTATION_GROUP_TYPE) {
                 for (let groupItemIndex = 0; groupItemIndex < assignment.items.items.length; groupItemIndex++) {
                     const item = assignment.items.items[groupItemIndex];
-                    const combinedTerm = `${assignment.name.value}.${item.term.value}`;
+
+                    const termValue =
+                        item.type === ANNOTATION_TYPE
+                            ? item.term.value
+                            : (item.path.segments[0] as FlattenedAnnotationSegment).term.value;
+                    const combinedTerm = `${assignment.name.value}.${termValue}`;
 
                     if (isMatchingAnnotation(item, term, combinedTerm, qualifier)) {
                         writer.addChange(
@@ -1181,12 +1193,18 @@ function deleteChildFlattenedStructures(
 }
 
 function isMatchingAnnotation(node: AstNode, prefix: string, term: string | undefined, qualifier?: string): boolean {
-    if (node.type !== ANNOTATION_TYPE) {
-        return false;
+    if (node.type === ANNOTATION_TYPE) {
+        term ??= node.term.value;
+        const [match, next] = term.split(prefix);
+
+        return match === '' && (next.startsWith('.') || next.startsWith('#')) && node.qualifier?.value === qualifier;
+    } else if (
+        node.type === FLATTENED_EXPRESSION_TYPE &&
+        node.path.segments[0]?.type === FLATTENED_ANNOTATION_SEGMENT_TYPE
+    ) {
+        const vocabulary = node.path.segments[0].vocabulary?.value;
+        term ??= (vocabulary ? vocabulary + '.' : '') + node.path.segments[0].term.value;
+        return term.startsWith(prefix) && node.path.segments[0].qualifier?.value === qualifier;
     }
-
-    term ??= node.term.value;
-    const [match, next] = term.split(prefix);
-
-    return match === '' && (next.startsWith('.') || next.startsWith('#')) && node.qualifier?.value === qualifier;
+    return false;
 }

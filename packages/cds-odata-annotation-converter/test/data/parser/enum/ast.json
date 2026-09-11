@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(9,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,12)..(1,13)]"
+                    "range": "[(1,12)..(1,13)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -311,8 +311,8 @@
                 "range": "[(10,4)..(18,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(10,16)..(10,17)]"
+                    "range": "[(10,16)..(10,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",

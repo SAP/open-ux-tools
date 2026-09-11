@@ -1,0 +1,213 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 63,
+              "endOffset": 63
+            }
+          ],
+          "Identifier": [
+            {
+              "tokenTypeName": "Identifier",
+              "image": "third",
+              "startOffset": 57,
+              "endOffset": 61
+            }
+          ],
+          "NumberSign": [
+            {
+              "tokenTypeName": "NumberSign",
+              "image": "#",
+              "startOffset": 56,
+              "endOffset": 56
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "delimitedIdentifier": [
+                        {
+                          "name": "delimitedIdentifier",
+                          "children": {
+                            "DelimitedIdentifier": [
+                              {
+                                "tokenTypeName": "DelimitedIdentifier",
+                                "image": "UI",
+                                "startOffset": 2,
+                                "endOffset": 3
+                              },
+                              {
+                                "tokenTypeName": "DelimitedIdentifier",
+                                "image": "HeaderInfo#abc  ",
+                                "startOffset": 5,
+                                "endOffset": 20
+                              },
+                              {
+                                "tokenTypeName": "DelimitedIdentifier",
+                                "image": "  Description",
+                                "startOffset": 22,
+                                "endOffset": 34
+                              }
+                            ],
+                            "DelimitedIdentifierExit": [
+                              {
+                                "tokenTypeName": "DelimitedIdentifierExit",
+                                "image": "]",
+                                "startOffset": 35,
+                                "endOffset": 35
+                              }
+                            ],
+                            "IdentifierStart": [
+                              {
+                                "tokenTypeName": "IdentifierStart",
+                                "image": "![",
+                                "startOffset": 0,
+                                "endOffset": 1
+                              }
+                            ],
+                            "PathSegmentSeparator": [
+                              {
+                                "tokenTypeName": "PathSegmentSeparator",
+                                "image": ".",
+                                "startOffset": 4,
+                                "endOffset": 4
+                              },
+                              {
+                                "tokenTypeName": "PathSegmentSeparator",
+                                "image": ".",
+                                "startOffset": 21,
+                                "endOffset": 21
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 0,
+                            "endOffset": 35
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 35
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "TermCastIdentifier",
+                          "image": "@Core",
+                          "startOffset": 38,
+                          "endOffset": 42
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 38,
+                      "endOffset": 42
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "Description",
+                          "startOffset": 44,
+                          "endOffset": 54
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 44,
+                      "endOffset": 54
+                    }
+                  }
+                ],
+                "PathSegmentSeparator": [
+                  {
+                    "tokenTypeName": "PathSegmentSeparator",
+                    "image": ".",
+                    "startOffset": 37,
+                    "endOffset": 37
+                  },
+                  {
+                    "tokenTypeName": "PathSegmentSeparator",
+                    "image": ".",
+                    "startOffset": 43,
+                    "endOffset": 43
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 54
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "struct": [
+                  {
+                    "name": "struct",
+                    "children": {
+                      "LCurly": [
+                        {
+                          "tokenTypeName": "LCurly",
+                          "image": "{",
+                          "startOffset": 65,
+                          "endOffset": 65
+                        }
+                      ],
+                      "RCurly": [
+                        {
+                          "tokenTypeName": "RCurly",
+                          "image": "}",
+                          "startOffset": 66,
+                          "endOffset": 66
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 65,
+                      "endOffset": 66
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 65,
+                "endOffset": 66
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 66
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 66
+  }
+}

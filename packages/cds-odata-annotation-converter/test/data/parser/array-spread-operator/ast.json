@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(1,23)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,16)..(1,17)]"
+                    "range": "[(1,16)..(1,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -72,8 +72,8 @@
                 "range": "[(2,4)..(2,42)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(2,16)..(2,17)]"
+                    "range": "[(2,16)..(2,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -177,8 +177,8 @@
                 "range": "[(3,4)..(3,61)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(3,16)..(3,17)]"
+                    "range": "[(3,16)..(3,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -282,8 +282,8 @@
                 "range": "[(4,4)..(4,39)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(4,23)..(4,24)]"
+                    "range": "[(4,23)..(4,24)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",

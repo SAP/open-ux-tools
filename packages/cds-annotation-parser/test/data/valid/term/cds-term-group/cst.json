@@ -1,0 +1,137 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 3,
+              "endOffset": 3
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "cds",
+                          "startOffset": 0,
+                          "endOffset": 2
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 2
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 2
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "struct": [
+                  {
+                    "name": "struct",
+                    "children": {
+                      "assignment": [
+                        {
+                          "name": "assignment",
+                          "children": {
+                            "path": [
+                              {
+                                "name": "path",
+                                "children": {
+                                  "pathSegment": [
+                                    {
+                                      "name": "pathSegment",
+                                      "children": {
+                                        "Identifier": [
+                                          {
+                                            "tokenTypeName": "Identifier",
+                                            "image": "assert",
+                                            "startOffset": 6,
+                                            "endOffset": 11
+                                          }
+                                        ]
+                                      },
+                                      "location": {
+                                        "startOffset": 6,
+                                        "endOffset": 11
+                                      }
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 6,
+                                  "endOffset": 11
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 6,
+                            "endOffset": 11
+                          }
+                        }
+                      ],
+                      "LCurly": [
+                        {
+                          "tokenTypeName": "LCurly",
+                          "image": "{",
+                          "startOffset": 5,
+                          "endOffset": 5
+                        }
+                      ],
+                      "RCurly": [
+                        {
+                          "tokenTypeName": "RCurly",
+                          "image": "}",
+                          "startOffset": 12,
+                          "endOffset": 12
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 5,
+                      "endOffset": 12
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 5,
+                "endOffset": 12
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 12
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 12
+  }
+}

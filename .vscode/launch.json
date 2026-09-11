@@ -576,7 +576,11 @@
             "windows": {
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
-            "cwd": "${workspaceFolder}/packages/cds-annotation-parser"
+            "cwd": "${workspaceFolder}/packages/cds-annotation-parser",
+            "env": {
+                "UX_DEBUG": "false",
+                "NODE_OPTIONS": "--experimental-vm-modules"
+            }
         },
         {
             "type": "node",
@@ -598,7 +602,8 @@
             },
             "cwd": "${workspaceFolder}/packages/cds-odata-annotation-converter",
             "env": {
-                "UX_DEBUG": "false"
+                "UX_DEBUG": "false",
+                "NODE_OPTIONS": "--experimental-vm-modules"
             }
         },
         {

@@ -18,7 +18,7 @@ exports[`fiori annotation service delete annotation all annotations EDMXBackend 
 "
 `;
 
-exports[`fiori annotation service delete annotation cds clean up related flattened structures partial annotation deletion 1`] = `
+exports[`fiori annotation service delete annotation cds clean up related flattened structures partial annotation deletion, flattened expression value 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
 
@@ -26,6 +26,45 @@ exports[`fiori annotation service delete annotation cds clean up related flatten
                     annotate service.Incidents with @(
                         ![UI.Chart#chartStatus].AxisScaling.ScaleBehavior: #AutoScale,
                         );
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures partial annotation deletion, nested record 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line
+                    );
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures partial annotation deletion, nested record property 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures partial annotation deletion, nested record property value 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
                     "
 `;
 
@@ -488,6 +527,32 @@ exports[`fiori annotation service flattened annotations multiple levels 1`] = `
                 UI.KPI.DataPoint.Value: 'A',
                 UI.KPI.DataPoint : {
                     Responsible.fn: 'Test'
+                },
+            );"
+`;
+
+exports[`fiori annotation service flattened annotations update nested record property 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            using from '../../srv/common';
+            annotate IncidentService.Incidents with @(
+                UI.HeaderInfo.TypeNamePlural : 'TypeNamePlural was here on app',
+                UI.HeaderInfo.Title : {
+                    Value.Property : 'New text',
+                },
+            );"
+`;
+
+exports[`fiori annotation service flattened annotations update record property 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            using from '../../srv/common';
+            annotate IncidentService.Incidents with @(
+                UI.HeaderInfo.TypeNamePlural : 'New text',
+                UI.HeaderInfo.Title : {
+                    Value : title,
                 },
             );"
 `;

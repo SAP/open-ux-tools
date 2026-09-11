@@ -36,10 +36,14 @@ export function convertAnnotation(assignment: Assignment, options: ToTermsOption
 
     if (assignment.type === 'annotation-group') {
         state.pushContext({
-            groupName: assignment.name.value
+            groupName: assignment.name.value,
+            groupNameRange: assignment.name.range
         });
     }
-    const nodes = assignment.type === 'annotation' ? [assignment] : assignment.items.items;
+    const nodes =
+        assignment.type === 'annotation' || assignment.type === 'flattened-expression'
+            ? [assignment]
+            : assignment.items.items;
 
     for (const item of nodes) {
         const context = { ...state.context };

@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(54,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,17)..(1,18)]"
+                    "range": "[(1,17)..(1,18)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "collection",
@@ -1573,28 +1573,41 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Chart.AxisScaling.ScaleBehavior",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Chart",
-                            "range": "[(55,4)..(55,9)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Chart",
+                                "range": "[(55,4)..(55,9)]",
+                                "quoted": false
+                            },
+                            "range": "[(55,4)..(55,9)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "AxisScaling",
-                            "range": "[(55,10)..(55,21)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "AxisScaling",
+                                "range": "[(55,10)..(55,21)]",
+                                "quoted": false
+                            },
+                            "range": "[(55,10)..(55,21)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "ScaleBehavior",
-                            "range": "[(55,22)..(55,35)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "ScaleBehavior",
+                                "range": "[(55,22)..(55,35)]",
+                                "quoted": false
+                            },
+                            "range": "[(55,22)..(55,35)]"
                         }
                     ],
                     "separators": [
@@ -1616,8 +1629,8 @@
                 "range": "[(55,4)..(55,48)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(55,36)..(55,37)]"
+                    "range": "[(55,36)..(55,37)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "enum",
@@ -1657,8 +1670,8 @@
                 "range": "[(56,4)..(56,29)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(56,12)..(56,13)]"
+                    "range": "[(56,12)..(56,13)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "path",
@@ -1707,8 +1720,8 @@
                 "range": "[(57,4)..(57,32)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(57,15)..(57,16)]"
+                    "range": "[(57,15)..(57,16)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -1762,8 +1775,8 @@
                 "range": "[(58,4)..(58,42)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(58,16)..(58,17)]"
+                    "range": "[(58,16)..(58,17)]",
+                    "value": ":"
                 },
                 "qualifier": {
                     "type": "qualifier",
@@ -1817,8 +1830,8 @@
                 "range": "[(59,4)..(62,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(59,15)..(59,16)]"
+                    "range": "[(59,15)..(59,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -1980,8 +1993,8 @@
                 "range": "[(63,4)..(66,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(63,15)..(63,16)]"
+                    "range": "[(63,15)..(63,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -2203,8 +2216,8 @@
                 "range": "[(67,4)..(70,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(67,15)..(67,16)]"
+                    "range": "[(67,15)..(67,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -2426,8 +2439,8 @@
                 "range": "[(71,4)..(74,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(71,15)..(71,16)]"
+                    "range": "[(71,15)..(71,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -2649,8 +2662,8 @@
                 "range": "[(75,4)..(78,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(75,15)..(75,16)]"
+                    "range": "[(75,15)..(75,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -2788,8 +2801,8 @@
                 "range": "[(79,4)..(82,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(79,15)..(79,16)]"
+                    "range": "[(79,15)..(79,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -2939,8 +2952,8 @@
                 "range": "[(83,4)..(86,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(83,15)..(83,16)]"
+                    "range": "[(83,15)..(83,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
