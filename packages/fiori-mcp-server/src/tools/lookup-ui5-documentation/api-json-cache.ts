@@ -39,7 +39,10 @@ function libToPath(libraryName: string): string {
  */
 function apiJsonUrl(base: string, version: string | null, libraryName: string): string {
     const libPath = libToPath(libraryName);
-    const cleanBase = base.replace(/\/+$/, '');
+    let cleanBase = base;
+    while (cleanBase.endsWith('/')) {
+        cleanBase = cleanBase.slice(0, -1);
+    }
     if (version) {
         return `${cleanBase}/${version}/test-resources/${libPath}/designtime/api.json`;
     }
