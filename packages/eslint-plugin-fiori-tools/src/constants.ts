@@ -5,3 +5,5 @@ export const COMMON_LABEL = 'com.sap.vocabularies.Common.v1.Label';
 export const UI_HIDDEN = 'com.sap.vocabularies.UI.v1.Hidden';
 export const UI_TEXT_ARRANGEMENT = 'com.sap.vocabularies.UI.v1.TextArrangement';
 export const UI_FIELD_GROUP = 'com.sap.vocabularies.UI.v1.FieldGroup';
+export const CAPABILITIES_SORT_RESTRICTIONS = 'Org.OData.Capabilities.V1.SortRestrictions';
+export const CAPABILITIES_FILTER_RESTRICTIONS = 'Org.OData.Capabilities.V1.FilterRestrictions';
