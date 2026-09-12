@@ -143,7 +143,7 @@ BINDING CONTEXT — CONTROL VS. VIEW (CRITICAL):
   Reading fields of the related entity from the root entity path will return 404.
 
 ON-DEMAND PROPERTY FETCHING (CRITICAL):
-- The framework's initial \$batch load only fetches properties referenced in the OData annotations
+- The framework's initial $batch load only fetches properties referenced in the OData annotations
   driving the current view (visible columns, SmartForm fields, etc.). Any other property returns
   \`undefined\` when read via \`oContext.getProperty()\` or \`oModel.getProperty()\` in a press handler.
 - Never assume a property is pre-loaded unless you have verified it is referenced in the view's
