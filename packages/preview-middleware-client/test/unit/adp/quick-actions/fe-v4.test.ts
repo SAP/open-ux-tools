@@ -4595,13 +4595,12 @@ describe('FE V4 quick actions', () => {
                     'id': 'TravelList',
                     'name': 'sap.fe.templates.ListReport',
                     'options': {
-                        'settings': testCase.isContextPathDefined
-                            ? {
-                                  'contextPath': '/Travel'
-                              }
-                            : {
-                                  'entitySet': 'Travel'
-                              }
+                        'settings': {
+                            ...(testCase.isContextPathDefined ? { 'contextPath': '/Travel' } : { 'entitySet': 'Travel' }),
+                            ...(testCase.isListReport && testCase.isNewPageUnavailable
+                                ? { navigation: { _Booking: { detail: { route: 'TravelObjectPage' } } } }
+                                : {})
+                        }
                     }
                 },
                 ...(testCase.isListReport && testCase.isNewPageUnavailable
@@ -4626,7 +4625,10 @@ describe('FE V4 quick actions', () => {
                     'name': 'sap.fe.templates.ObjectPage',
                     'options': {
                         'settings': {
-                            'entitySet': 'Booking'
+                            'entitySet': 'Booking',
+                            ...(!testCase.isListReport && testCase.isNewPageUnavailable
+                                ? { navigation: { _BookSupplement: { detail: { route: 'BookSupplementObjectPage' } } } }
+                                : {})
                         }
                     }
                 },
@@ -4668,7 +4670,16 @@ describe('FE V4 quick actions', () => {
                     'pattern': '/Travel({key})/_Booking({key1}):?query:',
                     'name': testCase.isNoRouteFound ? 'unknown' : 'BookingObjectPage',
                     'target': 'BookingObjectPage'
-                }
+                },
+                ...(!testCase.isListReport && testCase.isNewPageUnavailable
+                    ? [
+                          {
+                              'pattern': '/Travel({key})/_Booking({key1})/_BookSupplement({key2}):?query:',
+                              'name': 'BookSupplementObjectPage',
+                              'target': 'BookSupplementObjectPage'
+                          }
+                      ]
+                    : [])
             ];
             jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
                 'sap.ui5': {
@@ -4835,6 +4846,160 @@ describe('FE V4 quick actions', () => {
                     }
                 );
             }
+        });
+
+        test('multiple nav properties pointing to same entity set - only those without a navigation route are offered', async () => {
+            // Regression test for: "Add Subpage" greyed out when a CDS extension adds a new nav property
+            // that maps to an entity set already used by other nav properties which do have navigation routes.
+            // hasRouteForNavProperty checks targets[pageId].options.settings.navigation[navProp].detail.route.
+            mockTelemetryEventIdentifier();
+            getUi5VersionMock.mockResolvedValue({ major: 1, minor: 135 });
+
+            const pageView = new XMLView();
+            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                return {
+                    isA: (type: string) => type === 'sap.fe.templates.ListReport.Component',
+                    getEntitySet: jest.fn().mockReturnValue('ParentSet'),
+                    getContextPath: jest.fn().mockReturnValue(undefined)
+                } as unknown as UIComponent;
+            });
+
+            sapCoreMock.byId.mockImplementation((id) => {
+                if (id === 'ObjectPage') {
+                    return {
+                        isA: (type: string) => type === 'sap.fe.templates.ObjectPage.Component',
+                        getId: () => id,
+                        getDomRef: () => ({ ref: 'OP' }),
+                        getParent: () => pageView
+                    };
+                }
+                if (id === 'NavContainer') {
+                    const container = new NavContainer();
+                    const component = new ComponentMock();
+                    const view = new XMLView();
+                    pageView.getDomRef.mockImplementation(() => ({
+                        contains: (domRef: { ref: string }) => domRef.ref === 'OP'
+                    }));
+                    pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ObjectPage.ObjectPage');
+                    pageView.getViewData.mockImplementation(() => ({ stableId: 'appId::ParentSetObjectPage' }));
+                    jest.spyOn(view, 'getComponent').mockReturnValue('component-id');
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((cid) => {
+                        if (cid === 'component-id') return component;
+                    });
+                    container.getCurrentPage.mockImplementation(() => view);
+                    jest.spyOn(component, 'getRootControl').mockImplementation(() => pageView);
+                    return container;
+                }
+            });
+
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+
+            // Three nav properties all target 'Child01'; Subtype1 and Subtype2 already have navigation routes.
+            // NewSubtype (the CDS extension) has no navigation route yet and must be offered.
+            const routes = [
+                { pattern: ':?query:', name: 'ParentSetList', target: 'ParentSetList' },
+                { pattern: '/ParentSet({key}):?query:', name: 'ParentSetObjectPage', target: 'ParentSetObjectPage' },
+                { pattern: '/ParentSet({key})/_Subtype1({key1}):?query:', name: 'Subtype1ObjectPage', target: 'Subtype1ObjectPage' },
+                { pattern: '/ParentSet({key})/_Subtype2({key1}):?query:', name: 'Subtype2ObjectPage', target: 'Subtype2ObjectPage' }
+            ];
+            const targets = {
+                ParentSetObjectPage: {
+                    id: 'ParentSetObjectPage',
+                    name: 'sap.fe.templates.ObjectPage',
+                    options: {
+                        settings: {
+                            entitySet: 'ParentSet',
+                            // _Subtype1 and _Subtype2 already have navigation routes; _NewSubtype does not
+                            navigation: {
+                                _Subtype1: { detail: { route: 'Subtype1ObjectPage' } },
+                                _Subtype2: { detail: { route: 'Subtype2ObjectPage' } }
+                            }
+                        }
+                    }
+                },
+                Subtype1ObjectPage: {
+                    id: 'Subtype1ObjectPage',
+                    name: 'sap.fe.templates.ObjectPage',
+                    options: { settings: { entitySet: 'Child01' } }
+                },
+                Subtype2ObjectPage: {
+                    id: 'Subtype2ObjectPage',
+                    name: 'sap.fe.templates.ObjectPage',
+                    options: { settings: { entitySet: 'Child01' } }
+                }
+            };
+
+            jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                'sap.ui5': { routing: { routes, targets } }
+            });
+            jest.spyOn(rtaMock, 'getFlexSettings').mockImplementation(
+                () => ({ projectId: 'dummyProjectId' }) as FlexSettings
+            );
+
+            const dummyAppComponent = {} as unknown as AppComponentV4;
+            getV4AppComponentMock.mockReturnValue(dummyAppComponent);
+
+            const metaModelMock = {
+                requestObject: jest.fn().mockImplementation((path: string) => {
+                    switch (path) {
+                        case '/ParentSet':
+                            return {
+                                $Type: 'ParentType',
+                                $NavigationPropertyBinding: {
+                                    _Subtype1: 'Child01',
+                                    _Subtype2: 'Child01',
+                                    _NewSubtype: 'Child01'
+                                }
+                            };
+                        case '/ParentType/_Subtype1':
+                        case '/ParentType/_Subtype2':
+                        case '/ParentType/_NewSubtype':
+                            return { $isCollection: true };
+                        default:
+                            return { $isCollection: false };
+                    }
+                })
+            };
+            jest.spyOn(rtaMock.getRootControlInstance(), 'getModel').mockReturnValue({
+                getMetaModel: () => metaModelMock
+            } as unknown as ODataModelV4);
+
+            const registry = new FEV4QuickActionRegistry();
+            const service = new QuickActionService(
+                rtaMock,
+                new OutlineService(rtaMock, mockChangeService),
+                [registry],
+                { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
+            );
+
+            CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => ({
+                type,
+                value,
+                settings
+            }));
+
+            await service.init(sendActionMock, subscribeMock);
+            await service.reloadQuickActions({
+                'sap.uxap.ObjectPageLayout': [{ controlId: 'ObjectPage' } as any],
+                'sap.f.DynamicPage': [],
+                'sap.m.NavContainer': [{ controlId: 'NavContainer' } as any]
+            });
+
+            await subscribeMock.mock.calls[0][0](
+                executeQuickAction({ id: 'objectPage0-add-new-subpage', kind: 'simple' })
+            );
+
+            // Only _NewSubtype (no navigation route entry) must be offered; _Subtype1 and _Subtype2 are blocked.
+            expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                mockOverlay,
+                rtaMock,
+                'AddSubpage',
+                undefined,
+                expect.objectContaining({
+                    navProperties: [{ entitySet: 'Child01', navProperty: '_NewSubtype' }]
+                }),
+                expect.anything()
+            );
         });
     });
 

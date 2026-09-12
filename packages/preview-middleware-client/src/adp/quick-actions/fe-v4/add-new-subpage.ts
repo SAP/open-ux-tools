@@ -10,7 +10,7 @@ import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
 import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import { PageDescriptorV4 } from '../../controllers/types.js';
-import { getPageId } from './utils.js';
+import { getPageId, hasRouteForNavProperty } from './utils.js';
 
 export const OBJECT_PAGE_COMPONENT_NAME_V4 = 'sap.fe.templates.ObjectPage.ObjectPage';
 
@@ -142,16 +142,22 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         }
         const entityTypePath = entitySet.$Type;
         const entitySetNavigationKeys = Object.keys(entitySet.$NavigationPropertyBinding);
+        const pageId = getPageId(this.context);
+        if (!pageId) {
+            return;
+        }
 
         for (const navigationProperty of entitySetNavigationKeys) {
             const associationEnd = (await metaModel.requestObject(`/${entityTypePath}/${navigationProperty}`)) as {
                 $Type: string;
                 $isCollection: boolean;
                 $kind: 'NavigationProperty';
-            };
+            }; // NO SONAR;
             if (associationEnd?.$isCollection) {
                 const targetEntitySet = entitySet.$NavigationPropertyBinding[navigationProperty];
-                await this.addNavigationOptionIfAvailable(metaModel, targetEntitySet, navigationProperty);
+                if (targetEntitySet && !hasRouteForNavProperty(this.context.manifest, pageId, navigationProperty)) {
+                    this.navProperties.push({ entitySet: targetEntitySet, navProperty: navigationProperty });
+                }
             }
         }
     }

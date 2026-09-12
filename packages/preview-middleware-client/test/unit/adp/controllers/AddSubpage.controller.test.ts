@@ -552,7 +552,7 @@ describe('AddSubpage controller', () => {
                               },
                               'targetPage': {
                                   'type': 'Component',
-                                  'id': 'BookingsObjectPage',
+                                  'id': 'to_Booking|BookingsObjectPage',
                                   'name': 'sap.fe.templates.ObjectPage',
                                   'routePattern': testCase.expectedPattern,
                                   'settings': {
@@ -566,6 +566,83 @@ describe('AddSubpage controller', () => {
                           }
                       }
             );
+        });
+
+        test('targetPage id uses navProperty|entitySet format to distinguish multiple nav properties targeting the same entity set', async () => {
+            CommandFactory.getCommandFor.mockClear();
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({ pushAndExecute: executeSpy });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const testModel = {
+                getProperty: jest.fn().mockImplementation((name) => {
+                    const props: Record<string, any> = {
+                        '/navigationData': [
+                            { entitySet: 'Child01', navProperty: '_Subtype1' },
+                            { entitySet: 'Child01', navProperty: '_NewSubtype' }
+                        ],
+                        '/selectedNavigation/key': '_NewSubtype'
+                    };
+                    return props[name];
+                }),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+
+            const runtimeControlMock = {
+                getMetadata: jest.fn().mockReturnValue({
+                    getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
+                    getAllAggregations: jest.fn().mockReturnValue([])
+                })
+            } as unknown as ManagedObject;
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue(runtimeControlMock);
+            sapCoreMock.byId.mockReturnValue({});
+
+            const addSubpage = new AddSubpage(
+                'adp.extension.controllers.AddSubpage',
+                { getId: jest.fn().mockReturnValue('some-id') } as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'QUICK_ACTION_ADD_SUBPAGE',
+                    appReference: 'dummyApp',
+                    navProperties: [
+                        { entitySet: 'Child01', navProperty: '_Subtype1' },
+                        { entitySet: 'Child01', navProperty: '_NewSubtype' }
+                    ],
+                    pageDescriptor: {
+                        appType: 'fe-v4',
+                        appComponent: {} as unknown as AppComponentV4,
+                        pageId: 'ParentSetObjectPage',
+                        routePattern: '/ParentSet({key}):?query:'
+                    }
+                }
+            );
+            addSubpage.model = testModel;
+            addSubpage.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() }),
+                getContent: jest.fn().mockReturnValue([{ getContent: jest.fn().mockReturnValue([]) }])
+            } as unknown as Dialog;
+
+            addSubpage.handleDialogClose = jest.fn();
+
+            await addSubpage.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Event;
+
+            await addSubpage.onCreateBtnPress(event);
+
+            const commandCall = CommandFactory.getCommandFor.mock.calls[0];
+            // id must include the navProperty so two nav props targeting the same entity set
+            // produce distinct page ids (_Subtype1|Child01ObjectPage vs _NewSubtype|Child01ObjectPage)
+            expect(commandCall[2].parameters.targetPage.id).toBe('_NewSubtype|Child01ObjectPage');
         });
     });
 });

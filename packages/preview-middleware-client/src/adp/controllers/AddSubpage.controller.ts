@@ -154,7 +154,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
                     },
                     targetPage: {
                         type: 'Component',
-                        id: `${targetEntitySet}ObjectPage`,
+                        id: `${navProperty}|${targetEntitySet}ObjectPage`,
                         name: 'sap.fe.templates.ObjectPage',
                         routePattern,
                         settings: {
