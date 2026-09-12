@@ -20,11 +20,13 @@ import type {
     FoundODataService,
     CustomViews,
     MinUI5Version,
-    FlexChange
+    FlexChange,
+    I18nBundle
 } from './types.js';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { collectFlexChanges, getAppForPath, isFlexChange } from '../utils.js';
+import { parseI18nToAst } from '../../language/i18n/source-code.js';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -50,24 +52,30 @@ export class ApplicationParser {
      * @param fileCache - Map of file URIs to their contents
      */
     private reset(projectType: ProjectType, fileCache: Map<string, string>): void {
-        this.index = { projectType, apps: {}, documents: {} };
+        this.index = { projectType, apps: {}, documents: {}, appRoot: '' };
         this.diagnostics = [];
         this.context = { projectType, fileCache };
     }
 
     /**
+     * Parses the discovered Fiori application artifacts.
      *
-     * @param projectType
-     * @param artifacts
-     * @param fileCache
+     * @param projectType - The type of project being parsed
+     * @param artifacts - The discovered Fiori artifacts to parse
+     * @param i18nPathsByApp - Map of application roots to i18n file paths
+     * @param appRoot - The root path of the application
+     * @param fileCache - Map of file URIs to their contents
+     * @returns The parsed project index and diagnostics
      */
     public parse(
         projectType: ProjectType,
         artifacts: FoundFioriArtifacts,
+        i18nPathsByApp: { [appRoot: string]: string[] },
+        appRoot: string,
         fileCache: Map<string, string>
     ): ParseResult {
         this.reset(projectType, fileCache);
-
+        this.index.appRoot = appRoot;
         for (const app of artifacts.applications ?? []) {
             try {
                 const manifestUri = pathToFileURL(app.manifestPath).toString();
@@ -97,18 +105,11 @@ export class ApplicationParser {
                     manifestObject: manifest,
                     projectRootPath: app.projectRoot,
                     changes,
-                    services: {}
+                    services: {},
+                    i18nBundles: collectI18nBundles(i18nPathsByApp[app.appRoot] ?? [], this.context.fileCache)
                 };
                 this.index.apps[appRootUri] = parsedApp;
-
-                for (const service of services) {
-                    const result = this.parseService(app.projectRoot, service);
-                    if (result) {
-                        const [artifacts, v2Annotations] = result;
-                        const index = buildServiceIndex(artifacts, this.index.documents, v2Annotations);
-                        parsedApp.services[service.name] = { config: service, artifacts, index };
-                    }
-                }
+                this.parseServicesForApp(app.projectRoot, services, parsedApp);
             } catch {
                 // skip faulty apps for now
             }
@@ -117,6 +118,24 @@ export class ApplicationParser {
             index: this.index,
             diagnostics: this.diagnostics
         };
+    }
+
+    /**
+     * Parses each OData service and stores its artifacts and index in the app's services map.
+     *
+     * @param projectRoot - The absolute path to the project root
+     * @param services - The list of OData services to parse
+     * @param parsedApp - The app entry being populated
+     */
+    private parseServicesForApp(projectRoot: string, services: FoundODataService[], parsedApp: ParsedApp): void {
+        for (const service of services) {
+            const result = this.parseService(projectRoot, service);
+            if (result) {
+                const [artifacts, v2Annotations] = result;
+                const index = buildServiceIndex(artifacts, this.index.documents, v2Annotations);
+                parsedApp.services[service.name] = { config: service, artifacts, index };
+            }
+        }
     }
 
     /**
@@ -150,11 +169,17 @@ export class ApplicationParser {
      *
      * @param uri - The URI of the manifest.json file to reparse
      * @param index - The current parsed project index
+     * @param i18nPathsByApp - Map of application roots to i18n file paths
      * @param fileCache - Map of file URIs to their contents
      */
-    private reparseJSON(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
+    private reparseJSON(
+        uri: string,
+        index: ParsedProject,
+        i18nPathsByApp: { [appRoot: string]: string[] },
+        fileCache: Map<string, string>
+    ): void {
         for (const [key, previousApp] of Object.entries(index.apps)) {
-            if (previousApp.manifest.manifestUri !== uri) {
+            if (previousApp?.manifest.manifestUri !== uri) {
                 continue;
             }
             const manifestContent = fileCache.get(uri) ?? '';
@@ -174,7 +199,8 @@ export class ApplicationParser {
                 manifestObject: manifest,
                 projectRootPath: previousApp.projectRootPath,
                 services: {},
-                changes: previousApp.changes
+                changes: previousApp.changes,
+                i18nBundles: collectI18nBundles(i18nPathsByApp[join(previousApp.projectRootPath, key)] ?? [], fileCache)
             };
 
             const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
@@ -278,22 +304,58 @@ export class ApplicationParser {
     }
 
     /**
+     * Reparses a .properties i18n file and updates the matching bundle in the project index.
+     *
+     * @param uri - The URI of the .properties file to reparse
+     * @param index - The current parsed project index
+     * @param appRoot - The application root path
+     * @param fileCache - Map of file URIs to their contents
+     */
+    private reparseI18n(uri: string, index: ParsedProject, appRoot: string, fileCache: Map<string, string>): void {
+        const appUri = pathToFileURL(appRoot).toString();
+        const app = index.apps[appUri];
+        if (!app) {
+            return;
+        }
+        const bundleIndex = app.i18nBundles.findIndex((bundle) => bundle.uri === uri);
+        if (bundleIndex < 0) {
+            return;
+        }
+        try {
+            const content = fileCache.get(uri) ?? readFileSync(appRoot, { encoding: 'utf8', flag: 'r' });
+            app.i18nBundles[bundleIndex] = { uri, entries: parseI18nProperties(content) };
+        } catch {
+            // keep existing bundle on read failure
+        }
+    }
+
+    /**
      * Reparses a specific file and updates the project index based on file type.
      *
      * @param uri - The URI of the file to reparse
      * @param index - The current parsed project index
+     * @param i18nPathsByApp - Map of application roots to i18n file paths
+     * @param appRoot - The application root path
      * @param fileCache - Map of file URIs to their contents
      */
-    public reparse(uri: string, index: ParsedProject, fileCache: Map<string, string>): ParseResult {
+    public reparse(
+        uri: string,
+        index: ParsedProject,
+        i18nPathsByApp: { [appRoot: string]: string[] },
+        appRoot: string,
+        fileCache: Map<string, string>
+    ): ParseResult {
         this.reset(index.projectType, fileCache);
         if (uri.endsWith('.cds')) {
             this.reparseCDS(index, fileCache);
         } else if (uri.endsWith('manifest.json')) {
-            this.reparseJSON(uri, index, fileCache);
+            this.reparseJSON(uri, index, i18nPathsByApp, fileCache);
         } else if (uri.endsWith('.xml')) {
             this.reparseXML(uri, index);
         } else if (uri.endsWith('.change')) {
             this.reparseChange(uri, index, fileCache);
+        } else if (uri.endsWith('.properties')) {
+            this.reparseI18n(uri, index, appRoot, fileCache);
         }
         return { index: index, diagnostics: [] };
     }
@@ -504,4 +566,41 @@ function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
         minor: Number.isNaN(minor) ? 0 : minor,
         patch: Number.isNaN(patch) ? 0 : patch
     };
+}
+
+/**
+ * Parses a .properties file content into a key/value map.
+ * Lines starting with # or ! are treated as comments and skipped.
+ *
+ * @param content - The raw text content of the .properties file
+ * @returns Record mapping i18n keys to their values
+ */
+function parseI18nProperties(content: string): Record<string, string> {
+    const ast = parseI18nToAst(content);
+    const entries: Record<string, string> = {};
+    for (const entry of ast.entries) {
+        entries[entry.key.value] = entry.value.value;
+    }
+    return entries;
+}
+
+/**
+ * Reads and parses the i18n .properties files at the given paths using the file cache.
+ *
+ * @param paths - Absolute filesystem paths to .properties files
+ * @param fileCache - Map of file URIs to their contents (may be a proxy that reads from disk)
+ * @returns Array of I18nBundle objects with parsed entries
+ */
+function collectI18nBundles(paths: string[], fileCache: Map<string, string>): I18nBundle[] {
+    const bundles: I18nBundle[] = [];
+    for (const filePath of paths) {
+        const uri = pathToFileURL(filePath).toString();
+        try {
+            const content = fileCache.get(uri) ?? readFileSync(filePath, { encoding: 'utf8', flag: 'r' });
+            bundles.push({ uri, entries: parseI18nProperties(content) });
+        } catch {
+            // skip unreadable i18n files
+        }
+    }
+    return bundles;
 }

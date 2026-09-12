@@ -480,7 +480,7 @@ const typescriptConfig: Linter.Config[] = [
 // Fiori language rules (for manifest.json, XML views, CDS, .change files)
 const fioriLanguageConfig: Linter.Config[] = [
     {
-        files: ['**/manifest.json', '**/*.xml', '**/*.cds', '**/*.change'],
+        files: ['**/manifest.json', '**/*.xml', '**/*.cds', '**/*.change', '**/*.properties'],
         language: '@sap-ux/fiori-tools/fiori',
         rules: {
             // fiori tools specific rules
@@ -500,7 +500,8 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn',
             '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
             '@sap-ux/fiori-tools/sap-no-live-mode': 'warn',
-            '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn'
+            '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn',
+            '@sap-ux/fiori-tools/sap-no-comma-in-section-title': 'warn'
         }
     }
 ];

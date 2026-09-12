@@ -1,25 +1,31 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src/**/*.ts", "../project-access/src/types/webapp/ui5-manifest.d.ts"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "lib"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "../project-access/src/types/webapp/ui5-manifest.d.ts"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib"
+  },
+  "references": [
+    {
+      "path": "../fiori-annotation-api"
     },
-    "references": [
-        {
-            "path": "../fiori-annotation-api"
-        },
-        {
-            "path": "../odata-annotation-core"
-        },
-        {
-            "path": "../odata-entity-model"
-        },
-        {
-            "path": "../odata-vocabularies"
-        },
-        {
-            "path": "../project-access"
-        }
-    ]
+    {
+      "path": "../i18n"
+    },
+    {
+      "path": "../odata-annotation-core"
+    },
+    {
+      "path": "../odata-entity-model"
+    },
+    {
+      "path": "../odata-vocabularies"
+    },
+    {
+      "path": "../project-access"
+    }
+  ]
 }
