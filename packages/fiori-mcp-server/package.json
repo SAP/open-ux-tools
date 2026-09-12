@@ -22,6 +22,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
+        "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --external:playwright-core --main-fields=module,main src/index.ts",
         "build-bundle": "node scripts/bundle.mjs",
         "build-dev": "NODE_ENV=development node scripts/bundle.mjs",
         "build-compile": "tsc --noEmit",
@@ -47,7 +48,8 @@
         "dist",
         "!dist/**/*.map",
         "assets/icon.svg",
-        "assets/icon.png"
+        "assets/icon.png",
+        "skills"
     ],
     "bin": {
         "fiori-mcp": "./dist/index.js"
@@ -76,13 +78,17 @@
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/vocabularies-types": "0.16.0",
         "@sap/ux-specification": "1.144.5",
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "@sap-ux/adp-tooling": "workspace:*",
+        "prettify-xml": "1.2.0",
         "cross-env": "10.1.0",
         "esbuild": "0.28.1",
         "i18next": "26.3.6",
@@ -90,6 +96,7 @@
         "mem-fs-editor": "9.4.0",
         "npm-run-all2": "9.0.2",
         "os-name": "4.0.1",
+        "playwright-core": "1.58.2",
         "promptfoo": "0.122.0",
         "xml-formatter": "3.7.0",
         "ts-node": "10.9.2",

@@ -1,0 +1,158 @@
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const mockGetVariant = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    getVariant: mockGetVariant
+}));
+
+const { adpControllerExtension } = await import('../../../../src/tools/adp-controller-extension/tool.js');
+
+const mockedGetVariant = mockGetVariant;
+
+function createAdpProject(layer: string = 'CUSTOMER_BASE'): string {
+    const appPath = mkdtempSync(join(tmpdir(), 'adp-tool-'));
+    mockedGetVariant.mockResolvedValue({
+        layer,
+        reference: 'sap.ui.demoapps',
+        id: 'customer.adapt.demo',
+        namespace: 'apps/customer.adapt.demo',
+        content: []
+    } as never);
+    return appPath;
+}
+
+describe('adpControllerExtension', () => {
+    afterEach(() => {
+        mockedGetVariant.mockReset();
+    });
+
+    test('returns info envelope when appPath is missing', async () => {
+        const result = await adpControllerExtension({ appPath: '' } as never);
+        expect(result.status).toBe('Info');
+        expect(result.message).toContain('Missing required parameter: appPath');
+    });
+
+    test('returns error envelope when getVariant fails', async () => {
+        const appPath = mkdtempSync(join(tmpdir(), 'adp-tool-err-'));
+        mockedGetVariant.mockRejectedValueOnce(new Error('boom'));
+
+        try {
+            const result = await adpControllerExtension({ appPath });
+            expect(result.status).toBe('Error');
+            expect(result.message).toContain('Failed to read manifest.appdescr_variant');
+            expect(result.message).toContain('boom');
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('returns knowledge base + project context when no aiResponse is provided', async () => {
+        const appPath = createAdpProject('CUSTOMER_BASE');
+        try {
+            const result = await adpControllerExtension({ appPath, prompt: 'add a button' });
+            expect(result.status).toBe('Info');
+            expect(result.message).toContain('Prompt received: "add a button"');
+            expect(result.message).toContain('Layer: CUSTOMER_BASE');
+            expect(result.message).toContain('Variant ID (namespace base — use verbatim): customer.adapt.demo');
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('writes extracted files when aiResponse is provided', async () => {
+        const appPath = createAdpProject('VENDOR');
+        const aiResponse = [
+            '**Path:** webapp/changes/coding/MyExt.js',
+            '```javascript',
+            '// extension',
+            '```',
+            '',
+            '**Path:** webapp/changes/fragments/Foo.fragment.xml',
+            '```xml',
+            '<x/>',
+            '```'
+        ].join('\n');
+
+        try {
+            const result = await adpControllerExtension({ appPath, aiResponse });
+            expect(result.status).toBe('Success');
+            expect(result.changes).toHaveLength(2);
+            expect(existsSync(join(appPath, 'webapp', 'changes', 'coding', 'MyExt.js'))).toBe(true);
+            expect(readFileSync(join(appPath, 'webapp', 'changes', 'coding', 'MyExt.js'), 'utf-8')).toBe(
+                '// extension'
+            );
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('skips .change files emitted alongside code files', async () => {
+        const appPath = createAdpProject();
+        const aiResponse = [
+            '**Path:** webapp/changes/coding/MyExt.js',
+            '```javascript',
+            '// real',
+            '```',
+            '',
+            '**Path:** webapp/changes/foo.change',
+            '```json',
+            '{ "changeType": "x" }',
+            '```'
+        ].join('\n');
+
+        try {
+            const result = await adpControllerExtension({ appPath, aiResponse });
+            expect(result.status).toBe('Success');
+            expect(result.changes).toHaveLength(1);
+            expect(existsSync(join(appPath, 'webapp', 'changes', 'foo.change'))).toBe(false);
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('returns skipped envelope when aiResponse contains no extractable files', async () => {
+        const appPath = createAdpProject();
+        try {
+            const result = await adpControllerExtension({ appPath, aiResponse: 'just prose, no fences' });
+            expect(result.status).toBe('Skipped');
+            expect(result.changes).toEqual([]);
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('returns error envelope and stops on path traversal attempt', async () => {
+        const appPath = createAdpProject();
+        const aiResponse = ['**Path:** ../../escaped.js', '```javascript', '// nope', '```'].join('\n');
+
+        try {
+            const result = await adpControllerExtension({ appPath, aiResponse });
+            expect(result.status).toBe('Error');
+            expect(result.message).toContain('outside the application path');
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+
+    test('includes existing project files section when controller extension already exists', async () => {
+        const appPath = createAdpProject('CUSTOMER_BASE');
+        // Write a pre-existing controller extension file so the scanner picks it up.
+        const extDir = join(appPath, 'webapp', 'changes', 'coding');
+        const { mkdirSync, writeFileSync } = await import('node:fs');
+        mkdirSync(extDir, { recursive: true });
+        writeFileSync(join(extDir, 'ExistingExt.js'), '// existing controller extension');
+
+        try {
+            const result = await adpControllerExtension({ appPath, prompt: 'add another method' });
+            expect(result.status).toBe('Info');
+            expect(result.message).toContain('EXISTING PROJECT FILES');
+            expect(result.message).toContain('ExistingExt.js');
+            expect(result.message).toContain('// existing controller extension');
+        } finally {
+            rmSync(appPath, { recursive: true, force: true });
+        }
+    });
+});
