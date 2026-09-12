@@ -3,12 +3,39 @@ import type { ExtractedFile } from '../types.js';
 const PATH_MARKER = /\*\*Path:\*\*\s*(.+)/;
 const FENCE_OPEN = /^```(\w+)?/;
 
+/**
+ * Returns `true` when `line` closes the current code fence.
+ *
+ * @param line - Current source line.
+ * @param inCodeBlock - Whether we are currently inside a fenced code block.
+ * @returns `true` if this line is a closing fence.
+ */
 function isFenceClose(line: string, inCodeBlock: boolean): boolean {
     return inCodeBlock && line.startsWith('```');
 }
 
+/**
+ * Returns `true` when `line` opens a new code fence.
+ *
+ * @param line - Current source line.
+ * @param inCodeBlock - Whether we are currently inside a fenced code block.
+ * @returns `true` if this line is an opening fence.
+ */
 function isFenceOpen(line: string, inCodeBlock: boolean): boolean {
     return !inCodeBlock && FENCE_OPEN.test(line);
+}
+
+/**
+ * Appends an extracted file entry to `out` when both `path` and `code` are non-empty.
+ *
+ * @param path - File path declared by the preceding `**Path:**` marker.
+ * @param code - Accumulated code block content (before trimming).
+ * @param out - Accumulator array to push the result into.
+ */
+function closeFence(path: string, code: string, out: ExtractedFile[]): void {
+    if (path && code.trim()) {
+        out.push({ path, code: code.trim() });
+    }
 }
 
 /**
@@ -41,9 +68,7 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
 
         if (isFenceClose(line, inCodeBlock)) {
             inCodeBlock = false;
-            if (currentPath && currentCode.trim()) {
-                codeBlocks.push({ path: currentPath, code: currentCode.trim() });
-            }
+            closeFence(currentPath, currentCode, codeBlocks);
             currentPath = '';
             currentCode = '';
             continue;
