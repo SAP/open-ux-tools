@@ -370,6 +370,30 @@ describe('browser/playwright-bridge', () => {
         expect(launchMock).toHaveBeenCalledTimes(2);
     });
 
+    test('concurrent callFrontendAction calls reuse the same browser start promise', async () => {
+        // given: two pages queued; two concurrent calls before the browser resolves
+        const page1 = new FakePage();
+        const page2 = new FakePage();
+        const { browser } = setupBrowser([page1, page2]);
+        page1.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
+        page2.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+
+        const fs = await loadPlaywrightBridge();
+
+        // Fire two concurrent calls (both will race to start the browser)
+        const [r1, r2] = await Promise.all([
+            fs.callFrontendAction(SITE_A, 'a'),
+            fs.callFrontendAction(SITE_B, 'b')
+        ]);
+
+        // Browser should only have been launched once (browserStartPromise deduplication)
+        expect(launchMock).toHaveBeenCalledTimes(1);
+        expect(r1.payload).toBe('first');
+        expect(r2.payload).toBe('second');
+
+        await fs.stopBrowser();
+        expect(browser.close).toHaveBeenCalledTimes(1);
+    });
     test('isMissingBrowserError returns false for non-Error thrown values', async () => {
         // Throw a string (non-Error) from the primary launch — must NOT trigger the fallback retry.
         launchMock.mockRejectedValueOnce('not an error object');

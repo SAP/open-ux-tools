@@ -40,6 +40,12 @@ const mockListSapSystems = jest.fn<any>();
 const mockDownloadODataServiceMetadata = jest.fn<any>();
 const mockGenerateFioriAppOData = jest.fn<any>();
 const mockGenerateFioriAppCap = jest.fn<any>();
+const mockGenerateAdaptationProject = jest.fn<any>();
+const mockOpenAdaptationEditor = jest.fn<any>();
+const mockAdpControllerExtension = jest.fn<any>();
+const mockRunRtaWorkflowStep = jest.fn<any>();
+const mockReadODataMetadataAdp = jest.fn<any>();
+const mockLookupUi5Documentation = jest.fn<any>();
 const actualTools = await import('../../src/tools/index.js');
 jest.unstable_mockModule('../../src/tools', () => ({
     ...actualTools,
@@ -51,7 +57,13 @@ jest.unstable_mockModule('../../src/tools', () => ({
     listSapSystems: mockListSapSystems,
     downloadODataServiceMetadata: mockDownloadODataServiceMetadata,
     generateFioriAppOData: mockGenerateFioriAppOData,
-    generateFioriAppCap: mockGenerateFioriAppCap
+    generateFioriAppCap: mockGenerateFioriAppCap,
+    generateAdaptationProject: mockGenerateAdaptationProject,
+    openAdaptationEditor: mockOpenAdaptationEditor,
+    adpControllerExtension: mockAdpControllerExtension,
+    runRtaWorkflowStep: mockRunRtaWorkflowStep,
+    readODataMetadataAdp: mockReadODataMetadataAdp,
+    lookupUi5Documentation: mockLookupUi5Documentation
 }));
 
 // Dynamic imports after mocks
@@ -73,6 +85,12 @@ describe('FioriFunctionalityServer', () => {
         mockDownloadODataServiceMetadata.mockReset();
         mockGenerateFioriAppOData.mockReset();
         mockGenerateFioriAppCap.mockReset();
+        mockGenerateAdaptationProject.mockReset();
+        mockOpenAdaptationEditor.mockReset();
+        mockAdpControllerExtension.mockReset();
+        mockRunRtaWorkflowStep.mockReset();
+        mockReadODataMetadataAdp.mockReset();
+        mockLookupUi5Documentation.mockReset();
     });
 
     // version cannot be hard coded as it will update on each new patch update
@@ -597,6 +615,95 @@ describe('FioriFunctionalityServer', () => {
                 },
                 undefined
             );
+        });
+
+        describe('ADP tools (SAP_FIORI_MCP_ADP_TOOLS=true)', () => {
+            let originalEnv: string | undefined;
+
+            beforeEach(() => {
+                originalEnv = process.env.SAP_FIORI_MCP_ADP_TOOLS;
+                process.env.SAP_FIORI_MCP_ADP_TOOLS = 'true';
+            });
+
+            afterEach(() => {
+                if (originalEnv === undefined) {
+                    delete process.env.SAP_FIORI_MCP_ADP_TOOLS;
+                } else {
+                    process.env.SAP_FIORI_MCP_ADP_TOOLS = originalEnv;
+                }
+            });
+
+            test('generate_adaptation_project dispatches to generateAdaptationProject', async () => {
+                const mockResult = { status: 'Success', message: 'Done', appPath: '/proj', changes: [], parameters: {}, timestamp: '' };
+                mockGenerateAdaptationProject.mockResolvedValue(mockResult);
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+                const result = await onRequestCB({
+                    params: { name: 'generate_adaptation_project', arguments: { system: 'sys', application: 'app', appPath: '/proj' } }
+                });
+                expect(mockGenerateAdaptationProject).toHaveBeenCalledTimes(1);
+                expect(result.structuredContent).toEqual(mockResult);
+            });
+
+            test('open_adaptation_editor dispatches to openAdaptationEditor', async () => {
+                const mockResult = { status: 'Success', message: 'Done', editorUrl: 'http://localhost:8080', processId: 42 };
+                mockOpenAdaptationEditor.mockResolvedValue(mockResult);
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+                const result = await onRequestCB({
+                    params: { name: 'open_adaptation_editor', arguments: { appPath: '/proj' } }
+                });
+                expect(mockOpenAdaptationEditor).toHaveBeenCalledTimes(1);
+                expect(result.structuredContent).toEqual(mockResult);
+            });
+
+            test('adp_controller_extension dispatches to adpControllerExtension', async () => {
+                const mockResult = { status: 'Success', message: 'Done', changes: [] };
+                mockAdpControllerExtension.mockResolvedValue(mockResult);
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+                const result = await onRequestCB({
+                    params: { name: 'adp_controller_extension', arguments: { appPath: '/proj', prompt: 'add button' } }
+                });
+                expect(mockAdpControllerExtension).toHaveBeenCalledTimes(1);
+                expect(result.structuredContent).toEqual(mockResult);
+            });
+
+            test('run_rta_workflow_step dispatches to runRtaWorkflowStep', async () => {
+                const mockResult = { status: 'Success', message: 'Done' };
+                mockRunRtaWorkflowStep.mockResolvedValue(mockResult);
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+                const result = await onRequestCB({
+                    params: { name: 'run_rta_workflow_step', arguments: { step: 'start', site: 'http://localhost:8080' } }
+                });
+                expect(mockRunRtaWorkflowStep).toHaveBeenCalledTimes(1);
+                expect(result.structuredContent).toEqual(mockResult);
+            });
+
+            test('read_odata_metadata_adp dispatches to readODataMetadataAdp', async () => {
+                const mockResult = { status: 'Success', message: 'Done', metadata: '' };
+                mockReadODataMetadataAdp.mockResolvedValue(mockResult);
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+                const result = await onRequestCB({
+                    params: { name: 'read_odata_metadata_adp', arguments: { appPath: '/proj' } }
+                });
+                expect(mockReadODataMetadataAdp).toHaveBeenCalledTimes(1);
+                expect(result.structuredContent).toEqual(mockResult);
+            });
+
+            test('lookup_ui5_documentation dispatches to lookupUi5Documentation', async () => {
+                const mockResult = { status: 'Success', message: 'Done', documentation: '' };
+                mockLookupUi5Documentation.mockResolvedValue(mockResult);
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+                const result = await onRequestCB({
+                    params: { name: 'lookup_ui5_documentation', arguments: { appPath: '/proj', lookupType: 'property', library: 'sap.m', control: 'sap.m.Button', member: 'text' } }
+                });
+                expect(mockLookupUi5Documentation).toHaveBeenCalledTimes(1);
+                expect(result.structuredContent).toEqual(mockResult);
+            });
         });
 
         test('list_functionality', async () => {
