@@ -44,7 +44,9 @@ describe('processAiResponse', () => {
     });
 
     test('returns Error with empty changes when PathTraversalError is thrown', () => {
-        mockWriteExtractedFile.mockImplementationOnce(() => { throw new PathTraversalError(APP_PATH, '../../escaped.js'); });
+        mockWriteExtractedFile.mockImplementationOnce(() => {
+            throw new PathTraversalError(APP_PATH, '../../escaped.js');
+        });
         const result = processAiResponse(APP_PATH, singleFileResponse);
         expect(result.status).toBe('Error');
         expect(result.message).toContain('outside the application path');
@@ -65,9 +67,9 @@ describe('processAiResponse', () => {
             '```'
         ].join('\n');
 
-        mockWriteExtractedFile
-            .mockReturnValueOnce('webapp/changes/coding/FileA.js')
-            .mockImplementationOnce(() => { throw new Error('disk full'); });
+        mockWriteExtractedFile.mockReturnValueOnce('webapp/changes/coding/FileA.js').mockImplementationOnce(() => {
+            throw new Error('disk full');
+        });
 
         const result = processAiResponse(APP_PATH, twoFilesResponse);
         expect(result.status).toBe('Error');
