@@ -1,4 +1,4 @@
-import { promises as FSpromises } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { logger } from '../../../utils/logger.js';
 import type { ExtractedFile } from '../types.js';
@@ -53,11 +53,11 @@ export function resolveWithinAppPath(appPath: string, requestedPath: string): st
  * @returns The path that was written, relative to `appPath`.
  * @throws {PathTraversalError} If the file would be written outside the project.
  */
-export async function writeExtractedFile(appPath: string, file: ExtractedFile): Promise<string> {
+export function writeExtractedFile(appPath: string, file: ExtractedFile): string {
     const relativePath = resolveWithinAppPath(appPath, file.path);
     const fullPath = join(appPath, relativePath);
-    await FSpromises.mkdir(dirname(fullPath), { recursive: true });
-    await FSpromises.writeFile(fullPath, file.code, 'utf-8');
+    mkdirSync(dirname(fullPath), { recursive: true });
+    writeFileSync(fullPath, file.code, 'utf-8');
     logger.info(`Created file: ${relativePath}`);
     return relativePath;
 }

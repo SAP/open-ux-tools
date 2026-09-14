@@ -51,8 +51,8 @@ describe('ai-response/writer', () => {
     });
 
     describe('writeExtractedFile', () => {
-        test('writes a file and creates parent directories', async () => {
-            const written = await writeExtractedFile(appPath, {
+        test('writes a file and creates parent directories', () => {
+            const written = writeExtractedFile(appPath, {
                 path: 'webapp/changes/coding/MyExt.js',
                 code: '// hello'
             });
@@ -63,10 +63,10 @@ describe('ai-response/writer', () => {
             expect(readFileSync(writtenPath, 'utf-8')).toBe('// hello');
         });
 
-        test('rejects a write that escapes the project root', async () => {
-            await expect(
+        test('rejects a write that escapes the project root', () => {
+            expect(() =>
                 writeExtractedFile(appPath, { path: '../../escaped.js', code: '// nope' })
-            ).rejects.toBeInstanceOf(PathTraversalError);
+            ).toThrow(PathTraversalError);
         });
     });
 });

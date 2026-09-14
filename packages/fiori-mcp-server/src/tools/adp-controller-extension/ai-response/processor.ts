@@ -12,7 +12,7 @@ import { PathTraversalError, writeExtractedFile } from './writer.js';
  * @param aiResponse Raw AI response with `**Path:**` markers and code fences.
  * @returns Tool output envelope with `success`, `error`, or `skipped` status.
  */
-export async function processAiResponse(appPath: string, aiResponse: string): Promise<AdpControllerExtensionOutput> {
+export function processAiResponse(appPath: string, aiResponse: string): AdpControllerExtensionOutput {
     logger.info('Processing AI response to extract files');
     const extractedFiles = extractFilesFromResponse(aiResponse);
     if (extractedFiles.length === 0) {
@@ -32,7 +32,7 @@ export async function processAiResponse(appPath: string, aiResponse: string): Pr
         }
 
         try {
-            const relativePath = await writeExtractedFile(appPath, file);
+            const relativePath = writeExtractedFile(appPath, file);
             changes.push(`Created ${relativePath}`);
         } catch (error) {
             if (error instanceof PathTraversalError) {
