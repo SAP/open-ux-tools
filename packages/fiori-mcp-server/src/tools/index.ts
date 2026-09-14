@@ -118,10 +118,7 @@ const adpTools = [
     },
     {
         name: 'run_rta_workflow_step',
-        description: `Internal step runner for the **adp-controller-extension-flow** skill. **Do not call this tool standalone.**
-        The skill orchestrates a multi-step Runtime Authoring flow (start → get_overlays → AI selects target control + action → get_context → AI prepares payload → call_action → save → stop) and decides what each call should pass. Calling out of sequence will fail with descriptive errors but bypasses the AI decision points the skill provides.
-
-        Always go through the **adp-controller-extension-flow** skill in the SAP Fiori MCP server.
+        description: `Drives Runtime Authoring (RTA) in the SAP Fiori adaptation editor through a dispatched step protocol. Each call advances one step of the workflow; steps must be called in sequence. \`site\` is the editor URL from \`open_adaptation_editor\` — pass it on every step.
 
         Steps:
         - **start** — payload: \`{ site: string, frameId?: string }\`. Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step.
@@ -135,7 +132,7 @@ const adpTools = [
         - **call_page_action** — site + optional frameId, payload: \`{ id: string }\`. Invokes a registered action; returns \`{ result: PageActionRunResult }\`. Result is \`{ status: "ok" }\` on success or \`{ status: "needs_user_action", reason }\` if a precondition cannot be met.
         - **press_interactive** — site + optional frameId, payload: \`{ controlId: string }\`. Triggers a real user-gesture click on the named control and waits best-effort for the page to settle. Returns \`{ result: PageActionRunResult }\`.`,
         annotations: {
-            title: 'Run RTA Workflow Step (skill-internal)',
+            title: 'Run RTA Workflow Step',
             readOnlyHint: false,
             destructiveHint: true,
             idempotentHint: false,
