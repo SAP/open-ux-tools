@@ -1,9 +1,13 @@
 import type { AxiosRequestConfig } from 'axios';
+import type { ClientRequest } from 'node:http';
+import type { Socket } from 'node:net';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { type AgentOptions } from 'node:https';
 import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
 import { getProxyForUrl } from 'proxy-from-env';
 import { isAppStudio } from '@sap-ux/btp-utils';
+
+type AgentConnectOpts = Parameters<HttpsProxyAgent<string>['connect']>[1];
 
 /**
  * PatchedHttpsProxyAgent is a custom implementation of HttpsProxyAgent that allows to pass additional options, currently not supported by the original implementation when calling tls.connect
@@ -14,8 +18,8 @@ export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<
     /**
      * Extension of the base constructor.
      *
-     * @param proxy
-     * @param opts
+     * @param proxy - The proxy server URI or URL to route requests through.
+     * @param opts - Optional agent options, retained and merged into each connect call.
      */
     constructor(proxy: Uri | URL, opts?: HttpsProxyAgentOptions<Uri>) {
         super(proxy, opts);
@@ -25,15 +29,12 @@ export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<
     /**
      * Performs transparent encryption of written data and all required TLS negotiation.
      *
-     * @param req
-     * @param opts
-     * @returns {Promise<net.Socket>}
+     * @param req - The outgoing HTTP client request initiating the connection.
+     * @param opts - Connection options from the HTTP client, merged with the agent's extra options.
+     * @returns A promise that resolves to the negotiated socket.
      */
-    async connect(
-        req: Parameters<HttpsProxyAgent<Uri>['connect']>[0],
-        opts: Parameters<HttpsProxyAgent<Uri>['connect']>[1]
-    ): ReturnType<HttpsProxyAgent<Uri>['connect']> {
-        return super.connect(req, { ...this.extraOptions, ...opts } as typeof opts);
+    async connect(req: ClientRequest, opts: AgentConnectOpts): Promise<Socket> {
+        return super.connect(req, { ...this.extraOptions, ...opts });
     }
 }
 
