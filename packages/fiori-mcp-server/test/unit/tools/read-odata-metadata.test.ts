@@ -16,18 +16,20 @@ jest.unstable_mockModule('../../../src/utils', () => ({
     }
 }));
 
-const mockGetProvider = jest.fn<any>();
-jest.unstable_mockModule('../../../src/tools/services/abap-context.js', () => ({
-    getProvider: mockGetProvider
-}));
-
+const mockReadUi5Config = jest.fn<any>();
 const mockGetVariant = jest.fn<any>().mockResolvedValue({ id: 'customer.app.variant' });
 const mockInitMergedManifest = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    readUi5Config: mockReadUi5Config,
     getVariant: mockGetVariant,
     ManifestService: {
         initMergedManifest: mockInitMergedManifest
     }
+}));
+
+const mockCreateAbapServiceProvider = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    createAbapServiceProvider: mockCreateAbapServiceProvider
 }));
 
 const mockPrettifyXml = jest.fn<any>((xml: string) => `<formatted>${xml}</formatted>`);
@@ -72,17 +74,25 @@ describe('readODataMetadataAdp', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockPrettifyXml.mockImplementation((xml: string) => `<formatted>${xml}</formatted>`);
+        mockReadUi5Config.mockResolvedValue({
+            findCustomMiddleware: jest.fn<any>().mockReturnValue({
+                configuration: { adp: { target: { url: 'http://host', client: '100' } } }
+            })
+        });
     });
 
-    test('returns entries only for OData data sources, skips non-OData', async () => {
+    function setupProvider(dataSources: Record<string, { type: string; uri: string }>, ui5Models: Record<string, unknown> = {}) {
         const provider = makeAbapProvider();
-        mockGetProvider.mockResolvedValue(provider);
-        mockInitMergedManifest.mockResolvedValue(
-            makeManifestService({
-                mainService: { type: 'OData', uri: '/sap/opu/odata/main' },
-                annotationService: { type: 'ODataAnnotation', uri: '/sap/bc/annotation' }
-            })
-        );
+        mockCreateAbapServiceProvider.mockReturnValue(provider);
+        mockInitMergedManifest.mockResolvedValue(makeManifestService(dataSources, ui5Models));
+        return provider;
+    }
+
+    test('returns entries only for OData data sources, skips non-OData', async () => {
+        setupProvider({
+            mainService: { type: 'OData', uri: '/sap/opu/odata/main' },
+            annotationService: { type: 'ODataAnnotation', uri: '/sap/bc/annotation' }
+        });
 
         const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
@@ -93,12 +103,8 @@ describe('readODataMetadataAdp', () => {
     });
 
     test('attaches matching ui5 model to entry', async () => {
-        const provider = makeAbapProvider();
-        mockGetProvider.mockResolvedValue(provider);
         const model = { dataSource: 'mainService', settings: { defaultCountMode: 'None' } };
-        mockInitMergedManifest.mockResolvedValue(
-            makeManifestService({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } }, { '': model })
-        );
+        setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } }, { '': model });
 
         const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
@@ -106,11 +112,7 @@ describe('readODataMetadataAdp', () => {
     });
 
     test('writes metadata file when saveLocal is true', async () => {
-        const provider = makeAbapProvider();
-        mockGetProvider.mockResolvedValue(provider);
-        mockInitMergedManifest.mockResolvedValue(
-            makeManifestService({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } })
-        );
+        setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
 
         await readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true });
 
@@ -120,11 +122,7 @@ describe('readODataMetadataAdp', () => {
     });
 
     test('does not write file when saveLocal is false (default)', async () => {
-        const provider = makeAbapProvider();
-        mockGetProvider.mockResolvedValue(provider);
-        mockInitMergedManifest.mockResolvedValue(
-            makeManifestService({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } })
-        );
+        setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
 
         await readODataMetadataAdp({ appPath: APP_PATH });
 
@@ -136,7 +134,7 @@ describe('readODataMetadataAdp', () => {
             throw new Error('bad xml');
         });
         const provider = makeAbapProvider(makeMetadata('<raw/>'));
-        mockGetProvider.mockResolvedValue(provider);
+        mockCreateAbapServiceProvider.mockReturnValue(provider);
         mockInitMergedManifest.mockResolvedValue(
             makeManifestService({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } })
         );
@@ -145,5 +143,39 @@ describe('readODataMetadataAdp', () => {
 
         expect(result[0].metadata).toEqual('<raw/>');
         expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to format XML'));
+    });
+
+    test('passes url and client from ui5.yaml to createAbapServiceProvider', async () => {
+        mockReadUi5Config.mockResolvedValue({
+            findCustomMiddleware: jest.fn<any>().mockReturnValue({
+                configuration: { adp: { target: { url: 'http://myhost', client: '200' } } }
+            })
+        });
+        setupProvider({});
+
+        await readODataMetadataAdp({ appPath: APP_PATH });
+
+        expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
+            { url: 'http://myhost', client: '200' },
+            { ignoreCertErrors: false },
+            false,
+            expect.anything()
+        );
+    });
+
+    test('defaults url and client to empty strings when middleware is not configured', async () => {
+        mockReadUi5Config.mockResolvedValue({
+            findCustomMiddleware: jest.fn<any>().mockReturnValue(undefined)
+        });
+        setupProvider({});
+
+        await readODataMetadataAdp({ appPath: APP_PATH });
+
+        expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
+            { url: '', client: '' },
+            expect.anything(),
+            expect.anything(),
+            expect.anything()
+        );
     });
 });
