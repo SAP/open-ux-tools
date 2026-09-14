@@ -6,7 +6,20 @@ type ColumnModelItem = {
     custom?: boolean;
     description?: string;
     schema: { keys: { name: string; value: string }[] };
-    properties?: { availability?: { value?: string } };
+    properties?: {
+        availability?: { value?: string };
+        text?: { value?: string; artifactType?: string };
+    };
+};
+
+/**
+ * A column that carries a text annotation in the spec model. `columnProperty` is the
+ * column's own bound property (used to look up the `UI.TextArrangement` annotation in the
+ * OData metadata); `textProperty` is the `Common.Text` target property (used as the sort name).
+ */
+export type TextAnnotationColumnCandidate = {
+    columnProperty: string;
+    textProperty: string;
 };
 
 export type ColumnAggregations = TreeAggregations & {
@@ -145,4 +158,48 @@ export function extractContactCardColumnsFromNode(node: TreeAggregation): Contac
         }
     });
     return contactColumns;
+}
+
+/**
+ * Extracts columns that carry a text annotation (`properties.text.artifactType === 'Annotation'`
+ * with a real value) from a spec model node that contains a 'table' aggregation. The
+ * `UI.TextArrangement` gate is applied later by the caller, as it requires OData metadata not
+ * present in the spec model.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): TextAnnotationColumnCandidate[] {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
+        return [];
+    }
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return [];
+    }
+    const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
+    const candidates: TextAnnotationColumnCandidate[] = [];
+    const seenTextProperties = new Set<string>();
+    Object.entries(columnItems).forEach(([columnKey, column]) => {
+        if (!isDefaultAvailableColumn(column)) {
+            return;
+        }
+        const text = column.properties?.text;
+        if (text?.artifactType !== 'Annotation' || !text.value || text.value === 'none') {
+            return;
+        }
+        // A text target reached through a navigation property (e.g. "_DunningProcedure/DunningProcedure_Text")
+        // is not exposed as a sortable column in the sort dialog, so it cannot be used as a sort name.
+        if (text.value.includes('/')) {
+            return;
+        }
+        const columnProperty = getColumnIdentifier(column, columnKey);
+        if (!columnProperty || seenTextProperties.has(text.value)) {
+            return;
+        }
+        seenTextProperties.add(text.value);
+        candidates.push({ columnProperty, textProperty: text.value });
+    });
+    return candidates;
 }
