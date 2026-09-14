@@ -70,6 +70,7 @@ export interface CreationModeForTable {
 export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
+    property: string;
     pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }

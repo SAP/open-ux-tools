@@ -17,7 +17,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://ui5.sap.com/sdk/#/topic/f1430c0337534d469da3a56307ff76af'
         },
         messages: {
-            [FLEX_ENABLED]: '"flexEnabled" must be set to "true" to enable UI adaptation features.'
+            [FLEX_ENABLED]: '`flexEnabled` must be set to `true` to enable UI adaptation features.'
         },
         fixable: 'code'
     },

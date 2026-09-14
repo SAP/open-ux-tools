@@ -51,7 +51,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             [TABLE_PERSONALIZATION_GROUP]:
                 'Data grouping should be enabled in the{{sectionText}} table. Grouping is available for analytical and responsive type tables.',
             [MISSING_PERSONALIZATION_PROPERTIES]:
-                'In case of using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
+                'In case of using an object, omitting a setting is treated as `false`. {{undefinedPropertiesString}}.'
         },
         fixable: 'code'
     },
