@@ -56,7 +56,7 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
 
     for (const line of lines) {
         const pathMatch = PATH_MARKER.exec(line);
-        if (pathMatch) {
+        if (pathMatch && !inCodeBlock) {
             currentPath = pathMatch[1].trim();
             const remainder = line.slice(line.indexOf(pathMatch[0]) + pathMatch[0].length);
             if (isFenceOpen(remainder, inCodeBlock)) {

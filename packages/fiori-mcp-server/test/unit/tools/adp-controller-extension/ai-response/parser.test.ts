@@ -65,6 +65,20 @@ describe('ai-response/parser', () => {
         test('returns an empty array for prose-only input', () => {
             expect(extractFilesFromResponse('Just some explanation, no code.')).toEqual([]);
         });
+
+        test('ignores path marker that appears inside a code block', () => {
+            const content = [
+                '**Path:** webapp/changes/coding/Real.js',
+                '```js',
+                '// **Path:** webapp/changes/coding/Fake.js',
+                'const x = 1;',
+                '```'
+            ].join('\n');
+
+            expect(extractFilesFromResponse(content)).toEqual([
+                { path: 'webapp/changes/coding/Real.js', code: '// **Path:** webapp/changes/coding/Fake.js\nconst x = 1;' }
+            ]);
+        });
     });
 
     describe('isChangeFile', () => {
