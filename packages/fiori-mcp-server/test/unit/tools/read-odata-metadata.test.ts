@@ -81,7 +81,10 @@ describe('readODataMetadataAdp', () => {
         });
     });
 
-    function setupProvider(dataSources: Record<string, { type: string; uri: string }>, ui5Models: Record<string, unknown> = {}) {
+    function setupProvider(
+        dataSources: Record<string, { type: string; uri: string }>,
+        ui5Models: Record<string, unknown> = {}
+    ) {
         const provider = makeAbapProvider();
         mockCreateAbapServiceProvider.mockReturnValue(provider);
         mockInitMergedManifest.mockResolvedValue(makeManifestService(dataSources, ui5Models));

@@ -28,8 +28,9 @@ export type ODataMetadataEntry = {
  */
 async function getProvider(appPath: string): Promise<AbapServiceProvider> {
     const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
-    const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>('fiori-tools-preview')
-        ?.configuration?.adp?.target;
+    const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>(
+        'fiori-tools-preview'
+    )?.configuration?.adp?.target;
     const abapTarget: AbapTarget = { url: target?.url ?? '', client: target?.client ?? '' };
     return createAbapServiceProvider(abapTarget, { ignoreCertErrors: false }, false, logger);
 }
