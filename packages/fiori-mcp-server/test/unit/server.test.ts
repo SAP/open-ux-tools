@@ -634,19 +634,34 @@ describe('FioriFunctionalityServer', () => {
             });
 
             test('generate_adaptation_project dispatches to generateAdaptationProject', async () => {
-                const mockResult = { status: 'Success', message: 'Done', appPath: '/proj', changes: [], parameters: {}, timestamp: '' };
+                const mockResult = {
+                    status: 'Success',
+                    message: 'Done',
+                    appPath: '/proj',
+                    changes: [],
+                    parameters: {},
+                    timestamp: ''
+                };
                 mockGenerateAdaptationProject.mockResolvedValue(mockResult);
                 new FioriFunctionalityServer();
                 const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
                 const result = await onRequestCB({
-                    params: { name: 'generate_adaptation_project', arguments: { system: 'sys', application: 'app', appPath: '/proj' } }
+                    params: {
+                        name: 'generate_adaptation_project',
+                        arguments: { system: 'sys', application: 'app', appPath: '/proj' }
+                    }
                 });
                 expect(mockGenerateAdaptationProject).toHaveBeenCalledTimes(1);
                 expect(result.structuredContent).toEqual(mockResult);
             });
 
             test('open_adaptation_editor dispatches to openAdaptationEditor', async () => {
-                const mockResult = { status: 'Success', message: 'Done', editorUrl: 'http://localhost:8080', processId: 42 };
+                const mockResult = {
+                    status: 'Success',
+                    message: 'Done',
+                    editorUrl: 'http://localhost:8080',
+                    processId: 42
+                };
                 mockOpenAdaptationEditor.mockResolvedValue(mockResult);
                 new FioriFunctionalityServer();
                 const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
@@ -675,7 +690,10 @@ describe('FioriFunctionalityServer', () => {
                 new FioriFunctionalityServer();
                 const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
                 const result = await onRequestCB({
-                    params: { name: 'run_rta_workflow_step', arguments: { step: 'start', site: 'http://localhost:8080' } }
+                    params: {
+                        name: 'run_rta_workflow_step',
+                        arguments: { step: 'start', site: 'http://localhost:8080' }
+                    }
                 });
                 expect(mockRunRtaWorkflowStep).toHaveBeenCalledTimes(1);
                 expect(result.structuredContent).toEqual(mockResult);
@@ -699,7 +717,16 @@ describe('FioriFunctionalityServer', () => {
                 new FioriFunctionalityServer();
                 const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
                 const result = await onRequestCB({
-                    params: { name: 'lookup_ui5_documentation', arguments: { appPath: '/proj', lookupType: 'property', library: 'sap.m', control: 'sap.m.Button', member: 'text' } }
+                    params: {
+                        name: 'lookup_ui5_documentation',
+                        arguments: {
+                            appPath: '/proj',
+                            lookupType: 'property',
+                            library: 'sap.m',
+                            control: 'sap.m.Button',
+                            member: 'text'
+                        }
+                    }
                 });
                 expect(mockLookupUi5Documentation).toHaveBeenCalledTimes(1);
                 expect(result.structuredContent).toEqual(mockResult);

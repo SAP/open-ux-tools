@@ -381,10 +381,7 @@ describe('browser/playwright-bridge', () => {
         const fs = await loadPlaywrightBridge();
 
         // Fire two concurrent calls (both will race to start the browser)
-        const [r1, r2] = await Promise.all([
-            fs.callFrontendAction(SITE_A, 'a'),
-            fs.callFrontendAction(SITE_B, 'b')
-        ]);
+        const [r1, r2] = await Promise.all([fs.callFrontendAction(SITE_A, 'a'), fs.callFrontendAction(SITE_B, 'b')]);
 
         // Browser should only have been launched once (browserStartPromise deduplication)
         expect(launchMock).toHaveBeenCalledTimes(1);
