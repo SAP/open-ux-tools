@@ -4,12 +4,12 @@ import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { FieldGroupInTableTypeRestriction } from '../language/diagnostics.js';
 import { FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION } from '../language/diagnostics.js';
-import { getRecordType, getTargetAnnotationPath } from '../project-context/linker/annotations.js';
+import { getRecordType, getTargetAnnotationTerm } from '../project-context/linker/annotations.js';
 import type { Table as FeV4Table } from '../project-context/linker/fe-v4.js';
 import type { Table as FeV2Table } from '../project-context/linker/fe-v2.js';
 import type { ParsedService } from '../project-context/parser/index.js';
+import { DATA_FIELD_FOR_ANNOTATION, UI_FIELD_GROUP } from '../constants.js';
 
-const DATA_FIELD_FOR_ANNOTATION = 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation';
 const UNSUPPORTED_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTable']);
 
 /**
@@ -52,7 +52,7 @@ function checkTableForFieldGroupViolations(
     );
 
     for (const record of dataFieldForAnnotationRecords) {
-        if (!getTargetAnnotationPath(record)?.includes('.FieldGroup')) {
+        if (getTargetAnnotationTerm(aliasInfo, record) !== UI_FIELD_GROUP) {
             continue;
         }
 
