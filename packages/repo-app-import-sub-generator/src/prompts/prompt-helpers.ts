@@ -7,7 +7,6 @@ import {
     sourceTemplateIdField
 } from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { isAxiosError } from '@sap-ux/axios-extension';
 import type { AppInfo, AppItem } from '../app/types.js';
 import { AppDownloadType } from '../app/types.js';
 import { PromptState } from './prompt-state.js';
@@ -76,17 +75,6 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
 };
 
 /**
- * Returns true when the error is an HTTP 400 response from the app index search,
- * indicating the system does not support one of the requested fields.
- *
- * @param {unknown} error - The error thrown by the app index search call.
- * @returns {boolean} Whether the error is a 400 response.
- */
-function isUnsupportedFieldError(error: unknown): boolean {
-    return isAxiosError(error) && error.response?.status === 400;
-}
-
-/**
  * Fetches a list of deployed applications from the ABAP repository.
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
@@ -106,18 +94,31 @@ async function getAppList(
         const results = await provider.getAppIndex().search(searchParams, appListResultFields);
         if (downloadType === AppDownloadType.AbapRepository) {
             // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
-            return results.filter((app) => app[sourceTemplateIdField] !== adtSourceTemplateId);
+            const filtered = results.filter((app) => app[sourceTemplateIdField] !== adtSourceTemplateId);
+            console.log(
+                `[repo-app-import] App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
+            );
+            return filtered;
         }
         return results;
     } catch (error) {
-        if (downloadType === AppDownloadType.AbapRepository && isUnsupportedFieldError(error)) {
-            // Safe to skip ADT filter — a system that doesn't support this field cannot have ADT-deployed apps.
+        if (
+            downloadType === AppDownloadType.AbapRepository &&
+            // isAxiosError check is intentionally avoided — the error may be re-wrapped by upstream callers,
+            // stripping the isAxiosError flag even for genuine HTTP 400 responses.
+            (error as { response?: { status?: number } })?.response?.status === 400
+        ) {
+            // Older systems may not support sourceTemplateIdField or the sap.app/type search param.
+            // Retry with no search params and without sourceTemplateIdField — return all results as-is
+            // since old systems won't have ADT-deployed apps to filter out anyway.
+            console.log(`[repo-app-import] Retrying without ${sourceTemplateIdField} and search params`);
             try {
-                const retryResults = await provider.getAppIndex().search(searchParams, appListFieldsWithoutSourceTemplate);
+                const retryResults = await provider.getAppIndex().search({}, appListFieldsWithoutSourceTemplate);
+                console.log(`[repo-app-import] Retry succeeded: ${retryResults.length} results`);
                 return retryResults;
             } catch (retryError) {
                 const retryMessage = retryError instanceof Error ? retryError.message : String(retryError);
-                const retryResponseData = isAxiosError(retryError) ? JSON.stringify(retryError.response?.data) : undefined;
+                console.log(`[repo-app-import] Retry also failed: ${retryMessage}`);
                 RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: retryMessage }));
                 return [];
             }

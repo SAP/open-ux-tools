@@ -89,7 +89,7 @@ describe('fetchAppListForSelectedSystem', () => {
         expect(result).toEqual([regularApp, noTemplateApp]);
     });
 
-    it('should retry without sourceTemplate/id for AbapRepository download type on older systems (HTTP 400)', async () => {
+    it('should retry without sourceTemplate/id and search params for AbapRepository download type on older systems (HTTP 400)', async () => {
         const regularApp = { 'sap.app/id': 'regular-app', repoName: 'repo1', url: 'http://url' };
         const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
         const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockResolvedValueOnce([regularApp]);
@@ -105,7 +105,7 @@ describe('fetchAppListForSelectedSystem', () => {
 
         expect(mockSearch).toHaveBeenCalledTimes(2);
         expect(mockSearch).toHaveBeenNthCalledWith(1, expect.anything(), appListResultFields);
-        expect(mockSearch).toHaveBeenNthCalledWith(2, expect.anything(), appListFieldsWithoutSourceTemplate);
+        expect(mockSearch).toHaveBeenNthCalledWith(2, {}, appListFieldsWithoutSourceTemplate);
         expect(result).toEqual([regularApp]);
     });
 
