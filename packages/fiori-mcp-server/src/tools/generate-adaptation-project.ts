@@ -3,8 +3,7 @@ import { isAbsolute, join } from 'node:path';
 import { promises as FSpromises } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
-import { fetchKeyUserChanges } from './generate-adaptation-project/key-user-changes.js';
-import { getDefaultProjectName } from '@sap-ux/adp-tooling';
+import { fetchKeyUserChanges, getDefaultProjectName } from '@sap-ux/adp-tooling';
 
 /** Maximum time to wait for the key user changes fetch before aborting generation. */
 const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;

@@ -3,4 +3,4 @@
 "@sap-ux/generator-adp": patch
 ---
 
-FEAT: move getDefaultProjectName to @sap-ux/adp-tooling and reuse it in @sap-ux/generator-adp, eliminating the duplicate implementation
+FEAT: consolidate shared ADP utilities into @sap-ux/adp-tooling to eliminate duplicate implementations across packages

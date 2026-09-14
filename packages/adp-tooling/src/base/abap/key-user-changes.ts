@@ -1,14 +1,12 @@
 import type { AbapServiceProvider, FlexVersion, KeyUserChangeContent } from '@sap-ux/axios-extension';
-import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { logger } from '../../utils/logger.js';
+import { getConfiguredProvider } from '../../abap/provider.js';
 
 const DEFAULT_ADAPTATION_ID = 'DEFAULT';
 
 /**
- * Options for {@link fetchKeyUserChanges}. The same `system`/credentials supplied
- * to the adaptation project generator are reused to query LREP.
+ * Options for {@link fetchKeyUserChanges}.
  */
 export interface FetchKeyUserChangesOptions {
     system: string;
@@ -16,7 +14,7 @@ export interface FetchKeyUserChangesOptions {
     client?: string;
     username?: string;
     password?: string;
-    logger?: ToolsLogger;
+    logger: ToolsLogger;
 }
 
 /**
@@ -38,25 +36,23 @@ function determineFlexVersion(flexVersions: FlexVersion[]): string | undefined {
 }
 
 /**
- * Fetches the DEFAULT adaptation's key user changes from LREP for the given application,
- * reusing the same system and credentials provided to the adaptation project generator.
+ * Fetches the DEFAULT adaptation's key user changes from LREP for the given application.
  *
- * The flow mirrors the interactive `KeyUserImportPrompter` in `@sap-ux/generator-adp`:
+ * Mirrors the interactive `KeyUserImportPrompter` in `@sap-ux/generator-adp`:
  * authenticate the ABAP provider, resolve the active flex version, list adaptations,
  * locate the DEFAULT adaptation and download its key user changes.
  *
  * Errors propagate (strict-abort): callers should treat any rejection as a reason to
- * abort the surrounding adaptation project generation.
+ * abort the surrounding operation.
  *
- * @param options - System, application id and optional credentials.
+ * @param options - System, application id, optional credentials, and a logger.
  * @returns The key user changes attached to the DEFAULT adaptation. May be empty.
  * @throws If the LREP API is unsupported, authentication fails, or no DEFAULT adaptation exists.
  */
 export async function fetchKeyUserChanges(options: FetchKeyUserChangesOptions): Promise<KeyUserChangeContent[]> {
-    const { system, application, client, username, password, logger: providedLogger } = options;
-    const log = providedLogger ?? logger;
+    const { system, application, client, username, password, logger } = options;
 
-    const provider: AbapServiceProvider = await getConfiguredProvider({ system, client, username, password }, log);
+    const provider: AbapServiceProvider = await getConfiguredProvider({ system, client, username, password }, logger);
 
     // Ensures auth is performed up-front for Cloud Ready systems before subsequent calls.
     await provider.isAbapCloud();
@@ -83,7 +79,7 @@ export async function fetchKeyUserChanges(options: FetchKeyUserChangesOptions): 
     const keyUserDataResponse = await lrep.getKeyUserData(application, DEFAULT_ADAPTATION_ID);
     const contents = keyUserDataResponse?.contents ?? [];
 
-    log.info(
+    logger.info(
         `Fetched ${contents.length} key user change(s) for DEFAULT adaptation of '${application}' on '${system}'.`
     );
 

@@ -18,8 +18,9 @@ jest.unstable_mockModule('../../../src/utils', () => ({
     }
 }));
 
-jest.unstable_mockModule('../../../src/tools/generate-adaptation-project/key-user-changes.js', () => ({
-    fetchKeyUserChanges: mockFetchKeyUserChanges
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    fetchKeyUserChanges: mockFetchKeyUserChanges,
+    getDefaultProjectName: jest.fn().mockReturnValue('app.variant')
 }));
 
 // Force isYoAvailable() to return false so tests always exercise the npx fallback path.

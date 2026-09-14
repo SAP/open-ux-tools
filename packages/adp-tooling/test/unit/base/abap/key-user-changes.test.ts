@@ -1,23 +1,12 @@
 import { jest } from '@jest/globals';
 
-const mockLoggerInfo = jest.fn<any>();
-const mockLoggerWarn = jest.fn<any>();
-
-jest.unstable_mockModule('../../../../src/utils/logger', () => ({
-    logger: {
-        info: mockLoggerInfo,
-        warn: mockLoggerWarn,
-        error: jest.fn(),
-        debug: jest.fn()
-    }
-}));
-
 const mockGetConfiguredProvider = jest.fn<any>();
-jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+
+jest.unstable_mockModule('../../../../src/abap/provider', () => ({
     getConfiguredProvider: mockGetConfiguredProvider
 }));
 
-const { fetchKeyUserChanges } = await import('../../../../src/tools/generate-adaptation-project/key-user-changes.js');
+const { fetchKeyUserChanges } = await import('../../../../src/base/abap/key-user-changes.js');
 
 function makeLrep(overrides: Record<string, any> = {}) {
     return {
@@ -35,6 +24,8 @@ function makeProvider(lrep: ReturnType<typeof makeLrep>) {
     };
 }
 
+const mockLogger = { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() } as any;
+
 describe('fetchKeyUserChanges', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -44,7 +35,7 @@ describe('fetchKeyUserChanges', () => {
         const lrep = makeLrep();
         mockGetConfiguredProvider.mockResolvedValue(makeProvider(lrep));
 
-        const result = await fetchKeyUserChanges({ system: 'SYS', application: 'app.id' });
+        const result = await fetchKeyUserChanges({ system: 'SYS', application: 'app.id', logger: mockLogger });
 
         expect(result).toEqual([{ changeType: 'addFields' }]);
         expect(lrep.getFlexVersions).toHaveBeenCalledWith('app.id');
@@ -60,7 +51,7 @@ describe('fetchKeyUserChanges', () => {
         });
         mockGetConfiguredProvider.mockResolvedValue(makeProvider(lrep));
 
-        await fetchKeyUserChanges({ system: 'SYS', application: 'app.id' });
+        await fetchKeyUserChanges({ system: 'SYS', application: 'app.id', logger: mockLogger });
 
         expect(lrep.listAdaptations).toHaveBeenCalledWith('app.id', '2');
     });
@@ -71,7 +62,7 @@ describe('fetchKeyUserChanges', () => {
         });
         mockGetConfiguredProvider.mockResolvedValue(makeProvider(lrep));
 
-        await expect(fetchKeyUserChanges({ system: 'SYS', application: 'app.id' })).rejects.toThrow(
+        await expect(fetchKeyUserChanges({ system: 'SYS', application: 'app.id', logger: mockLogger })).rejects.toThrow(
             'No adaptations found'
         );
     });
@@ -84,7 +75,7 @@ describe('fetchKeyUserChanges', () => {
         });
         mockGetConfiguredProvider.mockResolvedValue(makeProvider(lrep));
 
-        await expect(fetchKeyUserChanges({ system: 'SYS', application: 'app.id' })).rejects.toThrow(
+        await expect(fetchKeyUserChanges({ system: 'SYS', application: 'app.id', logger: mockLogger })).rejects.toThrow(
             'No DEFAULT adaptation found'
         );
     });
@@ -95,7 +86,7 @@ describe('fetchKeyUserChanges', () => {
         });
         mockGetConfiguredProvider.mockResolvedValue(makeProvider(lrep));
 
-        await fetchKeyUserChanges({ system: 'SYS', application: 'app.id' });
+        await fetchKeyUserChanges({ system: 'SYS', application: 'app.id', logger: mockLogger });
 
         expect(lrep.listAdaptations).toHaveBeenCalledWith('app.id', undefined);
     });
@@ -109,12 +100,33 @@ describe('fetchKeyUserChanges', () => {
             application: 'app.id',
             client: '200',
             username: 'admin',
-            password: 'secret'
+            password: 'secret',
+            logger: mockLogger
         });
 
         expect(mockGetConfiguredProvider).toHaveBeenCalledWith(
             { system: 'SYS', client: '200', username: 'admin', password: 'secret' },
-            expect.anything()
+            mockLogger
         );
+    });
+
+    test('calls logger.info with fetch count', async () => {
+        const lrep = makeLrep();
+        mockGetConfiguredProvider.mockResolvedValue(makeProvider(lrep));
+
+        await fetchKeyUserChanges({ system: 'SYS', application: 'app.id', logger: mockLogger });
+
+        expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('1 key user change'));
+    });
+
+    test('returns empty array when contents is undefined', async () => {
+        const lrep = makeLrep({
+            getKeyUserData: jest.fn<any>().mockResolvedValue({})
+        });
+        mockGetConfiguredProvider.mockResolvedValue(makeProvider(lrep));
+
+        const result = await fetchKeyUserChanges({ system: 'SYS', application: 'app.id', logger: mockLogger });
+
+        expect(result).toEqual([]);
     });
 });
