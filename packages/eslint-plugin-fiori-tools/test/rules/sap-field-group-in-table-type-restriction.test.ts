@@ -188,6 +188,46 @@ const V4_COLLECTION_FACET_WITH_FIELDGROUP = `
         </Annotation>
     </Annotations>`;
 
+// Object page: CollectionFacet > CollectionFacet > ReferenceFacet → incidentFlow/@UI.LineItem
+// Tests that the recursive traversal reaches a ReferenceFacet two levels deep
+const V4_NESTED_COLLECTION_FACET_WITH_FIELDGROUP = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.Facets">
+            <Collection>
+                <Record Type="UI.CollectionFacet">
+                    <PropertyValue Property="ID" String="OuterGroup"/>
+                    <PropertyValue Property="Label" String="Outer Group"/>
+                    <PropertyValue Property="Facets">
+                        <Collection>
+                            <Record Type="UI.CollectionFacet">
+                                <PropertyValue Property="ID" String="InnerGroup"/>
+                                <PropertyValue Property="Label" String="Inner Group"/>
+                                <PropertyValue Property="Facets">
+                                    <Collection>
+                                        <Record Type="UI.ReferenceFacet">
+                                            <PropertyValue Property="ID" String="IncidentFlowSection"/>
+                                            <PropertyValue Property="Label" String="Incident Flow"/>
+                                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Collection>
+                    </PropertyValue>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.IncidentFlow">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#FlowData"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>`;
+
 // V4 manifest: set GridTable for the incidentFlow table on the IncidentsObjectPage
 const V4_MANIFEST_OP_INCIDENT_FLOW_GRID_TABLE = getManifestAsCode(V4_MANIFEST, [
     {
@@ -264,6 +304,14 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_COLLECTION_FACET_WITH_FIELDGROUP)
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'V4: CollectionFacet inside CollectionFacet with ReferenceFacet → FieldGroup in ResponsiveTable (default)',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_NESTED_COLLECTION_FACET_WITH_FIELDGROUP)
+            },
+            []
         )
     ],
     invalid: [
@@ -315,9 +363,23 @@ ruleTester.run(TEST_NAME, fieldGroupInTableTypeRestrictionRule, {
         ),
         createInvalidTest(
             {
-                name: 'V4: CollectionFacet with ReferenceFacet → FieldGroup in GridTable on object page',
+                name: 'V4: CollectionFacet on object page → GridTable on object page',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_COLLECTION_FACET_WITH_FIELDGROUP),
+                errors: [
+                    {
+                        message:
+                            'UI.FieldGroup is not supported in GridTable in the Incident Flow section. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                    }
+                ]
+            },
+            [{ filename: V4_MANIFEST_PATH, code: V4_MANIFEST_OP_INCIDENT_FLOW_GRID_TABLE }]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4: CollectionFacet inside CollectionFacet with ReferenceFacet → FieldGroup in GridTable on object page',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_NESTED_COLLECTION_FACET_WITH_FIELDGROUP),
                 errors: [
                     {
                         message:
