@@ -5,9 +5,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getVariant: mockGetVariant
 }));
 
-const { loadProjectContext } = await import(
-    '../../../../../src/tools/adp-controller-extension/project/context.js'
-);
+const { loadProjectContext } = await import('../../../../../src/tools/adp-controller-extension/project/context.js');
 
 describe('loadProjectContext', () => {
     afterEach(() => {
