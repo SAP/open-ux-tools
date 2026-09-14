@@ -9,7 +9,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
  * PatchedHttpsProxyAgent is a custom implementation of HttpsProxyAgent that allows to pass additional options, currently not supported by the original implementation when calling tls.connect
  */
 export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<Uri> {
-    private readonly extraOptions: any;
+    private readonly extraOptions: HttpsProxyAgentOptions<Uri> | undefined;
 
     /**
      * Extension of the base constructor.
@@ -29,8 +29,11 @@ export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<
      * @param opts
      * @returns {Promise<net.Socket>}
      */
-    async connect(req: any, opts: any) {
-        return super.connect(req, { ...this.extraOptions, ...opts });
+    async connect(
+        req: Parameters<HttpsProxyAgent<Uri>['connect']>[0],
+        opts: Parameters<HttpsProxyAgent<Uri>['connect']>[1]
+    ): ReturnType<HttpsProxyAgent<Uri>['connect']> {
+        return super.connect(req, { ...this.extraOptions, ...opts } as typeof opts);
     }
 }
 
