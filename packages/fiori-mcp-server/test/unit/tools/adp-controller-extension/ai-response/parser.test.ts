@@ -76,7 +76,10 @@ describe('ai-response/parser', () => {
             ].join('\n');
 
             expect(extractFilesFromResponse(content)).toEqual([
-                { path: 'webapp/changes/coding/Real.js', code: '// **Path:** webapp/changes/coding/Fake.js\nconst x = 1;' }
+                {
+                    path: 'webapp/changes/coding/Real.js',
+                    code: '// **Path:** webapp/changes/coding/Fake.js\nconst x = 1;'
+                }
             ]);
         });
     });
