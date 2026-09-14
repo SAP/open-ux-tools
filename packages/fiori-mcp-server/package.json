@@ -22,7 +22,6 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --external:playwright-core --main-fields=module,main src/index.ts",
         "build-bundle": "node scripts/bundle.mjs",
         "build-dev": "NODE_ENV=development node scripts/bundle.mjs",
         "build-compile": "tsc --noEmit",
