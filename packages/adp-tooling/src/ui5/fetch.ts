@@ -29,14 +29,18 @@ export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Vers
  * Fetches internal UI5 versions from the Neo CDN and maps them to formatted version strings.
  *
  * @param {string} latestVersion - The latest public UI5 version.
+ * @param {ToolsLogger} logger - Optional logger instance.
  * @returns {Promise<string[]>} A promise that resolves to an array of formatted internal version strings.
  */
-export async function fetchInternalVersions(latestVersion: string): Promise<string[]> {
+export async function fetchInternalVersions(latestVersion: string, logger?: ToolsLogger): Promise<string[]> {
     let data;
     try {
         ({ data } = await axios.get(UI5_VERSIONS_NEO_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_NEO_CDN_URL)));
     } catch (e) {
         if (isAxiosError(e) && e.response) {
+            logger?.warn(
+                '[ui5-info] Could not fetch internal UI5 versions: ' + (e instanceof Error ? e.message : String(e))
+            );
             return [];
         }
         throw e;

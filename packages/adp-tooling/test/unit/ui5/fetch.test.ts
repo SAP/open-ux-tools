@@ -59,6 +59,20 @@ describe('ui5 fetchers', () => {
             expect(await fetchInternalVersions('1.120.0')).toEqual([]);
         });
 
+        it('should warn via logger on an HTTP error response', async () => {
+            const warnMock = jest.fn();
+            axiosGetMock.mockRejectedValue(
+                Object.assign(new Error('Request failed with status code 404'), {
+                    isAxiosError: true,
+                    response: { status: 404 }
+                })
+            );
+
+            await fetchInternalVersions('1.120.0', { warn: warnMock } as any);
+
+            expect(warnMock).toHaveBeenCalledWith(expect.stringContaining('Could not fetch internal UI5 versions'));
+        });
+
         it('should propagate network errors', async () => {
             axiosGetMock.mockRejectedValue(new Error('getaddrinfo ENOTFOUND'));
 
