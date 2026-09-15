@@ -7,6 +7,7 @@ import {
     ODataVersion as CatalogODataVersion,
     TlsPatch
 } from '@sap-ux/axios-extension';
+import { SyntaxValidator } from 'fast-xml-validator';
 import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { EdmxAnnotationsInfo, OdataService } from '@sap-ux/odata-service-writer';
 import {
@@ -267,10 +268,24 @@ async function updateService(
         } catch (error) {
             if (isAppStudio() && backendConfig.destination) {
                 throw new Error(
-                    `The service metadata is returning an error. Please check that the destination '${backendConfig.destination}' exists and the service is accessible.`
+                    `The service metadata request is returning an error. Please check that the destination '${backendConfig.destination}' exists and the service is accessible.`
                 );
             }
             throw error;
+        }
+        try {
+            SyntaxValidator.validate(metadataXml);
+        } catch {
+            let errorMessage = 'The remote service metadata is not valid XML.';
+            try {
+                const parsed = JSON.parse(metadataXml) as { error?: { message?: string } };
+                if (typeof parsed?.error?.message === 'string') {
+                    errorMessage = `The service metadata request is returning an error. Error: ${parsed.error.message}`;
+                }
+            } catch {
+                // not valid JSON - use generic message
+            }
+            throw new Error(errorMessage);
         }
         logger.debug(`Received metadata for service '${serviceName}'`);
 
