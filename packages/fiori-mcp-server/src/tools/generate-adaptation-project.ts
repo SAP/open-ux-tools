@@ -144,12 +144,9 @@ export async function generateAdaptationProject(
             if (keyUserChanges.length > 0) {
                 jsonInput.keyUserChanges = keyUserChanges;
             } else {
-                return {
-                    status: 'Error',
-                    message:
-                        `importKeyUserChanges was requested but no key user changes were returned for '${application}' on '${system}'. ` +
-                        'Set importKeyUserChanges to false to generate the project without importing changes.'
-                };
+                logger.info(
+                    `No key user changes found for '${application}' on '${system}'; proceeding without importing changes.`
+                );
             }
         }
 

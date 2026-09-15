@@ -125,7 +125,7 @@ describe('generateAdaptationProject', () => {
         expect(payload.keyUserChanges).toEqual([{ content: { foo: 'bar' } }]);
     });
 
-    test('returns Error when import requested but no changes returned', async () => {
+    test('proceeds with generation and logs a warning when import requested but no changes returned', async () => {
         mockFetchKeyUserChanges.mockResolvedValue([]);
 
         const result = await generateAdaptationProject({
@@ -135,9 +135,11 @@ describe('generateAdaptationProject', () => {
             importKeyUserChanges: true
         } as any);
 
-        expect(result.status).toBe('Error');
-        expect(result.message).toContain('no key user changes were returned');
-        expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        expect(result.status).toBe('Success');
+        expect(mockRunCmdArgs).toHaveBeenCalledTimes(1);
+        // keyUserChanges should not be in the payload when the list is empty
+        const payload = JSON.parse(mockRunCmdArgs.mock.calls[0][1][3] as string);
+        expect(payload.keyUserChanges).toBeUndefined();
     });
 
     test('returns Error and does not generate when key user changes fetch hangs (timeout)', async () => {
