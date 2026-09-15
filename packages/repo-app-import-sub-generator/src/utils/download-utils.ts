@@ -74,8 +74,16 @@ export async function downloadApp(repoName: string): Promise<void> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
     const ui5AbapRepository = await serviceProvider.getUi5AbapRepository();
     ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
+    console.log(`[repo-app-import] Attempting zip download for repository: ${repoName}`);
     RepoAppDownloadLogger.logger?.debug(`App download started: ${repoName}`);
     const downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
+        console.log(
+            `[repo-app-import] No ZIP archive available for repository: ${repoName}. The system may not support this download method or the app was not deployed using SAP Fiori tools.`
+        );
+        return;
+    }
+    console.log(`[repo-app-import] Zip download completed: ${repoName}, size: ${downloadedAppPackage.length} bytes`);
     RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
     // store downloaded package in prompt state
     PromptState.admZip = downloadedAppPackage;

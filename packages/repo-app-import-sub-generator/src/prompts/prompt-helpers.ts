@@ -2,7 +2,9 @@ import {
     appListResultFields,
     downloadTypeConfig,
     generatorTitleConfig,
-    adtSourceTemplateId
+    adtSourceTemplateId,
+    appListFieldsWithoutSourceTemplate,
+    sourceTemplateIdField
 } from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { AppInfo, AppItem } from '../app/types.js';
@@ -78,29 +80,51 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string} appId - Application ID to filter the list.
  * @param {AppDownloadType} downloadType - The download type determining which search params to use.
- * @returns {Promise<AppIndex>} A list of applications filtered by source template.
+ * @returns {Promise<AppIndex>} A list of applications.
  */
 async function getAppList(
     provider: AbapServiceProvider,
     appId?: string,
     downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<AppIndex> {
+    const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
+    const searchParams = appId ? { ...baseSearchParams, 'sap.app/id': appId } : baseSearchParams;
+
     try {
-        const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
-        const searchParams = appId
-            ? {
-                  ...baseSearchParams,
-                  'sap.app/id': appId
-              }
-            : baseSearchParams;
         const results = await provider.getAppIndex().search(searchParams, appListResultFields);
         if (downloadType === AppDownloadType.AbapRepository) {
             // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
-            return results.filter((app) => app['sap.app/sourceTemplate/id'] !== adtSourceTemplateId);
+            const filtered = results.filter((app) => app[sourceTemplateIdField] !== adtSourceTemplateId);
+            console.log(
+                `[repo-app-import] App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
+            );
+            return filtered;
         }
         return results;
     } catch (error) {
-        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
+        if (
+            downloadType === AppDownloadType.AbapRepository &&
+            // isAxiosError check is intentionally avoided — the error may be re-wrapped by upstream callers,
+            // stripping the isAxiosError flag even for genuine HTTP 400 responses.
+            (error as { response?: { status?: number } })?.response?.status === 400
+        ) {
+            // Older systems may not support sourceTemplateIdField or the sap.app/type search param.
+            // Retry with no search params and without sourceTemplateIdField — return all results as-is
+            // since old systems won't have ADT-deployed apps to filter out anyway.
+            console.log(`[repo-app-import] Retrying without ${sourceTemplateIdField} and search params`);
+            try {
+                const retryResults = await provider.getAppIndex().search({}, appListFieldsWithoutSourceTemplate);
+                console.log(`[repo-app-import] Retry succeeded: ${retryResults.length} results`);
+                return retryResults;
+            } catch (retryError) {
+                const retryMessage = retryError instanceof Error ? retryError.message : String(retryError);
+                console.log(`[repo-app-import] Retry also failed: ${retryMessage}`);
+                RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: retryMessage }));
+                return [];
+            }
+        }
+        const message = error instanceof Error ? error.message : String(error);
+        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
     }
 }
