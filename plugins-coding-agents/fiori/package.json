@@ -1,0 +1,6 @@
+{
+    "name": "@sap-ux/fiori-tools-plugin",
+    "version": "1.12.5",
+    "private": true,
+    "description": "Coding agent plugin assets (skills) for SAP Fiori Tools"
+}

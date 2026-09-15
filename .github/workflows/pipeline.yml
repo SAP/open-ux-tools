@@ -177,6 +177,9 @@ jobs:
             - name: Sync MCP manifest versions
               if: steps.changesetVersion.outputs.changes == 'true'
               run: node packages/fiori-mcp-server/scripts/sync-mcp-manifests.cjs
+            - name: Sync plugin manifest versions
+              if: steps.changesetVersion.outputs.changes == 'true'
+              run: node plugins-coding-agents/fiori/scripts/sync-plugin-manifests.cjs
             - name: Commit and push changes
               if: steps.changesetVersion.outputs.changes == 'true'
               run: |
