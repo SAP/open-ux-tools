@@ -1,5 +1,21 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Add Subpage greyed out when multiple navigation properties target the same entity set [[fb8fd7a](https://github.com/SAP/open-ux-tools/commit/fb8fd7abaf0149663650b31c3010303e619e99f7)]
+
+## 1.2.12
+
+## 1.2.11
+
 ## 1.2.10
 
 ## 1.2.9
