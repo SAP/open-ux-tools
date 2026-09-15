@@ -4993,7 +4993,11 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 [
   {
     "maintained": true,
-    "version": "1.149.0",
+    "version": "1.151.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.150.0",
   },
   {
     "maintained": true,
@@ -5014,18 +5018,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   {
     "maintained": true,
     "version": "1.120.0",
-  },
-  {
-    "maintained": true,
-    "version": "1.108.0",
-  },
-  {
-    "maintained": true,
-    "version": "1.96.0",
-  },
-  {
-    "maintained": true,
-    "version": "1.71.0",
   },
 ]
 `;
@@ -5033,7 +5025,10 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback for specified min UI5 version, if request fails 1`] = `
 [
   {
-    "version": "1.149.0",
+    "version": "1.151.0",
+  },
+  {
+    "version": "1.150.0",
   },
   {
     "version": "1.148.0",
@@ -5049,15 +5044,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.120.0",
-  },
-  {
-    "version": "1.108.0",
-  },
-  {
-    "version": "1.96.0",
-  },
-  {
-    "version": "1.71.0",
   },
 ]
 `;
@@ -5065,7 +5051,10 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback if official is not available  1`] = `
 [
   {
-    "version": "1.149.0",
+    "version": "1.151.0",
+  },
+  {
+    "version": "1.150.0",
   },
   {
     "version": "1.148.0",
@@ -5081,15 +5070,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.120.0",
-  },
-  {
-    "version": "1.108.0",
-  },
-  {
-    "version": "1.96.0",
-  },
-  {
-    "version": "1.71.0",
   },
 ]
 `;
@@ -5097,7 +5077,10 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback if snapshot is not available  1`] = `
 [
   {
-    "version": "1.149.0",
+    "version": "1.151.0",
+  },
+  {
+    "version": "1.150.0",
   },
   {
     "version": "1.148.0",
@@ -5113,15 +5096,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.120.0",
-  },
-  {
-    "version": "1.108.0",
-  },
-  {
-    "version": "1.96.0",
-  },
-  {
-    "version": "1.71.0",
   },
 ]
 `;
@@ -5129,7 +5103,10 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 versions fallback if official is not available  1`] = `
 [
   {
-    "version": "1.149.0",
+    "version": "1.151.0",
+  },
+  {
+    "version": "1.150.0",
   },
   {
     "version": "1.148.0",
@@ -5145,15 +5122,6 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.120.0",
-  },
-  {
-    "version": "1.108.0",
-  },
-  {
-    "version": "1.96.0",
-  },
-  {
-    "version": "1.71.0",
   },
 ]
 `;
@@ -5161,7 +5129,10 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 versions fallback if snapshot is not available  1`] = `
 [
   {
-    "version": "1.149.0",
+    "version": "1.151.0",
+  },
+  {
+    "version": "1.150.0",
   },
   {
     "version": "1.148.0",
@@ -5177,15 +5148,6 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
   },
   {
     "version": "1.120.0",
-  },
-  {
-    "version": "1.108.0",
-  },
-  {
-    "version": "1.96.0",
-  },
-  {
-    "version": "1.71.0",
   },
 ]
 `;
