@@ -126,6 +126,28 @@ function validateSystemConfig(
         }
     }
 
+    // Validate that provided type values are valid enum members
+    // (TypeScript types don't prevent invalid runtime values from CLI flags)
+    const validSystemTypes = Object.values(SystemType) as string[];
+    if (!validSystemTypes.includes(config.systemType as string)) {
+        logger.error(`Invalid system type '${config.systemType}'. Valid values: ${validSystemTypes.join(', ')}`);
+        return false;
+    }
+
+    const validAuthTypes = Object.values(AuthenticationType) as string[];
+    if (!validAuthTypes.includes(config.authenticationType as string)) {
+        logger.error(`Invalid auth type '${config.authenticationType}'. Valid values: ${validAuthTypes.join(', ')}`);
+        return false;
+    }
+
+    const validConnectionTypes = Object.values(ConnectionType) as string[];
+    if (!validConnectionTypes.includes(config.connectionType as string)) {
+        logger.error(
+            `Invalid connection type '${config.connectionType}'. Valid values: ${validConnectionTypes.join(', ')}`
+        );
+        return false;
+    }
+
     return true;
 }
 
