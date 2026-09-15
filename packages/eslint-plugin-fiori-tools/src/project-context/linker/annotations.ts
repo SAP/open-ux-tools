@@ -413,7 +413,7 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
  * Returns the PropertyValue child element of a record for the given property name.
  *
  * @param record - The record element to search in
- * @param propertyName - The value of the Property attribute to match (e.g. 'Target', 'ID', 'Facets')
+ * @param propertyName - The value of the Property attribute to be matched (such as 'Target', 'ID', 'Facets')
  * @returns The matching PropertyValue element, or undefined
  */
 export function getPropertyValueElement(record: Element, propertyName: string): Element | undefined {
@@ -423,7 +423,7 @@ export function getPropertyValueElement(record: Element, propertyName: string): 
 }
 
 /**
- * Returns AnnotationPath property value of the Target property in a record element.
+ * Returns the AnnotationPath property value of the Target property in a record element.
  * Handles both attribute form (`AnnotationPath="..."`) and child-element form (`<AnnotationPath>...</AnnotationPath>`).
  *
  * @param record - The record element
