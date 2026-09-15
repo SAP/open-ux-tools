@@ -45,7 +45,7 @@
         "i18next": "26.3.6",
         "jest-environment-jsdom": "30.4.1",
         "jest-scss-transform": "1.0.4",
-        "npm-run-all2": "9.0.2",
+        "npm-run-all2": "9.0.3",
         "react": "16.14.0",
         "react-dom": "16.14.0",
         "react-i18next": "15.7.4",
