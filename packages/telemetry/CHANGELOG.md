@@ -1,5 +1,13 @@
 # @sap-ux/telemetry
 
+## 2.0.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+
 ## 2.0.5
 
 ### Patch Changes
