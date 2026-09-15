@@ -458,6 +458,7 @@ Options:
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
 - `--skip-connection-validation` - Skip connection verification before saving
+- `--skip-check` - (Deprecated: use --skip-connection-validation) Skip connection verification before saving
 
 --------------------------------
 

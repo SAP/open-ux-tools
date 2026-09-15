@@ -5,7 +5,12 @@ import { getService, BackendSystemKey, isSystemNameInUse } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing/index.js';
-import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
+import {
+    promptForSystemIdentifier,
+    promptForUpdateFields,
+    promptForFieldUpdates,
+    ClearCredentialsCancelledError
+} from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
 import { t } from '../../i18n.js';
@@ -37,6 +42,10 @@ Example:
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
         .option('--skip-connection-validation', 'Skip connection verification before saving')
+        .option(
+            '--skip-check',
+            '(Deprecated: use --skip-connection-validation) Skip connection verification before saving'
+        )
         .action(async (options) => {
             loadEnvConfig();
             await updateSystem({
@@ -46,7 +55,7 @@ Example:
                 username: options.username,
                 password: options.password,
                 clearCredentials: !!options.clearCredentials,
-                skipConnectionValidation: !!options.skipConnectionValidation
+                skipConnectionValidation: !!options.skipConnectionValidation || !!options.skipCheck
             });
         });
 }
@@ -138,8 +147,8 @@ async function determinePatch(
     try {
         updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
     } catch (err) {
-        // User cancelled (e.g. declined clear-credentials confirmation)
-        if ((err as Error).message === 'Clear credentials cancelled') {
+        // User cancelled credential clearing operation
+        if (err instanceof ClearCredentialsCancelledError) {
             logger.info('Operation cancelled.');
             return null;
         }

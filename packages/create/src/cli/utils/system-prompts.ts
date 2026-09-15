@@ -5,6 +5,16 @@ import { validateClient } from '@sap-ux/project-input-validator';
 import { t } from '../../i18n.js';
 
 /**
+ * Error thrown when user cancels credential clearing operation.
+ */
+export class ClearCredentialsCancelledError extends Error {
+    constructor() {
+        super('Clear credentials cancelled');
+        this.name = 'ClearCredentialsCancelledError';
+    }
+}
+
+/**
  * Checks if a string is empty or contains only whitespace.
  *
  * @param value - The value to check
@@ -134,14 +144,14 @@ async function validateSystemNameUniquenessForUpdate(
  * Prompts for complete system configuration, filling in any missing fields.
  *
  * @param partial - Partial system configuration with some fields already provided
- * @param partial.name
- * @param partial.url
- * @param partial.client
- * @param partial.systemType
- * @param partial.authenticationType
- * @param partial.connectionType
- * @param partial.username
- * @param partial.password
+ * @param partial.name - System display name
+ * @param partial.url - System URL
+ * @param partial.client - SAP client (optional)
+ * @param partial.systemType - System type
+ * @param partial.authenticationType - Authentication type
+ * @param partial.connectionType - Connection type
+ * @param partial.username - Username for basic auth
+ * @param partial.password - Password for basic auth
  * @param partial.skipCredentialsPrompt - skip credential prompts entirely
  * @returns Complete system configuration with all required fields
  */
@@ -159,9 +169,9 @@ export async function promptForSystemConfig(partial: {
     name: string;
     url: string;
     client?: string;
-    systemType: string;
-    authenticationType: string;
-    connectionType: string;
+    systemType: SystemType;
+    authenticationType: AuthenticationType;
+    connectionType: ConnectionType;
     username?: string;
     password?: string;
 }> {
@@ -263,9 +273,9 @@ export async function promptForSystemConfig(partial: {
         name: partial.name || answers.name,
         url: partial.url || answers.url,
         client: partial.client ?? (answers.client || undefined),
-        systemType: partial.systemType || answers.systemType,
-        authenticationType: finalAuthType,
-        connectionType: partial.connectionType || answers.connectionType,
+        systemType: (partial.systemType || answers.systemType) as SystemType,
+        authenticationType: finalAuthType as AuthenticationType,
+        connectionType: (partial.connectionType || answers.connectionType) as ConnectionType,
         username: partial.username ?? (credentialAnswers?.username || undefined),
         password: partial.password ?? (credentialAnswers?.password || undefined)
     };
@@ -372,7 +382,7 @@ export async function promptForFieldUpdates(
         });
 
         if (!answer.confirmClear) {
-            throw new Error('Clear credentials cancelled');
+            throw new ClearCredentialsCancelledError();
         }
 
         // Remove clearCredentials from fields to process

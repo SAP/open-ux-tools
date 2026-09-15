@@ -95,14 +95,14 @@ function validateSystemConfig(
         name: string;
         url: string;
         client?: string;
-        systemType: string;
-        authenticationType: string;
-        connectionType: string;
+        systemType: SystemType;
+        authenticationType: AuthenticationType;
+        connectionType: ConnectionType;
     },
     logger: ReturnType<typeof getLogger>
 ): boolean {
     if (!config.name || !config.url || !config.systemType || !config.authenticationType || !config.connectionType) {
-        logger.error('Missing required fields. System was not added.');
+        logger.error('Missing required fields.');
         return false;
     }
 
@@ -124,26 +124,6 @@ function validateSystemConfig(
             logger.error(`Invalid client '${config.client}'. Leave this field empty or enter a value between 000-999.`);
             return false;
         }
-    }
-
-    const validSystemTypes = Object.values(SystemType) as string[];
-    if (!validSystemTypes.includes(config.systemType)) {
-        logger.error(`Invalid system type '${config.systemType}'. Valid values: ${validSystemTypes.join(', ')}`);
-        return false;
-    }
-
-    const validAuthTypes = Object.values(AuthenticationType) as string[];
-    if (!validAuthTypes.includes(config.authenticationType)) {
-        logger.error(`Invalid auth type '${config.authenticationType}'. Valid values: ${validAuthTypes.join(', ')}`);
-        return false;
-    }
-
-    const validConnectionTypes = Object.values(ConnectionType) as string[];
-    if (!validConnectionTypes.includes(config.connectionType)) {
-        logger.error(
-            `Invalid connection type '${config.connectionType}'. Valid values: ${validConnectionTypes.join(', ')}`
-        );
-        return false;
     }
 
     return true;
@@ -233,6 +213,7 @@ async function addSystem(params: {
 
         if (!validateSystemConfig(config, logger)) {
             logger.info(t('systemActions.systemNotAdded'));
+            logger.info('Review the error messages above for details.');
             return;
         }
 
@@ -240,6 +221,7 @@ async function addSystem(params: {
 
         if (!(await checkForDuplicates(config, service, logger))) {
             logger.info(t('systemActions.systemNotAdded'));
+            logger.info('Review the error messages above for details.');
             return;
         }
 
@@ -248,7 +230,7 @@ async function addSystem(params: {
                 url: config.url,
                 client: config.client,
                 systemType: config.systemType,
-                authenticationType: config.authenticationType as AuthenticationType,
+                authenticationType: config.authenticationType,
                 connectionType: config.connectionType,
                 username: config.username,
                 password: config.password
@@ -265,10 +247,9 @@ async function addSystem(params: {
             name: config.name,
             url: config.url,
             client: config.client,
-            systemType: config.systemType as (typeof SystemType)[keyof typeof SystemType],
-            authenticationType:
-                config.authenticationType as (typeof AuthenticationType)[keyof typeof AuthenticationType],
-            connectionType: config.connectionType as (typeof ConnectionType)[keyof typeof ConnectionType],
+            systemType: config.systemType,
+            authenticationType: config.authenticationType,
+            connectionType: config.connectionType,
             username: config.username,
             password: config.password
         });

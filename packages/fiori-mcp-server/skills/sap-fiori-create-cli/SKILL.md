@@ -4,7 +4,7 @@ description: Run, invoke, and test the @sap-ux/create CLI — generate, add, con
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
-  version: "1.3.12"
+  version: "1.3.14"
 ---
 
 
@@ -453,6 +453,7 @@ Options:
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
 - `--skip-connection-validation` - Skip connection verification before saving
+- `--skip-check` - (Deprecated: use --skip-connection-validation) Skip connection verification before saving
 
 --------------------------------
 

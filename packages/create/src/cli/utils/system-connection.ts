@@ -1,6 +1,7 @@
 import prompts from 'prompts';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
+import type { SystemType } from '@sap-ux/store';
 import { AuthenticationType, ConnectionType } from '@sap-ux/store';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import { getLogger } from '../../tracing/index.js';
@@ -22,9 +23,9 @@ import { t } from '../../i18n.js';
 export async function checkSystemConnection(config: {
     url: string;
     client?: string;
-    systemType: string;
+    systemType: SystemType;
     authenticationType: AuthenticationType;
-    connectionType: string;
+    connectionType: ConnectionType;
     username?: string;
     password?: string;
 }): Promise<{ success: boolean; error?: string }> {
@@ -121,9 +122,9 @@ export async function checkConnectionOrPrompt(
     config: {
         url: string;
         client?: string;
-        systemType: string;
+        systemType: SystemType;
         authenticationType: AuthenticationType;
-        connectionType: string;
+        connectionType: ConnectionType;
         username?: string;
         password?: string;
     },
