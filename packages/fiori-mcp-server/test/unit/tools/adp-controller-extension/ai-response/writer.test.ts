@@ -64,9 +64,9 @@ describe('ai-response/writer', () => {
         });
 
         test('rejects a write that escapes the project root', () => {
-            expect(() =>
-                writeExtractedFile(appPath, { path: '../../escaped.js', code: '// nope' })
-            ).toThrow(PathTraversalError);
+            expect(() => writeExtractedFile(appPath, { path: '../../escaped.js', code: '// nope' })).toThrow(
+                PathTraversalError
+            );
         });
     });
 });
