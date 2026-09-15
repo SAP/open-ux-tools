@@ -5,6 +5,7 @@ export * from './base/service-provider.js';
 export * from './base/patchTls.js';
 export * from './abap/index.js';
 export * from './factory.js';
+export * from './proxy.js';
 export * from './auth/index.js';
 export * from './abap/message.js';
 export { ServiceType } from './abap/catalog/base.js';
