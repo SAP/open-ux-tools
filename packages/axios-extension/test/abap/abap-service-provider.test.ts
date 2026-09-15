@@ -393,5 +393,120 @@ describe('AbapServiceProvider', () => {
             );
             expect(serviceSpy).toHaveBeenCalledWith('/sap/opu/odata/srv_f4/one');
         });
+
+        describe('waitForFirst', () => {
+            const references = [
+                {
+                    type: 'value-list' as const,
+                    target: 'target1',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/one/$metadata'
+                },
+                {
+                    type: 'value-list' as const,
+                    target: 'target2',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/two/$metadata'
+                }
+            ];
+
+            test('should fetch all when first request succeeds', async () => {
+                const metadataSpy = jest.fn().mockResolvedValue('metadata');
+                jest.spyOn(provider, 'service').mockReturnValue({ metadata: metadataSpy } as any);
+
+                const result = await provider.fetchExternalServices(references, true);
+
+                expect(result).toHaveLength(2);
+                expect(metadataSpy).toHaveBeenCalledTimes(2);
+            });
+
+            test('should abort remaining requests and log warning on 401 from first', async () => {
+                const authError = Object.assign(new Error('Unauthorized'), {
+                    isAxiosError: true,
+                    response: { status: 401 }
+                });
+                const secondMetadataSpy = jest.fn().mockResolvedValue('metadata');
+                const logSpy = jest.spyOn(provider.log, 'warn');
+                jest.spyOn(provider, 'service').mockImplementation((path) => {
+                    if (path === '/sap/opu/odata/srv_f4/one') {
+                        return { metadata: jest.fn().mockRejectedValue(authError) } as any;
+                    }
+                    return { metadata: secondMetadataSpy } as any;
+                });
+
+                const result = await provider.fetchExternalServices(references, true);
+
+                expect(result).toHaveLength(0);
+                expect(secondMetadataSpy).not.toHaveBeenCalled();
+                expect(logSpy).toHaveBeenCalledWith(
+                    'Authentication failure fetching external service metadata, aborting remaining requests'
+                );
+            });
+
+            test('should abort remaining requests on 403 from first', async () => {
+                const authError = Object.assign(new Error('Forbidden'), {
+                    isAxiosError: true,
+                    response: { status: 403 }
+                });
+                const secondMetadataSpy = jest.fn().mockResolvedValue('metadata');
+                jest.spyOn(provider, 'service').mockImplementation((path) => {
+                    if (path === '/sap/opu/odata/srv_f4/one') {
+                        return { metadata: jest.fn().mockRejectedValue(authError) } as any;
+                    }
+                    return { metadata: secondMetadataSpy } as any;
+                });
+
+                const result = await provider.fetchExternalServices(references, true);
+
+                expect(result).toHaveLength(0);
+                expect(secondMetadataSpy).not.toHaveBeenCalled();
+            });
+
+            test('should continue with remaining requests when first fails with non-auth error', async () => {
+                const nonAuthError = Object.assign(new Error('Not found'), { response: { status: 404 } });
+                const secondMetadataSpy = jest.fn().mockResolvedValue('metadata');
+                const logSpy = jest.spyOn(provider.log, 'warn');
+                jest.spyOn(provider, 'service').mockImplementation((path) => {
+                    if (path === '/sap/opu/odata/srv_f4/one') {
+                        return { metadata: jest.fn().mockRejectedValue(nonAuthError) } as any;
+                    }
+                    return { metadata: secondMetadataSpy } as any;
+                });
+
+                const result = await provider.fetchExternalServices(references, true);
+
+                expect(result).toHaveLength(1);
+                expect(secondMetadataSpy).toHaveBeenCalled();
+                expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Not found'));
+            });
+
+            test('should behave like normal fetch when only one reference is provided', async () => {
+                const metadataSpy = jest.fn().mockResolvedValue('metadata');
+                jest.spyOn(provider, 'service').mockReturnValue({ metadata: metadataSpy } as any);
+
+                const result = await provider.fetchExternalServices([references[0]], true);
+
+                expect(result).toHaveLength(1);
+                expect(metadataSpy).toHaveBeenCalledTimes(1);
+            });
+
+            test('should abort on 401 when only one reference is provided', async () => {
+                const authError = Object.assign(new Error('Unauthorized'), {
+                    isAxiosError: true,
+                    response: { status: 401 }
+                });
+                const logSpy = jest.spyOn(provider.log, 'warn');
+                jest.spyOn(provider, 'service').mockReturnValue({
+                    metadata: jest.fn().mockRejectedValue(authError)
+                } as any);
+
+                const result = await provider.fetchExternalServices([references[0]], true);
+
+                expect(result).toHaveLength(0);
+                expect(logSpy).toHaveBeenCalledWith(
+                    'Authentication failure fetching external service metadata, aborting remaining requests'
+                );
+            });
+        });
     });
 });
