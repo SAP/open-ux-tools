@@ -322,7 +322,7 @@ export class ApplicationParser {
             return;
         }
         try {
-            const content = fileCache.get(uri) ?? readFileSync(appRoot, { encoding: 'utf8', flag: 'r' });
+            const content = fileCache.get(uri) ?? readFileSync(fileURLToPath(uri), { encoding: 'utf8', flag: 'r' });
             app.i18nBundles[bundleIndex] = { uri, entries: parseI18nProperties(content) };
         } catch {
             // keep existing bundle on read failure
