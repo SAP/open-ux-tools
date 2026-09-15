@@ -15,6 +15,7 @@ import { validateClient } from '@sap-ux/project-input-validator';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemConfig } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
+import { t } from '../../i18n.js';
 
 /**
  * Add the "add system" subcommand to a passed command.
@@ -54,7 +55,11 @@ Example:
             '--password <string>',
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
-        .option('--skip-check', 'Skip connection verification before saving')
+        .option(
+            '--skip-credentials-prompt',
+            'Skip credential prompts. No credentials will be saved, but may be added later if required'
+        )
+        .option('--skip-connection-validation', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
             await addSystem({
@@ -66,7 +71,8 @@ Example:
                 connectionType: options.connectionType,
                 username: options.username,
                 password: options.password,
-                skipCheck: !!options.skipCheck
+                skipCredentialsPrompt: !!options.skipCredentialsPrompt,
+                skipConnectionValidation: !!options.skipConnectionValidation
             });
         });
 }
@@ -89,14 +95,14 @@ function validateSystemConfig(
         name: string;
         url: string;
         client?: string;
-        systemType: string;
-        authenticationType: string;
-        connectionType: string;
+        systemType: SystemType;
+        authenticationType: AuthenticationType;
+        connectionType: ConnectionType;
     },
     logger: ReturnType<typeof getLogger>
 ): boolean {
     if (!config.name || !config.url || !config.systemType || !config.authenticationType || !config.connectionType) {
-        logger.error('Missing required fields. System was not added.');
+        logger.error('Missing required fields.');
         return false;
     }
 
@@ -120,20 +126,22 @@ function validateSystemConfig(
         }
     }
 
+    // Validate that provided type values are valid enum members
+    // (TypeScript types don't prevent invalid runtime values from CLI flags)
     const validSystemTypes = Object.values(SystemType) as string[];
-    if (!validSystemTypes.includes(config.systemType)) {
+    if (!validSystemTypes.includes(config.systemType as string)) {
         logger.error(`Invalid system type '${config.systemType}'. Valid values: ${validSystemTypes.join(', ')}`);
         return false;
     }
 
     const validAuthTypes = Object.values(AuthenticationType) as string[];
-    if (!validAuthTypes.includes(config.authenticationType)) {
+    if (!validAuthTypes.includes(config.authenticationType as string)) {
         logger.error(`Invalid auth type '${config.authenticationType}'. Valid values: ${validAuthTypes.join(', ')}`);
         return false;
     }
 
     const validConnectionTypes = Object.values(ConnectionType) as string[];
-    if (!validConnectionTypes.includes(config.connectionType)) {
+    if (!validConnectionTypes.includes(config.connectionType as string)) {
         logger.error(
             `Invalid connection type '${config.connectionType}'. Valid values: ${validConnectionTypes.join(', ')}`
         );
@@ -187,7 +195,8 @@ async function checkForDuplicates(
  * @param params.connectionType - connection type
  * @param params.username - optional username for basic auth
  * @param params.password - optional password for basic auth
- * @param params.skipCheck - skip connection verification
+ * @param params.skipCredentialsPrompt - skip credential prompts entirely
+ * @param params.skipConnectionValidation - skip connection verification
  */
 async function addSystem(params: {
     name?: string;
@@ -198,7 +207,8 @@ async function addSystem(params: {
     connectionType?: string;
     username?: string;
     password?: string;
-    skipCheck?: boolean;
+    skipCredentialsPrompt?: boolean;
+    skipConnectionValidation?: boolean;
 }): Promise<void> {
     const logger = getLogger();
     try {
@@ -217,18 +227,23 @@ async function addSystem(params: {
             authenticationType: params.authenticationType,
             connectionType: params.connectionType,
             username: params.username,
-            password: params.password
+            password: params.password,
+            skipCredentialsPrompt: params.skipCredentialsPrompt
         });
 
         replaceEnvVariables(config);
 
         if (!validateSystemConfig(config, logger)) {
+            logger.info(t('systemActions.systemNotAdded'));
+            logger.info('Review the error messages above for details.');
             return;
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
         if (!(await checkForDuplicates(config, service, logger))) {
+            logger.info(t('systemActions.systemNotAdded'));
+            logger.info('Review the error messages above for details.');
             return;
         }
 
@@ -238,14 +253,15 @@ async function addSystem(params: {
                 client: config.client,
                 systemType: config.systemType,
                 authenticationType: config.authenticationType,
+                connectionType: config.connectionType,
                 username: config.username,
                 password: config.password
             },
-            params.skipCheck || false
+            params.skipConnectionValidation || false
         );
 
         if (!shouldSave) {
-            logger.info('System was not saved.');
+            logger.info(t('systemActions.systemNotSaved'));
             return;
         }
 
@@ -253,16 +269,15 @@ async function addSystem(params: {
             name: config.name,
             url: config.url,
             client: config.client,
-            systemType: config.systemType as (typeof SystemType)[keyof typeof SystemType],
-            authenticationType:
-                config.authenticationType as (typeof AuthenticationType)[keyof typeof AuthenticationType],
-            connectionType: config.connectionType as (typeof ConnectionType)[keyof typeof ConnectionType],
+            systemType: config.systemType,
+            authenticationType: config.authenticationType,
+            connectionType: config.connectionType,
             username: config.username,
             password: config.password
         });
 
         await service.write(system);
-        logger.info(`System '${config.name}' added.`);
+        logger.info(t('systemActions.systemAdded', { name: config.name }));
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);
