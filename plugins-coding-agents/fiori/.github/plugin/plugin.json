@@ -1,7 +1,7 @@
 {
     "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
     "name": "sap-ux-fiori-tools",
-    "version": "1.12.2",
+    "version": "1.12.5",
     "description": "MCP server and skills for SAP Fiori development. Build, modify, and test SAP Fiori Elements applications with AI assistance.",
     "author": {
         "name": "SAP SE",

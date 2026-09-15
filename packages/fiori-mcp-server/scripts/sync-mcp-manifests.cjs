@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-// Syncs the server version into server.json and the pinned server version in .mcp.json.
-// Also patch-bumps the plugin manifest versions in plugins-coding-agents/fiori so that
-// a new server release is reflected in the plugin version too.
-// Called from the version job in pipeline.yml after `changeset version` bumps package.json.
+// Syncs the server version into server.json and .mcp.json.
+// Syncs the plugin package version into the plugin manifests.
+// Called from the version job in pipeline.yml after `changeset version` bumps package versions.
 
 'use strict';
 
@@ -12,6 +11,7 @@ const path = require('path');
 const pluginRoot = path.join(__dirname, '..', '..', '..', 'plugins-coding-agents', 'fiori');
 
 const pkgPath = path.join(__dirname, '..', 'package.json');
+const pluginPkgPath = path.join(pluginRoot, 'package.json');
 const serverJsonPath = path.join(__dirname, '..', 'server.json');
 const claudePluginJsonPath = path.join(pluginRoot, '.claude-plugin', 'plugin.json');
 const awesomeCopilotPluginJsonPath = path.join(pluginRoot, '.github', 'plugin', 'plugin.json');
@@ -34,25 +34,16 @@ function readJson(filePath) {
     }
 }
 
-/**
- * Increments the patch segment of a semver string (e.g. "1.12.2" → "1.12.3").
- * @param {string} ver
- * @returns {string}
- */
-function patchBump(ver) {
-    const parts = ver.split('.');
-    parts[2] = String(Number(parts[2]) + 1);
-    return parts.join('.');
-}
-
 try {
     const pkg = readJson(pkgPath);
+    const pluginPkg = readJson(pluginPkgPath);
     const serverJson = readJson(serverJsonPath);
     const claudePluginJson = readJson(claudePluginJsonPath);
     const awesomeCopilotPluginJson = readJson(awesomeCopilotPluginJsonPath);
     const mcpJson = readJson(mcpJsonPath);
 
     const { version } = pkg;
+    const pluginVersion = pluginPkg.version;
 
     // Update top-level version in server.json
     serverJson.version = version;
@@ -62,9 +53,9 @@ try {
         }
     }
 
-    // Patch-bump plugin manifest versions independently of the server version
-    claudePluginJson.version = patchBump(claudePluginJson.version);
-    awesomeCopilotPluginJson.version = patchBump(awesomeCopilotPluginJson.version);
+    // Sync plugin manifest versions from fiori-tools-plugin package.json
+    claudePluginJson.version = pluginVersion;
+    awesomeCopilotPluginJson.version = pluginVersion;
 
     // Update pinned server version in .mcp.json args
     const mcpArgs = mcpJson.mcpServers['fiori-mcp'].args;
@@ -76,10 +67,10 @@ try {
     console.log(`Updated server.json to version ${version}`);
 
     fs.writeFileSync(claudePluginJsonPath, JSON.stringify(claudePluginJson, null, 4) + '\n');
-    console.log(`Updated .claude-plugin/plugin.json to version ${claudePluginJson.version}`);
+    console.log(`Updated .claude-plugin/plugin.json to version ${pluginVersion}`);
 
     fs.writeFileSync(awesomeCopilotPluginJsonPath, JSON.stringify(awesomeCopilotPluginJson, null, 4) + '\n');
-    console.log(`Updated .github/plugin/plugin.json to version ${awesomeCopilotPluginJson.version}`);
+    console.log(`Updated .github/plugin/plugin.json to version ${pluginVersion}`);
 
     fs.writeFileSync(mcpJsonPath, JSON.stringify(mcpJson, null, 4) + '\n');
     console.log(`Updated .mcp.json to server version ${version}`);
