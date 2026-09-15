@@ -407,55 +407,58 @@ class CstToAstVisitor extends Visitor {
     private toTopLevelAnnotationPath(assignment: AssignmentCstNode, location: CstNodeLocation): AstResult {
         const path = this.visit(assignment.children.path[0]) as Path;
         const pathIsVocabularyGroup = supportedVocabularyAliases.has(path.value);
-        if (path.segments.length !== 1 || (path.segments.length === 1 && !pathIsVocabularyGroup)) {
-            const firstSegmentIsVocabulary = supportedVocabularyAliases.has(path.segments[0].value);
-            const minFlattenedSegmentCount = firstSegmentIsVocabulary ? 3 : 2;
-            const flattenedExpression = this.flattenedExpression(
-                assignment.children,
-                location,
-                path,
-                minFlattenedSegmentCount,
-                vocabularyService
-            );
-            const value = hasItems(assignment.children.value)
-                ? (this.visit(assignment.children.value[0]) as AnnotationValue)
-                : undefined;
-
-            if (flattenedExpression) {
-                flattenedExpression.value = value;
-                return flattenedExpression;
-            }
-
-            const ast: Annotation = {
-                type: ANNOTATION_TYPE,
-                term: path,
-                range: this.locationToRange(location)
-            };
-            ast.colon = this.getColon(assignment.children);
-            const qualifier = this.getQualifier(assignment.children);
-            if (qualifier) {
-                ast.qualifier = qualifier;
-            }
-
-            // Flattened qualifier syntax handling
-            const qSegment = Math.min(
-                supportedVocabularyAliases.has(path.segments[0].value) ? ast.term.segments.length - 1 : 0,
-                1
-            );
-            if (!ast.qualifier && qSegment >= 0 && ast.term.segments[qSegment].value.includes('#')) {
-                ast.qualifier = createQualifier(ast.term);
-            }
-
-            if (value) {
-                ast.value = value;
-            }
-            adjustCdsTermNames(ast, vocabularyService.cdsVocabulary);
-            return ast;
-        } else if (path.segments.length === 1 && pathIsVocabularyGroup) {
+        const pathLength = path.segments.length;
+        if (pathLength === 1 && pathIsVocabularyGroup) {
             return this.toTopLevelAnnotationPathGroup(path, assignment, location);
         }
+        const isCorrectPath = pathLength > 1 || (pathLength === 1 && !pathIsVocabularyGroup);
+        if (!isCorrectPath) {
+            return undefined;
+        }
 
-        return undefined;
+        const firstSegmentIsVocabulary = supportedVocabularyAliases.has(path.segments[0].value);
+        const minFlattenedSegmentCount = firstSegmentIsVocabulary ? 3 : 2;
+        const flattenedExpression = this.flattenedExpression(
+            assignment.children,
+            location,
+            path,
+            minFlattenedSegmentCount,
+            vocabularyService
+        );
+        const value = hasItems(assignment.children.value)
+            ? (this.visit(assignment.children.value[0]) as AnnotationValue)
+            : undefined;
+
+        if (flattenedExpression) {
+            flattenedExpression.value = value;
+            return flattenedExpression;
+        }
+
+        const ast: Annotation = {
+            type: ANNOTATION_TYPE,
+            term: path,
+            range: this.locationToRange(location)
+        };
+        ast.colon = this.getColon(assignment.children);
+        const qualifier = this.getQualifier(assignment.children);
+        if (qualifier) {
+            ast.qualifier = qualifier;
+        }
+
+        // Flattened qualifier syntax handling
+        const qSegment = Math.min(
+            supportedVocabularyAliases.has(path.segments[0].value) ? ast.term.segments.length - 1 : 0,
+            1
+        );
+        if (!ast.qualifier && qSegment >= 0 && ast.term.segments[qSegment].value.includes('#')) {
+            ast.qualifier = createQualifier(ast.term);
+        }
+
+        if (value) {
+            ast.value = value;
+        }
+        adjustCdsTermNames(ast, vocabularyService.cdsVocabulary);
+        return ast;
     }
 
     /**
@@ -1552,7 +1555,7 @@ class CstToAstVisitor extends Visitor {
 
         const ast: Annotation = {
             type: ANNOTATION_TYPE,
-            term: this.getAssignmentKey(context, range), //path,
+            term: path,
             range
         };
 
