@@ -34,7 +34,7 @@ export async function adpControllerExtension(
     const projectContext = contextResult.context;
 
     if (!aiResponse?.trim()) {
-        const existingFiles = await scanExistingProjectFiles(appPath);
+        const existingFiles = scanExistingProjectFiles(appPath);
         logger.debug(`Found ${existingFiles.length} existing project files`);
 
         const reason = prompt

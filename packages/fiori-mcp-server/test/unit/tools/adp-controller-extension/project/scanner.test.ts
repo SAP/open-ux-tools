@@ -18,16 +18,16 @@ describe('project/scanner', () => {
         rmSync(appPath, { recursive: true, force: true });
     });
 
-    test('returns an empty array when webapp/changes does not exist', async () => {
+    test('returns an empty array when webapp/changes does not exist', () => {
         const empty = mkdtempSync(join(tmpdir(), 'adp-scanner-empty-'));
         try {
-            expect(await scanExistingProjectFiles(empty)).toEqual([]);
+            expect(scanExistingProjectFiles(empty)).toEqual([]);
         } finally {
             rmSync(empty, { recursive: true, force: true });
         }
     });
 
-    test('collects files with scannable extensions and skips others', async () => {
+    test('collects files with scannable extensions and skips others', () => {
         const codingDir = join(changesDir, 'coding');
         mkdirSync(codingDir, { recursive: true });
         writeFileSync(join(codingDir, 'A.js'), '// js');
@@ -37,7 +37,7 @@ describe('project/scanner', () => {
         writeFileSync(join(codingDir, 'E.md'), 'skip me');
         writeFileSync(join(changesDir, 'foo.change'), '{}');
 
-        const files = await scanExistingProjectFiles(appPath);
+        const files = scanExistingProjectFiles(appPath);
         const names = files.map((f) => f.relativePath).sort();
 
         expect(names).toEqual([
@@ -48,12 +48,12 @@ describe('project/scanner', () => {
         ]);
     });
 
-    test('skips files larger than MAX_SCANNED_FILE_SIZE', async () => {
+    test('skips files larger than MAX_SCANNED_FILE_SIZE', () => {
         const big = 'x'.repeat(MAX_SCANNED_FILE_SIZE + 1);
         writeFileSync(join(changesDir, 'big.js'), big);
         writeFileSync(join(changesDir, 'small.js'), 'tiny');
 
-        const files = await scanExistingProjectFiles(appPath);
+        const files = scanExistingProjectFiles(appPath);
         const names = files.map((f) => f.relativePath);
 
         expect(names).toContain(join('webapp', 'changes', 'small.js'));
