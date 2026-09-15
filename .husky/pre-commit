@@ -1,2 +1,3 @@
 #!/bin/sh
-
+pnpm run:pretty-quick
+pnpm audit --audit-level=high
