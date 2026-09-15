@@ -1,0 +1,5 @@
+type: component
+resources:
+  configuration:
+    paths:
+      src: ts-src/app

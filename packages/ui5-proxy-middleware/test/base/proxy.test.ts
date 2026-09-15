@@ -1,22 +1,28 @@
 import { jest } from '@jest/globals';
 import type * as hpm from 'http-proxy-middleware';
 
+// Pre-import real utils to use as spread base (filterExcludeComponentNamespace must run real logic)
+const actualUtils = await import('../../src/base/utils.js');
+
 // Define mock functions
-const mockCreateProxyMiddleware = jest.fn<any>();
-const mockProxyRequestHandler = jest.fn() as jest.Mock;
-const mockProxyResponseHandler = jest.fn() as jest.Mock;
-const mockProxyErrorHandler = jest.fn() as jest.Mock;
-const mockFilterCompressedHtmlFiles = jest.fn() as jest.Mock;
-const mockUpdateProxyEnv = jest.fn() as jest.Mock;
-const mockGetPathRewrite = jest.fn<any>().mockReturnValue(jest.fn());
+const mockCreateProxyMiddleware = jest.fn<typeof hpm.createProxyMiddleware>();
+const mockProxyRequestHandler = jest.fn<typeof actualUtils.proxyRequestHandler>();
+const mockProxyResponseHandler = jest.fn<typeof actualUtils.proxyResponseHandler>();
+const mockProxyErrorHandler = jest.fn<typeof actualUtils.proxyErrorHandler>();
+const mockFilterCompressedHtmlFiles = jest.fn<() => boolean>().mockReturnValue(true);
+const mockUpdateProxyEnv = jest.fn<typeof actualUtils.updateProxyEnv>();
+const mockGetPathRewrite = jest
+    .fn<typeof actualUtils.getPathRewrite>()
+    .mockReturnValue(jest.fn() as unknown as hpm.Options['pathRewrite']);
 
 // Mock http-proxy-middleware
 jest.unstable_mockModule('http-proxy-middleware', () => ({
     createProxyMiddleware: mockCreateProxyMiddleware
 }));
 
-// Mock utils so proxy.ts uses our mocked functions
+// Mock utils so proxy.ts uses our mocked functions (real filterExcludeComponentNamespace for integration tests)
 jest.unstable_mockModule('../../src/base/utils', () => ({
+    ...actualUtils,
     proxyRequestHandler: mockProxyRequestHandler,
     proxyResponseHandler: mockProxyResponseHandler,
     proxyErrorHandler: mockProxyErrorHandler,
@@ -37,7 +43,7 @@ jest.unstable_mockModule('../../src/base/utils', () => ({
 
 // Mock proxy-from-env
 jest.unstable_mockModule('proxy-from-env', () => ({
-    getProxyForUrl: jest.fn().mockReturnValue('')
+    getProxyForUrl: jest.fn<() => string>().mockReturnValue('')
 }));
 
 // Import after mocking
@@ -47,7 +53,7 @@ const { ToolsLogger } = await import('@sap-ux/logger');
 describe('proxy', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockGetPathRewrite.mockReturnValue(jest.fn());
+        mockGetPathRewrite.mockReturnValue(jest.fn() as unknown as hpm.Options['pathRewrite']);
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, default params', () => {
@@ -117,17 +123,149 @@ describe('proxy', () => {
             version: ''
         };
 
-        const customFilterFn: hpm.Filter = (_pathname, _req) => {
-            console.log('This is my custom filter function');
-            return true;
-        };
+        const customFilterFn = jest.fn<() => boolean>().mockReturnValue(true);
 
         ui5Proxy(config, {}, customFilterFn);
         expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
-        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(expect.objectContaining({ pathFilter: customFilterFn }));
+
+        // Verify pathFilter is a function
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
+        expect(typeof proxyConfig.pathFilter).toBe('function');
+
+        // Test that the custom filter is called when pathFilter is invoked
+        const mockReq = { headers: {} } as any;
+        (proxyConfig.pathFilter as (path: string, req: any) => boolean)('/test/path.js', mockReq);
+
+        // Verify the custom filter was called
+        expect(customFilterFn).toHaveBeenCalledTimes(1);
+        expect(customFilterFn).toHaveBeenCalledWith('/test/path.js', mockReq);
+
         expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
             agent: expect.objectContaining({})
         });
+    });
+
+    test('ui5Proxy: namespace exclusion filter excludes internal paths', () => {
+        const config = {
+            path: '/mypath',
+            url: 'https://example.example',
+            version: '1.0.0'
+        };
+
+        const mockMiddlewareUtil = {
+            getProject: jest.fn<() => any>().mockReturnValue({
+                getType: jest.fn<() => string>().mockReturnValue('component'),
+                getNamespace: jest.fn<() => string>().mockReturnValue('my/app/namespace')
+            })
+        };
+
+        ui5Proxy(config, {}, undefined, undefined, mockMiddlewareUtil as any);
+
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
+        const pathFilter = proxyConfig.pathFilter as (path: string, req: any) => boolean;
+
+        const mockReq = { headers: {} } as any;
+
+        // Test that internal namespace paths are excluded
+        expect(pathFilter('/resources/my/app/namespace/Component.js', mockReq)).toBe(false);
+        expect(pathFilter('/test-resources/my/app/namespace/Test.js', mockReq)).toBe(false);
+
+        // Test that external paths are included
+        expect(pathFilter('/resources/sap/ui/core/library.js', mockReq)).toBe(true);
+        expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(true);
+    });
+
+    test('ui5Proxy: string customFilter combined with namespace exclusion filter', () => {
+        const config = { path: '/resources', url: 'https://example.example', version: '1.0.0' };
+        const mockMiddlewareUtil = {
+            getProject: jest.fn<() => any>().mockReturnValue({
+                getType: jest.fn<() => string>().mockReturnValue('component'),
+                getNamespace: jest.fn<() => string>().mockReturnValue('my/app/namespace')
+            })
+        };
+
+        ui5Proxy(config, {}, '/resources', undefined, mockMiddlewareUtil as any);
+
+        const pathFilter = mockCreateProxyMiddleware.mock.calls[0][0].pathFilter as (path: string, req: any) => boolean;
+        const mockReq = { headers: {} } as any;
+
+        // passes baseFilter (/resources prefix) and not in excluded namespace
+        expect(pathFilter('/resources/sap/ui/core/library.js', mockReq)).toBe(true);
+        // excluded by namespace filter
+        expect(pathFilter('/resources/my/app/namespace/Component.js', mockReq)).toBe(false);
+        // blocked by baseFilter (no /resources prefix)
+        expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(false);
+    });
+
+    test('ui5Proxy: string[] customFilter combined with namespace exclusion filter', () => {
+        const config = { path: '/resources', url: 'https://example.example', version: '1.0.0' };
+        const mockMiddlewareUtil = {
+            getProject: jest.fn<() => any>().mockReturnValue({
+                getType: jest.fn<() => string>().mockReturnValue('component'),
+                getNamespace: jest.fn<() => string>().mockReturnValue('my/app/namespace')
+            })
+        };
+
+        ui5Proxy(config, {}, ['/resources', '/other'], undefined, mockMiddlewareUtil as any);
+
+        const pathFilter = mockCreateProxyMiddleware.mock.calls[0][0].pathFilter as (path: string, req: any) => boolean;
+        const mockReq = { headers: {} } as any;
+
+        // passes both patterns, not in excluded namespace
+        expect(pathFilter('/resources/sap/ui/core/library.js', mockReq)).toBe(true);
+        expect(pathFilter('/other/some/file.js', mockReq)).toBe(true);
+        // excluded by namespace filter
+        expect(pathFilter('/resources/my/app/namespace/Component.js', mockReq)).toBe(false);
+        // blocked by baseFilter
+        expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(false);
+    });
+
+    test('ui5Proxy: glob customFilter combined with namespace exclusion filter', () => {
+        const config = { path: '/resources', url: 'https://example.example', version: '1.0.0' };
+        const mockMiddlewareUtil = {
+            getProject: jest.fn<() => any>().mockReturnValue({
+                getType: jest.fn<() => string>().mockReturnValue('component'),
+                getNamespace: jest.fn<() => string>().mockReturnValue('my/app/namespace')
+            })
+        };
+
+        ui5Proxy(config, {}, '/resources/**', undefined, mockMiddlewareUtil as any);
+
+        const pathFilter = mockCreateProxyMiddleware.mock.calls[0][0].pathFilter as (path: string, req: any) => boolean;
+        const mockReq = { headers: {} } as any;
+
+        // passes glob and not in excluded namespace
+        expect(pathFilter('/resources/sap/ui/core/library.js', mockReq)).toBe(true);
+        // excluded by namespace filter
+        expect(pathFilter('/resources/my/app/namespace/Component.js', mockReq)).toBe(false);
+        // blocked by glob (no match)
+        expect(pathFilter('/test-resources/sap/m/Button.js', mockReq)).toBe(false);
+    });
+
+    test('ui5Proxy: namespace exclusion filter not applied for non-component projects', () => {
+        const config = {
+            path: '/mypath',
+            url: 'https://example.example',
+            version: '1.0.0'
+        };
+
+        const mockMiddlewareUtil = {
+            getProject: jest.fn<() => any>().mockReturnValue({
+                getType: jest.fn<() => string>().mockReturnValue('library'),
+                getNamespace: jest.fn<() => string>().mockReturnValue('my/library')
+            })
+        };
+
+        ui5Proxy(config, {}, undefined, undefined, mockMiddlewareUtil as any);
+
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
+        const pathFilter = proxyConfig.pathFilter as (path: string, req: any) => boolean;
+
+        const mockReq = { headers: {} } as any;
+
+        // All paths should pass through since it's not a component
+        expect(pathFilter('/resources/my/library/library.js', mockReq)).toBe(true);
+        expect(pathFilter('/test-resources/my/library/Test.js', mockReq)).toBe(true);
     });
 
     test('ui5Proxy: calling onProxyReq calls proxyRequestHandler', () => {
