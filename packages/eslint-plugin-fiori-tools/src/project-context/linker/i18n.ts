@@ -139,6 +139,9 @@ export function collectSectionLabelKeys(projectContext: ProjectContext): Map<str
     const appUri = pathToFileURL(projectContext.index.appRoot).toString();
     const app = projectContext.linkedModel.apps[appUri];
     const parsedApp = projectContext.index.apps[appUri];
+    if (!app || !parsedApp) {
+        return keyToPageNames;
+    }
     const parsedService = projectContext.getIndexedServiceForMainService(parsedApp);
     if (!parsedService) {
         return keyToPageNames;
