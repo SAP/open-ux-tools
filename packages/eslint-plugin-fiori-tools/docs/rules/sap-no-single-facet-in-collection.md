@@ -120,7 +120,7 @@ annotate service.Incidents with @(
 </Annotations>
 ```
 
-Nested CollectionFacets with a single ReferenceFacet child are not checked, because with nested `UI.CollectionFacet` - all subsections appear separately.
+Nested CollectionFacets with a single ReferenceFacet child are not checked, because with nested `UI.CollectionFacet`, all subsections appear separately.
 
 ```cds
 annotate service.Incidents with @(
@@ -150,4 +150,4 @@ Remove the `UI.CollectionFacet` wrapper and place the `UI.ReferenceFacet` direct
 
 ## Bug Report
 
-If you experience an issue with this rule, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
+If you encounter an issue with this rule, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
