@@ -147,7 +147,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid `createMode` value: `badValue` in Products section. The recommended value is `creationRows`. Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue` in Products section. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -190,7 +190,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -215,7 +215,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
