@@ -1,6 +1,6 @@
 import type { GenerateAdaptationProjectOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { isAbsolute, join } from 'node:path';
-import { promises as FSpromises } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
 import { fetchKeyUserChanges, getDefaultProjectName } from '@sap-ux/adp-tooling';
@@ -153,7 +153,7 @@ export async function generateAdaptationProject(
             }
         }
 
-        await FSpromises.mkdir(finalTargetFolder, { recursive: true });
+        mkdirSync(finalTargetFolder, { recursive: true });
 
         // Pass the JSON payload as a single argv element (not interpolated into a shell string) so
         // quotes, spaces or apostrophes in values cannot corrupt it. A corrupted payload would make
