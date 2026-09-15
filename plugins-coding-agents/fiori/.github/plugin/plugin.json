@@ -8,7 +8,7 @@
         "email": "ospo@sap.com",
         "url": "https://www.sap.com"
     },
-    "homepage": "https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori-tools",
+    "homepage": "https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori",
     "repository": "https://github.com/SAP/open-ux-tools",
     "license": "Apache-2.0",
     "keywords": [
