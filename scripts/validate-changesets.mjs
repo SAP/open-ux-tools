@@ -256,6 +256,7 @@ function validateChangesets() {
     }
 
     if (errors.length > 0) {
+        console.error('\n🚫 Changeset validation failed:\n');
         errors.forEach((error) => console.error(error + '\n'));
         process.exit(1);
     }

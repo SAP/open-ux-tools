@@ -1,13 +1,16 @@
 #!/usr/bin/env node
-// Syncs the server version into server.json and .mcp.json.
-// Syncs the plugin package version into the plugin manifests.
+// Syncs versions and validates metadata consistency across the fiori-mcp-server and plugin packages.
 // Called from the version job in pipeline.yml after `changeset version` bumps package versions.
+//
+// On a fiori-mcp-server release:  updates server.json, .mcp.json (pinned server version), and both plugin manifests.
+// On a plugin-only release:       updates both plugin manifests only (server.json / .mcp.json are written unchanged).
 
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
 
+// Climb from packages/fiori-mcp-server/scripts/ → repo root → plugins-coding-agents/fiori
 const pluginRoot = path.join(__dirname, '..', '..', '..', 'plugins-coding-agents', 'fiori');
 
 const pkgPath = path.join(__dirname, '..', 'package.json');
@@ -58,10 +61,29 @@ try {
     awesomeCopilotPluginJson.version = pluginVersion;
 
     // Update pinned server version in .mcp.json args
-    const mcpArgs = mcpJson.mcpServers['fiori-mcp'].args;
-    mcpJson.mcpServers['fiori-mcp'].args = mcpArgs.map((arg) =>
+    const fioriMcpServer = mcpJson.mcpServers?.['fiori-mcp'];
+    if (!fioriMcpServer) {
+        throw new Error('Expected mcpServers["fiori-mcp"] in .mcp.json');
+    }
+    fioriMcpServer.args = fioriMcpServer.args.map((arg) =>
         arg.startsWith('@sap-ux/fiori-mcp-server@') ? `@sap-ux/fiori-mcp-server@${version}` : arg
     );
+
+    // Warn if shared metadata fields have drifted between the two plugin manifests.
+    // Only `version` is auto-synced here; other fields must be kept in sync manually.
+    const SHARED_FIELDS = ['description', 'keywords', 'author', 'homepage', 'repository', 'license'];
+    for (const field of SHARED_FIELDS) {
+        const claudeVal = JSON.stringify(claudePluginJson[field]);
+        const copilotVal = JSON.stringify(awesomeCopilotPluginJson[field]);
+        if (claudeVal !== copilotVal) {
+            console.warn(
+                `⚠️  Metadata drift detected in field "${field}":\n` +
+                `   .claude-plugin/plugin.json: ${claudeVal}\n` +
+                `   .github/plugin/plugin.json: ${copilotVal}\n` +
+                `   Update both files manually to keep them in sync.`
+            );
+        }
+    }
 
     fs.writeFileSync(serverJsonPath, JSON.stringify(serverJson, null, 4) + '\n');
     console.log(`Updated server.json to version ${version}`);
