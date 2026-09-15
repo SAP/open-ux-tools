@@ -88,7 +88,6 @@ import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
 import cloudDevAdaptationStatus from './sap-cloud-dev-adaptation-status.js';
-import noSingleFacetInCollection from './sap-no-single-facet-in-collection.js';
 import noDeepCollectionFacets from './sap-no-deep-collection-facets.js';
 
 import type { Rule } from 'eslint';

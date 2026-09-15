@@ -225,4 +225,6 @@ export type Diagnostic =
     | TextArrangementHidden
     | StrictUomFiltering
     | NoLiveMode
-    | CloudDevAdaptationStatus;
+    | CloudDevAdaptationStatus
+    | NoSingleFacetInCollection
+    | NoDeepCollectionFacets;
