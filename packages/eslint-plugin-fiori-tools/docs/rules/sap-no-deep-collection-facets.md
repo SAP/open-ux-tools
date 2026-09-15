@@ -1,6 +1,6 @@
-# UI.CollectionFacet should not be nested at third level or deeper (sap-no-deep-collection-facets)
+# UI.CollectionFacet UI.collectionfacet Should Not Be Nested at Third Level or Deeper (`sap-no-deep-collection-facets`)
 
-SAP Fiori elements does not consider `UI.CollectionFacet` elements that are nested at the third level or deeper within the `UI.Facets` annotation. This rule detects deeply nested collection facets and recommends reorganizing the facet structure to use a maximum of two nesting levels for proper rendering and functionality.
+SAP Fiori elements does not consider `UI.CollectionFacet` elements that are nested at the third level or deeper within the `UI.Facets` annotation. This rule detects deeply nested collection facets and recommends reorganizing the facet structure to use a maximum of two nesting levels.
 
 ## Rule Details
 
@@ -8,7 +8,7 @@ This rule checks `UI.Facets` annotations on object pages and identifies any `UI.
 
 - **Level 1** (direct children of `UI.Facets`): ✅ Supported
 - **Level 2** (children of level 1 `UI.CollectionFacet`): ✅ Supported  
-- **Level 3 and deeper**: ❌ Not considered by Fiori elements
+- **Level 3 and deeper**: ❌ Not considered by SAP fiori elements
 
 ### Warning Message
 
@@ -141,13 +141,13 @@ annotate service.Incidents with @(
 
 Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` elements. Consider one of these approaches:
 
-1. **Remove unnecessary nesting:** If a `UI.CollectionFacet` contains only one child, replace it with a direct `UI.ReferenceFacet`.
+- **Remove unnecessary nesting:** If a `UI.CollectionFacet` contains only one child, replace it with a direct `UI.ReferenceFacet`.
 
-2. **Flatten the hierarchy:** Move nested content up to a higher level by combining or reorganizing sections.
+- **Flatten the hierarchy:** Move nested content up to a higher level by combining or reorganizing sections.
 
-3. **Use side-by-side facets:** Place facets at the same level rather than nesting them deeply.
+- **Use side-by-side facets:** Place facets at the same level rather than nesting them deeply.
 
-**Before (3 levels - violation):**
+**Before (Three levels: violation):**
 
 ```xml
 <Record Type="UI.CollectionFacet">
@@ -176,7 +176,7 @@ Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` el
 </Record>
 ```
 
-**After (2 levels - correct):**
+**After (Two levels: correct):**
 
 ```xml
 <Record Type="UI.CollectionFacet">
@@ -201,7 +201,7 @@ Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` el
 
 ## Bug Report
 
-In case you detect an issue with this rule, please open a GitHub issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you encounter any problems, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
 
 ## Further Reading
 
