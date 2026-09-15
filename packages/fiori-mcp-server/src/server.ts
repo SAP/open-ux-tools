@@ -125,11 +125,13 @@ export class FioriFunctionalityServer {
      */
     private setupErrorHandling(): void {
         this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
-        process.on('SIGINT', async () => {
+        const shutdown = async (): Promise<void> => {
             await stopBrowser();
             await this.server.close();
             process.exit(0);
-        });
+        };
+        process.on('SIGINT', shutdown);
+        process.on('SIGTERM', shutdown);
     }
 
     /**
