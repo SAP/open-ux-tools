@@ -25,4 +25,19 @@ describe('Tools schemas', () => {
         expect(executeFunctionaliy?.inputSchema).toMatchSnapshot('Input schema for "execute_functionality"');
         expect(executeFunctionaliy?.outputSchema).toMatchSnapshot('Output schema for "execute_functionality"');
     });
+
+    test('adp tools are excluded when SAP_FIORI_MCP_ADP_TOOLS is not "true"', () => {
+        // The module is imported without the env var set, so adpToolsEnabled is false.
+        const adpOnlyNames = [
+            'lookup_ui5_documentation',
+            'generate_adaptation_project',
+            'open_adaptation_editor',
+            'adp_controller_extension',
+            'run_rta_workflow_step',
+            'read_odata_metadata_adp'
+        ];
+        for (const name of adpOnlyNames) {
+            expect(tools.find((t) => t.name === name)).toBeUndefined();
+        }
+    });
 });

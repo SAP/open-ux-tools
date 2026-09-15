@@ -1,5 +1,6 @@
 import * as zod from 'zod';
 import { FunctionalityIdSchema } from './basic.js';
+import { STEPS } from '../tools/run-rta-workflow-step/types.js';
 
 /**
  * Input interface for the 'list_fiori_apps' functionality
@@ -102,4 +103,143 @@ export const DocSearchInputSchema = zod.object({
         .string()
         .min(2)
         .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
+});
+
+export const GenerateAdaptationProjectInputSchema = zod.object({
+    system: zod.string().describe('The name of the SAP system (obtained from list_sap_systems)'),
+    application: zod.string().describe('The application ID to adapt (e.g., sap.ui.demoapps.rta.fe)'),
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the folder where the adaptation project will be generated (i.e. the current working directory). The project subdirectory will be created inside this folder.'
+        ),
+    targetFolder: zod
+        .string()
+        .optional()
+        .describe(
+            'Optional override: absolute path to a different folder where the project will be generated. Defaults to appPath if not provided.'
+        ),
+    projectName: zod
+        .string()
+        .optional()
+        .describe('Optional name of the project. Defaults to app.variant if not provided.'),
+    namespace: zod.string().optional().describe('Optional namespace for the project'),
+    applicationTitle: zod.string().optional().describe('Optional title for the application'),
+    client: zod.string().optional().describe('Optional SAP client number'),
+    username: zod.string().optional().describe('Optional username for authentication'),
+    password: zod.string().optional().describe('Optional password for authentication'),
+    importKeyUserChanges: zod
+        .boolean()
+        .optional()
+        .describe(
+            "When true, fetches the DEFAULT adaptation's key user changes from LREP using the same system " +
+                'and credentials, and includes them in the generated project. Aborts generation if the fetch ' +
+                'fails or no DEFAULT adaptation exists. Defaults to false.'
+        )
+});
+
+export const OpenAdaptationEditorInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe('Absolute path to the adaptation project root directory (where package.json resides).')
+});
+
+export const AdpControllerExtensionInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    prompt: zod
+        .string()
+        .optional()
+        .describe('Natural language prompt describing what controller extension or fragment to create'),
+    aiResponse: zod
+        .string()
+        .optional()
+        .describe(
+            'AI-generated response containing code blocks with **Path:** markers preceding each code block. Omit to receive generation rules and project context.'
+        ),
+    controllerName: zod.string().optional().describe('Desired controller extension name (without .js/.ts extension)'),
+    viewId: zod.string().optional().describe('Optional target view identifier for the controller extension')
+});
+
+export const RunRtaWorkflowStepInputSchema = zod.object({
+    step: zod
+        .enum(STEPS)
+        .describe(
+            'Which RTA workflow step to run. The first six steps map to the existing Joule RTA frontend ' +
+                'actions. The last three (get_page_actions, call_page_action, press_interactive) drive ' +
+                'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan. ' +
+                'restart is a mid-workflow step that reloads the editor to pick up files written to disk.'
+        ),
+    site: zod
+        .string()
+        .describe(
+            'Editor URL from the open_adaptation_editor result (e.g. "http://localhost:8081/test/adaptation-editor.html"). ' +
+                'Required for every step. Pass on every call so the server can locate the browser page.'
+        ),
+    frameId: zod
+        .string()
+        .optional()
+        .describe(
+            'Optional iframe element id (e.g. "preview"). Pass on every step when the editor renders inside an iframe.'
+        ),
+    payload: zod
+        .record(zod.string(), zod.unknown())
+        .optional()
+        .describe(
+            'Step-specific arguments. ' +
+                'start: { site: string, frameId?: string }. ' +
+                'get_context: { controlId: string, actionId: string }. ' +
+                'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
+                'call_page_action: { id: string }. ' +
+                'press_interactive: { controlId: string }. ' +
+                'get_overlays / save / stop / restart / get_page_actions: omit.'
+        )
+});
+
+export const ReadODataMetadataInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    saveLocal: zod
+        .boolean()
+        .optional()
+        .describe(
+            'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
+        )
+});
+
+/**
+ * Supported UI5 documentation lookup types.
+ */
+export const UI5_LOOKUP_TYPES = ['aggregation', 'property', 'event'] as const;
+
+export const LookupUi5DocumentationInputSchema = zod.object({
+    lookupType: zod
+        .enum(UI5_LOOKUP_TYPES)
+        .describe(
+            'Which kind of UI5 control member to look up: "aggregation" (type, cardinality, visibility, ' +
+                'since, description), "property" (type, defaultValue, group, bindable, visibility, since, ' +
+                'description), or "event" (parameters, visibility, since, description). Inherited members are ' +
+                "resolved by walking the control's inheritance chain across libraries."
+        ),
+    library: zod.string().describe('The UI5 library the control belongs to (e.g. "sap.ui.comp").'),
+    control: zod.string().describe('Fully-qualified control name (e.g. "sap.ui.comp.smarttable.SmartTable").'),
+    member: zod
+        .string()
+        .describe(
+            'Name of the aggregation, property or event to look up (e.g. "customToolbar", "busy", "press"). ' +
+                'Required for every lookupType.'
+        ),
+    appPath: zod
+        .string()
+        .optional()
+        .describe(
+            'Absolute path to the project (or any folder within it) used to discover ui5.yaml and resolve the ' +
+                'configured UI5 base URL and version. Falls back to the public https://ui5.sap.com when omitted or not found.'
+        )
 });
