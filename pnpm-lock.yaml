@@ -3288,8 +3288,8 @@ importers:
         version: 4.2.0
     devDependencies:
       '@ui5/cli':
-        specifier: 4.0.62
-        version: 4.0.62(supports-color@8.1.1)
+        specifier: 4.0.66
+        version: 4.0.66
       '@ui5/project':
         specifier: 4.0.15
         version: 4.0.15(@ui5/builder@4.2.0)(supports-color@8.1.1)
@@ -3862,8 +3862,8 @@ importers:
         specifier: 1.120.5
         version: 1.120.5
       '@ui5/cli':
-        specifier: 4.0.62
-        version: 4.0.62(supports-color@8.1.1)
+        specifier: 4.0.66
+        version: 4.0.66
       '@ui5/manifest':
         specifier: 1.89.0
         version: 1.89.0
@@ -10754,10 +10754,25 @@ packages:
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
     hasBin: true
 
-  '@ui5/cli@4.0.62':
-    resolution: {integrity: sha512-TinVVJBlk7Zkiz+qJ8sBVLGpUs8GIm4bmQWgqsK0HRahr1ueeky5p2CiOkU3p1OlkmCmTLh6NPYUzy9dpsaP2Q==}
+  '@ui5/cli@4.0.66':
+    resolution: {integrity: sha512-0sG33L51kEyMYzz8nLdQk8u8RrVUoAv9r+Y0VsBuMlMrDvHsopo5daTb8v5sCwgIg9l/WuT6Db4vP8CLqWCtBg==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
     hasBin: true
+    bundledDependencies:
+      - '@ui5/builder'
+      - '@ui5/fs'
+      - '@ui5/logger'
+      - '@ui5/project'
+      - '@ui5/server'
+      - chalk
+      - data-with-position
+      - import-local
+      - js-yaml
+      - open
+      - pretty-hrtime
+      - semver
+      - update-notifier
+      - yargs
 
   '@ui5/fs@4.0.6':
     resolution: {integrity: sha512-Emv91mG1VtRE9v8NktovDh1bJkzFXqY0DYXdfeK5tXc4ZhVr5V3wxo4m0mELYAlkx1mhLv9BNsZy9kU3InPa0w==}
@@ -15994,10 +16009,6 @@ packages:
     resolution: {integrity: sha512-smsWv2LzFjP03xmvFoJ331ss6h+jixfA4UUV/Bsiyuu4YJPfN+FIQGOIiv4w9/+MoHkfkJ22UIaQWRVFRfH6Vw==}
     engines: {node: '>=20'}
 
-  open@11.0.1:
-    resolution: {integrity: sha512-NzwMUB6C1D0+Kd+9iMS/H4k+Ck3cTX6Ckyfr/gAGlmvSE1LUQZnEZvWBi4PYmMwH/S5SMeTXnE+9uAz8uF+pWw==}
-    engines: {node: '>=20'}
-
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
@@ -16504,10 +16515,6 @@ packages:
 
   powershell-utils@0.1.0:
     resolution: {integrity: sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==}
-    engines: {node: '>=20'}
-
-  powershell-utils@0.2.0:
-    resolution: {integrity: sha512-ZlsFlG7MtSFCoc5xreOvBAozCJ6Pf06opgJjh9ONEv418xpZSAzNjstD36C6+JwOnfSqOW/9uDkqKjezTdxZhw==}
     engines: {node: '>=20'}
 
   prebuild-install@7.1.3:
@@ -19048,10 +19055,6 @@ packages:
     resolution: {integrity: sha512-g/eziiSUNBSsdDJtCLB8bdYEUMj4jR7AGeUo96p/3dTafgjHhpF4RiCFPiRILwjQoDXx5MqkBr4fwWtR3Ky4Wg==}
     engines: {node: '>=20'}
 
-  wsl-utils@1.0.0:
-    resolution: {integrity: sha512-Hl0ZOAs672vg+06kfujwRhoS6/jehvULrlFkuF2dRu6pHgA8U06h3xqNIqNNU1LTXPcedxByAR4GS6pwQK0mgA==}
-    engines: {node: '>=20'}
-
   wtfnode@0.10.1:
     resolution: {integrity: sha512-4mcHdlvcdSytsbFueN6QYZxmh5K7REawBk//ZOrJrtVOe548Qsq4GNEm/OUfZATqDnsX4g8uBbzmN7NdEZx09Q==}
     engines: {node: '>=0.10.0'}
@@ -19258,7 +19261,8 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@adobe/css-tools@4.5.0': {}
+  '@adobe/css-tools@4.5.0':
+    optional: true
 
   '@ai-sdk/gateway@3.0.120(zod@4.4.3)':
     dependencies:
@@ -26369,6 +26373,7 @@ snapshots:
       terser: 5.50.0
       workerpool: 10.0.3
       xml2js: 0.6.2
+    optional: true
 
   '@ui5/cli@4.0.57(supports-color@8.1.1)':
     dependencies:
@@ -26389,24 +26394,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ui5/cli@4.0.62(supports-color@8.1.1)':
-    dependencies:
-      '@ui5/builder': 4.3.1
-      '@ui5/fs': 4.0.6
-      '@ui5/logger': 4.0.2
-      '@ui5/project': 4.0.17(@ui5/builder@4.3.1)(supports-color@8.1.1)
-      '@ui5/server': 4.0.15(supports-color@8.1.1)
-      chalk: 5.6.2
-      data-with-position: 0.5.0
-      import-local: 3.2.0
-      js-yaml: 4.3.1
-      open: 11.0.1
-      pretty-hrtime: 1.0.3
-      semver: 7.8.5
-      update-notifier: 7.3.1
-      yargs: 17.7.3
-    transitivePeerDependencies:
-      - supports-color
+  '@ui5/cli@4.0.66': {}
 
   '@ui5/fs@4.0.6':
     dependencies:
@@ -31493,6 +31481,7 @@ snapshots:
     dependencies:
       '@adobe/css-tools': 4.5.0
       mime: 1.6.0
+    optional: true
 
   leven@3.1.0: {}
 
@@ -32711,15 +32700,6 @@ snapshots:
       powershell-utils: 0.1.0
       wsl-utils: 0.3.1
 
-  open@11.0.1:
-    dependencies:
-      default-browser: 5.5.0
-      define-lazy-prop: 3.0.0
-      is-in-ssh: 1.0.0
-      is-inside-container: 1.0.0
-      powershell-utils: 0.2.0
-      wsl-utils: 1.0.0
-
   open@8.4.2:
     dependencies:
       define-lazy-prop: 2.0.0
@@ -33334,8 +33314,6 @@ snapshots:
       '@posthog/core': 1.21.0
 
   powershell-utils@0.1.0: {}
-
-  powershell-utils@0.2.0: {}
 
   prebuild-install@7.1.3:
     dependencies:
@@ -36514,11 +36492,6 @@ snapshots:
       is-wsl: 3.1.0
 
   wsl-utils@0.3.1:
-    dependencies:
-      is-wsl: 3.1.0
-      powershell-utils: 0.1.0
-
-  wsl-utils@1.0.0:
     dependencies:
       is-wsl: 3.1.0
       powershell-utils: 0.1.0
