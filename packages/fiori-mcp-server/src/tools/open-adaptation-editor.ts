@@ -1,16 +1,19 @@
-import type { ExecuteFunctionalityOutput, OpenAdaptationEditorInput } from '../types/index.js';
+import type { OpenAdaptationEditorOutput, OpenAdaptationEditorInput } from '../types/index.js';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { logger } from '../utils/index.js';
-import { OPEN_ADAPTATION_EDITOR_ID } from '../constant.js';
 
 const TIMEOUT_MS = 30000;
 
 /**
  * Resolves the command and arguments to launch the Fiori editor CLI.
  * Prefers the local node binary directly over the .bin symlink, falls back to npm.
+ *
+ * @param appPath - Absolute path to the adaptation project root.
+ * @param isWindows - Whether the current platform is Windows.
+ * @returns An object containing the command and its arguments.
  */
 function resolveFioriBin(appPath: string, isWindows: boolean): { command: string; args: string[] } {
     const fioriBinTarget = join(appPath, 'node_modules', '@sap', 'ux-ui5-tooling', 'bin', 'fiori.cjs');
@@ -28,6 +31,10 @@ function resolveFioriBin(appPath: string, isWindows: boolean): { command: string
 /**
  * Waits for the editor server to emit its URL on stdout (or stderr).
  * Resolves when the URL is found or when the timeout elapses.
+ *
+ * @param childProcess - The spawned editor child process to listen on.
+ * @param timeoutMs - Maximum milliseconds to wait before resolving with undefined URL.
+ * @returns A promise resolving with the server URL, editor path, and any stderr output.
  */
 function waitForEditorUrl(
     childProcess: ChildProcess,
@@ -38,15 +45,18 @@ function waitForEditorUrl(
         let foundEditorPath: string | undefined;
         let stderrOutput = '';
         let settled = false;
+        const timer = { id: undefined as ReturnType<typeof setTimeout> | undefined };
 
         const done = (): void => {
-            if (settled) return;
+            if (settled) {
+                return;
+            }
             settled = true;
-            clearTimeout(timeoutId);
+            clearTimeout(timer.id);
             resolve({ serverUrl: foundServerUrl, editorPath: foundEditorPath, stderrOutput });
         };
 
-        const timeoutId = setTimeout(() => {
+        timer.id = setTimeout(() => {
             logger.warn('Timeout waiting for editor URL');
             done();
         }, timeoutMs);
@@ -55,18 +65,18 @@ function waitForEditorUrl(
             const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
 
             rl.on('line', (line: string) => {
-                const clean = line.replace(/\[[0-9;]*m/g, '');
+                const clean = line.replace(new RegExp(String.fromCodePoint(27) + String.raw`\[[0-9;]*m`, 'g'), '');
                 logger.debug(`Editor: ${clean}`);
 
                 if (!foundEditorPath) {
-                    const pathMatch = line.match(/fiori run --open\s+([^\s]+)/);
+                    const pathMatch = /fiori run --open\s+([^\s]+)/.exec(line);
                     if (pathMatch?.[1]) {
                         foundEditorPath = pathMatch[1];
                     }
                 }
 
                 if (!foundServerUrl) {
-                    const urlMatch = line.match(/^URL:\s*(https?:\/\/[^\s]+)/);
+                    const urlMatch = /^URL:\s*(https?:\/\/[^\s]+)/.exec(line);
                     if (urlMatch?.[1]) {
                         foundServerUrl = urlMatch[1];
                         logger.info(`Extracted server URL: ${foundServerUrl}`);
@@ -96,12 +106,15 @@ function waitForEditorUrl(
 
 /**
  * Parses the port from a server URL string.
+ *
+ * @param serverUrl - The full server URL to extract the port from.
+ * @returns The numeric port, or `undefined` if the URL cannot be parsed.
  */
 function parsePort(serverUrl: string): number | undefined {
     try {
         const urlObj = new URL(serverUrl);
         if (urlObj.port) {
-            return parseInt(urlObj.port, 10);
+            return Number.parseInt(urlObj.port, 10);
         }
         return urlObj.protocol === 'https:' ? 443 : 80;
     } catch {
@@ -111,6 +124,11 @@ function parsePort(serverUrl: string): number | undefined {
 
 /**
  * Builds the kill instructions string returned to the caller so they can stop the editor process.
+ *
+ * @param pid - The process ID of the running editor server.
+ * @param port - The listening port, used to generate an alternative port-based kill command.
+ * @param isWindows - Whether the current platform is Windows.
+ * @returns A formatted string with platform-appropriate instructions for stopping the process.
  */
 function buildKillInstructions(pid: number, port: number | undefined, isWindows: boolean): string {
     const byPid = isWindows
@@ -135,7 +153,7 @@ function buildKillInstructions(pid: number, port: number | undefined, isWindows:
  * @param params - Input parameters containing the appPath.
  * @returns A promise resolving to the execution output with editor URL and process info.
  */
-export async function openAdaptationEditor(params: OpenAdaptationEditorInput): Promise<ExecuteFunctionalityOutput> {
+export async function openAdaptationEditor(params: OpenAdaptationEditorInput): Promise<OpenAdaptationEditorOutput> {
     const { appPath } = params;
 
     try {
@@ -162,26 +180,16 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             }
             const detail = stderrOutput ? `\nProcess stderr:\n${stderrOutput.trim()}` : '';
             return {
-                functionalityId: OPEN_ADAPTATION_EDITOR_ID,
                 status: 'Error',
-                message: `Timeout: Could not extract server URL from editor output within 30 seconds${detail}`,
-                parameters: params,
-                appPath,
-                changes: [],
-                timestamp: new Date().toISOString()
+                message: `Timeout: Could not extract server URL from editor output within 30 seconds${detail}`
             };
         }
 
         const processId = childProcess.pid;
         if (!processId) {
             return {
-                functionalityId: OPEN_ADAPTATION_EDITOR_ID,
                 status: 'Error',
-                message: 'Failed to get process ID from spawned editor process',
-                parameters: params,
-                appPath,
-                changes: [],
-                timestamp: new Date().toISOString()
+                message: 'Failed to get process ID from spawned editor process'
             };
         }
 
@@ -204,29 +212,17 @@ ${portLine}
 ${killCommandsSection}`;
 
         return {
-            functionalityId: OPEN_ADAPTATION_EDITOR_ID,
             status: 'Success',
             message,
-            parameters: {
-                ...params,
-                editorUrl,
-                processId,
-                ...(port && { port })
-            },
-            appPath,
-            changes: [],
-            timestamp: new Date().toISOString()
+            editorUrl,
+            processId,
+            ...(port && { port })
         };
     } catch (error) {
         logger.error(`Error opening adaptation editor: ${error}`);
         return {
-            functionalityId: OPEN_ADAPTATION_EDITOR_ID,
             status: 'Error',
-            message: 'Error opening adaptation editor: ' + (error instanceof Error ? error.message : String(error)),
-            parameters: params,
-            appPath,
-            changes: [],
-            timestamp: new Date().toISOString()
+            message: 'Error opening adaptation editor: ' + (error instanceof Error ? error.message : String(error))
         };
     }
 }

@@ -57,7 +57,7 @@
         "format": "pnpm recursive run format",
         "lint": "nx run-many --target=lint --all",
         "lint:fix": "nx run-many --target=lint:fix --all",
-        "lint:dependency-versions": "check-dependency-version-consistency .",
+        "lint:dependency-versions": "check-dependency-version-consistency . --ignore-dep jest-environment-jsdom",
         "test": "nx run-many --target=test --all",
         "test:integration": "nx run-many --target=test:integration --all --exclude @sap-ux-private/adaptation-editor-tests",
         "link": "pnpm recursive run link",

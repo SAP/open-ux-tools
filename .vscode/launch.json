@@ -536,7 +536,10 @@
             "windows": {
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
-            "cwd": "${workspaceFolder}/packages/ui-components"
+            "cwd": "${workspaceFolder}/packages/ui-components",
+            "env": {
+                "NODE_OPTIONS": "--experimental-vm-modules"
+            }
         },
         {
             "type": "node",

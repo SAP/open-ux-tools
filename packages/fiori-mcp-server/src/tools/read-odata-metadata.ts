@@ -1,12 +1,14 @@
 import { join, dirname } from 'node:path';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
-import { getVariant, ManifestService } from '@sap-ux/adp-tooling';
+import { readUi5Config, getVariant, ManifestService } from '@sap-ux/adp-tooling';
+import type { AbapTarget } from '@sap-ux/system-access';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import prettifyXml from 'prettify-xml';
 
-import { getProvider } from './services/abap-context.js';
 import { logger } from '../utils/index.js';
-import type { AdpMetadataInput } from '../types/index.js';
+import type { ReadODataMetadataInput } from '../types/index.js';
 
 type Ui5Model = { dataSource?: string } & Record<string, unknown>;
 
@@ -19,6 +21,21 @@ export type ODataMetadataEntry = {
 };
 
 /**
+ * Resolves the target system from `ui5.yaml` and returns an ABAP service provider for it.
+ *
+ * @param appPath - Adaptation project root.
+ * @returns ABAP service provider for the configured target.
+ */
+async function getProvider(appPath: string): Promise<AbapServiceProvider> {
+    const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
+    const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>(
+        'fiori-tools-preview'
+    )?.configuration?.adp?.target;
+    const abapTarget: AbapTarget = { url: target?.url ?? '', client: target?.client ?? '' };
+    return createAbapServiceProvider(abapTarget, { ignoreCertErrors: false }, false, logger);
+}
+
+/**
  * Resolves OData data sources from the merged app descriptor and fetches their EDMX metadata
  * from the connected ABAP system. Optionally persists each result as a local XML file for
  * agent context consumption.
@@ -26,7 +43,7 @@ export type ODataMetadataEntry = {
  * @param params Input parameters including `appPath` and the optional `saveLocal` flag.
  * @returns One entry per OData data source: id, service URL, formatted metadata XML, and bound model.
  */
-export async function readODataMetadataAdp(params: AdpMetadataInput): Promise<ODataMetadataEntry[]> {
+export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ODataMetadataEntry[]> {
     const { appPath, saveLocal = false } = params;
     const abapProvider = await getProvider(appPath);
     const variant = await getVariant(appPath);

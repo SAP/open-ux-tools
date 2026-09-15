@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { convertToSchema } from '../../utils/index.js';
 import { entityConfig, floorplan, project, serviceOdata as service } from './appgen-config-schema-props.js';
 import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
+import type { AuthenticationType } from '@sap-ux/store';
 
 export const generatorConfigOData = z.object({
     entityConfig: entityConfig.optional(),
@@ -35,6 +36,7 @@ export type GeneratorConfigODataWithAPI = GeneratorConfigOData &
             edmx?: string;
             externalServices?: (ExternalService & { metadata: string })[];
             annotations?: Annotations;
+            authenticationType?: AuthenticationType;
         };
     };
 

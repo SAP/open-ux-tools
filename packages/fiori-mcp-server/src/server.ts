@@ -42,7 +42,7 @@ import type {
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
-    AdpMetadataInput,
+    ReadODataMetadataInput,
     LookupUi5DocumentationInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
@@ -61,7 +61,7 @@ type ToolArgs =
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
-    | AdpMetadataInput
+    | ReadODataMetadataInput
     | LookupUi5DocumentationInput
     | Record<string, unknown>;
 
@@ -306,7 +306,7 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
                         break;
                     case 'read_odata_metadata_adp':
-                        result = await readODataMetadataAdp(args as AdpMetadataInput);
+                        result = await readODataMetadataAdp(args as ReadODataMetadataInput);
                         break;
                     case 'lookup_ui5_documentation':
                         result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);
@@ -323,9 +323,7 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     default:
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
-                        throw new Error(
-                            `Unknown tool: ${name}. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.`
-                        );
+                        throw new Error(`Unknown tool: ${name}. Try one of: ${tools.map((t) => t.name).join(', ')}.`);
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
                 const convertedResult = this.convertResultToCallToolResult(result);

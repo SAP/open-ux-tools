@@ -1,4 +1,4 @@
-import type { AdpControllerExtensionInput, ExecuteFunctionalityOutput } from '../../types/index.js';
+import type { AdpControllerExtensionInput, AdpControllerExtensionOutput } from '../../types/index.js';
 import { logger } from '../../utils/logger.js';
 import { processAiResponse } from './ai-response/index.js';
 import { buildKnowledgeBaseResponse } from './knowledge-base.js';
@@ -15,7 +15,9 @@ import { loadProjectContext, scanExistingProjectFiles } from './project/index.js
  *   `aiResponse`, `controllerName`, and `viewId`.
  * @returns The tool execution output envelope.
  */
-export async function adpControllerExtension(params: AdpControllerExtensionInput): Promise<ExecuteFunctionalityOutput> {
+export async function adpControllerExtension(
+    params: AdpControllerExtensionInput
+): Promise<AdpControllerExtensionOutput> {
     const { appPath, prompt, aiResponse } = params;
 
     if (!appPath) {
@@ -32,7 +34,7 @@ export async function adpControllerExtension(params: AdpControllerExtensionInput
     const projectContext = contextResult.context;
 
     if (!aiResponse?.trim()) {
-        const existingFiles = await scanExistingProjectFiles(appPath);
+        const existingFiles = scanExistingProjectFiles(appPath);
         logger.debug(`Found ${existingFiles.length} existing project files`);
 
         const reason = prompt
@@ -42,5 +44,5 @@ export async function adpControllerExtension(params: AdpControllerExtensionInput
     }
 
     logger.info(`Executing ADP controller extension functionality for: ${prompt}`);
-    return processAiResponse(appPath, aiResponse, params);
+    return processAiResponse(appPath, aiResponse);
 }

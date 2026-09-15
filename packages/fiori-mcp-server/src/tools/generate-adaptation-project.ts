@@ -1,11 +1,9 @@
-import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types/index.js';
+import type { GenerateAdaptationProjectOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { isAbsolute, join } from 'node:path';
-import { promises as FSpromises } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
-import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
-import { fetchKeyUserChanges } from './generate-adaptation-project/key-user-changes.js';
-import { getDefaultProjectName } from '@sap-ux/adp-tooling';
+import { fetchKeyUserChanges, getDefaultProjectName } from '@sap-ux/adp-tooling';
 
 /** Maximum time to wait for the key user changes fetch before aborting generation. */
 const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;
@@ -16,6 +14,8 @@ const GENERATION_TIMEOUT_MS = 5 * 60_000;
 /**
  * Returns true if `yo` is available on PATH. Used to avoid re-downloading
  * Yeoman via `npx -y` on every invocation (slow on cold/corporate networks).
+ *
+ * @returns `true` if `yo` is on PATH, `false` otherwise.
  */
 function isYoAvailable(): boolean {
     try {
@@ -28,9 +28,12 @@ function isYoAvailable(): boolean {
 }
 
 /**
- * Builds the command + args to invoke the @sap-ux/adp Yeoman generator.
+ * Builds the command + args to invoke the {@link https://www.npmjs.com/package/@sap-ux/adp-tooling | sap-ux/adp} Yeoman generator.
  * Uses the globally-installed `yo` when available to avoid network round-trips;
  * falls back to `npx -y yo@4` for fresh environments.
+ *
+ * @param jsonString - JSON-serialised generator options to pass as a positional argument.
+ * @returns An object containing the command string and its argument array.
  */
 function buildGeneratorCommand(jsonString: string): { cmd: string; args: string[] } {
     if (isYoAvailable()) {
@@ -40,16 +43,12 @@ function buildGeneratorCommand(jsonString: string): { cmd: string; args: string[
 }
 
 /**
- * Returns a copy of `params` with sensitive credential fields removed so they
- * are never echoed back in the tool response envelope.
- */
-function safeParams(params: GenerateAdaptationProjectInput): Record<string, unknown> {
-    const { password: _password, username: _username, ...rest } = params;
-    return rest;
-}
-
-/**
  * Rejects with a descriptive error if the given promise does not settle within `timeoutMs`.
+ *
+ * @param promise - The promise to race against the timeout.
+ * @param timeoutMs - Maximum milliseconds to wait before rejecting.
+ * @param onTimeoutMessage - The error message used when the timeout fires.
+ * @returns A promise that resolves with the value of `promise` or rejects on timeout.
  */
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutMessage: string): Promise<T> {
     let timer: NodeJS.Timeout | undefined;
@@ -65,27 +64,34 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutM
     }
 }
 
-function errorResponse(message: string, params: GenerateAdaptationProjectInput, appPath: string): ExecuteFunctionalityOutput {
-    return {
-        functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
-        status: 'Error',
-        message,
-        parameters: safeParams(params),
-        appPath,
-        changes: [],
-        timestamp: new Date().toISOString()
-    };
+/**
+ * Copies non-empty optional fields from `fields` into `target`.
+ *
+ * @param target - The object to write the fields into.
+ * @param fields - Optional input fields; undefined and empty-string values are skipped.
+ */
+function applyOptionalFields(
+    target: Record<string, unknown>,
+    fields: Partial<
+        Pick<GenerateAdaptationProjectInput, 'namespace' | 'applicationTitle' | 'client' | 'username' | 'password'>
+    >
+): void {
+    for (const [key, value] of Object.entries(fields)) {
+        if (value !== undefined && value !== '') {
+            target[key] = value;
+        }
+    }
 }
 
 /**
- * Generates a new SAP Fiori adaptation project by invoking the @sap-ux/adp Yeoman generator.
+ * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *
  * @param params - Input parameters for the adaptation project generation.
  * @returns A promise resolving to the execution output.
  */
 export async function generateAdaptationProject(
     params: GenerateAdaptationProjectInput
-): Promise<ExecuteFunctionalityOutput> {
+): Promise<GenerateAdaptationProjectOutput> {
     const {
         system,
         application,
@@ -101,17 +107,13 @@ export async function generateAdaptationProject(
     } = params;
 
     if (!system || !application) {
-        return errorResponse('Missing required parameters: system and application are required.', params, appPath);
+        return { status: 'Error', message: 'Missing required parameters: system and application are required.' };
     }
 
     const finalTargetFolder = targetFolder ?? appPath;
 
     if (!isAbsolute(finalTargetFolder)) {
-        return errorResponse(
-            `targetFolder must be an absolute path. Received: "${finalTargetFolder}"`,
-            params,
-            appPath
-        );
+        return { status: 'Error', message: `targetFolder must be an absolute path. Received: "${finalTargetFolder}"` };
     }
 
     try {
@@ -122,21 +124,7 @@ export async function generateAdaptationProject(
             projectName: projectName ?? getDefaultProjectName(finalTargetFolder)
         };
 
-        if (namespace) {
-            jsonInput.namespace = namespace;
-        }
-        if (applicationTitle) {
-            jsonInput.applicationTitle = applicationTitle;
-        }
-        if (client) {
-            jsonInput.client = client;
-        }
-        if (username) {
-            jsonInput.username = username;
-        }
-        if (password) {
-            jsonInput.password = password;
-        }
+        applyOptionalFields(jsonInput, { namespace, applicationTitle, client, username, password });
 
         if (importKeyUserChanges) {
             const keyUserChanges = await withTimeout(
@@ -156,16 +144,16 @@ export async function generateAdaptationProject(
             if (keyUserChanges.length > 0) {
                 jsonInput.keyUserChanges = keyUserChanges;
             } else {
-                return errorResponse(
-                    `importKeyUserChanges was requested but no key user changes were returned for '${application}' on '${system}'. ` +
-                        'Set importKeyUserChanges to false to generate the project without importing changes.',
-                    params,
-                    appPath
-                );
+                return {
+                    status: 'Error',
+                    message:
+                        `importKeyUserChanges was requested but no key user changes were returned for '${application}' on '${system}'. ` +
+                        'Set importKeyUserChanges to false to generate the project without importing changes.'
+                };
             }
         }
 
-        await FSpromises.mkdir(finalTargetFolder, { recursive: true });
+        mkdirSync(finalTargetFolder, { recursive: true });
 
         // Pass the JSON payload as a single argv element (not interpolated into a shell string) so
         // quotes, spaces or apostrophes in values cannot corrupt it. A corrupted payload would make
@@ -186,17 +174,13 @@ export async function generateAdaptationProject(
 
         const projectPath = join(finalTargetFolder, jsonInput.projectName);
         return {
-            functionalityId: GENERATE_ADAPTATION_PROJECT_ID,
             status: 'Success',
             message: `Adaptation project generated successfully at ${projectPath}.`,
-            parameters: safeParams(params),
-            appPath: projectPath,
-            changes: [],
-            timestamp: new Date().toISOString()
+            projectPath
         };
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         logger.error(`Error generating adaptation project: ${message}`);
-        return errorResponse(`Error generating adaptation project: ${message}`, params, appPath);
+        return { status: 'Error', message: `Error generating adaptation project: ${message}` };
     }
 }

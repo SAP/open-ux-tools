@@ -1,5 +1,44 @@
 # @sap-ux/adp-tooling
 
+## 1.0.52
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+- @sap-ux/odata-service-writer 1.0.21 → 1.0.21
+- @sap-ux/system-access 1.0.12 → 1.0.13
+- @sap-ux/inquirer-common 1.0.38 → 1.0.39
+
+## 1.0.51
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.9 → 1.0.10
+- @sap-ux/inquirer-common 1.0.37 → 1.0.38
+
+## 1.0.50
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.36 → 1.0.37
+
+## 1.0.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.6 → 2.0.7
+- @sap-ux/system-access 1.0.11 → 1.0.12
+- @sap-ux/ui5-config 1.0.9 → 1.0.9
+- @sap-ux/inquirer-common 1.0.35 → 1.0.36
+
 ## 1.0.48
 
 ### Patch Changes

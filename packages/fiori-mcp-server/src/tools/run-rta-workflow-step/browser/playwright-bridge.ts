@@ -291,6 +291,8 @@ export async function stopBrowser(): Promise<void> {
 /**
  * Returns `true` when no editor pages are currently open.
  * Used by the `stop` step to decide whether to shut down the browser.
+ *
+ * @returns `true` if the connection registry has no entries, `false` otherwise.
  */
 export function isRegistryEmpty(): boolean {
     return connectionRegistry.size === 0;

@@ -1,6 +1,4 @@
-import { validateUI5VersionExists, getDefaultProjectName } from '@sap-ux/adp-tooling';
-
-export { getDefaultProjectName } from '@sap-ux/adp-tooling';
+import { validateUI5VersionExists } from '@sap-ux/adp-tooling';
 
 /**
  * Generates a namespace for a project based on its layer.

@@ -1,8 +1,7 @@
 import { basename } from 'node:path';
 import { getVariant } from '@sap-ux/adp-tooling';
-import type { ExecuteFunctionalityOutput } from '../../../types/index.js';
+import type { AdpControllerExtensionOutput } from '../../../types/index.js';
 import { logger } from '../../../utils/logger.js';
-import { buildOutput } from '../output.js';
 import type { ProjectContext } from '../types.js';
 
 /**
@@ -15,7 +14,7 @@ import type { ProjectContext } from '../types.js';
  */
 export async function loadProjectContext(
     appPath: string
-): Promise<{ context: ProjectContext } | { error: ExecuteFunctionalityOutput }> {
+): Promise<{ context: ProjectContext } | { error: AdpControllerExtensionOutput }> {
     try {
         const variant = await getVariant(appPath);
         const layer = String(variant.layer ?? '');
@@ -29,6 +28,6 @@ export async function loadProjectContext(
             error instanceof Error ? error.message : String(error)
         }`;
         logger.error(message);
-        return { error: buildOutput('Error', message, appPath) };
+        return { error: { status: 'Error', message, appPath, changes: [] } };
     }
 }

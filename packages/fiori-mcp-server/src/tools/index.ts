@@ -25,6 +25,25 @@ const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
 
 const adpTools = [
     {
+        name: 'lookup_ui5_documentation',
+        description: `Looks up UI5 control documentation from a library's designtime api.json.
+
+        This tool:
+        - Reads ui5.yaml (discovered from the provided appPath) to resolve the configured UI5 base URL and version, falling back to the public https://ui5.sap.com when none is found
+        - Fetches (and caches) the control's api.json and extracts the requested piece of documentation
+        - Currently supports lookupType "aggregation" (type, cardinality, visibility, since, description), "property" (type, defaultValue, group, bindable, visibility, since, description), and "event" (parameters, visibility, since, description). Inherited members are resolved by walking the control's inheritance chain across libraries.
+
+        Use this when creating controller extensions or fragments and you need the exact metadata of a control's aggregation, property or event (e.g. the type of "customToolbar" on a SmartTable) rather than guessing.`,
+        annotations: {
+            title: 'Look up UI5 Documentation',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: true
+        },
+        inputSchema: convertToSchema(Input.LookupUi5DocumentationInputSchema),
+        outputSchema: convertToSchema(Output.LookupUi5DocumentationOutputSchema)
+    },
+    {
         name: 'generate_adaptation_project',
         description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
 
@@ -50,7 +69,8 @@ const adpTools = [
             idempotentHint: false,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema)
+        inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema),
+        outputSchema: convertToSchema(Output.GenerateAdaptationProjectOutputSchema)
     },
     {
         name: 'open_adaptation_editor',
@@ -69,7 +89,8 @@ const adpTools = [
             idempotentHint: false,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema)
+        inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema),
+        outputSchema: convertToSchema(Output.OpenAdaptationEditorOutputSchema)
     },
     {
         name: 'adp_controller_extension',
@@ -93,7 +114,7 @@ const adpTools = [
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema),
-        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+        outputSchema: convertToSchema(Output.AdpControllerExtensionOutputSchema)
     },
     {
         name: 'run_rta_workflow_step',
@@ -114,7 +135,7 @@ const adpTools = [
         - **call_page_action** — site + optional frameId, payload: \`{ id: string }\`. Invokes a registered action; returns \`{ result: PageActionRunResult }\`. Result is \`{ status: "ok" }\` on success or \`{ status: "needs_user_action", reason }\` if a precondition cannot be met.
         - **press_interactive** — site + optional frameId, payload: \`{ controlId: string }\`. Triggers a real user-gesture click on the named control and waits best-effort for the page to settle. Returns \`{ result: PageActionRunResult }\`.`,
         annotations: {
-            title: 'Run RTA Workflow Step (skill-internal)',
+            title: 'Run RTA Workflow Step',
             readOnlyHint: false,
             destructiveHint: true,
             idempotentHint: false,
@@ -138,7 +159,8 @@ const adpTools = [
             idempotentHint: true,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.AdpMetadataInputSchema)
+        inputSchema: convertToSchema(Input.ReadODataMetadataInputSchema),
+        outputSchema: convertToSchema(Output.ReadODataMetadataOutputSchema)
     }
 ] as Tool[];
 
@@ -217,7 +239,8 @@ export const tools = [
                     - Returns host, servicePath, client, and metadataFilePath inside the result's parameters object.
                     - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. Map the returned properties to the app config service property input to 'generate_fiori_app_odata'.
                     - **Note:** This tool is only supported in VSCode. For SAP Business Application Studio, use the Service Center MCP server tool to retrieve the service metadata instead.
-                    **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
+                    **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.
+                    **DO NOT use this tool to refresh or update service metadata in an existing Fiori application. Instead, invoke the ['sap-fiori-create-cli' skill's 'update service-metadata' section](../sap-fiori-create-cli/SKILL.md#update-service-metadata).`,
         annotations: {
             title: 'Download OData Service Metadata',
             readOnlyHint: false,
@@ -302,24 +325,6 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: generatorConfigCAPJson
-    },
-    {
-        name: 'lookup_ui5_documentation',
-        description: `Looks up UI5 control documentation from a library's designtime api.json.
-
-        This tool:
-        - Reads ui5.yaml (discovered from the provided appPath) to resolve the configured UI5 base URL and version, falling back to the public https://ui5.sap.com when none is found
-        - Fetches (and caches) the control's api.json and extracts the requested piece of documentation
-        - Currently supports lookupType "aggregation" (type, cardinality, visibility, since, description), "property" (type, defaultValue, group, bindable, visibility, since, description), and "event" (parameters, visibility, since, description). Inherited members are resolved by walking the control's inheritance chain across libraries.
-
-        Use this when creating controller extensions or fragments and you need the exact metadata of a control's aggregation, property or event (e.g. the type of "customToolbar" on a SmartTable) rather than guessing.`,
-        annotations: {
-            title: 'Look up UI5 Documentation',
-            readOnlyHint: true,
-            idempotentHint: true,
-            openWorldHint: true
-        },
-        inputSchema: convertToSchema(Input.LookupUi5DocumentationInputSchema)
     },
     {
         name: 'list_functionality',

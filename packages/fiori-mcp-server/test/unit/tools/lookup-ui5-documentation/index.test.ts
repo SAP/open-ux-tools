@@ -26,8 +26,23 @@ const symbol: Ui5Symbol = {
     name: 'sap.m.Table',
     'ui5-metadata': {
         aggregations: [{ name: 'columns', type: 'sap.m.Column', cardinality: '0..n', visibility: 'public' }],
-        properties: [{ name: 'growing', type: 'boolean', defaultValue: false, group: 'Behavior', bindable: true, visibility: 'public' }],
-        events: [{ name: 'select', visibility: 'public', parameters: { item: { name: 'item', type: 'sap.m.Item', description: 'The item.' } } }]
+        properties: [
+            {
+                name: 'growing',
+                type: 'boolean',
+                defaultValue: false,
+                group: 'Behavior',
+                bindable: true,
+                visibility: 'public'
+            }
+        ],
+        events: [
+            {
+                name: 'select',
+                visibility: 'public',
+                parameters: { item: { name: 'item', type: 'sap.m.Item', description: 'The item.' } }
+            }
+        ]
     }
 };
 

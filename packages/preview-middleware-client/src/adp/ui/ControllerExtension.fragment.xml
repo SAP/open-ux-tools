@@ -14,7 +14,7 @@
             singleContainerFullSize="false"
             visible="{/inputFormVisibility}">
             <f:content>
-                <Label text="Controller Name" />
+                <Label text="Name" />
                 <Input
                     id="controllerName"
                     description="{/controllerExtension}"

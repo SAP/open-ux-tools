@@ -12,9 +12,8 @@ jest.unstable_mockModule('node:os', () => ({
 }));
 
 // ── Import SUT AFTER mocks ───────────────────────────────────────────────────
-const { findControl, resolveControlChain, resolveLibraryForClass } = await import(
-    '../../../../src/tools/lookup-ui5-documentation/api-json.js'
-);
+const { findControl, resolveControlChain, resolveLibraryForClass } =
+    await import('../../../../src/tools/lookup-ui5-documentation/api-json.js');
 
 afterAll(() => {
     rmSync(MOCK_HOME, { recursive: true, force: true });
@@ -159,6 +158,26 @@ describe('resolveControlChain', () => {
         expect(chain).toEqual([child]);
     });
 
+    test('follows extends across libraries via resolveLibraryForClass', async () => {
+        // given: child is in one library; parent is in a different library api.json
+        const child = { name: 'sap.m.xlib.Child', extends: 'sap.ui.xlib.Parent' };
+        const parent = { name: 'sap.ui.xlib.Parent' };
+        const childApiJson: ApiJson = { symbols: [child] };
+        const parentApiJson: ApiJson = { symbols: [parent] };
+
+        // unique base+version to avoid memo collisions with other tests
+        const base = 'https://xlib.example.com';
+        const version = '1.120.0';
+
+        // First fetch resolves sap.ui.xlib (candidate library for 'sap.ui.xlib.Parent')
+        fetchMock.mockResolvedValueOnce({ ok: true, json: async () => parentApiJson });
+
+        // when
+        const chain = await resolveControlChain(child, childApiJson, base, version);
+
+        // then: [child, parent] — parent was found in a different api.json via resolveLibraryForClass
+        expect(chain.map((s) => s.name)).toEqual([child.name, parent.name]);
+    });
     test('stops on a cycle to prevent an infinite loop', async () => {
         // given: A extends B, B extends A
         const a = { name: 'sap.m.chain.A', extends: 'sap.m.chain.B' };

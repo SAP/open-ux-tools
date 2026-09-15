@@ -9,7 +9,6 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { adpControllerExtension } = await import('../../../../src/tools/adp-controller-extension/tool.js');
-const { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } = await import('../../../../src/constant.js');
 
 const mockedGetVariant = mockGetVariant;
 
@@ -33,7 +32,6 @@ describe('adpControllerExtension', () => {
     test('returns info envelope when appPath is missing', async () => {
         const result = await adpControllerExtension({ appPath: '' } as never);
         expect(result.status).toBe('Info');
-        expect(result.functionalityId).toBe(ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID);
         expect(result.message).toContain('Missing required parameter: appPath');
     });
 
@@ -139,15 +137,20 @@ describe('adpControllerExtension', () => {
         }
     });
 
-    test('strips aiResponse from the parameters echoed back to the caller', async () => {
-        const appPath = createAdpProject();
-        const aiResponse = ['**Path:** webapp/changes/coding/MyExt.js', '```js', '// x', '```'].join('\n');
+    test('includes existing project files section when controller extension already exists', async () => {
+        const appPath = createAdpProject('CUSTOMER_BASE');
+        // Write a pre-existing controller extension file so the scanner picks it up.
+        const extDir = join(appPath, 'webapp', 'changes', 'coding');
+        const { mkdirSync, writeFileSync } = await import('node:fs');
+        mkdirSync(extDir, { recursive: true });
+        writeFileSync(join(extDir, 'ExistingExt.js'), '// existing controller extension');
 
         try {
-            const result = await adpControllerExtension({ appPath, aiResponse, prompt: 'p' });
-            expect(result.status).toBe('Success');
-            expect(result.parameters).toEqual({ appPath, prompt: 'p' });
-            expect(JSON.stringify(result.parameters)).not.toContain('Path:');
+            const result = await adpControllerExtension({ appPath, prompt: 'add another method' });
+            expect(result.status).toBe('Info');
+            expect(result.message).toContain('EXISTING PROJECT FILES');
+            expect(result.message).toContain('ExistingExt.js');
+            expect(result.message).toContain('// existing controller extension');
         } finally {
             rmSync(appPath, { recursive: true, force: true });
         }

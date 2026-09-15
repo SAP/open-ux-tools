@@ -2,4 +2,4 @@
 "@sap-ux/fiori-mcp-server": minor
 ---
 
-FEAT: add ADP tools for adaptation project generation, controller extension authoring, and RTA workflow navigation via Playwright
+FEAT: add MCP tools for adaptation project development, covering project generation, controller extension authoring, RTA workflow automation, and UI5 control documentation lookup
