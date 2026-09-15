@@ -8,6 +8,7 @@
   "Wrong_path_separator_0_Did_you_mean_1": "`{{currentValue}}` is the wrong path separator. Did you mean `{{proposedValue}}`?",
   "No_segments_after_type": "Segments are not allowed after `$Type.`",
   "Value_must_be_provided": "The `$Type` must have a value.",
+  "Vocabulary_0_is_already_specified_in_line_1": "Vocabulary `{{vocabulary}}` is already specified in annotation group (line {{line}}).",
   "diagnostics": {
     "deprecated_$value_syntax": "Annotating values with $value is deprecated. Use nested annotations names instead."
   }
