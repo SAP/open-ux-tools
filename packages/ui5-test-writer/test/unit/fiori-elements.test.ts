@@ -274,6 +274,50 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckColumns');
         });
 
+        it('generates menu action tests for a List Report toolbar menu button', async () => {
+            const appModel = JSON.parse(appModels.V4_MODEL);
+            // Attach a table toolbar with a custom menu button (two child actions) to the List Report.
+            appModel.applicationModel.pages.TravelList.model.root.aggregations.table.aggregations.toolBar = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            MenuActions: {
+                                description: 'My Menu Button',
+                                menuType: 'CustomMenu',
+                                schema: { actionType: 'CustomMenu' },
+                                aggregations: {
+                                    actions: {
+                                        aggregations: {
+                                            myAction1: {
+                                                description: 'Custom Action 1',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            },
+                                            myAction2: {
+                                                description: 'Custom Action 2',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const content =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            expect(content).toContain('onTable(defaultTableId).iCheckAction("My Menu Button")');
+            expect(content).toContain('onTable(defaultTableId).iExecuteAction("My Menu Button")');
+            expect(content).toContain('onTable(defaultTableId).iCheckMenuAction("Custom Action 1")');
+            expect(content).toContain('onTable(defaultTableId).iCheckMenuAction("Custom Action 2")');
+        });
+
         it('skips testsuite and opaTests harness files when useVirtualPreviewEndpoints is enabled', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
