@@ -8,6 +8,7 @@ const mockGetService = jest.fn();
 const mockGetAll = jest.fn();
 const mockSystemNameExists = jest.fn();
 const mockValidateClient = jest.fn();
+const mockValidateUrl = jest.fn();
 
 // Mock i18n to return the key as the value (for testing)
 jest.unstable_mockModule('../../../../src/i18n.js', () => ({
@@ -63,7 +64,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     isSystemNameInUse: mockSystemNameExists
 }));
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
-    validateClient: mockValidateClient
+    validateClient: mockValidateClient,
+    validateUrl: mockValidateUrl
 }));
 
 const {
@@ -81,10 +83,20 @@ describe('system-prompts', () => {
         mockGetAll.mockReset();
         mockSystemNameExists.mockReset();
         mockValidateClient.mockReset();
+        mockValidateUrl.mockReset();
 
         // Default mock implementations
         mockSystemNameExists.mockResolvedValue(false);
         mockValidateClient.mockReturnValue(true);
+        mockValidateUrl.mockImplementation((input: string) => {
+            // Mock validateUrl from @sap-ux/project-input-validator
+            try {
+                const url = new URL(input);
+                return !!url.protocol && !!url.host;
+            } catch {
+                return 'Please enter a valid URL, for example https://my-system.example.com';
+            }
+        });
     });
 
     describe('promptForSystemConfig', () => {

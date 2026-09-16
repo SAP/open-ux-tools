@@ -234,16 +234,14 @@ async function addSystem(params: {
         replaceEnvVariables(config);
 
         if (!validateSystemConfig(config, logger)) {
-            logger.info(t('systemActions.systemNotAdded'));
-            logger.info('Review the error messages above for details.');
+            logger.info(t('systemActions.systemNotAddedInvalidConfig'));
             return;
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
         if (!(await checkForDuplicates(config, service, logger))) {
-            logger.info(t('systemActions.systemNotAdded'));
-            logger.info('Review the error messages above for details.');
+            logger.info(t('systemActions.systemNotAddedDuplicate'));
             return;
         }
 

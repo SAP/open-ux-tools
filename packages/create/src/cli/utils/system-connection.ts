@@ -78,6 +78,7 @@ export async function checkSystemConnection(config: {
                 logger.info(t('systemConnection.metadataRequestSuccessful'));
                 return { success: true };
             }
+            return { success: false, error: `Unexpected response status: ${response.status}` };
         } else if (config.connectionType === ConnectionType.GenericHost) {
             // For generic host, basic connectivity check
             await service.get('/', { timeout: 5000 });

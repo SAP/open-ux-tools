@@ -1,7 +1,7 @@
 import prompts from 'prompts';
 import type { BackendSystem } from '@sap-ux/store';
 import { SystemType, AuthenticationType, ConnectionType, isSystemNameInUse } from '@sap-ux/store';
-import { validateClient } from '@sap-ux/project-input-validator';
+import { validateClient, validateUrl } from '@sap-ux/project-input-validator';
 import { t } from '../../i18n.js';
 
 /**
@@ -22,21 +22,6 @@ export class ClearCredentialsCancelledError extends Error {
  */
 function isEmptyString(value: string): boolean {
     return !value || !/\S/.test(value);
-}
-
-/**
- * Checks if a string is a valid URL.
- *
- * @param value - The value to check
- * @returns true if valid URL, false otherwise
- */
-function isValidUrl(value: string): boolean {
-    try {
-        const url = new URL(value);
-        return !!url.protocol && !!url.host;
-    } catch {
-        return false;
-    }
 }
 
 /**
@@ -61,7 +46,8 @@ function validateUrlField(value: string): true | string {
         return nonEmptyCheck;
     }
 
-    return isValidUrl(value) ? true : t('systemPrompts.validation.invalidUrl');
+    const result = validateUrl(value);
+    return result === true ? true : String(result);
 }
 
 /**
@@ -99,37 +85,6 @@ async function validateSystemNameUniqueness(value: string, excludeSystem?: Backe
             }
         }
         if (isTaken) {
-            return t('systemPrompts.validation.systemNameExists', { name: value });
-        }
-        return true;
-    } catch (error) {
-        // Catch and convert service errors to validation messages to prevent duplicate names
-        console.error('Error checking system name uniqueness:', error);
-        return t('systemPrompts.validation.checkNameFailed');
-    }
-}
-
-/**
- * Validates that a system name is unique when updating (excluding the current system).
- *
- * @param value - The system name to validate
- * @param currentSystem - The system being updated (to exclude from uniqueness check)
- * @returns True if valid, error message otherwise
- */
-async function validateSystemNameUniquenessForUpdate(
-    value: string,
-    currentSystem: BackendSystem
-): Promise<true | string> {
-    const nonEmptyCheck = validateNonEmpty(value);
-    if (nonEmptyCheck !== true) {
-        return nonEmptyCheck;
-    }
-
-    try {
-        const isTaken = await isSystemNameInUse(value);
-        // Allow keeping the same name (case-insensitive)
-        const isSameName = currentSystem.name.trim().toLowerCase() === value.trim().toLowerCase();
-        if (isTaken && !isSameName) {
             return t('systemPrompts.validation.systemNameExists', { name: value });
         }
         return true;
@@ -401,7 +356,7 @@ export async function promptForFieldUpdates(
                         name: 'name',
                         message: t('systemPrompts.updateFields.newNamePrompt'),
                         initial: existing.name,
-                        validate: (value: string) => validateSystemNameUniquenessForUpdate(value, existing)
+                        validate: (value: string) => validateSystemNameUniqueness(value, existing)
                     };
                 case 'username':
                     return {
