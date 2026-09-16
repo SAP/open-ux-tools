@@ -1,4 +1,4 @@
-# UI.CollectionFacet UI.collectionfacet Should Not Be Nested at Third Level or Deeper (`sap-no-deep-collection-facets`)
+# `UI.CollectionFacet` Should Not Be Nested at Third Level or Deeper (`sap-no-deep-collection-facets`)
 
 SAP Fiori elements does not consider `UI.CollectionFacet` elements that are nested at the third level or deeper within the `UI.Facets` annotation. This rule detects deeply nested collection facets and recommends reorganizing the facet structure to use a maximum of two nesting levels.
 
