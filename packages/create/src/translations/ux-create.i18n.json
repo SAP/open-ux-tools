@@ -58,6 +58,8 @@
         "systemNotAddedInvalidConfig": "The system was not added due to invalid system configuration. Check error logs for details.",
         "systemNotAddedDuplicate": "The system was not added due to duplicate system configuration found. Check error logs for details.",
         "systemNotSaved": "System was not saved.",
+        "systemNotUpdated": "System was not updated.",
+        "operationCancelled": "Operation cancelled.",
         "systemAdded": "System '{{name}}' added.",
         "systemUpdated": "System '{{name}}' updated.",
         "systemRemoved": "System '{{name}}' removed."

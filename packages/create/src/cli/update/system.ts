@@ -149,7 +149,7 @@ async function determinePatch(
     } catch (err) {
         // User cancelled credential clearing operation
         if (err instanceof ClearCredentialsCancelledError) {
-            logger.info('Operation cancelled.');
+            logger.info(t('systemActions.operationCancelled'));
             return null;
         }
         throw err;
@@ -263,7 +263,7 @@ async function updateSystem(params: {
         const patchRecord = await determinePatch(params, existing, logger);
 
         if (!patchRecord) {
-            logger.info('System was not updated.');
+            logger.info(t('systemActions.systemNotUpdated'));
             return;
         }
 
@@ -273,14 +273,14 @@ async function updateSystem(params: {
             logger.error(
                 'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
             );
-            logger.info('System was not updated.');
+            logger.info(t('systemActions.systemNotUpdated'));
             return;
         }
 
         const patch = patchRecord as Partial<BackendSystem>;
 
         if (!(await verifyCredentialsUpdate(patch, existing, params))) {
-            logger.info('System was not updated.');
+            logger.info(t('systemActions.systemNotUpdated'));
             return;
         }
 
