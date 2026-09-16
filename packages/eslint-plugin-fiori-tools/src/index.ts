@@ -358,7 +358,8 @@ const baseFioriToolsRules = {
     '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
     // Off rules (alphabetical)
     '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
-    '@sap-ux/fiori-tools/sap-no-window-alert': 'off'
+    '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
+    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
 } as Linter.RulesRecord;
 
 const prodConfig: Linter.Config[] = [
