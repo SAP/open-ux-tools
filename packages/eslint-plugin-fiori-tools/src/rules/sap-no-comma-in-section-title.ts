@@ -209,12 +209,6 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
     },
     check(context) {
-        if (
-            !(context.sourceCode instanceof FioriAnnotationSourceCode) &&
-            !(context.sourceCode instanceof FioriI18nSourceCode)
-        ) {
-            return [];
-        }
         if (context.sourceCode instanceof FioriAnnotationSourceCode) {
             return checkAnnotationSource(context.sourceCode);
         }
