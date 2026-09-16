@@ -17,6 +17,27 @@ import { convert } from '@sap-ux/annotation-converter';
 
 const DATA_FIELD_FOR_ACTION = 'DataFieldForAction';
 
+/**
+ * Collects the names of actions annotated with `Common.IsActionCritical` from converted metadata.
+ * The metadata must already include the annotation files (merged) for annotation-only terms to surface.
+ *
+ * @param metadata The converted (ideally annotation-merged) OData metadata
+ * @returns The set of critical action method names (empty if none)
+ */
+export function collectCriticalActionNames(metadata?: ConvertedMetadata): Set<string> {
+    const names = new Set<string>();
+    for (const action of metadata?.actions ?? []) {
+        if (action.name) {
+            // ponytail: IsActionCritical is present at runtime but missing from the vocabularies-types typings.
+            const common = action.annotations?.Common as { IsActionCritical?: boolean } | undefined;
+            if (common?.IsActionCritical?.valueOf() === true) {
+                names.add(action.name);
+            }
+        }
+    }
+    return names;
+}
+
 type OperationAvailableWithPaths = OperationAvailable & { $Path?: string; path?: string };
 type RestrictionValueWithPaths = (boolean | { $Path?: string; path?: string }) | undefined;
 type EntityContainerAnnotationsWithActions = EntityContainerAnnotations & Record<string, ActionAnnotations>;
@@ -141,9 +162,14 @@ export function extractEnumMemberValue(enumValue: unknown): string | undefined {
  *
  * @param item The DataFieldForAction annotation item
  * @param metadata The converted metadata
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns ActionButtonState for the action
  */
-export function buildActionButtonState(item: DataFieldForAction, metadata: ConvertedMetadata): ActionButtonState {
+export function buildActionButtonState(
+    item: DataFieldForAction,
+    metadata: ConvertedMetadata,
+    criticalActions?: Set<string>
+): ActionButtonState {
     const actionString = (item.Action as string) || '';
     const actionMethod = extractActionMethodName(actionString);
     const operationAvailable = findOperationAvailableAnnotation(metadata, actionMethod);
@@ -164,7 +190,8 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
         visible: true,
         enabled,
         dynamicPath,
-        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined
+        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined,
+        isCritical: criticalActions?.has(actionMethod) ?? false
     };
 }
 
@@ -178,13 +205,15 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
  * @param label Display label from the spec model item description
  * @param convertedMetadata The converted OData metadata
  * @param schemaNamespace The OData schema namespace (used as service identifier)
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns ActionButtonState or undefined if the key is not a DataFieldForAction key
  */
 export function buildActionStateFromSpecModelKey(
     aggregationKey: string,
     label: string | undefined,
     convertedMetadata: ConvertedMetadata,
-    schemaNamespace: string
+    schemaNamespace: string,
+    criticalActions?: Set<string>
 ): ActionButtonState | undefined {
     const keyParts = aggregationKey.split('::');
     if (keyParts[0] !== DATA_FIELD_FOR_ACTION || !keyParts[1]) {
@@ -212,7 +241,8 @@ export function buildActionStateFromSpecModelKey(
         unbound: !isBound,
         visible: true,
         enabled,
-        dynamicPath
+        dynamicPath,
+        isCritical: criticalActions?.has(actionMethod) ?? false
     };
 }
 
