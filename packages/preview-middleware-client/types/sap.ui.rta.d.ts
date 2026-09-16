@@ -213,6 +213,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
                             settings?: {
                                 contextPath?: string;
                                 entitySet?: string;
+                                navigation?: {
+                                    [navProperty: string]: {
+                                        detail?: {
+                                            route?: string
+                                        }
+                                    }
+                                }
                             };
                         };
                     }
