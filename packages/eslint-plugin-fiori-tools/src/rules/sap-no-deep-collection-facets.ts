@@ -64,6 +64,44 @@ function findDeepCollectionFacets(
 }
 
 /**
+ * Adds or merges a violation into the problems array.
+ * If the same CollectionFacet is already reported, merges pageNames.
+ *
+ * @param problems - Array of found rule violations (mutated in place)
+ * @param collectionFacet - The violating CollectionFacet element
+ * @param pageName - Name of the page where violation occurs
+ * @param annotationUri - URI of the annotation file
+ * @param annotationValue - Parent annotation value element
+ */
+function addOrMergeViolation(
+    problems: NoDeepCollectionFacets[],
+    collectionFacet: Element,
+    pageName: string,
+    annotationUri: string,
+    annotationValue: Element
+): void {
+    const existingIndex = problems.findIndex((p) => p.annotation.reference.value === collectionFacet);
+    if (existingIndex > -1) {
+        problems[existingIndex] = {
+            ...problems[existingIndex],
+            pageNames: [...problems[existingIndex].pageNames, pageName]
+        };
+    } else {
+        problems.push({
+            type: NO_DEEP_COLLECTION_FACETS,
+            pageNames: [pageName],
+            annotation: {
+                reference: {
+                    uri: annotationUri,
+                    value: collectionFacet
+                },
+                reportedParent: annotationValue
+            }
+        });
+    }
+}
+
+/**
  * Checks an object page's UI.Facets annotations for CollectionFacets at third level or deeper.
  * Deduplicates: if the same CollectionFacet is shared across pages, merges pageNames.
  *
@@ -98,25 +136,7 @@ function checkPageFacetAnnotations(
         findDeepCollectionFacets(facetsCollection, aliasInfo, 1, violations);
 
         for (const collectionFacet of violations) {
-            const existingIndex = problems.findIndex((p) => p.annotation.reference.value === collectionFacet);
-            if (existingIndex > -1) {
-                problems[existingIndex] = {
-                    ...problems[existingIndex],
-                    pageNames: [...problems[existingIndex].pageNames, page.targetName]
-                };
-            } else {
-                problems.push({
-                    type: NO_DEEP_COLLECTION_FACETS,
-                    pageNames: [page.targetName],
-                    annotation: {
-                        reference: {
-                            uri: annotation.top.uri,
-                            value: collectionFacet
-                        },
-                        reportedParent: annotation.top.value
-                    }
-                });
-            }
+            addOrMergeViolation(problems, collectionFacet, page.targetName, annotation.top.uri, annotation.top.value);
         }
     }
 }
