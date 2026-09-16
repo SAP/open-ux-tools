@@ -7,7 +7,7 @@ import {
     extractEnumMemberValue,
     buildActionButtonState,
     buildActionStateFromSpecModelKey,
-    getCriticalActionNames
+    collectCriticalActionNames
 } from '../../../src/utils/actionUtils.js';
 import { getMergedConvertedMetadata } from '../../../src/utils/metadataXmlUtils.js';
 
@@ -487,11 +487,11 @@ describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from ann
     });
 
     test('IsActionCritical is not visible from metadata.xml alone', () => {
-        expect(getCriticalActionNames(metadataXml).has('setToBooked')).toBe(false);
+        expect(collectCriticalActionNames(getMergedConvertedMetadata(metadataXml)).has('setToBooked')).toBe(false);
     });
 
     test('IsActionCritical becomes visible once the annotation file is merged', () => {
-        const criticalNames = getCriticalActionNames(metadataXml, [annotationXml]);
+        const criticalNames = collectCriticalActionNames(getMergedConvertedMetadata(metadataXml, [annotationXml]));
         expect(criticalNames.has('setToBooked')).toBe(true);
         expect(criticalNames.has('setToNew')).toBe(true);
     });
@@ -499,7 +499,7 @@ describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from ann
     test('LR toolbar action states carry isCritical from the merged metadata', async () => {
         const { checkActionButtonStatesFromMetadata } = await import('../../../src/utils/listReportUtils.js');
         const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
-        const criticalActions = getCriticalActionNames(metadataXml, [annotationXml]);
+        const criticalActions = collectCriticalActionNames(converted);
         const { actions } = checkActionButtonStatesFromMetadata(converted!, 'Travel', undefined, criticalActions);
         const critical = actions.filter((a) => a.isCritical).map((a) => a.action);
         expect(critical).toEqual(expect.arrayContaining(['setToBooked', 'setToNew']));

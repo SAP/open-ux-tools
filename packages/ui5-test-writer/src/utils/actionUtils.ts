@@ -14,32 +14,26 @@ import type {
 import type { Logger } from '@sap-ux/logger';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
-import { getMergedConvertedMetadata } from './metadataXmlUtils.js';
 
 const DATA_FIELD_FOR_ACTION = 'DataFieldForAction';
 
 /**
- * Collects the names of actions annotated with `Common.IsActionCritical`.
+ * Collects the names of actions annotated with `Common.IsActionCritical` from converted metadata.
+ * The metadata must already include the annotation files (merged) for annotation-only terms to surface.
  *
- * @param metadataXml The service metadata XML (metadata.xml), or undefined
- * @param annotationXmls Annotation XML documents to merge, in manifest order
- * @returns The set of critical action method names (empty if none or on failure)
+ * @param metadata The converted (ideally annotation-merged) OData metadata
+ * @returns The set of critical action method names (empty if none)
  */
-export function getCriticalActionNames(metadataXml?: string, annotationXmls: string[] = []): Set<string> {
+export function collectCriticalActionNames(metadata?: ConvertedMetadata): Set<string> {
     const names = new Set<string>();
-    try {
-        const merged = getMergedConvertedMetadata(metadataXml, annotationXmls);
-        for (const action of merged?.actions ?? []) {
-            if (action.name) {
-                // ponytail: IsActionCritical is present at runtime but missing from the vocabularies-types typings.
-                const common = action.annotations?.Common as { IsActionCritical?: boolean } | undefined;
-                if (common?.IsActionCritical?.valueOf() === true) {
-                    names.add(action.name);
-                }
+    for (const action of metadata?.actions ?? []) {
+        if (action.name) {
+            // ponytail: IsActionCritical is present at runtime but missing from the vocabularies-types typings.
+            const common = action.annotations?.Common as { IsActionCritical?: boolean } | undefined;
+            if (common?.IsActionCritical?.valueOf() === true) {
+                names.add(action.name);
             }
         }
-    } catch {
-        // On any parse/merge/convert failure, fall back to no critical actions.
     }
     return names;
 }

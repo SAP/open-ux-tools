@@ -29,7 +29,7 @@ import { convert } from '@sap-ux/annotation-converter';
 import {
     extractActionMethodName,
     buildActionButtonState,
-    getCriticalActionNames,
+    collectCriticalActionNames,
     safeCheckButtonVisibility,
     safeCheckButtonVisibilityFromMetadata
 } from './actionUtils.js';
@@ -181,9 +181,9 @@ export function getListReportFeatures(
                 ? merge(parse(metadata, 'metadata'), ...parsedAnnotations)
                 : parse(metadata);
             convertedMetadata = convert(rawMetadata);
-            // IsActionCritical is an annotation-only term (typically in a separate annotation.xml),
-            // resolved separately so the merge cannot affect the main metadata conversion.
-            const criticalActions = getCriticalActionNames(metadata, annotationXmls);
+            // IsActionCritical is an annotation-only term surfaced by the merge above; read it off the
+            // already-converted metadata rather than re-parsing.
+            const criticalActions = collectCriticalActionNames(convertedMetadata);
             buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log);
             semanticKeyProperties = safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log);
             toolBarActions = safeCheckActionButtonStates(

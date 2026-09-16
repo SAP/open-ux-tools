@@ -28,15 +28,14 @@ import {
 import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
 import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
-import { parse } from '@sap-ux/edmx-parser';
-import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import {
     buildActionStateFromSpecModelKey,
-    getCriticalActionNames,
+    collectCriticalActionNames,
     safeCheckButtonVisibility,
     safeCheckEditVisibility
 } from './actionUtils.js';
+import { getMergedConvertedMetadata } from './metadataXmlUtils.js';
 import { getListReportViews } from './listReportUtils.js';
 
 /**
@@ -79,11 +78,11 @@ export async function getObjectPageFeatures(
     }
 
     // attempt to get individual feature data for each object page
-    const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
+    // Merge local annotation files so annotation-only terms (e.g. Common.IsActionCritical) surface;
+    // with no annotation files this is equivalent to convert(parse(metadata)).
+    const convertedMetadata = getMergedConvertedMetadata(metadata, annotationXmls);
     const schemaNamespace = convertedMetadata?.namespace ?? '';
-    // IsActionCritical is an annotation-only term (typically in a separate annotation.xml), resolved
-    // separately so the merge cannot affect the main metadata conversion.
-    const criticalActions = getCriticalActionNames(metadata, annotationXmls);
+    const criticalActions = collectCriticalActionNames(convertedMetadata);
     // Non-custom tabs of the parent List Report with their optional entity set. Used to pick the
     // tab a given Object Page is reached from on multi-view LRs; empty for single-table LRs.
     const listReportViews = getListReportViews(manifest, listReportPageKey);
