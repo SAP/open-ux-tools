@@ -36,9 +36,9 @@ const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).s
         || (section.contactCardFields && section.contactCardFields.length > 0)
         || (section.contactCardColumns && section.contactCardColumns.length > 0)
         || (section.subSections || []).some(function(sub) { return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); })
-        || (section.actions || []).some(function(action) { return action.visible && action.menuActions; });
+        || (section.actions || []).some(function(action) { return action.visible && action.menuActions && !action.splitButton; });
 });
-const headerHasMenu = (headerActions || []).some(function(action) { return action.visible && action.menuActions; });
+const headerHasMenu = (headerActions || []).some(function(action) { return action.visible && action.menuActions && !action.splitButton; });
 -%>
 <% if (usesFieldIdentifier) { -%>
 import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI";
@@ -82,6 +82,11 @@ function journey() {
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
 <%         if (action.menuActions) { -%>
+<%             if (action.splitButton) { -%>
+        // <%- JSON.stringify(action.label) %> is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+        Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>);
+        // When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%             } else { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>);
         When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%             action.menuActions.forEach(function(menuAction) { -%>
@@ -90,6 +95,7 @@ function journey() {
         // When.onThe<%- name%>Generated.onHeader().iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                 } -%>
 <%             }); -%>
+<%             } -%>
 <%         } else if (action.custom) { -%>
 <%             if (action.labelUnresolved) { -%>
         // TODO: label is an unresolved i18n key; replace with the rendered action text
@@ -157,6 +163,11 @@ function journey() {
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
 <%              if (action.menuActions) { -%>
+<%                  if (action.splitButton) { -%>
+        // <%- JSON.stringify(action.label) %> is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+        Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+        // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  } else { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
         When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%                  action.menuActions.forEach(function(menuAction) { -%>
@@ -165,6 +176,7 @@ function journey() {
         // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                      } -%>
 <%                  }); -%>
+<%                  } -%>
 <%              } else if (action.custom) { -%>
 <%                  if (action.labelUnresolved) { -%>
         // TODO: label is an unresolved i18n key; replace with the rendered action text
@@ -180,6 +192,11 @@ function journey() {
 <%              } -%>
 <%          } else { -%>
 <%              if (action.menuActions) { -%>
+<%                  if (action.splitButton) { -%>
+        // <%- JSON.stringify(action.label) %> is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction(<%- JSON.stringify(action.label) %>);
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  } else { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction(<%- JSON.stringify(action.label) %>);
         When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%                  action.menuActions.forEach(function(menuAction) { -%>
@@ -188,6 +205,7 @@ function journey() {
         // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                      } -%>
 <%                  }); -%>
+<%                  } -%>
 <%              } else if (action.custom) { -%>
 <%                  if (action.labelUnresolved) { -%>
         // TODO: label is an unresolved i18n key; replace with the rendered action text

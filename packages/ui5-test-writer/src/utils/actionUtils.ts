@@ -483,6 +483,9 @@ export function buildMenuActionState(
         menuItem.menuType === 'Annotation' || menuItem.schema?.dataType === 'DataFieldForActionGroup'
             ? 'Annotation'
             : 'CustomMenu';
+    // A `defaultAction` makes FE render a split button whose menu cannot be opened via the OPA API.
+    const defaultAction = (menuItem as AggregationItem & { properties?: { defaultAction?: { value?: string } } })
+        .properties?.defaultAction?.value;
     const { label, unresolved } = resolveLabel(menuItem.description);
     return {
         label,
@@ -490,6 +493,7 @@ export function buildMenuActionState(
         visible: true,
         enabled: true,
         menuType,
+        splitButton: defaultAction ? true : undefined,
         labelUnresolved: unresolved || undefined,
         menuActions: buildMenuItemStates(menuItem, convertedMetadata, schemaNamespace, resolveLabel)
     };

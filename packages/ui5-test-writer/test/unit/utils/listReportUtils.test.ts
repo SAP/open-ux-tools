@@ -2722,4 +2722,34 @@ describe('extractCustomToolBarActions()', () => {
             }
         ]);
     });
+
+    test('flags a menu with a defaultAction as a split button', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                properties: { defaultAction: { value: 'myAction2' } },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: 'Custom Action 1',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        const convertedMetadata = { actions: [], namespace: 'svc' } as unknown as ConvertedMetadata;
+        expect(
+            extractCustomToolBarActions(
+                model,
+                (label) => ({ label: label ?? '', unresolved: false }),
+                convertedMetadata
+            )[0]
+        ).toMatchObject({ label: 'My Menu Button', menuType: 'CustomMenu', splitButton: true });
+    });
 });
