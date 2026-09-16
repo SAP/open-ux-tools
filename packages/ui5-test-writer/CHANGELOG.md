@@ -1,5 +1,69 @@
 # @sap-ux/ui5-test-writer
 
+## 1.10.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Bug Fixes
+
+- Pass the table identifier into contact-card List Report tests so multi-tab scenarios target the correct table (onTable/onDialog now use defaultTableId) [[48b094c](https://github.com/SAP/open-ux-tools/commit/48b094c50dac3e42f8b07ad2a3c6cfbbf1cc68e0)]
+
+## 1.10.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Add <appId>.test resource root to generated OPA/unit test HTML [[65954d5](https://github.com/SAP/open-ux-tools/commit/65954d5c51bd5d9f96ca2c0f92b7792e6ff2aeaa)]
+
+## 1.10.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Use the page name for FPM/custom page journey module name instead of hardcoded "FPM journey" [[2b7c664](https://github.com/SAP/open-ux-tools/commit/2b7c664e2f0d73e00fbff7e918755b49d2bbe0f6)]
+
+## 1.10.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.12 → 1.2.13
+
+## 1.10.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/fiori-generator-shared 1.2.14 → 1.2.15
+- @sap-ux/preview-middleware 1.2.11 → 1.2.12
+
+## 1.10.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.13 → 1.2.14
+- @sap-ux/preview-middleware 1.2.10 → 1.2.11
+
 ## 1.10.1
 
 ### Patch Changes

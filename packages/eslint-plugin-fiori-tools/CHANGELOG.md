@@ -1,5 +1,29 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- add sap-no-single-facet-in-collection rule to flag UI.CollectionFacet containing only a single UI.ReferenceFacet. [[57ada1b](https://github.com/SAP/open-ux-tools/commit/57ada1b22189cad79d0912fe10438984433fb26a)]
+
+## 10.9.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
 ## 10.9.3
 
 ### Patch Changes
