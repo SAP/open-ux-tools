@@ -43,7 +43,7 @@ describe('processAiResponse', () => {
         expect(result.changes).toEqual([]);
     });
 
-    test('returns Error with empty changes when PathTraversalError is thrown', () => {
+    test('returns Error with empty changes when PathTraversalError is thrown on first file', () => {
         mockWriteExtractedFile.mockImplementationOnce(() => {
             throw new PathTraversalError(APP_PATH, '../../escaped.js');
         });
@@ -51,6 +51,32 @@ describe('processAiResponse', () => {
         expect(result.status).toBe('Error');
         expect(result.message).toContain('outside the application path');
         expect(result.changes).toEqual([]);
+    });
+
+    test('returns Error with partial changes when PathTraversalError is thrown after earlier writes', () => {
+        const twoFilesResponse = [
+            '**Path:** webapp/changes/coding/FileA.js',
+            '```javascript',
+            '// a',
+            '```',
+            '',
+            '**Path:** ../../escaped.js',
+            '```javascript',
+            '// evil',
+            '```'
+        ].join('\n');
+
+        mockWriteExtractedFile
+            .mockReturnValueOnce('webapp/changes/coding/FileA.js')
+            .mockImplementationOnce(() => {
+                throw new PathTraversalError(APP_PATH, '../../escaped.js');
+            });
+
+        const result = processAiResponse(APP_PATH, twoFilesResponse);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('outside the application path');
+        expect(result.changes).toHaveLength(1);
+        expect(result.changes[0]).toContain('FileA.js');
     });
 
     test('returns Error with partial changes on generic write failure', () => {

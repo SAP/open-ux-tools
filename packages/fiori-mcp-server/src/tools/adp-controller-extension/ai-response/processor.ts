@@ -37,7 +37,7 @@ export function processAiResponse(appPath: string, aiResponse: string): AdpContr
         } catch (error) {
             if (error instanceof PathTraversalError) {
                 logger.error(error.message);
-                return { status: 'Error', message: error.message, appPath, changes: [] };
+                return { status: 'Error', message: error.message, appPath, changes };
             }
             const message = `Failed to write file ${file.path}: ${
                 error instanceof Error ? error.message : String(error)
