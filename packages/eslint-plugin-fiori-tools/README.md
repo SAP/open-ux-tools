@@ -174,7 +174,6 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-no-sessionstorage](docs/rules/sap-no-sessionstorage.md) | Detect the usage of `sessionStorage`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5-prop-warning](docs/rules/sap-no-ui5-prop-warning.md) | Flag use of private members of the `sap.ui.model.odata.v2.ODataModel`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5base-prop](docs/rules/sap-no-ui5base-prop.md) | Flag use of private members from `sap.ui.base` classes. | ✅ | ✅ |
-|   9.0.0   | [sap-no-ui5eventprovider-prop](docs/rules/sap-no-ui5eventprovider-prop.md) | Detect private property usage of `sap.ui.base.EventProvider`. Use `sap-no-ui5base-prop` instead. | | |
 |   9.0.0   | [sap-no-ui5odatamodel-prop](docs/rules/sap-no-ui5odatamodel-prop.md) | Detect private property usage of the UI5 OData model. Use `sap-no-ui5base-prop` instead. | | |
 |   9.0.0   | [sap-no-window-alert](docs/rules/sap-no-window-alert.md) | Flag use of `window.alert`. | | |
 |   9.0.0   | [sap-opa5-autowait-true](docs/rules/sap-opa5-autowait-true.md) | Check if `autowait` is `true` in `Opa5.extendConfig`. | ✅ | ✅ |
