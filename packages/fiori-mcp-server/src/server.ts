@@ -26,7 +26,8 @@ import {
     runRtaWorkflowStep,
     readODataMetadataAdp,
     lookupUi5Documentation,
-    tools
+    tools,
+    adpToolNames
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
@@ -275,6 +276,10 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                 }
 
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
+
+                if (adpToolNames.has(name) && process.env.SAP_FIORI_MCP_ADP_TOOLS !== 'true') {
+                    throw new Error(`Tool ${name} is disabled. Set SAP_FIORI_MCP_ADP_TOOLS=true to enable ADP tools.`);
+                }
 
                 switch (name) {
                     case 'search_docs':

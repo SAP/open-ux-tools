@@ -377,3 +377,5 @@ export const tools = [
     },
     ...(adpToolsEnabled ? adpTools : [])
 ] as Tool[];
+
+export const adpToolNames = new Set(adpTools.map((t) => t.name));

@@ -617,6 +617,27 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        describe('ADP tools disabled (SAP_FIORI_MCP_ADP_TOOLS unset)', () => {
+            beforeEach(() => {
+                delete process.env.SAP_FIORI_MCP_ADP_TOOLS;
+            });
+
+            test.each([
+                'generate_adaptation_project',
+                'open_adaptation_editor',
+                'adp_controller_extension',
+                'run_rta_workflow_step',
+                'read_odata_metadata_adp',
+                'lookup_ui5_documentation'
+            ])('%s throws when ADP tools are disabled', async (toolName) => {
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+                const response = await onRequestCB({ params: { name: toolName, arguments: {} } });
+                expect(response.content[0].text).toContain('disabled');
+                expect(response.content[0].text).toContain('SAP_FIORI_MCP_ADP_TOOLS=true');
+            });
+        });
+
         describe('ADP tools (SAP_FIORI_MCP_ADP_TOOLS=true)', () => {
             let originalEnv: string | undefined;
 
