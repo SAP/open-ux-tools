@@ -1,5 +1,16 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.10 → 2.0.10
+- @sap-ux/fiori-generator-shared 1.2.14 → 1.2.15
+- @sap-ux/inquirer-common 1.0.39 → 1.0.40
+- @sap-ux/system-access 1.0.13 → 1.0.13
+
 ## 2.0.44
 
 ### Patch Changes

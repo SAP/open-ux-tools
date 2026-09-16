@@ -22,7 +22,7 @@ sap.ui.require(
     "sap/ui/thirdparty/qunit-2",
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
-    "testNameSpace/lropv4versionnotspecified/test/integration/FirstJourney",
+    "testnamespace/lropv4versionnotspecified/test/integration/FirstJourney",
 ], function (QUnit) {
     "use strict";
     QUnit.start();
