@@ -22,7 +22,6 @@ import {
 
 // Import all rules
 import sapBookmarkPerformance from './sap-bookmark-performance.js';
-import sapBrowserApiError from './sap-browser-api-error.js';
 import sapBrowserApiWarning from './sap-browser-api-warning.js';
 import sapCrossApplicationNavigation from './sap-cross-application-navigation.js';
 import sapForbiddenWindowProperty from './sap-forbidden-window-property.js';
@@ -91,7 +90,6 @@ import type { Rule } from 'eslint';
 
 export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
     'sap-bookmark-performance': sapBookmarkPerformance,
-    'sap-browser-api-error': sapBrowserApiError,
     'sap-browser-api-warning': sapBrowserApiWarning,
     'sap-cross-application-navigation': sapCrossApplicationNavigation,
     'sap-forbidden-window-property': sapForbiddenWindowProperty,
