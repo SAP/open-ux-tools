@@ -307,12 +307,13 @@ describe('browser/playwright-bridge', () => {
         expect(launchMock).toHaveBeenCalledTimes(2);
     });
 
-    test('does not retry when launch fails for an unrelated reason', async () => {
+    test('always retries with bundled Chromium when primary launch fails for any reason', async () => {
         launchMock.mockRejectedValueOnce(new Error('User data dir is locked by another process'));
+        launchMock.mockRejectedValueOnce(new Error('bundled also missing'));
 
         const fs = await loadPlaywrightBridge();
-        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/locked by another process/);
-        expect(launchMock).toHaveBeenCalledTimes(1);
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/npx playwright install chromium/);
+        expect(launchMock).toHaveBeenCalledTimes(2);
     });
 
     test('skips frame whose frameElement() rejects (null element guard)', async () => {
@@ -360,13 +361,13 @@ describe('browser/playwright-bridge', () => {
         expect(fs.isRegistryEmpty()).toBe(true);
     });
 
-    test('does not retry when fallback launch also fails for an unrelated reason', async () => {
+    test('throws install hint when fallback launch also fails', async () => {
         launchMock
             .mockRejectedValueOnce(new Error("Executable doesn't exist at /usr/bin/google-chrome"))
             .mockRejectedValueOnce(new Error('sandboxing policy violation'));
 
         const fs = await loadPlaywrightBridge();
-        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/sandboxing policy violation/);
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/npx playwright install chromium/);
         expect(launchMock).toHaveBeenCalledTimes(2);
     });
 
@@ -391,12 +392,12 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
         expect(browser.close).toHaveBeenCalledTimes(1);
     });
-    test('isMissingBrowserError returns false for non-Error thrown values', async () => {
-        // Throw a string (non-Error) from the primary launch — must NOT trigger the fallback retry.
+    test('always retries with bundled Chromium when primary launch throws a non-Error value', async () => {
         launchMock.mockRejectedValueOnce('not an error object');
+        launchMock.mockRejectedValueOnce(new Error('bundled also missing'));
 
         const fs = await loadPlaywrightBridge();
-        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toBe('not an error object');
-        expect(launchMock).toHaveBeenCalledTimes(1);
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/npx playwright install chromium/);
+        expect(launchMock).toHaveBeenCalledTimes(2);
     });
 });
