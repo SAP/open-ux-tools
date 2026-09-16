@@ -190,7 +190,6 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         .optional()
         .describe(
             'Step-specific arguments. ' +
-                'start: { site: string, frameId?: string }. ' +
                 'get_context: { controlId: string, actionId: string }. ' +
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'call_page_action: { id: string }. ' +

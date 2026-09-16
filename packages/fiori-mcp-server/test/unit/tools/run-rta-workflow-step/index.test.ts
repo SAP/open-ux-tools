@@ -68,18 +68,16 @@ describe('runRtaWorkflowStep dispatcher', () => {
             mockStartRta.mockResolvedValue({ rtaStarted: true });
             const result = await runRtaWorkflowStep({
                 step: 'start',
-                site: '',
-                payload: { site: SITE, frameId: FRAME }
+                site: SITE,
+                frameId: FRAME
             });
             expect(mockDisconnectSite).toHaveBeenCalledWith(SITE);
             expect(mockStartRta).toHaveBeenCalled();
             expect(result).toMatchObject({ site: SITE, frameId: FRAME, rtaStarted: true });
         });
 
-        test('throws when payload.site is missing', async () => {
-            await expect(runRtaWorkflowStep({ step: 'start', site: '', payload: {} })).rejects.toThrow(
-                'payload.site is required'
-            );
+        test('throws when site is missing', async () => {
+            await expect(runRtaWorkflowStep({ step: 'start', site: '' })).rejects.toThrow('site is required');
         });
     });
 

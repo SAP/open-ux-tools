@@ -73,8 +73,8 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
     try {
         switch (input.step) {
             case 'start': {
-                const site = requireString(input.payload, 'site');
-                const frameId = typeof input.payload?.frameId === 'string' ? input.payload.frameId : undefined;
+                const site = requireSite(input.site);
+                const frameId = input.frameId;
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the
                 // previous project's stale Playwright page.
