@@ -1,5 +1,41 @@
 # @sap-ux/ui5-test-writer
 
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Generate a confirmation-dialog check for critical actions (Common.IsActionCritical) in the latest List Report and Object Page journeys — press the action, assert the confirmation dialog, then cancel so the action is not executed. [[3c617f9](https://github.com/SAP/open-ux-tools/commit/3c617f935932a19f54c70a53753189ce75088d7e)]
+
+## 1.10.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Bug Fixes
+
+- Pass the table identifier into contact-card List Report tests so multi-tab scenarios target the correct table (onTable/onDialog now use defaultTableId) [[48b094c](https://github.com/SAP/open-ux-tools/commit/48b094c50dac3e42f8b07ad2a3c6cfbbf1cc68e0)]
+
+## 1.10.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Add <appId>.test resource root to generated OPA/unit test HTML [[65954d5](https://github.com/SAP/open-ux-tools/commit/65954d5c51bd5d9f96ca2c0f92b7792e6ff2aeaa)]
+
 ## 1.10.5
 
 ### Patch Changes
