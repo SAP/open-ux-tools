@@ -11,6 +11,7 @@ import {
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
     NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
+    NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS,
     CONDENSED_TABLE_LAYOUT,
     TABLE_COLUMN_VERTICAL_ALIGNMENT,
     TABLE_PERSONALIZATION,
@@ -82,6 +83,7 @@ import enablePaste from './sap-enable-paste.js';
 import tablePersonalization from './sap-table-personalization.js';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment.js';
 import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation.js';
+import noPathHiddenOnInteractiveColumns from './sap-no-path-hidden-on-interactive-columns.js';
 import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
@@ -148,6 +150,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
     [NO_DATA_FIELD_INTENT_BASED_NAVIGATION]: noDataFieldIntentBasedNavigation,
+    [NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS]: noPathHiddenOnInteractiveColumns,
     [CONDENSED_TABLE_LAYOUT]: condensedTableLayout,
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
