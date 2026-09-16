@@ -81,9 +81,9 @@ describe('runRtaWorkflowStep dispatcher', () => {
         });
 
         test('throws when site is not an http/https URL', async () => {
-            await expect(
-                runRtaWorkflowStep({ step: 'start', site: 'file:///etc/passwd' })
-            ).rejects.toThrow('http:// or https://');
+            await expect(runRtaWorkflowStep({ step: 'start', site: 'file:///etc/passwd' })).rejects.toThrow(
+                'http:// or https://'
+            );
         });
     });
 
