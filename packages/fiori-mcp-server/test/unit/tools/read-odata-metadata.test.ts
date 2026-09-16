@@ -99,10 +99,10 @@ describe('readODataMetadataAdp', () => {
 
         const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(result).toHaveLength(1);
-        expect(result[0].id).toEqual('mainService');
-        expect(result[0].url).toEqual('/sap/opu/odata/main');
-        expect(result[0].metadata).toContain('<formatted>');
+        expect(result.entries).toHaveLength(1);
+        expect(result.entries[0].id).toEqual('mainService');
+        expect(result.entries[0].url).toEqual('/sap/opu/odata/main');
+        expect(result.entries[0].metadata).toContain('<formatted>');
     });
 
     test('attaches matching ui5 model to entry', async () => {
@@ -111,7 +111,7 @@ describe('readODataMetadataAdp', () => {
 
         const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(result[0].model).toEqual(model);
+        expect(result.entries[0].model).toEqual(model);
     });
 
     test('writes metadata file when saveLocal is true', async () => {
@@ -144,7 +144,7 @@ describe('readODataMetadataAdp', () => {
 
         const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(result[0].metadata).toEqual('<raw/>');
+        expect(result.entries[0].metadata).toEqual('<raw/>');
         expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to format XML'));
     });
 

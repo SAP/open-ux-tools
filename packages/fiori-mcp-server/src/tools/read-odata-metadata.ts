@@ -8,7 +8,7 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import prettifyXml from 'prettify-xml';
 
 import { logger } from '../utils/index.js';
-import type { ReadODataMetadataInput } from '../types/index.js';
+import type { ReadODataMetadataInput, ReadODataMetadataOutput } from '../types/index.js';
 
 type Ui5Model = { dataSource?: string } & Record<string, unknown>;
 
@@ -43,7 +43,7 @@ async function getProvider(appPath: string): Promise<AbapServiceProvider> {
  * @param params Input parameters including `appPath` and the optional `saveLocal` flag.
  * @returns One entry per OData data source: id, service URL, formatted metadata XML, and bound model.
  */
-export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ODataMetadataEntry[]> {
+export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ReadODataMetadataOutput> {
     const { appPath, saveLocal = false } = params;
     const abapProvider = await getProvider(appPath);
     const variant = await getVariant(appPath);
@@ -75,7 +75,7 @@ export async function readODataMetadataAdp(params: ReadODataMetadataInput): Prom
             model: modelsByDataSource.get(name)
         });
     }
-    return entries;
+    return { entries };
 }
 
 /**
