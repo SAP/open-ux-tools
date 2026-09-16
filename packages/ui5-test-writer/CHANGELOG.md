@@ -1,5 +1,25 @@
 # @sap-ux/ui5-test-writer
 
+## 1.10.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Use the page name for FPM/custom page journey module name instead of hardcoded "FPM journey" [[2b7c664](https://github.com/SAP/open-ux-tools/commit/2b7c664e2f0d73e00fbff7e918755b49d2bbe0f6)]
+
+## 1.10.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.12 → 1.2.13
+
 ## 1.10.3
 
 ### Patch Changes
