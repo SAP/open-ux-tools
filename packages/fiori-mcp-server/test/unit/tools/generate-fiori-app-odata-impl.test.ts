@@ -411,6 +411,33 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         expect(configContent.entityConfig.mainEntity.entityName).toBe('SalesOrder');
     });
 
+    test('should pass navigationEntity through to the generator config', async () => {
+        const args = {
+            floorplan: 'FE_LROP',
+            project: {
+                name: 'testapp',
+                targetFolder: mockAppPath
+            },
+            service: {
+                servicePath: '/sap/opu/odata4/service',
+                url: 'https://test.example.com'
+            },
+            entityConfig: {
+                mainEntity: { entityName: 'SalesOrder' },
+                navigationEntity: { EntitySet: 'SalesOrderItems', Name: '_Items' }
+            }
+        };
+
+        await generateFioriAppOData(args);
+
+        const writeCallArgs = mockWriteFile.mock.calls[0] as string[];
+        const configContent = JSON.parse(writeCallArgs[1] as string);
+        expect(configContent.entityConfig.navigationEntity).toEqual({
+            EntitySet: 'SalesOrderItems',
+            Name: '_Items'
+        });
+    });
+
     test('should use default app name when not provided', async () => {
         const args = {
             floorplan: 'FE_LROP',
