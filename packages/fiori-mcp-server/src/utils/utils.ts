@@ -99,7 +99,11 @@ export function runCmdArgs(cmd: string, args: string[], options: RunCmdArgsOptio
                 // If the child exits before the force-kill timer fires, cancel it.
                 child.once('close', () => clearTimeout(forceKillTimer));
                 settle(() =>
-                    reject(new Error(`Command '${cmd}' timed out after ${timeout}ms (${args.length} args) and was terminated.`))
+                    reject(
+                        new Error(
+                            `Command '${cmd}' timed out after ${timeout}ms (${args.length} args) and was terminated.`
+                        )
+                    )
                 );
             }, timeout);
         }
@@ -123,7 +127,9 @@ export function runCmdArgs(cmd: string, args: string[], options: RunCmdArgsOptio
             } else {
                 const detail = [stderr, stdout].filter(Boolean).join('\n').trim();
                 settle(() =>
-                    reject(new Error(`Command '${cmd}' failed with exit code ${code} (${args.length} args).\n${detail}`))
+                    reject(
+                        new Error(`Command '${cmd}' failed with exit code ${code} (${args.length} args).\n${detail}`)
+                    )
                 );
             }
         });
