@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Generate a confirmation-dialog check for critical actions (Common.IsActionCritical) in the latest List Report and Object Page journeys — press the action, assert the confirmation dialog, then cancel so the action is not executed. [[3c617f9](https://github.com/SAP/open-ux-tools/commit/3c617f935932a19f54c70a53753189ce75088d7e)]
+
 ## 1.10.7
 
 ### Patch Changes
