@@ -7,7 +7,6 @@ import {
     extractEnumMemberValue,
     buildActionButtonState,
     buildActionStateFromSpecModelKey,
-    isActionCritical,
     getCriticalActionNames
 } from '../../../src/utils/actionUtils.js';
 import { getMergedConvertedMetadata } from '../../../src/utils/metadataXmlUtils.js';
@@ -437,44 +436,6 @@ describe('buildActionStateFromSpecModelKey()', () => {
     });
 });
 
-describe('isActionCritical()', () => {
-    const metadata = {
-        actions: [
-            {
-                name: 'SetToBooked',
-                fullyQualifiedName: 'TestService.SetToBooked(TestService.Order)',
-                annotations: { Common: { IsActionCritical: Boolean(true) } }
-            },
-            {
-                name: 'NotCritical',
-                fullyQualifiedName: 'TestService.NotCritical(TestService.Order)',
-                annotations: { Common: { IsActionCritical: Boolean(false) } }
-            },
-            {
-                name: 'NoAnnotation',
-                fullyQualifiedName: 'TestService.NoAnnotation(TestService.Order)',
-                annotations: {}
-            }
-        ]
-    } as unknown as ConvertedMetadata;
-
-    test('returns true for an action annotated Common.IsActionCritical = true', () => {
-        expect(isActionCritical(metadata, 'SetToBooked')).toBe(true);
-    });
-
-    test('returns false when the annotation value is false', () => {
-        expect(isActionCritical(metadata, 'NotCritical')).toBe(false);
-    });
-
-    test('returns false when the annotation is absent', () => {
-        expect(isActionCritical(metadata, 'NoAnnotation')).toBe(false);
-    });
-
-    test('returns false for an unknown action', () => {
-        expect(isActionCritical(metadata, 'Unknown')).toBe(false);
-    });
-});
-
 describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from annotation files', () => {
     // Inline fixtures (kept self-contained; the metadata has no IsActionCritical — it lives only in the annotation doc).
     const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
@@ -526,14 +487,13 @@ describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from ann
     });
 
     test('IsActionCritical is not visible from metadata.xml alone', () => {
-        const converted = getMergedConvertedMetadata(metadataXml);
-        expect(converted && isActionCritical(converted, 'setToBooked')).toBe(false);
+        expect(getCriticalActionNames(metadataXml).has('setToBooked')).toBe(false);
     });
 
     test('IsActionCritical becomes visible once the annotation file is merged', () => {
-        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
-        expect(converted && isActionCritical(converted, 'setToBooked')).toBe(true);
-        expect(converted && isActionCritical(converted, 'setToNew')).toBe(true);
+        const criticalNames = getCriticalActionNames(metadataXml, [annotationXml]);
+        expect(criticalNames.has('setToBooked')).toBe(true);
+        expect(criticalNames.has('setToNew')).toBe(true);
     });
 
     test('LR toolbar action states carry isCritical from the merged metadata', async () => {

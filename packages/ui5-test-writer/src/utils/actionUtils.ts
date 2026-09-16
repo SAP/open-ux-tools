@@ -253,22 +253,6 @@ export function buildActionStateFromSpecModelKey(
 }
 
 /**
- * Determines whether an action is annotated with `Common.IsActionCritical`.
- * Critical actions trigger a confirmation dialog at runtime.
- *
- * @param metadata The converted metadata
- * @param actionMethodName The action method name
- * @returns true if the action carries `Common.IsActionCritical` = true
- */
-export function isActionCritical(metadata: ConvertedMetadata, actionMethodName: string): boolean {
-    const foundAction = metadata.actions?.find(
-        (action) => action.name === actionMethodName || action.fullyQualifiedName?.includes(`.${actionMethodName}(`)
-    );
-    const common = foundAction?.annotations?.Common as { IsActionCritical?: boolean } | undefined;
-    return common?.IsActionCritical?.valueOf() === true;
-}
-
-/**
  * Analyzes a restriction value (Insertable, Deletable, or Updatable) to determine button state.
  *
  * @param value The annotation value — boolean, path object, or undefined
