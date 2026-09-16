@@ -199,7 +199,7 @@ export interface Annotation extends Node {
     type: typeof ANNOTATION_TYPE;
     term: Path;
     /**
-     * CDS original term name (as it is in the file)
+     * Original CDS term name (as it appears in the file)
      */
     originalTerm?: Path;
     qualifier?: Qualifier;

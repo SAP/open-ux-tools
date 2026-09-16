@@ -21,7 +21,7 @@ import {
 
 type InputToken = Identifier | Separator;
 /**
- * Converter from Path node to FlattenedPath node.
+ * Path node to FlattenedPath node converter.
  */
 export class FlattenedPathConverter {
     private input: InputToken[];
@@ -41,10 +41,10 @@ export class FlattenedPathConverter {
     }
 
     /**
-     * Converts Path node to FlattenedPath node.
+     * Converts the Path node to a FlattenedPath node.
      *
      * @param firstSegmentIsAnnotation - Indicates if the first segment is expected to be an annotation segment.
-     * @param path - Path node to convert.
+     * @param path - Path node to be converted.
      * @param lastSegmentQualifier - Qualifier for the last segment, which is already parsed in CST.
      * @returns FlattenedPath node
      */
@@ -82,8 +82,8 @@ export class FlattenedPathConverter {
     /**
      * Peek a token.
      *
-     * @param count Number of tokens to look ahead. By default zero token
-     * @returns token or undefined
+     * @param count Number of tokens to look ahead. Defaults to 0
+     * @returns The token at the given offset, or undefined if out of range.
      */
     private peek(count = 0): InputToken | undefined {
         const token = this.input[this.index + count];
@@ -97,8 +97,8 @@ export class FlattenedPathConverter {
     /**
      * Get next token and increment index.
      *
-     * @param count number to increment index. By default one token
-     * @returns Token or undefined
+     * @param count Number of positions to increment the index. Defaults to one token
+     * @returns The token at the new position, or undefined if out of range.
      */
     private next(count = 1): InputToken | undefined {
         if (this.index >= this.input.length) {
