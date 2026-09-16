@@ -1,5 +1,29 @@
 # @sap-ux/ui5-test-writer
 
+## 1.10.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Add <appId>.test resource root to generated OPA/unit test HTML [[65954d5](https://github.com/SAP/open-ux-tools/commit/65954d5c51bd5d9f96ca2c0f92b7792e6ff2aeaa)]
+
+## 1.10.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Use the page name for FPM/custom page journey module name instead of hardcoded "FPM journey" [[2b7c664](https://github.com/SAP/open-ux-tools/commit/2b7c664e2f0d73e00fbff7e918755b49d2bbe0f6)]
+
 ## 1.10.4
 
 ### Patch Changes
