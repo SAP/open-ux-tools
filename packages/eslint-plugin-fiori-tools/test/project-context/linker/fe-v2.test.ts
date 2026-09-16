@@ -88,7 +88,7 @@ describe('FE V2 Linker', () => {
             const newAnnotations = applyXmlAnnotationsChange(currentAnnotations, options.annotationsChange);
             testCache.set(uri, newAnnotations);
         }
-        const model = parser.parse('EDMXBackend', artifacts, testCache);
+        const model = parser.parse('EDMXBackend', artifacts, {}, root, testCache);
 
         const app = model.index.apps[Object.keys(model.index.apps)[0]];
         return {

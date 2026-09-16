@@ -45,4 +45,7 @@ export type DocumentType = AnnotationFile | XMLDocument | DocumentNode;
 export interface WorkerResult {
     artifacts: FoundFioriArtifacts;
     projectType: ProjectType;
+    i18nPathsByApp: { [appKey: string]: string[] };
+    appRoot: string;
+    projectRoot: string;
 }
