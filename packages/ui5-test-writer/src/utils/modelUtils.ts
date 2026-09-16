@@ -118,7 +118,8 @@ export async function getAppFeatures(
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
-    let resolveLabel: I18nLabelResolver;
+    let annotationFiles: string[] = [];
+    let resolveLabel = passthroughLabelResolver;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
@@ -141,6 +142,16 @@ export async function getAppFeatures(
                 projectMetadata = fs?.read(metadataPath);
             }
         }
+
+        // Local annotation files (e.g. webapp/annotations/annotation.xml) are not part of the
+        // service $metadata; read them so annotations defined only locally (e.g. UI.TextArrangement)
+        // are available when the metadata is converted.
+        const annotationRefs = appAccess.project?.apps['']?.services?.mainService?.annotations ?? [];
+        annotationFiles = annotationRefs
+            .map((annotation) => annotation.local)
+            .filter((path): path is string => !!path)
+            .map((path) => fs?.read(path))
+            .filter((content): content is string => !!content);
 
         resolveLabel = await buildLabelResolver(appAccess, log);
 
@@ -168,7 +179,8 @@ export async function getAppFeatures(
                 log,
                 projectMetadata,
                 manifest,
-                resolveLabel
+                resolveLabel,
+                annotationFiles
             );
         }
         if (objectPages) {

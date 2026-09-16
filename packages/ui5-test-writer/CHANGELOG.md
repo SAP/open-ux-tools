@@ -1,5 +1,74 @@
 # @sap-ux/ui5-test-writer
 
+## 1.10.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Use the page name for FPM/custom page journey module name instead of hardcoded "FPM journey" [[2b7c664](https://github.com/SAP/open-ux-tools/commit/2b7c664e2f0d73e00fbff7e918755b49d2bbe0f6)]
+
+## 1.10.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.12 → 1.2.13
+
+## 1.10.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/fiori-generator-shared 1.2.14 → 1.2.15
+- @sap-ux/preview-middleware 1.2.11 → 1.2.12
+
+## 1.10.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.13 → 1.2.14
+- @sap-ux/preview-middleware 1.2.10 → 1.2.11
+
+## 1.10.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.9 → 1.2.10
+
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-07
+
+#### Features
+
+- Generate OPA sort-order tests for List Report columns backed by a Text annotation [[714e3c5](https://github.com/SAP/open-ux-tools/commit/714e3c50d47fd768c19d81c693e3a1be2b2bddcd)]
+
+## 1.9.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.8 → 1.2.9
+- @sap-ux/fiori-generator-shared 1.2.12 → 1.2.13
+
 ## 1.9.5
 
 ### Patch Changes

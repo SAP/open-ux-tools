@@ -315,7 +315,7 @@ export class ConfigPrompter {
                 hint: t('prompts.systemTooltip')
             },
             default: '',
-            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
+            validate: (value: string) => this.validateSystem(value),
             additionalMessages: () => {
                 this.systemAdditionalMessage = getSystemAdditionalMessages(
                     this.flexUICapability,
@@ -334,12 +334,12 @@ export class ConfigPrompter {
     private getSystemValidationPromptForCli() {
         return {
             name: configPromptNames.systemValidationCli,
-            when: async (answers: ConfigAnswers): Promise<boolean> => {
-                if (!answers.system) {
+            when: async ({ system }: ConfigAnswers): Promise<boolean> => {
+                if (!system) {
                     return false;
                 }
 
-                const result = await this.validateSystem(answers.system, answers);
+                const result = await this.validateSystem(system);
                 if (typeof result === 'string') {
                     throw new Error(result);
                 }
@@ -785,21 +785,13 @@ export class ConfigPrompter {
      * loading the available applications.
      *
      * @param {string} system - The selected system.
-     * @param {ConfigAnswers} answers - The configuration answers provided by the user.
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
-    private async validateSystem(system: string, answers: ConfigAnswers): Promise<string | boolean> {
+    private async validateSystem(system: string): Promise<string | boolean> {
         const validationResult = validateEmptyString(system);
         if (typeof validationResult === 'string') {
             return validationResult;
         }
-
-        const options = {
-            system,
-            client: undefined,
-            username: answers.username,
-            password: answers.password
-        };
 
         try {
             this.targetApps = [];
@@ -807,8 +799,12 @@ export class ConfigPrompter {
             this.selectedProjectType = undefined;
             this.selectedSystemType = undefined;
             this.supportedProject = undefined;
+            const options = {
+                system,
+                client: undefined
+            };
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
+            this.isAuthRequired = (await this.getIsAuthRequired(system)) ?? false;
 
             if (this.isAuthRequired) {
                 return true;
@@ -1068,5 +1064,39 @@ export class ConfigPrompter {
      */
     private shouldDisplayProjectTypeClassicLabel(application: SourceApplication | undefined): boolean {
         return !isInternalFeaturesSettingEnabled() && this.isClassicAppOnMixedSystem(application);
+    }
+
+    /**
+     * Determines whether the given system requires authentication.
+     *
+     * Returns `undefined` when no ABAP provider is configured. Otherwise, checks the system
+     * endpoint's authentication requirement. In SAP Business Application Studio, when the system
+     * reports that authentication is required, it verifies this by attempting to fetch a CSRF
+     * token from the layered repository: a `401` response confirms authentication is required,
+     * while a successful call indicates it is not.
+     *
+     * @param {string} system - The system to check.
+     * @returns {Promise<boolean | undefined>} `true` if authentication is required, `false` if not,
+     * or `undefined` if no provider is configured.
+     */
+    private async getIsAuthRequired(system: string): Promise<boolean | undefined> {
+        if (!this.abapProvider) {
+            return undefined;
+        }
+
+        const doesSystemRequireAuth = await this.systemLookup.getSystemRequiresAuth(system);
+        if (!isAppStudio() || !doesSystemRequireAuth) {
+            return doesSystemRequireAuth;
+        }
+
+        try {
+            await this.abapProvider.getLayeredRepository().getCsrfToken();
+            return false;
+        } catch (error) {
+            if (isAxiosError(error) && error.response?.status === 401) {
+                return true;
+            }
+            throw error;
+        }
     }
 }
