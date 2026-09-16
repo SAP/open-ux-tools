@@ -172,7 +172,6 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-no-sessionstorage](docs/rules/sap-no-sessionstorage.md) | Detect the usage of `sessionStorage`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5-prop-warning](docs/rules/sap-no-ui5-prop-warning.md) | Flag use of private members of the `sap.ui.model.odata.v2.ODataModel`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5base-prop](docs/rules/sap-no-ui5base-prop.md) | Flag use of private members from `sap.ui.base` classes. | ✅ | ✅ |
-|   9.0.0   | [sap-no-window-alert](docs/rules/sap-no-window-alert.md) | Flag use of `window.alert`. | | |
 |   9.0.0   | [sap-opa5-autowait-true](docs/rules/sap-opa5-autowait-true.md) | Check if `autowait` is `true` in `Opa5.extendConfig`. | ✅ | ✅ |
 |   9.0.0   | [sap-timeout-usage](docs/rules/sap-timeout-usage.md) | Detect `setTimeout` usage with a value greater than zero. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-forms](docs/rules/sap-ui5-forms.md) | Detect invalid content for `SimpleForm`, `Form`, and `SmartForm`. | ✅ | ✅ |
