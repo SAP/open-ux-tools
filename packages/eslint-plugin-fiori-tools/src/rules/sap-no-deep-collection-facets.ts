@@ -4,29 +4,13 @@ import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { NoDeepCollectionFacets } from '../language/diagnostics.js';
 import { NO_DEEP_COLLECTION_FACETS } from '../language/diagnostics.js';
-import { getRecordType, getPropertyValueElement } from '../project-context/linker/annotations.js';
-import { buildAnnotationIndexKey, type ParsedService } from '../project-context/parser/index.js';
-import type { FeV4ObjectPage } from '../project-context/linker/fe-v4.js';
-import type { FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
+import { getRecordType } from '../project-context/linker/annotations.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
-
-const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
-const UI_COLLECTION_FACET = 'com.sap.vocabularies.UI.v1.CollectionFacet';
-
-/**
- * Returns the child Collection element of the Facets property inside a CollectionFacet record, if present.
- *
- * @param record - A CollectionFacet Record element
- * @returns The child Collection element, or undefined
- */
-function getFacetsChildCollection(record: Element): Element | undefined {
-    const facetsPropertyValue = getPropertyValueElement(record, 'Facets');
-    if (!facetsPropertyValue) {
-        return undefined;
-    }
-    const [childCollection] = elementsWithName(Edm.Collection, facetsPropertyValue);
-    return childCollection;
-}
+import {
+    UI_COLLECTION_FACET,
+    getFacetsChildCollection,
+    checkPageFacetAnnotations as checkPageFacets
+} from './utils/facet-helpers.js';
 
 /**
  * Recursively finds CollectionFacet records that appear at third level or deeper.
@@ -64,81 +48,16 @@ function findDeepCollectionFacets(
 }
 
 /**
- * Adds or merges a violation into the problems array.
- * If the same CollectionFacet is already reported, merges pageNames.
+ * Wrapper function that finds violations in a facets collection for use with checkPageFacets.
  *
- * @param problems - Array of found rule violations (mutated in place)
- * @param collectionFacet - The violating CollectionFacet element
- * @param pageName - Name of the page where violation occurs
- * @param annotationUri - URI of the annotation file
- * @param annotationValue - Parent annotation value element
+ * @param facetsCollection - The top-level UI.Facets collection
+ * @param aliasInfo - Alias information for resolving qualified names
+ * @returns Array of violating CollectionFacet elements
  */
-function addOrMergeViolation(
-    problems: NoDeepCollectionFacets[],
-    collectionFacet: Element,
-    pageName: string,
-    annotationUri: string,
-    annotationValue: Element
-): void {
-    const existingIndex = problems.findIndex((p) => p.annotation.reference.value === collectionFacet);
-    if (existingIndex > -1) {
-        problems[existingIndex] = {
-            ...problems[existingIndex],
-            pageNames: [...problems[existingIndex].pageNames, pageName]
-        };
-    } else {
-        problems.push({
-            type: NO_DEEP_COLLECTION_FACETS,
-            pageNames: [pageName],
-            annotation: {
-                reference: {
-                    uri: annotationUri,
-                    value: collectionFacet
-                },
-                reportedParent: annotationValue
-            }
-        });
-    }
-}
-
-/**
- * Checks an object page's UI.Facets annotations for CollectionFacets at third level or deeper.
- * Deduplicates: if the same CollectionFacet is shared across pages, merges pageNames.
- *
- * @param page - Object page (V4 or V2)
- * @param parsedService - Parsed annotation service
- * @param problems - Array of found rule violations (mutated in place)
- */
-function checkPageFacetAnnotations(
-    page: FeV4ObjectPage | FeV2ObjectPage,
-    parsedService: ParsedService,
-    problems: NoDeepCollectionFacets[]
-): void {
-    const entityType = page.entity?.structuredType;
-    if (!entityType) {
-        return;
-    }
-
-    const annotationKey = buildAnnotationIndexKey(entityType, UI_FACETS);
-    const annotationMap = parsedService.index.annotations[annotationKey];
-    if (!annotationMap) {
-        return;
-    }
-
-    for (const annotation of Object.values(annotationMap)) {
-        const aliasInfo = parsedService.artifacts.aliasInfo[annotation.top.uri];
-        const [facetsCollection] = elementsWithName(Edm.Collection, annotation.top.value);
-        if (!facetsCollection) {
-            continue;
-        }
-
-        const violations: Element[] = [];
-        findDeepCollectionFacets(facetsCollection, aliasInfo, 1, violations);
-
-        for (const collectionFacet of violations) {
-            addOrMergeViolation(problems, collectionFacet, page.targetName, annotation.top.uri, annotation.top.value);
-        }
-    }
+function findViolations(facetsCollection: Element, aliasInfo: AliasInformation): Element[] {
+    const violations: Element[] = [];
+    findDeepCollectionFacets(facetsCollection, aliasInfo, 1, violations);
+    return violations;
 }
 
 const rule: FioriRuleDefinition = createFioriRule({
@@ -173,7 +92,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 if (page.type !== 'object-page') {
                     continue;
                 }
-                checkPageFacetAnnotations(page, parsedService, problems);
+                checkPageFacets(page, parsedService, problems, NO_DEEP_COLLECTION_FACETS, findViolations);
             }
         }
 
