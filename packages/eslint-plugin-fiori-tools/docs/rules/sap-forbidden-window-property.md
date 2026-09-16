@@ -14,6 +14,10 @@ window.addEventListener(listener);
 window.alert('hello world');
 ```
 
+## Bug report
+
+In case you detect a problem with this check, please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
+
 ## Further Reading
 
 - For `window.alert`, please check the [UI5 API](https://ui5.sap.com/#/api/sap.m.MessageBox) reference for examples on using sap.m.MessageBox instead.
