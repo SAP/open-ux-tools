@@ -78,9 +78,9 @@ function findCollectionFacetsWithSingleChild(facetsCollection: Element, aliasInf
  * Checks an object page's UI.Facets annotations for CollectionFacets with a single ReferenceFacet child.
  * Deduplicates: if the same CollectionFacet is shared across pages, merges pageNames.
  *
- * @param page - Object page (Odata V4 or Odata V2)
- * @param parsedService - Parsed annotation service
- * @param problems - Array of found rule violations (mutated in place)
+ * @param page - Object page (OData V4 or OData V2)
+ * @param parsedService - A parsed annotation service
+ * @param problems - An array of found rule violations (mutated in place)
  */
 function checkPageFacetAnnotations(
     page: FeV4ObjectPage | FeV2ObjectPage,

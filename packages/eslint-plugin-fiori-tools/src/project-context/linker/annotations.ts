@@ -443,7 +443,7 @@ export function getTargetAnnotationPath(record: Element): string | undefined {
 }
 
 /**
- * Returns ID property value.
+ * Returns the value of the ID property.
  *
  * @param record - The record element
  * @returns The string ID value, or undefined if not found
