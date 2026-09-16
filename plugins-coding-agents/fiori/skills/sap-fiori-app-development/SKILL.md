@@ -1,10 +1,10 @@
 ---
 name: sap-fiori-app-development
-description: 'Guidelines for SAP Fiori app development for CAP and standalone projects. Use this skill when creating or modifying SAP Fiori Elements applications.'
+description: 'Guidelines for SAP Fiori app development for CAP and standalone projects. Use when creating or modifying SAP Fiori Elements applications, adding a List Report, Object Page, or Worklist, or connecting a Fiori app to a CAP service or OData endpoint.'
 argument-hint: 'fiori elements application creation or modification'
 metadata:
   author: sap-fiori-tools
-  version: "0.0.2"
+  version: "0.0.3"
 ---
 
 # SAP Fiori App Development Guidelines (CAP & Standalone Projects)

@@ -28,6 +28,15 @@ const ESBUILD_BUNDLING_PACKAGES = [
     '@sap-ux/eslint-plugin-fiori-tools'
 ];
 
+/**
+ * When a source package is released, all listed followers must also have a changeset.
+ * Follower versions are independent — they do not mirror the source version, they simply
+ * advance in lockstep (e.g. fiori-mcp-server 1.1.1→1.1.2 triggers fiori-tools-plugin 2.1.9→2.1.10).
+ */
+const VERSION_FOLLOWERS = {
+    '@sap-ux/fiori-mcp-server': ['@sap-ux/fiori-tools-plugin']
+};
+
 const __dirname = import.meta.dirname;
 const ROOT = path.join(__dirname, '..');
 const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP|INFRA):/i;
@@ -221,6 +230,26 @@ function validateChangesets() {
                         `     "${consumer}": patch\n` +
                         `     ---\n\n` +
                         `     BUMP: Update pinned version of ${dep}`
+                );
+            }
+        }
+    }
+
+    // Check that version-follower packages have a changeset whenever their
+    // source package is being released. Follower versions are independent —
+    // they advance in lockstep, not mirroring the source version number.
+    for (const [source, followers] of Object.entries(VERSION_FOLLOWERS)) {
+        if (!packagesWithChangesets.has(source)) continue;
+        for (const follower of followers) {
+            if (!packagesWithChangesets.has(follower)) {
+                errors.push(
+                    `❌ Missing cascading changeset for "${follower}"\n` +
+                        `   Reason: "${source}" is being released and "${follower}" must advance in lockstep.\n` +
+                        `   Fix: Add a changeset for "${follower}" (patch bump, BUMP: prefix):\n\n` +
+                        `     ---\n` +
+                        `     "${follower}": patch\n` +
+                        `     ---\n\n` +
+                        `     BUMP: Sync version with ${source}`
                 );
             }
         }
