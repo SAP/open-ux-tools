@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- generate OPA tests for List Report table toolbar menu (drop-down) actions, which were previously skipped [[b0683b3](https://github.com/SAP/open-ux-tools/commit/b0683b38db08d5be20bcabbe17a06cf287713520)]
+
 ## 1.11.0
 
 ### Minor Changes
