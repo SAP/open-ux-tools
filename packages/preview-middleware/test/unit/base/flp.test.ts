@@ -160,12 +160,36 @@ describe('FlpSandbox', () => {
     });
 
     describe('init', () => {
+        beforeEach(() => {
+            mockGetProjectType.mockResolvedValue('EDMXBackend');
+        });
+
         test('minimal manifest', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
             await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('minimal manifest with CAPNodejs project type', async () => {
+            mockGetProjectType.mockResolvedValue('CAPNodejs');
+            const flp = new FlpSandbox(
+                {
+                    flp: {
+                        libs: true
+                    }
+                },
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            await flp.init(manifest);
+            expect(flp.templateConfig.locateReuseLibsScript).toBe(false);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
