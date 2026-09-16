@@ -46,8 +46,10 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
 }
 
 /**
- * Asserts that `site` is a non-empty string. Used by every step except `start`
- * to validate that the caller carried the site URL forward from the `start` result.
+ * Asserts that `site` is a non-empty http:// or https:// URL. Used by every
+ * step to validate that the caller carried the site URL forward from the `start` result
+ * and that it cannot be a file:// or javascript: URI that would cause the Playwright browser
+ * to load local content or execute arbitrary scripts.
  *
  * @param site Value of `input.site`.
  * @returns The validated site URL.
@@ -55,6 +57,9 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
 function requireSite(site: string | undefined): string {
     if (typeof site !== 'string' || site.length === 0) {
         throw new Error('site is required for this step. Pass the site URL returned by the "start" step.');
+    }
+    if (!site.startsWith('http://') && !site.startsWith('https://')) {
+        throw new Error(`site must be an http:// or https:// URL. Received: "${site}"`);
     }
     return site;
 }

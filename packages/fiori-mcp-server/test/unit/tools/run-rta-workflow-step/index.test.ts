@@ -79,6 +79,12 @@ describe('runRtaWorkflowStep dispatcher', () => {
         test('throws when site is missing', async () => {
             await expect(runRtaWorkflowStep({ step: 'start', site: '' })).rejects.toThrow('site is required');
         });
+
+        test('throws when site is not an http/https URL', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'start', site: 'file:///etc/passwd' })
+            ).rejects.toThrow('http:// or https://');
+        });
     });
 
     describe('get_overlays step', () => {
