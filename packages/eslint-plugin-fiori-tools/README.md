@@ -178,6 +178,6 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-ui5-global-eval](docs/rules/sap-ui5-global-eval.md) | Detect the usage of `globalEval()` and `eval()`. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-legacy-factories](docs/rules/sap-ui5-legacy-factories.md) | Detect legacy UI5 factories that lead to synchronous loading. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-legacy-jquerysap-usage](docs/rules/sap-ui5-legacy-jquerysap-usage.md) | Detect legacy `jQuery.sap` usage. | ✅ | ✅ |
-|   9.0.0   | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | | |
+|   9.0.0   | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | ✅ | ✅ |
 |   9.0.0   | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect the usage of the deprecated `BaseMasterController`. | ✅ | ✅ |
 </div>
