@@ -66,11 +66,9 @@ describe('processAiResponse', () => {
             '```'
         ].join('\n');
 
-        mockWriteExtractedFile
-            .mockReturnValueOnce('webapp/changes/coding/FileA.js')
-            .mockImplementationOnce(() => {
-                throw new PathTraversalError(APP_PATH, '../../escaped.js');
-            });
+        mockWriteExtractedFile.mockReturnValueOnce('webapp/changes/coding/FileA.js').mockImplementationOnce(() => {
+            throw new PathTraversalError(APP_PATH, '../../escaped.js');
+        });
 
         const result = processAiResponse(APP_PATH, twoFilesResponse);
         expect(result.status).toBe('Error');
