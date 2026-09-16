@@ -35,7 +35,6 @@ import sapNoDomInsertion from './sap-no-dom-insertion.js';
 import sapNoDynamicStyleInsertion from './sap-no-dynamic-style-insertion.js';
 import sapNoElementCreation from './sap-no-element-creation.js';
 import sapNoEncodeFileService from './sap-no-encode-file-service.js';
-import sapNoEventProp from './sap-no-event-prop.js';
 import sapNoExecCommand from './sap-no-exec-command.js';
 import sapNoGlobalDefine from './sap-no-global-define.js';
 import sapNoGlobalEvent from './sap-no-global-event.js';
@@ -104,7 +103,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-no-dynamic-style-insertion': sapNoDynamicStyleInsertion,
     'sap-no-element-creation': sapNoElementCreation,
     'sap-no-encode-file-service': sapNoEncodeFileService,
-    'sap-no-event-prop': sapNoEventProp,
     'sap-no-exec-command': sapNoExecCommand,
     'sap-no-global-define': sapNoGlobalDefine,
     'sap-no-global-event': sapNoGlobalEvent,

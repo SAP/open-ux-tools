@@ -151,7 +151,6 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-no-dynamic-style-insertion](docs/rules/sap-no-dynamic-style-insertion.md) | Detect the usage of `document.styleSheets` (dynamic style insertion). | ✅ | ✅ |
 |   9.0.0   | [sap-no-element-creation](docs/rules/sap-no-element-creation.md) | Detect direct element creation. | ✅ | ✅ |
 |   9.0.0   | [sap-no-encode-file-service](docs/rules/sap-no-encode-file-service.md) | Detect the usage of `/sap/bc/ui2/encode_file`. | ✅ | ✅ |
-|   9.0.0   | [sap-no-event-prop](docs/rules/sap-no-event-prop.md) | Flag use of private members from `sap.ui.base.Event`. Use `sap-no-ui5base-prop` instead. | | |
 |   9.0.0   | [sap-no-exec-command](docs/rules/sap-no-exec-command.md) | Detect the usage of `execCommand`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-global-define](docs/rules/sap-no-global-define.md) | Detect the definition of global properties in the `window` object. | ✅ | ✅ |
 |   9.0.0   | [sap-no-global-event](docs/rules/sap-no-global-event.md) | Detect the global event handling override. | ✅ | ✅ |
