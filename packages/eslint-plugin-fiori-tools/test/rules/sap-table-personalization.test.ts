@@ -495,7 +495,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 errors: [
                     {
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently column, filter, sort are disabled in the Products table.',
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `column`, `filter`, `sort` are disabled in the Products table.',
                         line: 145,
                         column: 21
                     }
@@ -764,7 +764,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently column, filter, group, sort are disabled in the table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `column`, `filter`, `group`, `sort` are disabled in the table.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -835,7 +835,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently column, sort are disabled in the table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `column`, `sort` are disabled in the table.'
                     },
                     {
                         line: 129,
@@ -893,7 +893,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently column is disabled in the table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `column` is disabled in the table.'
                     },
                     {
                         line: 129,
@@ -969,7 +969,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently filter, sort are disabled in the table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `filter`, `sort` are disabled in the table.'
                     },
                     {
                         line: 129,
@@ -1062,7 +1062,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 146,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently column, filter, group, sort are disabled in the Products table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `column`, `filter`, `group`, `sort` are disabled in the Products table.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -1133,7 +1133,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 145,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently column, sort are disabled in the Products table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `column`, `sort` are disabled in the Products table.'
                     },
                     {
                         line: 147,
@@ -1191,7 +1191,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 145,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently column is disabled in the Products table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `column` is disabled in the Products table.'
                     },
                     {
                         line: 147,
@@ -1267,7 +1267,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 146,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as `false`. Currently filter, sort are disabled in the Products table.'
+                            'In case of using an object, omitting a setting is treated as `false`. Currently `filter`, `sort` are disabled in the Products table.'
                     },
                     {
                         line: 148,

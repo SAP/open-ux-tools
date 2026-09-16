@@ -84,7 +84,8 @@ const rule: FioriRuleDefinition = createFioriRule({
             let messageId = MessageIdByProperty[diagnostic.property ?? ''];
             if (diagnostic.undefinedProperties?.length) {
                 const tableReference = diagnostic.pageSectionName ? ` ${diagnostic.pageSectionName} table` : ' table';
-                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'} in the${tableReference}`;
+                const properties = diagnostic.undefinedProperties.map((property) => `\`${property}\``);
+                undefinedPropertiesString = `Currently ${properties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'} in the${tableReference}`;
                 messageId = MISSING_PERSONALIZATION_PROPERTIES;
             }
             return context.report({
