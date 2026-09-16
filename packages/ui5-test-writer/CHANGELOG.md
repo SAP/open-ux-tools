@@ -1,5 +1,29 @@
 # @sap-ux/ui5-test-writer
 
+## 1.10.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Bug Fixes
+
+- Pass the table identifier into contact-card List Report tests so multi-tab scenarios target the correct table (onTable/onDialog now use defaultTableId) [[48b094c](https://github.com/SAP/open-ux-tools/commit/48b094c50dac3e42f8b07ad2a3c6cfbbf1cc68e0)]
+
+## 1.10.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Add <appId>.test resource root to generated OPA/unit test HTML [[65954d5](https://github.com/SAP/open-ux-tools/commit/65954d5c51bd5d9f96ca2c0f92b7792e6ff2aeaa)]
+
 ## 1.10.5
 
 ### Patch Changes
