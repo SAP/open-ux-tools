@@ -90,4 +90,14 @@ describe('ListReportJourney template (latest) - multi-tab tab-specific checks', 
     test('checks the tab-specific contact card link on its own tab', () => {
         expect(content).toContain('onTable("1").iClickLink(0, "DataFieldForAnnotation::_UserContactCard::Contact")');
     });
+
+    test('reveals popin details before contact-card clicks, only on tabs that have contact columns', () => {
+        expect(content).toContain('onTable("1").iExecuteShowHideDetails(true)');
+        // Tab "6" has no contact-card columns, so no show-details press is emitted for it.
+        expect(content).not.toContain('onTable("6").iExecuteShowHideDetails(true)');
+        // The show-details press must precede the contact-card link click on the same tab.
+        expect(content.indexOf('onTable("1").iExecuteShowHideDetails(true)')).toBeLessThan(
+            content.indexOf('onTable("1").iClickLink(0, "DataFieldForAnnotation::_UserContactCard::Contact")')
+        );
+    });
 });

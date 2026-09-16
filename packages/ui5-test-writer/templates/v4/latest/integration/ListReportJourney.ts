@@ -111,6 +111,10 @@ function journey() {
         Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
         <%_ } _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
+        <%_ if (tab.contactCardColumns.length > 0) { _%>
+        // Reveal popin details so low-priority (e.g. contact-card) columns become clickable; no-op on grid/analytical tables.
+        When.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iExecuteShowHideDetails(true);
+        <%_ } _%>
         <%_ tab.contactCardColumns.forEach(function(column) { _%>
         // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
         When.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iClickLink(0, "<%- column.property %>");
@@ -161,6 +165,8 @@ function journey() {
 
 <%_ if (contactCardColumns.length > 0) { -%>
     opaTest("Check contact card links", function (_Given: Given, When: When, Then: Then) {
+        // Reveal popin details so low-priority (e.g. contact-card) columns become clickable; no-op on grid/analytical tables.
+        When.onThe<%- startLR %>Generated.onTable("").iExecuteShowHideDetails(true);
         <%_ contactCardColumns.forEach(function(column) { _%>
         // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
         When.onThe<%- startLR %>Generated.onTable("").iClickLink(0, "<%- column.property %>");
