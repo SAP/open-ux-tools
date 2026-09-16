@@ -59,7 +59,6 @@ import sapNoSessionstorage from './sap-no-sessionstorage.js';
 import sapNoUi5PropWarning from './sap-no-ui5-prop-warning.js';
 import sapNoUi5baseProp from './sap-no-ui5base-prop.js';
 import sapNoUi5eventproviderProp from './sap-no-ui5eventprovider-prop.js';
-import sapNoUi5odatamodelProp from './sap-no-ui5odatamodel-prop.js';
 import sapNoWindowAlert from './sap-no-window-alert.js';
 import sapOpa5AutowaitTrue from './sap-opa5-autowait-true.js';
 import sapTimeoutUsage from './sap-timeout-usage.js';
@@ -128,7 +127,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-no-ui5-prop-warning': sapNoUi5PropWarning,
     'sap-no-ui5base-prop': sapNoUi5baseProp,
     'sap-no-ui5eventprovider-prop': sapNoUi5eventproviderProp,
-    'sap-no-ui5odatamodel-prop': sapNoUi5odatamodelProp,
     'sap-no-window-alert': sapNoWindowAlert,
     'sap-opa5-autowait-true': sapOpa5AutowaitTrue,
     'sap-timeout-usage': sapTimeoutUsage,
