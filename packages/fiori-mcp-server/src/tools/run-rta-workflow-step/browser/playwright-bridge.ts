@@ -238,10 +238,14 @@ export async function callFrontendAction<TReturn = unknown>(
             connectionRegistry.delete(site);
         });
 
-        await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
-
-        rpc = await createPageRPC(page);
-        connectionRegistry.set(site, rpc);
+        try {
+            await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
+            rpc = await createPageRPC(page);
+            connectionRegistry.set(site, rpc);
+        } catch (err) {
+            await context.close().catch(() => undefined);
+            throw err;
+        }
     }
 
     return rpc.callFrontendAction<TReturn>(actionName, payload, frameId);
