@@ -314,7 +314,7 @@ describe('getPrompts', () => {
         mockFormatAppChoices.mockReturnValue(appList);
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
         mockFetchAppList.mockResolvedValue(appList);
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue(true);
         mockHasQfaJson.mockReturnValue(true);
 
         const prompts = await getPrompts(appRootPath);

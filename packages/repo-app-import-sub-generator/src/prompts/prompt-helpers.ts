@@ -95,8 +95,8 @@ async function getAppList(
         if (downloadType === AppDownloadType.AbapRepository) {
             // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
             const filtered = results.filter((app) => app[sourceTemplateIdField] !== adtSourceTemplateId);
-            console.log(
-                `[repo-app-import] App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
+            RepoAppDownloadLogger.logger?.debug(
+                `App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
             );
             return filtered;
         }
@@ -104,21 +104,20 @@ async function getAppList(
     } catch (error) {
         if (
             downloadType === AppDownloadType.AbapRepository &&
-            // isAxiosError check is intentionally avoided — the error may be re-wrapped by upstream callers,
-            // stripping the isAxiosError flag even for genuine HTTP 400 responses.
             (error as { response?: { status?: number } })?.response?.status === 400
         ) {
             // Older systems may not support sourceTemplateIdField or the sap.app/type search param.
             // Retry with no search params and without sourceTemplateIdField — return all results as-is
             // since old systems won't have ADT-deployed apps to filter out anyway.
-            console.log(`[repo-app-import] Retrying without ${sourceTemplateIdField} and search params`);
+            RepoAppDownloadLogger.logger?.debug(`Retrying without ${sourceTemplateIdField} and search params`);
             try {
+                // sap.app/type=application is also dropped — older systems may reject it too.
+                // Non-application entries in the list are acceptable; they will fail at the download step.
                 const retryResults = await provider.getAppIndex().search({}, appListFieldsWithoutSourceTemplate);
-                console.log(`[repo-app-import] Retry succeeded: ${retryResults.length} results`);
+                RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${retryResults.length} results`);
                 return retryResults;
             } catch (retryError) {
                 const retryMessage = retryError instanceof Error ? retryError.message : String(retryError);
-                console.log(`[repo-app-import] Retry also failed: ${retryMessage}`);
                 RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: retryMessage }));
                 return [];
             }
