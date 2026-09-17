@@ -9,7 +9,7 @@ import { FioriAnnotationSourceCode } from '../language/annotations/source-code.j
 import {
     UI_COLLECTION_FACET,
     getFacetsChildCollection,
-    checkPageFacetAnnotations as checkPageFacets
+    checkPageFacetAnnotations
 } from './utils/facet-helpers.js';
 
 /**
@@ -19,7 +19,7 @@ import {
  * @param collection - The Collection element to traverse
  * @param aliasInfo - The alias information for resolving qualified names
  * @param currentLevel - The current nesting level (1 = direct children of UI.Facets)
- * @param violations - The accumulator for found violations (mutated in place)
+ * @param violations - The accumulator for identified violations (mutated in place)
  */
 function findDeepCollectionFacets(
     collection: Element,
@@ -92,7 +92,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 if (page.type !== 'object-page') {
                     continue;
                 }
-                checkPageFacets(page, parsedService, problems, NO_DEEP_COLLECTION_FACETS, findViolations);
+                checkPageFacetAnnotations(page, parsedService, problems, NO_DEEP_COLLECTION_FACETS, findViolations);
             }
         }
 

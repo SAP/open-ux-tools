@@ -10,7 +10,7 @@ import {
     UI_COLLECTION_FACET,
     UI_REFERENCE_FACET,
     getFacetsChildCollection,
-    checkPageFacetAnnotations as checkPageFacets
+    checkPageFacetAnnotations
 } from './utils/facet-helpers.js';
 
 /**
@@ -90,7 +90,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 if (page.type !== 'object-page') {
                     continue;
                 }
-                checkPageFacets(
+                checkPageFacetAnnotations(
                     page,
                     parsedService,
                     problems,

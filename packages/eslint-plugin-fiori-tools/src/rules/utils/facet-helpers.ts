@@ -7,6 +7,7 @@ import { getPropertyValueElement } from '../../project-context/linker/annotation
 import { buildAnnotationIndexKey, type ParsedService } from '../../project-context/parser/index.js';
 import type { FeV4ObjectPage } from '../../project-context/linker/fe-v4.js';
 import type { FeV2ObjectPage } from '../../project-context/linker/fe-v2.js';
+import type { NoDeepCollectionFacets, NoSingleFacetInCollection } from '../../language/diagnostics.js';
 
 export const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
 export const UI_COLLECTION_FACET = 'com.sap.vocabularies.UI.v1.CollectionFacet';
@@ -28,19 +29,9 @@ export function getFacetsChildCollection(record: Element): Element | undefined {
 }
 
 /**
- * Generic interface for annotation-based violations that can be deduplicated across pages
+ * Type representing facet-related violations that can be deduplicated across pages
  */
-export interface AnnotationViolation {
-    type: string;
-    pageNames: string[];
-    annotation: {
-        reference: {
-            uri: string;
-            value: Element;
-        };
-        reportedParent: Element;
-    };
-}
+export type FacetViolation = NoDeepCollectionFacets | NoSingleFacetInCollection;
 
 /**
  * Adds or merges a violation into the problem's array.
@@ -53,7 +44,7 @@ export interface AnnotationViolation {
  * @param annotationValue - The Value element of the parent annotation
  * @param violationType - The type/ID of the violation
  */
-export function addOrMergeViolation<T extends AnnotationViolation>(
+export function addOrMergeViolation<T extends FacetViolation>(
     problems: T[],
     violatingElement: Element,
     pageName: string,
@@ -98,7 +89,7 @@ export function addOrMergeViolation<T extends AnnotationViolation>(
  * @param violationType - The type/ID of the violation
  * @param findViolations - Function that finds violating records in a facets collection
  */
-export function checkPageFacetAnnotations<T extends AnnotationViolation>(
+export function checkPageFacetAnnotations<T extends FacetViolation>(
     page: FeV4ObjectPage | FeV2ObjectPage,
     parsedService: ParsedService,
     problems: T[],
