@@ -162,12 +162,14 @@ export async function validateAppSelection(
         try {
             const downloadSucceeded = await downloadApp(answers.repoName);
             if (!downloadSucceeded) {
-                await sendTelemetry(
-                    EventName.ABAP_REPO_DOWNLOAD_NO_FILES_RETURNED,
-                    TelemetryHelper.createTelemetryData({}) ?? {}
-                ).catch(() => {
-                    // telemetry errors are non-fatal
-                });
+                if (downloadType === AppDownloadType.AbapRepository) {
+                    await sendTelemetry(
+                        EventName.ABAP_REPO_DOWNLOAD_NO_FILES_RETURNED,
+                        TelemetryHelper.createTelemetryData({}) ?? {}
+                    ).catch(() => {
+                        // telemetry errors are non-fatal
+                    });
+                }
                 return await generateAppDownloadFailedHelpLink();
             }
             const isQfaJsonPresent: boolean = hasQfaJson();

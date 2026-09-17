@@ -230,7 +230,7 @@ describe('validateAppSelection', () => {
         mockDownloadApp.mockResolvedValue(false);
         mockGetHelpLink.mockResolvedValue(mockHelpLink);
 
-        const result = await validateAppSelection(answers, appList);
+        const result = await validateAppSelection(answers, appList, undefined, undefined, AppDownloadType.AbapRepository);
 
         expect(mockSendTelemetry).toHaveBeenCalledWith(
             EventName.ABAP_REPO_DOWNLOAD_NO_FILES_RETURNED,
