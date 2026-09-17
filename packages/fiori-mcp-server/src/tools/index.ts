@@ -54,10 +54,10 @@ const adpTools = [
 
         The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
 
-        Optional parameters: targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, username, password, importKeyUserChanges.
+        Optional parameters: targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
 
         Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
-        changes from LREP (using the same system and credentials) and include them in the generated
+        changes from LREP (using the same system) and include them in the generated
         project. Generation aborts if the fetch fails or no DEFAULT adaptation exists.
 
         Use 'list_sap_systems' first to discover available systems.

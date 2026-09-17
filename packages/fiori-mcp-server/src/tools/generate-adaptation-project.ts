@@ -72,9 +72,7 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, onTimeoutM
  */
 function applyOptionalFields(
     target: Record<string, unknown>,
-    fields: Partial<
-        Pick<GenerateAdaptationProjectInput, 'namespace' | 'applicationTitle' | 'client' | 'username' | 'password'>
-    >
+    fields: Partial<Pick<GenerateAdaptationProjectInput, 'namespace' | 'applicationTitle' | 'client'>>
 ): void {
     for (const [key, value] of Object.entries(fields)) {
         if (value !== undefined && value !== '') {
@@ -101,8 +99,6 @@ export async function generateAdaptationProject(
         namespace,
         applicationTitle,
         client,
-        username,
-        password,
         importKeyUserChanges
     } = params;
 
@@ -124,7 +120,7 @@ export async function generateAdaptationProject(
             projectName: projectName ?? getDefaultProjectName(finalTargetFolder)
         };
 
-        applyOptionalFields(jsonInput, { namespace, applicationTitle, client, username, password });
+        applyOptionalFields(jsonInput, { namespace, applicationTitle, client });
 
         if (importKeyUserChanges) {
             const keyUserChanges = await withTimeout(
@@ -132,14 +128,12 @@ export async function generateAdaptationProject(
                     system,
                     application,
                     client,
-                    username,
-                    password,
                     logger
                 }),
                 KEY_USER_CHANGES_TIMEOUT_MS,
                 `Fetching key user changes for '${application}' on '${system}' timed out after ` +
-                    `${KEY_USER_CHANGES_TIMEOUT_MS}ms. The system may be unreachable or require credentials; ` +
-                    'pass "username" and "password" or set importKeyUserChanges to false.'
+                    `${KEY_USER_CHANGES_TIMEOUT_MS}ms. The system may be unreachable; ` +
+                    'set importKeyUserChanges to false.'
             );
             if (keyUserChanges.length > 0) {
                 jsonInput.keyUserChanges = keyUserChanges;

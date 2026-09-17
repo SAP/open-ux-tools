@@ -94,8 +94,6 @@ describe('generateAdaptationProject', () => {
             appPath: '/tmp/app',
             namespace: 'my.ns',
             client: '200',
-            username: 'user',
-            password: 'pass',
             projectName: 'custom.variant'
         } as any);
 
@@ -104,8 +102,6 @@ describe('generateAdaptationProject', () => {
         expect(payload).toMatchObject({
             namespace: 'my.ns',
             client: '200',
-            username: 'user',
-            password: 'pass',
             projectName: 'custom.variant'
         });
     });
