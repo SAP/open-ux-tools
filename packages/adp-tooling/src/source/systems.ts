@@ -1,4 +1,4 @@
-import { getService, SystemType } from '@sap-ux/store';
+import { getService } from '@sap-ux/store';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';

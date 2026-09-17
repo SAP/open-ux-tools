@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ConfigAnswers, FlexUICapability, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
-import type { AxiosError, AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, AxiosError } from '@sap-ux/axios-extension';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 const mockIsInternalFeaturesSettingEnabled = jest.fn<typeof realFeatureToggle.isInternalFeaturesSettingEnabled>();
 const mockShowApplicationQuestion = jest.fn().mockResolvedValue(true);
@@ -14,6 +14,7 @@ const mockGetAppAdditionalMessages = jest.fn() as jest.Mock;
 const mockGetSystemAdditionalMessages = jest.fn() as jest.Mock;
 const mockGetHostEnvironment = jest.fn<typeof realFioriGenShared.getHostEnvironment>();
 const mockGetConfiguredProvider = jest.fn<typeof realAdpTooling.getConfiguredProvider>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>().mockResolvedValue(false);
 const mockLoadApps = jest.fn<typeof realAdpTooling.loadApps>();
 const mockGetSystemUI5Version = jest.fn<typeof realAdpTooling.getSystemUI5Version>();
 const mockFetchPublicVersions = jest.fn<typeof realAdpTooling.fetchPublicVersions>();
@@ -60,6 +61,7 @@ const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
     getConfiguredProvider: mockGetConfiguredProvider,
+    isAuthRequired: mockIsAuthRequired,
     loadApps: mockLoadApps,
     getSystemUI5Version: mockGetSystemUI5Version,
     fetchPublicVersions: mockFetchPublicVersions.mockResolvedValue({
@@ -113,10 +115,9 @@ const provider = {
 
 const sourceSystems: SystemLookup = {
     getSystems: jest.fn().mockResolvedValue([
-        { Name: 'SystemB', Client: '200', Url: 'urlB', Authentication: 'Basic' },
-        { Name: 'systemA', Client: '010', Url: 'urlA', Authentication: 'NoAuthentication' }
-    ]),
-    getSystemRequiresAuth: jest.fn().mockResolvedValue(false)
+        { Name: 'SystemB', Client: '200', Url: 'urlB' },
+        { Name: 'systemA', Client: '010', Url: 'urlA' }
+    ])
 } as unknown as SystemLookup;
 
 const dummyApps = [
@@ -151,6 +152,7 @@ describe('ConfigPrompter Integration Tests', () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
         mockLoadApps.mockResolvedValue(dummyApps);
         mockGetConfiguredProvider.mockResolvedValue(provider);
+        mockIsAuthRequired.mockResolvedValue(false);
         mockGetAppAdditionalMessages.mockResolvedValue(undefined);
         mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
         configPrompter = new ConfigPrompter(sourceSystems, layer, logger, telemetryCollector);
@@ -248,9 +250,9 @@ describe('ConfigPrompter Integration Tests', () => {
 
         it('system prompt validate should reset state values when switching systems', async () => {
             const systemLookup = {
-                ...sourceSystems,
-                getSystemRequiresAuth: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true)
+                ...sourceSystems
             } as unknown as SystemLookup;
+            mockIsAuthRequired.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
             isAbapCloudMock.mockResolvedValue(true);
             mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY);
             mockGetFlexUICapability.mockResolvedValue({
@@ -416,18 +418,12 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
         });
 
-        it('system prompt validate should set isAuthRequired to false in BAS when getCsrfToken succeeds', async () => {
-            const mockGetCsrfToken = jest.fn().mockResolvedValue(undefined);
-            const providerWithLrep = {
-                ...provider,
-                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
-            } as unknown as AbapServiceProvider;
+        it('system prompt validate should set isAuthRequired to false in BAS when the system is authenticated', async () => {
             const systemLookup = {
-                ...sourceSystems,
-                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+                ...sourceSystems
             } as unknown as SystemLookup;
             mockIsAppStudio.mockReturnValue(true);
-            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            mockIsAuthRequired.mockResolvedValue(false);
             configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
 
             const prompts = configPrompter.getPrompts();
@@ -437,26 +433,15 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(result).toEqual(true);
             expect(configPrompter['isAuthRequired']).toBe(false);
-            expect(mockGetCsrfToken).toHaveBeenCalledTimes(1);
         });
 
-        it('system prompt validate should set isAuthRequired to true in BAS when getCsrfToken returns 401', async () => {
-            const axiosError = {
-                isAxiosError: true,
-                response: { status: 401 }
-            } as AxiosError;
-            const mockGetCsrfToken = jest.fn().mockRejectedValue(axiosError);
-            const providerWithLrep = {
-                ...provider,
-                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
-            } as unknown as AbapServiceProvider;
+        it('system prompt validate should set isAuthRequired to true in BAS when the system is NOT authenticated', async () => {
             const systemLookup = {
-                ...sourceSystems,
-                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+                ...sourceSystems
             } as unknown as SystemLookup;
             mockIsAppStudio.mockReturnValue(true);
             mockIsAxiosError.mockReturnValue(true);
-            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            mockIsAuthRequired.mockResolvedValue(true);
             configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
 
             const prompts = configPrompter.getPrompts();
@@ -474,19 +459,10 @@ describe('ConfigPrompter Integration Tests', () => {
                 message: 'Internal Server Error',
                 response: { status: 500 }
             } as AxiosError;
-            const mockGetCsrfToken = jest.fn().mockRejectedValue(axiosError);
-            const providerWithLrep = {
-                ...provider,
-                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
-            } as unknown as AbapServiceProvider;
-            const systemLookup = {
-                ...sourceSystems,
-                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
-            } as unknown as SystemLookup;
             mockIsAppStudio.mockReturnValue(true);
             mockIsAxiosError.mockReturnValue(true);
-            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
-            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
+            mockIsAuthRequired.mockRejectedValue(axiosError);
+            configPrompter = new ConfigPrompter(sourceSystems, layer, logger, telemetryCollector);
 
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
