@@ -139,7 +139,7 @@ annotate service.Incidents with @(
 
 ## How to Fix
 
-Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` elements. Consider one of the following approaches:
+Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` records. Consider one of the following approaches:
 
 - **Remove unnecessary nesting:** If a `UI.CollectionFacet` contains only one child, replace it with a direct `UI.ReferenceFacet`.
 

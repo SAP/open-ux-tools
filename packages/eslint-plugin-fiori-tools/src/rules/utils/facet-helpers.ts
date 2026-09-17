@@ -44,10 +44,10 @@ export interface AnnotationViolation {
 
 /**
  * Adds or merges a violation into the problem's array.
- * If the same element is already reported, merges pageNames.
+ * If the same record is already reported, merges pageNames.
  *
  * @param problems - An array of identified rule violations (mutated in place)
- * @param violatingElement - The violating element
+ * @param violatingElement - The violating annotation record
  * @param pageName - The name of the page where the violation occurs
  * @param annotationUri - The URI of the annotation file
  * @param annotationValue - The Value element of the parent annotation
@@ -83,18 +83,20 @@ export function addOrMergeViolation<T extends AnnotationViolation>(
 }
 
 /**
- * Generic function to check page facet annotations for violations. * 
+ * Generic function to check page facet annotations for violations.
+ * 
  * This function checks an object page's UI.Facets annotations for various violations
  * depending on the provided findViolations function. Common use cases include:
  * - Checks an object page's UI.Facets annotations for CollectionFacets at the third level or deeper.
  * - Checks an object page's UI.Facets annotations for CollectionFacets with a single ReferenceFacet child
- *  * Deduplicates: if the same element is shared across pages, merges pageNames.
+ * 
+ * Deduplicates: if the same record is shared across pages, merges pageNames.
  *
  * @param page - Object page (OData V4 or OData V2)
  * @param parsedService - The parsed annotation service
  * @param problems - An array of identified rule violations (mutated in place)
  * @param violationType - The type/ID of the violation
- * @param findViolations - Function that finds violating elements in a facets collection
+ * @param findViolations - Function that finds violating records in a facets collection
  */
 export function checkPageFacetAnnotations<T extends AnnotationViolation>(
     page: FeV4ObjectPage | FeV2ObjectPage,

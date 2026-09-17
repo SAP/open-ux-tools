@@ -35,7 +35,7 @@ function hasSingleReferenceFacet(childCollection: Element, aliasInfo: AliasInfor
  *
  * @param facetsCollection - The Collection element directly under the UI.Facets Annotation
  * @param aliasInfo - Alias information for resolving qualified names
- * @returns Array of CollectionFacet elements containing exactly one ReferenceFacet
+ * @returns Array of CollectionFacet records containing exactly one ReferenceFacet
  */
 function findCollectionFacetsWithSingleChild(facetsCollection: Element, aliasInfo: AliasInformation): Element[] {
     const singleChildFacets: Element[] = [];

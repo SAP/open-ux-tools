@@ -52,7 +52,7 @@ function findDeepCollectionFacets(
  *
  * @param facetsCollection - The top-level UI.Facets collection
  * @param aliasInfo - Alias information for resolving qualified names
- * @returns Array of violating CollectionFacet elements
+ * @returns Array of violating CollectionFacet records
  */
 function findViolations(facetsCollection: Element, aliasInfo: AliasInformation): Element[] {
     const violations: Element[] = [];
