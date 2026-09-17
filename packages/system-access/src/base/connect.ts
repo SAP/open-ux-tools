@@ -27,6 +27,10 @@ import prompts from 'prompts';
 import { readFileSync } from 'node:fs';
 import { AuthenticationType } from '@sap-ux/store';
 
+type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
+
+const MOCK_ADP_ABAP_AUTHORIZATION_HEADER_NAME = 'm-adp-abap-authorization';
+
 /**
  * Check if it is a url target.
  *
@@ -205,10 +209,12 @@ async function createAbapDestinationServiceProvider(
  */
 export async function createAbapServiceProvider(
     target: AbapTarget,
-    requestOptions: (AxiosRequestConfig & Partial<ProviderConfiguration>) | undefined,
+    requestOptions: RequestOptions | undefined,
     prompt: boolean,
     logger: Logger
 ): Promise<AbapServiceProvider> {
+    applyMockAdpAbapAuthHeaderIfNeeded(requestOptions);
+
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         params: target.params ?? {},
@@ -237,4 +243,27 @@ export async function createAbapServiceProvider(
         throw new Error('Unable to handle the configuration in the current environment.');
     }
     return provider;
+}
+
+/**
+ * Add a mock ADP ABAP authorization header derived from the request's basic-auth credentials.
+ *
+ * When `auth` credentials are present on the request options, encodes them as a Base64
+ * `Basic` token and stores it under the `m-adp-abap-authorization` header, which the ADP
+ * mock server reads in place of the standard `Authorization` header. The provided
+ * `requestOptions` object is mutated in place. Does nothing when no credentials are set.
+ *
+ * @param {RequestOptions} [requestOptions] - Request options to inspect and mutate; may be undefined.
+ */
+function applyMockAdpAbapAuthHeaderIfNeeded(requestOptions?: RequestOptions): void {
+    const auth = requestOptions?.auth;
+    if (!auth) {
+        return;
+    }
+
+    const { username, password } = auth;
+    const headers = requestOptions.headers ?? {};
+    const credentials = Buffer.from(`${username}:${password}`).toString('base64');
+    headers[MOCK_ADP_ABAP_AUTHORIZATION_HEADER_NAME] = `Basic ${credentials}`;
+    requestOptions.headers = headers;
 }

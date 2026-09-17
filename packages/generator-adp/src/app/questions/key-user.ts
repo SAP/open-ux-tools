@@ -7,7 +7,7 @@ import type {
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAxiosError } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { type SystemLookup, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { type SystemLookup, getConfiguredProvider, isAuthRequired } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
 import type {
@@ -322,7 +322,7 @@ export class KeyUserImportPrompter {
                 return await this.loadDataAndValidateKeyUserChanges();
             }
 
-            this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
+            this.isAuthRequired = await isAuthRequired(system, this.logger);
             if (!this.isAuthRequired) {
                 const options = {
                     system,

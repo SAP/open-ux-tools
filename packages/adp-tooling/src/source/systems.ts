@@ -148,25 +148,4 @@ export class SystemLookup {
 
         return system;
     }
-
-    /**
-     * Determines whether a system requires authentication based on environment.
-     *
-     * @param {string} system - The system name or URL.
-     * @returns {Promise<boolean>} A promise that resolves to true if authentication is required, false otherwise.
-     */
-    public async getSystemRequiresAuth(system: string): Promise<boolean> {
-        const found = await this.getSystemByName(system);
-
-        if (isAppStudio()) {
-            return found?.Authentication === 'NoAuthentication';
-        } else {
-            if (!found) {
-                return true;
-            }
-            const isOnPrem = found.SystemType === SystemType.AbapOnPrem;
-            const hasMissingCredentials = !found.Credentials?.username || !found.Credentials?.password;
-            return isOnPrem && hasMissingCredentials;
-        }
-    }
 }
