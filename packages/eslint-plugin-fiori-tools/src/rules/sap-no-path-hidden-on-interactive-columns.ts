@@ -21,6 +21,7 @@ import {
 } from '../project-context/parser/index.js';
 import type { TableNode } from '../project-context/linker/annotations.js';
 import { UI_HIDDEN, CAPABILITIES_SORT_RESTRICTIONS, CAPABILITIES_FILTER_RESTRICTIONS } from '../constants.js';
+import { getTextPath } from './utils/common-text-helpers.js';
 
 /**
  * Returns the entity set path for a given entity type by scanning the service index.
@@ -85,43 +86,34 @@ function extractRestrictedPropertyNames(
  *
  * @param candidateTargets - Ordered list of annotation targets to try
  * @param parsedService - Parsed OData service
- * @param capTerm - Fully qualified Capabilities term (SortRestrictions or FilterRestrictions)
+ * @param capaTerm - Fully qualified Capabilities term (SortRestrictions or FilterRestrictions)
  * @param restrictionProperty - Property name inside the Capabilities record (NonSortableProperties or NonFilterableProperties)
  * @returns Set of restricted property names (empty if not found)
  */
 function getRestrictedProperties(
     candidateTargets: string[],
     parsedService: ParsedService,
-    capTerm: string,
+    capaTerm: string,
     restrictionProperty: string
 ): Set<string> {
+    const restricted = new Set<string>();
     for (const target of candidateTargets) {
-        const annotation = parsedService.index.annotations[buildAnnotationIndexKey(target, capTerm)]?.['undefined'];
-        if (!annotation) {
+        const capaKey = buildAnnotationIndexKey(target, capaTerm);
+        const annotations = parsedService.index.annotations[capaKey];
+        if (!annotations) {
             continue;
         }
-        const restricted = extractRestrictedPropertyNames(annotation, restrictionProperty);
-        if (restricted && restricted.size > 0) {
-            return restricted;
+        for (const annotationKey of Object.keys(annotations)) {
+            const annotation = annotations[annotationKey];
+            const restrictedName = extractRestrictedPropertyNames(annotation, restrictionProperty);
+            if (restrictedName && restrictedName.size > 0) {
+                for (const name of restrictedName) {
+                    restricted.add(name);
+                }
+            }
         }
     }
-    return new Set();
-}
-
-/**
- * Returns the path value from an element, handling both XML attribute style and
- * CDS child-element style (where the path is stored as a `<Path>text</Path>` child).
- *
- * @param element - The element to extract the path value from
- */
-function getPathValue(element: Element): string {
-    const fromAttr = getElementAttributeValue(element, Edm.Path);
-    if (fromAttr) {
-        return fromAttr;
-    }
-    const [pathEl] = elementsWithName(Edm.Path, element);
-    const textNode = pathEl?.content?.find((c) => c.type === 'text');
-    return textNode?.type === 'text' && textNode.text ? textNode.text : '';
+    return restricted;
 }
 
 /**
@@ -142,7 +134,7 @@ function getDynamicHiddenAnnotation(record: Element, aliasInfo: AliasInformation
             aliasInfo.currentFileNamespace,
             parseIdentifier(termAttr)
         );
-        return resolvedTerm === UI_HIDDEN && !!getPathValue(ann);
+        return resolvedTerm === UI_HIDDEN && !!getTextPath(ann);
     });
 }
 
@@ -200,7 +192,7 @@ function processTableItem(
             (el) => el.name === Edm.PropertyValue && getElementAttributeValue(el, Edm.Property) === 'Value',
             record
         );
-        const valuePath = valuePV ? getPathValue(valuePV) : '';
+        const valuePath = valuePV ? getTextPath(valuePV) : undefined;
         if (!valuePath) {
             continue;
         }
@@ -210,12 +202,9 @@ function processTableItem(
             continue;
         }
 
-        const existingIndex = problems.findIndex((p) => p.annotation.reference.value === hiddenWithPath);
-        if (existingIndex > -1) {
-            problems[existingIndex] = {
-                ...problems[existingIndex],
-                pageNames: [...problems[existingIndex].pageNames, targetName]
-            };
+        const existing = problems.find((p) => p.annotation.reference.value === hiddenWithPath);
+        if (existing) {
+            existing.pageNames.push(targetName);
         } else {
             problems.push({
                 type: NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS,
@@ -233,8 +222,7 @@ function processTableItem(
 }
 
 /**
- * Checks all tables in a page for violations. For list report pages the tables are in
- * `page.lookup['table']`; for object pages they are nested inside table sections.
+ * Checks all tables in a page for violations.
  *
  * @param page - Application page (V2 or V4)
  * @param parsedService - Parsed OData service
@@ -245,20 +233,8 @@ function checkTablesInPage(
     parsedService: ParsedService,
     problems: NoPathHiddenOnInteractiveColumns[]
 ): void {
-    if (page.type === 'list-report-page') {
-        for (const item of page.lookup['table'] ?? []) {
-            processTableItem(item, page.targetName, parsedService, problems);
-        }
-    } else {
-        for (const section of page.sections) {
-            if (section.type !== 'table-section') {
-                continue;
-            }
-            const item = section.children.find((c) => c.type === 'table');
-            if (item) {
-                processTableItem(item, page.targetName, parsedService, problems);
-            }
-        }
+    for (const item of page.lookup['table'] ?? []) {
+        processTableItem(item, page.targetName, parsedService, problems);
     }
 }
 
