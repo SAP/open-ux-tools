@@ -1,5 +1,17 @@
 # @sap-ux/app-config-writer
 
+## 1.1.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-17
+
+#### Bug Fixes
+
+- Show asterisk feedback when entering password in smartlinks-config prompt [[44a0b41](https://github.com/SAP/open-ux-tools/commit/44a0b41b374aa9758a8a93c4c42cc73e10c08c86)]
+
 ## 1.1.22
 
 ### Patch Changes
