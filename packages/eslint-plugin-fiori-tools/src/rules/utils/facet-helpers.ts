@@ -84,12 +84,12 @@ export function addOrMergeViolation<T extends AnnotationViolation>(
 
 /**
  * Generic function to check page facet annotations for violations.
- * 
+ *
  * This function checks an object page's UI.Facets annotations for various violations
  * depending on the provided findViolations function. Common use cases include:
  * - Checks an object page's UI.Facets annotations for CollectionFacets at the third level or deeper.
  * - Checks an object page's UI.Facets annotations for CollectionFacets with a single ReferenceFacet child
- * 
+ *
  * Deduplicates: if the same record is shared across pages, merges pageNames.
  *
  * @param page - Object page (OData V4 or OData V2)
