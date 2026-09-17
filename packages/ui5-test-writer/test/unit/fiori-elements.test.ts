@@ -176,6 +176,108 @@ describe('ui5-test-writer', () => {
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
+        describe('critical actions (Common.IsActionCritical)', () => {
+            // The mock spec models used above do not populate the LR toolbar `actions` aggregation, so a
+            // full generateOPAFiles run cannot exercise toolbar-action rendering. Render the real journey
+            // template directly with a synthetic critical action to verify the generated test code.
+            const renderListReportJourney = (toolBarActions: Record<string, unknown>[]): string => {
+                const templatePath = join(__dirname, '../../templates/v4/latest/integration/ListReportJourney.js');
+                const outPath = join(__dirname, '../test-output/critical/ListReportJourney.gen.js');
+                const editor = create(createStorage());
+                editor.copyTpl(templatePath, outPath, {
+                    startPages: ['TravelList'],
+                    startLR: 'TravelList',
+                    navigatedOP: undefined,
+                    hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
+                    name: 'TravelList',
+                    appPath: 'project1',
+                    createButton: { visible: false },
+                    deleteButton: { visible: false },
+                    isALP: false,
+                    filterBarItems: [],
+                    semanticKey: { semanticKeyProperties: [], missingFromFilterBar: [] },
+                    tableColumns: {},
+                    contactCardColumns: [],
+                    textAnnotationColumns: [],
+                    tableIdentifiers: [],
+                    tabs: [],
+                    toolBarActions
+                });
+                return editor.read(outPath);
+            };
+
+            it('integrates confirmation-dialog steps into the actions block only for critical actions', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
+                    { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
+                ]);
+                // No separate opaTest block — critical steps live in "Check table columns and actions".
+                expect(journey).not.toContain('Check critical action confirmation dialog');
+                expect(journey).toContain('iCheckAction("Set To Booked"');
+                expect(journey).toContain('onTable(defaultTableId).iExecuteAction("Set To Booked")');
+                expect(journey).toContain('onMessageDialog().iCheckState()');
+                expect(journey).toContain('onMessageDialog().iCancel()');
+                // Bound (enabled !== true) critical action selects a row first.
+                expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
+                // The non-critical action's execute stays commented out.
+                expect(journey).toContain(
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Copy")'
+                );
+            });
+
+            it('comments out the confirmation-dialog steps for a dynamically-enabled critical action', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To New', action: 'setToNew', visible: true, enabled: 'dynamic', isCritical: true }
+                ]);
+                const lines = journey.split('\n').map((line) => line.trim());
+                // Conditionally enabled (Core.OperationAvailable path) → steps are emitted commented out, never run.
+                expect(lines).toContain(
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("Set To New");'
+                );
+                const active = lines.filter((line) => !line.startsWith('//'));
+                expect(active.some((line) => line.includes('onMessageDialog'))).toBe(false);
+                expect(active.some((line) => line.includes('iExecuteAction("Set To New")'))).toBe(false);
+            });
+
+            it('omits the confirmation-dialog steps when no action is critical', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
+                ]);
+                expect(journey).not.toContain('onMessageDialog');
+            });
+
+            it('renders the confirmation-dialog steps for critical Object Page header actions', () => {
+                const templatePath = join(__dirname, '../../templates/v4/latest/integration/ObjectPageJourney.js');
+                const outPath = join(__dirname, '../test-output/critical/ObjectPageJourney.gen.js');
+                const editor = create(createStorage());
+                editor.copyTpl(templatePath, outPath, {
+                    name: 'TravelObjectPage',
+                    hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
+                    navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
+                    headerTitle: undefined,
+                    headerSections: [],
+                    bodySections: [],
+                    editButton: undefined,
+                    headerActions: [
+                        {
+                            service: 'TestService',
+                            action: 'setToBooked',
+                            unbound: false,
+                            visible: true,
+                            enabled: false,
+                            isCritical: true
+                        }
+                    ]
+                });
+                const journey = editor.read(outPath);
+                expect(journey).toContain('onMessageDialog().iCheckState()');
+                expect(journey).toContain('onMessageDialog().iCancel()');
+                expect(journey).toContain('onHeader().iExecuteAction({ service: "TestService", action: "setToBooked"');
+            });
+        });
+
         it('No manifest', async () => {
             const projectDir = prepareTestFiles('Not_Here');
             let error: string | undefined;
@@ -272,6 +374,98 @@ describe('ui5-test-writer', () => {
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
             expect(firstJourneyContent).toContain('iCheckColumns');
+        });
+
+        it('generates menu action tests for a regular List Report toolbar menu button', async () => {
+            const appModel = JSON.parse(appModels.V4_MODEL);
+            // Attach a table toolbar with a custom menu button (two child actions) to the List Report.
+            appModel.applicationModel.pages.TravelList.model.root.aggregations.table.aggregations.toolBar = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            MenuActions: {
+                                description: 'My Menu Button',
+                                menuType: 'CustomMenu',
+                                schema: { actionType: 'CustomMenu' },
+                                aggregations: {
+                                    actions: {
+                                        aggregations: {
+                                            myAction1: {
+                                                description: 'Custom Action 1',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            },
+                                            myAction2: {
+                                                description: 'Custom Action 2',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const content =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            expect(content).toContain('onTable(defaultTableId).iCheckAction("My Menu Button")');
+            expect(content).toContain('onTable(defaultTableId).iExecuteAction("My Menu Button")');
+            expect(content).toContain('onTable(defaultTableId).iCheckMenuAction("Custom Action 1")');
+            expect(content).toContain('onTable(defaultTableId).iCheckMenuAction("Custom Action 2")');
+        });
+
+        it('omits the drill-down for a split (default-action) List Report toolbar menu button', async () => {
+            const appModel = JSON.parse(appModels.V4_MODEL);
+            // A menu with a defaultAction renders as a split button whose drop-down cannot be opened via OPA.
+            appModel.applicationModel.pages.TravelList.model.root.aggregations.table.aggregations.toolBar = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            MenuActions: {
+                                description: 'My Menu Button',
+                                menuType: 'CustomMenu',
+                                schema: { actionType: 'CustomMenu' },
+                                properties: { defaultAction: { value: 'myAction2' } },
+                                aggregations: {
+                                    actions: {
+                                        aggregations: {
+                                            myAction1: {
+                                                description: 'Custom Action 1',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            },
+                                            myAction2: {
+                                                description: 'Custom Action 2',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const content =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            // The button is still asserted, and the (unopenable) drill-down is only present commented out.
+            expect(content).toContain('onTable(defaultTableId).iCheckAction("My Menu Button")');
+            expect(content).toContain('split menu button');
+            expect(content).toContain(
+                '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("My Menu Button")'
+            );
+            expect(content).not.toContain('iCheckMenuAction');
         });
 
         it('skips testsuite and opaTests harness files when useVirtualPreviewEndpoints is enabled', async () => {
@@ -890,10 +1084,10 @@ export type Then = Opa5 & BaseArrangements & {
             const travelListJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
             expect(travelListJourneyContent).toContain(
-                'onTable().iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+                'onTable(defaultTableId).iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
             );
             expect(travelListJourneyContent).toContain(
-                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+                'onDialog(defaultTableId).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
             );
         });
 
@@ -1424,8 +1618,12 @@ export type Then = Opa5 & BaseArrangements & {
             const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
-            expect(lrContent).toContain('onTable("").iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")');
-            expect(lrContent).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
+            expect(lrContent).toContain(
+                'onTable(defaultTableId).iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+            );
+            expect(lrContent).toContain(
+                'onDialog(defaultTableId).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
 
             // ─── No JS leakage ───
             expect(content).not.toContain('sap.ui.define');
@@ -1589,6 +1787,8 @@ export type Then = Opa5 & BaseArrangements & {
             // ES module imports (TS journey), not sap.ui.define
             expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
             expect(content).toContain('import runner from "./pages/JourneyRunner"');
+            // Module name is derived from the page name, not the hardcoded "FPM journey"
+            expect(content).toContain('QUnit.module("MyCustomPage Journey")');
             // The only page assertion is iSeeThisPage()
             expect(content).toContain('.iSeeThisPage()');
             // onFilterBar/onTable are NOT emitted for an FPM page — TemplatePage has neither.
@@ -1665,6 +1865,122 @@ export type Then = Opa5 & BaseArrangements & {
                 const projectDir = prepareTestFiles('FullScreenLROP');
                 fs = await generateOPAFiles(projectDir, {}, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('text annotation sort-order test — JS', () => {
+            // Inject a textAnnotationColumns entry on top of the real LR features so the generated
+            // journey exercises the new "Check text annotation for columns" opaTest and the
+            // conditional coreLibrary import, across all three JS buckets.
+            const withTextAnnotationColumn = () => {
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                    }
+                    return features;
+                });
+            };
+
+            const lrJourneyContents = (): string =>
+                fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js']
+                    .contents as string;
+
+            it.each([
+                ['1.84', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s emits the sort-order test and coreLibrary import (JS)', async (_bucket, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, ui5Version ? { ui5Version } : {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain('"sap/ui/core/library"');
+                expect(content).toContain('function (opaTest, runner, coreLibrary)');
+                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain(
+                    'iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending)'
+                );
+                expect(content).toContain(
+                    'iCheckSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending, true)'
+                );
+            });
+
+            it('omits the sort-order test and coreLibrary import when there is no text-annotated column', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('"sap/ui/core/library"');
+                expect(content).not.toContain('coreLibrary');
+                expect(content).not.toContain('Check text annotation for columns');
+            });
+
+            afterEach(() => {
+                getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
+            });
+        });
+
+        describe('text annotation sort-order test — TS', () => {
+            // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
+            // exercises the conditional `import { SortOrder } from "sap/ui/core/library"` and the
+            // "Check text annotation for columns" opaTest across all three TS buckets.
+            const withTextAnnotationColumn = () => {
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                    }
+                    return features;
+                });
+            };
+
+            const lrJourneyContents = (): string =>
+                fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.ts']
+                    .contents as string;
+
+            it.each([
+                ['1.84', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s emits the sort-order test and SortOrder import (TS)', async (_bucket, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ...(ui5Version ? { ui5Version } : {}), enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+
+                const content = lrJourneyContents();
+                expect(content).toContain('import { SortOrder } from "sap/ui/core/library";');
+                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.Ascending)');
+                expect(content).toContain('iCheckSortOrder({ name: "CustomerName" }, SortOrder.Ascending, true)');
+            });
+
+            it('omits the sort-order test and SortOrder import when there is no text-annotated column', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('sap/ui/core/library');
+                expect(content).not.toContain('SortOrder');
+                expect(content).not.toContain('Check text annotation for columns');
+            });
+
+            afterEach(() => {
+                getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
             });
         });
 

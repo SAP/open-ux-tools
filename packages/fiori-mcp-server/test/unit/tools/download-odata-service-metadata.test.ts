@@ -11,8 +11,8 @@ jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
 }));
 
 const mockWriteFileSync = jest.fn<any>();
-const mockExistsSync = jest.fn<any>().mockReturnValue(true);
-const mockStatSync = jest.fn<any>().mockReturnValue({ isDirectory: () => true });
+const mockExistsSync = jest.fn<any>();
+const mockStatSync = jest.fn<any>();
 const actualFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
@@ -48,6 +48,46 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 
 const { downloadODataServiceMetadata } = await import('../../../src/tools/download-odata-service-metadata.js');
 
+/**
+ * Configures existsSync and statSync mocks for a given appPath scenario.
+ *
+ * Default behaviour simulates a valid empty target directory:
+ *   - appPath exists and is a directory
+ *   - metadata.xml does not yet exist inside appPath
+ *
+ * Override options only in tests that specifically exercise one of the fs guards.
+ * Paths not handled here fall through to the real fs implementation.
+ *
+ * @param appPath - the appPath value passed to the tool under test
+ * @param options - override options for specific guard scenarios (all default to happy-path values)
+ * @param options.appPathExists - whether appPath exists on the filesystem (default true)
+ * @param options.isDirectory - whether appPath is a directory; only checked when appPathExists is true (default true)
+ * @param options.metadataXmlExists - whether a metadata.xml already exists inside appPath (default false)
+ */
+function setupFsMocks(
+    appPath: string,
+    options: {
+        appPathExists?: boolean;
+        isDirectory?: boolean;
+        metadataXmlExists?: boolean;
+    } = {}
+): void {
+    const { appPathExists = true, isDirectory = true, metadataXmlExists = false } = options;
+    mockExistsSync.mockImplementation((p: unknown) => {
+        const pathStr = String(p);
+        if (pathStr === appPath) {
+            return appPathExists;
+        }
+        if (pathStr === path.join(appPath, 'metadata.xml')) {
+            return metadataXmlExists;
+        }
+        return actualFs.existsSync(pathStr);
+    });
+    mockStatSync.mockImplementation((p: unknown) =>
+        String(p) === appPath ? { isDirectory: () => isDirectory } : actualFs.statSync(String(p))
+    );
+}
+
 describe('downloadODataServiceMetadata', () => {
     const mockAppPath = '/test/app/path';
     const mockServicePath = '/sap/opu/odata4/test/service';
@@ -63,8 +103,9 @@ describe('downloadODataServiceMetadata', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
-        mockExistsSync.mockReturnValue(true);
-        mockStatSync.mockReturnValue({ isDirectory: () => true });
+        // Reset fs mocks to happy-path defaults (directory exists, no metadata.xml yet).
+        // Tests that exercise a specific fs guard call setupFsMocks() again with override options.
+        setupFsMocks(mockAppPath);
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
@@ -152,7 +193,7 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should return error when appPath does not exist', async () => {
-        mockExistsSync.mockReturnValue(false);
+        setupFsMocks('/non/existent/path', { appPathExists: false });
         const params: DownloadODataServiceMetadataInput = {
             appPath: '/non/existent/path',
             sapSystemQuery: 'TestSystem',
@@ -168,8 +209,7 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should return error when appPath points to a file instead of a directory', async () => {
-        mockExistsSync.mockReturnValue(true);
-        mockStatSync.mockReturnValue({ isDirectory: () => false });
+        setupFsMocks('/some/existing/file.txt', { isDirectory: false });
         const params: DownloadODataServiceMetadataInput = {
             appPath: '/some/existing/file.txt',
             sapSystemQuery: 'TestSystem',
@@ -285,8 +325,29 @@ describe('downloadODataServiceMetadata', () => {
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '/sap/opu/odata4/test/service');
     });
 
+    test('should return error when metadata.xml already exists at appPath', async () => {
+        setupFsMocks(mockAppPath, { metadataXmlExists: true });
+        const metadataXmlPath = path.join(mockAppPath, 'metadata.xml');
+
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(result.status).toBe('Error');
+        expect(result.message).toMatch(/search_docs.*update service metadata/i);
+        expect(result.message).toContain(metadataXmlPath);
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
     test('should write metadata file to correct path', async () => {
         const customAppPath = '/custom/app/path';
+        setupFsMocks(customAppPath);
         const params: DownloadODataServiceMetadataInput = {
             appPath: customAppPath,
             sapSystemQuery: 'TestSystem',

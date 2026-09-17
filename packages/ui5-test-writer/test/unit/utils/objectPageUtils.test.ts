@@ -2652,7 +2652,8 @@ describe('Test getObjectPageFeatures()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -2721,7 +2722,8 @@ describe('Test getObjectPageFeatures()', () => {
             unbound: false,
             visible: true,
             enabled: true,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -2897,7 +2899,8 @@ describe('Test getObjectPageFeatures()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -3431,8 +3434,8 @@ describe('resolveOriginatingView()', () => {
         expect(resolveOriginatingView([], 'Customer', 'Customer')).toBeUndefined();
     });
 
-    test('maps a main-entity Object Page to the first (default) view', () => {
-        // CustomerObjectPage has entitySet Customer; the default views inherit the LR main entity set.
+    test('maps a main-entity Object Page to the first (default) matching tab', () => {
+        // CustomerObjectPage has entitySet Customer; views 1/2/3 all inherit it, so the default tab 1 is chosen.
         expect(resolveOriginatingView(lr2Views, 'Customer', 'Customer')).toEqual({ key: '1', isDefault: true });
     });
 

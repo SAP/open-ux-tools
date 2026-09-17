@@ -1,7 +1,7 @@
 {
   "_version": "1.35.0",
   "sap.app": {
-    "id": "testNameSpace.fpmv4",
+    "id": "testnamespace.fpmv4",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -70,7 +70,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "testNameSpace.fpmv4.i18n.i18n"
+          "bundleName": "testnamespace.fpmv4.i18n.i18n"
         }
       },
       "": {
@@ -109,7 +109,7 @@
             "settings": {
               "navigation": {},
               "contextPath": "/Travel",
-              "viewName": "testNameSpace.fpmv4.ext.view.Main"
+              "viewName": "testnamespace.fpmv4.ext.view.Main"
             }
           }
         }
