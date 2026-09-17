@@ -200,6 +200,7 @@ describe('ui5-test-writer', () => {
                     contactCardColumns: [],
                     textAnnotationColumns: [],
                     tableIdentifiers: [],
+                    tabs: [],
                     toolBarActions
                 });
                 return editor.read(outPath);
