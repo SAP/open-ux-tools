@@ -21,6 +21,7 @@ import {
     getCustomFilterFieldProperties,
     getTableIdentifiers,
     getListReportViews,
+    getListReportTabs,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
     hasTextArrangement,
@@ -29,6 +30,7 @@ import {
     extractCustomToolBarActions
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -2934,5 +2936,242 @@ describe('extractCustomToolBarActions()', () => {
     test('returns an empty array when there are no custom actions', () => {
         const model = buildModel({});
         expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
+    });
+
+    test('extracts a menu button with its child actions when metadata is available', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: '{i18n>customAction1}',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            },
+                            myAction2: {
+                                description: '{i18n>customAction2}',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        const childLabels: Record<string, string> = {
+            '{i18n>customAction1}': 'Custom Action 1',
+            '{i18n>customAction2}': 'Custom Action 2'
+        };
+        const resolve = (label: string | undefined) => ({
+            label: (label && childLabels[label]) || label || '',
+            unresolved: false
+        });
+        const convertedMetadata = { actions: [], namespace: 'svc' } as unknown as ConvertedMetadata;
+
+        expect(extractCustomToolBarActions(model, resolve, convertedMetadata)).toEqual([
+            {
+                label: 'My Menu Button',
+                action: '',
+                visible: true,
+                enabled: true,
+                menuType: 'CustomMenu',
+                labelUnresolved: undefined,
+                menuActions: [
+                    { label: 'Custom Action 1', visible: true, labelUnresolved: undefined },
+                    { label: 'Custom Action 2', visible: true, labelUnresolved: undefined }
+                ]
+            }
+        ]);
+    });
+
+    test('emits a label-only menu button (child labels, no annotation resolution) when no metadata is available', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: 'Custom Action 1',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([
+            {
+                label: 'My Menu Button',
+                action: '',
+                visible: true,
+                enabled: true,
+                menuType: 'CustomMenu',
+                labelUnresolved: undefined,
+                menuActions: [{ label: 'Custom Action 1', visible: true, labelUnresolved: undefined }]
+            }
+        ]);
+    });
+
+    test('flags a menu with a defaultAction as a split button', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                properties: { defaultAction: { value: 'myAction2' } },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: 'Custom Action 1',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        const convertedMetadata = { actions: [], namespace: 'svc' } as unknown as ConvertedMetadata;
+        expect(
+            extractCustomToolBarActions(
+                model,
+                (label) => ({ label: label ?? '', unresolved: false }),
+                convertedMetadata
+            )[0]
+        ).toMatchObject({ label: 'My Menu Button', menuType: 'CustomMenu', splitButton: true });
+    });
+});
+
+describe('getListReportTabs()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: { targets: { MyLR: { options: { settings: { views: { paths } } } } } }
+            }
+        }) as unknown as Manifest;
+
+    const makeViewNode = (columns: Record<string, unknown>, customActionDescription?: string): TreeAggregation => {
+        const aggregations: Record<string, unknown> = { columns: { aggregations: columns } };
+        if (customActionDescription) {
+            aggregations['toolBar'] = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            CustomAction: { schema: { actionType: 'Custom' }, description: customActionDescription }
+                        }
+                    }
+                }
+            };
+        }
+        return { aggregations } as unknown as TreeAggregation;
+    };
+
+    const makePage = (views: Record<string, TreeAggregation>): PageWithModelV4 =>
+        ({
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: { table: { aggregations: { views: { aggregations: views } } } } } }
+        }) as unknown as PageWithModelV4;
+
+    test('returns an empty array for a single-table List Report (no views block)', () => {
+        const page = {
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: {} } }
+        } as unknown as PageWithModelV4;
+        expect(getListReportTabs(page, undefined, undefined)).toEqual([]);
+    });
+
+    test('returns an empty array when only one non-custom tab exists', () => {
+        const page = makePage({ '1': makeViewNode({}) });
+        const manifest = makeManifest([{ key: '1' }, { key: '5', template: 'x.CustomTab' }]);
+        expect(getListReportTabs(page, undefined, manifest)).toEqual([]);
+    });
+
+    test('builds per-tab data, resolving each tab entity set and skipping custom tabs', () => {
+        const page = makePage({
+            '1': makeViewNode(
+                { 'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } } },
+                'My Custom Action'
+            ),
+            '6': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '5', template: 'x.CustomTab' },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+
+        const tabs = getListReportTabs(page, undefined, manifest);
+
+        expect(tabs).toHaveLength(2);
+        expect(tabs[0]).toMatchObject({
+            key: '1',
+            entitySet: 'Customer',
+            tableColumns: { A: { header: 'A' } },
+            contactCardColumns: [],
+            toolBarActions: [{ label: 'My Custom Action', custom: true, visible: true }]
+        });
+        expect(tabs[0].createButton.visible).toBe(false);
+        expect(tabs[1]).toMatchObject({
+            key: '6',
+            entitySet: 'CompanyCodeDetail',
+            tableColumns: { B: { header: 'B' } },
+            contactCardColumns: [],
+            toolBarActions: []
+        });
+    });
+
+    test('resolves per-tab action and button state when metadata is available', () => {
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.String"/></EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        expect(tabs.map((tab) => tab.key)).toEqual(['1', '2']);
+        expect(Array.isArray(tabs[0].toolBarActions)).toBe(true);
+        expect(typeof tabs[0].createButton.visible).toBe('boolean');
+    });
+
+    test('skips a manifest view that has no matching spec-model table node', () => {
+        // Manifest declares three tabs but the spec model only carries table nodes for two of them.
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }, { key: '9' }]);
+
+        expect(getListReportTabs(page, undefined, manifest).map((tab) => tab.key)).toEqual(['1', '2']);
     });
 });
