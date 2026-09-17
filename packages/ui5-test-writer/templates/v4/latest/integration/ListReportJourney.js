@@ -87,15 +87,50 @@ sap.ui.define([
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
-            <%_ if (item.custom) { _%>
+            <%_ if (item.menuActions) { _%>
+            <%_ if (item.splitButton) { _%>
+            // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ } else { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ item.menuActions.forEach(function(menuAction) { _%>
+            <%_ if (menuAction.visible) { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckMenuAction("<%- menuAction.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteMenuAction("<%- menuAction.label %>");
+            <%_ } _%>
+            <%_ }); _%>
+            <%_ } _%>
+            <%_ } else if (item.custom) { _%>
             <%_ if (item.labelUnresolved) { _%>
             // TODO: label is an unresolved i18n key; replace with the rendered action text
             <%_ } _%>
-            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { visible: true });
             <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            <%_ if (item.isCritical && item.enabled === 'dynamic') { _%>
+            // "<%- item.label %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the confirmation dialog.
+            <%_ if (!hideFilterBar) { _%>
+            // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            <%_ } _%>
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            // Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+            // When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+            <%_ } else if (item.isCritical) { _%>
+            <%_ if (!hideFilterBar) { _%>
+            When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            <%_ } _%>
+            <%_ if (item.enabled !== true) { _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            <%_ } _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+            When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+            <%_ } _%>
             <%_ } _%>
             <%_ } _%>
             <%_ }); -%>
