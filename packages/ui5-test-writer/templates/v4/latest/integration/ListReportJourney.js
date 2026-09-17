@@ -129,7 +129,22 @@ sap.ui.define([
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
-            <%_ if (item.custom) { _%>
+            <%_ if (item.menuActions) { _%>
+            <%_ if (item.splitButton) { _%>
+            // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ } else { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ item.menuActions.forEach(function(menuAction) { _%>
+            <%_ if (menuAction.visible) { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckMenuAction("<%- menuAction.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteMenuAction("<%- menuAction.label %>");
+            <%_ } _%>
+            <%_ }); _%>
+            <%_ } _%>
+            <%_ } else if (item.custom) { _%>
             <%_ if (item.labelUnresolved) { _%>
             // TODO: label is an unresolved i18n key; replace with the rendered action text
             <%_ } _%>
@@ -179,7 +194,7 @@ sap.ui.define([
 <%_ if (contactCardColumns.length > 0) { -%>
         opaTest("Check contact card links", function (Given, When, Then) {
             // Reveal popin details so low-priority (e.g. contact-card) columns become clickable
-            When.onThe<%- startLR %>Generated.onTable().iExecuteShowHideDetails(true);
+            When.onThe<%- startLR %>Generated.onTable(defaultTableId).iExecuteShowHideDetails(true);
             <%_ contactCardColumns.forEach(function(column) { _%>
             // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
             When.onThe<%- startLR %>Generated.onTable(defaultTableId).iClickLink(0, "<%- column.property %>");

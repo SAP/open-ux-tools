@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
 ## 1.12.5
 
 ### Patch Changes

@@ -20,6 +20,7 @@ import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 <%_
 const usesFilterFieldIdentifier =
     !hideFilterBar && filterBarItems && filterBarItems.some(function(item) { return item.custom; });
+const toolBarHasMenu = (toolBarActions || []).some(function(item) { return item.visible && item.menuActions && !item.splitButton; });
 -%>
 <% if (usesFilterFieldIdentifier) { -%>
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
@@ -107,7 +108,7 @@ function journey() {
     });
 <%_ } else { -%>
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-    opaTest("Check table columns and actions", function (_Given: Given, _When: When, Then: Then) {
+    opaTest("Check table columns and actions", function (_Given: Given, <% if (toolBarHasMenu) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
         <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
         <%_ if (createButton.visible && !isALP) { _%>
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
@@ -119,8 +120,25 @@ function journey() {
         <%_ } _%>
         <%_ toolBarActions.forEach(function(item) { _%>
         <%_ if (item.visible) { _%>
+        <%_ if (item.menuActions) { _%>
+        <%_ if (item.splitButton) { _%>
+        // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+        <%_ } else { _%>
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+        <%_ item.menuActions.forEach(function(menuAction) { _%>
+        <%_ if (menuAction.visible) { _%>
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckMenuAction("<%- menuAction.label %>");
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteMenuAction("<%- menuAction.label %>");
+        <%_ } _%>
+        <%_ }); _%>
+        <%_ } _%>
+        <%_ } else { _%>
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+        <%_ } _%>
         <%_ } _%>
         <%_ }); -%>
         <%_ } -%>

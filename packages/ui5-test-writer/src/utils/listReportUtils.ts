@@ -37,6 +37,8 @@ import { convert } from '@sap-ux/annotation-converter';
 import {
     extractActionMethodName,
     buildActionButtonState,
+    buildMenuActionState,
+    isMenuActionItem,
     collectCriticalActionNames,
     safeCheckButtonVisibility,
     safeCheckButtonVisibilityFromMetadata
@@ -206,10 +208,13 @@ export function getListReportFeatures(
         }
     }
 
-    // Custom (manifest-declared) toolbar actions have no OData counterpart and are matched by label.
-    // extractCustomToolBarActions filters strictly on actionType === 'Custom', so annotation-backed
-    // actions (already captured via safeCheckActionButtonStates) are never duplicated here.
-    toolBarActions = toolBarActions.concat(extractCustomToolBarActions(listReportPage.model, resolveLabel));
+    // Custom (manifest-declared) and menu (drop-down) toolbar actions have no OData counterpart in
+    // `safeCheckActionButtonStates` (which matches annotation actions by name). extractCustomToolBarActions
+    // adds custom actions (matched by label) and menu buttons with their child actions, without
+    // duplicating the annotation-backed actions already captured above.
+    toolBarActions = toolBarActions.concat(
+        extractCustomToolBarActions(listReportPage.model, resolveLabel, convertedMetadata)
+    );
 
     // Custom filter fields are matched by rendered label, so resolve unresolved i18n
     // placeholders via the property's OData `@Common.Label`.
@@ -303,25 +308,34 @@ export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
 }
 
 /**
- * Extracts custom (manifest-declared) toolbar actions from the given toolbar actions aggregation.
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from the given toolbar
+ * actions aggregation. Annotation-backed single actions are handled separately via the OData metadata
+ * path, so they are not emitted here.
  *
  * @param actionAggregations - the toolbar actions aggregation
  * @param resolveLabel - resolver for i18n placeholder labels
- * @returns array of custom toolbar action button states
+ * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
+ * @returns array of custom and menu toolbar action button states
  */
 function extractCustomToolBarActionsFromAggregation(
     actionAggregations: TreeAggregations,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    convertedMetadata?: ConvertedMetadata
 ): ActionButtonState[] {
-    const customActions: ActionButtonState[] = [];
+    const schemaNamespace = convertedMetadata?.namespace ?? '';
+    const actions: ActionButtonState[] = [];
     for (const key of Object.keys(actionAggregations ?? {})) {
         const item = actionAggregations[key as keyof TreeAggregations] as unknown as AggregationItem;
+        if (isMenuActionItem(item)) {
+            actions.push(buildMenuActionState(item, convertedMetadata, schemaNamespace, resolveLabel));
+            continue;
+        }
         if (item?.schema?.actionType !== 'Custom') {
             continue;
         }
         const { label, unresolved } = resolveLabel(item.description);
         if (label) {
-            customActions.push({
+            actions.push({
                 label,
                 action: '',
                 visible: true,
@@ -331,35 +345,43 @@ function extractCustomToolBarActionsFromAggregation(
             });
         }
     }
-    return customActions;
+    return actions;
 }
 
 /**
- * Extracts custom (manifest-declared) toolbar actions from a resolved table node.
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from a resolved table node.
  *
  * @param tableNode - the table node holding the `toolBar` aggregation
  * @param resolveLabel - resolver for i18n placeholder labels
- * @returns array of custom toolbar action button states
+ * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
+ * @returns array of custom and menu toolbar action button states
  */
 export function extractCustomToolBarActionsFromTableNode(
     tableNode: TreeAggregation,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    convertedMetadata?: ConvertedMetadata
 ): ActionButtonState[] {
-    return extractCustomToolBarActionsFromAggregation(getToolBarActionsFromTableNode(tableNode), resolveLabel);
+    return extractCustomToolBarActionsFromAggregation(
+        getToolBarActionsFromTableNode(tableNode),
+        resolveLabel,
+        convertedMetadata
+    );
 }
 
 /**
- * Extracts custom (manifest-declared) toolbar actions from the List Report table toolbar.
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from the List Report table toolbar.
  *
  * @param pageModel - the tree model containing the table toolbar definitions
  * @param resolveLabel - resolver for i18n placeholder labels
- * @returns array of custom toolbar action button states
+ * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
+ * @returns array of custom and menu toolbar action button states
  */
 export function extractCustomToolBarActions(
     pageModel: TreeModel,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    convertedMetadata?: ConvertedMetadata
 ): ActionButtonState[] {
-    return extractCustomToolBarActionsFromAggregation(getToolBarActions(pageModel), resolveLabel);
+    return extractCustomToolBarActionsFromAggregation(getToolBarActions(pageModel), resolveLabel, convertedMetadata);
 }
 
 /**
@@ -405,7 +427,9 @@ export function getListReportTabs(
             createButton = buildButtonState(buttonVisibility?.create);
             deleteButton = buildButtonState(buttonVisibility?.delete);
         }
-        toolBarActions = toolBarActions.concat(extractCustomToolBarActionsFromTableNode(tableNode, resolveLabel));
+        toolBarActions = toolBarActions.concat(
+            extractCustomToolBarActionsFromTableNode(tableNode, resolveLabel, convertedMetadata)
+        );
         tabs.push({
             key: view.key,
             entitySet,
