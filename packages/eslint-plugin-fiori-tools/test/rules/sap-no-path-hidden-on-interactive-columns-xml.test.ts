@@ -127,6 +127,81 @@ const V4_LINE_ITEM_QUALIFIED_DYNAMIC_HIDDEN = `
         </Annotation>
     </Annotations>`;
 
+// Valid: multiple SortRestrictions (one qualified), title is both non-sortable and non-filterable
+const V4_LINE_ITEM_QUALIFIED_SORT_AND_FILTER_RESTRICTED = `
+    <Annotations Target="IncidentService.EntityContainer/Incidents">
+        <Annotation Term="Capabilities.SortRestrictions">
+            <Record>
+                <PropertyValue Property="NonSortableProperties">
+                    <Collection>
+                        <PropertyPath>description</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.SortRestrictions" Qualifier="secondary">
+            <Record>
+                <PropertyValue Property="NonSortableProperties">
+                    <Collection>
+                        <PropertyPath>title</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.FilterRestrictions">
+            <Record>
+                <PropertyValue Property="NonFilterableProperties">
+                    <Collection>
+                        <PropertyPath>title</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="title"/>
+                    <Annotation Term="UI.Hidden" Path="isHidden"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>`;
+
+// Invalid: qualified SortRestrictions covers title, but no FilterRestrictions - still filterable
+const V4_LINE_ITEM_QUALIFIED_SORT_RESTRICTED_STILL_FILTERABLE = `
+    <Annotations Target="IncidentService.EntityContainer/Incidents">
+        <Annotation Term="Capabilities.SortRestrictions">
+            <Record>
+                <PropertyValue Property="NonSortableProperties">
+                    <Collection>
+                        <PropertyPath>description</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.SortRestrictions" Qualifier="secondary">
+            <Record>
+                <PropertyValue Property="NonSortableProperties">
+                    <Collection>
+                        <PropertyPath>title</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="title"/>
+                    <Annotation Term="UI.Hidden" Path="isHidden"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>`;
+
 const V4_LINE_ITEM_DYNAMIC_HIDDEN_SHARED_ACROSS_PAGES = `
     <Annotations Target="IncidentService.Incidents">
         <Annotation Term="UI.Facets">
@@ -211,6 +286,17 @@ ruleTester.run(TEST_NAME, noPathHiddenOnInteractiveColumnsRule, {
         ),
         createValidTest(
             {
+                name: 'V4: sort restricted via qualified annotation, filter via unqualified - both covered',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(
+                    V4_ANNOTATIONS_WITH_CAPS,
+                    V4_LINE_ITEM_QUALIFIED_SORT_AND_FILTER_RESTRICTED
+                )
+            },
+            []
+        ),
+        createValidTest(
+            {
                 name: 'V2: no UI.Hidden annotation',
                 filename: V2_ANNOTATIONS_PATH,
                 code: V2_ANNOTATIONS
@@ -249,6 +335,23 @@ ruleTester.run(TEST_NAME, noPathHiddenOnInteractiveColumnsRule, {
                 code: getAnnotationsAsXmlCode(
                     V4_ANNOTATIONS_WITH_CAPS,
                     V4_LINE_ITEM_DYNAMIC_HIDDEN_SORT_ONLY_RESTRICTED
+                ),
+                errors: [
+                    {
+                        message:
+                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V4: sort restricted via qualified annotation only - column still filterable',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(
+                    V4_ANNOTATIONS_WITH_CAPS,
+                    V4_LINE_ITEM_QUALIFIED_SORT_RESTRICTED_STILL_FILTERABLE
                 ),
                 errors: [
                     {
