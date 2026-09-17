@@ -25,7 +25,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 
     return new ListReport(
         {
-            appId: 'testNameSpace.worklistv4',
+            appId: 'testnamespace.worklistv4',
             componentId: 'TravelList',
             contextPath: '/Travel'
         },
