@@ -23,10 +23,23 @@ export async function getI18nPropertiesPaths(
         'sap.app': join(manifestFolder, relativeI18nPropertiesPaths['sap.app']),
         models: {}
     };
+    if (relativeI18nPropertiesPaths['sap.app.fallbackLocale']) {
+        i18nPropertiesPaths['sap.app.fallbackLocale'] = join(
+            manifestFolder,
+            relativeI18nPropertiesPaths['sap.app.fallbackLocale']
+        );
+    }
     for (const modelKey in relativeI18nPropertiesPaths.models) {
+        const relativeModelPaths = relativeI18nPropertiesPaths.models[modelKey];
         i18nPropertiesPaths.models[modelKey] = {
-            path: join(manifestFolder, relativeI18nPropertiesPaths.models[modelKey].path)
+            path: join(manifestFolder, relativeModelPaths.path)
         };
+        if (relativeModelPaths.fallbackLocalePath) {
+            i18nPropertiesPaths.models[modelKey].fallbackLocalePath = join(
+                manifestFolder,
+                relativeModelPaths.fallbackLocalePath
+            );
+        }
     }
     return i18nPropertiesPaths;
 }
@@ -39,10 +52,46 @@ export async function getI18nPropertiesPaths(
  * @returns - paths to i18n.properties files from sap.app and models
  */
 export function getRelativeI18nPropertiesPaths(manifest: Manifest): I18nPropertiesPaths {
-    return {
-        'sap.app': getI18nAppPath(manifest),
+    const appPath = getI18nAppPath(manifest);
+    const appFallbackLocalePath = getI18nAppFallbackLocalePath(manifest, appPath);
+    const result: I18nPropertiesPaths = {
+        'sap.app': appPath,
         models: getI18nModelPaths(manifest)
     };
+    if (appFallbackLocalePath) {
+        result['sap.app.fallbackLocale'] = appFallbackLocalePath;
+    }
+    return result;
+}
+
+/**
+ * Computes the fallback locale variant of a base i18n file path, e.g. "i18n/i18n.properties" + "en" yields "i18n/i18n_en.properties".
+ *
+ * @param basePath - base i18n file path
+ * @param locale - fallback locale string (e.g. "en", "de")
+ * @returns - path to the fallback locale file
+ */
+function computeFallbackLocalePath(basePath: string, locale: string): string {
+    const ext = '.properties';
+    const stem = basePath.endsWith(ext) ? basePath.slice(0, -ext.length) : basePath;
+    return `${stem}_${locale}${ext}`;
+}
+
+/**
+ * Get the fallback locale i18n path from sap.app.i18n part of the manifest.
+ *
+ * @param manifest - parsed content of manifest.json
+ * @param appPath - resolved base i18n path for sap.app
+ * @returns - fallback locale path, or undefined if not configured
+ */
+function getI18nAppFallbackLocalePath(manifest: Manifest, appPath: string): string | undefined {
+    if (typeof manifest?.['sap.app']?.i18n === 'object') {
+        const fallbackLocale = (manifest['sap.app'].i18n as { fallbackLocale?: unknown }).fallbackLocale;
+        if (typeof fallbackLocale === 'string' && fallbackLocale) {
+            return computeFallbackLocalePath(appPath, fallbackLocale);
+        }
+    }
+    return undefined;
 }
 
 /**
@@ -80,6 +129,29 @@ function getI18nAppPath(manifest: Manifest): string {
 }
 
 /**
+ * Resolves the i18n file path from a resource model's settings object.
+ *
+ * @param appId - application id from sap.app namespace
+ * @param settings - resource model settings object
+ * @param settings.bundleName - bundle name in dot notation (e.g. "sample.app.i18n")
+ * @param settings.bundleUrl - bundle URL path (e.g. "i18n/i18n.properties")
+ * @returns - resolved relative path, or undefined if it cannot be determined
+ */
+function extractBundlePath(appId: string, settings: { bundleName?: string; bundleUrl?: string }): string | undefined {
+    if (settings.bundleName) {
+        if (!appId) {
+            return undefined;
+        }
+        const withoutAppId = settings.bundleName.replace(appId, '');
+        return `${join(...withoutAppId.split('.'))}.properties`;
+    }
+    if (settings.bundleUrl) {
+        return join(settings.bundleUrl);
+    }
+    return undefined;
+}
+
+/**
  * Get the i18n path from UI5 resource models declared in sap.ui5.models part of the manifest.
  * By default the model used for internationalization in the UI is 'i18n'. For
  * internationalization of annotations the model is '@18n'.
@@ -92,30 +164,23 @@ function getI18nAppPath(manifest: Manifest): string {
  * @param manifest - parsed content of manifest.json
  * @returns - paths to i18n.properties file from models
  */
-function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: string } } {
-    const result: { [modelKey: string]: { path: string } } = {};
+function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: string; fallbackLocalePath?: string } } {
+    const result: { [modelKey: string]: { path: string; fallbackLocalePath?: string } } = {};
     const models = manifest?.['sap.ui5']?.models ?? {};
     const resourceModelKeys = Object.keys(models).filter(
         (key) => models[key].type === 'sap.ui.model.resource.ResourceModel'
     );
     for (const modelKey of resourceModelKeys) {
         const i18nModel = models[modelKey];
-        // settings wins over `uri`
         if (i18nModel.settings) {
-            // bundleName wins over `bundleUrl`
-            if (i18nModel.settings.bundleName) {
-                // module name is in dot notation
-                const appId = manifest['sap.app']?.id ?? '';
-                if (!appId) {
-                    continue;
+            const appId = manifest['sap.app']?.id ?? '';
+            const path = extractBundlePath(appId, i18nModel.settings);
+            if (path) {
+                result[modelKey] = { path };
+                const fallbackLocale = (i18nModel.settings as { fallbackLocale?: unknown }).fallbackLocale;
+                if (typeof fallbackLocale === 'string' && fallbackLocale) {
+                    result[modelKey].fallbackLocalePath = computeFallbackLocalePath(path, fallbackLocale);
                 }
-                const withoutAppId = i18nModel.settings.bundleName.replace(appId, '');
-                const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
-                result[modelKey] = { path: join(i18nPath) };
-                continue;
-            }
-            if (i18nModel.settings.bundleUrl) {
-                result[modelKey] = { path: join(i18nModel.settings.bundleUrl) };
                 continue;
             }
         }

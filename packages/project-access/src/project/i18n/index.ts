@@ -5,5 +5,6 @@ export {
     createManifestI18nEntries,
     createUI5I18nEntries,
     createAnnotationI18nEntries,
-    createCapI18nEntries
+    createCapI18nEntries,
+    createI18nEntriesAtPath
 } from './write.js';
