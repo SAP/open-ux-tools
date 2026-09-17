@@ -131,7 +131,8 @@ export class KeyUserImportPrompter {
             ),
             [keyUserPromptNames.keyUserAdaptation]: this.getAdaptationPrompt(
                 promptOptions?.[keyUserPromptNames.keyUserAdaptation]
-            )
+            ),
+            [keyUserPromptNames.keyUserRestrictedViewsLabel]: this.getRestrictedViewsLabelPrompt()
         };
 
         const questions: KeyUserImportQuestion[] = Object.entries(keyedPrompts)
@@ -233,6 +234,22 @@ export class KeyUserImportPrompter {
             validate: async (adaptation: AdaptationDescriptor) => await this.validateKeyUserChanges(adaptation?.id),
             when: () => this.adaptations.length > 1
         } as ListQuestion<KeyUserImportAnswers>;
+    }
+
+    private getRestrictedViewsLabelPrompt(): KeyUserImportQuestion {
+        return {
+            type: 'input',
+            name: keyUserPromptNames.keyUserRestrictedViewsLabel,
+            message: t('prompts.keyUserRestrictedViewsLabel'),
+            guiOptions: {
+                type: 'label',
+                link: {
+                    text: 'test123',
+                    url: 'https://google.com'
+                }
+            },
+            when: () => this.detectRestrictedViews()
+        } as InputQuestion<KeyUserImportAnswers>;
     }
 
     /**
@@ -401,5 +418,20 @@ export class KeyUserImportPrompter {
             this.logger.debug(e);
             return getUnsupportedApiMessage(e, t('error.keyUserNotSupported'));
         }
+    }
+
+    /**
+     * Checks whether any imported key-user change still carries a view restriction.
+     *
+     * A restriction is expressed as a non-empty `context.role` list on the change content. This
+     * information is stripped when the change is transformed for the adaptation project, so the
+     * developer must be notified that the imported views will become non-restricted.
+     *
+     * @returns {boolean} `true` if at least one change has a restricted view.
+     */
+    private detectRestrictedViews(): boolean {
+        return this.keyUserChanges.some((change) => {
+            return (change.content.contexts?.role?.length ?? 0) > 0;
+        });
     }
 }

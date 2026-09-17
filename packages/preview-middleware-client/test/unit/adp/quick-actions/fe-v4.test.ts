@@ -4668,7 +4668,17 @@ describe('FE V4 quick actions', () => {
                     'pattern': '/Travel({key})/_Booking({key1}):?query:',
                     'name': testCase.isNoRouteFound ? 'unknown' : 'BookingObjectPage',
                     'target': 'BookingObjectPage'
-                }
+                },
+                ...(!testCase.isListReport && testCase.isNewPageUnavailable
+                    ? [
+                          {
+                              'pattern':
+                                  '/Travel({key})/_Booking({key1})/_BookSupplement({BookingSupplementKey}):?query:',
+                              'name': 'BookSupplementObjectPage',
+                              'target': 'BookSupplementObjectPage'
+                          }
+                      ]
+                    : [])
             ];
             jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
                 'sap.ui5': {

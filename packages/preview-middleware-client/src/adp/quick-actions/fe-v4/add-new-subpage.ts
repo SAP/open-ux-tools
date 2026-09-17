@@ -86,12 +86,19 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         return result;
     }
 
-    protected async isPageExists(targetEntitySet: string, metaModel: ODataMetaModelV4): Promise<boolean> {
+    protected async isPageExists(
+        targetEntitySet: string,
+        navProperty: string | undefined,
+        metaModel: ODataMetaModelV4
+    ): Promise<boolean> {
+        if (navProperty) {
+            const routes = this.context.manifest['sap.ui5'].routing?.routes ?? [];
+            return routes.some((r) => r.pattern?.includes(`/${navProperty}(`));
+        }
         let pageFound = false;
         let entitySetName: string | undefined;
         for (const page of this.existingPages) {
             if (page.contextPath) {
-                // resolve contextPath to target entitySet
                 entitySetName = await this.resolveContextPathTargetName(page.contextPath, metaModel);
             } else {
                 entitySetName = page.entitySet;

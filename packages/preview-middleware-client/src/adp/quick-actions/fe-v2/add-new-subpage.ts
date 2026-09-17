@@ -40,7 +40,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         return getV2ApplicationPages(this.context.manifest);
     }
 
-    protected isPageExists(targetEntitySet: string): boolean {
+    protected isPageExists(targetEntitySet: string, _navProperty: string | undefined): boolean {
         return this.existingPages.some((page) => page.entitySet === targetEntitySet);
     }
 

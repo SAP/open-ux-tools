@@ -59,7 +59,11 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
     }
 
     protected abstract getApplicationPages(): ApplicationPageData[];
-    protected abstract isPageExists(targetEntitySet: string, metaModel: ODataMetaModelType): boolean | Promise<boolean>;
+    protected abstract isPageExists(
+        targetEntitySet: string,
+        navProperty: string | undefined,
+        metaModel: ODataMetaModelType
+    ): boolean | Promise<boolean>;
     protected abstract isCurrentObjectPage(): boolean;
     protected abstract getEntitySetNameFromPageComponent(
         component: Component | undefined,
@@ -76,7 +80,7 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         if (!targetEntitySet) {
             return;
         }
-        const pageExists = await this.isPageExists(targetEntitySet, metaModel);
+        const pageExists = await this.isPageExists(targetEntitySet, navProperty, metaModel);
         if (!pageExists) {
             this.navProperties.push({
                 entitySet: targetEntitySet,

@@ -140,7 +140,18 @@ export interface TextTranslation {
 export type KeyUserTextTranslations = Record<string, TextTranslation>;
 
 export interface KeyUserChangeContent {
-    content: Record<string, unknown>;
+    content: {
+        contexts?: {
+            role?: string[];
+        };
+        content: {
+            contexts?: {
+                role?: string[];
+            };
+            [key: string]: unknown;
+        };
+        [key: string]: unknown;
+    };
     texts?: KeyUserTextTranslations;
 }
 
