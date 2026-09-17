@@ -501,7 +501,8 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-no-path-hidden-on-interactive-columns': 'warn',
             '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
             '@sap-ux/fiori-tools/sap-no-live-mode': 'warn',
-            '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn'
+            '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn',
+            '@sap-ux/fiori-tools/sap-no-single-facet-in-collection': 'warn'
         }
     }
 ];

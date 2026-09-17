@@ -29,6 +29,9 @@ import { convert } from '@sap-ux/annotation-converter';
 import {
     extractActionMethodName,
     buildActionButtonState,
+    buildMenuActionState,
+    isMenuActionItem,
+    collectCriticalActionNames,
     safeCheckButtonVisibility,
     safeCheckButtonVisibilityFromMetadata
 } from './actionUtils.js';
@@ -65,16 +68,19 @@ export function buildButtonState(buttonState?: ButtonState): {
  * @param entitySetName - The name of the entity set
  * @param actionNames - List of action names to check
  * @param log - Optional logger instance
+ * @param criticalActions - Optional set of action method names annotated Common.IsActionCritical
  * @returns Array of action button states or empty array if error occurs
  */
 export function safeCheckActionButtonStates(
     convertedMetadata: ConvertedMetadata,
     entitySetName: string,
     actionNames: string[],
-    log?: Logger
+    log?: Logger,
+    criticalActions?: Set<string>
 ): ActionButtonState[] {
     try {
-        return checkActionButtonStatesFromMetadata(convertedMetadata, entitySetName, actionNames).actions;
+        return checkActionButtonStatesFromMetadata(convertedMetadata, entitySetName, actionNames, criticalActions)
+            .actions;
     } catch (error) {
         log?.debug(`Failed to check action button states: ${error instanceof Error ? error.message : String(error)}`);
         return [];
@@ -145,7 +151,7 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
  * @param metadata - optional metadata for the OPA test generation
  * @param manifest - optional application manifest, used to detect ALP configuration
  * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
- * @param annotationFiles - optional local annotation XML files merged with the metadata
+ * @param annotationXmls - optional annotation XML documents to merge with the metadata (for annotation-only terms)
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
@@ -154,7 +160,7 @@ export function getListReportFeatures(
     metadata?: string,
     manifest?: Manifest,
     resolveLabel: I18nLabelResolver = passthroughLabelResolver,
-    annotationFiles: string[] = []
+    annotationXmls: string[] = []
 ): ListReportFeatures {
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
     const filterFieldEntries = getFilterFieldItems(listReportPage.model, log);
@@ -172,23 +178,35 @@ export function getListReportFeatures(
             // with the service metadata before converting. Each source must be parsed with a distinct
             // fileId; otherwise merge treats them as the same file and later `Annotations` blocks
             // overwrite (rather than complement) the metadata's property-level annotations.
-            const parsedAnnotations = annotationFiles.map((xml, index) => parse(xml, `annotationFile${index}`));
+            const parsedAnnotations = annotationXmls.map((xml, index) => parse(xml, `annotationFile${index}`));
             const rawMetadata = parsedAnnotations.length
                 ? merge(parse(metadata, 'metadata'), ...parsedAnnotations)
                 : parse(metadata);
             convertedMetadata = convert(rawMetadata);
+            // IsActionCritical is an annotation-only term surfaced by the merge above; read it off the
+            // already-converted metadata rather than re-parsing.
+            const criticalActions = collectCriticalActionNames(convertedMetadata);
             buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log);
             semanticKeyProperties = safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log);
-            toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySetName, toolbarActions, log);
+            toolBarActions = safeCheckActionButtonStates(
+                convertedMetadata,
+                entitySetName,
+                toolbarActions,
+                log,
+                criticalActions
+            );
         } catch (error) {
             log?.debug(`Failed to parse metadata: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
-    // Custom (manifest-declared) toolbar actions have no OData counterpart and are matched by label.
-    // extractCustomToolBarActions filters strictly on actionType === 'Custom', so annotation-backed
-    // actions (already captured via safeCheckActionButtonStates) are never duplicated here.
-    toolBarActions = toolBarActions.concat(extractCustomToolBarActions(listReportPage.model, resolveLabel));
+    // Custom (manifest-declared) and menu (drop-down) toolbar actions have no OData counterpart in
+    // `safeCheckActionButtonStates` (which matches annotation actions by name). extractCustomToolBarActions
+    // adds custom actions (matched by label) and menu buttons with their child actions, without
+    // duplicating the annotation-backed actions already captured above.
+    toolBarActions = toolBarActions.concat(
+        extractCustomToolBarActions(listReportPage.model, resolveLabel, convertedMetadata)
+    );
 
     // Custom filter fields are matched by rendered label, so resolve unresolved i18n
     // placeholders via the property's OData `@Common.Label`.
@@ -272,26 +290,35 @@ export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
 }
 
 /**
- * Extracts custom (manifest-declared) toolbar actions from the List Report table toolbar.
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from the List Report
+ * table toolbar. Annotation-backed single actions are handled separately via the OData metadata
+ * path, so they are not emitted here.
  *
  * @param pageModel - the tree model containing the table toolbar definitions
  * @param resolveLabel - resolver for i18n placeholder labels
- * @returns array of custom toolbar action button states
+ * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
+ * @returns array of custom and menu toolbar action button states
  */
 export function extractCustomToolBarActions(
     pageModel: TreeModel,
-    resolveLabel: I18nLabelResolver
+    resolveLabel: I18nLabelResolver,
+    convertedMetadata?: ConvertedMetadata
 ): ActionButtonState[] {
     const actionAggregations = getToolBarActions(pageModel);
-    const customActions: ActionButtonState[] = [];
+    const schemaNamespace = convertedMetadata?.namespace ?? '';
+    const actions: ActionButtonState[] = [];
     for (const key of Object.keys(actionAggregations ?? {})) {
         const item = actionAggregations[key as keyof TreeAggregations] as unknown as AggregationItem;
+        if (isMenuActionItem(item)) {
+            actions.push(buildMenuActionState(item, convertedMetadata, schemaNamespace, resolveLabel));
+            continue;
+        }
         if (item?.schema?.actionType !== 'Custom') {
             continue;
         }
         const { label, unresolved } = resolveLabel(item.description);
         if (label) {
-            customActions.push({
+            actions.push({
                 label,
                 action: '',
                 visible: true,
@@ -301,7 +328,7 @@ export function extractCustomToolBarActions(
             });
         }
     }
-    return customActions;
+    return actions;
 }
 
 /**
@@ -591,13 +618,15 @@ export function isHiddenProperty(
  * @param convertedMetadata The already-converted OData metadata
  * @param entitySetName The name of the entity set to check
  * @param actionNames Optional list of action names to filter (e.g., ['Check', 'deductDiscount']). If not provided, returns all actions.
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns ActionButtonsResult containing the list of action buttons and their states
  * @throws {Error} If entity set is not found
  */
 export function checkActionButtonStatesFromMetadata(
     convertedMetadata: ConvertedMetadata,
     entitySetName: string,
-    actionNames?: string[]
+    actionNames?: string[],
+    criticalActions?: Set<string>
 ): ActionButtonsResult {
     const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
 
@@ -621,8 +650,8 @@ export function checkActionButtonStatesFromMetadata(
     );
 
     const actions: ActionButtonState[] = actionNames
-        ? findActionStates(dataFieldForActions, actionNames, convertedMetadata)
-        : extractAllActionStates(dataFieldForActions, convertedMetadata);
+        ? findActionStates(dataFieldForActions, actionNames, convertedMetadata, criticalActions)
+        : extractAllActionStates(dataFieldForActions, convertedMetadata, criticalActions);
 
     return { actions, entityType: entityType.name };
 }
@@ -655,12 +684,14 @@ export function checkActionButtonStates(
  * @param dataFieldForActions List of DataFieldForAction items from UI.LineItem
  * @param actionNames List of action names to find
  * @param metadata The converted metadata
+ * @param criticalActions - Optional set of action method names annotated Common.IsActionCritical
  * @returns List of action button states for the specified actions
  */
 function findActionStates(
     dataFieldForActions: DataFieldForAction[],
     actionNames: string[],
-    metadata: ConvertedMetadata
+    metadata: ConvertedMetadata,
+    criticalActions?: Set<string>
 ): ActionButtonState[] {
     const actionStates: ActionButtonState[] = [];
 
@@ -671,7 +702,7 @@ function findActionStates(
         });
 
         if (item) {
-            actionStates.push(buildActionButtonState(item, metadata));
+            actionStates.push(buildActionButtonState(item, metadata, criticalActions));
         }
     }
 
@@ -683,13 +714,15 @@ function findActionStates(
  *
  * @param dataFieldForActions List of DataFieldForAction items from UI.LineItem
  * @param metadata The converted metadata
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns List of all action button states
  */
 function extractAllActionStates(
     dataFieldForActions: DataFieldForAction[],
-    metadata: ConvertedMetadata
+    metadata: ConvertedMetadata,
+    criticalActions?: Set<string>
 ): ActionButtonState[] {
-    return dataFieldForActions.map((item) => buildActionButtonState(item, metadata));
+    return dataFieldForActions.map((item) => buildActionButtonState(item, metadata, criticalActions));
 }
 
 /**
