@@ -1,17 +1,14 @@
 /**
  * Shared utilities for facet-related ESLint rules
  */
-import type { Element } from '@sap-ux/odata-annotation-core';
+import type { AliasInformation, Element } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName } from '@sap-ux/odata-annotation-core';
 import { getPropertyValueElement } from '../../project-context/linker/annotations.js';
 import { buildAnnotationIndexKey, type ParsedService } from '../../project-context/parser/index.js';
 import type { FeV4ObjectPage } from '../../project-context/linker/fe-v4.js';
 import type { FeV2ObjectPage } from '../../project-context/linker/fe-v2.js';
 import type { NoDeepCollectionFacets, NoSingleFacetInCollection } from '../../language/diagnostics.js';
-
-export const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
-export const UI_COLLECTION_FACET = 'com.sap.vocabularies.UI.v1.CollectionFacet';
-export const UI_REFERENCE_FACET = 'com.sap.vocabularies.UI.v1.ReferenceFacet';
+import { UI_COLLECTION_FACET, UI_FACETS, UI_REFERENCE_FACET } from '../../constants.js';
 
 /**
  * Returns the child Collection element of the Facets property inside a CollectionFacet record, if present.
@@ -94,7 +91,7 @@ export function checkPageFacetAnnotations<T extends FacetViolation>(
     parsedService: ParsedService,
     problems: T[],
     violationType: string,
-    findViolations: (facetsCollection: Element, aliasInfo: any) => Element[]
+    findViolations: (facetsCollection: Element, aliasInfo: AliasInformation) => Element[]
 ): void {
     const entityType = page.entity?.structuredType;
     if (!entityType) {
@@ -109,6 +106,9 @@ export function checkPageFacetAnnotations<T extends FacetViolation>(
 
     for (const annotation of Object.values(annotationMap)) {
         const aliasInfo = parsedService.artifacts.aliasInfo[annotation.top.uri];
+        if (!aliasInfo) {
+            continue;
+        }
         const [facetsCollection] = elementsWithName(Edm.Collection, annotation.top.value);
         if (!facetsCollection) {
             continue;

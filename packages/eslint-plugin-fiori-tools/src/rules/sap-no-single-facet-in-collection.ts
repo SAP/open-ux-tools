@@ -6,12 +6,8 @@ import type { NoSingleFacetInCollection } from '../language/diagnostics.js';
 import { NO_SINGLE_FACET_IN_COLLECTION } from '../language/diagnostics.js';
 import { getRecordType } from '../project-context/linker/annotations.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
-import {
-    UI_COLLECTION_FACET,
-    UI_REFERENCE_FACET,
-    getFacetsChildCollection,
-    checkPageFacetAnnotations
-} from './utils/facet-helpers.js';
+import { UI_COLLECTION_FACET, UI_REFERENCE_FACET } from '../constants.js';
+import { getFacetsChildCollection, checkPageFacetAnnotations } from './utils/facet-helpers.js';
 
 /**
  * Returns true if the CollectionFacet's child collection contains exactly one ReferenceFacet.

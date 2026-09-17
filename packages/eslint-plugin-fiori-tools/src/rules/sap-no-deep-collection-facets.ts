@@ -6,7 +6,8 @@ import type { NoDeepCollectionFacets } from '../language/diagnostics.js';
 import { NO_DEEP_COLLECTION_FACETS } from '../language/diagnostics.js';
 import { getRecordType } from '../project-context/linker/annotations.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
-import { UI_COLLECTION_FACET, getFacetsChildCollection, checkPageFacetAnnotations } from './utils/facet-helpers.js';
+import { UI_COLLECTION_FACET } from '../constants.js';
+import { getFacetsChildCollection, checkPageFacetAnnotations } from './utils/facet-helpers.js';
 
 /**
  * Recursively finds CollectionFacet records that appear at the third level or deeper.
@@ -32,6 +33,8 @@ function findDeepCollectionFacets(
             // If this CollectionFacet is at level 3 or deeper, it's a violation
             if (currentLevel >= 3) {
                 violations.push(record);
+                // Skip deeper nesting levels - fixing this violation will resolve any deeper ones
+                continue;
             }
 
             // Recursively check nested Facets

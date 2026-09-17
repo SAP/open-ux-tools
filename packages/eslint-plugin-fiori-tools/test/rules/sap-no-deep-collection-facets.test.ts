@@ -327,14 +327,10 @@ ruleTester.run(TEST_NAME, noDeepCollectionFacetsRule, {
         ),
         createInvalidTest(
             {
-                name: 'V4: four-level nesting (reports level 3 and level 4)',
+                name: 'V4: four-level nesting (reports only level 3)',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FOUR_LEVEL_NESTING),
                 errors: [
-                    {
-                        message:
-                            'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
-                    },
                     {
                         message:
                             'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
