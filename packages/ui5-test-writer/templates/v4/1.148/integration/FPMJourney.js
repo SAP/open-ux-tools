@@ -25,6 +25,8 @@ sap.ui.define([
         QUnit.module("FPM journey");
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "<%- serviceUri %>" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName %>Generated.iSeeThisPage();

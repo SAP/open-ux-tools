@@ -8,6 +8,8 @@ sap.ui.define([
         QUnit.module("First journey");
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "<%- serviceUri %>" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             <% if (startLR) { %>Then.onThe<%- startLR %>.iSeeThisPage();<%} %>
         });

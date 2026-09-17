@@ -23,6 +23,8 @@ function journey() {
     QUnit.module("FPM journey");
 
     opaTest("Start application", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: "<%- serviceUri %>" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         <%_ startPages.forEach(function(pageName) { %>
         Then.onThe<%- pageName %>Generated.iSeeThisPage();
