@@ -7,7 +7,7 @@ import type {
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAxiosError } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { type SystemLookup, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { type SystemLookup, getConfiguredProvider, skipRestrictedViewsChange } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
 import type {
@@ -423,14 +423,19 @@ export class KeyUserImportPrompter {
     /**
      * Checks whether any imported key-user change still carries a view restriction.
      *
-     * A restriction is expressed as a non-empty `context.role` list on the change content. This
-     * information is stripped when the change is transformed for the adaptation project, so the
-     * developer must be notified that the imported views will become non-restricted.
+     * A restriction is either a change that exists solely to restrict views (see
+     * `skipRestrictedViewsChange`, which is skipped on write) or a change with a non-empty
+     * `contexts.role` list alongside other content (whose `contexts` is stripped on write). In both
+     * cases the restriction is lost, so the developer must be notified that the imported views will
+     * become non-restricted.
      *
      * @returns {boolean} `true` if at least one change has a restricted view.
      */
     private detectRestrictedViews(): boolean {
         return this.keyUserChanges.some((change) => {
+            if (skipRestrictedViewsChange(change.content)) {
+                return true;
+            }
             return (change.content.contexts?.role?.length ?? 0) > 0;
         });
     }

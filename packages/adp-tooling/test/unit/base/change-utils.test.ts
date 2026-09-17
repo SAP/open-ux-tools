@@ -54,6 +54,7 @@ const {
     getChangesByType,
     getParsedPropertyValue,
     parseStringToObject,
+    skipRestrictedViewsChange,
     transformKeyUserChangeForAdp,
     writeAnnotationChange,
     writeChangeToFolder,
@@ -762,7 +763,7 @@ describe('Change Utils', () => {
                         projectId: 'sap.ui.demoapps.rta.freestyle',
                         adaptationId: 'DEFAULT',
                         version: '1.0',
-                        context: 'someContext',
+                        contexts: { role: ['someRole'] },
                         versionId: 'someVersionId',
                         support: {
                             generator: 'sap.ui.rta.command'
@@ -789,7 +790,7 @@ describe('Change Utils', () => {
             const writtenChange = writeJsonSpy.mock.calls[0][1];
             expect(writtenChange).not.toHaveProperty('adaptationId');
             expect(writtenChange).not.toHaveProperty('version');
-            expect(writtenChange).not.toHaveProperty('context');
+            expect(writtenChange).not.toHaveProperty('contexts');
             expect(writtenChange).not.toHaveProperty('versionId');
         });
 
@@ -875,6 +876,56 @@ describe('Change Utils', () => {
 
             expect(result.support).toBeDefined();
             expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
+        });
+    });
+
+    describe('skipRestrictedViewsChange', () => {
+        it('should return true for an updateVariant change whose only content is contexts and has no texts', () => {
+            const change = {
+                changeType: 'updateVariant',
+                content: { contexts: { role: ['someRole'] } }
+            };
+
+            expect(skipRestrictedViewsChange(change)).toBe(true);
+        });
+
+        it('should return true for a ctrl_variant_change with setContexts change type', () => {
+            const change = {
+                fileType: 'ctrl_variant_change',
+                changeType: 'setContexts',
+                content: {}
+            };
+
+            expect(skipRestrictedViewsChange(change)).toBe(true);
+        });
+
+        it('should return false for an updateVariant change that also carries texts', () => {
+            const change = {
+                changeType: 'updateVariant',
+                content: { contexts: { role: ['someRole'] } },
+                texts: { someKey: 'value' }
+            };
+
+            expect(skipRestrictedViewsChange(change)).toBe(false);
+        });
+
+        it('should return false for an updateVariant change with content beyond contexts', () => {
+            const change = {
+                changeType: 'updateVariant',
+                content: { contexts: { role: ['someRole'] }, variantReference: 'variant1' }
+            };
+
+            expect(skipRestrictedViewsChange(change)).toBe(false);
+        });
+
+        it('should return false for a regular change', () => {
+            const change = {
+                fileName: 'test.change',
+                changeType: 'rename',
+                content: {}
+            };
+
+            expect(skipRestrictedViewsChange(change)).toBe(false);
         });
     });
 });

@@ -183,7 +183,7 @@ export function transformKeyUserChangeForAdp(
  * @param change - The key-user change payload from the backend.
  * @returns {boolean} `true` if the change should be skipped, otherwise `false`.
  */
-function skipRestrictedViewsChange(change: KeyUserChangeContent['content']): boolean {
+export function skipRestrictedViewsChange(change: KeyUserChangeContent['content']): boolean {
     const texts = change['texts'] as Record<string, unknown> | undefined;
     const hasTexts = !!texts && Object.keys(texts).length > 0;
 

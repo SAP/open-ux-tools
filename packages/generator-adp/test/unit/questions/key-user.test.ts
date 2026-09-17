@@ -132,12 +132,13 @@ describe('KeyUserImportPrompter', () => {
     describe('getPrompts', () => {
         it('should return all prompts by default', () => {
             const prompts = prompter.getPrompts();
-            expect(prompts).toHaveLength(4);
+            expect(prompts).toHaveLength(5);
             expect(prompts.map((p) => p.name)).toEqual([
                 keyUserPromptNames.keyUserSystem,
                 keyUserPromptNames.keyUserUsername,
                 keyUserPromptNames.keyUserPassword,
-                keyUserPromptNames.keyUserAdaptation
+                keyUserPromptNames.keyUserAdaptation,
+                keyUserPromptNames.keyUserRestrictedViewsLabel
             ]);
         });
 
@@ -146,11 +147,71 @@ describe('KeyUserImportPrompter', () => {
                 [keyUserPromptNames.keyUserSystem]: { hide: true },
                 [keyUserPromptNames.keyUserPassword]: { hide: true }
             });
-            expect(prompts).toHaveLength(2);
+            expect(prompts).toHaveLength(3);
             expect(prompts.map((p) => p.name)).toEqual([
                 keyUserPromptNames.keyUserUsername,
-                keyUserPromptNames.keyUserAdaptation
+                keyUserPromptNames.keyUserAdaptation,
+                keyUserPromptNames.keyUserRestrictedViewsLabel
             ]);
+        });
+    });
+
+    describe('Restricted views label (detectRestrictedViews)', () => {
+        const answers = {
+            keyUserSystem: 'SystemA',
+            keyUserUsername: 'user',
+            keyUserPassword: 'pass',
+            keyUserAdaptation: mockAdaptations[0]
+        };
+
+        /**
+         * Populates the prompter's key-user changes via system validation, then returns the
+         * `when` result of the restricted-views label prompt (which calls `detectRestrictedViews`).
+         *
+         * @returns {Promise<boolean>} `true` if the label should be shown.
+         */
+        const resolveLabelWhen = async (): Promise<boolean> => {
+            getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
+            listAdaptationsMock.mockResolvedValue({ adaptations: mockAdaptations });
+
+            const systemPrompt = prompter['getSystemPrompt']();
+            await systemPrompt?.validate?.(defaultSystem, answers);
+
+            const labelPrompt = prompter
+                .getPrompts()
+                .find((p) => p.name === keyUserPromptNames.keyUserRestrictedViewsLabel);
+            const when = labelPrompt?.when as (() => boolean) | undefined;
+            return !!when?.();
+        };
+
+        it('should show the label when a change exists solely to restrict views', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [{ content: { changeType: 'updateVariant', content: { contexts: { role: ['someRole'] } } } }]
+            });
+
+            expect(await resolveLabelWhen()).toBe(true);
+        });
+
+        it('should show the label when a change carries a non-empty contexts.role alongside other content', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [
+                    {
+                        content: {
+                            changeType: 'propertyChange',
+                            contexts: { role: ['someRole'] },
+                            content: { property: 'visible' }
+                        }
+                    }
+                ]
+            });
+
+            expect(await resolveLabelWhen()).toBe(true);
+        });
+
+        it('should hide the label when no change carries a view restriction', async () => {
+            getKeyUserDataMock.mockResolvedValue({ contents: mockKeyUserChanges });
+
+            expect(await resolveLabelWhen()).toBe(false);
         });
     });
 
