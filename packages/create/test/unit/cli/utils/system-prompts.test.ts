@@ -90,9 +90,11 @@ describe('system-prompts', () => {
         mockValidateClient.mockReturnValue(true);
         mockValidateUrl.mockImplementation((input: string) => {
             // Mock validateUrl from @sap-ux/project-input-validator
+            // Returns: true if valid, false if parses but no host, string error message if doesn't parse
             try {
                 const url = new URL(input);
-                return !!url.protocol && !!url.host;
+                const isValid = !!url.protocol && !!url.host;
+                return isValid ? true : false;
             } catch {
                 return 'Please enter a valid URL, for example https://my-system.example.com';
             }

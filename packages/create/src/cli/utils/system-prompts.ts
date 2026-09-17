@@ -47,7 +47,10 @@ function validateUrlField(value: string): true | string {
     }
 
     const result = validateUrl(value);
-    return result === true ? true : String(result);
+    if (result === true) {
+        return true;
+    }
+    return typeof result === 'string' ? result : t('systemPrompts.validation.invalidUrl');
 }
 
 /**
@@ -208,8 +211,7 @@ export async function promptForSystemConfig(partial: {
         credentialQuestions.push({
             type: 'text',
             name: 'username',
-            message: t('systemPrompts.prompts.username'),
-            validate: validateNonEmpty
+            message: t('systemPrompts.prompts.username')
         });
     }
 
@@ -217,8 +219,7 @@ export async function promptForSystemConfig(partial: {
         credentialQuestions.push({
             type: 'password',
             name: 'password',
-            message: t('systemPrompts.prompts.password'),
-            validate: validateNonEmpty
+            message: t('systemPrompts.prompts.password')
         });
     }
 
