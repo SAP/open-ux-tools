@@ -85,6 +85,12 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 'http:// or https://'
             );
         });
+
+        test('throws when site points to an external host', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'start', site: 'https://attacker.example.com/editor' })
+            ).rejects.toThrow('localhost');
+        });
     });
 
     describe('get_overlays step', () => {

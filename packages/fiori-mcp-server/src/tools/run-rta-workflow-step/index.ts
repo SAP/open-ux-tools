@@ -46,10 +46,9 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
 }
 
 /**
- * Asserts that `site` is a non-empty http:// or https:// URL. Used by every
- * step to validate that the caller carried the site URL forward from the `start` result
- * and that it cannot be a file:// or javascript: URI that would cause the Playwright browser
- * to load local content or execute arbitrary scripts.
+ * Asserts that `site` is a non-empty http(s)://localhost URL.
+ * The adaptation editor always binds to localhost, so any other host is rejected
+ * to prevent SSRF via a malicious MCP client or prompt-injected URL.
  *
  * @param site Value of `input.site`.
  * @returns The validated site URL.
@@ -58,8 +57,17 @@ function requireSite(site: string | undefined): string {
     if (typeof site !== 'string' || site.length === 0) {
         throw new Error('site is required for this step. Pass the site URL returned by the "start" step.');
     }
-    if (!site.startsWith('http://') && !site.startsWith('https://')) {
+    let url: URL;
+    try {
+        url = new URL(site);
+    } catch {
+        throw new Error(`site must be a valid URL. Received: "${site}"`);
+    }
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
         throw new Error(`site must be an http:// or https:// URL. Received: "${site}"`);
+    }
+    if (url.hostname !== 'localhost') {
+        throw new Error(`site must point to localhost. Received: "${url.hostname}"`);
     }
     return site;
 }
@@ -76,9 +84,9 @@ function requireSite(site: string | undefined): string {
  */
 export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkflowStepResult> {
     try {
+        const site = requireSite(input.site);
         switch (input.step) {
             case 'start': {
-                const site = requireSite(input.site);
                 const frameId = input.frameId;
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the
@@ -88,7 +96,6 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { site, frameId, ...result };
             }
             case 'get_overlays': {
-                const site = requireSite(input.site);
                 const { overlays, actionsCatalog } = await getOverlays(defaultTransport, {
                     site,
                     frameId: input.frameId
@@ -96,7 +103,6 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { overlays, actionsCatalog };
             }
             case 'get_context': {
-                const site = requireSite(input.site);
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
                 const context = await getElementContext(
@@ -108,7 +114,6 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { context };
             }
             case 'call_action': {
-                const site = requireSite(input.site);
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
                 const actionPayload = requireObject(input.payload, 'actionPayload');
@@ -122,12 +127,10 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { success: ok };
             }
             case 'save': {
-                const site = requireSite(input.site);
                 const ok = await saveChanges(defaultTransport, { site, frameId: input.frameId });
                 return { saved: ok };
             }
             case 'stop': {
-                const site = requireSite(input.site);
                 await defaultTransport.disconnectSite(site);
                 if (isRegistryEmpty()) {
                     await defaultTransport.stopBrowser();
@@ -135,14 +138,12 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { stopped: true };
             }
             case 'restart': {
-                const site = requireSite(input.site);
                 const page = { site, frameId: input.frameId };
                 await defaultTransport.disconnectSite(site);
                 const result = await startRta(defaultTransport, page);
                 return { site, frameId: input.frameId, ...result };
             }
             case 'get_page_actions': {
-                const site = requireSite(input.site);
                 const { registered, interactive, interactiveTruncated } = await getPageActions(defaultTransport, {
                     site,
                     frameId: input.frameId
@@ -154,13 +155,11 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 };
             }
             case 'call_page_action': {
-                const site = requireSite(input.site);
                 const id = requireString(input.payload, 'id');
                 const result = await callPageAction(defaultTransport, { site, frameId: input.frameId }, id);
                 return { result };
             }
             case 'press_interactive': {
-                const site = requireSite(input.site);
                 const controlId = requireString(input.payload, 'controlId');
                 const result = await pressInteractive(defaultTransport, { site, frameId: input.frameId }, controlId);
                 return { result };
