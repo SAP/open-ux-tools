@@ -1,5 +1,50 @@
 # @sap-ux/ui5-test-writer
 
+## 1.12.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.13 → 1.2.14
+- @sap-ux/fiori-generator-shared 1.2.15 → 1.2.16
+
+## 1.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- generate OPA tests for List Report table toolbar menu (drop-down) actions, which were previously skipped [[b0683b3](https://github.com/SAP/open-ux-tools/commit/b0683b38db08d5be20bcabbe17a06cf287713520)]
+
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Generate a confirmation-dialog check for critical actions (Common.IsActionCritical) in the latest List Report and Object Page journeys — press the action, assert the confirmation dialog, then cancel so the action is not executed. [[3c617f9](https://github.com/SAP/open-ux-tools/commit/3c617f935932a19f54c70a53753189ce75088d7e)]
+
+## 1.10.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Bug Fixes
+
+- Pass the table identifier into contact-card List Report tests so multi-tab scenarios target the correct table (onTable/onDialog now use defaultTableId) [[48b094c](https://github.com/SAP/open-ux-tools/commit/48b094c50dac3e42f8b07ad2a3c6cfbbf1cc68e0)]
+
 ## 1.10.6
 
 ### Patch Changes

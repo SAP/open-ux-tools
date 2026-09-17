@@ -277,6 +277,11 @@ export interface ActionButtonState {
      */
     unbound?: boolean;
     /**
+     * Whether the action is annotated with `Common.IsActionCritical`. Critical actions trigger a
+     * confirmation dialog at runtime, which the generated test asserts and then cancels.
+     */
+    isCritical?: boolean;
+    /**
      * Set when this entry is a menu (drop-down) button rather than a single action.
      * `menuActions` then holds the individual actions inside the menu.
      */
@@ -287,6 +292,12 @@ export interface ActionButtonState {
      * `iExecuteMenuAction` match menu entries by their rendered text, not by a stable id).
      */
     menuActions?: MenuActionState[];
+    /**
+     * Set when a menu (drop-down) button declares a `defaultAction`, so Fiori Elements renders it as a
+     * split button. Its dropdown can only be opened via the arrow, which the `sap.fe.test` API cannot
+     * press — so the generated test asserts the button but omits the (unreachable) menu drill-down.
+     */
+    splitButton?: boolean;
     /**
      * Set for custom (manifest-declared) actions that have no OData `DataFieldForAction` counterpart.
      * These are matched at runtime by their rendered label, so the writer emits the label-string form
