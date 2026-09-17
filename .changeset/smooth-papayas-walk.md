@@ -2,4 +2,4 @@
 '@sap-ux/eslint-plugin-fiori-tools': minor
 ---
 
-FEAT: Add rule sap-no-deep-collection-facets
+FEAT: Add the sap-no-deep-collection-facets rule

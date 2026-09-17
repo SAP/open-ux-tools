@@ -1,6 +1,6 @@
 # `UI.CollectionFacet` Should Not Be Nested at Third Level or Deeper (`sap-no-deep-collection-facets`)
 
-SAP Fiori elements does not consider `UI.CollectionFacet` elements that are nested at the third level or deeper within the `UI.Facets` annotation. This rule detects deeply nested collection facets and recommends reorganizing the facet structure to use a maximum of two nesting levels.
+SAP Fiori elements does not consider `UI.CollectionFacet` content that is nested at the third level or deeper within the `UI.Facets` annotation. This rule detects deeply nested collection facets and recommends reorganizing the facet structure to use a maximum of two nesting levels.
 
 ## Rule Details
 
@@ -8,12 +8,12 @@ This rule checks `UI.Facets` annotations on object pages and identifies any `UI.
 
 - **Level 1** (direct children of `UI.Facets`): ✅ Supported
 - **Level 2** (children of level 1 `UI.CollectionFacet`): ✅ Supported  
-- **Level 3 and deeper**: ❌ Not considered by SAP fiori elements
+- **Level 3 and deeper**: ❌ Not considered by SAP Fiori elements
 
 ### Warning Message
 
 ```
-UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.
+UI.CollectionFacet at level 3 or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.
 ```
 
 ### The following patterns are considered warnings:
@@ -54,7 +54,7 @@ UI.CollectionFacet at third level or deeper is not considered by SAP Fiori eleme
 </Annotations>
 ```
 
-**CDS equivalent:**
+**CAP CDS:**
 
 ```cds
 annotate service.Incidents with @(
@@ -139,7 +139,7 @@ annotate service.Incidents with @(
 
 ## How to Fix
 
-Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` elements. Consider one of these approaches:
+Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` elements. Consider one of the following approaches:
 
 - **Remove unnecessary nesting:** If a `UI.CollectionFacet` contains only one child, replace it with a direct `UI.ReferenceFacet`.
 
@@ -147,7 +147,7 @@ Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` el
 
 - **Use side-by-side facets:** Place facets at the same level rather than nesting them deeply.
 
-**Before (Three levels: violation):**
+**Before (three levels: violation):**
 
 ```xml
 <Record Type="UI.CollectionFacet">
@@ -176,7 +176,7 @@ Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` el
 </Record>
 ```
 
-**After (Two levels: correct):**
+**After (two levels: correct):**
 
 ```xml
 <Record Type="UI.CollectionFacet">

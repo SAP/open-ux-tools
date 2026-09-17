@@ -13,13 +13,13 @@ import {
 } from './utils/facet-helpers.js';
 
 /**
- * Recursively finds CollectionFacet records that appear at third level or deeper.
+ * Recursively finds CollectionFacet records that appear at the third level or deeper.
  * Collects all violating CollectionFacets discovered during the traversal.
  *
  * @param collection - The Collection element to traverse
- * @param aliasInfo - Alias information for resolving qualified names
+ * @param aliasInfo - The alias information for resolving qualified names
  * @param currentLevel - The current nesting level (1 = direct children of UI.Facets)
- * @param violations - Accumulator for found violations (mutated in place)
+ * @param violations - The accumulator for found violations (mutated in place)
  */
 function findDeepCollectionFacets(
     collection: Element,
