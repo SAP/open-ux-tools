@@ -15,6 +15,7 @@ const mockCreateAnnotationI18nEntries = jest.fn<typeof i18nWriteType.createAnnot
 const mockCreateUI5I18nEntries = jest.fn<typeof i18nWriteType.createUI5I18nEntries>();
 const mockCreateManifestI18nEntries = jest.fn<typeof i18nWriteType.createManifestI18nEntries>();
 const mockCreateCapI18nEntries = jest.fn<typeof i18nWriteType.createCapI18nEntries>();
+const mockCreateI18nEntriesAtPath = jest.fn<typeof i18nWriteType.createI18nEntriesAtPath>();
 const mockGetSpecification = jest.fn<typeof specType.getSpecification>();
 const mockReadCapServiceMetadataEdmx = jest.fn<typeof capType.readCapServiceMetadataEdmx>();
 
@@ -23,7 +24,8 @@ jest.unstable_mockModule('../../src/project/i18n/write', () => ({
     createAnnotationI18nEntries: mockCreateAnnotationI18nEntries,
     createUI5I18nEntries: mockCreateUI5I18nEntries,
     createManifestI18nEntries: mockCreateManifestI18nEntries,
-    createCapI18nEntries: mockCreateCapI18nEntries
+    createCapI18nEntries: mockCreateCapI18nEntries,
+    createI18nEntriesAtPath: mockCreateI18nEntriesAtPath
 }));
 
 const realSpec = await import('../../src/project/specification.js');

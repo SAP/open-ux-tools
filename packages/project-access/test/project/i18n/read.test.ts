@@ -186,9 +186,10 @@ describe('read', () => {
             const appPath = join('i18n', 'i18n.properties');
             const fallbackPath = join('i18n', 'i18n_en.properties');
             const root = 'root';
+            const enoentError = Object.assign(new Error('file not found'), { code: 'ENOENT' });
             mockGetPropertiesI18nBundle
                 .mockResolvedValueOnce(primaryData) // sap.app primary
-                .mockRejectedValueOnce(new Error('file not found')); // sap.app fallback missing
+                .mockRejectedValueOnce(enoentError); // sap.app fallback missing
             const result = await getI18nBundles(root, {
                 'sap.app': appPath,
                 'sap.app.fallbackLocale': fallbackPath,

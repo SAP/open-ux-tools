@@ -181,8 +181,8 @@ function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: st
                 if (typeof fallbackLocale === 'string' && fallbackLocale) {
                     result[modelKey].fallbackLocalePath = computeFallbackLocalePath(path, fallbackLocale);
                 }
-                continue;
             }
+            continue;
         }
         if (i18nModel.uri) {
             result[modelKey] = { path: join(i18nModel.uri) };

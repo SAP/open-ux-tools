@@ -48,8 +48,10 @@ export async function getI18nBundles(
             const fallbackBundle = await getPropertiesI18nBundle(i18nPropertiesPaths['sap.app.fallbackLocale'], fs);
             // Fallback entries supplement the primary bundle; primary entries take precedence on key collision
             result['sap.app'] = { ...fallbackBundle, ...result['sap.app'] };
-        } catch {
-            // Fallback file may not exist yet — not an error
+        } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+                throw error;
+            }
         }
     }
 
@@ -68,8 +70,10 @@ export async function getI18nBundles(
             try {
                 const fallbackBundle = await getPropertiesI18nBundle(fallbackLocalePath, fs);
                 result.models[key] = { ...fallbackBundle, ...result.models[key] };
-            } catch {
-                // Fallback file may not exist yet — not an error
+            } catch (error) {
+                if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+                    throw error;
+                }
             }
         }
     }
