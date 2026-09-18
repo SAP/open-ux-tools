@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 1.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/guided-answers-helper 1.0.1 → 1.0.2
+
 ## 1.0.41
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @sap-ux/ui5-test-writer
 
+## 1.13.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.14 → 1.2.15
+
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-17
+
+#### Features
+
+- Generate per-tab OPA5 tests for multi-table (Multiple Table Mode) List Reports — columns, toolbar actions, create/delete and contact-card checks now run on each non-custom tab, and object-page navigation is resolved to the tab that exposes the page (by entity set). Contact-card link checks now first call `iExecuteShowHideDetails(true)` so columns hidden in a ResponsiveTable popin become clickable. [[e9f9abe](https://github.com/SAP/open-ux-tools/commit/e9f9abe984b1f1fbae10d27e82edd394ac5026b5)]
+
 ## 1.12.1
 
 ### Patch Changes
