@@ -79,8 +79,8 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string} appId - Application ID to filter the list.
- * @param {AppDownloadType} downloadType - The download type determining which search params to use.
- * @returns {Promise<AppIndex>} A list of applications.
+ * @param {AppDownloadType} downloadType - The download type determining which search parameters to use.
+ * @returns {Promise<AppIndex>} A list of deployed applications. For the ADTQuickDeploy flow, only ADT-deployed apps are returned. For the AbapRepository flow on systems that support it, ADT-deployed apps are excluded.
  */
 async function getAppList(
     provider: AbapServiceProvider,

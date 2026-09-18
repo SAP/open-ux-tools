@@ -131,7 +131,7 @@ async function generateAppDownloadFailedHelpLink(): Promise<ValidationLink> {
 }
 
 /**
- * Validates the app selection and handles app download if applicable.
+ * Validates the app selection and handles the app download, if applicable.
  *
  * @param answers - The selected app information.
  * @param appList - The list of available apps.

@@ -16,7 +16,7 @@ export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
 export const sourceTemplateIdField = 'sap.app/sourceTemplate/id';
 
 /**
- * Title and description config per download flow, used in the constructor
+ * Title and configuration of the description per download flow, used in the constructor
  */
 export const generatorTitleConfig: Record<AppDownloadType, { title: string; description: string }> = {
     [AppDownloadType.ADTQuickDeploy]: {

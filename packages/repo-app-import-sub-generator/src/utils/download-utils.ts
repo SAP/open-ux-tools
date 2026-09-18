@@ -69,7 +69,7 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
  * Downloads application files from the ABAP repository.
  *
  * @param {string} repoName - The repository name of the application.
- * @returns {Promise<boolean>} - Resolves to false if no data was returned (e.g. legacy ABAP system), true otherwise.
+ * @returns {Promise<boolean>} - Resolves to false if no data was returned (such as on a legacy ABAP system), true otherwise.
  */
 export async function downloadApp(repoName: string): Promise<boolean> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
