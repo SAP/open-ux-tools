@@ -2065,6 +2065,9 @@ importers:
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/odata-annotation-core':
         specifier: workspace:*
         version: link:../odata-annotation-core

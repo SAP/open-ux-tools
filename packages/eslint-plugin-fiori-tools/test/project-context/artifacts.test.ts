@@ -39,7 +39,10 @@ describe('artifacts module', () => {
 
             expect(result).toEqual({
                 artifacts: {},
-                projectType: 'EDMXBackend'
+                projectType: 'EDMXBackend',
+                i18nPathsByApp: {},
+                appRoot: '',
+                projectRoot: ''
             });
         });
     });
