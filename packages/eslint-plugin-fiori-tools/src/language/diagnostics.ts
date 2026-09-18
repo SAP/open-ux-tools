@@ -21,6 +21,7 @@ export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 export const NO_COMMA_IN_SECTION_TITLE = 'sap-no-comma-in-section-title';
+export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -191,6 +192,14 @@ export interface CloudDevAdaptationStatus {
     type: typeof CLOUD_DEV_ADAPTATION_STATUS;
     manifest: ManifestPropertyDiagnosticData;
 }
+export interface NoSingleFacetInCollection {
+    type: typeof NO_SINGLE_FACET_IN_COLLECTION;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
 
 export interface NoCommaInSectionTitle {
     type: typeof NO_COMMA_IN_SECTION_TITLE;
@@ -223,4 +232,5 @@ export type Diagnostic =
     | StrictUomFiltering
     | NoLiveMode
     | CloudDevAdaptationStatus
+    | NoSingleFacetInCollection
     | NoCommaInSectionTitle;

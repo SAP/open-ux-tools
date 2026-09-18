@@ -1,5 +1,105 @@
 # @sap-ux/ui5-test-writer
 
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-17
+
+#### Features
+
+- Generate per-tab OPA5 tests for multi-table (Multiple Table Mode) List Reports — columns, toolbar actions, create/delete and contact-card checks now run on each non-custom tab, and object-page navigation is resolved to the tab that exposes the page (by entity set). Contact-card link checks now first call `iExecuteShowHideDetails(true)` so columns hidden in a ResponsiveTable popin become clickable. [[e9f9abe](https://github.com/SAP/open-ux-tools/commit/e9f9abe984b1f1fbae10d27e82edd394ac5026b5)]
+
+## 1.12.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.13 → 1.2.14
+- @sap-ux/fiori-generator-shared 1.2.15 → 1.2.16
+
+## 1.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- generate OPA tests for List Report table toolbar menu (drop-down) actions, which were previously skipped [[b0683b3](https://github.com/SAP/open-ux-tools/commit/b0683b38db08d5be20bcabbe17a06cf287713520)]
+
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Generate a confirmation-dialog check for critical actions (Common.IsActionCritical) in the latest List Report and Object Page journeys — press the action, assert the confirmation dialog, then cancel so the action is not executed. [[3c617f9](https://github.com/SAP/open-ux-tools/commit/3c617f935932a19f54c70a53753189ce75088d7e)]
+
+## 1.10.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Bug Fixes
+
+- Pass the table identifier into contact-card List Report tests so multi-tab scenarios target the correct table (onTable/onDialog now use defaultTableId) [[48b094c](https://github.com/SAP/open-ux-tools/commit/48b094c50dac3e42f8b07ad2a3c6cfbbf1cc68e0)]
+
+## 1.10.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- Add <appId>.test resource root to generated OPA/unit test HTML [[65954d5](https://github.com/SAP/open-ux-tools/commit/65954d5c51bd5d9f96ca2c0f92b7792e6ff2aeaa)]
+
+## 1.10.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Use the page name for FPM/custom page journey module name instead of hardcoded "FPM journey" [[2b7c664](https://github.com/SAP/open-ux-tools/commit/2b7c664e2f0d73e00fbff7e918755b49d2bbe0f6)]
+
+## 1.10.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.12 → 1.2.13
+
+## 1.10.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/fiori-generator-shared 1.2.14 → 1.2.15
+- @sap-ux/preview-middleware 1.2.11 → 1.2.12
+
 ## 1.10.2
 
 ### Patch Changes
