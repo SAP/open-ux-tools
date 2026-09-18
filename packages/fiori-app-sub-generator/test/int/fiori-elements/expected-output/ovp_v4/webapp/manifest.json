@@ -1,7 +1,7 @@
 {
   "_version": "1.38.0",
   "sap.app": {
-    "id": "testNameSpace.ovpv4",
+    "id": "testnamespace.ovpv4",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -73,7 +73,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "testNameSpace.ovpv4.i18n.i18n"
+          "bundleName": "testnamespace.ovpv4.i18n.i18n"
         }
       },
       "mainModel": {
