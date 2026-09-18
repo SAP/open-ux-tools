@@ -48,7 +48,8 @@ class FakeBrowser extends EventEmitter {
         this.emit('disconnected');
     });
     public readonly newPage = jest.fn();
-    public readonly newContext = jest.fn(async () => ({ newPage: this.newPage }));
+    public readonly contextClose = jest.fn(async () => undefined);
+    public readonly newContext = jest.fn(async () => ({ newPage: this.newPage, close: this.contextClose }));
     public connected = true;
     isConnected(): boolean {
         return this.connected;
@@ -183,7 +184,7 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
-    test('disconnectSite closes the page and removes the entry', async () => {
+    test('disconnectSite closes the page and context, and removes the entry', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page, new FakePage()]);
         page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
@@ -193,6 +194,7 @@ describe('browser/playwright-bridge', () => {
         await fs.disconnectSite(SITE_A);
 
         expect(page.close).toHaveBeenCalledTimes(1);
+        expect(browser.contextClose).toHaveBeenCalledTimes(1);
 
         await fs.callFrontendAction(SITE_A, 'b');
         expect(browser.newPage).toHaveBeenCalledTimes(2);
@@ -200,7 +202,7 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
-    test('stopBrowser closes pages and the browser, clears registry', async () => {
+    test('stopBrowser closes pages, contexts, and the browser, clears registry', async () => {
         const pageA = new FakePage();
         const pageB = new FakePage();
         const { browser } = setupBrowser([pageA, pageB]);
@@ -214,6 +216,7 @@ describe('browser/playwright-bridge', () => {
 
         expect(pageA.close).toHaveBeenCalled();
         expect(pageB.close).toHaveBeenCalled();
+        expect(browser.contextClose).toHaveBeenCalledTimes(2);
         expect(browser.close).toHaveBeenCalledTimes(1);
     });
 
