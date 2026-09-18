@@ -1,13 +1,16 @@
+import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { AxiosHeaders } from 'axios';
-import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
-import type { ServiceProvider } from '../base/service-provider.js';
 import detectContentType from 'detect-content-type';
+import type { ServiceProvider } from '../base/service-provider.js';
 
 export enum CSRF {
     RequestHeaderName = 'X-Csrf-Token',
     RequestHeaderValue = 'Fetch',
     ResponseHeaderName = 'x-csrf-token'
 }
+
+const MOCK_ADP_ABAP_AUTHORIZATION_HEADER = 'm-adp-abap-authorization';
+
 /** Default connection timeout (milliseconds) */
 export const defaultTimeout = 60 * 1000; // 1 minute
 
@@ -141,7 +144,7 @@ function getContentType(contentTypeHeader: string | undefined, responseData: any
 export function attachConnectionHandler(provider: ServiceProvider) {
     // fetch xsrf token with the first request
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-        request.headers = request.headers ?? new AxiosHeaders();
+        request.headers ??= new AxiosHeaders();
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
         return request;
     });
@@ -182,7 +185,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
 
     // always add cookies to outgoing requests
     provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-        request.headers = request.headers ?? new AxiosHeaders();
+        request.headers ??= new AxiosHeaders();
         request.headers.cookie = provider.cookies.toString();
         return request;
     });
@@ -191,5 +194,23 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     provider.interceptors.response.use((response: AxiosResponse) => {
         provider.cookies.setCookies(response);
         return response;
+    });
+
+    // inject mock ADP ABAP authorization header when basic-auth credentials are present
+    provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+        const auth = request.auth ?? provider.defaults.auth;
+        if (!auth) {
+            // Do nothing in case there is no credentials.
+            return request;
+        }
+        const { username, password } = auth;
+        if (username && password) {
+            request.headers ??= new AxiosHeaders();
+            request.headers.set(
+                MOCK_ADP_ABAP_AUTHORIZATION_HEADER,
+                `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`
+            );
+        }
+        return request;
     });
 }

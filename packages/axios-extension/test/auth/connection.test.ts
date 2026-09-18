@@ -66,7 +66,7 @@ describe('connection', () => {
         });
 
         it('handlers correctly attached', () => {
-            expect(reqHandlers.length).toBe(2);
+            expect(reqHandlers.length).toBe(3);
             expect(respHandlers.length).toBe(2);
         });
 
@@ -114,6 +114,41 @@ describe('connection', () => {
                 response.headers[CSRF.ResponseHeaderName]
             );
             expect(spyOnRequestEject).toHaveBeenCalledTimes(1);
+        });
+
+        describe('m-adp-abap-authorization header', () => {
+            const mockAdpInterceptor = () => reqHandlers[2];
+
+            it('sets header from provider defaults.auth when credentials are present', () => {
+                testProvider.defaults.auth = { username: 'user', password: 'pass' };
+                const request = { headers: undefined } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers.get('m-adp-abap-authorization')).toBe(
+                    `Basic ${Buffer.from('user:pass').toString('base64')}`
+                );
+            });
+
+            it('sets header from request.auth when present, taking precedence over defaults.auth', () => {
+                testProvider.defaults.auth = { username: 'default', password: 'default' };
+                const request = { auth: { username: 'req', password: 'secret' } } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers.get('m-adp-abap-authorization')).toBe(
+                    `Basic ${Buffer.from('req:secret').toString('base64')}`
+                );
+            });
+
+            it('does not set header when no auth credentials are present', () => {
+                const request = { headers: undefined } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers).toBeUndefined();
+            });
+
+            it('does not set header when username or password is missing', () => {
+                testProvider.defaults.auth = { username: 'user', password: '' };
+                const request = { headers: undefined } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers).toBeUndefined();
+            });
         });
     });
 });
