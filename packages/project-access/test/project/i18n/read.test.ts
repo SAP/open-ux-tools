@@ -219,6 +219,54 @@ describe('read', () => {
             expect(result.models['i18n']).toEqual({ fallbackKey: [], sharedKey: [], primaryKey: [] });
         });
 
+        test('bundles with sap.app fallback locale — non-ENOENT fallback error is rethrown', async () => {
+            const primaryData: uxI18nType.I18nBundle = { primaryKey: [] };
+            const appPath = join('i18n', 'i18n.properties');
+            const fallbackPath = join('i18n', 'i18n_en.properties');
+            const networkError = Object.assign(new Error('network failure'), { code: 'ENETDOWN' });
+            mockGetPropertiesI18nBundle.mockResolvedValueOnce(primaryData).mockRejectedValueOnce(networkError);
+            await expect(
+                getI18nBundles('root', {
+                    'sap.app': appPath,
+                    'sap.app.fallbackLocale': fallbackPath,
+                    models: {}
+                })
+            ).rejects.toThrow('network failure');
+        });
+
+        test('bundles with model fallback locale — ENOENT fallback read failure is silently ignored', async () => {
+            const primaryData: uxI18nType.I18nBundle = { primaryKey: [] };
+            const modelPath = join('i18n', 'i18n.properties');
+            const modelFallbackPath = join('i18n', 'i18n_en.properties');
+            const enoentError = Object.assign(new Error('file not found'), { code: 'ENOENT' });
+            mockGetPropertiesI18nBundle
+                .mockResolvedValueOnce({}) // sap.app
+                .mockResolvedValueOnce(primaryData) // model primary
+                .mockRejectedValueOnce(enoentError); // model fallback missing
+            const result = await getI18nBundles('root', {
+                'sap.app': join('i18n', 'i18n.properties'),
+                models: { i18n: { path: modelPath, fallbackLocalePath: modelFallbackPath } }
+            });
+            expect(result.models['i18n']).toEqual(primaryData);
+            expect(result.errors).toBeUndefined();
+        });
+
+        test('bundles with model fallback locale — non-ENOENT fallback error is rethrown', async () => {
+            const modelPath = join('i18n', 'i18n.properties');
+            const modelFallbackPath = join('i18n', 'i18n_en.properties');
+            const networkError = Object.assign(new Error('network failure'), { code: 'ENETDOWN' });
+            mockGetPropertiesI18nBundle
+                .mockResolvedValueOnce({}) // sap.app
+                .mockResolvedValueOnce({}) // model primary
+                .mockRejectedValueOnce(networkError); // model fallback
+            await expect(
+                getI18nBundles('root', {
+                    'sap.app': join('i18n', 'i18n.properties'),
+                    models: { i18n: { path: modelPath, fallbackLocalePath: modelFallbackPath } }
+                })
+            ).rejects.toThrow('network failure');
+        });
+
         describe('exception', () => {
             test('bundles for CAPNodejs', async () => {
                 const data: uxI18nType.I18nBundle = {
