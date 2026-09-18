@@ -6,7 +6,7 @@ function journey() {
     QUnit.module("First journey");
 
     opaTest("Start application", function (Given: Given, _When: When<% if (startLR) { %>, Then: Then<% } else { %>, _Then: Then<% } %>) {
-        Given.iResetMockData({ ServiceUri: "<%- serviceUri %>" });
+        Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
         Given.iResetTestData();
         Given.iStartMyApp();
         <% if (startLR) { %>Then.onThe<%- startLR %>Generated.iSeeThisPage();<%} %>

@@ -25,7 +25,7 @@ sap.ui.define([
         QUnit.module("<%- name %> Journey");
 
         opaTest("Start application", function (Given, When, Then) {
-            Given.iResetMockData({ ServiceUri: "<%- serviceUri %>" });
+            Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
             Given.iResetTestData();
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>

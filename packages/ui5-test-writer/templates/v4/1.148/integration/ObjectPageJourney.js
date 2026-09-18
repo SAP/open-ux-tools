@@ -25,7 +25,7 @@ sap.ui.define([
         QUnit.module("<%- name%>ObjectPage journey");
 
         opaTest("Navigate to <%- name%>ObjectPage", function (Given, When, Then) {
-            Given.iResetMockData({ ServiceUri: "<%- serviceUri %>" });
+            Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
             Given.iResetTestData();
             Given.iStartMyApp();
 <% if(navigationParents.parentLRName) { -%>
