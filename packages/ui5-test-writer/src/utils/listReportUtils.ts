@@ -1,5 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
-import type { TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type {
+    TreeAggregation,
+    TreeAggregations,
+    TreeModel
+} from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonsResult,
     ActionButtonState,
@@ -7,6 +11,7 @@ import type {
     FEV4ManifestTarget,
     FilterBarItem,
     ListReportFeatures,
+    ListReportTab,
     TextAnnotationColumn
 } from '../types.js';
 import {
@@ -20,8 +25,11 @@ import {
 import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
 import {
     extractContactCardColumnsFromNode,
+    extractContactCardColumnsFromTableNode,
+    extractTableColumnsFromTableNode,
     extractTextAnnotationColumnsFromNode,
-    resolvePrimaryTableNode
+    resolvePrimaryTableNode,
+    resolveViewTableNodes
 } from './tableUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse, merge } from '@sap-ux/edmx-parser';
@@ -264,11 +272,25 @@ export function getListReportFeatures(
         textAnnotationColumns,
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
+        tabs: getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log),
         semanticKey: {
             semanticKeyProperties,
             missingFromFilterBar: missingKeys?.length ? missingKeys : undefined
         }
     };
+}
+
+/**
+ * Retrieves toolbar action definitions from a resolved table node.
+ *
+ * @param tableNode - the table node holding the `toolBar` aggregation
+ * @returns The toolbar actions aggregation object.
+ */
+export function getToolBarActionsFromTableNode(tableNode: TreeAggregation): TreeAggregations {
+    const toolBar = getAggregations(tableNode)['toolBar'];
+    const toolBarAggregations = getAggregations(toolBar);
+    const actions = toolBarAggregations['actions'];
+    return getAggregations(actions);
 }
 
 /**
@@ -282,29 +304,24 @@ export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
     if (!tableNode) {
         return {} as TreeAggregations;
     }
-    const toolBar = getAggregations(tableNode)['toolBar'];
-    const toolBarAggregations = getAggregations(toolBar);
-    const actions = toolBarAggregations['actions'];
-    const actionAggregations = getAggregations(actions);
-    return actionAggregations;
+    return getToolBarActionsFromTableNode(tableNode);
 }
 
 /**
- * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from the List Report
- * table toolbar. Annotation-backed single actions are handled separately via the OData metadata
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from the given toolbar
+ * actions aggregation. Annotation-backed single actions are handled separately via the OData metadata
  * path, so they are not emitted here.
  *
- * @param pageModel - the tree model containing the table toolbar definitions
+ * @param actionAggregations - the toolbar actions aggregation
  * @param resolveLabel - resolver for i18n placeholder labels
  * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
  * @returns array of custom and menu toolbar action button states
  */
-export function extractCustomToolBarActions(
-    pageModel: TreeModel,
+function extractCustomToolBarActionsFromAggregation(
+    actionAggregations: TreeAggregations,
     resolveLabel: I18nLabelResolver,
     convertedMetadata?: ConvertedMetadata
 ): ActionButtonState[] {
-    const actionAggregations = getToolBarActions(pageModel);
     const schemaNamespace = convertedMetadata?.namespace ?? '';
     const actions: ActionButtonState[] = [];
     for (const key of Object.keys(actionAggregations ?? {})) {
@@ -329,6 +346,101 @@ export function extractCustomToolBarActions(
         }
     }
     return actions;
+}
+
+/**
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from a resolved table node.
+ *
+ * @param tableNode - the table node holding the `toolBar` aggregation
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
+ * @returns array of custom and menu toolbar action button states
+ */
+export function extractCustomToolBarActionsFromTableNode(
+    tableNode: TreeAggregation,
+    resolveLabel: I18nLabelResolver,
+    convertedMetadata?: ConvertedMetadata
+): ActionButtonState[] {
+    return extractCustomToolBarActionsFromAggregation(
+        getToolBarActionsFromTableNode(tableNode),
+        resolveLabel,
+        convertedMetadata
+    );
+}
+
+/**
+ * Extracts custom (manifest-declared) and menu (drop-down) toolbar actions from the List Report table toolbar.
+ *
+ * @param pageModel - the tree model containing the table toolbar definitions
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @param convertedMetadata - converted OData metadata, required to resolve annotation-backed menu children
+ * @returns array of custom and menu toolbar action button states
+ */
+export function extractCustomToolBarActions(
+    pageModel: TreeModel,
+    resolveLabel: I18nLabelResolver,
+    convertedMetadata?: ConvertedMetadata
+): ActionButtonState[] {
+    return extractCustomToolBarActionsFromAggregation(getToolBarActions(pageModel), resolveLabel, convertedMetadata);
+}
+
+/**
+ * Builds the per-tab feature data for a multi-table (Multiple Table Mode) List Report. Each non-custom
+ * tab is described by its own columns, contact-card columns, toolbar actions and create/delete state,
+ * resolved against that tab's entity set. Returns an empty array for single-table List Reports.
+ *
+ * @param listReportPage - the List Report page containing the tree model with per-tab table nodes
+ * @param convertedMetadata - already-converted OData metadata (undefined disables action/button state resolution)
+ * @param manifest - the application manifest, source of the non-custom tab keys and their entity sets
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @param log - optional logger instance
+ * @returns per-tab feature data in manifest order, empty for single-table List Reports
+ */
+export function getListReportTabs(
+    listReportPage: PageWithModelV4,
+    convertedMetadata: ConvertedMetadata | undefined,
+    manifest?: Manifest,
+    resolveLabel: I18nLabelResolver = passthroughLabelResolver,
+    log?: Logger
+): ListReportTab[] {
+    const views = getListReportViews(manifest, listReportPage.name);
+    if (views.length <= 1) {
+        return [];
+    }
+    const viewNodes = resolveViewTableNodes(listReportPage.model.root);
+    const nodeByKey = new Map(viewNodes.map((entry) => [entry.key, entry.node]));
+    const tabs: ListReportTab[] = [];
+    views.forEach((view, index) => {
+        // Match the spec-model view node by key; fall back to model order (both lists exclude custom tabs).
+        const tableNode = nodeByKey.get(view.key) ?? viewNodes[index]?.node;
+        if (!tableNode) {
+            return;
+        }
+        const entitySet = view.entitySet ?? listReportPage.entitySet;
+        let toolBarActions: ActionButtonState[] = [];
+        let createButton = buildButtonState();
+        let deleteButton = buildButtonState();
+        if (convertedMetadata && entitySet) {
+            const actionNames = getToolBarActionItems(getToolBarActionsFromTableNode(tableNode));
+            toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySet, actionNames, log);
+            const buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySet, log);
+            createButton = buildButtonState(buttonVisibility?.create);
+            deleteButton = buildButtonState(buttonVisibility?.delete);
+        }
+        toolBarActions = toolBarActions.concat(
+            extractCustomToolBarActionsFromTableNode(tableNode, resolveLabel, convertedMetadata)
+        );
+        tabs.push({
+            key: view.key,
+            entitySet,
+            tableColumns: extractTableColumnsFromTableNode(tableNode),
+            contactCardColumns: extractContactCardColumnsFromTableNode(tableNode),
+            toolBarActions,
+            createButton,
+            deleteButton
+        });
+    });
+    return tabs;
 }
 
 /**
