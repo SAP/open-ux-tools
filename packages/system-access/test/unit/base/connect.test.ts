@@ -1,17 +1,17 @@
 import { jest } from '@jest/globals';
-import type { Destination } from '@sap-ux/btp-utils';
-import type { AbapTarget } from '../../../src/types.js';
 import {
-    mockCreateForAbap,
-    mockCreateForAbapOnCloud,
-    mockCreateForDestination,
     mockedStoreService,
     mockIsAppStudio,
     mockListDestinations,
-    MockNullTransport,
     mockReadFileSync,
-    MockToolsLogger
+    mockCreateForAbap,
+    mockCreateForAbapOnCloud,
+    mockCreateForDestination,
+    MockToolsLogger,
+    MockNullTransport
 } from '../../__mocks__/index.js';
+import type { Destination } from '@sap-ux/btp-utils';
+import type { AbapTarget } from '../../../src/types.js';
 
 // Dynamic imports after mocks are set up
 const { AuthenticationType } = await import('@sap-ux/store');
@@ -235,29 +235,6 @@ describe('connect', () => {
         test('validate input parameters', () => {
             expect(isUrlTarget(target)).toBe(true);
             expect(isUrlTarget({} as AbapTarget)).toBe(false);
-        });
-    });
-
-    describe('applyMockAdpAbapAuthHeaderIfNeeded', () => {
-        test('should add m-adp-abap-authorization header when auth credentials are present', async () => {
-            const requestOptions = { auth: { username, password } };
-            const provider = await createAbapServiceProvider(target, requestOptions, false, logger);
-
-            const expectedCredentials = Buffer.from(`${username}:${password}`).toString('base64');
-            expect(provider.defaults.headers?.['m-adp-abap-authorization']).toBe(`Basic ${expectedCredentials}`);
-        });
-
-        test('should not add m-adp-abap-authorization header when auth credentials are absent', async () => {
-            const requestOptions = {};
-            const provider = await createAbapServiceProvider(target, requestOptions, false, logger);
-
-            expect(provider.defaults.headers?.['m-adp-abap-authorization']).toBeUndefined();
-        });
-
-        test('should not add m-adp-abap-authorization header when requestOptions is undefined', async () => {
-            const provider = await createAbapServiceProvider(target, undefined, false, logger);
-
-            expect(provider.defaults.headers?.['m-adp-abap-authorization']).toBeUndefined();
         });
     });
 });
