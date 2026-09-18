@@ -39,7 +39,7 @@ export type FacetViolation = NoDeepCollectionFacets | NoSingleFacetInCollection;
  * @param pageName - The name of the page where the violation occurs
  * @param annotationUri - The URI of the annotation file
  * @param annotationValue - The Value element of the parent annotation
- * @param violationType - The type/ID of the violation
+ * @param violationType - The type or ID of the violation
  */
 export function addOrMergeViolation<T extends FacetViolation>(
     problems: T[],
@@ -83,7 +83,7 @@ export function addOrMergeViolation<T extends FacetViolation>(
  * @param page - Object page (OData V4 or OData V2)
  * @param parsedService - The parsed annotation service
  * @param problems - An array of identified rule violations (mutated in place)
- * @param violationType - The type/ID of the violation
+ * @param violationType - The type or ID of the violation
  * @param findViolations - Function that finds violating records in a facets collection
  */
 export function checkPageFacetAnnotations<T extends FacetViolation>(
