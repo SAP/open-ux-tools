@@ -54,7 +54,7 @@ const {
     getChangesByType,
     getParsedPropertyValue,
     parseStringToObject,
-    skipRestrictedViewsChange,
+    isViewRestrictionOnlyChange,
     transformKeyUserChangeForAdp,
     writeAnnotationChange,
     writeChangeToFolder,
@@ -879,14 +879,14 @@ describe('Change Utils', () => {
         });
     });
 
-    describe('skipRestrictedViewsChange', () => {
+    describe('isViewRestrictionOnlyChange', () => {
         it('should return true for an updateVariant change whose only content is contexts and has no texts', () => {
             const change = {
                 changeType: 'updateVariant',
                 content: { contexts: { role: ['someRole'] } }
             };
 
-            expect(skipRestrictedViewsChange(change)).toBe(true);
+            expect(isViewRestrictionOnlyChange(change)).toBe(true);
         });
 
         it('should return true for a ctrl_variant_change with setContexts change type', () => {
@@ -896,7 +896,7 @@ describe('Change Utils', () => {
                 content: {}
             };
 
-            expect(skipRestrictedViewsChange(change)).toBe(true);
+            expect(isViewRestrictionOnlyChange(change)).toBe(true);
         });
 
         it('should return false for an updateVariant change that also carries texts', () => {
@@ -906,7 +906,7 @@ describe('Change Utils', () => {
                 texts: { someKey: 'value' }
             };
 
-            expect(skipRestrictedViewsChange(change)).toBe(false);
+            expect(isViewRestrictionOnlyChange(change)).toBe(false);
         });
 
         it('should return false for an updateVariant change with content beyond contexts', () => {
@@ -915,7 +915,7 @@ describe('Change Utils', () => {
                 content: { contexts: { role: ['someRole'] }, variantReference: 'variant1' }
             };
 
-            expect(skipRestrictedViewsChange(change)).toBe(false);
+            expect(isViewRestrictionOnlyChange(change)).toBe(false);
         });
 
         it('should return false for a regular change', () => {
@@ -925,7 +925,7 @@ describe('Change Utils', () => {
                 content: {}
             };
 
-            expect(skipRestrictedViewsChange(change)).toBe(false);
+            expect(isViewRestrictionOnlyChange(change)).toBe(false);
         });
     });
 });

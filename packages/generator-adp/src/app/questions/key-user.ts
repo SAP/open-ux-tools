@@ -7,7 +7,7 @@ import type {
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAxiosError } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { type SystemLookup, getConfiguredProvider, skipRestrictedViewsChange } from '@sap-ux/adp-tooling';
+import { type SystemLookup, getConfiguredProvider, isViewRestrictionOnlyChange } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
 import type {
@@ -244,8 +244,9 @@ export class KeyUserImportPrompter {
             guiOptions: {
                 type: 'label',
                 link: {
-                    text: 'test123',
-                    url: 'https://google.com'
+                    text: 'documentation.',
+                    // Placeholder URL - replace with the real ADP restricted-views documentation link
+                    url: 'https://help.sap.com/docs/'
                 }
             },
             when: () => this.detectRestrictedViews()
@@ -424,7 +425,7 @@ export class KeyUserImportPrompter {
      * Checks whether any imported key-user change still carries a view restriction.
      *
      * A restriction is either a change that exists solely to restrict views (see
-     * `skipRestrictedViewsChange`, which is skipped on write) or a change with a non-empty
+     * `isViewRestrictionOnlyChange`, which is skipped on write) or a change with a non-empty
      * `contexts.role` list alongside other content (whose `contexts` is stripped on write). In both
      * cases the restriction is lost, so the developer must be notified that the imported views will
      * become non-restricted.
@@ -433,7 +434,7 @@ export class KeyUserImportPrompter {
      */
     private detectRestrictedViews(): boolean {
         return this.keyUserChanges.some((change) => {
-            if (skipRestrictedViewsChange(change.content)) {
+            if (isViewRestrictionOnlyChange(change.content)) {
                 return true;
             }
             return (change.content.contexts?.role?.length ?? 0) > 0;

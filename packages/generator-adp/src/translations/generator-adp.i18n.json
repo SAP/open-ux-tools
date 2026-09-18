@@ -59,7 +59,7 @@
         "importKeyUserChangesLabel": "Import Key User Changes",
         "keyUserAdaptationLabel": "Context-Based Adaptation",
         "keyUserAdaptationBreadcrumb": "Adaptation",
-        "keyUserRestrictedViewsLabel": "At least one imported change has a restricted view. The restriction cannot be kept in the adaptation project, so the affected views will be imported as non-restricted. Key users can restrict them again after the adaptation project has been deployed.",
+        "keyUserRestrictedViewsLabel": "⚠️ At least one imported change has a restricted view. The restriction cannot be kept in the adaptation project, so the affected views will be imported as non-restricted. Key users can restrict them again after the adaptation project has been deployed. For further details, please refer to the",
         "targetEnvLabel": "Environment",
         "targetEnvTooltip": "Select the target environment for your Adaptation Project.",
         "targetEnvBreadcrumb": "Target Environment",

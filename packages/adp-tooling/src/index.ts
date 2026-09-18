@@ -12,7 +12,7 @@ export * from './base/credentials.js';
 export * from './base/constants/index.js';
 export * from './base/project-builder.js';
 export * from './base/abap/manifest-service.js';
-export { writeKeyUserChanges, skipRestrictedViewsChange } from './base/change-utils.js';
+export { writeKeyUserChanges, isViewRestrictionOnlyChange } from './base/change-utils.js';
 export { promptGeneratorInput, type PromptDefaults } from './base/prompt.js';
 export * from './preview/adp-preview.js';
 export * from './writer/cf.js';

@@ -116,7 +116,7 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         }
 
         const change = { ...entry.content };
-        if (!change['fileName'] || skipRestrictedViewsChange(change)) {
+        if (!change['fileName'] || isViewRestrictionOnlyChange(change)) {
             continue;
         }
 
@@ -183,7 +183,7 @@ export function transformKeyUserChangeForAdp(
  * @param change - The key-user change payload from the backend.
  * @returns {boolean} `true` if the change should be skipped, otherwise `false`.
  */
-export function skipRestrictedViewsChange(change: KeyUserChangeContent['content']): boolean {
+export function isViewRestrictionOnlyChange(change: KeyUserChangeContent['content']): boolean {
     const texts = change['texts'] as Record<string, unknown> | undefined;
     const hasTexts = !!texts && Object.keys(texts).length > 0;
 
