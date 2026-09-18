@@ -200,17 +200,18 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
         const auth = request.auth ?? provider.defaults.auth;
         if (!auth) {
-            // Do nothing in case there is no credentials.
             return request;
         }
+
         const { username, password } = auth;
-        if (username && password) {
-            request.headers ??= new AxiosHeaders();
-            request.headers.set(
-                MOCK_ADP_ABAP_AUTHORIZATION_HEADER,
-                `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`
-            );
+        if (!username || !password) {
+            return request;
         }
+
+        request.headers ??= new AxiosHeaders();
+        const encodedCredentials = Buffer.from(`${username}:${password}`).toString('base64');
+        request.headers.set(MOCK_ADP_ABAP_AUTHORIZATION_HEADER, `Basic ${encodedCredentials}`);
+
         return request;
     });
 }
