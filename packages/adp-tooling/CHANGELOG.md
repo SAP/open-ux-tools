@@ -1,5 +1,52 @@
 # @sap-ux/adp-tooling
 
+## 1.0.54
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Bug Fixes
+
+- Route UI5 version validation and version-list requests through the proxy-aware HTTP layer so the Adaptation Project generator works behind a corporate proxy (no longer fails with HTTP 400 / "version not compatible") [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
+#### Release Date
+
+2026-09-16
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.10 → 2.1.0
+- @sap-ux/odata-service-writer 1.0.22 → 1.0.22
+- @sap-ux/system-access 1.0.13 → 1.0.14
+- @sap-ux/inquirer-common 1.0.40 → 1.0.41
+
+## 1.0.53
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/axios-extension 2.0.10 → 2.0.10
+- @sap-ux/inquirer-common 1.0.39 → 1.0.40
+- @sap-ux/odata-service-writer 1.0.21 → 1.0.22
+- @sap-ux/project-input-validator 1.0.18 → 1.0.19
+- @sap-ux/system-access 1.0.13 → 1.0.13
+
+## 1.0.52
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+- @sap-ux/odata-service-writer 1.0.21 → 1.0.21
+- @sap-ux/system-access 1.0.12 → 1.0.13
+- @sap-ux/inquirer-common 1.0.38 → 1.0.39
+
 ## 1.0.51
 
 ### Patch Changes

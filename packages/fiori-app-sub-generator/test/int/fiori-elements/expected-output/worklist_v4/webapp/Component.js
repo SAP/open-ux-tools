@@ -3,7 +3,7 @@ sap.ui.define(
     function (Component) {
         "use strict";
 
-        return Component.extend("testNameSpace.worklistv4.Component", {
+        return Component.extend("testnamespace.worklistv4.Component", {
             metadata: {
                 manifest: "json"
             }
