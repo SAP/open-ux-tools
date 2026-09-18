@@ -200,7 +200,7 @@ describe('Version Info', () => {
         it('should return filtered internal versions based on feature support', async () => {
             // Using the default, all versions are supported.
             const result = await getInternalVersions('1.120.0');
-            expect(fetchInternalVersionsMock).toHaveBeenCalledWith('1.120.0');
+            expect(fetchInternalVersionsMock).toHaveBeenCalledWith('1.120.0', undefined);
             expect(result).toEqual(['1.120.0', '1.119.1', '1.119.0']);
         });
     });
