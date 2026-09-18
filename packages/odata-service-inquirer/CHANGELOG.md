@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.2.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/guided-answers-helper 1.0.1 → 1.0.2
+- @sap-ux/inquirer-common 1.0.41 → 1.0.42
+
 ## 3.2.18
 
 ### Patch Changes
