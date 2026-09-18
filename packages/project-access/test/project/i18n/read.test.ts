@@ -168,7 +168,7 @@ describe('read', () => {
             const fallbackPath = join('i18n', 'i18n_en.properties');
             const root = 'root';
             mockGetPropertiesI18nBundle
-                .mockResolvedValueOnce(primaryData)   // sap.app primary
+                .mockResolvedValueOnce(primaryData) // sap.app primary
                 .mockResolvedValueOnce(fallbackData); // sap.app fallback
             const result = await getI18nBundles(root, {
                 'sap.app': appPath,
@@ -207,7 +207,7 @@ describe('read', () => {
             const modelFallbackPath = join('i18n', 'i18n_en.properties');
             const root = 'root';
             mockGetPropertiesI18nBundle
-                .mockResolvedValueOnce({})          // sap.app
+                .mockResolvedValueOnce({}) // sap.app
                 .mockResolvedValueOnce(primaryData) // model primary
                 .mockResolvedValueOnce(fallbackData); // model fallback
             const result = await getI18nBundles(root, {

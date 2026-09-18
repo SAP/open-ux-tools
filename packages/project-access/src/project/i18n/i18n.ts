@@ -114,9 +114,11 @@ function getI18nAppPath(manifest: Manifest): string {
     if (typeof manifest?.['sap.app']?.i18n === 'object') {
         // bundleName wins over `bundleUrl`
         if ('bundleName' in manifest['sap.app'].i18n) {
-            // module name is in dot notation
-            const withoutAppId = manifest['sap.app'].i18n.bundleName.replace(manifest['sap.app'].id, '');
-            const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
+            // module name is in dot notation; strip appId as a prefix
+            const bundleName = manifest['sap.app'].i18n.bundleName;
+            const appId = manifest['sap.app'].id ?? '';
+            const suffix = appId && bundleName.startsWith(appId) ? bundleName.slice(appId.length) : bundleName;
+            const i18nPath = `${join(...suffix.split('.'))}.properties`;
             return join(i18nPath);
         }
 
@@ -142,8 +144,12 @@ function extractBundlePath(appId: string, settings: { bundleName?: string; bundl
         if (!appId) {
             return undefined;
         }
-        const withoutAppId = settings.bundleName.replace(appId, '');
-        return `${join(...withoutAppId.split('.'))}.properties`;
+        // Strip appId as a prefix when present; fall back to full bundleName otherwise.
+        // Prefix-strip is safer than String.replace which would remove the first occurrence anywhere in the string.
+        const suffix = settings.bundleName.startsWith(appId)
+            ? settings.bundleName.slice(appId.length)
+            : settings.bundleName;
+        return `${join(...suffix.split('.'))}.properties`;
     }
     if (settings.bundleUrl) {
         return join(settings.bundleUrl);
