@@ -1,5 +1,14 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/guided-answers-helper 1.0.1 → 1.0.2
+- @sap-ux/inquirer-common 1.0.41 → 1.0.42
+
 ## 2.0.46
 
 ### Patch Changes
