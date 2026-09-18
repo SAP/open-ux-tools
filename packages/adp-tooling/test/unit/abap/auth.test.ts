@@ -18,6 +18,7 @@ jest.unstable_mockModule('../../../src/abap/provider.js', () => ({
     getConfiguredProvider: mockGetConfiguredProvider
 }));
 
+const { SystemNotFoundError } = await import('../../../src/abap/config.js');
 const { isAuthRequired } = await import('../../../src/abap/auth.js');
 
 const logger = {
@@ -51,6 +52,21 @@ describe('isAuthRequired', () => {
         const result = await isAuthRequired('SYS010', logger);
 
         expect(result).toBe(true);
+    });
+
+    it('should return true when system is not found in the store', async () => {
+        mockGetConfiguredProvider.mockRejectedValue(new SystemNotFoundError('SYS010'));
+
+        const result = await isAuthRequired('SYS010', logger);
+
+        expect(result).toBe(true);
+    });
+
+    it('should rethrow when provider setup fails with an unrelated error', async () => {
+        const error = new Error('Network failure');
+        mockGetConfiguredProvider.mockRejectedValue(error);
+
+        await expect(isAuthRequired('SYS010', logger)).rejects.toThrow('Network failure');
     });
 
     it('should rethrow when getCsrfToken fails with a non-401 axios error', async () => {
