@@ -10,6 +10,6 @@
   "Value_must_be_provided": "The `$Type` must have a value.",
   "Vocabulary_0_is_already_specified_in_line_1": "Vocabulary `{{vocabulary}}` is already specified in the annotation group (line {{line}}).",
   "diagnostics": {
-    "deprecated_$value_syntax": "Annotating values with $value is deprecated. Use nested annotations names instead."
+    "deprecated_$value_syntax": "Annotating values with $value has been deprecated. Use nested annotations names instead."
   }
 }
