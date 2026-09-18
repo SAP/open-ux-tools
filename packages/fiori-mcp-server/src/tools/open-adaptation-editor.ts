@@ -1,5 +1,6 @@
 import type { OpenAdaptationEditorOutput, OpenAdaptationEditorInput } from '../types/index.js';
-import { spawn, type ChildProcess } from 'node:child_process';
+import { type ChildProcess } from 'node:child_process';
+import crossSpawn from 'cross-spawn';
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -12,20 +13,19 @@ const TIMEOUT_MS = 30000;
  * Prefers the local node binary directly over the .bin symlink, falls back to npm.
  *
  * @param appPath - Absolute path to the adaptation project root.
- * @param isWindows - Whether the current platform is Windows.
  * @returns An object containing the command and its arguments.
  */
-function resolveFioriBin(appPath: string, isWindows: boolean): { command: string; args: string[] } {
+function resolveFioriBin(appPath: string): { command: string; args: string[] } {
     const fioriBinTarget = join(appPath, 'node_modules', '@sap', 'ux-ui5-tooling', 'bin', 'fiori.cjs');
-    const fioriBin = join(appPath, 'node_modules', '.bin', isWindows ? 'fiori.cmd' : 'fiori');
+    const fioriBin = join(appPath, 'node_modules', '.bin', 'fiori');
 
     if (existsSync(fioriBinTarget)) {
         return { command: process.execPath, args: [fioriBinTarget, 'run', '/test/adaptation-editor.html'] };
     }
-    if (existsSync(fioriBin)) {
-        return { command: fioriBin, args: ['run', '/test/adaptation-editor.html'] };
+    if (existsSync(fioriBin) || existsSync(`${fioriBin}.cmd`)) {
+        return { command: 'fiori', args: ['run', '/test/adaptation-editor.html'] };
     }
-    return { command: isWindows ? 'npm.cmd' : 'npm', args: ['run', 'start-editor'] };
+    return { command: 'npm', args: ['run', 'start-editor'] };
 }
 
 /**
@@ -158,14 +158,15 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
     try {
         const isWindows = process.platform === 'win32';
-        const { command, args } = resolveFioriBin(appPath, isWindows);
+        const { command, args } = resolveFioriBin(appPath);
 
         logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
 
-        const childProcess: ChildProcess = spawn(command, args, {
+        // On Windows, .cmd shims cannot be spawned directly via CreateProcess.
+        // cross-spawn handles this transparently without shell: true.
+        const childProcess: ChildProcess = crossSpawn(command, args, {
             cwd: appPath,
-            stdio: ['ignore', 'pipe', 'pipe'],
-            shell: false
+            stdio: ['ignore', 'pipe', 'pipe']
         });
 
         const { serverUrl, editorPath, stderrOutput } = await waitForEditorUrl(childProcess, TIMEOUT_MS);

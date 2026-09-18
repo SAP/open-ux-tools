@@ -1,7 +1,8 @@
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
 
 import { promisify } from 'node:util';
-import { exec as execAsync, spawn, type SpawnOptions } from 'node:child_process';
+import { exec as execAsync } from 'node:child_process';
+import crossSpawn from 'cross-spawn';
 import { findInstalledPackages } from '@sap-ux/nodejs-utils';
 
 /**
@@ -43,31 +44,22 @@ export interface RunCmdArgsOptions {
 /**
  * Runs a command by spawning it with an explicit argument vector instead of a shell string.
  *
- * Unlike {@link runCmd} (which wraps `exec` and interpolates the command into a shell), this
- * passes each argument as a distinct argv element. That means arbitrary argument values —
- * such as a JSON payload containing quotes, spaces or apostrophes — are never re-parsed by a
- * shell and cannot corrupt the command. Output is streamed, so there is no `maxBuffer` limit,
- * and an optional `timeout` guards against a child that hangs (e.g. a generator that silently
- * dropped into an interactive prompt with no attached stdin).
- *
- * On Windows, `.cmd`/`.bat` shims (like `npx`) are not directly executable, so the command is
- * run through the shell there; each argument is still passed as a separate argv element.
+ * Each argument is passed verbatim so values containing quotes, spaces, or special characters
+ * are never re-parsed by a shell. Output is streamed (no `maxBuffer` limit), and an optional
+ * `timeout` terminates a child that hangs. `cross-spawn` is used to handle `.cmd`/`.bat` shims
+ * on Windows without `shell: true`, preventing cmd.exe metacharacter injection.
  *
  * @param cmd - The executable to run (e.g. `npx`).
- * @param args - The argument vector. Each element is passed verbatim; no shell parsing occurs on non-Windows.
+ * @param args - The argument vector. Each element is passed verbatim; no shell parsing occurs.
  * @param options - Optional working directory and timeout.
  * @returns A promise resolving to the collected stdout/stderr.
  * @throws {Error} If the process cannot be spawned, exits with a non-zero code, or exceeds `timeout`.
  */
 export function runCmdArgs(cmd: string, args: string[], options: RunCmdArgsOptions = {}): Promise<RunCmdArgsResult> {
     const { cwd, timeout } = options;
-    // On Windows, resolve .cmd shims (e.g. npx → npx.cmd) so we can spawn
-    // without shell: true — shell: true corrupts args that contain quotes.
-    const resolvedCmd = process.platform === 'win32' && !cmd.includes('.') ? `${cmd}.cmd` : cmd;
-    const spawnOptions: SpawnOptions = { cwd };
 
     return new Promise<RunCmdArgsResult>((resolve, reject) => {
-        const child = spawn(resolvedCmd, args, spawnOptions);
+        const child = crossSpawn(cmd, args, { cwd });
 
         let stdout = '';
         let stderr = '';

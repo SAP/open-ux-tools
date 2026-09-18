@@ -19,10 +19,8 @@ jest.unstable_mockModule('../../../src/utils', () => ({
 }));
 
 const mockSpawn = jest.fn<any>();
-const actualChildProcess = await import('node:child_process');
-jest.unstable_mockModule('node:child_process', () => ({
-    ...actualChildProcess,
-    spawn: mockSpawn
+jest.unstable_mockModule('cross-spawn', () => ({
+    default: mockSpawn
 }));
 
 const mockExistsSync = jest.fn<any>().mockReturnValue(false);
@@ -151,8 +149,7 @@ describe('openAdaptationEditor', () => {
         await promise;
 
         const spawnCmd = mockSpawn.mock.calls[0][0];
-        expect(typeof spawnCmd).toBe('string');
-        expect(spawnCmd).toContain('.bin');
+        expect(spawnCmd).toBe('fiori');
     });
 
     test('extracts editor path from "fiori run --open" line before URL line', async () => {
