@@ -22851,7 +22851,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests\\": \\"../../\\"
+                \\"lrop_v4_addtests\\": \\"../../\\",
+                \\"lrop_v4_addtests.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23766,7 +23767,8 @@ appDescription=A Fiori application.",
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -24743,7 +24745,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -26395,7 +26398,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\"
+                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\",
+                \\"lrop_v4_annotation_reuse_lib.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"

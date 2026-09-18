@@ -32,7 +32,7 @@ jest.unstable_mockModule('proxy-from-env', () => ({
     getProxyForUrl: mockGetProxyForUrl
 }));
 
-const { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } =
+const { create, createServiceForUrl, createForDestination, getProxyAgentConfig, ServiceProvider, AbapServiceProvider } =
     await import('../src/index.js');
 
 beforeAll(() => {
@@ -106,6 +106,41 @@ test('create with proxy', async () => {
     expect(config.httpAgent).toBeDefined();
     expect(config.httpsAgent).toBeDefined();
     mockGetProxyForUrl.mockReset();
+});
+
+describe('getProxyAgentConfig', () => {
+    const targetUrl = 'https://ui5.sap.com/1.120.0';
+
+    beforeEach(() => {
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetProxyForUrl.mockReset();
+    });
+
+    test('returns explicit agents and disables axios proxy handling', () => {
+        mockGetProxyForUrl.mockReturnValue('http://proxy.example:8080');
+
+        const config = getProxyAgentConfig(targetUrl);
+
+        expect(mockGetProxyForUrl).toHaveBeenCalledWith(targetUrl);
+        expect(config).toEqual({
+            httpAgent: expect.anything(),
+            httpsAgent: expect.anything(),
+            proxy: false
+        });
+    });
+
+    test('returns no proxy config when the URL bypasses the proxy', () => {
+        mockGetProxyForUrl.mockReturnValue('');
+
+        expect(getProxyAgentConfig(targetUrl)).toEqual({});
+    });
+
+    test('returns no proxy config in SAP Business Application Studio', () => {
+        mockGetProxyForUrl.mockReturnValue('http://proxy.example:8080');
+        mockIsAppStudio.mockReturnValue(true);
+
+        expect(getProxyAgentConfig(targetUrl)).toEqual({});
+    });
 });
 
 test('createForServiceUrl', async () => {
