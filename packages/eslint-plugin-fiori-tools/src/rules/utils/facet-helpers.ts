@@ -8,7 +8,7 @@ import { buildAnnotationIndexKey, type ParsedService } from '../../project-conte
 import type { FeV4ObjectPage } from '../../project-context/linker/fe-v4.js';
 import type { FeV2ObjectPage } from '../../project-context/linker/fe-v2.js';
 import type { NoDeepCollectionFacets, NoSingleFacetInCollection } from '../../language/diagnostics.js';
-import { UI_COLLECTION_FACET, UI_FACETS, UI_REFERENCE_FACET } from '../../constants.js';
+import { UI_FACETS } from '../../constants.js';
 
 /**
  * Returns the child Collection element of the Facets property inside a CollectionFacet record, if present.
