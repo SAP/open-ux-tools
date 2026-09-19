@@ -46,7 +46,7 @@
         "@jest/globals": "30.4.1",
         "@sap-ux/vocabularies-types": "0.16.0",
         "@sap-ux/project-access": "workspace:*",
-        "@types/lodash": "4.17.24",
+        "@types/lodash": "4.17.25",
         "nock": "14.0.16",
         "supertest": "7.2.2",
         "@types/proxy-from-env": "1.0.4"
