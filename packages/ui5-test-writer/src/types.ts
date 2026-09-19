@@ -62,6 +62,8 @@ export type JourneyParams = {
     navigatedOP: string | undefined;
     navigatedOPTabKey?: string;
     hideFilterBar: boolean;
+    /** OData service URI passed to `iResetMockData({ ServiceUri })` at the start of each journey. */
+    serviceUri: string;
 };
 
 export type FEV4ManifestTarget = {
