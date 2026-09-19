@@ -9,6 +9,7 @@ import {
     getMockServerConfig,
     getPathMappings,
     getWebappPath,
+    getWebappTestPath,
     readUi5Yaml
 } from '../../src/index.js';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -99,6 +100,111 @@ describe('Test getWebappPath()', () => {
         );
         memFs.writeJSON(join(samplesRoot, 'package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(join(samplesRoot, 'app/app1/webapp'));
+    });
+
+    test('Component type projects - ui5 cli v5.Get webapp from default app', async () => {
+        expect(await getWebappPath(join(samplesRoot, 'default-component-webapp-path'))).toEqual(
+            join(samplesRoot, 'default-component-webapp-path', 'src')
+        );
+    });
+
+    test('Component type projects - ui5 cli v5. Get webapp from app with custom webapp mapping', async () => {
+        expect(await getWebappPath(join(samplesRoot, 'custom-component-webapp-path'))).toEqual(
+            join(samplesRoot, 'custom-component-webapp-path', 'ts-src', 'app')
+        );
+    });
+
+    test('YAML is authoritative even if stale webapp/manifest.json exists on disk', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'custom-webapp-path');
+        memFs.write(
+            join(appRoot, 'ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: src/webapp'
+        );
+        memFs.write(join(appRoot, 'webapp', 'manifest.json'), '{}');
+        expect(await getWebappPath(appRoot, memFs)).toEqual(join(appRoot, 'src', 'webapp'));
+    });
+});
+
+describe('Test getWebappTestPath()', () => {
+    const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
+
+    test('Get webapp test path from default app', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'default-webapp-path'))).toEqual(
+            join(samplesRoot, 'default-webapp-path', 'webapp', 'test')
+        );
+    });
+
+    test('Get webapp test path from default app with ui5.yaml that does not contain a custom mapping', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'default-with-ui5-yaml'))).toEqual(
+            join(samplesRoot, 'default-with-ui5-yaml', 'webapp', 'test')
+        );
+    });
+
+    test('Get webapp test path from app with custom webapp mapping', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'custom-webapp-path'))).toEqual(
+            join(samplesRoot, 'custom-webapp-path', 'src', 'webapp', 'test')
+        );
+    });
+
+    test('Get webapp test path from app with custom webapp mapping in multi document yaml', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'custom-webapp-path-multi-yaml'))).toEqual(
+            join(samplesRoot, 'custom-webapp-path-multi-yaml', 'src', 'webapp', 'test')
+        );
+    });
+
+    test('Get custom webapp test path from mem-fs editor instance', async () => {
+        const memFs = create(createStorage());
+        memFs.write(
+            join(samplesRoot, 'custom-webapp-path/ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
+        );
+        memFs.writeJSON(join(samplesRoot, 'custom-webapp-path/package.json'), {});
+        expect(await getWebappTestPath(join(samplesRoot, 'custom-webapp-path'), memFs)).toEqual(
+            join(samplesRoot, 'custom-webapp-path/new/webapp/path/test')
+        );
+    });
+
+    test('Get custom webapp test path from mem-fs editor instance with custom webapp mapping in ui5.yaml', async () => {
+        const memFs = create(createStorage());
+        memFs.write(
+            join(samplesRoot, 'app/app1/ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: app/app1/webapp'
+        );
+        memFs.writeJSON(join(samplesRoot, 'package.json'), {});
+        expect(await getWebappTestPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(
+            join(samplesRoot, 'app/app1/webapp/test')
+        );
+    });
+
+    test('Get test path from component type project with default paths', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'component-default');
+        memFs.write(join(appRoot, 'ui5.yaml'), 'specVersion: "4.0"\ntype: component');
+        memFs.writeJSON(join(appRoot, 'package.json'), {});
+        expect(await getWebappTestPath(appRoot, memFs)).toEqual(join(appRoot, 'test'));
+    });
+
+    test('Get test path from component type project with custom test path', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'component-custom');
+        memFs.write(
+            join(appRoot, 'ui5.yaml'),
+            'specVersion: "4.0"\ntype: component\nresources:\n  configuration:\n    paths:\n      src: src\n      test: tests'
+        );
+        memFs.writeJSON(join(appRoot, 'package.json'), {});
+        expect(await getWebappTestPath(appRoot, memFs)).toEqual(join(appRoot, 'tests'));
+    });
+
+    test('YAML is authoritative even if stale webapp/manifest.json exists on disk', async () => {
+        const memFs = create(createStorage());
+        const appRoot = join(samplesRoot, 'custom-webapp-path');
+        memFs.write(
+            join(appRoot, 'ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: src/webapp'
+        );
+        memFs.write(join(appRoot, 'webapp', 'manifest.json'), '{}');
+        expect(await getWebappTestPath(appRoot, memFs)).toEqual(join(appRoot, 'src', 'webapp', 'test'));
     });
 });
 
@@ -311,6 +417,24 @@ describe('Test getPathMappings()', () => {
             );
         });
     });
+
+    describe('Component type projects - ui5 cli v5', () => {
+        test('Get path mappings from default component', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'default-component'));
+            expect(result).toEqual({
+                src: join(samplesRoot, 'default-component', 'src'),
+                test: join(samplesRoot, 'default-component', 'test')
+            });
+        });
+
+        test('Get path mappings from component with custom src mapping', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'custom-component'));
+            expect(result).toEqual({
+                src: join(samplesRoot, 'custom-component', 'src', 'main', 'dummy'),
+                test: join(samplesRoot, 'custom-component', 'test')
+            });
+        });
+    });
 });
 
 describe('get configuration for sap-fe-mockserver', () => {
@@ -407,7 +531,7 @@ describe('get configuration for sap-fe-mockserver', () => {
         expect(result).toBe('./webapp/localService/mainService/data');
     });
 
-    it('returns mockdataPath from services', async () => {
+    it('returns mockdataPath from services using ui5-local.yaml', async () => {
         const result = await getMockDataPath(projectPath, FileName.Ui5LocalYaml);
         expect(result).toBe('./webapp/localService/mainService/data');
     });

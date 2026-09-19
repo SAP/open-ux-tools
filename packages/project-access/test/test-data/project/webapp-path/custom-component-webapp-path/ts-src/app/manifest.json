@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "custom-component-webapp-path",
+        "type": "application"
+    }
+}
