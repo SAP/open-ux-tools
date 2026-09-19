@@ -60,6 +60,7 @@
         "diff": "8.0.4",
         "fast-xml-validator": "1.4.2",
         "dotenv": "17.4.2",
+        "i18next": "26.3.6",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2"
