@@ -61,7 +61,8 @@
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
         "sanitize-filename": "1.6.4",
-        "uuid": "11.1.1"
+        "uuid": "11.1.1",
+        "@ui5/task-adaptation": "1.6.8"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
