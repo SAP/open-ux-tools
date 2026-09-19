@@ -733,8 +733,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       fs-extra:
         specifier: 11.3.6
         version: 11.3.6
@@ -1767,8 +1767,8 @@ importers:
         specifier: workspace:*
         version: link:../nodejs-utils
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       i18next:
         specifier: 26.3.6
         version: 26.3.6(typescript@5.9.3)
@@ -2259,8 +2259,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       vscode-languageserver-textdocument:
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 1.0.14
+        version: 1.0.14
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -2638,8 +2638,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       i18next:
         specifier: 26.3.6
         version: 26.3.6(typescript@5.9.3)
@@ -2945,8 +2945,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -3054,8 +3054,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       fs-extra:
         specifier: 11.3.6
         version: 11.3.6
@@ -3126,8 +3126,8 @@ importers:
         specifier: 5.2.14
         version: 5.2.14
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       deepmerge:
         specifier: 4.3.1
         version: 4.3.1
@@ -3168,8 +3168,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       vscode-languageserver-textdocument:
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 1.0.14
+        version: 1.0.14
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -3880,8 +3880,8 @@ importers:
         specifier: 3.11.3
         version: 3.11.3(supports-color@8.1.1)
       vscode-languageserver-textdocument:
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 1.0.14
+        version: 1.0.14
 
   packages/project-access:
     dependencies:
@@ -4128,8 +4128,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       fs-extra:
         specifier: 11.3.6
         version: 11.3.6
@@ -4457,8 +4457,8 @@ importers:
   packages/text-document-utils:
     dependencies:
       vscode-languageserver-types:
-        specifier: 3.18.0
-        version: 3.18.0
+        specifier: 3.18.3
+        version: 3.18.3
 
   packages/ui-components:
     dependencies:
@@ -4845,8 +4845,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
@@ -5143,8 +5143,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       fs-extra:
         specifier: 11.3.6
         version: 11.3.6
@@ -5238,8 +5238,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       '@vscode-logging/logger':
-        specifier: 2.0.9
-        version: 2.0.9(supports-color@8.1.1)
+        specifier: 2.0.10
+        version: 2.0.10(supports-color@8.1.1)
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
@@ -10915,11 +10915,11 @@ packages:
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
 
-  '@vscode-logging/logger@2.0.9':
-    resolution: {integrity: sha512-Kq7dmziSHej+6yADxoHCZU8Tspf7ucJeNjH+QPMAQlRfT0uaXlh1q5DpWnzSgznWIBrMc7lX82meThDKBxL+oA==}
+  '@vscode-logging/logger@2.0.10':
+    resolution: {integrity: sha512-Mg8aW5Bkim3p4vF2S+n5eEKzg/OBSdS9iom3GmmBUGtmZ07WlOROGYm+2i2sN0R05wnqoafuJbN9LeCwMuZIbw==}
 
-  '@vscode-logging/types@2.0.8':
-    resolution: {integrity: sha512-9mc5+Iob1BqJ00QExLwdz4+w0A1odSYjvzpKYfP0lVzr7Tdf4iWGspLADyTSC7DtJVQQ+tu411cBju+cYJxE/g==}
+  '@vscode-logging/types@2.0.10':
+    resolution: {integrity: sha512-Y8Qn0Xc7ej8BC+cbDAi5LUKJs3qMGni0zUGZgqhDrXq3sQS5SQ2KG4sk320Si2rdL/nqivJ/gaEAcxD61m1+3w==}
 
   '@vscode/vsce-sign-alpine-arm64@2.0.6':
     resolution: {integrity: sha512-wKkJBsvKF+f0GfsUuGT0tSW0kZL87QggEiqNqK6/8hvqsXvpx8OsTEc3mnE1kejkh5r+qUyQ7PtF8jZYN0mo8Q==}
@@ -18774,11 +18774,14 @@ packages:
   vscode-languageserver-textdocument@1.0.12:
     resolution: {integrity: sha512-cxWNPesCnQCcMPeenjKKsOCKQZ/L6Tv19DTRIGuLWe32lyzWhihGVJ/rcckZXJxfdKCFvRLS3fpBIsV/ZGX4zA==}
 
+  vscode-languageserver-textdocument@1.0.14:
+    resolution: {integrity: sha512-EQyqJMi552E4ZTf46izQ4Fj6XquqxCySR3J5ZSD1SisMf6RfpeOWHxGBE8Gr6V0/3GHIGdAzDn8F8+1nTGCnoQ==}
+
   vscode-languageserver-types@3.17.5:
     resolution: {integrity: sha512-Ld1VelNuX9pdF39h2Hgaeb5hEZM2Z3jUrrMgWQAu82jMtZp7p3vJT3BzToKtZI7NgQssZje5o0zryOrhQvzQAg==}
 
-  vscode-languageserver-types@3.18.0:
-    resolution: {integrity: sha512-8TsGPNMIMiiBdkORgRSvLjuiEIiAFtO+KssmYWxQ+uSVvlf7RjK8YKCOjPzZ+YA04jXEV7+7LvkSmHkhpNS99g==}
+  vscode-languageserver-types@3.18.3:
+    resolution: {integrity: sha512-XIlzJ7Qp/jzSI1ds7/FwPAWrPeTZA7pAtlW4hdJ1J6xXWJL6dR9QYnDhJOdLzdKhUQ5Mm6mvUMw+3DcOQQasPw==}
 
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
@@ -26620,9 +26623,9 @@ snapshots:
       loupe: 3.2.1
       tinyrainbow: 2.0.0
 
-  '@vscode-logging/logger@2.0.9(supports-color@8.1.1)':
+  '@vscode-logging/logger@2.0.10(supports-color@8.1.1)':
     dependencies:
-      '@vscode-logging/types': 2.0.8
+      '@vscode-logging/types': 2.0.10
       fast-safe-stringify: 2.1.1
       fs-extra: 11.2.0
       lodash: 4.18.1
@@ -26634,7 +26637,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vscode-logging/types@2.0.8': {}
+  '@vscode-logging/types@2.0.10': {}
 
   '@vscode/vsce-sign-alpine-arm64@2.0.6':
     optional: true
@@ -36190,9 +36193,11 @@ snapshots:
 
   vscode-languageserver-textdocument@1.0.12: {}
 
+  vscode-languageserver-textdocument@1.0.14: {}
+
   vscode-languageserver-types@3.17.5: {}
 
-  vscode-languageserver-types@3.18.0: {}
+  vscode-languageserver-types@3.18.3: {}
 
   vscode-uri@3.1.0: {}
 
