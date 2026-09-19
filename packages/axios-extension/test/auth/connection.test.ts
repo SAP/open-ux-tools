@@ -89,7 +89,7 @@ describe('connection', () => {
             basProvider.defaults = { headers: { common: {} } as HeadersDefaults };
             attachConnectionHandler(basProvider);
             const basReqHandlers = (basProvider.interceptors.request as unknown)['handlers'];
-            expect(basReqHandlers.length).toBe(3);
+            expect(basReqHandlers).toHaveLength(3);
         });
 
         it('request: do not cause problem for normal responses', () => {
@@ -189,7 +189,7 @@ describe('connection', () => {
                 nonBasProvider.defaults = { headers: { common: {} } as HeadersDefaults };
                 attachConnectionHandler(nonBasProvider);
                 const handlers = (nonBasProvider.interceptors.request as unknown)['handlers'];
-                expect(handlers.length).toBe(2);
+                expect(handlers).toHaveLength(2);
             });
         });
     });
