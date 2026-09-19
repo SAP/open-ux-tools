@@ -11,9 +11,7 @@ import type { Editor } from 'mem-fs-editor';
  * @param error error to add
  */
 function addToErrors(result: I18nBundles, key: string, error: Error): void {
-    if (!result.errors) {
-        result.errors = {};
-    }
+    result.errors ??= {};
     result.errors[key] = error;
 }
 
@@ -45,6 +43,20 @@ export async function getI18nBundles(
         addToErrors(result, 'sap.app', error);
     }
 
+    if (i18nPropertiesPaths['sap.app.fallbackLocale']) {
+        try {
+            const fallbackBundle = await getPropertiesI18nBundle(i18nPropertiesPaths['sap.app.fallbackLocale'], fs);
+            // Fallback entries supplement the primary bundle; primary entries take precedence on key collision
+            result['sap.app'] = { ...fallbackBundle, ...result['sap.app'] };
+            // Fallback recovered the data — the primary-file error is no longer relevant
+            delete result.errors?.['sap.app'];
+        } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+                throw error;
+            }
+        }
+    }
+
     for (const key of Object.keys(i18nPropertiesPaths.models)) {
         try {
             result.models[key] = await getPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
@@ -53,6 +65,20 @@ export async function getI18nBundles(
             result.models[key] = {};
 
             addToErrors(result, `models.${key}`, error);
+        }
+
+        const fallbackLocalePath = i18nPropertiesPaths.models[key].fallbackLocalePath;
+        if (fallbackLocalePath) {
+            try {
+                const fallbackBundle = await getPropertiesI18nBundle(fallbackLocalePath, fs);
+                result.models[key] = { ...fallbackBundle, ...result.models[key] };
+                // Fallback recovered the data — the primary-file error is no longer relevant
+                delete result.errors?.[`models.${key}`];
+            } catch (error) {
+                if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+                    throw error;
+                }
+            }
         }
     }
 

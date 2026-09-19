@@ -39,6 +39,7 @@ export {
     getSpecificationPath,
     getI18nPropertiesPaths,
     getI18nBundles,
+    createI18nEntriesAtPath,
     getMinUI5VersionFromManifest,
     getMinUI5VersionAsArray,
     getMinimumUI5Version,
