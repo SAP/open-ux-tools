@@ -1,3 +1,4 @@
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { AxiosHeaders } from 'axios';
 import detectContentType from 'detect-content-type';
@@ -10,6 +11,22 @@ export enum CSRF {
 }
 
 const MOCK_ADP_ABAP_AUTHORIZATION_HEADER = 'm-adp-abap-authorization';
+
+/**
+ * Whether injection of the {@link MOCK_ADP_ABAP_AUTHORIZATION_HEADER} header is enabled.
+ *
+ * Controlled exclusively by the `ENABLE_MOCK_ADP_ABAP_AUTH_HEADER_INJECTION` environment variable and
+ * defaults to `false`. When enabled (and running in SAP Business Application Studio), the connection
+ * handler adds a second header carrying the base64-encoded basic-auth credentials so that the ADP mock
+ * server can record generator communication for automated testing.
+ *
+ * ⚠️ SECURITY: This MUST NOT be set to `true` in production. Enabling it causes credentials to be
+ * duplicated onto every outgoing request containing authorization header as an extra header, expanding
+ * credential exposure to backends that should never receive the mock-only header.
+ * It is intended solely for controlled test/recording environments and must remain
+ * unset (or `false`) in any real user-facing setup.
+ */
+const isMockAdpAbapAuthHeaderInjectionEnabled = process.env.ENABLE_MOCK_ADP_ABAP_AUTH_HEADER_INJECTION === 'true';
 
 /** Default connection timeout (milliseconds) */
 export const defaultTimeout = 60 * 1000; // 1 minute
@@ -196,22 +213,24 @@ export function attachConnectionHandler(provider: ServiceProvider) {
         return response;
     });
 
-    // inject mock ADP ABAP authorization header when basic-auth credentials are present
-    provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-        const auth = request.auth ?? provider.defaults.auth;
-        if (!auth) {
+    // inject mock ADP ABAP authorization header when running in BAS with basic-auth credentials
+    if (isAppStudio() && isMockAdpAbapAuthHeaderInjectionEnabled) {
+        provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+            const auth = request.auth ?? provider.defaults.auth;
+            if (!auth) {
+                return request;
+            }
+
+            const { username, password } = auth;
+            if (!username || !password) {
+                return request;
+            }
+
+            request.headers ??= new AxiosHeaders();
+            const encodedCredentials = Buffer.from(`${username}:${password}`).toString('base64');
+            request.headers.set(MOCK_ADP_ABAP_AUTHORIZATION_HEADER, `Basic ${encodedCredentials}`);
+
             return request;
-        }
-
-        const { username, password } = auth;
-        if (!username || !password) {
-            return request;
-        }
-
-        request.headers ??= new AxiosHeaders();
-        const encodedCredentials = Buffer.from(`${username}:${password}`).toString('base64');
-        request.headers.set(MOCK_ADP_ABAP_AUTHORIZATION_HEADER, `Basic ${encodedCredentials}`);
-
-        return request;
-    });
+        });
+    }
 }
