@@ -11,6 +11,18 @@ const __dirname = dirname(__filename);
 // Resolve via package.json (not the main entry) so dirname() gives the package
 // root regardless of where the main field points.
 const req = createRequire(join(__dirname, 'package.json'));
+
+// Fail fast if @babel/eslint-parser is not installed — esbuild would silently leave it
+// as an unbundled external import if it can't resolve it, producing a broken bundle.
+try {
+    req.resolve('@babel/eslint-parser/package.json');
+} catch {
+    throw new Error(
+        '[esbuild] @babel/eslint-parser is not installed. ' +
+        'Run `pnpm install` before building.'
+    );
+}
+
 const babelEslintParserRoot = dirname(req.resolve('@babel/eslint-parser/package.json'));
 const babelEslintParserWorker = resolve(babelEslintParserRoot, 'lib/worker/index.js');
 
@@ -104,4 +116,16 @@ if (watch) {
     console.log('[watch] watching for changes...');
 } else {
     await build(buildOptions);
+    // Verify that @babel packages were actually bundled and not left as external imports.
+    // esbuild silently externalizes unresolvable packages — this catches a broken bundle
+    // before it gets cached by Nx and published.
+    const bundleIndex = readFileSync(join(__dirname, 'lib/index.js'), 'utf8');
+    const leakedImports = [...bundleIndex.matchAll(/\bfrom\s+['"](@babel\/[^'"]+)['"]/g)].map(m => m[1]);
+    if (leakedImports.length > 0) {
+        throw new Error(
+            `[esbuild] Bundle validation failed: @babel packages were not bundled.\n` +
+            `Leaked external imports: ${[...new Set(leakedImports)].join(', ')}\n` +
+            `Check that @babel/* devDependencies are installed and the patchBabelEslintParser plugin is working.`
+        );
+    }
 }
