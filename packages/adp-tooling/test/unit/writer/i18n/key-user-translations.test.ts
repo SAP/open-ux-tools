@@ -72,7 +72,7 @@ describe('i18n-writer', () => {
 
             expect(result).toEqual({
                 annotationText: {
-                    value: '{i18n>id_123_renameLabel_annotationText}',
+                    value: '{@i18n>id_123_renameLabel_annotationText}',
                     type: 'XFLD'
                 }
             });
@@ -88,11 +88,11 @@ describe('i18n-writer', () => {
 
             expect(result).toEqual({
                 title: {
-                    value: '{i18n>id_456_change_title}',
+                    value: '{@i18n>id_456_change_title}',
                     type: 'XTIT'
                 },
                 description: {
-                    value: '{i18n>id_456_change_description}',
+                    value: '{@i18n>id_456_change_description}',
                     type: 'XFLD',
                     maxLength: 100
                 }
@@ -109,7 +109,7 @@ describe('i18n-writer', () => {
             expect(result.label.type).toBe('XFLD');
             expect(result.label.maxLength).toBe(50);
             expect(result.label.customProp).toBe(true);
-            expect(result.label.value).toBe('{i18n>id_789_rename_label}');
+            expect(result.label.value).toBe('{@i18n>id_789_rename_label}');
         });
 
         it('should not mutate original contentTexts', () => {
