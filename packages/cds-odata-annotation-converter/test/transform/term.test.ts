@@ -250,7 +250,7 @@ describe('ast to generic format', () => {
             const { diagnostics } = toTerms(ast as Assignment, { vocabularyService });
             expect(diagnostics).toHaveLength(1);
             expect(diagnostics[0].message).toStrictEqual(
-                'Vocabulary `UI` is already specified in annotation group (line 1).'
+                'Vocabulary `UI` is already specified in the annotation group (line 1).'
             );
             expect(diagnostics[0].range).toEqual(Range.create(1, 4, 1, 6));
         });
@@ -261,7 +261,7 @@ describe('ast to generic format', () => {
             const { diagnostics } = toTerms(ast as Assignment, { vocabularyService });
             expect(diagnostics).toHaveLength(1);
             expect(diagnostics[0].message).toStrictEqual(
-                'Vocabulary `UI` is already specified in annotation group (line 1).'
+                'Vocabulary `UI` is already specified in the annotation group (line 1).'
             );
             expect(diagnostics[0].range).toEqual(Range.create(1, 4, 1, 10));
         });

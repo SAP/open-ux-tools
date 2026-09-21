@@ -14,7 +14,7 @@
         }
     },
     {
-        "message": "Annotating values with $value is deprecated. Use nested annotation names instead.",
+        "message": "Annotating values with $value has been deprecated. Use nested annotation names instead.",
         "rule": "deprecated-$value-syntax",
         "range": "[(4,12)..(4,18)]",
         "severity": 2,

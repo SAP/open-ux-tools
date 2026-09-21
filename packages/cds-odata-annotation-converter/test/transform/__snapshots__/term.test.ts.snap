@@ -83,7 +83,7 @@ Array [
         },
       ],
     },
-    "message": "Annotating values with $value is deprecated. Use nested annotation names instead.",
+    "message": "Annotating values with $value has been deprecated. Use nested annotation names instead.",
     "range": Object {
       "end": Object {
         "character": 26,
@@ -186,7 +186,7 @@ Array [
         },
       ],
     },
-    "message": "Annotating values with $value is deprecated. Use nested annotation names instead.",
+    "message": "Annotating values with $value has been deprecated. Use nested annotation names instead.",
     "range": Object {
       "end": Object {
         "character": 33,
