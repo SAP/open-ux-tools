@@ -502,7 +502,8 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-no-live-mode': 'warn',
             '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn',
             '@sap-ux/fiori-tools/sap-field-group-in-table-type-restriction': 'warn',
-            '@sap-ux/fiori-tools/sap-no-single-facet-in-collection': 'warn'
+            '@sap-ux/fiori-tools/sap-no-single-facet-in-collection': 'warn',
+            '@sap-ux/fiori-tools/sap-no-deep-collection-facets': 'warn'
         }
     }
 ];
