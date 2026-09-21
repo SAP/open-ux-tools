@@ -11,6 +11,7 @@ const __dirname = dirname(__filename);
 // Resolve via package.json (not the main entry) so dirname() gives the package
 // root regardless of where the main field points.
 const req = createRequire(join(__dirname, 'package.json'));
+const { makeLicensePlugin } = req('../../esbuildLicensePlugin.cjs');
 const babelEslintParserRoot = dirname(req.resolve('@babel/eslint-parser/package.json'));
 const babelEslintParserWorker = resolve(babelEslintParserRoot, 'lib/worker/index.js');
 
@@ -95,7 +96,9 @@ const buildOptions = {
     sourcemap: !production,
     banner: { js: cjsCompatBanner },
     external: externalDependencies,
-    plugins: [patchBabelEslintParser]
+    legalComments: 'linked',
+    metafile: true,
+    plugins: [patchBabelEslintParser, makeLicensePlugin()]
 };
 
 if (watch) {

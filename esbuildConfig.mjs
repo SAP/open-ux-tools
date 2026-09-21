@@ -4,7 +4,11 @@ import postcss from 'postcss';
 import yargsParser from 'yargs-parser';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import * as esbuild from 'esbuild';
+
+const _require = createRequire(import.meta.url);
+const { makeLicensePlugin } = _require('./esbuildLicensePlugin.cjs');
 
 // from https://github.com/bvaughn/react-virtualized/issues/1212#issuecomment-847759202 workaround for https://github.com/bvaughn/react-virtualized/issues/1632 until it is released.
 const resolveFixup = {
@@ -24,6 +28,7 @@ const commonConfig = {
     metafile: true,
     sourcemap: true,
     minify: true,
+    legalComments: 'linked',
     logLevel: 'warning',
     loader: {
         '.jpg': 'file',
@@ -35,7 +40,7 @@ const commonConfig = {
     },
 
     external: [],
-    plugins: []
+    plugins: [makeLicensePlugin()]
 };
 const transformModule = postcssModules({});
 const browserConfig = {
@@ -49,6 +54,7 @@ const browserConfig = {
     target: 'chrome90',
     format: 'iife',
     plugins: [
+        makeLicensePlugin(),
         resolveFixup,
         sassPlugin({
             async transform(source, dirname, path) {
