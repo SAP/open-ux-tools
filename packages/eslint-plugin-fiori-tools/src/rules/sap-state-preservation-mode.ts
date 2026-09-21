@@ -101,11 +101,11 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-state-preservation-mode.md'
         },
         messages: {
-            invalidMode: 'Invalid value "{{value}}" for `statePreservationMode`. "{{recommended}}" is recommended.',
+            invalidMode: 'Invalid value `{{value}}` for `statePreservationMode`. `{{recommended}}` is recommended.',
             recommendPersistenceForFCL:
-                'Consider using `default`. For applications using Flexible Column Layout (FCL), `default` is `persistence` mode.',
+                'Consider using default. For applications using Flexible Column Layout (FCL), default is `persistence` mode.',
             recommendDiscoveryForNonFCL:
-                'Consider using `default`. For applications not using Flexible Column Layout, `default` is `discovery` mode.'
+                'Consider using default. For applications not using Flexible Column Layout, default is `discovery` mode.'
         },
         fixable: 'code'
     },

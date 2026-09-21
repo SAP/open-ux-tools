@@ -82,7 +82,7 @@ ruleTester.run(TEST_NAME, rule, {
                 output: getManifestAsCode(V2_MANIFEST, []),
                 errors: [
                     {
-                        message: 'Invalid value "invalidMode" for `statePreservationMode`. "discovery" is recommended.'
+                        message: 'Invalid value `invalidMode` for `statePreservationMode`. `discovery` is recommended.'
                     }
                 ]
             },
@@ -112,7 +112,7 @@ ruleTester.run(TEST_NAME, rule, {
                 errors: [
                     {
                         message:
-                            'Consider using `default`. For applications using Flexible Column Layout (FCL), `default` is `persistence` mode.'
+                            'Consider using default. For applications using Flexible Column Layout (FCL), default is `persistence` mode.'
                     }
                 ]
             },
@@ -133,7 +133,7 @@ ruleTester.run(TEST_NAME, rule, {
                 errors: [
                     {
                         message:
-                            'Consider using `default`. For applications not using Flexible Column Layout, `default` is `discovery` mode.'
+                            'Consider using default. For applications not using Flexible Column Layout, default is `discovery` mode.'
                     }
                 ]
             },
