@@ -236,6 +236,11 @@ export class KeyUserImportPrompter {
         } as ListQuestion<KeyUserImportAnswers>;
     }
 
+    /**
+     * Returns the restricted views label prompt.
+     *
+     * @returns {KeyUserImportQuestion} The restricted views label prompt.
+     */
     private getRestrictedViewsLabelPrompt(): KeyUserImportQuestion {
         return {
             type: 'input',
