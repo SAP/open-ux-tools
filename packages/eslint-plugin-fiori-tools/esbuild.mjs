@@ -2,7 +2,7 @@ import { context, build } from 'esbuild';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -119,8 +119,16 @@ if (watch) {
     // Verify that @babel packages were actually bundled and not left as external imports.
     // esbuild silently externalizes unresolvable packages — this catches a broken bundle
     // before it gets cached by Nx and published.
-    const bundleIndex = readFileSync(join(__dirname, 'lib/index.js'), 'utf8');
-    const leakedImports = [...bundleIndex.matchAll(/\bfrom\s+['"](@babel\/[^'"]+)['"]/g)].map(m => m[1]);
+    // Scan all emitted JS files: with splitting:true esbuild can place shared code in
+    // any chunk, not just index.js.
+    const findJsFiles = (dir) =>
+        readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+            const entryPath = join(dir, entry.name);
+            return entry.isDirectory() ? findJsFiles(entryPath) : entryPath.endsWith('.js') ? [entryPath] : [];
+        });
+    const leakedImports = findJsFiles(join(__dirname, 'lib')).flatMap((bundleFile) =>
+        [...readFileSync(bundleFile, 'utf8').matchAll(/\bfrom\s+['"](@babel\/[^'"]+)['"]/g)].map((m) => m[1])
+    );
     if (leakedImports.length > 0) {
         throw new Error(
             `[esbuild] Bundle validation failed: @babel packages were not bundled.\n` +
