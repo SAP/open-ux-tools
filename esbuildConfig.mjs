@@ -40,7 +40,7 @@ const commonConfig = {
     },
 
     external: [],
-    plugins: [makeLicensePlugin()]
+    plugins: []
 };
 const transformModule = postcssModules({});
 const browserConfig = {
@@ -76,9 +76,6 @@ const handleCliParams = (options, args = []) => {
 
     outOptions.watch = yargs.watch ? true : outOptions.watch;
     outOptions.watch = yargs.watch === 'false' ? false : outOptions.watch;
-
-    outOptions.metafile = yargs.metafile ? true : outOptions.metafile;
-    outOptions.metafile = yargs.metafile === 'false' ? false : outOptions.metafile;
 
     outOptions.sourcemap = yargs.sourcemap !== undefined ? yargs.sourcemap : outOptions.sourcemap;
 

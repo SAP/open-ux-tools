@@ -1,7 +1,7 @@
 'use strict';
 
 const { readFileSync, writeFileSync } = require('node:fs');
-const { dirname, join } = require('node:path');
+const { dirname, join, isAbsolute } = require('node:path');
 
 /**
  * esbuild plugin that collects license information from every bundled
@@ -16,14 +16,19 @@ function makeLicensePlugin() {
         setup(build) {
             build.onEnd((result) => {
                 if (!result.metafile) {
-                    console.warn('[license-collector] metafile not available — skipping LICENSES.txt generation. Set metafile: true in esbuild options.');
-                    return;
+                    throw new Error(
+                        '[license-collector] metafile is not available — LICENSES.txt cannot be generated. ' +
+                        'Set metafile: true in esbuild options and do not pass --metafile=false.'
+                    );
                 }
 
                 const outputLicenses = new Map();
 
                 for (const [outFile, outMeta] of Object.entries(result.metafile.outputs)) {
                     const pkgMap = new Map();
+                    // Track already-read nmRoot paths to avoid redundant readFileSync calls
+                    // when many source files come from the same package.
+                    const readRoots = new Set();
 
                     for (const inputPath of Object.keys(outMeta.inputs)) {
                         const normalised = inputPath.replace(/\\/g, '/');
@@ -39,6 +44,9 @@ function makeLicensePlugin() {
                         if (!pkgName) continue;
 
                         const nmRoot = normalised.slice(0, nmIdx + 'node_modules/'.length) + pkgName;
+                        if (readRoots.has(nmRoot)) continue;
+                        readRoots.add(nmRoot);
+
                         const directPkgJson = join(process.cwd(), nmRoot, 'package.json');
                         let pkg = null;
                         try {
@@ -56,12 +64,28 @@ function makeLicensePlugin() {
                         }
                         if (!pkg) continue;
 
-                        const id = `${pkg.name}@${pkg.version}`;
+                        const name = pkg.name ?? pkgName;
+                        const version = pkg.version ?? 'unknown';
+                        const id = `${name}@${version}`;
                         if (pkgMap.has(id)) continue;
+
+                        // Normalise license: prefer the SPDX 'license' string; fall back to the
+                        // deprecated 'licenses' array (e.g. fuzzy@0.1.3 has [{type:'MIT'}]).
+                        let license = 'unknown';
+                        if (typeof pkg.license === 'string') {
+                            license = pkg.license;
+                        } else if (Array.isArray(pkg.licenses)) {
+                            license = pkg.licenses
+                                .map((l) => (typeof l === 'string' ? l : (l.type ?? 'unknown')))
+                                .join(', ');
+                        } else if (pkg.license) {
+                            license = String(pkg.license);
+                        }
+
                         pkgMap.set(id, {
-                            name: pkg.name ?? pkgName,
-                            version: pkg.version ?? 'unknown',
-                            license: pkg.license ?? pkg.licenses ?? 'unknown',
+                            name,
+                            version,
+                            license,
                             repository: pkg.repository
                                 ? (typeof pkg.repository === 'string' ? pkg.repository : pkg.repository.url ?? '')
                                 : ''
@@ -86,9 +110,8 @@ function makeLicensePlugin() {
                             return entry;
                         })
                     ];
-                    const isAbsolute = outFile.startsWith('/') || /^[A-Za-z]:[\\/]/.test(outFile);
-                    const licenseFile = (isAbsolute ? outFile : join(process.cwd(), outFile)) + '.LICENSES.txt';
-                    writeFileSync(licenseFile, lines.join('\n'));
+                    const licenseFile = (isAbsolute(outFile) ? outFile : join(process.cwd(), outFile)) + '.LICENSES.txt';
+                    writeFileSync(licenseFile, lines.join('\n') + '\n');
                 }
             });
         }
