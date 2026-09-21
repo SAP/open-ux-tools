@@ -1,6 +1,6 @@
 {
     "systemLookup": {
-        "multipleSystemsFound": "{{count}} system found with this URL:",
+        "multipleSystemsFound_one": "{{count}} system found with this URL:",
         "multipleSystemsFound_other": "{{count}} systems found with this URL:",
         "selectSystemPrompt": "Which system do you want to use?",
         "clientInfo": "(Client: {{client}})",
@@ -8,10 +8,10 @@
     },
     "systemPrompts": {
         "validation": {
-            "fieldRequired": "This field is required and cannot be empty",
+            "fieldRequired": "This is a required field and can't be empty.",
             "invalidUrl": "Please enter a valid URL, for example https://my-system.example.com",
             "systemNameExists": "A system with the name '{{name}}' already exists. Please choose a different name.",
-            "checkNameFailed": "Unable to check system name uniqueness. Please try again."
+            "checkNameFailed": "Unable to check the uniqueness of the system name. Please try again."
         },
         "prompts": {
             "systemName": "System Name: ",
@@ -28,11 +28,11 @@
             "selectPrompt": "Select Fields to Update:",
             "nameLabel": "Name (Existing: {{name}})",
             "usernameLabel": "Username (Existing: {{username}})",
-            "usernameNone": "(none)",
+            "usernameNone": "(None)",
             "passwordLabel": "Password",
-            "clearCredentialsLabel": "Clear Credentials",
+            "clearCredentialsLabel": "Clear Stored Credentials",
             "clearCredentialsConfirm": "Are you sure you want to clear all stored credentials?",
-            "minOneRequired": "At least one field must be selected.",
+            "minOneRequired": "You must select at least one field.",
             "newNamePrompt": "New System Name:",
             "newUsernamePrompt": "New Username:",
             "newPasswordPrompt": "New Password:"
@@ -45,24 +45,24 @@
         "invalidUrl": "Invalid URL: {{url}}",
         "skippingCheck": "Skipping connection check (--skip-connection-validation flag provided)",
         "verifying": "Verifying connection to the back-end system...",
-        "connectionSuccessful": "✓ Connection achieved",
-        "connectionFailed": "Connection check failed. {{error}}",
+        "connectionSuccessful": "✓ Connection established",
+        "connectionFailed": "Connection check failed: {{error}}",
         "unknownError": "Unknown error",
         "saveAnywayPrompt": "Connection check failed. Save system anyway?",
-        "catalogServicesFound": "Found {{count}} catalog service",
-        "catalogServicesFound_other": "Found {{count}} catalog services",
-        "metadataRequestSuccessful": "✓ Metadata request successful",
+        "catalogServicesFound_one": "{{count}} catalog service found",
+        "catalogServicesFound_other": "{{count}} catalog services found",
+        "metadataRequestSuccessful": "✓ Metadata request succeeded",
         "unexpectedStatus": "Unexpected response status: {{status}}"
     },
     "systemActions": {
-        "systemNotAdded": "System was not added.",
-        "systemNotAddedInvalidConfig": "The system was not added due to invalid system configuration. Check error logs for details.",
-        "systemNotAddedDuplicate": "The system was not added due to duplicate system configuration found. Check error logs for details.",
-        "systemNotSaved": "System was not saved.",
-        "systemNotUpdated": "System was not updated.",
-        "operationCancelled": "Operation cancelled.",
-        "systemAdded": "System '{{name}}' added.",
-        "systemUpdated": "System '{{name}}' updated.",
-        "systemRemoved": "System '{{name}}' removed."
+        "systemNotAdded": "System wasn't added",
+        "systemNotAddedInvalidConfig": "The system wasn't added due to an invalid system configuration. Check the error logs for details.",
+        "systemNotAddedDuplicate": "The system wasn't added due to a duplicate system configuration. Check the error logs for details.",
+        "systemNotSaved": "System wasn't saved",
+        "systemNotUpdated": "System wasn't updated",
+        "operationCancelled": "Operation canceled",
+        "systemAdded": "System '{{name}}' added",
+        "systemUpdated": "System '{{name}}' updated",
+        "systemRemoved": "System '{{name}}' removed"
     }
 }

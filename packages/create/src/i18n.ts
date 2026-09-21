@@ -26,7 +26,7 @@ export async function initI18n(): Promise<void> {
 }
 
 /**
- * Helper function facading the call to i18next. Unless a namespace option is provided the local namespace will be used.
+ * Helper function facading the call to i18next. Unless a namespace option is provided, the local namespace will be used.
  *
  * @param key i18n key
  * @param options additional options
