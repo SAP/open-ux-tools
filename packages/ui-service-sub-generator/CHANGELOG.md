@@ -1,5 +1,14 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.51
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.41 → 1.0.42
+- @sap-ux/ui-service-inquirer 1.0.50 → 1.0.51
+
 ## 1.0.50
 
 ### Patch Changes
