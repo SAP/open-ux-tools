@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 1.2.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Features
+
+- Serve merged manifest.json via proxy in CF ADP preview mode [[3f822e1](https://github.com/SAP/open-ux-tools/commit/3f822e140aad6deb2df243295a25a917b7044929)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.55 → 1.0.56
+
 ## 1.2.15
 
 ### Patch Changes
