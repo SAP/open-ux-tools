@@ -999,6 +999,7 @@ export interface UI5YamlCustomTaskConfiguration {
     appHostId: string;
     appName: string;
     appVersion: string;
+    module: string;
     moduleName: string;
     org: string;
     space: string;

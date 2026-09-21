@@ -89,9 +89,8 @@ jest.unstable_mockModule('fast-glob', () => ({
     default: mockFastGlob
 }));
 
-jest.unstable_mockModule('read-pkg-up', () => ({
-    __esModule: true,
-    default: mockReadPkgUp
+jest.unstable_mockModule('read-package-up', () => ({
+    readPackageUp: mockReadPkgUp
 }));
 
 // Import after mocking
