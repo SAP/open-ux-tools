@@ -197,6 +197,10 @@ export interface FieldGroupInTableTypeRestriction {
     pageNames: string[];
     tableType: string;
     pageSectionName?: string;
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
 }
 
 export interface NoSingleFacetInCollection {
