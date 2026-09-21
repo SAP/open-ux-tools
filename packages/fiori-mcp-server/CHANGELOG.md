@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-19
+
+#### Bug Fixes
+
+- Correct frontmatter formatting in tree table skill [[863465a](https://github.com/SAP/open-ux-tools/commit/863465a4420c6435c2b8f206f631f2b5fd089d41)]
+
 ## 1.12.7
 
 ### Patch Changes
