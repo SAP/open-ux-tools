@@ -1,5 +1,13 @@
 # @sap-ux/flp-config-inquirer
 
+## 1.0.56
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.55 → 1.0.56
+
 ## 1.0.55
 
 ### Patch Changes
