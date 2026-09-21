@@ -86,7 +86,8 @@ function makeLicensePlugin() {
                             return entry;
                         })
                     ];
-                    const licenseFile = join(process.cwd(), outFile) + '.LICENSES.txt';
+                    const isAbsolute = outFile.startsWith('/') || /^[A-Za-z]:[\\/]/.test(outFile);
+                    const licenseFile = (isAbsolute ? outFile : join(process.cwd(), outFile)) + '.LICENSES.txt';
                     writeFileSync(licenseFile, lines.join('\n'));
                 }
             });
