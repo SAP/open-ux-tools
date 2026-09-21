@@ -22,6 +22,7 @@ export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 export const NO_COMMA_IN_SECTION_TITLE = 'sap-no-comma-in-section-title';
 export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
+export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -200,6 +201,14 @@ export interface NoSingleFacetInCollection {
         reportedParent: Element;
     };
 }
+export interface NoDeepCollectionFacets {
+    type: typeof NO_DEEP_COLLECTION_FACETS;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
 
 export interface NoCommaInSectionTitle {
     type: typeof NO_COMMA_IN_SECTION_TITLE;
@@ -233,4 +242,5 @@ export type Diagnostic =
     | NoLiveMode
     | CloudDevAdaptationStatus
     | NoSingleFacetInCollection
-    | NoCommaInSectionTitle;
+    | NoCommaInSectionTitle
+    | NoDeepCollectionFacets;
