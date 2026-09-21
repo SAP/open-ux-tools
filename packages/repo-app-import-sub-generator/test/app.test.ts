@@ -137,6 +137,7 @@ const { handleWorkspaceConfig, createLaunchConfig } = await import('@sap-ux/laun
 const env = (await import('yeoman-environment')).default;
 const { FileName, DirName } = await import('@sap-ux/project-access');
 const { getUI5Versions } = await import('@sap-ux/ui5-info');
+const { PromptState } = await import('../src/prompts/prompt-state.js');
 const { validateQfaJsonFile } = await import('../src/utils/validators.js');
 const { getAdtDeployConfig } = await import('../src/app/app-config-quick-deploy.js');
 const { getAbapRepoDeployConfig, getAbapRepoAppConfig } = await import('../src/app/app-config-abap-repo.js');
@@ -345,6 +346,8 @@ describe('Repo App Download', () => {
     beforeEach(() => {
         appConfig = createAppConfig(appId, metadata);
         mockPrompts(testOutputDir);
+        // Simulate a successful download so writing phase guards pass
+        (PromptState as any)._admZipInstance = {} as any;
         mockVSCode = {
             workspace: {
                 workspaceFolders: [],

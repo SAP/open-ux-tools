@@ -1,5 +1,13 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.33
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Retry app list fetch without sap.app/sourceTemplate/id on older ABAP systems that reject the field with HTTP 400 [[9d027ea](https://github.com/SAP/open-ux-tools/commit/9d027eab83ad80aba159d824ab9b0a1ea0020b3b)]
+
 ## 1.0.32
 
 ### Patch Changes
