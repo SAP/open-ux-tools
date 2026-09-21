@@ -19,7 +19,7 @@ overrides:
   fast-uri: '>=3.1.5'
   '@babel/core@>=7.0.0 <8.0.0': 7.29.7
   yeoman-test>yeoman-environment: 3.19.3
-  '@xmldom/xmldom': ~0.8.13
+  '@xmldom/xmldom': ~0.9.0
   node-forge: '>=1.4.0'
   express-rate-limit: '>=8.5.0'
   serialize-javascript: 7.0.5
@@ -1009,8 +1009,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@xmldom/xmldom':
-        specifier: ~0.8.13
-        version: 0.8.13
+        specifier: ~0.9.0
+        version: 0.9.12
       axios:
         specifier: '>=1.18.0'
         version: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -2147,8 +2147,8 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
       '@xmldom/xmldom':
-        specifier: ~0.8.13
-        version: 0.8.13
+        specifier: ~0.9.0
+        version: 0.9.12
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -11064,10 +11064,9 @@ packages:
   '@xml-tools/parser@1.0.11':
     resolution: {integrity: sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==}
 
-  '@xmldom/xmldom@0.8.13':
-    resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
-    engines: {node: '>=10.0.0'}
-    deprecated: this version has critical issues, please update to the latest version
+  '@xmldom/xmldom@0.9.12':
+    resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
+    engines: {node: '>=14.6'}
 
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
@@ -24384,7 +24383,7 @@ snapshots:
       '@sap-ux/btp-utils': 2.0.6(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap-ux/feature-toggle': 1.0.5
       '@sap-ux/logger': 1.0.3
-      '@xmldom/xmldom': 0.8.13
+      '@xmldom/xmldom': 0.9.12
       axios: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       detect-content-type: 1.2.0
       fast-xml-parser: 5.8.0
@@ -24445,7 +24444,7 @@ snapshots:
       '@sap-ux/logger': 0.8.5
       '@sap-ux/project-access': 1.36.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap-ux/vocabularies-types': 0.16.0
-      '@xmldom/xmldom': 0.8.13
+      '@xmldom/xmldom': 0.9.12
       ejs: 3.1.10
       i18next: 25.10.10(typescript@5.9.3)
       mem-fs: 2.1.0
@@ -26983,7 +26982,7 @@ snapshots:
     dependencies:
       chevrotain: 7.1.1
 
-  '@xmldom/xmldom@0.8.13': {}
+  '@xmldom/xmldom@0.9.12': {}
 
   '@xtuc/ieee754@1.2.0': {}
 
