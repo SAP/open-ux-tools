@@ -1,5 +1,29 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-19
+
+#### Bug Fixes
+
+- Correct frontmatter formatting in tree table skill [[863465a](https://github.com/SAP/open-ux-tools/commit/863465a4420c6435c2b8f206f631f2b5fd089d41)]
+
+## 1.12.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Improve ABAP RAP implementation guidance for analytical chart setup [[1c7ab55](https://github.com/SAP/open-ux-tools/commit/1c7ab55f7754a3f9aab1936760c45a64d1e51e49)]
+
 ## 1.12.6
 
 ### Patch Changes

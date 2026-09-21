@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Features
+
+- Add the sap-no-deep-collection-facets rule [[852ec34](https://github.com/SAP/open-ux-tools/commit/852ec34f7a7730f00a65df19ea2fad5c9fe9ff96)]
+
 ## 10.10.1
 
 ### Patch Changes
