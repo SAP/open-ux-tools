@@ -87,7 +87,7 @@ function computeFallbackLocalePath(basePath: string, locale: string): string {
 function getI18nAppFallbackLocalePath(manifest: Manifest, appPath: string): string | undefined {
     if (typeof manifest?.['sap.app']?.i18n === 'object') {
         const fallbackLocale = (manifest['sap.app'].i18n as { fallbackLocale?: unknown }).fallbackLocale;
-        if (typeof fallbackLocale === 'string' && fallbackLocale) {
+        if (typeof fallbackLocale === 'string' && fallbackLocale && /^[A-Za-z0-9_-]+$/.test(fallbackLocale)) {
             return computeFallbackLocalePath(appPath, fallbackLocale);
         }
     }
@@ -184,11 +184,11 @@ function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: st
             if (path) {
                 result[modelKey] = { path };
                 const fallbackLocale = (i18nModel.settings as { fallbackLocale?: unknown }).fallbackLocale;
-                if (typeof fallbackLocale === 'string' && fallbackLocale) {
+                if (typeof fallbackLocale === 'string' && fallbackLocale && /^[A-Za-z0-9_-]+$/.test(fallbackLocale)) {
                     result[modelKey].fallbackLocalePath = computeFallbackLocalePath(path, fallbackLocale);
                 }
+                continue;
             }
-            continue;
         }
         if (i18nModel.uri) {
             result[modelKey] = { path: join(i18nModel.uri) };

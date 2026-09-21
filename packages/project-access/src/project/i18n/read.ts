@@ -1,3 +1,4 @@
+import type { I18nBundle } from '@sap-ux/i18n';
 import { getCapI18nBundle, getI18nFolderNames, getPropertiesI18nBundle } from '@sap-ux/i18n';
 import { getCapEnvironment, getCdsFiles } from '../index.js';
 import type { I18nBundles, I18nPropertiesPaths, ProjectType } from '../../types/index.js';
@@ -13,6 +14,45 @@ import type { Editor } from 'mem-fs-editor';
 function addToErrors(result: I18nBundles, key: string, error: Error): void {
     result.errors ??= {};
     result.errors[key] = error;
+}
+
+/**
+ * Merges a fallback locale bundle into a primary bundle.
+ * Skipped when the primary failed with a non-ENOENT error (file exists but unreadable).
+ * Clears the primary ENOENT error when the fallback is read successfully.
+ * Stores non-ENOENT fallback errors in result.errors instead of throwing.
+ *
+ * @param result - accumulator for bundles and errors
+ * @param primaryKey - error key used to look up the primary error (e.g. 'sap.app')
+ * @param current - primary bundle (may be empty if primary failed)
+ * @param fallbackPath - path to the fallback locale .properties file
+ * @param fs - optional mem-fs-editor instance
+ * @returns merged bundle (fallback keys supplemented by primary entries)
+ */
+async function mergeWithFallback(
+    result: I18nBundles,
+    primaryKey: string,
+    current: I18nBundle,
+    fallbackPath: string,
+    fs: Editor | undefined
+): Promise<I18nBundle> {
+    const primaryError = result.errors?.[primaryKey] as NodeJS.ErrnoException | undefined;
+    if (primaryError && primaryError.code !== 'ENOENT') {
+        return current;
+    }
+    try {
+        const fallbackBundle = await getPropertiesI18nBundle(fallbackPath, fs);
+        if (primaryError?.code === 'ENOENT') {
+            delete result.errors![primaryKey];
+        }
+        // Primary entries take precedence on key collision
+        return { ...fallbackBundle, ...current };
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+            addToErrors(result, `${primaryKey}.fallbackLocale`, error as Error);
+        }
+        return current;
+    }
 }
 
 /**
@@ -44,17 +84,13 @@ export async function getI18nBundles(
     }
 
     if (i18nPropertiesPaths['sap.app.fallbackLocale']) {
-        try {
-            const fallbackBundle = await getPropertiesI18nBundle(i18nPropertiesPaths['sap.app.fallbackLocale'], fs);
-            // Fallback entries supplement the primary bundle; primary entries take precedence on key collision
-            result['sap.app'] = { ...fallbackBundle, ...result['sap.app'] };
-            // Fallback recovered the data — the primary-file error is no longer relevant
-            delete result.errors?.['sap.app'];
-        } catch (error) {
-            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-                throw error;
-            }
-        }
+        result['sap.app'] = await mergeWithFallback(
+            result,
+            'sap.app',
+            result['sap.app'],
+            i18nPropertiesPaths['sap.app.fallbackLocale'],
+            fs
+        );
     }
 
     for (const key of Object.keys(i18nPropertiesPaths.models)) {
@@ -69,16 +105,13 @@ export async function getI18nBundles(
 
         const fallbackLocalePath = i18nPropertiesPaths.models[key].fallbackLocalePath;
         if (fallbackLocalePath) {
-            try {
-                const fallbackBundle = await getPropertiesI18nBundle(fallbackLocalePath, fs);
-                result.models[key] = { ...fallbackBundle, ...result.models[key] };
-                // Fallback recovered the data — the primary-file error is no longer relevant
-                delete result.errors?.[`models.${key}`];
-            } catch (error) {
-                if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-                    throw error;
-                }
-            }
+            result.models[key] = await mergeWithFallback(
+                result,
+                `models.${key}`,
+                result.models[key],
+                fallbackLocalePath,
+                fs
+            );
         }
     }
 

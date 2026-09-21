@@ -219,19 +219,19 @@ describe('read', () => {
             expect(result.models['i18n']).toEqual({ fallbackKey: [], sharedKey: [], primaryKey: [] });
         });
 
-        test('bundles with sap.app fallback locale — non-ENOENT fallback error is rethrown', async () => {
+        test('bundles with sap.app fallback locale — non-ENOENT fallback error is stored in errors', async () => {
             const primaryData: uxI18nType.I18nBundle = { primaryKey: [] };
             const appPath = join('i18n', 'i18n.properties');
             const fallbackPath = join('i18n', 'i18n_en.properties');
             const networkError = Object.assign(new Error('network failure'), { code: 'ENETDOWN' });
             mockGetPropertiesI18nBundle.mockResolvedValueOnce(primaryData).mockRejectedValueOnce(networkError);
-            await expect(
-                getI18nBundles('root', {
-                    'sap.app': appPath,
-                    'sap.app.fallbackLocale': fallbackPath,
-                    models: {}
-                })
-            ).rejects.toThrow('network failure');
+            const result = await getI18nBundles('root', {
+                'sap.app': appPath,
+                'sap.app.fallbackLocale': fallbackPath,
+                models: {}
+            });
+            expect(result['sap.app']).toEqual(primaryData);
+            expect(result.errors?.['sap.app.fallbackLocale']).toBe(networkError);
         });
 
         test('bundles with model fallback locale — ENOENT fallback read failure is silently ignored', async () => {
@@ -251,7 +251,7 @@ describe('read', () => {
             expect(result.errors).toBeUndefined();
         });
 
-        test('bundles with model fallback locale — non-ENOENT fallback error is rethrown', async () => {
+        test('bundles with model fallback locale — non-ENOENT fallback error is stored in errors', async () => {
             const modelPath = join('i18n', 'i18n.properties');
             const modelFallbackPath = join('i18n', 'i18n_en.properties');
             const networkError = Object.assign(new Error('network failure'), { code: 'ENETDOWN' });
@@ -259,12 +259,77 @@ describe('read', () => {
                 .mockResolvedValueOnce({}) // sap.app
                 .mockResolvedValueOnce({}) // model primary
                 .mockRejectedValueOnce(networkError); // model fallback
-            await expect(
-                getI18nBundles('root', {
-                    'sap.app': join('i18n', 'i18n.properties'),
-                    models: { i18n: { path: modelPath, fallbackLocalePath: modelFallbackPath } }
-                })
-            ).rejects.toThrow('network failure');
+            const result = await getI18nBundles('root', {
+                'sap.app': join('i18n', 'i18n.properties'),
+                models: { i18n: { path: modelPath, fallbackLocalePath: modelFallbackPath } }
+            });
+            expect(result.models['i18n']).toEqual({});
+            expect(result.errors?.['models.i18n.fallbackLocale']).toBe(networkError);
+        });
+
+        test('bundles with sap.app fallback locale — ENOENT primary error is cleared when fallback succeeds', async () => {
+            const fallbackData: uxI18nType.I18nBundle = { fallbackKey: [] };
+            const appPath = join('i18n', 'i18n.properties');
+            const fallbackPath = join('i18n', 'i18n_en.properties');
+            const enoentError = Object.assign(new Error('file not found'), { code: 'ENOENT' });
+            mockGetPropertiesI18nBundle
+                .mockRejectedValueOnce(enoentError) // primary fails ENOENT
+                .mockResolvedValueOnce(fallbackData); // fallback succeeds
+            const result = await getI18nBundles('root', {
+                'sap.app': appPath,
+                'sap.app.fallbackLocale': fallbackPath,
+                models: {}
+            });
+            expect(result['sap.app']).toEqual(fallbackData);
+            expect(result.errors?.['sap.app']).toBeUndefined();
+        });
+
+        test('bundles with sap.app fallback locale — non-ENOENT primary error is preserved, fallback not attempted', async () => {
+            const appPath = join('i18n', 'i18n.properties');
+            const fallbackPath = join('i18n', 'i18n_en.properties');
+            const permError = Object.assign(new Error('permission denied'), { code: 'EACCES' });
+            mockGetPropertiesI18nBundle.mockRejectedValueOnce(permError); // primary fails EACCES
+            const result = await getI18nBundles('root', {
+                'sap.app': appPath,
+                'sap.app.fallbackLocale': fallbackPath,
+                models: {}
+            });
+            expect(result['sap.app']).toEqual({});
+            expect(result.errors?.['sap.app']).toBe(permError);
+            expect(mockGetPropertiesI18nBundle).toHaveBeenCalledTimes(1);
+        });
+
+        test('bundles with model fallback locale — ENOENT primary error is cleared when fallback succeeds', async () => {
+            const fallbackData: uxI18nType.I18nBundle = { fallbackKey: [] };
+            const modelPath = join('i18n', 'i18n.properties');
+            const modelFallbackPath = join('i18n', 'i18n_en.properties');
+            const enoentError = Object.assign(new Error('file not found'), { code: 'ENOENT' });
+            mockGetPropertiesI18nBundle
+                .mockResolvedValueOnce({}) // sap.app
+                .mockRejectedValueOnce(enoentError) // model primary fails ENOENT
+                .mockResolvedValueOnce(fallbackData); // model fallback succeeds
+            const result = await getI18nBundles('root', {
+                'sap.app': join('i18n', 'i18n.properties'),
+                models: { i18n: { path: modelPath, fallbackLocalePath: modelFallbackPath } }
+            });
+            expect(result.models['i18n']).toEqual(fallbackData);
+            expect(result.errors?.['models.i18n']).toBeUndefined();
+        });
+
+        test('bundles with model fallback locale — non-ENOENT primary error is preserved, fallback not attempted', async () => {
+            const modelPath = join('i18n', 'i18n.properties');
+            const modelFallbackPath = join('i18n', 'i18n_en.properties');
+            const permError = Object.assign(new Error('permission denied'), { code: 'EACCES' });
+            mockGetPropertiesI18nBundle
+                .mockResolvedValueOnce({}) // sap.app
+                .mockRejectedValueOnce(permError); // model primary fails EACCES
+            const result = await getI18nBundles('root', {
+                'sap.app': join('i18n', 'i18n.properties'),
+                models: { i18n: { path: modelPath, fallbackLocalePath: modelFallbackPath } }
+            });
+            expect(result.models['i18n']).toEqual({});
+            expect(result.errors?.['models.i18n']).toBe(permError);
+            expect(mockGetPropertiesI18nBundle).toHaveBeenCalledTimes(2); // sap.app + model primary only
         });
 
         describe('exception', () => {
