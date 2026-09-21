@@ -455,4 +455,57 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         expect(result.appPath).toContain('default');
     });
+
+    test('should write enableTypeScript to generator config when provided', async () => {
+        const args = {
+            floorplan: 'FE_LROP',
+            project: { name: 'testapp', targetFolder: mockAppPath, enableTypeScript: true },
+            service: { servicePath: '/sap/opu/odata4/service', url: 'https://test.example.com' }
+        };
+
+        await generateFioriAppOData(args);
+
+        const configContent = JSON.parse((mockWriteFile.mock.calls[0] as string[])[1] as string);
+        expect(configContent.project.enableTypeScript).toBe(true);
+    });
+
+    test('should not include enableTypeScript in config when omitted', async () => {
+        const args = {
+            floorplan: 'FE_LROP',
+            project: { name: 'testapp', targetFolder: mockAppPath },
+            service: { servicePath: '/sap/opu/odata4/service', url: 'https://test.example.com' }
+        };
+
+        await generateFioriAppOData(args);
+
+        const configContent = JSON.parse((mockWriteFile.mock.calls[0] as string[])[1] as string);
+        // Schema is mocked as passthrough here; the Zod default (false) is applied by the real
+        // schema at the MCP boundary. Within this test the field is absent when not supplied.
+        expect(configContent.project.enableTypeScript).toBeUndefined();
+    });
+
+    test('should write namespace to generator config when provided', async () => {
+        const args = {
+            floorplan: 'FE_LROP',
+            project: { name: 'testapp', targetFolder: mockAppPath, namespace: 'com.mycompany' },
+            service: { servicePath: '/sap/opu/odata4/service', url: 'https://test.example.com' }
+        };
+
+        await generateFioriAppOData(args);
+
+        const configContent = JSON.parse((mockWriteFile.mock.calls[0] as string[])[1] as string);
+        expect(configContent.project.namespace).toBe('com.mycompany');
+    });
+
+    test('should write viewName to generator config when provided', async () => {
+        const args = {
+            floorplan: 'FF_SIMPLE',
+            project: { name: 'testapp', targetFolder: mockAppPath, viewName: 'Main' }
+        };
+
+        await generateFioriAppOData(args);
+
+        const configContent = JSON.parse((mockWriteFile.mock.calls[0] as string[])[1] as string);
+        expect(configContent.project.viewName).toBe('Main');
+    });
 });

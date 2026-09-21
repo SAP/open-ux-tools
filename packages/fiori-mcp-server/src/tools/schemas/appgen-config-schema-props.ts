@@ -42,7 +42,35 @@ export const project = z.object({
                 'the generator will refuse to run if it does. ' +
                 'Do NOT pre-create that subfolder; only the parent targetFolder may exist.'
         ),
-    ui5Version: z.string().default(LATEST_UI5_VERSION)
+    ui5Version: z.string().default(LATEST_UI5_VERSION),
+    enableTypeScript: z
+        .boolean()
+        .default(false)
+        .describe(
+            'Generate the application in TypeScript (true) or JavaScript (false, default). ' +
+                'JS↔TS is a whole-project scaffolding decision (views, controllers, tsconfig.json, build). ' +
+                'There is no supported conversion command — this can only be set at generation time.'
+        ),
+    namespace: z
+        .string()
+        .regex(
+            /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$/,
+            'Namespace must start with a lowercase letter and contain only lowercase letters, digits, underscores, and dot-separated segments (e.g. "com.mycompany").'
+        )
+        .optional()
+        .describe(
+            'Application namespace, e.g. "com.mycompany". ' +
+                'Woven into sap.app.id, module paths, Component, i18n, and every view/controller ID. ' +
+                'Cannot be changed after generation.'
+        ),
+    viewName: z
+        .string()
+        .optional()
+        .describe(
+            'Initial view name (FF_SIMPLE floorplan only). ' +
+                'Sets the physical view and controller filenames at scaffold time. ' +
+                'Renaming these files later breaks manifest routing wiring.'
+        )
 });
 
 export const serviceOdata = z.object({
