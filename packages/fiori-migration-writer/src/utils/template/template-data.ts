@@ -1,5 +1,6 @@
 // CLASSIFICATION: [OPEN]
-import { get } from 'lodash';
+import pkg from 'lodash';
+const { get } = pkg;
 import type { Data } from 'ejs';
 import type { TemplateProperties } from '../../types.js';
 
