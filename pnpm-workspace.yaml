@@ -139,7 +139,7 @@ overrides:
     "http-proxy-agent@4>@tootallnate/once": ">=3.0.1"
     "@tootallnate/once": ">=3.0.1"
     esbuild-loader: ">=4.0.0"
-    qs: "6.15.2"
+    qs: "6.16.0"
     axios: ">=1.18.0"
     "@sap-ux/ui5-config>axios": ">=1.18.0"
     "@sap-ux/project-access>axios": ">=1.18.0"
