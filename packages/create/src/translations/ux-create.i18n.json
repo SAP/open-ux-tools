@@ -51,7 +51,8 @@
         "saveAnywayPrompt": "Connection check failed. Save system anyway?",
         "catalogServicesFound": "Found {{count}} catalog service",
         "catalogServicesFound_other": "Found {{count}} catalog services",
-        "metadataRequestSuccessful": "✓ Metadata request successful"
+        "metadataRequestSuccessful": "✓ Metadata request successful",
+        "unexpectedStatus": "Unexpected response status: {{status}}"
     },
     "systemActions": {
         "systemNotAdded": "System was not added.",

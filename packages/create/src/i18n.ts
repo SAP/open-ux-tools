@@ -4,6 +4,7 @@ import translations from './translations/ux-create.i18n.json' with { type: 'json
 
 const NS = 'ux-create';
 export const i18n: i18nNext = i18next.createInstance();
+let isInitialized = false;
 
 /**
  * Initialize i18next with the translations for this module.
@@ -21,6 +22,7 @@ export async function initI18n(): Promise<void> {
         ns: [NS],
         interpolation: { escapeValue: false }
     });
+    isInitialized = true;
 }
 
 /**
@@ -31,6 +33,10 @@ export async function initI18n(): Promise<void> {
  * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
+    if (!isInitialized) {
+        console.warn(`[i18n] t() called before initI18n() - returning key: ${key}`);
+        return key;
+    }
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: NS });
     }
