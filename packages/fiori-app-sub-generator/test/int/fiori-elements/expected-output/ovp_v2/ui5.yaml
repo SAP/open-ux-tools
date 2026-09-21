@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.ovpv2
+  name: testnamespace.ovpv2
 type: application
 server:
   customMiddleware:
@@ -31,7 +31,7 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
           intent:
-            object: testNameSpaceovpv2
+            object: testnamespaceovpv2
             action: tile
 builder:
   resources:

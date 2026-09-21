@@ -1,5 +1,105 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
+## 1.12.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Bug Fixes
+
+- Guard against pre-existing app subfolder in generate tools — return a clear error instead of silently deleting the folder via --force [[ea11bba](https://github.com/SAP/open-ux-tools/commit/ea11bbaf2f89cab14bb39a22e8dd37f7e395e85e)]
+
+## 1.12.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-19
+
+#### Bug Fixes
+
+- Correct frontmatter formatting in tree table skill [[863465a](https://github.com/SAP/open-ux-tools/commit/863465a4420c6435c2b8f206f631f2b5fd089d41)]
+
+## 1.12.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Improve ABAP RAP implementation guidance for analytical chart setup [[1c7ab55](https://github.com/SAP/open-ux-tools/commit/1c7ab55f7754a3f9aab1936760c45a64d1e51e49)]
+
+## 1.12.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
+## 1.12.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
+## 1.12.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- propagate authenticationType from BackendSystem into the generator config written to disk [[41e9341](https://github.com/SAP/open-ux-tools/commit/41e934192805ce9fc954bc34b42f9085b3ea2b36)]
+
+#### Bug Fixes
+
+- Redirect AI agent to search_docs when updating service metadata in an existing Fiori app instead of incorrectly using download_odata_service_metadata [[59a74a5](https://github.com/SAP/open-ux-tools/commit/59a74a524ee68a226eb67fe88500809208711cc3)]
+
+## 1.12.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Bug Fixes
+
+- update manifest config sample for analytical chart skill [[3af2405](https://github.com/SAP/open-ux-tools/commit/3af24052f4654091e1fa535cf336d1f0e6fba3d2)]
+
 ## 1.12.2
 
 ### Patch Changes

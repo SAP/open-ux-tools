@@ -1,5 +1,53 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Features
+
+- Add the sap-no-deep-collection-facets rule [[852ec34](https://github.com/SAP/open-ux-tools/commit/852ec34f7a7730f00a65df19ea2fad5c9fe9ff96)]
+
+## 10.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Rebuild bundle — 10.10.0 was published with a broken esbuild output that left @babel/eslint-parser unbundled, causing ERR_MODULE_NOT_FOUND in consumer projects [[20a02d6](https://github.com/SAP/open-ux-tools/commit/20a02d6bd2e764d8032d99ae99e1aa3922d5c32e)]
+
+## 10.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- add sap-no-single-facet-in-collection rule to flag UI.CollectionFacet containing only a single UI.ReferenceFacet. [[57ada1b](https://github.com/SAP/open-ux-tools/commit/57ada1b22189cad79d0912fe10438984433fb26a)]
+
+## 10.9.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
 ## 10.9.3
 
 ### Patch Changes

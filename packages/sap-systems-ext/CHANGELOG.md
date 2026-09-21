@@ -1,5 +1,73 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
+## 1.0.33
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Retry app list fetch without sap.app/sourceTemplate/id on older ABAP systems that reject the field with HTTP 400 [[9d027ea](https://github.com/SAP/open-ux-tools/commit/9d027eab83ad80aba159d824ab9b0a1ea0020b3b)]
+
+## 1.0.32
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
+## 1.0.31
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
+## 1.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[118d3d8](https://github.com/SAP/open-ux-tools/commit/118d3d866ad0003a51a79b3640f3d6cdfe42643b)]
+
+## 1.0.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[6163dfc](https://github.com/SAP/open-ux-tools/commit/6163dfc4d7d1ae628dedd93f93b4a743ec583d25)]
+
 ## 1.0.28
 
 ### Patch Changes

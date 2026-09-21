@@ -1,5 +1,25 @@
 # @sap-ux/telemetry
 
+## 2.0.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Bug Fixes
+
+- Error `Cannot read properties of undefined (reading 'trackEvent')` is thrown during `reportRuntimeError` call [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
+## 2.0.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+
 ## 2.0.5
 
 ### Patch Changes
