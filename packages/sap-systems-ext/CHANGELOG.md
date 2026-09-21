@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
 ## 1.0.33
 
 ### Patch Changes
