@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 2.1.0
+
+### Minor Changes
+
+#### Features
+
+- Export `getProxyAgentConfig` for reusing the environment-based proxy handling (honours NO_PROXY and BAS) outside the service-provider factory [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
 ## 2.0.10
 
 ### Patch Changes
