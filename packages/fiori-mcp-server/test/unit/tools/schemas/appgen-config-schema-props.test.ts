@@ -49,7 +49,9 @@ describe('generatorConfigOData — project.namespace', () => {
         ['contains spaces', 'com bad'],
         ['trailing dot', 'com.bad.'],
         ['digit after dot', 'com.1bad'],
-        ['uppercase letter', 'Com.bad']
+        ['uppercase letter', 'Com.bad'],
+        ['is exactly "sap"', 'sap'],
+        ['starts with "new"', 'newapp']
     ])('rejects namespace that %s: "%s"', (_label, ns) => {
         expect(() =>
             generatorConfigOData.parse({
@@ -69,6 +71,14 @@ describe('generatorConfigOData — project.viewName cross-field validation', () 
         expect(parsed.project.viewName).toBe('Main');
     });
 
+    test('accepts viewName with digits, underscores, and hyphens', () => {
+        const parsed = generatorConfigOData.parse({
+            floorplan: 'FF_SIMPLE',
+            project: { name: 'my-app', description: 'Test', targetFolder: '/tmp', viewName: 'My-View_1' }
+        });
+        expect(parsed.project.viewName).toBe('My-View_1');
+    });
+
     test('rejects viewName when floorplan is not FF_SIMPLE', () => {
         expect(() =>
             generatorConfigOData.parse({
@@ -76,6 +86,30 @@ describe('generatorConfigOData — project.viewName cross-field validation', () 
                 project: { ...baseOData.project, viewName: 'Main' }
             })
         ).toThrow('project.viewName is only supported for the FF_SIMPLE');
+    });
+
+    test.each([
+        ['starts with a digit', '1View'],
+        ['starts with an underscore', '_View'],
+        ['contains a space', 'My View'],
+        ['contains a special char', 'View@1'],
+        ['is an empty string', '']
+    ])('rejects viewName that %s: "%s"', (_label, vn) => {
+        expect(() =>
+            generatorConfigOData.parse({
+                floorplan: 'FF_SIMPLE',
+                project: { name: 'my-app', description: 'Test', targetFolder: '/tmp', viewName: vn }
+            })
+        ).toThrow();
+    });
+
+    test('rejects viewName that exceeds max length', () => {
+        expect(() =>
+            generatorConfigOData.parse({
+                floorplan: 'FF_SIMPLE',
+                project: { name: 'my-app', description: 'Test', targetFolder: '/tmp', viewName: 'A'.repeat(121) }
+            })
+        ).toThrow();
     });
 
     test('is optional — omitting it for FF_SIMPLE is allowed', () => {

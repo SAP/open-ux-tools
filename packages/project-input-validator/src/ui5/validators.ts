@@ -3,6 +3,31 @@ import { t } from '../i18n.js';
 import { existsSync, lstatSync, accessSync, constants } from 'node:fs';
 import validateNpmPackageName from 'validate-npm-package-name';
 
+/** Regex for a valid UI5 view name: starts with one or more letters, followed by letters/digits/underscores/hyphens. */
+export const VIEW_NAME_REGEX = /^[a-zA-Z]+[a-zA-Z0-9_-]*$/;
+
+/** Maximum allowed length for a UI5 view name. */
+export const VIEW_NAME_MAX_LENGTH = 120;
+
+/**
+ * Validator: UI5 view name.
+ *
+ * @param name - view name to validate
+ * @returns true if valid, otherwise an error message string for use in Inquirer validation functions
+ */
+export function validateViewName(name: string): boolean | string {
+    if (!name) {
+        return t('ui5.viewNameRequired');
+    }
+    if (name.length > VIEW_NAME_MAX_LENGTH) {
+        return t('ui5.viewNameTooLong', { maxLength: VIEW_NAME_MAX_LENGTH });
+    }
+    if (!VIEW_NAME_REGEX.test(name)) {
+        return t('ui5.viewNameInvalid');
+    }
+    return true;
+}
+
 /**
  * Validator: UI5 application namespace.
  *

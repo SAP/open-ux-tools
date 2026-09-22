@@ -47,6 +47,7 @@
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-application-inquirer": "workspace:*",
