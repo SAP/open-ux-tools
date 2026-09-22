@@ -1,5 +1,29 @@
 # @sap-ux/adp-tooling
 
+## 1.0.57
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.42 → 1.0.43
+
+## 1.0.56
+
+### Patch Changes
+
+#### Features
+
+- Serve merged manifest.json via proxy in CF ADP preview mode [[3f822e1](https://github.com/SAP/open-ux-tools/commit/3f822e140aad6deb2df243295a25a917b7044929)]
+
+## 1.0.55
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.41 → 1.0.42
+
 ## 1.0.54
 
 ### Patch Changes

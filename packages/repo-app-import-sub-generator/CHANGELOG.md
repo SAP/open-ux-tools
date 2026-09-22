@@ -1,5 +1,47 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.64
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.16 → 1.2.17
+- @sap-ux/inquirer-common 1.0.42 → 1.0.43
+- @sap-ux/odata-service-inquirer 3.2.19 → 3.2.20
+- @sap-ux/fiori-elements-writer 3.1.60 → 3.1.61
+- @sap-ux/fiori-freestyle-writer 3.0.105 → 3.0.106
+
+## 1.2.63
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.59 → 3.1.60
+- @sap-ux/fiori-freestyle-writer 3.0.104 → 3.0.105
+- @sap-ux/odata-service-inquirer 3.2.19 → 3.2.19
+
+## 1.2.62
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Retry app list fetch without sap.app/sourceTemplate/id on older ABAP systems that reject the field with HTTP 400 [[9d027ea](https://github.com/SAP/open-ux-tools/commit/9d027eab83ad80aba159d824ab9b0a1ea0020b3b)]
+
+#### Workspace Updates
+
+- @sap-ux/guided-answers-helper 1.0.1 → 1.0.2
+- @sap-ux/inquirer-common 1.0.41 → 1.0.42
+- @sap-ux/odata-service-inquirer 3.2.18 → 3.2.19
+- @sap-ux/fiori-elements-writer 3.1.58 → 3.1.59
+- @sap-ux/fiori-freestyle-writer 3.0.103 → 3.0.104
+
 ## 1.2.61
 
 ### Patch Changes
