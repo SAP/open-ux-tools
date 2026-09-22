@@ -4,19 +4,6 @@
 
 Adds or removes configuration for mockserver module `@sap-ux/ui5-middleware-fe-mockserver` to an SAP UX project.
 
-For the standard FE mockserver, the writer also adds the lightweight
-`@sap-ux/mockserver-data-generator` development dependency, configures it as an
-inactive data provider, and preserves the generated Fiori command behind the
-MockGen launcher. It does not add MockGen to the legacy `ui5.dependencies`
-list. A caller that selects another mockserver module or skips `package.json`
-changes does not receive this automatic wiring.
-
-Automatic wiring is applied only when the selected `start-mock` command is a
-simple `fiori run` command. Commands containing shell operators, comments, or
-dynamic expansion retain standard mockserver behavior and receive no partial
-MockGen dependency or provider configuration. A saved `--mockgen` flag is
-rejected; pass it only at runtime as shown below.
-
 ## Installation
 Npm
 `npm install --save @sap-ux/mockserver-config-writer`
@@ -41,26 +28,6 @@ const fs = await generateMockserverConfig(
 
 fs.commit();
 ```
-
-The generated application keeps one mockserver script. Run it normally for the
-standard mockserver behavior:
-
-```bash
-npm run start-mock
-```
-
-Append the flag after npm's argument separator to enable MockGen in the same
-server process:
-
-```bash
-npm run start-mock -- --mockgen
-```
-
-The npm package contains only the generator code. Large model weights and the
-matching platform runtime are not bundled in it; the production launcher will
-download and checksum-verify approved artifacts on the first flagged start and
-reuse the local cache on later starts. This automatic artifact acquisition is
-still under development for the initial preview.
 
 See more complex example in [`/test/unit`](./test/unit)
 

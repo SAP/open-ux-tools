@@ -2,16 +2,6 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { PackageJsonMockConfig } from '../types/index.js';
-import {
-    addMockgenLauncher,
-    canUseMockgenLauncher,
-    hasUnsafeCommandWhitespace,
-    MOCKGEN_MODULE,
-    MOCKGEN_VERSION,
-    removeMockgenLauncher,
-    STANDARD_MOCKSERVER_MODULE,
-    supportsMockgen
-} from './mockgen.js';
 
 /**
  * Enhance the package.json with dependency for mockserver.
@@ -19,21 +9,13 @@ import {
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
  * @param config - optional config for mockserver
- * @param mockgenProviderAvailable - whether the YAML provider slot is available for MockGen
- * @returns whether complete MockGen application wiring was added
  */
-export function enhancePackageJson(
-    fs: Editor,
-    basePath: string,
-    config?: PackageJsonMockConfig,
-    mockgenProviderAvailable = true
-): boolean {
+export function enhancePackageJson(fs: Editor, basePath: string, config?: PackageJsonMockConfig): void {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
-    const mockgenEnabled = enhanceScripts(fs, packageJson, supportsMockgen(config) && mockgenProviderAvailable);
-    enhanceDependencies(packageJson, config?.mockserverModule, config?.mockserverVersion, mockgenEnabled);
+    enhanceDependencies(packageJson, config?.mockserverModule, config?.mockserverVersion);
+    enhanceScripts(fs, packageJson);
     fs.writeJSON(packageJsonPath, packageJson);
-    return mockgenEnabled;
 }
 
 /**
@@ -43,22 +25,15 @@ export function enhancePackageJson(
  * @param packageJson - parsed package.json content
  * @param mockserverModule - npm name of the mockserver module
  * @param version - npm version string
- * @param mockgenEnabled - whether to add the direct MockGen dependency
  */
 function enhanceDependencies(
     packageJson: Package,
-    mockserverModule = STANDARD_MOCKSERVER_MODULE,
-    version = '2',
-    mockgenEnabled = false
+    mockserverModule = '@sap-ux/ui5-middleware-fe-mockserver',
+    version = '2'
 ): void {
     packageJson.devDependencies = packageJson.devDependencies ?? {};
     delete packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'];
     packageJson.devDependencies[mockserverModule] = version;
-    if (mockgenEnabled) {
-        packageJson.devDependencies[MOCKGEN_MODULE] = MOCKGEN_VERSION;
-    } else {
-        delete packageJson.devDependencies[MOCKGEN_MODULE];
-    }
     if (isUi5CliHigherTwo(packageJson.devDependencies)) {
         removeMockserverUi5Dependencies(packageJson);
     } else {
@@ -79,24 +54,13 @@ function enhanceDependencies(
  *
  * @param fs - mem-fs reference to be used for file access
  * @param packageJson - path to package.json
- * @param mockgenSupported - whether the standard MockGen launcher is supported by configuration
- * @returns whether complete MockGen package wiring was added
  */
-function enhanceScripts(fs: Editor, packageJson: Package, mockgenSupported: boolean): boolean {
+function enhanceScripts(fs: Editor, packageJson: Package): void {
     packageJson.scripts ||= {};
-    const sourceStart = packageJson.scripts.start;
-    const startMock =
-        copyStartScript(sourceStart) ??
+    packageJson.scripts['start-mock'] =
+        copyStartScript(packageJson.scripts.start) ??
         packageJson.scripts['start-mock'] ??
         `fiori run --config ./ui5-mock.yaml --open "/"`;
-    const mockgenEnabled =
-        mockgenSupported &&
-        (sourceStart === undefined || !hasUnsafeCommandWhitespace(sourceStart)) &&
-        canUseMockgenLauncher(startMock);
-    packageJson.scripts['start-mock'] = mockgenEnabled
-        ? addMockgenLauncher(startMock)
-        : removeMockgenLauncher(startMock);
-    return mockgenEnabled;
 }
 
 /**
@@ -199,7 +163,6 @@ export function removeFromPackageJson(fs: Editor, basePath: string): void {
     }
     delete packageJson.devDependencies?.['@sap/ux-ui5-fe-mockserver-middleware'];
     delete packageJson.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver'];
-    delete packageJson.devDependencies?.[MOCKGEN_MODULE];
     if (packageJson.devDependencies && Object.keys(packageJson.devDependencies).length === 0) {
         delete packageJson.devDependencies;
     }

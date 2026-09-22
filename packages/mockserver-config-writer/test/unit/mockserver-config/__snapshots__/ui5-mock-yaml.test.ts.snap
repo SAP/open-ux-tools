@@ -23,13 +23,6 @@ server:
         mountPath: /
         services: []
         annotations: []
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
 "
 `;
 
@@ -62,13 +55,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
 "
 `;
 
@@ -102,13 +88,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
 "
 `;
 
@@ -148,13 +127,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
 "
 `;
 
@@ -188,13 +160,6 @@ server:
         mountPath: /
         services: []
         annotations: []
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
 "
 `;
 
@@ -218,13 +183,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
     - name: middleware-after
 "
 `;
@@ -250,13 +208,6 @@ server:
             mockdataPath: ./webapp/localService/ds/data
             generateMockData: true
         annotations: []
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
     - name: middleware-after
 "
 `;
@@ -284,13 +235,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
     - name: middleware-after
 "
 `;

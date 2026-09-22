@@ -13,88 +13,47 @@ describe('Test for start-mock script in package.json', () => {
         const fs = getMockFsPackageJson();
         enhancePackageJson(fs, basePath);
         const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe(`mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"/\"`);
+        expect(startMock).toBe(`fiori run --config ./ui5-mock.yaml --open \"/\"`);
     });
 
     test(`Start script exists, but does not contain 'fiori run' command`, () => {
         const fs = getMockFsPackageJson('any other start script');
         enhancePackageJson(fs, basePath);
         const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe(`mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open \"/\"`);
+        expect(startMock).toBe(`fiori run --config ./ui5-mock.yaml --open \"/\"`);
     });
 
     test('Copy basic start script from package.json', () => {
         const fs = getMockFsPackageJson('fiori run');
         enhancePackageJson(fs, basePath);
         const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe('mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml');
-    });
-
-    test('Keep the MockGen launcher idempotent', () => {
-        const fs = getMockFsPackageJson('fiori run');
-        enhancePackageJson(fs, basePath);
-        enhancePackageJson(fs, basePath);
-        const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe('mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml');
+        expect(startMock).toBe('fiori run --config ./ui5-mock.yaml');
     });
 
     test('Copy start script with --config', () => {
         const fs = getMockFsPackageJson('fiori run --config .');
         enhancePackageJson(fs, basePath);
         const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe('mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml');
+        expect(startMock).toBe('fiori run --config ./ui5-mock.yaml');
     });
 
     test('Copy start script with --config and apostrophe path', () => {
         const fs = getMockFsPackageJson("fiori run --config     'path/with/a postrophe/any.yaml'  ");
         enhancePackageJson(fs, basePath);
         const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe('mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml  ');
+        expect(startMock).toBe('fiori run --config ./ui5-mock.yaml  ');
     });
 
-    test('Wrap a simple command containing a quoted URL query', () => {
-        const fs = getMockFsPackageJson('fiori run --open "test/flpSandbox.html?a=1&b=2"');
-        enhancePackageJson(fs, basePath);
-        const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
-        expect(startMock).toBe(
-            'mockserver-data-generator start -- fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html?a=1&b=2"'
-        );
-    });
-
-    test('Leave a complex shell command wholly unwired', () => {
+    test('Copy start script that contains multiple --config and path with space from package.json', () => {
         const fs = getMockFsPackageJson(
             'any --config before && fiori run --open "folder/file.html?some-param=value#frag-ment" --config "ui5 .yaml" --other arg'
         );
-        const configured = enhancePackageJson(fs, basePath);
-        const packageJson = fs.readJSON(packageJsonPath) as Package;
-        expect(configured).toBe(false);
-        expect(packageJson.scripts?.['start-mock']).toBe(
+        enhancePackageJson(fs, basePath);
+        const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
+        expect(startMock).toBe(
             'any --config before && fiori run --open "folder/file.html?some-param=value#frag-ment" --config ./ui5-mock.yaml --other arg'
         );
-        expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBeUndefined();
     });
-
-    test('Leave a shell-commented command wholly unwired', () => {
-        const fs = getMockFsPackageJson(undefined, 'fiori run --config ./ui5-mock.yaml # keep local');
-
-        const configured = enhancePackageJson(fs, basePath);
-        const packageJson = fs.readJSON(packageJsonPath) as Package;
-
-        expect(configured).toBe(false);
-        expect(packageJson.scripts?.['start-mock']).toBe('fiori run --config ./ui5-mock.yaml # keep local');
-        expect(packageJson.devDependencies?.['@sap-ux/mockserver-data-generator']).toBeUndefined();
-    });
-
-    test.each(['--mockgen', "'--mockgen'", '"--mockgen"', '--mock"gen"', '--"mockgen"', '"--mock"gen'])(
-        'Reject a persisted MockGen flag written as %s',
-        (flag) => {
-            const fs = getMockFsPackageJson(undefined, `fiori run --config ./ui5-mock.yaml ${flag}`);
-
-            expect(() => enhancePackageJson(fs, basePath)).toThrow(
-                'The persisted start-mock command must not contain --mockgen'
-            );
-        }
-    );
 
     function getMockFsPackageJson(startScript?: string, startMockScript?: string): Editor {
         const fs = create(createStorage());
@@ -117,10 +76,7 @@ describe('Test for mockserver dependencies in package.json', () => {
         const fs = getMockFsPackageJson();
         enhancePackageJson(fs, basePath);
         const packageJson = fs.readJSON(packageJsonPath) as Package;
-        expect(packageJson.devDependencies).toEqual({
-            '@sap-ux/ui5-middleware-fe-mockserver': '2',
-            '@sap-ux/mockserver-data-generator': '0.1.0'
-        });
+        expect(packageJson.devDependencies).toEqual({ '@sap-ux/ui5-middleware-fe-mockserver': '2' });
         expect(packageJson.ui5?.dependencies).toEqual(['@sap-ux/ui5-middleware-fe-mockserver']);
     });
 
@@ -130,7 +86,6 @@ describe('Test for mockserver dependencies in package.json', () => {
         const packageJson = fs.readJSON(packageJsonPath) as Package;
         expect(packageJson.devDependencies).toEqual({ 'dummy-mockserver': '1.2.3' });
         expect(packageJson.ui5?.dependencies).toEqual(['dummy-mockserver']);
-        expect(packageJson.scripts?.['start-mock']).toBe('fiori run --config ./ui5-mock.yaml --open "/"');
     });
 
     test('Add mockserver dependencies while removing legacy dependencies in package.json', () => {
@@ -147,8 +102,7 @@ describe('Test for mockserver dependencies in package.json', () => {
         const packageJson = fs.readJSON(packageJsonPath) as Package;
         expect(packageJson.devDependencies).toEqual({
             'other-dep': '9.9.9',
-            '@sap-ux/ui5-middleware-fe-mockserver': '2',
-            '@sap-ux/mockserver-data-generator': '0.1.0'
+            '@sap-ux/ui5-middleware-fe-mockserver': '2'
         });
         expect(packageJson.ui5?.dependencies).toEqual(['other-dep', '@sap-ux/ui5-middleware-fe-mockserver']);
     });
@@ -206,7 +160,6 @@ describe('Remove mockserver from package.json', () => {
             devDependencies: {
                 '@sap/ux-ui5-fe-mockserver-middleware': '3.2.1',
                 '@sap-ux/ui5-middleware-fe-mockserver': '1.2.3',
-                '@sap-ux/mockserver-data-generator': '0.1.0',
                 'other-dep': '1.1.1'
             },
             ui5: {

@@ -6,61 +6,6 @@ import type { Manifest } from '@sap-ux/project-access';
 import { DirName, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types/index.js';
 import { getODataSources } from '../app-info.js';
-import { MOCKGEN_PROVIDER } from './mockgen.js';
-
-type MockserverConfigWithMockgen = MockserverConfig & {
-    mockDataGenerator?: {
-        name: string;
-        options?: Record<string, unknown>;
-    };
-};
-
-/**
- * Add the default MockGen provider or remove only that owned provider.
- *
- * @param config UI5 mockserver configuration
- * @param enabled whether automatic MockGen wiring is enabled
- */
-function updateMockgenProvider(config: UI5Config, enabled: boolean | 'preserve'): void {
-    const middleware = config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver');
-    if (!middleware) {
-        throw new Error('Could not find sap-fe-mockserver');
-    }
-    if (enabled === 'preserve') {
-        return;
-    }
-    const current = middleware.configuration.mockDataGenerator;
-    if (enabled && current === undefined) {
-        middleware.configuration.mockDataGenerator = {
-            name: MOCKGEN_PROVIDER,
-            options: { locale: 'en', mode: 'auto', rowsPerEntity: 10, seed: 42 }
-        };
-        config.updateCustomMiddleware(middleware);
-    } else if (!enabled && current?.name === MOCKGEN_PROVIDER) {
-        delete middleware.configuration.mockDataGenerator;
-        config.updateCustomMiddleware(middleware);
-    }
-}
-
-/**
- * Check whether MockGen may own the generator slot in an existing mock YAML.
- * A missing file, middleware, or provider leaves the slot available; a custom
- * provider reserves it.
- *
- * @param fs - mem-fs reference to be used for file access
- * @param basePath - path to project root
- * @returns whether MockGen can be configured without replacing a custom provider
- */
-export async function canConfigureMockgenProvider(fs: Editor, basePath: string): Promise<boolean> {
-    const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
-    if (!fs.exists(ui5MockYamlPath)) {
-        return true;
-    }
-    const config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
-    const current =
-        config.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver')?.configuration.mockDataGenerator;
-    return current === undefined || current.name === MOCKGEN_PROVIDER;
-}
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.
@@ -83,14 +28,12 @@ export async function canConfigureMockgenProvider(fs: Editor, basePath: string):
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
  * @param config - optional config passed in by consumer
- * @param configureMockgen - whether to configure the default MockGen provider, or preserve its current state
  */
 export async function enhanceYaml(
     fs: Editor,
     basePath: string,
     webappPath: string,
-    config?: Ui5MockYamlConfig,
-    configureMockgen: boolean | 'preserve' = true
+    config?: Ui5MockYamlConfig
 ): Promise<void> {
     const overwrite = !!config?.overwrite;
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
@@ -148,7 +91,6 @@ export async function enhanceYaml(
                   annotationsConfig
               );
     }
-    updateMockgenProvider(mockConfig, configureMockgen);
     const yaml = mockConfig.toString();
     fs.write(ui5MockYamlPath, yaml);
 }
@@ -201,18 +143,12 @@ async function updateUi5MockYamlConfig(
 ): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
     if (overwrite) {
-        const currentMockserverMiddleware =
-            existingUi5MockYamlConfig.findCustomMiddleware<MockserverConfigWithMockgen>('sap-fe-mockserver');
         const newMockserverMiddleware = await getNewMockserverMiddleware(
             basePath,
             webappPath,
             dataSourcesConfig,
             annotationsConfig
         );
-        if (currentMockserverMiddleware?.configuration.mockDataGenerator !== undefined) {
-            (newMockserverMiddleware.configuration as MockserverConfigWithMockgen).mockDataGenerator =
-                currentMockserverMiddleware.configuration.mockDataGenerator;
-        }
         existingUi5MockYamlConfig.updateCustomMiddleware(newMockserverMiddleware);
     } else {
         for (const dataSourceName in dataSourcesConfig) {
