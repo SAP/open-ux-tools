@@ -1,5 +1,17 @@
 # @sap-ux/create
 
+## 1.4.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- apply i18n text review feedback for clarity and consistency [[c84c818](https://github.com/SAP/open-ux-tools/commit/c84c818790fe1fadb7ff020e67f06efc68873b6d)]
+
 ## 1.4.1
 
 ### Patch Changes

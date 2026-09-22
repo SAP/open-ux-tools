@@ -1,5 +1,25 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Expose navigationEntity in entityConfig so AI agents can generate sub-object page navigation [[5adaccb](https://github.com/SAP/open-ux-tools/commit/5adaccb465eb5de57ca8c00bdc6bdbc6137f7de0)]
+
+## 1.12.13
+
+### Patch Changes
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
 ## 1.12.12
 
 ### Patch Changes
