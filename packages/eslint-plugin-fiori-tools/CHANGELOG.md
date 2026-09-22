@@ -1,5 +1,53 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.11.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Update diagnostic messages by formatting rule-related properties, values, and annotation names as inline code for better readability in warnings/errors. [[079ed68](https://github.com/SAP/open-ux-tools/commit/079ed68394d934231110f108f5ab175c679d44e1)]
+
+## 10.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- Add defensive checks to esbuild.mjs to fail fast if @babel/eslint-parser is not installed and assert no @babel/* imports leak into the bundle after build [[6f73f76](https://github.com/SAP/open-ux-tools/commit/6f73f76dcf69c4791ffcec715689f55fa7ad9614)]
+
+## 10.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Features
+
+- Add the sap-no-deep-collection-facets rule [[852ec34](https://github.com/SAP/open-ux-tools/commit/852ec34f7a7730f00a65df19ea2fad5c9fe9ff96)]
+
+## 10.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Rebuild bundle — 10.10.0 was published with a broken esbuild output that left @babel/eslint-parser unbundled, causing ERR_MODULE_NOT_FOUND in consumer projects [[20a02d6](https://github.com/SAP/open-ux-tools/commit/20a02d6bd2e764d8032d99ae99e1aa3922d5c32e)]
+
 ## 10.10.0
 
 ### Minor Changes

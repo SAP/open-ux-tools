@@ -7,3 +7,6 @@ export const UI_TEXT_ARRANGEMENT = 'com.sap.vocabularies.UI.v1.TextArrangement';
 export const UI_FIELD_GROUP = 'com.sap.vocabularies.UI.v1.FieldGroup';
 export const CAPABILITIES_SORT_RESTRICTIONS = 'Org.OData.Capabilities.V1.SortRestrictions';
 export const CAPABILITIES_FILTER_RESTRICTIONS = 'Org.OData.Capabilities.V1.FilterRestrictions';
+export const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
+export const UI_COLLECTION_FACET = 'com.sap.vocabularies.UI.v1.CollectionFacet';
+export const UI_REFERENCE_FACET = 'com.sap.vocabularies.UI.v1.ReferenceFacet';
