@@ -1,0 +1,436 @@
+% =====================================================================
+% MockGen (standalone package) -- short conference paper, IEEEtran.
+%
+% WRITING RULES (enforced in review):
+%  * Define every acronym at first use (OData, EDMX, CDS, MLP, ONNX,
+%    VSIX, API, vCPU).
+%  * Plain language. Short sentences. One idea per paragraph.
+%  * Present tense, active voice, current-state facts only.
+%  * Every measured number comes from numbers.tex.
+%  * Every coverage number states the mode it was measured in.
+%  * Label provenance (machine consensus, not human-verified) is stated
+%    wherever label quality is discussed.
+% =====================================================================
+\documentclass[conference]{IEEEtran}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\Urlmuskip=0mu plus 1mu
+\emergencystretch=3em
+
+\input{numbers.tex}
+\newcommand{\system}{MockGen}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\begin{document}
+
+\title{\system: Realistic Offline Mock Data for Enterprise Applications}
+
+\author{\IEEEauthorblockN{Christos Koutsiaris}
+\IEEEauthorblockA{\textit{SAP P\&E -- Cloud ERP -- UX Foundation}\\
+Development Expert\\
+christos.koutsiaris@sap.com}}
+
+\maketitle
+
+\begin{abstract}
+Developers of enterprise applications need screens full of realistic
+data long before any backend exists. Hand-written mock data is expensive
+and goes stale; random generators produce values that look broken on
+screen. \system{} generates complete, relationally consistent mock
+datasets directly from an application's service definition, offline and
+deterministically. Every column is resolved by a cascade: declared
+catalogs, then a recognised semantic role, then a small local language
+model, then a type-correct fallback that cannot decline. Recognition is
+a learned classifier trained on \LabelFields{} fields labelled by a
+panel of \LabelJudges{} large language models that see only structural
+metadata. On \CorpusServices{} real service definitions the pipeline
+generates \CorpusFields{} fields with \CorpusFailed{} failures and binds
+\ProviderBoundPct\% of them to a semantic provider; with recognition
+disabled the same corpus binds \DetProviderBoundPct\% and
+\DetFailed{} services fail outright. On \SealedServices{} services held
+out from training, the classifier's decisions are correct
+\SealedPrecision\% of the time across \RoutableRoles{} roles. We also
+report a verifier that did not work and what we shipped instead.
+\end{abstract}
+
+\begin{IEEEkeywords}
+mock data, test data generation, service metadata, OData, offline
+inference, semantic role classification, relational data generation
+\end{IEEEkeywords}
+
+\section{Introduction}
+\label{sec:intro}
+
+\IEEEPARstart{A}{frontend} developer starts from a service definition
+--- a contract naming entities, columns, types, widths and relationships
+--- and needs data on screen before any backend exists. Hand-written
+mock data drifts out of sync with the schema. Random generators fill a
+city column with random words, so every screen looks broken. Recording
+real responses needs access, permissions and cleanup.
+
+Enterprise schemas amplify this. A service declares dozens of entities
+and hundreds of columns with exact widths; some columns are protocol
+artifacts rather than business data; annotations encode meaning a
+generator should honour. Errors are visible: a too-long value truncates,
+a code that does not match its text reads as a bug, an empty child table
+makes the application look defective.
+
+\system{} generates a complete dataset from the service definition
+alone: offline, deterministic, in seconds. Five rules govern it: any
+application works cold; no screen is empty; data looks real at a glance;
+no internal failure blanks the application; and the same input always
+produces the same output. The architecture is a \emph{tier cascade}
+(Fig.~\ref{fig:cascade}): the first tier that can produce a valid value
+wins, and the last tier cannot decline.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.74\columnwidth]{figures/out/fig-cascade.pdf}
+  \caption{The cascade for one column. Declared catalogs beat
+  recognition, recognition beats the language model, and the typed
+  fallback cannot refuse. Takeaway: the never-empty promise is
+  structural.}
+  \label{fig:cascade}
+\end{figure}
+
+\textbf{Contributions.} (i) The four-tier cascade and the schema
+representation behind it (Sections~\ref{sec:ir}--\ref{sec:tiers});
+(ii) a learned role recogniser trained on machine-adjudicated labels,
+with a routing policy that decides per role whether the model may speak
+(Sections~\ref{sec:learning}--\ref{sec:routing}); (iii) a measured
+characterisation of the shipped system, including a negative result
+(Sections~\ref{sec:results}--\ref{sec:relevance}).
+
+\section{Schema IR and Adapters}
+\label{sec:ir}
+
+Everything downstream reads one internal shape: a schema graph holding
+entities, properties with type, width, precision, key and nullability
+flags, declared labels, data elements and descriptions, relationships
+with their column mappings, and annotation-derived links such as value
+lists and text associations. Adapters translate each input format into
+it, so the tiers never learn protocol dialects. Two ship today: the
+metadata format (EDMX) of Open Data Protocol (OData) services, and Core
+Data Services (CDS) documents.
+
+\section{The Four Tiers}
+\label{sec:tiers}
+
+\textbf{T0, declared catalogs.} If the schema declares allowed values,
+or the developer supplied authored rows, the value comes from there. A
+value-list annotation points at a code entity; the generator produces
+that code table first and draws from it, so a code column and its text
+column agree by construction.
+
+\textbf{T1, recognised roles.} Otherwise the system recognises what the
+column means and draws from a curated bank. A role declares the types it
+accepts, whether it may sit on a key, its provider, its validator, its
+coherence group and its routing confidence. Roles group into families
+--- status, identity, location, finance, temporal, narrative, contact,
+organisation, measure --- and families decide both support floors and
+error severity.
+
+Three sources feed one arbitrator. Metadata rules fire when an
+annotation or data element settles the question, and win outright. The
+learned classifier handles the rest. Audited name-based rules remain
+where a name is conclusive; each was checked against adjudicated labels,
+and the eight that contradicted a label with a different positive role
+were switched off. When classifier and lexical rule disagree, the
+classifier wins only with a singleton prediction set and a stricter
+confidence; otherwise both are discarded. Compatibility is enforced
+last, so a role forbidden on keys never lands on one. Draft-administration
+and action-control columns abstain unconditionally.
+
+\textbf{T2, a budgeted local language model.} For visible text with no
+recognised role, a small quantized model proposes values under a grammar
+and a wall-clock budget, on two virtual central processing units
+(vCPUs). When the budget expires the tier yields and the cascade
+continues.
+
+\textbf{T3, the guaranteed floor.} A typed generator emits values
+respecting type, width, precision and nullability, unique where
+uniqueness is required. It cannot decline, which is what turns ``no
+empty screens'' into a property.
+
+\textbf{Relational passes.} Keys are generated first and kept unique
+within their entity. Child rows draw foreign keys from parents that were
+actually generated, so references resolve. Coherence groups --- city
+with country and postal code, amount with currency --- are generated
+together, and a second pass recomputes derived display values. Datasets
+are cached under a key including the schema, seed, row counts and every
+model fingerprint, so a stale dataset is never served after a model
+swap.
+
+\section{Learning to Recognise a Column}
+\label{sec:learning}
+
+\subsection{Labels without human annotators}
+
+We use a panel of \LabelJudges{} large language models from two vendors:
+\JudgeOne{}, \JudgeTwo{} and \JudgeThree{}. Each sees one field's
+structural metadata and a frozen guideline, and returns a registered
+role or \code{unknown}. Judges are independent; a field is labelled when
+at least two of three agree, and disagreements are excluded rather than
+tie-broken. \LabelRounds{} rounds produced \LabelFields{} labels, with
+Fleiss' kappa from \KappaHigh{} down to \KappaLow{} on a round aimed at
+the hardest cases and back to \KappaFinal{} after the guideline was
+clarified. Every label records machine panel consensus with
+\code{humanVerified} false; we claim consistency and reproducibility,
+not parity with expert labels.
+
+Services group into families, and a family belongs to exactly one
+partition: \TrainRows{} training rows from \TrainGroups{} groups,
+\CalibrationRows{} calibration rows from \CalibrationGroups{}, and a
+sealed set of \SealedRows{} fields across \SealedServices{} services.
+Contexts with conflicting labels, and contexts appearing in two
+partitions, are dropped rather than relabelled.
+
+\subsection{Two findings that mattered}
+
+The classifier embeds a text rendering of the field context with a
+frozen sentence encoder (Fig.~\ref{fig:recognition}). The pilot rendered
+a delimited record, \code{v3|BookingStatus\_code|string|...}, which is a
+fine machine format and a poor input for an encoder trained on prose.
+The shipped rendering is a sentence: \code{Booking Status code (string)
+in Travel Booking; data element BOOK STATUS; a code field}. Identifiers
+become words, structural facts are stated in words, and verbose material
+that fills the \TokenBudget{}-word-piece budget without carrying role
+evidence is dropped. With the same encoder and labels, calibration
+accuracy rose from \DelimitedAccuracy{} to \SentenceAccuracy{}. The
+final clause names the identifier's head noun, because mean pooling
+cannot weigh the last word yet that word decides meaning; it raised
+status routing precision from \HeadNounPrecisionBefore{} to
+\HeadNounPrecisionAfter{}.
+
+The second finding is capacity. One hidden layer of \HiddenUnits{}
+rectified-linear units on the same embeddings raised calibration
+accuracy from \LinearCalAccuracy{} to \MlpCalAccuracy{} and the routed
+share of role-bearing calibration fields from \LinearRoutedShare\% to
+\MlpRoutedShare\%. The shipped head is a multilayer perceptron (MLP) of
+\EmbeddingDim{}$\times$\HiddenUnits{}$\times$\TrainedClasses{}, adding
+\RoleHeadMiB{}\,MiB to the package.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.70\columnwidth]{figures/out/fig-recognition.pdf}
+  \caption{One column becoming a routed role: sentence rendering, frozen
+  encoder, small head, three gates that can each fall back to
+  abstention. Takeaway: routing is a decision about trust, not the
+  top-scoring class.}
+  \label{fig:recognition}
+\end{figure}
+
+\section{When the Classifier May Speak}
+\label{sec:routing}
+
+Three gates. \textbf{Support}: at least \RoleFloor{} correct calibration
+examples for the role and \FamilyFloor{} for its family.
+\textbf{Measured precision}: each role's threshold is raised --- never
+lowered --- to the lowest confidence reaching \PrecisionTarget{}
+precision on calibration with enough decisions to measure; a role that
+cannot reach it does not route. \textbf{Conformal set size}: a decision
+whose prediction set holds more than one class abstains, at a quantile
+targeting \ConformalCoverage{} coverage.
+
+Roles failing these gates stay as \emph{auxiliary} classes: trained,
+never selected. When we instead removed weak classes from training,
+status-text columns had nowhere to go and were misrouted as status
+codes. Of \TrainedClasses{} classes, \RoutableRoles{} route and
+\AuxiliaryRoles{} are auxiliary, so coverage grows with evidence rather
+than with code changes.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Corpus}
+
+We run the whole pipeline over every checksum-verified service in the
+source registry whose format the package parses directly:
+\CorpusServices{} of \RegistryServices{} registered, covering
+\CorpusEntities{} entities and \CorpusFields{} fields at two rows per
+entity. All \CorpusGenerated{} generate, with \CorpusFailed{} failures.
+\ProviderBoundPct\% of fields bind to a semantic provider: classifier
+\ClassifierPct\%, metadata rules \MetadataPct\%, lexical rules
+\LexicalPct\%.
+
+Disabling recognition isolates the learned tier
+(Fig.~\ref{fig:resolution}): binding falls to \DetProviderBoundPct\%
+and, unexpectedly, \DetFailed{} services fail outright, because without
+a recognised role some code columns cannot satisfy their own semantic
+validation. Recognition is a robustness feature as well as a realism
+one.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.96\columnwidth]{figures/out/fig-resolution-bars.pdf}
+  \caption{Field resolution across the \CorpusServices{}-service corpus
+  with and without the learned tier. Takeaway: the classifier roughly
+  doubles semantic binding, \DetProviderBoundPct\% to
+  \ProviderBoundPct\%.}
+  \label{fig:resolution}
+\end{figure}
+
+\subsection{Recognition quality on unseen services}
+
+Corpus shares say how often the classifier speaks, not whether it is
+right. The sealed set is family-disjoint from training and calibration
+and is scored through the real runtime path. On \SealedServices{}
+services and \SealedDomains{} domains never seen, the classifier makes
+\SealedDecisions{} decisions of which \SealedCorrect{} are correct
+(\SealedPrecision\%) across \RoutableRoles{} roles, with a critical
+false-positive rate of \CriticalRate\%.
+
+\begin{table}[t]
+\centering
+\caption{Sealed evaluation on \SealedServices{} unseen services
+(\SealedRows{} fields). Precision counts the classifier's own decisions;
+deterministic rules are listed separately. Takeaway: when the model
+speaks it is right \SealedPrecision\% of the time.}
+\label{tab:sealed}
+\footnotesize
+\begin{tabular}{@{}p{0.56\columnwidth}r@{}}
+\toprule
+Measure & Value \\
+\midrule
+Classifier routing decisions & \SealedDecisions{} \\
+\quad correct & \SealedCorrect{} (\SealedPrecision\%) \\
+\quad critical false positives & \CriticalFalsePositives{} (\CriticalRate\%) \\
+Distinct roles routed & \RoutableRoles{} \\
+Supported-field recall & \SupportedRecall\% \\
+Status fields detected & \StatusCorrect{}/\StatusTotal{} \\
+\quad classifier's top label correct & \StatusRawCorrect{}/\StatusTotal{} \\
+Decisions from metadata rules & \MetadataAccepted{} \\
+Decisions from lexical rules & \LexicalAccepted{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two numbers belong together: status recall is
+\StatusCorrect{}/\StatusTotal{} while the top label is correct on
+\StatusRawCorrect{}/\StatusTotal{}. The first gap is the routing policy
+declining what it cannot justify; the second is the model being wrong,
+and only that closes with more labels. Residual errors concentrate on
+one boundary --- a generic caption against a specific named thing ---
+the same boundary where the judges themselves needed a guideline
+revision.
+
+\subsection{Speed and footprint}
+
+Generation time is dominated by fixed costs, not dataset size
+(Fig.~\ref{fig:scaling}): \ScaleRowsMin{} rows cost \ScaleMsMin{}\,ms
+and \ScaleRowsMax{} rows \ScaleMsMax{}\,ms on a \ScaleEntities{}-entity
+service, from \ScaleMsPerRowMax{} down to \ScaleMsPerRowMin{}\,ms per
+row. Median service time is \DetMedianMs{}\,ms without recognition and
+\CorpusMedianMs{}\,ms with it; both isolate recognition by giving the
+language model a budget it cannot use, and letting it run at its packaged
+budget raises the median to \CorpusFullMedianMs{}\,ms for the same
+resolved fields. The reference application with every tier enabled
+generates in \TravelAutoMs{}\,ms.
+
+The published archive is \PackageMB{}\,MB against a
+\PackageLimitMB{}\,MB registry limit: encoder \EncoderMiB{}\,MiB, role
+head \RoleHeadMiB{}\,MiB, vocabulary \VocabularyMiB{}\,MiB, relevance
+head \RelevanceHeadMiB{}\,MiB, generation model
+\GeneratorModelMiB{}\,MiB. The editor extension (\VsixMB{}\,MB) carries
+no models: it pins the package by version, application programming
+interface (API) version and hashes, and resolves that pin once into a
+shared verified cache. The build passes \PackageTests{} package tests,
+\TrainingTests{} training-tool tests and \EditorTests{} editor tests
+with \LintErrors{} lint errors.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.96\columnwidth]{figures/out/fig-scaling.pdf}
+  \caption{Deterministic-pipeline scaling on a \ScaleEntities{}-entity
+  service. Takeaway: everything except the language model is effectively
+  free at realistic dataset sizes.}
+  \label{fig:scaling}
+\end{figure}
+
+\section{A Component That Did Not Work}
+\label{sec:relevance}
+
+Before a model-proposed display value is written, a verifier should
+judge whether it suits the field; the intended gate was 80\% of valid
+candidates accepted at no more than 1\% of wrong ones. We built
+\RelevancePairs{} panel-judged pairs over \RelevanceTrainGroups{}
+approved value sources with \RelevanceSealedGroups{} held out, and tried
+a frozen-encoder logistic head, a fine-tuned bi-encoder and a
+cross-encoder. None separated the classes: at the 1\% budget the
+verifier accepts \RelevancePositiveRate\% of valid candidates, and
+loosening it enough to be useful admits about
+\RelevanceLooseNegativeRate\% of clearly-wrong values. Expanding the
+corpus made the task harder, and the panel judged a sixth of our
+supposed wrong values acceptable --- the task as posed was not well
+defined.
+
+We ship the strict point
+(\RelevancePositivesAccepted{}/\RelevancePositives{} valid,
+\RelevanceNegativesAccepted{}/\RelevanceNegatives{} wrong). Because that
+rejects nearly everything and the pipeline treated ``unverified'' as
+fatal, applications with synthetic display domains produced no data.
+Generation now keeps the deterministic values, marks the resource
+unverified and emits a diagnostic; the guardrail for a \emph{missing}
+verifier is unchanged.
+
+\section{Discussion and Limitations}
+\label{sec:discussion}
+
+The pilot recogniser routed nothing useful for three reasons, none of
+them the model: the input was written for a machine rather than the
+encoder, the head lacked capacity for the class count, and a registry
+default threshold overrode the head's own calibration so decisions
+between 0.6 and 0.9 never routed. Each was invisible in aggregate
+accuracy and obvious once every sealed decision recorded its confidence,
+threshold, prediction-set size and abstention reason.
+
+Machine labelling bought scale --- \LabelFields{} labels for the cost of
+compute --- but is also the ceiling: residual errors sit where
+inter-judge agreement was lowest.
+
+Limitations: labels are machine consensus, not human-verified; corpus
+numbers count fields bound to a provider, not fields a human would judge
+realistic; the corpus is \CorpusServices{} services of
+\RegistryServices{} registered, and the sealed set, while
+family-disjoint, comes from the same registry; supported recall is
+\SupportedRecall\%; the verifier is nearly inactive; and gate thresholds
+were revised once, with the owner's approval, when the sealed set grew
+from 45 fields to \SealedRows{}, with both values recorded in the
+release baseline.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\system{} turns a service definition into a complete, coherent,
+deterministic mock dataset with no backend, no network and no human
+labelling effort. On \CorpusServices{} real services it generates
+\CorpusFields{} fields with \CorpusFailed{} failures and binds
+\ProviderBoundPct\% to a semantic provider, against
+\DetProviderBoundPct\% and \DetFailed{} failures without recognition; on
+\SealedServices{} unseen services its learned decisions are correct
+\SealedPrecision\% of the time across \RoutableRoles{} roles.
+
+\section*{Glossary}
+
+\begin{description}
+  \item[API] Application programming interface.
+  \item[CDS] Core Data Services, SAP's schema definition language.
+  \item[Conformal prediction] A calibration method producing a set of
+    plausible classes at a target coverage level.
+  \item[EDMX] The XML document format for OData service metadata.
+  \item[Fleiss' kappa] Agreement measure for more than two raters,
+    corrected for chance.
+  \item[MLP] Multilayer perceptron, a network with a hidden layer.
+  \item[OData] Open Data Protocol, used by SAP Fiori applications.
+  \item[ONNX] Open Neural Network Exchange, the packaged model format.
+  \item[vCPU] Virtual central processing unit.
+  \item[VSIX] The package format for a code editor extension.
+\end{description}
+
+\end{document}

@@ -1,0 +1,42 @@
+% System components: what is shipped where. The editor extension carries no
+% models; it pins the package, which carries the models and the engine.
+\documentclass[tikz,border=6pt]{standalone}
+\input{figpreamble}
+\begin{document}
+\begin{tikzpicture}[node distance=4mm]
+
+% ---- editor side -----------------------------------------------------
+\node[main] (editor) {code editor extension\\[-1pt]{\scriptsize no models inside}};
+\node[box, below=6mm of editor] (pin) {package pin\\[-1pt]
+  {\scriptsize name, version, API version, integrity, dist hash}};
+\node[box, below=5mm of pin] (worker) {isolated worker process\\[-1pt]
+  {\scriptsize cancellable, budgeted, rollback on failure}};
+\node[draw=mockink!45, dashed, rounded corners=3pt, fit=(editor)(pin)(worker),
+  inner sep=6pt, label={[font=\scriptsize\bfseries, text=mockink!75]above:editor}] (editorbox) {};
+
+% ---- package side ----------------------------------------------------
+\node[main, right=26mm of editor] (pkg) {mock data generator package};
+\node[box, below=6mm of pkg] (engine) {generation engine\\[-1pt]
+  {\scriptsize schema IR, tier cascade, relational passes}};
+\node[tone, below=5mm of engine] (models) {model component\\[-1pt]
+  {\scriptsize encoder, role head, relevance head, vocabulary}};
+\node[ttwo, below=5mm of models] (llm) {generation model\\[-1pt]{\scriptsize local, quantized}};
+\node[box, below=5mm of llm] (manifest) {signed manifest\\[-1pt]
+  {\scriptsize per-file checksums, content-derived revision}};
+\node[draw=mockink!45, dashed, rounded corners=3pt, fit=(pkg)(engine)(models)(llm)(manifest),
+  inner sep=6pt, label={[font=\scriptsize\bfseries, text=mockink!75]above:published package}] (pkgbox) {};
+
+% ---- cache -----------------------------------------------------------
+\node[box, below=9mm of editorbox.south, xshift=20mm] (cache)
+  {shared module cache\\[-1pt]{\scriptsize one verified copy per pinned version}};
+
+\draw[arrow] (pin.east) -- ++(6mm,0) |- (pkgbox.west);
+\draw[arrow] (pkgbox.south) |- (cache.east);
+\draw[arrow] (worker.south) |- (cache.west);
+
+\node[note, below=3mm of cache, text width=72mm]
+  {The extension resolves its pin once, verifies every model file against the
+   manifest, and reuses the cached copy for every application afterwards.};
+
+\end{tikzpicture}
+\end{document}

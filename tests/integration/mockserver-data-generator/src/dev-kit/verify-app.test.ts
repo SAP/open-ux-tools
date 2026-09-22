@@ -6,6 +6,7 @@ import {
     createCanaryLaunch,
     createCanaryConfiguration,
     createCanaryEnvironment,
+    createCanaryOutputCollector,
     discoverCanaryTarget,
     extractCanaryTimings,
     verifyCanaryProcessEvidence,
@@ -299,6 +300,55 @@ describe('installed application verification', () => {
 describe('canary process evidence', () => {
     const providerEvidence = 'Provider mockdata found for Products';
     const learnedEvidence = 'MOCK_DATA_GENERATOR_CAPABILITIES: mode=hybrid classifier=ready sft=ready';
+
+    test('retains early readiness and timings after verbose Travel diagnostics', () => {
+        const output = createCanaryOutputCollector();
+        output.append('stdout', `${learnedEvidence.slice(0, 35)}`);
+        output.append('stderr', 'unrelated warning\n');
+        output.append(
+            'stdout',
+            `${learnedEvidence.slice(35)}\nMOCK_DATA_GENERATOR_TIMING: phase=runtime-initialization durationMs=1800\n`
+        );
+        output.append('stderr', 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE\n'.repeat(2000));
+        output.append('stdout', `${providerEvidence}\n`);
+
+        expect(output.tail().length).toBeLessThanOrEqual(20_000);
+        expect(output.tail()).not.toContain(learnedEvidence);
+        expect(verifyCanaryProcessEvidence(output.evidence(), 'Products', true)).toEqual({
+            providerExecuted: true,
+            learnedRuntimeVerified: true
+        });
+        expect(extractCanaryTimings(output.evidence()).runtimeInitializationMs).toBe(1800);
+    });
+
+    test('does not turn missing readiness into success after noisy output', () => {
+        const output = createCanaryOutputCollector();
+        output.append('stdout', `${providerEvidence}\n`);
+        output.append('stderr', 'warning\n'.repeat(5000));
+        expect(() => verifyCanaryProcessEvidence(output.evidence(), 'Products', true)).toThrow(/classifier and SFT/);
+    });
+
+    test('keeps early contamination and duplicate timing evidence after log eviction', () => {
+        const output = createCanaryOutputCollector();
+        const timing = 'MOCK_DATA_GENERATOR_TIMING: phase=runtime-initialization durationMs=10\n';
+        output.append('stdout', `${providerEvidence}\n${timing}`);
+        output.append('stderr', 'warning\n'.repeat(5000));
+        expect(() => verifyCanaryProcessEvidence(output.evidence(), 'Products', false, false)).toThrow(/unexpectedly/);
+        output.append(
+            'stdout',
+            'GENERATED_DATA_CACHE_HIT: reused\nMOCK_DATA_GENERATOR_TIMING: phase=generated-data-cache-hit durationMs=1\n'
+        );
+        expect(() => extractCanaryTimings(output.evidence(), { expectedCacheHit: true })).toThrow(/initialized/);
+        output.append('stdout', timing);
+        expect(() => extractCanaryTimings(output.evidence())).toThrow(/unique timing/);
+    });
+
+    test('fails closed when evidence exceeds its bound', () => {
+        const output = createCanaryOutputCollector();
+        output.append('stdout', `${learnedEvidence}\n`.repeat(1500));
+        expect(() => output.evidence()).toThrow(/bounded capacity/);
+        expect(output.tail().length).toBeLessThanOrEqual(20_000);
+    });
 
     test('accepts provider evidence for the deterministic development path', () => {
         expect(verifyCanaryProcessEvidence(providerEvidence, 'Products')).toEqual({ providerExecuted: true });

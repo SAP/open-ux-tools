@@ -1,0 +1,207 @@
+% =====================================================================
+% numbers.tex -- single source of truth for every measured number cited
+% by main.tex and conference.tex in this directory.
+%
+% RULES
+%  * One \newcommand per metric; a source-path comment above each.
+%  * Prose must use these macros -- a bare number in a .tex body is a
+%    review defect.
+%  * A value that cannot be traced to a file in this repository or to
+%    the private evidence directory must not appear here.
+%  * Values recorded 2026-09-21 (standalone package 0.1.0-dev.10).
+% =====================================================================
+
+% ---------------------------------------------------------------------
+% Label production. Six adjudication rounds by a three-judge panel of
+% distinct models over structural field metadata only.
+% source: scripts/mockserver-data-generator-training/baselines/
+%         2026-09-18-v3-development-evidence.json
+% ---------------------------------------------------------------------
+\newcommand{\LabelFields}{23{,}741}
+\newcommand{\LabelRounds}{six}
+\newcommand{\LabelJudges}{three}
+\newcommand{\JudgeOne}{Claude Opus 4.8}
+\newcommand{\JudgeTwo}{Claude Sonnet 4.5}
+\newcommand{\JudgeThree}{GPT-5.6-terra}
+\newcommand{\KappaLow}{0.72}
+\newcommand{\KappaHigh}{0.87}
+\newcommand{\KappaFinal}{0.81}
+
+% ---------------------------------------------------------------------
+% Partitions after the family-disjoint join.
+% source: ~/mockgen-private/rows/join-summary.json
+% ---------------------------------------------------------------------
+\newcommand{\TrainRows}{12{,}375}
+\newcommand{\CalibrationRows}{4{,}991}
+\newcommand{\SealedRows}{4{,}317}
+\newcommand{\TrainGroups}{119}
+\newcommand{\CalibrationGroups}{39}
+\newcommand{\SealedServices}{41}
+\newcommand{\SealedDomains}{21}
+\newcommand{\TrainedClasses}{63}
+\newcommand{\RoutableRoles}{44}
+\newcommand{\AuxiliaryRoles}{18}
+
+% ---------------------------------------------------------------------
+% Role head architecture and calibration.
+% source: ~/mockgen-private/heads/v3-head.qualified.json
+% ---------------------------------------------------------------------
+\newcommand{\EmbeddingDim}{384}
+\newcommand{\HiddenUnits}{256}
+\newcommand{\TokenBudget}{64}
+\newcommand{\CalibrationAccuracy}{0.835}
+\newcommand{\ConformalCoverage}{0.900}
+\newcommand{\GlobalThreshold}{0.54}
+\newcommand{\RoleFloor}{5}
+\newcommand{\FamilyFloor}{10}
+\newcommand{\PrecisionTarget}{0.95}
+
+% ---------------------------------------------------------------------
+% Sealed evaluation of the shipped role head (service-disjoint).
+% source: ~/mockgen-private/heads/sealed-report.dev10.json
+% ---------------------------------------------------------------------
+\newcommand{\SealedDecisions}{1{,}206}
+\newcommand{\SealedCorrect}{1{,}160}
+\newcommand{\SealedPrecision}{96.2}
+\newcommand{\SupportedCorrect}{1{,}277}
+\newcommand{\SupportedTotal}{2{,}026}
+\newcommand{\SupportedRecall}{63.0}
+\newcommand{\StatusCorrect}{27}
+\newcommand{\StatusTotal}{44}
+\newcommand{\StatusRawCorrect}{33}
+\newcommand{\StatusServices}{22}
+\newcommand{\StatusDomains}{10}
+\newcommand{\CriticalFalsePositives}{27}
+\newcommand{\CriticalRate}{2.2}
+\newcommand{\LexicalAccepted}{512}
+\newcommand{\MetadataAccepted}{389}
+
+% ---------------------------------------------------------------------
+% Serialization study: the same frozen encoder, two renderings of the
+% same field context, linear head, identical partitions.
+% source: session experiment logs, scratchpad serializer-experiment.mjs
+% ---------------------------------------------------------------------
+\newcommand{\DelimitedAccuracy}{0.63}
+\newcommand{\SentenceAccuracy}{0.84}
+\newcommand{\HeadNounPrecisionBefore}{45/56}
+\newcommand{\HeadNounPrecisionAfter}{91/100}
+
+% ---------------------------------------------------------------------
+% Head-capacity study: linear versus one hidden layer, same embeddings.
+% source: session experiment logs, scratchpad head_capacity.py
+% ---------------------------------------------------------------------
+\newcommand{\LinearCalAccuracy}{0.62}
+\newcommand{\MlpCalAccuracy}{0.84}
+\newcommand{\LinearRoutedShare}{29}
+\newcommand{\MlpRoutedShare}{74}
+
+% ---------------------------------------------------------------------
+% Field-to-value relevance verifier.
+% source: ~/mockgen-private/relevance3/heads/relevance-head.qualified.json
+%         ~/mockgen-private/relevance3/heads/report.json
+% ---------------------------------------------------------------------
+\newcommand{\RelevancePairs}{3{,}346}
+\newcommand{\RelevanceTrainGroups}{19}
+\newcommand{\RelevanceSealedGroups}{19}
+\newcommand{\RelevancePositives}{399}
+\newcommand{\RelevancePositivesAccepted}{5}
+\newcommand{\RelevanceNegatives}{704}
+\newcommand{\RelevanceNegativesAccepted}{6}
+\newcommand{\RelevanceNegativeRate}{0.9}
+\newcommand{\RelevancePositiveRate}{1.3}
+\newcommand{\RelevanceLooseNegativeRate}{14}
+
+% ---------------------------------------------------------------------
+% Packaged artifacts and release identities.
+% source: scripts/mockserver-data-generator-training/baselines/
+%         dev10-application-modeler-1.52.0.json
+%         packages/mock-data-generator/resources/models/manifest.json
+% ---------------------------------------------------------------------
+\newcommand{\EncoderMiB}{21.9}
+\newcommand{\RoleHeadMiB}{3.4}
+\newcommand{\RelevanceHeadMiB}{0.1}
+\newcommand{\VocabularyMiB}{0.2}
+\newcommand{\GeneratorModelMiB}{157.3}
+\newcommand{\PackageMB}{128}
+\newcommand{\PackageLimitMB}{200}
+\newcommand{\PackageVersion}{0.1.0-dev.10}
+\newcommand{\ApiVersion}{2}
+\newcommand{\VsixMB}{11.4}
+\newcommand{\VsixVersion}{1.52.0}
+
+% ---------------------------------------------------------------------
+% Verification state of the shipped build.
+% source: session test runs, 2026-09-20
+% ---------------------------------------------------------------------
+\newcommand{\PackageTests}{466}
+\newcommand{\TrainingTests}{80}
+\newcommand{\EditorTests}{50}
+\newcommand{\LintErrors}{0}
+\newcommand{\ReplayServices}{four}
+\newcommand{\TravelAutoMs}{2{,}845}
+
+% ---------------------------------------------------------------------
+% Corpus benchmark over every checksum-verified service of the source
+% registry whose format this package parses directly. Two runs of the same
+% corpus: the recognition path (tiers 0, 1 and 3, the language model given a
+% 1 ms budget so it never fires) and the whole pipeline with the language
+% model at its packaged service budget. Field resolution is identical in
+% both; only the timings differ.
+% source: scripts/mockserver-data-generator-training/baselines/
+%         2026-09-21-corpus-benchmark-recognition.json  (recognition path)
+%         2026-09-21-corpus-benchmark-learned.json      (whole pipeline)
+% ---------------------------------------------------------------------
+\newcommand{\RegistryServices}{473}
+\newcommand{\CorpusServices}{131}
+\newcommand{\CorpusGenerated}{131}
+\newcommand{\CorpusFailed}{0}
+\newcommand{\CorpusEntities}{1{,}345}
+\newcommand{\CorpusFields}{11{,}529}
+\newcommand{\CorpusLargestService}{897}
+\newcommand{\MetadataPct}{5.96}
+\newcommand{\ClassifierPct}{29.01}
+\newcommand{\LexicalPct}{11.85}
+\newcommand{\AbstainedPct}{53.18}
+\newcommand{\ProviderBoundPct}{44.79}
+\newcommand{\CorpusMedianMs}{1{,}442}
+\newcommand{\CorpusPNinetyMs}{2{,}929}
+\newcommand{\CorpusTotalSec}{251}
+\newcommand{\CorpusFullMedianMs}{3{,}808}
+\newcommand{\CorpusFullPNinetyMs}{13{,}896}
+\newcommand{\CorpusFullTotalSec}{820}
+
+% ---------------------------------------------------------------------
+% Same corpus with recognition disabled (deterministic mode): the
+% contribution of the learned tier, and its effect on robustness.
+% source: scripts/mockserver-data-generator-training/baselines/
+%         2026-09-21-corpus-benchmark-deterministic.json
+% ---------------------------------------------------------------------
+\newcommand{\DetGenerated}{119}
+\newcommand{\DetFailed}{12}
+\newcommand{\DetFields}{9{,}928}
+\newcommand{\DetMetadataPct}{5.96}
+\newcommand{\DetLexicalPct}{17.94}
+\newcommand{\DetAbstainedPct}{76.10}
+\newcommand{\DetProviderBoundPct}{22.93}
+\newcommand{\DetMedianMs}{107}
+
+% ---------------------------------------------------------------------
+% Scaling benchmark: deterministic pipeline, finance service, 17 entities.
+% source: scripts/mockserver-data-generator-training/baselines/
+%         2026-09-19-scaling-benchmark.json
+% ---------------------------------------------------------------------
+\newcommand{\ScaleEntities}{17}
+\newcommand{\ScaleRowsMin}{17}
+\newcommand{\ScaleRowsMax}{1{,}700}
+\newcommand{\ScaleMsMin}{270}
+\newcommand{\ScaleMsMax}{453}
+\newcommand{\ScaleMsPerRowMax}{15.9}
+\newcommand{\ScaleMsPerRowMin}{0.27}
+
+% ---------------------------------------------------------------------
+% Editor availability budgets.
+% source: packages/application-modeler/ide-extension/src/mockgen/runtime.ts
+%         (tools-suite-standalone-mockgen)
+% ---------------------------------------------------------------------
+\newcommand{\AvailabilityBudgetSec}{60}
+\newcommand{\GenerationBudgetSec}{300}

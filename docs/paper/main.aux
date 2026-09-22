@@ -1,0 +1,78 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{I}{1}{Introduction}{section.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The resolution cascade for a single column. Declared catalogs beat recognition, recognition beats the language model, and the typed fallback cannot refuse. Takeaway: the never-empty promise is structural, not aspirational.}}{1}{figure.1}\protected@file@percent }
+\newlabel{fig:cascade}{{1}{1}{The resolution cascade for a single column. Declared catalogs beat recognition, recognition beats the language model, and the typed fallback cannot refuse. Takeaway: the never-empty promise is structural, not aspirational}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:related}{{II}{2}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Schema IR and Adapters}{2}{section.3}\protected@file@percent }
+\newlabel{sec:ir}{{III}{2}{Schema IR and Adapters}{section.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}The Cascade at a Glance}{2}{section.4}\protected@file@percent }
+\newlabel{sec:cascade}{{IV}{2}{The Cascade at a Glance}{section.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}T0: Authoritative Catalogs}{2}{section.5}\protected@file@percent }
+\newlabel{sec:t0}{{V}{2}{T0: Authoritative Catalogs}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}T1: Recognised Roles}{2}{section.6}\protected@file@percent }
+\newlabel{sec:t1}{{VI}{2}{T1: Recognised Roles}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Three sources, one arbitrator}{2}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Framework columns never route}{3}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Learning to Recognise a Column}{3}{section.7}\protected@file@percent }
+\newlabel{sec:learning}{{VII}{3}{Learning to Recognise a Column}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}Labels without human annotators}{3}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-B}}Partitions and leakage}{3}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-C}}Writing the field as language}{3}{subsection.7.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces How one column becomes a routed role. The field context is rendered as a sentence, embedded by the frozen encoder, and scored by a small head; three gates can each send the decision back to abstention. Takeaway: routing is a decision about trust, not simply the top-scoring class.}}{3}{figure.2}\protected@file@percent }
+\newlabel{fig:recognition}{{2}{3}{How one column becomes a routed role. The field context is rendered as a sentence, embedded by the frozen encoder, and scored by a small head; three gates can each send the decision back to abstention. Takeaway: routing is a decision about trust, not simply the top-scoring class}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-D}}Head capacity}{3}{subsection.7.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces The two design changes, measured on identical labels and the same frozen encoder. Routed share is the fraction of role-bearing calibration fields the system is willing to route.}}{4}{table.1}\protected@file@percent }
+\newlabel{tab:findings}{{I}{4}{The two design changes, measured on identical labels and the same frozen encoder. Routed share is the fraction of role-bearing calibration fields the system is willing to route}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}When the Classifier May Speak}{4}{section.8}\protected@file@percent }
+\newlabel{sec:routing}{{VIII}{4}{When the Classifier May Speak}{section.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IX}T2: A Budgeted Local Language Model}{4}{section.9}\protected@file@percent }
+\newlabel{sec:t2}{{IX}{4}{T2: A Budgeted Local Language Model}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {X}T3: The Guaranteed Floor}{4}{section.10}\protected@file@percent }
+\newlabel{sec:t3}{{X}{4}{T3: The Guaranteed Floor}{section.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {XI}Keys, References, and Caching}{4}{section.11}\protected@file@percent }
+\newlabel{sec:relations}{{XI}{4}{Keys, References, and Caching}{section.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {XII}Determinism and Reproducibility}{4}{section.12}\protected@file@percent }
+\newlabel{sec:determinism}{{XII}{4}{Determinism and Reproducibility}{section.12}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {XIII}Packaging, Qualification, and the Editor}{4}{section.13}\protected@file@percent }
+\newlabel{sec:release}{{XIII}{4}{Packaging, Qualification, and the Editor}{section.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XIII-A}}Nothing is qualified by hand}{4}{subsection.13.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XIII-B}}What ships where}{4}{subsection.13.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces What ships where. The extension holds only a pin; the package holds the engine and the models; a shared cache holds one verified copy per pinned version. Takeaway: models are distributed once and verified on every load, not bundled into every extension update.}}{5}{figure.3}\protected@file@percent }
+\newlabel{fig:components}{{3}{5}{What ships where. The extension holds only a pin; the package holds the engine and the models; a shared cache holds one verified copy per pinned version. Takeaway: models are distributed once and verified on every load, not bundled into every extension update}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XIII-C}}Availability without a stall}{5}{subsection.13.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {XIV}Results}{5}{section.14}\protected@file@percent }
+\newlabel{sec:results}{{XIV}{5}{Results}{section.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XIV-A}}Corpus coverage}{5}{subsection.14.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XIV-B}}Recognition quality on unseen services}{5}{subsection.14.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces How each field of the 131{}-service corpus is resolved, with and without the learned recognition tier. Takeaway: the classifier roughly doubles the share of fields bound to a semantic provider, from 22.93\% to 44.79\%.}}{5}{figure.4}\protected@file@percent }
+\newlabel{fig:resolution}{{4}{5}{How each field of the \CorpusServices {}-service corpus is resolved, with and without the learned recognition tier. Takeaway: the classifier roughly doubles the share of fields bound to a semantic provider, from \DetProviderBoundPct \% to \ProviderBoundPct \%}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Corpus profile over 131{} service definitions, two rows per entity. Percentages are shares of all fields in that mode. Both runs isolate recognition, so the language model is given a budget it cannot use; the times are therefore the recognition path, not the whole pipeline.}}{5}{table.2}\protected@file@percent }
+\newlabel{tab:corpus}{{II}{5}{Corpus profile over \CorpusServices {} service definitions, two rows per entity. Percentages are shares of all fields in that mode. Both runs isolate recognition, so the language model is given a budget it cannot use; the times are therefore the recognition path, not the whole pipeline}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Sealed evaluation on 41{} services never used for training or calibration (4{,}317{} fields). Precision counts the classifier's own accepted decisions; deterministic metadata and lexical decisions are listed separately because they are rules, not model output. Takeaway: when the model speaks it is right 96.2\% of the time.}}{6}{table.3}\protected@file@percent }
+\newlabel{tab:sealed}{{III}{6}{Sealed evaluation on \SealedServices {} services never used for training or calibration (\SealedRows {} fields). Precision counts the classifier's own accepted decisions; deterministic metadata and lexical decisions are listed separately because they are rules, not model output. Takeaway: when the model speaks it is right \SealedPrecision \% of the time}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Deterministic-pipeline scaling on a 17{}-entity service: total time rises from 270{}\,ms to 453{}\,ms while rows rise from 17{} to 1{,}700{}, so cost per row falls by roughly sixty times. Takeaway: everything except the language model is effectively free at realistic dataset sizes.}}{6}{figure.5}\protected@file@percent }
+\newlabel{fig:scaling}{{5}{6}{Deterministic-pipeline scaling on a \ScaleEntities {}-entity service: total time rises from \ScaleMsMin {}\,ms to \ScaleMsMax {}\,ms while rows rise from \ScaleRowsMin {} to \ScaleRowsMax {}, so cost per row falls by roughly sixty times. Takeaway: everything except the language model is effectively free at realistic dataset sizes}{figure.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XIV-C}}Speed}{6}{subsection.14.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XIV-D}}End-to-end behaviour}{6}{subsection.14.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {XV}A Component That Did Not Work}{6}{section.15}\protected@file@percent }
+\newlabel{sec:relevance}{{XV}{6}{A Component That Did Not Work}{section.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XV-A}}What it was for}{6}{subsection.15.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XV-B}}What we measured}{6}{subsection.15.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XV-C}}What we ship}{6}{subsection.15.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {XVI}Discussion}{6}{section.16}\protected@file@percent }
+\newlabel{sec:discussion}{{XVI}{6}{Discussion}{section.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XVI-A}}Three mistakes, one lesson}{6}{subsection.16.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XVI-B}}Machine labels buy scale, not truth}{7}{subsection.16.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {XVI-C}}Abstention as a feature}{7}{subsection.16.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {XVII}Limitations and Threats to Validity}{7}{section.17}\protected@file@percent }
+\newlabel{sec:limitations}{{XVII}{7}{Limitations and Threats to Validity}{section.17}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {XVIII}Future Work}{7}{section.18}\protected@file@percent }
+\newlabel{sec:future}{{XVIII}{7}{Future Work}{section.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {XIX}Conclusion}{7}{section.19}\protected@file@percent }
+\newlabel{sec:conclusion}{{XIX}{7}{Conclusion}{section.19}{}}
+\gdef \@abspage@last{7}

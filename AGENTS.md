@@ -59,6 +59,14 @@ The test: Every changed line should trace directly to the user's request.
 
 **Define success criteria. Loop until verified.**
 
+For an explicitly requested end-to-end implementation or release, keep working through
+the complete scope and its evaluation gates. Do not stop after a partial fix,
+component test, or diagnosis and present it as the handoff. Continue with safe,
+in-scope alternatives when one path fails. Stop only when the requested result
+has been implemented and evaluated, or when an external requirement or missing
+authority makes further meaningful progress impossible; then report the exact
+unfinished gates and evidence without claiming completion.
+
 Transform tasks into verifiable goals:
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"

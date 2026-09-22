@@ -1,0 +1,32 @@
+% Deterministic-pipeline scaling: total generation time is nearly flat in the
+% number of generated rows, so cost per row falls as datasets grow.
+% source: scripts/mockserver-data-generator-training/baselines/
+%         2026-09-19-scaling-benchmark.json (finance service, 17 entities)
+\documentclass[tikz,border=6pt]{standalone}
+\input{figpreamble}
+\input{../../numbers.tex}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=98mm, height=60mm,
+  xmode=log, log basis x=10,
+  xlabel={generated rows (log scale)},
+  ylabel={time (ms)},
+  xlabel style={font=\scriptsize}, ylabel style={font=\scriptsize},
+  x tick label style={font=\scriptsize}, y tick label style={font=\scriptsize},
+  ymin=0, ymax=520,
+  grid=major, grid style={mockink!12},
+  axis line style={mockink!60},
+  legend style={font=\scriptsize, at={(0.02,0.97)}, anchor=north west, draw=none},
+]
+  \addplot+[mark=*, thick, mockblue, mark options={fill=mockblue}] coordinates {
+    (17,269.7) (34,253.5) (85,239.9) (170,278.7) (425,261.5) (850,317.1) (1700,452.5)
+  };
+  \addlegendentry{total time}
+  \addplot+[mark=square*, thick, mockgreen, mark options={fill=mockgreen}, dashed] coordinates {
+    (17,158.7) (34,74.6) (85,28.2) (170,16.4) (425,6.2) (850,3.7) (1700,2.7)
+  };
+  \addlegendentry{time per row $\times$ 10}
+\end{axis}
+\end{tikzpicture}
+\end{document}

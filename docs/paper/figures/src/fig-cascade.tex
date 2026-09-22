@@ -1,0 +1,41 @@
+% The resolution cascade for a single column: the first tier that can produce a
+% constraint-valid value wins, and the last tier can never decline.
+\documentclass[tikz,border=6pt]{standalone}
+\input{figpreamble}
+\begin{document}
+\begin{tikzpicture}[node distance=5mm]
+
+\node[main] (field) {column of a service definition\\[-1pt]
+  {\scriptsize entity, name, type, width, key, annotations}};
+
+\node[tzero, below=7mm of field] (t0) {\textbf{T0} declared catalog\\[-1pt]
+  {\scriptsize value list, code list, enum, authored data}};
+\node[tone, below=7mm of t0] (t1) {\textbf{T1} recognised role\\[-1pt]
+  {\scriptsize metadata rule, learned classifier, audited lexical rule}};
+\node[ttwo, below=7mm of t1] (t2) {\textbf{T2} local language model\\[-1pt]
+  {\scriptsize grammar-constrained, budgeted, verified}};
+\node[tthree, below=7mm of t2] (t3) {\textbf{T3} typed fallback\\[-1pt]
+  {\scriptsize always succeeds}};
+
+\node[main, below=7mm of t3] (out) {value written to the row};
+
+\draw[arrow] (field) -- (t0);
+\draw[no] (t0) -- node[note, right=1mm] {no catalog} (t1);
+\draw[no] (t1) -- node[note, right=1mm] {no confident role} (t2);
+\draw[no] (t2) -- node[note, right=1mm] {declined or out of budget} (t3);
+
+\foreach \tier/\chip in {t0/chipzero, t1/chipone, t2/chiptwo, t3/chipthree} {
+  \draw[yes] (\tier.east) -- ++(1.35,0) |- (out.east);
+}
+
+\node[chipzero, left=2mm of t0] {T0};
+\node[chipone, left=2mm of t1] {T1};
+\node[chiptwo, left=2mm of t2] {T2};
+\node[chipthree, left=2mm of t3] {T3};
+
+\node[note, below=3mm of out, text width=62mm]
+  {Each tier answers or declines. Because T3 cannot decline, a column always
+   receives a type-correct value: quality degrades, availability does not.};
+
+\end{tikzpicture}
+\end{document}

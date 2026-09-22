@@ -1,0 +1,46 @@
+% How one column becomes a routed role: text rendering, frozen encoder, small
+% head, then three gates that can each send the decision back to abstention.
+\documentclass[tikz,border=6pt]{standalone}
+\input{figpreamble}
+\input{../../numbers.tex}
+\begin{document}
+\begin{tikzpicture}[node distance=4mm]
+
+\node[main] (ctx) {field context\\[-1pt]
+  {\scriptsize \texttt{BookingStatus\_code}, string, non-key, data element \texttt{BOOK\_STATUS}}};
+
+\node[box, below=6mm of ctx, fill=mockgray, text width=58mm] (text)
+  {one sentence, \TokenBudget{} word pieces\\[-1pt]
+   {\scriptsize Booking Status code (string) in Travel Booking; data element BOOK STATUS; a code field}};
+
+\node[tone, below=6mm of text] (enc) {frozen sentence encoder\\[-1pt]
+  {\scriptsize \EmbeddingDim{} dimensions, shipped in the package}};
+
+\node[tone, below=5mm of enc] (head) {role head\\[-1pt]
+  {\scriptsize \HiddenUnits{} hidden units, \TrainedClasses{} classes}};
+
+\node[decision, below=6mm of head] (g1) {support?};
+\node[decision, below=6mm of g1] (g2) {precision?};
+\node[decision, below=6mm of g2] (g3) {single\\class?};
+
+\node[main, below=6mm of g3] (routed) {routed role};
+\node[tthree, right=14mm of g2] (abstain) {abstain\\[-1pt]{\scriptsize next tier answers}};
+
+\draw[arrow] (ctx) -- (text);
+\draw[arrow] (text) -- (enc);
+\draw[arrow] (enc) -- (head);
+\draw[arrow] (head) -- (g1);
+\draw[yes] (g1) -- node[note, right=1mm] {yes} (g2);
+\draw[yes] (g2) -- node[note, right=1mm] {yes} (g3);
+\draw[yes] (g3) -- node[note, right=1mm] {yes} (routed);
+\draw[no] (g1.east) -- ++(8mm,0) |- (abstain.north);
+\draw[no] (g2.east) -- (abstain.west);
+\draw[no] (g3.east) -- ++(8mm,0) |- (abstain.south);
+
+\node[note, below=3mm of routed, text width=70mm]
+  {The gates ask whether the role has enough calibration evidence, whether it
+   reached its measured precision target at this confidence, and whether the
+   conformal prediction set holds exactly one class.};
+
+\end{tikzpicture}
+\end{document}

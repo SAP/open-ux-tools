@@ -15,7 +15,7 @@ overrides:
   onnxruntime-node>adm-zip: '>=0.6.0'
   sharp@<0.35.0: '>=0.33.5'
   '@huggingface/transformers>sharp': '>=0.35.0'
-  '@sap-ux/mockserver-data-generator>fast-xml-parser': 5.10.1
+  '@sap-ux/mock-data-generator>fast-xml-parser': 5.10.1
   fast-xml-parser: 5.8.0
   fast-uri: '>=3.1.5'
   '@babel/core@>=7.0.0 <8.0.0': 7.29.7
@@ -2484,9 +2484,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap-ux/mockserver-config-writer':
-        specifier: workspace:*
-        version: link:../mockserver-config-writer
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
@@ -3410,6 +3407,15 @@ importers:
         specifier: 2.7.0
         version: 2.7.0
 
+  packages/mock-data-generator:
+    dependencies:
+      fast-xml-parser:
+        specifier: 5.10.1
+        version: 5.10.1
+      onnxruntime-node:
+        specifier: 1.24.3
+        version: 1.24.3
+
   packages/mockserver-config-writer:
     dependencies:
       '@sap-ux/project-access':
@@ -3440,25 +3446,6 @@ importers:
       prompts:
         specifier: 2.4.2
         version: 2.4.2
-
-  packages/mockserver-data-generator:
-    dependencies:
-      cross-spawn:
-        specifier: 7.0.6
-        version: 7.0.6
-      fast-xml-parser:
-        specifier: 5.10.1
-        version: 5.10.1
-      undici:
-        specifier: 7.29.0
-        version: 7.29.0
-    devDependencies:
-      '@types/cross-spawn':
-        specifier: 6.0.6
-        version: 6.0.6
-      onnxruntime-node:
-        specifier: 1.24.3
-        version: 1.24.3
 
   packages/nodejs-utils:
     dependencies:
@@ -5570,12 +5557,6 @@ importers:
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
-
-  tests/integration/mockserver-data-generator:
-    devDependencies:
-      '@jest/globals':
-        specifier: 30.4.1
-        version: 30.4.1(supports-color@8.1.1)
 
   types:
     devDependencies:

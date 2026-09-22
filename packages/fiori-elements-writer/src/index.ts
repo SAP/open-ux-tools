@@ -37,7 +37,6 @@ import { generateFpmConfig } from './fpmConfig.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { writeAnnotations } from './writeAnnotations.js';
-import { reconcileMockgenPackageJson } from '@sap-ux/mockserver-config-writer';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -251,7 +250,6 @@ async function generate<T extends {}>(
         };
     }
     fs.writeJSON(packagePath, packageJson);
-    await reconcileMockgenPackageJson(basePath, fs);
 
     if (feApp.service.capService) {
         const settings: CapProjectSettings = {

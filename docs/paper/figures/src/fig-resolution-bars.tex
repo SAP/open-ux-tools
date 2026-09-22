@@ -1,0 +1,42 @@
+% How each field of the corpus is resolved, with and without the learned
+% recognition tier. Percent values from numbers.tex (source: the two corpus
+% benchmark baselines of 2026-09-20).
+\documentclass[tikz,border=6pt]{standalone}
+\input{figpreamble}
+\input{../../numbers.tex}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar stacked,
+  width=98mm, height=62mm,
+  bar width=18mm,
+  ymin=0, ymax=100,
+  ylabel={share of fields (\%)},
+  symbolic x coords={recognition enabled, recognition disabled},
+  xtick=data,
+  x tick label style={font=\scriptsize, align=center},
+  y tick label style={font=\scriptsize},
+  ylabel style={font=\scriptsize},
+  legend style={font=\scriptsize, at={(0.5,-0.18)}, anchor=north, legend columns=2, draw=none},
+  axis line style={mockink!60},
+]
+  \addplot+[ybar, fill=mockblue!70, draw=mockblue!90!black] coordinates {
+    (recognition enabled, \MetadataPct) (recognition disabled, \DetMetadataPct)
+  };
+  \addplot+[ybar, fill=mockgreen!70, draw=mockgreen!90!black,
+    nodes near coords, point meta=explicit symbolic,
+    every node near coord/.append style={anchor=north, yshift=-0.5mm,
+      font=\scriptsize\bfseries, text=white}] coordinates {
+    (recognition enabled, \ClassifierPct) [\ClassifierPct\%]
+    (recognition disabled, 0) []
+  };
+  \addplot+[ybar, fill=mockgold!70, draw=mockgold!90!black] coordinates {
+    (recognition enabled, \LexicalPct) (recognition disabled, \DetLexicalPct)
+  };
+  \addplot+[ybar, fill=mockred!30, draw=mockred!70] coordinates {
+    (recognition enabled, \AbstainedPct) (recognition disabled, \DetAbstainedPct)
+  };
+  \legend{metadata rules, learned classifier, lexical rules, abstained to lower tiers}
+\end{axis}
+\end{tikzpicture}
+\end{document}

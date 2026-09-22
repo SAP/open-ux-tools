@@ -1,0 +1,43 @@
+% Shared preamble for all standalone paper figures.
+% Palette and TikZ setup carried over from the legacy generator
+% (paper/figures/scripts/build_paper_figures.py, TIKZ_HEADER) so the new
+% figures keep the established visual identity.
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric}
+
+\definecolor{mockblue}{HTML}{2E6F9E}
+\definecolor{mockgreen}{HTML}{4F8A70}
+\definecolor{mockred}{HTML}{C0392B}
+\definecolor{mockgold}{HTML}{B08A2E}
+\definecolor{mockgray}{HTML}{F4F1EC}
+\definecolor{mockink}{HTML}{2B2B2B}
+
+\tikzset{
+  box/.style={draw=mockink!60, fill=white, rounded corners=2pt, align=center,
+    inner sep=5pt, font=\small},
+  main/.style={box, fill=mockgray, draw=mockink!70, thick},
+  tzero/.style={box, fill=mockblue!14, draw=mockblue, thick},
+  tone/.style={box, fill=mockgreen!14, draw=mockgreen, thick},
+  ttwo/.style={box, fill=mockgold!16, draw=mockgold, thick},
+  tthree/.style={box, fill=mockred!12, draw=mockred, thick},
+  decision/.style={draw=mockink!70, fill=white, diamond, aspect=2.2,
+    align=center, inner sep=2pt, font=\small},
+  chip/.style={draw, rounded corners=4pt, inner sep=2.5pt, font=\scriptsize\bfseries,
+    text=white},
+  chipzero/.style={chip, fill=mockblue, draw=mockblue},
+  chipone/.style={chip, fill=mockgreen, draw=mockgreen},
+  chiptwo/.style={chip, fill=mockgold, draw=mockgold},
+  chipthree/.style={chip, fill=mockred, draw=mockred},
+  arrow/.style={-{Stealth[length=2.6mm]}, thick, mockink!80},
+  yes/.style={arrow, mockgreen!80!black},
+  no/.style={arrow, mockred!70!black},
+  note/.style={font=\scriptsize, text=mockink!75, align=center},
+  banner/.style={draw=mockink!70, fill=mockgray, rounded corners=3pt,
+    align=center, inner sep=6pt, font=\small\bfseries},
+}

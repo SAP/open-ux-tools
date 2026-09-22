@@ -1,59 +1,52 @@
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: "4.0"
+specVersion: '4.0'
 metadata:
-  name: testNameSpace.lropv2apihub
+    name: testNameSpace.lropv2apihub
 type: application
 server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-        backend:
-          - path: /sap
-            url: https://abap.cloud.host
-            client: '012'
-            apiHub: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-appreload
-      configuration:
-        flp:
-          theme: sap_fiori_3
-          path: test/flpSandbox.html
-          intent:
-            object: testNameSpacelropv2apihub
-            action: tile
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/mainService/metadata.xml
-            mockdataPath: ./webapp/localService/mainService/data
-            generateMockData: true
-        annotations: []
-        mockDataGenerator:
-          name: '@sap-ux/mockserver-data-generator/fe-mockserver'
-          options:
-            locale: en
-            mode: auto
-            rowsPerEntity: 10
-            seed: 42
+    customMiddleware:
+        - name: fiori-tools-proxy
+          afterMiddleware: compression
+          configuration:
+              ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+              ui5:
+                  path:
+                      - /resources
+                      - /test-resources
+                  url: https://ui5.sap.com
+              backend:
+                  - path: /sap
+                    url: https://abap.cloud.host
+                    client: '012'
+                    apiHub: true
+        - name: fiori-tools-appreload
+          afterMiddleware: compression
+          configuration:
+              port: 35729
+              path: webapp
+              delay: 300
+        - name: fiori-tools-preview
+          afterMiddleware: fiori-tools-appreload
+          configuration:
+              flp:
+                  theme: sap_fiori_3
+                  path: test/flpSandbox.html
+                  intent:
+                      object: testNameSpacelropv2apihub
+                      action: tile
+        - name: sap-fe-mockserver
+          beforeMiddleware: csp
+          configuration:
+              mountPath: /
+              services:
+                  - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+                    metadataPath: ./webapp/localService/mainService/metadata.xml
+                    mockdataPath: ./webapp/localService/mainService/data
+                    generateMockData: true
+              annotations: []
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
+    resources:
+        excludes:
+            - /test/**
+            - /localService/**
