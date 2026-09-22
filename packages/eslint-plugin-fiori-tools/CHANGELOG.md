@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- Add defensive checks to esbuild.mjs to fail fast if @babel/eslint-parser is not installed and assert no @babel/* imports leak into the bundle after build [[6f73f76](https://github.com/SAP/open-ux-tools/commit/6f73f76dcf69c4791ffcec715689f55fa7ad9614)]
+
 ## 10.11.0
 
 ### Minor Changes
