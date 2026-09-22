@@ -6,22 +6,10 @@ import type { MicroChartRequiresNavigationEntity } from '../language/diagnostics
 import { MICRO_CHART_REQUIRES_NAVIGATION_ENTITY } from '../language/diagnostics.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
-import { getEntityTypeForContextPath } from '../project-context/linker/annotations.js';
+import { getElementText, getEntityTypeForContextPath } from '../project-context/linker/annotations.js';
 
 /** Annotation record properties whose `PropertyPath` values must use a 1:n navigation path. */
 const MICRO_CHART_CHECKED_PROPS = ['Measures', 'Dimensions'] as const;
-
-/**
- * Returns the text content of a `PropertyPath` element.
- * In both XML and CDS representations the path value is stored as a text node.
- *
- * @param element - The `PropertyPath` element to read.
- * @returns The path string, or an empty string if the element has no text content.
- */
-function getPropertyPathText(element: Element): string {
-    const textNode = element.content?.find((c) => c.type === 'text');
-    return textNode?.type === 'text' && textNode.text ? textNode.text : '';
-}
 
 /**
  * Returns `true` when `pathValue` violates the 1:n navigation requirement.
@@ -124,7 +112,7 @@ function checkChartAnnotation(
         }
 
         for (const propPath of elementsWithName(Edm.PropertyPath, collection)) {
-            const pathValue = getPropertyPathText(propPath);
+            const pathValue = getElementText(propPath) ?? '';
             if (violatesNavigationRule(pathValue, chartEntityType, service)) {
                 problems.push({
                     type: MICRO_CHART_REQUIRES_NAVIGATION_ENTITY,

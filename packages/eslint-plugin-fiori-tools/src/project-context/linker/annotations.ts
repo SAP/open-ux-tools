@@ -315,7 +315,7 @@ export function collectChartsFromFieldGroupNode(fieldGroupNode: FieldGroupNode, 
 const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
     content.find((c) => (c as Element).name === name);
 
-const getElementText = (element: ElementChild): string | undefined =>
+export const getElementText = (element: ElementChild): string | undefined =>
     (element as Element).content?.find((c) => c.type === 'text')?.text;
 
 /**
