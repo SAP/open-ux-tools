@@ -4,7 +4,7 @@ description: Run, invoke, and test the @sap-ux/create CLI — generate, add, con
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
-  version: "1.3.7"
+  version: "1.3.14"
 ---
 
 
@@ -307,7 +307,8 @@ Options:
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
-- `--skip-check` - Skip connection verification before saving
+- `--skip-credentials-prompt` - Skip credential prompts. No credentials will be saved, but may be added later if required
+- `--skip-connection-validation` - Skip connection verification before saving
 
 --------------------------------
 
@@ -451,7 +452,8 @@ Options:
 - `--username <string>` - New username
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
-- `--skip-check` - Skip connection verification before saving
+- `--skip-connection-validation` - Skip connection verification before saving
+- `--skip-check` - (Deprecated: use --skip-connection-validation) Skip connection verification before saving
 
 --------------------------------
 
@@ -575,18 +577,4 @@ Options:
 - `--url <string>` _(required)_ - URL of the backend system.
 - `--client <string>` - SAP client number (optional).
 - `--json` - Output as JSON, which is useful for automation and MCP integrations.
-
---------------------------------
-
-## [`migrate`](#migrate)
-
-Migrate legacy WebIDE Fiori project to modern Fiori tools format
-
-Options:
-- `-d, --destination <name>` - SAP System destination name
-- `-s, --sap-system-name <name>` - SAP System name (alias for destination)
-- `-H, --hostname <host>` - Hostname (required if destination not provided)
-- `-c, --client <client>` - SAP Client (optional)
-- `-u, --ui5-version <version>` - UI5 version (defaults to source project version)
-- `-f, --force` - Force migration even if project is already a Fiori tools project
 
