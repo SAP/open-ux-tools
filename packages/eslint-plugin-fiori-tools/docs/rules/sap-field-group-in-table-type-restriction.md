@@ -1,18 +1,18 @@
 # `UI.FieldGroup` Is Not Supported in Grid, Tree, and Analytical Tables (`sap-field-group-in-table-type-restriction`)
 
-Detects `UI.FieldGroup` references inside `UI.LineItem` when the configured table type does not support them.
+Detects `UI.FieldGroup` references inside a `UI.LineItem` when the configured table type does not support them.
 
-The `UI.FieldGroup` annotation is only supported in `ResponsiveTable`. Using it in `GridTable`, `AnalyticalTable`, or `TreeTable` causes the annotation to be silently ignored. Grouped fields are not displayed in the table.
+The `UI.FieldGroup` annotation is only supported in a `ResponsiveTable`. Using it in z `GridTable`, `AnalyticalTable`, or `TreeTable` causes the annotation to be silently ignored. Grouped fields are not displayed in the table.
 
 ## Rule Details
 
 The rule checks every `UI.DataFieldForAnnotation` record inside a `UI.LineItem`. If its `Target` property points to a `UI.FieldGroup` and the table's configured `tableSettings.type` is one of the unsupported types, that is, `GridTable`, `AnalyticalTable`, `TreeTable`, a violation is reported on the `DataFieldForAnnotation` record.
 
 The rule covers all tables in an application:
-- **List report pages**: tables bound directly to a `UI.LineItem` annotation.
-- **Object page sections**: tables referenced by a `UI.ReferenceFacet` inside `UI.Facets`, including facets nested within a `UI.CollectionFacet`.
+- **List report pages**: tables bound directly to a `UI.LineItem` annotation
+- **Object page sections**: tables referenced by a `UI.ReferenceFacet` inside `UI.Facets`,  which includes facets nested within a `UI.CollectionFacet`
 
-Applies to SAP Fiori elements for OData V2 and OData V4 applications.
+Applies to SAP Fiori elements for OData V2 and SAP Fiori elements for OData V4 applications.
 
 ### Warning
 
@@ -38,7 +38,7 @@ The following patterns are considered warnings:
 </Annotations>
 ```
 
-The rule also flags violations in object page tables referenced via `UI.Facets`, including tables nested inside a `UI.CollectionFacet`:
+The rule also detects violations in tables in object pages, which are referenced using `UI.Facets` and includes tables nested inside a `UI.CollectionFacet`:
 
 ```xml
 <!-- manifest.json on IncidentsObjectPage: controlConfiguration for "incidentFlow/@UI.LineItem": { "tableSettings": { "type": "GridTable" } } -->
