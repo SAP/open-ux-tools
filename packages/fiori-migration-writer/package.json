@@ -44,7 +44,7 @@
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "@ui5/manifest": "1.88.0",
+        "@ui5/manifest": "1.89.0",
         "ejs": "3.1.10",
         "fast-glob": "3.3.3",
         "fast-xml-parser": "5.8.0",
