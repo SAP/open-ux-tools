@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Expose navigationEntity in entityConfig so AI agents can generate sub-object page navigation [[5adaccb](https://github.com/SAP/open-ux-tools/commit/5adaccb465eb5de57ca8c00bdc6bdbc6137f7de0)]
+
 ## 1.12.13
 
 ### Patch Changes
