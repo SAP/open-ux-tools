@@ -2,11 +2,11 @@
 
 Detects `UI.FieldGroup` references inside a `UI.LineItem` when the configured table type does not support them.
 
-The `UI.FieldGroup` annotation is only supported in a `ResponsiveTable`. Using it in z `GridTable`, `AnalyticalTable`, or `TreeTable` causes the annotation to be silently ignored. Grouped fields are not displayed in the table.
+The `UI.FieldGroup` annotation is only supported in a `ResponsiveTable`. Using it in a `GridTable`, `AnalyticalTable`, or `TreeTable` causes the annotation to be silently ignored. Grouped fields are not displayed in the table.
 
 ## Rule Details
 
-The rule checks every `UI.DataFieldForAnnotation` record inside a `UI.LineItem`. If its `Target` property points to a `UI.FieldGroup` and the table's configured `tableSettings.type` is one of the unsupported types, that is, `GridTable`, `AnalyticalTable`, `TreeTable`, a violation is reported on the `DataFieldForAnnotation` record.
+The rule checks every `UI.DataFieldForAnnotation` record inside a `UI.LineItem`. If its `Target` property points to a `UI.FieldGroup` and the table's configured `tableSettings.type` is one of the unsupported types, that is, `GridTable`, `AnalyticalTable`, or `TreeTable`, a violation is reported on the `DataFieldForAnnotation` record.
 
 The rule covers all tables in an application:
 - **List report pages**: tables bound directly to a `UI.LineItem` annotation
