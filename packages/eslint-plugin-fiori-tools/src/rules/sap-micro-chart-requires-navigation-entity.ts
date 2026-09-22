@@ -73,12 +73,15 @@ function violatesNavigationRule(
 }
 
 /**
- * Inspects a single `UI.Chart` annotation and appends one diagnostic when any `Measures`
- * or `Dimensions` `PropertyPath` does not traverse a 1:n navigation property.
+ * Inspects a single `UI.Chart` annotation and appends a diagnostic for each `Measures`
+ * or `Dimensions` `PropertyPath` that does not traverse a 1:n navigation property.
  *
  * The check only runs when **both** `Measures` and `Dimensions` are present.  Charts that
  * use a `DataPoint` pattern (e.g. Bullet, Harvey Ball, Radial) omit `Dimensions` by design;
  * skipping those avoids false positives for the DataPoint-based measure reference in `Measures`.
+ *
+ * Each diagnostic points at the specific violating `PropertyPath` element and carries whether
+ * the violation is in a measure or a dimension.
  *
  * @param annotation - The full indexed annotation, used for both the element and its target entity type.
  * @param pageNames - Names of pages that reference this chart annotation.
@@ -112,7 +115,9 @@ function checkChartAnnotation(
         return;
     }
 
-    for (const propValueEl of propValueEls) {
+    for (const [i, propValueEl] of propValueEls.entries()) {
+        const propName = MICRO_CHART_CHECKED_PROPS[i];
+        const propertyType: 'measure' | 'dimension' = propName === 'Measures' ? 'measure' : 'dimension';
         const [collection] = elementsWithName(Edm.Collection, propValueEl);
         if (!collection) {
             continue;
@@ -124,12 +129,12 @@ function checkChartAnnotation(
                 problems.push({
                     type: MICRO_CHART_REQUIRES_NAVIGATION_ENTITY,
                     pageNames,
+                    propertyType,
                     annotation: {
-                        reference: { uri: annotation.top.uri, value: annotationElement },
+                        reference: { uri: annotation.top.uri, value: propPath },
                         reportedParent: annotationElement
                     }
                 });
-                return;
             }
         }
     }
@@ -220,7 +225,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [MICRO_CHART_REQUIRES_NAVIGATION_ENTITY]:
-                'Micro chart measures and dimensions must reference properties from a 1:n navigation entity.'
+                'Micro chart {{propertyType}} must reference a property from a 1:n navigation entity.'
         }
     },
     check(context) {
@@ -252,7 +257,8 @@ const rule: FioriRuleDefinition = createFioriRule({
                     .forEach((r) => {
                         context.report({
                             node: r.annotation.reference.value,
-                            messageId: MICRO_CHART_REQUIRES_NAVIGATION_ENTITY
+                            messageId: MICRO_CHART_REQUIRES_NAVIGATION_ENTITY,
+                            data: { propertyType: r.propertyType }
                         });
                     });
             }

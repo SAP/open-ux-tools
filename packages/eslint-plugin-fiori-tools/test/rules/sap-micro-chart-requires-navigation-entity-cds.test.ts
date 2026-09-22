@@ -9,7 +9,8 @@ const ruleTester = new RuleTester({
 });
 
 const TEST_NAME = 'sap-micro-chart-requires-navigation-entity - CDS';
-const EXPECTED_MESSAGE = 'Micro chart measures and dimensions must reference properties from a 1:n navigation entity.';
+const EXPECTED_MEASURE_MESSAGE = 'Micro chart measure must reference a property from a 1:n navigation entity.';
+const EXPECTED_DIMENSION_MESSAGE = 'Micro chart dimension must reference a property from a 1:n navigation entity.';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME, CAP_APP_PATH);
 
 // CDS: service.Incidents entity; incidentFlow is a 1:n navigation to IncidentFlow
@@ -88,7 +89,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'CDS: Bar chart with direct Measures - reported',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CDS_NON_MICRO_CHART,
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         ),
@@ -97,7 +98,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'CDS: micro chart Measures without navigation',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CDS_MICRO_CHART_INVALID,
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_MEASURE_MESSAGE }]
             },
             []
         ),
@@ -106,7 +107,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'CDS: micro chart Dimensions without navigation',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CDS_MICRO_CHART_DIMENSIONS_INVALID,
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         )

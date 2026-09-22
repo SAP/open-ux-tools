@@ -16,7 +16,8 @@ const ruleTester = new RuleTester({
 });
 
 const TEST_NAME = 'sap-micro-chart-requires-navigation-entity';
-const EXPECTED_MESSAGE = 'Micro chart measures and dimensions must reference properties from a 1:n navigation entity.';
+const EXPECTED_MEASURE_MESSAGE = 'Micro chart measure must reference a property from a 1:n navigation entity.';
+const EXPECTED_DIMENSION_MESSAGE = 'Micro chart dimension must reference a property from a 1:n navigation entity.';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
 // V4 entity: IncidentService.Incidents (incidentFlow is a 1:n navigation to IncidentFlow)
@@ -364,7 +365,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V4: micro chart with Dimensions without navigation - reported',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_DIMENSIONS_INVALID),
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         ),
@@ -373,7 +374,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V4: Bar chart with direct Measures - reported',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_NON_MICRO_CHART),
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         ),
@@ -382,7 +383,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V4: micro chart with Measures without navigation',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_MEASURES_INVALID),
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_MEASURE_MESSAGE }]
             },
             []
         ),
@@ -391,7 +392,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V4: micro chart with both Measures and Dimensions without navigation',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_BOTH_INVALID),
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         ),
@@ -402,7 +403,7 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V2: micro chart with direct properties',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_MICRO_CHART_INVALID),
-                errors: [{ message: EXPECTED_MESSAGE }]
+                errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         )

@@ -213,6 +213,7 @@ export interface NoDeepCollectionFacets {
 export interface MicroChartRequiresNavigationEntity {
     type: typeof MICRO_CHART_REQUIRES_NAVIGATION_ENTITY;
     pageNames: string[];
+    propertyType: 'measure' | 'dimension';
     annotation: {
         reference: AnnotationReference;
         reportedParent: Element;

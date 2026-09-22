@@ -12,9 +12,11 @@ The rule only checks charts that are actually displayed on a page. A chart is co
 
 `UI.Chart` annotations that are not referenced from any of these locations are ignored.
 
-For every page-visible chart, every `PropertyPath` in the `Measures` and `Dimensions` collections must include a `/` navigation separator (e.g. `to_History/Revenue`). If any path references a property of the chart's own entity (no `/`), the entire `UI.Chart` annotation is flagged — one warning per chart regardless of how many invalid paths it contains.
+For every page-visible chart, every `PropertyPath` in the `Measures` and `Dimensions` collections must include a `/` navigation separator (e.g. `to_History/Revenue`). Each path that references a property of the chart's own entity (no `/`) is flagged individually — one warning per invalid `PropertyPath`, with the message identifying whether the violation is in a measure or a dimension.
 
-**Warning:** Micro chart measures and dimensions must reference properties from a 1:n navigation entity (e.g. "to_History/Revenue" instead of "Revenue").
+**Warning (measure):** Micro chart measure must reference a property from a 1:n navigation entity (e.g. "to_History/Revenue" instead of "Revenue").
+
+**Warning (dimension):** Micro chart dimension must reference a property from a 1:n navigation entity (e.g. "to_History/Period" instead of "Period").
 
 The following patterns are considered warnings:
 
