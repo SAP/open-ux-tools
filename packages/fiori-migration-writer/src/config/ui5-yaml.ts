@@ -1,19 +1,20 @@
 /**
  * Helper functions for generating UI5 YAML files during migration
  * (ui5.yaml, ui5-local.yaml, ui5-mock.yaml)
+ *
+ * Uses modern @sap-ux/ui5-config API via adapter layer instead of EJS templates.
  */
 
 import { join } from 'node:path';
-import { render, escapeXML } from 'ejs';
-import { parse, stringify } from 'yaml';
-import { readFile, updateFile } from '../utils/index.js';
-import type { MiddlewareProxy } from '../project-spec-types.js';
+import { updateFile } from '../utils/index.js';
 import { TemplateFileName } from '../index.js';
-import { FIORI_TOOLS_PROXY } from '../utils/common.js';
-import { updateNeoYamlBackends, updateYamlBackends } from './backend.js';
-import { setProxyUI5Version, setAppreloadPath, setWebappPath, cleanupBackendNullUrls } from '../data/yaml.js';
 import type { TemplateData, NeoappDestination, Message, Ui5MockYaml } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
+import {
+    generateUI5YamlContent,
+    generateUI5LocalYamlContent,
+    generateUI5MockYamlContent
+} from '../adapters/ui5-config-adapter.js';
 
 /**
  * Configuration for generating UI5 YAML files
@@ -73,7 +74,7 @@ export interface UI5YamlAllFilesConfig {
 }
 
 /**
- * Generate and write ui5.yaml file
+ * Generate and write ui5.yaml file using modern @sap-ux/ui5-config API
  *
  * @param config - Configuration object containing all required parameters
  */
@@ -86,47 +87,24 @@ export async function generateAndWriteUI5Yaml(config: UI5YamlGenerationConfig): 
         firstNeoAppDestination,
         webappPath,
         setUI5version,
-        rootPath,
-        templateRoot
+        rootPath
     } = config;
-    const ui5YamlTemplate = await readFile(join(templateRoot, TemplateFileName.UI5Yaml));
 
-    const ui5YamlContent = render(ui5YamlTemplate, templateData.ui5Yaml, { escape: escapeXML });
-    const ui5YamlJson = parse(ui5YamlContent);
+    const ui5YamlContent = await generateUI5YamlContent(
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        setUI5version
+    );
 
-    ui5YamlJson.server.customMiddleware.forEach((middleware: MiddlewareProxy, index: number) => {
-        if (middleware?.name === FIORI_TOOLS_PROXY) {
-            //backend with many destinations from neo-app
-            if (neoappDestinations && neoappDestinations?.length > 0) {
-                ui5YamlJson.server.customMiddleware[index].configuration.backend = updateNeoYamlBackends(
-                    neoappDestinations,
-                    ui5YamlJson.server.customMiddleware[index].configuration.backend,
-                    templateData,
-                    messages,
-                    destination,
-                    firstNeoAppDestination
-                );
-            }
-            //other backends
-            if (setUI5version) {
-                setProxyUI5Version(ui5YamlJson, templateData.ui5Yaml?.ui5Version);
-            }
-            ui5YamlJson.server.customMiddleware[index].configuration = updateYamlBackends(
-                ui5YamlJson.server.customMiddleware[index].configuration,
-                templateData
-            );
-        }
-        setAppreloadPath(ui5YamlJson, webappPath);
-    });
-    // Set webapp path
-    setWebappPath(ui5YamlJson, webappPath);
-
-    cleanupBackendNullUrls(ui5YamlJson);
-    await updateFile(join(rootPath, TemplateFileName.UI5Yaml), stringify(ui5YamlJson));
+    await updateFile(join(rootPath, TemplateFileName.UI5Yaml), ui5YamlContent);
 }
 
 /**
- * Generate and write ui5-local.yaml file
+ * Generate and write ui5-local.yaml file using modern @sap-ux/ui5-config API
  *
  * @param config - Configuration object containing all required parameters
  */
@@ -138,54 +116,32 @@ export async function generateAndWriteUI5LocalYaml(config: UI5LocalYamlGeneratio
         destination,
         firstNeoAppDestination,
         webappPath,
-        rootPath,
-        templateRoot
+        rootPath
     } = config;
     // Only generate for regular projects, not library or extension projects
     if (templateData.project.type !== MigrationTypes.project) {
         return;
     }
 
-    const ui5LocalYamlTemplate = await readFile(join(templateRoot, TemplateFileName.UI5LocalYaml));
+    const ui5LocalYamlContent = await generateUI5LocalYamlContent(
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath
+    );
 
-    const ui5LocalYamlContent = render(ui5LocalYamlTemplate, templateData.ui5Yaml, { escape: escapeXML });
-    const ui5LocalYamlJson = parse(ui5LocalYamlContent);
-
-    ui5LocalYamlJson.server.customMiddleware.forEach((middleware: MiddlewareProxy, index: number) => {
-        if (middleware?.name === FIORI_TOOLS_PROXY) {
-            //backend with many destinations from neo-app
-            if (neoappDestinations && neoappDestinations?.length > 0) {
-                ui5LocalYamlJson.server.customMiddleware[index].configuration.backend = updateNeoYamlBackends(
-                    neoappDestinations,
-                    ui5LocalYamlJson.server.customMiddleware[index].configuration.backend,
-                    templateData,
-                    messages,
-                    destination,
-                    firstNeoAppDestination
-                );
-            }
-            //other backends
-            ui5LocalYamlJson.server.customMiddleware[index].configuration = updateYamlBackends(
-                ui5LocalYamlJson.server.customMiddleware[index].configuration,
-                templateData
-            );
-        }
-        setAppreloadPath(ui5LocalYamlJson, webappPath);
-    });
-    // Set webapp path
-    setWebappPath(ui5LocalYamlJson, webappPath);
-
-    cleanupBackendNullUrls(ui5LocalYamlJson);
-    await updateFile(join(rootPath, TemplateFileName.UI5LocalYaml), stringify(ui5LocalYamlJson));
+    await updateFile(join(rootPath, TemplateFileName.UI5LocalYaml), ui5LocalYamlContent);
 }
 
 /**
- * Generate and write ui5-mock.yaml file if required
+ * Generate and write ui5-mock.yaml file if required using modern @sap-ux/ui5-config API
  *
  * @param config - Configuration object containing all required parameters
  */
 export async function generateAndWriteUI5MockYaml(config: UI5MockYamlGenerationConfig): Promise<void> {
-    const { templateData, webappPath, setUI5version, rootPath, templateRoot, hasDataSource } = config;
+    const { templateData, webappPath, setUI5version, rootPath, hasDataSource } = config;
     if (!hasDataSource) {
         return;
     }
@@ -195,26 +151,14 @@ export async function generateAndWriteUI5MockYaml(config: UI5MockYamlGenerationC
         return;
     }
 
-    const ui5MockYamlContents: string = render(
-        await readFile(join(templateRoot, TemplateFileName.UI5MockYaml)),
-        templateData.ui5Yaml,
-        { escape: escapeXML }
-    );
+    const ui5MockYamlContent = await generateUI5MockYamlContent(templateData, webappPath, setUI5version);
 
-    const ui5MockYamlJson = parse(ui5MockYamlContents);
-    ui5MockYamlJson.server.customMiddleware.forEach((middleware: MiddlewareProxy) => {
-        if (setUI5version && middleware?.name === FIORI_TOOLS_PROXY) {
-            setProxyUI5Version(ui5MockYamlJson, templateData.ui5Yaml?.ui5Version);
-        }
-        setAppreloadPath(ui5MockYamlJson, webappPath);
-    });
-    // Set webapp path
-    setWebappPath(ui5MockYamlJson, webappPath);
-    await updateFile(join(rootPath, TemplateFileName.UI5MockYaml), stringify(ui5MockYamlJson));
+    await updateFile(join(rootPath, TemplateFileName.UI5MockYaml), ui5MockYamlContent);
 }
 
 /**
  * Generate all UI5 YAML files (ui5.yaml, ui5-local.yaml, ui5-mock.yaml)
+ * using modern @sap-ux/ui5-config API
  *
  * @param config - Configuration object containing all required parameters
  */
@@ -228,7 +172,6 @@ export async function generateAllUI5YamlFiles(config: UI5YamlAllFilesConfig): Pr
         webappPath,
         setUI5version,
         rootPath,
-        templateRoot,
         hasDataSource
     } = config;
 
@@ -243,7 +186,7 @@ export async function generateAllUI5YamlFiles(config: UI5YamlAllFilesConfig): Pr
             webappPath,
             setUI5version,
             rootPath,
-            templateRoot
+            templateRoot: '' // No longer used, kept for interface compatibility
         }),
         generateAndWriteUI5LocalYaml({
             templateData,
@@ -253,14 +196,14 @@ export async function generateAllUI5YamlFiles(config: UI5YamlAllFilesConfig): Pr
             firstNeoAppDestination,
             webappPath,
             rootPath,
-            templateRoot
+            templateRoot: '' // No longer used, kept for interface compatibility
         }),
         generateAndWriteUI5MockYaml({
             templateData,
             webappPath,
             setUI5version,
             rootPath,
-            templateRoot,
+            templateRoot: '', // No longer used, kept for interface compatibility
             hasDataSource
         })
     ]);
