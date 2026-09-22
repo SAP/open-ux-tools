@@ -146,7 +146,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, noPathHiddenOnInteractiveColumnsRule, {
                 errors: [
                     {
                         message:
-                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                            '`UI.Hidden` with a path-based value must not be used on a sortable or filterable column. Use a static `UI.Hidden` or restrict sorting and filtering via Capabilities annotations.'
                     }
                 ]
             },
@@ -160,7 +160,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, noPathHiddenOnInteractiveColumnsRule, {
                 errors: [
                     {
                         message:
-                            'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                            '`UI.Hidden` with a path-based value must not be used on a sortable or filterable column. Use a static `UI.Hidden` or restrict sorting and filtering via Capabilities annotations.'
                     }
                 ]
             },

@@ -249,7 +249,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS]:
-                'UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.'
+                '`UI.Hidden` with a path-based value must not be used on a sortable or filterable column. Use a static `UI.Hidden` or restrict sorting and filtering via Capabilities annotations.'
         }
     },
     check(context) {
