@@ -1,5 +1,41 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.12.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[77ac0e2](https://github.com/SAP/open-ux-tools/commit/77ac0e2629ef9e95e72723c5a7a31c28aa2a1405)]
+
+## 1.12.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
+## 1.12.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Bug Fixes
+
+- Guard against pre-existing app subfolder in generate tools — return a clear error instead of silently deleting the folder via --force [[ea11bba](https://github.com/SAP/open-ux-tools/commit/ea11bbaf2f89cab14bb39a22e8dd37f7e395e85e)]
+
 ## 1.12.8
 
 ### Patch Changes
