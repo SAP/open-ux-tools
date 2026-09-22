@@ -1726,6 +1726,9 @@ importers:
       fast-xml-validator:
         specifier: 1.4.2
         version: 1.4.2
+      i18next:
+        specifier: 26.3.6
+        version: 26.3.6(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2240,6 +2243,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/text-document-utils':
+        specifier: workspace:*
+        version: link:../text-document-utils
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
