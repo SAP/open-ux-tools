@@ -38,10 +38,38 @@ export async function downloadODataServiceMetadata(
         };
     }
 
+    if (!fs.existsSync(params.appPath) || !fs.statSync(params.appPath).isDirectory()) {
+        return {
+            status: 'Error',
+            message:
+                `appPath does not exist or is not a directory: ${params.appPath}. Create the directory before calling this tool ` +
+                `(e.g. on Unix: \`mkdir -p ${params.appPath}\`, on Windows: \`mkdir "${params.appPath}"\`). This tool does not create directories.`,
+            parameters: EMPTY_PARAMS,
+            appPath: params.appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
     if (!servicePath) {
         return {
             status: 'Error',
             message: 'Missing required parameter: servicePath must be provided',
+            parameters: EMPTY_PARAMS,
+            appPath: params.appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
+    const metadataFilePath = path.join(params.appPath, 'metadata.xml');
+    if (fs.existsSync(metadataFilePath)) {
+        return {
+            status: 'Error',
+            message:
+                `A metadata.xml already exists at '${metadataFilePath}'. ` +
+                `This tool is only for downloading metadata when generating a new Fiori app. ` +
+                `To refresh service metadata for an existing app, use the \`search_docs\` tool with query \`"update service metadata"\` to find the correct CLI workflow.`,
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
@@ -65,7 +93,6 @@ export async function downloadODataServiceMetadata(
 
         // At this point, foundSystem should be a BackendSystem (VSCode only)
         const metadata = await getServiceMetadata(foundSystem as BackendSystem, servicePath);
-        const metadataFilePath = path.join(params.appPath, 'metadata.xml');
         fs.writeFileSync(metadataFilePath, metadata, 'utf-8');
 
         const backend = foundSystem as BackendSystem;
@@ -86,9 +113,10 @@ export async function downloadODataServiceMetadata(
             timestamp: new Date().toISOString()
         };
     } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
         return {
             status: 'Error',
-            message: error instanceof Error ? error.message : String(error),
+            message: `Could not fetch metadata for service '${servicePath}': ${reason}`,
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],

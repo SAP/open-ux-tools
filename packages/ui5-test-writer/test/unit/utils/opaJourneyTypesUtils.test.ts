@@ -21,7 +21,7 @@ await initI18n();
  * @param template - the framework template
  * @returns a fully populated OpaPageWriteInfo
  */
-function makePage(targetKey: string, template: 'ListReport' | 'ObjectPage' = 'ListReport'): OpaPageWriteInfo {
+function makePage(targetKey: string, template: 'ListReport' | 'ObjectPage' | 'FPM' = 'ListReport'): OpaPageWriteInfo {
     return {
         targetKey,
         appPath: 'myApp',
@@ -75,9 +75,11 @@ describe('spliceJourneysIntoOpaJourneyTypes()', () => {
     });
 
     test('skips pages with an unsupported framework', () => {
-        const result = spliceJourneysIntoOpaJourneyTypes(BASE_FILE, [{ ...makePage('FpmPage'), template: 'FPM' }]);
+        const result = spliceJourneysIntoOpaJourneyTypes(BASE_FILE, [
+            { ...makePage('AlpPage'), template: 'AnalyticalListPage' }
+        ]);
         // Custom-import for unsupported framework is not added; When/Then stay untouched
-        expect(result).not.toContain('FpmPage');
+        expect(result).not.toContain('AlpPage');
     });
 
     test('adds a new ObjectPage entry: framework import, custom import, When and Then unions', () => {
@@ -89,16 +91,43 @@ describe('spliceJourneysIntoOpaJourneyTypes()', () => {
         expect(result).toContain(
             'import type { actions as TravelObjectPageGeneratedCustomActions, assertions as TravelObjectPageGeneratedCustomAssertions } from "../pages/TravelObjectPage.gen";'
         );
-        // When-union member added
+        // When-union member added, wrapped in WithAnd for `.and` chaining
         expect(result).toContain(
-            'onTheTravelObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof TravelObjectPageGeneratedCustomActions;'
+            'onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof TravelObjectPageGeneratedCustomActions>;'
         );
-        // Then-union member added
+        // Then-union member added, wrapped in WithAnd for `.and` chaining
         expect(result).toContain(
-            'onTheTravelObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TravelObjectPageGeneratedCustomAssertions;'
+            'onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TravelObjectPageGeneratedCustomAssertions>;'
         );
         // Existing TravelList content is preserved
         expect(result).toContain('onTheTravelListGenerated: Opa5 & ListReportActions');
+    });
+
+    test('adds an FPM entry using TemplatePage as its whole typed surface, wrapped in WithAnd', () => {
+        const result = spliceJourneysIntoOpaJourneyTypes(BASE_FILE, [makePage('CustomFpm', 'FPM')]);
+
+        // FPM reuses the TemplatePage import already present in BASE_FILE (no `sap/fe/test/FPM` import)
+        expect(result).not.toContain('from "sap/fe/test/FPM"');
+        // Custom import added
+        expect(result).toContain(
+            'import type { actions as CustomFpmGeneratedCustomActions, assertions as CustomFpmGeneratedCustomAssertions } from "../pages/CustomFpm.gen";'
+        );
+        // When/Then union members use TemplatePage as the sole framework surface
+        expect(result).toContain(
+            'onTheCustomFpmGenerated: WithAnd<Opa5 & TemplatePageActions & typeof CustomFpmGeneratedCustomActions>;'
+        );
+        expect(result).toContain(
+            'onTheCustomFpmGenerated: WithAnd<Opa5 & TemplatePageAssertions & typeof CustomFpmGeneratedCustomAssertions>;'
+        );
+    });
+
+    test('backfills the WithAnd<T> definition when the existing file lacks it', () => {
+        // BASE_FILE predates `.and` chaining support and has no WithAnd<T> definition.
+        expect(BASE_FILE).not.toContain('type WithAnd<');
+        const result = spliceJourneysIntoOpaJourneyTypes(BASE_FILE, [makePage('TravelObjectPage', 'ObjectPage')]);
+        // The definition is injected exactly once so spliced WithAnd<...> references resolve.
+        expect(result).toContain('type WithAnd<T> = {');
+        expect(result.match(/type WithAnd<T> = \{/g) ?? []).toHaveLength(1);
     });
 
     test('does not duplicate a framework import that is already present', () => {

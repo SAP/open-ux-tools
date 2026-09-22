@@ -10,7 +10,7 @@
 |**Service URL**<br>http://localhost:4004/admin/|
 |**Module Name**<br>alp_v4_cap_typescript|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
-|**Namespace**<br>testNameSpace|
+|**Namespace**<br>testnamespace|
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.90.0|
 |**Enable TypeScript**<br>True|
@@ -25,7 +25,7 @@ Test &#39;Project&#39; &#34;Description&#34;
 
 -   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated app, start your CAP project:  and navigate to the following location in your browser:
 
-http://localhost:4004/testNameSpace.alpv4captypescript/index.html
+http://localhost:4004/testnamespace.alpv4captypescript/index.html
 
 #### Pre-requisites:
 

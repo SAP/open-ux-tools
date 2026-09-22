@@ -18804,6 +18804,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
 
@@ -22706,6 +22708,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
         opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
@@ -22847,7 +22851,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests\\": \\"../../\\"
+                \\"lrop_v4_addtests\\": \\"../../\\",
+                \\"lrop_v4_addtests.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23762,7 +23767,8 @@ appDescription=A Fiori application.",
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -24739,7 +24745,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -24969,6 +24976,23 @@ import type { actions as TravelListGeneratedCustomActions, assertions as TravelL
 import type { actions as TravelObjectPageGeneratedCustomActions, assertions as TravelObjectPageGeneratedCustomAssertions } from \\"../pages/TravelObjectPage.gen\\";
 import type { actions as BookingObjectPageGeneratedCustomActions, assertions as BookingObjectPageGeneratedCustomAssertions } from \\"../pages/BookingObjectPage.gen\\";
 
+/**
+ * Enables OPA5 fluent \`.and\` chaining on page objects and their sub-objects.
+ *
+ * @example
+ * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
+ * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
+ */
+type WithAnd<T> = {
+    [K in keyof T | 'and']: K extends 'and'
+        ? WithAnd<T>
+        : K extends keyof T
+        ? T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+            : T[K]
+        : never;
+};
+
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
@@ -24976,16 +25000,16 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheTravelListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof TravelListGeneratedCustomActions;
-    onTheTravelObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof TravelObjectPageGeneratedCustomActions;
-    onTheBookingObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof BookingObjectPageGeneratedCustomActions;
+    onTheTravelListGenerated: WithAnd<Opa5 & ListReportActions & TemplatePageActions & typeof TravelListGeneratedCustomActions>;
+    onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof TravelObjectPageGeneratedCustomActions>;
+    onTheBookingObjectPageGenerated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof BookingObjectPageGeneratedCustomActions>;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheTravelListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof TravelListGeneratedCustomAssertions;
-    onTheTravelObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TravelObjectPageGeneratedCustomAssertions;
-    onTheBookingObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BookingObjectPageGeneratedCustomAssertions;
+    onTheTravelListGenerated: WithAnd<Opa5 & ListReportAssertions & TemplatePageAssertions & typeof TravelListGeneratedCustomAssertions>;
+    onTheTravelObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TravelObjectPageGeneratedCustomAssertions>;
+    onTheBookingObjectPageGenerated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BookingObjectPageGeneratedCustomAssertions>;
     onTheShell: Shell;
 };
 ",
@@ -26292,6 +26316,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
 
@@ -26372,7 +26398,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\"
+                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\",
+                \\"lrop_v4_annotation_reuse_lib.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"

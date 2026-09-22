@@ -1,5 +1,177 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
+## 10.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+## 10.11.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Update diagnostic messages by formatting rule-related properties, values, and annotation names as inline code for better readability in warnings/errors. [[079ed68](https://github.com/SAP/open-ux-tools/commit/079ed68394d934231110f108f5ab175c679d44e1)]
+
+## 10.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- Add defensive checks to esbuild.mjs to fail fast if @babel/eslint-parser is not installed and assert no @babel/* imports leak into the bundle after build [[6f73f76](https://github.com/SAP/open-ux-tools/commit/6f73f76dcf69c4791ffcec715689f55fa7ad9614)]
+
+## 10.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Features
+
+- Add the sap-no-deep-collection-facets rule [[852ec34](https://github.com/SAP/open-ux-tools/commit/852ec34f7a7730f00a65df19ea2fad5c9fe9ff96)]
+
+## 10.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Rebuild bundle — 10.10.0 was published with a broken esbuild output that left @babel/eslint-parser unbundled, causing ERR_MODULE_NOT_FOUND in consumer projects [[20a02d6](https://github.com/SAP/open-ux-tools/commit/20a02d6bd2e764d8032d99ae99e1aa3922d5c32e)]
+
+## 10.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- add sap-no-single-facet-in-collection rule to flag UI.CollectionFacet containing only a single UI.ReferenceFacet. [[57ada1b](https://github.com/SAP/open-ux-tools/commit/57ada1b22189cad79d0912fe10438984433fb26a)]
+
+## 10.9.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
+## 10.9.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-01
+
+#### Bug Fixes
+
+- handle json parsing failures in the language parser. [[c9e527c](https://github.com/SAP/open-ux-tools/commit/c9e527ce6b3b0ab861d2a37ba601070e3ff73fc5)]
+
+## 10.9.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-27
+
+#### Dependency Updates
+
+- Upgrade @babel/core, @babel/eslint-parser, @babel/parser from 8.0.0-rc.6 to stable 8.0.x [[5076c5f](https://github.com/SAP/open-ux-tools/commit/5076c5f5ab874570c236e48fb0dfcca1044196d4)]
+
+## 10.9.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
+## 10.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Features
+
+- Add an internal AI agent skill for developing ESLint rules in the @sap-ux/eslint-plugin-fiori-tools package. [[6cfd8d0](https://github.com/SAP/open-ux-tools/commit/6cfd8d068955287fe9dc764d2acb5315235ec213)]
+
+## 10.8.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+## 10.8.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[ed4f7bc](https://github.com/SAP/open-ux-tools/commit/ed4f7bc7b4d118d43280295e50e4f0c077ef0afb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/text-document-utils and @sap-ux/ui5-config [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
+## 10.8.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
 ## 10.8.2
 
 ### Patch Changes

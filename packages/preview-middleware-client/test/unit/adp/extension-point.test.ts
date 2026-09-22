@@ -9,6 +9,7 @@ jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
     checkForExistingChange: jest.fn(),
     getNestedProperty: jest.fn(),
     matchesChangeProperty: jest.fn(),
+    getPendingCodeExtViewIds: jest.fn(),
     getControllerInfoForControl: jest.fn(),
     getControllerInfo: jest.fn(),
     getReuseComponentChecker: jest.fn(),

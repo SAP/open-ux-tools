@@ -36,9 +36,8 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
             if (appId) {
                 return true;
             }
-            // If appId is not provided, check if the user has selected an app.
-            // If an app is selected, display the prompt accordingly.
-            return Boolean(answers?.selectedApp?.appId);
+            // Only show after a successful download — admZip is set by downloadApp on success.
+            return Boolean(answers?.selectedApp?.appId) && !!PromptState.admZip;
         },
         guiOptions: {
             applyDefaultWhenDirty: true,

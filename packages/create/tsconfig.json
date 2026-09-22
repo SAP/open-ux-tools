@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/mem-fs-editor.d.ts",
-    "src"
+    "src",
+    "src/**/*.json"
   ],
   "compilerOptions": {
     "rootDir": "src",
@@ -65,6 +66,9 @@
     },
     {
       "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-test-writer"
     }
   ]
 }
