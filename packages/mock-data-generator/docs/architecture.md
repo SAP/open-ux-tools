@@ -1,0 +1,7 @@
+# Standalone architecture
+
+The package parses service EDMX/CSN into a schema graph, compiles an evidence-first semantic plan, and generates one service snapshot. T0 applies explicit domains, authored evidence and relationships; T1 routes supported semantics to deterministic providers with optional classifier assistance; T2 asks the local LLM only for eligible unresolved slots; T3 supplies validated deterministic fallback. A final pass checks facets, semantic formats, temporal constraints and actual cross-resource links. Structured diagnostics distinguish unsupported meaning from validated coverage.
+
+The public session verifies package-local model and dataset hashes before loading ONNX sessions. It loads classifier and LLM independently, so one failure does not disable the other. `generateProjectData()` writes validated service JSON into a staged sibling directory, then swaps the target directory with a recoverable backup. Other files in that directory survive the replacement; a failed commit restores the original directory. The package never edits `package.json` or UI5 configuration.
+
+Data Editor runs the package in an isolated worker. The extension installs an exact npm version with an exact integrity under `~/.fioritools/module-cache/@unseen/mock-data-generator/<version>`, validates model files, then communicates only bounded progress and diagnostics over IPC. No model, package runtime, or native ONNX binary is embedded in the VSIX.

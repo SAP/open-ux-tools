@@ -1,0 +1,54 @@
+{
+    "name": "@sap-ux/mock-data-generator",
+    "description": "Generate context-aware, structurally valid mock data for SAP services",
+    "version": "0.0.0",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/mock-data-generator"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues"
+    },
+    "type": "module",
+    "license": "Apache-2.0",
+    "main": "dist/public.js",
+    "types": "dist/public.d.ts",
+    "bin": {
+        "mockgen": "./dist/cli.js"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/public.d.ts",
+            "import": "./dist/public.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "check:package": "node scripts/check-package.mjs",
+        "check:release": "node scripts/check-package.mjs --release",
+        "stage:development": "node scripts/stage-development-publication.mjs",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,md,ts}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "README.md",
+        "docs",
+        "dist",
+        "resources",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "fast-xml-parser": "5.10.1",
+        "onnxruntime-node": "1.24.3"
+    },
+    "engines": {
+        "node": ">=22.x"
+    }
+}

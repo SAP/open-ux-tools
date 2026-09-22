@@ -1,0 +1,52 @@
+{
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.6",
+        "npmIntegrity": "sha512-33IBiwSc8Ypc24Z3dt3AS8fv5Mjcym/hjpO4JIYmkLpCnZiy0O0i5uKIVToZPvm3W8eOynNJMN9KIQ0JxbHrvw==",
+        "npmShasum": "ec4eeb8d3746fa344bf2c47da46778dbc1819878",
+        "tarballSha256": "b7e84d7be73cdbb64991c2923ef58bae88405ac9a9424da98e6ea1629a0e5936",
+        "tarballBytes": 126878878
+    },
+    "applicationModeler": {
+        "version": "1.48.0",
+        "fileName": "sap-ux-application-modeler-extension-linux-x64-1.48.0.vsix",
+        "sha256": "a786c0b08d53bda54771556d46393635e1f539059b7559f733dd7aa89a4c7c58"
+    },
+    "metadataFixtures": [
+        {
+            "name": "Travel V2",
+            "path": "test/unit/travel-v2.metadata.xml",
+            "sha256": "27fe1bce4512bcdd24e515d28f4f95678a837d3f71df2baab342a346e58bb81b"
+        },
+        {
+            "name": "Finance Manage",
+            "path": "test/unit/finance-manage.metadata.xml",
+            "sha256": "bed9c40cdaee6d6abfb4ec1948ed6b1b4deebd9b3f42c579c654a2d726483e1e"
+        }
+    ],
+    "replayStatus": "deterministic-fixture-replay-only",
+    "replaySettings": {
+        "seed": 42,
+        "rowsPerEntity": 4,
+        "mode": "deterministic",
+        "authoredEvidenceSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    "replayResults": [
+        {
+            "name": "Travel V2",
+            "protocol": "2.0",
+            "baselineGeneratedSha256": "021b3aa855b868fe11fd461076ba027268540410cb75b066b61789d3c1f3f152",
+            "currentOutcome": "SFT_CANDIDATE_VERIFIER_UNAVAILABLE: BookingStatus",
+            "comparison": "intentional fail-closed behavior, not a passing realism comparison"
+        },
+        {
+            "name": "Finance Manage",
+            "protocol": "4.0",
+            "baselineGeneratedSha256": "f9aee6a6224b7f441ea55bdf10c3a225ba5ec37622da7c55d367a115126dc53f",
+            "currentGeneratedSha256": "f9aee6a6224b7f441ea55bdf10c3a225ba5ec37622da7c55d367a115126dc53f",
+            "comparison": "identical deterministic output for this fixture"
+        }
+    ],
+    "reviewStatus": "unreviewed",
+    "note": "Artifact identity is pinned. These metadata fixtures with empty authored evidence are not a captured BAS application run; no learned, sealed-service, or blinded realism comparison is claimed."
+}

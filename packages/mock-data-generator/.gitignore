@@ -1,0 +1,11 @@
+# Build output and coverage
+dist/
+coverage/
+*.tsbuildinfo
+
+# Model artifacts (194 MB; one file exceeds GitHub's 100 MB limit).
+# They are published with the npm package and fetched by `pnpm models:fetch`.
+resources/models/
+
+# Test fixture copied from a non-public service; keep it out of the public repository.
+test/unit/finance-manage.metadata.xml

@@ -1,0 +1,168 @@
+import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { createReadStream } from 'node:fs';
+import type { TextEmbedder } from './embedding-classifier.js';
+import { meanPoolAndNormalize } from './minilm-pooling.js';
+import { createMiniLmTokenizer } from './minilm-tokenizer.js';
+
+export interface OnnxTensorLike {
+    data: BigInt64Array | Float32Array;
+    dims: ReadonlyArray<number>;
+}
+
+export interface OnnxSessionLike {
+    run(feeds: Readonly<Record<string, OnnxTensorLike>>): Promise<Readonly<Record<string, OnnxTensorLike>>>;
+    dispose?(): Promise<void> | void;
+}
+
+interface NativeOnnxSessionLike {
+    run(feeds: Readonly<Record<string, OnnxTensorLike>>): Promise<Readonly<Record<string, OnnxTensorLike>>>;
+    release(): Promise<void> | void;
+}
+
+export interface OnnxBackend {
+    createSession(modelPath: string): Promise<OnnxSessionLike>;
+    tensor(type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>): OnnxTensorLike;
+}
+
+export interface MiniLmTextEmbedder extends TextEmbedder {
+    dispose(): Promise<void>;
+}
+
+export interface CreateMiniLmTextEmbedderOptions {
+    modelPath: string;
+    vocabularyPath: string;
+    hiddenSize: number;
+    backend: OnnxBackend;
+    maxWordPieceTokens?: number;
+    expectedEncoderSha256?: string;
+    expectedVocabularySha256?: string;
+}
+
+interface OnnxRuntimeModule {
+    InferenceSession?: { create(modelPath: string, options?: object): Promise<NativeOnnxSessionLike> };
+    Tensor?: new (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) => OnnxTensorLike;
+    default?: OnnxRuntimeModule;
+}
+
+/**
+ * Adapt an already integrity-verified runtime module to the classifier backend.
+ *
+ * @param module imported runtime module
+ * @param label privacy-safe source label for diagnostics
+ */
+export function createOnnxBackend(module: unknown, label: string): OnnxBackend {
+    const imported = module as OnnxRuntimeModule;
+    const runtime = imported.InferenceSession || imported.Tensor ? imported : imported.default;
+    const InferenceSession = runtime?.InferenceSession;
+    const Tensor = runtime?.Tensor;
+    if (!InferenceSession?.create || !Tensor) {
+        throw new TypeError(`${label} does not expose the required ONNX runtime API`);
+    }
+    return Object.freeze({
+        createSession: async (modelPath: string) => {
+            const session = await InferenceSession.create(modelPath, {
+                executionProviders: ['cpu'],
+                graphOptimizationLevel: 'all',
+                executionMode: 'sequential'
+            });
+            return Object.freeze({
+                run: (feeds: Readonly<Record<string, OnnxTensorLike>>) => session.run(feeds),
+                dispose: () => session.release()
+            });
+        },
+        tensor: (type: 'int64', data: BigInt64Array, dimensions: ReadonlyArray<number>) =>
+            new Tensor(type, data, dimensions)
+    });
+}
+
+/**
+ * Load onnxruntime lazily so the generator package stays usable without a native runtime.
+ *
+ * @param packageName
+ */
+export async function loadOnnxBackend(
+    packageName: 'onnxruntime-node' | 'onnxruntime-web' = 'onnxruntime-node'
+): Promise<OnnxBackend> {
+    return createOnnxBackend(await import(packageName), packageName);
+}
+
+/**
+ * Create a MiniLM embedder using the exact WordPiece and pooling contracts from the pilot.
+ *
+ * @param options
+ */
+export async function createMiniLmTextEmbedder(options: CreateMiniLmTextEmbedderOptions): Promise<MiniLmTextEmbedder> {
+    if (!Number.isSafeInteger(options.hiddenSize) || options.hiddenSize <= 0) {
+        throw new TypeError('MiniLM hidden size must be a positive integer');
+    }
+    for (const [path, expected] of [
+        [options.modelPath, options.expectedEncoderSha256],
+        [options.vocabularyPath, options.expectedVocabularySha256]
+    ]) {
+        if (path && expected) {
+            const hash = createHash('sha256');
+            for await (const chunk of createReadStream(path)) {
+                hash.update(chunk);
+            }
+            if (hash.digest('hex') !== expected) {
+                throw new TypeError('MiniLM artifact fingerprint mismatch');
+            }
+        }
+    }
+    const tokenizer = createMiniLmTokenizer(await readFile(options.vocabularyPath, 'utf8'), options.maxWordPieceTokens);
+    const session = await options.backend.createSession(options.modelPath);
+    let operationQueue = Promise.resolve();
+    let disposePromise: Promise<void> | undefined;
+    return Object.freeze({
+        embed: async (texts: ReadonlyArray<string>, signal: AbortSignal) => {
+            if (disposePromise) {
+                throw new Error('MiniLM runtime has been disposed');
+            }
+            const operation = operationQueue.then(async () => {
+                const embeddings: ReadonlyArray<number>[] = [];
+                for (const text of texts) {
+                    signal.throwIfAborted();
+                    const encoded = tokenizer.encodeForModel(text);
+                    const sequenceLength = encoded.inputIds.length;
+                    const dimensions = [1, sequenceLength];
+                    const output = await session.run({
+                        'input_ids': options.backend.tensor(
+                            'int64',
+                            BigInt64Array.from(encoded.inputIds, BigInt),
+                            dimensions
+                        ),
+                        'attention_mask': options.backend.tensor(
+                            'int64',
+                            BigInt64Array.from(encoded.attentionMask, BigInt),
+                            dimensions
+                        ),
+                        'token_type_ids': options.backend.tensor(
+                            'int64',
+                            BigInt64Array.from(encoded.tokenTypeIds, BigInt),
+                            dimensions
+                        )
+                    });
+                    signal.throwIfAborted();
+                    const hidden = output.last_hidden_state;
+                    if (!hidden || !(hidden.data instanceof Float32Array)) {
+                        throw new TypeError('MiniLM runtime did not return last_hidden_state float data');
+                    }
+                    embeddings.push(meanPoolAndNormalize(hidden.data, encoded.attentionMask, options.hiddenSize));
+                }
+                return Object.freeze(embeddings);
+            });
+            operationQueue = operation.then(
+                () => undefined,
+                () => undefined
+            );
+            return operation;
+        },
+        dispose: async () => {
+            disposePromise ??= operationQueue.then(async () => {
+                await session.dispose?.();
+            });
+            await disposePromise;
+        }
+    });
+}

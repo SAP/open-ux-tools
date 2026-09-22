@@ -1,0 +1,550 @@
+{
+    "id": "offline-synthetic-catalog",
+    "version": "2",
+    "locations": [
+        {
+            "city": "Berlin",
+            "country": "DE",
+            "countryName": "Germany",
+            "region": "BE",
+            "regionName": "Berlin",
+            "postalCode": "10115",
+            "phonePrefix": "+49 30",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+49 151",
+            "mobileSubscriberDigits": 8
+        },
+        {
+            "city": "Dublin",
+            "country": "IE",
+            "countryName": "Ireland",
+            "region": "L",
+            "regionName": "Leinster",
+            "postalCode": "D02",
+            "phonePrefix": "+353 1",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+353 85",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Milan",
+            "country": "IT",
+            "countryName": "Italy",
+            "region": "MI",
+            "regionName": "Lombardy",
+            "postalCode": "20121",
+            "phonePrefix": "+39 02",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+39 320",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Prague",
+            "country": "CZ",
+            "countryName": "Czechia",
+            "region": "PR",
+            "regionName": "Prague",
+            "postalCode": "11000",
+            "phonePrefix": "+420 2",
+            "phoneSubscriberDigits": 8,
+            "mobilePrefix": "+420 601",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "Paris",
+            "country": "FR",
+            "countryName": "France",
+            "region": "IDF",
+            "regionName": "Ile-de-France",
+            "postalCode": "75001",
+            "phonePrefix": "+33 1",
+            "phoneSubscriberDigits": 8,
+            "mobilePrefix": "+33 6",
+            "mobileSubscriberDigits": 8
+        },
+        {
+            "city": "Madrid",
+            "country": "ES",
+            "countryName": "Spain",
+            "region": "MD",
+            "regionName": "Madrid",
+            "postalCode": "28001",
+            "phonePrefix": "+34 91",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+34 612",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "Lisbon",
+            "country": "PT",
+            "countryName": "Portugal",
+            "region": "11",
+            "regionName": "Lisbon",
+            "postalCode": "1100-148",
+            "phonePrefix": "+351 21",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+351 912",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "Amsterdam",
+            "country": "NL",
+            "countryName": "Netherlands",
+            "region": "NH",
+            "regionName": "North Holland",
+            "postalCode": "1012 AB",
+            "phonePrefix": "+31 20",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+31 6",
+            "mobileSubscriberDigits": 8
+        },
+        {
+            "city": "Brussels",
+            "country": "BE",
+            "countryName": "Belgium",
+            "region": "BRU",
+            "regionName": "Brussels-Capital",
+            "postalCode": "1000",
+            "phonePrefix": "+32 2",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+32 470",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "Vienna",
+            "country": "AT",
+            "countryName": "Austria",
+            "region": "9",
+            "regionName": "Vienna",
+            "postalCode": "1010",
+            "phonePrefix": "+43 1",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+43 660",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Zurich",
+            "country": "CH",
+            "countryName": "Switzerland",
+            "region": "ZH",
+            "regionName": "Zurich",
+            "postalCode": "8001",
+            "phonePrefix": "+41 44",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+41 79",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Copenhagen",
+            "country": "DK",
+            "countryName": "Denmark",
+            "region": "84",
+            "regionName": "Capital Region",
+            "postalCode": "1050",
+            "phonePrefix": "+45 33",
+            "phoneSubscriberDigits": 6,
+            "mobilePrefix": "+45 20",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "Stockholm",
+            "country": "SE",
+            "countryName": "Sweden",
+            "region": "AB",
+            "regionName": "Stockholm",
+            "postalCode": "111 20",
+            "phonePrefix": "+46 8",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+46 70",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Oslo",
+            "country": "NO",
+            "countryName": "Norway",
+            "region": "03",
+            "regionName": "Oslo",
+            "postalCode": "0150",
+            "phonePrefix": "+47 22",
+            "phoneSubscriberDigits": 6,
+            "mobilePrefix": "+47 90",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "Helsinki",
+            "country": "FI",
+            "countryName": "Finland",
+            "region": "18",
+            "regionName": "Uusimaa",
+            "postalCode": "00100",
+            "phonePrefix": "+358 9",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+358 40",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Warsaw",
+            "country": "PL",
+            "countryName": "Poland",
+            "region": "14",
+            "regionName": "Masovia",
+            "postalCode": "00-001",
+            "phonePrefix": "+48 22",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+48 501",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "Budapest",
+            "country": "HU",
+            "countryName": "Hungary",
+            "region": "BU",
+            "regionName": "Budapest",
+            "postalCode": "1051",
+            "phonePrefix": "+36 1",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+36 30",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Athens",
+            "country": "GR",
+            "countryName": "Greece",
+            "region": "I",
+            "regionName": "Attica",
+            "postalCode": "105 57",
+            "phonePrefix": "+30 210",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+30 690",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "London",
+            "country": "GB",
+            "countryName": "United Kingdom",
+            "region": "ENG",
+            "regionName": "England",
+            "postalCode": "SW1A 1AA",
+            "phonePrefix": "+44 20",
+            "phoneSubscriberDigits": 8,
+            "mobilePrefix": "+44 7700",
+            "mobileSubscriberDigits": 6
+        },
+        {
+            "city": "New York",
+            "country": "US",
+            "countryName": "United States",
+            "region": "NY",
+            "regionName": "New York",
+            "postalCode": "10001",
+            "phonePrefix": "+1 212",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+1 917",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Toronto",
+            "country": "CA",
+            "countryName": "Canada",
+            "region": "ON",
+            "regionName": "Ontario",
+            "postalCode": "M5H 2N2",
+            "phonePrefix": "+1 416",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+1 647",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Tokyo",
+            "country": "JP",
+            "countryName": "Japan",
+            "region": "13",
+            "regionName": "Tokyo",
+            "postalCode": "100-0001",
+            "phonePrefix": "+81 3",
+            "phoneSubscriberDigits": 8,
+            "mobilePrefix": "+81 90",
+            "mobileSubscriberDigits": 8
+        },
+        {
+            "city": "Singapore",
+            "country": "SG",
+            "countryName": "Singapore",
+            "region": "01",
+            "regionName": "Central Singapore",
+            "postalCode": "018956",
+            "phonePrefix": "+65 6",
+            "phoneSubscriberDigits": 7,
+            "mobilePrefix": "+65 9",
+            "mobileSubscriberDigits": 7
+        },
+        {
+            "city": "Sydney",
+            "country": "AU",
+            "countryName": "Australia",
+            "region": "NSW",
+            "regionName": "New South Wales",
+            "postalCode": "2000",
+            "phonePrefix": "+61 2",
+            "phoneSubscriberDigits": 8,
+            "mobilePrefix": "+61 4",
+            "mobileSubscriberDigits": 8
+        }
+    ],
+    "dataEnrichmentLocations": [
+        {
+            "city": "San Francisco",
+            "country": "US",
+            "district": "CA-11",
+            "postalCode": "94105",
+            "region": "CA",
+            "streetAddress": "135 Market Street"
+        },
+        {
+            "city": "Austin",
+            "country": "US",
+            "district": "TX-35",
+            "postalCode": "78701",
+            "region": "TX",
+            "streetAddress": "210 Congress Avenue"
+        },
+        {
+            "city": "New York",
+            "country": "US",
+            "district": "NY-12",
+            "postalCode": "10017",
+            "region": "NY",
+            "streetAddress": "350 Madison Avenue"
+        },
+        {
+            "city": "Chicago",
+            "country": "US",
+            "district": "IL-05",
+            "postalCode": "60606",
+            "region": "IL",
+            "streetAddress": "200 West Adams Street"
+        }
+    ],
+    "currencies": [
+        "EUR",
+        "USD",
+        "GBP",
+        "JPY",
+        "CHF",
+        "CAD",
+        "AUD",
+        "SEK",
+        "NOK",
+        "DKK",
+        "PLN",
+        "CZK",
+        "MXN",
+        "SGD",
+        "NZD",
+        "HKD",
+        "CNY",
+        "INR",
+        "BRL",
+        "ZAR"
+    ],
+    "units": ["EA", "KG", "L", "H", "PC", "M", "S", "MIN", "D", "WK"],
+    "unitIsoCodes": {
+        "EA": "EA",
+        "KG": "KGM",
+        "L": "LTR",
+        "H": "HUR",
+        "PC": "PCE",
+        "M": "MTR",
+        "S": "SEC",
+        "MIN": "MIN",
+        "D": "DAY",
+        "WK": "WEE"
+    },
+    "statusSamples": [
+        {
+            "code": "O",
+            "text": "Open"
+        },
+        {
+            "code": "I",
+            "text": "In Progress"
+        },
+        {
+            "code": "A",
+            "text": "Approved"
+        },
+        {
+            "code": "C",
+            "text": "Completed"
+        }
+    ],
+    "unitSamples": [
+        {
+            "code": "EA",
+            "iso": "EA",
+            "text": "Each"
+        },
+        {
+            "code": "KG",
+            "iso": "KGM",
+            "text": "Kilogram"
+        },
+        {
+            "code": "L",
+            "iso": "LTR",
+            "text": "Litre"
+        },
+        {
+            "code": "H",
+            "iso": "HUR",
+            "text": "Hour"
+        },
+        {
+            "code": "PC",
+            "iso": "PCE",
+            "text": "Piece"
+        },
+        {
+            "code": "M",
+            "iso": "MTR",
+            "text": "Metre"
+        },
+        {
+            "code": "S",
+            "iso": "SEC",
+            "text": "Second"
+        },
+        {
+            "code": "MIN",
+            "iso": "MIN",
+            "text": "Minute"
+        },
+        {
+            "code": "D",
+            "iso": "DAY",
+            "text": "Day"
+        },
+        {
+            "code": "WK",
+            "iso": "WEE",
+            "text": "Week"
+        }
+    ],
+    "products": [
+        "Industrial Pump",
+        "Safety Valve",
+        "Service Package",
+        "Control Module",
+        "Pressure Sensor",
+        "Hydraulic Cylinder",
+        "Gear Motor",
+        "Flow Meter",
+        "Air Compressor",
+        "Conveyor Belt",
+        "Circuit Breaker",
+        "Heat Exchanger",
+        "Solar Inverter",
+        "Temperature Controller",
+        "Ball Bearing",
+        "Filter Cartridge",
+        "Power Supply Unit",
+        "Servo Drive",
+        "Water Heater",
+        "LED Floodlight",
+        "Welding Kit",
+        "Pipe Fitting Set",
+        "Torque Wrench",
+        "Laser Level",
+        "Cable Reel",
+        "Battery Pack",
+        "Cooling Fan",
+        "Safety Helmet",
+        "Spare Parts Kit",
+        "Maintenance Contract"
+    ],
+    "equipmentNames": [
+        "Hydraulic Pump",
+        "Safety Valve",
+        "Control Module",
+        "Heat Exchanger",
+        "Boiler Unit",
+        "Cooling Tower",
+        "Diesel Generator",
+        "Forklift",
+        "Packaging Line",
+        "Robotic Arm",
+        "CNC Lathe",
+        "Air Handler",
+        "Transformer",
+        "Water Chiller",
+        "Conveyor System",
+        "Mixing Tank",
+        "Steam Turbine",
+        "Filtration Unit",
+        "Pallet Wrapper",
+        "Backup Generator"
+    ],
+    "ethnicities": ["Asian", "Black", "Hispanic or Latino", "Indigenous", "Not Specified"],
+    "fieldControlValues": [0, 1, 3, 7],
+    "measurementDimensions": ["TIME", "LENGTH", "MASS", "TEMP", "PRESSURE"],
+    "priceSources": ["Contract", "Price List", "Service Agreement", "Manual"],
+    "accountDescriptions": ["Operating Account", "Payroll Account", "Clearing Account", "Collections Account"],
+    "bankNames": ["Deutsche Bank", "JPMorgan Chase", "Barclays Bank", "Bank of Ireland"],
+    "roleSamples": {
+        "unique_item_identifier_structure_type": ["GS1", "EPC", "UID"],
+        "sales_item_proposal_description": ["Product proposal", "Proposal"],
+        "data_enrichment_ethnicity": ["Not Specified", "Not Disclosed"],
+        "language": ["EN", "DE", "FR", "IT", "ES", "PT", "NL", "PL", "CS", "SV"],
+        "timezone_short": ["UTC", "CET", "EST", "JST"],
+        "timezone_long": ["Europe/Dublin", "Europe/Berlin", "America/New_York", "Asia/Tokyo"],
+        "temperature_unit": ["C", "F", "K"],
+        "pressure_unit": ["BAR", "PSI", "PA", "KPA"],
+        "bic": ["DEUTDEFF", "BOFIIE2D", "CHASUS33", "BARCGB22"],
+        "duration_unit": ["MIN", "S"],
+        "length_unit": ["M", "CM", "MM", "KM"],
+        "street_name": [
+            "Market Street",
+            "Main Street",
+            "High Street",
+            "Oak Avenue",
+            "Station Road",
+            "Church Lane",
+            "Park Avenue",
+            "Mill Road",
+            "River Street",
+            "King Street",
+            "Queen Street",
+            "Harbour Road",
+            "Elm Street",
+            "Maple Avenue",
+            "Bridge Street",
+            "Victoria Road",
+            "Garden Lane",
+            "Lake Drive",
+            "Hill Street",
+            "Castle Road"
+        ],
+        "manufacturer": [
+            "Aster Motorworks",
+            "Kestrel Instruments",
+            "Halden Machinery",
+            "Corvid Electronics",
+            "Brightline Devices",
+            "Ironvale Engineering",
+            "Northgate Motors",
+            "Solace Appliances",
+            "Tessera Robotics",
+            "Vireo Components",
+            "Arbor Tools",
+            "Caldera Systems",
+            "Duskfield Optics",
+            "Emberline Power",
+            "Fenwick Hydraulics",
+            "Glenmore Electric",
+            "Hollis Precision",
+            "Juniper Mechanical",
+            "Larkspur Audio",
+            "Marlow Industries"
+        ]
+    }
+}
