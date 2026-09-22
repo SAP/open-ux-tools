@@ -314,7 +314,7 @@ ruleTester.run(TEST_NAME, noDeepCollectionFacetsRule, {
                 errors: [
                     {
                         message:
-                            'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
+                            '`UI.CollectionFacet` at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
                     }
                 ]
             },
@@ -333,7 +333,7 @@ ruleTester.run(TEST_NAME, noDeepCollectionFacetsRule, {
                 errors: [
                     {
                         message:
-                            'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
+                            '`UI.CollectionFacet` at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
                     }
                 ]
             },
@@ -352,7 +352,7 @@ ruleTester.run(TEST_NAME, noDeepCollectionFacetsRule, {
                 errors: [
                     {
                         message:
-                            'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
+                            '`UI.CollectionFacet` at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
                     }
                 ]
             },
@@ -371,7 +371,7 @@ ruleTester.run(TEST_NAME, noDeepCollectionFacetsRule, {
                 errors: [
                     {
                         message:
-                            'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
+                            '`UI.CollectionFacet` at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
                     }
                 ]
             },
@@ -385,7 +385,7 @@ ruleTester.run(TEST_NAME, noDeepCollectionFacetsRule, {
                 errors: [
                     {
                         message:
-                            'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
+                            '`UI.CollectionFacet` at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
                     }
                 ]
             },
