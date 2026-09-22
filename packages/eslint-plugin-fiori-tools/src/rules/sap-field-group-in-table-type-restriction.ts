@@ -118,7 +118,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION]:
-                'UI.FieldGroup is not supported in {{tableType}}{{sectionText}}. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                '`UI.FieldGroup` is not supported in `{{tableType}}`{{sectionText}}. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.'
         },
         schema: []
     },

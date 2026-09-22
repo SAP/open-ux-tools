@@ -206,7 +206,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, fieldGroupInTableTypeRestrictionRule, {
                 errors: [
                     {
                         message:
-                            'UI.FieldGroup is not supported in GridTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                            '`UI.FieldGroup` is not supported in `GridTable`. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.'
                     }
                 ]
             },
@@ -220,11 +220,11 @@ ruleTester.run(`${TEST_NAME} - CDS`, fieldGroupInTableTypeRestrictionRule, {
                 errors: [
                     {
                         message:
-                            'UI.FieldGroup is not supported in AnalyticalTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                            '`UI.FieldGroup` is not supported in `AnalyticalTable`. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.'
                     },
                     {
                         message:
-                            'UI.FieldGroup is not supported in AnalyticalTable. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                            '`UI.FieldGroup` is not supported in `AnalyticalTable`. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.'
                     }
                 ]
             },
@@ -238,7 +238,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, fieldGroupInTableTypeRestrictionRule, {
                 errors: [
                     {
                         message:
-                            'UI.FieldGroup is not supported in GridTable in the Incident Flow section. Change the table type to ResponsiveTable or use individual UI.DataField entries instead.'
+                            '`UI.FieldGroup` is not supported in `GridTable` in the Incident Flow section. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.'
                     }
                 ]
             },
