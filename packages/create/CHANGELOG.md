@@ -1,5 +1,51 @@
 # @sap-ux/create
 
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- system management CLI improvements
+
+    - Add `--skip-credentials-prompt` flag for non-basic auth
+    - Add i18n localization
+    - Implement HTTP connection check with error handling
+    - Add smart URL lookup (prompt when multiple systems match)
+    - Add "Clear Credentials" option
+    - Fix re-entrance ticket authentication message display [[77ac0e2](https://github.com/SAP/open-ux-tools/commit/77ac0e2629ef9e95e72723c5a7a31c28aa2a1405)]
+
+## 1.3.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.42 → 1.0.43
+- @sap-ux/abap-deploy-config-inquirer 2.0.47 → 2.0.48
+- @sap-ux/cap-config-writer 1.0.38 → 1.0.39
+- @sap-ux/flp-config-inquirer 1.0.56 → 1.0.57
+- @sap-ux/ui5-test-writer 1.13.2 → 1.13.3
+- @sap-ux/adp-tooling 1.0.56 → 1.0.57
+- @sap-ux/preview-middleware 1.2.16 → 1.2.17
+- @sap-ux/app-config-writer 1.1.23 → 1.1.23
+
+## 1.3.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.15 → 1.2.16
+- @sap-ux/adp-tooling 1.0.55 → 1.0.56
+- @sap-ux/app-config-writer 1.1.23 → 1.1.23
+- @sap-ux/ui5-test-writer 1.13.1 → 1.13.2
+- @sap-ux/flp-config-inquirer 1.0.55 → 1.0.56
+
 ## 1.3.26
 
 ### Patch Changes
