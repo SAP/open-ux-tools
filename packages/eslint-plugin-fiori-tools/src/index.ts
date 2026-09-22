@@ -501,7 +501,9 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
             '@sap-ux/fiori-tools/sap-no-live-mode': 'warn',
             '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn',
-            '@sap-ux/fiori-tools/sap-micro-chart-requires-navigation-entity': 'warn'
+            '@sap-ux/fiori-tools/sap-micro-chart-requires-navigation-entity': 'warn',
+            '@sap-ux/fiori-tools/sap-no-single-facet-in-collection': 'warn',
+            '@sap-ux/fiori-tools/sap-no-deep-collection-facets': 'warn'
         }
     }
 ];

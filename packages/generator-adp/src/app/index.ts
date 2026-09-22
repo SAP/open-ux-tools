@@ -46,6 +46,7 @@ import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
 import { getPackageInfo, installDependencies } from '../utils/deps.js';
 import { initI18n, t } from '../utils/i18n.js';
+import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
 import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
@@ -74,6 +75,7 @@ import {
     type AdpGeneratorOptions,
     type AttributePromptOptions,
     type JsonInput,
+    type JsonInputFile,
     type OptionalPromptsConfig
 } from './types.js';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
@@ -140,6 +142,10 @@ export default class extends Generator {
      * passed as a CLI argument.
      */
     private readonly jsonInput?: JsonInput;
+    /**
+     * Parsed `{tmpdir}/{id}.txt` when JSON input includes `id`.
+     */
+    private jsonInputFile?: JsonInputFile;
     /**
      * Instance of AbapServiceProvider.
      */
@@ -409,7 +415,7 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
-            const keyUserChanges = this.jsonInput ? this.jsonInput.keyUserChanges : this.keyUserPrompter?.changes;
+            const keyUserChanges = this.jsonInput ? this.jsonInputFile?.keyUserChanges : this.keyUserPrompter?.changes;
             const projectType = this._getProjectType();
 
             const packageJson = getPackageInfo();
@@ -761,6 +767,10 @@ export default class extends Generator {
     private async _initFromJson(): Promise<void> {
         if (!this.jsonInput) {
             return;
+        }
+
+        if (this.jsonInput.id) {
+            this.jsonInputFile = await readJsonInputFile(this.jsonInput.id);
         }
 
         const {

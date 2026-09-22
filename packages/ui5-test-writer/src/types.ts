@@ -60,6 +60,7 @@ export type JourneyParams = {
     startPages: string[];
     startLR: string | undefined;
     navigatedOP: string | undefined;
+    navigatedOPTabKey?: string;
     hideFilterBar: boolean;
 };
 
@@ -81,6 +82,9 @@ export type FEV4ManifestTarget = {
             };
             views?: {
                 paths?: Array<{
+                    key?: string;
+                    entitySet?: string;
+                    template?: string;
                     primary?: unknown[];
                     secondary?: unknown[];
                     defaultPath?: string;
@@ -126,7 +130,8 @@ export type ObjectPageNavigationParent = {
 
 export type ObjectPageNavigationParents = {
     parentLRName?: string;
-    parentLRTableIdentifier?: string;
+    parentLRViewKey?: string;
+    parentLRViewIsDefault?: boolean;
     parentOPs: ObjectPageNavigationParent[];
 };
 
@@ -145,6 +150,15 @@ export type TableColumnFeatureData = Record<string, TableColumn>;
 
 export type ContactCardField = {
     property: string;
+};
+
+/**
+ * A table column whose bound property carries both a `Common.Text` annotation and a
+ * `UI.TextArrangement` annotation. `textProperty` is the text/description property the
+ * column can be sorted by (the `Common.Text` target, e.g. "CustomerName").
+ */
+export type TextAnnotationColumn = {
+    textProperty: string;
 };
 
 export type BodySubSectionFeatureData = {
@@ -196,6 +210,20 @@ export type FilterBarItem = {
     custom: boolean;
 };
 
+/**
+ * Per-tab feature data for a multi-table (Multiple Table Mode) List Report. Each non-custom tab is
+ * checked separately (columns, actions, create/delete, contact cards) against its own table.
+ */
+export type ListReportTab = {
+    key: string;
+    entitySet?: string;
+    tableColumns: TableColumnFeatureData;
+    contactCardColumns: ContactCardField[];
+    toolBarActions: ActionButtonState[];
+    createButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+    deleteButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+};
+
 export type ListReportFeatures = {
     name?: string;
     createButton?: {
@@ -212,12 +240,22 @@ export type ListReportFeatures = {
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     contactCardColumns: ContactCardField[];
     toolBarActions?: ActionButtonState[];
+    /**
+     * Columns whose bound property has both a `Common.Text` and a `UI.TextArrangement`
+     * annotation; used to generate sort-order tests against the text/description property.
+     */
+    textAnnotationColumns?: TextAnnotationColumn[];
     isALP?: boolean;
     /**
      * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
      * single-table LRs. Used to target a specific tab via `onTable("<key>")`.
      */
     tableIdentifiers?: string[];
+    /**
+     * Per-tab feature data for multi-table List Reports; empty for single-table LRs (in which case the
+     * top-level `tableColumns` / `toolBarActions` / `contactCardColumns` describe the single table).
+     */
+    tabs?: ListReportTab[];
     semanticKey?: {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
@@ -258,6 +296,50 @@ export interface ActionButtonState {
      * Populated for both List Report and Object Page actions extracted via metadata.
      */
     unbound?: boolean;
+    /**
+     * Whether the action is annotated with `Common.IsActionCritical`. Critical actions trigger a
+     * confirmation dialog at runtime, which the generated test asserts and then cancels.
+     */
+    isCritical?: boolean;
+    /**
+     * Set when this entry is a menu (drop-down) button rather than a single action.
+     * `menuActions` then holds the individual actions inside the menu.
+     */
+    menuType?: 'Annotation' | 'CustomMenu';
+    /**
+     * The individual actions contained in a menu. Only set when `menuType` is present.
+     * Menu items are matched at runtime by label (the FE test API `iCheckMenuAction` /
+     * `iExecuteMenuAction` match menu entries by their rendered text, not by a stable id).
+     */
+    menuActions?: MenuActionState[];
+    /**
+     * Set when a menu (drop-down) button declares a `defaultAction`, so Fiori Elements renders it as a
+     * split button. Its dropdown can only be opened via the arrow, which the `sap.fe.test` API cannot
+     * press — so the generated test asserts the button but omits the (unreachable) menu drill-down.
+     */
+    splitButton?: boolean;
+    /**
+     * Set for custom (manifest-declared) actions that have no OData `DataFieldForAction` counterpart.
+     * These are matched at runtime by their rendered label, so the writer emits the label-string form
+     * `iCheckAction("<label>")` instead of the `{ service, action, unbound }` object form.
+     */
+    custom?: boolean;
+    /**
+     * Set when `label` is still an unresolved i18n placeholder (the app i18n bundle had no matching key).
+     * The writer emits a follow-up marker comment so the developer can fix the assertion.
+     */
+    labelUnresolved?: boolean;
+}
+
+export interface MenuActionState {
+    label: string;
+    visible: boolean;
+    service?: string;
+    action?: string;
+    unbound?: boolean;
+    enabled?: boolean | 'dynamic';
+    dynamicPath?: string;
+    labelUnresolved?: boolean;
 }
 
 export type FPMFeatures = {

@@ -332,7 +332,7 @@ describe('service-metadata', () => {
             } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
-                'Failed to parse service metadata. The service may not be a valid OData V4 service.'
+                'Failed to parse the service metadata as valid OData.'
             );
 
             expect(mockParseEdmx).toHaveBeenCalledWith(mockMetadata);
@@ -348,7 +348,7 @@ describe('service-metadata', () => {
             } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
-                'Failed to parse service metadata. The service may not be a valid OData V4 service.'
+                'Failed to parse the service metadata as valid OData.'
             );
 
             expect(mockParseEdmx).toHaveBeenCalledWith(mockMetadata);
@@ -364,7 +364,7 @@ describe('service-metadata', () => {
             } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
-                'Failed to parse service metadata. The service may not be a valid OData V4 service.'
+                'Failed to parse the service metadata as valid OData.'
             );
 
             expect(mockParseEdmx).toHaveBeenCalledWith(mockMetadata);

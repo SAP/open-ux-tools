@@ -90,7 +90,8 @@ export const tools = [
                     - Returns host, servicePath, client, and metadataFilePath inside the result's parameters object.
                     - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. Map the returned properties to the app config service property input to 'generate_fiori_app_odata'.
                     - **Note:** This tool is only supported in VSCode. For SAP Business Application Studio, use the Service Center MCP server tool to retrieve the service metadata instead.
-                    **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
+                    **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.
+                    **DO NOT use this tool to refresh or update service metadata in an existing Fiori application. Instead, invoke the ['sap-fiori-create-cli' skill's 'update service-metadata' section](../sap-fiori-create-cli/SKILL.md#update-service-metadata).`,
         annotations: {
             title: 'Download OData Service Metadata',
             readOnlyHint: false,
@@ -103,6 +104,11 @@ export const tools = [
     {
         name: 'generate_fiori_app_odata',
         description: `Creates (generates) a new SAP Fiori UI application either within an existing CAP project or standalone. ALWAYS read ALL of the following instructions carefully before calling this tool.
+
+        🚨 CRITICAL - TARGET FOLDER MUST NOT EXIST 🚨
+        The app subfolder <project.targetFolder>/<project.name> MUST NOT already exist before calling this tool.
+        If it exists the tool will STOP and return an error — it will NOT overwrite or merge.
+        Do NOT pre-create that subfolder. Only the parent targetFolder may exist.
 
         🚨 CRITICAL - READ SCHEMA FIRST 🚨
         Before calling this tool, you MUST:
@@ -164,6 +170,12 @@ export const tools = [
     {
         name: 'generate_fiori_app_cap',
         description: `Creates (generates) a new SAP Fiori UI application within an existing CAP project.
+
+        🚨 CRITICAL - TARGET FOLDER MUST NOT EXIST 🚨
+        The app subfolder <project.targetFolder>/app/<project.name> MUST NOT already exist before calling this tool.
+        If it exists the tool will STOP and return an error — it will NOT overwrite or merge.
+        Do NOT pre-create that subfolder. Only the parent targetFolder may exist.
+
                     To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
                     As a fallback, only if no such tool is available, manually read and parse all .cds files in the projectPath.
                     The configuration **MUST** be a valid JSON object matching the tool's inputSchema and based on the project files.`,

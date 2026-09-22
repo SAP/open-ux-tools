@@ -1,5 +1,7 @@
-import type { Action, ActionParameter, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
-import type { ActionButtonState, ButtonState, ButtonVisibilityResult } from '../types.js';
+import type { Action, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
+import type { ActionButtonState, ButtonState, ButtonVisibilityResult, MenuActionState } from '../types.js';
+import { getAggregations, type AggregationItem } from './modelUtils.js';
+import type { I18nLabelResolver } from './i18nUtils.js';
 import type {
     ActionAnnotations,
     EntityContainerAnnotations
@@ -16,6 +18,27 @@ import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 
 const DATA_FIELD_FOR_ACTION = 'DataFieldForAction';
+
+/**
+ * Collects the names of actions annotated with `Common.IsActionCritical` from converted metadata.
+ * The metadata must already include the annotation files (merged) for annotation-only terms to surface.
+ *
+ * @param metadata The converted (ideally annotation-merged) OData metadata
+ * @returns The set of critical action method names (empty if none)
+ */
+export function collectCriticalActionNames(metadata?: ConvertedMetadata): Set<string> {
+    const names = new Set<string>();
+    for (const action of metadata?.actions ?? []) {
+        if (action.name) {
+            // ponytail: IsActionCritical is present at runtime but missing from the vocabularies-types typings.
+            const common = action.annotations?.Common as { IsActionCritical?: boolean } | undefined;
+            if (common?.IsActionCritical?.valueOf() === true) {
+                names.add(action.name);
+            }
+        }
+    }
+    return names;
+}
 
 type OperationAvailableWithPaths = OperationAvailable & { $Path?: string; path?: string };
 type RestrictionValueWithPaths = (boolean | { $Path?: string; path?: string }) | undefined;
@@ -85,21 +108,22 @@ export function findOperationAvailableAnnotation(
 
 /**
  * Analyzes Core.OperationAvailable annotation to determine action availability.
- * Single-entity bound actions (requiring row selection) are disabled by default when no annotation is present.
+ * Bound actions require a row/context selection to be invoked, so they are disabled by default
+ * when no annotation is present.
  *
  * @param operationAvailable The OperationAvailable annotation value
- * @param isEntityBound Whether the action is bound to a single entity (requires row selection to enable)
+ * @param requiresSelection Whether the action needs a selected context to be enabled (true for any bound action)
  * @returns Object containing enabled state and optional dynamic path
  */
 export function analyzeOperationAvailability(
     operationAvailable: OperationAvailableWithPaths | undefined,
-    isEntityBound?: boolean
+    requiresSelection?: boolean
 ): {
     enabled: boolean | 'dynamic';
     dynamicPath?: string;
 } {
     if (operationAvailable === undefined) {
-        return { enabled: !isEntityBound };
+        return { enabled: !requiresSelection };
     }
 
     if (typeof operationAvailable === 'boolean') {
@@ -140,28 +164,36 @@ export function extractEnumMemberValue(enumValue: unknown): string | undefined {
  *
  * @param item The DataFieldForAction annotation item
  * @param metadata The converted metadata
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns ActionButtonState for the action
  */
-export function buildActionButtonState(item: DataFieldForAction, metadata: ConvertedMetadata): ActionButtonState {
+export function buildActionButtonState(
+    item: DataFieldForAction,
+    metadata: ConvertedMetadata,
+    criticalActions?: Set<string>
+): ActionButtonState {
     const actionString = (item.Action as string) || '';
     const actionMethod = extractActionMethodName(actionString);
     const operationAvailable = findOperationAvailableAnnotation(metadata, actionMethod);
-    // Bound actions whose binding parameter is a single entity (not a collection) require
-    // row selection to be invoked, so they are disabled by default (no row selected).
-    // Collection-bound actions operate on the entity set and are always enabled.
+    // A single-instance-bound action operates on one selected row, so it is disabled by default
+    // until a row is selected. A collection-bound action operates on the whole collection and is
+    // enabled without a selection. Both are bound (`unbound: false`), but only the single-instance
+    // case requires a selection.
     const actionTarget = item.ActionTarget;
-    const isEntityBound = actionTarget?.isBound === true && actionTarget?.parameters?.[0]?.isCollection !== true;
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isEntityBound);
+    const isBound = actionTarget?.isBound === true;
+    const requiresSelection = isBound && actionTarget?.parameters?.[0]?.isCollection !== true;
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, requiresSelection);
 
     return {
         label: (item.Label as string) || '',
         action: actionMethod,
         service: metadata.namespace ?? '',
-        unbound: !isEntityBound,
+        unbound: !isBound,
         visible: true,
         enabled,
         dynamicPath,
-        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined
+        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined,
+        isCritical: criticalActions?.has(actionMethod) ?? false
     };
 }
 
@@ -175,13 +207,15 @@ export function buildActionButtonState(item: DataFieldForAction, metadata: Conve
  * @param label Display label from the spec model item description
  * @param convertedMetadata The converted OData metadata
  * @param schemaNamespace The OData schema namespace (used as service identifier)
+ * @param criticalActions Optional set of action method names annotated Common.IsActionCritical
  * @returns ActionButtonState or undefined if the key is not a DataFieldForAction key
  */
 export function buildActionStateFromSpecModelKey(
     aggregationKey: string,
     label: string | undefined,
     convertedMetadata: ConvertedMetadata,
-    schemaNamespace: string
+    schemaNamespace: string,
+    criticalActions?: Set<string>
 ): ActionButtonState | undefined {
     const keyParts = aggregationKey.split('::');
     if (keyParts[0] !== DATA_FIELD_FOR_ACTION || !keyParts[1]) {
@@ -194,20 +228,23 @@ export function buildActionStateFromSpecModelKey(
     const actionDefinition: Action | undefined = convertedMetadata.actions?.find(
         (action) => action.name === actionMethod || action.fullyQualifiedName?.includes(`.${actionMethod}(`)
     );
-    const firstParameter: ActionParameter | undefined = actionDefinition?.parameters?.[0];
-    const isEntityBound = actionDefinition?.isBound === true && firstParameter?.isCollection !== true;
+    // Single-instance-bound actions require a row selection (disabled by default); collection-bound
+    // actions operate on the whole collection and are enabled without a selection. Both are bound.
+    const isBound = actionDefinition?.isBound === true;
+    const requiresSelection = isBound && actionDefinition?.parameters?.[0]?.isCollection !== true;
 
     const operationAvailable = findOperationAvailableAnnotation(convertedMetadata, actionMethod);
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, isEntityBound);
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, requiresSelection);
 
     return {
         label: label ?? '',
         action: actionMethod,
         service: schemaNamespace,
-        unbound: !isEntityBound,
+        unbound: !isBound,
         visible: true,
         enabled,
-        dynamicPath
+        dynamicPath,
+        isCritical: criticalActions?.has(actionMethod) ?? false
     };
 }
 
@@ -404,4 +441,90 @@ export function safeCheckEditVisibility(
         log?.debug(`Failed to check edit visibility: ${error instanceof Error ? error.message : String(error)}`);
         return undefined;
     }
+}
+
+/**
+ * Determines whether an action aggregation entry is a menu (drop-down) grouping several actions.
+ *
+ * @param item - action aggregation entry from the spec model
+ * @returns true if the entry represents an annotation menu or a manifest (custom) menu
+ */
+export function isMenuActionItem(item: AggregationItem): boolean {
+    return item.menuType !== undefined || item.schema?.dataType === 'DataFieldForActionGroup';
+}
+
+/**
+ * Builds the individual menu item states contained in a menu action node. Child actions are read
+ * from the nested `actions` aggregation of the menu node (`menuItem.aggregations.actions`).
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation-backed children; when omitted children are matched by label only
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels (`{i18n>key}` → translated text)
+ * @returns array of menu item states
+ */
+export function buildMenuItemStates(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata | undefined,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): MenuActionState[] {
+    const innerContainer = getAggregations(menuItem)['actions'];
+    if (!innerContainer) {
+        return [];
+    }
+    const innerEntries = getAggregations(innerContainer) as Record<string, AggregationItem>;
+    return Object.entries(innerEntries).map(([childKey, child]) => {
+        const annotationState = convertedMetadata
+            ? buildActionStateFromSpecModelKey(childKey, child.description, convertedMetadata, schemaNamespace)
+            : undefined;
+        if (annotationState) {
+            return {
+                label: annotationState.label,
+                visible: annotationState.visible,
+                service: annotationState.service,
+                action: annotationState.action,
+                unbound: annotationState.unbound,
+                enabled: annotationState.enabled,
+                dynamicPath: annotationState.dynamicPath
+            };
+        }
+        const { label, unresolved } = resolveLabel(child.description);
+        return { label, visible: true, labelUnresolved: unresolved || undefined };
+    });
+}
+
+/**
+ * Builds a menu action button state from a menu aggregation entry (annotation or custom menu).
+ *
+ * @param menuItem - the menu container aggregation entry
+ * @param convertedMetadata - converted OData metadata for resolving annotation-backed children; when omitted children are matched by label only
+ * @param schemaNamespace - OData schema namespace used as service identifier
+ * @param resolveLabel - resolver for i18n placeholder labels
+ * @returns the menu action button state
+ */
+export function buildMenuActionState(
+    menuItem: AggregationItem,
+    convertedMetadata: ConvertedMetadata | undefined,
+    schemaNamespace: string,
+    resolveLabel: I18nLabelResolver
+): ActionButtonState {
+    const menuType =
+        menuItem.menuType === 'Annotation' || menuItem.schema?.dataType === 'DataFieldForActionGroup'
+            ? 'Annotation'
+            : 'CustomMenu';
+    // A `defaultAction` makes FE render a split button whose menu cannot be opened via the OPA API.
+    const defaultAction = (menuItem as AggregationItem & { properties?: { defaultAction?: { value?: string } } })
+        .properties?.defaultAction?.value;
+    const { label, unresolved } = resolveLabel(menuItem.description);
+    return {
+        label,
+        action: '',
+        visible: true,
+        enabled: true,
+        menuType,
+        splitButton: defaultAction ? true : undefined,
+        labelUnresolved: unresolved || undefined,
+        menuActions: buildMenuItemStates(menuItem, convertedMetadata, schemaNamespace, resolveLabel)
+    };
 }

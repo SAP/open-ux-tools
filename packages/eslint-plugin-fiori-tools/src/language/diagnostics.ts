@@ -20,6 +20,8 @@ export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 export const MICRO_CHART_REQUIRES_NAVIGATION_ENTITY = 'sap-micro-chart-requires-navigation-entity';
+export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
+export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -71,6 +73,7 @@ export interface CreationModeForTable {
 export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
+    property: string;
     pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
@@ -132,9 +135,7 @@ export interface NoDataFieldIntentBasedNavigation {
     type: typeof NO_DATA_FIELD_INTENT_BASED_NAVIGATION;
     pageNames: string[];
     annotation: {
-        file: string;
         recordType: string;
-        annotationPath: string;
         reference: AnnotationReference;
         reportedParent: Element;
     };
@@ -192,6 +193,22 @@ export interface CloudDevAdaptationStatus {
     type: typeof CLOUD_DEV_ADAPTATION_STATUS;
     manifest: ManifestPropertyDiagnosticData;
 }
+export interface NoSingleFacetInCollection {
+    type: typeof NO_SINGLE_FACET_IN_COLLECTION;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+export interface NoDeepCollectionFacets {
+    type: typeof NO_DEEP_COLLECTION_FACETS;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
 
 export interface MicroChartRequiresNavigationEntity {
     type: typeof MICRO_CHART_REQUIRES_NAVIGATION_ENTITY;
@@ -220,4 +237,6 @@ export type Diagnostic =
     | StrictUomFiltering
     | NoLiveMode
     | CloudDevAdaptationStatus
-    | MicroChartRequiresNavigationEntity;
+    | MicroChartRequiresNavigationEntity
+    | NoSingleFacetInCollection
+    | NoDeepCollectionFacets;

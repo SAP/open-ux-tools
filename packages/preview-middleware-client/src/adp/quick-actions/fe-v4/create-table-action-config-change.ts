@@ -52,8 +52,9 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         if (table) {
             const overlay = OverlayRegistry.getOverlay(table) || [];
             const controlInfo = getControllerInfoForControl(table);
-            const data = await getExistingController(controlInfo.controllerName);
-            const controllerPath = data.controllerPathFromRoot.replaceAll('/', '.').replace(/\.[^.]+$/, '');
+            const data = await getExistingController(controlInfo.controllerName, controlInfo.viewId);
+            const controllerPathFromRoot = data.baseControllerPathFromRoot || data.instanceControllerPathFromRoot || '';
+            const controllerPath = controllerPathFromRoot.replaceAll('/', '.').replace(/\.[^.]+$/, '');
             await DialogFactory.createDialog(
                 overlay,
                 this.context.rta,

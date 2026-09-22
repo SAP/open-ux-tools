@@ -1,0 +1,10 @@
+@import './variables';
+
+:root {
+    --ui-spacing-xs: #{$spacing-xs};
+    --ui-spacing-small: #{$spacing-small};
+    --ui-spacing-medium: #{$spacing-medium};
+    --ui-spacing-large: #{$spacing-large};
+    --ui-spacing-xl: #{$spacing-xl};
+    --ui-spacing-xxl: #{$spacing-xxl};
+}

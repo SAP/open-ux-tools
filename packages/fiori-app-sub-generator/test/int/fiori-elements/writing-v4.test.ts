@@ -102,6 +102,45 @@ describe('Generate v4 apps', () => {
         cleanTestDir(join(testDir, testProjectName));
     });
 
+    it('ALP v4 SAPUI 1.120.4', async () => {
+        testProjectName = 'alp_v4_ui5_1_120_4';
+        expectedOutputPath = getExpectedOutputPath(testProjectName);
+        // ALP requires specific entity relationships so using a specific service
+        const alpServiceV4: Service = {
+            servicePath: '/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/',
+            host: 'https://sap-ux-mock-services-v4-alp.cfapps.us10.hana.ondemand.com',
+            version: OdataVersion.v4,
+            edmx: getTestData(fixturesPath, 'sales_order_manage_v4', 'metadata'),
+            annotations: [],
+            source: DatasourceType.odataServiceUrl
+        };
+
+        const testState: State = cloneDeep({
+            project: {
+                ...baseTestProject(testDir),
+                name: testProjectName,
+                ui5Version: '1.120.4' // ALP v4 restricted to 1.90 and above
+            } as Project,
+            floorplan: FloorplanFE.FE_ALP,
+            service: alpServiceV4,
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'SalesOrderItem',
+                    entitySetType: 'SalesOrderItemType'
+                },
+                navigationEntity: {
+                    entitySetName: 'MaterialDetails',
+                    navigationPropertyName: '_MaterialDetails'
+                },
+                tableType: 'GridTable',
+                tableSelectionMode: 'None'
+            }
+        });
+        await runWritingPhaseGen(testState as Partial<State>);
+        expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
     it('LROP v4 - invalid UI5 version specified', async () => {
         testProjectName = 'lrop_v4';
         expectedOutputPath = getExpectedOutputPath(testProjectName);
@@ -118,6 +157,26 @@ describe('Generate v4 apps', () => {
         });
 
         await expect(() => runWritingPhaseGen(testState)).rejects.toThrow('ValidationError');
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
+    it('LROP v4 - ui5 1.120.4', async () => {
+        testProjectName = 'lrop_v4_ui5_1_120_4';
+        expectedOutputPath = getExpectedOutputPath(testProjectName);
+
+        const testState: State = cloneDeep({
+            project: {
+                ...baseTestProject(testDir),
+                name: testProjectName,
+                ui5Version: '1.120.4'
+            } as Project,
+            floorplan: FloorplanFE.FE_LROP,
+            service: v4Service,
+            entityRelatedConfig: v4EntityConfig
+        });
+
+        await runWritingPhaseGen(testState);
+        expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
 
