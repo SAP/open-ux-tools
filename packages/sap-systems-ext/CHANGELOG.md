@@ -1,5 +1,13 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.36
+
+### Patch Changes
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
 ## 1.0.35
 
 ### Patch Changes
